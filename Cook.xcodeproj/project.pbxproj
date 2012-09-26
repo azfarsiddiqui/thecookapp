@@ -1,0 +1,301 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
+		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
+		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
+		76ED274C1612DC180012E479 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 76ED274A1612DC180012E479 /* InfoPlist.strings */; };
+		76ED274E1612DC180012E479 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED274D1612DC180012E479 /* main.m */; };
+		76ED27521612DC180012E479 /* CKAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED27511612DC180012E479 /* CKAppDelegate.m */; };
+		76ED27541612DC180012E479 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27531612DC180012E479 /* Default.png */; };
+		76ED27561612DC180012E479 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27551612DC180012E479 /* Default@2x.png */; };
+		76ED27581612DC180012E479 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27571612DC180012E479 /* Default-568h@2x.png */; };
+		76ED275B1612DC180012E479 /* CKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED275A1612DC180012E479 /* CKViewController.m */; };
+		76ED275E1612DC180012E479 /* CKViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76ED275C1612DC180012E479 /* CKViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		76ED27451612DC180012E479 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		76ED27491612DC180012E479 /* Cook-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Cook-Info.plist"; sourceTree = "<group>"; };
+		76ED274B1612DC180012E479 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		76ED274D1612DC180012E479 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		76ED274F1612DC180012E479 /* Cook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cook-Prefix.pch"; sourceTree = "<group>"; };
+		76ED27501612DC180012E479 /* CKAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKAppDelegate.h; sourceTree = "<group>"; };
+		76ED27511612DC180012E479 /* CKAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKAppDelegate.m; sourceTree = "<group>"; };
+		76ED27531612DC180012E479 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		76ED27551612DC180012E479 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		76ED27571612DC180012E479 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		76ED27591612DC180012E479 /* CKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKViewController.h; sourceTree = "<group>"; };
+		76ED275A1612DC180012E479 /* CKViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKViewController.m; sourceTree = "<group>"; };
+		76ED275D1612DC180012E479 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CKViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		76ED273A1612DC180012E479 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76ED27421612DC180012E479 /* UIKit.framework in Frameworks */,
+				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
+				76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		76ED27321612DC180012E479 = {
+			isa = PBXGroup;
+			children = (
+				76ED27471612DC180012E479 /* Cook */,
+				76ED27401612DC180012E479 /* Frameworks */,
+				76ED273E1612DC180012E479 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		76ED273E1612DC180012E479 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				76ED273D1612DC180012E479 /* Cook.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		76ED27401612DC180012E479 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				76ED27411612DC180012E479 /* UIKit.framework */,
+				76ED27431612DC180012E479 /* Foundation.framework */,
+				76ED27451612DC180012E479 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		76ED27471612DC180012E479 /* Cook */ = {
+			isa = PBXGroup;
+			children = (
+				76ED27501612DC180012E479 /* CKAppDelegate.h */,
+				76ED27511612DC180012E479 /* CKAppDelegate.m */,
+				76ED27591612DC180012E479 /* CKViewController.h */,
+				76ED275A1612DC180012E479 /* CKViewController.m */,
+				76ED275C1612DC180012E479 /* CKViewController.xib */,
+				76ED27481612DC180012E479 /* Supporting Files */,
+			);
+			path = Cook;
+			sourceTree = "<group>";
+		};
+		76ED27481612DC180012E479 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				76ED27491612DC180012E479 /* Cook-Info.plist */,
+				76ED274A1612DC180012E479 /* InfoPlist.strings */,
+				76ED274D1612DC180012E479 /* main.m */,
+				76ED274F1612DC180012E479 /* Cook-Prefix.pch */,
+				76ED27531612DC180012E479 /* Default.png */,
+				76ED27551612DC180012E479 /* Default@2x.png */,
+				76ED27571612DC180012E479 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		76ED273C1612DC180012E479 /* Cook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 76ED27611612DC180012E479 /* Build configuration list for PBXNativeTarget "Cook" */;
+			buildPhases = (
+				76ED27391612DC180012E479 /* Sources */,
+				76ED273A1612DC180012E479 /* Frameworks */,
+				76ED273B1612DC180012E479 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Cook;
+			productName = Cook;
+			productReference = 76ED273D1612DC180012E479 /* Cook.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		76ED27341612DC180012E479 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = CK;
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "Cook Apps Pty Ltd";
+			};
+			buildConfigurationList = 76ED27371612DC180012E479 /* Build configuration list for PBXProject "Cook" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 76ED27321612DC180012E479;
+			productRefGroup = 76ED273E1612DC180012E479 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				76ED273C1612DC180012E479 /* Cook */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		76ED273B1612DC180012E479 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76ED274C1612DC180012E479 /* InfoPlist.strings in Resources */,
+				76ED27541612DC180012E479 /* Default.png in Resources */,
+				76ED27561612DC180012E479 /* Default@2x.png in Resources */,
+				76ED27581612DC180012E479 /* Default-568h@2x.png in Resources */,
+				76ED275E1612DC180012E479 /* CKViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		76ED27391612DC180012E479 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76ED274E1612DC180012E479 /* main.m in Sources */,
+				76ED27521612DC180012E479 /* CKAppDelegate.m in Sources */,
+				76ED275B1612DC180012E479 /* CKViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		76ED274A1612DC180012E479 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				76ED274B1612DC180012E479 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		76ED275C1612DC180012E479 /* CKViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				76ED275D1612DC180012E479 /* en */,
+			);
+			name = CKViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		76ED275F1612DC180012E479 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		76ED27601612DC180012E479 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		76ED27621612DC180012E479 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
+				INFOPLIST_FILE = "Cook/Cook-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		76ED27631612DC180012E479 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
+				INFOPLIST_FILE = "Cook/Cook-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		76ED27371612DC180012E479 /* Build configuration list for PBXProject "Cook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				76ED275F1612DC180012E479 /* Debug */,
+				76ED27601612DC180012E479 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		76ED27611612DC180012E479 /* Build configuration list for PBXNativeTarget "Cook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				76ED27621612DC180012E479 /* Debug */,
+				76ED27631612DC180012E479 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 76ED27341612DC180012E479 /* Project object */;
+}
