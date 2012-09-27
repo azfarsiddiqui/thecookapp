@@ -1,0 +1,63 @@
+//
+//  CKServerManager.m
+//  Cook
+//
+//  Created by Jeff Tan-Ang on 26/09/12.
+//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//
+
+#import "CKServerManager.h"
+#import <Parse/Parse.h>
+
+@interface CKServerManager ()
+
+@end
+
+@implementation CKServerManager
+
++ (CKServerManager *)sharedInstance {
+    static CKServerManager *sharedInstance;
+    @synchronized(self) {
+        if (sharedInstance == nil) {
+            sharedInstance = [[CKServerManager alloc] init];
+        }
+    }
+    return sharedInstance;
+}
+
+- (id)init {
+    if (self = [super init]) {
+    }
+    return self;
+}
+
+- (void)start {
+    
+    // Enable anonymous user.
+    [PFUser enableAutomaticUser];
+    
+    // Set up Parse
+    [Parse setApplicationId:@"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS"
+                  clientKey:@"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN"];
+    
+    // Set up Facebook
+    //JTATest
+    [PFFacebookUtils initializeWithApplicationId:@"194406683965631"];
+    
+    // JonnyAppTest
+    // [PFFacebookUtils initializeWithApplicationId:@"205980009473724"];
+    
+    // TODO Set up analytics.
+    
+    DLog(@"Started ServerManager");
+}
+
+- (void)stop {
+    DLog(@"Stopped ServerManager");
+}
+
+- (BOOL)handleFacebookCallback:(NSURL *)url {
+    return [PFFacebookUtils handleOpenURL:url];
+}
+
+@end

@@ -12,3 +12,13 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+// Only generate output in non-release builds.
+// DLog();
+// DLog(@"here");
+// DLog(@"value: %d", x);
+#ifndef __OPTIMIZE__
+#    define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#    define DLog(...) {}
+#endif

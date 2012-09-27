@@ -1,0 +1,27 @@
+//
+//  CKUser.h
+//  Cook
+//
+//  Created by Jeff Tan-Ang on 27/09/12.
+//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
+#import "CKModel.h"
+
+@class CKUser;
+
+typedef void(^LoginSuccessBlock)(CKUser *user);
+
+@interface CKUser : CKModel
+
+@property (nonatomic, copy) NSString *facebookId;
+
++ (CKUser *)currentUser;
+
+- (id)initWithParseUser:(PFUser *)parseUser;
+- (BOOL)isSignedIn;
+- (void)loginWithFacebookCompletion:(LoginSuccessBlock)success failure:(ObjectSuccessBlock)failure;
+
+@end
