@@ -12,6 +12,7 @@
 		7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EE16140F6F001D1BA1 /* CKModel.m */; };
 		7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */; };
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
+		7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* CKAppHelper.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -45,6 +46,8 @@
 		7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKIntroViewController.m; sourceTree = "<group>"; };
 		7666B40116141B7E001D1BA1 /* CKModalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKModalView.h; sourceTree = "<group>"; };
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
+		7666B40416143713001D1BA1 /* CKAppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKAppHelper.h; sourceTree = "<group>"; };
+		7666B40516143713001D1BA1 /* CKAppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKAppHelper.m; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* .app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = .app; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -102,6 +105,8 @@
 			children = (
 				7666B40116141B7E001D1BA1 /* CKModalView.h */,
 				7666B40216141B7E001D1BA1 /* CKModalView.m */,
+				7666B40416143713001D1BA1 /* CKAppHelper.h */,
+				7666B40516143713001D1BA1 /* CKAppHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -293,6 +298,7 @@
 				7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */,
 				7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */,
 				7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */,
+				7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

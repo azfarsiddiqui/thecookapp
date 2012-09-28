@@ -16,12 +16,11 @@
 @implementation CKServerManager
 
 + (CKServerManager *)sharedInstance {
-    static CKServerManager *sharedInstance;
-    @synchronized(self) {
-        if (sharedInstance == nil) {
-            sharedInstance = [[CKServerManager alloc] init];
-        }
-    }
+    static dispatch_once_t pred;
+    static CKServerManager *sharedInstance = nil;
+    dispatch_once(&pred, ^{
+        sharedInstance =  [[CKServerManager alloc] init];
+    });
     return sharedInstance;
 }
 

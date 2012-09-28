@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKModalView.h"
+#import "CKIntroViewController.h"
 
-@interface CKViewController : UIViewController
+@interface CKViewController : UIViewController <CKModalViewContentDelegate, CKIntroViewControllerDelegate>
 
 @end

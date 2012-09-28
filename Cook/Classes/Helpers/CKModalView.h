@@ -21,18 +21,18 @@ typedef enum {
 
 @protocol CKModalViewContentDelegate
 
-- (BOOL)modalViewShouldNotHide;
 - (void)modalViewDidShow;
 - (void)modalViewDidHide;
 
 @end
 
-@interface CKModalView : UIView <UIGestureRecognizerDelegate>
+@interface CKModalView : UIView
 
 + (CKModalView *)modalViewInView:(UIView *)view;
 
+- (id)initWithViewController:(UIViewController *)contentViewController delegate:(id<CKModalViewContentDelegate>)delegate;
 - (id)initWithViewController:(UIViewController *)contentViewController delegate:(id<CKModalViewContentDelegate>)delegate
-                        size:(CGSize)contentSize;
+                 dismissable:(BOOL)dismissable;
 - (void)showInView:(UIView *)view;
 - (void)showInView:(UIView *)view animation:(CKModalViewShowAnimation)showAnimation;
 - (void)hide;

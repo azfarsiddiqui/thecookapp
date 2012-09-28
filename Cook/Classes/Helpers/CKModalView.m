@@ -13,8 +13,8 @@
 @property (nonatomic, assign) id<CKModalViewContentDelegate> delegate;
 @property (nonatomic, strong) UIViewController *contentViewController;
 @property (nonatomic, strong) UIView *backgroundOverlay;
-@property (nonatomic, assign) CGSize contentSize;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL dismissable;
 
 - (void)backgroundTapped:(UITapGestureRecognizer *)tapGesture;
 
@@ -28,17 +28,21 @@
     CKModalView *modalView = nil;
     UIView *targetView = [view viewWithTag:kModalViewTag];
     if (targetView && [targetView isKindOfClass:[CKModalView class]]) {
-        modalView = (CKModalView *)modalView;
+        modalView = (CKModalView *)targetView;
     }
     return modalView;
 }
 
-- (id)initWithViewController:(UIViewController *)contentViewController delegate:(id<CKModalViewContentDelegate>)delegate
-                        size:(CGSize)contentSize {
+- (id)initWithViewController:(UIViewController *)contentViewController delegate:(id<CKModalViewContentDelegate>)delegate {
+    return [self initWithViewController:contentViewController delegate:delegate dismissable:YES];
+}
 
+- (id)initWithViewController:(UIViewController *)contentViewController delegate:(id<CKModalViewContentDelegate>)delegate
+                 dismissable:(BOOL)dismissable {
     if (self = [super init]) {
         self.contentViewController = contentViewController;
-        self.contentSize = contentSize;
+        self.delegate = delegate;
+        self.dismissable = dismissable;
         self.backgroundColor = [UIColor clearColor];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     }
@@ -188,12 +192,6 @@
     self.tag = kModalViewTag;
     [view addSubview:self];
     
-    // Register tap on container.
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                 action:@selector(backgroundTapped:)];
-    tapGesture.delegate = self;
-    [self addGestureRecognizer:tapGesture];
-    
     // Prepare the background overlay.
     UIView *backgroundOverlay = [[UIView alloc] initWithFrame:self.bounds];
     backgroundOverlay.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
@@ -202,18 +200,25 @@
     [self addSubview:backgroundOverlay];
     self.backgroundOverlay = backgroundOverlay;
     
+    // Register tap if dismissable.
+    if (self.dismissable) {
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                     action:@selector(backgroundTapped:)];
+        [backgroundOverlay addGestureRecognizer:tapGesture];
+    }
+    
     // Prepare the contentView.
     UIView *contentView = self.contentViewController.view;
-    contentView.frame = CGRectMake(floorf((self.bounds.size.width - self.contentSize.width) / 2),
-                                   floorf((self.bounds.size.height - self.contentSize.height) / 2),
-                                   self.contentSize.width,
-                                   self.contentSize.height);
+    contentView.frame = CGRectMake(floorf((self.bounds.size.width - contentView.frame.size.width) / 2),
+                                   floorf((self.bounds.size.height - contentView.frame.size.height) / 2),
+                                   contentView.frame.size.width,
+                                   contentView.frame.size.height);
     [self addSubview:contentView];
     contentView.transform = [self showTransformFor:showAnimation];
     contentView.alpha = [self showAlphaFor:showAnimation];
     
     // Fade in the background.
-    [UIView animateWithDuration:0.1
+    [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationCurveLinear
                      animations:^{

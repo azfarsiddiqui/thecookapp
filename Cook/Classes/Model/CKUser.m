@@ -31,7 +31,7 @@
 - (BOOL)isSignedIn {
     return [PFFacebookUtils isLinkedWithUser:(PFUser *)self.parseObject];
 }
-            
+
 - (id)initWithParseUser:(PFUser *)parseUser {
     if (self = [super initWithParseObject:parseUser]) {
     }
