@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		762C0E43161A6DA000EBA344 /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 762C0E42161A6DA000EBA344 /* NSString+Utilities.m */; };
 		7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3E716140A16001D1BA1 /* CKConstants.m */; };
 		7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EB16140B16001D1BA1 /* CKUser.m */; };
 		7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EE16140F6F001D1BA1 /* CKModel.m */; };
@@ -36,6 +37,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		762C0E41161A6DA000EBA344 /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utilities.h"; sourceTree = "<group>"; };
+		762C0E42161A6DA000EBA344 /* NSString+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utilities.m"; sourceTree = "<group>"; };
 		7666B3E616140A16001D1BA1 /* CKConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKConstants.h; sourceTree = "<group>"; };
 		7666B3E716140A16001D1BA1 /* CKConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKConstants.m; sourceTree = "<group>"; };
 		7666B3EA16140B16001D1BA1 /* CKUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUser.h; sourceTree = "<group>"; };
@@ -48,7 +51,7 @@
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
 		7666B40416143713001D1BA1 /* CKAppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKAppHelper.h; sourceTree = "<group>"; };
 		7666B40516143713001D1BA1 /* CKAppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKAppHelper.m; sourceTree = "<group>"; };
-		76ED273D1612DC180012E479 /* .app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = .app; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		76ED27451612DC180012E479 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -100,6 +103,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		762C0E3F161A6D9200EBA344 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				762C0E41161A6DA000EBA344 /* NSString+Utilities.h */,
+				762C0E42161A6DA000EBA344 /* NSString+Utilities.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		764CB5F2161553210067280C /* External */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
 		7666B3FB16141B28001D1BA1 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,7 +142,7 @@
 		76ED273E1612DC180012E479 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				76ED273D1612DC180012E479 /* .app */,
+				76ED273D1612DC180012E479 /* Cook.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -174,8 +193,10 @@
 		76ED277C1612DDDA0012E479 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				762C0E3F161A6D9200EBA344 /* Categories */,
 				76ED277E1612DE020012E479 /* Controllers */,
 				7666B3FB16141B28001D1BA1 /* Helpers */,
+				764CB5F2161553210067280C /* External */,
 				76ED277D1612DDDA0012E479 /* Managers */,
 				76ED27911612E6B50012E479 /* Model */,
 			);
@@ -241,7 +262,7 @@
 			);
 			name = Cook;
 			productName = Cook;
-			productReference = 76ED273D1612DC180012E479 /* .app */;
+			productReference = 76ED273D1612DC180012E479 /* Cook.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -299,6 +320,7 @@
 				7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */,
 				7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */,
 				7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */,
+				762C0E43161A6DA000EBA344 /* NSString+Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

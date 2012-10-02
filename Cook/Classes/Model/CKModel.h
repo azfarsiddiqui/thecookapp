@@ -24,5 +24,6 @@ typedef void(^ProgressBlock)(int percentDone);
 
 - (id)initWithParseObject:(PFObject *)parseObject;
 - (void)saveEventually;
+- (NSDictionary *)descriptionProperties;
 
 @end

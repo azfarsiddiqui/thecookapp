@@ -7,6 +7,7 @@
 //
 
 #import "CKUser.h"
+#import "NSString+Utilities.h"
 
 @interface CKUser ()
 
@@ -73,6 +74,15 @@
 
 - (NSString *)facebookId {
     return [self.parseObject objectForKey:kCKUserFacebookIdKey];
+}
+
+#pragma mark - CKModel
+
+- (NSDictionary *)descriptionProperties {
+    NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
+    [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:@"facebookId"];
+    [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
+    return descriptionProperties;
 }
 
 #pragma mark - Private methods
