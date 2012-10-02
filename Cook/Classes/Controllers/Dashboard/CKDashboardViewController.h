@@ -10,4 +10,7 @@
 
 @interface CKDashboardViewController : UICollectionViewController
 
+- (void)dim:(BOOL)dim animated:(BOOL)animated;
+- (void)reveal:(BOOL)reveal;
+
 @end

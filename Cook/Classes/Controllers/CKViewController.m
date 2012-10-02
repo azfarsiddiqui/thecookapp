@@ -82,20 +82,8 @@
     // Prepare for the dashboard to be transitioned in.
     self.dashboardViewController = [[CKDashboardViewController alloc] init];
     self.dashboardViewController.view.frame = self.view.bounds;
-    self.dashboardViewController.view.alpha = 0.0;
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.95, 0.95);
-    self.dashboardViewController.view.transform = scaleTransform;
     [self.view addSubview:self.dashboardViewController.view];
-    
-    [UIView animateWithDuration:0.4
-                          delay:0.0
-                        options:UIViewAnimationCurveLinear
-                     animations:^{
-                         self.dashboardViewController.view.alpha = 1.0;
-                         self.dashboardViewController.view.transform = CGAffineTransformIdentity;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
+    [self.dashboardViewController reveal:YES];
 }
 
 @end

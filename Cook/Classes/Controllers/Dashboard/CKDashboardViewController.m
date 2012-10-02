@@ -14,7 +14,9 @@
 
 @property (nonatomic, assign) BOOL firstBenchtop;
 @property (nonatomic, assign) BOOL snapActivated;
-@property (nonatomic, retain) UIView *backgroundView;
+@property (nonatomic, strong) UIView *backgroundView;
+@property (nonatomic, strong) UIView *dimView;
+@property (nonatomic, strong) UIView *overlayView;
 
 - (void)initBackground;
 - (NSIndexPath *)nextSnapIndexPath;
@@ -30,6 +32,7 @@
 
 #define kBookCellId             @"BookCell"
 #define kBackgroundAvailOffset  50.0
+#define kDimViewAlpha           0.7
 
 - (void)dealloc {
     [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
@@ -62,6 +65,71 @@
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[CKDashboardBookCell class] forCellWithReuseIdentifier:kBookCellId];
     self.firstBenchtop = YES;
+}
+
+- (void)dim:(BOOL)dim animated:(BOOL)animated {
+    if (dim) {
+        
+        // Prepare the dimView to be faded in.
+        self.dimView = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.dimView.backgroundColor = [UIColor blackColor];
+        
+        if (animated) {
+            self.dimView.alpha = 0.0;
+            [self.view addSubview:self.dimView];
+            
+            [UIView animateWithDuration:0.5
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.dimView.alpha = kDimViewAlpha;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+            
+        } else {
+            self.dimView.alpha = kDimViewAlpha;
+            [self.view addSubview:self.dimView];
+        }
+        
+    } else {
+        if (animated) {
+            [UIView animateWithDuration:0.5
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.dimView.alpha = 0.0;
+                             }
+                             completion:^(BOOL finished) {
+                                 [self.dimView removeFromSuperview];
+                             }];
+            
+        } else {
+            [self.dimView removeFromSuperview];
+        }
+        
+    }
+}
+
+- (void)reveal:(BOOL)reveal {
+    if (reveal && !self.overlayView) {
+        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ff_dash_bg_overlay.png"]];
+        self.overlayView.autoresizingMask = UIViewAutoresizingNone;
+        self.overlayView.alpha = 0.0;
+        [self.view insertSubview:self.overlayView aboveSubview:self.backgroundView];
+    }
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.overlayView.alpha = reveal ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!reveal) {
+                             [self.overlayView removeFromSuperview];
+                         }
+                     }];
+
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -230,11 +298,6 @@
     backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ff_dash_bg_tile.png"]];
     [self.view insertSubview:backgroundView belowSubview:self.collectionView];
     self.backgroundView = backgroundView;
-    
-    // Woodgrain overlay.
-    UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ff_dash_bg_overlay.png"]];
-    overlayImageView.autoresizingMask = UIViewAutoresizingNone;
-    [self.view insertSubview:overlayImageView aboveSubview:backgroundView];
     
     // Observe changes in contentSize and contentOffset.
     [self.collectionView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
