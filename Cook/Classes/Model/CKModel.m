@@ -38,7 +38,12 @@
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionary];
     [descriptionProperties setValue:[NSString CK_safeString:self.parseObject.objectId] forKey:@"objectId"];
     [descriptionProperties setValue:[NSString CK_safeString:self.name] forKey:@"name"];
+    [descriptionProperties setValue:[NSString CK_stringForBoolean:[self persisted]] forKey:@"persisted"];
     return descriptionProperties;
+}
+
+- (BOOL)persisted {
+    return (self.parseObject.objectId != nil && [self.parseObject.objectId length] > 0);
 }
 
 #pragma mark - NSObject
