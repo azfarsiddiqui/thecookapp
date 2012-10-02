@@ -12,6 +12,9 @@
 		762C0E53161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E4F161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png */; };
 		762C0E54161A7FC400EBA344 /* ff_dash_bg_tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */; };
 		762C0E55161A7FC400EBA344 /* ff_dash_bg_tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */; };
+		76520460161A811700EE253C /* CKDashboardBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652045B161A80E800EE253C /* CKDashboardBookCell.m */; };
+		76520461161A811700EE253C /* CKDashboardFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652045D161A80E800EE253C /* CKDashboardFlowLayout.m */; };
+		76520462161A811700EE253C /* CKDashboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652045F161A80E800EE253C /* CKDashboardViewController.m */; };
 		7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3E716140A16001D1BA1 /* CKConstants.m */; };
 		7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EB16140B16001D1BA1 /* CKUser.m */; };
 		7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EE16140F6F001D1BA1 /* CKModel.m */; };
@@ -47,6 +50,12 @@
 		762C0E4F161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ff_dash_bg_overlay@2x.png"; sourceTree = "<group>"; };
 		762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ff_dash_bg_tile.png; sourceTree = "<group>"; };
 		762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ff_dash_bg_tile@2x.png"; sourceTree = "<group>"; };
+		7652045A161A80E800EE253C /* CKDashboardBookCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKDashboardBookCell.h; sourceTree = "<group>"; };
+		7652045B161A80E800EE253C /* CKDashboardBookCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKDashboardBookCell.m; sourceTree = "<group>"; };
+		7652045C161A80E800EE253C /* CKDashboardFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKDashboardFlowLayout.h; sourceTree = "<group>"; };
+		7652045D161A80E800EE253C /* CKDashboardFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKDashboardFlowLayout.m; sourceTree = "<group>"; };
+		7652045E161A80E800EE253C /* CKDashboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKDashboardViewController.h; sourceTree = "<group>"; };
+		7652045F161A80E800EE253C /* CKDashboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKDashboardViewController.m; sourceTree = "<group>"; };
 		7666B3E616140A16001D1BA1 /* CKConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKConstants.h; sourceTree = "<group>"; };
 		7666B3E716140A16001D1BA1 /* CKConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKConstants.m; sourceTree = "<group>"; };
 		7666B3EA16140B16001D1BA1 /* CKUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUser.h; sourceTree = "<group>"; };
@@ -136,6 +145,19 @@
 			children = (
 			);
 			path = External;
+			sourceTree = "<group>";
+		};
+		76520459161A80CB00EE253C /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				7652045A161A80E800EE253C /* CKDashboardBookCell.h */,
+				7652045B161A80E800EE253C /* CKDashboardBookCell.m */,
+				7652045C161A80E800EE253C /* CKDashboardFlowLayout.h */,
+				7652045D161A80E800EE253C /* CKDashboardFlowLayout.m */,
+				7652045E161A80E800EE253C /* CKDashboardViewController.h */,
+				7652045F161A80E800EE253C /* CKDashboardViewController.m */,
+			);
+			path = Dashboard;
 			sourceTree = "<group>";
 		};
 		7666B3FB16141B28001D1BA1 /* Helpers */ = {
@@ -234,6 +256,7 @@
 		76ED277E1612DE020012E479 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				76520459161A80CB00EE253C /* Dashboard */,
 				76ED277F1612DE140012E479 /* CKViewController.h */,
 				76ED27801612DE140012E479 /* CKViewController.m */,
 				7666B3F8161418E5001D1BA1 /* CKIntroViewController.h */,
@@ -345,6 +368,9 @@
 				7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */,
 				7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */,
 				762C0E43161A6DA000EBA344 /* NSString+Utilities.m in Sources */,
+				76520460161A811700EE253C /* CKDashboardBookCell.m in Sources */,
+				76520461161A811700EE253C /* CKDashboardFlowLayout.m in Sources */,
+				76520462161A811700EE253C /* CKDashboardViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
