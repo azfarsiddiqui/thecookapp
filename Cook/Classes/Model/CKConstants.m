@@ -8,10 +8,17 @@
 
 #import "CKConstants.h"
 
-#pragma mark - Model Class
+#pragma mark - Model class
 
 NSString *const kCKModelNameKey = @"name";
 
-#pragma mark - User Class
+#pragma mark - User class
 
 NSString *const kCKUserFacebookIdKey  = @"facebookId";
+NSString *const kCKUserKey  = @"user";
+
+#pragma mark - Book class
+
+NSString *const kCKBookModelName = @"Book";
+NSString *const kCKBookCoverPhotoNameKey  = @"coverPhotoName";
+NSString *const kCKBookDefaultName = @"My Book";

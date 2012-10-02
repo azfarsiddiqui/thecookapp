@@ -8,6 +8,7 @@
 
 #import "CKUser.h"
 #import "NSString+Utilities.h"
+#import "CKBook.h"
 
 @interface CKUser ()
 
@@ -15,6 +16,7 @@
 @property (nonatomic, copy) ObjectFailureBlock loginFailureBlock;
 
 - (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser>*)facebookUser;
++ (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser;
 
 @end
 
@@ -23,8 +25,9 @@
 + (CKUser *)currentUser {
     PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
-        return [[CKUser alloc] initWithParseUser:currentUser];
+        return [self initialiseUserWithParseUser:currentUser];
     } else {
+        // Should always return non-nil because enableAutomaticUser is set.
         return nil;
     }
 }
@@ -109,6 +112,27 @@
     self.loginSuccessfulBlock(currentUser);
     self.loginSuccessfulBlock = nil;
     self.loginFailureBlock = nil;
+}
+
++ (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser {
+    DLog(@"initialiseUserWithParseUser:%@", parseUser);
+    if (parseUser.objectId == nil) {
+        
+        DLog(@"initialiseUserWithParseUser:creating book");
+        
+        // Create a book for the new user and save it in the background.
+        PFObject *parseBook = [CKBook parseBookForParseUser:parseUser];
+        [parseBook saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                DLog(@"initialiseUserWithParseUser:created book");
+            } else {
+                DLog(@"initialiseUserWithParseUser:Error initialising user: %@",
+                     [error localizedDescription]);
+            }
+        }];
+        
+    }
+    return [[CKUser alloc] initWithParseUser:parseUser];
 }
 
 @end

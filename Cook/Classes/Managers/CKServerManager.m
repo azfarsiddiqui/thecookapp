@@ -32,9 +32,6 @@
 
 - (void)start {
     
-    // Enable anonymous user.
-    [PFUser enableAutomaticUser];
-    
     // Set up Parse
     [Parse setApplicationId:@"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS"
                   clientKey:@"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN"];

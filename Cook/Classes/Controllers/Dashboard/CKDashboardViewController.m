@@ -9,6 +9,8 @@
 #import "CKDashboardViewController.h"
 #import "CKDashboardFlowLayout.h"
 #import "CKDashboardBookCell.h"
+#import "CKUser.h"
+#import "CKBook.h"
 
 @interface CKDashboardViewController ()
 
@@ -17,6 +19,7 @@
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIView *dimView;
 @property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) CKBook *myBook;
 
 - (void)initBackground;
 - (NSIndexPath *)nextSnapIndexPath;
@@ -25,6 +28,7 @@
 - (void)parallaxScrollBackground;
 - (CGFloat)backgroundAvailableScrollWidth;
 - (CGRect)backgroundFrameForView:(UIView *)view translation:(CGPoint)translation;
+- (void)loadData;
 
 @end
 
@@ -65,6 +69,10 @@
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[CKDashboardBookCell class] forCellWithReuseIdentifier:kBookCellId];
     self.firstBenchtop = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [self loadData];
 }
 
 - (void)dim:(BOOL)dim animated:(BOOL)animated {
@@ -401,6 +409,16 @@
                       currentFrame.origin.y,
                       currentFrame.size.width,
                       currentFrame.size.height);
+}
+
+- (void)loadData {
+    [CKBook bookForUser:[CKUser currentUser]
+                success:^(CKBook *book) {
+                    self.myBook = book;
+                }
+                failure:^(NSError *error) {
+                    DLog(@"Error: %@", [error localizedDescription]);
+                }];
 }
 
 @end

@@ -1,0 +1,23 @@
+//
+//  CKBook.h
+//  Cook
+//
+//  Created by Jeff Tan-Ang on 2/10/12.
+//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//
+
+#import <Parse/Parse.h>
+#import "CKModel.h"
+#import "CKUser.h"
+
+@interface CKBook : CKModel
+
+@property (nonatomic, strong) CKUser *user;
+@property (nonatomic, copy) NSString *coverPhotoName;
+
++ (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (PFObject *)parseBookForParseUser:(PFUser *)parseUser;
+
+- (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
+
+@end
