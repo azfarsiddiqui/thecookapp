@@ -36,6 +36,7 @@ typedef enum {
 - (void)showInView:(UIView *)view;
 - (void)showInView:(UIView *)view animation:(CKModalViewShowAnimation)showAnimation;
 - (void)hide;
+- (void)hideWithCompletion:(void (^)())completion;
 - (void)hide:(CKModalViewHideAnimation)animation;
 - (void)hide:(CKModalViewHideAnimation)animation completion:(void (^)())completion;
 

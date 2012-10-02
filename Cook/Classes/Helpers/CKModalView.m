@@ -61,6 +61,10 @@
     [self hide:CKModalViewHideAnimationDown];
 }
 
+- (void)hideWithCompletion:(void (^)())completion {
+    [self hide:CKModalViewHideAnimationDown completion:completion];
+}
+
 - (void)hide:(CKModalViewHideAnimation)animation {
     [self hide:animation completion:^{}];
 }
