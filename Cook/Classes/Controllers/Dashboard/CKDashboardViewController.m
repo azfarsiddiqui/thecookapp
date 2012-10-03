@@ -135,6 +135,7 @@
                      completion:^(BOOL finished) {
                          if (!reveal) {
                              [self.overlayView removeFromSuperview];
+                             self.overlayView = nil;
                          }
                      }];
 
@@ -412,13 +413,14 @@
 }
 
 - (void)loadData {
-    [CKBook bookForUser:[CKUser currentUser]
-                success:^(CKBook *book) {
-                    self.myBook = book;
-                }
-                failure:^(NSError *error) {
-                    DLog(@"Error: %@", [error localizedDescription]);
-                }];
+    DLog(@"User: %@", [CKUser currentUser]);
+//    [CKBook bookForUser:[CKUser currentUser]
+//                success:^(CKBook *book) {
+//                    self.myBook = book;
+//                }
+//                failure:^(NSError *error) {
+//                    DLog(@"Error: %@", [error localizedDescription]);
+//                }];
 }
 
 @end
