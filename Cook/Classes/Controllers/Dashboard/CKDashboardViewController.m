@@ -124,7 +124,7 @@
 
 - (void)reveal:(BOOL)reveal {
     if (reveal && !self.overlayView) {
-        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ff_dash_bg_overlay.png"]];
+        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
         self.overlayView.autoresizingMask = UIViewAutoresizingNone;
         self.overlayView.alpha = 0.0;
         [self.view insertSubview:self.overlayView aboveSubview:self.backgroundView];
@@ -159,7 +159,7 @@
         if ([[CKUser currentUser] isSignedIn]) {
             numItems = 1; // Friends Boooks
         } else {
-            numItems = 1; // Login book.
+            numItems = 6; // Login book.
         }
     }
     
@@ -278,20 +278,23 @@
         // Update the positioning of the background to achieve the parallax effect.
         CGRect backgroundFrame = self.backgroundView.frame;
         
-        // 100 => -59.0
-        // 50  => -30.0
-        CGFloat backgroundOffset = self.firstBenchtop? 0.0 : -30.0;
+        // kBackgroundAvailOffset 100 => -59.0
+        // kBackgroundAvailOffset 50  => -30.0
+        // CGFloat backgroundOffset = self.firstBenchtop? 0.0 :-kBackgroundAvailOffset;
+        CGFloat backgroundOffset = self.firstBenchtop? 0.0 :-30;
         
-        if ((self.firstBenchtop && contentOffset.x >= 0.0)
-            || (!self.firstBenchtop && contentOffset.x <= contentSize.width - self.collectionView.bounds.size.width)) {
-            
+        if (self.firstBenchtop && contentOffset.x >= 0.0) {
             backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
-            self.backgroundView.frame = backgroundFrame;
-            
+        } else if (!self.firstBenchtop && contentOffset.x <= contentSize.width - self.collectionView.bounds.size.width) {
+            backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
         }
         
-        NSLog(@"*** contentOffset %@ first [%@] snap [%@]", NSStringFromCGPoint(contentOffset), self.firstBenchtop ? @"YES" : @"NO", self.snapActivated ? @"YES" : @"NO");
-        NSLog(@"*** backgroundFrame %@", NSStringFromCGRect(backgroundFrame));
+        self.backgroundView.frame = backgroundFrame;
+        
+//        NSLog(@"*** contentOffset %@ first [%@] snap [%@]",
+//              NSStringFromCGPoint(contentOffset), self.firstBenchtop ? @"YES" : @"NO", self.snapActivated ? @"YES" : @"NO");
+        DLog(@"*** contentOffset   %@", NSStringFromCGPoint(contentOffset));
+        DLog(@"*** backgroundFrame %@", NSStringFromCGRect(backgroundFrame));
         
     } else if ([keyPath isEqualToString:@"contentSize"]) {
         
@@ -301,6 +304,8 @@
         CGRect backgroundFrame = self.backgroundView.frame;
         backgroundFrame.size.width = contentSize.width + kBackgroundAvailOffset;
         self.backgroundView.frame = backgroundFrame;
+        
+        DLog(@"*** contentOffset backgroundFrame %@", NSStringFromCGRect(backgroundFrame));
         
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -320,6 +325,7 @@
     backgroundView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ff_dash_bg_tile.png"]];
     [self.view insertSubview:backgroundView belowSubview:self.collectionView];
+    DLog(@"initBackground FRAME: %@", NSStringFromCGRect(backgroundView.frame));
     self.backgroundView = backgroundView;
     
     // Observe changes in contentSize and contentOffset.
@@ -365,22 +371,22 @@
     // Works
     [self.collectionView setContentOffset:scrollToPoint animated:YES];
     
-    CGRect backgroundFrame = self.backgroundView.frame;
-    if (self.firstBenchtop) {
-        backgroundFrame.origin.x = -kBackgroundAvailOffset;
-    } else {
-        backgroundFrame.origin.x = 0.0;
-    }
-    
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         //self.backgroundView.frame = backgroundFrame;
-                     }
-                     completion:^(BOOL finished) {
-                         NSLog(@"Snap BG %@", NSStringFromCGPoint(backgroundFrame.origin));
-                     }];
+//    CGRect backgroundFrame = self.backgroundView.frame;
+//    if (self.firstBenchtop) {
+//        backgroundFrame.origin.x = -kBackgroundAvailOffset;
+//    } else {
+//        backgroundFrame.origin.x = 0.0;
+//    }
+//    
+//    [UIView animateWithDuration:0.3
+//                          delay:0.0
+//                        options:UIViewAnimationCurveEaseIn
+//                     animations:^{
+//                         //self.backgroundView.frame = backgroundFrame;
+//                     }
+//                     completion:^(BOOL finished) {
+//                         NSLog(@"Snap BG %@", NSStringFromCGPoint(backgroundFrame.origin));
+//                     }];
 
 }
 

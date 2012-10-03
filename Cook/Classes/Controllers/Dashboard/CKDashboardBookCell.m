@@ -13,25 +13,38 @@
 
 @property (nonatomic, retain) UILabel *textLabel;
 
+- (CGSize)availableSize;
+
 @end
 
 @implementation CKDashboardBookCell
 
+#define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
+#define kBookTitleFont          [UIFont boldSystemFontOfSize:40.0]
+#define kBookTitleColour        [UIColor lightGrayColor]
+#define kBookTitleShadowColour  [UIColor blackColor]
+
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
-        self.contentView.backgroundColor = [UIColor lightGrayColor];
-        self.contentView.layer.borderWidth = 1.0f;
-        self.contentView.layer.borderColor = [UIColor blackColor].CGColor;
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0,
-                                                                   0.0,
-                                                                   self.contentView.bounds.size.width,
-                                                                   30.0)];
+        UIImageView *bookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_defaultbook.png"]];
+        bookImageView.center = self.contentView.center;
+        [self.contentView addSubview:bookImageView];
+        
+        DLog(@"cell size: %@", NSStringFromCGSize(self.contentView.bounds.size));
+        CGSize availableSize = [self availableSize];
+        CGSize size = [@"A" sizeWithFont:kBookTitleFont constrainedToSize:availableSize
+                           lineBreakMode:NSLineBreakByTruncatingTail];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(kContentInsets.left,
+                                                                   floorf((self.contentView.bounds.size.height - size.height) / 2.0),
+                                                                   size.width,
+                                                                   size.height)];
         label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-        label.backgroundColor = [UIColor darkGrayColor];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.font = [UIFont boldSystemFontOfSize:12.0];
-        label.textColor = [UIColor whiteColor];
+        label.backgroundColor = [UIColor clearColor];
+        label.font = kBookTitleFont;
+        label.textColor = kBookTitleColour;
+        label.shadowColor = kBookTitleShadowColour;
+        label.shadowOffset = CGSizeMake(0.0, 1.0);
         [self.contentView addSubview:label];
         self.textLabel = label;
     }
@@ -39,7 +52,21 @@
 }
 
 - (void)setText:(NSString *)text {
+    CGSize availableSize = [self availableSize];
+    CGSize size = [text sizeWithFont:kBookTitleFont constrainedToSize:[self availableSize]
+                       lineBreakMode:NSLineBreakByTruncatingTail];
+    self.textLabel.frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+                                      self.textLabel.frame.origin.y,
+                                      size.width,
+                                      size.height);
     self.textLabel.text = text;
+}
+
+#pragma mark - Private methods
+
+- (CGSize)availableSize {
+    return CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                      self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
 }
 
 @end
