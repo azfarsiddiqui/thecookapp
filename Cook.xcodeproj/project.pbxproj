@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		762C0E52161A7FC400EBA344 /* ff_dash_bg_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E4E161A7FC400EBA344 /* ff_dash_bg_overlay.png */; };
-		762C0E53161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E4F161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png */; };
 		762C0E54161A7FC400EBA344 /* ff_dash_bg_tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */; };
 		762C0E55161A7FC400EBA344 /* ff_dash_bg_tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */; };
 		76520460161A811700EE253C /* CKDashboardBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652045B161A80E800EE253C /* CKDashboardBookCell.m */; };
@@ -22,6 +20,10 @@
 		7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */; };
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
 		7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* CKAppHelper.m */; };
+		76B015AE161C0AC100AF3C2C /* cook_defaultbook.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */; };
+		76B015AF161C0AC100AF3C2C /* cook_defaultbook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */; };
+		76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */; };
+		76B015B4161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B2161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -45,8 +47,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		762C0E4E161A7FC400EBA344 /* ff_dash_bg_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ff_dash_bg_overlay.png; sourceTree = "<group>"; };
-		762C0E4F161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ff_dash_bg_overlay@2x.png"; sourceTree = "<group>"; };
 		762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ff_dash_bg_tile.png; sourceTree = "<group>"; };
 		762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ff_dash_bg_tile@2x.png"; sourceTree = "<group>"; };
 		7652045A161A80E800EE253C /* CKDashboardBookCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKDashboardBookCell.h; sourceTree = "<group>"; };
@@ -71,6 +71,10 @@
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
 		7666B40416143713001D1BA1 /* CKAppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKAppHelper.h; sourceTree = "<group>"; };
 		7666B40516143713001D1BA1 /* CKAppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKAppHelper.m; sourceTree = "<group>"; };
+		76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_defaultbook.png; sourceTree = "<group>"; };
+		76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_defaultbook@2x.png"; sourceTree = "<group>"; };
+		76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_overlay.png; sourceTree = "<group>"; };
+		76B015B2161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_overlay@2x.png"; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -126,8 +130,8 @@
 		762C0E4D161A7FC400EBA344 /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				762C0E4E161A7FC400EBA344 /* ff_dash_bg_overlay.png */,
-				762C0E4F161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png */,
+				76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */,
+				76B015B2161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png */,
 				762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */,
 				762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */,
 			);
@@ -173,6 +177,15 @@
 				7666B40516143713001D1BA1 /* CKAppHelper.m */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		76B015AB161C0AC100AF3C2C /* books */ = {
+			isa = PBXGroup;
+			children = (
+				76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */,
+				76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */,
+			);
+			path = books;
 			sourceTree = "<group>";
 		};
 		76ED27321612DC180012E479 = {
@@ -272,6 +285,7 @@
 		76ED27821612DEA30012E479 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				76B015AB161C0AC100AF3C2C /* books */,
 				762C0E4D161A7FC400EBA344 /* dashboard */,
 				76ED27831612DEB80012E479 /* Icon.png */,
 				76ED27841612DEB80012E479 /* Icon@2x.png */,
@@ -349,10 +363,12 @@
 				76ED274C1612DC180012E479 /* InfoPlist.strings in Resources */,
 				76ED27851612DEB80012E479 /* Icon.png in Resources */,
 				76ED27861612DEB80012E479 /* Icon@2x.png in Resources */,
-				762C0E52161A7FC400EBA344 /* ff_dash_bg_overlay.png in Resources */,
-				762C0E53161A7FC400EBA344 /* ff_dash_bg_overlay@2x.png in Resources */,
 				762C0E54161A7FC400EBA344 /* ff_dash_bg_tile.png in Resources */,
 				762C0E55161A7FC400EBA344 /* ff_dash_bg_tile@2x.png in Resources */,
+				76B015AE161C0AC100AF3C2C /* cook_defaultbook.png in Resources */,
+				76B015AF161C0AC100AF3C2C /* cook_defaultbook@2x.png in Resources */,
+				76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */,
+				76B015B4161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
