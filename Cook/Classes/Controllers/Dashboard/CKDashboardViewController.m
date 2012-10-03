@@ -32,6 +32,7 @@
 - (CKDashboardBookCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath;
 - (CKDashboardBookCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath;
 - (void)updateMyBook;
+- (void)updateBackgroundScrolling;
 
 @end
 
@@ -159,7 +160,7 @@
         if ([[CKUser currentUser] isSignedIn]) {
             numItems = 1; // Friends Boooks
         } else {
-            numItems = 6; // Login book.
+            numItems = 1; // Login book.
         }
     }
     
@@ -268,45 +269,9 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
                        context:(void *)context {
-    
-    // Decorate reminder button if changed.
-    if ([keyPath isEqualToString:@"contentOffset"]) {
-        
-        CGPoint contentOffset = self.collectionView.contentOffset;
-        CGSize contentSize = self.collectionView.contentSize;
-        
-        // Update the positioning of the background to achieve the parallax effect.
-        CGRect backgroundFrame = self.backgroundView.frame;
-        
-        // kBackgroundAvailOffset 100 => -59.0
-        // kBackgroundAvailOffset 50  => -30.0
-        // CGFloat backgroundOffset = self.firstBenchtop? 0.0 :-kBackgroundAvailOffset;
-        CGFloat backgroundOffset = self.firstBenchtop? 0.0 :-30;
-        
-        if (self.firstBenchtop && contentOffset.x >= 0.0) {
-            backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
-        } else if (!self.firstBenchtop && contentOffset.x <= contentSize.width - self.collectionView.bounds.size.width) {
-            backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
-        }
-        
-        self.backgroundView.frame = backgroundFrame;
-        
-//        NSLog(@"*** contentOffset %@ first [%@] snap [%@]",
-//              NSStringFromCGPoint(contentOffset), self.firstBenchtop ? @"YES" : @"NO", self.snapActivated ? @"YES" : @"NO");
-        DLog(@"*** contentOffset   %@", NSStringFromCGPoint(contentOffset));
-        DLog(@"*** backgroundFrame %@", NSStringFromCGRect(backgroundFrame));
-        
-    } else if ([keyPath isEqualToString:@"contentSize"]) {
-        
-        CGSize contentSize = self.collectionView.contentSize;
-        
-        // Update the width of the background.
-        CGRect backgroundFrame = self.backgroundView.frame;
-        backgroundFrame.size.width = contentSize.width + kBackgroundAvailOffset;
-        self.backgroundView.frame = backgroundFrame;
-        
-        DLog(@"*** contentOffset backgroundFrame %@", NSStringFromCGRect(backgroundFrame));
-        
+    // Update background parallax scrolling.
+    if ([keyPath isEqualToString:@"contentOffset"] || [keyPath isEqualToString:@"contentSize"]) {
+        [self updateBackgroundScrolling];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -471,6 +436,27 @@
     CKDashboardBookCell *cell = (CKDashboardBookCell *)[self.collectionView cellForItemAtIndexPath:
                                                         [NSIndexPath indexPathForItem:0 inSection:0]];
     [cell setText:self.myBook.name];
+}
+
+- (void)updateBackgroundScrolling {
+    CGPoint contentOffset = self.collectionView.contentOffset;
+    CGSize contentSize = self.collectionView.contentSize;
+    CGRect backgroundFrame = self.backgroundView.frame;
+    
+    // kBackgroundAvailOffset 100 => -59.0
+    // kBackgroundAvailOffset 50  => -30.0
+    CGFloat backgroundOffset = self.firstBenchtop? 0.0 :-30;
+    
+    // Update backgroundWidth.
+    backgroundFrame.size.width = contentSize.width + kBackgroundAvailOffset;
+    
+    // Update background parallax effect.
+    if (self.firstBenchtop && contentOffset.x >= 0.0) {
+        backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
+    } else if (!self.firstBenchtop && contentOffset.x <= contentSize.width - self.collectionView.bounds.size.width) {
+        backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
+    }
+    self.backgroundView.frame = backgroundFrame;    
 }
 
 @end
