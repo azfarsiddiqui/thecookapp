@@ -21,7 +21,7 @@
     PFQuery *query = [PFQuery queryWithClassName:kCKBookModelName];
     
     // Get local cache first before getting updated with networked version.
-    [query setCachePolicy:kPFCachePolicyCacheElseNetwork];
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kCKUserKey equalTo:user.parseObject];
     
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
