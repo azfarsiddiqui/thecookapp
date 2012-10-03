@@ -29,6 +29,9 @@
 - (CGFloat)backgroundAvailableScrollWidth;
 - (CGRect)backgroundFrameForView:(UIView *)view translation:(CGPoint)translation;
 - (void)loadData;
+- (CKDashboardBookCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath;
+- (CKDashboardBookCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath;
+- (void)updateMyBook;
 
 @end
 
@@ -148,18 +151,29 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+    NSInteger numItems = 0;
+    
     if (section == 0) {
-        return 1;
+        numItems = 1;   // My Book
     } else {
-        return 6;
+        if ([[CKUser currentUser] isSignedIn]) {
+            numItems = 1; // Friends Boooks
+        } else {
+            numItems = 1; // Login book.
+        }
     }
+    
+    return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CKDashboardBookCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
-                                                                                forIndexPath:indexPath];
-    [cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+    CKDashboardBookCell *cell = nil;
+    if ([indexPath section] == 0) {
+        cell = [self myBookCellForIndexPath:indexPath];
+    } else {
+        cell = [self otherBookCellsForIndexPath:indexPath];
+    }
     return cell;
 }
 
@@ -268,7 +282,8 @@
         // 50  => -30.0
         CGFloat backgroundOffset = self.firstBenchtop? 0.0 : -30.0;
         
-        if ((self.firstBenchtop && contentOffset.x >= 0.0) || (!self.firstBenchtop && contentOffset.x <= contentSize.width - self.collectionView.bounds.size.width)) {
+        if ((self.firstBenchtop && contentOffset.x >= 0.0)
+            || (!self.firstBenchtop && contentOffset.x <= contentSize.width - self.collectionView.bounds.size.width)) {
             
             backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
             self.backgroundView.frame = backgroundFrame;
@@ -281,7 +296,6 @@
     } else if ([keyPath isEqualToString:@"contentSize"]) {
         
         CGSize contentSize = self.collectionView.contentSize;
-        NSLog(@"*** contentSize %@", NSStringFromCGSize(contentSize));
         
         // Update the width of the background.
         CGRect backgroundFrame = self.backgroundView.frame;
@@ -413,14 +427,44 @@
 }
 
 - (void)loadData {
-    DLog(@"User: %@", [CKUser currentUser]);
-//    [CKBook bookForUser:[CKUser currentUser]
-//                success:^(CKBook *book) {
-//                    self.myBook = book;
-//                }
-//                failure:^(NSError *error) {
-//                    DLog(@"Error: %@", [error localizedDescription]);
-//                }];
+    [self loadMyBook];
+}
+
+- (void)loadMyBook {
+    
+    // This will be called twice - once from cache if exists, then from network.
+    [CKBook bookForUser:[CKUser currentUser]
+                success:^(CKBook *book) {
+                    self.myBook = book;
+                    [self updateMyBook];
+                }
+                failure:^(NSError *error) {
+                    DLog(@"Error: %@", [error localizedDescription]);
+                }];
+}
+
+- (CKDashboardBookCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath {
+    CKDashboardBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
+                                                                          forIndexPath:indexPath];
+    if (self.myBook) {
+        [cell setText:self.myBook.name];
+    } else {
+        [cell setText:@""];
+    }
+    return cell;
+}
+
+- (CKDashboardBookCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath {
+    CKDashboardBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
+                                                                               forIndexPath:indexPath];
+    [cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+    return cell;
+}
+
+- (void)updateMyBook {
+    CKDashboardBookCell *cell = (CKDashboardBookCell *)[self.collectionView cellForItemAtIndexPath:
+                                                        [NSIndexPath indexPathForItem:0 inSection:0]];
+    [cell setText:self.myBook.name];
 }
 
 @end
