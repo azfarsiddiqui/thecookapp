@@ -55,6 +55,9 @@
         contentSize = CGSizeMake(contentSize.width - 600.0, contentSize.height);
     } else {
         contentSize = self.collectionView.bounds.size;
+        
+        // So that books peek through from beyond the first page.
+        // contentSize = CGSizeMake(self.collectionView.bounds.size.width + 500.0, self.collectionView.bounds.size.height);
     }
     return contentSize;
 }
@@ -64,6 +67,7 @@
 }
 
 -  (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    DLog(@"Elements in rect: %@", NSStringFromCGRect(rect));
     if (self.nextDashboard) {
         CGSize itemSize = [CKDashboardFlowLayout itemSize];
         rect.origin.x = rect.origin.x + (itemSize.width * 2.0);
@@ -126,7 +130,7 @@
     BOOL scalingRequired = NO;
     
     // Only apply scaling to the next dashboard and not on first book if it was on its way to the left.
-    if (self.nextDashboard && attributes.indexPath.section == 1) {
+    if (attributes.indexPath.section == 1) {
         if (attributes.indexPath.row == 0
             && attributes.center.x >= self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0)) {
             scalingRequired = NO;

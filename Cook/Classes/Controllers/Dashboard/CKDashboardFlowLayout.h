@@ -11,8 +11,7 @@
 @interface CKDashboardFlowLayout : UICollectionViewFlowLayout
 
 @property (nonatomic, assign) BOOL nextDashboard;
-@property (nonatomic, assign) BOOL fullWidth;
-@property (nonatomic, assign) CGFloat offset;
+@property (nonatomic, assign) BOOL expanded;
 
 + (CGSize)itemSize;
 

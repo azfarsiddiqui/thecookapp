@@ -160,7 +160,7 @@
         if ([[CKUser currentUser] isSignedIn]) {
             numItems = 1; // Friends Boooks
         } else {
-            numItems = 1; // Login book.
+            numItems = 5; // Login book.
         }
     }
     
@@ -336,23 +336,6 @@
     // Works
     [self.collectionView setContentOffset:scrollToPoint animated:YES];
     
-//    CGRect backgroundFrame = self.backgroundView.frame;
-//    if (self.firstBenchtop) {
-//        backgroundFrame.origin.x = -kBackgroundAvailOffset;
-//    } else {
-//        backgroundFrame.origin.x = 0.0;
-//    }
-//    
-//    [UIView animateWithDuration:0.3
-//                          delay:0.0
-//                        options:UIViewAnimationCurveEaseIn
-//                     animations:^{
-//                         //self.backgroundView.frame = backgroundFrame;
-//                     }
-//                     completion:^(BOOL finished) {
-//                         NSLog(@"Snap BG %@", NSStringFromCGPoint(backgroundFrame.origin));
-//                     }];
-
 }
 
 - (void)parallaxScrollBackground {
