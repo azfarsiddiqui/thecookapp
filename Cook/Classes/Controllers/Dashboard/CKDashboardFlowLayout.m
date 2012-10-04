@@ -11,6 +11,7 @@
 @interface CKDashboardFlowLayout ()
 
 - (CGFloat)sideInset;
+- (BOOL)scalingTransformRequired:(UICollectionViewLayoutAttributes *)attributes;
 
 @end
 
@@ -73,7 +74,10 @@
     
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         attributes.center = CGPointMake(attributes.center.x + itemOffset.x, attributes.center.y);
-        [self applyScalingTransformToLayoutAttributes:attributes];
+        
+        if ([self scalingTransformRequired:attributes]) {
+            [self applyScalingTransformToLayoutAttributes:attributes];
+        }
     }
     
     return layoutAttributes;
@@ -84,7 +88,6 @@
     
     CGFloat offsetAdjustment = MAXFLOAT;
     CGFloat horizontalCenter = proposedContentOffset.x + (CGRectGetWidth(self.collectionView.bounds) / 2.0);
-    //horizontalCenter += [self itemOffset].x + 10.0;
     
     CGRect targetRect = CGRectMake(proposedContentOffset.x,
                                    0.0,
@@ -117,6 +120,21 @@
     CGFloat offset = self.nextDashboard ? -600.0 : 0.0; // Past the left edge for nextDashboard.
     CGPoint itemOffset = CGPointMake(offset, 0.0);
     return itemOffset;
+}
+
+- (BOOL)scalingTransformRequired:(UICollectionViewLayoutAttributes *)attributes {
+    BOOL scalingRequired = NO;
+    
+    // Only apply scaling to the next dashboard and not on first book if it was on its way to the left.
+    if (self.nextDashboard && attributes.indexPath.section == 1) {
+        if (attributes.indexPath.row == 0
+            && attributes.center.x >= self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0)) {
+            scalingRequired = NO;
+        } else {
+            scalingRequired = YES;
+        }
+    }
+    return scalingRequired;
 }
 
 - (void)applyScalingTransformToLayoutAttributes:(UICollectionViewLayoutAttributes *)attributes {
