@@ -11,6 +11,7 @@
 #import "CKDashboardBookCell.h"
 #import "CKUser.h"
 #import "CKBook.h"
+#import "RecipeListViewController.h"
 
 @interface CKDashboardViewController ()
 
@@ -184,10 +185,16 @@
     NSLog(@"didSelectItemAtIndexPath: %@", indexPath);
     
     if (!self.firstBenchtop) {
-        
         [collectionView scrollToItemAtIndexPath:indexPath
                                atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                        animated:YES];
+        
+    } else {
+        //list recipes
+        RecipeListViewController *recipeListVC = [[RecipeListViewController alloc]init];
+        recipeListVC.book = self.myBook;
+        [self presentViewController:recipeListVC animated:YES completion:^{
+        }];
     }
 
 }

@@ -34,7 +34,6 @@
 		76ED276F1612DCC60012E479 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27661612DCC60012E479 /* AudioToolbox.framework */; };
 		76ED27701612DCC60012E479 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27671612DCC60012E479 /* CFNetwork.framework */; };
 		76ED27711612DCC60012E479 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27681612DCC60012E479 /* libsqlite3.dylib */; };
-		76ED27721612DCC60012E479 /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27691612DCC60012E479 /* libz.1.1.3.dylib */; };
 		76ED27731612DCC60012E479 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276A1612DCC60012E479 /* MobileCoreServices.framework */; };
 		76ED27741612DCC60012E479 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276B1612DCC60012E479 /* QuartzCore.framework */; };
 		76ED27751612DCC60012E479 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276C1612DCC60012E479 /* Security.framework */; };
@@ -44,6 +43,29 @@
 		76ED27851612DEB80012E479 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27831612DEB80012E479 /* Icon.png */; };
 		76ED27861612DEB80012E479 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27841612DEB80012E479 /* Icon@2x.png */; };
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
+		8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7E8161E78AE00E6EF1D /* CKRecipe.m */; };
+		8936F7ED161E78CE00E6EF1D /* CKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7EC161E78CE00E6EF1D /* CKCategory.m */; };
+		8936F7F0161E7AA700E6EF1D /* Cook.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8936F7EF161E7AA700E6EF1D /* Cook.storyboard */; };
+		8936F7FA161E7ABB00E6EF1D /* NewRecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F3161E7ABB00E6EF1D /* NewRecipeViewController.m */; };
+		8936F7FB161E7ABB00E6EF1D /* RecipeListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */; };
+		8936F7FC161E7ABB00E6EF1D /* RecipeListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */; };
+		8936F800161E7C1100E6EF1D /* CKUIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7FF161E7C1100E6EF1D /* CKUIHelper.m */; };
+		8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F802161E959700E6EF1D /* CKRecipeImage.m */; };
+		8962217B161E9F300023EC30 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89622178161E9F300023EC30 /* libAviarySDK.a */; };
+		8962217C161E9F300023EC30 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8962217A161E9F300023EC30 /* AviarySDKResources.bundle */; };
+		8962217E161E9F830023EC30 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962217D161E9F830023EC30 /* Accelerate.framework */; };
+		89622180161E9F970023EC30 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962217F161E9F970023EC30 /* libz.1.2.5.dylib */; };
+		89622182161E9FA80023EC30 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89622181161E9FA80023EC30 /* CoreData.framework */; };
+		89622193161EA6610023EC30 /* NSArray+Enumerable.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962218A161EA6610023EC30 /* NSArray+Enumerable.m */; };
+		89622194161EA6610023EC30 /* NSArray+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962218C161EA6610023EC30 /* NSArray+Utilities.m */; };
+		89622195161EA6610023EC30 /* NSDictionary+Enumerable.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962218E161EA6610023EC30 /* NSDictionary+Enumerable.m */; };
+		89622196161EA6610023EC30 /* NSSet+Enumerable.m in Sources */ = {isa = PBXBuildFile; fileRef = 89622190161EA6610023EC30 /* NSSet+Enumerable.m */; };
+		89622197161EA6610023EC30 /* NSSet+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 89622192161EA6610023EC30 /* NSSet+Utilities.m */; };
+		8962219C161EAE370023EC30 /* btn_create_recipe.png in Resources */ = {isa = PBXBuildFile; fileRef = 89622199161EAE370023EC30 /* btn_create_recipe.png */; };
+		8962219D161EAE370023EC30 /* btn_create_recipe@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219A161EAE370023EC30 /* btn_create_recipe@2x.png */; };
+		8962219E161EAE370023EC30 /* image_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219B161EAE370023EC30 /* image_placeholder.png */; };
+		896221A1161EAF4C0023EC30 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219F161EAF4C0023EC30 /* btn_close.png */; };
+		896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896221A0161EAF4C0023EC30 /* btn_close@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,6 +123,47 @@
 		76ED27841612DEB80012E479 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		76ED278A1612E45B0012E479 /* CKServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKServerManager.h; sourceTree = "<group>"; };
 		76ED278B1612E45B0012E479 /* CKServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKServerManager.m; sourceTree = "<group>"; };
+		8936F7E7161E78AE00E6EF1D /* CKRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipe.h; sourceTree = "<group>"; };
+		8936F7E8161E78AE00E6EF1D /* CKRecipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipe.m; sourceTree = "<group>"; };
+		8936F7EB161E78CD00E6EF1D /* CKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCategory.h; sourceTree = "<group>"; };
+		8936F7EC161E78CE00E6EF1D /* CKCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCategory.m; sourceTree = "<group>"; };
+		8936F7EF161E7AA700E6EF1D /* Cook.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Cook.storyboard; sourceTree = "<group>"; };
+		8936F7F2161E7ABB00E6EF1D /* NewRecipeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewRecipeViewController.h; sourceTree = "<group>"; };
+		8936F7F3161E7ABB00E6EF1D /* NewRecipeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewRecipeViewController.m; sourceTree = "<group>"; };
+		8936F7F4161E7ABB00E6EF1D /* RecipeListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeListCell.h; sourceTree = "<group>"; };
+		8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeListCell.m; sourceTree = "<group>"; };
+		8936F7F6161E7ABB00E6EF1D /* RecipeListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeListViewController.h; sourceTree = "<group>"; };
+		8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeListViewController.m; sourceTree = "<group>"; };
+		8936F7FE161E7C1100E6EF1D /* CKUIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUIHelper.h; sourceTree = "<group>"; };
+		8936F7FF161E7C1100E6EF1D /* CKUIHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUIHelper.m; sourceTree = "<group>"; };
+		8936F801161E959700E6EF1D /* CKRecipeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeImage.h; sourceTree = "<group>"; };
+		8936F802161E959700E6EF1D /* CKRecipeImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeImage.m; sourceTree = "<group>"; };
+		89622173161E9F300023EC30 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
+		89622174161E9F300023EC30 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
+		89622175161E9F300023EC30 /* AFPhotoEditorControllerOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorControllerOptions.h; sourceTree = "<group>"; };
+		89622176161E9F300023EC30 /* AFPhotoEditorSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorSession.h; sourceTree = "<group>"; };
+		89622177161E9F300023EC30 /* AFPhotoEditorStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorStyle.h; sourceTree = "<group>"; };
+		89622178161E9F300023EC30 /* libAviarySDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAviarySDK.a; sourceTree = "<group>"; };
+		8962217A161E9F300023EC30 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
+		8962217D161E9F830023EC30 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		8962217F161E9F970023EC30 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
+		89622181161E9FA80023EC30 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		89622188161EA6610023EC30 /* MRCEnumerable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRCEnumerable.h; sourceTree = "<group>"; };
+		89622189161EA6610023EC30 /* NSArray+Enumerable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Enumerable.h"; sourceTree = "<group>"; };
+		8962218A161EA6610023EC30 /* NSArray+Enumerable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Enumerable.m"; sourceTree = "<group>"; };
+		8962218B161EA6610023EC30 /* NSArray+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Utilities.h"; sourceTree = "<group>"; };
+		8962218C161EA6610023EC30 /* NSArray+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Utilities.m"; sourceTree = "<group>"; };
+		8962218D161EA6610023EC30 /* NSDictionary+Enumerable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Enumerable.h"; sourceTree = "<group>"; };
+		8962218E161EA6610023EC30 /* NSDictionary+Enumerable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Enumerable.m"; sourceTree = "<group>"; };
+		8962218F161EA6610023EC30 /* NSSet+Enumerable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+Enumerable.h"; sourceTree = "<group>"; };
+		89622190161EA6610023EC30 /* NSSet+Enumerable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+Enumerable.m"; sourceTree = "<group>"; };
+		89622191161EA6610023EC30 /* NSSet+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+Utilities.h"; sourceTree = "<group>"; };
+		89622192161EA6610023EC30 /* NSSet+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+Utilities.m"; sourceTree = "<group>"; };
+		89622199161EAE370023EC30 /* btn_create_recipe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_create_recipe.png; sourceTree = "<group>"; };
+		8962219A161EAE370023EC30 /* btn_create_recipe@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_create_recipe@2x.png"; sourceTree = "<group>"; };
+		8962219B161EAE370023EC30 /* image_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image_placeholder.png; sourceTree = "<group>"; };
+		8962219F161EAF4C0023EC30 /* btn_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_close.png; sourceTree = "<group>"; };
+		896221A0161EAF4C0023EC30 /* btn_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,19 +171,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89622182161E9FA80023EC30 /* CoreData.framework in Frameworks */,
+				89622180161E9F970023EC30 /* libz.1.2.5.dylib in Frameworks */,
+				8962217E161E9F830023EC30 /* Accelerate.framework in Frameworks */,
+				76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */,
 				76ED276F1612DCC60012E479 /* AudioToolbox.framework in Frameworks */,
 				76ED27701612DCC60012E479 /* CFNetwork.framework in Frameworks */,
 				76ED27711612DCC60012E479 /* libsqlite3.dylib in Frameworks */,
-				76ED27721612DCC60012E479 /* libz.1.1.3.dylib in Frameworks */,
 				76ED27731612DCC60012E479 /* MobileCoreServices.framework in Frameworks */,
 				76ED27741612DCC60012E479 /* QuartzCore.framework in Frameworks */,
 				76ED27751612DCC60012E479 /* Security.framework in Frameworks */,
 				76ED27761612DCC60012E479 /* StoreKit.framework in Frameworks */,
 				76ED27771612DCC60012E479 /* SystemConfiguration.framework in Frameworks */,
-				76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */,
 				76ED27421612DC180012E479 /* UIKit.framework in Frameworks */,
 				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
 				76ED27651612DC720012E479 /* Parse.framework in Frameworks */,
+				8962217B161E9F300023EC30 /* libAviarySDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,13 +202,6 @@
 				762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */,
 			);
 			path = dashboard;
-			sourceTree = "<group>";
-		};
-		764CB5F2161553210067280C /* External */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = External;
 			sourceTree = "<group>";
 		};
 		76520459161A80CB00EE253C /* Dashboard */ = {
@@ -175,6 +234,8 @@
 				7666B40216141B7E001D1BA1 /* CKModalView.m */,
 				7666B40416143713001D1BA1 /* CKAppHelper.h */,
 				7666B40516143713001D1BA1 /* CKAppHelper.m */,
+				8936F7FE161E7C1100E6EF1D /* CKUIHelper.h */,
+				8936F7FF161E7C1100E6EF1D /* CKUIHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -208,6 +269,9 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89622181161E9FA80023EC30 /* CoreData.framework */,
+				8962217F161E9F970023EC30 /* libz.1.2.5.dylib */,
+				8962217D161E9F830023EC30 /* Accelerate.framework */,
 				76ED27681612DCC60012E479 /* libsqlite3.dylib */,
 				76ED27691612DCC60012E479 /* libz.1.1.3.dylib */,
 				76ED27661612DCC60012E479 /* AudioToolbox.framework */,
@@ -228,6 +292,7 @@
 		76ED27471612DC180012E479 /* Cook */ = {
 			isa = PBXGroup;
 			children = (
+				8936F7EF161E7AA700E6EF1D /* Cook.storyboard */,
 				76ED27501612DC180012E479 /* CKAppDelegate.h */,
 				76ED27511612DC180012E479 /* CKAppDelegate.m */,
 				76ED277C1612DDDA0012E479 /* Classes */,
@@ -253,9 +318,9 @@
 			children = (
 				76ED277E1612DE020012E479 /* Controllers */,
 				7666B3FB16141B28001D1BA1 /* Helpers */,
-				764CB5F2161553210067280C /* External */,
 				76ED277D1612DDDA0012E479 /* Managers */,
 				76ED27911612E6B50012E479 /* Model */,
+				89622170161E9F300023EC30 /* External */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -272,6 +337,7 @@
 		76ED277E1612DE020012E479 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				8936F7F1161E7ABB00E6EF1D /* Recipe */,
 				7652046B161AD11E00EE253C /* Categories */,
 				76520459161A80CB00EE253C /* Dashboard */,
 				76ED277F1612DE140012E479 /* CKViewController.h */,
@@ -285,6 +351,7 @@
 		76ED27821612DEA30012E479 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				89622198161EAE370023EC30 /* recipes */,
 				76B015AB161C0AC100AF3C2C /* books */,
 				762C0E4D161A7FC400EBA344 /* dashboard */,
 				76ED27831612DEB80012E479 /* Icon.png */,
@@ -304,8 +371,96 @@
 				7666B3EB16140B16001D1BA1 /* CKUser.m */,
 				76520463161ABB0F00EE253C /* CKBook.h */,
 				76520464161ABB0F00EE253C /* CKBook.m */,
+				8936F7E7161E78AE00E6EF1D /* CKRecipe.h */,
+				8936F7E8161E78AE00E6EF1D /* CKRecipe.m */,
+				8936F7EB161E78CD00E6EF1D /* CKCategory.h */,
+				8936F7EC161E78CE00E6EF1D /* CKCategory.m */,
+				8936F801161E959700E6EF1D /* CKRecipeImage.h */,
+				8936F802161E959700E6EF1D /* CKRecipeImage.m */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		8936F7F1161E7ABB00E6EF1D /* Recipe */ = {
+			isa = PBXGroup;
+			children = (
+				8936F7F2161E7ABB00E6EF1D /* NewRecipeViewController.h */,
+				8936F7F3161E7ABB00E6EF1D /* NewRecipeViewController.m */,
+				8936F7F4161E7ABB00E6EF1D /* RecipeListCell.h */,
+				8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */,
+				8936F7F6161E7ABB00E6EF1D /* RecipeListViewController.h */,
+				8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */,
+			);
+			path = Recipe;
+			sourceTree = "<group>";
+		};
+		89622170161E9F300023EC30 /* External */ = {
+			isa = PBXGroup;
+			children = (
+				89622187161EA6610023EC30 /* MRCEnumerable */,
+				89622171161E9F300023EC30 /* AviarySDK */,
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
+		89622171161E9F300023EC30 /* AviarySDK */ = {
+			isa = PBXGroup;
+			children = (
+				89622172161E9F300023EC30 /* Headers */,
+				89622178161E9F300023EC30 /* libAviarySDK.a */,
+				89622179161E9F300023EC30 /* Resources */,
+			);
+			path = AviarySDK;
+			sourceTree = "<group>";
+		};
+		89622172161E9F300023EC30 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				89622173161E9F300023EC30 /* AFPhotoEditorContext.h */,
+				89622174161E9F300023EC30 /* AFPhotoEditorController.h */,
+				89622175161E9F300023EC30 /* AFPhotoEditorControllerOptions.h */,
+				89622176161E9F300023EC30 /* AFPhotoEditorSession.h */,
+				89622177161E9F300023EC30 /* AFPhotoEditorStyle.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		89622179161E9F300023EC30 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8962217A161E9F300023EC30 /* AviarySDKResources.bundle */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		89622187161EA6610023EC30 /* MRCEnumerable */ = {
+			isa = PBXGroup;
+			children = (
+				89622188161EA6610023EC30 /* MRCEnumerable.h */,
+				89622189161EA6610023EC30 /* NSArray+Enumerable.h */,
+				8962218A161EA6610023EC30 /* NSArray+Enumerable.m */,
+				8962218B161EA6610023EC30 /* NSArray+Utilities.h */,
+				8962218C161EA6610023EC30 /* NSArray+Utilities.m */,
+				8962218D161EA6610023EC30 /* NSDictionary+Enumerable.h */,
+				8962218E161EA6610023EC30 /* NSDictionary+Enumerable.m */,
+				8962218F161EA6610023EC30 /* NSSet+Enumerable.h */,
+				89622190161EA6610023EC30 /* NSSet+Enumerable.m */,
+				89622191161EA6610023EC30 /* NSSet+Utilities.h */,
+				89622192161EA6610023EC30 /* NSSet+Utilities.m */,
+			);
+			path = MRCEnumerable;
+			sourceTree = "<group>";
+		};
+		89622198161EAE370023EC30 /* recipes */ = {
+			isa = PBXGroup;
+			children = (
+				8962219F161EAF4C0023EC30 /* btn_close.png */,
+				896221A0161EAF4C0023EC30 /* btn_close@2x.png */,
+				89622199161EAE370023EC30 /* btn_create_recipe.png */,
+				8962219A161EAE370023EC30 /* btn_create_recipe@2x.png */,
+				8962219B161EAE370023EC30 /* image_placeholder.png */,
+			);
+			path = recipes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -369,6 +524,13 @@
 				76B015AF161C0AC100AF3C2C /* cook_defaultbook@2x.png in Resources */,
 				76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */,
 				76B015B4161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png in Resources */,
+				8936F7F0161E7AA700E6EF1D /* Cook.storyboard in Resources */,
+				8962217C161E9F300023EC30 /* AviarySDKResources.bundle in Resources */,
+				8962219C161EAE370023EC30 /* btn_create_recipe.png in Resources */,
+				8962219D161EAE370023EC30 /* btn_create_recipe@2x.png in Resources */,
+				8962219E161EAE370023EC30 /* image_placeholder.png in Resources */,
+				896221A1161EAF4C0023EC30 /* btn_close.png in Resources */,
+				896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +556,18 @@
 				76520462161A811700EE253C /* CKDashboardViewController.m in Sources */,
 				76520465161ABB0F00EE253C /* CKBook.m in Sources */,
 				7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */,
+				8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */,
+				8936F7ED161E78CE00E6EF1D /* CKCategory.m in Sources */,
+				8936F7FA161E7ABB00E6EF1D /* NewRecipeViewController.m in Sources */,
+				8936F7FB161E7ABB00E6EF1D /* RecipeListCell.m in Sources */,
+				8936F7FC161E7ABB00E6EF1D /* RecipeListViewController.m in Sources */,
+				8936F800161E7C1100E6EF1D /* CKUIHelper.m in Sources */,
+				8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */,
+				89622193161EA6610023EC30 /* NSArray+Enumerable.m in Sources */,
+				89622194161EA6610023EC30 /* NSArray+Utilities.m in Sources */,
+				89622195161EA6610023EC30 /* NSDictionary+Enumerable.m in Sources */,
+				89622196161EA6610023EC30 /* NSSet+Enumerable.m in Sources */,
+				89622197161EA6610023EC30 /* NSSet+Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,6 +648,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Cook/Classes/External/AviarySDK\"",
+				);
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -488,6 +666,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Cook/Classes/External/AviarySDK\"",
+				);
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -7,7 +7,9 @@
 //
 
 #import "CKBook.h"
+#import "CKRecipe.h"
 #import "NSString+Utilities.h"
+#import "NSArray+Enumerable.h"
 
 @interface CKBook ()
 
@@ -18,11 +20,11 @@
 @implementation CKBook
 
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *query = [PFQuery queryWithClassName:kCKBookModelName];
+    PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     
     // Get local cache first before getting updated with networked version.
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
-    [query whereKey:kCKUserKey equalTo:user.parseObject];
+    [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
         if (!error) {
@@ -35,9 +37,9 @@
 }
 
 + (PFObject *)parseBookForParseUser:(PFUser *)parseUser {
-    PFObject *parseBook = [PFObject objectWithClassName:kCKBookModelName];
-    [parseBook setObject:kCKBookDefaultName forKey:kCKModelNameKey];
-    [parseBook setObject:parseUser forKey:kCKUserKey];
+    PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
+    [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
+    [parseBook setObject:parseUser forKey:kUserModelForeignKeyName];
     return parseBook;
 }
 
@@ -49,12 +51,32 @@
 }
 
 - (void)setCoverPhotoName:(NSString *)coverPhotoName {
-    [self.parseObject setObject:coverPhotoName forKey:kCKBookCoverPhotoNameKey];
+    [self.parseObject setObject:coverPhotoName forKey:kBookAttrCoverPhotoName];
 }
 
 - (NSString *)coverPhotoName {
-    return [self.parseObject objectForKey:kCKBookCoverPhotoNameKey];
+    return [self.parseObject objectForKey:kBookAttrCoverPhotoName];
 }
+
+- (void)listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
+    [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+    [query orderByDescending:kModelAttrUpdatedAt];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipes, NSError *error) {
+        if (!error) {
+            NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
+                return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user];
+            }];
+            DLog(@"fetch returned %i recipes", [recipes count]);
+            success(recipes);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 
 #pragma mark - CKModel
 

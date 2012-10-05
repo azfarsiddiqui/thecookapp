@@ -23,11 +23,11 @@
 }
 
 - (void)setName:(NSString *)name {
-    [self.parseObject setObject:name forKey:kCKModelNameKey];
+    [self.parseObject setObject:name forKey:kModelAttrName];
 }
 
 - (NSString *)name {
-    return [self.parseObject objectForKey:kCKModelNameKey];
+    return [self.parseObject objectForKey:kModelAttrName];
 }
 
 - (void)saveEventually {

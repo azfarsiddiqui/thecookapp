@@ -72,11 +72,11 @@
 }
 
 - (void)setFacebookId:(NSString *)facebookId {
-    [self.parseObject setObject:facebookId forKey:kCKUserFacebookIdKey];
+    [self.parseObject setObject:facebookId forKey:kUserAttrFacebookId];
 }
 
 - (NSString *)facebookId {
-    return [self.parseObject objectForKey:kCKUserFacebookIdKey];
+    return [self.parseObject objectForKey:kUserAttrFacebookId];
 }
 
 #pragma mark - CKModel

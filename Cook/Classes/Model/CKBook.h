@@ -15,9 +15,9 @@
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, copy) NSString *coverPhotoName;
 
-+ (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-+ (PFObject *)parseBookForParseUser:(PFUser *)parseUser;
++(void) bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++(PFObject *) parseBookForParseUser:(PFUser *)parseUser;
 
-- (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
-
+-(id) initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
+-(void) listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 @end
