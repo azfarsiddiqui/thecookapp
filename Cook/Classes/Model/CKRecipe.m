@@ -20,6 +20,8 @@
 
 @implementation CKRecipe
 
+@synthesize category=_category;
+
 +(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     recipe.user = user;
@@ -53,15 +55,31 @@
     }
 }
 
+-(Category *)category
+{
+    if (!_category) {
+        PFObject *parseCategory = [self.parseObject objectForKey:kCategoryModelForeignKeyName];
+        if (parseCategory) {
+            _category = [Category categoryForParseCategory:parseCategory];
+        }
+    }
+    
+    return _category;
+
+}
+
 -(PFFile*) imageFile
 {
     return [self.recipeImage imageFile];
 }
 
--(NSString *)categoryName
+-(void) categoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess
 {
-    return [self.category name];
+    [self.category.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        getObjectSuccess(_category.name);
+    }];
 }
+
 
 -(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure progress:(ProgressBlock)progress
 {

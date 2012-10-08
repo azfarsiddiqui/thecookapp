@@ -14,7 +14,6 @@
 @interface CKRecipe : CKModel
 
 @property (nonatomic, strong) NSString *description;
-@property (nonatomic, readonly, strong) NSString *categoryName;
 @property (nonatomic, strong) UIImage *image;
 
 +(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
@@ -22,5 +21,6 @@
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category;
 
 -(PFFile*) imageFile;
+-(void) categoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
 -(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure progress:(ProgressBlock)progress;
 @end
