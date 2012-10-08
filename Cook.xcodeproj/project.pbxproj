@@ -67,6 +67,8 @@
 		896221A1161EAF4C0023EC30 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219F161EAF4C0023EC30 /* btn_close.png */; };
 		896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896221A0161EAF4C0023EC30 /* btn_close@2x.png */; };
 		89A50499162250F700E6CDF1 /* Ingredient.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A50498162250F700E6CDF1 /* Ingredient.m */; };
+		89A504A8162290BF00E6CDF1 /* CategoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */; };
+		89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504AB1622923500E6CDF1 /* CategoryListCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -167,6 +169,10 @@
 		896221A0161EAF4C0023EC30 /* btn_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@2x.png"; sourceTree = "<group>"; };
 		89A50497162250F700E6CDF1 /* Ingredient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ingredient.h; sourceTree = "<group>"; };
 		89A50498162250F700E6CDF1 /* Ingredient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ingredient.m; sourceTree = "<group>"; };
+		89A504A6162290BF00E6CDF1 /* CategoryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CategoryListViewController.h; path = Cook/Classes/Controllers/CategoryListViewController.h; sourceTree = SOURCE_ROOT; };
+		89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CategoryListViewController.m; path = Cook/Classes/Controllers/CategoryListViewController.m; sourceTree = SOURCE_ROOT; };
+		89A504AA1622923400E6CDF1 /* CategoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListCell.h; sourceTree = "<group>"; };
+		89A504AB1622923500E6CDF1 /* CategoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -395,6 +401,10 @@
 				8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */,
 				8936F7F6161E7ABB00E6EF1D /* RecipeListViewController.h */,
 				8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */,
+				89A504A6162290BF00E6CDF1 /* CategoryListViewController.h */,
+				89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */,
+				89A504AA1622923400E6CDF1 /* CategoryListCell.h */,
+				89A504AB1622923500E6CDF1 /* CategoryListCell.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -574,6 +584,8 @@
 				89622196161EA6610023EC30 /* NSSet+Enumerable.m in Sources */,
 				89622197161EA6610023EC30 /* NSSet+Utilities.m in Sources */,
 				89A50499162250F700E6CDF1 /* Ingredient.m in Sources */,
+				89A504A8162290BF00E6CDF1 /* CategoryListViewController.m in Sources */,
+				89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

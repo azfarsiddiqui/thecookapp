@@ -20,7 +20,7 @@
 +(void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     PFQuery *query = [PFQuery queryWithClassName:kCategoryModelName];
-    [query setCachePolicy:kPFCachePolicyCacheElseNetwork];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query orderByAscending:kModelAttrName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *categoryList, NSError *error) {
         if (!error) {
@@ -47,8 +47,8 @@
 
 +(void)seedData
 {
-    NSArray *seedData = @[@"Meat", @"Chicken", @"Fish", @"Vegetarian", @"Snacks and Sides", @"Soup", @"Pasta", @"Baking", @"Dessert", @"Drinks,Quick and Easy", @"Allergy Free",
-    @"Kid-friendly", @"Healthy", @"Comfort", @"Festive"];
+    NSArray *seedData = @[@"Meat", @"Chicken", @"Fish", @"Vegetarian", @"Snacks and Sides", @"Soup", @"Pasta", @"Baking", @"Dessert", @"Drinks",
+    @"Quick and Easy", @"Allergy Free", @"Kid-friendly", @"Healthy", @"Comfort", @"Festive"];
     
     for (NSString *categoryName in seedData) {
         PFObject *parseCategoryObject = [PFObject objectWithClassName:kCategoryModelName];

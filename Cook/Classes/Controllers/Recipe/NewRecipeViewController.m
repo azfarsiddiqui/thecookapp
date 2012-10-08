@@ -7,17 +7,19 @@
 //
 
 #import "NewRecipeViewController.h"
+#import "CategoryListViewController.h"
 #import "CKUIHelper.h"
 #import "AFPhotoEditorController.h"
 #import "CKRecipe.h"
 #import "Category.h"
 
-@interface NewRecipeViewController ()<UITableViewDataSource,UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate>
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate, CategoryListViewDelegate>
 
 //UI
 @property (nonatomic,strong) UIPopoverController *popVc;
 @property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
 @property (nonatomic,strong) IBOutlet UILabel *uploadLabel;
+@property (nonatomic,strong) IBOutlet UILabel *categoryLabel;
 @property (nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
 @property (nonatomic,strong) IBOutlet UITextField *recipeNameTextField;
 @property (nonatomic,strong) IBOutlet UITextView *recipeDescriptionTextView;
@@ -52,48 +54,22 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.categories count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"CategoryViewCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    Category *category = [self.categories objectAtIndex:indexPath.row];
-    cell.textLabel.text = category.name;
-    return cell;
-
-}
-
-#pragma marke - Table view delegate
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    for (int i = 0; i < [self.categories count]; i++) {
-        if (i!=indexPath.row) {
-            UITableViewCell *tableCell= [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-            tableCell.accessoryType = UITableViewCellAccessoryNone;
-        }
-    }
-    
-    UITableViewCell *tableCell= [tableView cellForRowAtIndexPath:indexPath];
-    tableCell.accessoryType = UITableViewCellAccessoryCheckmark;
-    self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
-}
-
 #pragma mark - Action delegates
+
+
+- (IBAction)selectCategoryTapped:(UIButton*)button {
+    
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    CategoryListViewController *categoryListVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"CategoryListViewController"];
+    categoryListVC.delegate = self;
+    categoryListVC.categories = self.categories;
+    self.popVc = [[UIPopoverController alloc] initWithContentViewController:categoryListVC];
+    self.popVc.delegate = self;
+    self.popVc.popoverContentSize = CGSizeMake(400.0f, 400.0f);
+    [self.popVc presentPopoverFromRect:self.categoryLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+}
+
+
 - (IBAction)closeTapped:(UIButton*)button {
     [self.delegate closeRequested];
 }
@@ -130,29 +106,44 @@
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.delegate = self;
-        self.popVc = [[UIPopoverController alloc] initWithContentViewController:picker];
-        self.popVc.delegate = self;
-        [self.popVc presentPopoverFromRect:sender.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+//        self.popVc = [[UIPopoverController alloc] initWithContentViewController:picker];
+//        self.popVc.popoverContentSize = CGSizeMake(1024.0f, 748.0f);
+//        self.popVc.delegate = self;
+//        [self.popVc presentPopoverFromRect:sender.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        [self presentViewController:picker animated:YES completion:nil];
     }
 }
 
+#pragma mark - CategoryListViewDelegate
+
+-(void)didSelectCategory:(Category *)category
+{
+    self.selectedCategory = category;
+    self.categoryLabel.text = category.name;
+    [self.popVc dismissPopoverAnimated:YES];
+}
 
 #pragma mark - UIImagePickerControllerDelegate
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    [self.popVc dismissPopoverAnimated:YES];
-    self.popVc = nil;
+    [self dismissViewControllerAnimated:YES
+                             completion:nil];
+//    [self.popVc dismissPopoverAnimated:YES];
+//    self.popVc = nil;
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
     NSParameterAssert(image);
-    [self.popVc dismissPopoverAnimated:YES];
-    self.popVc = nil;
-    self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
-    [self.photoEditorController setDelegate:self];
-    self.photoEditorController.view.frame = self.view.bounds;
-    [self.view addSubview:self.photoEditorController.view];
+    
+//    [self.popVc dismissPopoverAnimated:YES];
+//    self.popVc = nil;
+    [self dismissViewControllerAnimated:NO completion:^{
+        self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
+        [self.photoEditorController setDelegate:self];
+        self.photoEditorController.view.frame = self.view.bounds;
+        [self.view addSubview:self.photoEditorController.view];
+    }];
 }
 
 #pragma mark = AFPhotoEditorControllerDelegate
