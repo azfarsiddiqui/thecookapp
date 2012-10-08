@@ -188,6 +188,7 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="categoriesTableView" destination="nlU-iq-tpf" id="fCF-TR-THE"/>
                         <outlet property="recipeDescriptionTextView" destination="rGC-AK-2Id" id="Fme-H9-KrJ"/>
                         <outlet property="recipeImageView" destination="5fL-vj-ZFX" id="Tcc-iW-9xC"/>
                         <outlet property="recipeNameTextField" destination="wa0-dn-372" id="g0I-QL-FsG"/>
@@ -213,6 +214,7 @@
                 <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
                 <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
                 <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="categoriesTableView" candidateClass="UITableView"/>
                 <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="recipeImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="recipeNameTextField" candidateClass="UITextField"/>

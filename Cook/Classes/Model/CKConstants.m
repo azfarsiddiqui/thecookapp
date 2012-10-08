@@ -39,3 +39,8 @@ NSString *const kRecipeImageModelName = @"RecipeImage";
 NSString *const kRecipeImageModelForeignKeyName = @"recipeImage";
 NSString *const kRecipeImageAttrImageFile = @"imageFile";
 NSString *const kRecipeImageAttrImageName = @"imageName";
+
+#pragma mark - Category class
+NSString *const kCategoryModelName = @"Category";
+NSString *const kCategoryModelForeignKeyName = @"category";
+

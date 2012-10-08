@@ -9,16 +9,17 @@
 #import "CKModel.h"
 #import "CKUser.h"
 #import "CKBook.h"
+#import "Category.h"
 
 @interface CKRecipe : CKModel
 
 @property (nonatomic, strong) NSString *description;
-@property (nonatomic, assign) NSInteger categoryIndex;
+@property (nonatomic, readonly, strong) NSString *categoryName;
 @property (nonatomic, strong) UIImage *image;
 
 +(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book;
++(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category;
 
 -(PFFile*) imageFile;
 -(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure progress:(ProgressBlock)progress;

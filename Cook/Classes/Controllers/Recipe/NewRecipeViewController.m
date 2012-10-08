@@ -10,6 +10,7 @@
 #import "CKUIHelper.h"
 #import "AFPhotoEditorController.h"
 #import "CKRecipe.h"
+#import "Category.h"
 
 @interface NewRecipeViewController ()<UITableViewDataSource,UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate>
 
@@ -21,11 +22,14 @@
 @property (nonatomic,strong) IBOutlet UITextField *recipeNameTextField;
 @property (nonatomic,strong) IBOutlet UITextView *recipeDescriptionTextView;
 @property (nonatomic,strong) IBOutlet UIImageView *recipeImageView;
+@property (nonatomic,strong) IBOutlet UITableView *categoriesTableView;
+
 //Data
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) NSMutableArray *pickedCategoryIndexPaths;
-@property (nonatomic, retain) UIImage *recipeImage;
-@property (nonatomic, assign) NSInteger selectedCategory;
+@property (nonatomic,strong) UIImage *recipeImage;
+@property (nonatomic,strong) Category *selectedCategory;
+
 @end
 
 @implementation NewRecipeViewController
@@ -65,7 +69,8 @@
 {
     static NSString *CellIdentifier = @"CategoryViewCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell.textLabel.text = [self.categories objectAtIndex:indexPath.row];
+    Category *category = [self.categories objectAtIndex:indexPath.row];
+    cell.textLabel.text = category.name;
     return cell;
 
 }
@@ -85,7 +90,7 @@
     
     UITableViewCell *tableCell= [tableView cellForRowAtIndexPath:indexPath];
     tableCell.accessoryType = UITableViewCellAccessoryCheckmark;
-    self.selectedCategory = indexPath.row;
+    self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
 }
 
 #pragma mark - Action delegates
@@ -99,10 +104,9 @@
         button.enabled = NO;
         self.uploadLabel.hidden = NO;
         CKRecipe *recipe = [CKRecipe recipeForUser:[CKUser currentUser]
-                                          book:self.book];
+                                          book:self.book category:self.selectedCategory];
         recipe.name = self.recipeNameTextField.text;
         recipe.description = self.recipeDescriptionTextView.text;
-        recipe.categoryIndex = self.selectedCategory;
         recipe.image = self.recipeImage;
         [recipe saveWithSuccess:^{
             [self.delegate recipeCreated];
@@ -173,9 +177,14 @@
 
 -(void) data
 {
-    self.categories = @[@"Beef",@"Poultry",@"Seafood",@"Lamb",@"Pork",@"Vegetables"];
+    [Category listCategories:^(NSArray *results) {
+        self.categories = results;
+        [self.categoriesTableView reloadData];
+    } failure:^(NSError *error) {
+        DLog(@"Could not retrieve categories: %@", [error description]);
+    }];
+    
     self.pickedCategoryIndexPaths = [NSMutableArray array];
-    self.selectedCategory = -1;
 }
 
 -(BOOL)nullOrEmpty:(NSString*)input
@@ -196,7 +205,7 @@
         return false;
     }
     
-    if (self.selectedCategory == -1) {
+    if (!self.selectedCategory) {
         [self displayMessage:@"Please select a food category"];
         return false;
     }

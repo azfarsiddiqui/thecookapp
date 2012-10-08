@@ -1,13 +1,13 @@
 //
-//  CKCategory.h
+//  Ingredient.h
 //  Cook
 //
-//  Created by Jonny Sagorin on 10/5/12.
+//  Created by Jonny Sagorin on 10/8/12.
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
 #import "CKModel.h"
 
-@interface CKCategory : CKModel
+@interface Ingredient : CKModel
 
 @end

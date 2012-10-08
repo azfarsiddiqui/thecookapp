@@ -15,6 +15,7 @@
 @property(nonatomic,strong) CKRecipeImage *recipeImage;
 @property(nonatomic,strong) CKUser *user;
 @property(nonatomic,strong) CKBook *book;
+@property(nonatomic,strong) Category *category;
 @end
 
 @implementation CKRecipe
@@ -25,12 +26,13 @@
     return recipe;
 }
 
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book
++(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
 {
     PFObject *parseRecipe = [PFObject objectWithClassName:kRecipeModelName];
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     recipe.user = user;
     recipe.book = book;
+    recipe.category = category;
     return recipe;
 }
 
@@ -56,12 +58,18 @@
     return [self.recipeImage imageFile];
 }
 
+-(NSString *)categoryName
+{
+    return [self.category name];
+}
+
 -(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure progress:(ProgressBlock)progress
 {
     
     PFObject *parseRecipe = self.parseObject;
     [parseRecipe setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipe setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
+    [parseRecipe setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
     
     if (self.recipeImage) {
         PFFile *imageFile = [self.recipeImage imageFile];

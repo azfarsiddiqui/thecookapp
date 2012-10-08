@@ -39,4 +39,8 @@ extern NSString *const kRecipeImageModelForeignKeyName;
 extern NSString *const kRecipeImageAttrImageFile;
 extern NSString *const kRecipeImageAttrImageName;
 
+#pragma mark - Category class
+extern NSString *const kCategoryModelName;
+extern NSString *const kCategoryModelForeignKeyName;
+
 

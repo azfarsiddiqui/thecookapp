@@ -9,7 +9,7 @@
 #import "RecipeListCell.h"
 
 @interface RecipeListCell ()
-@property (strong, nonatomic) UILabel *label;
+@property (strong, nonatomic) UILabel *recipeNameLabel;
 @property (strong, nonatomic) UIView *overlayView;
 @property (strong, nonatomic) PFImageView *imageView;
 @end
@@ -33,15 +33,17 @@
         self.overlayView = [[UIView alloc]initWithFrame:CGRectMake(0.0f, self.frame.size.height - 30.0f, self.frame.size.width, 30.0f)];
         self.overlayView.backgroundColor = [UIColor blackColor];
         self.overlayView.alpha = 0.2f;
-        self.label = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, self.frame.size.height - 25.0f, self.frame.size.width, 20.0f)];
-        self.label.textColor = [UIColor whiteColor];
-        self.label.font = [UIFont systemFontOfSize:14.0f];
-        self.label.textAlignment = NSTextAlignmentCenter;
-        self.label.backgroundColor = [UIColor clearColor];
-        [self.contentView addSubview:self.label];
+        
+        self.recipeNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, self.frame.size.height - 25.0f, self.frame.size.width, 20.0f)];
+        self.recipeNameLabel.textColor = [UIColor whiteColor];
+        self.recipeNameLabel.font = [UIFont systemFontOfSize:14.0f];
+        self.recipeNameLabel.textAlignment = NSTextAlignmentCenter;
+        self.recipeNameLabel.backgroundColor = [UIColor clearColor];
+        
+        [self.contentView addSubview:self.recipeNameLabel];
         [self.contentView addSubview:self.overlayView];
     }
-    self.label.text = recipe.name;
+    self.recipeNameLabel.text = recipe.name;
 
 
     [CKRecipe imagesForRecipe:recipe success:^{
