@@ -13,7 +13,9 @@
 #import "CKRecipe.h"
 #import "Category.h"
 
-@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate, CategoryListViewDelegate>
+#define kIngredientCellTag 112233
+
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate>
 
 //UI
 @property (nonatomic,strong) UIPopoverController *popVc;
@@ -24,11 +26,11 @@
 @property (nonatomic,strong) IBOutlet UITextField *recipeNameTextField;
 @property (nonatomic,strong) IBOutlet UITextView *recipeDescriptionTextView;
 @property (nonatomic,strong) IBOutlet UIImageView *recipeImageView;
-@property (nonatomic,strong) IBOutlet UITableView *categoriesTableView;
+@property (nonatomic,strong) IBOutlet UITableView *ingredientsTableView;
 
 //Data
 @property (nonatomic,strong) NSArray *categories;
-@property (nonatomic,strong) NSMutableArray *pickedCategoryIndexPaths;
+@property (nonatomic,strong) NSMutableArray *ingredients;
 @property (nonatomic,strong) UIImage *recipeImage;
 @property (nonatomic,strong) Category *selectedCategory;
 
@@ -99,7 +101,7 @@
     }
 }
 
--(IBAction)uploadButtonTapped:(UIButton *)sender
+-(IBAction)uploadButtonTapped:(UIButton *)button
 {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
     {
@@ -114,6 +116,12 @@
     }
 }
 
+-(IBAction)addIngredientTapped:(UIButton*)button
+{
+    [self.ingredients addObject:@"ingredient"];
+    [self.ingredientsTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+}
+
 #pragma mark - CategoryListViewDelegate
 
 -(void)didSelectCategory:(Category *)category
@@ -121,6 +129,28 @@
     self.selectedCategory = category;
     self.categoryLabel.text = category.name;
     [self.popVc dismissPopoverAnimated:YES];
+}
+
+#pragma mark - UITableViewDelegate
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.ingredients count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *reuseCellID = @"IngredientTableViewCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellID];
+    UITextField *ingredientTextField = (UITextField*) [cell viewWithTag:kIngredientCellTag];
+    if (ingredientTextField) {
+        ingredientTextField.placeholder = [NSString stringWithFormat:@"%@ %i",[self.ingredients objectAtIndex:indexPath.row], indexPath.row];
+    }
+    return cell;
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -146,7 +176,7 @@
     }];
 }
 
-#pragma mark = AFPhotoEditorControllerDelegate
+#pragma mark - AFPhotoEditorControllerDelegate
 -(void)photoEditor:(AFPhotoEditorController *)editor finishedWithImage:(UIImage *)image
 {
     DLog();
@@ -168,14 +198,14 @@
 
 -(void) data
 {
+    //data needed by categories selection
     [Category listCategories:^(NSArray *results) {
         self.categories = results;
-        [self.categoriesTableView reloadData];
     } failure:^(NSError *error) {
         DLog(@"Could not retrieve categories: %@", [error description]);
     }];
     
-    self.pickedCategoryIndexPaths = [NSMutableArray array];
+    self.ingredients = [NSMutableArray array];
 }
 
 -(BOOL)nullOrEmpty:(NSString*)input
