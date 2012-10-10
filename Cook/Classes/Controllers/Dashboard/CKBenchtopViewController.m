@@ -13,7 +13,7 @@
 #import "CKBenchtopLayout.h"
 #import "CKUser.h"
 #import "CKBook.h"
-#import "RecipeListViewController.h"
+#import "BookViewController.h"
 
 @interface CKBenchtopViewController ()
 
@@ -132,10 +132,9 @@
                                        animated:YES];
         
     } else {
-        //list recipes
-        RecipeListViewController *recipeListVC = [[RecipeListViewController alloc]init];
-        recipeListVC.book = self.myBook;
-        [self presentViewController:recipeListVC animated:YES completion:^{
+        //bookview
+        BookViewController *bookViewVC = [[BookViewController alloc] initWithBook:self.myBook];
+        [self presentViewController:bookViewVC animated:YES completion:^{
         }];
     }
     

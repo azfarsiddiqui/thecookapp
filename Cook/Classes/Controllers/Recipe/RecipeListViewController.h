@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "CKBook.h"
+#import "BookViewController.h"
 @interface RecipeListViewController : UIViewController
 @property(nonatomic,strong) CKBook *book;
+@property(nonatomic,assign) id<BookViewDelegate> bookViewDelegate;
 @end

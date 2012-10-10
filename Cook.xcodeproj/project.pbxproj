@@ -50,8 +50,9 @@
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
 		89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B721624FB6100152940 /* IngredientTableViewCell.m */; };
 		89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7B1625291A00152940 /* AFKPageFlipper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		89232B801625291A00152940 /* RecipePageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7E1625291A00152940 /* RecipePageFlipper.m */; };
+		89232B801625291A00152940 /* CookPageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7E1625291A00152940 /* CookPageFlipper.m */; };
 		89232B861625369400152940 /* test_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 89232B851625369400152940 /* test_image.png */; };
+		89232B921625431500152940 /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B911625431500152940 /* BookViewController.m */; };
 		8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7E8161E78AE00E6EF1D /* CKRecipe.m */; };
 		8936F7ED161E78CE00E6EF1D /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7EC161E78CE00E6EF1D /* Category.m */; };
 		8936F7F0161E7AA700E6EF1D /* Cook.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8936F7EF161E7AA700E6EF1D /* Cook.storyboard */; };
@@ -151,9 +152,11 @@
 		89232B7A1625291A00152940 /* AFKPageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFKPageFlipper.h; sourceTree = "<group>"; };
 		89232B7B1625291A00152940 /* AFKPageFlipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFKPageFlipper.m; sourceTree = "<group>"; };
 		89232B7C1625291A00152940 /* ColorHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorHelper.h; sourceTree = "<group>"; };
-		89232B7D1625291A00152940 /* RecipePageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipePageFlipper.h; sourceTree = "<group>"; };
-		89232B7E1625291A00152940 /* RecipePageFlipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipePageFlipper.m; sourceTree = "<group>"; };
+		89232B7D1625291A00152940 /* CookPageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CookPageFlipper.h; sourceTree = "<group>"; };
+		89232B7E1625291A00152940 /* CookPageFlipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CookPageFlipper.m; sourceTree = "<group>"; };
 		89232B851625369400152940 /* test_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test_image.png; sourceTree = "<group>"; };
+		89232B901625431500152940 /* BookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BookViewController.h; path = Book/BookViewController.h; sourceTree = "<group>"; };
+		89232B911625431500152940 /* BookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BookViewController.m; path = Book/BookViewController.m; sourceTree = "<group>"; };
 		8936F7E7161E78AE00E6EF1D /* CKRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipe.h; sourceTree = "<group>"; };
 		8936F7E8161E78AE00E6EF1D /* CKRecipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipe.m; sourceTree = "<group>"; };
 		8936F7EB161E78CD00E6EF1D /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
@@ -385,6 +388,7 @@
 		76ED277E1612DE020012E479 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				89232B931625431900152940 /* Book */,
 				8936F7F1161E7ABB00E6EF1D /* Recipe */,
 				7652046B161AD11E00EE253C /* Categories */,
 				76520459161A80CB00EE253C /* Dashboard */,
@@ -437,10 +441,19 @@
 				89232B7A1625291A00152940 /* AFKPageFlipper.h */,
 				89232B7B1625291A00152940 /* AFKPageFlipper.m */,
 				89232B7C1625291A00152940 /* ColorHelper.h */,
-				89232B7D1625291A00152940 /* RecipePageFlipper.h */,
-				89232B7E1625291A00152940 /* RecipePageFlipper.m */,
+				89232B7D1625291A00152940 /* CookPageFlipper.h */,
+				89232B7E1625291A00152940 /* CookPageFlipper.m */,
 			);
 			path = AFKPageFlipper;
+			sourceTree = "<group>";
+		};
+		89232B931625431900152940 /* Book */ = {
+			isa = PBXGroup;
+			children = (
+				89232B901625431500152940 /* BookViewController.h */,
+				89232B911625431500152940 /* BookViewController.m */,
+			);
+			name = Book;
 			sourceTree = "<group>";
 		};
 		8936F7F1161E7ABB00E6EF1D /* Recipe */ = {
@@ -644,12 +657,13 @@
 				89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */,
 				89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */,
 				89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */,
-				89232B801625291A00152940 /* RecipePageFlipper.m in Sources */,
+				89232B801625291A00152940 /* CookPageFlipper.m in Sources */,
 				7620270416252B1E005A8B66 /* CKBenchtopViewController.m in Sources */,
 				7620270516252B1E005A8B66 /* CKBenchtopStackLayout.m in Sources */,
 				7620270616252B1E005A8B66 /* CKBenchtopFlowLayout.m in Sources */,
 				7620270716252B1E005A8B66 /* CKBenchtopLayout.m in Sources */,
 				7620270816252B1E005A8B66 /* CKBenchtopBookCell.m in Sources */,
+				89232B921625431500152940 /* BookViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
