@@ -11,4 +11,6 @@
 
 @interface CKBenchtopViewController : UICollectionViewController <CKBenchtopDelegate>
 
+- (void)reveal:(BOOL)reveal;
+
 @end

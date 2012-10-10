@@ -11,12 +11,17 @@
 #import "CKBenchtopFlowLayout.h"
 #import "CKBenchtopBookCell.h"
 #import "CKBenchtopLayout.h"
+#import "CKUser.h"
+#import "CKBook.h"
+#import "RecipeListViewController.h"
 
 @interface CKBenchtopViewController ()
 
 @property (nonatomic, strong) UIView *backgroundView;
+@property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) BOOL firstBenchtop;
 @property (nonatomic, assign) BOOL snapActivated;
+@property (nonatomic, strong) CKBook *myBook;
 
 @end
 
@@ -63,6 +68,33 @@
     self.firstBenchtop = YES;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [self loadData];
+}
+
+- (void)reveal:(BOOL)reveal {
+    if (reveal && !self.overlayView) {
+        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        self.overlayView.autoresizingMask = UIViewAutoresizingNone;
+        self.overlayView.alpha = 0.0;
+        [self.view insertSubview:self.overlayView aboveSubview:self.backgroundView];
+    }
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.overlayView.alpha = reveal ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!reveal) {
+                             [self.overlayView removeFromSuperview];
+                             self.overlayView = nil;
+                         }
+                     }];
+    
+}
+
+
 #pragma mark - CKBenchtopDelegate methods
 
 - (BOOL)onMyBenchtop {
@@ -89,6 +121,26 @@
     }
 }
 
+#pragma mark - UICollectionViewDelegate methods
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"didSelectItemAtIndexPath: %@", indexPath);
+    
+    if (!self.firstBenchtop) {
+        [collectionView scrollToItemAtIndexPath:indexPath
+                               atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                       animated:YES];
+        
+    } else {
+        //list recipes
+        RecipeListViewController *recipeListVC = [[RecipeListViewController alloc]init];
+        recipeListVC.book = self.myBook;
+        [self presentViewController:recipeListVC animated:YES completion:^{
+        }];
+    }
+    
+}
+
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -96,18 +148,29 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+    NSInteger numItems = 0;
+    
     if (section == 0) {
-        return 1;
+        numItems = 1;   // My Book
     } else {
-        return 3;
+        if ([[CKUser currentUser] isSignedIn]) {
+            numItems = 1; // Friends Boooks
+        } else {
+            numItems = 5; // Login book.
+        }
     }
+    
+    return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CKBenchtopBookCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
-                                                                                forIndexPath:indexPath];
-    [cell setText:[NSString stringWithFormat:@"Book (%d, %d)", indexPath.section, indexPath.item]];
+    CKBenchtopBookCell *cell = nil;
+    if ([indexPath section] == 0) {
+        cell = [self myBookCellForIndexPath:indexPath];
+    } else {
+        cell = [self otherBookCellsForIndexPath:indexPath];
+    }
     return cell;
 }
 
@@ -243,7 +306,10 @@
     }
     
     // Toggle the layout
-    [self performSelector:@selector(toggleLayout) withObject:nil afterDelay:0.0];
+    if (!self.firstBenchtop && [[CKUser currentUser] isSignedIn]) {
+        [self performSelector:@selector(toggleLayout) withObject:nil afterDelay:0.0];
+    }
+    
 }
 
 - (void)initBackground {
@@ -282,6 +348,46 @@
         backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
     }
     self.backgroundView.frame = backgroundFrame;
+}
+
+- (void)loadData {
+    [self loadMyBook];
+}
+
+- (void)loadMyBook {
+    
+    // This will be called twice - once from cache if exists, then from network.
+    [CKBook bookForUser:[CKUser currentUser]
+                success:^(CKBook *book) {
+                    self.myBook = book;
+                    [self updateMyBook];
+                }
+                failure:^(NSError *error) {
+                    DLog(@"Error: %@", [error localizedDescription]);
+                }];
+}
+
+- (CKBenchtopBookCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath {
+    CKBenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
+                                                                              forIndexPath:indexPath];
+    if (self.myBook) {
+        [cell setText:self.myBook.name];
+    } else {
+        [cell setText:@""];
+    }
+    return cell;
+}
+
+- (CKBenchtopBookCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath {
+    CKBenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
+                                                                              forIndexPath:indexPath];
+    [cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+    return cell;
+}
+
+- (void)updateMyBook {
+    CKBenchtopBookCell *cell = (CKBenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    [cell setText:self.myBook.name];
 }
 
 @end

@@ -9,11 +9,11 @@
 #import "CKViewController.h"
 #import "CKUser.h"
 #import "CKAppHelper.h"
-#import "CKDashboardViewController.h"
+#import "CKBenchtopViewController.h"
 
 @interface CKViewController ()
 
-@property (nonatomic, strong) CKDashboardViewController *dashboardViewController;
+@property (nonatomic, strong) CKBenchtopViewController *benchtopViewController;
 
 - (void)showDashboard;
 
@@ -80,10 +80,10 @@
     DLog(@"Current User: %@", currentUser);
     
     // Prepare for the dashboard to be transitioned in.
-    self.dashboardViewController = [[CKDashboardViewController alloc] init];
-    self.dashboardViewController.view.frame = self.view.bounds;
-    [self.view addSubview:self.dashboardViewController.view];
-    [self.dashboardViewController reveal:YES];
+    self.benchtopViewController = [[CKBenchtopViewController alloc] init];
+    self.benchtopViewController.view.frame = self.view.bounds;
+    [self.view addSubview:self.benchtopViewController.view];
+    [self.benchtopViewController reveal:YES];
 }
 
 @end
