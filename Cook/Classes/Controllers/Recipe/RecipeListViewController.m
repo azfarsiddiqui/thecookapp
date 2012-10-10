@@ -21,6 +21,7 @@
 @property (nonatomic, retain) UICollectionView *collectionView;
 @property (nonatomic, retain) NSArray *recipes;
 @property (strong, nonatomic) PFImageView *imageView;
+@property (nonatomic, retain) RecipePageFlipper *pageFlipper;
 @end
 @implementation RecipeListViewController
 
@@ -44,6 +45,8 @@
 {
     self.view.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 748.0f);
     self.view.backgroundColor = [UIColor whiteColor];
+ 
+    [self initFlipper];
     UILabel *testLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 30.0f)];
     testLabel.textAlignment = NSTextAlignmentCenter;
     testLabel.text = @"My Book";
@@ -70,6 +73,21 @@
     UIButton *addRecipeButton = [CKUIHelper buttonWithImage:[UIImage imageNamed:@"btn_create_recipe"] target:self selector:@selector(createRecipeTapped:)];
     addRecipeButton.frame = CGRectMake(10.0f, 150.0f, addRecipeButton.frame.size.width, addRecipeButton.frame.size.height);
     [self.view addSubview:addRecipeButton];
+}
+
+- (void)initFlipper {
+//    CGRect pageFrame = CGRectMake(kPageEdgeInsets.left,
+//                                  kPageEdgeInsets.top,
+//                                  self.backgroundView.frame.size.width - kPageEdgeInsets.left - kPageEdgeInsets.right,
+//                                  self.backgroundView.frame.size.height - kPageEdgeInsets.top - kPageEdgeInsets.bottom);
+//    DLog(@"FLIPPER FRAME: %@", NSStringFromCGRect(pageFrame));
+//    RecipePageFlipper *pageFlipper = [[RecipePageFlipper alloc] initWithFrame:pageFrame];
+//    self.pageFlipper = pageFlipper;
+//    pageFlipper.autoresizingMask = UIViewAutoresizingNone;
+//    pageFlipper.dataSource = self;
+//    [self.backgroundView addSubview:pageFlipper];
+//    [pageFlipper release];
+//}
 }
 
 - (void)loadData {
@@ -128,5 +146,29 @@
 -(void) closeTapped:(UIButton*)button
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma AFKPageFlipperDataSource methods
+
+- (NSInteger)numberOfPagesForPageFlipper:(RecipePageFlipper *) pageFlipper {
+//    NSInteger numPages = 0;
+//    numPages += 1;                          // Profile page
+//    numPages += [self numCategories];
+//    numPages += [self numRecipes];
+    return 2;
+}
+
+- (UIView *)viewForPage:(NSInteger)page inFlipper:(RecipePageFlipper *)pageFlipper {
+//    DLog("viewForPage[%d]", page);
+//    
+//    PageViewController *pageViewController = [self pageViewControllerForPage:page];
+//    self.currentPageViewController = pageViewController;
+//    [pageViewController pageDidShow:YES];
+//    
+//    UIView *pageView = pageViewController.view;
+//    [self resetPageView:pageView];
+//    
+//    return pageView;
+    return nil;
 }
 @end

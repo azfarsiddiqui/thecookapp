@@ -116,6 +116,14 @@
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.delegate = self;
         [self presentViewController:picker animated:YES completion:nil];
+    } else {
+        DLog("** no camera available - stubbed image **");
+        //so we simulate an image
+        self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:[UIImage imageNamed:@"test_image"]];
+        [self.photoEditorController setDelegate:self];
+        self.photoEditorController.view.frame = self.view.bounds;
+        [self.view addSubview:self.photoEditorController.view];
+
     }
 }
 
@@ -172,10 +180,10 @@
                              completion:nil];
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     NSParameterAssert(image);
-    
     [self dismissViewControllerAnimated:NO completion:^{
         self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
         [self.photoEditorController setDelegate:self];
