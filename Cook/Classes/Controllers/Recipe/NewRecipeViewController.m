@@ -12,10 +12,12 @@
 #import "AFPhotoEditorController.h"
 #import "CKRecipe.h"
 #import "Category.h"
+#import "Ingredient.h"
+#import "IngredientTableViewCell.h"
 
 #define kIngredientCellTag 112233
 
-@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate>
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate>
 
 //UI
 @property (nonatomic,strong) UIPopoverController *popVc;
@@ -86,6 +88,11 @@
         recipe.name = self.recipeNameTextField.text;
         recipe.description = self.recipeDescriptionTextView.text;
         recipe.image = self.recipeImage;
+        
+        if ([self.ingredients count] > 0) {
+            recipe.ingredients = [NSArray arrayWithArray:self.ingredients];
+        }
+        
         [recipe saveWithSuccess:^{
             [self.delegate recipeCreated];
             button.enabled = YES;
@@ -108,17 +115,13 @@
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.delegate = self;
-//        self.popVc = [[UIPopoverController alloc] initWithContentViewController:picker];
-//        self.popVc.popoverContentSize = CGSizeMake(1024.0f, 748.0f);
-//        self.popVc.delegate = self;
-//        [self.popVc presentPopoverFromRect:sender.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         [self presentViewController:picker animated:YES completion:nil];
     }
 }
 
 -(IBAction)addIngredientTapped:(UIButton*)button
 {
-    [self.ingredients addObject:@"ingredient"];
+    [self.ingredients addObject:[Ingredient ingredientwithName:@"ingredient"]];
     [self.ingredientsTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
 }
 
@@ -131,7 +134,7 @@
     [self.popVc dismissPopoverAnimated:YES];
 }
 
-#pragma mark - UITableViewDelegate
+#pragma mark - UITableViewDatasource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -145,29 +148,34 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *reuseCellID = @"IngredientTableViewCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellID];
+    IngredientTableViewCell *cell = (IngredientTableViewCell*) [tableView dequeueReusableCellWithIdentifier:reuseCellID];
     UITextField *ingredientTextField = (UITextField*) [cell viewWithTag:kIngredientCellTag];
     if (ingredientTextField) {
-        ingredientTextField.placeholder = [NSString stringWithFormat:@"%@ %i",[self.ingredients objectAtIndex:indexPath.row], indexPath.row];
+        Ingredient *ingredient = [self.ingredients objectAtIndex:indexPath.row];
+        cell.ingredientIndex = indexPath.row;
+        ingredientTextField.placeholder = [NSString stringWithFormat:@"%@ %i",ingredient.name, indexPath.row];
     }
     return cell;
 }
+
+#pragma mark - UITableViewDelegate
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DLog();
+}
+    
 
 #pragma mark - UIImagePickerControllerDelegate
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
     [self dismissViewControllerAnimated:YES
                              completion:nil];
-//    [self.popVc dismissPopoverAnimated:YES];
-//    self.popVc = nil;
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
     NSParameterAssert(image);
     
-//    [self.popVc dismissPopoverAnimated:YES];
-//    self.popVc = nil;
     [self dismissViewControllerAnimated:NO completion:^{
         self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
         [self.photoEditorController setDelegate:self];
@@ -192,6 +200,24 @@
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover
 {
     self.popVc = nil;
+}
+
+#pragma mark - UITextFieldDelegate
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    DLog(@"ended. value is %@",textField.text);
+    if (textField!= self.recipeNameTextField) {
+        UIView *parentView = [textField superview];
+        IngredientTableViewCell *cell = (IngredientTableViewCell*)[parentView superview];
+        Ingredient *ingredient = [self.ingredients objectAtIndex:cell.ingredientIndex];
+        ingredient.name = textField.text;
+    }
 }
 
 #pragma mark - Private methods
@@ -222,7 +248,7 @@
     }
     
     if ([self nullOrEmpty:self.recipeDescriptionTextView.text]) {
-        [self displayMessage:@"Recipe Description is blank"];
+        [self displayMessage:@"Recipe Method is blank"];
         return false;
     }
     

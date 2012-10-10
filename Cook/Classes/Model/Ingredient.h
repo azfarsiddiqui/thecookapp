@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKModel.h"
-
-@interface Ingredient : CKModel
-
+@interface Ingredient : NSObject
+@property(nonatomic,strong) NSString *name;
++(Ingredient *)ingredientwithName:(NSString*)name;
 @end

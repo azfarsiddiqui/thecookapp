@@ -32,7 +32,7 @@ NSString *const kRecipeModelForeignKeyName = @"recipe";
 NSString *const kRecipeAttrDescription = @"description";
 NSString *const kRecipeAttrCategoryIndex = @"categoryIndex";
 NSString *const kRecipeAttrRecipeImages  = @"images";
-
+NSString *const kRecipeAttrIngredients = @"ingredients";
 
 #pragma mark - RecipeImage class
 NSString *const kRecipeImageModelName = @"RecipeImage";

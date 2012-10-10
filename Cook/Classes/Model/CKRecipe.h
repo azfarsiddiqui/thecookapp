@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) NSString *description;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) NSArray *ingredients;
 
 +(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;

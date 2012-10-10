@@ -10,4 +10,11 @@
 
 @implementation Ingredient
 
++(Ingredient *)ingredientwithName:(NSString *)name
+{
+    Ingredient *ingredient = [[Ingredient alloc] init];
+    ingredient.name = name;
+    return ingredient;
+}
+
 @end

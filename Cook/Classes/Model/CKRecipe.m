@@ -9,7 +9,9 @@
 #import "CKRecipe.h"
 #import "CKBook.h"
 #import "CKRecipeImage.h"
+#import "Ingredient.h"
 #import "CKConstants.h"
+#import "NSArray+Enumerable.h"
 
 @interface CKRecipe()
 @property(nonatomic,strong) CKRecipeImage *recipeImage;
@@ -88,6 +90,14 @@
     [parseRecipe setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipe setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
     [parseRecipe setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
+    
+    if (self.ingredients && [self.ingredients count] > 0) {
+        NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
+            return ingredient.name;
+        }];
+        
+        [parseRecipe setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
+    }
     
     if (self.recipeImage) {
         PFFile *imageFile = [self.recipeImage imageFile];

@@ -173,6 +173,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="shd-KT-h88" id="zYk-Xo-yBn"/>
+                                </connections>
                             </textField>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Uploading..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xmC-eC-N0p">
                                 <constraints>
@@ -255,7 +258,7 @@
                                     </constraints>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="IngredientTableViewCell" id="wfa-vv-zag">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="IngredientTableViewCell" id="wfa-vv-zag" customClass="IngredientTableViewCell">
                                         <rect key="frame" x="0.0" y="22" width="223" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -268,6 +271,9 @@
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="shd-KT-h88" id="8gF-Q6-b9b"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -354,12 +360,18 @@
         <class className="CategoryListViewController" superclassName="UICollectionViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListViewController.h"/>
         </class>
+        <class className="IngredientTableViewCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientTableViewCell.h"/>
+        </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
         </class>
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
+                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="selectCategoryTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="categoryLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
                 <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
