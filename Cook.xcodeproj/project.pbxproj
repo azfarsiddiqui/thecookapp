@@ -44,6 +44,8 @@
 		76ED27861612DEB80012E479 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27841612DEB80012E479 /* Icon@2x.png */; };
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
 		89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B721624FB6100152940 /* IngredientTableViewCell.m */; };
+		89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7B1625291A00152940 /* AFKPageFlipper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		89232B801625291A00152940 /* RecipePageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7E1625291A00152940 /* RecipePageFlipper.m */; };
 		8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7E8161E78AE00E6EF1D /* CKRecipe.m */; };
 		8936F7ED161E78CE00E6EF1D /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7EC161E78CE00E6EF1D /* Category.m */; };
 		8936F7F0161E7AA700E6EF1D /* Cook.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8936F7EF161E7AA700E6EF1D /* Cook.storyboard */; };
@@ -129,6 +131,11 @@
 		76ED278B1612E45B0012E479 /* CKServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKServerManager.m; sourceTree = "<group>"; };
 		89232B711624FB6100152940 /* IngredientTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientTableViewCell.h; sourceTree = "<group>"; };
 		89232B721624FB6100152940 /* IngredientTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientTableViewCell.m; sourceTree = "<group>"; };
+		89232B7A1625291A00152940 /* AFKPageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFKPageFlipper.h; sourceTree = "<group>"; };
+		89232B7B1625291A00152940 /* AFKPageFlipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFKPageFlipper.m; sourceTree = "<group>"; };
+		89232B7C1625291A00152940 /* ColorHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorHelper.h; sourceTree = "<group>"; };
+		89232B7D1625291A00152940 /* RecipePageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipePageFlipper.h; sourceTree = "<group>"; };
+		89232B7E1625291A00152940 /* RecipePageFlipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipePageFlipper.m; sourceTree = "<group>"; };
 		8936F7E7161E78AE00E6EF1D /* CKRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipe.h; sourceTree = "<group>"; };
 		8936F7E8161E78AE00E6EF1D /* CKRecipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipe.m; sourceTree = "<group>"; };
 		8936F7EB161E78CD00E6EF1D /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
@@ -395,6 +402,18 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		89232B791625291A00152940 /* AFKPageFlipper */ = {
+			isa = PBXGroup;
+			children = (
+				89232B7A1625291A00152940 /* AFKPageFlipper.h */,
+				89232B7B1625291A00152940 /* AFKPageFlipper.m */,
+				89232B7C1625291A00152940 /* ColorHelper.h */,
+				89232B7D1625291A00152940 /* RecipePageFlipper.h */,
+				89232B7E1625291A00152940 /* RecipePageFlipper.m */,
+			);
+			path = AFKPageFlipper;
+			sourceTree = "<group>";
+		};
 		8936F7F1161E7ABB00E6EF1D /* Recipe */ = {
 			isa = PBXGroup;
 			children = (
@@ -417,6 +436,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				89232B791625291A00152940 /* AFKPageFlipper */,
 				89622187161EA6610023EC30 /* MRCEnumerable */,
 				89622171161E9F300023EC30 /* AviarySDK */,
 			);
@@ -592,6 +612,8 @@
 				89A504A8162290BF00E6CDF1 /* CategoryListViewController.m in Sources */,
 				89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */,
 				89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */,
+				89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */,
+				89232B801625291A00152940 /* RecipePageFlipper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

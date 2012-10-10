@@ -9,6 +9,7 @@
 #import "RecipeListViewController.h"
 #import "NewRecipeViewController.h"
 #import "RecipeListCell.h"
+#import "RecipePageFlipper.h"
 #import "CKRecipe.h"
 #import "CKUIHelper.h"
 
@@ -36,6 +37,7 @@
     [super viewWillAppear:animated];
     [self loadData];
 }
+
 #pragma mark - Private Methods
 
 -(void)initScreen
