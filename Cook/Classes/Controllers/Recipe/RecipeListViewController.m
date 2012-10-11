@@ -9,7 +9,6 @@
 #import "RecipeListViewController.h"
 #import "NewRecipeViewController.h"
 #import "RecipeListCell.h"
-#import "RecipePageFlipper.h"
 #import "CKRecipe.h"
 #import "CKUIHelper.h"
 
@@ -32,8 +31,15 @@
     return self;
 }
 
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    DLog();
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
+    DLog();
     [super viewWillAppear:animated];
     [self loadData];
 }
@@ -44,6 +50,7 @@
 {
     self.view.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 748.0f);
     self.view.backgroundColor = [UIColor whiteColor];
+ 
     UILabel *testLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 30.0f)];
     testLabel.textAlignment = NSTextAlignmentCenter;
     testLabel.text = @"My Book";
@@ -127,6 +134,7 @@
 
 -(void) closeTapped:(UIButton*)button
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.bookViewDelegate closeRequested];
 }
+
 @end

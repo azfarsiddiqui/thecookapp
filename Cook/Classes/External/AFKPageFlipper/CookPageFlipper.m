@@ -1,14 +1,14 @@
 //
-//  RecipePageFlipper.m
+//  CookPageFlipper.m
 //  recipe
 //
 //  Created by Jonny Sagorin on 8/9/12.
-//  Copyright (c) 2012 Apps Perhaps Pty Ltd. All rights reserved.
+//  Copyright (c) 2012 Cook Pty Ltd. All rights reserved.
 //
 
-#import "RecipePageFlipper.h"
+#import "CookPageFlipper.h"
 
-@implementation RecipePageFlipper
+@implementation CookPageFlipper
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {

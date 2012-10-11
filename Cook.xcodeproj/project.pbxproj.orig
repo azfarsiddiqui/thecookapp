@@ -655,6 +655,7 @@
 				8962219E161EAE370023EC30 /* image_placeholder.png in Resources */,
 				896221A1161EAF4C0023EC30 /* btn_close.png in Resources */,
 				896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */,
+<<<<<<< HEAD
 				7620271D16254128005A8B66 /* cook_signin_banner_leftback.png in Resources */,
 				7620271E16254128005A8B66 /* cook_signin_banner_leftback@2x.png in Resources */,
 				7620271F16254128005A8B66 /* cook_signin_banner_leftoverlay.png in Resources */,
@@ -667,7 +668,9 @@
 				7620272616254128005A8B66 /* cook_signin_banner@2x.png in Resources */,
 				7620272716254128005A8B66 /* cook_signin_btn.png in Resources */,
 				7620272816254128005A8B66 /* cook_signin_btn@2x.png in Resources */,
+=======
 				89232B861625369400152940 /* test_image.png in Resources */,
+>>>>>>> 5f0bca0e91cfbc6cd3eef8fbdafdb44d29e5a317
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -716,8 +719,11 @@
 				7620270616252B1E005A8B66 /* CKBenchtopFlowLayout.m in Sources */,
 				7620270716252B1E005A8B66 /* CKBenchtopLayout.m in Sources */,
 				7620270816252B1E005A8B66 /* CKBenchtopBookCell.m in Sources */,
+<<<<<<< HEAD
 				7620271016253D19005A8B66 /* CKLoginBookCell.m in Sources */,
+=======
 				89232B921625431500152940 /* BookViewController.m in Sources */,
+>>>>>>> 5f0bca0e91cfbc6cd3eef8fbdafdb44d29e5a317
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
