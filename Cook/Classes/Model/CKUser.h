@@ -24,5 +24,6 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
+- (NSArray *)friendIds;
 
 @end

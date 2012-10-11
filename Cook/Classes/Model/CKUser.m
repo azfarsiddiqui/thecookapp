@@ -95,6 +95,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseUser objectForKey:kUserAttrFacebookId];
 }
 
+- (NSArray *)friendIds {
+    return [self.parseUser objectForKey:kUserAttrFriends];
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {
