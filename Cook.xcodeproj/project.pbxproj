@@ -61,6 +61,11 @@
 		76ED27851612DEB80012E479 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27831612DEB80012E479 /* Icon.png */; };
 		76ED27861612DEB80012E479 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27841612DEB80012E479 /* Icon@2x.png */; };
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
+		76FA9A371626568B006EAFBB /* cook_btn_dark_facebook_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A331626568B006EAFBB /* cook_btn_dark_facebook_icon.png */; };
+		76FA9A381626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A341626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png */; };
+		76FA9A391626568B006EAFBB /* cook_btn_dark_facebook_tick.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A351626568B006EAFBB /* cook_btn_dark_facebook_tick.png */; };
+		76FA9A3A1626568B006EAFBB /* cook_btn_dark_facebook_tick@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A361626568B006EAFBB /* cook_btn_dark_facebook_tick@2x.png */; };
+		76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76FA9A3B162656AF006EAFBB /* CKLoginView.m */; };
 		89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B721624FB6100152940 /* IngredientTableViewCell.m */; };
 		89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7B1625291A00152940 /* AFKPageFlipper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		89232B801625291A00152940 /* CookPageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7E1625291A00152940 /* CookPageFlipper.m */; };
@@ -174,6 +179,12 @@
 		76ED27841612DEB80012E479 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		76ED278A1612E45B0012E479 /* CKServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKServerManager.h; sourceTree = "<group>"; };
 		76ED278B1612E45B0012E479 /* CKServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKServerManager.m; sourceTree = "<group>"; };
+		76FA9A331626568B006EAFBB /* cook_btn_dark_facebook_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btn_dark_facebook_icon.png; sourceTree = "<group>"; };
+		76FA9A341626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btn_dark_facebook_icon@2x.png"; sourceTree = "<group>"; };
+		76FA9A351626568B006EAFBB /* cook_btn_dark_facebook_tick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btn_dark_facebook_tick.png; sourceTree = "<group>"; };
+		76FA9A361626568B006EAFBB /* cook_btn_dark_facebook_tick@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btn_dark_facebook_tick@2x.png"; sourceTree = "<group>"; };
+		76FA9A3B162656AF006EAFBB /* CKLoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKLoginView.m; sourceTree = "<group>"; };
+		76FA9A3C162656AF006EAFBB /* CKLoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKLoginView.h; sourceTree = "<group>"; };
 		89232B711624FB6100152940 /* IngredientTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientTableViewCell.h; sourceTree = "<group>"; };
 		89232B721624FB6100152940 /* IngredientTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientTableViewCell.m; sourceTree = "<group>"; };
 		89232B7A1625291A00152940 /* AFKPageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFKPageFlipper.h; sourceTree = "<group>"; };
@@ -277,6 +288,10 @@
 				7620271C16254128005A8B66 /* cook_signin_btn@2x.png */,
 				76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */,
 				76B015B2161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png */,
+				76FA9A331626568B006EAFBB /* cook_btn_dark_facebook_icon.png */,
+				76FA9A341626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png */,
+				76FA9A351626568B006EAFBB /* cook_btn_dark_facebook_tick.png */,
+				76FA9A361626568B006EAFBB /* cook_btn_dark_facebook_tick@2x.png */,
 				762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */,
 				762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */,
 			);
@@ -413,6 +428,7 @@
 				76ED277D1612DDDA0012E479 /* Managers */,
 				76ED27911612E6B50012E479 /* Model */,
 				89622170161E9F300023EC30 /* External */,
+				76FA9A3116265636006EAFBB /* Views */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -474,6 +490,15 @@
 				89A50498162250F700E6CDF1 /* Ingredient.m */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		76FA9A3116265636006EAFBB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				76FA9A3C162656AF006EAFBB /* CKLoginView.h */,
+				76FA9A3B162656AF006EAFBB /* CKLoginView.m */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		89232B791625291A00152940 /* AFKPageFlipper */ = {
@@ -668,6 +693,10 @@
 				7620272716254128005A8B66 /* cook_signin_btn.png in Resources */,
 				7620272816254128005A8B66 /* cook_signin_btn@2x.png in Resources */,
 				89232B861625369400152940 /* test_image.png in Resources */,
+				76FA9A371626568B006EAFBB /* cook_btn_dark_facebook_icon.png in Resources */,
+				76FA9A381626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png in Resources */,
+				76FA9A391626568B006EAFBB /* cook_btn_dark_facebook_tick.png in Resources */,
+				76FA9A3A1626568B006EAFBB /* cook_btn_dark_facebook_tick@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -718,6 +747,7 @@
 				7620270816252B1E005A8B66 /* CKBenchtopBookCell.m in Sources */,
 				7620271016253D19005A8B66 /* CKLoginBookCell.m in Sources */,
 				89232B921625431500152940 /* BookViewController.m in Sources */,
+				76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

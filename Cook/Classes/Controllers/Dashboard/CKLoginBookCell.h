@@ -7,7 +7,8 @@
 //
 
 #import "CKBenchtopBookCell.h"
+#import "CKLoginView.h"
 
-@interface CKLoginBookCell : CKBenchtopBookCell
+@interface CKLoginBookCell : CKBenchtopBookCell <CKLoginViewDelegate>
 
 @end
