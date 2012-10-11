@@ -12,7 +12,7 @@
 
 @interface CKUser ()
 
-@property (nonatomic, copy) LoginSuccessBlock loginSuccessfulBlock;
+@property (nonatomic, copy) ObjectSuccessBlock loginSuccessfulBlock;
 @property (nonatomic, copy) ObjectFailureBlock loginFailureBlock;
 
 - (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser>*)facebookUser;
@@ -42,12 +42,24 @@
     return self;
 }
 
-- (void)loginWithFacebookCompletion:(LoginSuccessBlock)success failure:(ObjectSuccessBlock)failure {
-    NSAssert([self isSignedIn], @"User already linked with Facebook.");
+- (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
+    // Make sure user is not signed on already.
+    if ([self isSignedIn]) {
+        failure([self errorWithMessage:[NSString stringWithFormat:@"User %@ already signed in", self]]);
+        return;
+    }
+    
+    // Save the completion blocks.
+    self.loginSuccessfulBlock = success;
+    self.loginFailureBlock = failure;
+    
+    // Go ahead and link this user via Facebook.
+    DLog(@"Linking user with facebook %@", self);
     [PFFacebookUtils linkUser:(PFUser *)self.parseObject
                   permissions:nil
                         block:^(BOOL succeeded, NSError *error) {
+                            
                             if (succeeded) {
                                 
                                 // Update user details and friends.
@@ -65,7 +77,9 @@
                                  }];
 
                             } else {
-                                failure(error);
+                                self.loginFailureBlock(error);
+                                self.loginFailureBlock = nil;
+                                self.loginSuccessfulBlock = nil;
                             }
     }];
     
@@ -90,8 +104,7 @@
 
 #pragma mark - Private methods
 
-- (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser>*)facebookUser {
-    CKUser *currentUser = [CKUser currentUser];
+- (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser> *)facebookUser {
     
     // Find the user's friends, and see if any of them are Cook users
     [[PF_FBRequest requestForMyFriends] startWithCompletionHandler:
@@ -106,10 +119,10 @@
     // Save facebook profile details.
     self.name = facebookUser.name;
     self.facebookId = facebookUser.id;
-    
     [self saveEventually];
     
-    self.loginSuccessfulBlock(currentUser);
+    // Call success completion.
+    self.loginSuccessfulBlock();
     self.loginSuccessfulBlock = nil;
     self.loginFailureBlock = nil;
 }

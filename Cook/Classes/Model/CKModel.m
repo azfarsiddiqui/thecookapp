@@ -15,6 +15,8 @@
 
 @implementation CKModel
 
+#define kCKErrorDomain  @"CKErrorDomain"
+
 - (id)initWithParseObject:(PFObject *)parseObject {
     if (self = [super init]) {
         self.parseObject = parseObject;
@@ -44,6 +46,17 @@
 
 - (BOOL)persisted {
     return (self.parseObject.objectId != nil && [self.parseObject.objectId length] > 0);
+}
+
+- (NSError *)errorWithMessage:(NSString *)errorMessage {
+    return [self errorWithCode:0 message:errorMessage];
+}
+
+- (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage {
+    return [NSError errorWithDomain:kCKErrorDomain
+                               code:0
+                           userInfo:[NSDictionary dictionaryWithObject:errorMessage
+                                                                forKey:NSLocalizedDescriptionKey]];
 }
 
 #pragma mark - NSObject

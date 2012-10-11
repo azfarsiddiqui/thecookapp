@@ -16,6 +16,7 @@
 #import "CKLoginBookCell.h"
 #import "RecipeListViewController.h"
 #import "BookViewController.h"
+#import "EventHelper.h"
 
 @interface CKBenchtopViewController ()
 
@@ -34,6 +35,7 @@
 #define kBackgroundAvailOffset      50.0
 
 - (void)dealloc {
+    [EventHelper unregisterBenchtopFreeze:self];
     [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
     [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
 }
@@ -71,6 +73,9 @@
     
     [self.collectionView registerClass:[CKBenchtopBookCell class] forCellWithReuseIdentifier:kBookCellId];
     [self.collectionView registerClass:[CKLoginBookCell class] forCellWithReuseIdentifier:kLoginCellId];
+    
+    // Register for events.
+    [EventHelper registerBenchtopFreeze:self selector:@selector(benchtopFreezeRequested:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -99,6 +104,9 @@
     
 }
 
+- (void)freeze:(BOOL)freeze {
+    self.collectionView.userInteractionEnabled = !freeze;
+}
 
 #pragma mark - CKBenchtopDelegate methods
 
@@ -401,6 +409,11 @@
 - (void)updateMyBook {
     CKBenchtopBookCell *cell = (CKBenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     [cell setText:self.myBook.name];
+}
+
+- (void)benchtopFreezeRequested:(NSNotification *)notification {
+    BOOL freeze = [EventHelper benchFreezeForNotification:notification];
+    self.collectionView.userInteractionEnabled = !freeze;
 }
 
 @end

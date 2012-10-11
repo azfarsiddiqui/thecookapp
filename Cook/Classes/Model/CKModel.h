@@ -26,5 +26,7 @@ typedef void(^ProgressBlock)(int percentDone);
 - (void)saveEventually;
 - (NSDictionary *)descriptionProperties;
 - (BOOL)persisted;
+- (NSError *)errorWithMessage:(NSString *)errorMessage;
+- (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage;
 
 @end

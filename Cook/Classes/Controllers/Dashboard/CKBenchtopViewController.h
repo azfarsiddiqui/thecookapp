@@ -12,5 +12,6 @@
 @interface CKBenchtopViewController : UICollectionViewController <CKBenchtopDelegate>
 
 - (void)reveal:(BOOL)reveal;
+- (void)freeze:(BOOL)freeze;
 
 @end

@@ -22,6 +22,6 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
-- (void)loginWithFacebookCompletion:(LoginSuccessBlock)success failure:(ObjectSuccessBlock)failure;
+- (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end

@@ -20,5 +20,6 @@
 - (void)loginStarted;
 - (void)loginDone;
 - (void)loginReset;
+- (void)loginFailed;
 
 @end

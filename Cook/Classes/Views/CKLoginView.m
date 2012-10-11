@@ -38,11 +38,15 @@
 
 - (void)loginDone {
     [self setButtonText:[self facebookLoginDoneText] activity:NO icon:[self tickIconImage] enabled:NO];
-    // [self performSelector:@selector(loginReset) withObject:nil afterDelay:1.0];
 }
 
 - (void)loginReset {
     [self setButtonText:[self facebookLoginText] activity:NO icon:[self facebookIconImage] enabled:YES];
+}
+
+- (void)loginFailed {
+    [self setButtonText:[self facebookLoginFailedText] activity:NO icon:[self facebookIconImage] enabled:NO];
+    [self performSelector:@selector(loginReset) withObject:nil afterDelay:1.5];
 }
 
 #pragma mark - Private
@@ -139,11 +143,15 @@
 }
 
 - (NSString *)facebookLoginStartedText {
-    return @"LOGIN WITH FACEBOOK";
+    return @"LOGIN IN PROGRESS";
 }
 
 - (NSString *)facebookLoginDoneText {
-    return @"LOGIN WITH FACEBOOK";
+    return @"LOGIN SUCCESSFUL";
+}
+
+- (NSString *)facebookLoginFailedText {
+    return @"UNABLE TO LOGIN";
 }
 
 @end

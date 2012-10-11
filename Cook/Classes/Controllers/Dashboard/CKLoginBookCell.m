@@ -7,6 +7,8 @@
 //
 
 #import "CKLoginBookCell.h"
+#import "EventHelper.h"
+#import "CKUser.h"
 
 @interface CKLoginBookCell ()
 
@@ -27,8 +29,15 @@
 #pragma mark - CKLoginViewDelegate
 
 - (void)loginViewTapped {
-    DLog(@"Cell %@", NSStringFromCGRect(self.frame));
-    DLog(@"Banner %@", NSStringFromCGRect(self.loginBannerView.frame));
+    
+    // Spin the facebook button.
+    [self.loginView loginStarted];
+    
+    // Disable the benchtop while we login.
+    [EventHelper postBenchtopFreeze:YES];
+    
+    // Dispatch login after one second.
+    [self performSelector:@selector(performLogin) withObject:nil afterDelay:1.0];
 }
 
 #pragma mark - Private
@@ -51,6 +60,28 @@
                                     loginBanner.bounds.size.height - loginFrame.size.height - 52.0);
     loginView.frame = loginFrame;
     [loginBanner addSubview:loginView];
+    self.loginView = loginView;
 }
-
+     
+- (void)performLogin {
+    
+    // Now tries and log the user in.
+    [[CKUser currentUser] loginWithFacebookCompletion:^{
+        
+        [self.loginView loginDone];
+        
+        // Re-enable the benchtop
+        [EventHelper postBenchtopFreeze:NO];
+        
+    } failure:^(NSError *error) {
+        DLog(@"Error logging in: %@", [error localizedDescription]);
+        
+        // Reset the facebook button.
+        [self.loginView loginFailed];
+        
+        // Re-enable the benchtop
+        [EventHelper postBenchtopFreeze:NO];
+        
+    }];
+}
 @end
