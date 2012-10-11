@@ -12,8 +12,7 @@
 @interface CKBenchtopBookCell ()
 
 @property (nonatomic, retain) UILabel *textLabel;
-
-- (CGSize)availableSize;
+@property (nonatomic, strong) UIImageView *bookImageView;
 
 @end
 
@@ -34,6 +33,7 @@
         UIImageView *bookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_defaultbook.png"]];
         bookImageView.center = self.contentView.center;
         [self.contentView addSubview:bookImageView];
+        self.bookImageView = bookImageView;
         
         DLog(@"cell size: %@", NSStringFromCGSize(self.contentView.bounds.size));
         CGSize availableSize = [self availableSize];
@@ -49,6 +49,7 @@
         label.textColor = kBookTitleColour;
         label.shadowColor = kBookTitleShadowColour;
         label.shadowOffset = CGSizeMake(0.0, 1.0);
+        label.hidden = YES; // Hidden to start off with.
         [self.contentView addSubview:label];
         self.textLabel = label;
     }
@@ -59,11 +60,19 @@
     CGSize availableSize = [self availableSize];
     CGSize size = [text sizeWithFont:kBookTitleFont constrainedToSize:[self availableSize]
                        lineBreakMode:NSLineBreakByTruncatingTail];
+    self.textLabel.hidden = NO;
     self.textLabel.frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
                                       self.textLabel.frame.origin.y,
                                       size.width,
                                       size.height);
     self.textLabel.text = text;
+}
+
+- (void)setBookImageWithName:(NSString *)bookImageName {
+    UIImage *bookImage = [UIImage imageNamed:bookImageName];
+    if (bookImage) {
+        self.bookImageView.image = bookImage;
+    }
 }
 
 #pragma mark - Private methods

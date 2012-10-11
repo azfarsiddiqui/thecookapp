@@ -11,7 +11,8 @@
 
 @interface CKDashboardBookCell ()
 
-@property (nonatomic, retain) UILabel *textLabel;
+@property (nonatomic, strong) UILabel *textLabel;
+@property (nonatomic, strong) UIImageView *bookImageView;
 
 - (CGSize)availableSize;
 
@@ -30,6 +31,7 @@
         UIImageView *bookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_defaultbook.png"]];
         bookImageView.center = self.contentView.center;
         [self.contentView addSubview:bookImageView];
+        self.bookImageView = bookImageView;
         
         DLog(@"cell size: %@", NSStringFromCGSize(self.contentView.bounds.size));
         CGSize availableSize = [self availableSize];
@@ -60,6 +62,13 @@
                                       size.width,
                                       size.height);
     self.textLabel.text = text;
+}
+
+- (void)setBookImageWithName:(NSString *)bookImageName {
+    UIImage *bookImage = [UIImage imageNamed:bookImageName];
+    if (bookImage) {
+        self.bookImageView.image = bookImage;
+    }
 }
 
 #pragma mark - Private methods

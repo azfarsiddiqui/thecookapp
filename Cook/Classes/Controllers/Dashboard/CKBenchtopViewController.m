@@ -13,6 +13,7 @@
 #import "CKBenchtopLayout.h"
 #import "CKUser.h"
 #import "CKBook.h"
+#import "CKLoginBookCell.h"
 #import "RecipeListViewController.h"
 
 @interface CKBenchtopViewController ()
@@ -27,8 +28,9 @@
 
 @implementation CKBenchtopViewController
 
-#define kBookCellId             @"BookCell"
-#define kBackgroundAvailOffset  50.0
+#define kBookCellId                 @"BookCell"
+#define kLoginCellId                @"LoginCell"
+#define kBackgroundAvailOffset      50.0
 
 - (void)dealloc {
     [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
@@ -64,8 +66,10 @@
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self.collectionView registerClass:[CKBenchtopBookCell class] forCellWithReuseIdentifier:kBookCellId];
     self.firstBenchtop = YES;
+    
+    [self.collectionView registerClass:[CKBenchtopBookCell class] forCellWithReuseIdentifier:kBookCellId];
+    [self.collectionView registerClass:[CKLoginBookCell class] forCellWithReuseIdentifier:kLoginCellId];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -156,7 +160,7 @@
         if ([[CKUser currentUser] isSignedIn]) {
             numItems = 1; // Friends Boooks
         } else {
-            numItems = 5; // Login book.
+            numItems = 2; // Login book.
         }
     }
     
@@ -165,7 +169,7 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CKBenchtopBookCell *cell = nil;
+    UICollectionViewCell *cell = nil;
     if ([indexPath section] == 0) {
         cell = [self myBookCellForIndexPath:indexPath];
     } else {
@@ -367,7 +371,7 @@
                 }];
 }
 
-- (CKBenchtopBookCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath {
     CKBenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
                                                                               forIndexPath:indexPath];
     if (self.myBook) {
@@ -378,10 +382,19 @@
     return cell;
 }
 
-- (CKBenchtopBookCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath {
-    CKBenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
-                                                                              forIndexPath:indexPath];
-    [cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+- (UICollectionViewCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = nil;
+    if ([[CKUser currentUser] isSignedIn]) {
+        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
+        [(CKBenchtopBookCell *)cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+    } else {
+        if (indexPath.row == 0) {
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kLoginCellId forIndexPath:indexPath];
+        } else {
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
+            [(CKBenchtopBookCell *)cell setText:@""];
+        }
+    }
     return cell;
 }
 

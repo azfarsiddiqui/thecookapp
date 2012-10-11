@@ -11,5 +11,6 @@
 @interface CKDashboardBookCell : UICollectionViewCell
 
 - (void)setText:(NSString *)text;
+- (void)setBookImageWithName:(NSString *)bookImageName;
 
 @end
