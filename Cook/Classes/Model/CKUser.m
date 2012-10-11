@@ -105,6 +105,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
     [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:@"facebookId"];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [[self friendIds] count]] forKey:@"friendsCount"];
     return descriptionProperties;
 }
 
@@ -170,7 +171,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 + (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser {
-    DLog(@"initialiseUserWithParseUser:%@", parseUser);
+
     if (parseUser.objectId == nil) {
         
         DLog(@"initialiseUserWithParseUser:creating book");

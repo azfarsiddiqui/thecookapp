@@ -43,6 +43,7 @@
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[CKBenchtopStackLayout alloc] initWithBenchtopDelegate:self]]) {
+        DLog(@"Loading benchtop for user %@", [CKUser currentUser]);
     }
     return self;
 }
@@ -168,9 +169,10 @@
         numItems = 1;   // My Book
     } else {
         if ([[CKUser currentUser] isSignedIn]) {
-            numItems = 1; // Friends Boooks
+            numItems += 1;  // Team book
+            numItems += [[CKUser currentUser].friendIds count];   // Friends Boooks
         } else {
-            numItems = 2; // Login book.
+            numItems = 2; // Login book and some fake book.
         }
     }
     
@@ -320,7 +322,7 @@
     }
     
     // Toggle the layout
-    if (!self.firstBenchtop && [[CKUser currentUser] isSignedIn]) {
+    if ([[CKUser currentUser] isSignedIn]) {
         [self performSelector:@selector(toggleLayout) withObject:nil afterDelay:0.0];
     }
     
