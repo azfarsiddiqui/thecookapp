@@ -18,6 +18,7 @@ NSString *const kModelAttrUpdatedAt = @"updatedAt";
 
 NSString *const kUserModelForeignKeyName = @"user";
 NSString *const kUserAttrFacebookId  = @"facebookId";
+NSString *const kUserAttrFriends  = @"friends";
 
 #pragma mark - Book class
 

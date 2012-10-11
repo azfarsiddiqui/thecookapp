@@ -12,6 +12,23 @@
 
 #define kEventBenchtopFreeze    @"CKEventBenchtopFreeze"
 #define kBoolBenchtopFreeze     @"CKBoolBenchtopFreeze"
+#define kEventLoginSuccessful   @"CKEventLoginSuccessful"
+
+#pragma mark - Login successful event
+
++ (void)registerLoginSucessful:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventLoginSuccessful];
+}
+
++ (void)postLoginSuccessful {
+    [EventHelper postEvent:kEventLoginSuccessful];
+}
+
++ (void)unregisterLoginSucessful:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventLoginSuccessful];
+}
+
+#pragma mark - Benchtop events
 
 + (void)registerBenchtopFreeze:(id)observer selector:(SEL)selector {
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventBenchtopFreeze];

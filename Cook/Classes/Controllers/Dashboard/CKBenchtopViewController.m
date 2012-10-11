@@ -35,6 +35,7 @@
 #define kBackgroundAvailOffset      50.0
 
 - (void)dealloc {
+    [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterBenchtopFreeze:self];
     [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
     [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
@@ -76,6 +77,7 @@
     
     // Register for events.
     [EventHelper registerBenchtopFreeze:self selector:@selector(benchtopFreezeRequested:)];
+    [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -414,6 +416,11 @@
 - (void)benchtopFreezeRequested:(NSNotification *)notification {
     BOOL freeze = [EventHelper benchFreezeForNotification:notification];
     self.collectionView.userInteractionEnabled = !freeze;
+}
+
+- (void)loginSuccessful:(NSNotification *)notification {
+    self.collectionView.userInteractionEnabled = YES;
+    [self.collectionView reloadData];
 }
 
 @end

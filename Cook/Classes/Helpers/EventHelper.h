@@ -10,6 +10,10 @@
 
 @interface EventHelper : NSObject
 
++ (void)registerLoginSucessful:(id)observer selector:(SEL)selector;
++ (void)postLoginSuccessful;
++ (void)unregisterLoginSucessful:(id)observer;
+
 + (void)registerBenchtopFreeze:(id)observer selector:(SEL)selector;
 + (void)postBenchtopFreeze:(BOOL)freeze;
 + (void)unregisterBenchtopFreeze:(id)observer;

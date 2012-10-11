@@ -16,12 +16,13 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 
 @interface CKUser : CKModel
 
+@property (nonatomic, strong) PFUser *parseUser;
 @property (nonatomic, copy) NSString *facebookId;
 
 + (CKUser *)currentUser;
++ (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
-- (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end

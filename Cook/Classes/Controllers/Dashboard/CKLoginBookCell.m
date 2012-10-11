@@ -66,12 +66,12 @@
 - (void)performLogin {
     
     // Now tries and log the user in.
-    [[CKUser currentUser] loginWithFacebookCompletion:^{
+    [CKUser loginWithFacebookCompletion:^{
         
         [self.loginView loginDone];
         
-        // Re-enable the benchtop
-        [EventHelper postBenchtopFreeze:NO];
+        // Inform login successful event.
+        [EventHelper postLoginSuccessful];
         
     } failure:^(NSError *error) {
         DLog(@"Error logging in: %@", [error localizedDescription]);

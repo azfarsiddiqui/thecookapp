@@ -9,16 +9,14 @@
 #import "CKUser.h"
 #import "NSString+Utilities.h"
 #import "CKBook.h"
+#import "MRCEnumerable.h"
 
 @interface CKUser ()
 
-@property (nonatomic, copy) ObjectSuccessBlock loginSuccessfulBlock;
-@property (nonatomic, copy) ObjectFailureBlock loginFailureBlock;
-
-- (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser>*)facebookUser;
-+ (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser;
-
 @end
+
+static ObjectSuccessBlock loginSuccessfulBlock = nil;
+static ObjectFailureBlock loginFailureBlock = nil;
 
 @implementation CKUser
 
@@ -32,65 +30,69 @@
     }
 }
 
-- (BOOL)isSignedIn {
-    return [PFFacebookUtils isLinkedWithUser:(PFUser *)self.parseObject];
-}
-
-- (id)initWithParseUser:(PFUser *)parseUser {
-    if (self = [super initWithParseObject:parseUser]) {
-    }
-    return self;
-}
-
-- (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    CKUser *currentUser = [CKUser currentUser];
     
     // Make sure user is not signed on already.
-    if ([self isSignedIn]) {
-        failure([self errorWithMessage:[NSString stringWithFormat:@"User %@ already signed in", self]]);
+    if ([currentUser isSignedIn]) {
+        failure([CKModel errorWithMessage:[NSString stringWithFormat:@"User %@ already signed in", currentUser]]);
         return;
     }
     
-    // Save the completion blocks.
-    self.loginSuccessfulBlock = success;
-    self.loginFailureBlock = failure;
+    // Copies and saves the completion blocks.
+    loginSuccessfulBlock = [success copy];
+    loginFailureBlock = [failure copy];
     
     // Go ahead and link this user via Facebook.
     DLog(@"Linking user with facebook %@", self);
-    [PFFacebookUtils linkUser:(PFUser *)self.parseObject
-                  permissions:nil
-                        block:^(BOOL succeeded, NSError *error) {
-                            
-                            if (succeeded) {
-                                
-                                // Update user details and friends.
-                                [[PF_FBRequest requestForMe] startWithCompletionHandler:
-                                 ^(PF_FBRequestConnection *connection,
-                                   NSDictionary<PF_FBGraphUser> *user,
-                                   NSError *error) {
-                                     if (error) {
-                                         self.loginFailureBlock(error);
-                                         self.loginFailureBlock = nil;
-                                         self.loginSuccessfulBlock = nil;
-                                     } else {
-                                         [self populateUserDetailsFromFacebookData:user];
-                                     }
-                                 }];
-
-                            } else {
-                                self.loginFailureBlock(error);
-                                self.loginFailureBlock = nil;
-                                self.loginSuccessfulBlock = nil;
-                            }
+    [PFFacebookUtils logInWithPermissions:nil block:^(PFUser *user, NSError *error) {
+        if (!user) {
+            if (!error) {
+                loginFailureBlock([CKModel errorWithCode:kCKLoginCancelledErrorCode
+                                                 message:[NSString stringWithFormat:@"User %@ cancelled signin", currentUser]]);
+            } else {
+                loginFailureBlock(error);
+            }
+            loginFailureBlock = nil;
+            loginSuccessfulBlock = nil;
+            
+        } else {
+            
+            // Update user details and friends.
+            [[PF_FBRequest requestForMe] startWithCompletionHandler:
+             ^(PF_FBRequestConnection *connection,
+               NSDictionary<PF_FBGraphUser> *userData,
+               NSError *error) {
+                 if (error) {
+                     loginFailureBlock(error);
+                     loginFailureBlock = nil;
+                     loginSuccessfulBlock = nil;
+                 } else {
+                     [CKUser populateUserDetailsFromFacebookData:userData];
+                 }
+             }];
+        }
     }];
     
 }
 
+- (BOOL)isSignedIn {
+    return [PFFacebookUtils isLinkedWithUser:self.parseUser];
+}
+
+- (id)initWithParseUser:(PFUser *)parseUser {
+    if (self = [super initWithParseObject:parseUser]) {
+        self.parseUser = parseUser;
+    }
+    return self;
+}
+
 - (void)setFacebookId:(NSString *)facebookId {
-    [self.parseObject setObject:facebookId forKey:kUserAttrFacebookId];
+    [self.parseUser setObject:facebookId forKey:kUserAttrFacebookId];
 }
 
 - (NSString *)facebookId {
-    return [self.parseObject objectForKey:kUserAttrFacebookId];
+    return [self.parseUser objectForKey:kUserAttrFacebookId];
 }
 
 #pragma mark - CKModel
@@ -104,27 +106,63 @@
 
 #pragma mark - Private methods
 
-- (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser> *)facebookUser {
++ (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
     
     // Find the user's friends, and see if any of them are Cook users
-    [[PF_FBRequest requestForMyFriends] startWithCompletionHandler:
-     ^(PF_FBRequestConnection *connection,
-       NSDictionary *jsonDictionary, NSError *error){
-         DLog(@"friend count: %i", [[jsonDictionary objectForKey:@"data"] count]);
-         for (NSDictionary<PF_FBGraphUser> *friend in [jsonDictionary objectForKey:@"data"]) {
-             DLog(@"%@", friend);
-         }
+    [[PF_FBRequest requestForMyFriends] startWithCompletionHandler:^(PF_FBRequestConnection *connection,
+                                                                     NSDictionary *jsonDictionary, NSError *error) {
+        
+        CKUser *currentUser = [CKUser currentUser];
+        
+        if (!error) {
+            
+            // Grab the facebook ids of friends.
+            NSArray *friendIds = [[jsonDictionary objectForKey:@"data"] collect:^id(NSDictionary<PF_FBGraphUser> *friendData) {
+                return friendData.id;
+            }];
+            DLog(@"Friend ids: %@", friendIds);
+            
+            // Now grab and add friends to the current user.
+            PFQuery *query = [PFUser query];
+            [query whereKey:kUserAttrFacebookId containedIn:friendIds];
+            [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
+                if (error) {
+                    loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
+                                                     message:[NSString stringWithFormat:@"Unable to retrieve friends for %@", currentUser]]);
+                    loginFailureBlock = nil;
+                    loginSuccessfulBlock = nil;
+                } else {
+                    
+                    // Add friends
+                    NSArray *cookFriends = [friends collect:^id(PFUser *parseUser) {
+                        return parseUser.objectId;
+                    }];
+                    DLog(@"Adding friends in Cook: %@", cookFriends);
+                    [currentUser.parseUser addUniqueObjectsFromArray:cookFriends forKey:kUserAttrFriends];
+                    
+                    // Save facebook profile details.
+                    currentUser.name = userData.name;
+                    currentUser.facebookId = userData.id;
+                    [currentUser saveEventually];
+                    
+                    // Call success completion.
+                    loginSuccessfulBlock();
+                    loginSuccessfulBlock = nil;
+                    loginFailureBlock = nil;
+                    
+                }
+            }];
+            
+        } else {
+            
+            loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
+                                             message:[NSString stringWithFormat:@"Unable to retrieve friends for %@", currentUser]]);
+            loginFailureBlock = nil;
+            loginSuccessfulBlock = nil;
+        }
+        
      }];
     
-    // Save facebook profile details.
-    self.name = facebookUser.name;
-    self.facebookId = facebookUser.id;
-    [self saveEventually];
-    
-    // Call success completion.
-    self.loginSuccessfulBlock();
-    self.loginSuccessfulBlock = nil;
-    self.loginFailureBlock = nil;
 }
 
 + (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser {

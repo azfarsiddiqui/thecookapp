@@ -17,16 +17,23 @@ typedef void(^NumObjectSuccessBlock)(int numObjects);
 typedef void(^ListObjectsSuccessBlock)(NSArray *results);
 typedef void(^ProgressBlock)(int percentDone);
 
+#define kCKErrorDomain                  @"CKErrorDomain"
+#define kCKLoginFailedErrorCode         210
+#define kCKLoginCancelledErrorCode      211
+#define kCKLoginFriendsErrorCode        212
+
 @interface CKModel : NSObject
 
 @property (nonatomic, strong) PFObject *parseObject;
 @property (nonatomic, copy) NSString *name;
 
++ (NSError *)errorWithMessage:(NSString *)errorMessage;
++ (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage;
+
 - (id)initWithParseObject:(PFObject *)parseObject;
 - (void)saveEventually;
 - (NSDictionary *)descriptionProperties;
 - (BOOL)persisted;
-- (NSError *)errorWithMessage:(NSString *)errorMessage;
-- (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage;
+
 
 @end
