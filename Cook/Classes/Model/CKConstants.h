@@ -18,7 +18,8 @@ extern NSString *const kModelAttrUpdatedAt;
 
 extern NSString *const kUserModelForeignKeyName;
 extern NSString *const kUserAttrFacebookId;
-extern NSString *const kUserAttrFriends;
+extern NSString *const kUserAttrFollows;
+extern NSString *const kUserAttrAdmin;
 
 #pragma mark - Book class
 

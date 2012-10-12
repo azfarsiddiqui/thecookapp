@@ -36,6 +36,14 @@
     [self setButtonText:[self facebookLoginStartedText] activity:YES icon:nil enabled:NO];
 }
 
+- (void)loginAdminDone {
+    [self setButtonText:[self facebookLoginAdminDoneText] activity:YES icon:nil enabled:NO];
+}
+
+- (void)loginLoadingFriends:(NSUInteger)numFriends {
+    [self setButtonText:[self facebookLoadingFriendsText:numFriends] activity:YES icon:nil enabled:NO];
+}
+
 - (void)loginDone {
     [self setButtonText:[self facebookLoginDoneText] activity:NO icon:[self tickIconImage] enabled:NO];
 }
@@ -143,15 +151,32 @@
 }
 
 - (NSString *)facebookLoginStartedText {
-    return @"LOGIN IN PROGRESS";
+    return @"CHATTING WITH FACEBOOK";
 }
 
 - (NSString *)facebookLoginDoneText {
-    return @"LOGIN SUCCESSFUL";
+    return @"DONE";
+}
+
+- (NSString *)facebookLoginAdminDoneText {
+    return @"WELCOME ADMIN";
 }
 
 - (NSString *)facebookLoginFailedText {
     return @"UNABLE TO LOGIN";
+}
+
+- (NSString *)facebookLoadingFriendsText:(NSUInteger)numFriends {
+    NSMutableString *loadingDisplay = [NSMutableString stringWithString:@"LOADING "];
+    if (numFriends > 0) {
+        [loadingDisplay appendFormat:@"%d FRIEND", numFriends];
+        if (numFriends > 1) {
+            [loadingDisplay appendString:@"S"];
+        }
+    } else {
+        [loadingDisplay appendString:@"FRIENDS"];
+    }
+    return loadingDisplay;
 }
 
 @end

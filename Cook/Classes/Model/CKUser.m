@@ -96,7 +96,11 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 - (NSArray *)friendIds {
-    return [self.parseUser objectForKey:kUserAttrFriends];
+    return [self.parseUser objectForKey:kUserAttrFollows];
+}
+
+- (BOOL)isAdmin {
+    return [[self.parseUser objectForKey:kUserAttrAdmin] boolValue];
 }
 
 #pragma mark - CKModel
@@ -106,12 +110,53 @@ static ObjectFailureBlock loginFailureBlock = nil;
     [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:@"facebookId"];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [[self friendIds] count]] forKey:@"friendsCount"];
+    [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isAdmin]] forKey:@"admin"];
     return descriptionProperties;
 }
 
 #pragma mark - Private methods
 
 + (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
+    CKUser *currentUser = [CKUser currentUser];
+    DLog(@"Logged in user %@", currentUser);
+    if ([currentUser isAdmin]) {
+        [CKUser handleAdminLoginFromFacebookData:userData];
+    } else {
+        [CKUser handleUserLoginFromFacebookData:userData];
+    }
+}
+
++ (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser {
+
+    if (parseUser.objectId == nil) {
+        
+        DLog(@"initialiseUserWithParseUser:creating book");
+        
+        // Create a book for the new user and save it in the background.
+        PFObject *parseBook = [CKBook parseBookForParseUser:parseUser];
+        [parseBook saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                DLog(@"initialiseUserWithParseUser:created book");
+            } else {
+                DLog(@"initialiseUserWithParseUser:Error initialising user: %@",
+                     [error localizedDescription]);
+            }
+        }];
+        
+    }
+    return [[CKUser alloc] initWithParseUser:parseUser];
+}
+
++ (void)handleAdminLoginFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
+    DLog(@"Logged in as admin");
+    
+    // Call success completion.
+    loginSuccessfulBlock();
+    loginSuccessfulBlock = nil;
+    loginFailureBlock = nil;
+}
+
++ (void)handleUserLoginFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
     
     // Find the user's friends, and see if any of them are Cook users
     [[PF_FBRequest requestForMyFriends] startWithCompletionHandler:^(PF_FBRequestConnection *connection,
@@ -127,9 +172,15 @@ static ObjectFailureBlock loginFailureBlock = nil;
             }];
             DLog(@"Friend ids: %@", friendIds);
             
-            // Now grab and add friends to the current user.
-            PFQuery *query = [PFUser query];
-            [query whereKey:kUserAttrFacebookId containedIn:friendIds];
+            // Friends query.
+            PFQuery *friendsQuery = [PFUser query];
+            [friendsQuery whereKey:kUserAttrFacebookId containedIn:friendIds];
+            
+            // Admin query.
+            PFQuery *adminQuery = [PFUser query];
+            [adminQuery whereKey:kUserAttrAdmin equalTo:[NSNumber numberWithBool:YES]];
+            
+            PFQuery *query = [PFQuery orQueryWithSubqueries:[NSArray arrayWithObjects:friendsQuery, adminQuery, nil]];
             [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
                 if (error) {
                     loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
@@ -143,7 +194,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                         return parseUser.objectId;
                     }];
                     DLog(@"Adding friends in Cook: %@", cookFriends);
-                    [currentUser.parseUser addUniqueObjectsFromArray:cookFriends forKey:kUserAttrFriends];
+                    [currentUser.parseUser addUniqueObjectsFromArray:cookFriends forKey:kUserAttrFollows];
                     
                     // Save facebook profile details.
                     currentUser.name = userData.name;
@@ -166,29 +217,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
             loginSuccessfulBlock = nil;
         }
         
-     }];
-    
-}
-
-+ (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser {
-
-    if (parseUser.objectId == nil) {
-        
-        DLog(@"initialiseUserWithParseUser:creating book");
-        
-        // Create a book for the new user and save it in the background.
-        PFObject *parseBook = [CKBook parseBookForParseUser:parseUser];
-        [parseBook saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                DLog(@"initialiseUserWithParseUser:created book");
-            } else {
-                DLog(@"initialiseUserWithParseUser:Error initialising user: %@",
-                     [error localizedDescription]);
-            }
-        }];
-        
-    }
-    return [[CKUser alloc] initWithParseUser:parseUser];
+    }];
 }
 
 @end

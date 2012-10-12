@@ -13,6 +13,7 @@
 #define kEventBenchtopFreeze    @"CKEventBenchtopFreeze"
 #define kBoolBenchtopFreeze     @"CKBoolBenchtopFreeze"
 #define kEventLoginSuccessful   @"CKEventLoginSuccessful"
+#define kBoolLoginSuccessful    @"CKBoolLoginSuccessful"
 
 #pragma mark - Login successful event
 
@@ -20,12 +21,18 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventLoginSuccessful];
 }
 
-+ (void)postLoginSuccessful {
-    [EventHelper postEvent:kEventLoginSuccessful];
++ (void)postLoginSuccessful:(BOOL)success {
+    [EventHelper postEvent:kEventLoginSuccessful
+              withUserInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:success]
+                                                       forKey:kBoolLoginSuccessful]];
 }
 
 + (void)unregisterLoginSucessful:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventLoginSuccessful];
+}
+
++ (BOOL)loginSuccessfulForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kBoolLoginSuccessful] boolValue];
 }
 
 #pragma mark - Benchtop events

@@ -396,9 +396,17 @@
 
 - (UICollectionViewCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = nil;
-    if ([[CKUser currentUser] isSignedIn]) {
-        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
-        [(CKBenchtopBookCell *)cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+    CKUser *user = [CKUser currentUser];
+    if ([user isSignedIn]) {
+        
+        if ([user isAdmin]) {
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
+            [(CKBenchtopBookCell *)cell setText:@"Admin Stats"];
+        } else {
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
+            [(CKBenchtopBookCell *)cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+        }
+        
     } else {
         if (indexPath.row == 0) {
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kLoginCellId forIndexPath:indexPath];
@@ -421,8 +429,14 @@
 }
 
 - (void)loginSuccessful:(NSNotification *)notification {
-    self.collectionView.userInteractionEnabled = YES;
-    [self.collectionView reloadData];
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        
+        
+        [self.collectionView reloadData];
+    } else {
+        self.collectionView.userInteractionEnabled = YES;
+    }
 }
 
 @end

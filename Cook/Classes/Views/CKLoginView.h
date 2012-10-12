@@ -18,6 +18,8 @@
 
 - (id)initWithDelegate:(id<CKLoginViewDelegate>)delegate;
 - (void)loginStarted;
+- (void)loginAdminDone;
+- (void)loginLoadingFriends:(NSUInteger)numFriends;
 - (void)loginDone;
 - (void)loginReset;
 - (void)loginFailed;

@@ -68,10 +68,14 @@
     // Now tries and log the user in.
     [CKUser loginWithFacebookCompletion:^{
         
-        [self.loginView loginDone];
+        CKUser *user = [CKUser currentUser];
+        if ([user isAdmin]) {
+            [self.loginView loginAdminDone];
+        } else {
+            [self.loginView loginLoadingFriends:[user.friendIds count]];
+        }
         
-        // Inform login successful event.
-        [EventHelper postLoginSuccessful];
+        [self informLoginSuccessful:YES];
         
     } failure:^(NSError *error) {
         DLog(@"Error logging in: %@", [error localizedDescription]);
@@ -79,9 +83,15 @@
         // Reset the facebook button.
         [self.loginView loginFailed];
         
-        // Re-enable the benchtop
-        [EventHelper postBenchtopFreeze:NO];
-        
+        [self informLoginSuccessful:NO];
     }];
 }
+
+- (void)informLoginSuccessful:(BOOL)success {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC),
+                   dispatch_get_main_queue(), ^{
+                       [EventHelper postLoginSuccessful:success];
+                   });
+}
+
 @end
