@@ -19,6 +19,7 @@
 @interface RecipeListViewController()<UICollectionViewDelegate,UICollectionViewDataSource, NewRecipeViewDelegate>
 @property (nonatomic, retain) UICollectionView *collectionView;
 @property (nonatomic, retain) NSArray *recipes;
+@property (nonatomic, assign) BOOL refreshNeeded;
 @property (strong, nonatomic) PFImageView *imageView;
 @end
 @implementation RecipeListViewController
@@ -50,7 +51,7 @@
 {
     self.view.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 748.0f);
     self.view.backgroundColor = [UIColor whiteColor];
- 
+    self.refreshNeeded = YES;
     UILabel *testLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 30.0f)];
     testLabel.textAlignment = NSTextAlignmentCenter;
     testLabel.text = @"My Book";
@@ -81,14 +82,16 @@
 
 - (void)loadData {
     DLog();
-    [self.book listRecipesSuccess:^(NSArray *recipes) {
-        self.recipes = recipes;
-        [self.collectionView reloadData];
-        
+    //for now, only refresh data once
+    if (self.refreshNeeded) {
+        [self.book listRecipesSuccess:^(NSArray *recipes) {
+            self.recipes = recipes;
+            [self.collectionView reloadData];
+            self.refreshNeeded = NO;
+        } failure:^(NSError *error) {
+            DLog(@"%@", [error description]);
+        }];
     }
-                          failure:^(NSError *error) {
-                              DLog(@"%@", [error description]);
-                          }];
 }
 
 

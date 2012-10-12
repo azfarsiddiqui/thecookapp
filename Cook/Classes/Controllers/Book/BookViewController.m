@@ -7,18 +7,27 @@
 //
 
 #import "BookViewController.h"
+#import "BookContentsViewController.h"
 #import "RecipeListViewController.h"
+#import "BookCategoryViewController.h"
+#import "RecipeViewController.h"
 #import "CookPageFlipper.h"
 #import "CKUIHelper.h"
 
-@interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate>
+@interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
 @property (nonatomic, strong) AFKPageFlipper *pageFlipper;
 @property (nonatomic,strong) CKBook *book;
 @property (nonatomic,strong) RecipeListViewController *recipeListViewController;
+@property (nonatomic,strong) RecipeViewController *recipeViewController;
+@property (nonatomic,strong) BookContentsViewController *bookContentsViewController;
+@property (nonatomic,strong) BookCategoryViewController *bookCategoryViewController;
 @end
 
 @implementation BookViewController
 @synthesize recipeListViewController=_recipeListViewController;
+@synthesize bookContentsViewController=_bookContentsViewController;
+@synthesize bookCategoryViewController=_bookCategoryViewController;
+@synthesize recipeViewController=_recipeViewController;
 -(id)initWithBook:(CKBook *)book
 {
     if (self = [super init]) {
@@ -31,43 +40,53 @@
 #pragma AFKPageFlipperDataSource methods
 
 - (NSInteger)numberOfPagesForPageFlipper:(CookPageFlipper *) pageFlipper {
-    //    NSInteger numPages = 0;
-    //    numPages += 1;                          // Profile page
-    //    numPages += [self numCategories];
-    //    numPages += [self numRecipes];
-    return 1;
+    return [self numberOfPagesInBook];
 }
 
 - (UIView *)viewForPage:(NSInteger)page inFlipper:(CookPageFlipper *)pageFlipper {
     DLog(@"view for page %i", page);
-    UIView *view = nil;
-    switch (page) {
-        case 1:
-            //recipe list
-            view = self.recipeListViewController.view;
-            break;
-        default:
-            break;
-    }
-    return view;
-    //
-    //    PageViewController *pageViewController = [self pageViewControllerForPage:page];
-    //    self.currentPageViewController = pageViewController;
-    //    [pageViewController pageDidShow:YES];
-    //
-    //    UIView *pageView = pageViewController.view;
-    //    [self resetPageView:pageView];
-    //    
-    //    return pageView;
-    return nil;
+    return [self viewForPageAtIndex:page];
 }
 
-#pragma mark - Action delegates
+#pragma mark - BookViewDelegate
 -(void) closeRequested
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - BookViewDatasource
+-(NSInteger)numberOfPagesInBook
+{
+    //    NSInteger numPages = 0;
+    //    numPages += 1;                          // Profile page
+    //    numPages += [self numCategories];
+    //    numPages += [self numRecipes];
+    return 4;
+}
+
+-(UIView *)viewForPageAtIndex:(NSInteger)pageIndex
+{
+    UIView *view = nil;
+    switch (pageIndex) {
+        case 1:
+            //recipe list
+            view = self.recipeListViewController.view;
+            break;
+        case 2:
+            //book contents
+            view = self.bookContentsViewController.view;
+            break;
+        case 3:
+            view = self.bookCategoryViewController.view;
+            break;
+        case 4: 
+            view = self.recipeViewController.view;
+            break;
+        default:
+            break;
+    }
+    return view;
+}
 #pragma mark - Private methods
 
 - (RecipeListViewController *)recipeListViewController
@@ -78,6 +97,36 @@
         _recipeListViewController.bookViewDelegate = self;
     }
     return _recipeListViewController;
+}
+
+- (BookContentsViewController *)bookContentsViewController
+{
+    if (!_bookContentsViewController) {
+        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+        _bookContentsViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BookContentsViewController"];
+        _bookContentsViewController.bookViewDelegate = self;
+    }
+    return _bookContentsViewController;
+}
+
+- (BookCategoryViewController *)bookCategoryViewController
+{
+    if (!_bookCategoryViewController) {
+        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+        _bookCategoryViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BookCategoryViewController"];
+        _bookCategoryViewController.bookViewDelegate = self;
+    }
+    return _bookCategoryViewController;
+}
+
+- (RecipeViewController *)recipeViewController
+{
+    if (!_recipeViewController) {
+        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+        _recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
+        _recipeViewController.bookViewDelegate = self;
+    }
+    return _recipeViewController;
 }
 
 -(void) initScreen

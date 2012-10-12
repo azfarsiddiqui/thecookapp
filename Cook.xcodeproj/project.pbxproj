@@ -95,6 +95,9 @@
 		8962219E161EAE370023EC30 /* image_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219B161EAE370023EC30 /* image_placeholder.png */; };
 		896221A1161EAF4C0023EC30 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219F161EAF4C0023EC30 /* btn_close.png */; };
 		896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896221A0161EAF4C0023EC30 /* btn_close@2x.png */; };
+		8976B893162787DC004155C6 /* BookContentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8976B892162787DC004155C6 /* BookContentsViewController.m */; };
+		8976B89816279244004155C6 /* BookCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8976B89716279244004155C6 /* BookCategoryViewController.m */; };
+		8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8976B89C162797A5004155C6 /* RecipeViewController.m */; };
 		89A50499162250F700E6CDF1 /* Ingredient.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A50498162250F700E6CDF1 /* Ingredient.m */; };
 		89A504A8162290BF00E6CDF1 /* CategoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */; };
 		89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504AB1622923500E6CDF1 /* CategoryListCell.m */; };
@@ -239,6 +242,12 @@
 		8962219B161EAE370023EC30 /* image_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image_placeholder.png; sourceTree = "<group>"; };
 		8962219F161EAF4C0023EC30 /* btn_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_close.png; sourceTree = "<group>"; };
 		896221A0161EAF4C0023EC30 /* btn_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@2x.png"; sourceTree = "<group>"; };
+		8976B891162787DC004155C6 /* BookContentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BookContentsViewController.h; path = Book/BookContentsViewController.h; sourceTree = "<group>"; };
+		8976B892162787DC004155C6 /* BookContentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BookContentsViewController.m; path = Book/BookContentsViewController.m; sourceTree = "<group>"; };
+		8976B89616279244004155C6 /* BookCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BookCategoryViewController.h; path = Book/BookCategoryViewController.h; sourceTree = "<group>"; };
+		8976B89716279244004155C6 /* BookCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BookCategoryViewController.m; path = Book/BookCategoryViewController.m; sourceTree = "<group>"; };
+		8976B89B162797A5004155C6 /* RecipeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeViewController.h; sourceTree = "<group>"; };
+		8976B89C162797A5004155C6 /* RecipeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeViewController.m; sourceTree = "<group>"; };
 		89A50497162250F700E6CDF1 /* Ingredient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ingredient.h; sourceTree = "<group>"; };
 		89A50498162250F700E6CDF1 /* Ingredient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ingredient.m; sourceTree = "<group>"; };
 		89A504A6162290BF00E6CDF1 /* CategoryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CategoryListViewController.h; path = Cook/Classes/Controllers/CategoryListViewController.h; sourceTree = SOURCE_ROOT; };
@@ -523,6 +532,10 @@
 			children = (
 				89232B901625431500152940 /* BookViewController.h */,
 				89232B911625431500152940 /* BookViewController.m */,
+				8976B891162787DC004155C6 /* BookContentsViewController.h */,
+				8976B892162787DC004155C6 /* BookContentsViewController.m */,
+				8976B89616279244004155C6 /* BookCategoryViewController.h */,
+				8976B89716279244004155C6 /* BookCategoryViewController.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -530,18 +543,9 @@
 		8936F7F1161E7ABB00E6EF1D /* Recipe */ = {
 			isa = PBXGroup;
 			children = (
-				8936F7F2161E7ABB00E6EF1D /* NewRecipeViewController.h */,
-				8936F7F3161E7ABB00E6EF1D /* NewRecipeViewController.m */,
-				8936F7F4161E7ABB00E6EF1D /* RecipeListCell.h */,
-				8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */,
-				8936F7F6161E7ABB00E6EF1D /* RecipeListViewController.h */,
-				8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */,
-				89A504A6162290BF00E6CDF1 /* CategoryListViewController.h */,
-				89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */,
-				89A504AA1622923400E6CDF1 /* CategoryListCell.h */,
-				89A504AB1622923500E6CDF1 /* CategoryListCell.m */,
-				89232B711624FB6100152940 /* IngredientTableViewCell.h */,
-				89232B721624FB6100152940 /* IngredientTableViewCell.m */,
+				8976B89A16279711004155C6 /* ViewEdit */,
+				8976B89916279703004155C6 /* List */,
+				8976B895162791F6004155C6 /* Create */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -615,6 +619,41 @@
 				8962219B161EAE370023EC30 /* image_placeholder.png */,
 			);
 			path = recipes;
+			sourceTree = "<group>";
+		};
+		8976B895162791F6004155C6 /* Create */ = {
+			isa = PBXGroup;
+			children = (
+				89232B711624FB6100152940 /* IngredientTableViewCell.h */,
+				89232B721624FB6100152940 /* IngredientTableViewCell.m */,
+				8936F7F2161E7ABB00E6EF1D /* NewRecipeViewController.h */,
+				8936F7F3161E7ABB00E6EF1D /* NewRecipeViewController.m */,
+				89A504A6162290BF00E6CDF1 /* CategoryListViewController.h */,
+				89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */,
+				89A504AA1622923400E6CDF1 /* CategoryListCell.h */,
+				89A504AB1622923500E6CDF1 /* CategoryListCell.m */,
+			);
+			name = Create;
+			sourceTree = "<group>";
+		};
+		8976B89916279703004155C6 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				8936F7F4161E7ABB00E6EF1D /* RecipeListCell.h */,
+				8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */,
+				8936F7F6161E7ABB00E6EF1D /* RecipeListViewController.h */,
+				8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */,
+			);
+			name = List;
+			sourceTree = "<group>";
+		};
+		8976B89A16279711004155C6 /* ViewEdit */ = {
+			isa = PBXGroup;
+			children = (
+				8976B89B162797A5004155C6 /* RecipeViewController.h */,
+				8976B89C162797A5004155C6 /* RecipeViewController.m */,
+			);
+			name = ViewEdit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -754,6 +793,9 @@
 				89232B921625431500152940 /* BookViewController.m in Sources */,
 				76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */,
 				76FA9A4016267687006EAFBB /* EventHelper.m in Sources */,
+				8976B893162787DC004155C6 /* BookContentsViewController.m in Sources */,
+				8976B89816279244004155C6 /* BookCategoryViewController.m in Sources */,
+				8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
