@@ -278,6 +278,7 @@
                      }
                      completion:^(BOOL finished) {
                          [layoutToToggle layoutCompleted];
+                         self.collectionView.userInteractionEnabled = YES;
                      }];
 
 }
@@ -431,9 +432,8 @@
 - (void)loginSuccessful:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-        
-        
         [self.collectionView reloadData];
+        [self toggleLayout];
     } else {
         self.collectionView.userInteractionEnabled = YES;
     }
