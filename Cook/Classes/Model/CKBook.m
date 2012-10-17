@@ -43,6 +43,31 @@
     return parseBook;
 }
 
++(void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
+    
+    // List of friend keys
+    NSArray *friendUserKeys = [user.friendIds collect:^id(NSString *friendObjectId) {
+        return [PFUser objectWithoutDataWithClassName:kUserModelName objectId:friendObjectId];
+    }];
+    
+    // Goes to network first before falling back to cache.
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query whereKey:kUserModelForeignKeyName containedIn:friendUserKeys];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
+        if (!error) {
+            NSArray *books = [results collect:^id(PFObject *parseBook) {
+                return [[CKBook alloc] initWithParseObject:parseBook];
+            }];
+            DLog(@"Loaded friends %d books.", [books count]);
+            success(books);
+        } else {
+            failure(error);
+        }
+    }];
+    
+}
+
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user {
     if (self = [super initWithParseObject:parseBook]) {
         self.user = user;

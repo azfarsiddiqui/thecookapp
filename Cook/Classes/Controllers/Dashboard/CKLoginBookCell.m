@@ -14,6 +14,11 @@
 
 @property (nonatomic, strong) CKLoginView *loginView;
 @property (nonatomic, strong) UIView *loginBannerView;
+@property (nonatomic, strong) UIView *loginBackgroundView;
+@property (nonatomic, strong) UIView *rightCornerView;
+@property (nonatomic, strong) UIView *rightOverlayView;
+@property (nonatomic, strong) UIView *leftCornerView;
+@property (nonatomic, strong) UIView *leftOverlayView;
 
 @end
 
@@ -24,6 +29,31 @@
         [self initLoginView];
     }
     return self;
+}
+
+- (void)revealWithCompletion:(void (^)())completion {
+    
+    // Hide right corner first.
+    self.rightCornerView.hidden = YES;
+    
+    // Transition banner background left, and fade out right overlay.
+    [UIView animateWithDuration:0.5
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.loginBackgroundView.transform = CGAffineTransformMakeTranslation(-self.loginBackgroundView.frame.size.width, 0.0);
+                         self.rightOverlayView.alpha = 0.0;
+                         self.leftCornerView.alpha = 0.0;
+                         self.leftOverlayView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.rightCornerView removeFromSuperview];
+                         [self.rightOverlayView removeFromSuperview];
+                         [self.loginBackgroundView removeFromSuperview];
+                         [self.leftCornerView removeFromSuperview];
+                         [self.leftOverlayView removeFromSuperview];
+                         completion();
+                     }];
 }
 
 #pragma mark - CKLoginViewDelegate
@@ -43,23 +73,52 @@
 #pragma mark - Private
 
 - (void)initLoginView {
-    UIImageView *loginBanner = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_signin_banner.png"]];
-    loginBanner.userInteractionEnabled = YES;
-    loginBanner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    loginBanner.center = self.contentView.center;
-    loginBanner.frame = CGRectMake(floorf(loginBanner.frame.origin.x),
-                                   floorf(loginBanner.frame.origin.y),
-                                   loginBanner.frame.size.width,
-                                   loginBanner.frame.size.height);
-    [self.contentView addSubview:loginBanner];
-    self.loginBannerView = loginBanner;
     
+    // Login banner background image.
+    UIImageView *loginBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_signin_banner.png"]];
+    loginBackgroundView.userInteractionEnabled = YES;
+    
+    // Container to house all the banner elements
+    UIView *loginBannerContainer = [[UIView alloc] initWithFrame:loginBackgroundView.frame];
+    loginBannerContainer.center = self.contentView.center;
+    loginBannerContainer.frame = CGRectMake(floorf(loginBannerContainer.frame.origin.x),
+                                            floorf(loginBannerContainer.frame.origin.y),
+                                            loginBannerContainer.frame.size.width,
+                                            loginBannerContainer.frame.size.height);
+    loginBannerContainer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    loginBannerContainer.clipsToBounds = YES;   // To ensure left transition of background clips.
+    
+    // Position the left/right corners and overlays first.
+    UIImageView *leftCornerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_signin_banner_leftback.png"]];
+    [loginBannerContainer addSubview:leftCornerView];
+    self.leftCornerView = leftCornerView;
+    UIImageView *rightCornerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_signin_banner_rightback.png"]];
+    [loginBannerContainer addSubview:rightCornerView];
+    self.rightCornerView = rightCornerView;
+    
+    // Now position the background over.
+    [loginBannerContainer addSubview:loginBackgroundView];
+    self.loginBackgroundView = loginBackgroundView;
+    
+    // Followed by the left/right overlays.
+    UIImageView *leftOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_signin_banner_leftoverlay.png"]];
+    [loginBackgroundView addSubview:leftOverlayView];
+    self.leftOverlayView = leftOverlayView;
+    UIImageView *rightOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_signin_banner_rightoverlay.png"]];
+    [loginBackgroundView addSubview:rightOverlayView];
+    self.rightOverlayView = rightOverlayView;
+    
+    // Add the container to the cell.
+    [self.contentView addSubview:loginBannerContainer];
+    self.loginBannerView = loginBannerContainer;
+    
+    // Facebook button ontop of the background.
     CKLoginView *loginView = [[CKLoginView alloc] initWithDelegate:self];
     CGRect loginFrame = loginView.frame;
-    loginFrame.origin = CGPointMake(floorf((loginBanner.bounds.size.width - loginFrame.size.width) / 2.0),
-                                    loginBanner.bounds.size.height - loginFrame.size.height - 52.0);
+    loginFrame.origin = CGPointMake(floorf((loginBackgroundView.bounds.size.width - loginFrame.size.width) / 2.0),
+                                    loginBackgroundView.bounds.size.height - loginFrame.size.height - 52.0);
     loginView.frame = loginFrame;
-    [loginBanner addSubview:loginView];
+    [loginBackgroundView addSubview:loginView];
     self.loginView = loginView;
 }
      
@@ -88,10 +147,7 @@
 }
 
 - (void)informLoginSuccessful:(BOOL)success {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC),
-                   dispatch_get_main_queue(), ^{
-                       [EventHelper postLoginSuccessful:success];
-                   });
+    [EventHelper postLoginSuccessful:success];
 }
 
 @end

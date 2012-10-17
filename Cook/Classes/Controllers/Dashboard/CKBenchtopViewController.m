@@ -25,6 +25,7 @@
 @property (nonatomic, assign) BOOL firstBenchtop;
 @property (nonatomic, assign) BOOL snapActivated;
 @property (nonatomic, strong) CKBook *myBook;
+@property (nonatomic, strong) NSArray *friendsBooks;
 
 @end
 
@@ -169,8 +170,7 @@
         numItems = 1;   // My Book
     } else {
         if ([[CKUser currentUser] isSignedIn]) {
-            numItems += 1;  // Team book
-            numItems += [[CKUser currentUser].friendIds count];   // Friends Boooks
+            numItems += [self.friendsBooks count];
         } else {
             numItems = 2; // Login book and some fake book.
         }
@@ -404,8 +404,9 @@
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
             [(CKBenchtopBookCell *)cell setText:@"Admin Stats"];
         } else {
+            CKBook *friendBook = [self.friendsBooks objectAtIndex:indexPath.row];
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
-            [(CKBenchtopBookCell *)cell setText:[NSString stringWithFormat:@"Book [%d][%d]", indexPath.section, indexPath.item]];
+            [(CKBenchtopBookCell *)cell setText:friendBook.name];
         }
         
     } else {
@@ -432,8 +433,26 @@
 - (void)loginSuccessful:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-        [self.collectionView reloadData];
-        [self toggleLayout];
+       
+        // Load friends book objects.
+        [CKBook friendsBooksForUser:[CKUser currentUser]
+                            success:^(NSArray *books) {
+                                
+                                // Keep a reference of the friends books to reload the collection view with.
+                                self.friendsBooks = books;
+                                
+                                // Reveal the login book cell.
+                                CKLoginBookCell *loginBookCell = (CKLoginBookCell *)[self.collectionView cellForItemAtIndexPath:
+                                                                                     [NSIndexPath indexPathForItem:0 inSection:1]];
+                                
+                                [loginBookCell revealWithCompletion:^{
+                                    [self.collectionView reloadData];
+                                    [self toggleLayout];
+                                }];
+                            }
+                            failure:^(NSError *error) {
+                            }];
+        
     } else {
         self.collectionView.userInteractionEnabled = YES;
     }

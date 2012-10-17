@@ -17,7 +17,9 @@
 
 +(void) bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 +(PFObject *) parseBookForParseUser:(PFUser *)parseUser;
++(void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 -(id) initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
 -(void) listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 @end

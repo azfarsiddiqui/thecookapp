@@ -16,6 +16,7 @@ extern NSString *const kModelAttrUpdatedAt;
 
 #pragma mark - User class
 
+extern NSString *const kUserModelName;
 extern NSString *const kUserModelForeignKeyName;
 extern NSString *const kUserAttrFacebookId;
 extern NSString *const kUserAttrFollows;

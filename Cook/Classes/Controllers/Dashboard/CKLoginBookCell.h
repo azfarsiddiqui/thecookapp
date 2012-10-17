@@ -11,4 +11,6 @@
 
 @interface CKLoginBookCell : CKBenchtopBookCell <CKLoginViewDelegate>
 
+- (void)revealWithCompletion:(void (^)())completion;
+
 @end

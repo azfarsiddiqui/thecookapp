@@ -16,6 +16,7 @@ NSString *const kModelAttrUpdatedAt = @"updatedAt";
 
 #pragma mark - User class
 
+NSString *const kUserModelName = @"_User";
 NSString *const kUserModelForeignKeyName = @"user";
 NSString *const kUserAttrFacebookId  = @"facebookId";
 NSString *const kUserAttrFollows  = @"follows";
