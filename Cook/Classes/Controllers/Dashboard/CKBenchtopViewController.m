@@ -34,6 +34,7 @@
 #define kBookCellId                 @"BookCell"
 #define kLoginCellId                @"LoginCell"
 #define kBackgroundAvailOffset      50.0
+#define kNumFriendsMaxStack         2
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
@@ -141,7 +142,13 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"didSelectItemAtIndexPath: %@", indexPath);
+    CKBenchtopBookCell *cell = (CKBenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    
+    // Ignore if the cell is not enabled.
+    if (![cell enabled]) {
+        return;
+    }
+    DLog(@"didSelectItemAtIndexPath: %@", indexPath);
     
     if (!self.firstBenchtop) {
         [collectionView scrollToItemAtIndexPath:indexPath
@@ -171,7 +178,7 @@
     } else {
         CKUser *currentUser = [CKUser currentUser];
         if ([currentUser isSignedIn]) {
-            numItems += [currentUser numFollows];
+            numItems += MIN([currentUser numFollows], kNumFriendsMaxStack);
         } else {
             numItems = 2; // Login book and some fake book.
         }
@@ -397,7 +404,12 @@
     [CKBook friendsBooksForUser:[CKUser currentUser]
                         success:^(NSArray *friendsBooks) {
                             self.friendsBooks = friendsBooks;
-                            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                            [self.collectionView reloadData];
+                            
+                            // Inform layout complete.
+                            CKBenchtopLayout *layout = (CKBenchtopLayout *)self.collectionView.collectionViewLayout;
+                            [layout layoutCompleted];
+                            
                         }
                         failure:^(NSError *error) {
                             DLog(@"Error: %@", [error localizedDescription]);
@@ -415,7 +427,7 @@
 }
 
 - (UICollectionViewCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = nil;
+    CKBenchtopBookCell *cell = nil;
     CKUser *user = [CKUser currentUser];
     if ([user isSignedIn]) {
         
@@ -426,9 +438,7 @@
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
             if (self.friendsBooks) {
                 CKBook *friendBook = [self.friendsBooks objectAtIndex:indexPath.row];
-                [(CKBenchtopBookCell *)cell loadBook:friendBook];
-            } else {
-                [(CKBenchtopBookCell *)cell loadAsPlaceholder];
+                [cell loadBook:friendBook];
             }
         }
         
@@ -442,7 +452,7 @@
             
             // Fake books at the back.
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
-            [(CKBenchtopBookCell *)cell loadAsPlaceholder];
+            [cell loadAsPlaceholder];
         }
     }
     return cell;

@@ -31,6 +31,10 @@
     return self;
 }
 
+- (BOOL)enabled {
+    return NO;
+}
+
 - (void)revealWithCompletion:(void (^)())completion {
     
     // Hide right corner first.

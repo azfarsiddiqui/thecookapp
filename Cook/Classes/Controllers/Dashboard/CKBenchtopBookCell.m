@@ -54,6 +54,10 @@
     return self;
 }
 
+- (BOOL)enabled {
+    return (self.book != nil);
+}
+
 - (void)loadBook:(CKBook *)book {
     
     // Do nothing if the same book has already been loaded.

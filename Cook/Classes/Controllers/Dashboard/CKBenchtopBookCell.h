@@ -13,6 +13,7 @@
 
 + (CGSize)cellSize;
 
+- (BOOL)enabled;
 - (void)loadBook:(CKBook *)book;
 
 // Empty shell placeholder.
