@@ -29,9 +29,6 @@
 		7620272816254128005A8B66 /* cook_signin_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7620271C16254128005A8B66 /* cook_signin_btn@2x.png */; };
 		762C0E54161A7FC400EBA344 /* ff_dash_bg_tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */; };
 		762C0E55161A7FC400EBA344 /* ff_dash_bg_tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */; };
-		76520460161A811700EE253C /* CKDashboardBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652045B161A80E800EE253C /* CKDashboardBookCell.m */; };
-		76520461161A811700EE253C /* CKDashboardFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652045D161A80E800EE253C /* CKDashboardFlowLayout.m */; };
-		76520462161A811700EE253C /* CKDashboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652045F161A80E800EE253C /* CKDashboardViewController.m */; };
 		76520465161ABB0F00EE253C /* CKBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 76520464161ABB0F00EE253C /* CKBook.m */; };
 		7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652046D161AD11E00EE253C /* NSString+Utilities.m */; };
 		7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3E716140A16001D1BA1 /* CKConstants.m */; };
@@ -137,12 +134,6 @@
 		7620271C16254128005A8B66 /* cook_signin_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_signin_btn@2x.png"; sourceTree = "<group>"; };
 		762C0E50161A7FC400EBA344 /* ff_dash_bg_tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ff_dash_bg_tile.png; sourceTree = "<group>"; };
 		762C0E51161A7FC400EBA344 /* ff_dash_bg_tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ff_dash_bg_tile@2x.png"; sourceTree = "<group>"; };
-		7652045A161A80E800EE253C /* CKDashboardBookCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKDashboardBookCell.h; sourceTree = "<group>"; };
-		7652045B161A80E800EE253C /* CKDashboardBookCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKDashboardBookCell.m; sourceTree = "<group>"; };
-		7652045C161A80E800EE253C /* CKDashboardFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKDashboardFlowLayout.h; sourceTree = "<group>"; };
-		7652045D161A80E800EE253C /* CKDashboardFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKDashboardFlowLayout.m; sourceTree = "<group>"; };
-		7652045E161A80E800EE253C /* CKDashboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKDashboardViewController.h; sourceTree = "<group>"; };
-		7652045F161A80E800EE253C /* CKDashboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKDashboardViewController.m; sourceTree = "<group>"; };
 		76520463161ABB0F00EE253C /* CKBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBook.h; sourceTree = "<group>"; };
 		76520464161ABB0F00EE253C /* CKBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBook.m; sourceTree = "<group>"; };
 		7652046C161AD11E00EE253C /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utilities.h"; sourceTree = "<group>"; };
@@ -332,12 +323,6 @@
 				762026FA16252B1E005A8B66 /* CKBenchtopStackLayout.m */,
 				762026FC16252B1E005A8B66 /* CKBenchtopFlowLayout.h */,
 				762026FB16252B1E005A8B66 /* CKBenchtopFlowLayout.m */,
-				7652045C161A80E800EE253C /* CKDashboardFlowLayout.h */,
-				7652045D161A80E800EE253C /* CKDashboardFlowLayout.m */,
-				7652045E161A80E800EE253C /* CKDashboardViewController.h */,
-				7652045F161A80E800EE253C /* CKDashboardViewController.m */,
-				7652045A161A80E800EE253C /* CKDashboardBookCell.h */,
-				7652045B161A80E800EE253C /* CKDashboardBookCell.m */,
 				761FA06A162FC29000DC0C84 /* BookCoverView.h */,
 				761FA06B162FC29000DC0C84 /* BookCoverView.m */,
 				761FA06E162FC60400DC0C84 /* BookCoverViewFactory.h */,
@@ -771,9 +756,6 @@
 				7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */,
 				7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */,
 				7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */,
-				76520460161A811700EE253C /* CKDashboardBookCell.m in Sources */,
-				76520461161A811700EE253C /* CKDashboardFlowLayout.m in Sources */,
-				76520462161A811700EE253C /* CKDashboardViewController.m in Sources */,
 				76520465161ABB0F00EE253C /* CKBook.m in Sources */,
 				7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */,
 				8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */,
