@@ -59,8 +59,10 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray* layoutAttributes = [NSMutableArray array];
     
+    NSInteger numSections = [self.collectionView numberOfSections];
+    
     // TODO potential optimisation here to include only first few books instead of all.
-    for (NSInteger section = 0; section < 2; section++) {
+    for (NSInteger section = 0; section < numSections; section++) {
         NSInteger numItems = [self.collectionView numberOfItemsInSection:section];
         for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
             UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:

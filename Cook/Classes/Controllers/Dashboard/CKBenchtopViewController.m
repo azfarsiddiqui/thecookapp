@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) BOOL firstBenchtop;
 @property (nonatomic, assign) BOOL snapActivated;
+@property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSArray *friendsBooks;
 
@@ -84,11 +85,11 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self loadData];
+    //[self loadData];
 }
 
-- (void)reveal:(BOOL)reveal {
-    if (reveal && !self.overlayView) {
+- (void)enable:(BOOL)enable {
+    if (enable && !self.overlayView) {
         self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
         self.overlayView.autoresizingMask = UIViewAutoresizingNone;
         self.overlayView.alpha = 0.0;
@@ -98,13 +99,17 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.overlayView.alpha = reveal ? 1.0 : 0.0;
+                         self.overlayView.alpha = enable ? 1.0 : 0.0;
                      }
                      completion:^(BOOL finished) {
-                         if (!reveal) {
+                         if (!enable) {
                              [self.overlayView removeFromSuperview];
                              self.overlayView = nil;
                          }
+                         self.enabled = enable;
+                        
+                         [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
+                         [self loadData];
                      }];
     
 }
@@ -167,11 +172,18 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    if (!self.enabled) {
+        return 0;
+    }
+    
     return 2;   // My Book + Login/Friends
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
+    if (!self.enabled) {
+        return 0;
+    }
     
     if (section == 0) {
         numItems = 1;   // My Book

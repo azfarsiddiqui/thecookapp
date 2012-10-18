@@ -31,6 +31,11 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     
+    // Prepare for the dashboard to be transitioned in.
+    self.benchtopViewController = [[CKBenchtopViewController alloc] init];
+    self.benchtopViewController.view.frame = self.view.bounds;
+    [self.view addSubview:self.benchtopViewController.view];
+    
     // If this was a new install/upgrade (it checks versions) then slide up intro screen.
     if ([[CKAppHelper sharedInstance] newInstall]) {
         CKIntroViewController *introViewController = [[CKIntroViewController alloc] initWithDelegate:self];
@@ -79,11 +84,7 @@
     CKUser *currentUser = [CKUser currentUser];
     DLog(@"Current User: %@", currentUser);
     
-    // Prepare for the dashboard to be transitioned in.
-    self.benchtopViewController = [[CKBenchtopViewController alloc] init];
-    self.benchtopViewController.view.frame = self.view.bounds;
-    [self.view addSubview:self.benchtopViewController.view];
-    [self.benchtopViewController reveal:YES];
+    [self.benchtopViewController enable:YES];
 }
 
 @end
