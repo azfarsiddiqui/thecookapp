@@ -22,6 +22,11 @@ NSString *const kUserAttrFacebookId  = @"facebookId";
 NSString *const kUserAttrFollows  = @"follows";
 NSString *const kUserAttrAdmin = @"admin";
 
+#pragma mark - Follow requests class
+
+NSString *const kFollowRequestModelName         = @"FollowRequest";
+NSString *const kFollowRequestAttrRequestedUser = @"requestedUser";
+
 #pragma mark - Book class
 
 NSString *const kBookModelName = @"Book";

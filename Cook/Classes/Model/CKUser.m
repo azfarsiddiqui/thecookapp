@@ -176,7 +176,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
             PFQuery *friendsQuery = [PFUser query];
             [friendsQuery whereKey:kUserAttrFacebookId containedIn:friendIds];
             
-            // Admin query.
+            // Add admin user as auto-follow.
             PFQuery *adminQuery = [PFUser query];
             [adminQuery whereKey:kUserAttrAdmin equalTo:[NSNumber numberWithBool:YES]];
             
@@ -189,23 +189,53 @@ static ObjectFailureBlock loginFailureBlock = nil;
                     loginSuccessfulBlock = nil;
                 } else {
                     
-                    // Add friends
-                    NSArray *cookFriends = [friends collect:^id(PFUser *parseUser) {
-                        return parseUser.objectId;
-                    }];
-                    DLog(@"Adding friends in Cook: %@", cookFriends);
-                    [currentUser.parseUser addUniqueObjectsFromArray:cookFriends forKey:kUserAttrFollows];
-                    
                     // Save facebook profile details.
                     currentUser.name = userData.name;
                     currentUser.facebookId = userData.id;
-                    [currentUser saveEventually];
                     
-                    // Call success completion.
-                    loginSuccessfulBlock();
-                    loginSuccessfulBlock = nil;
-                    loginFailureBlock = nil;
+                    // Auto-follow my friends.
+                    NSArray *cookFriends = [friends collect:^id(PFUser *parseUser) {
+                        return parseUser.objectId;
+                    }];
+                    [currentUser.parseUser addUniqueObjectsFromArray:cookFriends forKey:kUserAttrFollows];
                     
+                    // Prepare objects to update in bulk: follow requests and my profile.
+                    NSMutableArray *objectsToUpdate = [NSMutableArray arrayWithCapacity:[friends count] + 1];
+                    
+                    // Loop through and add myself as follow request for my friends.
+                    for (PFUser *parseFriend in friends) {
+                        
+                        // Create a follow request for the friend for myself.
+                        PFObject *userFollowRequest = [PFObject objectWithClassName:kFollowRequestModelName];
+                        [userFollowRequest setObject:parseFriend forKey:kUserModelForeignKeyName];
+                        [userFollowRequest setObject:currentUser.parseUser forKey:kFollowRequestAttrRequestedUser];
+                        
+                        // Only myself and my friend can read and write the request.
+                        PFACL *followRequestACL = [PFACL ACLWithUser:currentUser.parseUser];
+                        [followRequestACL setWriteAccess:YES forUser:parseFriend];
+                        [followRequestACL setReadAccess:YES forUser:parseFriend];
+                        userFollowRequest.ACL = followRequestACL;
+                        
+                        // Add follow request to be saved in bulk.
+                        [objectsToUpdate addObject:userFollowRequest];
+                    }
+                    
+                    // Now add myself to be saved in bulk.
+                    [objectsToUpdate addObject:currentUser.parseUser];
+                    
+                    // Now kick off the save and wait as we need operation to succeed before deeming it successful.
+                    [PFObject saveAllInBackground:objectsToUpdate block:^(BOOL succeeded, NSError *error) {
+                        if (!error) {
+                            loginSuccessfulBlock();
+                            loginSuccessfulBlock = nil;
+                            loginFailureBlock = nil;
+                        } else {
+                            loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
+                                                             message:[NSString stringWithFormat:@"Unable to save friends for %@", currentUser]]);
+                            loginFailureBlock = nil;
+                            loginSuccessfulBlock = nil;
+                        }
+                    }];
                 }
             }];
             

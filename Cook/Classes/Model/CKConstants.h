@@ -22,6 +22,11 @@ extern NSString *const kUserAttrFacebookId;
 extern NSString *const kUserAttrFollows;
 extern NSString *const kUserAttrAdmin;
 
+#pragma mark - User Follows pending class
+
+extern NSString *const kFollowRequestModelName;
+extern NSString *const kFollowRequestAttrRequestedUser;
+
 #pragma mark - Book class
 
 extern NSString *const kBookModelName;
