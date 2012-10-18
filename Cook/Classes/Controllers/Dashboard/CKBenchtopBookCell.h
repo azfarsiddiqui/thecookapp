@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKBook.h"
 
 @interface CKBenchtopBookCell : UICollectionViewCell
 
 + (CGSize)cellSize;
-- (void)setText:(NSString *)text;
-- (void)setBookImageWithName:(NSString *)bookImageName;
+
+- (void)loadBook:(CKBook *)book;
+
+// Empty shell placeholder.
+- (void)loadAsPlaceholder;
 
 @end

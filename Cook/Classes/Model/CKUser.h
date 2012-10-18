@@ -24,7 +24,9 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
-- (NSArray *)friendIds;
+- (NSArray *)followIds;
+- (NSUInteger)numFollows;
 - (BOOL)isAdmin;
+- (void)autoFollowCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end

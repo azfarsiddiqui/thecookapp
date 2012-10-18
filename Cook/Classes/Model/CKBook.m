@@ -9,7 +9,7 @@
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "NSString+Utilities.h"
-#import "NSArray+Enumerable.h"
+#import "MRCEnumerable.h"
 
 @interface CKBook ()
 
@@ -21,9 +21,8 @@
 
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
-    
-    // Get local cache first before getting updated with networked version.
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
@@ -33,7 +32,6 @@
             failure(error);
         }
     }];
-
 }
 
 + (PFObject *)parseBookForParseUser:(PFUser *)parseUser {
@@ -43,29 +41,15 @@
     return parseBook;
 }
 
-+(void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
++ (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    // List of friend keys
-    NSArray *friendUserKeys = [user.friendIds collect:^id(NSString *friendObjectId) {
-        return [PFUser objectWithoutDataWithClassName:kUserModelName objectId:friendObjectId];
-    }];
-    
-    // Goes to network first before falling back to cache.
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
-    [query whereKey:kUserModelForeignKeyName containedIn:friendUserKeys];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
-        if (!error) {
-            NSArray *books = [results collect:^id(PFObject *parseBook) {
-                return [[CKBook alloc] initWithParseObject:parseBook];
-            }];
-            DLog(@"Loaded friends %d books.", [books count]);
-            success(books);
-        } else {
-            failure(error);
-        }
-    }];
-    
+    // Auto follow any friends first before loading books.
+    [user autoFollowCompletion:^{
+        [CKBook loadFriendsBooksForUser:user success:success failure:failure];
+    }
+                       failure:^(NSError *error) {
+                           failure(error);
+                       }];
 }
 
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user {
@@ -118,6 +102,40 @@
         parseBook = [CKBook parseBookForParseUser:(PFUser *)user.parseObject];
     }
     return [[CKBook alloc] initWithParseBook:parseBook user:user];
+}
+
++ (void)loadFriendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success
+                        failure:(ObjectFailureBlock)failure {
+    
+    // Friends books query.
+    NSArray *friendUserKeys = [[user followIds] collect:^id(NSString *friendObjectId) {
+        return [PFUser objectWithoutDataWithClassName:kUserModelName objectId:friendObjectId];
+    }];
+    PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
+    [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friendUserKeys];
+    [friendsBooksQuery orderByAscending:kModelAttrName];
+    [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
+        if (!error) {
+            
+            // Get my friends books.
+            NSArray *friendsParseBooks = [parseBooks select:^BOOL(PFObject *parseBook) {
+                PFUser *parseUser = [parseBook objectForKey:kUserModelForeignKeyName];
+                return ![parseUser.objectId isEqualToString:user.parseUser.objectId];
+            }];
+            NSArray *friendsBooks = [friendsParseBooks collect:^id(PFObject *parseBook) {
+                return [[CKBook alloc] initWithParseObject:parseBook];
+            }];
+            DLog(@"Found friends books: %@", friendsBooks);
+            
+            // Return my book and friends books.
+            success(friendsBooks);
+            
+        } else {
+            DLog(@"Error loading books: %@", [error localizedDescription]);
+            failure(error);
+        }
+    }];
 }
 
 @end

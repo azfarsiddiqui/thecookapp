@@ -8,11 +8,16 @@
 
 #import "CKBenchtopBookCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import "BookCoverView.h"
+#import "BookCoverViewFactory.h"
 
 @interface CKBenchtopBookCell ()
 
-@property (nonatomic, retain) UILabel *textLabel;
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) BookCoverView *bookCoverView;
+@property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UIImageView *bookImageView;
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
@@ -30,30 +35,50 @@
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         
-        UIImageView *bookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_defaultbook.png"]];
-        bookImageView.center = self.contentView.center;
-        [self.contentView addSubview:bookImageView];
-        self.bookImageView = bookImageView;
+        BookCoverView *bookCoverView = [BookCoverViewFactory bookCoverViewWithFrame:frame];
+        bookCoverView.center = self.contentView.center;
+        bookCoverView.frame = CGRectIntegral(bookCoverView.frame);
+        [self.contentView addSubview:bookCoverView];
+        self.bookCoverView = bookCoverView;
         
-        DLog(@"cell size: %@", NSStringFromCGSize(self.contentView.bounds.size));
-        CGSize availableSize = [self availableSize];
-        CGSize size = [@"A" sizeWithFont:kBookTitleFont constrainedToSize:availableSize
-                           lineBreakMode:NSLineBreakByTruncatingTail];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(kContentInsets.left,
-                                                                   floorf((self.contentView.bounds.size.height - size.height) / 2.0),
-                                                                   size.width,
-                                                                   size.height)];
-        label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-        label.backgroundColor = [UIColor clearColor];
-        label.font = kBookTitleFont;
-        label.textColor = kBookTitleColour;
-        label.shadowColor = kBookTitleShadowColour;
-        label.shadowOffset = CGSizeMake(0.0, 1.0);
-        label.hidden = YES; // Hidden to start off with.
-        [self.contentView addSubview:label];
-        self.textLabel = label;
+        // Start spinning until book is available
+        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc]
+                                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        activityView.center = self.contentView.center;
+        activityView.frame = CGRectIntegral(activityView.frame);
+        [activityView startAnimating];
+        [self.contentView addSubview:activityView];
+        self.activityView = activityView;
+        
     }
     return self;
+}
+
+- (void)loadBook:(CKBook *)book {
+    
+    // Do nothing if the same book has already been loaded.
+    if (self.book == book) {
+        return;
+    }
+    
+    self.book = book;
+    
+    // Stop spinning.
+    [self.activityView stopAnimating];
+    
+    // Update book cover.
+    [self.bookCoverView updateTitle:book.name];
+}
+
+- (void)loadAsPlaceholder {
+    [self.activityView stopAnimating];
+}
+
+#pragma mark - Private methods
+
+- (CGSize)availableSize {
+    return CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                      self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
 }
 
 - (void)setText:(NSString *)text {
@@ -66,20 +91,6 @@
                                       size.width,
                                       size.height);
     self.textLabel.text = text;
-}
-
-- (void)setBookImageWithName:(NSString *)bookImageName {
-    UIImage *bookImage = [UIImage imageNamed:bookImageName];
-    if (bookImage) {
-        self.bookImageView.image = bookImage;
-    }
-}
-
-#pragma mark - Private methods
-
-- (CGSize)availableSize {
-    return CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
-                      self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
 }
 
 @end

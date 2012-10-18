@@ -95,12 +95,43 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseUser objectForKey:kUserAttrFacebookId];
 }
 
-- (NSArray *)friendIds {
+- (NSArray *)followIds {
     return [self.parseUser objectForKey:kUserAttrFollows];
+}
+
+- (NSUInteger)numFollows {
+    return [[self followIds] count];
 }
 
 - (BOOL)isAdmin {
     return [[self.parseUser objectForKey:kUserAttrAdmin] boolValue];
+}
+
+- (void)autoFollowCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    // First check if we have any auto-follow.
+    PFQuery *followRequestQuery = [PFQuery queryWithClassName:kFollowRequestModelName];
+    [followRequestQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+    [followRequestQuery findObjectsInBackgroundWithBlock:^(NSArray *followRequests, NSError *error) {
+        if (!error) {
+            
+            // Auto-follow the requested user ids.
+            NSArray *requestedUserIds = [followRequests collect:^id(PFObject *followRequest) {
+                return [followRequest objectForKey:kFollowRequestAttrRequestedUser];
+            }];
+            [self.parseUser addUniqueObjectsFromArray:requestedUserIds forKey:kUserAttrFollows];
+            DLog(@"Auto followed %d friends", [requestedUserIds count]);
+            
+            // Delete the auto follow requests.
+            [followRequests makeObjectsPerformSelector:@selector(deleteEventually)];
+            DLog(@"Deleted follow requests.");
+            
+            success();
+        } else {
+            failure(error);
+        }
+    }];
+    
 }
 
 #pragma mark - CKModel
@@ -109,7 +140,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
     [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:@"facebookId"];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [[self friendIds] count]] forKey:@"friendsCount"];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self numFollows]] forKey:@"numFollows"];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isAdmin]] forKey:@"admin"];
     return descriptionProperties;
 }

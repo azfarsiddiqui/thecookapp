@@ -131,7 +131,7 @@
         if ([user isAdmin]) {
             [self.loginView loginAdminDone];
         } else {
-            [self.loginView loginLoadingFriends:[user.friendIds count]];
+            [self.loginView loginLoadingFriends:[user numFollows]];
         }
         
         [self informLoginSuccessful:YES];

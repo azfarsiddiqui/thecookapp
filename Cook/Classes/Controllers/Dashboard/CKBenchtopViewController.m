@@ -160,7 +160,7 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 2;
+    return 2;   // My Book + Login/Friends
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
@@ -169,8 +169,9 @@
     if (section == 0) {
         numItems = 1;   // My Book
     } else {
-        if ([[CKUser currentUser] isSignedIn]) {
-            numItems += [self.friendsBooks count];
+        CKUser *currentUser = [CKUser currentUser];
+        if ([currentUser isSignedIn]) {
+            numItems += [currentUser numFollows];
         } else {
             numItems = 2; // Login book and some fake book.
         }
@@ -368,7 +369,14 @@
 }
 
 - (void)loadData {
+    
+    // Load my book.
     [self loadMyBook];
+    
+    // If signed in, start loading friends books.
+    if ([[CKUser currentUser] isSignedIn]) {
+        [self loadFriendsBooks];
+    }
 }
 
 - (void)loadMyBook {
@@ -376,21 +384,32 @@
     // This will be called twice - once from cache if exists, then from network.
     [CKBook bookForUser:[CKUser currentUser]
                 success:^(CKBook *book) {
-                    self.myBook = book;
-                    [self updateMyBook];
+                    [self updateMyBook:book];
                 }
                 failure:^(NSError *error) {
                     DLog(@"Error: %@", [error localizedDescription]);
                 }];
 }
 
+- (void)loadFriendsBooks {
+    
+    // Load friends books - this also does auto-follow in the background.
+    [CKBook friendsBooksForUser:[CKUser currentUser]
+                        success:^(NSArray *friendsBooks) {
+                            self.friendsBooks = friendsBooks;
+                            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                        }
+                        failure:^(NSError *error) {
+                            DLog(@"Error: %@", [error localizedDescription]);
+                        }];
+    
+}
+
 - (UICollectionViewCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath {
     CKBenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
                                                                               forIndexPath:indexPath];
     if (self.myBook) {
-        [cell setText:self.myBook.name];
-    } else {
-        [cell setText:@""];
+        [cell loadBook:self.myBook];
     }
     return cell;
 }
@@ -402,27 +421,38 @@
         
         if ([user isAdmin]) {
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
-            [(CKBenchtopBookCell *)cell setText:@"Admin Stats"];
         } else {
-            CKBook *friendBook = [self.friendsBooks objectAtIndex:indexPath.row];
+            
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
-            [(CKBenchtopBookCell *)cell setText:friendBook.name];
+            if (self.friendsBooks) {
+                CKBook *friendBook = [self.friendsBooks objectAtIndex:indexPath.row];
+                [(CKBenchtopBookCell *)cell loadBook:friendBook];
+            } else {
+                [(CKBenchtopBookCell *)cell loadAsPlaceholder];
+            }
         }
         
     } else {
         if (indexPath.row == 0) {
+            
+            // Login book.
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kLoginCellId forIndexPath:indexPath];
+            
         } else {
+            
+            // Fake books at the back.
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
-            [(CKBenchtopBookCell *)cell setText:@""];
+            [(CKBenchtopBookCell *)cell loadAsPlaceholder];
         }
     }
     return cell;
 }
 
-- (void)updateMyBook {
-    CKBenchtopBookCell *cell = (CKBenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    [cell setText:self.myBook.name];
+- (void)updateMyBook:(CKBook *)book {
+    self.myBook = book;
+    CKBenchtopBookCell *cell = (CKBenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:
+                                                      [NSIndexPath indexPathForItem:0 inSection:0]];
+    [cell loadBook:book];
 }
 
 - (void)benchtopFreezeRequested:(NSNotification *)notification {

@@ -29,10 +29,11 @@ NSString *const kFollowRequestAttrRequestedUser = @"requestedUser";
 
 #pragma mark - Book class
 
-NSString *const kBookModelName = @"Book";
-NSString *const kBookModelForeignKeyName = @"book";
-NSString *const kBookAttrCoverPhotoName  = @"coverPhotoName";
-NSString *const kBookAttrDefaultNameValue = @"My Book";
+NSString *const kBookModelName              = @"Book";
+NSString *const kBookModelForeignKeyName    = @"book";
+NSString *const kBookAttrCoverPhotoName     = @"coverPhotoName";
+NSString *const kBookAttrDefaultNameValue   = @"My Book";
+NSString *const kBookAttrCoverLayout        = @"layout";
 
 #pragma mark - Recipe class
 NSString *const kRecipeModelName = @"Recipe";
