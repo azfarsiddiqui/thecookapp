@@ -26,18 +26,19 @@
 
 + (NSString *)randomCover {
     NSArray *covers = [BookCover covers];
-    return [covers objectAtIndex:arc4random() % [covers count] - 1];
+    return [covers objectAtIndex:arc4random() % ([covers count] - 1)];
 }
 
 + (NSString *)randomIllustration {
     NSArray *illustrations = [BookCover illustrations];
-    return [illustrations objectAtIndex:arc4random() % [illustrations count] - 1];
+    return [illustrations objectAtIndex:arc4random() % ([illustrations count] - 1)];
 }
 
 + (UIImage *)imageForCover:(NSString *)cover {
     NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"covers.%@", cover]];
     if (!imageName) {
-        imageName = [BookCover randomCover];
+        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"covers.%@",
+                                                           [BookCover randomCover]]];
     }
     return [UIImage imageNamed:imageName];
 }
@@ -45,7 +46,8 @@
 + (UIImage *)imageForIllustration:(NSString *)illustration {
     NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"illustrations.%@", illustration]];
     if (!imageName) {
-        imageName = [BookCover randomIllustration];
+        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"illustrations.%@",
+                                                           [BookCover randomIllustration]]];
     }
     return [UIImage imageNamed:imageName];
 }

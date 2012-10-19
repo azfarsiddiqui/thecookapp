@@ -23,7 +23,6 @@
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
@@ -40,7 +39,7 @@
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
     [parseBook setObject:parseUser forKey:kUserModelForeignKeyName];
     [parseBook setObject:[BookCover randomCover] forKey:kBookAttrCover];
-    [parseBook setObject:[BookCover randomIllustration] forKey:kBookAttrCover];
+    [parseBook setObject:[BookCover randomIllustration] forKey:kBookAttrIllustration];
     return parseBook;
 }
 

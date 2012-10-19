@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKBook.h"
 
 @interface BookCoverView : UIView
 
 @property (nonatomic, strong) NSString *type;
 
 - (void)layoutBookCover;
-- (void)updateName:(NSString *)name;
-- (void)updateTitle:(NSString *)title;
+- (void)updateWithBook:(CKBook *)book;
 
 - (UIEdgeInsets)contentEdgeInsets;
 - (CGSize)contentAvailableSize;

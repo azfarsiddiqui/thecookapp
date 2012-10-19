@@ -160,7 +160,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 + (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser {
-
     if (parseUser.objectId == nil) {
         
         DLog(@"initialiseUserWithParseUser:creating book");
