@@ -40,13 +40,7 @@
     [PFUser enableAutomaticUser];
     
     // Set up Facebook
-    //JTATest
-    [PFFacebookUtils initializeWithApplicationId:@"194406683965631"];
-    
-    // JonnyAppTest
-    // [PFFacebookUtils initializeWithApplicationId:@"205980009473724"];
-    
-    // TODO Set up analytics.
+    [PFFacebookUtils initializeWithApplicationId:@"289425251158959"];
     
     DLog(@"Started ServerManager");
 }
