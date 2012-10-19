@@ -357,7 +357,7 @@
                                                                       self.view.bounds.size.width + kBackgroundAvailOffset,
                                                                       self.view.bounds.size.height)];
     backgroundView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ff_dash_bg_tile.png"]];
+    backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"cook_dash_bg_tile.png"]];
     [self.view insertSubview:backgroundView belowSubview:self.collectionView];
     self.backgroundView = backgroundView;
     
@@ -416,6 +416,7 @@
     [CKBook friendsBooksForUser:[CKUser currentUser]
                         success:^(NSArray *friendsBooks) {
                             self.friendsBooks = friendsBooks;
+                            
                             [self.collectionView reloadData];
                             
                             // Inform layout complete.
