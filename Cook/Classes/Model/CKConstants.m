@@ -32,7 +32,7 @@ NSString *const kFollowRequestAttrRequestedUser = @"requestedUser";
 NSString *const kBookModelName              = @"Book";
 NSString *const kBookModelForeignKeyName    = @"book";
 NSString *const kBookAttrCoverPhotoName     = @"coverPhotoName";
-NSString *const kBookAttrDefaultNameValue   = @"My Book";
+NSString *const kBookAttrDefaultNameValue   = @"COOK";
 NSString *const kBookAttrCoverLayout        = @"layout";
 
 #pragma mark - Recipe class

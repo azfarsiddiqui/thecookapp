@@ -15,4 +15,11 @@
 - (void)layoutBookCover;
 - (void)updateTitle:(NSString *)title;
 
+- (UIFont *)coverTitleFont;
+- (UIColor *)coverTitleColor;
+- (UIColor *)coverTitleShadowColor;
+- (UIImage *)coverBackgroundImage;
+- (UIImage *)coverIllustrationImage;
+- (UIImage *)coverOverlayImage;
+
 @end
