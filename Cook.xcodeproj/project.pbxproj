@@ -37,6 +37,9 @@
 		7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */; };
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
 		7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* CKAppHelper.m */; };
+		766BFBE11630D69B0083EB0E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE01630D69B0083EB0E /* Social.framework */; };
+		766BFBE41630D6A00083EB0E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE31630D6A00083EB0E /* Accounts.framework */; };
+		766BFBE61630D6A40083EB0E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE51630D6A40083EB0E /* AdSupport.framework */; };
 		76B015AE161C0AC100AF3C2C /* cook_defaultbook.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */; };
 		76B015AF161C0AC100AF3C2C /* cook_defaultbook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */; };
 		76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */; };
@@ -150,6 +153,9 @@
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
 		7666B40416143713001D1BA1 /* CKAppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKAppHelper.h; sourceTree = "<group>"; };
 		7666B40516143713001D1BA1 /* CKAppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKAppHelper.m; sourceTree = "<group>"; };
+		766BFBE01630D69B0083EB0E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		766BFBE31630D6A00083EB0E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		766BFBE51630D6A40083EB0E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_defaultbook.png; sourceTree = "<group>"; };
 		76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_defaultbook@2x.png"; sourceTree = "<group>"; };
 		76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_overlay.png; sourceTree = "<group>"; };
@@ -258,6 +264,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				766BFBE61630D6A40083EB0E /* AdSupport.framework in Frameworks */,
+				766BFBE41630D6A00083EB0E /* Accounts.framework in Frameworks */,
+				766BFBE11630D69B0083EB0E /* Social.framework in Frameworks */,
 				89622182161E9FA80023EC30 /* CoreData.framework in Frameworks */,
 				89622180161E9F970023EC30 /* libz.1.2.5.dylib in Frameworks */,
 				8962217E161E9F830023EC30 /* Accelerate.framework in Frameworks */,
@@ -385,6 +394,9 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				766BFBE51630D6A40083EB0E /* AdSupport.framework */,
+				766BFBE31630D6A00083EB0E /* Accounts.framework */,
+				766BFBE01630D69B0083EB0E /* Social.framework */,
 				89622181161E9FA80023EC30 /* CoreData.framework */,
 				8962217F161E9F970023EC30 /* libz.1.2.5.dylib */,
 				8962217D161E9F830023EC30 /* Accelerate.framework */,
