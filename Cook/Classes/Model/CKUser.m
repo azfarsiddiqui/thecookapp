@@ -165,6 +165,9 @@ static ObjectFailureBlock loginFailureBlock = nil;
         
         DLog(@"initialiseUserWithParseUser:creating book");
         
+        // Initial default name.
+        [parseUser setObject:kUserAttrDefaultNameValue forKey:kModelAttrName];
+        
         // Create a book for the new user and save it in the background.
         PFObject *parseBook = [CKBook parseBookForParseUser:parseUser];
         [parseBook saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
