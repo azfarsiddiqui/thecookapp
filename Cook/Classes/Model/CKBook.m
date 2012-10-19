@@ -10,6 +10,7 @@
 #import "CKRecipe.h"
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
+#import "BookCover.h"
 
 @interface CKBook ()
 
@@ -34,10 +35,12 @@
     }];
 }
 
-+ (PFObject *)parseBookForParseUser:(PFUser *)parseUser {
++ (PFObject *)createParseBookForParseUser:(PFUser *)parseUser {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
     [parseBook setObject:parseUser forKey:kUserModelForeignKeyName];
+    [parseBook setObject:[BookCover randomCover] forKey:kBookAttrCover];
+    [parseBook setObject:[BookCover randomIllustration] forKey:kBookAttrCover];
     return parseBook;
 }
 
@@ -69,14 +72,6 @@
         self.user = user;
     }
     return self;
-}
-
-- (void)setCoverPhotoName:(NSString *)coverPhotoName {
-    [self.parseObject setObject:coverPhotoName forKey:kBookAttrCoverPhotoName];
-}
-
-- (NSString *)coverPhotoName {
-    return [self.parseObject objectForKey:kBookAttrCoverPhotoName];
 }
 
 - (void)setCover:(NSString *)cover {
@@ -122,7 +117,8 @@
 
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
-    [descriptionProperties setValue:[NSString CK_safeString:self.coverPhotoName] forKey:@"coverPhotoName"];
+    [descriptionProperties setValue:[NSString CK_safeString:self.cover] forKey:kBookAttrCover];
+    [descriptionProperties setValue:[NSString CK_safeString:self.illustration] forKey:kBookAttrIllustration];
     return descriptionProperties;
 }
 
@@ -130,7 +126,7 @@
 
 + (CKBook *)createBookIfRequiredForParseBook:(PFObject *)parseBook user:(CKUser *)user {
     if (!parseBook) {
-        parseBook = [CKBook parseBookForParseUser:(PFUser *)user.parseObject];
+        parseBook = [CKBook createParseBookForParseUser:(PFUser *)user.parseObject];
     }
     return [[CKBook alloc] initWithParseBook:parseBook user:user];
 }

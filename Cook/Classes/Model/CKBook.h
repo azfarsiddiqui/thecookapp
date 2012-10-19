@@ -17,13 +17,12 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @interface CKBook : CKModel
 
 @property (nonatomic, strong) CKUser *user;
-@property (nonatomic, copy) NSString *coverPhotoName;
 
 @property (nonatomic, copy) NSString *cover;
 @property (nonatomic, copy) NSString *illustration;
 
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-+ (PFObject *)parseBookForParseUser:(PFUser *)parseUser;
++ (PFObject *)createParseBookForParseUser:(PFUser *)parseUser;
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;

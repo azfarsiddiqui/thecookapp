@@ -2,10 +2,31 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>red</key>
+	<key>covers</key>
 	<dict>
-		<key>cover</key>
+		<key>Red</key>
 		<string>cook_book_red.png</string>
+		<key>Green</key>
+		<string>cook_book_green.png</string>
+		<key>Blue</key>
+		<string>cook_book_blue.png</string>
+		<key>Gray</key>
+		<string>cook_book_gray.png</string>
+	</dict>
+	<key>illustrations</key>
+	<dict>
+		<key>Cherry</key>
+		<string>cook_book_graphic_cherry.png</string>
+		<key>Chopsticks</key>
+		<string>cook_book_graphic_chopsticks.png</string>
+		<key>Cleaver</key>
+		<string>cook_book_graphic_cleaver.png</string>
+		<key>Cow</key>
+		<string>cook_book_graphic_cow.png</string>
+		<key>Cupcake</key>
+		<string>cook_book_graphic_cupcake.png</string>
+		<key>Spoon</key>
+		<string>cook_book_graphic_spoon.png</string>
 	</dict>
 </dict>
 </plist>

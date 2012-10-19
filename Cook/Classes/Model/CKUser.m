@@ -140,10 +140,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
-    [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:@"facebookId"];
+    [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:kUserAttrFacebookId];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self numFollows]] forKey:@"numFollows"];
-    [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isAdmin]] forKey:@"admin"];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self numFollows]] forKey:kUserAttrFollows];
+    [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isAdmin]] forKey:kUserAttrAdmin];
     return descriptionProperties;
 }
 
@@ -169,7 +169,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
         [parseUser setObject:kUserAttrDefaultNameValue forKey:kModelAttrName];
         
         // Create a book for the new user and save it in the background.
-        PFObject *parseBook = [CKBook parseBookForParseUser:parseUser];
+        PFObject *parseBook = [CKBook createParseBookForParseUser:parseUser];
         [parseBook saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 DLog(@"initialiseUserWithParseUser:created book");

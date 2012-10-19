@@ -29,6 +29,8 @@
 		7620272816254128005A8B66 /* cook_signin_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7620271C16254128005A8B66 /* cook_signin_btn@2x.png */; };
 		76520465161ABB0F00EE253C /* CKBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 76520464161ABB0F00EE253C /* CKBook.m */; };
 		7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652046D161AD11E00EE253C /* NSString+Utilities.m */; };
+		76616E8D16312461002C4878 /* BookCover.m in Sources */ = {isa = PBXBuildFile; fileRef = 76616E8C16312461002C4878 /* BookCover.m */; };
+		76616E9516312C68002C4878 /* cook_book_orange@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76616E9416312C68002C4878 /* cook_book_orange@2x.png */; };
 		7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3E716140A16001D1BA1 /* CKConstants.m */; };
 		7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EB16140B16001D1BA1 /* CKUser.m */; };
 		7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EE16140F6F001D1BA1 /* CKModel.m */; };
@@ -164,6 +166,9 @@
 		76520464161ABB0F00EE253C /* CKBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBook.m; sourceTree = "<group>"; };
 		7652046C161AD11E00EE253C /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utilities.h"; sourceTree = "<group>"; };
 		7652046D161AD11E00EE253C /* NSString+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utilities.m"; sourceTree = "<group>"; };
+		76616E8B16312461002C4878 /* BookCover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCover.h; sourceTree = "<group>"; };
+		76616E8C16312461002C4878 /* BookCover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCover.m; sourceTree = "<group>"; };
+		76616E9416312C68002C4878 /* cook_book_orange@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_orange@2x.png"; sourceTree = "<group>"; };
 		7666B3E616140A16001D1BA1 /* CKConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKConstants.h; sourceTree = "<group>"; };
 		7666B3E716140A16001D1BA1 /* CKConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKConstants.m; sourceTree = "<group>"; };
 		7666B3EA16140B16001D1BA1 /* CKUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUser.h; sourceTree = "<group>"; };
@@ -431,6 +436,7 @@
 				766BFBED1630D9630083EB0E /* cook_book_green.png */,
 				766BFBEE1630D9630083EB0E /* cook_book_green@2x.png */,
 				766BFBEF1630D9630083EB0E /* cook_book_orange.png */,
+				76616E9416312C68002C4878 /* cook_book_orange@2x.png */,
 				766BFBF01630D9630083EB0E /* cook_book_red.png */,
 				766BFBF11630D9630083EB0E /* cook_book_red@2x.png */,
 				766BFBFB1630D96A0083EB0E /* cook_book_overlay.png */,
@@ -586,6 +592,8 @@
 				8936F802161E959700E6EF1D /* CKRecipeImage.m */,
 				89A50497162250F700E6CDF1 /* Ingredient.h */,
 				89A50498162250F700E6CDF1 /* Ingredient.m */,
+				76616E8B16312461002C4878 /* BookCover.h */,
+				76616E8C16312461002C4878 /* BookCover.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -849,6 +857,7 @@
 				766BFC161630D9750083EB0E /* cook_book_graphic_spoon@2x.png in Resources */,
 				766BFC191630D9DD0083EB0E /* cook_dash_bg_tile.png in Resources */,
 				766BFC1A1630D9DD0083EB0E /* cook_dash_bg_tile@2x.png in Resources */,
+				76616E9516312C68002C4878 /* cook_book_orange@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -904,6 +913,7 @@
 				761FA06C162FC29000DC0C84 /* BookCoverView.m in Sources */,
 				761FA070162FC60400DC0C84 /* BookCoverViewFactory.m in Sources */,
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
+				76616E8D16312461002C4878 /* BookCover.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
