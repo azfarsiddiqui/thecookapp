@@ -33,6 +33,8 @@ extern NSString *const kFollowRequestAttrRequestedUser;
 extern NSString *const kBookModelName;
 extern NSString *const kBookModelForeignKeyName;
 extern NSString *const kBookAttrCoverPhotoName;
+extern NSString *const kBookAttrCover;
+extern NSString *const kBookAttrIllustration;
 extern NSString *const kBookAttrDefaultNameValue;
 extern NSString *const kBookAttrCoverLayout;
 

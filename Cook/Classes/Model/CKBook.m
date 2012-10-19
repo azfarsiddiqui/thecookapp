@@ -79,6 +79,22 @@
     return [self.parseObject objectForKey:kBookAttrCoverPhotoName];
 }
 
+- (void)setCover:(NSString *)cover {
+    [self.parseObject setObject:cover forKey:kBookAttrCover];
+}
+
+- (NSString *)cover {
+    return [self.parseObject objectForKey:kBookAttrCover];
+}
+
+- (void)setIllustration:(NSString *)illustration {
+    [self.parseObject setObject:illustration forKey:kBookAttrIllustration];
+}
+
+- (NSString *)illustration {
+    return [self.parseObject objectForKey:kBookAttrIllustration];
+}
+
 - (void)listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
