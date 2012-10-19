@@ -11,4 +11,8 @@
 @interface CKUIHelper : NSObject
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
+
++ (CGSize)bookSize;
++ (CGFloat)singleLineHeightForFont:(UIFont *)font;
+
 @end

@@ -52,6 +52,18 @@
                        }];
 }
 
+#pragma mark - Instance 
+
+- (id)initWithParseObject:(PFObject *)parseObject {
+    if (self = [super initWithParseObject:parseObject]) {
+        PFUser *parseUser = [parseObject objectForKey:kUserModelForeignKeyName];
+        if (parseUser) {
+            self.user = [[CKUser alloc] initWithParseUser:parseUser];
+        }
+    }
+    return self;
+}
+
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user {
     if (self = [super initWithParseObject:parseBook]) {
         self.user = user;
@@ -86,6 +98,9 @@
     }];
 }
 
+- (NSString *)userName {
+    return self.user.name;
+}
 
 #pragma mark - CKModel
 
@@ -115,6 +130,7 @@
     [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
     [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friendUserKeys];
     [friendsBooksQuery orderByAscending:kModelAttrName];
+    [friendsBooksQuery includeKey:kUserModelForeignKeyName];  // Load associated user.
     [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         if (!error) {
             

@@ -76,6 +76,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
+#pragma mark - CKUser
+
 - (BOOL)isSignedIn {
     return [PFFacebookUtils isLinkedWithUser:self.parseUser];
 }

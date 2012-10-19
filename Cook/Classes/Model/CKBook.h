@@ -25,5 +25,6 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
 - (void)listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (NSString *)userName;
 
 @end

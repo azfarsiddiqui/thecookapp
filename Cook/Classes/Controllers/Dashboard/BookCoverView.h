@@ -13,9 +13,18 @@
 @property (nonatomic, strong) NSString *type;
 
 - (void)layoutBookCover;
+- (void)updateName:(NSString *)name;
 - (void)updateTitle:(NSString *)title;
 
+- (UIEdgeInsets)contentEdgeInsets;
+- (CGSize)contentAvailableSize;
+
+- (UIFont *)coverNameFont;
+- (UIColor *)coverNameColor;
+- (UIColor *)coverNameShadowColor;
+
 - (UIFont *)coverTitleFont;
+- (NSTextAlignment)coverTitleAlignment;
 - (UIColor *)coverTitleColor;
 - (UIColor *)coverTitleShadowColor;
 - (UIImage *)coverBackgroundImage;

@@ -71,6 +71,7 @@
     [self.activityView stopAnimating];
     
     // Update book cover.
+    [self.bookCoverView updateName:[book userName]];
     [self.bookCoverView updateTitle:book.name];
 }
 

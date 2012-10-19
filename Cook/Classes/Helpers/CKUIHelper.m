@@ -20,4 +20,13 @@
     button.autoresizingMask = UIViewAutoresizingNone;
     return button;
 }
+
++ (CGSize)bookSize {
+    return CGSizeMake(300.0, 438.0);
+}
+
++ (CGFloat)singleLineHeightForFont:(UIFont *)font {
+    return [@"A" sizeWithFont:font constrainedToSize:[CKUIHelper bookSize] lineBreakMode:NSLineBreakByTruncatingTail].height;
+}
+
 @end
