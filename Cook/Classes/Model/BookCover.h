@@ -10,6 +10,8 @@
 
 @interface BookCover : NSObject
 
++ (NSString *)initialCover;
++ (NSString *)initialIllustration;
 + (NSString *)defaultCover;
 + (NSString *)defaultIllustration;
 + (NSString *)randomCover;

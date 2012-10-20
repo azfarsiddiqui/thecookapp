@@ -17,6 +17,7 @@
 #import "RecipeListViewController.h"
 #import "BookViewController.h"
 #import "EventHelper.h"
+#import "MRCEnumerable.h"
 
 @interface CKBenchtopViewController ()
 
@@ -435,7 +436,10 @@
                                                                               forIndexPath:indexPath];
     if (self.myBook) {
         [cell loadBook:self.myBook];
+    } else {
+        [cell loadBook:[CKBook myInitialBook]];
     }
+    
     return cell;
 }
 
@@ -465,6 +469,7 @@
             
             // Fake books at the back.
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
+            [cell loadBook:[CKBook defaultBook]];
             [cell loadAsPlaceholder];
         }
     }

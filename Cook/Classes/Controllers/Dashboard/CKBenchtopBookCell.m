@@ -35,7 +35,7 @@
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         
-        BookCoverView *bookCoverView = [BookCoverViewFactory bookCoverViewWithFrame:frame];
+        BookCoverView *bookCoverView = [[BookCoverView alloc] initWithFrame:frame];
         bookCoverView.center = self.contentView.center;
         bookCoverView.frame = CGRectIntegral(bookCoverView.frame);
         [self.contentView addSubview:bookCoverView];

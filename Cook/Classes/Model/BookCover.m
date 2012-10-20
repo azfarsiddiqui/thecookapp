@@ -16,6 +16,29 @@
 
 @implementation BookCover
 
+#define kInitialCover           @"kCookInitialCover"
+#define kInitialIllustration    @"kCookInitialIllustration"
+
++ (NSString *)initialCover {
+    NSString *initialCover = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialCover];
+    if (!initialCover) {
+        initialCover = [BookCover randomCover];
+        [[NSUserDefaults standardUserDefaults] setObject:initialCover forKey:kInitialCover];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    return initialCover;
+}
+
++ (NSString *)initialIllustration {
+    NSString *initialIllustration = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialIllustration];
+    if (!initialIllustration) {
+        initialIllustration = [BookCover randomIllustration];
+        [[NSUserDefaults standardUserDefaults] setObject:initialIllustration forKey:kInitialIllustration];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    return initialIllustration;
+}
+
 + (NSString *)defaultCover {
     return [[BookCover settings] valueForKeyPath:@"covers.Red"];
 }

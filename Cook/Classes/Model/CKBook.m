@@ -34,12 +34,17 @@
     }];
 }
 
-+ (PFObject *)createParseBookForParseUser:(PFUser *)parseUser {
++ (PFObject *)createParseBook {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
+    [parseBook setObject:[BookCover initialCover] forKey:kBookAttrCover];
+    [parseBook setObject:[BookCover initialIllustration] forKey:kBookAttrIllustration];
+    return parseBook;
+}
+
++ (PFObject *)createParseBookForParseUser:(PFUser *)parseUser {
+    PFObject *parseBook = [CKBook createParseBook];
     [parseBook setObject:parseUser forKey:kUserModelForeignKeyName];
-    [parseBook setObject:[BookCover randomCover] forKey:kBookAttrCover];
-    [parseBook setObject:[BookCover randomIllustration] forKey:kBookAttrIllustration];
     return parseBook;
 }
 
@@ -52,6 +57,22 @@
                        failure:^(NSError *error) {
                            failure(error);
                        }];
+}
+
++ (CKBook *)myInitialBook {
+    PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
+    [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
+    [parseBook setObject:[BookCover initialCover] forKey:kBookAttrCover];
+    [parseBook setObject:[BookCover initialIllustration] forKey:kBookAttrIllustration];
+    return [[CKBook alloc] initWithParseObject:parseBook];
+}
+
++ (CKBook *)defaultBook {
+    PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
+    [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
+    [parseBook setObject:[BookCover defaultCover] forKey:kBookAttrCover];
+    [parseBook setObject:[BookCover defaultIllustration] forKey:kBookAttrIllustration];
+    return [[CKBook alloc] initWithParseObject:parseBook];
 }
 
 #pragma mark - Instance 

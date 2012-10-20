@@ -22,8 +22,11 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @property (nonatomic, copy) NSString *illustration;
 
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (PFObject *)createParseBook;
 + (PFObject *)createParseBookForParseUser:(PFUser *)parseUser;
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (CKBook *)myInitialBook;
++ (CKBook *)defaultBook;
 
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
 - (void)listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
