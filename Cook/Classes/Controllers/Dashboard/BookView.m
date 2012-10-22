@@ -66,7 +66,7 @@
 }
 
 - (UIEdgeInsets)contentEdgeInsets {
-    return UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0);
+    return UIEdgeInsetsMake(10.0, 10.0, 13.0, 10.0);
 }
 
 - (CGSize)contentAvailableSize {
@@ -76,7 +76,7 @@
 }
                    
 - (UIFont *)coverNameFont {
-    return [UIFont boldSystemFontOfSize:18.0];
+    return [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
 }
 
 - (UIColor *)coverNameColour {
@@ -88,7 +88,7 @@
 }
 
 - (UIFont *)coverTitleFont {
-    return [UIFont boldSystemFontOfSize:70.0];
+    return [UIFont fontWithName:@"AvenirNext-Bold" size:78];
 }
 
 - (NSTextAlignment)coverTitleAlignment {
@@ -104,7 +104,7 @@
 }
 
 - (UIFont *)coverTaglineFont {
-    return [UIFont boldSystemFontOfSize:14.0];
+    return [UIFont fontWithName:@"AvenirNext-DemiBold" size:14];
 }
 
 - (UIColor *)coverTaglineColour {
@@ -116,7 +116,7 @@
 }
 
 - (UIFont *)coverNumRecipesFont {
-    return [UIFont boldSystemFontOfSize:14.0];
+    return [UIFont fontWithName:@"AvenirNext-DemiBold" size:14];
 }
 
 - (UIColor *)coverNumRecipesColour {
@@ -249,13 +249,13 @@
     [self.numRecipesLabel removeFromSuperview];
     
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-    UIEdgeInsets insets = UIEdgeInsetsMake(1.0, 6.0, 1.0, 6.0);
+    UIEdgeInsets insets = UIEdgeInsetsMake(2.0, 6.0, 1.0, 6.0);
     CGFloat singleLineHeight = [CKUIHelper singleLineHeightForFont:[self coverNumRecipesFont]];
     CGSize size = [displayNum sizeWithFont:[self coverNumRecipesFont]
                          constrainedToSize:CGSizeMake([self contentAvailableSize].width, singleLineHeight)
                              lineBreakMode:lineBreakMode];
     UILabel *numRecipesLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((self.bounds.size.width - size.width) / 2.0),
-                                                                         self.bounds.size.height - insets.bottom - size.height - 35.0,
+                                                                         self.bounds.size.height - insets.bottom - size.height - 40.0,
                                                                          insets.left + size.width + insets.right,
                                                                          insets.top + size.height + insets.bottom)];
     numRecipesLabel.autoresizingMask = UIViewAutoresizingNone;
