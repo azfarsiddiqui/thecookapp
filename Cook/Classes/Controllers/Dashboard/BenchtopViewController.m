@@ -162,16 +162,29 @@
         
     } else {
         
-        // Grab the book to open.
-        CKBook *bookToOpen = nil;
-        if (self.firstBenchtop && indexPath.section == 0) {
-            bookToOpen = self.myBook;
-        } else if (!self.firstBenchtop && indexPath.section == 1) {
-            bookToOpen = [self.friendsBooks objectAtIndex:indexPath.row];
+        
+        // Only open book if book was in the center.
+        UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+        if (CGRectContainsPoint(attributes.frame, CGPointMake(self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0),
+                                                              self.collectionView.center.y))) {
+            
+            // Grab the book to open.
+            CKBook *bookToOpen = nil;
+            if (self.firstBenchtop && indexPath.section == 0) {
+                bookToOpen = self.myBook;
+            } else if (!self.firstBenchtop && indexPath.section == 1) {
+                bookToOpen = [self.friendsBooks objectAtIndex:indexPath.row];
+            }
+            
+            // Open book.
+            [self openBook:bookToOpen indexPath:indexPath];
+            
+        } else {
+            [self.collectionView scrollToItemAtIndexPath:indexPath
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
         }
         
-        // Open book.
-        [self openBook:bookToOpen];
     }
     
 }
@@ -524,26 +537,6 @@
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
         [self loadDataToggleOnCompletion:NO];
-//       
-//        // Load friends book objects.
-//        [CKBook friendsBooksForUser:[CKUser currentUser]
-//                            success:^(NSArray *books) {
-//                                
-//                                // Keep a reference of the friends books to reload the collection view with.
-//                                self.friendsBooks = books;
-//                                
-//                                // Reveal the login book cell.
-//                                CKLoginBookCell *loginBookCell = (CKLoginBookCell *)[self.collectionView cellForItemAtIndexPath:
-//                                                                                     [NSIndexPath indexPathForItem:0 inSection:1]];
-//                                
-//                                [loginBookCell revealWithCompletion:^{
-//                                    [self.collectionView reloadData];
-//                                    [self toggleLayout];
-//                                }];
-//                            }
-//                            failure:^(NSError *error) {
-//                            }];
-//        
     } else {
         self.collectionView.userInteractionEnabled = YES;
     }
@@ -554,16 +547,16 @@
     return [layout isKindOfClass:[BenchtopStackLayout class]];
 }
 
-- (void)openBook:(CKBook *)book {
+- (void)openBook:(CKBook *)book indexPath:(NSIndexPath *)indexPath {
     if (!book) {
         return;
     }
     DLog(@"Open bookToOpen %@", book);
-    
-    // Open book.
-    BookViewController *bookViewVC = [[BookViewController alloc] initWithBook:book];
-    [self presentViewController:bookViewVC animated:YES completion:^{
-    }];
+        
+//    // Open book.
+//    BookViewController *bookViewVC = [[BookViewController alloc] initWithBook:book];
+//    [self presentViewController:bookViewVC animated:YES completion:^{
+//    }];
 }
 
 @end
