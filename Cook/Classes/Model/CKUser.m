@@ -122,6 +122,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 return [followRequest objectForKey:kFollowRequestAttrRequestedUser];
             }];
             [self.parseUser addUniqueObjectsFromArray:requestedUserIds forKey:kUserAttrFollows];
+            [self.parseUser saveEventually];
             DLog(@"Auto followed %d friends", [requestedUserIds count]);
             
             // Delete the auto follow requests.
