@@ -21,8 +21,8 @@
     return self;
 }
 
+// Subclasses to implement what to do after layout has completed after animation.
 - (void)layoutCompleted {
-    // Subclasses to implement what to do after layout has completed after animation.
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {

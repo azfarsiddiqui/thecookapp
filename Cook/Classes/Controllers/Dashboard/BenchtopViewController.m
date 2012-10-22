@@ -155,16 +155,23 @@
     }
     DLog(@"didSelectItemAtIndexPath: %@", indexPath);
     
-    if (!self.firstBenchtop) {
-        [collectionView scrollToItemAtIndexPath:indexPath
-                               atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                       animated:YES];
+    if (!self.firstBenchtop && indexPath.section == 1 && [self stacked]) {
+        
+        // Unstack books if we are on friends benchtop and stacked.
+        [self stackLayout:NO];
         
     } else {
-        //bookview
-        BookViewController *bookViewVC = [[BookViewController alloc] initWithBook:self.myBook];
-        [self presentViewController:bookViewVC animated:YES completion:^{
-        }];
+        
+        // Grab the book to open.
+        CKBook *bookToOpen = nil;
+        if (self.firstBenchtop && indexPath.section == 0) {
+            bookToOpen = self.myBook;
+        } else if (!self.firstBenchtop && indexPath.section == 1) {
+            bookToOpen = [self.friendsBooks objectAtIndex:indexPath.row];
+        }
+        
+        // Open book.
+        [self openBook:bookToOpen];
     }
     
 }
@@ -277,19 +284,32 @@
 #pragma mark - Private
 
 - (void)toggleLayout {
+    BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
+    [self stackLayout:[layout isKindOfClass:[BenchtopFlowLayout class]]];
+}
+
+- (void)stackLayout:(BOOL)stack {
+    BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
+    
+    // Return immediately if we are already on the required layout.
+    if ((stack && [layout isKindOfClass:[BenchtopStackLayout class]])
+        || (!stack && [layout isKindOfClass:[BenchtopFlowLayout class]])) {
+        return;
+    }
+    
     BenchtopLayout *layoutToToggle = nil;
-    
-    // Select the first cell.
-    [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]
-                                      animated:NO
-                                scrollPosition:UICollectionViewScrollPositionNone];
-    
-    if ([self.collectionView.collectionViewLayout isKindOfClass:[BenchtopFlowLayout class]]) {
+    if (stack) {
         layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
     } else {
         layoutToToggle = [[BenchtopFlowLayout alloc] initWithBenchtopDelegate:self];
     }
     
+    // Prepare to stack.
+    // Select the first cell to ensure cell stays on top.
+    [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]
+                                      animated:NO
+                                scrollPosition:UICollectionViewScrollPositionNone];
+
     [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationCurveLinear
@@ -300,7 +320,6 @@
                          [layoutToToggle layoutCompleted];
                          self.collectionView.userInteractionEnabled = YES;
                      }];
-
 }
 
 - (NSIndexPath *)nextSnapIndexPath {
@@ -342,8 +361,8 @@
         self.firstBenchtop = !self.firstBenchtop;
     }
     
-    // Toggle the layout
-    if ([[CKUser currentUser] isSignedIn]) {
+    // Toggle the layout on snap back to the first benchtop.
+    if (self.firstBenchtop && ![self stacked]) {
         [self performSelector:@selector(toggleLayout) withObject:nil afterDelay:0.0];
     }
     
@@ -426,6 +445,7 @@
                         success:^(NSArray *friendsBooks) {
                             self.friendsBooks = friendsBooks;
                             
+                            self.collectionView.userInteractionEnabled = YES;
                             [self.collectionView reloadData];
                             
                             // Inform layout complete.
@@ -503,7 +523,7 @@
 - (void)loginSuccessful:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-        [self loadDataToggleOnCompletion:YES];
+        [self loadDataToggleOnCompletion:NO];
 //       
 //        // Load friends book objects.
 //        [CKBook friendsBooksForUser:[CKUser currentUser]
@@ -527,6 +547,23 @@
     } else {
         self.collectionView.userInteractionEnabled = YES;
     }
+}
+
+- (BOOL)stacked {
+    BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
+    return [layout isKindOfClass:[BenchtopStackLayout class]];
+}
+
+- (void)openBook:(CKBook *)book {
+    if (!book) {
+        return;
+    }
+    DLog(@"Open bookToOpen %@", book);
+    
+    // Open book.
+    BookViewController *bookViewVC = [[BookViewController alloc] initWithBook:book];
+    [self presentViewController:bookViewVC animated:YES completion:^{
+    }];
 }
 
 @end
