@@ -86,7 +86,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    //[self loadData];
 }
 
 - (void)enable:(BOOL)enable {
@@ -389,15 +388,20 @@
 }
 
 - (void)loadData {
+    [self loadDataToggleOnCompletion:NO];
+}
+
+- (void)loadDataToggleOnCompletion:(BOOL)toggle {
     
     // Load my book.
     [self loadMyBook];
     
     // If signed in, start loading friends books.
     if ([[CKUser currentUser] isSignedIn]) {
-        [self loadFriendsBooks];
+        [self loadFriendsBooksToggleOnCompletion:toggle];
     }
 }
+
 
 - (void)loadMyBook {
     
@@ -412,6 +416,10 @@
 }
 
 - (void)loadFriendsBooks {
+    [self loadFriendsBooksToggleOnCompletion:NO];
+}
+
+- (void)loadFriendsBooksToggleOnCompletion:(BOOL)toggle {
     
     // Load friends books - this also does auto-follow in the background.
     [CKBook friendsBooksForUser:[CKUser currentUser]
@@ -421,8 +429,12 @@
                             [self.collectionView reloadData];
                             
                             // Inform layout complete.
-                            CKBenchtopLayout *layout = (CKBenchtopLayout *)self.collectionView.collectionViewLayout;
-                            [layout layoutCompleted];
+                            if (toggle) {
+                                [self toggleLayout];
+                            } else {
+                                CKBenchtopLayout *layout = (CKBenchtopLayout *)self.collectionView.collectionViewLayout;
+                                [layout layoutCompleted];
+                            }
                             
                         }
                         failure:^(NSError *error) {
@@ -491,26 +503,27 @@
 - (void)loginSuccessful:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-       
-        // Load friends book objects.
-        [CKBook friendsBooksForUser:[CKUser currentUser]
-                            success:^(NSArray *books) {
-                                
-                                // Keep a reference of the friends books to reload the collection view with.
-                                self.friendsBooks = books;
-                                
-                                // Reveal the login book cell.
-                                CKLoginBookCell *loginBookCell = (CKLoginBookCell *)[self.collectionView cellForItemAtIndexPath:
-                                                                                     [NSIndexPath indexPathForItem:0 inSection:1]];
-                                
-                                [loginBookCell revealWithCompletion:^{
-                                    [self.collectionView reloadData];
-                                    [self toggleLayout];
-                                }];
-                            }
-                            failure:^(NSError *error) {
-                            }];
-        
+        [self loadDataToggleOnCompletion:YES];
+//       
+//        // Load friends book objects.
+//        [CKBook friendsBooksForUser:[CKUser currentUser]
+//                            success:^(NSArray *books) {
+//                                
+//                                // Keep a reference of the friends books to reload the collection view with.
+//                                self.friendsBooks = books;
+//                                
+//                                // Reveal the login book cell.
+//                                CKLoginBookCell *loginBookCell = (CKLoginBookCell *)[self.collectionView cellForItemAtIndexPath:
+//                                                                                     [NSIndexPath indexPathForItem:0 inSection:1]];
+//                                
+//                                [loginBookCell revealWithCompletion:^{
+//                                    [self.collectionView reloadData];
+//                                    [self toggleLayout];
+//                                }];
+//                            }
+//                            failure:^(NSError *error) {
+//                            }];
+//        
     } else {
         self.collectionView.userInteractionEnabled = YES;
     }
