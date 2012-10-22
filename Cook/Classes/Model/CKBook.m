@@ -116,7 +116,12 @@
 }
 
 - (NSString *)tagline {
-    return [self.parseObject objectForKey:kBookAttrTagline];
+    NSString *tagLine = [self.parseObject objectForKey:kBookAttrTagline];
+    if ([tagLine length] == 0) {
+        return kBookAttrDefaultTaglineValue;
+    } else {
+        return tagLine;
+    }
 }
 
 - (void)setNumRecipes:(NSInteger)numRecipes {
