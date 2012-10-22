@@ -74,6 +74,10 @@
     [self.bookCoverView updateWithBook:book];
 }
 
+- (void)openBook:(BOOL)open {
+    [self.bookCoverView open:open];
+}
+
 - (void)loadAsPlaceholder {
     [self.activityView stopAnimating];
 }

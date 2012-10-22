@@ -65,6 +65,10 @@
     self.book = book;
 }
 
+- (void)open:(BOOL)open {
+    DLog();
+}
+
 - (UIEdgeInsets)contentEdgeInsets {
     return UIEdgeInsetsMake(10.0, 10.0, 13.0, 10.0);
 }

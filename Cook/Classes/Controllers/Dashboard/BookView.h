@@ -15,6 +15,7 @@
 
 - (void)layoutBookCover;
 - (void)updateWithBook:(CKBook *)book;
+- (void)open:(BOOL)open;
 
 - (UIEdgeInsets)contentEdgeInsets;
 - (CGSize)contentAvailableSize;

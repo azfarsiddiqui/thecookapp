@@ -552,6 +552,9 @@
         return;
     }
     DLog(@"Open bookToOpen %@", book);
+    
+    BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    [bookCell openBook:YES];
         
 //    // Open book.
 //    BookViewController *bookViewVC = [[BookViewController alloc] initWithBook:book];
