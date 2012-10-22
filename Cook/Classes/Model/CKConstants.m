@@ -17,7 +17,7 @@ NSString *const kModelAttrUpdatedAt = @"updatedAt";
 #pragma mark - User class
 
 NSString *const kUserModelName              = @"_User";
-NSString *const kUserAttrDefaultNameValue   = @"Guest";
+NSString *const kUserAttrDefaultNameValue   = @"Your Name";
 NSString *const kUserModelForeignKeyName    = @"user";
 NSString *const kUserAttrFacebookId         = @"facebookId";
 NSString *const kUserAttrFollows            = @"follows";
@@ -30,11 +30,14 @@ NSString *const kFollowRequestAttrRequestedUser = @"requestedUser";
 
 #pragma mark - Book class
 
-NSString *const kBookModelName              = @"Book";
-NSString *const kBookModelForeignKeyName    = @"book";
-NSString *const kBookAttrCover              = @"cover";
-NSString *const kBookAttrIllustration       = @"illustration";
-NSString *const kBookAttrDefaultNameValue   = @"COOK";
+NSString *const kBookModelName                  = @"Book";
+NSString *const kBookModelForeignKeyName        = @"book";
+NSString *const kBookAttrCover                  = @"cover";
+NSString *const kBookAttrIllustration           = @"illustration";
+NSString *const kBookAttrTagline                = @"tagline";
+NSString *const kBookAttrNumRecipes             = @"numRecipes";
+NSString *const kBookAttrDefaultNameValue       = @"COOK";
+NSString *const kBookAttrDefaultTaglineValue    = @"Tell us more about your book";
 
 #pragma mark - Recipe class
 NSString *const kRecipeModelName = @"Recipe";

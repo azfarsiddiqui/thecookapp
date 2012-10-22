@@ -37,6 +37,7 @@
 + (PFObject *)createParseBook {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
+    [parseBook setObject:kBookAttrDefaultTaglineValue forKey:kBookAttrTagline];
     [parseBook setObject:[BookCover initialCover] forKey:kBookAttrCover];
     [parseBook setObject:[BookCover initialIllustration] forKey:kBookAttrIllustration];
     return parseBook;
@@ -108,6 +109,22 @@
 
 - (NSString *)illustration {
     return [self.parseObject objectForKey:kBookAttrIllustration];
+}
+
+- (void)setTagline:(NSString *)tagline {
+    [self.parseObject setObject:tagline forKey:kBookAttrTagline];
+}
+
+- (NSString *)tagline {
+    return [self.parseObject objectForKey:kBookAttrTagline];
+}
+
+- (void)setNumRecipes:(NSInteger)numRecipes {
+    [self.parseObject setObject:[NSNumber numberWithInteger:numRecipes] forKey:kBookAttrNumRecipes];
+}
+
+- (NSInteger)numRecipes {
+    return [[self.parseObject objectForKey:kBookAttrNumRecipes] integerValue];
 }
 
 - (void)listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {

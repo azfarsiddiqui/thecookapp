@@ -20,13 +20,18 @@
 - (CGSize)contentAvailableSize;
 
 - (UIFont *)coverNameFont;
-- (UIColor *)coverNameColor;
-- (UIColor *)coverNameShadowColor;
-
+- (UIColor *)coverNameColour;
+- (UIColor *)coverNameShadowColour;
 - (UIFont *)coverTitleFont;
 - (NSTextAlignment)coverTitleAlignment;
-- (UIColor *)coverTitleColor;
-- (UIColor *)coverTitleShadowColor;
+- (UIColor *)coverTitleColour;
+- (UIColor *)coverTitleShadowColour;
+- (UIFont *)coverTaglineFont;
+- (UIColor *)coverTaglineColour;
+- (UIColor *)coverTaglineShadowColor;
+- (UIFont *)coverNumRecipesFont;
+- (UIColor *)coverNumRecipesColour;
+- (UIColor *)coverNumRecipesShadowColour;
 - (UIImage *)coverBackgroundImage;
 - (UIImage *)coverIllustrationImage;
 - (UIImage *)coverOverlayImage;

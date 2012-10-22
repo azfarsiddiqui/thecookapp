@@ -20,6 +20,8 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 
 @property (nonatomic, copy) NSString *cover;
 @property (nonatomic, copy) NSString *illustration;
+@property (nonatomic, copy) NSString *tagline;
+@property (nonatomic, assign) NSInteger numRecipes;
 
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (PFObject *)createParseBook;
