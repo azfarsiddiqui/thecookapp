@@ -6,16 +6,16 @@
 //  Copyright (c) 2012 Apps Perhaps Pty Ltd. All rights reserved.
 //
 
-#import "CKBenchtopStackLayout.h"
+#import "BenchtopStackLayout.h"
 
-@interface CKBenchtopStackLayout ()
+@interface BenchtopStackLayout ()
 
 - (CGFloat)rotationForIndexPath:(NSIndexPath *)indexPath;
 - (CATransform3D)transformForIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
-@implementation CKBenchtopStackLayout
+@implementation BenchtopStackLayout
 
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
 

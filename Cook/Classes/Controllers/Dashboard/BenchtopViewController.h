@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CKBenchtopDelegate.h"
 
-@interface CKBenchtopViewController : UICollectionViewController <CKBenchtopDelegate>
+@interface BenchtopViewController : UICollectionViewController <BenchtopDelegate>
 
 - (void)enable:(BOOL)enable;
 - (void)freeze:(BOOL)freeze;

@@ -6,20 +6,20 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKBenchtopViewController.h"
-#import "CKBenchtopStackLayout.h"
-#import "CKBenchtopFlowLayout.h"
-#import "CKBenchtopBookCell.h"
-#import "CKBenchtopLayout.h"
+#import "BenchtopViewController.h"
+#import "BenchtopStackLayout.h"
+#import "BenchtopFlowLayout.h"
+#import "BenchtopBookCell.h"
+#import "BenchtopLayout.h"
 #import "CKUser.h"
 #import "CKBook.h"
-#import "CKLoginBookCell.h"
+#import "LoginBookCell.h"
 #import "RecipeListViewController.h"
 #import "BookViewController.h"
 #import "EventHelper.h"
 #import "MRCEnumerable.h"
 
-@interface CKBenchtopViewController ()
+@interface BenchtopViewController ()
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIView *overlayView;
@@ -31,7 +31,7 @@
 
 @end
 
-@implementation CKBenchtopViewController
+@implementation BenchtopViewController
 
 #define kBookCellId                 @"BookCell"
 #define kLoginCellId                @"LoginCell"
@@ -46,7 +46,7 @@
 }
 
 - (id)init {
-    if (self = [super initWithCollectionViewLayout:[[CKBenchtopStackLayout alloc] initWithBenchtopDelegate:self]]) {
+    if (self = [super initWithCollectionViewLayout:[[BenchtopStackLayout alloc] initWithBenchtopDelegate:self]]) {
         DLog(@"Loading benchtop for user %@", [CKUser currentUser]);
     }
     return self;
@@ -77,8 +77,8 @@
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     self.firstBenchtop = YES;
     
-    [self.collectionView registerClass:[CKBenchtopBookCell class] forCellWithReuseIdentifier:kBookCellId];
-    [self.collectionView registerClass:[CKLoginBookCell class] forCellWithReuseIdentifier:kLoginCellId];
+    [self.collectionView registerClass:[BenchtopBookCell class] forCellWithReuseIdentifier:kBookCellId];
+    [self.collectionView registerClass:[LoginBookCell class] forCellWithReuseIdentifier:kLoginCellId];
     
     // Register for events.
     [EventHelper registerBenchtopFreeze:self selector:@selector(benchtopFreezeRequested:)];
@@ -125,7 +125,7 @@
 }
 
 - (CGSize)benchtopItemSize {
-    return [CKBenchtopBookCell cellSize];
+    return [BenchtopBookCell cellSize];
 }
 
 - (CGFloat)benchtopSideGap {
@@ -147,7 +147,7 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    CKBenchtopBookCell *cell = (CKBenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     
     // Ignore if the cell is not enabled.
     if (![cell enabled]) {
@@ -277,17 +277,17 @@
 #pragma mark - Private
 
 - (void)toggleLayout {
-    CKBenchtopLayout *layoutToToggle = nil;
+    BenchtopLayout *layoutToToggle = nil;
     
     // Select the first cell.
     [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]
                                       animated:NO
                                 scrollPosition:UICollectionViewScrollPositionNone];
     
-    if ([self.collectionView.collectionViewLayout isKindOfClass:[CKBenchtopFlowLayout class]]) {
-        layoutToToggle = [[CKBenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+    if ([self.collectionView.collectionViewLayout isKindOfClass:[BenchtopFlowLayout class]]) {
+        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
     } else {
-        layoutToToggle = [[CKBenchtopFlowLayout alloc] initWithBenchtopDelegate:self];
+        layoutToToggle = [[BenchtopFlowLayout alloc] initWithBenchtopDelegate:self];
     }
     
     [UIView animateWithDuration:0.2
@@ -432,7 +432,7 @@
                             if (toggle) {
                                 [self toggleLayout];
                             } else {
-                                CKBenchtopLayout *layout = (CKBenchtopLayout *)self.collectionView.collectionViewLayout;
+                                BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
                                 [layout layoutCompleted];
                             }
                             
@@ -444,7 +444,7 @@
 }
 
 - (UICollectionViewCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath {
-    CKBenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
+    BenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
                                                                               forIndexPath:indexPath];
     if (self.myBook) {
         [cell loadBook:self.myBook];
@@ -456,7 +456,7 @@
 }
 
 - (UICollectionViewCell *)otherBookCellsForIndexPath:(NSIndexPath *)indexPath {
-    CKBenchtopBookCell *cell = nil;
+    BenchtopBookCell *cell = nil;
     CKUser *user = [CKUser currentUser];
     if ([user isSignedIn]) {
         
@@ -490,7 +490,7 @@
 
 - (void)updateMyBook:(CKBook *)book {
     self.myBook = book;
-    CKBenchtopBookCell *cell = (CKBenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:
+    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:
                                                       [NSIndexPath indexPathForItem:0 inSection:0]];
     [cell loadBook:book];
 }

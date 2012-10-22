@@ -6,13 +6,13 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookCoverView.h"
+#import "BookView.h"
 #import "BookCover.h"
 #import "UIColor+Expanded.h"
 #import "CKUIHelper.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface BookCoverView ()
+@interface BookView ()
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
@@ -25,7 +25,7 @@
 
 @end
 
-@implementation BookCoverView
+@implementation BookView
 
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 

@@ -6,15 +6,15 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKBenchtopLayout.h"
+#import "BenchtopLayout.h"
 
-@interface CKBenchtopLayout ()
+@interface BenchtopLayout ()
 
 @end
 
-@implementation CKBenchtopLayout
+@implementation BenchtopLayout
 
-- (id)initWithBenchtopDelegate:(id<CKBenchtopDelegate>)benchtopDelegate {
+- (id)initWithBenchtopDelegate:(id<BenchtopDelegate>)benchtopDelegate {
     if ([super init]) {
         self.benchtopDelegate = benchtopDelegate;
     }

@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKBenchtopBookCell.h"
+#import "BenchtopBookCell.h"
 #import "CKLoginView.h"
 
-@interface CKLoginBookCell : CKBenchtopBookCell <CKLoginViewDelegate>
+@interface LoginBookCell : BenchtopBookCell <CKLoginViewDelegate>
 
 - (void)revealWithCompletion:(void (^)())completion;
 

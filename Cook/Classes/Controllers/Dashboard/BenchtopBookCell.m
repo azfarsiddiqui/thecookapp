@@ -6,22 +6,22 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKBenchtopBookCell.h"
+#import "BenchtopBookCell.h"
 #import <QuartzCore/QuartzCore.h>
-#import "BookCoverView.h"
+#import "BookView.h"
 #import "BookCoverViewFactory.h"
 
-@interface CKBenchtopBookCell ()
+@interface BenchtopBookCell ()
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) BookCoverView *bookCoverView;
+@property (nonatomic, strong) BookView *bookCoverView;
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UIImageView *bookImageView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
-@implementation CKBenchtopBookCell
+@implementation BenchtopBookCell
 
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 #define kBookTitleFont          [UIFont boldSystemFontOfSize:40.0]
@@ -35,7 +35,7 @@
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         
-        BookCoverView *bookCoverView = [[BookCoverView alloc] initWithFrame:frame];
+        BookView *bookCoverView = [[BookView alloc] initWithFrame:frame];
         bookCoverView.center = self.contentView.center;
         bookCoverView.frame = CGRectIntegral(bookCoverView.frame);
         [self.contentView addSubview:bookCoverView];

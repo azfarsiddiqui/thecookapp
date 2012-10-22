@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKLoginBookCell.h"
+#import "LoginBookCell.h"
 #import "EventHelper.h"
 #import "CKUser.h"
 
-@interface CKLoginBookCell ()
+@interface LoginBookCell ()
 
 @property (nonatomic, strong) CKLoginView *loginView;
 @property (nonatomic, strong) UIView *loginBannerView;
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation CKLoginBookCell
+@implementation LoginBookCell
 
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {

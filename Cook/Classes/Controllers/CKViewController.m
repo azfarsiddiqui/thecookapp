@@ -9,11 +9,11 @@
 #import "CKViewController.h"
 #import "CKUser.h"
 #import "CKAppHelper.h"
-#import "CKBenchtopViewController.h"
+#import "BenchtopViewController.h"
 
 @interface CKViewController ()
 
-@property (nonatomic, strong) CKBenchtopViewController *benchtopViewController;
+@property (nonatomic, strong) BenchtopViewController *benchtopViewController;
 
 - (void)showDashboard;
 
@@ -32,7 +32,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     // Prepare for the dashboard to be transitioned in.
-    self.benchtopViewController = [[CKBenchtopViewController alloc] init];
+    self.benchtopViewController = [[BenchtopViewController alloc] init];
     self.benchtopViewController.view.frame = self.view.bounds;
     [self.view addSubview:self.benchtopViewController.view];
     

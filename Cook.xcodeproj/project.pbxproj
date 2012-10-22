@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		761FA06C162FC29000DC0C84 /* BookCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 761FA06B162FC29000DC0C84 /* BookCoverView.m */; };
+		761FA06C162FC29000DC0C84 /* BookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 761FA06B162FC29000DC0C84 /* BookView.m */; };
 		761FA070162FC60400DC0C84 /* BookCoverViewFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 761FA06F162FC60400DC0C84 /* BookCoverViewFactory.m */; };
-		7620270416252B1E005A8B66 /* CKBenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026F916252B1E005A8B66 /* CKBenchtopViewController.m */; };
-		7620270516252B1E005A8B66 /* CKBenchtopStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FA16252B1E005A8B66 /* CKBenchtopStackLayout.m */; };
-		7620270616252B1E005A8B66 /* CKBenchtopFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FB16252B1E005A8B66 /* CKBenchtopFlowLayout.m */; };
-		7620270716252B1E005A8B66 /* CKBenchtopLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FD16252B1E005A8B66 /* CKBenchtopLayout.m */; };
-		7620270816252B1E005A8B66 /* CKBenchtopBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7620270216252B1E005A8B66 /* CKBenchtopBookCell.m */; };
-		7620271016253D19005A8B66 /* CKLoginBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7620270F16253D18005A8B66 /* CKLoginBookCell.m */; };
+		7620270516252B1E005A8B66 /* BenchtopStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FA16252B1E005A8B66 /* BenchtopStackLayout.m */; };
+		7620270616252B1E005A8B66 /* BenchtopFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FB16252B1E005A8B66 /* BenchtopFlowLayout.m */; };
+		7620270716252B1E005A8B66 /* BenchtopLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FD16252B1E005A8B66 /* BenchtopLayout.m */; };
+		7620270816252B1E005A8B66 /* BenchtopBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7620270216252B1E005A8B66 /* BenchtopBookCell.m */; };
+		7620271016253D19005A8B66 /* LoginBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7620270F16253D18005A8B66 /* LoginBookCell.m */; };
 		7620271D16254128005A8B66 /* cook_signin_banner_leftback.png in Resources */ = {isa = PBXBuildFile; fileRef = 7620271116254128005A8B66 /* cook_signin_banner_leftback.png */; };
 		7620271E16254128005A8B66 /* cook_signin_banner_leftback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7620271216254128005A8B66 /* cook_signin_banner_leftback@2x.png */; };
 		7620271F16254128005A8B66 /* cook_signin_banner_leftoverlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7620271316254128005A8B66 /* cook_signin_banner_leftoverlay.png */; };
@@ -37,6 +36,7 @@
 		7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */; };
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
 		7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* CKAppHelper.m */; };
+		766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026F916252B1E005A8B66 /* BenchtopViewController.m */; };
 		766BFBE11630D69B0083EB0E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE01630D69B0083EB0E /* Social.framework */; };
 		766BFBE41630D6A00083EB0E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE31630D6A00083EB0E /* Accounts.framework */; };
 		766BFBE61630D6A40083EB0E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE51630D6A40083EB0E /* AdSupport.framework */; };
@@ -133,23 +133,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		761FA06A162FC29000DC0C84 /* BookCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCoverView.h; sourceTree = "<group>"; };
-		761FA06B162FC29000DC0C84 /* BookCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCoverView.m; sourceTree = "<group>"; };
+		761FA06A162FC29000DC0C84 /* BookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookView.h; sourceTree = "<group>"; };
+		761FA06B162FC29000DC0C84 /* BookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookView.m; sourceTree = "<group>"; };
 		761FA06E162FC60400DC0C84 /* BookCoverViewFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCoverViewFactory.h; sourceTree = "<group>"; };
 		761FA06F162FC60400DC0C84 /* BookCoverViewFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCoverViewFactory.m; sourceTree = "<group>"; };
-		762026F916252B1E005A8B66 /* CKBenchtopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBenchtopViewController.m; sourceTree = "<group>"; };
-		762026FA16252B1E005A8B66 /* CKBenchtopStackLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBenchtopStackLayout.m; sourceTree = "<group>"; };
-		762026FB16252B1E005A8B66 /* CKBenchtopFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBenchtopFlowLayout.m; sourceTree = "<group>"; };
-		762026FC16252B1E005A8B66 /* CKBenchtopFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopFlowLayout.h; sourceTree = "<group>"; };
-		762026FD16252B1E005A8B66 /* CKBenchtopLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBenchtopLayout.m; sourceTree = "<group>"; };
-		762026FE16252B1E005A8B66 /* CKBenchtopLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopLayout.h; sourceTree = "<group>"; };
-		762026FF16252B1E005A8B66 /* CKBenchtopStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopStackLayout.h; sourceTree = "<group>"; };
+		762026F916252B1E005A8B66 /* BenchtopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopViewController.m; sourceTree = "<group>"; };
+		762026FA16252B1E005A8B66 /* BenchtopStackLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopStackLayout.m; sourceTree = "<group>"; };
+		762026FB16252B1E005A8B66 /* BenchtopFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopFlowLayout.m; sourceTree = "<group>"; };
+		762026FC16252B1E005A8B66 /* BenchtopFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopFlowLayout.h; sourceTree = "<group>"; };
+		762026FD16252B1E005A8B66 /* BenchtopLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopLayout.m; sourceTree = "<group>"; };
+		762026FE16252B1E005A8B66 /* BenchtopLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopLayout.h; sourceTree = "<group>"; };
+		762026FF16252B1E005A8B66 /* BenchtopStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopStackLayout.h; sourceTree = "<group>"; };
 		7620270016252B1E005A8B66 /* CKBenchtopDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopDelegate.h; sourceTree = "<group>"; };
-		7620270116252B1E005A8B66 /* CKBenchtopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopViewController.h; sourceTree = "<group>"; };
-		7620270216252B1E005A8B66 /* CKBenchtopBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBenchtopBookCell.m; sourceTree = "<group>"; };
-		7620270316252B1E005A8B66 /* CKBenchtopBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopBookCell.h; sourceTree = "<group>"; };
-		7620270E16253D18005A8B66 /* CKLoginBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKLoginBookCell.h; sourceTree = "<group>"; };
-		7620270F16253D18005A8B66 /* CKLoginBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKLoginBookCell.m; sourceTree = "<group>"; };
+		7620270116252B1E005A8B66 /* BenchtopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewController.h; sourceTree = "<group>"; };
+		7620270216252B1E005A8B66 /* BenchtopBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopBookCell.m; sourceTree = "<group>"; };
+		7620270316252B1E005A8B66 /* BenchtopBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopBookCell.h; sourceTree = "<group>"; };
+		7620270E16253D18005A8B66 /* LoginBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginBookCell.h; sourceTree = "<group>"; };
+		7620270F16253D18005A8B66 /* LoginBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginBookCell.m; sourceTree = "<group>"; };
 		7620271116254128005A8B66 /* cook_signin_banner_leftback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_signin_banner_leftback.png; sourceTree = "<group>"; };
 		7620271216254128005A8B66 /* cook_signin_banner_leftback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_signin_banner_leftback@2x.png"; sourceTree = "<group>"; };
 		7620271316254128005A8B66 /* cook_signin_banner_leftoverlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_signin_banner_leftoverlay.png; sourceTree = "<group>"; };
@@ -375,21 +375,21 @@
 		76520459161A80CB00EE253C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				7620270116252B1E005A8B66 /* CKBenchtopViewController.h */,
-				762026F916252B1E005A8B66 /* CKBenchtopViewController.m */,
-				7620270316252B1E005A8B66 /* CKBenchtopBookCell.h */,
-				7620270216252B1E005A8B66 /* CKBenchtopBookCell.m */,
-				7620270E16253D18005A8B66 /* CKLoginBookCell.h */,
-				7620270F16253D18005A8B66 /* CKLoginBookCell.m */,
-				762026FE16252B1E005A8B66 /* CKBenchtopLayout.h */,
-				762026FD16252B1E005A8B66 /* CKBenchtopLayout.m */,
+				7620270116252B1E005A8B66 /* BenchtopViewController.h */,
+				762026F916252B1E005A8B66 /* BenchtopViewController.m */,
+				7620270316252B1E005A8B66 /* BenchtopBookCell.h */,
+				7620270216252B1E005A8B66 /* BenchtopBookCell.m */,
+				7620270E16253D18005A8B66 /* LoginBookCell.h */,
+				7620270F16253D18005A8B66 /* LoginBookCell.m */,
+				762026FE16252B1E005A8B66 /* BenchtopLayout.h */,
+				762026FD16252B1E005A8B66 /* BenchtopLayout.m */,
 				7620270016252B1E005A8B66 /* CKBenchtopDelegate.h */,
-				762026FF16252B1E005A8B66 /* CKBenchtopStackLayout.h */,
-				762026FA16252B1E005A8B66 /* CKBenchtopStackLayout.m */,
-				762026FC16252B1E005A8B66 /* CKBenchtopFlowLayout.h */,
-				762026FB16252B1E005A8B66 /* CKBenchtopFlowLayout.m */,
-				761FA06A162FC29000DC0C84 /* BookCoverView.h */,
-				761FA06B162FC29000DC0C84 /* BookCoverView.m */,
+				762026FF16252B1E005A8B66 /* BenchtopStackLayout.h */,
+				762026FA16252B1E005A8B66 /* BenchtopStackLayout.m */,
+				762026FC16252B1E005A8B66 /* BenchtopFlowLayout.h */,
+				762026FB16252B1E005A8B66 /* BenchtopFlowLayout.m */,
+				761FA06A162FC29000DC0C84 /* BookView.h */,
+				761FA06B162FC29000DC0C84 /* BookView.m */,
 				761FA06E162FC60400DC0C84 /* BookCoverViewFactory.h */,
 				761FA06F162FC60400DC0C84 /* BookCoverViewFactory.m */,
 			);
@@ -898,22 +898,22 @@
 				89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */,
 				89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */,
 				89232B801625291A00152940 /* CookPageFlipper.m in Sources */,
-				7620270416252B1E005A8B66 /* CKBenchtopViewController.m in Sources */,
-				7620270516252B1E005A8B66 /* CKBenchtopStackLayout.m in Sources */,
-				7620270616252B1E005A8B66 /* CKBenchtopFlowLayout.m in Sources */,
-				7620270716252B1E005A8B66 /* CKBenchtopLayout.m in Sources */,
-				7620270816252B1E005A8B66 /* CKBenchtopBookCell.m in Sources */,
-				7620271016253D19005A8B66 /* CKLoginBookCell.m in Sources */,
+				7620270516252B1E005A8B66 /* BenchtopStackLayout.m in Sources */,
+				7620270616252B1E005A8B66 /* BenchtopFlowLayout.m in Sources */,
+				7620270716252B1E005A8B66 /* BenchtopLayout.m in Sources */,
+				7620270816252B1E005A8B66 /* BenchtopBookCell.m in Sources */,
+				7620271016253D19005A8B66 /* LoginBookCell.m in Sources */,
 				89232B921625431500152940 /* BookViewController.m in Sources */,
 				76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */,
 				76FA9A4016267687006EAFBB /* EventHelper.m in Sources */,
 				8976B893162787DC004155C6 /* BookContentsViewController.m in Sources */,
 				8976B89816279244004155C6 /* BookCategoryViewController.m in Sources */,
 				8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */,
-				761FA06C162FC29000DC0C84 /* BookCoverView.m in Sources */,
+				761FA06C162FC29000DC0C84 /* BookView.m in Sources */,
 				761FA070162FC60400DC0C84 /* BookCoverViewFactory.m in Sources */,
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
 				76616E8D16312461002C4878 /* BookCover.m in Sources */,
+				766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

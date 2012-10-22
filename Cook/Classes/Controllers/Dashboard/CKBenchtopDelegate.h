@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CKBenchtopDelegate <NSObject>
+@protocol BenchtopDelegate <NSObject>
 
 - (BOOL)onMyBenchtop;
 - (CGSize)benchtopItemSize;

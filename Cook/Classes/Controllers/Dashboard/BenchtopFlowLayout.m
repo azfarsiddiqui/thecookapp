@@ -6,15 +6,15 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKBenchtopFlowLayout.h"
+#import "BenchtopFlowLayout.h"
 
-@interface CKBenchtopFlowLayout ()
+@interface BenchtopFlowLayout ()
 
 @property (nonatomic, assign) BOOL observingCollectionView;
 
 @end
 
-@implementation CKBenchtopFlowLayout
+@implementation BenchtopFlowLayout
 
 - (void)dealloc {
     [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];

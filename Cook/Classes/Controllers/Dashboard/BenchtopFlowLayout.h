@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CKBenchtopLayout.h"
+#import "BenchtopLayout.h"
 
-@interface CKBenchtopFlowLayout : CKBenchtopLayout
+@interface BenchtopFlowLayout : BenchtopLayout
 
 @end

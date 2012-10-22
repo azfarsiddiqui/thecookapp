@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "CKBenchtopDelegate.h"
 
-@interface CKBenchtopLayout : UICollectionViewLayout
+@interface BenchtopLayout : UICollectionViewLayout
 
-@property (nonatomic, assign) id<CKBenchtopDelegate> benchtopDelegate;
+@property (nonatomic, assign) id<BenchtopDelegate> benchtopDelegate;
 
-- (id)initWithBenchtopDelegate:(id<CKBenchtopDelegate>)benchtopDelegate;
+- (id)initWithBenchtopDelegate:(id<BenchtopDelegate>)benchtopDelegate;
 - (void)layoutCompleted;
 
 @end

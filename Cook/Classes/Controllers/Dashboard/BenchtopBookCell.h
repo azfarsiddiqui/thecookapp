@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
 
-@interface CKBenchtopBookCell : UICollectionViewCell
+@interface BenchtopBookCell : UICollectionViewCell
 
 + (CGSize)cellSize;
 

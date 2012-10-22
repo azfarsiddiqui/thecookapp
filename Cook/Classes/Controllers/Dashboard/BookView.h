@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
 
-@interface BookCoverView : UIView
+@interface BookView : UIView
 
 @property (nonatomic, strong) NSString *type;
 

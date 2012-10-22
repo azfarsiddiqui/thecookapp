@@ -10,12 +10,12 @@
 
 @implementation BookCoverViewFactory
 
-+ (BookCoverView *)bookCoverViewWithFrame:(CGRect)frame {
-    return [[BookCoverView alloc] initWithFrame:frame];
++ (BookView *)bookCoverViewWithFrame:(CGRect)frame {
+    return [[BookView alloc] initWithFrame:frame];
 }
 
-+ (BookCoverView *)bookCoverViewWithType:(NSString *)type frame:(CGRect)frame {
-    BookCoverView *bookCoverView = [BookCoverViewFactory bookCoverViewWithFrame:frame];
++ (BookView *)bookCoverViewWithType:(NSString *)type frame:(CGRect)frame {
+    BookView *bookCoverView = [BookCoverViewFactory bookCoverViewWithFrame:frame];
     bookCoverView.type = type;
     return bookCoverView;
 }
