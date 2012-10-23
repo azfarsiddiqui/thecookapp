@@ -118,7 +118,7 @@
     self.collectionView.userInteractionEnabled = !freeze;
 }
 
-#pragma mark - CKBenchtopDelegate methods
+#pragma mark - BenchtopDelegate methods
 
 - (BOOL)onMyBenchtop {
     return self.firstBenchtop;
@@ -530,7 +530,7 @@
 
 - (void)benchtopFreezeRequested:(NSNotification *)notification {
     BOOL freeze = [EventHelper benchFreezeForNotification:notification];
-    self.collectionView.userInteractionEnabled = !freeze;
+    [self freeze:freeze];
 }
 
 - (void)loginSuccessful:(NSNotification *)notification {
@@ -552,6 +552,8 @@
         return;
     }
     DLog(@"Open bookToOpen %@", book);
+    
+    [self freeze:YES];
     
     BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     [bookCell openBook:YES];

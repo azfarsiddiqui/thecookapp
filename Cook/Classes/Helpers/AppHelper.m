@@ -6,21 +6,22 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKAppHelper.h"
+#import "AppHelper.h"
+#import "AppDelegate.h"
 
-@interface CKAppHelper ()
+@interface AppHelper ()
 
 @end
 
-@implementation CKAppHelper
+@implementation AppHelper
 
 #define kExistingVersion    @"COOK_EXISTING_VERSION"
 
-+ (CKAppHelper *)sharedInstance {
++ (AppHelper *)sharedInstance {
     static dispatch_once_t pred;
-    static CKAppHelper *sharedInstance = nil;
+    static AppHelper *sharedInstance = nil;
     dispatch_once(&pred, ^{
-        sharedInstance =  [[CKAppHelper alloc] init];
+        sharedInstance =  [[AppHelper alloc] init];
     });
     return sharedInstance;
 }
@@ -44,6 +45,10 @@
     }
     
     return newInstall;
+}
+
+- (UIView *)rootView {
+    return [UIApplication sharedApplication].keyWindow.rootViewController.view;
 }
 
 @end

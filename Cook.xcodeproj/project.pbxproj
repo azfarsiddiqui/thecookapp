@@ -35,7 +35,7 @@
 		7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3EE16140F6F001D1BA1 /* CKModel.m */; };
 		7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */; };
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
-		7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* CKAppHelper.m */; };
+		7666B40616143713001D1BA1 /* AppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* AppHelper.m */; };
 		766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026F916252B1E005A8B66 /* BenchtopViewController.m */; };
 		766BFBE11630D69B0083EB0E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE01630D69B0083EB0E /* Social.framework */; };
 		766BFBE41630D6A00083EB0E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE31630D6A00083EB0E /* Accounts.framework */; };
@@ -86,7 +86,7 @@
 		76ED27751612DCC60012E479 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276C1612DCC60012E479 /* Security.framework */; };
 		76ED27761612DCC60012E479 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276D1612DCC60012E479 /* StoreKit.framework */; };
 		76ED27771612DCC60012E479 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276E1612DCC60012E479 /* SystemConfiguration.framework */; };
-		76ED27811612DE140012E479 /* CKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED27801612DE140012E479 /* CKViewController.m */; };
+		76ED27811612DE140012E479 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED27801612DE140012E479 /* RootViewController.m */; };
 		76ED27851612DEB80012E479 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27831612DEB80012E479 /* Icon.png */; };
 		76ED27861612DEB80012E479 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27841612DEB80012E479 /* Icon@2x.png */; };
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
@@ -144,7 +144,7 @@
 		762026FD16252B1E005A8B66 /* BenchtopLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopLayout.m; sourceTree = "<group>"; };
 		762026FE16252B1E005A8B66 /* BenchtopLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopLayout.h; sourceTree = "<group>"; };
 		762026FF16252B1E005A8B66 /* BenchtopStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopStackLayout.h; sourceTree = "<group>"; };
-		7620270016252B1E005A8B66 /* CKBenchtopDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopDelegate.h; sourceTree = "<group>"; };
+		7620270016252B1E005A8B66 /* BenchtopDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopDelegate.h; sourceTree = "<group>"; };
 		7620270116252B1E005A8B66 /* BenchtopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewController.h; sourceTree = "<group>"; };
 		7620270216252B1E005A8B66 /* BenchtopBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopBookCell.m; sourceTree = "<group>"; };
 		7620270316252B1E005A8B66 /* BenchtopBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopBookCell.h; sourceTree = "<group>"; };
@@ -179,8 +179,8 @@
 		7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKIntroViewController.m; sourceTree = "<group>"; };
 		7666B40116141B7E001D1BA1 /* CKModalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKModalView.h; sourceTree = "<group>"; };
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
-		7666B40416143713001D1BA1 /* CKAppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKAppHelper.h; sourceTree = "<group>"; };
-		7666B40516143713001D1BA1 /* CKAppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKAppHelper.m; sourceTree = "<group>"; };
+		7666B40416143713001D1BA1 /* AppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppHelper.h; sourceTree = "<group>"; };
+		7666B40516143713001D1BA1 /* AppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppHelper.m; sourceTree = "<group>"; };
 		766BFBE01630D69B0083EB0E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		766BFBE31630D6A00083EB0E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		766BFBE51630D6A40083EB0E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -236,8 +236,8 @@
 		76ED276C1612DCC60012E479 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		76ED276D1612DCC60012E479 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		76ED276E1612DCC60012E479 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		76ED277F1612DE140012E479 /* CKViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKViewController.h; sourceTree = "<group>"; };
-		76ED27801612DE140012E479 /* CKViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKViewController.m; sourceTree = "<group>"; };
+		76ED277F1612DE140012E479 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		76ED27801612DE140012E479 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		76ED27831612DEB80012E479 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		76ED27841612DEB80012E479 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		76ED278A1612E45B0012E479 /* CKServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKServerManager.h; sourceTree = "<group>"; };
@@ -383,7 +383,7 @@
 				7620270F16253D18005A8B66 /* LoginBookCell.m */,
 				762026FE16252B1E005A8B66 /* BenchtopLayout.h */,
 				762026FD16252B1E005A8B66 /* BenchtopLayout.m */,
-				7620270016252B1E005A8B66 /* CKBenchtopDelegate.h */,
+				7620270016252B1E005A8B66 /* BenchtopDelegate.h */,
 				762026FF16252B1E005A8B66 /* BenchtopStackLayout.h */,
 				762026FA16252B1E005A8B66 /* BenchtopStackLayout.m */,
 				762026FC16252B1E005A8B66 /* BenchtopFlowLayout.h */,
@@ -413,8 +413,8 @@
 			children = (
 				7666B40116141B7E001D1BA1 /* CKModalView.h */,
 				7666B40216141B7E001D1BA1 /* CKModalView.m */,
-				7666B40416143713001D1BA1 /* CKAppHelper.h */,
-				7666B40516143713001D1BA1 /* CKAppHelper.m */,
+				7666B40416143713001D1BA1 /* AppHelper.h */,
+				7666B40516143713001D1BA1 /* AppHelper.m */,
 				8936F7FE161E7C1100E6EF1D /* CKUIHelper.h */,
 				8936F7FF161E7C1100E6EF1D /* CKUIHelper.m */,
 				76FA9A3E16267687006EAFBB /* EventHelper.h */,
@@ -553,8 +553,8 @@
 				8936F7F1161E7ABB00E6EF1D /* Recipe */,
 				7652046B161AD11E00EE253C /* Categories */,
 				76520459161A80CB00EE253C /* Dashboard */,
-				76ED277F1612DE140012E479 /* CKViewController.h */,
-				76ED27801612DE140012E479 /* CKViewController.m */,
+				76ED277F1612DE140012E479 /* RootViewController.h */,
+				76ED27801612DE140012E479 /* RootViewController.m */,
 				7666B3F8161418E5001D1BA1 /* CKIntroViewController.h */,
 				7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */,
 			);
@@ -870,14 +870,14 @@
 			files = (
 				76ED274E1612DC180012E479 /* main.m in Sources */,
 				76ED27521612DC180012E479 /* AppDelegate.m in Sources */,
-				76ED27811612DE140012E479 /* CKViewController.m in Sources */,
+				76ED27811612DE140012E479 /* RootViewController.m in Sources */,
 				76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */,
 				7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */,
 				7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */,
 				7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */,
 				7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */,
 				7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */,
-				7666B40616143713001D1BA1 /* CKAppHelper.m in Sources */,
+				7666B40616143713001D1BA1 /* AppHelper.m in Sources */,
 				76520465161ABB0F00EE253C /* CKBook.m in Sources */,
 				7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */,
 				8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */,

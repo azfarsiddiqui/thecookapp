@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CKAppHelper : NSObject
+@interface AppHelper : NSObject
 
-+ (CKAppHelper *)sharedInstance;
++ (AppHelper *)sharedInstance;
 
 - (BOOL)newInstall;
+- (UIView *)rootView;
 
 @end

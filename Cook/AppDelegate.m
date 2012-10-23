@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "CKViewController.h"
+#import "RootViewController.h"
 #import "CKServerManager.h"
 
 @implementation AppDelegate
@@ -17,8 +17,7 @@
     [[CKServerManager sharedInstance] start];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.viewController = [[CKViewController alloc] init];
-    self.window.rootViewController = self.viewController;
+    self.window.rootViewController = [[RootViewController alloc] init];
     [self.window makeKeyAndVisible];
     return YES;
 }

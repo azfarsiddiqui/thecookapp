@@ -1,5 +1,5 @@
 //
-//  CKViewController.h
+//  RootViewController.h
 //  Cook
 //
 //  Created by Jeff Tan-Ang on 26/09/12.

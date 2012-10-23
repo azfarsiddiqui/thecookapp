@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CKBenchtopDelegate.h"
+#import "BenchtopDelegate.h"
 
 @interface BenchtopLayout : UICollectionViewLayout
 

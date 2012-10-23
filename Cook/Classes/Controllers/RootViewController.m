@@ -1,14 +1,14 @@
 //
-//  CKViewController.m
+//  RootViewController.m
 //  Cook
 //
 //  Created by Jeff Tan-Ang on 26/09/12.
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKViewController.h"
+#import "RootViewController.h"
 #import "CKUser.h"
-#import "CKAppHelper.h"
+#import "AppHelper.h"
 #import "BenchtopViewController.h"
 
 @interface RootViewController ()
@@ -37,7 +37,7 @@
     [self.view addSubview:self.benchtopViewController.view];
     
     // If this was a new install/upgrade (it checks versions) then slide up intro screen.
-    if ([[CKAppHelper sharedInstance] newInstall]) {
+    if ([[AppHelper sharedInstance] newInstall]) {
         CKIntroViewController *introViewController = [[CKIntroViewController alloc] initWithDelegate:self];
         CKModalView *modalView = [[CKModalView alloc] initWithViewController:introViewController
                                                                     delegate:self
