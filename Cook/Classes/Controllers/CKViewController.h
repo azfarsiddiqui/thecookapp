@@ -10,6 +10,6 @@
 #import "CKModalView.h"
 #import "CKIntroViewController.h"
 
-@interface CKViewController : UIViewController <CKModalViewContentDelegate, CKIntroViewControllerDelegate>
+@interface RootViewController : UIViewController <CKModalViewContentDelegate, CKIntroViewControllerDelegate>
 
 @end

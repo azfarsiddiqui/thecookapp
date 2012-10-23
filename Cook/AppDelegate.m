@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKAppDelegate.h"
+#import "AppDelegate.h"
 #import "CKViewController.h"
 #import "CKServerManager.h"
 
-@implementation CKAppDelegate
+@implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     

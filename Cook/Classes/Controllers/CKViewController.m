@@ -11,7 +11,7 @@
 #import "CKAppHelper.h"
 #import "BenchtopViewController.h"
 
-@interface CKViewController ()
+@interface RootViewController ()
 
 @property (nonatomic, strong) BenchtopViewController *benchtopViewController;
 
@@ -21,7 +21,7 @@
 
 #define RADIANS(degrees)    ((degrees * (float)M_PI) / 180.0f)
 
-@implementation CKViewController
+@implementation RootViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

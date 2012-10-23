@@ -76,7 +76,7 @@
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
 		76ED274C1612DC180012E479 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 76ED274A1612DC180012E479 /* InfoPlist.strings */; };
 		76ED274E1612DC180012E479 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED274D1612DC180012E479 /* main.m */; };
-		76ED27521612DC180012E479 /* CKAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED27511612DC180012E479 /* CKAppDelegate.m */; };
+		76ED27521612DC180012E479 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED27511612DC180012E479 /* AppDelegate.m */; };
 		76ED27651612DC720012E479 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27641612DC720012E479 /* Parse.framework */; };
 		76ED276F1612DCC60012E479 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27661612DCC60012E479 /* AudioToolbox.framework */; };
 		76ED27701612DCC60012E479 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27671612DCC60012E479 /* CFNetwork.framework */; };
@@ -224,8 +224,8 @@
 		76ED274B1612DC180012E479 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		76ED274D1612DC180012E479 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		76ED274F1612DC180012E479 /* Cook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cook-Prefix.pch"; sourceTree = "<group>"; };
-		76ED27501612DC180012E479 /* CKAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKAppDelegate.h; sourceTree = "<group>"; };
-		76ED27511612DC180012E479 /* CKAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKAppDelegate.m; sourceTree = "<group>"; };
+		76ED27501612DC180012E479 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		76ED27511612DC180012E479 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		76ED27641612DC720012E479 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		76ED27661612DCC60012E479 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		76ED27671612DCC60012E479 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -504,8 +504,8 @@
 			isa = PBXGroup;
 			children = (
 				8936F7EF161E7AA700E6EF1D /* Cook.storyboard */,
-				76ED27501612DC180012E479 /* CKAppDelegate.h */,
-				76ED27511612DC180012E479 /* CKAppDelegate.m */,
+				76ED27501612DC180012E479 /* AppDelegate.h */,
+				76ED27511612DC180012E479 /* AppDelegate.m */,
 				76ED277C1612DDDA0012E479 /* Classes */,
 				76ED27821612DEA30012E479 /* Resources */,
 				76ED27481612DC180012E479 /* Supporting Files */,
@@ -869,7 +869,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				76ED274E1612DC180012E479 /* main.m in Sources */,
-				76ED27521612DC180012E479 /* CKAppDelegate.m in Sources */,
+				76ED27521612DC180012E479 /* AppDelegate.m in Sources */,
 				76ED27811612DE140012E479 /* CKViewController.m in Sources */,
 				76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */,
 				7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */,
