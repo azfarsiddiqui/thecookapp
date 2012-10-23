@@ -11,10 +11,14 @@
 #import "UIColor+Expanded.h"
 #import "CKUIHelper.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AppHelper.h"
 
 @interface BookView ()
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CALayer *rootBookLayer;
+@property (nonatomic, strong) CALayer *bookCoverLayer;
+@property (nonatomic, strong) CALayer *bookCoverContentsLayer;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIImageView *illustrationImageView;
 @property (nonatomic, strong) UIImageView *overlayImageView;
@@ -22,12 +26,14 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *taglineLabel;
 @property (nonatomic, strong) UILabel *numRecipesLabel;
+@property (nonatomic, assign) BOOL opened;
 
 @end
 
 @implementation BookView
 
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
+#define RADIANS(degrees)        ((degrees * (float)M_PI) / 180.0f)
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -37,6 +43,7 @@
 }
 
 - (void)layoutBookCover {
+    [self initLayers];
     [self initBackground];
 }
 
@@ -66,7 +73,7 @@
 }
 
 - (void)open:(BOOL)open {
-    DLog();
+    [self openBook:open];
 }
 
 - (UIEdgeInsets)contentEdgeInsets {
@@ -145,6 +152,62 @@
 
 #pragma mark - Private methods
 
+- (void)initLayers {
+    
+    // Book root layer.
+    CALayer *rootBookLayer = [CALayer layer];
+    rootBookLayer.anchorPoint = CGPointMake(0.5, 0.5);
+    rootBookLayer.bounds = self.bounds;
+    rootBookLayer.position = CGPointMake(floorf(self.bounds.size.width / 2),
+                                         floorf(self.bounds.size.height / 2));
+    rootBookLayer.backgroundColor = [UIColor lightGrayColor].CGColor;
+    [self.layer addSublayer:rootBookLayer];
+    self.rootBookLayer = rootBookLayer;
+    
+    // Opened RHS layer.
+    CALayer *rightOpenLayer = [CALayer layer];
+    rightOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
+    rightOpenLayer.position = CGPointMake(floorf(self.rootBookLayer.bounds.size.width / 2),
+                                          floorf(self.rootBookLayer.bounds.size.height / 2));
+    rightOpenLayer.bounds = self.bounds;
+    rightOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
+    [self.rootBookLayer addSublayer:rightOpenLayer];
+    
+    // Book cover layer.
+    CALayer *bookCoverLayer = [self createBookCoverLayer];
+    [self.rootBookLayer addSublayer:bookCoverLayer];
+    self.bookCoverLayer = bookCoverLayer;
+    
+}
+
+- (CALayer *)createBookCoverLayer {
+    CALayer *rootBookCoverLayer = [CATransformLayer layer];
+    rootBookCoverLayer.anchorPoint = CGPointMake(0.0, 0.5);
+    rootBookCoverLayer.bounds = self.bounds;
+    rootBookCoverLayer.position = CGPointMake(0.0, floorf(self.bounds.size.height / 2));
+    rootBookCoverLayer.doubleSided = YES;
+    
+    // Opened LHS layer.
+    CALayer *leftOpenLayer = [CALayer layer];
+    leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
+    leftOpenLayer.bounds = rootBookCoverLayer.bounds;
+    leftOpenLayer.position = CGPointMake(floorf(self.bounds.size.width / 2), floorf(self.bounds.size.height / 2));
+    leftOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
+    leftOpenLayer.doubleSided = NO;
+    leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
+    [rootBookCoverLayer addSublayer:leftOpenLayer];
+    
+    // Front book cover contents.
+    CALayer *bookCoverContentsLayer = [CALayer layer];
+    bookCoverContentsLayer.anchorPoint = CGPointMake(0.0, 0.0);
+    bookCoverContentsLayer.bounds = rootBookCoverLayer.bounds;
+    bookCoverContentsLayer.doubleSided = NO;
+    [rootBookCoverLayer addSublayer:bookCoverContentsLayer];
+    self.bookCoverContentsLayer = bookCoverContentsLayer;
+    
+    return rootBookCoverLayer;
+}
+
 - (void)initBackground {
     
     // Cover
@@ -153,26 +216,25 @@
                                            floorf((self.frame.size.height - backgroundImageView.frame.size.height) / 2.0),
                                            backgroundImageView.frame.size.width,
                                            backgroundImageView.frame.size.height);
-    [self addSubview:backgroundImageView];
-    [self sendSubviewToBack:backgroundImageView];
+    [self.bookCoverContentsLayer addSublayer:backgroundImageView.layer];
     self.backgroundImageView = backgroundImageView;
     
     // Overlay
     UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:[self coverOverlayImage]];
     overlayImageView.frame = backgroundImageView.frame;
-    [self insertSubview:overlayImageView aboveSubview:backgroundImageView];
+    [self.bookCoverContentsLayer insertSublayer:overlayImageView.layer above:backgroundImageView.layer];
     self.overlayImageView = overlayImageView;
     
     // Illustration.
     UIImageView *illustrationImageView = [[UIImageView alloc] initWithImage:[self coverIllustrationImage]];
     illustrationImageView.frame = backgroundImageView.frame;
-    [self insertSubview:illustrationImageView aboveSubview:backgroundImageView];
+    [self.bookCoverContentsLayer insertSublayer:illustrationImageView.layer above:backgroundImageView.layer];
     self.illustrationImageView = illustrationImageView;
 }
 
 - (void)updateName:(NSString *)name {
     NSString *displayName = [name uppercaseString];
-    [self.nameLabel removeFromSuperview];
+    [self.nameLabel.layer removeFromSuperlayer];
     
     UIEdgeInsets edgeInsets = [self contentEdgeInsets];
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
@@ -194,7 +256,7 @@
     nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     nameLabel.text = displayName;
     nameLabel.alpha = 0.0;
-    [self insertSubview:nameLabel belowSubview:self.overlayImageView];
+    [self.bookCoverContentsLayer insertSublayer:nameLabel.layer below:self.overlayImageView.layer];
     self.nameLabel = nameLabel;
     
     // Fade the title in.
@@ -211,7 +273,7 @@
 
 - (void)updateTagline:(NSString *)tagline {
     NSString *displayTagline = [tagline uppercaseString];
-    [self.taglineLabel removeFromSuperview];
+    [self.taglineLabel.layer removeFromSuperlayer];
     
     UIEdgeInsets edgeInsets = [self contentEdgeInsets];
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
@@ -233,7 +295,7 @@
     taglineLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     taglineLabel.text = displayTagline;
     taglineLabel.alpha = 0.0;
-    [self insertSubview:taglineLabel belowSubview:self.overlayImageView];
+    [self.bookCoverContentsLayer insertSublayer:taglineLabel.layer below:self.overlayImageView.layer];
     self.taglineLabel = taglineLabel;
     
     // Fade the tagline in.
@@ -250,7 +312,7 @@
 
 - (void)updateNumRecipes:(NSUInteger)numRecipes {
     NSString *displayNum = [NSString stringWithFormat:@"%d", numRecipes];
-    [self.numRecipesLabel removeFromSuperview];
+    [self.numRecipesLabel.layer removeFromSuperlayer];
     
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
     UIEdgeInsets insets = UIEdgeInsetsMake(2.0, 6.0, 1.0, 6.0);
@@ -274,7 +336,7 @@
     numRecipesLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     numRecipesLabel.text = displayNum;
     numRecipesLabel.alpha = 0.0;
-    [self insertSubview:numRecipesLabel belowSubview:self.overlayImageView];
+    [self.bookCoverContentsLayer insertSublayer:numRecipesLabel.layer below:self.overlayImageView.layer];
     self.numRecipesLabel = numRecipesLabel;
     
     // Fade the tagline in.
@@ -291,7 +353,7 @@
 
 - (void)updateTitle:(NSString *)title {
     NSString *displayTitle = [title uppercaseString];
-    [self.titleLabel removeFromSuperview];
+    [self.titleLabel.layer removeFromSuperlayer];
     
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     CGSize size = [displayTitle sizeWithFont:[self coverTitleFont] constrainedToSize:self.bounds.size lineBreakMode:lineBreakMode];
@@ -310,7 +372,7 @@
     titleLabel.alpha = 0.0;
     titleLabel.center = self.center;
     titleLabel.frame = CGRectIntegral(titleLabel.frame);
-    [self insertSubview:titleLabel belowSubview:self.overlayImageView];
+    [self.bookCoverContentsLayer insertSublayer:titleLabel.layer below:self.overlayImageView.layer];
     self.titleLabel = titleLabel;
     
     // Fade the title in.
@@ -323,6 +385,77 @@
                      completion:^(BOOL finished) {
                      }];
     
+}
+
+- (void)openBook:(BOOL)open {
+    NSLog(@"open: %@", open ? @"YES" : @"NO");
+    self.opened = open;
+    
+    // Root view to open the book in.
+    UIView *rootView = [[AppHelper sharedInstance] rootView];
+    
+    // Root book animation changes.
+    CGPoint rootBookStartPoint = CGPointMake(0.5, 0.5);
+    CGPoint rootBookEndPoint = CGPointMake(0.0, 0.5);
+    CGFloat requiredScale = (rootView.bounds.size.height - 19.0) / self.bounds.size.height; // 8top + 11bot gaps
+    CATransform3D rootBookScaleUpTransform = CATransform3DMakeScale(requiredScale, requiredScale, requiredScale);
+    CATransform3D rootBookScaleDownTransform = CATransform3DIdentity;
+    CATransform3D openBookTransform = CATransform3DMakeRotation(RADIANS(180), 0.0f, -1.0f, 0.0f);
+    CGFloat zDistance = 1000;
+    openBookTransform.m34 = 1 / zDistance;
+    CATransform3D closeBookTransform = CATransform3DIdentity;
+    
+    // Grab media time for timing our animations.
+    CFTimeInterval rootMediaTime = [self.rootBookLayer convertTime:CACurrentMediaTime() fromLayer:nil];
+    CGFloat duration = 0.6;
+    CGFloat shiftEndOffset = 0.05;
+    CGFloat scaleUpStartOffset = 0.05;
+    CGFloat flipStartOffset = 0.1;
+    CGFloat scaleDownEndOffset = 0.0;
+    CGFloat flipEndOffset = 0.1;
+    
+    // Shift right/left
+    CABasicAnimation *translateAnimation = [CABasicAnimation animationWithKeyPath:@"anchorPoint"];
+    translateAnimation.fromValue = [NSValue valueWithCGPoint:open ? rootBookStartPoint : rootBookEndPoint];
+    translateAnimation.toValue = [NSValue valueWithCGPoint:open ? rootBookEndPoint : rootBookStartPoint];
+    translateAnimation.beginTime = 0.0;
+    translateAnimation.duration = open ? (duration - shiftEndOffset) : duration;
+    translateAnimation.fillMode = kCAFillModeBoth;
+    translateAnimation.timingFunction = [CAMediaTimingFunction functionWithName:open ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut];
+    translateAnimation.removedOnCompletion = NO;
+    
+    // Scale up/down
+    CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+    scaleAnimation.fromValue = [NSValue valueWithCATransform3D:open ? rootBookScaleDownTransform : rootBookScaleUpTransform];
+    scaleAnimation.toValue = [NSValue valueWithCATransform3D:open ? rootBookScaleUpTransform : rootBookScaleDownTransform];
+    scaleAnimation.beginTime = open ? scaleUpStartOffset : 0.0;
+    scaleAnimation.duration = open ? (duration - scaleUpStartOffset) : (duration - scaleDownEndOffset);
+    scaleAnimation.fillMode = kCAFillModeBoth;
+    scaleAnimation.timingFunction = [CAMediaTimingFunction functionWithName:open ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut];
+    scaleAnimation.removedOnCompletion = NO;
+    
+    // Combine shift+right
+    CAAnimationGroup *groupAnimation = [CAAnimationGroup animation];
+    groupAnimation.duration = duration;
+    [groupAnimation setAnimations:[NSArray arrayWithObjects:translateAnimation, scaleAnimation, nil]];
+    groupAnimation.removedOnCompletion = NO;
+    groupAnimation.fillMode = kCAFillModeBoth;
+    
+    // Flip open/close
+    CABasicAnimation *flipAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+    flipAnimation.beginTime = open ? (rootMediaTime + flipStartOffset) : rootMediaTime;
+    flipAnimation.duration = open ? (duration - flipStartOffset) : (duration - flipEndOffset);
+    flipAnimation.fromValue = [NSValue valueWithCATransform3D:open ? closeBookTransform : openBookTransform];
+    flipAnimation.toValue = [NSValue valueWithCATransform3D:open ? openBookTransform : closeBookTransform];
+    flipAnimation.fillMode = kCAFillModeBoth;
+    flipAnimation.timingFunction = [CAMediaTimingFunction functionWithName:open ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut];
+    flipAnimation.removedOnCompletion = NO;
+    flipAnimation.additive = YES;
+    flipAnimation.delegate = self;
+    
+    // Run the animation.
+    [self.rootBookLayer addAnimation:groupAnimation forKey:nil];
+    [self.bookCoverLayer addAnimation:flipAnimation forKey:@"transform"];
 }
 
 @end
