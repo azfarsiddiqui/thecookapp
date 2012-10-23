@@ -11,6 +11,7 @@
 @protocol BenchtopDelegate <NSObject>
 
 - (BOOL)onMyBenchtop;
+- (BOOL)benchtopMyBookLoaded;
 - (CGSize)benchtopItemSize;
 - (CGFloat)benchtopSideGap;
 - (CGFloat)benchtopBookMinScaleFactor;

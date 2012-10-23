@@ -113,7 +113,9 @@
                          }
                          self.enabled = enable;
                         
-                         [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
+                         // [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
+                         NSUInteger numSections = self.friendsBooks ? 2 : 1;
+                         [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, numSections)]];
                          [self loadData];
                      }];
     
@@ -127,6 +129,10 @@
 
 - (BOOL)onMyBenchtop {
     return self.firstBenchtop;
+}
+
+- (BOOL)benchtopMyBookLoaded {
+    return (self.myBook != nil);
 }
 
 - (CGSize)benchtopItemSize {
@@ -203,7 +209,9 @@
         return 0;
     }
     
-    return 2;   // My Book + Login/Friends
+    return self.friendsBooks ? 2 : 1;
+//    
+//    return 2;   // My Book + Login/Friends
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
@@ -217,7 +225,8 @@
     } else {
         CKUser *currentUser = [CKUser currentUser];
         if ([currentUser isSignedIn]) {
-            numItems += MIN([currentUser numFollows], kNumFriendsMaxStack);
+//            numItems += MIN([currentUser numFollows], kNumFriendsMaxStack);
+            numItems = [self.friendsBooks count];
         } else {
             numItems = 2; // Login book and some fake book.
         }
@@ -518,15 +527,16 @@
                             self.friendsBooks = friendsBooks;
                             
                             self.collectionView.userInteractionEnabled = YES;
-                            [self.collectionView reloadData];
+//                            [self.collectionView reloadData];
+                            [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
                             
-                            // Inform layout complete.
-                            if (toggle) {
-                                [self toggleLayout];
-                            } else {
-                                BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
-                                [layout layoutCompleted];
-                            }
+//                            // Inform layout complete.
+//                            if (toggle) {
+//                                [self toggleLayout];
+//                            } else {
+//                                BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
+//                                [layout layoutCompleted];
+//                            }
                             
                         }
                         failure:^(NSError *error) {

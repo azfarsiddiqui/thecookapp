@@ -27,9 +27,20 @@
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-    CGFloat scaleFactor = [self.benchtopDelegate benchtopBookMinScaleFactor];
-    initialAttributes.alpha = 0.0;
-    initialAttributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 0.0);
+    
+    if (![self.benchtopDelegate benchtopMyBookLoaded] && itemIndexPath.section == 0) {
+        
+        // Fade and scale in my book.
+        CGFloat scaleFactor = [self.benchtopDelegate benchtopBookMinScaleFactor];
+        initialAttributes.alpha = 0.0;
+        initialAttributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 0.0);
+        
+    } else if (itemIndexPath.section == 1) {
+        
+        // Insert friends book from right.
+        initialAttributes.transform3D = CATransform3DMakeTranslation([self.benchtopDelegate benchtopSideGap], 0.0, 0.0);
+    }
+    
     return initialAttributes;
 }
 
