@@ -8,8 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
+
+@protocol BookViewControllerDelegate
+
+- (void)bookViewControllerCloseRequested;
+
+@end
+
 @protocol BookViewDelegate
--(void) closeRequested;
+
+- (void)bookViewCloseRequested;
+
 @end
 
 @protocol BookViewDataSource
@@ -19,5 +28,7 @@
 @end
 
 @interface BookViewController : UIViewController
--(id) initWithBook:(CKBook*)book;
+
+- (id)initWithBook:(CKBook*)book delegate:(id<BookViewControllerDelegate>)delegate;
+
 @end

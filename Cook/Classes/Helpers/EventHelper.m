@@ -14,6 +14,8 @@
 #define kBoolBenchtopFreeze     @"CKBoolBenchtopFreeze"
 #define kEventLoginSuccessful   @"CKEventLoginSuccessful"
 #define kBoolLoginSuccessful    @"CKBoolLoginSuccessful"
+#define kEventOpenBook          @"CKEventOpenBook"
+#define kBoolOpenBook           @"CKBoolOpenBook"
 
 #pragma mark - Login successful event
 
@@ -54,6 +56,27 @@
 + (BOOL)benchFreezeForNotification:(NSNotification *)notification {
     return [[[notification userInfo] valueForKey:kBoolBenchtopFreeze] boolValue];
 }
+
+#pragma mark - Book events
+
++ (void)registerOpenBook:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventOpenBook];
+}
+
++ (void)postOpenBook:(BOOL)open {
+    [EventHelper postEvent:kEventOpenBook
+              withUserInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:open]
+                                                       forKey:kBoolOpenBook]];
+}
+
++ (void)unregisterOpenBook:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventOpenBook];
+}
+
++ (BOOL)openBookForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kBoolOpenBook] boolValue];
+}
+
 
 #pragma mark - Private
 

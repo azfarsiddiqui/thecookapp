@@ -137,7 +137,7 @@
 
 -(void) closeTapped:(UIButton*)button
 {
-    [self.bookViewDelegate closeRequested];
+    [self.bookViewDelegate bookViewCloseRequested];
 }
 
 @end

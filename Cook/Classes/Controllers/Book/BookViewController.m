@@ -15,23 +15,23 @@
 #import "CKUIHelper.h"
 
 @interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
+
 @property (nonatomic, strong) AFKPageFlipper *pageFlipper;
-@property (nonatomic,strong) CKBook *book;
-@property (nonatomic,strong) RecipeListViewController *recipeListViewController;
-@property (nonatomic,strong) RecipeViewController *recipeViewController;
-@property (nonatomic,strong) BookContentsViewController *bookContentsViewController;
-@property (nonatomic,strong) BookCategoryViewController *bookCategoryViewController;
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
+@property (nonatomic, strong) RecipeListViewController *recipeListViewController;
+@property (nonatomic, strong) RecipeViewController *recipeViewController;
+@property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
+@property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
+
 @end
 
 @implementation BookViewController
-@synthesize recipeListViewController=_recipeListViewController;
-@synthesize bookContentsViewController=_bookContentsViewController;
-@synthesize bookCategoryViewController=_bookCategoryViewController;
-@synthesize recipeViewController=_recipeViewController;
--(id)initWithBook:(CKBook *)book
-{
+
+- (id)initWithBook:(CKBook*)book delegate:(id<BookViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
+        self.delegate = delegate;
         [self initScreen];
     }
     return self;
@@ -49,9 +49,9 @@
 }
 
 #pragma mark - BookViewDelegate
--(void) closeRequested
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
+
+- (void)bookViewCloseRequested {
+    [self.delegate bookViewControllerCloseRequested];
 }
 
 #pragma mark - BookViewDatasource

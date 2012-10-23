@@ -16,6 +16,7 @@
 - (BOOL)enabled;
 - (void)loadBook:(CKBook *)book;
 - (void)openBook:(BOOL)open;
+- (void)openBook:(BOOL)open completion:(void (^)(BOOL opened))completion;
 
 // Empty shell placeholder.
 - (void)loadAsPlaceholder;

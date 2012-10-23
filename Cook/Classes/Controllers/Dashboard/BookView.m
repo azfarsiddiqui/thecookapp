@@ -12,6 +12,8 @@
 #import "CKUIHelper.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppHelper.h"
+#import "EventHelper.h"
+#import "NSString+Utilities.h"
 
 @interface BookView ()
 
@@ -148,6 +150,16 @@
 
 - (UIImage *)coverOverlayImage {
     return [UIImage imageNamed:@"cook_book_overlay.png"];
+}
+
+#pragma mark - CAAnimation delegate methods
+
+- (void)animationDidStart:(CAAnimation *)theAnimation {
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
+    DLog(@"open: %@", [NSString CK_stringForBoolean:self.opened]);
+    [EventHelper postOpenBook:self.opened];
 }
 
 #pragma mark - Private methods
@@ -388,7 +400,7 @@
 }
 
 - (void)openBook:(BOOL)open {
-    NSLog(@"open: %@", open ? @"YES" : @"NO");
+    DLog(@"open: %@", [NSString CK_stringForBoolean:open]);
     self.opened = open;
     
     // Root view to open the book in.

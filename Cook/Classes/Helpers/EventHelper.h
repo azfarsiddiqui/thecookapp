@@ -20,4 +20,9 @@
 + (void)unregisterBenchtopFreeze:(id)observer;
 + (BOOL)benchFreezeForNotification:(NSNotification *)notification;
 
++ (void)registerOpenBook:(id)observer selector:(SEL)selector;
++ (void)postOpenBook:(BOOL)open;
++ (void)unregisterOpenBook:(id)observer;
++ (BOOL)openBookForNotification:(NSNotification *)notification;
+
 @end

@@ -15,9 +15,9 @@
 #import "CKBook.h"
 #import "LoginBookCell.h"
 #import "RecipeListViewController.h"
-#import "BookViewController.h"
 #import "EventHelper.h"
 #import "MRCEnumerable.h"
+#import "NSString+Utilities.h"
 
 @interface BenchtopViewController ()
 
@@ -28,6 +28,9 @@
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSArray *friendsBooks;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+@property (nonatomic, strong) BookViewController *bookViewController;
+@property (nonatomic, strong) CKBook *selectedBook;
 
 @end
 
@@ -41,6 +44,7 @@
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterBenchtopFreeze:self];
+    [EventHelper unregisterOpenBook:self];
     [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
     [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
 }
@@ -83,6 +87,7 @@
     // Register for events.
     [EventHelper registerBenchtopFreeze:self selector:@selector(benchtopFreezeRequested:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
+    [EventHelper registerOpenBook:self selector:@selector(bookOpened:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -153,7 +158,9 @@
     if (![cell enabled]) {
         return;
     }
-    DLog(@"didSelectItemAtIndexPath: %@", indexPath);
+    
+    // Remember the selected indexPath.
+    self.selectedIndexPath = indexPath;
     
     if (!self.firstBenchtop && indexPath.section == 1 && [self stacked]) {
         
@@ -243,7 +250,11 @@
         NSIndexPath *nextSnapIndexPath = [self nextSnapIndexPath];
         UICollectionViewCell *nextSnapCell = [self.collectionView cellForItemAtIndexPath:nextSnapIndexPath];
         
-        if (nextSnapCell && CGRectContainsRect(visibleRect, nextSnapCell.frame)) {
+        // If the next book is completely visible.
+        // if (nextSnapCell && CGRectContainsRect(visibleRect, nextSnapCell.frame)) {
+        // If the next book is 0.75 visible.
+        if (nextSnapCell &&
+            CGRectIntersection(visibleRect, nextSnapCell.frame).size.width > ([BenchtopBookCell cellSize].width * 0.75)) {
             if (!self.snapActivated) {
                 NSLog(@"Snap activated for item %d", nextSnapIndexPath.item);
             }
@@ -279,6 +290,54 @@
     
     if (self.snapActivated) {
         [self resetScrollView];
+    }
+}
+
+#pragma mark - BookViewControllerDelegate methods
+
+- (void)bookViewControllerCloseRequested {
+    DLog();
+    
+    // Fade the books back in and close the book at the same time.
+    [self fadeBooks:NO during:^(BOOL open) {
+        
+        [self.bookViewController.view removeFromSuperview];
+        
+        BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        [bookCell openBook:open];
+        
+    }];
+
+}
+
+#pragma mark - EventHelper methods
+
+- (void)benchtopFreezeRequested:(NSNotification *)notification {
+    BOOL freeze = [EventHelper benchFreezeForNotification:notification];
+    [self freeze:freeze];
+}
+
+- (void)loginSuccessful:(NSNotification *)notification {
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        [self loadDataToggleOnCompletion:NO];
+    } else {
+        self.collectionView.userInteractionEnabled = YES;
+    }
+}
+
+- (void)bookOpened:(NSNotification *)notification {
+    BOOL opened = [EventHelper openBookForNotification:notification];
+    DLog(@"opened: %@", [NSString CK_stringForBoolean:opened]);
+    if (opened) {
+        
+        BookViewController *bookViewController = [[BookViewController alloc] initWithBook:self.selectedBook delegate:self];
+        [self.view addSubview:bookViewController.view];
+        self.bookViewController = bookViewController;
+        
+    } else {
+        
+        self.selectedBook = nil;
     }
 }
 
@@ -528,20 +587,6 @@
     [cell loadBook:book];
 }
 
-- (void)benchtopFreezeRequested:(NSNotification *)notification {
-    BOOL freeze = [EventHelper benchFreezeForNotification:notification];
-    [self freeze:freeze];
-}
-
-- (void)loginSuccessful:(NSNotification *)notification {
-    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
-    if (success) {
-        [self loadDataToggleOnCompletion:NO];
-    } else {
-        self.collectionView.userInteractionEnabled = YES;
-    }
-}
-
 - (BOOL)stacked {
     BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
     return [layout isKindOfClass:[BenchtopStackLayout class]];
@@ -551,17 +596,42 @@
     if (!book) {
         return;
     }
-    DLog(@"Open bookToOpen %@", book);
     
-    [self freeze:YES];
+    // Remmeber the book to be opened.
+    self.selectedBook = book;
     
-    BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    [bookCell openBook:YES];
+    // Fade the books and open the book at the same time.
+    [self fadeBooks:YES during:^(BOOL open) {
         
-//    // Open book.
-//    BookViewController *bookViewVC = [[BookViewController alloc] initWithBook:book];
-//    [self presentViewController:bookViewVC animated:YES completion:^{
-//    }];
+        BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        [bookCell openBook:open];
+        
+    }];
+    
 }
+
+- (void)fadeBooks:(BOOL)fade during:(void (^)(BOOL open))during {
+    NSArray *indexPaths = [[self.collectionView indexPathsForVisibleItems] select:^BOOL(NSIndexPath *indexPath) {
+        return ([indexPath compare:self.selectedIndexPath] != NSOrderedSame);
+    }];
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         
+                         // Fade
+                         for (NSIndexPath *indexPath in indexPaths) {
+                             UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+                             cell.alpha = fade ? 0.0 : 1.0;
+                         }
+                         
+                         // Open book
+                         during(fade);
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+
 
 @end

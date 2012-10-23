@@ -8,13 +8,13 @@
 
 #import "BenchtopBookCell.h"
 #import <QuartzCore/QuartzCore.h>
-#import "BookView.h"
 #import "BookCoverViewFactory.h"
+#import "BookView.h"
 
 @interface BenchtopBookCell ()
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) BookView *bookCoverView;
+@property (nonatomic, strong) BookView *bookView;
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UIImageView *bookImageView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
@@ -35,11 +35,11 @@
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         
-        BookView *bookCoverView = [[BookView alloc] initWithFrame:frame];
-        bookCoverView.center = self.contentView.center;
-        bookCoverView.frame = CGRectIntegral(bookCoverView.frame);
-        [self.contentView addSubview:bookCoverView];
-        self.bookCoverView = bookCoverView;
+        BookView *bookView = [[BookView alloc] initWithFrame:frame];
+        bookView.center = self.contentView.center;
+        bookView.frame = CGRectIntegral(bookView.frame);
+        [self.contentView addSubview:bookView];
+        self.bookView = bookView;
         
         // Start spinning until book is available
         UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc]
@@ -71,15 +71,27 @@
     [self.activityView stopAnimating];
     
     // Update book cover.
-    [self.bookCoverView updateWithBook:book];
+    [self.bookView updateWithBook:book];
 }
 
 - (void)openBook:(BOOL)open {
-    [self.bookCoverView open:open];
+    [self.bookView open:open];
+}
+
+- (void)openBook:(BOOL)open completion:(void (^)(BOOL opened))completion {    
 }
 
 - (void)loadAsPlaceholder {
     [self.activityView stopAnimating];
+}
+
+#pragma mark - BookViewDelegate methods
+
+- (void)bookViewWillOpen:(BOOL)open {
+}
+
+- (void)bookViewDidOpen:(BOOL)open {
+    
 }
 
 #pragma mark - Private methods
