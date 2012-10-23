@@ -181,7 +181,7 @@
         return [PFUser objectWithoutDataWithClassName:kUserModelName objectId:friendObjectId];
     }];
     PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
-    [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];  // Always go to the network first.
     [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friendUserKeys];
     [friendsBooksQuery orderByAscending:kModelAttrName];
     [friendsBooksQuery includeKey:kUserModelForeignKeyName];  // Load associated user.
