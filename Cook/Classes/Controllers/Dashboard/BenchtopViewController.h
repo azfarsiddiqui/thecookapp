@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "BenchtopDelegate.h"
 #import "BookViewController.h"
+#import "MenuViewController.h"
 
-@interface BenchtopViewController : UICollectionViewController <BenchtopDelegate, BookViewControllerDelegate>
+@interface BenchtopViewController : UICollectionViewController <BenchtopDelegate, BookViewControllerDelegate,
+    MenuViewControllerDelegate>
 
 - (void)enable:(BOOL)enable;
 - (void)freeze:(BOOL)freeze;

@@ -31,6 +31,8 @@
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, strong) CKBook *selectedBook;
+@property (nonatomic, strong) MenuViewController *menuViewController;
+
 
 @end
 
@@ -91,6 +93,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [self showMenu:YES];
 }
 
 - (void)enable:(BOOL)enable {
@@ -345,7 +348,7 @@
         self.bookViewController = bookViewController;
         
     } else {
-        
+        [self showMenu:YES];
         self.selectedBook = nil;
     }
 }
@@ -360,6 +363,16 @@
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+#pragma mark - MenuViewControllerDelegate methods
+
+- (void)menuViewControllerSettingsRequested {
+    DLog();
+}
+
+- (void)menuViewControllerStoreRequested {
+    DLog();
 }
 
 #pragma mark - Private
@@ -610,6 +623,9 @@
     // Remmeber the book to be opened.
     self.selectedBook = book;
     
+    // Hide the menu.
+    [self showMenu:NO];
+    
     // Fade the books and open the book at the same time.
     [self fadeBooks:YES during:^(BOOL open) {
         
@@ -643,5 +659,22 @@
                      }];
 }
 
+- (void)showMenu:(BOOL)show {
+    if (!self.menuViewController) {
+        self.menuViewController = [[MenuViewController alloc] initWithDelegate:self];
+        self.menuViewController.view.alpha = 0.0;
+        [self.view addSubview:self.menuViewController.view];
+    }
+    
+    // Fade it in
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.menuViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
 
 @end
