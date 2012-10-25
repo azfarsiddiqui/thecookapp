@@ -44,7 +44,7 @@
 }
 
 + (NSString *)defaultIllustration {
-    return [[BookCover settings] valueForKeyPath:@"illustrations.Cleaver"];
+    return [[BookCover settings] valueForKeyPath:@"illustrations.Cutlery"];
 }
 
 + (NSString *)randomCover {

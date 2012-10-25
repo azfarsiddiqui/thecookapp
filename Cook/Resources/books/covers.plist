@@ -19,18 +19,48 @@
 	</dict>
 	<key>illustrations</key>
 	<dict>
-		<key>Cherry</key>
-		<string>cook_book_graphic_cherry.png</string>
-		<key>Chopsticks</key>
-		<string>cook_book_graphic_chopsticks.png</string>
-		<key>Cleaver</key>
-		<string>cook_book_graphic_cleaver.png</string>
-		<key>Cow</key>
-		<string>cook_book_graphic_cow.png</string>
+		<key>Asparagus</key>
+		<string>cook_book_graphic_asparagus.png</string>
+		<key>Bicycle</key>
+		<string>cook_book_graphic_bicycle.png</string>
+		<key>Bicycle Back</key>
+		<string>cook_book_graphic_bicycleback.png</string>
+		<key>Boots</key>
+		<string>cook_book_graphic_boots.png</string>
+		<key>Bowls</key>
+		<string>cook_book_graphic_bowls.png</string>
+		<key>Burger</key>
+		<string>cook_book_graphic_burger.png</string>
+		<key>Clock</key>
+		<string>cook_book_graphic_clock.png</string>
 		<key>Cupcake</key>
 		<string>cook_book_graphic_cupcake.png</string>
+		<key>Cutlery</key>
+		<string>cook_book_graphic_cutlery.png</string>
+		<key>Egg Beater</key>
+		<string>cook_book_graphic_eggbeater.png</string>
+		<key>Fork Plate</key>
+		<string>cook_book_graphic_forkplate.png</string>
+		<key>Orange</key>
+		<string>cook_book_graphic_orange.png</string>
+		<key>Pasta</key>
+		<string>cook_book_graphic_pasta.png</string>
+		<key>Peas</key>
+		<string>cook_book_graphic_peas.png</string>
+		<key>Plane</key>
+		<string>cook_book_graphic_plane.png</string>
+		<key>Pot</key>
+		<string>cook_book_graphic_pot.png</string>
+		<key>Prawn</key>
+		<string>cook_book_graphic_prawn.png</string>
+		<key>Rice</key>
+		<string>cook_book_graphic_rice.png</string>
+		<key>Scooter</key>
+		<string>cook_book_graphic_scooter.png</string>
 		<key>Spoon</key>
 		<string>cook_book_graphic_spoon.png</string>
+		<key>Tomato</key>
+		<string>cook_book_graphic_tomato.png</string>
 	</dict>
 </dict>
 </plist>

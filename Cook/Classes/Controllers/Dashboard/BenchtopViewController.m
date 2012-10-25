@@ -620,6 +620,9 @@
         return;
     }
     
+    // Get the book cell.
+    BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    
     // Remmeber the book to be opened.
     self.selectedBook = book;
     
@@ -628,10 +631,7 @@
     
     // Fade the books and open the book at the same time.
     [self fadeBooks:YES during:^(BOOL open) {
-        
-        BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         [bookCell openBook:open];
-        
     }];
     
 }
