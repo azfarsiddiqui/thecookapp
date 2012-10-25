@@ -12,6 +12,10 @@
 		<string>cook_book_blue.png</string>
 		<key>Gray</key>
 		<string>cook_book_gray.png</string>
+		<key>Pink</key>
+		<string>cook_book_pink.png</string>
+		<key>Yellow</key>
+		<string>cook_book_yellow.png</string>
 	</dict>
 	<key>illustrations</key>
 	<dict>
