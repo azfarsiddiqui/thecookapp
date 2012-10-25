@@ -69,9 +69,9 @@
     if (![self.book.tagline isEqualToString:book.tagline]) {
         [self updateTagline:book.tagline];
     }
-    if (!self.book || self.book.numRecipes != book.numRecipes) {
-        [self updateNumRecipes:book.numRecipes];
-    }
+//    if (!self.book || self.book.numRecipes != book.numRecipes) {
+//        [self updateNumRecipes:book.numRecipes];
+//    }
     self.book = book;
 }
 
@@ -110,11 +110,11 @@
 }
 
 - (UIColor *)coverTitleColour {
-    return [UIColor colorWithHexString:@"222222"];
+    return [UIColor colorWithHexString:@"FFFFFF"];
 }
 
 - (UIColor *)coverTitleShadowColour {
-    return [UIColor colorWithRed:255 green:255 blue:255 alpha:0.15];
+    return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
 }
 
 - (UIFont *)coverTaglineFont {
@@ -283,7 +283,7 @@
     nameLabel.font = [self coverNameFont];
     nameLabel.textColor = [self coverNameColour];
     nameLabel.shadowColor = [self coverNameShadowColour];
-    nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    nameLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     nameLabel.text = displayName;
     nameLabel.alpha = 0.0;
     [self.bookCoverContentsLayer insertSublayer:nameLabel.layer below:self.overlayImageView.layer];
@@ -322,7 +322,7 @@
     taglineLabel.font = [self coverTaglineFont];
     taglineLabel.textColor = [self coverTaglineColour];
     taglineLabel.shadowColor = [self coverTaglineShadowColor];
-    taglineLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    taglineLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     taglineLabel.text = displayTagline;
     taglineLabel.alpha = 0.0;
     [self.bookCoverContentsLayer insertSublayer:taglineLabel.layer below:self.overlayImageView.layer];
@@ -363,7 +363,7 @@
     numRecipesLabel.font = [self coverNumRecipesFont];
     numRecipesLabel.textColor = [self coverNumRecipesColour];
     numRecipesLabel.shadowColor = [self coverNumRecipesShadowColour];
-    numRecipesLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    numRecipesLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     numRecipesLabel.text = displayNum;
     numRecipesLabel.alpha = 0.0;
     [self.bookCoverContentsLayer insertSublayer:numRecipesLabel.layer below:self.overlayImageView.layer];
@@ -397,7 +397,7 @@
     titleLabel.font = [self coverTitleFont];
     titleLabel.textColor = [self coverTitleColour];
     titleLabel.shadowColor = [self coverTitleShadowColour];
-    titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     titleLabel.text = displayTitle;
     titleLabel.alpha = 0.0;
     titleLabel.center = self.center;

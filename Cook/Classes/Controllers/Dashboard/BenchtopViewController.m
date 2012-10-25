@@ -103,6 +103,7 @@
         self.overlayView.alpha = 0.0;
         [self.view insertSubview:self.overlayView aboveSubview:self.backgroundView];
     }
+    
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
@@ -117,7 +118,13 @@
                          self.enabled = enable;
                         
                          // [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
-                         NSUInteger numSections = self.friendsBooks ? 2 : 1;
+                         CKUser *currentUser = [CKUser currentUser];
+                         NSUInteger numSections = 0;
+                         if ([currentUser isSignedIn]) {
+                             numSections =  self.friendsBooks ? 2 : 1;
+                         } else {
+                             numSections = 2;
+                         }
                          [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, numSections)]];
                          [self loadData];
                      }];
@@ -212,9 +219,13 @@
         return 0;
     }
     
-    return self.friendsBooks ? 2 : 1;
-//    
-//    return 2;   // My Book + Login/Friends
+    CKUser *currentUser = [CKUser currentUser];
+    if ([currentUser isSignedIn]) {
+        return self.friendsBooks ? 2 : 1;
+    } else {
+        return 2;
+    }
+    
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
@@ -541,7 +552,13 @@
                             
                             self.collectionView.userInteractionEnabled = YES;
 //                            [self.collectionView reloadData];
-                            [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
+                            
+                            NSUInteger numSections = [self.collectionView numberOfSections];
+                            if (numSections < 2) {
+                                [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
+                            } else {
+                                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                            }
                             
 //                            // Inform layout complete.
 //                            if (toggle) {
