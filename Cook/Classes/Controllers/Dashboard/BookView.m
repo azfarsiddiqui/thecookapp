@@ -35,6 +35,7 @@
 @implementation BookView
 
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
+#define kBookInsets             UIEdgeInsetsMake(17.0, 19.0, 22.0, 20.0)
 #define RADIANS(degrees)        ((degrees * (float)M_PI) / 180.0f)
 
 - (id)initWithFrame:(CGRect)frame {
@@ -169,20 +170,37 @@
     // Book root layer.
     CALayer *rootBookLayer = [CALayer layer];
     rootBookLayer.anchorPoint = CGPointMake(0.5, 0.5);
-    rootBookLayer.bounds = self.bounds;
+    rootBookLayer.frame = self.bounds;
     rootBookLayer.position = CGPointMake(floorf(self.bounds.size.width / 2),
                                          floorf(self.bounds.size.height / 2));
-    rootBookLayer.backgroundColor = [UIColor lightGrayColor].CGColor;
+    rootBookLayer.backgroundColor = [UIColor clearColor].CGColor;
     [self.layer addSublayer:rootBookLayer];
     self.rootBookLayer = rootBookLayer;
     
     // Opened RHS layer.
+    CGFloat radius = 5.0;
     CALayer *rightOpenLayer = [CALayer layer];
     rightOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
     rightOpenLayer.position = CGPointMake(floorf(self.rootBookLayer.bounds.size.width / 2),
                                           floorf(self.rootBookLayer.bounds.size.height / 2));
-    rightOpenLayer.bounds = self.bounds;
+    rightOpenLayer.frame = CGRectMake(rootBookLayer.bounds.origin.x,
+                                      rootBookLayer.bounds.origin.y - 1.0,
+                                      rootBookLayer.bounds.size.width - 1.0,
+                                      rootBookLayer.bounds.size.height - 2.0);
     rightOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathMoveToPoint(path, nil, CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMidY(rightOpenLayer.bounds));
+	CGPathAddArcToPoint(path, nil, CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMinY(rightOpenLayer.bounds), CGRectGetMidX(rightOpenLayer.bounds), CGRectGetMinY(rightOpenLayer.bounds), 0.0);
+	CGPathAddArcToPoint(path, nil, CGRectGetMaxX(rightOpenLayer.bounds), CGRectGetMinY(rightOpenLayer.bounds), CGRectGetMaxX(rightOpenLayer.bounds), CGRectGetMidY(rightOpenLayer.bounds), radius);
+	CGPathAddArcToPoint(path, nil, CGRectGetMaxX(rightOpenLayer.bounds), CGRectGetMaxY(rightOpenLayer.bounds), CGRectGetMidX(rightOpenLayer.bounds), CGRectGetMaxY(rightOpenLayer.bounds), radius);
+	CGPathAddArcToPoint(path, nil, CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMaxY(rightOpenLayer.bounds), CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMidY(rightOpenLayer.bounds), 0.0);
+	CGPathCloseSubpath(path);
+    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
+	[maskLayer setPath:path];
+    rightOpenLayer.mask = nil;
+    rightOpenLayer.mask = maskLayer;
+    
     [self.rootBookLayer addSublayer:rightOpenLayer];
     
     // Book cover layer.
@@ -195,14 +213,14 @@
 - (CALayer *)createBookCoverLayer {
     CALayer *rootBookCoverLayer = [CATransformLayer layer];
     rootBookCoverLayer.anchorPoint = CGPointMake(0.0, 0.5);
-    rootBookCoverLayer.bounds = self.bounds;
+    rootBookCoverLayer.frame = self.bounds;
     rootBookCoverLayer.position = CGPointMake(0.0, floorf(self.bounds.size.height / 2));
     rootBookCoverLayer.doubleSided = YES;
     
     // Opened LHS layer.
     CALayer *leftOpenLayer = [CALayer layer];
     leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
-    leftOpenLayer.bounds = rootBookCoverLayer.bounds;
+    leftOpenLayer.frame = rootBookCoverLayer.bounds;
     leftOpenLayer.position = CGPointMake(floorf(self.bounds.size.width / 2), floorf(self.bounds.size.height / 2));
     leftOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
     leftOpenLayer.doubleSided = NO;
@@ -212,7 +230,7 @@
     // Front book cover contents.
     CALayer *bookCoverContentsLayer = [CALayer layer];
     bookCoverContentsLayer.anchorPoint = CGPointMake(0.0, 0.0);
-    bookCoverContentsLayer.bounds = rootBookCoverLayer.bounds;
+    bookCoverContentsLayer.frame = rootBookCoverLayer.bounds;
     bookCoverContentsLayer.doubleSided = NO;
     [rootBookCoverLayer addSublayer:bookCoverContentsLayer];
     self.bookCoverContentsLayer = bookCoverContentsLayer;
@@ -409,7 +427,8 @@
     // Root book animation changes.
     CGPoint rootBookStartPoint = CGPointMake(0.5, 0.5);
     CGPoint rootBookEndPoint = CGPointMake(0.0, 0.5);
-    CGFloat requiredScale = (rootView.bounds.size.height - 19.0) / self.bounds.size.height; // 8top + 11bot gaps
+//    CGFloat requiredScale = (rootView.bounds.size.height - 19.0) / self.bounds.size.height; // 8top + 11bot gaps
+    CGFloat requiredScale = rootView.bounds.size.height / self.bounds.size.height;
     CATransform3D rootBookScaleUpTransform = CATransform3DMakeScale(requiredScale, requiredScale, requiredScale);
     CATransform3D rootBookScaleDownTransform = CATransform3DIdentity;
     CATransform3D openBookTransform = CATransform3DMakeRotation(RADIANS(180), 0.0f, -1.0f, 0.0f);
