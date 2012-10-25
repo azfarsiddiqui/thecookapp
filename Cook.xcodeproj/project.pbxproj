@@ -79,6 +79,7 @@
 		76E16E471638FF870044EB9B /* cook_book_pink@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E16E431638FF870044EB9B /* cook_book_pink@2x.png */; };
 		76E16E481638FF870044EB9B /* cook_book_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E16E441638FF870044EB9B /* cook_book_yellow.png */; };
 		76E16E491638FF870044EB9B /* cook_book_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E16E451638FF870044EB9B /* cook_book_yellow@2x.png */; };
+		76E16E4C163903070044EB9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E16E4B163903070044EB9B /* MenuViewController.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -115,7 +116,7 @@
 		8936F7FA161E7ABB00E6EF1D /* NewRecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F3161E7ABB00E6EF1D /* NewRecipeViewController.m */; };
 		8936F7FB161E7ABB00E6EF1D /* RecipeListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */; };
 		8936F7FC161E7ABB00E6EF1D /* RecipeListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */; };
-		8936F800161E7C1100E6EF1D /* CKUIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7FF161E7C1100E6EF1D /* CKUIHelper.m */; };
+		8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7FF161E7C1100E6EF1D /* ViewHelper.m */; };
 		8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F802161E959700E6EF1D /* CKRecipeImage.m */; };
 		8962217B161E9F300023EC30 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89622178161E9F300023EC30 /* libAviarySDK.a */; };
 		8962217C161E9F300023EC30 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8962217A161E9F300023EC30 /* AviarySDKResources.bundle */; };
@@ -232,6 +233,8 @@
 		76E16E431638FF870044EB9B /* cook_book_pink@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_pink@2x.png"; sourceTree = "<group>"; };
 		76E16E441638FF870044EB9B /* cook_book_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_yellow.png; sourceTree = "<group>"; };
 		76E16E451638FF870044EB9B /* cook_book_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_yellow@2x.png"; sourceTree = "<group>"; };
+		76E16E4A163903070044EB9B /* MenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuViewController.h; sourceTree = "<group>"; };
+		76E16E4B163903070044EB9B /* MenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuViewController.m; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -287,8 +290,8 @@
 		8936F7F5161E7ABB00E6EF1D /* RecipeListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeListCell.m; sourceTree = "<group>"; };
 		8936F7F6161E7ABB00E6EF1D /* RecipeListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeListViewController.h; sourceTree = "<group>"; };
 		8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeListViewController.m; sourceTree = "<group>"; };
-		8936F7FE161E7C1100E6EF1D /* CKUIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUIHelper.h; sourceTree = "<group>"; };
-		8936F7FF161E7C1100E6EF1D /* CKUIHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUIHelper.m; sourceTree = "<group>"; };
+		8936F7FE161E7C1100E6EF1D /* ViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewHelper.h; sourceTree = "<group>"; };
+		8936F7FF161E7C1100E6EF1D /* ViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewHelper.m; sourceTree = "<group>"; };
 		8936F801161E959700E6EF1D /* CKRecipeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeImage.h; sourceTree = "<group>"; };
 		8936F802161E959700E6EF1D /* CKRecipeImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeImage.m; sourceTree = "<group>"; };
 		89622173161E9F300023EC30 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
@@ -435,8 +438,8 @@
 				7666B40216141B7E001D1BA1 /* CKModalView.m */,
 				7666B40416143713001D1BA1 /* AppHelper.h */,
 				7666B40516143713001D1BA1 /* AppHelper.m */,
-				8936F7FE161E7C1100E6EF1D /* CKUIHelper.h */,
-				8936F7FF161E7C1100E6EF1D /* CKUIHelper.m */,
+				8936F7FE161E7C1100E6EF1D /* ViewHelper.h */,
+				8936F7FF161E7C1100E6EF1D /* ViewHelper.m */,
 				76FA9A3E16267687006EAFBB /* EventHelper.h */,
 				76FA9A3F16267687006EAFBB /* EventHelper.m */,
 			);
@@ -446,9 +449,9 @@
 		76B015AB161C0AC100AF3C2C /* books */ = {
 			isa = PBXGroup;
 			children = (
+				766BFBE71630D80A0083EB0E /* covers.plist */,
 				76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */,
 				76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */,
-				766BFBE71630D80A0083EB0E /* covers.plist */,
 				766BFBE91630D9630083EB0E /* cook_book_blue.png */,
 				766BFBEA1630D9630083EB0E /* cook_book_blue@2x.png */,
 				766BFBEB1630D9630083EB0E /* cook_book_gray.png */,
@@ -581,6 +584,8 @@
 				76ED27801612DE140012E479 /* RootViewController.m */,
 				7666B3F8161418E5001D1BA1 /* CKIntroViewController.h */,
 				7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */,
+				76E16E4A163903070044EB9B /* MenuViewController.h */,
+				76E16E4B163903070044EB9B /* MenuViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -917,7 +922,7 @@
 				8936F7FA161E7ABB00E6EF1D /* NewRecipeViewController.m in Sources */,
 				8936F7FB161E7ABB00E6EF1D /* RecipeListCell.m in Sources */,
 				8936F7FC161E7ABB00E6EF1D /* RecipeListViewController.m in Sources */,
-				8936F800161E7C1100E6EF1D /* CKUIHelper.m in Sources */,
+				8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */,
 				8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */,
 				89622193161EA6610023EC30 /* NSArray+Enumerable.m in Sources */,
 				89622194161EA6610023EC30 /* NSArray+Utilities.m in Sources */,
@@ -946,6 +951,7 @@
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
 				76616E8D16312461002C4878 /* BookCover.m in Sources */,
 				766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */,
+				76E16E4C163903070044EB9B /* MenuViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

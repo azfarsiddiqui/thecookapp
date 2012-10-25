@@ -9,7 +9,7 @@
 #import "BookView.h"
 #import "BookCover.h"
 #import "UIColor+Expanded.h"
-#import "CKUIHelper.h"
+#import "ViewHelper.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppHelper.h"
 #import "EventHelper.h"
@@ -268,7 +268,7 @@
     
     UIEdgeInsets edgeInsets = [self contentEdgeInsets];
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-    CGFloat singleLineHeight = [CKUIHelper singleLineHeightForFont:[self coverNameFont]];
+    CGFloat singleLineHeight = [ViewHelper singleLineHeightForFont:[self coverNameFont]];
     CGSize size = [displayName sizeWithFont:[self coverNameFont]
                           constrainedToSize:CGSizeMake([self contentAvailableSize].width, singleLineHeight)
                               lineBreakMode:lineBreakMode];
@@ -307,7 +307,7 @@
     
     UIEdgeInsets edgeInsets = [self contentEdgeInsets];
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-    CGFloat singleLineHeight = [CKUIHelper singleLineHeightForFont:[self coverTaglineFont]];
+    CGFloat singleLineHeight = [ViewHelper singleLineHeightForFont:[self coverTaglineFont]];
     CGSize size = [displayTagline sizeWithFont:[self coverTaglineFont]
                              constrainedToSize:CGSizeMake([self contentAvailableSize].width, singleLineHeight)
                                  lineBreakMode:lineBreakMode];
@@ -346,7 +346,7 @@
     
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
     UIEdgeInsets insets = UIEdgeInsetsMake(2.0, 6.0, 1.0, 6.0);
-    CGFloat singleLineHeight = [CKUIHelper singleLineHeightForFont:[self coverNumRecipesFont]];
+    CGFloat singleLineHeight = [ViewHelper singleLineHeightForFont:[self coverNumRecipesFont]];
     CGSize size = [displayNum sizeWithFont:[self coverNumRecipesFont]
                          constrainedToSize:CGSizeMake([self contentAvailableSize].width, singleLineHeight)
                              lineBreakMode:lineBreakMode];

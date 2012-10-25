@@ -8,7 +8,7 @@
 
 #import "NewRecipeViewController.h"
 #import "CategoryListViewController.h"
-#import "CKUIHelper.h"
+#import "ViewHelper.h"
 #import "AFPhotoEditorController.h"
 #import "CKRecipe.h"
 #import "Category.h"

@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "CKModalView.h"
 #import "CKIntroViewController.h"
+#import "MenuViewController.h"
 
-@interface RootViewController : UIViewController <CKModalViewContentDelegate, CKIntroViewControllerDelegate>
+@interface RootViewController : UIViewController <CKModalViewContentDelegate, CKIntroViewControllerDelegate,
+    MenuViewControllerDelegate>
 
 @end

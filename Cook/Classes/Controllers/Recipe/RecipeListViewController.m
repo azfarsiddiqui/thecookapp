@@ -10,7 +10,7 @@
 #import "NewRecipeViewController.h"
 #import "RecipeListCell.h"
 #import "CKRecipe.h"
-#import "CKUIHelper.h"
+#import "ViewHelper.h"
 
 #define kCellReuseIdentifier    @"RecipeListTableViewCell"
 #define kCollectionViewSideSize 500.0f
@@ -71,11 +71,11 @@
     [self.view addSubview:self.collectionView];
     
 
-    UIButton *closeButton = [CKUIHelper buttonWithImage:[UIImage imageNamed:@"btn_close"] target:self selector:@selector(closeTapped:)];
+    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"btn_close"] target:self selector:@selector(closeTapped:)];
     closeButton.frame = CGRectMake(10.0f, 25.0f, closeButton.frame.size.width, closeButton.frame.size.height);
     [self.view addSubview:closeButton];
 
-    UIButton *addRecipeButton = [CKUIHelper buttonWithImage:[UIImage imageNamed:@"btn_create_recipe"] target:self selector:@selector(createRecipeTapped:)];
+    UIButton *addRecipeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"btn_create_recipe"] target:self selector:@selector(createRecipeTapped:)];
     addRecipeButton.frame = CGRectMake(10.0f, 150.0f, addRecipeButton.frame.size.width, addRecipeButton.frame.size.height);
     [self.view addSubview:addRecipeButton];
 }

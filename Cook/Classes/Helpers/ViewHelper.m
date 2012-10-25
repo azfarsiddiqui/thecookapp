@@ -7,9 +7,9 @@
 //  User Interface helper for creation of user interface element
 //
 
-#import "CKUIHelper.h"
+#import "ViewHelper.h"
 
-@implementation CKUIHelper
+@implementation ViewHelper
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -26,7 +26,7 @@
 }
 
 + (CGFloat)singleLineHeightForFont:(UIFont *)font {
-    return [@"A" sizeWithFont:font constrainedToSize:[CKUIHelper bookSize] lineBreakMode:NSLineBreakByTruncatingTail].height;
+    return [@"A" sizeWithFont:font constrainedToSize:[ViewHelper bookSize] lineBreakMode:NSLineBreakByTruncatingTail].height;
 }
 
 @end

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CKUIHelper : NSObject
+@interface ViewHelper : NSObject
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
 

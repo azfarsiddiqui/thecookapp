@@ -14,8 +14,8 @@
 @interface RootViewController ()
 
 @property (nonatomic, strong) BenchtopViewController *benchtopViewController;
+@property (nonatomic, strong) MenuViewController *menuViewController;
 
-- (void)showDashboard;
 
 @end
 
@@ -45,6 +45,7 @@
         [modalView showInView:self.view];
     } else {
         [self showDashboard];
+        [self showMenu:YES];
     }
 }
 
@@ -79,12 +80,42 @@
     }];
 }
 
+#pragma mark - MenuViewControllerDelegate methods
+
+- (void)menuViewControllerSettingsRequested {
+    DLog();
+}
+
+- (void)menuViewControllerStoreRequested {
+    DLog();
+}
+
+#pragma mark - Private methods
+
 - (void)showDashboard {
     DLog();
     CKUser *currentUser = [CKUser currentUser];
     DLog(@"Current User: %@", currentUser);
     
     [self.benchtopViewController enable:YES];
+}
+
+- (void)showMenu:(BOOL)show {
+    if (!self.menuViewController) {
+        self.menuViewController = [[MenuViewController alloc] initWithDelegate:self];
+        self.menuViewController.view.alpha = 0.0;
+        [self.view addSubview:self.menuViewController.view];
+    }
+    
+    // Fade it in
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.menuViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 @end

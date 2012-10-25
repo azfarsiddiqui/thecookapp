@@ -12,7 +12,7 @@
 #import "BookCategoryViewController.h"
 #import "RecipeViewController.h"
 #import "CookPageFlipper.h"
-#import "CKUIHelper.h"
+#import "ViewHelper.h"
 
 @interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
 
