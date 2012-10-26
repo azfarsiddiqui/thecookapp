@@ -40,11 +40,11 @@
 }
 
 + (NSString *)defaultCover {
-    return [[BookCover settings] valueForKeyPath:@"covers.Red"];
+    return [[BookCover settings] valueForKeyPath:@"Covers.Red"];
 }
 
 + (NSString *)defaultIllustration {
-    return [[BookCover settings] valueForKeyPath:@"illustrations.Cutlery"];
+    return [[BookCover settings] valueForKeyPath:@"Illustrations.Cutlery.Image"];
 }
 
 + (NSString *)randomCover {
@@ -58,29 +58,33 @@
 }
 
 + (UIImage *)imageForCover:(NSString *)cover {
-    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"covers.%@", cover]];
+    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@", cover]];
     if (!imageName) {
-        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"covers.%@",
+        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@",
                                                            [BookCover randomCover]]];
     }
     return [UIImage imageNamed:imageName];
 }
 
 + (UIImage *)imageForIllustration:(NSString *)illustration {
-    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"illustrations.%@", illustration]];
+    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
     if (!imageName) {
-        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"illustrations.%@",
+        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image",
                                                            [BookCover randomIllustration]]];
     }
     return [UIImage imageNamed:imageName];
 }
 
 + (NSArray *)covers {
-    return [[[BookCover settings] valueForKey:@"covers"] allKeys];
+    return [[[BookCover settings] valueForKey:@"Covers"] allKeys];
 }
 
 + (NSArray *)illustrations {
-    return [[[BookCover settings] valueForKey:@"illustrations"] allKeys];
+    return [[[BookCover settings] valueForKey:@"Illustrations"] allKeys];
+}
+
++ (NSTextAlignment)titleTextAlignmentForIllustration:(NSString *)illustration {
+    return NSTextAlignmentCenter;
 }
 
 #pragma mark - Private 

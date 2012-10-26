@@ -21,4 +21,6 @@
 + (NSArray *)covers;
 + (NSArray *)illustrations;
 
++ (NSTextAlignment)titleTextAlignmentForIllustration:(NSString *)illustration;
+
 @end

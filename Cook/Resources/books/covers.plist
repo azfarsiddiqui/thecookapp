@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>covers</key>
+	<key>Covers</key>
 	<dict>
 		<key>Red</key>
 		<string>cook_book_red.png</string>
@@ -17,50 +17,155 @@
 		<key>Yellow</key>
 		<string>cook_book_yellow.png</string>
 	</dict>
-	<key>illustrations</key>
+	<key>Illustrations</key>
 	<dict>
 		<key>Asparagus</key>
-		<string>cook_book_graphic_asparagus.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_asparagus.png</string>
+			<key>TitleAlignment</key>
+			<string>TopLeft</string>
+		</dict>
 		<key>Bicycle</key>
-		<string>cook_book_graphic_bicycle.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_bicycle.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Bicycle Back</key>
-		<string>cook_book_graphic_bicycleback.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_bicycleback.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Boots</key>
-		<string>cook_book_graphic_boots.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_boots.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Bowls</key>
-		<string>cook_book_graphic_bowls.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_bowls.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Burger</key>
-		<string>cook_book_graphic_burger.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_burger.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Clock</key>
-		<string>cook_book_graphic_clock.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_clock.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Cupcake</key>
-		<string>cook_book_graphic_cupcake.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_cupcake.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Cutlery</key>
-		<string>cook_book_graphic_cutlery.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_cutlery.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Egg Beater</key>
-		<string>cook_book_graphic_eggbeater.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_eggbeater.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Fork Plate</key>
-		<string>cook_book_graphic_forkplate.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_forkplate.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Orange</key>
-		<string>cook_book_graphic_orange.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_orange.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Pasta</key>
-		<string>cook_book_graphic_pasta.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_pasta.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Peas</key>
-		<string>cook_book_graphic_peas.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_peas.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Plane</key>
-		<string>cook_book_graphic_plane.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_plane.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Pot</key>
-		<string>cook_book_graphic_pot.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_pot.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Prawn</key>
-		<string>cook_book_graphic_prawn.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_prawn.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Rice</key>
-		<string>cook_book_graphic_rice.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_rice.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Scooter</key>
-		<string>cook_book_graphic_scooter.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_scooter.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Spoon</key>
-		<string>cook_book_graphic_spoon.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_spoon.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 		<key>Tomato</key>
-		<string>cook_book_graphic_tomato.png</string>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_tomato.png</string>
+			<key>TitleAlignment</key>
+			<string>TopCenter</string>
+		</dict>
 	</dict>
 </dict>
 </plist>
