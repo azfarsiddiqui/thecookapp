@@ -27,6 +27,7 @@
 @property (nonatomic, assign) BOOL firstBenchtop;
 @property (nonatomic, assign) BOOL snapActivated;
 @property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSArray *friendsBooks;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
@@ -166,6 +167,10 @@
     }
 }
 
+- (BOOL)benchtopEditMode {
+    return self.editMode;
+}
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -215,10 +220,18 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    
+    // Nothing to show if not enabled.
     if (!self.enabled) {
         return 0;
     }
     
+    // Only one section for edit mode.
+    if (self.editMode) {
+        return 1;
+    }
+    
+    // Normal operations.
     CKUser *currentUser = [CKUser currentUser];
     if ([currentUser isSignedIn]) {
         return self.friendsBooks ? 2 : 1;
@@ -229,17 +242,23 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    NSInteger numItems = 0;
+    
+    // Nothing to show if not enabled.
     if (!self.enabled) {
         return 0;
     }
     
+    // Only my book if in edit mode.
+    if (self.editMode) {
+        return 1;
+    }
+    
+    NSInteger numItems = 0;
     if (section == 0) {
         numItems = 1;   // My Book
     } else {
         CKUser *currentUser = [CKUser currentUser];
         if ([currentUser isSignedIn]) {
-//            numItems += MIN([currentUser numFollows], kNumFriendsMaxStack);
             numItems = [self.friendsBooks count];
         } else {
             numItems = 2; // Login book and some fake book.

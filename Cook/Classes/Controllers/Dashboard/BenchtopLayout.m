@@ -25,6 +25,33 @@
 - (void)layoutCompleted {
 }
 
+#pragma mark - UICollectionViewLayout methods
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewLayoutAttributes* attributes = [UICollectionViewLayoutAttributes
+                                                    layoutAttributesForCellWithIndexPath:indexPath];
+    CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
+    CGFloat sideGap = [self.benchtopDelegate benchtopSideGap];
+    CGFloat itemOffset = [self.benchtopDelegate benchtopItemOffset];
+    attributes.size = itemSize;
+    
+    if (indexPath.section == 0) {
+        
+        // |62| + 300 + 150
+        attributes.center = CGPointMake(sideGap + itemSize.width + (itemSize.width / 2.0) + itemOffset, self.collectionView.center.y);
+        
+    } else {
+        
+        // Starts at |62| + 300 + 300 + 300 + (300n + 150)
+        CGFloat offset = sideGap + itemSize.width * 3.0 + (itemSize.width * indexPath.row + (itemSize.width / 2.0)) + itemOffset;
+        attributes.center = CGPointMake(offset, self.collectionView.center.y);
+        
+    }
+    
+    return attributes;
+}
+
+// Insertion start point.
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
     

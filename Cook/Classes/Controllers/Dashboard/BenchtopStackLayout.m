@@ -34,18 +34,14 @@
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes* attributes = [UICollectionViewLayoutAttributes
-                                                    layoutAttributesForCellWithIndexPath:indexPath];
-    CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
-    CGFloat sideGap = [self.benchtopDelegate benchtopSideGap];
-    CGFloat itemOffset = [self.benchtopDelegate benchtopItemOffset];
-    attributes.size = itemSize;
+    UICollectionViewLayoutAttributes* attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
     
-    if (indexPath.section == 0) {
-        // |62| + 300 + 150
-        attributes.center = CGPointMake(sideGap + itemSize.width + (itemSize.width / 2.0) + itemOffset,
-                                        self.collectionView.center.y);
-    } else {
+    if (indexPath.section == 1) {
+        
+        CGFloat sideGap = [self.benchtopDelegate benchtopSideGap];
+        CGFloat itemOffset = [self.benchtopDelegate benchtopItemOffset];
+        CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
+        
         // |62| + 300 + 150
         attributes.center = CGPointMake(sideGap + itemSize.width * 3.0 + (itemSize.width / 2.0) + itemOffset,
                                         self.collectionView.center.y);
