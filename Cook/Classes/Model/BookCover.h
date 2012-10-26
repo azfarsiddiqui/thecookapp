@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-	BookCoverTitleAlignmentTopLeft,
-	BookCoverTitleAlignmentTopCentered,
-	BookCoverTitleAlignmentMidCentered,
-	BookCoverTitleAlignmentBottomCentered,
-} BookCoverTitleAlignment;
+	BookCoverLayout1,
+	BookCoverLayout2,
+	BookCoverLayout3,
+	BookCoverLayout4,
+	BookCoverLayout5,
+} BookCoverLayout;
 
 @interface BookCover : NSObject
 
@@ -28,6 +29,6 @@ typedef enum {
 + (NSArray *)covers;
 + (NSArray *)illustrations;
 
-+ (BookCoverTitleAlignment)titleAlignmentForIllustration:(NSString *)illustration;
++ (BookCoverLayout)layoutForIllustration:(NSString *)illustration;
 
 @end

@@ -83,9 +83,9 @@
     return [[[BookCover settings] valueForKey:@"Illustrations"] allKeys];
 }
 
-+ (BookCoverTitleAlignment)titleAlignmentForIllustration:(NSString *)illustration {
-    return [self textAlignmentForKey:[[BookCover settings] valueForKeyPath:
-                                      [NSString stringWithFormat:@"Illustrations.%@.TitleAlignment", illustration]]];
++ (BookCoverLayout)layoutForIllustration:(NSString *)illustration {
+    return [self layoutForKey:[[BookCover settings] valueForKeyPath:
+                               [NSString stringWithFormat:@"Illustrations.%@.Layout", illustration]]];
 }
 
 #pragma mark - Private
@@ -100,16 +100,20 @@
     return settings;
 }
 
-+ (BookCoverTitleAlignment)textAlignmentForKey:(NSString *)key {
-    BookCoverTitleAlignment textAlignment = BookCoverTitleAlignmentMidCentered;
-    if ([key isEqualToString:@"TopLeft"]) {
-        textAlignment = BookCoverTitleAlignmentTopLeft;
-    } else if ([key isEqualToString:@"TopCenter"]) {
-        textAlignment = BookCoverTitleAlignmentTopCentered;
-    } else if ([key isEqualToString:@"BottomCenter"]) {
-        textAlignment = BookCoverTitleAlignmentBottomCentered;
++ (BookCoverLayout)layoutForKey:(NSString *)key {
+    BookCoverLayout layout = BookCoverLayout1;
+    if ([key isEqualToString:@"Layout1"]) {
+        layout = BookCoverLayout1;
+    } else if ([key isEqualToString:@"Layout2"]) {
+        layout = BookCoverLayout2;
+    } else if ([key isEqualToString:@"Layout3"]) {
+        layout = BookCoverLayout3;
+    } else if ([key isEqualToString:@"Layout4"]) {
+        layout = BookCoverLayout4;
+    } else if ([key isEqualToString:@"Layout5"]) {
+        layout = BookCoverLayout5;
     }
-    return textAlignment;
+    return layout;
 }
 
 @end

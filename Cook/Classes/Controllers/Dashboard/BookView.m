@@ -26,7 +26,7 @@
 @property (nonatomic, strong) UIImageView *overlayImageView;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *taglineLabel;
+@property (nonatomic, strong) UILabel *captionLabel;
 @property (nonatomic, strong) UILabel *numRecipesLabel;
 @property (nonatomic, assign) BOOL opened;
 
@@ -34,7 +34,6 @@
 
 @implementation BookView
 
-#define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 #define kBookInsets             UIEdgeInsetsMake(17.0, 19.0, 22.0, 20.0)
 #define RADIANS(degrees)        ((degrees * (float)M_PI) / 180.0f)
 
@@ -60,18 +59,11 @@
     if (![self.book.illustration isEqualToString:book.illustration]) {
         self.illustrationImageView.image = [BookCover imageForIllustration:book.illustration];
     }
-    if (![[self.book userName] isEqualToString:[book userName]]) {
-        [self updateName:[book userName] book:book];
-    }
-    if (![self.book.name isEqualToString:book.name]) {
-        [self updateTitle:book.name book:book];
-    }
-    if (![self.book.tagline isEqualToString:book.tagline]) {
-        [self updateTagline:book.tagline book:book];
-    }
-//    if (!self.book || self.book.numRecipes != book.numRecipes) {
-//        [self updateNumRecipes:book.numRecipes];
-//    }
+    
+    [self updateName:[book userName] book:book];
+    [self updateTitle:book.name book:book];
+    [self updateCaption:book.caption book:book];
+    
     self.book = book;
 }
 
@@ -285,59 +277,58 @@
     nameLabel.shadowColor = [self coverNameShadowColour];
     nameLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     nameLabel.text = displayName;
-    nameLabel.alpha = 0.0;
+    nameLabel.alpha = 1.0;
     [self.bookCoverContentsLayer insertSublayer:nameLabel.layer below:self.overlayImageView.layer];
     self.nameLabel = nameLabel;
-    
-    // Fade the title in.
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseOut
-                     animations:^{
-                         nameLabel.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-    
 }
 
-- (void)updateTagline:(NSString *)tagline book:(CKBook *)book {
-    NSString *displayTagline = [tagline uppercaseString];
-    [self.taglineLabel.layer removeFromSuperlayer];
+- (void)updateTitle:(NSString *)title book:(CKBook *)book {
+    NSString *displayTitle = [title uppercaseString];
+    [self.titleLabel.layer removeFromSuperlayer];
     
-    UIEdgeInsets edgeInsets = [self contentEdgeInsets];
+    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
+    CGSize size = [displayTitle sizeWithFont:[self coverTitleFont] constrainedToSize:self.bounds.size lineBreakMode:lineBreakMode];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.autoresizingMask = UIViewAutoresizingNone;
+    titleLabel.numberOfLines = 0;
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.lineBreakMode = lineBreakMode;
+    titleLabel.textAlignment = [self coverTitleAlignment];
+    titleLabel.minimumScaleFactor = 0.7;
+    titleLabel.font = [self coverTitleFont];
+    titleLabel.textColor = [self coverTitleColour];
+    titleLabel.shadowColor = [self coverTitleShadowColour];
+    titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    titleLabel.text = displayTitle;
+    titleLabel.alpha = 1.0;
+    titleLabel.frame = [self titleLabelFrameForSize:size book:book];
+    [self.bookCoverContentsLayer insertSublayer:titleLabel.layer below:self.overlayImageView.layer];
+    self.titleLabel = titleLabel;
+}
+
+- (void)updateCaption:(NSString *)caption book:(CKBook *)book {
+    NSString *displayCaption = [caption uppercaseString];
+    [self.captionLabel.layer removeFromSuperlayer];
+    
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
     CGFloat singleLineHeight = [ViewHelper singleLineHeightForFont:[self coverTaglineFont]];
-    CGSize size = [displayTagline sizeWithFont:[self coverTaglineFont]
+    CGSize size = [displayCaption sizeWithFont:[self coverTaglineFont]
                              constrainedToSize:CGSizeMake([self contentAvailableSize].width, singleLineHeight)
                                  lineBreakMode:lineBreakMode];
-    UILabel *taglineLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((self.bounds.size.width - size.width) / 2.0),
-                                                                      self.bounds.size.height - edgeInsets.bottom - size.height,
-                                                                      size.width,
-                                                                      size.height)];
-    taglineLabel.autoresizingMask = UIViewAutoresizingNone;
-    taglineLabel.backgroundColor = [UIColor clearColor];
-    taglineLabel.lineBreakMode = lineBreakMode;
-    taglineLabel.minimumScaleFactor = 0.7;
-    taglineLabel.font = [self coverTaglineFont];
-    taglineLabel.textColor = [self coverTaglineColour];
-    taglineLabel.shadowColor = [self coverTaglineShadowColor];
-    taglineLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    taglineLabel.text = displayTagline;
-    taglineLabel.alpha = 0.0;
-    [self.bookCoverContentsLayer insertSublayer:taglineLabel.layer below:self.overlayImageView.layer];
-    self.taglineLabel = taglineLabel;
-    
-    // Fade the tagline in.
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseOut
-                     animations:^{
-                         taglineLabel.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-    
+    UILabel *captionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    captionLabel.autoresizingMask = UIViewAutoresizingNone;
+    captionLabel.backgroundColor = [UIColor clearColor];
+    captionLabel.lineBreakMode = lineBreakMode;
+    captionLabel.minimumScaleFactor = 0.7;
+    captionLabel.font = [self coverTaglineFont];
+    captionLabel.textColor = [self coverTaglineColour];
+    captionLabel.shadowColor = [self coverTaglineShadowColor];
+    captionLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    captionLabel.text = displayCaption;
+    captionLabel.alpha = 1.0;
+    captionLabel.frame = [self captionLabelFrameForSize:size book:book];
+    [self.bookCoverContentsLayer insertSublayer:captionLabel.layer below:self.overlayImageView.layer];
+    self.captionLabel = captionLabel;
 }
 
 - (void)updateNumRecipes:(NSUInteger)numRecipes book:(CKBook *)book {
@@ -365,55 +356,9 @@
     numRecipesLabel.shadowColor = [self coverNumRecipesShadowColour];
     numRecipesLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     numRecipesLabel.text = displayNum;
-    numRecipesLabel.alpha = 0.0;
+    numRecipesLabel.alpha = 1.0;
     [self.bookCoverContentsLayer insertSublayer:numRecipesLabel.layer below:self.overlayImageView.layer];
     self.numRecipesLabel = numRecipesLabel;
-    
-    // Fade the tagline in.
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseOut
-                     animations:^{
-                         numRecipesLabel.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-    
-}
-
-- (void)updateTitle:(NSString *)title book:(CKBook *)book {
-    NSString *displayTitle = [title uppercaseString];
-    [self.titleLabel.layer removeFromSuperlayer];
-    
-    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
-    CGSize size = [displayTitle sizeWithFont:[self coverTitleFont] constrainedToSize:self.bounds.size lineBreakMode:lineBreakMode];
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
-    titleLabel.autoresizingMask = UIViewAutoresizingNone;
-    titleLabel.numberOfLines = 0;
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.lineBreakMode = lineBreakMode;
-    titleLabel.textAlignment = [self coverTitleAlignment];
-    titleLabel.minimumScaleFactor = 0.7;
-    titleLabel.font = [self coverTitleFont];
-    titleLabel.textColor = [self coverTitleColour];
-    titleLabel.shadowColor = [self coverTitleShadowColour];
-    titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    titleLabel.text = displayTitle;
-    titleLabel.alpha = 0.0;
-    titleLabel.frame = [self titleLabelFrameForSize:size book:book];
-    [self.bookCoverContentsLayer insertSublayer:titleLabel.layer below:self.overlayImageView.layer];
-    self.titleLabel = titleLabel;
-    
-    // Fade the title in.
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseOut
-                     animations:^{
-                         titleLabel.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-    
 }
 
 - (void)openBook:(BOOL)open {
@@ -489,21 +434,56 @@
 }
 
 - (CGRect)titleLabelFrameForSize:(CGSize)size book:(CKBook *)book  {
-    BookCoverTitleAlignment titleAlignment = [BookCover titleAlignmentForIllustration:book.illustration];
+    UIEdgeInsets edgeInsets = [self contentEdgeInsets];
+    BookCoverLayout layout = [BookCover layoutForIllustration:book.illustration];
     CGRect frame = CGRectMake(0.0, 0.0, size.width, size.height);
     CGPoint origin = frame.origin;
-    switch (titleAlignment) {
-        case BookCoverTitleAlignmentTopLeft:
-            origin = CGPointMake(kContentInsets.left, kContentInsets.top);
+    switch (layout) {
+        case BookCoverLayout1:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), edgeInsets.top + 10.0);
             break;
-        case BookCoverTitleAlignmentTopCentered:
-            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), kContentInsets.top);
+        case BookCoverLayout2:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), edgeInsets.top);
             break;
-        case BookCoverTitleAlignmentMidCentered:
-            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), floorf((self.bounds.size.height - size.height) / 2.0));
+        case BookCoverLayout3:
+            origin = CGPointMake(edgeInsets.left, edgeInsets.top);
             break;
-        case BookCoverTitleAlignmentBottomCentered:
-            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), self.bounds.size.height - kContentInsets.bottom - size.height);
+        case BookCoverLayout4:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), self.bounds.size.height - edgeInsets.bottom - size.height);
+            break;
+        case BookCoverLayout5:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), floorf((self.bounds.size.height - size.height) / 2.0) - 20.0);
+            break;
+        default:
+            break;
+    }
+    frame.origin = origin;
+    return frame;
+}
+
+- (CGRect)captionLabelFrameForSize:(CGSize)size book:(CKBook *)book  {
+    UIEdgeInsets edgeInsets = [self contentEdgeInsets];
+    BookCoverLayout layout = [BookCover layoutForIllustration:book.illustration];
+    CGRect titleFrame = self.titleLabel.frame;
+    CGFloat titleOffset = titleFrame.origin.y + titleFrame.size.height - 20.0;
+    DLog(@"***** TITLE FRAME %@", NSStringFromCGRect(titleFrame));
+    CGRect frame = CGRectMake(0.0, 0.0, size.width, size.height);
+    CGPoint origin = frame.origin;
+    switch (layout) {
+        case BookCoverLayout1:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), titleOffset);
+            break;
+        case BookCoverLayout2:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), titleOffset);
+            break;
+        case BookCoverLayout3:
+            origin = CGPointMake(edgeInsets.left, titleOffset);
+            break;
+        case BookCoverLayout4:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), titleOffset);
+            break;
+        case BookCoverLayout5:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), titleOffset);
             break;
         default:
             break;

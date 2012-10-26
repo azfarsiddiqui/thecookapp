@@ -37,7 +37,7 @@
 + (PFObject *)createParseBook {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
-    [parseBook setObject:kBookAttrDefaultTaglineValue forKey:kBookAttrTagline];
+    [parseBook setObject:kBookAttrDefaultTaglineValue forKey:kBookAttrCaption];
     [parseBook setObject:[BookCover initialCover] forKey:kBookAttrCover];
     [parseBook setObject:[BookCover initialIllustration] forKey:kBookAttrIllustration];
     return parseBook;
@@ -111,12 +111,12 @@
     return [self.parseObject objectForKey:kBookAttrIllustration];
 }
 
-- (void)setTagline:(NSString *)tagline {
-    [self.parseObject setObject:tagline forKey:kBookAttrTagline];
+- (void)setCaption:(NSString *)tagline {
+    [self.parseObject setObject:tagline forKey:kBookAttrCaption];
 }
 
-- (NSString *)tagline {
-    NSString *tagLine = [self.parseObject objectForKey:kBookAttrTagline];
+- (NSString *)caption {
+    NSString *tagLine = [self.parseObject objectForKey:kBookAttrCaption];
     if ([tagLine length] == 0) {
         return kBookAttrDefaultTaglineValue;
     } else {

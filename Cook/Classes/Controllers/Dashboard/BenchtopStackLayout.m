@@ -76,7 +76,7 @@
 - (CATransform3D)transformForIndexPath:(NSIndexPath *)indexPath {
     NSInteger numItems = [self.collectionView numberOfItemsInSection:indexPath.section];
     CGFloat scale = 1.0 - (indexPath.item * 0.1);
-    CGFloat translation = indexPath.item * -50;
+    CGFloat translation = indexPath.item * -40;
     
 //    return CATransform3DMakeRotation([self rotationForIndexPath:indexPath], 0.0, 0.0, 1.0);
     
