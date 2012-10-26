@@ -35,6 +35,7 @@
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewLayoutAttributes* attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
+    NSInteger numItems = [self.collectionView numberOfItemsInSection:indexPath.section];
     
     if (indexPath.section == 1) {
         
@@ -46,7 +47,7 @@
         attributes.center = CGPointMake(sideGap + itemSize.width * 3.0 + (itemSize.width / 2.0) + itemOffset,
                                         self.collectionView.center.y);
         attributes.transform3D = [self transformForIndexPath:indexPath];
-        attributes.zIndex = -indexPath.item;
+        attributes.zIndex = (numItems - 1) - indexPath.item;
     }
     
     return attributes;
@@ -73,7 +74,15 @@
 #pragma mark - Private methods
 
 - (CATransform3D)transformForIndexPath:(NSIndexPath *)indexPath {
-    return CATransform3DMakeRotation([self rotationForIndexPath:indexPath], 0.0, 0.0, 1.0);
+    NSInteger numItems = [self.collectionView numberOfItemsInSection:indexPath.section];
+    CGFloat scale = 1.0 - (indexPath.item * 0.1);
+    CGFloat translation = indexPath.item * -50;
+    
+//    return CATransform3DMakeRotation([self rotationForIndexPath:indexPath], 0.0, 0.0, 1.0);
+    
+    // The -1 in the z-axis transform ensures that they don't overlap books in front. Changing layouts disregard
+    // the z-index of the cell.
+    return CATransform3DConcat(CATransform3DMakeTranslation(0.0, translation, (numItems - 1) - indexPath.item), CATransform3DMakeScale(scale, scale, 1.0));
 }
 
 - (CGFloat)rotationForIndexPath:(NSIndexPath *)indexPath {

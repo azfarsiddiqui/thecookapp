@@ -437,9 +437,9 @@
     
     // Prepare to stack.
     // Select the first cell to ensure cell stays on top.
-    [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]
-                                      animated:NO
-                                scrollPosition:UICollectionViewScrollPositionNone];
+//    [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]
+//                                      animated:NO
+//                                scrollPosition:UICollectionViewScrollPositionNone];
 
     [UIView animateWithDuration:0.2
                           delay:0.0
