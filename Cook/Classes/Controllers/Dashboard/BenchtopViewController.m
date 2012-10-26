@@ -18,6 +18,7 @@
 #import "EventHelper.h"
 #import "MRCEnumerable.h"
 #import "NSString+Utilities.h"
+#import "SettingsViewController.h"
 
 @interface BenchtopViewController ()
 
@@ -32,7 +33,7 @@
 @property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, strong) MenuViewController *menuViewController;
-
+@property (nonatomic, strong) UIPopoverController *settingsPopoverController;
 
 @end
 
@@ -379,6 +380,13 @@
 
 - (void)menuViewControllerSettingsRequested {
     DLog();
+    SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
+    UIPopoverController *popoverController = [[UIPopoverController alloc] initWithContentViewController:settingsViewController];
+    [popoverController presentPopoverFromRect:self.menuViewController.settingsButton.frame
+                                       inView:self.view
+                     permittedArrowDirections:UIPopoverArrowDirectionUp
+                                     animated:YES];
+    self.settingsPopoverController = popoverController;
 }
 
 - (void)menuViewControllerStoreRequested {

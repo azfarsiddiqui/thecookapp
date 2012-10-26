@@ -17,6 +17,9 @@
 
 @interface MenuViewController : UIViewController
 
+@property (nonatomic, strong) UIButton *settingsButton;
+@property (nonatomic, strong) UIButton *storeButton;
+
 - (id)initWithDelegate:(id<MenuViewControllerDelegate>)delegate;
 
 @end

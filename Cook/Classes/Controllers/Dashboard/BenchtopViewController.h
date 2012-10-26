@@ -12,7 +12,7 @@
 #import "MenuViewController.h"
 
 @interface BenchtopViewController : UICollectionViewController <BenchtopDelegate, BookViewControllerDelegate,
-    MenuViewControllerDelegate>
+    MenuViewControllerDelegate, UIPopoverControllerDelegate>
 
 - (void)enable:(BOOL)enable;
 - (void)freeze:(BOOL)freeze;

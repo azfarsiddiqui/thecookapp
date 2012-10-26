@@ -44,6 +44,7 @@
                                       settingsButton.frame.size.height);
     settingsButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     [self.view addSubview:settingsButton];
+    self.settingsButton = settingsButton;
     
     // Store button.
     UIButton *storeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_friends.png"]
@@ -55,6 +56,7 @@
                                    storeButton.frame.size.height);
     storeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     [self.view addSubview:storeButton];
+    self.storeButton = storeButton;
     
     self.view.frame = CGRectMake(0.0, 0.0, storeButton.frame.origin.x + storeButton.frame.size.width + kSideGap, kMenuHeight);
 }
