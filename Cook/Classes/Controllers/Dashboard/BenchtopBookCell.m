@@ -15,18 +15,11 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) BookView *bookView;
-@property (nonatomic, strong) UILabel *textLabel;
-@property (nonatomic, strong) UIImageView *bookImageView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
 @implementation BenchtopBookCell
-
-#define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
-#define kBookTitleFont          [UIFont boldSystemFontOfSize:40.0]
-#define kBookTitleColour        [UIColor lightGrayColor]
-#define kBookTitleShadowColour  [UIColor blackColor]
 
 + (CGSize)cellSize {
     return CGSizeMake(300.0, 438.0);
@@ -53,6 +46,16 @@
     }
     return self;
 }
+
+- (void)setHighlighted:(BOOL)highlighted {
+    DLog();
+}
+
+- (void)setSelected:(BOOL)selected {
+    DLog();
+}
+
+#pragma mark - BenchtopBookCell methods
 
 - (BOOL)enabled {
     return (self.book != nil);
@@ -95,22 +98,5 @@
 }
 
 #pragma mark - Private methods
-
-- (CGSize)availableSize {
-    return CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
-                      self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
-}
-
-- (void)setText:(NSString *)text {
-    CGSize availableSize = [self availableSize];
-    CGSize size = [text sizeWithFont:kBookTitleFont constrainedToSize:[self availableSize]
-                       lineBreakMode:NSLineBreakByTruncatingTail];
-    self.textLabel.hidden = NO;
-    self.textLabel.frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                                      self.textLabel.frame.origin.y,
-                                      size.width,
-                                      size.height);
-    self.textLabel.text = text;
-}
 
 @end

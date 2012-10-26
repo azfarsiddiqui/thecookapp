@@ -167,13 +167,12 @@
 
 #pragma mark - UICollectionViewDelegate methods
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    
-    // Ignore if the cell is not enabled.
-    if (![cell enabled]) {
-        return;
-    }
+    return [cell enabled];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     // Remember the selected indexPath.
     self.selectedIndexPath = indexPath;
