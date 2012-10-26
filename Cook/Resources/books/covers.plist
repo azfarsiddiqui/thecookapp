@@ -115,7 +115,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_peas.png</string>
 			<key>TitleAlignment</key>
-			<string>TopCenter</string>
+			<string>BottomCenter</string>
 		</dict>
 		<key>Plane</key>
 		<dict>
