@@ -80,7 +80,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_cutlery.png</string>
 			<key>TitleAlignment</key>
-			<string>TopCenter</string>
+			<string>MidCenter</string>
 		</dict>
 		<key>Egg Beater</key>
 		<dict>
@@ -157,7 +157,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_spoon.png</string>
 			<key>TitleAlignment</key>
-			<string>TopCenter</string>
+			<string>BottomCenter</string>
 		</dict>
 		<key>Tomato</key>
 		<dict>

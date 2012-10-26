@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "BookView.h"
 #import "BookCover.h"
 #import "UIColor+Expanded.h"
 #import "ViewHelper.h"
-#import <QuartzCore/QuartzCore.h>
 #import "AppHelper.h"
 #import "EventHelper.h"
 #import "NSString+Utilities.h"
@@ -61,13 +61,13 @@
         self.illustrationImageView.image = [BookCover imageForIllustration:book.illustration];
     }
     if (![[self.book userName] isEqualToString:[book userName]]) {
-        [self updateName:[book userName]];
+        [self updateName:[book userName] book:book];
     }
     if (![self.book.name isEqualToString:book.name]) {
-        [self updateTitle:book.name];
+        [self updateTitle:book.name book:book];
     }
     if (![self.book.tagline isEqualToString:book.tagline]) {
-        [self updateTagline:book.tagline];
+        [self updateTagline:book.tagline book:book];
     }
 //    if (!self.book || self.book.numRecipes != book.numRecipes) {
 //        [self updateNumRecipes:book.numRecipes];
@@ -262,7 +262,7 @@
     self.illustrationImageView = illustrationImageView;
 }
 
-- (void)updateName:(NSString *)name {
+- (void)updateName:(NSString *)name book:(CKBook *)book {
     NSString *displayName = [name uppercaseString];
     [self.nameLabel.layer removeFromSuperlayer];
     
@@ -301,7 +301,7 @@
     
 }
 
-- (void)updateTagline:(NSString *)tagline {
+- (void)updateTagline:(NSString *)tagline book:(CKBook *)book {
     NSString *displayTagline = [tagline uppercaseString];
     [self.taglineLabel.layer removeFromSuperlayer];
     
@@ -340,7 +340,7 @@
     
 }
 
-- (void)updateNumRecipes:(NSUInteger)numRecipes {
+- (void)updateNumRecipes:(NSUInteger)numRecipes book:(CKBook *)book {
     NSString *displayNum = [NSString stringWithFormat:@"%d", numRecipes];
     [self.numRecipesLabel.layer removeFromSuperlayer];
     
@@ -381,7 +381,7 @@
     
 }
 
-- (void)updateTitle:(NSString *)title {
+- (void)updateTitle:(NSString *)title book:(CKBook *)book {
     NSString *displayTitle = [title uppercaseString];
     [self.titleLabel.layer removeFromSuperlayer];
     
@@ -400,8 +400,7 @@
     titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     titleLabel.text = displayTitle;
     titleLabel.alpha = 0.0;
-    titleLabel.center = self.center;
-    titleLabel.frame = CGRectIntegral(titleLabel.frame);
+    titleLabel.frame = [self titleLabelFrameForSize:size book:book];
     [self.bookCoverContentsLayer insertSublayer:titleLabel.layer below:self.overlayImageView.layer];
     self.titleLabel = titleLabel;
     
@@ -487,6 +486,30 @@
     // Run the animation.
     [self.rootBookLayer addAnimation:groupAnimation forKey:nil];
     [self.bookCoverLayer addAnimation:flipAnimation forKey:@"transform"];
+}
+
+- (CGRect)titleLabelFrameForSize:(CGSize)size book:(CKBook *)book  {
+    BookCoverTitleAlignment titleAlignment = [BookCover titleAlignmentForIllustration:book.illustration];
+    CGRect frame = CGRectMake(0.0, 0.0, size.width, size.height);
+    CGPoint origin = frame.origin;
+    switch (titleAlignment) {
+        case BookCoverTitleAlignmentTopLeft:
+            origin = CGPointMake(kContentInsets.left, kContentInsets.top);
+            break;
+        case BookCoverTitleAlignmentTopCentered:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), kContentInsets.top);
+            break;
+        case BookCoverTitleAlignmentMidCentered:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), floorf((self.bounds.size.height - size.height) / 2.0));
+            break;
+        case BookCoverTitleAlignmentBottomCentered:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), self.bounds.size.height - kContentInsets.bottom - size.height);
+            break;
+        default:
+            break;
+    }
+    frame.origin = origin;
+    return frame;
 }
 
 @end

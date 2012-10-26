@@ -83,11 +83,12 @@
     return [[[BookCover settings] valueForKey:@"Illustrations"] allKeys];
 }
 
-+ (NSTextAlignment)titleTextAlignmentForIllustration:(NSString *)illustration {
-    return NSTextAlignmentCenter;
++ (BookCoverTitleAlignment)titleAlignmentForIllustration:(NSString *)illustration {
+    return [self textAlignmentForKey:[[BookCover settings] valueForKeyPath:
+                                      [NSString stringWithFormat:@"Illustrations.%@.TitleAlignment", illustration]]];
 }
 
-#pragma mark - Private 
+#pragma mark - Private
 
 + (NSDictionary *)settings {
     static dispatch_once_t pred;
@@ -97,6 +98,18 @@
                     [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"covers.plist"]];
     });
     return settings;
+}
+
++ (BookCoverTitleAlignment)textAlignmentForKey:(NSString *)key {
+    BookCoverTitleAlignment textAlignment = BookCoverTitleAlignmentMidCentered;
+    if ([key isEqualToString:@"TopLeft"]) {
+        textAlignment = BookCoverTitleAlignmentTopLeft;
+    } else if ([key isEqualToString:@"TopCenter"]) {
+        textAlignment = BookCoverTitleAlignmentTopCentered;
+    } else if ([key isEqualToString:@"BottomCenter"]) {
+        textAlignment = BookCoverTitleAlignmentBottomCentered;
+    }
+    return textAlignment;
 }
 
 @end

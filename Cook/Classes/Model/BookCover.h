@@ -8,6 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+	BookCoverTitleAlignmentTopLeft,
+	BookCoverTitleAlignmentTopCentered,
+	BookCoverTitleAlignmentMidCentered,
+	BookCoverTitleAlignmentBottomCentered,
+} BookCoverTitleAlignment;
+
 @interface BookCover : NSObject
 
 + (NSString *)initialCover;
@@ -21,6 +28,6 @@
 + (NSArray *)covers;
 + (NSArray *)illustrations;
 
-+ (NSTextAlignment)titleTextAlignmentForIllustration:(NSString *)illustration;
++ (BookCoverTitleAlignment)titleAlignmentForIllustration:(NSString *)illustration;
 
 @end
