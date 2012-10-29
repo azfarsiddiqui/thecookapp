@@ -8,6 +8,7 @@
 //
 
 #import "ViewHelper.h"
+#import "AppHelper.h"
 
 @implementation ViewHelper
 
@@ -27,6 +28,10 @@
 
 + (CGFloat)singleLineHeightForFont:(UIFont *)font {
     return [@"A" sizeWithFont:font constrainedToSize:[ViewHelper bookSize] lineBreakMode:NSLineBreakByTruncatingTail].height;
+}
+
++ (CGSize)screenSize {
+    return [[AppHelper sharedInstance] rootView].bounds.size;
 }
 
 @end

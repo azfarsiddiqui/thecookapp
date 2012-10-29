@@ -31,7 +31,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    self.view.frame = CGRectMake(0.0, 0.0, [ViewHelper screenSize].width, kMenuHeight);
     self.view.backgroundColor = [UIColor clearColor];
     
     // Settings button.
@@ -47,18 +48,16 @@
     self.settingsButton = settingsButton;
     
     // Store button.
-    UIButton *storeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_friends.png"]
+    UIButton *storeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_store.png"]
                                                     target:self
                                                   selector:@selector(storeTapped:)];
-    storeButton.frame = CGRectMake(settingsButton.frame.origin.x + settingsButton.frame.size.width + kMenuGap,
+    storeButton.frame = CGRectMake(self.view.bounds.size.width - storeButton.frame.size.width - kSideGap,
                                    floorf((kMenuHeight - storeButton.frame.size.height) / 2.0),
                                    storeButton.frame.size.width,
                                    storeButton.frame.size.height);
-    storeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+    storeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [self.view addSubview:storeButton];
     self.storeButton = storeButton;
-    
-    self.view.frame = CGRectMake(0.0, 0.0, storeButton.frame.origin.x + storeButton.frame.size.width + kSideGap, kMenuHeight);
 }
 
 #pragma mark - Private

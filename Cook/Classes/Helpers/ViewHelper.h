@@ -14,5 +14,6 @@
 
 + (CGSize)bookSize;
 + (CGFloat)singleLineHeightForFont:(UIFont *)font;
++ (CGSize)screenSize;
 
 @end
