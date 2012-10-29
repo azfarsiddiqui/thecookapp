@@ -14,7 +14,7 @@
 @property (nonatomic, strong) NSString *type;
 
 - (void)layoutBookCover;
-- (void)updateWithBook:(CKBook *)book;
+- (void)updateWithBook:(CKBook *)book mine:(BOOL)mine;
 - (void)open:(BOOL)open;
 
 - (UIEdgeInsets)contentEdgeInsets;

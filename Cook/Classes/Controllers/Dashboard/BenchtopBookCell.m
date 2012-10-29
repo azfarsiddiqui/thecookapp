@@ -62,6 +62,10 @@
 }
 
 - (void)loadBook:(CKBook *)book {
+    [self loadBook:book mine:NO];
+}
+
+- (void)loadBook:(CKBook *)book mine:(BOOL)mine {
     
     // Do nothing if the same book has already been loaded.
     if (self.book == book) {
@@ -74,7 +78,7 @@
     [self.activityView stopAnimating];
     
     // Update book cover.
-    [self.bookView updateWithBook:book];
+    [self.bookView updateWithBook:book mine:mine];
 }
 
 - (void)openBook:(BOOL)open {
@@ -94,7 +98,6 @@
 }
 
 - (void)bookViewDidOpen:(BOOL)open {
-    
 }
 
 #pragma mark - Private methods

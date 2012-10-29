@@ -41,6 +41,10 @@
     return [self.parseObject objectForKey:kModelAttrName];
 }
 
+- (NSString *)objectId {
+    return [self.parseObject objectForKey:kModelAttrId];
+}
+
 - (void)saveEventually {
     [self.parseObject saveEventually];
 }

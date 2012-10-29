@@ -28,6 +28,7 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *captionLabel;
 @property (nonatomic, strong) UILabel *numRecipesLabel;
+@property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) BOOL opened;
 
 @end
@@ -50,20 +51,14 @@
 }
 
 - (void)updateWithBook:(CKBook *)book {
-    DLog(@"Update with book %@", book);
-    
-    // Update content if it's necessary.
-    if (![self.book.cover isEqualToString:book.cover]) {
-        self.backgroundImageView.image = [BookCover imageForCover:book.cover];
+    [self updateWithBook:book mine:NO];
+}
+
+- (void)updateWithBook:(CKBook *)book mine:(BOOL)mine {
+    [self updateIfRequiredWithBook:book];
+    if (mine) {
+        [self updateEditButtonWithBook:book];
     }
-    if (![self.book.illustration isEqualToString:book.illustration]) {
-        self.illustrationImageView.image = [BookCover imageForIllustration:book.illustration];
-    }
-    
-    [self updateName:[book userName] book:book];
-    [self updateTitle:book.name book:book];
-    [self updateCaption:book.caption book:book];
-    
     self.book = book;
 }
 
@@ -148,10 +143,16 @@
 #pragma mark - CAAnimation delegate methods
 
 - (void)animationDidStart:(CAAnimation *)theAnimation {
+    if (self.opened) {
+        self.editButton.hidden = YES;
+    }
 }
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
     DLog(@"open: %@", [NSString CK_stringForBoolean:self.opened]);
+    if (!self.opened) {
+        self.editButton.hidden = NO;
+    }
     [EventHelper postOpenBook:self.opened];
 }
 
@@ -264,10 +265,7 @@
     CGSize size = [displayName sizeWithFont:[self coverNameFont]
                           constrainedToSize:CGSizeMake([self contentAvailableSize].width, singleLineHeight)
                               lineBreakMode:lineBreakMode];
-    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((self.bounds.size.width - size.width) / 2.0),
-                                                                   edgeInsets.top,
-                                                                   size.width,
-                                                                   size.height)];
+    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     nameLabel.autoresizingMask = UIViewAutoresizingNone;
     nameLabel.backgroundColor = [UIColor clearColor];
     nameLabel.lineBreakMode = lineBreakMode;
@@ -278,6 +276,7 @@
     nameLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     nameLabel.text = displayName;
     nameLabel.alpha = 1.0;
+    nameLabel.frame = [self nameLabelFrameForSize:size book:book];
     [self.bookCoverContentsLayer insertSublayer:nameLabel.layer below:self.overlayImageView.layer];
     self.nameLabel = nameLabel;
 }
@@ -329,6 +328,19 @@
     captionLabel.frame = [self captionLabelFrameForSize:size book:book];
     [self.bookCoverContentsLayer insertSublayer:captionLabel.layer below:self.overlayImageView.layer];
     self.captionLabel = captionLabel;
+}
+
+- (void)updateEditButtonWithBook:(CKBook *)book {
+    if (!self.editButton) {
+        UIEdgeInsets edgeInsets = [self contentEdgeInsets];
+        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+        editButton.frame = CGRectMake(self.bounds.size.width - editButton.frame.size.width - edgeInsets.right,
+                                      edgeInsets.top,
+                                      editButton.frame.size.width,
+                                      editButton.frame.size.height);
+        [self addSubview:editButton];
+        self.editButton = editButton;
+    }
 }
 
 - (void)updateNumRecipes:(NSUInteger)numRecipes book:(CKBook *)book {
@@ -433,6 +445,34 @@
     [self.bookCoverLayer addAnimation:flipAnimation forKey:@"transform"];
 }
 
+- (CGRect)nameLabelFrameForSize:(CGSize)size book:(CKBook *)book {
+    UIEdgeInsets edgeInsets = [self contentEdgeInsets];
+    BookCoverLayout layout = [BookCover layoutForIllustration:book.illustration];
+    CGRect frame = CGRectMake(0.0, 0.0, size.width, size.height);
+    CGPoint origin = frame.origin;
+    switch (layout) {
+        case BookCoverLayout1:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), edgeInsets.top);
+            break;
+        case BookCoverLayout2:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0),  self.bounds.size.height - edgeInsets.bottom - size.height);
+            break;
+        case BookCoverLayout3:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0),  self.bounds.size.height - edgeInsets.bottom - size.height);
+            break;
+        case BookCoverLayout4:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), self.bounds.size.height - edgeInsets.bottom - size.height);
+            break;
+        case BookCoverLayout5:
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), self.bounds.size.height - edgeInsets.bottom - size.height);
+            break;
+        default:
+            break;
+    }
+    frame.origin = origin;
+    return frame;
+}
+
 - (CGRect)titleLabelFrameForSize:(CGSize)size book:(CKBook *)book  {
     UIEdgeInsets edgeInsets = [self contentEdgeInsets];
     BookCoverLayout layout = [BookCover layoutForIllustration:book.illustration];
@@ -449,7 +489,7 @@
             origin = CGPointMake(edgeInsets.left, edgeInsets.top);
             break;
         case BookCoverLayout4:
-            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), self.bounds.size.height - edgeInsets.bottom - size.height);
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), self.bounds.size.height - edgeInsets.bottom - size.height - self.nameLabel.frame.size.height);
             break;
         case BookCoverLayout5:
             origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), floorf((self.bounds.size.height - size.height) / 2.0) - 20.0);
@@ -466,7 +506,6 @@
     BookCoverLayout layout = [BookCover layoutForIllustration:book.illustration];
     CGRect titleFrame = self.titleLabel.frame;
     CGFloat titleOffset = titleFrame.origin.y + titleFrame.size.height - 20.0;
-    DLog(@"***** TITLE FRAME %@", NSStringFromCGRect(titleFrame));
     CGRect frame = CGRectMake(0.0, 0.0, size.width, size.height);
     CGPoint origin = frame.origin;
     switch (layout) {
@@ -490,6 +529,25 @@
     }
     frame.origin = origin;
     return frame;
+}
+
+- (void)updateIfRequiredWithBook:(CKBook *)book {
+    
+    // Update content if it's necessary.
+    if (![self.book.cover isEqualToString:book.cover]) {
+        self.backgroundImageView.image = [BookCover imageForCover:book.cover];
+    }
+    if (![self.book.illustration isEqualToString:book.illustration]) {
+        self.illustrationImageView.image = [BookCover imageForIllustration:book.illustration];
+    }
+    
+    [self updateName:[book userName] book:book];
+    [self updateTitle:book.name book:book];
+    [self updateCaption:book.caption book:book];
+}
+
+- (void)editTapped:(id)sender {
+    DLog();
 }
 
 @end

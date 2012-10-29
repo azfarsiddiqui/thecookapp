@@ -10,6 +10,7 @@
 
 #pragma mark - Model class
 
+extern NSString *const kModelAttrId;
 extern NSString *const kModelAttrName;
 extern NSString *const kModelAttrCreatedAt;
 extern NSString *const kModelAttrUpdatedAt;

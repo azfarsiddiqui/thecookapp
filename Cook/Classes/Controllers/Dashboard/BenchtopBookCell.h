@@ -15,6 +15,7 @@
 
 - (BOOL)enabled;
 - (void)loadBook:(CKBook *)book;
+- (void)loadBook:(CKBook *)book mine:(BOOL)mine;
 - (void)openBook:(BOOL)open;
 - (void)openBook:(BOOL)open completion:(void (^)(BOOL opened))completion;
 

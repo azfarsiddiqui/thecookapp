@@ -605,11 +605,10 @@
     BenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
                                                                               forIndexPath:indexPath];
     if (self.myBook) {
-        [cell loadBook:self.myBook];
+        [cell loadBook:self.myBook mine:YES];
     } else {
-        [cell loadBook:[CKBook myInitialBook]];
+        [cell loadBook:[CKBook myInitialBook] mine:YES];
     }
-    
     return cell;
 }
 
