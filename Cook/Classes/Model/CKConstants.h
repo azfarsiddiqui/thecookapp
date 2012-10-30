@@ -21,13 +21,18 @@ extern NSString *const kUserModelName;
 extern NSString *const kUserAttrDefaultNameValue;
 extern NSString *const kUserModelForeignKeyName;
 extern NSString *const kUserAttrFacebookId;
-extern NSString *const kUserAttrFollows;
+extern NSString *const kUserAttrBookSuggestions;
 extern NSString *const kUserAttrAdmin;
 
-#pragma mark - User Follows pending class
+#pragma mark - Book Follow class
 
-extern NSString *const kFollowRequestModelName;
-extern NSString *const kFollowRequestAttrRequestedUser;
+extern NSString *const kBookFollowModelName;
+extern NSString *const kBookFollowAttrSuggest;
+
+#pragma mark - Book follow suggestions.
+
+extern NSString *const kBookFollowSuggestionModelName;
+extern NSString *const kBookFollowSuggestionAttrUser;
 
 #pragma mark - Book class
 
@@ -38,7 +43,7 @@ extern NSString *const kBookAttrIllustration;
 extern NSString *const kBookAttrCaption;
 extern NSString *const kBookAttrNumRecipes;
 extern NSString *const kBookAttrDefaultNameValue;
-extern NSString *const kBookAttrDefaultTaglineValue;
+extern NSString *const kBookAttrDefaultCaptionValue;
 
 #pragma mark - Recipe class
 extern NSString *const kRecipeModelName;

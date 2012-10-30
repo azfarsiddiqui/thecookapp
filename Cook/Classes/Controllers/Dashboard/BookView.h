@@ -27,9 +27,9 @@
 - (NSTextAlignment)coverTitleAlignment;
 - (UIColor *)coverTitleColour;
 - (UIColor *)coverTitleShadowColour;
-- (UIFont *)coverTaglineFont;
-- (UIColor *)coverTaglineColour;
-- (UIColor *)coverTaglineShadowColor;
+- (UIFont *)coverCaptionFont;
+- (UIColor *)coverCaptionColour;
+- (UIColor *)coverCaptionShadowColor;
 - (UIFont *)coverNumRecipesFont;
 - (UIColor *)coverNumRecipesColour;
 - (UIColor *)coverNumRecipesShadowColour;

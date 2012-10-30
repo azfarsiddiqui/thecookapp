@@ -24,9 +24,9 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
-- (NSArray *)followIds;
+- (NSArray *)bookSuggestionIds;
 - (NSUInteger)numFollows;
 - (BOOL)isAdmin;
-- (void)autoFollowCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)autoSuggestCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end

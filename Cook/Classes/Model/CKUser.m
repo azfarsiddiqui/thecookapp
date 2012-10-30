@@ -97,39 +97,66 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseUser objectForKey:kUserAttrFacebookId];
 }
 
-- (NSArray *)followIds {
-    return [self.parseUser objectForKey:kUserAttrFollows];
+- (NSArray *)bookSuggestionIds {
+    return [self.parseUser objectForKey:kUserAttrBookSuggestions];
 }
 
 - (NSUInteger)numFollows {
-    return [[self followIds] count];
+    return 0;
 }
 
 - (BOOL)isAdmin {
     return [[self.parseUser objectForKey:kUserAttrAdmin] boolValue];
 }
 
-- (void)autoFollowCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+// This method gets all the auto-suggests that was created for the current user, then consolidates them as single
+// entries for myself.
+- (void)autoSuggestCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    // First check if we have any auto-follow.
-    PFQuery *followRequestQuery = [PFQuery queryWithClassName:kFollowRequestModelName];
+    // Get all my suggested follow's and consolidate them.
+    PFQuery *followRequestQuery = [PFQuery queryWithClassName:kBookFollowModelName];
     [followRequestQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+    [followRequestQuery whereKey:kBookFollowAttrSuggest equalTo:[NSNumber numberWithBool:YES]];
     [followRequestQuery findObjectsInBackgroundWithBlock:^(NSArray *followRequests, NSError *error) {
         if (!error) {
             
-            // Auto-follow the requested user ids.
-            NSArray *requestedUserIds = [followRequests collect:^id(PFObject *followRequest) {
-                return [followRequest objectForKey:kFollowRequestAttrRequestedUser];
+            NSMutableArray *objectsToUpdate = [NSMutableArray array];
+            
+            // Get unique object ids of books.
+            NSMutableSet *uniqueFollowRequests = [NSMutableSet set];
+            for (PFObject *followRequest in followRequests) {
+                PFObject *book = [followRequest objectForKey:kBookModelForeignKeyName];
+                [uniqueFollowRequests addObject:book.objectId];
+            }
+            
+            DLog(@"UNIQUE FOLLOW REQUESTS: %@", uniqueFollowRequests);
+            
+            // Create book follow suggests.
+            for (NSString *bookObjectId in uniqueFollowRequests) {
+                PFObject *friendBookFollow = [PFObject objectWithClassName:kBookFollowModelName];
+                [friendBookFollow setObject:self.parseUser forKey:kUserModelForeignKeyName];
+                [friendBookFollow setObject:[PFObject objectWithoutDataWithClassName:kBookModelName objectId:bookObjectId]
+                                     forKey:kBookModelForeignKeyName];
+                [friendBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrSuggest];
+                [objectsToUpdate addObject:friendBookFollow];
+            }
+            
+            // Save all in background.
+            [PFObject saveAllInBackground:objectsToUpdate block:^(BOOL succeeded, NSError *error) {
+                
+                if (!error) {
+                    
+                    // Delete the auto follow requests.
+                    [followRequests makeObjectsPerformSelector:@selector(deleteEventually)];
+                    DLog(@"Deleted follow requests.");
+                    
+                    success();
+                } else {
+                    failure(error);
+                }
+                
             }];
-            [self.parseUser addUniqueObjectsFromArray:requestedUserIds forKey:kUserAttrFollows];
-            [self.parseUser saveEventually];
-            DLog(@"Auto followed %d friends", [requestedUserIds count]);
             
-            // Delete the auto follow requests.
-            [followRequests makeObjectsPerformSelector:@selector(deleteEventually)];
-            DLog(@"Deleted follow requests.");
-            
-            success();
         } else {
             failure(error);
         }
@@ -143,7 +170,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
     [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:kUserAttrFacebookId];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self numFollows]] forKey:kUserAttrFollows];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isAdmin]] forKey:kUserAttrAdmin];
     return descriptionProperties;
 }
@@ -197,7 +223,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
     // Find the user's friends, and see if any of them are Cook users
     [[PF_FBRequest requestForMyFriends] startWithCompletionHandler:^(PF_FBRequestConnection *connection,
                                                                      NSDictionary *jsonDictionary, NSError *error) {
-        
         CKUser *currentUser = [CKUser currentUser];
         
         if (!error) {
@@ -208,56 +233,87 @@ static ObjectFailureBlock loginFailureBlock = nil;
             }];
             DLog(@"Friend ids: %@", friendIds);
             
+            // My book query.
+            PFQuery *myBookQuery = [PFQuery queryWithClassName:kBookModelName];
+            [myBookQuery whereKey:kUserModelForeignKeyName equalTo:currentUser.parseUser];
+            
             // Friends query.
-            PFQuery *friendsQuery = [PFUser query];
-            [friendsQuery whereKey:kUserAttrFacebookId containedIn:friendIds];
+            PFQuery *usersQuery = [PFUser query];
+            [usersQuery whereKey:kUserAttrFacebookId containedIn:friendIds];
+                        
+            // Get suggested books and make them as follow requests.
+            PFQuery *otherBooksQuery = [PFQuery queryWithClassName:kBookModelName];
+            [otherBooksQuery whereKey:kUserModelForeignKeyName matchesQuery:usersQuery];
             
-            // Add admin user as auto-follow.
-            PFQuery *adminQuery = [PFUser query];
-            [adminQuery whereKey:kUserAttrAdmin equalTo:[NSNumber numberWithBool:YES]];
-            
-            PFQuery *query = [PFQuery orQueryWithSubqueries:[NSArray arrayWithObjects:friendsQuery, adminQuery, nil]];
-            [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
+            // Combine both books query.
+            PFQuery *booksQuery = [PFQuery orQueryWithSubqueries:[NSArray arrayWithObjects:myBookQuery, otherBooksQuery, nil]];
+            [booksQuery includeKey:kUserModelForeignKeyName];  // Load associated user.
+            [booksQuery findObjectsInBackgroundWithBlock:^(NSArray *books, NSError *error) {
+                
                 if (error) {
+                    
                     loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
-                                                     message:[NSString stringWithFormat:@"Unable to retrieve friends for %@", currentUser]]);
+                                                     message:[NSString stringWithFormat:@"Unable to retrieve follow books for %@", currentUser]]);
                     loginFailureBlock = nil;
                     loginSuccessfulBlock = nil;
+                    
                 } else {
+                    
+                    // Prepare objects to update in bulk: follow requests and my profile.
+                    NSMutableArray *objectsToUpdate = [NSMutableArray array];
                     
                     // Save facebook profile details.
                     currentUser.name = userData.name;
                     currentUser.facebookId = userData.id;
-                    
-                    // Auto-follow my friends.
-                    NSArray *cookFriends = [friends collect:^id(PFUser *parseUser) {
-                        return parseUser.objectId;
-                    }];
-                    [currentUser.parseUser addUniqueObjectsFromArray:cookFriends forKey:kUserAttrFollows];
-                    
-                    // Prepare objects to update in bulk: follow requests and my profile.
-                    NSMutableArray *objectsToUpdate = [NSMutableArray arrayWithCapacity:[friends count] + 1];
-                    
-                    // Loop through and add myself as follow request for my friends.
-                    for (PFUser *parseFriend in friends) {
-                        
-                        // Create a follow request for the friend for myself.
-                        PFObject *userFollowRequest = [PFObject objectWithClassName:kFollowRequestModelName];
-                        [userFollowRequest setObject:parseFriend forKey:kUserModelForeignKeyName];
-                        [userFollowRequest setObject:currentUser.parseUser forKey:kFollowRequestAttrRequestedUser];
-                        
-                        // Only myself and my friend can read and write the request.
-                        PFACL *followRequestACL = [PFACL ACLWithUser:currentUser.parseUser];
-                        [followRequestACL setWriteAccess:YES forUser:parseFriend];
-                        [followRequestACL setReadAccess:YES forUser:parseFriend];
-                        userFollowRequest.ACL = followRequestACL;
-                        
-                        // Add follow request to be saved in bulk.
-                        [objectsToUpdate addObject:userFollowRequest];
-                    }
-                    
-                    // Now add myself to be saved in bulk.
                     [objectsToUpdate addObject:currentUser.parseUser];
+                    
+                    // My books.
+                    NSArray *myBooks = [books select:^BOOL(PFObject *parseBook) {
+                        PFUser *parseUser = [parseBook objectForKey:kUserModelForeignKeyName];
+                        DLog(@"MY PARSE USER ID: %@", parseUser.objectId);
+                        return [parseUser.objectId compare:currentUser.objectId];
+                    }];
+                    
+                    // Friends' books.
+                    NSArray *friendsBooks = [books reject:^BOOL(PFObject *parseBook) {
+                        PFUser *parseUser = [parseBook objectForKey:kUserModelForeignKeyName];
+                        DLog(@"PARSE USER ID: %@", parseUser.objectId);
+                        return [parseUser.objectId compare:currentUser.objectId];
+                    }];
+                    
+                    DLog(@"USER ID: %@", currentUser.parseUser.objectId);
+                    DLog(@"MY BOOKS: %@", myBooks);
+                    DLog(@"FRIENDS BOOKS: %@", friendsBooks);
+                    
+                    // Now create interim follow suggestions for myself of my friends' books.
+                    for (PFObject *parseBook in friendsBooks) {
+                        
+                        PFUser *parseFriend = [parseBook objectForKey:kUserModelForeignKeyName];
+                        
+                        // Loop through my books and add them as follow to my friend.
+                        for (PFObject *myBook in myBooks) {
+                            
+                            // Create suggested follow of my book for my friends.
+                            PFObject *friendBookFollow = [PFObject objectWithClassName:kBookFollowModelName];
+                            [friendBookFollow setObject:parseFriend forKey:kUserModelForeignKeyName];
+                            [friendBookFollow setObject:myBook forKey:kBookModelForeignKeyName];
+                            [friendBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrSuggest];
+                            
+                            // Only myself and my friend can read/write the request.
+                            PFACL *followACL = [PFACL ACLWithUser:currentUser.parseUser];
+                            [followACL setWriteAccess:YES forUser:parseFriend];
+                            [followACL setReadAccess:YES forUser:parseFriend];
+                            friendBookFollow.ACL = followACL;
+                            [objectsToUpdate addObject:friendBookFollow];
+                        }
+                        
+                        // Create suggested follow for myself of my friend's book.
+                        PFObject *myBookFollow = [PFObject objectWithClassName:kBookFollowModelName];
+                        [myBookFollow setObject:currentUser.parseUser forKey:kUserModelForeignKeyName];
+                        [myBookFollow setObject:parseBook forKey:kBookModelForeignKeyName];
+                        [myBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrSuggest];
+                        [objectsToUpdate addObject:myBookFollow];
+                    }
                     
                     // Now kick off the save and wait as we need operation to succeed before deeming it successful.
                     [PFObject saveAllInBackground:objectsToUpdate block:^(BOOL succeeded, NSError *error) {
@@ -284,6 +340,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
         }
         
     }];
+
 }
 
 @end

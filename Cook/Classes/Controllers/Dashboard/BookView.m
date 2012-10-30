@@ -104,15 +104,15 @@
     return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
 }
 
-- (UIFont *)coverTaglineFont {
+- (UIFont *)coverCaptionFont {
     return [UIFont fontWithName:@"AvenirNext-DemiBold" size:14];
 }
 
-- (UIColor *)coverTaglineColour {
+- (UIColor *)coverCaptionColour {
     return [self coverTitleColour];
 }
 
-- (UIColor *)coverTaglineShadowColor {
+- (UIColor *)coverCaptionShadowColor {
     return [self coverTitleShadowColour];
 }
 
@@ -310,8 +310,8 @@
     [self.captionLabel.layer removeFromSuperlayer];
     
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-    CGFloat singleLineHeight = [ViewHelper singleLineHeightForFont:[self coverTaglineFont]];
-    CGSize size = [displayCaption sizeWithFont:[self coverTaglineFont]
+    CGFloat singleLineHeight = [ViewHelper singleLineHeightForFont:[self coverCaptionFont]];
+    CGSize size = [displayCaption sizeWithFont:[self coverCaptionFont]
                              constrainedToSize:CGSizeMake([self contentAvailableSize].width, singleLineHeight)
                                  lineBreakMode:lineBreakMode];
     UILabel *captionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -319,9 +319,9 @@
     captionLabel.backgroundColor = [UIColor clearColor];
     captionLabel.lineBreakMode = lineBreakMode;
     captionLabel.minimumScaleFactor = 0.7;
-    captionLabel.font = [self coverTaglineFont];
-    captionLabel.textColor = [self coverTaglineColour];
-    captionLabel.shadowColor = [self coverTaglineShadowColor];
+    captionLabel.font = [self coverCaptionFont];
+    captionLabel.textColor = [self coverCaptionColour];
+    captionLabel.shadowColor = [self coverCaptionShadowColor];
     captionLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     captionLabel.text = displayCaption;
     captionLabel.alpha = 1.0;

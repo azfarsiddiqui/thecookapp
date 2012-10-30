@@ -24,7 +24,6 @@
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
-    
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
         if (!error) {
             success([CKBook createBookIfRequiredForParseBook:parseBook user:user]);
@@ -37,7 +36,7 @@
 + (PFObject *)createParseBook {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
-    [parseBook setObject:kBookAttrDefaultTaglineValue forKey:kBookAttrCaption];
+    [parseBook setObject:kBookAttrDefaultCaptionValue forKey:kBookAttrCaption];
     [parseBook setObject:[BookCover initialCover] forKey:kBookAttrCover];
     [parseBook setObject:[BookCover initialIllustration] forKey:kBookAttrIllustration];
     return parseBook;
@@ -52,7 +51,7 @@
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     // Auto follow any friends first before loading books.
-    [user autoFollowCompletion:^{
+    [user autoSuggestCompletion:^{
         [CKBook loadFriendsBooksForUser:user success:success failure:failure];
     }
                        failure:^(NSError *error) {
@@ -111,16 +110,16 @@
     return [self.parseObject objectForKey:kBookAttrIllustration];
 }
 
-- (void)setCaption:(NSString *)tagline {
-    [self.parseObject setObject:tagline forKey:kBookAttrCaption];
+- (void)setCaption:(NSString *)caption {
+    [self.parseObject setObject:caption forKey:kBookAttrCaption];
 }
 
 - (NSString *)caption {
-    NSString *tagLine = [self.parseObject objectForKey:kBookAttrCaption];
-    if ([tagLine length] == 0) {
-        return kBookAttrDefaultTaglineValue;
+    NSString *caption = [self.parseObject objectForKey:kBookAttrCaption];
+    if ([caption length] == 0) {
+        return kBookAttrDefaultCaptionValue;
     } else {
-        return tagLine;
+        return caption;
     }
 }
 
@@ -176,13 +175,14 @@
 + (void)loadFriendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success
                         failure:(ObjectFailureBlock)failure {
     
+    // Book follow query for the current user.
+    PFQuery *followBookQuery = [PFQuery queryWithClassName:kBookFollowModelName];
+    [followBookQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    
     // Friends books query.
-    NSArray *friendUserKeys = [[user followIds] collect:^id(NSString *friendObjectId) {
-        return [PFUser objectWithoutDataWithClassName:kUserModelName objectId:friendObjectId];
-    }];
     PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
-    [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];  // Always go to the network first.
-    [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friendUserKeys];
+    [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];          // Always go to the network first.
+    [friendsBooksQuery whereKey:kBookModelForeignKeyName matchesKey:kBookModelForeignKeyName inQuery:followBookQuery];
     [friendsBooksQuery orderByAscending:kModelAttrName];
     [friendsBooksQuery includeKey:kUserModelForeignKeyName];  // Load associated user.
     [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {

@@ -575,9 +575,7 @@
     [CKBook friendsBooksForUser:[CKUser currentUser]
                         success:^(NSArray *friendsBooks) {
                             self.friendsBooks = friendsBooks;
-                            
                             self.collectionView.userInteractionEnabled = YES;
-//                            [self.collectionView reloadData];
                             
                             NSUInteger numSections = [self.collectionView numberOfSections];
                             if (numSections < 2) {
@@ -585,14 +583,6 @@
                             } else {
                                 [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:1]];
                             }
-                            
-//                            // Inform layout complete.
-//                            if (toggle) {
-//                                [self toggleLayout];
-//                            } else {
-//                                BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
-//                                [layout layoutCompleted];
-//                            }
                             
                         }
                         failure:^(NSError *error) {
