@@ -204,6 +204,11 @@
     self.recipeImageView.image = self.recipeImage;
 }
 
+-(void)photoEditorCanceled:(AFPhotoEditorController *)editor
+{
+    [self.photoEditorController.view removeFromSuperview];
+    self.photoEditorController = nil;
+}
 #pragma mark - UIPopoverControlerDelegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover
 {
@@ -219,7 +224,6 @@
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    DLog(@"ended. value is %@",textField.text);
     if (textField!= self.recipeNameTextField) {
         UIView *parentView = [textField superview];
         IngredientTableViewCell *cell = (IngredientTableViewCell*)[parentView superview];

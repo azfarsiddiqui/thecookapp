@@ -42,7 +42,7 @@
 {
     DLog();
     [super viewWillAppear:animated];
-    [self loadData];
+    [self loadData:NO];
 }
 
 #pragma mark - Private Methods
@@ -80,10 +80,10 @@
     [self.view addSubview:addRecipeButton];
 }
 
-- (void)loadData {
+- (void)loadData:(BOOL)forceRefresh {
     DLog();
-    //for now, only refresh data once
-    if (self.refreshNeeded) {
+    //for now, refresh data once unless a force refresh is requested.
+    if (forceRefresh || self.refreshNeeded) {
         [self.book listRecipesSuccess:^(NSArray *recipes) {
             self.recipes = recipes;
             [self.collectionView reloadData];
@@ -120,7 +120,7 @@
 
 -(void)recipeCreated
 {
-    [self loadData];
+    [self loadData:YES];
     [self closeRequested];
 }
 
