@@ -11,6 +11,7 @@
 @interface NSString (Utilities)
 
 + (NSString *)CK_safeString:(NSString *)string;
++ (NSString *)CK_safeString:(NSString *)string defaultString:(NSString *)defaultString;
 + (NSString *)CK_stringForBoolean:(BOOL)boolean;
 
 @end

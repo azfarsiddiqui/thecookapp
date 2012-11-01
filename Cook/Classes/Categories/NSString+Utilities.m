@@ -11,7 +11,11 @@
 @implementation NSString (Utilities)
 
 + (NSString *)CK_safeString:(NSString *)string {
-    return string == nil ? @"" : string;
+    return [NSString CK_safeString:string defaultString:@""];
+}
+
++ (NSString *)CK_safeString:(NSString *)string defaultString:(NSString *)defaultString {
+    return string == nil ? defaultString : string;
 }
 
 + (NSString *)CK_stringForBoolean:(BOOL)boolean {
