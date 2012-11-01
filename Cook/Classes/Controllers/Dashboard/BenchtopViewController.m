@@ -554,6 +554,7 @@
 
 
 - (void)loadMyBook {
+    DLog(@"CURRENT USER: %@", [CKUser currentUser]);
     
     // This will be called twice - once from cache if exists, then from network.
     [CKBook bookForUser:[CKUser currentUser]
@@ -639,7 +640,7 @@
     self.myBook = book;
     BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:
                                                       [NSIndexPath indexPathForItem:0 inSection:0]];
-    [cell loadBook:book];
+    [cell loadBook:book mine:YES];
 }
 
 - (BOOL)stacked {
