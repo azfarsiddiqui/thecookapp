@@ -217,10 +217,65 @@ static ObjectFailureBlock loginFailureBlock = nil;
 + (void)handleAdminLoginFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
     DLog(@"Logged in as admin");
     
-    // Call success completion.
-    loginSuccessfulBlock();
-    loginSuccessfulBlock = nil;
-    loginFailureBlock = nil;
+    CKUser *currentUser = [CKUser currentUser];
+    
+    // Admin books query.
+    PFQuery *adminBookQuery = [PFQuery queryWithClassName:kBookModelName];
+    [adminBookQuery whereKey:kUserModelForeignKeyName equalTo:currentUser.parseUser];
+    [adminBookQuery findObjectsInBackgroundWithBlock:^(NSArray *books, NSError *error) {
+        if (!error) {
+            
+            // Admin follow.
+            PFQuery *adminFollowQuery = [PFQuery queryWithClassName:kBookFollowModelName];
+            [adminFollowQuery whereKey:kUserModelForeignKeyName equalTo:currentUser.parseUser];
+            [adminFollowQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
+                
+                // Existing admin follow ids to find which admin books to follow.
+                NSArray *adminFollowIds = [parseFollows collect:^id(PFObject *parseFollow) {
+                    PFObject *adminFollowBook = [parseFollow objectForKey:kBookModelForeignKeyName];
+                    return adminFollowBook.objectId;
+                }];
+               
+                // Figure out new admin books to follow.
+                NSArray *adminBooksToFollow = [books select:^BOOL(PFObject *parseBook) {
+                    return (![adminFollowIds containsObject:parseBook.objectId]);
+                }];
+                
+                // Prepare admin follows to create.
+                NSMutableArray *objectsToUpdate = [NSMutableArray arrayWithCapacity:[adminBooksToFollow count]];
+                for (PFObject *adminBook in adminBooksToFollow) {
+                    
+                    // Create suggested follow of my book for my friends.
+                    PFObject *adminBookFollow = [PFObject objectWithClassName:kBookFollowModelName];
+                    [adminBookFollow setObject:currentUser.parseUser forKey:kUserModelForeignKeyName];
+                    [adminBookFollow setObject:adminBook forKey:kBookModelForeignKeyName];
+                    [adminBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrAdmin];
+                    [objectsToUpdate addObject:adminBookFollow];
+                }
+                
+                // Save it off.
+                [PFObject saveAllInBackground:objectsToUpdate block:^(BOOL succeeded, NSError *error) {
+                    if (!error) {
+                        loginSuccessfulBlock();
+                        loginSuccessfulBlock = nil;
+                        loginFailureBlock = nil;
+                    } else {
+                        loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
+                                                         message:[NSString stringWithFormat:@"Unable to process admin follow books for %@", currentUser]]);
+                        loginFailureBlock = nil;
+                        loginSuccessfulBlock = nil;
+                    }
+                }];
+                
+            }];
+            
+        } else {
+            loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
+                                             message:[NSString stringWithFormat:@"Unable to process admin follow books for %@", currentUser]]);
+            loginFailureBlock = nil;
+            loginSuccessfulBlock = nil;
+        }
+    }];
 }
 
 + (void)handleUserLoginFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
@@ -236,7 +291,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
             NSArray *friendIds = [[jsonDictionary objectForKey:@"data"] collect:^id(NSDictionary<PF_FBGraphUser> *friendData) {
                 return friendData.id;
             }];
-            DLog(@"Friend ids: %@", friendIds);
             
             // My book query.
             PFQuery *myBookQuery = [PFQuery queryWithClassName:kBookModelName];
