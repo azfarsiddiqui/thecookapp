@@ -175,13 +175,21 @@
 + (void)loadBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success
                         failure:(ObjectFailureBlock)failure {
     
-    // Book follow query for the current user.
+    // Admin book follow.
+    PFQuery *adminFollowBookQuery = [PFQuery queryWithClassName:kBookFollowModelName];
+    [adminFollowBookQuery whereKey:kBookFollowAttrAdmin equalTo:[NSNumber numberWithBool:YES]];
+    
+    // Merged follow query for the current user.
     PFQuery *followBookQuery = [PFQuery queryWithClassName:kBookFollowModelName];
     [followBookQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
     [followBookQuery whereKey:kBookFollowAttrMerge equalTo:[NSNumber numberWithBool:YES]];
-    [followBookQuery includeKey:kBookModelForeignKeyName];  // Load associated books.
-    [followBookQuery includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];
-    [followBookQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
+    
+    // Combined query.
+    PFQuery *booksQuery = [PFQuery orQueryWithSubqueries:[NSArray arrayWithObjects:adminFollowBookQuery, followBookQuery, nil]];
+    [booksQuery includeKey:kBookModelForeignKeyName];  // Load associated books.
+    [booksQuery includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];  // Load associated users.
+    [booksQuery orderByDescending:kBookFollowAttrAdmin];
+    [booksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
         if (!error) {
             
             // Get my friends books.
