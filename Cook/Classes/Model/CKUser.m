@@ -263,7 +263,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                     NSMutableArray *objectsToUpdate = [NSMutableArray array];
                     
                     // Save facebook profile details.
-                    currentUser.name = userData.name;
+                    currentUser.name = [NSString CK_safeString:userData.name defaultString:kUserAttrDefaultNameValue];
                     currentUser.facebookId = userData.id;
                     [objectsToUpdate addObject:currentUser.parseUser];
                     
@@ -278,7 +278,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                     NSArray *friendsBooks = [books reject:^BOOL(PFObject *parseBook) {
                         PFUser *parseUser = [parseBook objectForKey:kUserModelForeignKeyName];
                         DLog(@"PARSE USER ID: %@", parseUser.objectId);
-                        return [parseUser.objectId compare:currentUser.objectId];
+                        return [currentUser.objectId compare:parseUser.objectId];
                     }];
                     
                     DLog(@"USER ID: %@", currentUser.parseUser.objectId);
