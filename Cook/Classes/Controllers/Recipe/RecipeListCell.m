@@ -27,6 +27,7 @@
         self.imageView.backgroundColor = [UIColor clearColor];
         self.imageView.image = [UIImage imageNamed:@"image_placeholder"]; // placeholder image
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        self.imageView.hidden = YES;
         CGRect frame = CGRectMake(0.0f, 25.0f, self.frame.size.width, self.frame.size.height);
         self.imageView.frame = frame;
         [self.contentView addSubview:self.imageView];
@@ -69,7 +70,14 @@
     [CKRecipe imagesForRecipe:recipe success:^{
         if ([recipe imageFile]) {
             self.imageView.file = [recipe imageFile];
-            [self.imageView loadInBackground];
+            [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
+                if (!error) {
+                    self.imageView.image = image;
+                    self.imageView.hidden = NO;
+                } else {
+                    DLog(@"Error loading image in background: %@", [error description]); 
+                }
+            }];
         }
     } failure:^(NSError *error) {
         DLog(@"Error loading image: %@", [error description]);
@@ -81,7 +89,9 @@
     [super prepareForReuse];
     self.recipeNameLabel.text = nil;
     self.recipeCategoryLabel.text = nil;
+    self.imageView.hidden = YES;
     self.imageView.image = nil;
+    self.imageView.file = nil;
     
 }
 @end
