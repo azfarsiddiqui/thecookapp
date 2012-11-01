@@ -28,6 +28,7 @@ NSString *const kUserAttrBookSuggestions        = @"suggestedBooks";
 
 NSString *const kBookFollowModelName            = @"BookFollow";
 NSString *const kBookFollowAttrSuggest          = @"suggest";
+NSString *const kBookFollowAttrMerge            = @"merged";
 
 #pragma mark - Book follow suggestions.
 

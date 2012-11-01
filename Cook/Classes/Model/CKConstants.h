@@ -28,6 +28,7 @@ extern NSString *const kUserAttrAdmin;
 
 extern NSString *const kBookFollowModelName;
 extern NSString *const kBookFollowAttrSuggest;
+extern NSString *const kBookFollowAttrMerge;
 
 #pragma mark - Book follow suggestions.
 

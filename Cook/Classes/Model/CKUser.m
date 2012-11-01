@@ -76,6 +76,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
+#pragma mark - CKModel 
+
+- (NSString *)objectId {
+    return [self.parseUser objectForKey:kModelAttrId];
+}
+
 #pragma mark - CKUser
 
 - (BOOL)isSignedIn {
@@ -129,8 +135,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 [uniqueFollowRequests addObject:book.objectId];
             }
             
-            DLog(@"UNIQUE FOLLOW REQUESTS: %@", uniqueFollowRequests);
-            
             // Create book follow suggests.
             for (NSString *bookObjectId in uniqueFollowRequests) {
                 PFObject *friendBookFollow = [PFObject objectWithClassName:kBookFollowModelName];
@@ -138,6 +142,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 [friendBookFollow setObject:[PFObject objectWithoutDataWithClassName:kBookModelName objectId:bookObjectId]
                                      forKey:kBookModelForeignKeyName];
                 [friendBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrSuggest];
+                [friendBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrMerge];
                 [objectsToUpdate addObject:friendBookFollow];
             }
             
@@ -147,7 +152,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 if (!error) {
                     
                     // Delete the auto follow requests.
-                    [followRequests makeObjectsPerformSelector:@selector(deleteEventually)];
+                    [followRequests makeObjectsPerformSelector:@selector(deleteInBackground)];
                     DLog(@"Deleted follow requests.");
                     
                     success();
@@ -270,20 +275,14 @@ static ObjectFailureBlock loginFailureBlock = nil;
                     // My books.
                     NSArray *myBooks = [books select:^BOOL(PFObject *parseBook) {
                         PFUser *parseUser = [parseBook objectForKey:kUserModelForeignKeyName];
-                        DLog(@"MY PARSE USER ID: %@", parseUser.objectId);
-                        return [parseUser.objectId compare:currentUser.objectId];
+                        return [parseUser.objectId isEqualToString:currentUser.parseUser.objectId];
                     }];
                     
                     // Friends' books.
                     NSArray *friendsBooks = [books reject:^BOOL(PFObject *parseBook) {
                         PFUser *parseUser = [parseBook objectForKey:kUserModelForeignKeyName];
-                        DLog(@"PARSE USER ID: %@", parseUser.objectId);
-                        return [currentUser.objectId compare:parseUser.objectId];
+                        return [parseUser.objectId isEqualToString:currentUser.parseUser.objectId];
                     }];
-                    
-                    DLog(@"USER ID: %@", currentUser.parseUser.objectId);
-                    DLog(@"MY BOOKS: %@", myBooks);
-                    DLog(@"FRIENDS BOOKS: %@", friendsBooks);
                     
                     // Now create interim follow suggestions for myself of my friends' books.
                     for (PFObject *parseBook in friendsBooks) {
