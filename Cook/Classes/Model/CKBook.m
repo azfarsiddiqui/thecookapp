@@ -181,36 +181,24 @@
     [followBookQuery whereKey:kBookFollowAttrMerge equalTo:[NSNumber numberWithBool:YES]];
     [followBookQuery includeKey:kBookModelForeignKeyName];  // Load associated books.
     [followBookQuery includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];
-    
-    NSArray *parseFollows = [followBookQuery findObjects];
-    NSArray *friendsBooks = [parseFollows collect:^id(PFObject *parseFollow) {
-        PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
-        return [[CKBook alloc] initWithParseObject:parseBook];
+    [followBookQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
+        if (!error) {
+            
+            // Get my friends books.
+            NSArray *friendsBooks = [parseFollows collect:^id(PFObject *parseFollow) {
+                PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
+                return [[CKBook alloc] initWithParseObject:parseBook];
+            }];
+            DLog(@"Found friends books: %@", friendsBooks);
+            
+            // Return my book and friends books.
+            success(friendsBooks);
+            
+        } else {
+            DLog(@"Error loading books: %@", [error localizedDescription]);
+            failure(error);
+        }
     }];
-    DLog(@"Found friends books: %@", friendsBooks);
-
-    // Return my book and friends books.
-    success(friendsBooks);
-    
-    
-//    [followBookQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
-//        if (!error) {
-//            
-//            // Get my friends books.
-//            NSArray *friendsBooks = [parseFollows collect:^id(PFObject *parseFollow) {
-//                PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
-//                return [[CKBook alloc] initWithParseObject:parseBook];
-//            }];
-//            DLog(@"Found friends books: %@", friendsBooks);
-//            
-//            // Return my book and friends books.
-//            success(friendsBooks);
-//            
-//        } else {
-//            DLog(@"Error loading books: %@", [error localizedDescription]);
-//            failure(error);
-//        }
-//    }];
 }
 
 @end
