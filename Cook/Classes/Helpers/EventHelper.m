@@ -16,6 +16,8 @@
 #define kBoolLoginSuccessful    @"CKBoolLoginSuccessful"
 #define kEventOpenBook          @"CKEventOpenBook"
 #define kBoolOpenBook           @"CKBoolOpenBook"
+#define kEventEditMode          @"CKEventEditMode"
+#define kBoolEditMode           @"CKBoolEditMode"
 
 #pragma mark - Login successful event
 
@@ -77,6 +79,25 @@
     return [[[notification userInfo] valueForKey:kBoolOpenBook] boolValue];
 }
 
+#pragma mark - Edit mode
+
++ (void)registerEditMode:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventEditMode];
+}
+
++ (void)postEditMode:(BOOL)editMode {
+    [EventHelper postEvent:kEventEditMode
+              withUserInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:editMode]
+                                                       forKey:kBoolEditMode]];
+}
+
++ (void)unregisterEditMode:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventEditMode];
+}
+
++ (BOOL)editModeForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kBoolEditMode] boolValue];
+}
 
 #pragma mark - Private
 

@@ -49,6 +49,8 @@
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterBenchtopFreeze:self];
     [EventHelper unregisterOpenBook:self];
+    [EventHelper unregisterEditMode:self];
+    
     [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
     [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
 }
@@ -92,6 +94,7 @@
     [EventHelper registerBenchtopFreeze:self selector:@selector(benchtopFreezeRequested:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
     [EventHelper registerOpenBook:self selector:@selector(bookOpened:)];
+    [EventHelper registerEditMode:self selector:@selector(editTapped:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -381,6 +384,11 @@
         [self showMenu:YES];
         self.selectedBook = nil;
     }
+}
+
+- (void)editTapped:(NSNotification *)notification {
+    BOOL editMode = [EventHelper editModeForNotification:notification];
+    DLog(@"editMode: %@", [NSString CK_stringForBoolean:editMode]);
 }
 
 #pragma mark - KVO methods.

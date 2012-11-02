@@ -25,4 +25,9 @@
 + (void)unregisterOpenBook:(id)observer;
 + (BOOL)openBookForNotification:(NSNotification *)notification;
 
++ (void)registerEditMode:(id)observer selector:(SEL)selector;
++ (void)postEditMode:(BOOL)editMode;
++ (void)unregisterEditMode:(id)observer;
++ (BOOL)editModeForNotification:(NSNotification *)notification;
+
 @end

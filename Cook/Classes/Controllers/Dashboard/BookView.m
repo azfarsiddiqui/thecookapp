@@ -338,6 +338,7 @@
                                       edgeInsets.top,
                                       editButton.frame.size.width,
                                       editButton.frame.size.height);
+        [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:editButton];
         self.editButton = editButton;
     }
@@ -548,6 +549,7 @@
 
 - (void)editTapped:(id)sender {
     DLog();
+    [EventHelper postEditMode:YES];
 }
 
 @end
