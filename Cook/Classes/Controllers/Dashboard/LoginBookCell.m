@@ -132,7 +132,7 @@
     [CKUser loginWithFacebookCompletion:^{
         
         CKUser *user = [CKUser currentUser];
-        if ([user isAdmin]) {
+        if (user.admin) {
             [self.loginView loginAdminDone];
         } else {
             [self.loginView loginLoadingFriends:[user numFollows]];

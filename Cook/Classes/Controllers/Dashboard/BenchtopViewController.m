@@ -608,7 +608,7 @@
     CKUser *user = [CKUser currentUser];
     if ([user isSignedIn]) {
         
-        if ([user isAdmin]) {
+        if (user.admin) {
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId forIndexPath:indexPath];
         } else {
             

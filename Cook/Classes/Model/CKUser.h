@@ -18,6 +18,7 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 
 @property (nonatomic, strong) PFUser *parseUser;
 @property (nonatomic, copy) NSString *facebookId;
+@property (nonatomic, readonly) BOOL admin;
 
 + (CKUser *)currentUser;
 + (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
@@ -26,7 +27,6 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 - (BOOL)isSignedIn;
 - (NSArray *)bookSuggestionIds;
 - (NSUInteger)numFollows;
-- (BOOL)isAdmin;
 - (void)autoSuggestCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end

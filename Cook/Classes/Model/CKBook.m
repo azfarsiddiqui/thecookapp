@@ -188,7 +188,6 @@
     PFQuery *booksQuery = [PFQuery orQueryWithSubqueries:[NSArray arrayWithObjects:adminFollowBookQuery, followBookQuery, nil]];
     [booksQuery includeKey:kBookModelForeignKeyName];  // Load associated books.
     [booksQuery includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];  // Load associated users.
-    [booksQuery orderByDescending:kBookFollowAttrAdmin];
     [booksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
         if (!error) {
             
@@ -197,10 +196,14 @@
                 PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
                 return [[CKBook alloc] initWithParseObject:parseBook];
             }];
-            DLog(@"Found friends books: %@", friendsBooks);
+            
+            // Sort them by admin, then user names.
+            NSMutableArray *sortedFriendsBooks = [NSMutableArray arrayWithArray:friendsBooks];
+            NSSortDescriptor *adminSorter = [[NSSortDescriptor alloc] initWithKey:@"user.admin" ascending:NO];
+            NSSortDescriptor *nameSorter = [[NSSortDescriptor alloc] initWithKey:@"user.name" ascending:YES];
             
             // Return my book and friends books.
-            success(friendsBooks);
+            success([sortedFriendsBooks sortedArrayUsingDescriptors:[NSArray arrayWithObjects:adminSorter, nameSorter, nil]]);
             
         } else {
             DLog(@"Error loading books: %@", [error localizedDescription]);

@@ -111,7 +111,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return 0;
 }
 
-- (BOOL)isAdmin {
+- (BOOL)admin {
     return [[self.parseUser objectForKey:kUserAttrAdmin] boolValue];
 }
 
@@ -175,7 +175,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
     [descriptionProperties setValue:[NSString CK_safeString:self.facebookId] forKey:kUserAttrFacebookId];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isSignedIn]] forKey:@"signedIn"];
-    [descriptionProperties setValue:[NSString CK_stringForBoolean:[self isAdmin]] forKey:kUserAttrAdmin];
+    [descriptionProperties setValue:[NSString CK_stringForBoolean:self.admin] forKey:kUserAttrAdmin];
     return descriptionProperties;
 }
 
@@ -184,7 +184,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 + (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
     CKUser *currentUser = [CKUser currentUser];
     DLog(@"Logged in user %@", currentUser);
-    if ([currentUser isAdmin]) {
+    if (currentUser.admin) {
         [CKUser handleAdminLoginFromFacebookData:userData];
     } else {
         [CKUser handleUserLoginFromFacebookData:userData];
