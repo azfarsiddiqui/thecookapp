@@ -19,6 +19,7 @@
 #import "MRCEnumerable.h"
 #import "NSString+Utilities.h"
 #import "SettingsViewController.h"
+#import "BenchtopEditLayout.h"
 
 @interface BenchtopViewController ()
 
@@ -94,7 +95,7 @@
     [EventHelper registerBenchtopFreeze:self selector:@selector(benchtopFreezeRequested:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
     [EventHelper registerOpenBook:self selector:@selector(bookOpened:)];
-    [EventHelper registerEditMode:self selector:@selector(editTapped:)];
+    [EventHelper registerEditMode:self selector:@selector(editEvent:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -386,9 +387,17 @@
     }
 }
 
-- (void)editTapped:(NSNotification *)notification {
+- (void)editEvent:(NSNotification *)notification {
     BOOL editMode = [EventHelper editModeForNotification:notification];
     DLog(@"editMode: %@", [NSString CK_stringForBoolean:editMode]);
+    
+    BenchtopLayout *layoutToToggle = nil;
+    if (editMode) {
+        layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
+    } else {
+        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+    }
+    [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
 }
 
 #pragma mark - KVO methods.
