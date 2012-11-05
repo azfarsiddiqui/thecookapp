@@ -58,6 +58,9 @@
 		766BFC1A1630D9DD0083EB0E /* cook_dash_bg_tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 766BFC181630D9DD0083EB0E /* cook_dash_bg_tile@2x.png */; };
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
 		769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FA16473F3D00752128 /* BenchtopEditLayout.m */; };
+		769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FE16474A2100752128 /* BenchtopEditViewController.m */; };
+		7692260216474D4600752128 /* IllustrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692260116474D4600752128 /* IllustrationViewController.m */; };
+		769226051647863A00752128 /* EditBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* EditBookCell.m */; };
 		76B015AE161C0AC100AF3C2C /* cook_defaultbook.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */; };
 		76B015AF161C0AC100AF3C2C /* cook_defaultbook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */; };
 		76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */; };
@@ -247,6 +250,12 @@
 		766BFC211630DE990083EB0E /* UIColor+Expanded.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Expanded.m"; sourceTree = "<group>"; };
 		769225F916473F3D00752128 /* BenchtopEditLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopEditLayout.h; sourceTree = "<group>"; };
 		769225FA16473F3D00752128 /* BenchtopEditLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopEditLayout.m; sourceTree = "<group>"; };
+		769225FD16474A2100752128 /* BenchtopEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopEditViewController.h; sourceTree = "<group>"; };
+		769225FE16474A2100752128 /* BenchtopEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopEditViewController.m; sourceTree = "<group>"; };
+		7692260016474D4600752128 /* IllustrationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationViewController.h; sourceTree = "<group>"; };
+		7692260116474D4600752128 /* IllustrationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationViewController.m; sourceTree = "<group>"; };
+		769226031647863900752128 /* EditBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditBookCell.h; sourceTree = "<group>"; };
+		769226041647863A00752128 /* EditBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditBookCell.m; sourceTree = "<group>"; };
 		76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_defaultbook.png; sourceTree = "<group>"; };
 		76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_defaultbook@2x.png"; sourceTree = "<group>"; };
 		76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_overlay.png; sourceTree = "<group>"; };
@@ -489,6 +498,12 @@
 				761FA06B162FC29000DC0C84 /* BookView.m */,
 				761FA06E162FC60400DC0C84 /* BookCoverViewFactory.h */,
 				761FA06F162FC60400DC0C84 /* BookCoverViewFactory.m */,
+				769225FD16474A2100752128 /* BenchtopEditViewController.h */,
+				769225FE16474A2100752128 /* BenchtopEditViewController.m */,
+				7692260016474D4600752128 /* IllustrationViewController.h */,
+				7692260116474D4600752128 /* IllustrationViewController.m */,
+				769226031647863900752128 /* EditBookCell.h */,
+				769226041647863A00752128 /* EditBookCell.m */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -1100,6 +1115,9 @@
 				76E16E4C163903070044EB9B /* MenuViewController.m in Sources */,
 				76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */,
 				769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */,
+				769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */,
+				7692260216474D4600752128 /* IllustrationViewController.m in Sources */,
+				769226051647863A00752128 /* EditBookCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

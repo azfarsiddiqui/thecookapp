@@ -28,7 +28,6 @@
 @property (nonatomic, assign) BOOL firstBenchtop;
 @property (nonatomic, assign) BOOL snapActivated;
 @property (nonatomic, assign) BOOL enabled;
-@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSArray *friendsBooks;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
@@ -36,6 +35,7 @@
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, strong) MenuViewController *menuViewController;
 @property (nonatomic, strong) UIPopoverController *settingsPopoverController;
+@property (nonatomic, strong) BenchtopEditViewController *editViewController;
 
 @end
 
@@ -171,10 +171,6 @@
     }
 }
 
-- (BOOL)benchtopEditMode {
-    return self.editMode;
-}
-
 #pragma mark - UICollectionViewDelegate methods
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -230,11 +226,6 @@
         return 0;
     }
     
-    // Only one section for edit mode.
-    if (self.editMode) {
-        return 1;
-    }
-    
     // Normal operations.
     CKUser *currentUser = [CKUser currentUser];
     if ([currentUser isSignedIn]) {
@@ -250,11 +241,6 @@
     // Nothing to show if not enabled.
     if (!self.enabled) {
         return 0;
-    }
-    
-    // Only my book if in edit mode.
-    if (self.editMode) {
-        return 1;
     }
     
     NSInteger numItems = 0;
@@ -389,15 +375,11 @@
 
 - (void)editEvent:(NSNotification *)notification {
     BOOL editMode = [EventHelper editModeForNotification:notification];
-    DLog(@"editMode: %@", [NSString CK_stringForBoolean:editMode]);
     
-    BenchtopLayout *layoutToToggle = nil;
+    // Only respond to edit events, as disabling is handled by the buttons.
     if (editMode) {
-        layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
-    } else {
-        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+        [self enableEditMode:editMode];
     }
-    [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
 }
 
 #pragma mark - KVO methods.
@@ -427,6 +409,16 @@
 
 - (void)menuViewControllerStoreRequested {
     DLog();
+}
+
+#pragma mark - BenchtopEditViewControllerDelegate methods
+
+- (void)editViewControllerCancelRequested {
+    [self enableEditMode:NO];
+}
+
+- (void)editViewControllerDoneRequested {
+    [self enableEditMode:NO];
 }
 
 #pragma mark - Private
@@ -724,6 +716,34 @@
                          self.menuViewController.view.alpha = show ? 1.0 : 0.0;
                      }
                      completion:^(BOOL finished) {
+                     }];
+}
+
+- (void)enableEditMode:(BOOL)editMode {
+    DLog(@"editMode: %@", [NSString CK_stringForBoolean:editMode]);
+    
+    BenchtopLayout *layoutToToggle = editMode ? [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self] : [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+    if (editMode && !self.editViewController) {
+        BenchtopEditViewController *editViewController = [[BenchtopEditViewController alloc] initWithDelegate:self];
+        editViewController.view.frame = self.view.bounds;
+        editViewController.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        [self.view addSubview:editViewController.view];
+        self.editViewController = editViewController;
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
+                         [self.editViewController showEditPalette:editMode animated:NO];
+                         [self.menuViewController setEditMode:editMode animated:NO];
+                     }
+                     completion:^(BOOL finished) {
+                         if (!editMode) {
+                             [self.editViewController.view removeFromSuperview];
+                             self.editViewController = nil;
+                         }
                      }];
 }
 
