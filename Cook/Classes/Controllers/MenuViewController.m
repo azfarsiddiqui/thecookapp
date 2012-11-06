@@ -58,18 +58,61 @@
     storeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [self.view addSubview:storeButton];
     self.storeButton = storeButton;
+    
+    // Edit cancel button.
+    UIButton *editCancelButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [editCancelButton addTarget:self action:@selector(editCancelTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [editCancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [editCancelButton sizeToFit];
+    editCancelButton.frame = CGRectMake(kSideGap,
+                                        floorf((kMenuHeight - settingsButton.frame.size.height) / 2.0),
+                                        editCancelButton.frame.size.width,
+                                        editCancelButton.frame.size.height);
+    editCancelButton.hidden = YES;
+    [self.view addSubview:editCancelButton];
+    self.editCancelButton = editCancelButton;
+    
+    // Edit done button.
+    UIButton *editDoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [editDoneButton addTarget:self action:@selector(editDoneTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [editDoneButton setTitle:@"Done" forState:UIControlStateNormal];
+    [editDoneButton sizeToFit];
+    editDoneButton.frame = CGRectMake(self.view.bounds.size.width - editDoneButton.frame.size.width - kSideGap,
+                                      floorf((kMenuHeight - editDoneButton.frame.size.height) / 2.0),
+                                      editDoneButton.frame.size.width,
+                                      editDoneButton.frame.size.height);
+    editDoneButton.hidden = YES;
+    [self.view addSubview:editDoneButton];
+    self.editDoneButton = editDoneButton;
 }
 
 - (void)setEditMode:(BOOL)editMode animated:(BOOL)animated {
+    if (editMode) {
+        self.editCancelButton.alpha = 0.0;
+        self.editDoneButton.alpha = 0.0;
+        self.editCancelButton.hidden = NO;
+        self.editDoneButton.hidden = NO;
+    } else {
+        self.settingsButton.alpha = 0.0;
+        self.storeButton.alpha = 0.0;
+        self.settingsButton.hidden = NO;
+        self.storeButton.hidden = NO;
+    }
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
+                             self.editCancelButton.alpha = editMode ? 1.0 : 0.0;
+                             self.editDoneButton.alpha = editMode ? 1.0 : 0.0;
                              self.settingsButton.alpha = editMode ? 0.0 : 1.0;
                              self.storeButton.alpha = editMode ? 0.0 : 1.0;
                          }
                          completion:^(BOOL finished) {
+                             self.editCancelButton.hidden = editMode ? NO : YES;
+                             self.editDoneButton.hidden = editMode ? NO : YES;
+                             self.settingsButton.hidden = editMode ? YES : NO;
+                             self.storeButton.hidden = editMode ? YES : NO;
                          }];
     } else {
         self.settingsButton.alpha = editMode ? 0.0 : 1.0;
@@ -85,6 +128,14 @@
 
 - (void)storeTapped:(id)sender {
     [self.delegate menuViewControllerStoreRequested];
+}
+
+- (void)editCancelTapped:(id)sender {
+    [self.delegate menuViewControllerCancelRequested];
+}
+
+- (void)editDoneTapped:(id)sender {
+    [self.delegate menuViewControllerDoneRequested];
 }
 
 @end

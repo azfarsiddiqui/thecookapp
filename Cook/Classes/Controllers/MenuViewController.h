@@ -12,6 +12,8 @@
 
 - (void)menuViewControllerSettingsRequested;
 - (void)menuViewControllerStoreRequested;
+- (void)menuViewControllerCancelRequested;
+- (void)menuViewControllerDoneRequested;
 
 @end
 
@@ -19,6 +21,8 @@
 
 @property (nonatomic, strong) UIButton *settingsButton;
 @property (nonatomic, strong) UIButton *storeButton;
+@property (nonatomic, strong) UIButton *editCancelButton;
+@property (nonatomic, strong) UIButton *editDoneButton;
 
 - (id)initWithDelegate:(id<MenuViewControllerDelegate>)delegate;
 - (void)setEditMode:(BOOL)editMode animated:(BOOL)animated;

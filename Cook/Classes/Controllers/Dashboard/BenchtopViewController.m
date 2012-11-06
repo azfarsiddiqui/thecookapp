@@ -20,6 +20,7 @@
 #import "NSString+Utilities.h"
 #import "SettingsViewController.h"
 #import "BenchtopEditLayout.h"
+#import "IllustrationViewController.h"
 
 @interface BenchtopViewController ()
 
@@ -35,7 +36,7 @@
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, strong) MenuViewController *menuViewController;
 @property (nonatomic, strong) UIPopoverController *settingsPopoverController;
-@property (nonatomic, strong) BenchtopEditViewController *editViewController;
+@property (nonatomic, strong) IllustrationViewController *illustrationViewController;
 
 @end
 
@@ -411,13 +412,11 @@
     DLog();
 }
 
-#pragma mark - BenchtopEditViewControllerDelegate methods
-
-- (void)editViewControllerCancelRequested {
+- (void)menuViewControllerCancelRequested {
     [self enableEditMode:NO];
 }
 
-- (void)editViewControllerDoneRequested {
+- (void)menuViewControllerDoneRequested {
     [self enableEditMode:NO];
 }
 
@@ -722,27 +721,41 @@
 - (void)enableEditMode:(BOOL)editMode {
     DLog(@"editMode: %@", [NSString CK_stringForBoolean:editMode]);
     
-    BenchtopLayout *layoutToToggle = editMode ? [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self] : [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
-    if (editMode && !self.editViewController) {
-        BenchtopEditViewController *editViewController = [[BenchtopEditViewController alloc] initWithDelegate:self];
-        editViewController.view.frame = self.view.bounds;
-        editViewController.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        [self.view addSubview:editViewController.view];
-        self.editViewController = editViewController;
+    CGAffineTransform illustrationTransform = CGAffineTransformIdentity;
+    BenchtopLayout *layoutToToggle = nil;
+    if (editMode) {
+        layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
+        
+        // Prepare the illustration picker.
+        IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] init];
+        illustrationViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                           self.view.bounds.size.height,
+                                                           self.view.bounds.size.width,
+                                                           illustrationViewController.view.frame.size.height);
+        [self.view addSubview:illustrationViewController.view];
+        self.illustrationViewController = illustrationViewController;
+        illustrationTransform = CGAffineTransformMakeTranslation(0.0, - self.illustrationViewController.view.frame.size.height);
+    } else {
+        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
     }
     
+    // Change to the editMode layout
+    [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
+    
+    // Toggle menu to show edit-context buttons.
+    [self.menuViewController setEditMode:editMode animated:YES];
+    
+    // Slide up the illustrations picker.
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
-                         [self.editViewController showEditPalette:editMode animated:NO];
-                         [self.menuViewController setEditMode:editMode animated:NO];
+                         self.illustrationViewController.view.transform = illustrationTransform;
                      }
                      completion:^(BOOL finished) {
                          if (!editMode) {
-                             [self.editViewController.view removeFromSuperview];
-                             self.editViewController = nil;
+                             [self.illustrationViewController.view removeFromSuperview];
+                             self.illustrationViewController = nil;
                          }
                      }];
 }
