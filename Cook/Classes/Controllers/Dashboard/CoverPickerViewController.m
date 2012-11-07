@@ -27,7 +27,7 @@
 #define kCoverTag               260
 
 - (void)dealloc {
-    [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
+    //[self.collectionView removeObserver:self forKeyPath:@"contentSize"];
 }
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewControllerDelegate>)delegate {
@@ -45,7 +45,7 @@
     CGSize itemSize = [CoverPickerCell minCellSize];
     
     self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-    self.view.backgroundColor = [UIColor greenColor];
+    self.view.backgroundColor = [UIColor clearColor];
     
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.itemSize = itemSize;
@@ -61,7 +61,7 @@
     [self.collectionView registerClass:[CoverPickerCell class] forCellWithReuseIdentifier:kIllustrationCellId];
     
     // Observe changes in contentSize and contentOffset.
-    [self.collectionView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
+    //[self.collectionView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -132,7 +132,7 @@
     self.expanded = !self.expanded;
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.itemSize = self.expanded ? [CoverPickerCell maxCellSize] : [CoverPickerCell minCellSize];
-    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    [self.collectionView reloadData];
     [self.delegate coverPickerExpanded:self.expanded];
 }
 

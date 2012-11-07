@@ -392,9 +392,19 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
                        context:(void *)context {
-    // Update background parallax scrolling.
     if ([keyPath isEqualToString:@"contentOffset"] || [keyPath isEqualToString:@"contentSize"]) {
+        
+        // Update background parallax scrolling.
         [self updateBackgroundScrolling];
+        
+    } else if ([keyPath isEqualToString:@"collectionView.contentSize"]) {
+        
+        // Update cover picker.
+        self.coverViewController.view.frame = CGRectMake(floorf((self.view.bounds.size.width - self.coverViewController.collectionView.contentSize.width) / 2.0),
+                                                         self.coverViewController.view.frame.origin.y,
+                                                         self.coverViewController.collectionView.contentSize.width,
+                                                         self.coverViewController.view.frame.size.height);
+        
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -771,20 +781,12 @@
         // Prepare the cover picker.
         UIEdgeInsets pickerInsets = UIEdgeInsetsMake(20.0, 100.0, 0.0, 100.0);
         CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
-        coverViewController.view.frame = CGRectMake(floorf((self.view.bounds.size.width - coverViewController.view.frame.size.width) / 2.0),
+        coverViewController.view.frame = CGRectMake(0.0,
                                                     -coverViewController.view.frame.size.height,
                                                     coverViewController.view.frame.size.width,
                                                     coverViewController.view.frame.size.height);
-        coverViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
         [self.view addSubview:coverViewController.view];
-        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:coverViewController.view
-                                                                      attribute:NSLayoutAttributeCenterX
-                                                                      relatedBy:NSLayoutRelationEqual
-                                                                         toItem:self.view
-                                                                      attribute:NSLayoutAttributeCenterX
-                                                                     multiplier:1.0
-                                                                       constant:0];
-        [self.view addConstraint:constraint];
+        [coverViewController addObserver:self forKeyPath:@"collectionView.contentSize" options:NSKeyValueObservingOptionNew context:NULL];
         self.coverViewController = coverViewController;
         
         // Prepare the illustration picker.
@@ -811,15 +813,14 @@
                                 options:UIViewAnimationCurveEaseOut
                              animations:^{
                                  [self.menuViewController setEditMode:editMode animated:NO];
-                                 self.coverViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + pickerInsets.top + bounceOffset);
+                                 self.coverViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + pickerInsets.top);
                                  self.illustrationViewController.view.transform = CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset);
                              }
                              completion:^(BOOL finished) {
                                  [UIView animateWithDuration:0.2
                                                        delay:0.0
-                                                     options:UIViewAnimationCurveEaseOut
+                                                     options:UIViewAnimationCurveEaseIn
                                                   animations:^{
-                                                      self.coverViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + pickerInsets.top);
                                                       self.illustrationViewController.view.transform = CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height);
                                                   }
                                                   completion:^(BOOL finished) {
@@ -843,6 +844,7 @@
                          completion:^(BOOL finished) {
                              [self.illustrationViewController.view removeFromSuperview];
                              self.illustrationViewController = nil;
+                             [self.coverViewController removeObserver:self forKeyPath:@"collectionView.contentSize"];
                              [self.coverViewController.view removeFromSuperview];
                              self.coverViewController = nil;
                              
