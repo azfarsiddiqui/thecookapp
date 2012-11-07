@@ -66,6 +66,11 @@
     return [UIImage imageNamed:imageName];
 }
 
++ (UIImage *)customiseImageForCover:(NSString *)cover {
+    NSString *imageName = [NSString stringWithFormat:@"cook_customise_colours_%@.png", [[cover stringByReplacingOccurrencesOfString:@" " withString:@""] lowercaseString]];
+    return [UIImage imageNamed:imageName];
+}
+
 + (UIImage *)imageForIllustration:(NSString *)illustration {
     NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
     if (!imageName) {

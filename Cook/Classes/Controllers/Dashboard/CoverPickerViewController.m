@@ -34,9 +34,7 @@
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
         self.cover = cover;
         self.delegate = delegate;
-        self.availableCovers = [NSMutableArray arrayWithArray:[[BookCover covers]
-                                                               sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
-
+        self.availableCovers = [NSMutableArray arrayWithObjects:@"Yellow", @"Pink", @"Red", @"Blue", @"Light Green", nil];
     }
     return self;
 }
@@ -101,15 +99,21 @@
     NSString *currentCover = [self.availableCovers objectAtIndex:indexPath.item];
     UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kIllustrationCellId
                                                                                 forIndexPath:indexPath];
+    cell.contentView.backgroundColor = [UIColor clearColor];
     UIImageView *coverImageView = (UIImageView *)[cell viewWithTag:kCoverTag];
     if (!coverImageView) {
         coverImageView = [[UIImageView alloc] initWithImage:nil];
         coverImageView.frame = cell.contentView.bounds;
         coverImageView.tag = kCoverTag;
+        coverImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
         [cell.contentView addSubview:coverImageView];
     }
-    //coverImageView.image = [BookCover imageForCover:currentCover];
-    cell.contentView.backgroundColor = (indexPath.item % 2 == 0) ? [UIColor lightGrayColor] : [UIColor darkGrayColor];
+    
+    UIImage *coverImage = [[BookCover customiseImageForCover:currentCover] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    if (indexPath.row == 0 || indexPath.row == [self.availableCovers count] - 1) {
+        coverImage = [coverImage stretchableImageWithLeftCapWidth:12 topCapHeight:0];
+    }
+    coverImageView.image = coverImage;
     return cell;
 }
 
