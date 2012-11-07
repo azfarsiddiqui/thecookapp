@@ -9,11 +9,14 @@
 #import "IllustrationViewController.h"
 #import "BookCover.h"
 #import "IllustrationBookCell.h"
+#import "IllustrationFlowLayout.h"
+#import "NSString+Utilities.h"
+#import "MRCEnumerable.h"
 
 @interface IllustrationViewController ()
 
 @property (nonatomic, strong) NSString *illustration;
-@property (nonatomic, strong) NSArray *illustrations;
+@property (nonatomic, strong) NSMutableArray *availableIllustrations;
 @property (nonatomic, assign) id<IllustrationViewControllerDelegate> delegate;
 
 @end
@@ -23,10 +26,11 @@
 #define kCoverCellId        @"CoverCell"
 
 - (id)initWithIllustration:(NSString *)illustration delegate:(id<IllustrationViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+    if (self = [super initWithCollectionViewLayout:[[IllustrationFlowLayout alloc] init]]) {
+        self.availableIllustrations = [NSMutableArray arrayWithArray:[[BookCover illustrations]
+                                                                      sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
         self.illustration = illustration;
         self.delegate = delegate;
-        self.illustrations = [[BookCover illustrations] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     }
     return self;
 }
@@ -67,7 +71,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return [self.illustrations count];
+    return [self.availableIllustrations count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -75,11 +79,17 @@
     IllustrationBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCoverCellId
                                                                                 forIndexPath:indexPath];
     [cell setCover:@"Red"];
-    [cell setIllustration:[self.illustrations objectAtIndex:indexPath.item]];
+    [cell setIllustration:[self.availableIllustrations objectAtIndex:indexPath.item]];
     return cell;
 }
 
-#pragma mark - UICollectionViewDelegateFlowLayout methods
+#pragma mark - Private
+
+- (NSArray *)indexPathsForIllustrations {
+    return [self.availableIllustrations collectWithIndex:^id(NSString *illustration, NSUInteger idx) {
+        return [NSIndexPath indexPathForItem:idx inSection:0];
+    }];
+}
 
 
 @end

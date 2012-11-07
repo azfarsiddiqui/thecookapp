@@ -25,8 +25,8 @@
     } else if (indexPath.section == 1) {
         
         // Move the other books to the right.
-        CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
-        attributes.center = CGPointMake(attributes.center.x + itemSize.width, attributes.center.y);
+        // CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
+        attributes.center = CGPointMake(attributes.center.x + 62.0, attributes.center.y);
     }
     
     return attributes;

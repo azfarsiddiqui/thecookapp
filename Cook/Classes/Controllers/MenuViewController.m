@@ -103,10 +103,10 @@
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
-                             self.editCancelButton.alpha = editMode ? 1.0 : 0.0;
-                             self.editDoneButton.alpha = editMode ? 1.0 : 0.0;
                              self.settingsButton.alpha = editMode ? 0.0 : 1.0;
                              self.storeButton.alpha = editMode ? 0.0 : 1.0;
+                             self.editCancelButton.alpha = editMode ? 1.0 : 0.0;
+                             self.editDoneButton.alpha = editMode ? 1.0 : 0.0;
                          }
                          completion:^(BOOL finished) {
                              self.editCancelButton.hidden = editMode ? NO : YES;
@@ -117,6 +117,8 @@
     } else {
         self.settingsButton.alpha = editMode ? 0.0 : 1.0;
         self.storeButton.alpha = editMode ? 0.0 : 1.0;
+        self.editCancelButton.alpha = editMode ? 1.0 : 0.0;
+        self.editDoneButton.alpha = editMode ? 1.0 : 0.0;
     }
 }
 

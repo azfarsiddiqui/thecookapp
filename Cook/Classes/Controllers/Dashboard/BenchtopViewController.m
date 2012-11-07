@@ -729,9 +729,11 @@
     CGAffineTransform illustrationTransform = CGAffineTransformIdentity;
     BenchtopLayout *layoutToToggle = nil;
     if (editMode) {
+        
         layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
         
         // Prepare the illustration picker.
+        [self.illustrationViewController.view removeFromSuperview];
         IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] initWithIllustration:nil delegate:self];
         illustrationViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
                                                            self.view.bounds.size.height,
@@ -740,29 +742,57 @@
         [self.view addSubview:illustrationViewController.view];
         self.illustrationViewController = illustrationViewController;
         illustrationTransform = CGAffineTransformMakeTranslation(0.0, - self.illustrationViewController.view.frame.size.height);
+        
+        // Change to the editMode layout
+        [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
+        
+        // Dispatch after delay.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            
+            // Show illustrations.
+            CGFloat bounceOffset = 10.0;
+            [UIView animateWithDuration:0.3
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseOut
+                             animations:^{
+                                 [self.menuViewController setEditMode:editMode animated:NO];
+                                 self.illustrationViewController.view.transform = CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset);
+                             }
+                             completion:^(BOOL finished) {
+                                 [UIView animateWithDuration:0.2
+                                                       delay:0.0
+                                                     options:UIViewAnimationCurveEaseOut
+                                                  animations:^{
+                                                      self.illustrationViewController.view.transform = CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height);
+                                                  }
+                                                  completion:^(BOOL finished) {
+                                                  }];
+                             }];
+        });
+
     } else {
         layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
-    }
-    
-    // Change to the editMode layout
-    [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
-    
-    // Toggle menu to show edit-context buttons.
-    [self.menuViewController setEditMode:editMode animated:YES];
-    
-    // Slide up the illustrations picker.
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         self.illustrationViewController.view.transform = illustrationTransform;
-                     }
-                     completion:^(BOOL finished) {
-                         if (!editMode) {
+        
+        // Hide illustrations
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             [self.menuViewController setEditMode:editMode animated:NO];
+                             self.illustrationViewController.view.transform = CGAffineTransformIdentity;
+                         }
+                         completion:^(BOOL finished) {
                              [self.illustrationViewController.view removeFromSuperview];
                              self.illustrationViewController = nil;
-                         }
-                     }];
+                             
+                         }];
+        
+        // Dispatch after delay.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
+        });
+
+    }
 }
 
 @end
