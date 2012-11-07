@@ -11,14 +11,14 @@
 @implementation IllustrationFlowLayout
 
 // Insertion start point.
-- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-    CGSize itemSize = self.itemSize;
-    initialAttributes.center = CGPointMake(initialAttributes.center.x,
-                                           initialAttributes.center.y + ((itemIndexPath.row + 1) * itemSize.height * 2));
-    
-    return initialAttributes;
-}
+//- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+//    UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+//    CGSize itemSize = self.itemSize;
+//    initialAttributes.center = CGPointMake(initialAttributes.center.x,
+//                                           initialAttributes.center.y + ((itemIndexPath.row + 1) * itemSize.height * 2));
+//    
+//    return initialAttributes;
+//}
 
 // Deletion end point.
 //- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {

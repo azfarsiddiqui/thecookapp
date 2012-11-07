@@ -28,6 +28,7 @@
 @property (nonatomic, assign) BOOL firstBenchtop;
 @property (nonatomic, assign) BOOL snapActivated;
 @property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSArray *friendsBooks;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
@@ -179,6 +180,10 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    // No selection while in edit mode.
+    if (self.editMode) {
+        return;
+    }
     
     // Remember the selected indexPath.
     self.selectedIndexPath = indexPath;
@@ -412,17 +417,27 @@
 }
 
 - (void)menuViewControllerCancelRequested {
+
+    // Revert to previous illustration.
+    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    self.myBook.illustration = self.illustrationViewController.illustration;
+    [cell loadBook:self.myBook mine:YES force:YES];
+
     [self enableEditMode:NO];
 }
 
 - (void)menuViewControllerDoneRequested {
-    [self enableEditMode:NO];
+    [self.myBook saveEventually];
 }
 
 #pragma mark - IllustrationViewControllerDelegate methods
 
 - (void)illustrationSelected:(NSString *)illustration {
     DLog();
+    
+    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    self.myBook.illustration = illustration;
+    [cell loadBook:self.myBook mine:YES force:YES];
 }
 
 #pragma mark - Private
@@ -606,6 +621,7 @@
 }
 
 - (UICollectionViewCell *)myBookCellForIndexPath:(NSIndexPath *)indexPath {
+    DLog();
     BenchtopBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kBookCellId
                                                                               forIndexPath:indexPath];
     if (self.myBook) {
@@ -726,6 +742,12 @@
 - (void)enableEditMode:(BOOL)editMode {
     DLog(@"editMode: %@", [NSString CK_stringForBoolean:editMode]);
     
+    // Ensure edit mode is not tapped repeatedly.
+    if (editMode == self.editMode) {
+        return;
+    }
+    self.editMode = editMode;
+    
     CGAffineTransform illustrationTransform = CGAffineTransformIdentity;
     BenchtopLayout *layoutToToggle = nil;
     if (editMode) {
@@ -734,7 +756,7 @@
         
         // Prepare the illustration picker.
         [self.illustrationViewController.view removeFromSuperview];
-        IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] initWithIllustration:nil delegate:self];
+        IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
         illustrationViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
                                                            self.view.bounds.size.height,
                                                            self.view.bounds.size.width,
@@ -771,6 +793,7 @@
         });
 
     } else {
+        
         layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
         
         // Hide illustrations

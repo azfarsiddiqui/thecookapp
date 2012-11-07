@@ -15,6 +15,7 @@
 
 - (void)layoutBookCover;
 - (void)updateWithBook:(CKBook *)book mine:(BOOL)mine;
+- (void)updateWithBook:(CKBook *)book mine:(BOOL)mine force:(BOOL)force;
 - (void)open:(BOOL)open;
 
 - (UIEdgeInsets)contentEdgeInsets;

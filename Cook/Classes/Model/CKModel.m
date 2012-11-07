@@ -49,6 +49,16 @@
     [self.parseObject saveEventually];
 }
 
+- (void)saveInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    [self.parseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            success();
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionary];
     [descriptionProperties setValue:[NSString CK_safeString:self.parseObject.objectId] forKey:@"objectId"];

@@ -16,6 +16,10 @@
 
 @interface IllustrationViewController : UICollectionViewController
 
-- (id)initWithIllustration:(NSString *)illustration delegate:(id<IllustrationViewControllerDelegate>)delegate;
+@property (nonatomic, strong) NSString *illustration;
+
+- (id)initWithIllustration:(NSString *)illustration cover:(NSString *)cover
+                  delegate:(id<IllustrationViewControllerDelegate>)delegate;
+- (void)changeCover:(NSString *)cover;
 
 @end

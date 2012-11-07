@@ -15,9 +15,10 @@
 
 @interface IllustrationViewController ()
 
-@property (nonatomic, strong) NSString *illustration;
+@property (nonatomic, strong) NSString *cover;
 @property (nonatomic, strong) NSMutableArray *availableIllustrations;
 @property (nonatomic, assign) id<IllustrationViewControllerDelegate> delegate;
+@property (nonatomic, assign) NSInteger currentIndex;
 
 @end
 
@@ -25,12 +26,17 @@
 
 #define kCoverCellId        @"CoverCell"
 
-- (id)initWithIllustration:(NSString *)illustration delegate:(id<IllustrationViewControllerDelegate>)delegate {
+- (id)initWithIllustration:(NSString *)illustration cover:(NSString *)cover
+                  delegate:(id<IllustrationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[IllustrationFlowLayout alloc] init]]) {
         self.availableIllustrations = [NSMutableArray arrayWithArray:[[BookCover illustrations]
                                                                       sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
         self.illustration = illustration;
+        self.cover = cover;
         self.delegate = delegate;
+        self.currentIndex = [self.availableIllustrations findIndexWithBlock:^(NSString *illustration) {
+            return [self.illustration isEqualToString:illustration];
+        }];
     }
     return self;
 }
@@ -47,11 +53,15 @@
     
     self.collectionView.frame = self.view.bounds;
     self.collectionView.alwaysBounceHorizontal = YES;
-    self.collectionView.showsHorizontalScrollIndicator = YES;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kCoverCellId];
+}
+
+- (void)changeCover:(NSString *)cover {
+    self.cover = cover;
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -61,7 +71,23 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    
+    // Ignore if same was selected.
+    if (self.currentIndex == indexPath.row) {
+        return;
+    }
+    
+    NSString *selectedIllustration = [self.availableIllustrations objectAtIndex:indexPath.row];
+    NSInteger indexToClear = self.currentIndex;
+    self.currentIndex = indexPath.row;
+    
+    // Reload the selected, and the previous cell.
+    [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObjects:
+                                                  indexPath,
+                                                  [NSIndexPath indexPathForItem:indexToClear inSection:0], nil]];
+    
+    // Inform delegate of update.
+    [self.delegate illustrationSelected:selectedIllustration];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -76,20 +102,18 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *currentIllustration = [self.availableIllustrations objectAtIndex:indexPath.item];
     IllustrationBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCoverCellId
                                                                                 forIndexPath:indexPath];
-    [cell setCover:@"Red"];
-    [cell setIllustration:[self.availableIllustrations objectAtIndex:indexPath.item]];
+    if (self.currentIndex == indexPath.row) {
+        [cell setCover:self.cover];
+    } else {
+        [cell setCover:[BookCover grayCoverName]];
+    }
+    [cell setIllustration:currentIllustration];
     return cell;
 }
 
 #pragma mark - Private
-
-- (NSArray *)indexPathsForIllustrations {
-    return [self.availableIllustrations collectWithIndex:^id(NSString *illustration, NSUInteger idx) {
-        return [NSIndexPath indexPathForItem:idx inSection:0];
-    }];
-}
-
 
 @end

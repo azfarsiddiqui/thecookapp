@@ -71,6 +71,10 @@
     if (self.book == book) {
         return;
     }
+    [self loadBook:book mine:mine force:NO];
+}
+
+- (void)loadBook:(CKBook *)book mine:(BOOL)mine force:(BOOL)force {
     
     self.book = book;
     
@@ -78,7 +82,7 @@
     [self.activityView stopAnimating];
     
     // Update book cover.
-    [self.bookView updateWithBook:book mine:mine];
+    [self.bookView updateWithBook:book mine:mine force:force];
 }
 
 - (void)openBook:(BOOL)open {

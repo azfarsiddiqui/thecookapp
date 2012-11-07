@@ -88,6 +88,10 @@
                                [NSString stringWithFormat:@"Illustrations.%@.Layout", illustration]]];
 }
 
++ (NSString *)grayCoverName {
+    return @"Gray";
+}
+
 #pragma mark - Private
 
 + (NSDictionary *)settings {

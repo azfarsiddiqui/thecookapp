@@ -28,6 +28,7 @@ typedef enum {
 + (UIImage *)imageForIllustration:(NSString *)illustration;
 + (NSArray *)covers;
 + (NSArray *)illustrations;
++ (NSString *)grayCoverName;
 
 + (BookCoverLayout)layoutForIllustration:(NSString *)illustration;
 

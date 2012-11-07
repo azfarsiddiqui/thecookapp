@@ -34,11 +34,9 @@
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
-    DLog();
 }
 
 - (void)setSelected:(BOOL)selected {
-    DLog();
 }
 
 - (void)setCover:(NSString *)cover {

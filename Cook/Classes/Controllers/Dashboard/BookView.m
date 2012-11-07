@@ -55,7 +55,11 @@
 }
 
 - (void)updateWithBook:(CKBook *)book mine:(BOOL)mine {
-    [self updateIfRequiredWithBook:book];
+    [self updateIfRequiredWithBook:book force:NO];
+}
+
+- (void)updateWithBook:(CKBook *)book mine:(BOOL)mine force:(BOOL)force {
+    [self updateIfRequiredWithBook:book force:force];
     if (mine) {
         [self updateEditButtonWithBook:book];
     }
@@ -376,6 +380,9 @@
 
 - (void)openBook:(BOOL)open {
     DLog(@"open: %@", [NSString CK_stringForBoolean:open]);
+    if (self.opened == open) {
+        return;
+    }
     self.opened = open;
     
     // Root view to open the book in.
@@ -533,12 +540,16 @@
 }
 
 - (void)updateIfRequiredWithBook:(CKBook *)book {
+    [self updateIfRequiredWithBook:book force:NO];
+}
+
+- (void)updateIfRequiredWithBook:(CKBook *)book force:(BOOL)force {
     
     // Update content if it's necessary.
-    if (![self.book.cover isEqualToString:book.cover]) {
+    if (force || ![self.book.cover isEqualToString:book.cover]) {
         self.backgroundImageView.image = [BookCover imageForCover:book.cover];
     }
-    if (![self.book.illustration isEqualToString:book.illustration]) {
+    if (force || ![self.book.illustration isEqualToString:book.illustration]) {
         self.illustrationImageView.image = [BookCover imageForIllustration:book.illustration];
     }
     
