@@ -15,7 +15,7 @@
 
 @end
 
-#define kMenuHeight 60.0
+#define kMenuHeight 80.0
 #define kMenuGap    20.0
 #define kSideGap    20.0
 
