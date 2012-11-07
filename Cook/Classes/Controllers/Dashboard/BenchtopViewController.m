@@ -36,7 +36,8 @@
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, strong) MenuViewController *menuViewController;
 @property (nonatomic, strong) UIPopoverController *settingsPopoverController;
-@property (nonatomic, strong) IllustrationViewController *illustrationViewController;
+@property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
+@property (nonatomic, strong) CoverPickerViewController *coverViewController;
 
 @end
 
@@ -434,12 +435,23 @@
 #pragma mark - IllustrationViewControllerDelegate methods
 
 - (void)illustrationSelected:(NSString *)illustration {
-    DLog();
     
+    // Force reload my book with the selected illustration.
     BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     self.myBook.illustration = illustration;
     [cell loadBook:self.myBook mine:YES force:YES];
 }
+
+#pragma mark - CoverPickerViewControllerDelegate methods
+
+- (void)coverPickerExpanded:(BOOL)expanded {
+    DLog();
+}
+
+- (void)coverPickerSelected:(NSString *)cover {
+    DLog();
+}
+
 
 #pragma mark - Private
 
@@ -753,11 +765,30 @@
     BenchtopLayout *layoutToToggle = nil;
     if (editMode) {
         
+        // Edit mode layout that moves the other books out.
         layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
         
+        // Prepare the cover picker.
+        UIEdgeInsets pickerInsets = UIEdgeInsetsMake(20.0, 100.0, 0.0, 100.0);
+        CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
+        coverViewController.view.frame = CGRectMake(floorf((self.view.bounds.size.width - coverViewController.view.frame.size.width) / 2.0),
+                                                    -coverViewController.view.frame.size.height,
+                                                    coverViewController.view.frame.size.width,
+                                                    coverViewController.view.frame.size.height);
+        coverViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:coverViewController.view];
+        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:coverViewController.view
+                                                                      attribute:NSLayoutAttributeCenterX
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:self.view
+                                                                      attribute:NSLayoutAttributeCenterX
+                                                                     multiplier:1.0
+                                                                       constant:0];
+        [self.view addConstraint:constraint];
+        self.coverViewController = coverViewController;
+        
         // Prepare the illustration picker.
-        [self.illustrationViewController.view removeFromSuperview];
-        IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
+        IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
         illustrationViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
                                                            self.view.bounds.size.height,
                                                            self.view.bounds.size.width,
@@ -780,6 +811,7 @@
                                 options:UIViewAnimationCurveEaseOut
                              animations:^{
                                  [self.menuViewController setEditMode:editMode animated:NO];
+                                 self.coverViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + pickerInsets.top + bounceOffset);
                                  self.illustrationViewController.view.transform = CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset);
                              }
                              completion:^(BOOL finished) {
@@ -787,6 +819,7 @@
                                                        delay:0.0
                                                      options:UIViewAnimationCurveEaseOut
                                                   animations:^{
+                                                      self.coverViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + pickerInsets.top);
                                                       self.illustrationViewController.view.transform = CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height);
                                                   }
                                                   completion:^(BOOL finished) {
@@ -805,10 +838,13 @@
                          animations:^{
                              [self.menuViewController setEditMode:editMode animated:NO];
                              self.illustrationViewController.view.transform = CGAffineTransformIdentity;
+                             self.coverViewController.view.transform = CGAffineTransformIdentity;
                          }
                          completion:^(BOOL finished) {
                              [self.illustrationViewController.view removeFromSuperview];
                              self.illustrationViewController = nil;
+                             [self.coverViewController.view removeFromSuperview];
+                             self.coverViewController = nil;
                              
                          }];
         

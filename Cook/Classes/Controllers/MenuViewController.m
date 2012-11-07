@@ -60,10 +60,10 @@
     self.storeButton = storeButton;
     
     // Edit cancel button.
-    UIButton *editCancelButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    UIButton *editCancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+                                                      target:self
+                                                    selector:@selector(editCancelTapped:)];
     [editCancelButton addTarget:self action:@selector(editCancelTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [editCancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-    [editCancelButton sizeToFit];
     editCancelButton.frame = CGRectMake(kSideGap,
                                         floorf((kMenuHeight - settingsButton.frame.size.height) / 2.0),
                                         editCancelButton.frame.size.width,
@@ -73,10 +73,10 @@
     self.editCancelButton = editCancelButton;
     
     // Edit done button.
-    UIButton *editDoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    UIButton *editDoneButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
+                                                        target:self
+                                                        selector:@selector(editDoneTapped:)];
     [editDoneButton addTarget:self action:@selector(editDoneTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [editDoneButton setTitle:@"Done" forState:UIControlStateNormal];
-    [editDoneButton sizeToFit];
     editDoneButton.frame = CGRectMake(self.view.bounds.size.width - editDoneButton.frame.size.width - kSideGap,
                                       floorf((kMenuHeight - editDoneButton.frame.size.height) / 2.0),
                                       editDoneButton.frame.size.width,

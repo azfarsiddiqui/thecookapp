@@ -7,13 +7,13 @@
 //
 
 #import "BenchtopEditViewController.h"
-#import "IllustrationViewController.h"
+#import "IllustrationPickerViewController.h"
 
 @interface BenchtopEditViewController ()
 
 @property (nonatomic, assign) id<BenchtopEditViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *colourMenuView;
-@property (nonatomic, strong) IllustrationViewController *illustrationViewController;
+@property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 
 @end
 
@@ -95,7 +95,7 @@
 }
 
 - (void)initIllustrationMenu {
-    IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] init];
+    IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] init];
     illustrationViewController.view.frame = CGRectMake(0.0,
                                                        self.view.bounds.size.height,
                                                        self.view.bounds.size.width,

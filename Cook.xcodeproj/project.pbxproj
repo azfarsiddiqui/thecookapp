@@ -59,7 +59,7 @@
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
 		769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FA16473F3D00752128 /* BenchtopEditLayout.m */; };
 		769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FE16474A2100752128 /* BenchtopEditViewController.m */; };
-		7692260216474D4600752128 /* IllustrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692260116474D4600752128 /* IllustrationViewController.m */; };
+		7692260216474D4600752128 /* IllustrationPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692260116474D4600752128 /* IllustrationPickerViewController.m */; };
 		769226051647863A00752128 /* IllustrationBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* IllustrationBookCell.m */; };
 		76B015AE161C0AC100AF3C2C /* cook_defaultbook.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */; };
 		76B015AF161C0AC100AF3C2C /* cook_defaultbook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */; };
@@ -71,6 +71,12 @@
 		76DA0F4B1636521C00D9325B /* cook_dash_icons_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F471636521C00D9325B /* cook_dash_icons_settings.png */; };
 		76DA0F4C1636521C00D9325B /* cook_dash_icons_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F481636521C00D9325B /* cook_dash_icons_settings@2x.png */; };
 		76DEF0411649E78D00B7DB9C /* IllustrationFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF0401649E78D00B7DB9C /* IllustrationFlowLayout.m */; };
+		76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF04F164A262B00B7DB9C /* CoverPickerViewController.m */; };
+		76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF052164A285D00B7DB9C /* CoverPickerCell.m */; };
+		76DEF058164A37BB00B7DB9C /* cook_customise_btns_cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF054164A37BB00B7DB9C /* cook_customise_btns_cancel.png */; };
+		76DEF059164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */; };
+		76DEF05A164A37BB00B7DB9C /* cook_customise_btns_done.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF056164A37BB00B7DB9C /* cook_customise_btns_done.png */; };
+		76DEF05B164A37BB00B7DB9C /* cook_customise_btns_done@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF057164A37BB00B7DB9C /* cook_customise_btns_done@2x.png */; };
 		76E16E461638FF870044EB9B /* cook_book_pink.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E16E421638FF870044EB9B /* cook_book_pink.png */; };
 		76E16E471638FF870044EB9B /* cook_book_pink@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E16E431638FF870044EB9B /* cook_book_pink@2x.png */; };
 		76E16E481638FF870044EB9B /* cook_book_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E16E441638FF870044EB9B /* cook_book_yellow.png */; };
@@ -253,8 +259,8 @@
 		769225FA16473F3D00752128 /* BenchtopEditLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopEditLayout.m; sourceTree = "<group>"; };
 		769225FD16474A2100752128 /* BenchtopEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopEditViewController.h; sourceTree = "<group>"; };
 		769225FE16474A2100752128 /* BenchtopEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopEditViewController.m; sourceTree = "<group>"; };
-		7692260016474D4600752128 /* IllustrationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationViewController.h; sourceTree = "<group>"; };
-		7692260116474D4600752128 /* IllustrationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationViewController.m; sourceTree = "<group>"; };
+		7692260016474D4600752128 /* IllustrationPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationPickerViewController.h; sourceTree = "<group>"; };
+		7692260116474D4600752128 /* IllustrationPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationPickerViewController.m; sourceTree = "<group>"; };
 		769226031647863900752128 /* IllustrationBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationBookCell.h; sourceTree = "<group>"; };
 		769226041647863A00752128 /* IllustrationBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationBookCell.m; sourceTree = "<group>"; };
 		76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_defaultbook.png; sourceTree = "<group>"; };
@@ -269,6 +275,14 @@
 		76DA0F481636521C00D9325B /* cook_dash_icons_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_settings@2x.png"; sourceTree = "<group>"; };
 		76DEF03F1649E78D00B7DB9C /* IllustrationFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationFlowLayout.h; sourceTree = "<group>"; };
 		76DEF0401649E78D00B7DB9C /* IllustrationFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationFlowLayout.m; sourceTree = "<group>"; };
+		76DEF04E164A262B00B7DB9C /* CoverPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPickerViewController.h; sourceTree = "<group>"; };
+		76DEF04F164A262B00B7DB9C /* CoverPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPickerViewController.m; sourceTree = "<group>"; };
+		76DEF051164A285D00B7DB9C /* CoverPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPickerCell.h; sourceTree = "<group>"; };
+		76DEF052164A285D00B7DB9C /* CoverPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPickerCell.m; sourceTree = "<group>"; };
+		76DEF054164A37BB00B7DB9C /* cook_customise_btns_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_btns_cancel.png; sourceTree = "<group>"; };
+		76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_btns_cancel@2x.png"; sourceTree = "<group>"; };
+		76DEF056164A37BB00B7DB9C /* cook_customise_btns_done.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_btns_done.png; sourceTree = "<group>"; };
+		76DEF057164A37BB00B7DB9C /* cook_customise_btns_done@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_btns_done@2x.png"; sourceTree = "<group>"; };
 		76E16E421638FF870044EB9B /* cook_book_pink.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_pink.png; sourceTree = "<group>"; };
 		76E16E431638FF870044EB9B /* cook_book_pink@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_pink@2x.png"; sourceTree = "<group>"; };
 		76E16E441638FF870044EB9B /* cook_book_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_yellow.png; sourceTree = "<group>"; };
@@ -449,6 +463,10 @@
 		762C0E4D161A7FC400EBA344 /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				76DEF054164A37BB00B7DB9C /* cook_customise_btns_cancel.png */,
+				76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */,
+				76DEF056164A37BB00B7DB9C /* cook_customise_btns_done.png */,
+				76DEF057164A37BB00B7DB9C /* cook_customise_btns_done@2x.png */,
 				76DA0F451636521C00D9325B /* cook_dash_icons_friends.png */,
 				76DA0F461636521C00D9325B /* cook_dash_icons_friends@2x.png */,
 				76DA0F471636521C00D9325B /* cook_dash_icons_settings.png */,
@@ -503,12 +521,16 @@
 				761FA06F162FC60400DC0C84 /* BookCoverViewFactory.m */,
 				769225FD16474A2100752128 /* BenchtopEditViewController.h */,
 				769225FE16474A2100752128 /* BenchtopEditViewController.m */,
-				7692260016474D4600752128 /* IllustrationViewController.h */,
-				7692260116474D4600752128 /* IllustrationViewController.m */,
+				7692260016474D4600752128 /* IllustrationPickerViewController.h */,
+				7692260116474D4600752128 /* IllustrationPickerViewController.m */,
 				769226031647863900752128 /* IllustrationBookCell.h */,
 				769226041647863A00752128 /* IllustrationBookCell.m */,
 				76DEF03F1649E78D00B7DB9C /* IllustrationFlowLayout.h */,
 				76DEF0401649E78D00B7DB9C /* IllustrationFlowLayout.m */,
+				76DEF04E164A262B00B7DB9C /* CoverPickerViewController.h */,
+				76DEF04F164A262B00B7DB9C /* CoverPickerViewController.m */,
+				76DEF051164A285D00B7DB9C /* CoverPickerCell.h */,
+				76DEF052164A285D00B7DB9C /* CoverPickerCell.m */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -1061,6 +1083,10 @@
 				76E16F1116390DA70044EB9B /* cook_book_graphic_tomato@2x.png in Resources */,
 				76506D64163DF8920047D36B /* cook_dash_icons_store.png in Resources */,
 				76506D65163DF8920047D36B /* cook_dash_icons_store@2x.png in Resources */,
+				76DEF058164A37BB00B7DB9C /* cook_customise_btns_cancel.png in Resources */,
+				76DEF059164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png in Resources */,
+				76DEF05A164A37BB00B7DB9C /* cook_customise_btns_done.png in Resources */,
+				76DEF05B164A37BB00B7DB9C /* cook_customise_btns_done@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1121,9 +1147,11 @@
 				76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */,
 				769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */,
 				769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */,
-				7692260216474D4600752128 /* IllustrationViewController.m in Sources */,
+				7692260216474D4600752128 /* IllustrationPickerViewController.m in Sources */,
 				769226051647863A00752128 /* IllustrationBookCell.m in Sources */,
 				76DEF0411649E78D00B7DB9C /* IllustrationFlowLayout.m in Sources */,
+				76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */,
+				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

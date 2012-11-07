@@ -6,28 +6,28 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "IllustrationViewController.h"
+#import "IllustrationPickerViewController.h"
 #import "BookCover.h"
 #import "IllustrationBookCell.h"
 #import "IllustrationFlowLayout.h"
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
 
-@interface IllustrationViewController ()
+@interface IllustrationPickerViewController ()
 
 @property (nonatomic, strong) NSString *cover;
 @property (nonatomic, strong) NSMutableArray *availableIllustrations;
-@property (nonatomic, assign) id<IllustrationViewControllerDelegate> delegate;
+@property (nonatomic, assign) id<IllustrationPickerViewControllerDelegate> delegate;
 @property (nonatomic, assign) NSInteger currentIndex;
 
 @end
 
-@implementation IllustrationViewController
+@implementation IllustrationPickerViewController
 
-#define kCoverCellId        @"CoverCell"
+#define kIllustrationCellId        @"IllustrationCell"
 
 - (id)initWithIllustration:(NSString *)illustration cover:(NSString *)cover
-                  delegate:(id<IllustrationViewControllerDelegate>)delegate {
+                  delegate:(id<IllustrationPickerViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[IllustrationFlowLayout alloc] init]]) {
         self.availableIllustrations = [NSMutableArray arrayWithArray:[[BookCover illustrations]
                                                                       sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
@@ -58,8 +58,8 @@
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.backgroundColor = [UIColor clearColor];
-    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kCoverCellId];
+    self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kIllustrationCellId];
 }
 
 - (void)changeCover:(NSString *)cover {
@@ -111,7 +111,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSString *currentIllustration = [self.availableIllustrations objectAtIndex:indexPath.item];
-    IllustrationBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCoverCellId
+    IllustrationBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kIllustrationCellId
                                                                                 forIndexPath:indexPath];
     if (self.currentIndex == indexPath.row) {
         [cell setCover:self.cover];

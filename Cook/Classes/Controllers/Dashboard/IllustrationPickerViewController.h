@@ -8,18 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol IllustrationViewControllerDelegate
+@protocol IllustrationPickerViewControllerDelegate
 
 - (void)illustrationSelected:(NSString *)illustration;
 
 @end
 
-@interface IllustrationViewController : UICollectionViewController
+@interface IllustrationPickerViewController : UICollectionViewController
 
 @property (nonatomic, strong) NSString *illustration;
 
 - (id)initWithIllustration:(NSString *)illustration cover:(NSString *)cover
-                  delegate:(id<IllustrationViewControllerDelegate>)delegate;
+                  delegate:(id<IllustrationPickerViewControllerDelegate>)delegate;
 - (void)changeCover:(NSString *)cover;
 - (void)scrollToIllustration;
 
