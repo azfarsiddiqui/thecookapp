@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EditBookCell : UICollectionViewCell
+@interface IllustrationBookCell : UICollectionViewCell
 
 + (CGSize)cellSize;
 - (void)setCover:(NSString *)cover;

@@ -20,7 +20,6 @@
 #import "NSString+Utilities.h"
 #import "SettingsViewController.h"
 #import "BenchtopEditLayout.h"
-#import "IllustrationViewController.h"
 
 @interface BenchtopViewController ()
 
@@ -420,6 +419,12 @@
     [self enableEditMode:NO];
 }
 
+#pragma mark - IllustrationViewControllerDelegate methods
+
+- (void)illustrationSelected:(NSString *)illustration {
+    DLog();
+}
+
 #pragma mark - Private
 
 - (void)toggleLayout {
@@ -727,7 +732,7 @@
         layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
         
         // Prepare the illustration picker.
-        IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] init];
+        IllustrationViewController *illustrationViewController = [[IllustrationViewController alloc] initWithIllustration:nil delegate:self];
         illustrationViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
                                                            self.view.bounds.size.height,
                                                            self.view.bounds.size.width,

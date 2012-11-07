@@ -8,11 +8,13 @@
 
 #import "IllustrationViewController.h"
 #import "BookCover.h"
-#import "EditBookCell.h"
+#import "IllustrationBookCell.h"
 
 @interface IllustrationViewController ()
 
+@property (nonatomic, strong) NSString *illustration;
 @property (nonatomic, strong) NSArray *illustrations;
+@property (nonatomic, assign) id<IllustrationViewControllerDelegate> delegate;
 
 @end
 
@@ -20,15 +22,17 @@
 
 #define kCoverCellId        @"CoverCell"
 
-- (id)init {
+- (id)initWithIllustration:(NSString *)illustration delegate:(id<IllustrationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+        self.illustration = illustration;
+        self.delegate = delegate;
         self.illustrations = [[BookCover illustrations] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     }
     return self;
 }
 
 - (void)viewDidLoad {
-    CGSize itemSize = [EditBookCell cellSize];
+    CGSize itemSize = [IllustrationBookCell cellSize];
     
     self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
     self.view.backgroundColor = [UIColor clearColor];
@@ -43,7 +47,7 @@
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self.collectionView registerClass:[EditBookCell class] forCellWithReuseIdentifier:kCoverCellId];
+    [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kCoverCellId];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -68,7 +72,7 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    EditBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCoverCellId
+    IllustrationBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCoverCellId
                                                                                 forIndexPath:indexPath];
     [cell setCover:@"Red"];
     [cell setIllustration:[self.illustrations objectAtIndex:indexPath.item]];

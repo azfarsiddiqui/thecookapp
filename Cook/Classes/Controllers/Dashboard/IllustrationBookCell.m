@@ -6,18 +6,18 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "EditBookCell.h"
+#import "IllustrationBookCell.h"
 #import "BookCover.h"
 #import "BenchtopBookCell.h"
 
-@interface EditBookCell ()
+@interface IllustrationBookCell ()
 
 @property (nonatomic, strong) UIImageView *colourImageView;
 @property (nonatomic, strong) UIImageView *illustrationImageView;
 
 @end
 
-@implementation EditBookCell
+@implementation IllustrationBookCell
 
 #define kDivideScaleFactor  3.0
 

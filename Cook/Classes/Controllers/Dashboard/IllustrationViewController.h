@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol IllustrationViewControllerDelegate
+
+- (void)illustrationSelected:(NSString *)illustration;
+
+@end
+
 @interface IllustrationViewController : UICollectionViewController
+
+- (id)initWithIllustration:(NSString *)illustration delegate:(id<IllustrationViewControllerDelegate>)delegate;
 
 @end

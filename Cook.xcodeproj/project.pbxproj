@@ -60,7 +60,7 @@
 		769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FA16473F3D00752128 /* BenchtopEditLayout.m */; };
 		769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FE16474A2100752128 /* BenchtopEditViewController.m */; };
 		7692260216474D4600752128 /* IllustrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692260116474D4600752128 /* IllustrationViewController.m */; };
-		769226051647863A00752128 /* EditBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* EditBookCell.m */; };
+		769226051647863A00752128 /* IllustrationBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* IllustrationBookCell.m */; };
 		76B015AE161C0AC100AF3C2C /* cook_defaultbook.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */; };
 		76B015AF161C0AC100AF3C2C /* cook_defaultbook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */; };
 		76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */; };
@@ -254,8 +254,8 @@
 		769225FE16474A2100752128 /* BenchtopEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopEditViewController.m; sourceTree = "<group>"; };
 		7692260016474D4600752128 /* IllustrationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationViewController.h; sourceTree = "<group>"; };
 		7692260116474D4600752128 /* IllustrationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationViewController.m; sourceTree = "<group>"; };
-		769226031647863900752128 /* EditBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditBookCell.h; sourceTree = "<group>"; };
-		769226041647863A00752128 /* EditBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditBookCell.m; sourceTree = "<group>"; };
+		769226031647863900752128 /* IllustrationBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationBookCell.h; sourceTree = "<group>"; };
+		769226041647863A00752128 /* IllustrationBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationBookCell.m; sourceTree = "<group>"; };
 		76B015AC161C0AC100AF3C2C /* cook_defaultbook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_defaultbook.png; sourceTree = "<group>"; };
 		76B015AD161C0AC100AF3C2C /* cook_defaultbook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_defaultbook@2x.png"; sourceTree = "<group>"; };
 		76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_overlay.png; sourceTree = "<group>"; };
@@ -502,8 +502,8 @@
 				769225FE16474A2100752128 /* BenchtopEditViewController.m */,
 				7692260016474D4600752128 /* IllustrationViewController.h */,
 				7692260116474D4600752128 /* IllustrationViewController.m */,
-				769226031647863900752128 /* EditBookCell.h */,
-				769226041647863A00752128 /* EditBookCell.m */,
+				769226031647863900752128 /* IllustrationBookCell.h */,
+				769226041647863A00752128 /* IllustrationBookCell.m */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -1117,7 +1117,7 @@
 				769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */,
 				769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */,
 				7692260216474D4600752128 /* IllustrationViewController.m in Sources */,
-				769226051647863A00752128 /* EditBookCell.m in Sources */,
+				769226051647863A00752128 /* IllustrationBookCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

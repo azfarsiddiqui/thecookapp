@@ -10,9 +10,10 @@
 #import "BenchtopDelegate.h"
 #import "BookViewController.h"
 #import "MenuViewController.h"
+#import "IllustrationViewController.h"
 
 @interface BenchtopViewController : UICollectionViewController <BenchtopDelegate, BookViewControllerDelegate,
-    MenuViewControllerDelegate, UIPopoverControllerDelegate>
+    MenuViewControllerDelegate, UIPopoverControllerDelegate, IllustrationViewControllerDelegate>
 
 - (void)enable:(BOOL)enable;
 - (void)freeze:(BOOL)freeze;
