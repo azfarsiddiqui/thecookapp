@@ -50,6 +50,8 @@
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.itemSize = itemSize;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    flowLayout.sectionInset = UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0);
+    flowLayout.minimumLineSpacing = 15.0;
     
     self.collectionView.frame = self.view.bounds;
     self.collectionView.alwaysBounceHorizontal = YES;
@@ -62,6 +64,12 @@
 
 - (void)changeCover:(NSString *)cover {
     self.cover = cover;
+}
+
+- (void)scrollToIllustration {
+    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0]
+                                atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                        animated:NO];
 }
 
 #pragma mark - UICollectionViewDelegate methods

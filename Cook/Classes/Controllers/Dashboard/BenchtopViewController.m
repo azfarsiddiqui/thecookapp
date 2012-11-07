@@ -428,6 +428,7 @@
 
 - (void)menuViewControllerDoneRequested {
     [self.myBook saveEventually];
+    [self enableEditMode:NO];
 }
 
 #pragma mark - IllustrationViewControllerDelegate methods
@@ -761,6 +762,7 @@
                                                            self.view.bounds.size.height,
                                                            self.view.bounds.size.width,
                                                            illustrationViewController.view.frame.size.height);
+        [illustrationViewController scrollToIllustration];
         [self.view addSubview:illustrationViewController.view];
         self.illustrationViewController = illustrationViewController;
         illustrationTransform = CGAffineTransformMakeTranslation(0.0, - self.illustrationViewController.view.frame.size.height);

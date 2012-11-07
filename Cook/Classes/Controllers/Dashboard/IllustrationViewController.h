@@ -21,5 +21,6 @@
 - (id)initWithIllustration:(NSString *)illustration cover:(NSString *)cover
                   delegate:(id<IllustrationViewControllerDelegate>)delegate;
 - (void)changeCover:(NSString *)cover;
+- (void)scrollToIllustration;
 
 @end
