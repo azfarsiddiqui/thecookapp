@@ -140,7 +140,7 @@
     
     // Drag to pull
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
-    panGesture.delegate = self;
+//    panGesture.delegate = self;
     [self addGestureRecognizer:panGesture];
     
 }
