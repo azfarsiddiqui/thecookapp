@@ -97,6 +97,9 @@
 		76C6CDCC164B3EC3006001BD /* cook_customise_textbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */; };
 		76C6CDCD164B3EC3006001BD /* cook_dash_icons_customise.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */; };
 		76C6CDCE164B3EC3006001BD /* cook_dash_icons_customise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDCA164B3EC3006001BD /* cook_dash_icons_customise@2x.png */; };
+		76C6CDD2164B5495006001BD /* APBookmarkNavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C6CDD1164B5495006001BD /* APBookmarkNavigationView.m */; };
+		76C6CDD6164B62D1006001BD /* cook_book_bookmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDD4164B62D1006001BD /* cook_book_bookmark.png */; };
+		76C6CDD7164B62D1006001BD /* cook_book_bookmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDD5164B62D1006001BD /* cook_book_bookmark@2x.png */; };
 		76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C99D73163A12DD00788679 /* SettingsViewController.m */; };
 		76DA0F491636521C00D9325B /* cook_dash_icons_friends.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F451636521C00D9325B /* cook_dash_icons_friends.png */; };
 		76DA0F4A1636521C00D9325B /* cook_dash_icons_friends@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F461636521C00D9325B /* cook_dash_icons_friends@2x.png */; };
@@ -331,6 +334,10 @@
 		76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox@2x.png"; sourceTree = "<group>"; };
 		76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise.png; sourceTree = "<group>"; };
 		76C6CDCA164B3EC3006001BD /* cook_dash_icons_customise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_customise@2x.png"; sourceTree = "<group>"; };
+		76C6CDD0164B5495006001BD /* APBookmarkNavigationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APBookmarkNavigationView.h; sourceTree = "<group>"; };
+		76C6CDD1164B5495006001BD /* APBookmarkNavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APBookmarkNavigationView.m; sourceTree = "<group>"; };
+		76C6CDD4164B62D1006001BD /* cook_book_bookmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_bookmark.png; sourceTree = "<group>"; };
+		76C6CDD5164B62D1006001BD /* cook_book_bookmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_bookmark@2x.png"; sourceTree = "<group>"; };
 		76C99D72163A12DD00788679 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		76C99D73163A12DD00788679 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		76DA0F451636521C00D9325B /* cook_dash_icons_friends.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_friends.png; sourceTree = "<group>"; };
@@ -726,6 +733,25 @@
 			path = books;
 			sourceTree = "<group>";
 		};
+		76C6CDCF164B5495006001BD /* APBookmarkNavigationView */ = {
+			isa = PBXGroup;
+			children = (
+				76C6CDD3164B62D1006001BD /* Resources */,
+				76C6CDD0164B5495006001BD /* APBookmarkNavigationView.h */,
+				76C6CDD1164B5495006001BD /* APBookmarkNavigationView.m */,
+			);
+			path = APBookmarkNavigationView;
+			sourceTree = "<group>";
+		};
+		76C6CDD3164B62D1006001BD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				76C6CDD4164B62D1006001BD /* cook_book_bookmark.png */,
+				76C6CDD5164B62D1006001BD /* cook_book_bookmark@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		76C99D70163A12BD00788679 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -926,6 +952,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76C6CDCF164B5495006001BD /* APBookmarkNavigationView */,
 				89232B791625291A00152940 /* AFKPageFlipper */,
 				89622187161EA6610023EC30 /* MRCEnumerable */,
 				89622171161E9F300023EC30 /* AviarySDK */,
@@ -1215,6 +1242,8 @@
 				76C6CDCC164B3EC3006001BD /* cook_customise_textbox@2x.png in Resources */,
 				76C6CDCD164B3EC3006001BD /* cook_dash_icons_customise.png in Resources */,
 				76C6CDCE164B3EC3006001BD /* cook_dash_icons_customise@2x.png in Resources */,
+				76C6CDD6164B62D1006001BD /* cook_book_bookmark.png in Resources */,
+				76C6CDD7164B62D1006001BD /* cook_book_bookmark@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1280,6 +1309,7 @@
 				76DEF0411649E78D00B7DB9C /* IllustrationFlowLayout.m in Sources */,
 				76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */,
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
+				76C6CDD2164B5495006001BD /* APBookmarkNavigationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
