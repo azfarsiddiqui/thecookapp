@@ -429,9 +429,10 @@
 
 - (void)menuViewControllerCancelRequested {
 
-    // Revert to previous illustration.
+    // Revert to previous illustration/cover.
     BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     self.myBook.illustration = self.illustrationViewController.illustration;
+    self.myBook.cover = self.coverViewController.cover;
     [cell loadBook:self.myBook mine:YES force:YES];
 
     [self enableEditMode:NO];
@@ -454,14 +455,13 @@
 
 #pragma mark - CoverPickerViewControllerDelegate methods
 
-- (void)coverPickerExpanded:(BOOL)expanded {
-    DLog();
-}
-
 - (void)coverPickerSelected:(NSString *)cover {
-    DLog();
+    
+    // Force reload my book with the selected illustration.
+    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    self.myBook.cover = cover;
+    [cell loadBook:self.myBook mine:YES force:YES];
 }
-
 
 #pragma mark - Private
 

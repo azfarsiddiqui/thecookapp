@@ -15,7 +15,7 @@
 }
 
 + (CGSize)maxCellSize {
-    return CGSizeMake(100.0, 30.0);
+    return CGSizeMake(80.0, 30.0);
 }
 
 @end

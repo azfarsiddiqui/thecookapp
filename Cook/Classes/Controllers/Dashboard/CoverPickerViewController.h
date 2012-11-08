@@ -10,12 +10,13 @@
 
 @protocol CoverPickerViewControllerDelegate
 
-- (void)coverPickerExpanded:(BOOL)expanded;
 - (void)coverPickerSelected:(NSString *)cover;
 
 @end
 
-@interface CoverPickerViewController : UICollectionViewController
+@interface CoverPickerViewController : UICollectionViewController <UICollectionViewDelegateFlowLayout>
+
+@property (nonatomic, copy) NSString *cover;
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewControllerDelegate>)delegate;
 

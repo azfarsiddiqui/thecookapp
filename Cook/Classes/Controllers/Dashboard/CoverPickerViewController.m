@@ -13,9 +13,8 @@
 
 @interface CoverPickerViewController ()
 
-@property (nonatomic, copy) NSString *cover;
 @property (nonatomic, assign) NSInteger currentIndex;
-@property (nonatomic, strong) NSMutableArray *availableCovers;
+@property (nonatomic, strong) NSArray *availableCovers;
 @property (nonatomic, assign) id<CoverPickerViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL expanded;
 
@@ -34,7 +33,7 @@
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
         self.cover = cover;
         self.delegate = delegate;
-        self.availableCovers = [NSMutableArray arrayWithObjects:@"Yellow", @"Pink", @"Red", @"Blue", @"Light Green", nil];
+        self.availableCovers = [BookCover covers];
     }
     return self;
 }
@@ -46,10 +45,7 @@
     self.view.backgroundColor = [UIColor clearColor];
     
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
-    flowLayout.itemSize = itemSize;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    flowLayout.sectionInset = UIEdgeInsetsZero;
-    flowLayout.minimumLineSpacing = 0.0;
     
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
@@ -76,12 +72,32 @@
         return;
     }
     
-    // Ignore if same was selected.
-    if (self.currentIndex == indexPath.row) {
-        return;
-    }
-    
-    // TODO
+    // Select the cover and toggle expansion.
+    NSString *cover = [self.availableCovers objectAtIndex:indexPath.item];
+    [self toggleExpansion];
+    [self.delegate coverPickerSelected:cover];
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout methods
+
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return self.expanded ? [CoverPickerCell maxCellSize] : [CoverPickerCell minCellSize];
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
+                        layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsZero;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView
+                   layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    return 0.0;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView
+                   layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return 0.0;
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -109,7 +125,7 @@
         [cell.contentView addSubview:coverImageView];
     }
     
-    UIImage *coverImage = [[BookCover customiseImageForCover:currentCover] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    UIImage *coverImage = [[BookCover thumbImageForCover:currentCover] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
     if (indexPath.row == 0 || indexPath.row == [self.availableCovers count] - 1) {
         coverImage = [coverImage stretchableImageWithLeftCapWidth:12 topCapHeight:0];
     }
@@ -134,10 +150,12 @@
 
 - (void)toggleExpansion {
     self.expanded = !self.expanded;
-    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
-    flowLayout.itemSize = self.expanded ? [CoverPickerCell maxCellSize] : [CoverPickerCell minCellSize];
+    
+//    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+//    [self.collectionView setCollectionViewLayout:flowLayout animated:YES];
+    
     [self.collectionView reloadData];
-    [self.delegate coverPickerExpanded:self.expanded];
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "BookCover.h"
+#import "MRCEnumerable.h"
 
 @interface BookCover ()
 
@@ -40,7 +41,7 @@
 }
 
 + (NSString *)defaultCover {
-    return [[BookCover settings] valueForKeyPath:@"Covers.Red"];
+    return [[BookCover settings] valueForKeyPath:@"Covers.Red.Image"];
 }
 
 + (NSString *)defaultIllustration {
@@ -58,16 +59,16 @@
 }
 
 + (UIImage *)imageForCover:(NSString *)cover {
-    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@", cover]];
+    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
     if (!imageName) {
-        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@",
+        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
                                                            [BookCover randomCover]]];
     }
     return [UIImage imageNamed:imageName];
 }
 
-+ (UIImage *)customiseImageForCover:(NSString *)cover {
-    NSString *imageName = [NSString stringWithFormat:@"cook_customise_colours_%@.png", [[cover stringByReplacingOccurrencesOfString:@" " withString:@""] lowercaseString]];
++ (UIImage *)thumbImageForCover:(NSString *)cover {
+    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Thumb", cover]];
     return [UIImage imageNamed:imageName];
 }
 
@@ -81,7 +82,15 @@
 }
 
 + (NSArray *)covers {
-    return [[[BookCover settings] valueForKey:@"Covers"] allKeys];
+    NSDictionary *settings = [BookCover settings];
+    NSArray *enabledCovers = [[[settings valueForKey:@"Covers"] allKeys] select:^BOOL(NSString *cover) {
+        return ([settings valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Index", cover]] != nil);
+    }];
+    return [enabledCovers sortedArrayUsingComparator:^NSComparisonResult(NSString *cover, NSString *cover2) {
+        NSNumber *index = [settings valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Index", cover]];
+        NSNumber *index2 = [settings valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Index", cover2]];
+        return [index compare:index2];
+    }];
 }
 
 + (NSArray *)illustrations {
