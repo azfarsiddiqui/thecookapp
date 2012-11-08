@@ -38,6 +38,7 @@
 @property (nonatomic, strong) UIPopoverController *settingsPopoverController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
+@property (nonatomic, strong) UIView *editOverlayView;
 
 @end
 
@@ -775,6 +776,13 @@
     BenchtopLayout *layoutToToggle = nil;
     if (editMode) {
         
+        // Edit overlayview.
+        UIImageView *editOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        editOverlayView.autoresizingMask = UIViewAutoresizingNone;
+        editOverlayView.alpha = 0.0;
+        [self.view insertSubview:editOverlayView belowSubview:self.menuViewController.view];
+        self.editOverlayView = editOverlayView;
+        
         // Edit mode layout that moves the other books out.
         layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
         
@@ -813,6 +821,7 @@
                                 options:UIViewAnimationCurveEaseOut
                              animations:^{
                                  [self.menuViewController setEditMode:editMode animated:NO];
+                                 self.editOverlayView.alpha = 1.0;
                                  self.coverViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + pickerInsets.top);
                                  self.illustrationViewController.view.transform = CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset);
                              }
@@ -838,10 +847,13 @@
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
                              [self.menuViewController setEditMode:editMode animated:NO];
+                             self.editOverlayView.alpha = 0.0;
                              self.illustrationViewController.view.transform = CGAffineTransformIdentity;
                              self.coverViewController.view.transform = CGAffineTransformIdentity;
                          }
                          completion:^(BOOL finished) {
+                             [self.editOverlayView removeFromSuperview];
+                             self.editOverlayView = nil;
                              [self.illustrationViewController.view removeFromSuperview];
                              self.illustrationViewController = nil;
                              [self.coverViewController removeObserver:self forKeyPath:@"collectionView.contentSize"];
