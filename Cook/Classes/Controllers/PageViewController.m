@@ -8,6 +8,7 @@
 
 #import "PageViewController.h"
 #import "APBookmarkNavigationView.h"
+#import "ViewHelper.h"
 
 @interface PageViewController () <APBookmarkNavigationViewDelegate>
 
@@ -29,6 +30,7 @@
     self.view.frame = [self.delegate bookViewBounds];
     
     [self initPageView];
+    [self initMenu];
     [self initBookmark];
 }
 
@@ -99,6 +101,17 @@
 
 #pragma mark - Private methods
 
+- (void)initMenu {
+    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+                                                 target:self
+                                               selector:@selector(closeTapped:)];
+    closeButton.frame = CGRectMake(20.0,
+                                   15.0,
+                                   closeButton.frame.size.width,
+                                   closeButton.frame.size.height);
+    [self.view addSubview:closeButton];
+}
+
 - (void)initBookmark {
     UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
     APBookmarkNavigationView *bookmarkView = [[APBookmarkNavigationView alloc] initWithDelegate:self];
@@ -108,6 +121,10 @@
                                     bookmarkView.frame.size.height);
     [self.view addSubview:bookmarkView];
     
+}
+
+- (void)closeTapped:(id)sender {
+    [self.delegate bookViewCloseRequested];
 }
 
 @end
