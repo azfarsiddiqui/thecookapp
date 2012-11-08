@@ -337,12 +337,11 @@
 - (void)updateEditButtonWithBook:(CKBook *)book {
     if (!self.editButton) {
         UIEdgeInsets edgeInsets = [self contentEdgeInsets];
-        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+        UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"] target:self selector:@selector(editTapped:)];
         editButton.frame = CGRectMake(self.bounds.size.width - editButton.frame.size.width - edgeInsets.right,
-                                      edgeInsets.top,
+                                      edgeInsets.top - 3.0,
                                       editButton.frame.size.width,
                                       editButton.frame.size.height);
-        [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:editButton];
         self.editButton = editButton;
     }
