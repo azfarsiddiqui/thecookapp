@@ -776,6 +776,9 @@
     BenchtopLayout *layoutToToggle = nil;
     if (editMode) {
         
+        // Edit mode layout that moves the other books out.
+        layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
+        
         // Edit overlayview.
         UIImageView *editOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
         editOverlayView.autoresizingMask = UIViewAutoresizingNone;
@@ -783,8 +786,16 @@
         [self.view insertSubview:editOverlayView belowSubview:self.menuViewController.view];
         self.editOverlayView = editOverlayView;
         
-        // Edit mode layout that moves the other books out.
-        layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
+        // Prepare the illustration picker.
+        IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
+        illustrationViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                           self.view.bounds.size.height,
+                                                           self.view.bounds.size.width,
+                                                           illustrationViewController.view.frame.size.height);
+        [illustrationViewController scrollToIllustration];
+        [self.view insertSubview:illustrationViewController.view belowSubview:self.editOverlayView];
+        self.illustrationViewController = illustrationViewController;
+        illustrationTransform = CGAffineTransformMakeTranslation(0.0, - self.illustrationViewController.view.frame.size.height);
         
         // Prepare the cover picker.
         CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
@@ -796,17 +807,6 @@
         [coverViewController addObserver:self forKeyPath:@"collectionView.contentSize" options:NSKeyValueObservingOptionNew context:NULL];
         self.coverViewController = coverViewController;
         UIEdgeInsets pickerInsets = UIEdgeInsetsMake(floorf((self.menuViewController.view.frame.size.height - coverViewController.view.frame.size.height) / 2.0), 100.0, 0.0, 100.0);
-        
-        // Prepare the illustration picker.
-        IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
-        illustrationViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                           self.view.bounds.size.height,
-                                                           self.view.bounds.size.width,
-                                                           illustrationViewController.view.frame.size.height);
-        [illustrationViewController scrollToIllustration];
-        [self.view addSubview:illustrationViewController.view];
-        self.illustrationViewController = illustrationViewController;
-        illustrationTransform = CGAffineTransformMakeTranslation(0.0, - self.illustrationViewController.view.frame.size.height);
         
         // Change to the editMode layout
         [self.collectionView setCollectionViewLayout:layoutToToggle animated:YES];
