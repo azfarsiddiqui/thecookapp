@@ -62,6 +62,9 @@
     [self updateIfRequiredWithBook:book force:force];
     if (mine) {
         [self updateEditButtonWithBook:book];
+    } else {
+        [self.editButton removeFromSuperview];
+        self.editButton = nil;
     }
     self.book = book;
 }
