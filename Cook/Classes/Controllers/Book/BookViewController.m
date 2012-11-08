@@ -13,6 +13,7 @@
 #import "RecipeViewController.h"
 #import "CookPageFlipper.h"
 #import "ViewHelper.h"
+#import "ContentsPageViewController.h"
 
 @interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
 
@@ -23,6 +24,8 @@
 @property (nonatomic, strong) RecipeViewController *recipeViewController;
 @property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
 @property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
+
+@property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 
 @end
 
@@ -54,14 +57,26 @@
     [self.delegate bookViewControllerCloseRequested];
 }
 
+- (CGRect)bookViewBounds {
+    return self.view.bounds;
+}
+
+- (CKBook *)currentBook {
+    return self.book;
+}
+
+- (UIEdgeInsets)bookViewInsets {
+    return UIEdgeInsetsMake(20.0, 0.0, 0.0, 20.0);
+}
+
 #pragma mark - BookViewDatasource
--(NSInteger)numberOfPagesInBook
-{
-    //    NSInteger numPages = 0;
-    //    numPages += 1;                          // Profile page
-    //    numPages += [self numCategories];
-    //    numPages += [self numRecipes];
-    return 4;
+- (NSInteger)numberOfPagesInBook {
+    NSInteger numPages = 0;
+    numPages += 1;  // Contents page.
+//    numPages += [self numCategories];
+//    numPages += [self numRecipes];
+    // return 4;
+    return numPages;
 }
 
 -(UIView *)viewForPageAtIndex:(NSInteger)pageIndex
@@ -69,25 +84,39 @@
     UIView *view = nil;
     switch (pageIndex) {
         case 1:
-            //recipe list
-            view = self.recipeListViewController.view;
-            break;
-        case 2:
-            //book contents
-            view = self.bookContentsViewController.view;
-            break;
-        case 3:
-            view = self.bookCategoryViewController.view;
-            break;
-        case 4: 
-            view = self.recipeViewController.view;
+            view = self.contentsViewController.view;
             break;
         default:
             break;
     }
+//    switch (pageIndex) {
+//        case 1:
+//            //recipe list
+//            view = self.recipeListViewController.view;
+//            break;
+//        case 2:
+//            //book contents
+//            view = self.bookContentsViewController.view;
+//            break;
+//        case 3:
+//            view = self.bookCategoryViewController.view;
+//            break;
+//        case 4: 
+//            view = self.recipeViewController.view;
+//            break;
+//        default:
+//            break;
+//    }
     return view;
 }
 #pragma mark - Private methods
+
+- (ContentsPageViewController *)contentsViewController {
+    if (!_contentsViewController) {
+        _contentsViewController = [[ContentsPageViewController alloc] initWithBookViewDelegate:self];
+    }
+    return _contentsViewController;
+}
 
 - (RecipeListViewController *)recipeListViewController
 {

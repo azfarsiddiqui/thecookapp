@@ -18,6 +18,9 @@
 @protocol BookViewDelegate
 
 - (void)bookViewCloseRequested;
+- (CGRect)bookViewBounds;
+- (CKBook *)currentBook;
+- (UIEdgeInsets)bookViewInsets;
 
 @end
 

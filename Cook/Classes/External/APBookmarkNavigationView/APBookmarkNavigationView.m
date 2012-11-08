@@ -10,10 +10,11 @@
 
 @interface APBookmarkNavigationView()
 
-@property (nonatomic, retain) NSArray *options;
+@property (nonatomic, strong) NSArray *options;
 @property (nonatomic, assign) id<APBookmarkNavigationViewDelegate> delegate;
 @property (nonatomic, assign) BOOL shown;
-@property (nonatomic, retain) UIView *optionContainerView;
+@property (nonatomic, strong) UIView *bookmarkIconView;
+@property (nonatomic, strong) UIView *optionContainerView;
 @property (nonatomic, assign) CGRect startPanFrame;
 
 - (void)initOptions;
@@ -30,29 +31,32 @@
 
 @implementation APBookmarkNavigationView
 
-@synthesize options = _options;
-@synthesize delegate = _delegate;
-@synthesize shown = _shown;
-@synthesize optionContainerView = _optionContainerView;
-@synthesize startPanFrame = _startPanFrame;
-
+#define kBookmarkImageTopOffset     4.0
 #define kBookmarkMinSize            CGSizeMake(80.0, 70.0)
 #define kBookmarkOptionHeight       44.0
-#define kBookmarkOptionInsets       UIEdgeInsetsMake(20.0, 0.0, kBookmarkMinSize.height, 0.0)
+#define kBookmarkOptionInsets       UIEdgeInsetsMake(20.0, 0.0, 50.0, 0.0)
 #define kBookmarkOptionTagBase      360
 #define kBookmarkPanRatio           0.25
 #define kBookmarkPanStretchRatio    0.1
 #define kBookmarkPanShowRatio       0.1
 #define kBookmarkPanHideRatio       0.12
 
-- (id)initWithOptions:(NSArray *)options delegate:(id<APBookmarkNavigationViewDelegate>)delegate {
-    if (self = [super initWithFrame:CGRectMake(0.0, 0.0, kBookmarkMinSize.width, kBookmarkMinSize.height)]) {
-        self.options = options;
+- (id)initWithDelegate:(id<APBookmarkNavigationViewDelegate>)delegate {
+    if (self = [super initWithFrame:CGRectZero]) {
+        
+        UIImage *bookmarkImage = [[UIImage imageNamed:@"cook_book_bookmark.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:38.0];
+        UIImageView *bookmarkImageView = [[UIImageView alloc] initWithImage:bookmarkImage];
+        bookmarkImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+        self.frame = CGRectMake(0.0, 0.0, bookmarkImageView.frame.size.width, bookmarkImageView.frame.size.height - kBookmarkImageTopOffset);
+        bookmarkImageView.frame = CGRectMake(0.0, -kBookmarkImageTopOffset, bookmarkImageView.frame.size.width, bookmarkImageView.frame.size.height);
+        [self addSubview:bookmarkImageView];
+        
         self.delegate = delegate;
         
-        self.backgroundColor = [UIColor darkGrayColor];
+        self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;   // Important so that optionContainerView gets clipped at top.
         
+        [self initIconView];
         [self initOptions];
         [self initInteractions];
     }
@@ -86,47 +90,44 @@
 
 #pragma mark - Private methods
 
+- (void)initIconView {
+    UIView *iconView = [self.delegate bookmarkIconView];
+    iconView.frame = CGRectMake(floorf((self.bounds.size.width - iconView.frame.size.width) / 2.0),
+                                floorf((self.bounds.size.height - iconView.frame.size.height) / 2.0),
+                                iconView.frame.size.width,
+                                iconView.frame.size.height);
+    iconView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    [self addSubview:iconView];
+    self.bookmarkIconView = iconView;
+}
+
 - (void)initOptions {
     
     // Container view.
-    CGFloat heightForOptions = [self heightForOptions];
     UIView *optionContainerView = [[UIView alloc] initWithFrame:CGRectMake(self.bounds.origin.x, 
-                                                                           self.bounds.size.height - kBookmarkOptionInsets.bottom - heightForOptions, 
+                                                                           self.bounds.size.height,
                                                                            self.bounds.size.width, 
-                                                                           heightForOptions)];
+                                                                           self.bounds.size.height)];
     optionContainerView.backgroundColor = [UIColor clearColor];
     optionContainerView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin; // Anchor at bottom of parent.
     
+    NSUInteger numOptions = [self.delegate bookmarkNumberOfOptions];
+    
     // Now add the options.
     CGFloat yOffset = 0.0;
-    for (NSUInteger optionIndex = 0; optionIndex < [self.options count]; optionIndex++) {
-        id option = [self.options objectAtIndex:optionIndex];
-        UIView *optionView = nil;
+    CGFloat optionGap = 5.0;
+    for (NSUInteger optionIndex = 0; optionIndex < numOptions; optionIndex++) {
         
-        if ([option isKindOfClass:[NSString class]]) {
-            optionView = [self optionViewFromString:option];
-        } else if ([option isKindOfClass:[UIView class]]) {
-            optionView = option;
-        }
-        
-        if (optionView) {
-            
-            // Make it tappable.
-            optionView.userInteractionEnabled = YES;
-            optionView.tag = kBookmarkOptionTagBase + optionIndex;
-            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self 
-                                                                                         action:@selector(optionTapped:)];
-            [optionView addGestureRecognizer:tapGesture];
-            
-            // Position within bookmark.
-            optionView.frame = CGRectMake(floorf((self.bounds.size.width - optionView.frame.size.width) / 2), 
-                                          yOffset, 
-                                          optionView.frame.size.width, 
-                                          optionView.frame.size.height);
-            [optionContainerView addSubview:optionView];
-            yOffset += optionView.frame.size.height;
-        }
+        UIView *optionView = [self optionViewForIndex:optionIndex];
+        optionView.frame = CGRectMake(floorf((optionContainerView.bounds.size.width - optionView.frame.size.width) / 2.0),
+                                      yOffset,
+                                      optionView.frame.size.width,
+                                      optionView.frame.size.height);
+        yOffset += optionView.frame.size.height + optionGap;
+        [optionContainerView addSubview:optionView];
     }
+    
+    optionContainerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - yOffset, optionContainerView.bounds.size.height, yOffset);
     
     [self addSubview:optionContainerView];
     self.optionContainerView = optionContainerView;
@@ -289,6 +290,53 @@
     UIView *tappedView = [tapGesture view];
     NSUInteger tappedIndex = tappedView.tag - kBookmarkOptionTagBase;
     [self.delegate bookmarkDidSelectOptionAtIndex:tappedIndex];
+}
+
+- (UIView *)optionViewForIndex:(NSUInteger)optionIndex {
+    UIView *optionView = [self.delegate bookmarkOptionViewAtIndex:optionIndex];
+    NSString *optionValue = [self.delegate bookmarkOptionLabelAtIndex:optionIndex];
+    CGFloat gap = 2.0;
+    
+    UIFont *optionFont = [UIFont boldSystemFontOfSize:10.0];
+    CGSize optionSize = [optionValue sizeWithFont:optionFont
+                                constrainedToSize:CGSizeMake(self.bounds.size.width, kBookmarkOptionHeight)
+                                    lineBreakMode:NSLineBreakByTruncatingTail];
+    
+    // Container view.
+    UIView *optionContainerView = [[UIView alloc] initWithFrame:CGRectMake(0.0,
+                                                                           0.0,
+                                                                           self.bounds.size.width,
+                                                                           optionView.frame.size.height + gap + optionSize.height)];
+    optionContainerView.backgroundColor = [UIColor clearColor];
+    
+    // Option view.
+    optionView.frame = CGRectMake(floorf((optionContainerView.bounds.size.width - optionView.frame.size.width) / 2.0),
+                                  0.0,
+                                  optionView.frame.size.width,
+                                  optionView.frame.size.height);
+    [optionContainerView addSubview:optionView];
+    
+    // Label
+    UILabel *optionLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((optionContainerView.bounds.size.width - optionSize.width) / 2),
+                                                                     optionView.frame.origin.y + optionView.frame.size.height + gap,
+                                                                     optionSize.width,
+                                                                     optionSize.height)];
+    optionLabel.backgroundColor = [UIColor clearColor];
+    optionLabel.font = optionFont;
+    optionLabel.textColor = [UIColor whiteColor];
+    optionLabel.shadowColor = [UIColor blackColor];
+    optionLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    optionLabel.text = optionValue;
+    [optionContainerView addSubview:optionLabel];
+    
+    // Make it tappable.
+    optionContainerView.userInteractionEnabled = YES;
+    optionContainerView.tag = kBookmarkOptionTagBase + optionIndex;
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                 action:@selector(optionTapped:)];
+    [optionView addGestureRecognizer:tapGesture];
+    
+    return optionContainerView;
 }
 
 @end

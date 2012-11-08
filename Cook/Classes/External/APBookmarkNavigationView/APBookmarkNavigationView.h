@@ -10,13 +10,17 @@
 
 @protocol APBookmarkNavigationViewDelegate
 
+- (NSUInteger)bookmarkNumberOfOptions;
+- (UIView *)bookmarkIconView;
+- (UIView *)bookmarkOptionViewAtIndex:(NSUInteger)optionIndex;
+- (NSString *)bookmarkOptionLabelAtIndex:(NSUInteger)optionIndex;
 - (void)bookmarkDidSelectOptionAtIndex:(NSUInteger)optionIndex;
 
 @end
 
 @interface APBookmarkNavigationView : UIView <UIGestureRecognizerDelegate>
 
-- (id)initWithOptions:(NSArray *)options delegate:(id<APBookmarkNavigationViewDelegate>)delegate;
+- (id)initWithDelegate:(id<APBookmarkNavigationViewDelegate>)delegate;
 - (void)show:(BOOL)show animated:(BOOL)animated;
 
 @end
