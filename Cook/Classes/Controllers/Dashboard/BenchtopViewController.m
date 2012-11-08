@@ -779,7 +779,6 @@
         layoutToToggle = [[BenchtopEditLayout alloc] initWithBenchtopDelegate:self];
         
         // Prepare the cover picker.
-        UIEdgeInsets pickerInsets = UIEdgeInsetsMake(20.0, 100.0, 0.0, 100.0);
         CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
         coverViewController.view.frame = CGRectMake(0.0,
                                                     -coverViewController.view.frame.size.height,
@@ -788,6 +787,7 @@
         [self.view addSubview:coverViewController.view];
         [coverViewController addObserver:self forKeyPath:@"collectionView.contentSize" options:NSKeyValueObservingOptionNew context:NULL];
         self.coverViewController = coverViewController;
+        UIEdgeInsets pickerInsets = UIEdgeInsetsMake(floorf((self.menuViewController.view.frame.size.height - coverViewController.view.frame.size.height) / 2.0), 100.0, 0.0, 100.0);
         
         // Prepare the illustration picker.
         IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];

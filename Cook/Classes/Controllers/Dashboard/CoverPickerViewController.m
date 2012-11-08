@@ -34,12 +34,13 @@
         self.cover = cover;
         self.delegate = delegate;
         self.availableCovers = [BookCover covers];
+        self.expanded = YES;
     }
     return self;
 }
 
 - (void)viewDidLoad {
-    CGSize itemSize = [CoverPickerCell minCellSize];
+    CGSize itemSize = self.expanded ? [CoverPickerCell maxCellSize] : [CoverPickerCell minCellSize];
     
     self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
     self.view.backgroundColor = [UIColor clearColor];
@@ -53,9 +54,6 @@
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.collectionView registerClass:[CoverPickerCell class] forCellWithReuseIdentifier:kIllustrationCellId];
-    
-    // Observe changes in contentSize and contentOffset.
-    //[self.collectionView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -66,15 +64,8 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    // Expand if not expanded.
-    if (!self.expanded) {
-        [self toggleExpansion];
-        return;
-    }
-    
     // Select the cover and toggle expansion.
     NSString *cover = [self.availableCovers objectAtIndex:indexPath.item];
-    [self toggleExpansion];
     [self.delegate coverPickerSelected:cover];
 }
 
@@ -82,7 +73,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return self.expanded ? [CoverPickerCell maxCellSize] : [CoverPickerCell minCellSize];
+    return [CoverPickerCell maxCellSize];
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
