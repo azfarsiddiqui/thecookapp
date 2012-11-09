@@ -55,7 +55,7 @@
         }
     }
     
-    if (numSections > 1) {
+    if (numSections > 1 && ![self.benchtopDelegate onMyBenchtop]) {
         
         // TODO potential optimisation here to exclude header if not in view.
         [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:kLibraryHeader
@@ -111,7 +111,6 @@
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingSupplementaryElementOfKind:(NSString *)elementKind
                                                                                         atIndexPath:(NSIndexPath *)elementIndexPath {
-    DLog(@"ROW: %d", elementIndexPath.row)
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
     initialAttributes.alpha = 0.0;
     return initialAttributes;
