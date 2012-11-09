@@ -25,7 +25,7 @@
 #define kBookmarkImageTopOffset     8.0
 #define kBookmarkOptionTagBase      360
 #define kBookmarkPanRatio           0.25
-#define kBookmarkPanStretchRatio    0.1
+#define kBookmarkPanStretchRatio    0.2
 #define kBookmarkPanShowRatio       0.1
 #define kBookmarkPanHideRatio       0.12
 
@@ -58,15 +58,38 @@
 - (void)show:(BOOL)show animated:(BOOL)animated {
     NSLog(@"show:%@ animated:%@", show ? @"YES" : @"NO", animated ? @"YES" : @"NO");
     CGRect frameForShow = [self frameForShow:show];
+    CGFloat hideBounceOffset = 5.0;
     if (animated) {
         [UIView animateWithDuration:0.15 
                               delay:0.0 
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
-                             self.frame = frameForShow;
-                         } 
+                             
+                             if (show) {
+                                 self.frame = frameForShow;
+                             } else {
+                                 
+                                 // Bounce back
+                                 self.frame = CGRectMake(frameForShow.origin.x,
+                                                         frameForShow.origin.y - hideBounceOffset,
+                                                         frameForShow.size.width,
+                                                         frameForShow.size.height);
+                             }
+                         }
                          completion:^(BOOL finished) {
-                             self.shown = show;
+                             if (show) {
+                                 self.shown = show;
+                             } else {
+                                 [UIView animateWithDuration:0.1
+                                                       delay:0.0
+                                                     options:UIViewAnimationCurveEaseIn
+                                                  animations:^{
+                                                      self.frame = frameForShow;
+                                                  } completion:^(BOOL finished) {
+                                                      self.shown = show;
+                                                  }];
+                             }
+                             
                          }];
     } else {
         self.frame = frameForShow;
