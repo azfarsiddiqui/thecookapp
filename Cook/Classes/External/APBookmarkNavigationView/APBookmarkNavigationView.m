@@ -21,7 +21,7 @@
 
 @implementation APBookmarkNavigationView
 
-#define kBookmarkContentInsets      UIEdgeInsetsMake(20.0, 3.0, 1.0, 3.0)
+#define kBookmarkContentInsets      UIEdgeInsetsMake(40.0, 3.0, 1.0, 3.0)
 #define kBookmarkImageTopOffset     8.0
 #define kBookmarkOptionTagBase      360
 #define kBookmarkPanRatio           0.25
@@ -100,21 +100,26 @@
                                                                            kBookmarkContentInsets.top,
                                                                            self.bounds.size.width - kBookmarkContentInsets.left - kBookmarkContentInsets.right,
                                                                            self.bounds.size.height)];
+    optionContainerView.backgroundColor = [UIColor clearColor];
     optionContainerView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin; // Anchor at bottom of parent.
     
     NSUInteger numOptions = [self.delegate bookmarkNumberOfOptions];
     
     // Now add the options.
     CGFloat yOffset = 0.0;
-    CGFloat optionGap = 20.0;
+    CGFloat optionGap = 22.0;
     for (NSUInteger optionIndex = 0; optionIndex < numOptions; optionIndex++) {
         
         UIView *optionView = [self optionViewForIndex:optionIndex];
+        optionView.backgroundColor = [UIColor clearColor];
         optionView.frame = CGRectMake(floorf((optionContainerView.bounds.size.width - optionView.frame.size.width) / 2.0),
                                       yOffset,
                                       optionView.frame.size.width,
                                       optionView.frame.size.height);
-        yOffset += optionView.frame.size.height + optionGap;
+        yOffset += optionView.frame.size.height;
+        if (optionIndex != numOptions - 1) {
+            yOffset += optionGap;
+        }
         [optionContainerView addSubview:optionView];
     }
     
