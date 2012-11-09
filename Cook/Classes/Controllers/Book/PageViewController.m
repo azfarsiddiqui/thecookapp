@@ -12,8 +12,6 @@
 
 @interface PageViewController () <APBookmarkNavigationViewDelegate>
 
-@property (nonatomic, assign) id<BookViewDelegate> delegate;
-
 @end
 
 @implementation PageViewController
@@ -27,6 +25,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
     self.view.frame = [self.delegate bookViewBounds];
     
     [self initPageView];

@@ -11,6 +11,8 @@
 
 @interface PageViewController : UIViewController
 
+@property (nonatomic, assign) id<BookViewDelegate> delegate;
+
 - (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate;
 - (void)initPageView;
 - (void)loadData;

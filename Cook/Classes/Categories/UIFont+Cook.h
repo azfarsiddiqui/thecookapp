@@ -1,5 +1,5 @@
 //
-//  ContentsPhotoCell.h
+//  UIFont+Cook.h
 //  Cook
 //
 //  Created by Jeff Tan-Ang on 9/11/12.
@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ContentsPhotoCell : UICollectionViewCell
+@interface UIFont (Cook)
 
-+ (CGSize)cellSize;
++ (UIFont *)bookTitleFontWithSize:(CGFloat)size;
 
 @end

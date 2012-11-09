@@ -14,6 +14,7 @@
 #import "AppHelper.h"
 #import "EventHelper.h"
 #import "NSString+Utilities.h"
+#import "UIFont+Cook.h"
 
 @interface BookView ()
 
@@ -96,7 +97,7 @@
 }
 
 - (UIFont *)coverTitleFont {
-    return [UIFont fontWithName:@"AvenirNext-Bold" size:78];
+    return [UIFont bookTitleFontWithSize:78.0];
 }
 
 - (NSTextAlignment)coverTitleAlignment {

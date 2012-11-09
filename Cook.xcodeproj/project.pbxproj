@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		761A966A164C936E008FA0C4 /* UIFont+Cook.m in Sources */ = {isa = PBXBuildFile; fileRef = 761A9669164C936E008FA0C4 /* UIFont+Cook.m */; };
+		761A966E164C967E008FA0C4 /* cook_dash_library.png in Resources */ = {isa = PBXBuildFile; fileRef = 761A966C164C967E008FA0C4 /* cook_dash_library.png */; };
+		761A966F164C967E008FA0C4 /* cook_dash_library@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */; };
 		761FA06C162FC29000DC0C84 /* BookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 761FA06B162FC29000DC0C84 /* BookView.m */; };
 		761FA070162FC60400DC0C84 /* BookCoverViewFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 761FA06F162FC60400DC0C84 /* BookCoverViewFactory.m */; };
 		7620270516252B1E005A8B66 /* BenchtopStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FA16252B1E005A8B66 /* BenchtopStackLayout.m */; };
@@ -233,6 +236,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		761A9668164C936E008FA0C4 /* UIFont+Cook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Cook.h"; sourceTree = "<group>"; };
+		761A9669164C936E008FA0C4 /* UIFont+Cook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Cook.m"; sourceTree = "<group>"; };
+		761A966C164C967E008FA0C4 /* cook_dash_library.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library.png; sourceTree = "<group>"; };
+		761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library@2x.png"; sourceTree = "<group>"; };
 		761FA06A162FC29000DC0C84 /* BookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookView.h; sourceTree = "<group>"; };
 		761FA06B162FC29000DC0C84 /* BookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookView.m; sourceTree = "<group>"; };
 		761FA06E162FC60400DC0C84 /* BookCoverViewFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCoverViewFactory.h; sourceTree = "<group>"; };
@@ -562,6 +569,8 @@
 		762C0E4D161A7FC400EBA344 /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				761A966C164C967E008FA0C4 /* cook_dash_library.png */,
+				761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */,
 				769CB34E164A8990007B7BC9 /* cook_customise_colours_blue.png */,
 				769CB34F164A8990007B7BC9 /* cook_customise_colours_blue@2x.png */,
 				769CB350164A8990007B7BC9 /* cook_customise_colours_burntorange.png */,
@@ -665,6 +674,8 @@
 				7652046D161AD11E00EE253C /* NSString+Utilities.m */,
 				766BFC201630DE990083EB0E /* UIColor+Expanded.h */,
 				766BFC211630DE990083EB0E /* UIColor+Expanded.m */,
+				761A9668164C936E008FA0C4 /* UIFont+Cook.h */,
+				761A9669164C936E008FA0C4 /* UIFont+Cook.m */,
 			);
 			name = Categories;
 			path = Cook/Classes/Categories;
@@ -1296,6 +1307,8 @@
 				76552748164B87DA001D4BAA /* cook_book_icon_facebook@2x.png in Resources */,
 				76552749164B87DA001D4BAA /* cook_book_icon_twitter.png in Resources */,
 				7655274A164B87DA001D4BAA /* cook_book_icon_twitter@2x.png in Resources */,
+				761A966E164C967E008FA0C4 /* cook_dash_library.png in Resources */,
+				761A966F164C967E008FA0C4 /* cook_dash_library@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1366,6 +1379,7 @@
 				76B9E01E164C85D100345B8D /* ContentsCollectionViewController.m in Sources */,
 				76B9E01F164C85D100345B8D /* ContentsPageViewController.m in Sources */,
 				76B9E020164C85D100345B8D /* PageViewController.m in Sources */,
+				761A966A164C936E008FA0C4 /* UIFont+Cook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
