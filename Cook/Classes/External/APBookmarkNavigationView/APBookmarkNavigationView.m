@@ -22,7 +22,7 @@
 @implementation APBookmarkNavigationView
 
 #define kBookmarkContentInsets      UIEdgeInsetsMake(20.0, 3.0, 1.0, 3.0)
-#define kBookmarkImageTopOffset     4.0
+#define kBookmarkImageTopOffset     8.0
 #define kBookmarkOptionTagBase      360
 #define kBookmarkPanRatio           0.25
 #define kBookmarkPanStretchRatio    0.1
@@ -106,7 +106,7 @@
     
     // Now add the options.
     CGFloat yOffset = 0.0;
-    CGFloat optionGap = 10.0;
+    CGFloat optionGap = 20.0;
     for (NSUInteger optionIndex = 0; optionIndex < numOptions; optionIndex++) {
         
         UIView *optionView = [self optionViewForIndex:optionIndex];
