@@ -12,13 +12,21 @@
 
 @interface PageViewController () <APBookmarkNavigationViewDelegate>
 
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) UILabel *pageNumberLabel;
+
 @end
 
 @implementation PageViewController
 
-- (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate {
+- (void)dealloc {
+    [[self.delegate bookViewController]  removeObserver:self forKeyPath:@"recipes"];
+}
+
+- (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource {
     if (self = [super init]) {
         self.delegate = delegate;
+        self.dataSource = dataSource;
     }
     return self;
 }
@@ -32,6 +40,22 @@
     [self initPageView];
     [self initMenu];
     [self initBookmark];
+    
+    // Check if we have recipes loaded, else spin the activity and observe it.
+    NSArray *recipes = [self.dataSource bookRecipes];
+    if (!recipes) {
+        
+        // Start spinner.
+        [self initLoadingIndicator];
+        
+        // Observe the change in recipes.
+        [[self.delegate bookViewController] addObserver:self forKeyPath:@"recipes" options:NSKeyValueObservingOptionNew
+                                                context:NULL];
+    } else {
+        
+        [self updatePageNumber];
+    }
+    
 }
 
 - (void)initPageView {
@@ -39,6 +63,10 @@
 }
 
 - (void)loadData {
+    // Subclasses to implement.
+}
+
+- (void)dataDidLoad {
     // Subclasses to implement.
 }
 
@@ -99,6 +127,27 @@
     DLog();
 }
 
+#pragma mark - KVO methods.
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
+                       context:(void *)context {
+    if ([keyPath isEqualToString:@"recipes"]) {
+        [self updatePageNumber];
+        
+        // Remove the spinner.
+        [self.activityView stopAnimating];
+        [self.activityView removeFromSuperview];
+        self.activityView = nil;
+        
+        // Inform subclasses of data loaded.
+        [self dataDidLoad];
+        
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+
 #pragma mark - Private methods
 
 - (void)initMenu {
@@ -121,6 +170,39 @@
                                     bookmarkView.frame.size.height);
     [self.view addSubview:bookmarkView];
     
+}
+
+- (void)initLoadingIndicator {
+    UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
+    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityView.frame = CGRectMake(self.view.bounds.size.width - activityView.frame.size.width - edgeInsets.right,
+                                    self.view.bounds.size.height - activityView.frame.size.height - edgeInsets.bottom,
+                                    activityView.frame.size.width,
+                                    activityView.frame.size.height);
+    [activityView startAnimating];
+    [self.view addSubview:activityView];
+    self.activityView = activityView;
+}
+
+- (void)updatePageNumber {
+    [self.pageNumberLabel removeFromSuperview];
+    
+    UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
+    UIFont *font = [UIFont systemFontOfSize:12.0];
+    NSInteger pageNumber = [self.dataSource currentPageNumber];
+    NSInteger numberOfPages = [self.dataSource numberOfPages];
+    NSString *pageDisplay = [NSString stringWithFormat:@"Page %d of %d", pageNumber, numberOfPages];
+    CGSize size = [pageDisplay sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
+    UILabel *pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - size.width - edgeInsets.right,
+                                                                   self.view.bounds.size.height - size.height - edgeInsets.bottom,
+                                                                   size.width,
+                                                                   size.height)];
+    pageLabel.backgroundColor = [UIColor clearColor];
+    pageLabel.font = font;
+    pageLabel.textColor = [UIColor blackColor];
+    pageLabel.text = pageDisplay;
+    [self.view addSubview:pageLabel];
+    self.pageNumberLabel = pageLabel;
 }
 
 - (void)closeTapped:(id)sender {

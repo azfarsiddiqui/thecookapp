@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
 
+@class BookViewController;
+
 @protocol BookViewControllerDelegate
 
 - (void)bookViewControllerCloseRequested;
@@ -21,12 +23,16 @@
 - (CGRect)bookViewBounds;
 - (CKBook *)currentBook;
 - (UIEdgeInsets)bookViewInsets;
+- (BookViewController *)bookViewController;
 
 @end
 
 @protocol BookViewDataSource
--(NSInteger) numberOfPagesInBook;
--(UIView*) viewForPageAtIndex:(NSInteger) pageIndex;
+
+- (NSInteger)numberOfPages;
+- (UIView*)viewForPageAtIndex:(NSInteger) pageIndex;
+- (NSArray *)bookRecipes;
+- (NSInteger)currentPageNumber;
 
 @end
 

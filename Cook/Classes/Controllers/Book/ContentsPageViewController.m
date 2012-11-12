@@ -30,6 +30,10 @@
     [self initTitleView];
 }
 
+- (void)dataDidLoad {
+    // Subclasses to implement.
+}
+
 #pragma mark - Private methods
 
 - (void)initTitleView {

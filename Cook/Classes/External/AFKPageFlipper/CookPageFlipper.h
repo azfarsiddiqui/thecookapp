@@ -11,4 +11,6 @@
 
 @interface CookPageFlipper : AFKPageFlipper
 
+- (void)reloadData;
+
 @end

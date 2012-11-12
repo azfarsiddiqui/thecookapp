@@ -19,4 +19,11 @@
     return self;
 }
 
+- (void)reloadData {
+    
+    // Reload number of pages.
+	numberOfPages = [self.dataSource numberOfPagesForPageFlipper:self];
+    
+}
+
 @end
