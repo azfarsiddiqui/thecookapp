@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
+#import "CKRecipe.h"
 
 @class BookViewController;
 
@@ -29,10 +30,12 @@
 @protocol BookViewDataSource
 
 - (CKBook *)currentBook;
+- (CKRecipe *)currentRecipe;
 - (NSInteger)numberOfPages;
 - (UIView*)viewForPageAtIndex:(NSInteger) pageIndex;
 - (NSArray *)bookRecipes;
 - (NSInteger)currentPageNumber;
+- (NSString *)bookViewCurrentCategory;
 
 @end
 

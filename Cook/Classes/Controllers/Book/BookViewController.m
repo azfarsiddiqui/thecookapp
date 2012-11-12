@@ -14,22 +14,33 @@
 #import "CookPageFlipper.h"
 #import "ViewHelper.h"
 #import "ContentsPageViewController.h"
+#import "CKRecipe.h"
+#import "MRCEnumerable.h"
+#import "CategoryPageViewController.h"
 
 @interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
 
 @property (nonatomic, strong) CookPageFlipper *pageFlipper;
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) NSArray *recipes;
+@property (nonatomic, strong) NSMutableArray *categories;
+@property (nonatomic, strong) NSMutableArray *categoryRecipes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, strong) RecipeListViewController *recipeListViewController;
 @property (nonatomic, strong) RecipeViewController *recipeViewController;
 @property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
 @property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
+@property (nonatomic, strong) CategoryPageViewController *categoryViewController;
+
+@property (nonatomic, assign) NSUInteger currentCategoryIndex;
 
 @end
 
 @implementation BookViewController
+
+#define kCategoryPageIndex  2
 
 - (id)initWithBook:(CKBook*)book delegate:(id<BookViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -79,27 +90,39 @@
     return self.book;
 }
 
+- (CKRecipe *)currentRecipe {
+    return self.recipe;
+}
+
 - (NSInteger)numberOfPages {
     NSInteger numPages = 0;
-    numPages += 1;                          // Contents page.
+    numPages += 1;                                  // Contents page.
     if ([self.recipes count] > 0) {
-        numPages += [self.book numCategories];  // Categories page.
-        numPages += [self.recipes count];       // Recipes page.
+        numPages += [self.categories count];   // Number of categories.
+        numPages += [self.recipes count];           // Recipes page.
     }
     return numPages;
 }
 
 -(UIView *)viewForPageAtIndex:(NSInteger)pageIndex {
     UIView *view = nil;
-    switch (pageIndex) {
-        case 1:
-            view = self.contentsViewController.view;
-            break;
-        case 2:
-            view = self.recipeListViewController.view;
-            break;
-        default:
-            break;
+    if (pageIndex == 1) {
+        view = self.contentsViewController.view;
+        
+    } else if ([self isCategoryPageForPageIndex:pageIndex]) {
+        
+        // Category page.
+        self.currentCategoryIndex = pageIndex - kCategoryPageIndex;
+        view = self.categoryViewController.view;
+        
+    } else {
+        
+        // Get the recipe for the current page.
+        NSUInteger recipeIndex = pageIndex - self.currentCategoryIndex - kCategoryPageIndex - 1;
+        NSArray *recipes = [self.categoryRecipes objectAtIndex:self.currentCategoryIndex];
+        CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
+        self.recipe = recipe;
+        view = self.recipeListViewController.view;
     }
     return view;
 }
@@ -112,6 +135,10 @@
     return self.pageFlipper.currentPage;
 }
 
+- (NSString *)bookViewCurrentCategory {
+    return [self.categories objectAtIndex:self.currentCategoryIndex];
+}
+
 #pragma mark - Private methods
 
 - (ContentsPageViewController *)contentsViewController {
@@ -119,6 +146,13 @@
         _contentsViewController = [[ContentsPageViewController alloc] initWithBookViewDelegate:self dataSource:self];
     }
     return _contentsViewController;
+}
+
+- (CategoryPageViewController *)categoryViewController {
+    if (!_categoryViewController) {
+        _categoryViewController = [[CategoryPageViewController alloc] initWithBookViewDelegate:self dataSource:self];
+    }
+    return _categoryViewController;
 }
 
 - (RecipeListViewController *)recipeListViewController
@@ -177,6 +211,23 @@
 - (void)loadData {
     [self.book listRecipesSuccess:^(NSArray *recipes) {
         
+        self.currentCategoryIndex = 0;
+        self.categoryRecipes = [NSMutableArray array];
+        self.categories = [NSMutableArray array];
+        
+        for (CKRecipe *recipe in recipes) {
+            if ([self.categoryRecipes containsObject:recipe.category.name]) {
+                NSMutableArray *recipes = [self.categoryRecipes objectAtIndex:[self.categoryRecipes indexOfObject:recipe.category.name]];
+                [recipes addObject:recipe];
+            } else {
+                NSMutableArray *recipes = [NSMutableArray array];
+                [recipes addObject:recipe];
+                [self.categoryRecipes addObject:recipes];
+                [self.categories addObject:recipe.category.name];
+            }
+        }
+        
+        // Set recipes - important for observe (TODO remove this).
         self.recipes = recipes;
         
         // Reload page flipper.
@@ -187,11 +238,24 @@
     }];
 }
 
-- (void)resetPageView:(UIView *)pageView {
+- (BOOL)isCategoryPageForPageIndex:(NSUInteger)pageIndex {
+    BOOL categoryPage = NO;
     
-    // Override AFKPageFlipper behaviour.
-    pageView.hidden = NO;
-    pageView.frame = self.pageFlipper.bounds;
+    NSUInteger categoryPageIndex = pageIndex - kCategoryPageIndex;
+    if (categoryPageIndex == 0) {
+        categoryPage = YES;
+    } else {
+        for (NSUInteger categoryIndex = 0; categoryIndex < [self.categoryRecipes count]; categoryIndex++) {
+            NSArray *recipes = [self.categoryRecipes objectAtIndex:categoryIndex];
+            NSUInteger numRecipes = [recipes count];
+            NSUInteger nextCategoryIndex = numRecipes + 1;
+            if (categoryPageIndex == nextCategoryIndex) {
+                categoryPage = YES;
+                break;
+            }
+        }
+    }
+    return categoryPage;
 }
 
 @end

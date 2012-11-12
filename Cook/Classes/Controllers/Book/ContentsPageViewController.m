@@ -39,6 +39,8 @@
 }
 
 - (void)dataDidLoad {
+    [super dataDidLoad];
+    
     self.categories = [NSMutableArray array];
     for (CKRecipe *recipe in [self.dataSource bookRecipes]) {
         if (![self.categories containsObject:recipe.category.name]) {
