@@ -17,7 +17,6 @@
 -(void)awakeFromNib
 {
     [super awakeFromNib];
-    [self initScreen];
 }
 - (void)viewDidLoad
 {
@@ -32,11 +31,11 @@
 }
 
 
-#pragma mark - Private Methods
-
--(void)initScreen
+#pragma mark - Overridden methods
+-(void)initPageView
 {
-    self.view.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 748.0f);
+    [super initPageView];
+    DLog();
 }
 
 @end
