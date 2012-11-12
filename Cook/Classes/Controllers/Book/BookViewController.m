@@ -65,10 +65,6 @@
     return self.view.bounds;
 }
 
-- (CKBook *)currentBook {
-    return self.book;
-}
-
 - (UIEdgeInsets)bookViewInsets {
     return UIEdgeInsetsMake(20.0, 0.0, 10.0, 20.0);
 }
@@ -79,11 +75,17 @@
 
 #pragma mark - BookViewDataSource
 
+- (CKBook *)currentBook {
+    return self.book;
+}
+
 - (NSInteger)numberOfPages {
     NSInteger numPages = 0;
     numPages += 1;                          // Contents page.
-    numPages += [self.book numCategories];  // Categories page.
-    numPages += [self.recipes count];       // Recipes page.
+    if ([self.recipes count] > 0) {
+        numPages += [self.book numCategories];  // Categories page.
+        numPages += [self.recipes count];       // Recipes page.
+    }
     return numPages;
 }
 

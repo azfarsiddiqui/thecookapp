@@ -21,7 +21,6 @@
 
 - (void)bookViewCloseRequested;
 - (CGRect)bookViewBounds;
-- (CKBook *)currentBook;
 - (UIEdgeInsets)bookViewInsets;
 - (BookViewController *)bookViewController;
 
@@ -29,6 +28,7 @@
 
 @protocol BookViewDataSource
 
+- (CKBook *)currentBook;
 - (NSInteger)numberOfPages;
 - (UIView*)viewForPageAtIndex:(NSInteger) pageIndex;
 - (NSArray *)bookRecipes;

@@ -17,7 +17,6 @@
 @property(nonatomic,strong) CKRecipeImage *recipeImage;
 @property(nonatomic,strong) CKUser *user;
 @property(nonatomic,strong) CKBook *book;
-@property(nonatomic,strong) Category *category;
 @end
 
 @implementation CKRecipe
