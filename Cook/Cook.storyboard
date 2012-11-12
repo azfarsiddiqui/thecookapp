@@ -135,7 +135,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Method - directions" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cpF-g6-rQz">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Method - directions" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="330" translatesAutoresizingMaskIntoConstraints="NO" id="cpF-g6-rQz">
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="330" id="zpq-KK-s1x"/>
@@ -183,8 +183,11 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="directionsLabel" destination="cpF-g6-rQz" id="4rm-Hx-eXa"/>
+                        <outlet property="ingredientListLabel" destination="wVN-TU-GmU" id="oDr-I9-7FR"/>
                         <outlet property="recipeNameLabel" destination="Pu7-06-VlL" id="XLV-9G-RTk"/>
                         <outlet property="recipeScrollView" destination="Jf2-lp-5CN" id="2H1-79-2R7"/>
+                        <outlet property="userNameLabel" destination="PvL-Ru-8Vs" id="z5R-5o-8wA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kNQ-Lb-Rg5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -597,8 +600,11 @@
         <class className="RecipeViewController" superclassName="PageViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
             <relationships>
+                <relationship kind="outlet" name="directionsLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ingredientListLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="recipeNameLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="recipeScrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="userNameLabel" candidateClass="UILabel"/>
             </relationships>
         </class>
         <class className="UICollectionReusableView" superclassName="UIView">

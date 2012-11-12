@@ -10,8 +10,9 @@
 #import "BookViewController.h"
 #import "PageViewController.h"
 #import "CKRecipe.h"
-
+#import "CKBook.h"
 @interface RecipeViewController : PageViewController
 @property(nonatomic,strong) CKRecipe *recipe;
+@property(nonatomic,strong) CKBook *book;
           
 @end

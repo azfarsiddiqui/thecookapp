@@ -7,9 +7,13 @@
 //
 
 #import "RecipeViewController.h"
-
+#import "NSArray+Enumerable.h"
+#import "Ingredient.h"
 @interface RecipeViewController ()
 @property(nonatomic,strong) IBOutlet UILabel *recipeNameLabel;
+@property(nonatomic,strong) IBOutlet UILabel *userNameLabel;
+@property(nonatomic,strong) IBOutlet UILabel *ingredientListLabel;
+@property(nonatomic,strong) IBOutlet UILabel *directionsLabel;
 @property(nonatomic,strong) IBOutlet UIScrollView *recipeScrollView;
 @end
 
@@ -37,6 +41,18 @@
 {
     [super initPageView];
     self.recipeNameLabel.text = self.recipe.name;
+    self.userNameLabel.text = [self.book.userName uppercaseString];
+
+    NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
+    [self.recipe.ingredients each:^(Ingredient *ingredient) {
+        [mutableIngredientString appendFormat:@"%@,",ingredient.name];
+    }];
+    
+    if ([mutableIngredientString length] > 0) {
+        self.ingredientListLabel.text = mutableIngredientString;
+    }
+    
+    self.directionsLabel.text = self.recipe.description;
     
     PFImageView *imageView = [[PFImageView alloc] init];
     [self.recipeScrollView addSubview:imageView];

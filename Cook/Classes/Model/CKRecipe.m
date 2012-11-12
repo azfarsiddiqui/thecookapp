@@ -12,6 +12,7 @@
 #import "Ingredient.h"
 #import "CKConstants.h"
 #import "NSArray+Enumerable.h"
+#import "NSArray+Enumerable.h"
 
 @interface CKRecipe()
 @property(nonatomic,strong) CKRecipeImage *recipeImage;
@@ -25,6 +26,16 @@
 
 +(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
+    NSArray *ingredients = [parseRecipe objectForKey:kRecipeAttrIngredients];
+    if (ingredients && [ingredients count] > 0) {
+        NSMutableArray *ingredientsArray = [NSMutableArray arrayWithCapacity:[ingredients count]];
+        [ingredients each:^(NSString *ingredientName) {
+            Ingredient *ingredient = [Ingredient ingredientwithName:ingredientName];
+            [ingredientsArray addObject:ingredient];
+        }];
+        recipe.ingredients = [NSArray arrayWithArray:ingredientsArray];
+    }
+    
     recipe.user = user;
     return recipe;
 }
