@@ -17,6 +17,7 @@
 
 @protocol BookViewDelegate
 
+@optional
 - (void)bookViewCloseRequested;
 - (CGRect)bookViewBounds;
 - (CKBook *)currentBook;

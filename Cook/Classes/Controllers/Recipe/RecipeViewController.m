@@ -9,7 +9,8 @@
 #import "RecipeViewController.h"
 
 @interface RecipeViewController ()
-
+@property(nonatomic,strong) IBOutlet UILabel *recipeNameLabel;
+@property(nonatomic,strong) IBOutlet UIScrollView *recipeScrollView;
 @end
 
 @implementation RecipeViewController
@@ -35,7 +36,31 @@
 -(void)initPageView
 {
     [super initPageView];
-    DLog();
+    self.recipeNameLabel.text = self.recipe.name;
+    
+    PFImageView *imageView = [[PFImageView alloc] init];
+    [self.recipeScrollView addSubview:imageView];
+
+    [CKRecipe imagesForRecipe:self.recipe success:^{
+        if ([self.recipe imageFile]) {
+            imageView.file = [self.recipe imageFile];
+            [imageView loadInBackground:^(UIImage *image, NSError *error) {
+                if (!error) {
+                    CGSize imageSize = CGSizeMake(image.size.width, image.size.height);
+                    DLog(@"recipe image size: %@",NSStringFromCGSize(imageSize));
+                    imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
+                    imageView.image = image;
+                    self.recipeScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
+                    [self.recipeScrollView setContentOffset:CGPointMake(341.0f, 0.0f)];
+                } else {
+                    DLog(@"Error loading image in background: %@", [error description]);
+                }
+            }];
+        }
+    } failure:^(NSError *error) {
+        DLog(@"Error loading image: %@", [error description]);
+    }];
+
 }
 
 @end

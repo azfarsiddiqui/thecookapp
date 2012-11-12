@@ -17,7 +17,7 @@
 
 @interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
 
-@property (nonatomic, strong) AFKPageFlipper *pageFlipper;
+@property (nonatomic, strong) CookPageFlipper *pageFlipper;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, strong) RecipeListViewController *recipeListViewController;
@@ -84,7 +84,8 @@
     UIView *view = nil;
     switch (pageIndex) {
         case 1:
-            view = self.contentsViewController.view;
+//            view = self.contentsViewController.view;
+              view = self.recipeListViewController.view;
             break;
         default:
             break;
@@ -153,7 +154,7 @@
     if (!_recipeViewController) {
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
         _recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
-        _recipeViewController.bookViewDelegate = self;
+        _recipeViewController.delegate = self;
     }
     return _recipeViewController;
 }
@@ -171,7 +172,7 @@
     //                                  self.backgroundView.frame.size.width - kPageEdgeInsets.left - kPageEdgeInsets.right,
     //                                  self.backgroundView.frame.size.height - kPageEdgeInsets.top - kPageEdgeInsets.bottom);
     //    DLog(@"FLIPPER FRAME: %@", NSStringFromCGRect(pageFrame));
-    self.pageFlipper = [[AFKPageFlipper alloc] initWithFrame:self.view.frame];
+    self.pageFlipper = [[CookPageFlipper alloc] initWithFrame:self.view.frame];
     //    pageFlipper.autoresizingMask = UIViewAutoresizingNone;
     self.pageFlipper.dataSource = self;
     [self.view addSubview:self.pageFlipper];
