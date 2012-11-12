@@ -67,7 +67,7 @@
 }
 
 - (void)dataDidLoad {
-    // Subclasses to implement.
+    [self updatePageNumber];
 }
 
 #pragma mark - APBookmarkNavigationViewDelegate methods
@@ -132,7 +132,6 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
                        context:(void *)context {
     if ([keyPath isEqualToString:@"recipes"]) {
-        [self updatePageNumber];
         
         // Remove the spinner.
         [self.activityView stopAnimating];
