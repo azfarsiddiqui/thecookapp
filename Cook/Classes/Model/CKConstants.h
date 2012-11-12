@@ -44,6 +44,7 @@ extern NSString *const kBookAttrCover;
 extern NSString *const kBookAttrIllustration;
 extern NSString *const kBookAttrCaption;
 extern NSString *const kBookAttrNumRecipes;
+extern NSString *const kBookAttrCategories;
 extern NSString *const kBookAttrDefaultNameValue;
 extern NSString *const kBookAttrDefaultCaptionValue;
 
