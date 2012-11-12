@@ -190,7 +190,7 @@
     if (!_recipeViewController) {
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
         _recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
-        _recipeViewController.bookViewDelegate = self;
+        _recipeViewController.delegate = self;
     }
     return _recipeViewController;
 }
@@ -203,7 +203,13 @@
 }
 
 - (void)initFlipper {
-    self.pageFlipper = [[CookPageFlipper alloc] initWithFrame:self.view.bounds];
+    //    CGRect pageFrame = CGRectMake(kPageEdgeInsets.left,
+    //                                  kPageEdgeInsets.top,
+    //                                  self.backgroundView.frame.size.width - kPageEdgeInsets.left - kPageEdgeInsets.right,
+    //                                  self.backgroundView.frame.size.height - kPageEdgeInsets.top - kPageEdgeInsets.bottom);
+    //    DLog(@"FLIPPER FRAME: %@", NSStringFromCGRect(pageFrame));
+    self.pageFlipper = [[CookPageFlipper alloc] initWithFrame:self.view.frame];
+    //    pageFlipper.autoresizingMask = UIViewAutoresizingNone;
     self.pageFlipper.dataSource = self;
     [self.view addSubview:self.pageFlipper];
 }

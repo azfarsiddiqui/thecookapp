@@ -7,6 +7,7 @@
 //
 
 #import "RecipeListViewController.h"
+#import "RecipeViewController.h"
 #import "NewRecipeViewController.h"
 #import "RecipeListCell.h"
 #import "CKRecipe.h"
@@ -16,11 +17,10 @@
 #define kCollectionViewSideSize 500.0f
 #define kCollectionViewCellSize 200.0f
 
-@interface RecipeListViewController()<UICollectionViewDelegate,UICollectionViewDataSource, NewRecipeViewDelegate>
+@interface RecipeListViewController()<UICollectionViewDelegate,UICollectionViewDataSource, NewRecipeViewDelegate, BookViewDelegate>
 @property (nonatomic, retain) UICollectionView *collectionView;
 @property (nonatomic, retain) NSArray *recipes;
 @property (nonatomic, assign) BOOL refreshNeeded;
-@property (strong, nonatomic) PFImageView *imageView;
 @end
 @implementation RecipeListViewController
 
@@ -95,7 +95,7 @@
 }
 
 
-#pragma mark - IUCollectionViewDataSource
+#pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return [self.recipes count];
@@ -111,6 +111,20 @@
 
 }
 
+#pragma mark - UICollectionViewDelegate
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    DLog();
+    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.row];
+    
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    RecipeViewController *recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
+    recipeViewController.recipe = recipe;
+    recipeViewController.delegate = self;
+    [self presentViewController:recipeViewController animated:YES completion:nil];
+}
+
 #pragma mark - NewRecipeVieDelegate
 
 -(void)closeRequested
@@ -122,6 +136,27 @@
 {
     [self loadData:YES];
     [self closeRequested];
+}
+
+#pragma mark - BookViewDelegate
+//TEMP delegate implementation for navgiation purposes only
+-(void)bookViewCloseRequested
+{
+    DLog();
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (CGRect)bookViewBounds {
+    return self.view.bounds;
+}
+
+- (UIEdgeInsets)bookViewInsets {
+    return UIEdgeInsetsMake(20.0, 0.0, 0.0, 20.0);
+}
+
+-(BookViewController *)bookViewController
+{
+    return nil;
 }
 
 #pragma mark - Action buttons

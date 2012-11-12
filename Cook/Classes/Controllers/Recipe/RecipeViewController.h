@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "BookViewController.h"
+#import "PageViewController.h"
+#import "CKRecipe.h"
 
-@interface RecipeViewController : UIViewController
-@property(nonatomic,assign) id<BookViewDelegate> bookViewDelegate;
+@interface RecipeViewController : PageViewController
+@property(nonatomic,strong) CKRecipe *recipe;
+          
 @end
