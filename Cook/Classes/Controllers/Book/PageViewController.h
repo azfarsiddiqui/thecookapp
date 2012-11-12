@@ -12,9 +12,11 @@
 @interface PageViewController : UIViewController
 
 @property (nonatomic, assign) id<BookViewDelegate> delegate;
+@property (nonatomic, assign) id<BookViewDataSource> dataSource;
 
-- (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate;
+- (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource;
 - (void)initPageView;
 - (void)loadData;
+- (void)dataDidLoad;
 
 @end

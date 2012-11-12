@@ -62,13 +62,8 @@
                       self.collectionView.bounds.size.height);
 }
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes* attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
-    return attributes;
-}
-
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSMutableArray* layoutAttributes = [NSMutableArray array];
+    NSMutableArray *layoutAttributes = [NSMutableArray arrayWithArray:[super layoutAttributesForElementsInRect:rect]];
     
     // Add my book only if it's supposed to be within frame.
     UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
@@ -76,16 +71,12 @@
         [layoutAttributes addObject:attributes];
     }
     
-    NSInteger numItems = [self.collectionView numberOfItemsInSection:1];
-    for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
-        UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:
-                                                        [NSIndexPath indexPathForItem:itemIndex inSection:1]];
-        if (attributes.frame.origin.x < rect.origin.x + rect.size.width) {
-            [layoutAttributes addObject:attributes];
-        }
-    }
-    
     return layoutAttributes;
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewLayoutAttributes* attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
+    return attributes;
 }
 
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset

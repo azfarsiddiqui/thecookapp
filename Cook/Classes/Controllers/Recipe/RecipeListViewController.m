@@ -154,6 +154,11 @@
     return UIEdgeInsetsMake(20.0, 0.0, 0.0, 20.0);
 }
 
+-(BookViewController *)bookViewController
+{
+    return nil;
+}
+
 #pragma mark - Action buttons
 -(void) createRecipeTapped:(UIButton*)button
 {

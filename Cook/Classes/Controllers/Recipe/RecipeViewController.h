@@ -11,7 +11,7 @@
 #import "PageViewController.h"
 #import "CKRecipe.h"
 
-@interface RecipeViewController :PageViewController
+@interface RecipeViewController : PageViewController
 @property(nonatomic,strong) CKRecipe *recipe;
           
 @end

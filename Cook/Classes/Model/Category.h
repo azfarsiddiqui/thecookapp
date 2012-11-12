@@ -10,6 +10,7 @@
 
 @interface Category : CKModel
 
-+(Category *)categoryForParseCategory:(PFObject *)parseCategory;
-+(void) listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (Category *)categoryForParseCategory:(PFObject *)parseCategory;
++ (void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 @end

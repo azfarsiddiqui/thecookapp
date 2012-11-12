@@ -19,12 +19,12 @@
 
 @property (nonatomic, strong) CookPageFlipper *pageFlipper;
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) NSArray *recipes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, strong) RecipeListViewController *recipeListViewController;
 @property (nonatomic, strong) RecipeViewController *recipeViewController;
 @property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
 @property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
-
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 
 @end
@@ -40,14 +40,18 @@
     return self;
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self loadData];
+}
+
 #pragma AFKPageFlipperDataSource methods
 
 - (NSInteger)numberOfPagesForPageFlipper:(CookPageFlipper *) pageFlipper {
-    return [self numberOfPagesInBook];
+    return [self numberOfPages];
 }
 
 - (UIView *)viewForPage:(NSInteger)page inFlipper:(CookPageFlipper *)pageFlipper {
-    DLog(@"view for page %i", page);
     return [self viewForPageAtIndex:page];
 }
 
@@ -61,60 +65,59 @@
     return self.view.bounds;
 }
 
+- (UIEdgeInsets)bookViewInsets {
+    return UIEdgeInsetsMake(20.0, 0.0, 10.0, 20.0);
+}
+
+- (BookViewController *)bookViewController {
+    return self;
+}
+
+#pragma mark - BookViewDataSource
+
 - (CKBook *)currentBook {
     return self.book;
 }
 
-- (UIEdgeInsets)bookViewInsets {
-    return UIEdgeInsetsMake(20.0, 0.0, 0.0, 20.0);
-}
-
-#pragma mark - BookViewDatasource
-- (NSInteger)numberOfPagesInBook {
+- (NSInteger)numberOfPages {
     NSInteger numPages = 0;
-    numPages += 1;  // Contents page.
-//    numPages += [self numCategories];
-//    numPages += [self numRecipes];
-    // return 4;
+    numPages += 1;                          // Contents page.
+    if ([self.recipes count] > 0) {
+        numPages += [self.book numCategories];  // Categories page.
+        numPages += [self.recipes count];       // Recipes page.
+    }
     return numPages;
 }
 
--(UIView *)viewForPageAtIndex:(NSInteger)pageIndex
-{
+-(UIView *)viewForPageAtIndex:(NSInteger)pageIndex {
     UIView *view = nil;
     switch (pageIndex) {
         case 1:
 //            view = self.contentsViewController.view;
               view = self.recipeListViewController.view;
             break;
+        case 2:
+            view = self.recipeListViewController.view;
+            break;
         default:
             break;
     }
-//    switch (pageIndex) {
-//        case 1:
-//            //recipe list
-//            view = self.recipeListViewController.view;
-//            break;
-//        case 2:
-//            //book contents
-//            view = self.bookContentsViewController.view;
-//            break;
-//        case 3:
-//            view = self.bookCategoryViewController.view;
-//            break;
-//        case 4: 
-//            view = self.recipeViewController.view;
-//            break;
-//        default:
-//            break;
-//    }
     return view;
 }
+
+- (NSArray *)bookRecipes {
+    return self.recipes;
+}
+
+- (NSInteger)currentPageNumber {
+    return self.pageFlipper.currentPage;
+}
+
 #pragma mark - Private methods
 
 - (ContentsPageViewController *)contentsViewController {
     if (!_contentsViewController) {
-        _contentsViewController = [[ContentsPageViewController alloc] initWithBookViewDelegate:self];
+        _contentsViewController = [[ContentsPageViewController alloc] initWithBookViewDelegate:self dataSource:self];
     }
     return _contentsViewController;
 }
@@ -176,9 +179,26 @@
     //    pageFlipper.autoresizingMask = UIViewAutoresizingNone;
     self.pageFlipper.dataSource = self;
     [self.view addSubview:self.pageFlipper];
-    //    [self.backgroundView addSubview:pageFlipper];
-    //    [pageFlipper release];
-    //}
+}
+
+- (void)loadData {
+    [self.book listRecipesSuccess:^(NSArray *recipes) {
+        
+        self.recipes = recipes;
+        
+        // Reload page flipper.
+        [self.pageFlipper reloadData];
+        
+    } failure:^(NSError *error) {
+        DLog(@"Error %@", [error localizedDescription]);
+    }];
+}
+
+- (void)resetPageView:(UIView *)pageView {
+    
+    // Override AFKPageFlipper behaviour.
+    pageView.hidden = NO;
+    pageView.frame = self.pageFlipper.bounds;
 }
 
 @end

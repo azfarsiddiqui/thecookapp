@@ -46,6 +46,8 @@
 
 #define kBookCellId                 @"BookCell"
 #define kLoginCellId                @"LoginCell"
+#define kLibraryHeaderId            @"LibraryHeaderCell"
+#define kLibraryHeaderKind          @"LibraryHeader"
 #define kBackgroundAvailOffset      50.0
 #define kNumFriendsMaxStack         2
 
@@ -93,6 +95,8 @@
     
     [self.collectionView registerClass:[BenchtopBookCell class] forCellWithReuseIdentifier:kBookCellId];
     [self.collectionView registerClass:[LoginBookCell class] forCellWithReuseIdentifier:kLoginCellId];
+    [self.collectionView registerClass:[UICollectionReusableView class]
+             forSupplementaryViewOfKind:kLibraryHeaderKind withReuseIdentifier:kLibraryHeaderId];
     
     // Register for events.
     [EventHelper registerBenchtopFreeze:self selector:@selector(benchtopFreezeRequested:)];
@@ -225,6 +229,28 @@
 }
 
 #pragma mark - UICollectionViewDataSource methods
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                                   withReuseIdentifier:kLibraryHeaderId
+                                                                                          forIndexPath:indexPath];
+    NSInteger imageTag = 239;
+    UIImageView *libraryImageView = (UIImageView *)[headerView viewWithTag:imageTag];
+    if (!libraryImageView) {
+        libraryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library.png"]];
+        libraryImageView.tag = imageTag;
+        libraryImageView.frame = CGRectMake(floorf((headerView.bounds.size.width - libraryImageView.frame.size.width) / 2.0),
+                                            floorf((headerView.bounds.size.height - libraryImageView.frame.size.height) / 2.0),
+                                            libraryImageView.frame.size.width,
+                                            libraryImageView.frame.size.height);
+        libraryImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+        [headerView addSubview:libraryImageView];
+    }
+    return headerView;
+}
+
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     

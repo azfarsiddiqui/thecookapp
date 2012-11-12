@@ -14,6 +14,8 @@
 
 @implementation BenchtopLayout
 
+#define kLibraryHeader  @"LibraryHeader"
+
 - (id)initWithBenchtopDelegate:(id<BenchtopDelegate>)benchtopDelegate {
     if ([super init]) {
         self.benchtopDelegate = benchtopDelegate;
@@ -26,6 +28,42 @@
 }
 
 #pragma mark - UICollectionViewLayout methods
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind
+                                                                     atIndexPath:(NSIndexPath *)indexPath {
+    CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
+    
+    UICollectionViewLayoutAttributes *firstOtherAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
+    UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
+    layoutAttributes.size = itemSize;
+    layoutAttributes.center = CGPointMake(firstOtherAttributes.center.x - itemSize.width, firstOtherAttributes.center.y);
+    return layoutAttributes;
+}
+
+- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    NSMutableArray* layoutAttributes = [NSMutableArray array];
+    
+    NSInteger numSections = [self.collectionView numberOfSections];
+    
+    // TODO potential optimisation here to include only first few books instead of all.
+    for (NSInteger section = 0; section < numSections; section++) {
+        NSInteger numItems = [self.collectionView numberOfItemsInSection:section];
+        for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
+            UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:
+                                                            [NSIndexPath indexPathForItem:itemIndex inSection:section]];
+            [layoutAttributes addObject:attributes];
+        }
+    }
+    
+    if (numSections > 1 && ![self.benchtopDelegate onMyBenchtop]) {
+        
+        // TODO potential optimisation here to exclude header if not in view.
+        [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:kLibraryHeader
+                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]]];
+    }
+    
+    return layoutAttributes;
+}
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewLayoutAttributes* attributes = [UICollectionViewLayoutAttributes
@@ -68,6 +106,13 @@
         initialAttributes.transform3D = CATransform3DMakeTranslation([self.benchtopDelegate benchtopSideGap], 0.0, 0.0);
     }
     
+    return initialAttributes;
+}
+
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingSupplementaryElementOfKind:(NSString *)elementKind
+                                                                                        atIndexPath:(NSIndexPath *)elementIndexPath {
+    UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
+    initialAttributes.alpha = 0.0;
     return initialAttributes;
 }
 
