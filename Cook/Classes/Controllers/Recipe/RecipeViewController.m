@@ -9,6 +9,8 @@
 #import "RecipeViewController.h"
 #import "NSArray+Enumerable.h"
 #import "Ingredient.h"
+
+#define kImageViewTag   1122334455
 @interface RecipeViewController ()
 @property(nonatomic,strong) IBOutlet UILabel *recipeNameLabel;
 @property(nonatomic,strong) IBOutlet UILabel *userNameLabel;
@@ -23,10 +25,18 @@
 {
     [super awakeFromNib];
 }
+
+-(void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    DLog();
+    [self refreshData];
+
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+    DLog();
 }
 
 - (void)didReceiveMemoryWarning
@@ -37,11 +47,11 @@
 
 
 #pragma mark - Overridden methods
--(void)initPageView
+-(void)refreshData
 {
-    [super initPageView];
+    [super loadData];
     self.recipeNameLabel.text = self.recipe.name;
-    self.userNameLabel.text = [self.book.userName uppercaseString];
+    self.userNameLabel.text = [[self.dataSource currentBook].userName uppercaseString];
 
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
     [self.recipe.ingredients each:^(Ingredient *ingredient) {
@@ -54,9 +64,13 @@
     
     self.directionsLabel.text = self.recipe.description;
     
-    PFImageView *imageView = [[PFImageView alloc] init];
-    [self.recipeScrollView addSubview:imageView];
-
+    PFImageView *imageView = (PFImageView*) [self.recipeScrollView viewWithTag:kImageViewTag];
+    if (!imageView) {
+        imageView = [[PFImageView alloc] init];
+        imageView.tag = kImageViewTag;
+        [self.recipeScrollView addSubview:imageView];
+    }
+    
     [CKRecipe imagesForRecipe:self.recipe success:^{
         if ([self.recipe imageFile]) {
             imageView.file = [self.recipe imageFile];
@@ -71,6 +85,7 @@
                 } else {
                     DLog(@"Error loading image in background: %@", [error description]);
                 }
+                [super dataDidLoad];
             }];
         }
     } failure:^(NSError *error) {

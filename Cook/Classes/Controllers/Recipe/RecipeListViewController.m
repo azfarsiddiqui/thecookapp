@@ -121,7 +121,7 @@
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
     RecipeViewController *recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
     recipeViewController.recipe = recipe;
-    recipeViewController.book = self.book;
+//    recipeViewController.book = self.book;
     recipeViewController.delegate = self;
     [self presentViewController:recipeViewController animated:YES completion:nil];
 }
@@ -158,6 +158,11 @@
 -(BookViewController *)bookViewController
 {
     return nil;
+}
+
+-(void)bookViewReloadRequested
+{
+    
 }
 
 #pragma mark - Action buttons

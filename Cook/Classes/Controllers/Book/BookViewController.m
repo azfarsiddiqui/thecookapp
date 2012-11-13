@@ -17,7 +17,7 @@
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "CategoryPageViewController.h"
-#import "RecipePageViewController.h"
+#import "RecipeViewController.h"
 
 @interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
 
@@ -30,11 +30,11 @@
 @property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, strong) RecipeListViewController *recipeListViewController;
+@property (nonatomic, strong) RecipeViewController *recipeViewController;
 @property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
 @property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
-@property (nonatomic, strong) RecipePageViewController *recipeViewController;
 
 @property (nonatomic, assign) NSUInteger currentCategoryIndex;
 
@@ -141,8 +141,7 @@
             NSArray *recipes = [self.categoryRecipes objectAtIndex:categoryIndex];
             CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
             self.recipe = recipe;
-            [self.recipeViewController setRecipe:recipe];
-            [self.recipeViewController loadData];
+            self.recipeViewController.recipe = recipe;
             view = self.recipeViewController.view;
         }
         
@@ -224,10 +223,12 @@
     return _bookCategoryViewController;
 }
 
-- (RecipePageViewController *)recipeViewController
+- (RecipeViewController *)recipeViewController
 {
     if (!_recipeViewController) {
-        _recipeViewController = [[RecipePageViewController alloc] initWithBookViewDelegate:self dataSource:self];
+        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+        _recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
+        _recipeViewController.delegate = self;
     }
     return _recipeViewController;
 }
