@@ -47,18 +47,6 @@
     [self.view addSubview:settingsButton];
     self.settingsButton = settingsButton;
     
-    // Store button.
-    UIButton *storeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_store.png"]
-                                                    target:self
-                                                  selector:@selector(storeTapped:)];
-    storeButton.frame = CGRectMake(self.view.bounds.size.width - storeButton.frame.size.width - kSideGap,
-                                   floorf((kMenuHeight - storeButton.frame.size.height) / 2.0),
-                                   storeButton.frame.size.width,
-                                   storeButton.frame.size.height);
-    storeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [self.view addSubview:storeButton];
-    self.storeButton = storeButton;
-    
     // Edit cancel button.
     UIButton *editCancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
                                                       target:self
@@ -94,9 +82,7 @@
         self.editDoneButton.hidden = NO;
     } else {
         self.settingsButton.alpha = 0.0;
-        self.storeButton.alpha = 0.0;
         self.settingsButton.hidden = NO;
-        self.storeButton.hidden = NO;
     }
     if (animated) {
         [UIView animateWithDuration:0.3
@@ -104,7 +90,6 @@
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
                              self.settingsButton.alpha = editMode ? 0.0 : 1.0;
-                             self.storeButton.alpha = editMode ? 0.0 : 1.0;
                              self.editCancelButton.alpha = editMode ? 1.0 : 0.0;
                              self.editDoneButton.alpha = editMode ? 1.0 : 0.0;
                          }
@@ -112,11 +97,9 @@
                              self.editCancelButton.hidden = editMode ? NO : YES;
                              self.editDoneButton.hidden = editMode ? NO : YES;
                              self.settingsButton.hidden = editMode ? YES : NO;
-                             self.storeButton.hidden = editMode ? YES : NO;
                          }];
     } else {
         self.settingsButton.alpha = editMode ? 0.0 : 1.0;
-        self.storeButton.alpha = editMode ? 0.0 : 1.0;
         self.editCancelButton.alpha = editMode ? 1.0 : 0.0;
         self.editDoneButton.alpha = editMode ? 1.0 : 0.0;
     }
@@ -126,10 +109,6 @@
 
 - (void)settingsTapped:(id)sender {
     [self.delegate menuViewControllerSettingsRequested];
-}
-
-- (void)storeTapped:(id)sender {
-    [self.delegate menuViewControllerStoreRequested];
 }
 
 - (void)editCancelTapped:(id)sender {
