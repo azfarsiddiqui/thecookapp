@@ -18,7 +18,13 @@
 
 #define kCategoryFont   [UIFont boldSystemFontOfSize:30.0]
 
+- (void)loadData {
+    [super loadData];
+    [self dataDidLoad];
+}
+
 - (void)setCategory:(NSString *)category {
+    NSString *categoryDisplay = [NSString stringWithFormat:@"Category: %@", category];
     
     if (!self.categoryLabel) {
         UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -31,12 +37,13 @@
         self.categoryLabel = categoryLabel;
     }
     
-    CGSize size = [category sizeWithFont:kCategoryFont constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
+    CGSize size = [categoryDisplay sizeWithFont:kCategoryFont constrainedToSize:self.view.bounds.size
+                                  lineBreakMode:NSLineBreakByTruncatingTail];
     self.categoryLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
                                           floorf((self.view.bounds.size.height - size.height) / 2.0),
                                           size.width,
                                           size.height);
-    self.categoryLabel.text = category;
+    self.categoryLabel.text = categoryDisplay;
 }
 
 @end

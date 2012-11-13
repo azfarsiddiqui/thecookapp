@@ -18,5 +18,6 @@
 - (void)initPageView;
 - (void)loadData;
 - (void)dataDidLoad;
+- (void)setLoading:(BOOL)loading;
 
 @end

@@ -19,10 +19,6 @@
 
 @implementation PageViewController
 
-- (void)dealloc {
-    [[self.delegate bookViewController]  removeObserver:self forKeyPath:@"recipes"];
-}
-
 - (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource {
     if (self = [super init]) {
         self.delegate = delegate;
@@ -40,22 +36,7 @@
     [self initPageView];
     [self initMenu];
     [self initBookmark];
-    
-    // Check if we have recipes loaded, else spin the activity and observe it.
-    NSArray *recipes = [self.dataSource bookRecipes];
-    if (!recipes) {
-        
-        // Start spinner.
-        [self initLoadingIndicator];
-        
-        // Observe the change in recipes.
-        [[self.delegate bookViewController] addObserver:self forKeyPath:@"recipes" options:NSKeyValueObservingOptionNew
-                                                context:NULL];
-    } else {
-        
-        [self updatePageNumber];
-    }
-    
+    [self initLoadingIndicator];
 }
 
 - (void)initPageView {
@@ -63,11 +44,24 @@
 }
 
 - (void)loadData {
-    // Subclasses to implement.
+    [self setLoading:YES];
 }
 
 - (void)dataDidLoad {
+    [self setLoading:NO];
     [self updatePageNumber];
+}
+
+- (void)setLoading:(BOOL)loading {
+    if (loading) {
+        [self.pageNumberLabel removeFromSuperview];
+        [self.activityView startAnimating];
+        self.activityView.hidden = NO;
+    } else {
+        [self updatePageNumber];
+        [self.activityView stopAnimating];
+        self.activityView.hidden = YES;
+    }
 }
 
 #pragma mark - APBookmarkNavigationViewDelegate methods
@@ -127,26 +121,6 @@
     DLog();
 }
 
-#pragma mark - KVO methods.
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
-                       context:(void *)context {
-    if ([keyPath isEqualToString:@"recipes"]) {
-        
-        // Remove the spinner.
-        [self.activityView stopAnimating];
-        [self.activityView removeFromSuperview];
-        self.activityView = nil;
-        
-        // Inform subclasses of data loaded.
-        [self dataDidLoad];
-        
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-
 #pragma mark - Private methods
 
 - (void)initMenu {
@@ -178,7 +152,7 @@
                                     self.view.bounds.size.height - activityView.frame.size.height - edgeInsets.bottom,
                                     activityView.frame.size.width,
                                     activityView.frame.size.height);
-    [activityView startAnimating];
+    activityView.hidden = YES;
     [self.view addSubview:activityView];
     self.activityView = activityView;
 }

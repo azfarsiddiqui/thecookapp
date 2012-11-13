@@ -24,6 +24,7 @@
 - (CGRect)bookViewBounds;
 - (UIEdgeInsets)bookViewInsets;
 - (BookViewController *)bookViewController;
+- (void)bookViewReloadRequested;
 
 @end
 

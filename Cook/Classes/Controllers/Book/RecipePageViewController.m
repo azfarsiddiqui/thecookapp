@@ -18,9 +18,14 @@
 
 #define kCategoryFont   [UIFont boldSystemFontOfSize:30.0]
 
+- (void)loadData {
+    [super loadData];
+    [self dataDidLoad];
+}
+
 - (void)setRecipe:(CKRecipe *)recipe {
     
-    NSString *recipeName = recipe.name;
+    NSString *recipeName = [NSString stringWithFormat:@"Recipe: %@", recipe.name];
     
     if (!self.recipeLabel) {
         UILabel *recipeLabel = [[UILabel alloc] initWithFrame:CGRectZero];

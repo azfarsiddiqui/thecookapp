@@ -30,6 +30,14 @@
 #define kCategoryCellId @"CategoryCellId"
 
 - (void)loadData {
+    DLog();
+    
+    [super loadData];
+    
+    // Data would've been loaded by BookVC.
+    if ([self.dataSource bookCategories]) {
+        [self dataDidLoad];
+    }
 }
 
 - (void)initPageView {
@@ -69,6 +77,7 @@
 }
 
 - (void)recipeCreated {
+    [self.delegate bookViewReloadRequested];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

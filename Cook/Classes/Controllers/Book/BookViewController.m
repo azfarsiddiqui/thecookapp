@@ -86,6 +86,12 @@
     return self;
 }
 
+- (void)bookViewReloadRequested {
+    DLog();
+    self.recipes = nil;
+    [self loadData];
+}
+
 #pragma mark - BookViewDataSource
 
 - (CKBook *)currentBook {
@@ -111,7 +117,9 @@
     
     if (pageIndex == 1) {
         
+        // Contents page.
         view = self.contentsViewController.view;
+        [self.contentsViewController loadData];
         
     } else {
         
@@ -121,6 +129,7 @@
             // Category page.
             NSString *category = [self.categories objectAtIndex:categoryIndex];
             [self.categoryViewController setCategory:category];
+            [self.categoryViewController loadData];
             view = self.categoryViewController.view;
             
         } else {
@@ -133,6 +142,7 @@
             CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
             self.recipe = recipe;
             [self.recipeViewController setRecipe:recipe];
+            [self.recipeViewController loadData];
             view = self.recipeViewController.view;
         }
         
@@ -276,16 +286,15 @@
         // Set recipes - important for observe (TODO remove this).
         self.recipes = recipes;
         
-        // Reload page flipper.
+        // Reload contents.
+        [self.contentsViewController loadData];
+        
+        // Reload page flipper for non-contents pages.
         [self.pageFlipper reloadData];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
     }];
-}
-
-- (BOOL)isCategoryPageForPageIndex:(NSUInteger)pageIndex {
-    return ([self categoryIndexForPageIndex:pageIndex] != -1);
 }
 
 - (NSInteger)categoryIndexForPageIndex:(NSUInteger)pageIndex {
@@ -314,19 +323,6 @@
     }
     
     return categoryIndex;
-}
-
-- (NSInteger)categoryPageIndexForPageIndex:(NSUInteger)pageIndex {
-    NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
-    if (categoryIndex != -1) {
-        return [[self.categoryPageIndexes objectAtIndex:categoryIndex] integerValue];
-    } else {
-        return categoryIndex;
-    }
-}
-
-- (NSInteger)recipeIndexForPageIndex:(NSInteger)pageIndex categoryIndex:(NSInteger)categoryIndex {
-    return 0;
 }
 
 @end
