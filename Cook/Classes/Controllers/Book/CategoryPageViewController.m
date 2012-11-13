@@ -10,29 +10,33 @@
 
 @interface CategoryPageViewController ()
 
+@property (nonatomic, strong) UILabel *categoryLabel;
+
 @end
 
 @implementation CategoryPageViewController
 
-- (void)loadData {
-}
+#define kCategoryFont   [UIFont boldSystemFontOfSize:30.0]
 
-- (void)initPageView {
+- (void)setCategory:(NSString *)category {
     
-    NSString *title = [self.dataSource bookViewCurrentCategory];
-    UIFont *font = [UIFont boldSystemFontOfSize:20.0];
-    CGSize size = [title sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
-    UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
-                                                                       floorf((self.view.bounds.size.height - size.height) / 2.0),
-                                                                       size.width,
-                                                                       size.height)];
-    categoryLabel.backgroundColor = [UIColor clearColor];
-    categoryLabel.font = font;
-    categoryLabel.textColor = [UIColor blackColor];
-    categoryLabel.shadowColor = [UIColor whiteColor];
-    categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-    categoryLabel.text = title;
-    [self.view addSubview:categoryLabel];
+    if (!self.categoryLabel) {
+        UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        categoryLabel.backgroundColor = [UIColor clearColor];
+        categoryLabel.font = kCategoryFont;
+        categoryLabel.textColor = [UIColor blackColor];
+        categoryLabel.shadowColor = [UIColor whiteColor];
+        categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        [self.view addSubview:categoryLabel];
+        self.categoryLabel = categoryLabel;
+    }
+    
+    CGSize size = [category sizeWithFont:kCategoryFont constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
+    self.categoryLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
+                                          floorf((self.view.bounds.size.height - size.height) / 2.0),
+                                          size.width,
+                                          size.height);
+    self.categoryLabel.text = category;
 }
 
 @end

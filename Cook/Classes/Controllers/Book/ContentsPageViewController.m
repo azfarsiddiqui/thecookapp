@@ -18,7 +18,6 @@
 @property (nonatomic, strong) ContentsCollectionViewController *contentsCollectionViewController;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) NSMutableArray *categories;
 
 @end
 
@@ -40,25 +39,18 @@
 
 - (void)dataDidLoad {
     [super dataDidLoad];
-    
-    self.categories = [NSMutableArray array];
-    for (CKRecipe *recipe in [self.dataSource bookRecipes]) {
-        if (![self.categories containsObject:recipe.category.name]) {
-            [self.categories addObject:recipe.category.name];
-        }
-    }
     [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.categories count];
+    return [[self.dataSource bookCategories] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
-    cell.textLabel.text = [self.categories objectAtIndex:indexPath.row];
+    cell.textLabel.text = [[self.dataSource bookCategories] objectAtIndex:indexPath.row];
     return cell;
 }
 

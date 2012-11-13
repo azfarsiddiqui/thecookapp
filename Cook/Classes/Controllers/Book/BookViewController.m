@@ -17,6 +17,7 @@
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "CategoryPageViewController.h"
+#import "RecipePageViewController.h"
 
 @interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
 
@@ -28,11 +29,11 @@
 @property (nonatomic, strong) NSMutableArray *categoryRecipes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, strong) RecipeListViewController *recipeListViewController;
-@property (nonatomic, strong) RecipeViewController *recipeViewController;
 @property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
 @property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
+@property (nonatomic, strong) RecipePageViewController *recipeViewController;
 
 @property (nonatomic, assign) NSUInteger currentCategoryIndex;
 
@@ -98,7 +99,7 @@
     NSInteger numPages = 0;
     numPages += 1;                                  // Contents page.
     if ([self.recipes count] > 0) {
-        numPages += [self.categories count];   // Number of categories.
+        numPages += [self.categories count];        // Number of categories.
         numPages += [self.recipes count];           // Recipes page.
     }
     return numPages;
@@ -106,13 +107,16 @@
 
 -(UIView *)viewForPageAtIndex:(NSInteger)pageIndex {
     UIView *view = nil;
+    
     if (pageIndex == 1) {
+        
         view = self.contentsViewController.view;
         
     } else if ([self isCategoryPageForPageIndex:pageIndex]) {
         
         // Category page.
         self.currentCategoryIndex = pageIndex - kCategoryPageIndex;
+        [self.categoryViewController setCategory:[self bookViewCurrentCategory]];
         view = self.categoryViewController.view;
         
     } else {
@@ -122,13 +126,30 @@
         NSArray *recipes = [self.categoryRecipes objectAtIndex:self.currentCategoryIndex];
         CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
         self.recipe = recipe;
-        view = self.recipeListViewController.view;
+        [self.recipeViewController setRecipe:recipe];
+        view = self.recipeViewController.view;
     }
     return view;
 }
 
 - (NSArray *)bookRecipes {
     return self.recipes;
+}
+
+- (NSArray *)bookCategories {
+    return self.categories;
+}
+
+- (NSArray *)recipesForCategory:(NSString *)category {
+    NSArray *recipes = nil;
+    for (NSUInteger categoryIndex = 0; categoryIndex < [self.categories count]; categoryIndex++) {
+        NSString *categoryName = [self.categories objectAtIndex:categoryIndex];
+        if ([categoryName isEqualToString:category]) {
+            recipes = [self.categoryRecipes objectAtIndex:categoryIndex];
+            break;
+        }
+    }
+    return recipes;
 }
 
 - (NSInteger)currentPageNumber {
@@ -185,12 +206,10 @@
     return _bookCategoryViewController;
 }
 
-- (RecipeViewController *)recipeViewController
+- (RecipePageViewController *)recipeViewController
 {
     if (!_recipeViewController) {
-        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-        _recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
-        _recipeViewController.delegate = self;
+        _recipeViewController = [[RecipePageViewController alloc] initWithBookViewDelegate:self dataSource:self];
     }
     return _recipeViewController;
 }
@@ -203,13 +222,7 @@
 }
 
 - (void)initFlipper {
-    //    CGRect pageFrame = CGRectMake(kPageEdgeInsets.left,
-    //                                  kPageEdgeInsets.top,
-    //                                  self.backgroundView.frame.size.width - kPageEdgeInsets.left - kPageEdgeInsets.right,
-    //                                  self.backgroundView.frame.size.height - kPageEdgeInsets.top - kPageEdgeInsets.bottom);
-    //    DLog(@"FLIPPER FRAME: %@", NSStringFromCGRect(pageFrame));
     self.pageFlipper = [[CookPageFlipper alloc] initWithFrame:self.view.frame];
-    //    pageFlipper.autoresizingMask = UIViewAutoresizingNone;
     self.pageFlipper.dataSource = self;
     [self.view addSubview:self.pageFlipper];
 }

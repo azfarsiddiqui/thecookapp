@@ -10,4 +10,6 @@
 
 @interface CategoryPageViewController : PageViewController
 
+- (void)setCategory:(NSString *)category;
+
 @end
