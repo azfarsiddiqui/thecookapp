@@ -83,8 +83,7 @@
     if ([self validate]) {
         button.enabled = NO;
         self.uploadLabel.hidden = NO;
-        CKRecipe *recipe = [CKRecipe recipeForUser:[CKUser currentUser]
-                                          book:self.book category:self.selectedCategory];
+        CKRecipe *recipe = [CKRecipe recipeForUser:[CKUser currentUser] book:self.book category:self.selectedCategory];
         recipe.name = self.recipeNameTextField.text;
         recipe.description = self.recipeDescriptionTextView.text;
         recipe.image = self.recipeImage;
