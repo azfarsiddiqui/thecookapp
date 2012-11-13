@@ -144,7 +144,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jf2-lp-5CN"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jf2-lp-5CN"/>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz"/>
                         </subviews>
@@ -585,6 +585,11 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
+                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="selectCategoryTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="categoryLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
                 <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
