@@ -64,6 +64,7 @@
 
 - (void)changeCover:(NSString *)cover {
     self.cover = cover;
+    [self.collectionView reloadData];
 }
 
 - (void)scrollToIllustration {
@@ -113,11 +114,7 @@
     NSString *currentIllustration = [self.availableIllustrations objectAtIndex:indexPath.item];
     IllustrationBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kIllustrationCellId
                                                                                 forIndexPath:indexPath];
-    if (self.currentIndex == indexPath.row) {
-        [cell setCover:self.cover];
-    } else {
-        [cell setCover:[BookCover grayCoverName]];
-    }
+    [cell setCover:self.cover];
     [cell setIllustration:currentIllustration];
     return cell;
 }

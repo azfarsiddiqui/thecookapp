@@ -461,6 +461,9 @@
     self.myBook.illustration = self.illustrationViewController.illustration;
     self.myBook.cover = self.coverViewController.cover;
     [cell loadBook:self.myBook mine:YES force:YES];
+    
+    // Reload the illustration cover.
+    [self.illustrationViewController changeCover:self.coverViewController.cover];
 
     [self enableEditMode:NO];
 }
@@ -488,6 +491,9 @@
     BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     self.myBook.cover = cover;
     [cell loadBook:self.myBook mine:YES force:YES];
+    
+    // Reload the illustration covers.
+    [self.illustrationViewController changeCover:cover];
 }
 
 #pragma mark - Private
