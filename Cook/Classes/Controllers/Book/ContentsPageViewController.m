@@ -12,8 +12,9 @@
 #import "MRCEnumerable.h"
 #import "CKRecipe.h"
 #import "Category.h"
+#import "NewRecipeViewController.h"
 
-@interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate>
 
 @property (nonatomic, strong) ContentsCollectionViewController *contentsCollectionViewController;
 @property (nonatomic, strong) UITableView *tableView;
@@ -35,6 +36,13 @@
     [self initCollectionView];
     [self initTitleView];
     [self initTableView];
+    
+    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [createButton setTitle:@"Create" forState:UIControlStateNormal];
+    [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [createButton sizeToFit];
+    [createButton setFrame:CGRectMake(self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width + 20.0, 18.0, createButton.frame.size.width, createButton.frame.size.height)];
+    [self.view addSubview:createButton];
 }
 
 - (void)dataDidLoad {
@@ -52,6 +60,16 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
     cell.textLabel.text = [[self.dataSource bookCategories] objectAtIndex:indexPath.row];
     return cell;
+}
+
+#pragma mark - NewRecipeViewDelegate methods
+
+- (void)closeRequested {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)recipeCreated {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Private methods
@@ -105,6 +123,15 @@
                                                      self.view.bounds.size.height);
     [self.view addSubview:collectionViewController.view];
     self.contentsCollectionViewController = collectionViewController;
+}
+
+- (void)createTapped:(id)sender {
+    DLog();
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
+    newRecipeViewVC.delegate = self;
+    newRecipeViewVC.book = [self.dataSource currentBook];
+    [self presentViewController:newRecipeViewVC animated:YES completion:nil];
 }
 
 @end
