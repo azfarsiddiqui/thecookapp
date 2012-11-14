@@ -125,20 +125,10 @@
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh"/>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Ingredient list" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wVN-TU-GmU">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Ingredient list" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="190" translatesAutoresizingMaskIntoConstraints="NO" id="wVN-TU-GmU">
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="190" id="WKL-1s-Ft1"/>
-                                    <constraint firstAttribute="height" constant="532" id="ZMn-Ke-AQL"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Method - directions" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="330" translatesAutoresizingMaskIntoConstraints="NO" id="cpF-g6-rQz">
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="330" id="zpq-KK-s1x"/>
+                                    <constraint firstAttribute="width" constant="190" type="user" id="WKL-1s-Ft1"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -147,6 +137,15 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jf2-lp-5CN"/>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="330" translatesAutoresizingMaskIntoConstraints="NO" id="VcO-Se-gxr">
+                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="330" type="user" id="UiX-Jq-oG5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -154,6 +153,8 @@
                             <constraint firstItem="fcB-UV-juz" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="367" id="2MO-va-9fj"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="33M-yp-Iut"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="3vA-Cy-UQt"/>
+                            <constraint firstItem="VcO-Se-gxr" firstAttribute="baseline" secondItem="wVN-TU-GmU" secondAttribute="baseline" type="default" id="4J4-cO-DrH"/>
+                            <constraint firstItem="wVN-TU-GmU" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="196" id="7hP-He-fks"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="69" id="89H-Nw-73N"/>
                             <constraint firstItem="PvL-Ru-8Vs" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="32" id="9OV-N5-EAj"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="trailing" secondItem="Jf2-lp-5CN" secondAttribute="trailing" type="default" id="9cA-Fp-2Dj"/>
@@ -161,29 +162,26 @@
                             <constraint firstItem="yed-5j-dET" firstAttribute="leading" secondItem="Pu7-06-VlL" secondAttribute="leading" type="default" id="GrR-VR-faV"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="yed-5j-dET" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="KUq-dc-zRb"/>
                             <constraint firstItem="8gW-u9-5Bh" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="151" id="Le4-3z-ABO"/>
-                            <constraint firstItem="cpF-g6-rQz" firstAttribute="top" secondItem="wVN-TU-GmU" secondAttribute="top" type="default" id="OBp-9i-i8E"/>
                             <constraint firstItem="Xia-Kz-dcG" firstAttribute="top" secondItem="Pu7-06-VlL" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Pd6-ni-UkL"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" type="default" id="SOa-7l-bl6"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="PvL-Ru-8Vs" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="SdT-MH-6Yp"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="Pu7-06-VlL" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="VWN-a5-LmE"/>
                             <constraint firstItem="8gW-u9-5Bh" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="leading" type="default" id="Zm2-u5-aNM"/>
                             <constraint firstItem="8gW-u9-5Bh" firstAttribute="leading" secondItem="wVN-TU-GmU" secondAttribute="leading" type="default" id="asp-fD-q8x"/>
-                            <constraint firstItem="PvL-Ru-8Vs" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="462" id="cHf-Fl-iiL"/>
-                            <constraint firstAttribute="trailing" secondItem="cpF-g6-rQz" secondAttribute="trailing" constant="16" id="chf-Nb-Lc6"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="leading" type="default" id="dFR-wf-nqT"/>
+                            <constraint firstItem="VcO-Se-gxr" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="650" type="user" id="dGD-k2-YDx"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="duZ-3G-hVO"/>
+                            <constraint firstItem="PvL-Ru-8Vs" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="462" id="ede-02-41W"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="gnl-Ie-F1H"/>
                             <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="472" id="iWi-Jv-Blv"/>
                             <constraint firstItem="yed-5j-dET" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="436" id="kt8-C0-VHh"/>
-                            <constraint firstAttribute="bottom" secondItem="wVN-TU-GmU" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="oGu-md-TmD"/>
-                            <constraint firstAttribute="bottom" secondItem="cpF-g6-rQz" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="rib-3E-W3j"/>
                             <constraint firstItem="dt9-Fo-cZC" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="471" id="sNT-tG-pxV"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
-                        <outlet property="directionsLabel" destination="cpF-g6-rQz" id="4rm-Hx-eXa"/>
+                        <outlet property="directionsLabel" destination="VcO-Se-gxr" id="17I-dM-eQc"/>
                         <outlet property="ingredientListLabel" destination="wVN-TU-GmU" id="oDr-I9-7FR"/>
                         <outlet property="recipeNameLabel" destination="Pu7-06-VlL" id="XLV-9G-RTk"/>
                         <outlet property="recipeScrollView" destination="Jf2-lp-5CN" id="2H1-79-2R7"/>
@@ -585,11 +583,6 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
-                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="selectCategoryTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="categoryLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
                 <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>

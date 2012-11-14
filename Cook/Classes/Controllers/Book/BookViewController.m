@@ -120,7 +120,6 @@
         // Contents page.
         view = self.contentsViewController.view;
         [self.contentsViewController loadData];
-        
     } else {
         
         NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
@@ -229,6 +228,7 @@
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
         _recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
         _recipeViewController.delegate = self;
+        _recipeViewController.dataSource = self;
     }
     return _recipeViewController;
 }

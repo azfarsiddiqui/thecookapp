@@ -51,11 +51,11 @@
 {
     [super loadData];
     self.recipeNameLabel.text = self.recipe.name;
-    self.userNameLabel.text = [[self.dataSource currentBook].userName uppercaseString];
+    self.userNameLabel.text = [[[self.dataSource currentBook] userName] uppercaseString];
 
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
     [self.recipe.ingredients each:^(Ingredient *ingredient) {
-        [mutableIngredientString appendFormat:@"%@,",ingredient.name];
+        [mutableIngredientString appendFormat:@"%@\n",ingredient.name];
     }];
     
     if ([mutableIngredientString length] > 0) {
@@ -63,6 +63,7 @@
     }
     
     self.directionsLabel.text = self.recipe.description;
+    [self.directionsLabel sizeToFit];
     
     PFImageView *imageView = (PFImageView*) [self.recipeScrollView viewWithTag:kImageViewTag];
     if (!imageView) {
