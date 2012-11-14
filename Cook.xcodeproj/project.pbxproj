@@ -219,8 +219,6 @@
 		892041BE16509A4500765F96 /* cook_book_icon_contents_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041B616509A4500765F96 /* cook_book_icon_contents_gray@2x.png */; };
 		892041BF16509A4500765F96 /* cook_book_icon_contents_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041B716509A4500765F96 /* cook_book_icon_contents_white.png */; };
 		892041C016509A4500765F96 /* cook_book_icon_contents_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041B816509A4500765F96 /* cook_book_icon_contents_white@2x.png */; };
-		892041C716509A5000765F96 /* cook_book_icon_like_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041C116509A4F00765F96 /* cook_book_icon_like_off.png */; };
-		892041C816509A5000765F96 /* cook_book_icon_like_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041C216509A4F00765F96 /* cook_book_icon_like_off@2x.png */; };
 		892041C916509A5000765F96 /* cook_book_icon_serves.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041C316509A4F00765F96 /* cook_book_icon_serves.png */; };
 		892041CA16509A5000765F96 /* cook_book_icon_serves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041C416509A4F00765F96 /* cook_book_icon_serves@2x.png */; };
 		892041CB16509A5000765F96 /* cook_book_profile_sm.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041C516509A4F00765F96 /* cook_book_profile_sm.png */; };
@@ -522,8 +520,6 @@
 		892041B616509A4500765F96 /* cook_book_icon_contents_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_contents_gray@2x.png"; sourceTree = "<group>"; };
 		892041B716509A4500765F96 /* cook_book_icon_contents_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_contents_white.png; sourceTree = "<group>"; };
 		892041B816509A4500765F96 /* cook_book_icon_contents_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_contents_white@2x.png"; sourceTree = "<group>"; };
-		892041C116509A4F00765F96 /* cook_book_icon_like_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_like_off.png; sourceTree = "<group>"; };
-		892041C216509A4F00765F96 /* cook_book_icon_like_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_like_off@2x.png"; sourceTree = "<group>"; };
 		892041C316509A4F00765F96 /* cook_book_icon_serves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_serves.png; sourceTree = "<group>"; };
 		892041C416509A4F00765F96 /* cook_book_icon_serves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_serves@2x.png"; sourceTree = "<group>"; };
 		892041C516509A4F00765F96 /* cook_book_profile_sm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_profile_sm.png; sourceTree = "<group>"; };
@@ -1175,8 +1171,6 @@
 			children = (
 				892041CD16509A9500765F96 /* cook_book_icon_time.png */,
 				892041CE16509A9600765F96 /* cook_book_icon_time@2x.png */,
-				892041C116509A4F00765F96 /* cook_book_icon_like_off.png */,
-				892041C216509A4F00765F96 /* cook_book_icon_like_off@2x.png */,
 				892041C316509A4F00765F96 /* cook_book_icon_serves.png */,
 				892041C416509A4F00765F96 /* cook_book_icon_serves@2x.png */,
 				892041C516509A4F00765F96 /* cook_book_profile_sm.png */,
@@ -1435,8 +1429,6 @@
 				892041BE16509A4500765F96 /* cook_book_icon_contents_gray@2x.png in Resources */,
 				892041BF16509A4500765F96 /* cook_book_icon_contents_white.png in Resources */,
 				892041C016509A4500765F96 /* cook_book_icon_contents_white@2x.png in Resources */,
-				892041C716509A5000765F96 /* cook_book_icon_like_off.png in Resources */,
-				892041C816509A5000765F96 /* cook_book_icon_like_off@2x.png in Resources */,
 				892041C916509A5000765F96 /* cook_book_icon_serves.png in Resources */,
 				892041CA16509A5000765F96 /* cook_book_icon_serves@2x.png in Resources */,
 				892041CB16509A5000765F96 /* cook_book_profile_sm.png in Resources */,
