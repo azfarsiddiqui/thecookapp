@@ -53,8 +53,10 @@
 
 +(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFRelation *images = [recipe.parseObject objectForKey:kRecipeAttrRecipeImages];
-    if (images ) {
-        [[images query] findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+    PFQuery *query = [images query];
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+    if (images) {
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (objects && [objects count] > 0) {
                 recipe.recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[objects objectAtIndex:0]];
                 if (!error) {
