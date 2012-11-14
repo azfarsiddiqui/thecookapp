@@ -26,16 +26,12 @@
 
 @implementation RecipeViewController
 
--(void)awakeFromNib
-{
-    [super awakeFromNib];
-}
-
 -(void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     DLog();
     [self refreshData];
+    [self showContentsButton];
 
 }
 

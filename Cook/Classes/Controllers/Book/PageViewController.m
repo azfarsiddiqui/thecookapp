@@ -10,18 +10,20 @@
 #import "APBookmarkNavigationView.h"
 #import "ViewHelper.h"
 
+#define kContentsButtonTag 112233445566
 @interface PageViewController () <APBookmarkNavigationViewDelegate>
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *pageNumberLabel;
-
+@property (nonatomic, assign) NavigationButtonStyle navigationButtonStyle;
 @end
 
 @implementation PageViewController
 
-- (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource {
+- (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource withButtonStyle:(NavigationButtonStyle)navigationButtonStyle {
     if (self = [super init]) {
         self.delegate = delegate;
+        self.navigationButtonStyle = navigationButtonStyle;
         self.dataSource = dataSource;
     }
     return self;
@@ -123,7 +125,8 @@
 #pragma mark - Private methods
 
 - (void)initMenu {
-    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+    NSString *closeImageName = (self.navigationButtonStyle == NavigationButtonStyleGray) ? @"cook_book_icon_close_gray.png" : @"cook_book_icon_close_white.png";
+    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:closeImageName]
                                                  target:self
                                                selector:@selector(closeTapped:)];
     closeButton.frame = CGRectMake(20.0,
@@ -131,6 +134,29 @@
                                    closeButton.frame.size.width,
                                    closeButton.frame.size.height);
     [self.view addSubview:closeButton];
+    
+    
+    NSString *contentsImageName = (self.navigationButtonStyle == NavigationButtonStyleGray) ? @"cook_book_icon_contents_gray.png" : @"cook_book_icon_contents_white.png";
+    UIButton *contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:contentsImageName]
+                                                 target:self
+                                               selector:@selector(contentTapped:)];
+    contentsButton.frame = CGRectMake(60.0,
+                                   15.0,
+                                   contentsButton.frame.size.width,
+                                   contentsButton.frame.size.height);
+    contentsButton.tag = kContentsButtonTag;
+    contentsButton.hidden = YES;
+    [self.view addSubview:contentsButton];
+    
+    
+}
+
+- (void)showContentsButton
+{
+    UIView *contentsButton = [self.view viewWithTag:kContentsButtonTag];
+    if (contentsButton) {
+        contentsButton.hidden = NO;
+    }
 }
 
 - (void)initBookmark {
@@ -179,6 +205,10 @@
 
 - (void)closeTapped:(id)sender {
     [self.delegate bookViewCloseRequested];
+}
+
+-(void)contentTapped:(id)sender {
+    
 }
 
 @end

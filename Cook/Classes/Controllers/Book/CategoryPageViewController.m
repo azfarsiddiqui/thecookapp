@@ -27,6 +27,12 @@
     self.categoryImageView = categoryImageView;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self showContentsButton];
+}
+
 - (void)loadData {
     [super loadData];
     [self dataDidLoad];
