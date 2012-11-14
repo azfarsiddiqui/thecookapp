@@ -133,10 +133,6 @@
                                                      self.view.bounds.size.height);
     [self.view addSubview:collectionViewController.view];
     self.contentsCollectionViewController = collectionViewController;
-    
-    UIImageView *shadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_imageshadow.png"]];
-    shadowImageView.frame = CGRectMake(collectionViewController.view.frame.origin.x + collectionViewController.view.frame.size.width - shadowImageView.frame.size.width, collectionViewController.view.frame.origin.y, shadowImageView.frame.size.width, collectionViewController.view.frame.size.height);
-    [self.view addSubview:shadowImageView];
 }
 
 - (void)createTapped:(id)sender {

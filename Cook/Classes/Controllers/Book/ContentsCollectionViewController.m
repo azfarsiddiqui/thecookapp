@@ -43,6 +43,14 @@
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.collectionView registerClass:[ContentsPhotoCell class] forCellWithReuseIdentifier:kPhotoCellId];
+    
+    
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_imageshadow.png"]];
+    shadowImageView.frame = CGRectMake(self.view.bounds.size.width - shadowImageView.frame.size.width,
+                                       self.view.bounds.origin.y, shadowImageView.frame.size.width,
+                                       self.view.bounds.size.height);
+    shadowImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:shadowImageView];
 }
 
 #pragma mark - ContentsCollectionViewController methods
