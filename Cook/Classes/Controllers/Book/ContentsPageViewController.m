@@ -14,6 +14,8 @@
 #import "Category.h"
 #import "NewRecipeViewController.h"
 #import "ContentsTableViewCell.h"
+#import "ContentsPhotoCell.h"
+#import "ViewHelper.h"
 
 @interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate>
 
@@ -45,13 +47,7 @@
     [self initCollectionView];
     [self initTitleView];
     [self initTableView];
-    
-    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [createButton setTitle:@"Create" forState:UIControlStateNormal];
-    [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [createButton sizeToFit];
-    [createButton setFrame:CGRectMake(self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width + 20.0, 18.0, createButton.frame.size.width, createButton.frame.size.height)];
-    [self.view addSubview:createButton];
+    [self initCreateButton];
 }
 
 - (void)dataDidLoad {
@@ -136,6 +132,15 @@
                                                      self.view.bounds.size.height);
     [self.view addSubview:collectionViewController.view];
     self.contentsCollectionViewController = collectionViewController;
+}
+
+- (void)initCreateButton {
+    UIButton *createButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_create.png"]
+                                                  target:self selector:@selector(createTapped:)];
+    [createButton setFrame:CGRectMake(self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width - floorf(createButton.frame.size.width / 2.0),
+                                      self.contentsCollectionViewController.view.frame.origin.y + floorf(([ContentsPhotoCell midSize].height - createButton.frame.size.width) / 2.0),
+                                      createButton.frame.size.width, createButton.frame.size.height)];
+    [self.view addSubview:createButton];
 }
 
 - (void)createTapped:(id)sender {

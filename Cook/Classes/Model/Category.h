@@ -12,5 +12,8 @@
 
 + (Category *)categoryForParseCategory:(PFObject *)parseCategory;
 + (void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (UIImage *)bookImageForCategory:(NSString *)category;
+
+- (UIImage *)bookImage;
 
 @end

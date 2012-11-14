@@ -7,10 +7,12 @@
 //
 
 #import "CategoryPageViewController.h"
+#import "Category.h"
 
 @interface CategoryPageViewController ()
 
 @property (nonatomic, strong) UILabel *categoryLabel;
+@property (nonatomic, strong) UIImageView *categoryImageView;
 
 @end
 
@@ -18,12 +20,23 @@
 
 #define kCategoryFont   [UIFont boldSystemFontOfSize:30.0]
 
+- (void)initPageView {
+    UIImageView *categoryImageView = [[UIImageView alloc] initWithImage:nil];
+    categoryImageView.frame = self.view.bounds;
+    [self.view addSubview:categoryImageView];
+    self.categoryImageView = categoryImageView;
+}
+
 - (void)loadData {
     [super loadData];
     [self dataDidLoad];
 }
 
 - (void)setCategory:(NSString *)category {
+    
+    // Update category image.
+    self.categoryImageView.image = [Category bookImageForCategory:category];
+    
     NSString *categoryDisplay = [NSString stringWithFormat:@"Category: %@", category];
     
     if (!self.categoryLabel) {
