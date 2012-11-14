@@ -90,7 +90,7 @@
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Serves x-y" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a8t-x1-NZg">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="114" id="7Vl-bH-uoX"/>
-                                    <constraint firstAttribute="height" constant="21" id="xQc-QJ-tfF"/>
+                                    <constraint firstAttribute="height" constant="20" id="IPL-3K-bHq"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -98,83 +98,56 @@
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="cooking time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dt9-Fo-cZC">
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="TnD-ki-E95"/>
+                                    <constraint firstAttribute="height" constant="20" id="uN2-U3-xtZ"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="Xia-Kz-dcG">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="32" id="eb1-ZY-0MJ"/>
-                                    <constraint firstAttribute="height" constant="32" id="xBR-4Q-5mR"/>
-                                </constraints>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="6uU-l1-Qiw"/>
-                                </constraints>
-                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="Xia-Kz-dcG"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh"/>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jf2-lp-5CN"/>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="32" id="3Vg-wS-p3Q"/>
-                                    <constraint firstAttribute="height" constant="32" id="xbn-qd-MD1"/>
-                                </constraints>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="8" id="zp3-p6-4yl"/>
-                                </constraints>
-                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="94h-kc-7mL"/>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xS6-ra-iss"/>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="auk-Y5-yP6" customClass="FacebookUserView">
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="centerY" secondItem="8gW-u9-5Bh" secondAttribute="centerY" type="default" id="0AD-N2-bXm"/>
-                            <constraint firstItem="fcB-UV-juz" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="367" id="2MO-va-9fj"/>
-                            <constraint firstItem="auk-Y5-yP6" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="8" id="2oC-NG-kjy"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="33M-yp-Iut"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="3vA-Cy-UQt"/>
                             <constraint firstItem="xS6-ra-iss" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="650" id="4W3-sC-ko8"/>
-                            <constraint firstItem="9m0-6J-wgX" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="69" id="89H-Nw-73N"/>
+                            <constraint firstItem="9m0-6J-wgX" firstAttribute="bottom" secondItem="Pu7-06-VlL" secondAttribute="bottom" type="default" id="9JJ-kx-NUc"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="trailing" secondItem="Jf2-lp-5CN" secondAttribute="trailing" type="default" id="9cA-Fp-2Dj"/>
-                            <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="61" id="BJh-Kk-Z4e"/>
-                            <constraint firstItem="a8t-x1-NZg" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="121" id="CoI-Hq-MzO"/>
-                            <constraint firstItem="8gW-u9-5Bh" firstAttribute="trailing" secondItem="Xia-Kz-dcG" secondAttribute="trailing" type="default" id="FmQ-eq-wdc"/>
+                            <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="BSr-Ha-3Xi"/>
+                            <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="353" id="FiR-5d-Inf"/>
                             <constraint firstAttribute="bottom" secondItem="94h-kc-7mL" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="HP4-ac-AOP"/>
-                            <constraint firstAttribute="bottom" secondItem="auk-Y5-yP6" secondAttribute="bottom" constant="703" id="I0g-B6-VWe"/>
-                            <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="471" id="LaQ-cg-u2p"/>
-                            <constraint firstItem="8gW-u9-5Bh" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="151" id="Le4-3z-ABO"/>
+                            <constraint firstItem="Xia-Kz-dcG" firstAttribute="centerY" secondItem="a8t-x1-NZg" secondAttribute="centerY" type="default" id="IR8-oO-NGV"/>
+                            <constraint firstItem="8gW-u9-5Bh" firstAttribute="centerY" secondItem="dt9-Fo-cZC" secondAttribute="centerY" type="default" id="JHD-JH-o4j"/>
+                            <constraint firstItem="fcB-UV-juz" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="367" id="K8a-1N-efv"/>
+                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="KKb-sm-ReB"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="196" id="Lmw-Hm-kgh"/>
                             <constraint firstAttribute="bottom" secondItem="xS6-ra-iss" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Mk5-8e-58T"/>
                             <constraint firstAttribute="trailing" secondItem="xS6-ra-iss" secondAttribute="trailing" constant="44" id="Mkd-ID-MPH"/>
-                            <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="dt9-Fo-cZC" secondAttribute="leading" type="default" id="Mxc-Au-zeG"/>
-                            <constraint firstItem="auk-Y5-yP6" firstAttribute="leading" secondItem="Pu7-06-VlL" secondAttribute="leading" type="default" id="N1D-f5-EWr"/>
+                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="trailing" secondItem="a8t-x1-NZg" secondAttribute="trailing" type="default" id="N8w-8m-dY9"/>
                             <constraint firstItem="Xia-Kz-dcG" firstAttribute="top" secondItem="Pu7-06-VlL" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Pd6-ni-UkL"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" type="default" id="SOa-7l-bl6"/>
+                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="leading" secondItem="a8t-x1-NZg" secondAttribute="leading" type="default" id="ULb-a5-vYY"/>
+                            <constraint firstItem="Pu7-06-VlL" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="436" id="V6L-aS-Qfg"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="leading" type="default" id="Vir-i4-S71"/>
-                            <constraint firstItem="8gW-u9-5Bh" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="leading" type="default" id="Zm2-u5-aNM"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="top" secondItem="xS6-ra-iss" secondAttribute="top" type="default" id="bua-z7-XEu"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="leading" type="default" id="dFR-wf-nqT"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="duZ-3G-hVO"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="gnl-Ie-F1H"/>
                             <constraint firstAttribute="trailing" secondItem="94h-kc-7mL" secondAttribute="trailing" constant="398" id="ira-gc-Kod"/>
-                            <constraint firstItem="a8t-x1-NZg" firstAttribute="trailing" secondItem="dt9-Fo-cZC" secondAttribute="trailing" type="default" id="sLJ-T6-NXf"/>
-                            <constraint firstItem="auk-Y5-yP6" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="436" id="sZp-XV-oP6"/>
-                            <constraint firstAttribute="trailing" secondItem="auk-Y5-yP6" secondAttribute="trailing" constant="158" id="sgA-dG-ayz"/>
-                            <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="359" id="vcx-oY-jXs"/>
+                            <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="61" id="qMC-oH-UoG"/>
+                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="149" id="qmr-y7-HvR"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="cookingDirectionsScrollView" destination="xS6-ra-iss" id="2rz-cT-U6U"/>
-                        <outlet property="facebookUserView" destination="auk-Y5-yP6" id="Dqm-Zk-EFx"/>
                         <outlet property="ingredientsScrollView" destination="94h-kc-7mL" id="9Oo-wh-xPq"/>
                         <outlet property="recipeImageScrollView" destination="Jf2-lp-5CN" id="MYA-8p-K0o"/>
                         <outlet property="recipeNameLabel" destination="Pu7-06-VlL" id="XLV-9G-RTk"/>
@@ -545,11 +518,71 @@
         </scene>
     </scenes>
     <resources>
-        <image name="cook_book_icon_like_off.png" width="16" height="16"/>
-        <image name="cook_book_icon_serves.png" width="16" height="16"/>
-        <image name="cook_book_icon_time.png" width="16" height="16"/>
-        <image name="cook_book_recipe_imageshadow.png" width="16" height="16"/>
+        <image name="cook_book_icon_like_off.png" width="48" height="42"/>
+        <image name="cook_book_icon_serves.png" width="17" height="17"/>
+        <image name="cook_book_icon_time.png" width="17" height="17"/>
+        <image name="cook_book_recipe_imageshadow.png" width="8" height="1"/>
     </resources>
+    <classes>
+        <class className="BookCategoryViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/BookCategoryViewController.h"/>
+        </class>
+        <class className="BookContentsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/BookContentsViewController.h"/>
+        </class>
+        <class className="CategoryListCell" superclassName="UICollectionViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="categoryNameLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="CategoryListViewController" superclassName="UICollectionViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListViewController.h"/>
+        </class>
+        <class className="IngredientTableViewCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientTableViewCell.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="NewRecipeViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="selectCategoryTapped:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="categoryLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="recipeImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="recipeNameTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="uploadLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="uploadProgressView" candidateClass="UIProgressView"/>
+            </relationships>
+        </class>
+        <class className="PageViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/PageViewController.h"/>
+        </class>
+        <class className="RecipeViewController" superclassName="PageViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="cookingDirectionsScrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="ingredientsScrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="recipeNameLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="UICollectionReusableView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
+        </class>
+        <class className="UICollectionViewCell" superclassName="UICollectionReusableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewCell.h"/>
+        </class>
+        <class className="UICollectionViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewController.h"/>
+        </class>
+        <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

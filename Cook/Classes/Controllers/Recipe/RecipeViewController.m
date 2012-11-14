@@ -15,13 +15,13 @@
 #define kImageViewTag   1122334455
 @interface RecipeViewController ()
 @property(nonatomic,strong) IBOutlet UILabel *recipeNameLabel;
-@property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @property(nonatomic,strong) IBOutlet UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *cookingDirectionsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
 
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UILabel *cookingDirectionsLabel;
+@property(nonatomic,strong) FacebookUserView *facebookUserView;
 @end
 
 @implementation RecipeViewController
@@ -38,6 +38,7 @@
     [self refreshData];
 
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -56,10 +57,7 @@
 {
     [super loadData];
     self.recipeNameLabel.text = self.recipe.name;
-    
-    CKUser *user = [[self.dataSource currentBook] user];
-    [self.facebookUserView setUser:user];
-
+    [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
     [self.recipe.ingredients each:^(Ingredient *ingredient) {
         [mutableIngredientString appendFormat:@"%@\n",ingredient.name];
@@ -135,6 +133,15 @@
     }
     
     return _cookingDirectionsLabel;
+}
+
+-(FacebookUserView *)facebookUserView
+{
+    if (!_facebookUserView) {
+        _facebookUserView = [[FacebookUserView alloc]initWithFrame:CGRectMake(436.0f, 33.0f, 0.0f, 0.0f)];
+        [self.view addSubview:_facebookUserView];
+    }
+    return _facebookUserView;
 }
 
 -(void) adjustScrollView:(UIScrollView*)scrollView forHeight:(float)height
