@@ -176,6 +176,11 @@
     return [self.categories objectAtIndex:self.currentCategoryIndex];
 }
 
+- (NSInteger)numRecipesInCategory:(NSString *)category {
+    NSInteger categoryIndex = [self.categories findIndex:category];
+    return [[self.categoryRecipes objectAtIndex:categoryIndex] count];
+}
+
 #pragma mark - Private methods
 
 - (ContentsPageViewController *)contentsViewController {

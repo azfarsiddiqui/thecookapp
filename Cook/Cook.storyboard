@@ -104,11 +104,29 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="Xia-Kz-dcG"/>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="Xia-Kz-dcG">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="32" id="eb1-ZY-0MJ"/>
+                                    <constraint firstAttribute="height" constant="32" id="xBR-4Q-5mR"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="32" id="6uU-l1-Qiw"/>
+                                </constraints>
+                            </imageView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jf2-lp-5CN"/>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="32" id="3Vg-wS-p3Q"/>
+                                    <constraint firstAttribute="height" constant="32" id="xbn-qd-MD1"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="8" id="zp3-p6-4yl"/>
+                                </constraints>
+                            </imageView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="94h-kc-7mL"/>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xS6-ra-iss"/>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="auk-Y5-yP6" customClass="FacebookUserView">
@@ -127,6 +145,7 @@
                             <constraint firstItem="fcB-UV-juz" firstAttribute="trailing" secondItem="Jf2-lp-5CN" secondAttribute="trailing" type="default" id="9cA-Fp-2Dj"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="61" id="BJh-Kk-Z4e"/>
                             <constraint firstItem="a8t-x1-NZg" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="121" id="CoI-Hq-MzO"/>
+                            <constraint firstItem="8gW-u9-5Bh" firstAttribute="trailing" secondItem="Xia-Kz-dcG" secondAttribute="trailing" type="default" id="FmQ-eq-wdc"/>
                             <constraint firstAttribute="bottom" secondItem="94h-kc-7mL" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="HP4-ac-AOP"/>
                             <constraint firstAttribute="bottom" secondItem="auk-Y5-yP6" secondAttribute="bottom" constant="703" id="I0g-B6-VWe"/>
                             <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="471" id="LaQ-cg-u2p"/>
@@ -526,74 +545,11 @@
         </scene>
     </scenes>
     <resources>
-        <image name="cook_book_icon_like_off.png" width="32" height="32"/>
-        <image name="cook_book_icon_serves.png" width="32" height="32"/>
-        <image name="cook_book_icon_time.png" width="32" height="32"/>
-        <image name="cook_book_recipe_imageshadow.png" width="8" height="1"/>
+        <image name="cook_book_icon_like_off.png" width="16" height="16"/>
+        <image name="cook_book_icon_serves.png" width="16" height="16"/>
+        <image name="cook_book_icon_time.png" width="16" height="16"/>
+        <image name="cook_book_recipe_imageshadow.png" width="16" height="16"/>
     </resources>
-    <classes>
-        <class className="BookCategoryViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/BookCategoryViewController.h"/>
-        </class>
-        <class className="BookContentsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/BookContentsViewController.h"/>
-        </class>
-        <class className="CategoryListCell" superclassName="UICollectionViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="categoryNameLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="CategoryListViewController" superclassName="UICollectionViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListViewController.h"/>
-        </class>
-        <class className="FacebookUserView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FacebookUserView.h"/>
-        </class>
-        <class className="IngredientTableViewCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientTableViewCell.h"/>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="NewRecipeViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="categoryLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="recipeImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="recipeNameTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="uploadLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="uploadProgressView" candidateClass="UIProgressView"/>
-            </relationships>
-        </class>
-        <class className="PageViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PageViewController.h"/>
-        </class>
-        <class className="RecipeViewController" superclassName="PageViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="cookingDirectionsScrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
-                <relationship kind="outlet" name="ingredientsScrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="recipeNameLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="UICollectionReusableView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
-        </class>
-        <class className="UICollectionViewCell" superclassName="UICollectionReusableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewCell.h"/>
-        </class>
-        <class className="UICollectionViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewController.h"/>
-        </class>
-        <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

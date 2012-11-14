@@ -169,6 +169,15 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
+- (NSURL *)pictureUrl {
+    NSURL *pictureUrl = nil;
+    if ([PFFacebookUtils isLinkedWithUser:self.parseUser]) {
+        pictureUrl = [NSURL URLWithString:
+                      [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", self.facebookId]];
+    }
+    return pictureUrl;
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {

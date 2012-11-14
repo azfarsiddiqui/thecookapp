@@ -32,6 +32,7 @@
 		76324F0D165343DE007D1EBF /* MGImageUtilities - Source Code License.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 76324F08165343DE007D1EBF /* MGImageUtilities - Source Code License.rtf */; };
 		76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0A165343DE007D1EBF /* UIImage+ProportionalFill.m */; };
 		76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0C165343DE007D1EBF /* UIImage+Tint.m */; };
+		76324F1F16534EF3007D1EBF /* ContentsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F1E16534EF3007D1EBF /* ContentsTableViewCell.m */; };
 		76506D64163DF8920047D36B /* cook_dash_icons_store.png in Resources */ = {isa = PBXBuildFile; fileRef = 76506D62163DF8920047D36B /* cook_dash_icons_store.png */; };
 		76506D65163DF8920047D36B /* cook_dash_icons_store@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76506D63163DF8920047D36B /* cook_dash_icons_store@2x.png */; };
 		76520465161ABB0F00EE253C /* CKBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 76520464161ABB0F00EE253C /* CKBook.m */; };
@@ -295,6 +296,8 @@
 		76324F0A165343DE007D1EBF /* UIImage+ProportionalFill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ProportionalFill.m"; sourceTree = "<group>"; };
 		76324F0B165343DE007D1EBF /* UIImage+Tint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Tint.h"; sourceTree = "<group>"; };
 		76324F0C165343DE007D1EBF /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
+		76324F1D16534EF3007D1EBF /* ContentsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentsTableViewCell.h; sourceTree = "<group>"; };
+		76324F1E16534EF3007D1EBF /* ContentsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsTableViewCell.m; sourceTree = "<group>"; };
 		76506D62163DF8920047D36B /* cook_dash_icons_store.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_store.png; sourceTree = "<group>"; };
 		76506D63163DF8920047D36B /* cook_dash_icons_store@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_store@2x.png"; sourceTree = "<group>"; };
 		76520463161ABB0F00EE253C /* CKBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBook.h; sourceTree = "<group>"; };
@@ -1072,6 +1075,8 @@
 				76B9E016164C853F00345B8D /* ContentsPhotoCell.m */,
 				76622D5A1650C6A7005F4459 /* CategoryPageViewController.h */,
 				76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */,
+				76324F1D16534EF3007D1EBF /* ContentsTableViewCell.h */,
+				76324F1E16534EF3007D1EBF /* ContentsTableViewCell.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -1494,6 +1499,7 @@
 				76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */,
 				76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */,
 				8903B56916534D8900BB3E5B /* FacebookUserView.m in Sources */,
+				76324F1F16534EF3007D1EBF /* ContentsTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

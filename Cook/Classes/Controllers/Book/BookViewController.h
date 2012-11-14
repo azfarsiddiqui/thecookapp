@@ -39,6 +39,7 @@
 - (NSArray *)recipesForCategory:(NSString *)category;
 - (NSInteger)currentPageNumber;
 - (NSString *)bookViewCurrentCategory;
+- (NSInteger)numRecipesInCategory:(NSString *)category;
 
 @end
 

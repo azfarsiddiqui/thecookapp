@@ -13,6 +13,7 @@
 #import "CKRecipe.h"
 #import "Category.h"
 #import "NewRecipeViewController.h"
+#import "ContentsTableViewCell.h"
 
 @interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate>
 
@@ -67,7 +68,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
-    cell.textLabel.text = [[self.dataSource bookCategories] objectAtIndex:indexPath.row];
+    NSString *category = [[self.dataSource bookCategories] objectAtIndex:indexPath.row];
+    cell.textLabel.text = category;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource numRecipesInCategory:category]];
     return cell;
 }
 
@@ -122,7 +125,7 @@
     tableView.scrollEnabled = NO;
     [self.view addSubview:tableView];
     self.tableView = tableView;
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kCategoryCellId];
+    [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kCategoryCellId];
 }
 
 - (void)initCollectionView {
