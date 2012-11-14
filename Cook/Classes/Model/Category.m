@@ -43,6 +43,15 @@
 
 }
 
++ (UIImage *)bookImageForCategory:(NSString *)category {
+    return [UIImage imageNamed:[NSString stringWithFormat:@"cook_category_%@.png",
+                                [[category stringByReplacingOccurrencesOfString:@" " withString:@""] lowercaseString]]];
+}
+
+- (UIImage *)bookImage {
+    return [Category bookImageForCategory:self.name];
+}
+
 #pragma mark - Category population. Populate once only
 
 +(void)seedData
