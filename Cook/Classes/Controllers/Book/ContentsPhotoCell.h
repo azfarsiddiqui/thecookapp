@@ -7,9 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKRecipe.h"
 
 @interface ContentsPhotoCell : UICollectionViewCell
 
+- (void)loadRecipe:(CKRecipe *)recipe;
+
 + (CGSize)cellSize;
++ (CGSize)minSize;
++ (CGSize)midSize;
++ (CGSize)maxSize;
 
 @end

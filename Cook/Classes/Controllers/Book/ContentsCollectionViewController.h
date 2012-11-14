@@ -10,4 +10,6 @@
 
 @interface ContentsCollectionViewController : UICollectionViewController
 
+- (void)loadRecipes:(NSArray *)recipes;
+
 @end

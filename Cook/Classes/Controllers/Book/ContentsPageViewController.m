@@ -56,6 +56,7 @@
 - (void)dataDidLoad {
     [super dataDidLoad];
     [self.tableView reloadData];
+    [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -107,7 +108,7 @@
 
 - (void)initTableView {
     CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;
-    UIEdgeInsets tableInsets = UIEdgeInsetsMake(20.0, 50.0, 50.0, 50.0);
+    UIEdgeInsets tableInsets = UIEdgeInsetsMake(20.0, 100.0, 50.0, 100.0);
     CGFloat availableWidth = self.view.bounds.size.width - xOffset;
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(xOffset + tableInsets.left,
                                                                            self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + tableInsets.top,
@@ -126,12 +127,16 @@
 
 - (void)initCollectionView {
     ContentsCollectionViewController *collectionViewController  = [[ContentsCollectionViewController alloc] init];
-    collectionViewController.view.frame = CGRectMake(78.0,
+    collectionViewController.view.frame = CGRectMake(0.0,
                                                      0.0,
                                                      collectionViewController.view.frame.size.width,
                                                      self.view.bounds.size.height);
     [self.view addSubview:collectionViewController.view];
     self.contentsCollectionViewController = collectionViewController;
+    
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_imageshadow.png"]];
+    shadowImageView.frame = CGRectMake(collectionViewController.view.frame.origin.x + collectionViewController.view.frame.size.width - shadowImageView.frame.size.width, collectionViewController.view.frame.origin.y, shadowImageView.frame.size.width, collectionViewController.view.frame.size.height);
+    [self.view addSubview:shadowImageView];
 }
 
 - (void)createTapped:(id)sender {

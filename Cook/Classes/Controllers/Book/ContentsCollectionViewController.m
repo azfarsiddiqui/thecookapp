@@ -8,15 +8,18 @@
 
 #import "ContentsCollectionViewController.h"
 #import "ContentsPhotoCell.h"
+#import "CKRecipe.h"
 
 @interface ContentsCollectionViewController ()
+
+@property (nonatomic, strong) NSArray *recipes;
 
 @end
 
 @implementation ContentsCollectionViewController
 
 #define kPhotoCellId    @"PhotoCellId"
-#define kNumColumns     3
+#define kNumColumns     2
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
@@ -42,11 +45,27 @@
     [self.collectionView registerClass:[ContentsPhotoCell class] forCellWithReuseIdentifier:kPhotoCellId];
 }
 
+#pragma mark - ContentsCollectionViewController methods
+
+- (void)loadRecipes:(NSArray *)recipes {
+    self.recipes = recipes;
+    [self.collectionView reloadData];
+}
+
 #pragma mark - UICollectionViewDelegateFlowLayout methods
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [ContentsPhotoCell cellSize];
+    NSInteger numItems = [self collectionView:collectionView numberOfItemsInSection:indexPath.section];
+    CGSize itemSize = [ContentsPhotoCell minSize];
+    if (numItems == 1) {
+        itemSize = [ContentsPhotoCell maxSize];
+    } else if (numItems < 5) {
+        itemSize = [ContentsPhotoCell midSize];
+    } else if (indexPath.row == 0) {
+        itemSize = [ContentsPhotoCell midSize];
+    }
+    return itemSize;
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
@@ -71,15 +90,15 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return 15;
+    return [self.recipes count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.row];
     ContentsPhotoCell *cell = (ContentsPhotoCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kPhotoCellId
                                                                                                   forIndexPath:indexPath];
-    cell.contentView.backgroundColor = (indexPath.item % 2 == 0) ? [UIColor lightGrayColor] : [UIColor darkGrayColor];
-    cell.contentView.alpha = 0.7;
+    [cell loadRecipe:recipe];
     return cell;
 }
 
