@@ -32,7 +32,6 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.view.frame = [self.delegate bookViewBounds];
-    
     [self initPageView];
     [self initMenu];
     [self initBookmark];
