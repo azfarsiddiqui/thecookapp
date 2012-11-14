@@ -14,9 +14,12 @@
 @interface RecipeViewController ()
 @property(nonatomic,strong) IBOutlet UILabel *recipeNameLabel;
 @property(nonatomic,strong) IBOutlet UILabel *userNameLabel;
-@property(nonatomic,strong) IBOutlet UILabel *ingredientListLabel;
-@property(nonatomic,strong) IBOutlet UILabel *directionsLabel;
-@property(nonatomic,strong) IBOutlet UIScrollView *recipeScrollView;
+@property(nonatomic,strong) IBOutlet UIScrollView *ingredientsScrollView;
+@property(nonatomic,strong) IBOutlet UIScrollView *cookingDirectionsScrollView;
+@property(nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
+
+@property(nonatomic,strong) UILabel *ingredientsLabel;
+@property(nonatomic,strong) UILabel *cookingDirectionsLabel;
 @end
 
 @implementation RecipeViewController
@@ -59,17 +62,28 @@
     }];
     
     if ([mutableIngredientString length] > 0) {
-        self.ingredientListLabel.text = mutableIngredientString;
+        CGSize maxSize = CGSizeMake(self.ingredientsScrollView.frame.size.width, CGFLOAT_MAX);
+        self.ingredientsLabel.text = mutableIngredientString;
+        CGSize requiredSize = [self.ingredientsLabel sizeThatFits:maxSize];
+        self.ingredientsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
+        [self adjustScrollView:self.ingredientsScrollView forHeight:requiredSize.height];
+
     }
     
-    self.directionsLabel.text = self.recipe.description;
-    [self.directionsLabel sizeToFit];
+    if (self.recipe.description) {
+        CGSize maxSize = CGSizeMake(self.cookingDirectionsScrollView.frame.size.width, CGFLOAT_MAX);
+        self.cookingDirectionsLabel.text = self.recipe.description;
+        CGSize requiredSize = [self.cookingDirectionsLabel sizeThatFits:maxSize];
+        self.cookingDirectionsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
+        [self adjustScrollView:self.cookingDirectionsScrollView forHeight:requiredSize.height];
+
+    }
     
-    PFImageView *imageView = (PFImageView*) [self.recipeScrollView viewWithTag:kImageViewTag];
+    PFImageView *imageView = (PFImageView*) [self.recipeImageScrollView viewWithTag:kImageViewTag];
     if (!imageView) {
         imageView = [[PFImageView alloc] init];
         imageView.tag = kImageViewTag;
-        [self.recipeScrollView addSubview:imageView];
+        [self.recipeImageScrollView addSubview:imageView];
     }
     
     [CKRecipe imagesForRecipe:self.recipe success:^{
@@ -81,8 +95,8 @@
                     DLog(@"recipe image size: %@",NSStringFromCGSize(imageSize));
                     imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
                     imageView.image = image;
-                    self.recipeScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
-                    [self.recipeScrollView setContentOffset:CGPointMake(341.0f, 0.0f)];
+                    self.recipeImageScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
+                    [self.recipeImageScrollView setContentOffset:CGPointMake(341.0f, 0.0f)];
                 } else {
                     DLog(@"Error loading image in background: %@", [error description]);
                 }
@@ -93,6 +107,37 @@
         DLog(@"Error loading image: %@", [error description]);
     }];
 
+}
+
+#pragma mark - private methods
+
+-(UILabel *)ingredientsLabel
+{
+    if (!_ingredientsLabel) {
+        _ingredientsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.ingredientsScrollView.frame.size.width, 20.0f)];
+        _ingredientsLabel.numberOfLines = 0;
+        [self.ingredientsScrollView addSubview:_ingredientsLabel];
+    }
+    
+    return _ingredientsLabel;
+}
+
+-(UILabel *)cookingDirectionsLabel
+{
+    if (!_cookingDirectionsLabel) {
+        _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.cookingDirectionsScrollView.frame.size.width, 20.0f)];
+        _cookingDirectionsLabel.numberOfLines = 0;
+        [self.cookingDirectionsScrollView addSubview:_cookingDirectionsLabel];
+    }
+    
+    return _cookingDirectionsLabel;
+}
+
+-(void) adjustScrollView:(UIScrollView*)scrollView forHeight:(float)height
+{
+    scrollView.contentSize = height > scrollView.frame.size.height ?
+        CGSizeMake(scrollView.frame.size.width, height) :
+    CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
 }
 
 @end
