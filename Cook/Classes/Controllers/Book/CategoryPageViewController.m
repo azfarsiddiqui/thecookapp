@@ -62,6 +62,7 @@
                                       self.categoryLabel.frame.origin.y + self.categoryLabel.frame.size.height,
                                       self.tableView.frame.size.width,
                                       self.view.bounds.size.height - self.categoryLabel.frame.origin.y - self.categoryLabel.frame.size.height - kTableInsets.top - kTableInsets.bottom);
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource methods
