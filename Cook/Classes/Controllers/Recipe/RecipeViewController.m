@@ -9,11 +9,13 @@
 #import "RecipeViewController.h"
 #import "NSArray+Enumerable.h"
 #import "Ingredient.h"
+#import "FacebookUserView.h"
+#import "CKUser.h"
 
 #define kImageViewTag   1122334455
 @interface RecipeViewController ()
 @property(nonatomic,strong) IBOutlet UILabel *recipeNameLabel;
-@property(nonatomic,strong) IBOutlet UILabel *userNameLabel;
+@property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @property(nonatomic,strong) IBOutlet UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *cookingDirectionsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
@@ -54,7 +56,9 @@
 {
     [super loadData];
     self.recipeNameLabel.text = self.recipe.name;
-    self.userNameLabel.text = [[[self.dataSource currentBook] userName] uppercaseString];
+    
+    CKUser *user = [[self.dataSource currentBook] user];
+    [self.facebookUserView setUser:user];
 
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
     [self.recipe.ingredients each:^(Ingredient *ingredient) {
