@@ -127,7 +127,7 @@
             
             // Category page.
             NSString *category = [self.categories objectAtIndex:categoryIndex];
-            [self.categoryViewController setCategory:category];
+            [self.categoryViewController loadCategory:category];
             [self.categoryViewController loadData];
             view = self.categoryViewController.view;
             

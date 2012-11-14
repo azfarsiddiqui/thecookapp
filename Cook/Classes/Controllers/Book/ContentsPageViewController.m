@@ -65,7 +65,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
     NSString *category = [[self.dataSource bookCategories] objectAtIndex:indexPath.row];
-    cell.textLabel.text = category;
+    cell.textLabel.text = [category uppercaseString];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource numRecipesInCategory:category]];
     return cell;
 }
@@ -118,7 +118,7 @@
     tableView.autoresizingMask = UIViewAutoresizingNone;
     tableView.dataSource = self;
     tableView.delegate = self;
-    tableView.scrollEnabled = NO;
+    tableView.scrollEnabled = YES;
     [self.view addSubview:tableView];
     self.tableView = tableView;
     [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kCategoryCellId];
