@@ -55,6 +55,10 @@
 		76552748164B87DA001D4BAA /* cook_book_icon_facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76552740164B87DA001D4BAA /* cook_book_icon_facebook@2x.png */; };
 		76552749164B87DA001D4BAA /* cook_book_icon_twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 76552741164B87DA001D4BAA /* cook_book_icon_twitter.png */; };
 		7655274A164B87DA001D4BAA /* cook_book_icon_twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76552742164B87DA001D4BAA /* cook_book_icon_twitter@2x.png */; };
+		76582AAC165497310007FCE1 /* MPAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA3165497310007FCE1 /* MPAnimation.m */; };
+		76582AAD165497310007FCE1 /* MPFlipTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA6165497310007FCE1 /* MPFlipTransition.m */; };
+		76582AAE165497310007FCE1 /* MPFlipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA8165497310007FCE1 /* MPFlipViewController.m */; };
+		76582AAF165497310007FCE1 /* MPTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AAA165497310007FCE1 /* MPTransition.m */; };
 		76616E8D16312461002C4878 /* BookCover.m in Sources */ = {isa = PBXBuildFile; fileRef = 76616E8C16312461002C4878 /* BookCover.m */; };
 		76616E9516312C68002C4878 /* cook_book_orange@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76616E9416312C68002C4878 /* cook_book_orange@2x.png */; };
 		76622D5C1650C6AB005F4459 /* CategoryPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */; };
@@ -334,6 +338,16 @@
 		76552740164B87DA001D4BAA /* cook_book_icon_facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_facebook@2x.png"; sourceTree = "<group>"; };
 		76552741164B87DA001D4BAA /* cook_book_icon_twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_twitter.png; sourceTree = "<group>"; };
 		76552742164B87DA001D4BAA /* cook_book_icon_twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_twitter@2x.png"; sourceTree = "<group>"; };
+		76582AA2165497310007FCE1 /* MPAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPAnimation.h; sourceTree = "<group>"; };
+		76582AA3165497310007FCE1 /* MPAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPAnimation.m; sourceTree = "<group>"; };
+		76582AA4165497310007FCE1 /* MPFlipEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPFlipEnumerations.h; sourceTree = "<group>"; };
+		76582AA5165497310007FCE1 /* MPFlipTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPFlipTransition.h; sourceTree = "<group>"; };
+		76582AA6165497310007FCE1 /* MPFlipTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPFlipTransition.m; sourceTree = "<group>"; };
+		76582AA7165497310007FCE1 /* MPFlipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPFlipViewController.h; sourceTree = "<group>"; };
+		76582AA8165497310007FCE1 /* MPFlipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPFlipViewController.m; sourceTree = "<group>"; };
+		76582AA9165497310007FCE1 /* MPTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTransition.h; sourceTree = "<group>"; };
+		76582AAA165497310007FCE1 /* MPTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTransition.m; sourceTree = "<group>"; };
+		76582AAB165497310007FCE1 /* MPTransitionEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTransitionEnumerations.h; sourceTree = "<group>"; };
 		76616E8B16312461002C4878 /* BookCover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCover.h; sourceTree = "<group>"; };
 		76616E8C16312461002C4878 /* BookCover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCover.m; sourceTree = "<group>"; };
 		76616E9416312C68002C4878 /* cook_book_orange@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_orange@2x.png"; sourceTree = "<group>"; };
@@ -768,6 +782,23 @@
 			path = Cook/Classes/Categories;
 			sourceTree = SOURCE_ROOT;
 		};
+		76582AA1165497310007FCE1 /* MPFlipViewController */ = {
+			isa = PBXGroup;
+			children = (
+				76582AA2165497310007FCE1 /* MPAnimation.h */,
+				76582AA3165497310007FCE1 /* MPAnimation.m */,
+				76582AA4165497310007FCE1 /* MPFlipEnumerations.h */,
+				76582AA5165497310007FCE1 /* MPFlipTransition.h */,
+				76582AA6165497310007FCE1 /* MPFlipTransition.m */,
+				76582AA7165497310007FCE1 /* MPFlipViewController.h */,
+				76582AA8165497310007FCE1 /* MPFlipViewController.m */,
+				76582AA9165497310007FCE1 /* MPTransition.h */,
+				76582AAA165497310007FCE1 /* MPTransition.m */,
+				76582AAB165497310007FCE1 /* MPTransitionEnumerations.h */,
+			);
+			path = MPFlipViewController;
+			sourceTree = "<group>";
+		};
 		7666B3FB16141B28001D1BA1 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1130,6 +1161,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76582AA1165497310007FCE1 /* MPFlipViewController */,
 				76324F07165343DE007D1EBF /* MGImageUtilities */,
 				76C6CDCF164B5495006001BD /* APBookmarkNavigationView */,
 				89232B791625291A00152940 /* AFKPageFlipper */,
@@ -1556,6 +1588,10 @@
 				76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */,
 				8903B56916534D8900BB3E5B /* FacebookUserView.m in Sources */,
 				76324F1F16534EF3007D1EBF /* ContentsTableViewCell.m in Sources */,
+				76582AAC165497310007FCE1 /* MPAnimation.m in Sources */,
+				76582AAD165497310007FCE1 /* MPFlipTransition.m in Sources */,
+				76582AAE165497310007FCE1 /* MPFlipViewController.m in Sources */,
+				76582AAF165497310007FCE1 /* MPTransition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

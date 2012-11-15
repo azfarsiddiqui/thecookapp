@@ -11,17 +11,16 @@
 #import "RecipeListViewController.h"
 #import "BookCategoryViewController.h"
 #import "RecipeViewController.h"
-#import "CookPageFlipper.h"
 #import "ViewHelper.h"
 #import "ContentsPageViewController.h"
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "CategoryPageViewController.h"
 #import "RecipeViewController.h"
+#import "MPFlipViewController.h"
 
-@interface BookViewController ()<AFKPageFlipperDataSource, BookViewDelegate, BookViewDataSource>
+@interface BookViewController () <BookViewDelegate, BookViewDataSource, MPFlipViewControllerDataSource, MPFlipViewControllerDelegate>
 
-@property (nonatomic, strong) CookPageFlipper *pageFlipper;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) NSArray *recipes;
@@ -36,6 +35,10 @@
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
 
+@property (nonatomic, strong) MPFlipViewController *flipViewController;
+@property (nonatomic, assign) NSInteger previousIndex;
+@property (nonatomic, assign) NSInteger tentativeIndex;
+
 @property (nonatomic, assign) NSUInteger currentCategoryIndex;
 
 @end
@@ -48,24 +51,15 @@
     if (self = [super init]) {
         self.book = book;
         self.delegate = delegate;
-        [self initScreen];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self initScreen];
     [self loadData];
-}
-
-#pragma AFKPageFlipperDataSource methods
-
-- (NSInteger)numberOfPagesForPageFlipper:(CookPageFlipper *) pageFlipper {
-    return [self numberOfPages];
-}
-
-- (UIView *)viewForPage:(NSInteger)page inFlipper:(CookPageFlipper *)pageFlipper {
-    return [self viewForPageAtIndex:page];
 }
 
 #pragma mark - BookViewDelegate
@@ -112,14 +106,22 @@
     return numPages;
 }
 
--(UIView *)viewForPageAtIndex:(NSInteger)pageIndex {
+- (UIView *)viewForPageAtIndex:(NSInteger)pageIndex {
+    UIViewController *viewController = [self viewControllerForPageIndex:pageIndex];
+    return viewController.view;
+}
+
+- (UIViewController *)viewControllerForPageIndex:(NSInteger)pageIndex {
+    UIViewController *viewController = nil;
     UIView *view = nil;
     
     if (pageIndex == 1) {
         
         // Contents page.
         view = self.contentsViewController.view;
+        viewController = self.contentsViewController;
         [self.contentsViewController loadData];
+        
     } else {
         
         NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
@@ -127,6 +129,7 @@
             
             // Category page.
             NSString *category = [self.categories objectAtIndex:categoryIndex];
+            viewController = self.categoryViewController;
             [self.categoryViewController loadCategory:category];
             [self.categoryViewController loadData];
             view = self.categoryViewController.view;
@@ -141,11 +144,12 @@
             CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
             self.recipe = recipe;
             self.recipeViewController.recipe = recipe;
+            viewController = self.recipeViewController;
             view = self.recipeViewController.view;
         }
         
     }
-    return view;
+    return viewController;
 }
 
 - (NSArray *)bookRecipes {
@@ -169,7 +173,7 @@
 }
 
 - (NSInteger)currentPageNumber {
-    return self.pageFlipper.currentPage;
+    return self.previousIndex;
 }
 
 - (NSString *)bookViewCurrentCategory {
@@ -179,6 +183,44 @@
 - (NSInteger)numRecipesInCategory:(NSString *)category {
     NSInteger categoryIndex = [self.categories findIndex:category];
     return [[self.categoryRecipes objectAtIndex:categoryIndex] count];
+}
+
+#pragma mark - MPFlipViewControllerDataSource methods
+
+- (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController viewControllerBeforeViewController:(UIViewController *)viewController {
+	NSInteger index = self.previousIndex;
+	index--;
+	if (index < 1) {
+		return nil; // reached beginning, don't wrap
+    }
+    
+	self.tentativeIndex = index;
+	return [self viewControllerForPageIndex:index];
+}
+
+- (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController
+       viewControllerAfterViewController:(UIViewController *)viewController {
+	NSInteger index = self.previousIndex;
+	index++;
+	if (index > [self numberOfPages]) {
+		return nil; // reached end, don't wrap
+    }
+	self.tentativeIndex = index;
+	return [self viewControllerForPageIndex:index];
+}
+
+#pragma mark - MPFlipViewControllerDelegate protocol
+
+- (void)flipViewController:(MPFlipViewController *)flipViewController didFinishAnimating:(BOOL)finished
+    previousViewController:(UIViewController *)previousViewController transitionCompleted:(BOOL)completed {
+	if (completed) {
+		self.previousIndex = self.tentativeIndex;
+	}
+}
+
+- (MPFlipViewControllerOrientation)flipViewController:(MPFlipViewController *)flipViewController
+                   orientationForInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    return MPFlipViewControllerOrientationHorizontal;
 }
 
 #pragma mark - Private methods
@@ -246,9 +288,22 @@
 }
 
 - (void)initFlipper {
-    self.pageFlipper = [[CookPageFlipper alloc] initWithFrame:self.view.frame];
-    self.pageFlipper.dataSource = self;
-    [self.view addSubview:self.pageFlipper];
+//    self.pageFlipper = [[CookPageFlipper alloc] initWithFrame:self.view.frame];
+//    self.pageFlipper.dataSource = self;
+//    [self.view addSubview:self.pageFlipper];
+    
+    self.previousIndex = 1;
+    self.flipViewController = [[MPFlipViewController alloc] initWithOrientation:MPFlipViewControllerOrientationHorizontal];
+    self.flipViewController.delegate = self;
+    self.flipViewController.dataSource = self;
+    self.flipViewController.view.frame = self.view.bounds;
+	[self addChildViewController:self.flipViewController];
+	[self.view addSubview:self.flipViewController.view];
+	[self.flipViewController didMoveToParentViewController:self];
+    [self.flipViewController setViewController:self.contentsViewController direction:MPFlipViewControllerDirectionForward animated:NO completion:nil];
+	
+	// Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
+	self.view.gestureRecognizers = self.flipViewController.gestureRecognizers;
 }
 
 - (void)loadData {
@@ -294,9 +349,6 @@
         
         // Reload contents.
         [self.contentsViewController loadData];
-        
-        // Reload page flipper for non-contents pages.
-        [self.pageFlipper reloadData];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
