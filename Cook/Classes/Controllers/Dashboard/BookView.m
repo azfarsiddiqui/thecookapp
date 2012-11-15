@@ -75,7 +75,7 @@
 }
 
 - (UIEdgeInsets)contentEdgeInsets {
-    return UIEdgeInsetsMake(10.0, 10.0, 13.0, 10.0);
+    return UIEdgeInsetsMake(20.0, 10.0, 13.0, 10.0);
 }
 
 - (CGSize)contentAvailableSize {
@@ -521,7 +521,7 @@
     CGPoint origin = frame.origin;
     switch (layout) {
         case BookCoverLayout1:
-            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), titleOffset);
+            origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), titleOffset + 5.0);
             break;
         case BookCoverLayout2:
             origin = CGPointMake(floorf((self.bounds.size.width - size.width) / 2.0), titleOffset);
