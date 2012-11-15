@@ -49,7 +49,12 @@
     self.category = category;
     
     // Update category image.
-    self.categoryImageView.image = [Category bookImageForCategory:category];
+    UIImage *categoryImage = [Category bookImageForCategory:category];
+    self.categoryImageView.frame = CGRectMake(self.view.bounds.origin.x,
+                                              self.view.bounds.origin.y,
+                                              categoryImage.size.width,
+                                              categoryImage.size.height);
+    self.categoryImageView.image = categoryImage;
     
     // Update category label.
     NSString *categoryDisplay = [category uppercaseString];
@@ -89,7 +94,6 @@
 
 - (void)initCategoryImageView {
     UIImageView *categoryImageView = [[UIImageView alloc] initWithImage:nil];
-    categoryImageView.frame = self.view.bounds;
     [self.view addSubview:categoryImageView];
     self.categoryImageView = categoryImageView;
 }
