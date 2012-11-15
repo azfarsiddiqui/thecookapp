@@ -185,14 +185,14 @@
 
 - (ContentsPageViewController *)contentsViewController {
     if (!_contentsViewController) {
-        _contentsViewController = [[ContentsPageViewController alloc] initWithBookViewDelegate:self dataSource:self];
+        _contentsViewController = [[ContentsPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleWhite];
     }
     return _contentsViewController;
 }
 
 - (CategoryPageViewController *)categoryViewController {
     if (!_categoryViewController) {
-        _categoryViewController = [[CategoryPageViewController alloc] initWithBookViewDelegate:self dataSource:self];
+        _categoryViewController = [[CategoryPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleGray];
     }
     return _categoryViewController;
 }

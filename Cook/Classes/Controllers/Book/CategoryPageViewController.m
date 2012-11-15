@@ -33,6 +33,12 @@
     [self initTableView];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self showContentsButton];
+}
+
 - (void)loadData {
     [super loadData];
     [self dataDidLoad];

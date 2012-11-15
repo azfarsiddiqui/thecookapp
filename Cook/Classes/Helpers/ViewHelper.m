@@ -22,6 +22,15 @@
     return button;
 }
 
++(UIButton *)buttonWithImagePrefix:(NSString *)imagePrefix target:(id)target selector:(SEL)selector
+{
+    UIImage *offImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_off.png",imagePrefix]];
+    UIImage *onImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_on.png",imagePrefix]];
+    UIButton *button = [self buttonWithImage:offImage target:target selector:selector];
+    [button setBackgroundImage:onImage forState:UIControlStateSelected];
+    return button;
+}
+
 + (CGSize)bookSize {
     return CGSizeMake(300.0, 438.0);
 }
