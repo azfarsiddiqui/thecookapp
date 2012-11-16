@@ -10,9 +10,6 @@
 
 @interface BenchtopStackLayout ()
 
-- (CGFloat)rotationForIndexPath:(NSIndexPath *)indexPath;
-- (CATransform3D)transformForIndexPath:(NSIndexPath *)indexPath;
-
 @end
 
 @implementation BenchtopStackLayout

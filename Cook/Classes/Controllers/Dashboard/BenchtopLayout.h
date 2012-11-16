@@ -14,6 +14,5 @@
 @property (nonatomic, assign) id<BenchtopDelegate> benchtopDelegate;
 
 - (id)initWithBenchtopDelegate:(id<BenchtopDelegate>)benchtopDelegate;
-- (void)layoutCompleted;
 
 @end

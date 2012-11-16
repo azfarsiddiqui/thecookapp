@@ -16,38 +16,7 @@
 
 @implementation BenchtopFlowLayout
 
-- (void)dealloc {
-    [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
-}
-
-#pragma mark - CKBenchtopLayout methods
-
-- (void)layoutCompleted {
-    [self applyScalingTransformAnimated:YES];
-}
-
-#pragma mark - KVO methods.
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
-                       context:(void *)context {
-    if ([keyPath isEqualToString:@"contentOffset"]) {
-        [self applyScalingTransformAnimated:NO];
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
 #pragma mark - UICollectionViewLayout methods
-
-- (void)prepareLayout {
-    [super prepareLayout];
-    
-    if (!self.observingCollectionView) {
-        [self.collectionView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew
-                                 context:NULL];
-        self.observingCollectionView = YES;
-    }
-}
 
 - (CGSize)collectionViewContentSize {
     
@@ -69,6 +38,16 @@
     UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     if (attributes.frame.origin.x < rect.origin.x + rect.size.width) {
         [layoutAttributes addObject:attributes];
+    }
+    
+    // Scale the books according to their distance away from the center.
+    for (UICollectionViewLayoutAttributes* attributes in layoutAttributes) {
+        
+        if (attributes.representedElementCategory == UICollectionElementCategoryCell
+            && attributes.indexPath.section == 1) {
+            CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
+            attributes.transform3D = CATransform3DScale(attributes.transform3D, scaleFactor, scaleFactor, 1.0);
+        }
     }
     
     return layoutAttributes;
@@ -108,35 +87,6 @@
                       self.collectionView.contentOffset.y,
                       self.collectionView.bounds.size.width,
                       self.collectionView.bounds.size.height);
-}
-
-- (void)applyScalingTransformAnimated:(BOOL)animated {
-    CGRect visibleRect = [self visibleFrame];
-    NSArray *array = [self layoutAttributesForElementsInRect:visibleRect];
-    
-    for (UICollectionViewLayoutAttributes* layoutAttributes in array) {
-        if (layoutAttributes.indexPath.section == 1) {
-            UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:layoutAttributes.indexPath];
-            CGFloat scaleFactor = [self scaleFactorForCenter:cell.center];
-            if (animated) {
-                [UIView animateWithDuration:0.3
-                                      delay:0.0
-                                    options:UIViewAnimationCurveEaseOut
-                                 animations:^{
-                                     cell.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor);
-                                 }
-                                 completion:^(BOOL finished) {
-                                 }];
-            } else {
-                cell.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor);
-            }
-        }
-    }
-}
-
-- (void)applyScalingTransformToLayoutAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
-    attributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0);
 }
 
 - (CGFloat)scaleFactorForCenter:(CGPoint)center {
