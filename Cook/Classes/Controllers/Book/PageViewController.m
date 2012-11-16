@@ -208,7 +208,7 @@
 }
 
 -(void)contentTapped:(id)sender {
-    
+    [self.delegate contentViewRequested];
 }
 
 @end

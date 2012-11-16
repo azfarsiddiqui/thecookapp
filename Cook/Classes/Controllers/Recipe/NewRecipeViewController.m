@@ -58,6 +58,17 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationIsLandscape(interfaceOrientation));
+}
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
 #pragma mark - Action delegates
 
 
@@ -75,7 +86,7 @@
 
 
 - (IBAction)closeTapped:(UIButton*)button {
-    [self.delegate closeRequested];
+    [self.recipeViewDelegate closeRequested];
 }
 
 - (IBAction)saveTapped:(UIButton*)button {
@@ -93,7 +104,7 @@
         }
         
         [recipe saveWithSuccess:^{
-            [self.delegate recipeCreated];
+            [self.recipeViewDelegate recipeCreated];
             button.enabled = YES;
         } failure:^(NSError *error) {
             DLog(@"An error occurred: %@", [error description]);
@@ -183,6 +194,7 @@
 {
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     NSParameterAssert(image);
+    DLog(@"image size after picker: %f, %f", image.size.width,image.size.height);
     [self dismissViewControllerAnimated:NO completion:^{
         self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
         [self.photoEditorController setDelegate:self];

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "CKBook.h"
+#import "PageViewController.h"
 
 @protocol NewRecipeViewDelegate
 -(void)closeRequested;
@@ -16,6 +17,6 @@
 @end
 
 @interface NewRecipeViewController : UIViewController
-@property(nonatomic,assign) id<NewRecipeViewDelegate> delegate;
+@property(nonatomic,assign) id<NewRecipeViewDelegate> recipeViewDelegate;
 @property(nonatomic,strong) CKBook *book;
 @end

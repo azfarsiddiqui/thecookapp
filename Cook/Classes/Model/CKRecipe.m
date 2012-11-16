@@ -111,14 +111,9 @@
         [parseRecipe setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
     }
     
-    // Prepare objects to be saved in bulk.
-    NSMutableArray *objectsToSave = [NSMutableArray array];
-    
     // Now add the category to book.
+    // Why is this here?
     [self.book.parseObject addUniqueObject:self.category.parseObject forKey:kBookAttrCategories];
-    
-    // Save recipe.
-    [objectsToSave addObject:parseRecipe];
     
     if (self.recipeImage) {
         PFFile *imageFile = [self.recipeImage imageFile];
@@ -127,14 +122,14 @@
                 failure(error);
             } else {
                 
-                // Save the image reference.
-                [objectsToSave addObject:self.recipeImage.parseObject];
+                //must save image reference to get an object id
+                [self.recipeImage.parseObject save];
                 
                 // Save the image relation to recipe.
                 PFRelation *relation = [parseRecipe relationforKey:kRecipeAttrRecipeImages];
                 [relation addObject:self.recipeImage.parseObject];
                 
-                [PFObject saveAllInBackground:objectsToSave block:^(BOOL succeeded, NSError *error) {
+                [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (error) {
                         failure(error);
                     } else {
@@ -147,7 +142,7 @@
             progress(percentDone);
         }];
     } else {
-        [PFObject saveAllInBackground:objectsToSave block:^(BOOL succeeded, NSError *error) {
+        [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (error) {
                 failure(error);
             } else {
