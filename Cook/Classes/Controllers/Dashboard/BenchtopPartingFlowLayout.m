@@ -16,11 +16,12 @@
     NSMutableArray *layoutAttributes = [NSMutableArray arrayWithArray:[super layoutAttributesForElementsInRect:rect]];
     
     for (UICollectionViewLayoutAttributes* attributes in layoutAttributes) {
+        
         if (attributes.indexPath.section == 1) {
+            
             CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
             CGFloat sideGap = [self.benchtopDelegate benchtopSideGap];
-            // CGFloat offset = itemSize.width + [self.benchtopDelegate benchtopSideGap];
-            CGFloat offset = itemSize.width;
+            CGFloat offset = itemSize.width + [self.benchtopDelegate benchtopSideGap];
             NSIndexPath *indexPath = attributes.indexPath;
             NSIndexPath *selectedIndexPath = [self.benchtopDelegate benchtopOpenedIndexPath];
             
@@ -29,6 +30,7 @@
             if (ABS(distance) == 1) {
                 attributes.transform3D = CATransform3DTranslate(attributes.transform3D, offset * distance, 0.0, 0.0);
             }
+            
         }
     }
     

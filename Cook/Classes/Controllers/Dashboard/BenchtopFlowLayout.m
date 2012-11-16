@@ -34,17 +34,12 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *layoutAttributes = [NSMutableArray arrayWithArray:[super layoutAttributesForElementsInRect:rect]];
     
-    // Add my book only if it's supposed to be within frame.
-    UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    if (attributes.frame.origin.x < rect.origin.x + rect.size.width) {
-        [layoutAttributes addObject:attributes];
-    }
-    
     // Scale the books according to their distance away from the center.
     for (UICollectionViewLayoutAttributes* attributes in layoutAttributes) {
         
         if (attributes.representedElementCategory == UICollectionElementCategoryCell
             && attributes.indexPath.section == 1) {
+            
             CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
             attributes.transform3D = CATransform3DScale(attributes.transform3D, scaleFactor, scaleFactor, 1.0);
         }

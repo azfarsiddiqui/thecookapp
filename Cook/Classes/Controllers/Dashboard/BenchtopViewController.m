@@ -388,11 +388,11 @@
                          }
                          completion:^(BOOL finished) {
                              self.selectedBook = nil;
+                             self.openedIndexPath = nil;
                              [self showMenu:YES];
                              self.collectionView.userInteractionEnabled = YES;
                          }];
     });
-
 
 }
 
