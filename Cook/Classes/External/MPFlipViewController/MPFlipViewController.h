@@ -45,6 +45,11 @@ typedef NSInteger MPFlipViewControllerDirection; // For 'MPFlipViewControllerOri
 // flip to a new page
 - (void)setViewController:(UIViewController *)viewController direction:(MPFlipViewControllerDirection)direction animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 
+// added to API to allow programmatic turning of pages (no swipes)
+- (void)gotoPreviousPage;
+
+- (void)gotoNextPage;
+
 @end
 
 @protocol MPFlipViewControllerDelegate<NSObject>

@@ -68,10 +68,10 @@
 
 -(void)contentViewRequested
 {
-    [self.flipViewController setViewController:self.contentsViewController direction:MPFlipViewControllerDirectionReverse animated:YES completion:^(BOOL finished) {
-    }];
-    self.previousIndex = 1;
+    self.previousIndex = 2;
+    [self.flipViewController gotoPreviousPage];
 }
+
 - (CGRect)bookViewBounds {
     return self.view.bounds;
 }
