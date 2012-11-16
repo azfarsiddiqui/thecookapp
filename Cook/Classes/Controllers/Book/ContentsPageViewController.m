@@ -147,7 +147,7 @@
     DLog();
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
     NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
-    newRecipeViewVC.delegate = self;
+    newRecipeViewVC.recipeViewDelegate = self;
     newRecipeViewVC.book = [self.dataSource currentBook];
     [self presentViewController:newRecipeViewVC animated:YES completion:nil];
 }

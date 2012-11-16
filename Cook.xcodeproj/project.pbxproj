@@ -252,6 +252,10 @@
 		8936F7FC161E7ABB00E6EF1D /* RecipeListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F7161E7ABB00E6EF1D /* RecipeListViewController.m */; };
 		8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7FF161E7C1100E6EF1D /* ViewHelper.m */; };
 		8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F802161E959700E6EF1D /* CKRecipeImage.m */; };
+		895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D91650C23500765F96 /* CoreText.framework */; };
+		895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D71650C20200765F96 /* OpenGLES.framework */; };
+		895A2B8F1655BC670061E687 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */; };
+		895A2B901655BC9E0061E687 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962217D161E9F830023EC30 /* Accelerate.framework */; };
 		8962217B161E9F300023EC30 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89622178161E9F300023EC30 /* libAviarySDK.a */; };
 		89622180161E9F970023EC30 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962217F161E9F970023EC30 /* libz.1.2.5.dylib */; };
 		89622182161E9FA80023EC30 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89622181161E9FA80023EC30 /* CoreData.framework */; };
@@ -587,6 +591,7 @@
 		8936F7FF161E7C1100E6EF1D /* ViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewHelper.m; sourceTree = "<group>"; };
 		8936F801161E959700E6EF1D /* CKRecipeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeImage.h; sourceTree = "<group>"; };
 		8936F802161E959700E6EF1D /* CKRecipeImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeImage.m; sourceTree = "<group>"; };
+		895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
 		89622173161E9F300023EC30 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
 		89622174161E9F300023EC30 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
 		89622175161E9F300023EC30 /* AFPhotoEditorControllerOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorControllerOptions.h; sourceTree = "<group>"; };
@@ -631,6 +636,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				895A2B901655BC9E0061E687 /* Accelerate.framework in Frameworks */,
+				895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */,
+				895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */,
 				766BFBE61630D6A40083EB0E /* AdSupport.framework in Frameworks */,
 				766BFBE41630D6A00083EB0E /* Accounts.framework in Frameworks */,
 				766BFBE11630D69B0083EB0E /* Social.framework in Frameworks */,
@@ -1196,6 +1204,7 @@
 		89622179161E9F300023EC30 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1512,6 +1521,7 @@
 				76324F37165356F3007D1EBF /* cook_category_seafood@2x.png in Resources */,
 				76324F38165356F3007D1EBF /* cook_category_vegetarian.png in Resources */,
 				76324F39165356F3007D1EBF /* cook_category_vegetarian@2x.png in Resources */,
+				895A2B8F1655BC670061E687 /* AviarySDKResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1632,6 +1642,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				"OTHER_LDFLAGS[arch=*]" = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = Cook;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -1655,6 +1669,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"OTHER_LDFLAGS[arch=*]" = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = Cook;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A8F20478-1336-4B62-8EFB-14328933A17E";
 				SDKROOT = iphoneos;
