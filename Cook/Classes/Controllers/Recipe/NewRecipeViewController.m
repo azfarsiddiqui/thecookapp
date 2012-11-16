@@ -211,18 +211,8 @@
     [self.photoEditorController.view removeFromSuperview];
     self.photoEditorController = nil;
     NSParameterAssert(image);
-    DLog(@"image size after photo editor render: %f, %f", image.size.width,image.size.height);
-    
     self.recipeImage = image;
     self.recipeImageView.image = self.recipeImage;
-//    AFPhotoEditorSession *session = [self.photoEditorController session];
-//    AFPhotoEditorContext *context = [session createContextWithImage:image maxSize:CGSizeMake(1024.0f, 1024.0f)];
-//    [context render:^(UIImage *result) {
-//        DLog(@"image size after photo editor render: %f, %f", image.size.width,image.size.height);
-//        self.recipeImage = result;
-//        self.recipeImageView.image = self.recipeImage;
-//
-//    }];
 }
 
 -(void)photoEditorCanceled:(AFPhotoEditorController *)editor

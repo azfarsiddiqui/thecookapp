@@ -8,7 +8,6 @@
 
 #import "BookViewController.h"
 #import "BookContentsViewController.h"
-#import "RecipeListViewController.h"
 #import "BookCategoryViewController.h"
 #import "RecipeViewController.h"
 #import "ViewHelper.h"
@@ -28,7 +27,6 @@
 @property (nonatomic, strong) NSMutableArray *categoryRecipes;
 @property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
-@property (nonatomic, strong) RecipeListViewController *recipeListViewController;
 @property (nonatomic, strong) RecipeViewController *recipeViewController;
 @property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
 @property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
@@ -68,6 +66,12 @@
     [self.delegate bookViewControllerCloseRequested];
 }
 
+-(void)contentViewRequested
+{
+    [self.flipViewController setViewController:self.contentsViewController direction:MPFlipViewControllerDirectionReverse animated:YES completion:^(BOOL finished) {
+    }];
+    self.previousIndex = 1;
+}
 - (CGRect)bookViewBounds {
     return self.view.bounds;
 }
@@ -237,16 +241,6 @@
         _categoryViewController = [[CategoryPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleGray];
     }
     return _categoryViewController;
-}
-
-- (RecipeListViewController *)recipeListViewController
-{
-    if (!_recipeListViewController) {
-        _recipeListViewController = [[RecipeListViewController alloc]init];
-        _recipeListViewController.book = self.book;
-        _recipeListViewController.bookViewDelegate = self;
-    }
-    return _recipeListViewController;
 }
 
 - (BookContentsViewController *)bookContentsViewController
