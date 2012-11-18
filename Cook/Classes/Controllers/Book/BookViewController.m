@@ -7,8 +7,6 @@
 //
 
 #import "BookViewController.h"
-#import "BookContentsViewController.h"
-#import "BookCategoryViewController.h"
 #import "RecipeViewController.h"
 #import "ViewHelper.h"
 #import "ContentsPageViewController.h"
@@ -28,8 +26,6 @@
 @property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, strong) RecipeViewController *recipeViewController;
-@property (nonatomic, strong) BookContentsViewController *bookContentsViewController;
-@property (nonatomic, strong) BookCategoryViewController *bookCategoryViewController;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
 
@@ -241,26 +237,6 @@
         _categoryViewController = [[CategoryPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleGray];
     }
     return _categoryViewController;
-}
-
-- (BookContentsViewController *)bookContentsViewController
-{
-    if (!_bookContentsViewController) {
-        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-        _bookContentsViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BookContentsViewController"];
-        _bookContentsViewController.bookViewDelegate = self;
-    }
-    return _bookContentsViewController;
-}
-
-- (BookCategoryViewController *)bookCategoryViewController
-{
-    if (!_bookCategoryViewController) {
-        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-        _bookCategoryViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BookCategoryViewController"];
-        _bookCategoryViewController.bookViewDelegate = self;
-    }
-    return _bookCategoryViewController;
 }
 
 - (RecipeViewController *)recipeViewController
