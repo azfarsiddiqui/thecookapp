@@ -10,6 +10,6 @@
 
 @interface CategoryPageViewController : PageViewController
 
-- (void)loadCategory:(NSString *)category;
+- (void)loadCategory:(NSString *)categoryName;
 
 @end
