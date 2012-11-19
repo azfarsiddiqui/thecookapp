@@ -41,6 +41,8 @@
 - (NSInteger)currentPageNumber;
 - (NSString *)bookViewCurrentCategoryName;
 - (NSInteger)numRecipesInCategory:(NSString *)category;
+- (NSInteger)pageNumForRecipeAtIndex:(NSInteger)recipeIndex forCategoryName:(NSString*)categoryName;
+- (NSInteger)pageNumForCategoryName:(NSString*)categoryName;
 
 @end
 

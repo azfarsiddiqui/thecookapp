@@ -188,6 +188,17 @@
     return recipeCount;
 }
 
+-(NSInteger)pageNumForRecipeAtIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName
+{
+    return [self pageNumForCategoryName:categoryName] + recipeIndex + 1;
+}
+
+-(NSInteger)pageNumForCategoryName:(NSString *)categoryName
+{
+    NSInteger categoryIndex = [self.categoryNames findIndex:categoryName];
+    NSNumber *pageCategoryIndex = [self.categoryPageIndexes objectAtIndex:categoryIndex];
+    return [pageCategoryIndex intValue];
+}
 #pragma mark - MPFlipViewControllerDataSource methods
 
 - (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController viewControllerBeforeViewController:(UIViewController *)viewController {
@@ -306,7 +317,7 @@
                 NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
                 [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:previousCategoryIndex + [categoryRecipes count] + 1]];
             } else {
-                [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:kCategoryPageIndex]];
+                [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:kCategoryPageIndex+1]];
             }
         }
         
@@ -334,12 +345,9 @@
         for (NSInteger index = 0; index < [self.categoryPageIndexes count]; index++) {
             NSNumber *categoryPageIndex = [self.categoryPageIndexes objectAtIndex:index];
             if (pageIndex > [categoryPageIndex integerValue]) {
-                
                 // Candidate category index
                 categoryIndex = index;
-                
             } else {
-                
                 // We've found it before, break now.
                 break;
             }

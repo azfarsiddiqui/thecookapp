@@ -66,7 +66,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
     NSString *categoryName = [[self.dataSource bookCategoryNames] objectAtIndex:indexPath.row];
     cell.textLabel.text = [categoryName uppercaseString];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource numRecipesInCategory:categoryName]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForCategoryName:categoryName]];
     return cell;
 }
 
