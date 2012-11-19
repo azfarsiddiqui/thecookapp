@@ -19,16 +19,28 @@
         
         if (attributes.indexPath.section == 1) {
             
-            CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
-            CGFloat sideGap = [self.benchtopDelegate benchtopSideGap];
-            CGFloat offset = itemSize.width + [self.benchtopDelegate benchtopSideGap];
-            NSIndexPath *indexPath = attributes.indexPath;
             NSIndexPath *selectedIndexPath = [self.benchtopDelegate benchtopOpenedIndexPath];
             
-            // Only part those books immediately before/after the selected one.
-            NSInteger distance = indexPath.row - selectedIndexPath.row;
-            if (ABS(distance) == 1) {
-                attributes.transform3D = CATransform3DTranslate(attributes.transform3D, offset * distance, 0.0, 0.0);
+            // Move it apart if book selected.
+            NSInteger distance = attributes.indexPath.row - selectedIndexPath.row;
+            if (distance != 0) {
+                CGFloat sign = distance / ABS(distance);
+                if (ABS(distance) == 1) {
+                    // CGFloat offset = 421.0; // Offscreen
+                    CGFloat offset = 400.0;
+                    attributes.transform3D = CATransform3DTranslate(attributes.transform3D, offset * sign, 0.0, 0.0);
+                } else if (ABS(distance) == 2) {
+                    // CGFloat offset = 37.0; // Offscreen
+                    CGFloat offset = 27.0;
+                    attributes.transform3D = CATransform3DTranslate(attributes.transform3D, offset * sign, 0.0, 0.0);
+                }
+                
+                // Make sure they are tucked under.
+                if (distance > 0) {
+                    attributes.zIndex = distance;
+                } else {
+                    attributes.zIndex = -distance;
+                }
             }
             
         }
