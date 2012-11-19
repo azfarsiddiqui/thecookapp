@@ -374,11 +374,19 @@
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
-    if (!open) {
+    CGFloat layoutDelay = 0.0;
+    if (open) {
+        layoutDelay = 0.0;
+    } else {
+        self.selectedBook = nil;
+        self.openedIndexPath = nil;
+        layoutDelay = 0.2;
         [self.bookViewController.view removeFromSuperview];
         self.bookViewController = nil;
     }
-    [self toggleLayoutToOpenBook:open];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, layoutDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self toggleLayoutToOpenBook:open];
+    });
 }
 
 - (void)bookCoverViewDidOpen:(BOOL)open {
@@ -925,23 +933,18 @@
     }
     
     // Change the layout after a delay.
-    CGFloat layoutDelay = open ? 0.1 : 0.1;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, layoutDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.4
-                              delay:0.0
-                            options:UIViewAnimationCurveEaseIn
-                         animations:^{
-                             [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
+                     }
+                     completion:^(BOOL finished) {
+                         if (!open) {
+                             [self showMenu:YES];
                          }
-                         completion:^(BOOL finished) {
-                             if (!open) {
-                                 self.selectedBook = nil;
-                                 self.openedIndexPath = nil;
-                                 [self showMenu:YES];
-                             }
-                             self.collectionView.userInteractionEnabled = !open;
-                         }];
-    });
+                         self.collectionView.userInteractionEnabled = !open;
+                     }];
     
 }
 

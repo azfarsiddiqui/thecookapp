@@ -55,9 +55,8 @@
     
     for (UICollectionViewLayoutAttributes* attributes in layoutAttributes) {
         
-        NSIndexPath *selectedIndexPath = [self.benchtopDelegate benchtopOpenedIndexPath];
-        
         // Hide selected book.
+        NSIndexPath *selectedIndexPath = [self.benchtopDelegate benchtopOpenedIndexPath];
         if ([attributes.indexPath compare:selectedIndexPath] == NSOrderedSame) {
             attributes.alpha = 0.0;
         }
