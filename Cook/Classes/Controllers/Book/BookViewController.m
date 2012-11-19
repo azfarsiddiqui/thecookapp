@@ -21,8 +21,8 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) NSArray *recipes;
-@property (nonatomic, strong) NSMutableArray *categories;
-@property (nonatomic, strong) NSMutableArray *categoryRecipes;
+@property (nonatomic, strong) NSMutableArray *categoryNames;
+@property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, strong) RecipeViewController *recipeViewController;
@@ -100,7 +100,7 @@
     NSInteger numPages = 0;
     numPages += 1;                                  // Contents page.
     if ([self.recipes count] > 0) {
-        numPages += [self.categories count];        // Number of categories.
+        numPages += [self.categoryNames count];        // Number of categories.
         numPages += [self.recipes count];           // Recipes page.
     }
     return numPages;
@@ -128,9 +128,9 @@
         if (categoryIndex != -1) {
             
             // Category page.
-            NSString *category = [self.categories objectAtIndex:categoryIndex];
+            NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
             viewController = self.categoryViewController;
-            [self.categoryViewController loadCategory:category];
+            [self.categoryViewController loadCategory:categoryName];
             [self.categoryViewController loadData];
             view = self.categoryViewController.view;
             
@@ -140,7 +140,8 @@
             categoryIndex = [self currentCategoryIndexForPageIndex:pageIndex];
             NSInteger categoryPageIndex = [[self.categoryPageIndexes objectAtIndex:categoryIndex] integerValue];
             NSInteger recipeIndex = pageIndex - categoryPageIndex - 1;
-            NSArray *recipes = [self.categoryRecipes objectAtIndex:categoryIndex];
+            NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
+            NSArray *recipes = [self.categoryRecipes objectForKey:categoryName];
             CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
             self.recipe = recipe;
             self.recipeViewController.recipe = recipe;
@@ -156,18 +157,15 @@
     return self.recipes;
 }
 
-- (NSArray *)bookCategories {
-    return self.categories;
+-(NSArray *)bookCategoryNames {
+    return self.categoryNames;
 }
 
-- (NSArray *)recipesForCategory:(NSString *)category {
+- (NSArray *)recipesForCategory:(NSString *)categoryName {
     NSArray *recipes = nil;
-    for (NSUInteger categoryIndex = 0; categoryIndex < [self.categories count]; categoryIndex++) {
-        NSString *categoryName = [self.categories objectAtIndex:categoryIndex];
-        if ([categoryName isEqualToString:category]) {
-            recipes = [self.categoryRecipes objectAtIndex:categoryIndex];
-            break;
-        }
+    NSUInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
+    if (categoryIndex != NSNotFound) {
+        recipes = [self.categoryRecipes objectForKey:categoryName];
     }
     return recipes;
 }
@@ -176,13 +174,18 @@
     return self.previousIndex;
 }
 
-- (NSString *)bookViewCurrentCategory {
-    return [self.categories objectAtIndex:self.currentCategoryIndex];
+- (NSString *)bookViewCurrentCategoryName {
+    return [self.categoryNames objectAtIndex:self.currentCategoryIndex];
 }
 
-- (NSInteger)numRecipesInCategory:(NSString *)category {
-    NSInteger categoryIndex = [self.categories findIndex:category];
-    return [[self.categoryRecipes objectAtIndex:categoryIndex] count];
+- (NSInteger)numRecipesInCategory:(NSString *)categoryName {
+    NSInteger recipeCount = 0;
+    NSInteger categoryIndex = [self.categoryNames findIndex:categoryName];
+    if (categoryIndex != NSNotFound) {
+        recipeCount = [[self.categoryRecipes objectForKey:categoryName] count];
+        DLog(@"num recipes for %@ : %i", categoryName,recipeCount);
+    }
+    return recipeCount;
 }
 
 #pragma mark - MPFlipViewControllerDataSource methods
@@ -280,25 +283,21 @@
     [self.book listRecipesSuccess:^(NSArray *recipes) {
         
         self.currentCategoryIndex = 0;
-        self.categoryRecipes = [NSMutableArray array];
-        self.categories = [NSMutableArray array];
-        
+        self.categoryRecipes = [NSMutableDictionary dictionary];
+        self.categoryNames = [NSMutableArray array];
         for (CKRecipe *recipe in recipes) {
             
-            if (![self.categoryRecipes containsObject:recipe.category.name]) {
-                
-                NSMutableArray *recipes = [NSMutableArray array];
-                [recipes addObject:recipe];
-                [self.categoryRecipes addObject:recipes];
-                [self.categories addObject:recipe.category.name];
+            NSString *categoryName = recipe.category.name;
+            DLog(@"category name: %@", categoryName);
+            if (![self.categoryNames containsObject:categoryName]) {
+                NSMutableArray *recipes = [NSMutableArray arrayWithObject:recipe];
+                [self.categoryRecipes setObject:recipes forKey:categoryName];
+                [self.categoryNames addObject:categoryName];
+                DLog(@"Adding new category %@",categoryName);
             } else {
-                
-                NSUInteger categoryIndex = [self.categoryRecipes indexOfObject:recipe.category.name];
-                
-                // Add recipe to existing category.
-                NSMutableArray *recipes = [self.categoryRecipes objectAtIndex:categoryIndex];
+                NSMutableArray *recipes = [self.categoryRecipes objectForKey:categoryName];
                 [recipes addObject:recipe];
-                
+                DLog(@"Adding recipe %@ to existing category %@",recipe.name, categoryName);
             }
         }
         
@@ -307,7 +306,8 @@
         for (NSUInteger categoryIndex = 0; categoryIndex < [self.categoryRecipes count]; categoryIndex++) {
             if (categoryIndex > 0) {
                 NSInteger previousCategoryIndex = [[self.categoryPageIndexes lastObject] integerValue];
-                NSArray *categoryRecipes = [self.categoryRecipes objectAtIndex:categoryIndex - 1];
+                NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex - 1];
+                NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
                 [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:previousCategoryIndex + [categoryRecipes count] + 1]];
             } else {
                 [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:kCategoryPageIndex]];

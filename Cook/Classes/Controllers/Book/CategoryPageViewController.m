@@ -12,7 +12,7 @@
 
 @interface CategoryPageViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) NSString *category;
+@property (nonatomic, strong) NSString *categoryName;
 @property (nonatomic, strong) UILabel *categoryLabel;
 @property (nonatomic, strong) UIImageView *categoryImageView;
 @property (nonatomic, strong) UITableView *tableView;
@@ -44,12 +44,12 @@
     [self dataDidLoad];
 }
 
-- (void)loadCategory:(NSString *)category {
+- (void)loadCategory:(NSString *)categoryName {
     
-    self.category = category;
+    self.categoryName = categoryName;
     
     // Update category image.
-    UIImage *categoryImage = [Category bookImageForCategory:category];
+    UIImage *categoryImage = [Category bookImageForCategory:categoryName];
     self.categoryImageView.frame = CGRectMake(self.view.bounds.origin.x,
                                               self.view.bounds.origin.y,
                                               categoryImage.size.width,
@@ -57,7 +57,7 @@
     self.categoryImageView.image = categoryImage;
     
     // Update category label.
-    NSString *categoryDisplay = [category uppercaseString];
+    NSString *categoryDisplay = [categoryName uppercaseString];
     CGSize size = [categoryDisplay sizeWithFont:kCategoryFont
                               constrainedToSize:CGSizeMake(self.view.bounds.size.width - kLabelOffset.x,
                                                            self.view.bounds.size.height)
@@ -79,11 +79,11 @@
 #pragma mark - UITableViewDataSource methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[self.dataSource recipesForCategory:self.category] count];
+    return [self.dataSource numRecipesInCategory:self.categoryName];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CKRecipe *recipe = [[self.dataSource recipesForCategory:self.category] objectAtIndex:indexPath.row];
+    CKRecipe *recipe = [[self.dataSource recipesForCategory:self.categoryName] objectAtIndex:indexPath.row];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
     cell.textLabel.text = [recipe.name uppercaseString];

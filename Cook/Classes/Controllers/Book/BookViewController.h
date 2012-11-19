@@ -36,10 +36,10 @@
 - (NSInteger)numberOfPages;
 - (UIView*)viewForPageAtIndex:(NSInteger) pageIndex;
 - (NSArray *)bookRecipes;
-- (NSArray *)bookCategories;
-- (NSArray *)recipesForCategory:(NSString *)category;
+- (NSArray *)bookCategoryNames;
+- (NSArray *)recipesForCategory:(NSString *)categoryName;
 - (NSInteger)currentPageNumber;
-- (NSString *)bookViewCurrentCategory;
+- (NSString *)bookViewCurrentCategoryName;
 - (NSInteger)numRecipesInCategory:(NSString *)category;
 
 @end

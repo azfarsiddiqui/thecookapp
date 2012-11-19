@@ -38,7 +38,7 @@
     [super loadData];
     
     // Data would've been loaded by BookVC.
-    if ([self.dataSource bookCategories]) {
+    if ([self.dataSource bookCategoryNames]) {
         [self dataDidLoad];
     }
 }
@@ -59,14 +59,14 @@
 #pragma mark - UITableViewDataSource methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[self.dataSource bookCategories] count];
+    return [[self.dataSource bookCategoryNames] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
-    NSString *category = [[self.dataSource bookCategories] objectAtIndex:indexPath.row];
-    cell.textLabel.text = [category uppercaseString];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource numRecipesInCategory:category]];
+    NSString *categoryName = [[self.dataSource bookCategoryNames] objectAtIndex:indexPath.row];
+    cell.textLabel.text = [categoryName uppercaseString];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource numRecipesInCategory:categoryName]];
     return cell;
 }
 
