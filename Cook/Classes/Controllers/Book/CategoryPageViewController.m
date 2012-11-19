@@ -36,14 +36,16 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    DLog();
+    [self loadData];
     [self showContentsButton];
 }
 
-- (void)loadData {
-    [super loadData];
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     [self dataDidLoad];
 }
-
 - (void)loadCategory:(NSString *)categoryName {
     
     self.categoryName = categoryName;
@@ -87,6 +89,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
     cell.textLabel.text = [recipe.name uppercaseString];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtIndex:indexPath.row forCategoryName:self.categoryName]];
     return cell;
 }
 

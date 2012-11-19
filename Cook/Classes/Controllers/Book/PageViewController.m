@@ -59,7 +59,6 @@
         [self.activityView startAnimating];
         self.activityView.hidden = NO;
     } else {
-        [self updatePageNumber];
         [self.activityView stopAnimating];
         self.activityView.hidden = YES;
     }
@@ -189,6 +188,7 @@
     UIFont *font = [UIFont systemFontOfSize:12.0];
     NSInteger pageNumber = [self.dataSource currentPageNumber];
     NSInteger numberOfPages = [self.dataSource numberOfPages];
+    DLog(@"page %d of %d", pageNumber, numberOfPages)
     NSString *pageDisplay = [NSString stringWithFormat:@"Page %d of %d", pageNumber, numberOfPages];
     CGSize size = [pageDisplay sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
     UILabel *pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - size.width - edgeInsets.right,

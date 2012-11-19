@@ -124,12 +124,10 @@
         
         NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
         if (categoryIndex != -1) {
-            
             // Category page.
             NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
             viewController = self.categoryViewController;
             [self.categoryViewController loadCategory:categoryName];
-            [self.categoryViewController loadData];
             view = self.categoryViewController.view;
             
         } else {
@@ -182,7 +180,6 @@
     NSInteger categoryIndex = [self.categoryNames findIndex:categoryName];
     if (categoryIndex != NSNotFound) {
         recipeCount = [[self.categoryRecipes objectForKey:categoryName] count];
-        DLog(@"num recipes for %@ : %i", categoryName,recipeCount);
     }
     return recipeCount;
 }
@@ -203,11 +200,12 @@
 - (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController viewControllerBeforeViewController:(UIViewController *)viewController {
 	NSInteger index = self.currentPageIndex;
 	index--;
-	if (index < 1) {
+	if (index < kContentPageIndex) {
 		return nil; // reached beginning, don't wrap
     }
     
 	self.tentativeIndex = index;
+    
 	return [self viewControllerForPageIndex:index];
 }
 
