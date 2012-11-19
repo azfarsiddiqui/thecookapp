@@ -400,6 +400,7 @@
     } else {
         
         // Remove the book cover.
+        [self.bookCoverViewController cleanUpLayers];
         [self.bookCoverViewController.view removeFromSuperview];
         self.bookCoverViewController = nil;
         

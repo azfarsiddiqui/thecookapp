@@ -60,6 +60,10 @@
     [self animateBookOpen:open];
 }
 
+- (void)cleanUpLayers {
+    [self.rootBookLayer removeFromSuperlayer];
+}
+
 #pragma mark - CAAnimation delegate methods
 
 - (void)animationDidStart:(CAAnimation *)theAnimation {
@@ -68,6 +72,11 @@
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
     DLog(@"Open book finished: %@", [NSString CK_stringForBoolean:self.opened]);
+    
+//    if (!self.opened) {
+        [self.rootBookLayer removeAllAnimations];
+        [self.bookCoverLayer removeAllAnimations];
+//    }
     [self.delegate bookCoverViewDidOpen:self.opened];
 }
 
@@ -214,8 +223,12 @@
     flipAnimation.delegate = self;
     
     // Run the animation.
+    [CATransaction lock];
+    [CATransaction begin];
     [self.rootBookLayer addAnimation:groupAnimation forKey:nil];
     [self.bookCoverLayer addAnimation:flipAnimation forKey:@"transform"];
+    [CATransaction commit];
+    [CATransaction unlock];
 }
 
 

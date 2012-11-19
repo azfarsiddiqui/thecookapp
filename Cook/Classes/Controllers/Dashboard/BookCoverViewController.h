@@ -21,5 +21,6 @@
 
 - (id)initWithBook:(CKBook *)book mine:(BOOL)mine delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (void)openBook:(BOOL)open;
+- (void)cleanUpLayers;
 
 @end
