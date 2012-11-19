@@ -16,6 +16,8 @@
 #import "RecipeViewController.h"
 #import "MPFlipViewController.h"
 
+#define kCategoryPageIndex  2
+
 @interface BookViewController () <BookViewDelegate, BookViewDataSource, MPFlipViewControllerDataSource, MPFlipViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
@@ -25,7 +27,6 @@
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
-@property (nonatomic, strong) RecipeViewController *recipeViewController;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
 
@@ -38,8 +39,6 @@
 @end
 
 @implementation BookViewController
-
-#define kCategoryPageIndex  2
 
 - (id)initWithBook:(CKBook*)book delegate:(id<BookViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -144,9 +143,10 @@
             NSArray *recipes = [self.categoryRecipes objectForKey:categoryName];
             CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
             self.recipe = recipe;
-            self.recipeViewController.recipe = recipe;
-            viewController = self.recipeViewController;
-            view = self.recipeViewController.view;
+            RecipeViewController *recipeViewController = [self newRecipeViewController];
+            recipeViewController.recipe = recipe;
+            viewController = recipeViewController;
+            view = recipeViewController.view;
         }
         
     }
@@ -242,15 +242,13 @@
     return _categoryViewController;
 }
 
-- (RecipeViewController *)recipeViewController
+- (RecipeViewController *)newRecipeViewController
 {
-    if (!_recipeViewController) {
-        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-        _recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
-        _recipeViewController.delegate = self;
-        _recipeViewController.dataSource = self;
-    }
-    return _recipeViewController;
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    RecipeViewController * recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
+    recipeViewController.delegate = self;
+    recipeViewController.dataSource = self;
+    return recipeViewController;
 }
 
 -(void) initScreen
@@ -288,22 +286,20 @@
         for (CKRecipe *recipe in recipes) {
             
             NSString *categoryName = recipe.category.name;
-            DLog(@"category name: %@", categoryName);
             if (![self.categoryNames containsObject:categoryName]) {
                 NSMutableArray *recipes = [NSMutableArray arrayWithObject:recipe];
                 [self.categoryRecipes setObject:recipes forKey:categoryName];
                 [self.categoryNames addObject:categoryName];
-                DLog(@"Adding new category %@",categoryName);
             } else {
                 NSMutableArray *recipes = [self.categoryRecipes objectForKey:categoryName];
                 [recipes addObject:recipe];
-                DLog(@"Adding recipe %@ to existing category %@",recipe.name, categoryName);
             }
         }
         
         // Assign category page indexes.
-        self.categoryPageIndexes = [NSMutableArray arrayWithCapacity:[self.categoryRecipes count]];
-        for (NSUInteger categoryIndex = 0; categoryIndex < [self.categoryRecipes count]; categoryIndex++) {
+        NSUInteger categoryNameCount = [self.categoryNames count];
+        self.categoryPageIndexes = [NSMutableArray arrayWithCapacity:categoryNameCount];
+        for (NSUInteger categoryIndex = 0; categoryIndex < categoryNameCount; categoryIndex++) {
             if (categoryIndex > 0) {
                 NSInteger previousCategoryIndex = [[self.categoryPageIndexes lastObject] integerValue];
                 NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex - 1];
