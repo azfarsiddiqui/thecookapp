@@ -16,7 +16,7 @@
 #import "RecipeViewController.h"
 #import "MPFlipViewController.h"
 
-#define kCategoryPageIndex  2
+#define kContentPageIndex  2
 
 @interface BookViewController () <BookViewDelegate, BookViewDataSource, MPFlipViewControllerDataSource, MPFlipViewControllerDelegate>
 
@@ -31,7 +31,7 @@
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
 
 @property (nonatomic, strong) MPFlipViewController *flipViewController;
-@property (nonatomic, assign) NSInteger previousIndex;
+@property (nonatomic, assign) NSInteger currentPageIndex;
 @property (nonatomic, assign) NSInteger tentativeIndex;
 
 @property (nonatomic, assign) NSUInteger currentCategoryIndex;
@@ -63,7 +63,7 @@
 
 -(void)contentViewRequested
 {
-    self.previousIndex = 2;
+    self.currentPageIndex = kContentPageIndex + 1;
     [self.flipViewController gotoPreviousPage];
 }
 
@@ -97,7 +97,7 @@
 
 - (NSInteger)numberOfPages {
     NSInteger numPages = 0;
-    numPages += 1;                                  // Contents page.
+    numPages += 2;                                  // Contents page and Profile page
     if ([self.recipes count] > 0) {
         numPages += [self.categoryNames count];        // Number of categories.
         numPages += [self.recipes count];           // Recipes page.
@@ -114,8 +114,7 @@
     UIViewController *viewController = nil;
     UIView *view = nil;
     
-    if (pageIndex == 1) {
-        
+    if (pageIndex == kContentPageIndex) {
         // Contents page.
         view = self.contentsViewController.view;
         viewController = self.contentsViewController;
@@ -171,7 +170,7 @@
 }
 
 - (NSInteger)currentPageNumber {
-    return self.previousIndex;
+    return self.currentPageIndex;
 }
 
 - (NSString *)bookViewCurrentCategoryName {
@@ -202,7 +201,7 @@
 #pragma mark - MPFlipViewControllerDataSource methods
 
 - (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController viewControllerBeforeViewController:(UIViewController *)viewController {
-	NSInteger index = self.previousIndex;
+	NSInteger index = self.currentPageIndex;
 	index--;
 	if (index < 1) {
 		return nil; // reached beginning, don't wrap
@@ -214,7 +213,7 @@
 
 - (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController
        viewControllerAfterViewController:(UIViewController *)viewController {
-	NSInteger index = self.previousIndex;
+	NSInteger index = self.currentPageIndex;
 	index++;
 	if (index > [self numberOfPages]) {
 		return nil; // reached end, don't wrap
@@ -228,7 +227,7 @@
 - (void)flipViewController:(MPFlipViewController *)flipViewController didFinishAnimating:(BOOL)finished
     previousViewController:(UIViewController *)previousViewController transitionCompleted:(BOOL)completed {
 	if (completed) {
-		self.previousIndex = self.tentativeIndex;
+		self.currentPageIndex = self.tentativeIndex;
 	}
 }
 
@@ -274,7 +273,7 @@
 //    self.pageFlipper.dataSource = self;
 //    [self.view addSubview:self.pageFlipper];
     
-    self.previousIndex = 1;
+    self.currentPageIndex = kContentPageIndex;
     self.flipViewController = [[MPFlipViewController alloc] initWithOrientation:MPFlipViewControllerOrientationHorizontal];
     self.flipViewController.delegate = self;
     self.flipViewController.dataSource = self;
@@ -317,7 +316,7 @@
                 NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
                 [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:previousCategoryIndex + [categoryRecipes count] + 1]];
             } else {
-                [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:kCategoryPageIndex+1]];
+                [self.categoryPageIndexes addObject:[NSNumber numberWithInteger:kContentPageIndex+1]];
             }
         }
         
@@ -340,7 +339,7 @@
 
 - (NSInteger)currentCategoryIndexForPageIndex:(NSInteger)pageIndex {
     NSInteger categoryIndex = -1;
-    if (pageIndex > kCategoryPageIndex) {
+    if (pageIndex > kContentPageIndex) {
         
         for (NSInteger index = 0; index < [self.categoryPageIndexes count]; index++) {
             NSNumber *categoryPageIndex = [self.categoryPageIndexes objectAtIndex:index];
