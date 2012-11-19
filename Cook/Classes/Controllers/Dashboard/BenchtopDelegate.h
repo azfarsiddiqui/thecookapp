@@ -16,5 +16,6 @@
 - (CGFloat)benchtopSideGap;
 - (CGFloat)benchtopBookMinScaleFactor;
 - (CGFloat)benchtopItemOffset;
+- (NSIndexPath *)benchtopOpenedIndexPath;
 
 @end

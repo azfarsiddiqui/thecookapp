@@ -9,6 +9,7 @@
 #import "BenchtopViewController.h"
 #import "BenchtopStackLayout.h"
 #import "BenchtopFlowLayout.h"
+#import "BenchtopPartingFlowLayout.h"
 #import "BenchtopBookCell.h"
 #import "BenchtopLayout.h"
 #import "CKUser.h"
@@ -31,6 +32,7 @@
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSArray *friendsBooks;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+@property (nonatomic, strong) NSIndexPath *openedIndexPath;
 @property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, strong) MenuViewController *menuViewController;
@@ -177,6 +179,10 @@
     }
 }
 
+- (NSIndexPath *)benchtopOpenedIndexPath {
+    return self.openedIndexPath;
+}
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -199,7 +205,6 @@
         [self stackLayout:NO];
         
     } else {
-        
         
         // Only open book if book was in the center.
         UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
@@ -362,15 +367,31 @@
 - (void)bookViewControllerCloseRequested {
     DLog();
     
-    // Fade the books back in and close the book at the same time.
-    [self fadeBooks:NO during:^(BOOL open) {
-        
-        [self.bookViewController.view removeFromSuperview];
-        
-        BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
-        [bookCell openBook:open];
-        
-    }];
+    [self.bookViewController.view removeFromSuperview];
+    BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+    [bookCell openBook:NO];
+    
+    BenchtopLayout *layoutToToggle = nil;
+    if (self.firstBenchtop) {
+        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+    } else {
+        layoutToToggle = [[BenchtopFlowLayout alloc] initWithBenchtopDelegate:self];
+    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
+                         }
+                         completion:^(BOOL finished) {
+                             self.selectedBook = nil;
+                             self.openedIndexPath = nil;
+                             [self showMenu:YES];
+                             self.collectionView.userInteractionEnabled = YES;
+                         }];
+    });
 
 }
 
@@ -400,8 +421,6 @@
         self.bookViewController = bookViewController;
         
     } else {
-        [self showMenu:YES];
-        self.selectedBook = nil;
     }
 }
 
@@ -518,20 +537,13 @@
         layoutToToggle = [[BenchtopFlowLayout alloc] initWithBenchtopDelegate:self];
     }
     
-    // Prepare to stack.
-    // Select the first cell to ensure cell stays on top.
-//    [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]
-//                                      animated:NO
-//                                scrollPosition:UICollectionViewScrollPositionNone];
-
-    [UIView animateWithDuration:0.2
+    [UIView animateWithDuration:stack ? 0.6 : 0.4
                           delay:0.0
                         options:UIViewAnimationCurveLinear
                      animations:^{
                          [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
                      }
                      completion:^(BOOL finished) {
-                         [layoutToToggle layoutCompleted];
                          self.collectionView.userInteractionEnabled = YES;
                      }];
 }
@@ -742,37 +754,29 @@
     
     // Remmeber the book to be opened.
     self.selectedBook = book;
+    self.openedIndexPath = indexPath;
     
     // Hide the menu.
     [self showMenu:NO];
     
-    // Fade the books and open the book at the same time.
-    [self fadeBooks:YES during:^(BOOL open) {
-        [bookCell openBook:open];
-    }];
+    // Open book.
+    [bookCell openBook:YES];
     
-}
-
-- (void)fadeBooks:(BOOL)fade during:(void (^)(BOOL open))during {
-    NSArray *indexPaths = [[self.collectionView indexPathsForVisibleItems] select:^BOOL(NSIndexPath *indexPath) {
-        return ([indexPath compare:self.selectedIndexPath] != NSOrderedSame);
-    }];
-    
-    [UIView animateWithDuration:0.3
+    // Only part the books if we are in other books.
+    BenchtopLayout *layoutToToggle = nil;
+    if (indexPath.section == 0) {
+        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+    } else {
+        layoutToToggle = [[BenchtopPartingFlowLayout alloc] initWithBenchtopDelegate:self];
+    }
+    [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         
-                         // Fade
-                         for (NSIndexPath *indexPath in indexPaths) {
-                             UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
-                             cell.alpha = fade ? 0.0 : 1.0;
-                         }
-                         
-                         // Open book
-                         during(fade);
+                         [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
                      }
                      completion:^(BOOL finished) {
+                         self.collectionView.userInteractionEnabled = NO;
                      }];
 }
 
@@ -899,6 +903,12 @@
         });
 
     }
+}
+
+- (NSArray *)partingIndexPathsForIndexPath:(NSIndexPath *)indexPath {
+    return [[self.collectionView indexPathsForVisibleItems] select:^BOOL(NSIndexPath *currentIndexPath) {
+        return ([currentIndexPath compare:indexPath] != NSOrderedSame);
+    }];
 }
 
 @end

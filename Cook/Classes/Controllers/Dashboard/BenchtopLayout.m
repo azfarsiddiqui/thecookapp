@@ -23,11 +23,11 @@
     return self;
 }
 
-// Subclasses to implement what to do after layout has completed after animation.
-- (void)layoutCompleted {
-}
-
 #pragma mark - UICollectionViewLayout methods
+
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
+    return YES;
+}
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind
                                                                      atIndexPath:(NSIndexPath *)indexPath {
@@ -55,6 +55,7 @@
         }
     }
     
+    // Library header.
     if (numSections > 1 && ![self.benchtopDelegate onMyBenchtop]) {
         
         // TODO potential optimisation here to exclude header if not in view.
@@ -106,13 +107,6 @@
         initialAttributes.transform3D = CATransform3DMakeTranslation([self.benchtopDelegate benchtopSideGap], 0.0, 0.0);
     }
     
-    return initialAttributes;
-}
-
-- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingSupplementaryElementOfKind:(NSString *)elementKind
-                                                                                        atIndexPath:(NSIndexPath *)elementIndexPath {
-    UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
-    initialAttributes.alpha = 0.0;
     return initialAttributes;
 }
 
