@@ -20,8 +20,9 @@
 #import "NSString+Utilities.h"
 #import "SettingsViewController.h"
 #import "BenchtopEditLayout.h"
+#import "BookCoverViewController.h"
 
-@interface BenchtopViewController ()
+@interface BenchtopViewController () <BookCoverViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIView *overlayView;
@@ -40,6 +41,7 @@
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) UIView *editOverlayView;
+@property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 
 @end
 
@@ -303,6 +305,7 @@
     } else {
         cell = [self otherBookCellsForIndexPath:indexPath];
     }
+    cell.hidden = NO;
     return cell;
 }
 
@@ -365,34 +368,34 @@
 #pragma mark - BookViewControllerDelegate methods
 
 - (void)bookViewControllerCloseRequested {
-    DLog();
-    
-    [self.bookViewController.view removeFromSuperview];
-    BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
-    [bookCell openBook:NO];
-    
-    BenchtopLayout *layoutToToggle = nil;
-    if (self.firstBenchtop) {
-        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
-    } else {
-        layoutToToggle = [[BenchtopFlowLayout alloc] initWithBenchtopDelegate:self];
-    }
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.4
-                              delay:0.0
-                            options:UIViewAnimationCurveEaseIn
-                         animations:^{
-                             [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
-                         }
-                         completion:^(BOOL finished) {
-                             self.selectedBook = nil;
-                             self.openedIndexPath = nil;
-                             [self showMenu:YES];
-                             self.collectionView.userInteractionEnabled = YES;
-                         }];
-    });
+    [self.bookCoverViewController openBook:NO];
+}
 
+#pragma mark - BookCoverViewControllerDelegate methods
+
+- (void)bookCoverViewWillOpen:(BOOL)open {
+    if (!open) {
+        [self.bookViewController.view removeFromSuperview];
+        self.bookViewController = nil;
+    }
+    [self toggleLayoutToOpenBook:open];
+}
+
+- (void)bookCoverViewDidOpen:(BOOL)open {
+    if (open) {
+        
+        // Add the book view.
+        BookViewController *bookViewController = [[BookViewController alloc] initWithBook:self.selectedBook delegate:self];
+        [self.view addSubview:bookViewController.view];
+        self.bookViewController = bookViewController;
+        
+    } else {
+        
+        // Remove the book cover.
+        [self.bookCoverViewController.view removeFromSuperview];
+        self.bookCoverViewController = nil;
+        
+    }
 }
 
 #pragma mark - EventHelper methods
@@ -749,10 +752,7 @@
         return;
     }
     
-    // Get the book cell.
-    BenchtopBookCell *bookCell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    
-    // Remmeber the book to be opened.
+    // Remember the book to be opened.
     self.selectedBook = book;
     self.openedIndexPath = indexPath;
     
@@ -760,24 +760,13 @@
     [self showMenu:NO];
     
     // Open book.
-    [bookCell openBook:YES];
-    
-    // Only part the books if we are in other books.
-    BenchtopLayout *layoutToToggle = nil;
-    if (indexPath.section == 0) {
-        layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
-    } else {
-        layoutToToggle = [[BenchtopPartingFlowLayout alloc] initWithBenchtopDelegate:self];
-    }
-    [UIView animateWithDuration:0.4
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
-                     }
-                     completion:^(BOOL finished) {
-                         self.collectionView.userInteractionEnabled = NO;
-                     }];
+    BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book
+                                                                                                mine:self.firstBenchtop
+                                                                                            delegate:self];
+    bookCoverViewController.view.frame = self.view.bounds;
+    [self.view addSubview:bookCoverViewController.view];
+    [bookCoverViewController openBook:YES];
+    self.bookCoverViewController = bookCoverViewController;
 }
 
 - (void)showMenu:(BOOL)show {
@@ -909,6 +898,51 @@
     return [[self.collectionView indexPathsForVisibleItems] select:^BOOL(NSIndexPath *currentIndexPath) {
         return ([currentIndexPath compare:indexPath] != NSOrderedSame);
     }];
+}
+
+- (void)toggleLayoutToOpenBook:(BOOL)open {
+    
+    BenchtopLayout *layoutToToggle = nil;
+    
+    if (open) {
+        
+        // Only part the books if we are in other books.
+        if (self.firstBenchtop) {
+            layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+        } else {
+            layoutToToggle = [[BenchtopPartingFlowLayout alloc] initWithBenchtopDelegate:self];
+        }
+        
+    } else {
+        
+        // Restore the layout.
+        if (self.firstBenchtop) {
+            layoutToToggle = [[BenchtopStackLayout alloc] initWithBenchtopDelegate:self];
+        } else {
+            layoutToToggle = [[BenchtopFlowLayout alloc] initWithBenchtopDelegate:self];
+        }
+        
+    }
+    
+    // Change the layout after a delay.
+    CGFloat layoutDelay = open ? 0.1 : 0.1;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, layoutDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             [self.collectionView setCollectionViewLayout:layoutToToggle animated:NO];
+                         }
+                         completion:^(BOOL finished) {
+                             if (!open) {
+                                 self.selectedBook = nil;
+                                 self.openedIndexPath = nil;
+                                 [self showMenu:YES];
+                             }
+                             self.collectionView.userInteractionEnabled = !open;
+                         }];
+    });
+    
 }
 
 @end

@@ -9,14 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
 
-@interface BookView : UIView
+@interface BookCoverView : UIView
 
 @property (nonatomic, strong) NSString *type;
 
 - (void)layoutBookCover;
 - (void)updateWithBook:(CKBook *)book mine:(BOOL)mine;
 - (void)updateWithBook:(CKBook *)book mine:(BOOL)mine force:(BOOL)force;
-- (void)open:(BOOL)open;
 
 - (UIEdgeInsets)contentEdgeInsets;
 - (CGSize)contentAvailableSize;

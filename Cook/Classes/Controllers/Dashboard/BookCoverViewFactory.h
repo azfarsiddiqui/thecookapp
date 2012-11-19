@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BookView.h"
+#import "BookCoverView.h"
 
 @interface BookCoverViewFactory : NSObject
 
-+ (BookView *)bookCoverViewWithFrame:(CGRect)frame;
-+ (BookView *)bookCoverViewWithType:(NSString *)type frame:(CGRect)frame;
++ (BookCoverView *)bookCoverViewWithFrame:(CGRect)frame;
++ (BookCoverView *)bookCoverViewWithType:(NSString *)type frame:(CGRect)frame;
 
 @end

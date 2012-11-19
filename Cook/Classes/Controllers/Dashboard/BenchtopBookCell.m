@@ -9,12 +9,10 @@
 #import "BenchtopBookCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "BookCoverViewFactory.h"
-#import "BookView.h"
 
 @interface BenchtopBookCell ()
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) BookView *bookView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
@@ -28,11 +26,11 @@
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         
-        BookView *bookView = [[BookView alloc] initWithFrame:frame];
+        BookCoverView *bookView = [[BookCoverView alloc] initWithFrame:frame];
         bookView.center = self.contentView.center;
         bookView.frame = CGRectIntegral(bookView.frame);
         [self.contentView addSubview:bookView];
-        self.bookView = bookView;
+        self.bookCoverView = bookView;
         
         // Start spinning until book is available
         UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc]
@@ -82,11 +80,11 @@
     [self.activityView stopAnimating];
     
     // Update book cover.
-    [self.bookView updateWithBook:book mine:mine force:force];
+    [self.bookCoverView updateWithBook:book mine:mine force:force];
 }
 
 - (void)openBook:(BOOL)open {
-    [self.bookView open:open];
+    // [self.bookView open:open];
 }
 
 - (void)openBook:(BOOL)open completion:(void (^)(BOOL opened))completion {    

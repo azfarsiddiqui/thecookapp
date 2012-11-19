@@ -17,9 +17,14 @@
     
     for (UICollectionViewLayoutAttributes* attributes in layoutAttributes) {
         
+        NSIndexPath *selectedIndexPath = [self.benchtopDelegate benchtopOpenedIndexPath];
+        
+        // Hide selected book.
+        if ([attributes.indexPath compare:selectedIndexPath] == NSOrderedSame) {
+            attributes.alpha = 0.0;
+        }
+        
         if (attributes.indexPath.section == 1) {
-            
-            NSIndexPath *selectedIndexPath = [self.benchtopDelegate benchtopOpenedIndexPath];
             
             // Move it apart if book selected.
             NSInteger distance = attributes.indexPath.row - selectedIndexPath.row;

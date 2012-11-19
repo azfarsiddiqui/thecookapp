@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
+#import "BookCoverView.h"
 
 @interface BenchtopBookCell : UICollectionViewCell
+
+@property (nonatomic, strong) BookCoverView *bookCoverView;
 
 + (CGSize)cellSize;
 

@@ -34,6 +34,12 @@
     UICollectionViewLayoutAttributes* attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
     NSInteger numItems = [self.collectionView numberOfItemsInSection:indexPath.section];
     
+    // Hide selected book.
+    NSIndexPath *selectedIndexPath = [self.benchtopDelegate benchtopOpenedIndexPath];
+    if ([attributes.indexPath compare:selectedIndexPath] == NSOrderedSame) {
+        attributes.alpha = 0.0;
+    }
+    
     if (indexPath.section == 1) {
         
         CGFloat sideGap = [self.benchtopDelegate benchtopSideGap];
