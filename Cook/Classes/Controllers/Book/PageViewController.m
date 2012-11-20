@@ -44,18 +44,18 @@
     // Subclasses to implement.
 }
 
-- (void)loadData {
-    [self setLoading:YES];
-}
+//- (void)loadData {
+//    [self setLoading:YES];
+//}
+//
+//- (void)dataDidLoad {
+//    [self setLoading:NO];
+//    [self updatePageNumber];
+//}
 
-- (void)dataDidLoad {
-    [self setLoading:NO];
-    [self updatePageNumber];
-}
-
-- (void)setLoading:(BOOL)loading {
+- (void)loadingIndicator:(BOOL)loading {
     if (loading) {
-        [self.pageNumberLabel removeFromSuperview];
+//        [self.pageNumberLabel removeFromSuperview];
         [self.activityView startAnimating];
         self.activityView.hidden = NO;
     } else {
@@ -181,8 +181,13 @@
     self.activityView = activityView;
 }
 
-- (void)updatePageNumber {
+-(void) hidePageNumber {
+    [self loadingIndicator:YES];
     [self.pageNumberLabel removeFromSuperview];
+    
+}
+- (void)showPageNumber {
+    [self loadingIndicator:NO];
     
     UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
     UIFont *font = [UIFont systemFontOfSize:12.0];

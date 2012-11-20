@@ -27,6 +27,7 @@
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
+@property (nonatomic, assign) id<PageViewDelegate> pageViewDelegate;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
 
@@ -118,8 +119,7 @@
         // Contents page.
         view = self.contentsViewController.view;
         viewController = self.contentsViewController;
-        [self.contentsViewController loadData];
-        
+        self.pageViewDelegate = self.contentsViewController;
     } else {
         
         NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
@@ -129,7 +129,7 @@
             viewController = self.categoryViewController;
             [self.categoryViewController loadCategory:categoryName];
             view = self.categoryViewController.view;
-            
+            self.pageViewDelegate = self.categoryViewController;
         } else {
             
             // Recipe page.
@@ -144,8 +144,12 @@
             recipeViewController.recipe = recipe;
             viewController = recipeViewController;
             view = recipeViewController.view;
+            self.pageViewDelegate = recipeViewController;
         }
         
+    }
+    if (self.pageViewDelegate) {
+        [self.pageViewDelegate hidePageNumber];
     }
     return viewController;
 }
@@ -226,6 +230,10 @@
     previousViewController:(UIViewController *)previousViewController transitionCompleted:(BOOL)completed {
 	if (completed) {
 		self.currentPageIndex = self.tentativeIndex;
+        if (self.pageViewDelegate) {
+            [self.pageViewDelegate showPageNumber];
+        }
+        DLog(@"updated page index to %i", self.currentPageIndex);
 	}
 }
 
@@ -320,9 +328,7 @@
         
         // Set recipes - important for observe (TODO remove this).
         self.recipes = recipes;
-        
-        // Reload contents.
-        [self.contentsViewController loadData];
+        [self.contentsViewController refreshData];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);

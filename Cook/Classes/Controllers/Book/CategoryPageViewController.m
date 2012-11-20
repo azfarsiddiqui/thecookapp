@@ -37,14 +37,13 @@
 {
     [super viewWillAppear:animated];
     DLog();
-    [self loadData];
     [self showContentsButton];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self dataDidLoad];
+    DLog();
 }
 - (void)loadCategory:(NSString *)categoryName {
     

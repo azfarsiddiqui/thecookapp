@@ -32,15 +32,23 @@
 #define kNameYOffset    150.0
 #define kCategoryCellId @"CategoryCellId"
 
-- (void)loadData {
+//- (void)loadData {
+//    DLog();
+//    
+//    [super loadData];
+//    
+//    // Data would've been loaded by BookVC.
+//    if ([self.dataSource bookCategoryNames]) {
+//        [self dataDidLoad];
+//    }
+//}
+
+-(void)refreshData
+{
     DLog();
-    
-    [super loadData];
-    
-    // Data would've been loaded by BookVC.
-    if ([self.dataSource bookCategoryNames]) {
-        [self dataDidLoad];
-    }
+    [self.tableView reloadData];
+    [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
+    [self showPageNumber];
 }
 
 - (void)initPageView {
@@ -50,10 +58,16 @@
     [self initCreateButton];
 }
 
-- (void)dataDidLoad {
-    [super dataDidLoad];
-    [self.tableView reloadData];
-    [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    DLog();
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    DLog();
 }
 
 #pragma mark - UITableViewDataSource methods

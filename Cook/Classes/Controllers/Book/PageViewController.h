@@ -14,7 +14,11 @@ typedef enum {
 	NavigationButtonStyleGray
 } NavigationButtonStyle;
 
-@interface PageViewController : UIViewController
+@protocol PageViewDelegate
+-(void)showPageNumber;
+-(void)hidePageNumber;
+@end
+@interface PageViewController : UIViewController<PageViewDelegate>
 
 @property (nonatomic, assign) id<BookViewDelegate> delegate;
 @property (nonatomic, assign) id<BookViewDataSource> dataSource;
@@ -22,7 +26,5 @@ typedef enum {
 - (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource withButtonStyle:(NavigationButtonStyle)navigationButtonStyle;
 - (void)initPageView;
 - (void)showContentsButton;
-- (void)loadData;
-- (void)dataDidLoad;
-- (void)setLoading:(BOOL)loading;
+- (void)loadingIndicator:(BOOL)loading;
 @end
