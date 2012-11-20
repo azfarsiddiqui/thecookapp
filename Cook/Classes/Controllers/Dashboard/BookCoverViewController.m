@@ -133,7 +133,7 @@
     CALayer *leftOpenLayer = [CALayer layer];
     leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
     leftOpenLayer.frame = rootBookCoverLayer.bounds;
-    leftOpenLayer.backgroundColor = [UIColor greenColor].CGColor;
+    leftOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
     leftOpenLayer.doubleSided = NO;
     leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
     [rootBookCoverLayer addSublayer:leftOpenLayer];
