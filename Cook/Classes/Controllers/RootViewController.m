@@ -10,10 +10,12 @@
 #import "CKUser.h"
 #import "AppHelper.h"
 #import "BenchtopViewController.h"
+#import "StoreViewController.h"
 
-@interface RootViewController ()
+@interface RootViewController () <BenchtopViewControlelrDelegate, StoreViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopViewController *benchtopViewController;
+@property (nonatomic, strong) StoreViewController *storeViewController;
 
 @end
 
@@ -30,7 +32,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     // Prepare for the dashboard to be transitioned in.
-    self.benchtopViewController = [[BenchtopViewController alloc] init];
+    self.benchtopViewController = [[BenchtopViewController alloc] initWithDelegate:self];
     self.benchtopViewController.view.frame = self.view.bounds;
     [self.view addSubview:self.benchtopViewController.view];
     
@@ -77,6 +79,20 @@
     }];
 }
 
+#pragma mark - BenchtopViewControlelrDelegate methods
+
+- (void)benchtopViewControllerStoreRequested {
+    DLog();
+    [self showStoreMode:YES];
+}
+
+#pragma mark - StoreViewControllerDelegate methods
+
+- (void)storeViewControllerCloseRequested {
+    DLog();
+    [self showStoreMode:NO];
+}
+
 #pragma mark - Private methods
 
 - (void)showDashboard {
@@ -85,6 +101,34 @@
     DLog(@"Current User: %@", currentUser);
     
     [self.benchtopViewController enable:YES];
+}
+
+- (void)showStoreMode:(BOOL)show {
+    if (show) {
+        StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
+        storeViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                    -self.view.bounds.size.height,
+                                                    self.view.bounds.size.width,
+                                                    self.view.bounds.size.height);
+        [self.view addSubview:storeViewController.view];
+        self.storeViewController = storeViewController;
+    }
+    
+    CGAffineTransform transform = show ? CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height) : CGAffineTransformIdentity;
+    [UIView animateWithDuration:0.5
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.storeViewController.view.transform = transform;
+                         [self.storeViewController enable:YES animated:NO];
+                         self.benchtopViewController.view.transform = transform;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.storeViewController.view removeFromSuperview];
+                             self.storeViewController = nil;
+                         }
+                     }];
 }
 
 @end
