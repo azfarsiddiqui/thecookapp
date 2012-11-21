@@ -93,7 +93,7 @@
 - (void)initTitleView {
     
     CKBook *book = [self.dataSource currentBook];
-    NSString *title = book.name;
+    NSString *title = [book.name uppercaseString];
     UIFont *font = [UIFont bookTitleFontWithSize:50.0];
     CGSize size = [title sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
     CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;

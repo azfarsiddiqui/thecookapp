@@ -32,7 +32,6 @@
 		76324F0D165343DE007D1EBF /* MGImageUtilities - Source Code License.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 76324F08165343DE007D1EBF /* MGImageUtilities - Source Code License.rtf */; };
 		76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0A165343DE007D1EBF /* UIImage+ProportionalFill.m */; };
 		76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0C165343DE007D1EBF /* UIImage+Tint.m */; };
-		76324F1F16534EF3007D1EBF /* ContentsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F1E16534EF3007D1EBF /* ContentsTableViewCell.m */; };
 		76324F2716535591007D1EBF /* cook_book_icon_create.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2516535590007D1EBF /* cook_book_icon_create.png */; };
 		76324F2816535591007D1EBF /* cook_book_icon_create@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */; };
 		76324F32165356F3007D1EBF /* cook_category_meat.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2A165356F1007D1EBF /* cook_category_meat.png */; };
@@ -242,8 +241,6 @@
 		892041CF16509A9600765F96 /* cook_book_icon_time.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041CD16509A9500765F96 /* cook_book_icon_time.png */; };
 		892041D016509A9600765F96 /* cook_book_icon_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041CE16509A9600765F96 /* cook_book_icon_time@2x.png */; };
 		89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B721624FB6100152940 /* IngredientTableViewCell.m */; };
-		89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7B1625291A00152940 /* AFKPageFlipper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		89232B801625291A00152940 /* CookPageFlipper.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B7E1625291A00152940 /* CookPageFlipper.m */; };
 		89232B861625369400152940 /* test_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 89232B851625369400152940 /* test_image.png */; };
 		89232B921625431500152940 /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B911625431500152940 /* BookViewController.m */; };
 		8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7E8161E78AE00E6EF1D /* CKRecipe.m */; };
@@ -270,6 +267,8 @@
 		896221A1161EAF4C0023EC30 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219F161EAF4C0023EC30 /* btn_close.png */; };
 		896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896221A0161EAF4C0023EC30 /* btn_close@2x.png */; };
 		8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8976B89C162797A5004155C6 /* RecipeViewController.m */; };
+		8996A3B0165C653F0099583E /* BookProfilePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8996A3AF165C653F0099583E /* BookProfilePageViewController.m */; };
+		8996A3B3165C66740099583E /* ContentsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8996A3B2165C66740099583E /* ContentsTableViewCell.m */; };
 		89A50499162250F700E6CDF1 /* Ingredient.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A50498162250F700E6CDF1 /* Ingredient.m */; };
 		89A504A8162290BF00E6CDF1 /* CategoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */; };
 		89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504AB1622923500E6CDF1 /* CategoryListCell.m */; };
@@ -314,8 +313,6 @@
 		76324F0A165343DE007D1EBF /* UIImage+ProportionalFill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ProportionalFill.m"; sourceTree = "<group>"; };
 		76324F0B165343DE007D1EBF /* UIImage+Tint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Tint.h"; sourceTree = "<group>"; };
 		76324F0C165343DE007D1EBF /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
-		76324F1D16534EF3007D1EBF /* ContentsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentsTableViewCell.h; sourceTree = "<group>"; };
-		76324F1E16534EF3007D1EBF /* ContentsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsTableViewCell.m; sourceTree = "<group>"; };
 		76324F2516535590007D1EBF /* cook_book_icon_create.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_create.png; sourceTree = "<group>"; };
 		76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_create@2x.png"; sourceTree = "<group>"; };
 		76324F2A165356F1007D1EBF /* cook_category_meat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_category_meat.png; sourceTree = "<group>"; };
@@ -570,11 +567,6 @@
 		892041D91650C23500765F96 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		89232B711624FB6100152940 /* IngredientTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientTableViewCell.h; sourceTree = "<group>"; };
 		89232B721624FB6100152940 /* IngredientTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientTableViewCell.m; sourceTree = "<group>"; };
-		89232B7A1625291A00152940 /* AFKPageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFKPageFlipper.h; sourceTree = "<group>"; };
-		89232B7B1625291A00152940 /* AFKPageFlipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFKPageFlipper.m; sourceTree = "<group>"; };
-		89232B7C1625291A00152940 /* ColorHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorHelper.h; sourceTree = "<group>"; };
-		89232B7D1625291A00152940 /* CookPageFlipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CookPageFlipper.h; sourceTree = "<group>"; };
-		89232B7E1625291A00152940 /* CookPageFlipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CookPageFlipper.m; sourceTree = "<group>"; };
 		89232B851625369400152940 /* test_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test_image.png; sourceTree = "<group>"; };
 		89232B901625431500152940 /* BookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BookViewController.h; path = Book/BookViewController.h; sourceTree = "<group>"; };
 		89232B911625431500152940 /* BookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BookViewController.m; path = Book/BookViewController.m; sourceTree = "<group>"; };
@@ -617,6 +609,10 @@
 		896221A0161EAF4C0023EC30 /* btn_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@2x.png"; sourceTree = "<group>"; };
 		8976B89B162797A5004155C6 /* RecipeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeViewController.h; sourceTree = "<group>"; };
 		8976B89C162797A5004155C6 /* RecipeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeViewController.m; sourceTree = "<group>"; };
+		8996A3AE165C653F0099583E /* BookProfilePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookProfilePageViewController.h; sourceTree = "<group>"; };
+		8996A3AF165C653F0099583E /* BookProfilePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookProfilePageViewController.m; sourceTree = "<group>"; };
+		8996A3B1165C66730099583E /* ContentsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContentsTableViewCell.h; path = Book/ContentsTableViewCell.h; sourceTree = "<group>"; };
+		8996A3B2165C66740099583E /* ContentsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContentsTableViewCell.m; path = Book/ContentsTableViewCell.m; sourceTree = "<group>"; };
 		89A50497162250F700E6CDF1 /* Ingredient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ingredient.h; sourceTree = "<group>"; };
 		89A50498162250F700E6CDF1 /* Ingredient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ingredient.m; sourceTree = "<group>"; };
 		89A504A6162290BF00E6CDF1 /* CategoryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CategoryListViewController.h; path = Cook/Classes/Controllers/CategoryListViewController.h; sourceTree = SOURCE_ROOT; };
@@ -1027,7 +1023,6 @@
 			isa = PBXGroup;
 			children = (
 				89232B931625431900152940 /* Book */,
-				8936F7F1161E7ABB00E6EF1D /* Recipe */,
 				7652046B161AD11E00EE253C /* Categories */,
 				76520459161A80CB00EE253C /* Dashboard */,
 				76C99D70163A12BD00788679 /* Settings */,
@@ -1117,28 +1112,14 @@
 			path = navigation;
 			sourceTree = "<group>";
 		};
-		89232B791625291A00152940 /* AFKPageFlipper */ = {
-			isa = PBXGroup;
-			children = (
-				89232B7A1625291A00152940 /* AFKPageFlipper.h */,
-				89232B7B1625291A00152940 /* AFKPageFlipper.m */,
-				89232B7C1625291A00152940 /* ColorHelper.h */,
-				89232B7D1625291A00152940 /* CookPageFlipper.h */,
-				89232B7E1625291A00152940 /* CookPageFlipper.m */,
-			);
-			path = AFKPageFlipper;
-			sourceTree = "<group>";
-		};
 		89232B931625431900152940 /* Book */ = {
 			isa = PBXGroup;
 			children = (
-				89B83E8F1659AA130012E03B /* Contents */,
 				89232B901625431500152940 /* BookViewController.h */,
 				89232B911625431500152940 /* BookViewController.m */,
 				76B9E01C164C85D100345B8D /* PageViewController.h */,
 				76B9E01B164C85D100345B8D /* PageViewController.m */,
-				76622D5A1650C6A7005F4459 /* CategoryPageViewController.h */,
-				76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */,
+				89B83E8F1659AA130012E03B /* BookPages */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -1158,7 +1139,6 @@
 				76582AA1165497310007FCE1 /* MPFlipViewController */,
 				76324F07165343DE007D1EBF /* MGImageUtilities */,
 				76C6CDCF164B5495006001BD /* APBookmarkNavigationView */,
-				89232B791625291A00152940 /* AFKPageFlipper */,
 				89622187161EA6610023EC30 /* MRCEnumerable */,
 				89622171161E9F300023EC30 /* AviarySDK */,
 			);
@@ -1268,11 +1248,11 @@
 			name = ViewEdit;
 			sourceTree = "<group>";
 		};
-		89B83E8F1659AA130012E03B /* Contents */ = {
+		8996A3A9165C62A70099583E /* Contents */ = {
 			isa = PBXGroup;
 			children = (
-				76324F1D16534EF3007D1EBF /* ContentsTableViewCell.h */,
-				76324F1E16534EF3007D1EBF /* ContentsTableViewCell.m */,
+				8996A3B1165C66730099583E /* ContentsTableViewCell.h */,
+				8996A3B2165C66740099583E /* ContentsTableViewCell.m */,
 				76B9E01D164C85D100345B8D /* ContentsPageViewController.h */,
 				76B9E01A164C85D100345B8D /* ContentsPageViewController.m */,
 				76B9E019164C85D100345B8D /* ContentsCollectionViewController.h */,
@@ -1281,6 +1261,27 @@
 				76B9E016164C853F00345B8D /* ContentsPhotoCell.m */,
 			);
 			name = Contents;
+			sourceTree = "<group>";
+		};
+		8996A3AA165C62B00099583E /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				76622D5A1650C6A7005F4459 /* CategoryPageViewController.h */,
+				76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */,
+			);
+			name = Category;
+			sourceTree = "<group>";
+		};
+		89B83E8F1659AA130012E03B /* BookPages */ = {
+			isa = PBXGroup;
+			children = (
+				8996A3AA165C62B00099583E /* Category */,
+				8996A3A9165C62A70099583E /* Contents */,
+				8936F7F1161E7ABB00E6EF1D /* Recipe */,
+				8996A3AE165C653F0099583E /* BookProfilePageViewController.h */,
+				8996A3AF165C653F0099583E /* BookProfilePageViewController.m */,
+			);
+			name = BookPages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1548,8 +1549,6 @@
 				89A504A8162290BF00E6CDF1 /* CategoryListViewController.m in Sources */,
 				89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */,
 				89232B731624FB6100152940 /* IngredientTableViewCell.m in Sources */,
-				89232B7F1625291A00152940 /* AFKPageFlipper.m in Sources */,
-				89232B801625291A00152940 /* CookPageFlipper.m in Sources */,
 				7620270516252B1E005A8B66 /* BenchtopStackLayout.m in Sources */,
 				7620270616252B1E005A8B66 /* BenchtopFlowLayout.m in Sources */,
 				7620270716252B1E005A8B66 /* BenchtopLayout.m in Sources */,
@@ -1583,13 +1582,14 @@
 				76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */,
 				76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */,
 				8903B56916534D8900BB3E5B /* FacebookUserView.m in Sources */,
-				76324F1F16534EF3007D1EBF /* ContentsTableViewCell.m in Sources */,
 				76582AAC165497310007FCE1 /* MPAnimation.m in Sources */,
 				76582AAD165497310007FCE1 /* MPFlipTransition.m in Sources */,
 				76582AAE165497310007FCE1 /* MPFlipViewController.m in Sources */,
 				76582AAF165497310007FCE1 /* MPTransition.m in Sources */,
 				767C0AA11655201700141355 /* BenchtopPartingFlowLayout.m in Sources */,
 				76DC8DBB1659BF23005C472B /* BookCoverViewController.m in Sources */,
+				8996A3B0165C653F0099583E /* BookProfilePageViewController.m in Sources */,
+				8996A3B3165C66740099583E /* ContentsTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,9 +14,11 @@
 #import "MRCEnumerable.h"
 #import "CategoryPageViewController.h"
 #import "RecipeViewController.h"
+#import "BookProfilePageViewController.h"
 #import "MPFlipViewController.h"
 
 #define kContentPageIndex  2
+#define kBookProfilePageIndex 1
 
 @interface BookViewController () <BookViewDelegate, BookViewDataSource, MPFlipViewControllerDataSource, MPFlipViewControllerDelegate>
 
@@ -30,7 +32,7 @@
 @property (nonatomic, assign) id<PageViewDelegate> pageViewDelegate;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
-
+@property (nonatomic, strong) BookProfilePageViewController *bookProfilePageViewController;
 @property (nonatomic, strong) MPFlipViewController *flipViewController;
 @property (nonatomic, assign) NSInteger currentPageIndex;
 @property (nonatomic, assign) NSInteger tentativeIndex;
@@ -120,38 +122,48 @@
     UIViewController *viewController = nil;
     UIView *view = nil;
     
-    if (pageIndex == kContentPageIndex) {
-        // Contents page.
-        view = self.contentsViewController.view;
-        viewController = self.contentsViewController;
-        self.pageViewDelegate = self.contentsViewController;
-    } else {
-        
-        NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
-        if (categoryIndex != -1) {
-            // Category page.
-            NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
-            viewController = self.categoryViewController;
-            [self.categoryViewController loadCategory:categoryName];
-            view = self.categoryViewController.view;
-            self.pageViewDelegate = self.categoryViewController;
-        } else {
-            
-            // Recipe page.
-            categoryIndex = [self currentCategoryIndexForPageIndex:pageIndex];
-            NSInteger categoryPageIndex = [[self.categoryPageIndexes objectAtIndex:categoryIndex] integerValue];
-            NSInteger recipeIndex = pageIndex - categoryPageIndex - 1;
-            NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
-            NSArray *recipes = [self.categoryRecipes objectForKey:categoryName];
-            CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
-            self.recipe = recipe;
-            RecipeViewController *recipeViewController = [self newRecipeViewController];
-            recipeViewController.recipe = recipe;
-            viewController = recipeViewController;
-            view = recipeViewController.view;
-            self.pageViewDelegate = recipeViewController;
+    switch (pageIndex) {
+        case kBookProfilePageIndex: {
+            // Contents page.
+            view = self.bookProfilePageViewController.view;
+            viewController = self.bookProfilePageViewController;
+            self.pageViewDelegate = self.bookProfilePageViewController;
+            break;
         }
-        
+        case kContentPageIndex: {
+            // Contents page.
+            view = self.contentsViewController.view;
+            viewController = self.contentsViewController;
+            self.pageViewDelegate = self.contentsViewController;
+            break;
+        }
+        default: {
+            NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
+            if (categoryIndex != -1) {
+                // Category page.
+                NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
+                viewController = self.categoryViewController;
+                [self.categoryViewController loadCategory:categoryName];
+                view = self.categoryViewController.view;
+                self.pageViewDelegate = self.categoryViewController;
+            } else {
+                
+                // Recipe page.
+                categoryIndex = [self currentCategoryIndexForPageIndex:pageIndex];
+                NSInteger categoryPageIndex = [[self.categoryPageIndexes objectAtIndex:categoryIndex] integerValue];
+                NSInteger recipeIndex = pageIndex - categoryPageIndex - 1;
+                NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
+                NSArray *recipes = [self.categoryRecipes objectForKey:categoryName];
+                CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
+                self.recipe = recipe;
+                RecipeViewController *recipeViewController = [self newRecipeViewController];
+                recipeViewController.recipe = recipe;
+                viewController = recipeViewController;
+                view = recipeViewController.view;
+                self.pageViewDelegate = recipeViewController;
+                break;
+            }
+        }
     }
     if (self.pageViewDelegate) {
         [self.pageViewDelegate hidePageNumber];
@@ -224,7 +236,7 @@
 - (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController viewControllerBeforeViewController:(UIViewController *)viewController {
 	NSInteger index = self.currentPageIndex;
 	index--;
-	if (index < kContentPageIndex) {
+	if (index < kBookProfilePageIndex) {
 		return nil; // reached beginning, don't wrap
     }
     
@@ -278,6 +290,17 @@
     return _categoryViewController;
 }
 
+-(BookProfilePageViewController *)bookProfilePageViewController
+{
+    if (!_bookProfilePageViewController) {
+        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+        _bookProfilePageViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BookProfilePageViewController"];
+        _bookProfilePageViewController.delegate = self;
+        _bookProfilePageViewController.dataSource = self;
+    }
+    return _bookProfilePageViewController;
+}
+
 - (RecipeViewController *)newRecipeViewController
 {
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
@@ -295,10 +318,6 @@
 }
 
 - (void)initFlipper {
-//    self.pageFlipper = [[CookPageFlipper alloc] initWithFrame:self.view.frame];
-//    self.pageFlipper.dataSource = self;
-//    [self.view addSubview:self.pageFlipper];
-    
     self.currentPageIndex = kContentPageIndex;
     self.flipViewController = [[MPFlipViewController alloc] initWithOrientation:MPFlipViewControllerOrientationHorizontal];
     self.flipViewController.delegate = self;
