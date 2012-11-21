@@ -32,15 +32,12 @@
 #define kNameYOffset    150.0
 #define kCategoryCellId @"CategoryCellId"
 
-- (void)loadData {
+-(void)refreshData
+{
     DLog();
-    
-    [super loadData];
-    
-    // Data would've been loaded by BookVC.
-    if ([self.dataSource bookCategoryNames]) {
-        [self dataDidLoad];
-    }
+    [self.tableView reloadData];
+    [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
+    [self showPageNumber];
 }
 
 - (void)initPageView {
@@ -50,10 +47,11 @@
     [self initCreateButton];
 }
 
-- (void)dataDidLoad {
-    [super dataDidLoad];
-    [self.tableView reloadData];
-    [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    DLog();
+    [self hidePageNumber];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -68,6 +66,15 @@
     cell.textLabel.text = [categoryName uppercaseString];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForCategoryName:categoryName]];
     return cell;
+}
+
+#pragma mark - UITableViewDelegate methods
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSString *categoryName = [[self.dataSource bookCategoryNames] objectAtIndex:indexPath.row];
+    NSUInteger requestedPageIndex = [self.dataSource pageNumForCategoryName:categoryName];
+    [self.delegate requestedPageIndex:requestedPageIndex];
 }
 
 #pragma mark - NewRecipeViewDelegate methods
@@ -86,7 +93,7 @@
 - (void)initTitleView {
     
     CKBook *book = [self.dataSource currentBook];
-    NSString *title = book.name;
+    NSString *title = [book.name uppercaseString];
     UIFont *font = [UIFont bookTitleFontWithSize:50.0];
     CGSize size = [title sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
     CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;
@@ -130,6 +137,8 @@
                                                      0.0,
                                                      collectionViewController.view.frame.size.width,
                                                      self.view.bounds.size.height);
+    collectionViewController.bookViewDataSource = self.dataSource;
+    collectionViewController.bookViewDelegate = self.delegate;
     [self.view addSubview:collectionViewController.view];
     self.contentsCollectionViewController = collectionViewController;
 }

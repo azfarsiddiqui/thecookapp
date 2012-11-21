@@ -10,4 +10,5 @@
 
 @interface ContentsPageViewController : PageViewController
 
+-(void) refreshData;
 @end

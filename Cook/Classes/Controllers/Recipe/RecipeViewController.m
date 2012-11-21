@@ -51,7 +51,6 @@
 #pragma mark - Overridden methods
 -(void)refreshData
 {
-    [super loadData];
     self.recipeNameLabel.text = self.recipe.name;
     [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
@@ -98,7 +97,7 @@
                 } else {
                     DLog(@"Error loading image in background: %@", [error description]);
                 }
-                [super dataDidLoad];
+//                [super dataDidLoad];
             }];
         }
     } failure:^(NSError *error) {

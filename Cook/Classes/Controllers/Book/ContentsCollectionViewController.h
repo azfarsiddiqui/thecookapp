@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BookViewController.h"
 @interface ContentsCollectionViewController : UICollectionViewController
 
 - (void)loadRecipes:(NSArray *)recipes;
-
+@property(nonatomic,assign) id<BookViewDataSource> bookViewDataSource;
+@property(nonatomic,assign) id<BookViewDelegate> bookViewDelegate;
 @end

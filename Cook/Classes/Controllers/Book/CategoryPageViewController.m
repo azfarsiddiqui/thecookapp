@@ -37,14 +37,13 @@
 {
     [super viewWillAppear:animated];
     DLog();
-    [self loadData];
     [self showContentsButton];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self dataDidLoad];
+    DLog();
 }
 - (void)loadCategory:(NSString *)categoryName {
     
@@ -89,8 +88,16 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
     cell.textLabel.text = [recipe.name uppercaseString];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtIndex:indexPath.row forCategoryName:self.categoryName]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.categoryName]];
     return cell;
+}
+
+#pragma mark - UITableViewDelegate methods
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSUInteger requestedPageIndex = [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.categoryName];
+    [self.delegate requestedPageIndex:requestedPageIndex];
 }
 
 #pragma mark - Private methods

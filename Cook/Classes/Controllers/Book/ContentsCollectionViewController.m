@@ -110,5 +110,17 @@
     return cell;
 }
 
+#pragma mark - UICollectionViewDelegate methods
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    DLog(@"selected %i", indexPath.row);
+    if (self.bookViewDataSource && self.bookViewDelegate) {
+        CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.row];
+        NSUInteger requestedPageIndex = [self.bookViewDataSource pageNumForRecipe:recipe];
+        [self.bookViewDelegate requestedPageIndex:requestedPageIndex];
+    }
+}
+
 
 @end
