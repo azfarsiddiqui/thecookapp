@@ -137,6 +137,8 @@
                                                      0.0,
                                                      collectionViewController.view.frame.size.width,
                                                      self.view.bounds.size.height);
+    collectionViewController.bookViewDataSource = self.dataSource;
+    collectionViewController.bookViewDelegate = self.delegate;
     [self.view addSubview:collectionViewController.view];
     self.contentsCollectionViewController = collectionViewController;
 }

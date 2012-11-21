@@ -186,21 +186,36 @@
 
 - (NSInteger)numRecipesInCategory:(NSString *)categoryName {
     NSInteger recipeCount = 0;
-    NSInteger categoryIndex = [self.categoryNames findIndex:categoryName];
+    NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
     if (categoryIndex != NSNotFound) {
         recipeCount = [[self.categoryRecipes objectForKey:categoryName] count];
     }
     return recipeCount;
 }
 
--(NSInteger)pageNumForRecipeAtIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName
+-(NSInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName
 {
     return [self pageNumForCategoryName:categoryName] + recipeIndex + 1;
 }
 
+-(NSInteger)pageNumForRecipe:(CKRecipe*)recipe
+{
+    NSString *categoryName = recipe.category.name;
+    NSArray *recipesForCategory = [self recipesForCategory:categoryName];
+    NSUInteger i = 0;
+    for (CKRecipe *categoryRecipe in recipesForCategory) {
+        if ([categoryRecipe isEqual:recipe]) {
+            DLog(@"found recipe! i is %i", i);
+            break;
+        }
+        i++;
+    }
+    
+    return [self pageNumForRecipeAtCategoryIndex:i forCategoryName:categoryName];
+}
 -(NSInteger)pageNumForCategoryName:(NSString *)categoryName
 {
-    NSInteger categoryIndex = [self.categoryNames findIndex:categoryName];
+    NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
     NSNumber *pageCategoryIndex = [self.categoryPageIndexes objectAtIndex:categoryIndex];
     return [pageCategoryIndex intValue];
 }

@@ -88,7 +88,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
     cell.textLabel.text = [recipe.name uppercaseString];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtIndex:indexPath.row forCategoryName:self.categoryName]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.categoryName]];
     return cell;
 }
 
@@ -96,7 +96,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    NSUInteger requestedPageIndex = [self.dataSource pageNumForRecipeAtIndex:indexPath.row forCategoryName:self.categoryName];
+    NSUInteger requestedPageIndex = [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.categoryName];
     [self.delegate requestedPageIndex:requestedPageIndex];
 }
 
