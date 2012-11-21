@@ -92,6 +92,14 @@
     return cell;
 }
 
+#pragma mark - UITableViewDelegate methods
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSUInteger requestedPageIndex = [self.dataSource pageNumForRecipeAtIndex:indexPath.row forCategoryName:self.categoryName];
+    [self.delegate requestedPageIndex:requestedPageIndex];
+}
+
 #pragma mark - Private methods
 
 - (void)initCategoryImageView {
