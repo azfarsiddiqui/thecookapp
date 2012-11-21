@@ -44,18 +44,8 @@
     // Subclasses to implement.
 }
 
-//- (void)loadData {
-//    [self setLoading:YES];
-//}
-//
-//- (void)dataDidLoad {
-//    [self setLoading:NO];
-//    [self updatePageNumber];
-//}
-
 - (void)loadingIndicator:(BOOL)loading {
     if (loading) {
-//        [self.pageNumberLabel removeFromSuperview];
         [self.activityView startAnimating];
         self.activityView.hidden = NO;
     } else {

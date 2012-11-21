@@ -32,17 +32,6 @@
 #define kNameYOffset    150.0
 #define kCategoryCellId @"CategoryCellId"
 
-//- (void)loadData {
-//    DLog();
-//    
-//    [super loadData];
-//    
-//    // Data would've been loaded by BookVC.
-//    if ([self.dataSource bookCategoryNames]) {
-//        [self dataDidLoad];
-//    }
-//}
-
 -(void)refreshData
 {
     DLog();
@@ -58,16 +47,11 @@
     [self initCreateButton];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    DLog();
-}
-
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     DLog();
+    [self hidePageNumber];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -82,6 +66,15 @@
     cell.textLabel.text = [categoryName uppercaseString];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForCategoryName:categoryName]];
     return cell;
+}
+
+#pragma mark - UITableViewDelegate methods
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSString *categoryName = [[self.dataSource bookCategoryNames] objectAtIndex:indexPath.row];
+    NSUInteger requestedPageIndex = [self.dataSource pageNumForCategoryName:categoryName];
+    [self.delegate requestedPageIndex:requestedPageIndex];
 }
 
 #pragma mark - NewRecipeViewDelegate methods

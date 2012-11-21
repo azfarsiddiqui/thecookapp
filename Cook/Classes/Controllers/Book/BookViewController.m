@@ -68,6 +68,11 @@
     [self.flipViewController gotoPreviousPage];
 }
 
+-(void)requestedPageIndex:(NSUInteger)pageIndex
+{
+    self.currentPageIndex = pageIndex-1;
+    [self.flipViewController gotoNextPage];
+}
 - (CGRect)bookViewBounds {
     return self.view.bounds;
 }
