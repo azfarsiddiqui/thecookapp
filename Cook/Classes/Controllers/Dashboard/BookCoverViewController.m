@@ -22,6 +22,7 @@
 @property (nonatomic, strong) CALayer *rootBookLayer;
 @property (nonatomic, strong) CALayer *bookCoverLayer;
 @property (nonatomic, strong) CALayer *bookCoverContentsLayer;
+@property (nonatomic, strong) CALayer *leftOpenLayer;
 @property (nonatomic, assign) BOOL opened;
 
 @end
@@ -61,6 +62,8 @@
 }
 
 - (void)cleanUpLayers {
+    [self.leftOpenLayer removeFromSuperlayer];
+    [self.bookCoverLayer removeFromSuperlayer];
     [self.rootBookLayer removeFromSuperlayer];
 }
 
@@ -75,6 +78,7 @@
     
 //    if (!self.opened) {
         [self.rootBookLayer removeAllAnimations];
+    [self.leftOpenLayer removeAllAnimations];
         [self.bookCoverLayer removeAllAnimations];
 //    }
     [self.delegate bookCoverViewDidOpen:self.opened];
@@ -129,11 +133,11 @@
     CALayer *leftOpenLayer = [CALayer layer];
     leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
     leftOpenLayer.frame = rootBookCoverLayer.bounds;
-    leftOpenLayer.position = CGPointMake(floorf(rootBookCoverLayer.bounds.size.width / 2), floorf(rootBookCoverLayer.bounds.size.height / 2));
-    leftOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
+    leftOpenLayer.backgroundColor = [UIColor greenColor].CGColor;
     leftOpenLayer.doubleSided = NO;
     leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
     [rootBookCoverLayer addSublayer:leftOpenLayer];
+    self.leftOpenLayer = leftOpenLayer;
     
     // Front book cover contents.
     CALayer *bookCoverContentsLayer = [CALayer layer];
