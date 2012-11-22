@@ -7,7 +7,7 @@
 //
 
 #import "IllustrationPickerViewController.h"
-#import "BookCover.h"
+#import "CKBookCover.h"
 #import "IllustrationBookCell.h"
 #import "IllustrationFlowLayout.h"
 #import "NSString+Utilities.h"
@@ -29,7 +29,7 @@
 - (id)initWithIllustration:(NSString *)illustration cover:(NSString *)cover
                   delegate:(id<IllustrationPickerViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[IllustrationFlowLayout alloc] init]]) {
-        self.availableIllustrations = [NSMutableArray arrayWithArray:[[BookCover illustrations]
+        self.availableIllustrations = [NSMutableArray arrayWithArray:[[CKBookCover illustrations]
                                                                       sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
         self.illustration = illustration;
         self.cover = cover;

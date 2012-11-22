@@ -6,16 +6,16 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookCover.h"
+#import "CKBookCover.h"
 #import "MRCEnumerable.h"
 
-@interface BookCover ()
+@interface CKBookCover ()
 
 + (NSDictionary *)settings;
 
 @end
 
-@implementation BookCover
+@implementation CKBookCover
 
 #define kInitialCover           @"kCookInitialCover"
 #define kInitialIllustration    @"kCookInitialIllustration"
@@ -23,7 +23,7 @@
 + (NSString *)initialCover {
     NSString *initialCover = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialCover];
     if (!initialCover) {
-        initialCover = [BookCover randomCover];
+        initialCover = [CKBookCover randomCover];
         [[NSUserDefaults standardUserDefaults] setObject:initialCover forKey:kInitialCover];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -33,7 +33,7 @@
 + (NSString *)initialIllustration {
     NSString *initialIllustration = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialIllustration];
     if (!initialIllustration) {
-        initialIllustration = [BookCover randomIllustration];
+        initialIllustration = [CKBookCover randomIllustration];
         [[NSUserDefaults standardUserDefaults] setObject:initialIllustration forKey:kInitialIllustration];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -41,48 +41,48 @@
 }
 
 + (NSString *)defaultCover {
-    return [[BookCover settings] valueForKeyPath:@"Covers.Red.Image"];
+    return [[CKBookCover settings] valueForKeyPath:@"Covers.Red.Image"];
 }
 
 + (NSString *)defaultIllustration {
-    return [[BookCover settings] valueForKeyPath:@"Illustrations.Cutlery.Image"];
+    return [[CKBookCover settings] valueForKeyPath:@"Illustrations.Cutlery.Image"];
 }
 
 + (NSString *)randomCover {
-    NSArray *covers = [BookCover covers];
+    NSArray *covers = [CKBookCover covers];
     return [covers objectAtIndex:arc4random() % ([covers count] - 1)];
 }
 
 + (NSString *)randomIllustration {
-    NSArray *illustrations = [BookCover illustrations];
+    NSArray *illustrations = [CKBookCover illustrations];
     return [illustrations objectAtIndex:arc4random() % ([illustrations count] - 1)];
 }
 
 + (UIImage *)imageForCover:(NSString *)cover {
-    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
     if (!imageName) {
-        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
-                                                           [BookCover randomCover]]];
+        imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
+                                                           [CKBookCover randomCover]]];
     }
     return [UIImage imageNamed:imageName];
 }
 
 + (UIImage *)thumbImageForCover:(NSString *)cover {
-    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Thumb", cover]];
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Thumb", cover]];
     return [UIImage imageNamed:imageName];
 }
 
 + (UIImage *)imageForIllustration:(NSString *)illustration {
-    NSString *imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
     if (!imageName) {
-        imageName = [[BookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image",
-                                                           [BookCover randomIllustration]]];
+        imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image",
+                                                           [CKBookCover randomIllustration]]];
     }
     return [UIImage imageNamed:imageName];
 }
 
 + (NSArray *)covers {
-    NSDictionary *settings = [BookCover settings];
+    NSDictionary *settings = [CKBookCover settings];
     NSArray *enabledCovers = [[[settings valueForKey:@"Covers"] allKeys] select:^BOOL(NSString *cover) {
         return ([settings valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Index", cover]] != nil);
     }];
@@ -94,16 +94,24 @@
 }
 
 + (NSArray *)illustrations {
-    return [[[BookCover settings] valueForKey:@"Illustrations"] allKeys];
+    return [[[CKBookCover settings] valueForKey:@"Illustrations"] allKeys];
 }
 
 + (BookCoverLayout)layoutForIllustration:(NSString *)illustration {
-    return [self layoutForKey:[[BookCover settings] valueForKeyPath:
+    return [self layoutForKey:[[CKBookCover settings] valueForKeyPath:
                                [NSString stringWithFormat:@"Illustrations.%@.Layout", illustration]]];
 }
 
 + (NSString *)grayCoverName {
     return @"Gray";
+}
+
++ (UIImage *)overlayImage {
+    return [UIImage imageNamed:@"cook_book_overlay.png"];
+}
+
++ (UIImage *)placeholderCoverImage {
+    return [UIImage imageNamed:[[CKBookCover settings] valueForKeyPath:@"Covers.Gray.Image"]];
 }
 
 #pragma mark - Private
