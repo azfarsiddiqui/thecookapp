@@ -16,6 +16,11 @@
 
 @implementation CategoryListCell
 
++(CGSize)cellSize
+{
+    return CGSizeMake(100.0f, 28.0f);
+}
+
 -(void)awakeFromNib
 {
     [super awakeFromNib];
@@ -55,5 +60,6 @@
     [super prepareForReuse];
     self.categoryNameLabel.text = nil;
 }
+
 
 @end

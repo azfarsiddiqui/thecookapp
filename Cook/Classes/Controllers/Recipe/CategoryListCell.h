@@ -12,4 +12,5 @@
 @interface CategoryListCell : UICollectionViewCell
 -(void)configure:(Category*)category;
 -(void)selectCell:(BOOL)selected;
++(CGSize)cellSize;
 @end

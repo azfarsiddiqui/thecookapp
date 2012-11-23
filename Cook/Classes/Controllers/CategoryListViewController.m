@@ -10,7 +10,7 @@
 #import "CategoryListCell.h"
 
 #define kCellReuseIdentifier    @"CategoryListCell"
-
+#define kCategoryLabelFont      [UIFont systemFontOfSize:14.0f]
 @interface CategoryListViewController ()
 @end
 
@@ -72,16 +72,13 @@
     
     Category *category = [self.categories objectAtIndex:indexPath.row];
     NSString *tester = [category.name uppercaseString];
-    CGSize labelSize = [tester sizeWithFont:[UIFont systemFontOfSize:14.0f]];
-
-    DLog(@"optimal size is %f, %f for %@", labelSize.width,labelSize.height, tester);
-
-    return CGSizeMake(labelSize.width, 28.0f);
+    CGSize labelSize = [tester sizeWithFont:kCategoryLabelFont];
+    return CGSizeMake(labelSize.width, [CategoryListCell cellSize].height);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 5.0f;
+    return 10.0f;
 }
 
 #pragma mark - Private methods

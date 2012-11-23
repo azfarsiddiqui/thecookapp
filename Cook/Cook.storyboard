@@ -374,12 +374,12 @@
                             <constraint firstItem="5fL-vj-ZFX" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="0EK-LL-8eY"/>
                             <constraint firstItem="hNd-HF-af5" firstAttribute="trailing" secondItem="xqe-1v-oTm" secondAttribute="trailing" type="default" id="1o5-ZT-jrm"/>
                             <constraint firstItem="hNd-HF-af5" firstAttribute="top" secondItem="rGC-AK-2Id" secondAttribute="top" type="default" id="1tc-Vi-0I3"/>
-                            <constraint firstItem="p0O-vO-Qd6" firstAttribute="top" secondItem="cq0-5i-ca6" secondAttribute="top" type="default" id="4hw-DO-W7k"/>
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="61" id="7VO-53-aYZ"/>
                             <constraint firstItem="rGC-AK-2Id" firstAttribute="leading" secondItem="gGj-42-Age" secondAttribute="leading" type="default" id="AhO-L9-fVC"/>
                             <constraint firstItem="fSK-9i-gTq" firstAttribute="leading" secondItem="5fL-vj-ZFX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="BUc-zY-nco"/>
                             <constraint firstItem="rZq-vn-O5F" firstAttribute="leading" secondItem="5fL-vj-ZFX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="CHf-Fl-pRu"/>
                             <constraint firstItem="hNd-HF-af5" firstAttribute="leading" secondItem="xqe-1v-oTm" secondAttribute="leading" type="default" id="DRb-n6-3i7"/>
+                            <constraint firstItem="dP8-1h-KHq" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="59" id="Ha3-N0-Z9X"/>
                             <constraint firstAttribute="trailing" secondItem="gGj-42-Age" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="LtA-eK-P6b"/>
                             <constraint firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="NHM-QT-dv5"/>
                             <constraint firstAttribute="bottom" secondItem="fSK-9i-gTq" secondAttribute="bottom" constant="54" id="Rrj-Eg-TNw"/>
@@ -393,15 +393,15 @@
                             <constraint firstItem="xqe-1v-oTm" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="121" id="dpF-Pt-CKT"/>
                             <constraint firstItem="wa0-dn-372" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="82" id="e2T-bm-l6m"/>
                             <constraint firstItem="aeg-Qf-Jo0" firstAttribute="top" secondItem="5fL-vj-ZFX" secondAttribute="top" type="default" id="e3T-oQ-c8I"/>
+                            <constraint firstItem="p0O-vO-Qd6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="eiI-f9-FEu"/>
                             <constraint firstAttribute="trailing" secondItem="wa0-dn-372" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="fmm-EA-Ekg"/>
                             <constraint firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="ja4-CQ-GLK"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="leading" secondItem="dP8-1h-KHq" secondAttribute="leading" type="default" id="pkl-q8-g3I"/>
                             <constraint firstAttribute="trailing" secondItem="xmC-eC-N0p" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="plu-y2-dsi"/>
-                            <constraint firstItem="p0O-vO-Qd6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="12" id="s1G-DA-CPp"/>
                             <constraint firstItem="xqe-1v-oTm" firstAttribute="leading" secondItem="wa0-dn-372" secondAttribute="leading" type="default" id="sWB-5P-2fE"/>
-                            <constraint firstItem="dP8-1h-KHq" firstAttribute="top" secondItem="cq0-5i-ca6" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="tVw-2A-mP7"/>
                             <constraint firstItem="aeg-Qf-Jo0" firstAttribute="leading" secondItem="5fL-vj-ZFX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="uzT-wJ-2fe"/>
                             <constraint firstAttribute="bottom" secondItem="5fL-vj-ZFX" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="w6f-4K-fJv"/>
+                            <constraint firstItem="cq0-5i-ca6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="x0e-x7-gnh"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
@@ -454,10 +454,6 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
-                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
                 <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="recipeImageView" candidateClass="UIImageView"/>
@@ -489,9 +485,6 @@
         </class>
         <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
-        </class>
-        <class className="UICollectionViewLayout" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewLayout.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
