@@ -97,13 +97,10 @@
 
 - (void)showDashboard {
     DLog();
-    CKUser *currentUser = [CKUser currentUser];
-    DLog(@"Current User: %@", currentUser);
-    
-    [self.benchtopViewController enable:YES];
+    [self.benchtopViewController show];
 }
 
-- (void)showStoreMode:(BOOL)show {
+- (void)showStoreMode:(BOOL)show {  
     if (show) {
         StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
         storeViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
@@ -115,20 +112,46 @@
     }
     
     CGAffineTransform transform = show ? CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height) : CGAffineTransformIdentity;
-    [UIView animateWithDuration:0.5
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         self.storeViewController.view.transform = transform;
-                         [self.storeViewController enable:YES animated:NO];
-                         self.benchtopViewController.view.transform = transform;
-                     }
-                     completion:^(BOOL finished) {
-                         if (!show) {
-                             [self.storeViewController.view removeFromSuperview];
-                             self.storeViewController = nil;
-                         }
-                     }];
+    
+    if (show) {
+        
+        // Disable benchtop first then shift to store mode.
+        [self.benchtopViewController enable:NO completion:^{
+            
+            [UIView animateWithDuration:0.4
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.storeViewController.view.transform = transform;
+                                 self.benchtopViewController.view.transform = transform;
+                             }
+                             completion:^(BOOL finished) {
+                                 [self.storeViewController enable:YES];
+                             }];
+        }];
+        
+    } else {
+        
+        // Disable store first then shift to benchtop mode.
+        [self.storeViewController enable:NO completion:^{
+            
+            [UIView animateWithDuration:0.4
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.storeViewController.view.transform = transform;
+                                 self.benchtopViewController.view.transform = transform;
+                             }
+                             completion:^(BOOL finished) {
+                                 [self.benchtopViewController enable:YES];
+                                 [self.storeViewController.view removeFromSuperview];
+                                 self.storeViewController = nil;
+                             }];
+        }];
+        
+    }
+
+    
 }
 
 @end

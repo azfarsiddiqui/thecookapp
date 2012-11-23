@@ -24,7 +24,10 @@
     CoverPickerViewControllerDelegate>
 
 - (id)initWithDelegate:(id<BenchtopViewControlelrDelegate>)delegate;
+- (void)show;
 - (void)enable:(BOOL)enable;
+- (void)enable:(BOOL)enable completion:(void (^)())completion;
+- (void)showOverlay:(BOOL)show animated:(BOOL)animated;
 - (void)freeze:(BOOL)freeze;
 
 @end

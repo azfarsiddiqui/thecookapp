@@ -13,6 +13,8 @@
 
 @property (nonatomic, assign) id<StoreViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *backgroundView;
+@property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, assign) BOOL enabled;
 
 @end
 
@@ -57,21 +59,47 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kStoreBookCellId];
 }
 
-- (void)enable:(BOOL)enable animated:(BOOL)animated {
+- (void)enable:(BOOL)enable {
+    [self enable:enable completion:^{}];
+}
+
+- (void)enable:(BOOL)enable completion:(void (^)())completion {
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         [self showOverlay:enable animated:NO];
+                     }
+                     completion:^(BOOL finished) {
+                         self.enabled = enable;
+                         
+                         // Run completion block.
+                         completion();
+                     }];
+}
+
+- (void)showOverlay:(BOOL)show animated:(BOOL)animated {
+    if (show && !self.overlayView) {
+        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        self.overlayView.autoresizingMask = UIViewAutoresizingNone;
+        self.overlayView.alpha = 0.0;
+        [self.view insertSubview:self.overlayView aboveSubview:self.collectionView];
+    }
+    
     if (animated) {
         [UIView animateWithDuration:0.4
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
-                             self.backgroundView.alpha = enable ? 1.0 : 0.0;
-                             self.collectionView.backgroundColor = enable ? [UIColor blackColor] : [UIColor clearColor];
+                             self.overlayView.alpha = show ? 1.0 : 0.0;
                          }
                          completion:^(BOOL finished) {
                          }];
     } else {
-        self.backgroundView.alpha = enable ? 1.0 : 0.0;
+        self.overlayView.alpha = show ? 1.0 : 0.0;
     }
 }
+
 
 #pragma mark - KVO methods.
 
