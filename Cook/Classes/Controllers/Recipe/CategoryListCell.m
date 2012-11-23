@@ -40,11 +40,11 @@
     return self;
 }
 
--(void)configure:(Category*)category;
+-(void)configure:(Category*)category asSelected:(BOOL)selected
 {
     self.categoryNameLabel.text = [category.name uppercaseString];
     self.selectedImageView.frame = CGRectMake(0.0f, 0.0f, self.contentView.frame.size.width, 28.0f);
-
+    [self selectCell:selected];
 }
 
 -(void)selectCell:(BOOL)selected;

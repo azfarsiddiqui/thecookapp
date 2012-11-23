@@ -12,6 +12,7 @@
 #define kCellReuseIdentifier    @"CategoryListCell"
 #define kCategoryLabelFont      [UIFont systemFontOfSize:14.0f]
 @interface CategoryListViewController ()
+@property(nonatomic,strong) Category *selectedCategory;
 @end
 
 @implementation CategoryListViewController
@@ -42,7 +43,7 @@
 {
     CategoryListCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseIdentifier forIndexPath:indexPath];
     Category *category = [self.categories objectAtIndex:indexPath.row];
-    [cell configure:category];
+    [cell configure:category asSelected:[category isEqual:self.selectedCategory]];
     
     return cell;
     
@@ -56,6 +57,7 @@
     CategoryListCell *cell = (CategoryListCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell selectCell:YES];
     Category *categorySelected = [self.categories objectAtIndex:indexPath.row];
+    self.selectedCategory = categorySelected;
     [self.delegate didSelectCategory:categorySelected];
 }
 

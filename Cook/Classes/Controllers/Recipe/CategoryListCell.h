@@ -10,7 +10,7 @@
 #import "Category.h"
 
 @interface CategoryListCell : UICollectionViewCell
--(void)configure:(Category*)category;
+-(void)configure:(Category*)category asSelected:(BOOL)selected;
 -(void)selectCell:(BOOL)selected;
 +(CGSize)cellSize;
 @end
