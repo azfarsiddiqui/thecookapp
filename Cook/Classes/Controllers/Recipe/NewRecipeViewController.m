@@ -249,17 +249,12 @@
     self.backgroundIngredientImageView.image = backgroundImage;
     self.recipeNameTextField.background = backgroundImage;
 }
+
 -(void) configCategoriesList
 {
-
-    UIImage *cappedImage = [[UIImage imageNamed:@"cook_editrecipe_categorybg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 32.0f, 0.0f, 32.0f)];
-    UIImageView *backgroundImageview = [[UIImageView alloc]initWithImage:cappedImage];
-    backgroundImageview.frame = CGRectMake(100.0f, 6.0f, 820.0f, 66.0f);
-    [self.view addSubview:backgroundImageview];
-
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
     self.categoryListViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"CategoryListViewController"];
-    self.categoryListViewController.view.frame = CGRectMake(130.0f, 18.0f, 760.0f, 40.0f);
+    self.categoryListViewController.view.frame = CGRectMake(100.0f, 6.0f, 760.0f, 66.0f);
     self.categoryListViewController.delegate = self;
     self.categoryListViewController.categories = self.categories;
     

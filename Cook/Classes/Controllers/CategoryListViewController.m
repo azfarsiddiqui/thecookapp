@@ -13,6 +13,7 @@
 #define kCategoryLabelFont      [UIFont systemFontOfSize:14.0f]
 @interface CategoryListViewController ()
 @property(nonatomic,strong) Category *selectedCategory;
+@property(nonatomic,strong) IBOutlet UICollectionView *collectionView;
 @end
 
 @implementation CategoryListViewController
@@ -20,6 +21,7 @@
 -(void)awakeFromNib
 {
     [super awakeFromNib];
+    [self style];
 }
 - (void)viewDidLoad
 {
@@ -83,5 +85,15 @@
     return 10.0f;
 }
 
-#pragma mark - Private methods
+-(void) style
+{
+    self.collectionView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 40.0f);
+    UIImage *cappedImage = [[UIImage imageNamed:@"cook_editrecipe_categorybg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 32.0f, 0.0f, 32.0f)];
+    UIImageView *backgroundImageView = [[UIImageView alloc]initWithImage:cappedImage];
+    backgroundImageView.image = cappedImage;
+    backgroundImageView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, backgroundImageView.image.size.height);
+    [self.view insertSubview:backgroundImageView belowSubview:self.collectionView];
+//
+}
+
 @end

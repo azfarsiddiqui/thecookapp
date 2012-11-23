@@ -12,7 +12,7 @@
 @protocol CategoryListViewDelegate
 -(void)didSelectCategory:(Category*)category;
 @end
-@interface CategoryListViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>
+@interface CategoryListViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic,strong) NSArray *categories;
 @property(nonatomic,assign) id<CategoryListViewDelegate> delegate;
 @end
