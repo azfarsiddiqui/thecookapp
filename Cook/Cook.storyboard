@@ -233,7 +233,7 @@
                                         </constraints>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="5fL-vj-ZFX" secondAttribute="trailing" constant="27" id="912-7w-HRw"/>
                                     <constraint firstAttribute="bottom" secondItem="5fL-vj-ZFX" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Eod-vj-72k"/>
@@ -264,7 +264,10 @@
                                     <action selector="saveTapped:" destination="shd-KT-h88" eventType="touchUpInside" id="hi3-Fj-PFR"/>
                                 </connections>
                             </button>
-                            <progressView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dP8-1h-KHq"/>
+                            <progressView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dP8-1h-KHq">
+                                <color key="progressTintColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="trackTintColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                            </progressView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="   RECIPE NAME" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wa0-dn-372">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="58" id="8rJ-71-RiE"/>
@@ -505,6 +508,9 @@
         </class>
         <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+        <class className="UICollectionViewLayout" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewLayout.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

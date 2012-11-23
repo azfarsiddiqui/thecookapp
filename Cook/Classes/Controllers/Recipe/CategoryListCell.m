@@ -59,6 +59,8 @@
 {
     [super prepareForReuse];
     self.categoryNameLabel.text = nil;
+    self.categoryNameLabel.textColor = [UIColor blackColor];
+    self.selectedImageView.hidden = YES;
 }
 
 
