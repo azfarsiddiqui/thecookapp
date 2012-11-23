@@ -60,7 +60,7 @@
                   layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Category *category = [self.categories objectAtIndex:indexPath.row];
-    NSString *tester = category.name;
+    NSString *tester = [category.name uppercaseString];
     CGSize labelSize = [tester sizeWithFont:[UIFont systemFontOfSize:14.0f]];
 
     DLog(@"optimal size is %f, %f for %@", labelSize.width,labelSize.height, tester);

@@ -24,13 +24,16 @@
         UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
         backgroundView.backgroundColor = [UIColor redColor];
         self.selectedBackgroundView = backgroundView;
+        UIImage *selectedImageName = [UIImage imageNamed:@"cook_editrecipe_categoryselected"];
+        self.selectedBackgroundView = [[UIImageView alloc]initWithImage:[selectedImageName resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 14.0f, 0.0f, 14.0f)]];
+        
     }
     return self;
 }
 
 -(void)configure:(Category*)category;
 {
-    self.categoryNameLabel.text = category.name;
+    self.categoryNameLabel.text = [category.name uppercaseString];
     self.selectedBackgroundView.backgroundColor = [UIColor redColor];
 }
 

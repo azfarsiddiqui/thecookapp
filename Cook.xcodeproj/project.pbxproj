@@ -277,6 +277,8 @@
 		89A50499162250F700E6CDF1 /* Ingredient.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A50498162250F700E6CDF1 /* Ingredient.m */; };
 		89A504A8162290BF00E6CDF1 /* CategoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */; };
 		89A504AC1622923500E6CDF1 /* CategoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A504AB1622923500E6CDF1 /* CategoryListCell.m */; };
+		89E2CA87165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */; };
+		89E2CA88165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA86165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -629,6 +631,8 @@
 		89A504A7162290BF00E6CDF1 /* CategoryListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CategoryListViewController.m; path = Cook/Classes/Controllers/CategoryListViewController.m; sourceTree = SOURCE_ROOT; };
 		89A504AA1622923400E6CDF1 /* CategoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListCell.h; sourceTree = "<group>"; };
 		89A504AB1622923500E6CDF1 /* CategoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListCell.m; sourceTree = "<group>"; };
+		89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_categoryselected.png; sourceTree = "<group>"; };
+		89E2CA86165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_categoryselected@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1243,6 +1247,8 @@
 		89622198161EAE370023EC30 /* recipes */ = {
 			isa = PBXGroup;
 			children = (
+				89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */,
+				89E2CA86165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png */,
 				76324F2A165356F1007D1EBF /* cook_category_meat.png */,
 				76324F2B165356F1007D1EBF /* cook_category_meat@2x.png */,
 				76324F2C165356F2007D1EBF /* cook_category_poultry.png */,
@@ -1565,6 +1571,8 @@
 				76BEE785165DEE600065B97B /* Neutra2Cond-Medium.otf in Resources */,
 				76BEE786165DEE600065B97B /* Neutra2Cond-Thin.otf in Resources */,
 				76BEE787165DEE600065B97B /* Neutra2Cond-Titling.otf in Resources */,
+				89E2CA87165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png in Resources */,
+				89E2CA88165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
