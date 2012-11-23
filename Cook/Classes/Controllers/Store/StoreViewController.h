@@ -14,7 +14,7 @@
 
 @end
 
-@interface StoreViewController : UICollectionViewController
+@interface StoreViewController : UIViewController
 
 - (id)initWithDelegate:(id<StoreViewControllerDelegate>)delegate;
 - (void)enable:(BOOL)enable;
