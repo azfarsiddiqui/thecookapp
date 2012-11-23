@@ -16,10 +16,13 @@
 
 @implementation CategoryListViewController
 
+-(void)awakeFromNib
+{
+    [super awakeFromNib];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
 }
 
 - (void)didReceiveMemoryWarning
@@ -50,8 +53,16 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    CategoryListCell *cell = (CategoryListCell*)[collectionView cellForItemAtIndexPath:indexPath];
+    [cell selectCell:YES];
     Category *categorySelected = [self.categories objectAtIndex:indexPath.row];
     [self.delegate didSelectCategory:categorySelected];
+}
+
+-(void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    CategoryListCell *cell = (CategoryListCell*)[collectionView cellForItemAtIndexPath:indexPath];
+    [cell selectCell:NO];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -65,7 +76,7 @@
 
     DLog(@"optimal size is %f, %f for %@", labelSize.width,labelSize.height, tester);
 
-    return CGSizeMake(labelSize.width, 40.0f);
+    return CGSizeMake(labelSize.width, 28.0f);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section

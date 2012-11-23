@@ -11,4 +11,5 @@
 
 @interface CategoryListCell : UICollectionViewCell
 -(void)configure:(Category*)category;
+-(void)selectCell:(BOOL)selected;
 @end
