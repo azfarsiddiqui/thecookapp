@@ -25,7 +25,11 @@
 @property (nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
 @property (nonatomic,strong) IBOutlet UITextField *recipeNameTextField;
 @property (nonatomic,strong) IBOutlet UITextView *recipeDescriptionTextView;
+@property (nonatomic,strong) IBOutlet UIImageView *backgroundRecipeDescriptionImageView;
+@property (nonatomic,strong) IBOutlet UIImageView *backgroundServesTimeImageView;
+@property (nonatomic,strong) IBOutlet UIImageView *backgroundIngredientImageView;
 @property (nonatomic,strong) IBOutlet UIImageView *recipeImageView;
+
 @property (nonatomic,strong) IBOutlet UITableView *ingredientsTableView;
 @property (nonatomic,strong) CategoryListViewController *categoryListViewController;
 
@@ -48,7 +52,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+    [self style];
 }
 
 - (void)didReceiveMemoryWarning
@@ -237,6 +241,14 @@
     self.ingredients = [NSMutableArray array];
 }
 
+-(void) style
+{
+    UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
+    self.backgroundRecipeDescriptionImageView.image = backgroundImage;
+    self.backgroundServesTimeImageView.image = backgroundImage;
+    self.backgroundIngredientImageView.image = backgroundImage;
+    self.recipeNameTextField.background = backgroundImage;
+}
 -(void) configCategoriesList
 {
 
