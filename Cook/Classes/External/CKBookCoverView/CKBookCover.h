@@ -16,7 +16,7 @@ typedef enum {
 	BookCoverLayout5,
 } BookCoverLayout;
 
-@interface BookCover : NSObject
+@interface CKBookCover : NSObject
 
 + (NSString *)initialCover;
 + (NSString *)initialIllustration;
@@ -30,6 +30,8 @@ typedef enum {
 + (NSArray *)covers;
 + (NSArray *)illustrations;
 + (NSString *)grayCoverName;
++ (UIImage *)overlayImage;
++ (UIImage *)placeholderCoverImage;
 
 + (BookCoverLayout)layoutForIllustration:(NSString *)illustration;
 

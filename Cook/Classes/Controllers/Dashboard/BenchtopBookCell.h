@@ -8,14 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "CKBook.h"
-#import "BookCoverView.h"
+#import "CKBookCoverView.h"
 
 @interface BenchtopBookCell : UICollectionViewCell
 
-@property (nonatomic, strong) BookCoverView *bookCoverView;
+@property (nonatomic, strong) CKBookCoverView *bookCoverView;
 
 + (CGSize)cellSize;
 
+- (void)enableEditMode:(BOOL)editMode;
 - (BOOL)enabled;
 - (void)loadBook:(CKBook *)book;
 - (void)loadBook:(CKBook *)book mine:(BOOL)mine;

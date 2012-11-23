@@ -10,7 +10,7 @@
 #import "CKRecipe.h"
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
-#import "BookCover.h"
+#import "CKBookCover.h"
 
 @interface CKBook ()
 
@@ -37,8 +37,8 @@
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
     [parseBook setObject:kBookAttrDefaultCaptionValue forKey:kBookAttrCaption];
-    [parseBook setObject:[BookCover initialCover] forKey:kBookAttrCover];
-    [parseBook setObject:[BookCover initialIllustration] forKey:kBookAttrIllustration];
+    [parseBook setObject:[CKBookCover initialCover] forKey:kBookAttrCover];
+    [parseBook setObject:[CKBookCover initialIllustration] forKey:kBookAttrIllustration];
     return parseBook;
 }
 
@@ -62,16 +62,16 @@
 + (CKBook *)myInitialBook {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
-    [parseBook setObject:[BookCover initialCover] forKey:kBookAttrCover];
-    [parseBook setObject:[BookCover initialIllustration] forKey:kBookAttrIllustration];
+    [parseBook setObject:[CKBookCover initialCover] forKey:kBookAttrCover];
+    [parseBook setObject:[CKBookCover initialIllustration] forKey:kBookAttrIllustration];
     return [[CKBook alloc] initWithParseObject:parseBook];
 }
 
 + (CKBook *)defaultBook {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
-    [parseBook setObject:[BookCover defaultCover] forKey:kBookAttrCover];
-    [parseBook setObject:[BookCover defaultIllustration] forKey:kBookAttrIllustration];
+    [parseBook setObject:[CKBookCover defaultCover] forKey:kBookAttrCover];
+    [parseBook setObject:[CKBookCover defaultIllustration] forKey:kBookAttrIllustration];
     return [[CKBook alloc] initWithParseObject:parseBook];
 }
 

@@ -21,9 +21,11 @@
 #import "SettingsViewController.h"
 #import "BenchtopEditLayout.h"
 #import "BookCoverViewController.h"
+#import "ViewHelper.h"
 
 @interface BenchtopViewController () <BookCoverViewControllerDelegate>
 
+@property (nonatomic, assign) id<BenchtopViewControlelrDelegate> delegate;
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) BOOL firstBenchtop;
@@ -64,8 +66,9 @@
     [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
 }
 
-- (id)init {
+- (id)initWithDelegate:(id<BenchtopViewControlelrDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BenchtopStackLayout alloc] initWithBenchtopDelegate:self]]) {
+        self.delegate = delegate;
         DLog(@"Loading benchtop for user %@", [CKUser currentUser]);
     }
     return self;
@@ -243,16 +246,17 @@
                                                                                    withReuseIdentifier:kLibraryHeaderId
                                                                                           forIndexPath:indexPath];
     NSInteger imageTag = 239;
-    UIImageView *libraryImageView = (UIImageView *)[headerView viewWithTag:imageTag];
-    if (!libraryImageView) {
-        libraryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library.png"]];
-        libraryImageView.tag = imageTag;
-        libraryImageView.frame = CGRectMake(floorf((headerView.bounds.size.width - libraryImageView.frame.size.width) / 2.0),
-                                            floorf((headerView.bounds.size.height - libraryImageView.frame.size.height) / 2.0),
-                                            libraryImageView.frame.size.width,
-                                            libraryImageView.frame.size.height);
-        libraryImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
-        [headerView addSubview:libraryImageView];
+    UIButton *storeButton = (UIButton *)[headerView viewWithTag:imageTag];
+    if (!storeButton) {
+        storeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library.png"]
+                                           target:self selector:@selector(storeTapped:)];
+        storeButton.tag = imageTag;
+        storeButton.frame = CGRectMake(floorf((headerView.bounds.size.width - storeButton.frame.size.width) / 2.0),
+                                            floorf((headerView.bounds.size.height - storeButton.frame.size.height) / 2.0),
+                                            storeButton.frame.size.width,
+                                            storeButton.frame.size.height);
+        storeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+        [headerView addSubview:storeButton];
     }
     return headerView;
 }
@@ -947,6 +951,10 @@
                          self.collectionView.userInteractionEnabled = !open;
                      }];
     
+}
+
+- (void)storeTapped:(id)sender {
+    [self.delegate benchtopViewControllerStoreRequested];
 }
 
 @end

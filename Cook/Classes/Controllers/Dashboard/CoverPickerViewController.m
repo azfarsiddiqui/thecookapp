@@ -9,7 +9,7 @@
 #import "CoverPickerViewController.h"
 #import "CoverPickerCell.h"
 #import "MRCEnumerable.h"
-#import "BookCover.h"
+#import "CKBookCover.h"
 
 @interface CoverPickerViewController ()
 
@@ -33,7 +33,7 @@
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
         self.cover = cover;
         self.delegate = delegate;
-        self.availableCovers = [BookCover covers];
+        self.availableCovers = [CKBookCover covers];
         self.expanded = YES;
     }
     return self;
@@ -117,7 +117,7 @@
         [cell.contentView addSubview:coverImageView];
     }
     
-    UIImage *coverImage = [[BookCover thumbImageForCover:currentCover] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    UIImage *coverImage = [[CKBookCover thumbImageForCover:currentCover] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
     if (indexPath.row == 0 || indexPath.row == [self.availableCovers count] - 1) {
         coverImage = [coverImage stretchableImageWithLeftCapWidth:12 topCapHeight:0];
     }

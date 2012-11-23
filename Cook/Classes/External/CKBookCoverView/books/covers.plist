@@ -114,7 +114,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_bicycle.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout3</string>
 		</dict>
 		<key>Bicycle Back</key>
 		<dict>
@@ -128,7 +128,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_boots.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout2</string>
 		</dict>
 		<key>Bowls</key>
 		<dict>

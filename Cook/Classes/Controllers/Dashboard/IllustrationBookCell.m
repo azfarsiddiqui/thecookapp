@@ -7,7 +7,7 @@
 //
 
 #import "IllustrationBookCell.h"
-#import "BookCover.h"
+#import "CKBookCover.h"
 #import "BenchtopBookCell.h"
 
 @interface IllustrationBookCell ()
@@ -40,11 +40,11 @@
 }
 
 - (void)setCover:(NSString *)cover {
-    self.colourImageView.image = [BookCover imageForCover:cover];
+    self.colourImageView.image = [CKBookCover imageForCover:cover];
 }
 
 - (void)setIllustration:(NSString *)illustration {
-    self.illustrationImageView.image = [BookCover imageForIllustration:illustration];
+    self.illustrationImageView.image = [CKBookCover imageForIllustration:illustration];
 }
 
 #pragma mark - Private methods

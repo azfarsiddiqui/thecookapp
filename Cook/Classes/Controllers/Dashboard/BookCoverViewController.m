@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BookCoverViewController.h"
-#import "BookCoverView.h"
+#import "CKBookCoverView.h"
 #import "BenchtopBookCell.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
@@ -47,8 +47,9 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
     CGSize bookSize = [BenchtopBookCell cellSize];
-    BookCoverView *bookCoverView = [[BookCoverView alloc] initWithFrame:CGRectMake(0.0, 0.0, bookSize.width, bookSize.height)];
-    [bookCoverView updateWithBook:self.book mine:self.mine];
+    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:CGRectMake(0.0, 0.0, bookSize.width, bookSize.height)];
+    [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
+    [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption];
     self.bookCoverView = bookCoverView;
 }
 
@@ -133,7 +134,7 @@
     CALayer *leftOpenLayer = [CALayer layer];
     leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
     leftOpenLayer.frame = rootBookCoverLayer.bounds;
-    leftOpenLayer.backgroundColor = [UIColor greenColor].CGColor;
+    leftOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
     leftOpenLayer.doubleSided = NO;
     leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
     [rootBookCoverLayer addSublayer:leftOpenLayer];

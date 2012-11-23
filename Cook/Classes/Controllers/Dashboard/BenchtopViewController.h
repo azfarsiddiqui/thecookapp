@@ -13,10 +13,17 @@
 #import "IllustrationPickerViewController.h"
 #import "CoverPickerViewController.h"
 
+@protocol BenchtopViewControlelrDelegate
+
+- (void)benchtopViewControllerStoreRequested;
+
+@end
+
 @interface BenchtopViewController : UICollectionViewController <BenchtopDelegate, BookViewControllerDelegate,
     MenuViewControllerDelegate, UIPopoverControllerDelegate, IllustrationPickerViewControllerDelegate,
     CoverPickerViewControllerDelegate>
 
+- (id)initWithDelegate:(id<BenchtopViewControlelrDelegate>)delegate;
 - (void)enable:(BOOL)enable;
 - (void)freeze:(BOOL)freeze;
 
