@@ -14,9 +14,10 @@
 
 @end
 
-@interface StoreViewController : UICollectionViewController
+@interface StoreViewController : UIViewController
 
 - (id)initWithDelegate:(id<StoreViewControllerDelegate>)delegate;
-- (void)enable:(BOOL)enable animated:(BOOL)animated;
+- (void)enable:(BOOL)enable;
+- (void)enable:(BOOL)enable completion:(void (^)())completion;
 
 @end

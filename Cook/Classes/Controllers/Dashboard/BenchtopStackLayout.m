@@ -34,7 +34,8 @@
     UICollectionViewLayoutAttributes* attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
     NSInteger numItems = [self.collectionView numberOfItemsInSection:indexPath.section];
     
-    if (indexPath.section == 1) {
+    if (attributes.representedElementCategory == UICollectionElementCategoryCell
+        && indexPath.section == 1) {
         
         CGFloat sideGap = [self.benchtopDelegate benchtopSideGap];
         CGFloat itemOffset = [self.benchtopDelegate benchtopItemOffset];

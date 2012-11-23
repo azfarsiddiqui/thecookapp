@@ -33,9 +33,11 @@
                                                                      atIndexPath:(NSIndexPath *)indexPath {
     CGSize itemSize = [self.benchtopDelegate benchtopItemSize];
     
+    
     UICollectionViewLayoutAttributes *firstOtherAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
     UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
     layoutAttributes.size = itemSize;
+    layoutAttributes.alpha = [self.benchtopDelegate onMyBenchtop] ? 0.0 : 1.0;
     layoutAttributes.center = CGPointMake(firstOtherAttributes.center.x - itemSize.width, firstOtherAttributes.center.y);
     return layoutAttributes;
 }
@@ -56,8 +58,8 @@
     }
     
     // Library header.
-    if (numSections > 1 && ![self.benchtopDelegate onMyBenchtop]) {
-        
+    if (numSections > 1) {
+    
         // TODO potential optimisation here to exclude header if not in view.
         [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:kLibraryHeader
                                                                          atIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]]];

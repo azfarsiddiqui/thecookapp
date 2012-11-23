@@ -8,28 +8,29 @@
 
 #import "StoreViewController.h"
 #import "ViewHelper.h"
+#import "StoreCollectionViewController.h"
 
 @interface StoreViewController ()
 
 @property (nonatomic, assign) id<StoreViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *backgroundView;
+@property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, strong) StoreCollectionViewController *featuredViewController;
+@property (nonatomic, strong) StoreCollectionViewController *friendsViewController;
 
 @end
 
 @implementation StoreViewController
 
-#define kBackgroundAvailOffset      50.0
-#define kStoreBookCellId            @"StoreBookCell"
-#define kMenuHeight 80.0
-#define kMenuGap    20.0
-#define kSideGap    20.0
+#define kStoreBookCellId    @"StoreBookCell"
+#define kMenuHeight         80.0
+#define kMenuGap            20.0
+#define kSideGap            20.0
+#define kVerticalInset      80.0
 
-- (void)dealloc {
-    [self.collectionView removeObserver:self forKeyPath:@"contentSize"];
-    [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
-}
 - (id)initWithDelegate:(id<StoreViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+    if (self = [super init]) {
         self.delegate = delegate;
     }
     return self;
@@ -38,52 +39,57 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self initBackground];
     [self initButtons];
+    [self initCollectionViews];
     
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    
-    self.collectionView.frame = CGRectMake(self.collectionView.frame.origin.x,
-                                           self.collectionView.frame.origin.y,
-                                           self.collectionView.frame.size.width,
-                                           self.view.bounds.size.height);
-    
-    // Important so that if contentSize is smaller than viewport, that it still bounces.
-    self.collectionView.alwaysBounceHorizontal = YES;
-    self.collectionView.showsHorizontalScrollIndicator = NO;
-    self.collectionView.backgroundColor = [UIColor clearColor];
-    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
-    
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kStoreBookCellId];
 }
 
-- (void)enable:(BOOL)enable animated:(BOOL)animated {
+- (void)enable:(BOOL)enable {
+    [self enable:enable completion:^{}];
+}
+
+- (void)enable:(BOOL)enable completion:(void (^)())completion {
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         [self showOverlay:enable animated:NO];
+                     }
+                     completion:^(BOOL finished) {
+                         self.enabled = enable;
+                         
+                         if (enable) {
+                             [self loadData];
+                         } else {
+                             [self unloadData];
+                         }
+                         
+                         // Run completion block.
+                         completion();
+                     }];
+}
+
+- (void)showOverlay:(BOOL)show animated:(BOOL)animated {
+    if (show && !self.overlayView) {
+        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        self.overlayView.autoresizingMask = UIViewAutoresizingNone;
+        self.overlayView.alpha = 0.0;
+        [self.view addSubview:self.overlayView];
+    }
+    
     if (animated) {
         [UIView animateWithDuration:0.4
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
-                             self.backgroundView.alpha = enable ? 1.0 : 0.0;
-                             self.collectionView.backgroundColor = enable ? [UIColor blackColor] : [UIColor clearColor];
+                             self.overlayView.alpha = show ? 1.0 : 0.0;
                          }
                          completion:^(BOOL finished) {
                          }];
     } else {
-        self.backgroundView.alpha = enable ? 1.0 : 0.0;
-    }
-}
-
-#pragma mark - KVO methods.
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
-                       context:(void *)context {
-    if ([keyPath isEqualToString:@"contentOffset"] || [keyPath isEqualToString:@"contentSize"]) {
-        
-        // Update background parallax scrolling.
-        [self updateBackgroundScrolling];
-        
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        self.overlayView.alpha = show ? 1.0 : 0.0;
     }
 }
 
@@ -93,18 +99,11 @@
 - (void)initBackground {
     
     // Tiled background
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
-                                                                      self.view.bounds.origin.y,
-                                                                      self.view.bounds.size.width + kBackgroundAvailOffset,
-                                                                      self.view.bounds.size.height)];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
     backgroundView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"cook_dash_bg_tile.png"]];
-    [self.view insertSubview:backgroundView belowSubview:self.collectionView];
+    [self.view addSubview:backgroundView];
     self.backgroundView = backgroundView;
-    
-    // Observe changes in contentSize and contentOffset.
-    [self.collectionView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-    [self.collectionView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void)initButtons {
@@ -118,27 +117,40 @@
     [self.view addSubview:closeButton];
 }
 
+- (void)initCollectionViews {
+    
+    // First row.
+    StoreCollectionViewController *featuredViewController = [[StoreCollectionViewController alloc] init];
+    featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    featuredViewController.view.frame = CGRectMake(0.0,
+                                                   kVerticalInset,
+                                                   self.view.bounds.size.width,
+                                                   featuredViewController.view.frame.size.height);
+    [self.view addSubview:featuredViewController.view];
+    self.featuredViewController = featuredViewController;
+    
+    // Second row.
+    StoreCollectionViewController *friendsViewController = [[StoreCollectionViewController alloc] init];
+    friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    friendsViewController.view.frame = CGRectMake(0.0,
+                                                  self.view.bounds.size.height - friendsViewController.view.frame.size.height - kVerticalInset,
+                                                  self.view.bounds.size.width,
+                                                  friendsViewController.view.frame.size.height);
+    [self.view addSubview:friendsViewController.view];
+    self.friendsViewController = friendsViewController;
+    
+}
+
 - (void)closeTapped:(id)sender {
     [self.delegate storeViewControllerCloseRequested];
 }
 
-- (void)updateBackgroundScrolling {
-    CGPoint contentOffset = self.collectionView.contentOffset;
-    CGSize contentSize = self.collectionView.contentSize;
-    CGRect backgroundFrame = self.backgroundView.frame;
+- (void)loadData {
     
-    // kBackgroundAvailOffset 100 => -59.0
-    // kBackgroundAvailOffset 50  => -30.0
-    CGFloat backgroundOffset = 0.0;
+}
+
+- (void)unloadData {
     
-    // Update backgroundWidth.
-    backgroundFrame.size.width = contentSize.width + kBackgroundAvailOffset;
-    
-    // Update background parallax effect.
-    if (contentOffset.x >= 0.0) {
-        backgroundFrame.origin.x = floorf(-contentOffset.x * (kBackgroundAvailOffset / self.collectionView.bounds.size.width) + backgroundOffset);
-    }
-    self.backgroundView.frame = backgroundFrame;
 }
 
 @end

@@ -42,6 +42,9 @@
 		76324F39165356F3007D1EBF /* cook_category_vegetarian@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F31165356F3007D1EBF /* cook_category_vegetarian@2x.png */; };
 		76506D64163DF8920047D36B /* cook_dash_icons_store.png in Resources */ = {isa = PBXBuildFile; fileRef = 76506D62163DF8920047D36B /* cook_dash_icons_store.png */; };
 		76506D65163DF8920047D36B /* cook_dash_icons_store@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76506D63163DF8920047D36B /* cook_dash_icons_store@2x.png */; };
+		7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7651070C165F22820077B551 /* StoreCollectionViewController.m */; };
+		76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76510710165F256D0077B551 /* StoreFlowLayout.m */; };
+		76510714165F31180077B551 /* StoreBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76510713165F31180077B551 /* StoreBookCell.m */; };
 		76520465161ABB0F00EE253C /* CKBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 76520464161ABB0F00EE253C /* CKBook.m */; };
 		7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652046D161AD11E00EE253C /* NSString+Utilities.m */; };
 		76552743164B87DA001D4BAA /* cook_book_icon_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 7655273B164B87DA001D4BAA /* cook_book_icon_add.png */; };
@@ -336,6 +339,12 @@
 		76324F31165356F3007D1EBF /* cook_category_vegetarian@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_category_vegetarian@2x.png"; sourceTree = "<group>"; };
 		76506D62163DF8920047D36B /* cook_dash_icons_store.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_store.png; sourceTree = "<group>"; };
 		76506D63163DF8920047D36B /* cook_dash_icons_store@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_store@2x.png"; sourceTree = "<group>"; };
+		7651070B165F22820077B551 /* StoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreCollectionViewController.h; sourceTree = "<group>"; };
+		7651070C165F22820077B551 /* StoreCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreCollectionViewController.m; sourceTree = "<group>"; };
+		7651070F165F256D0077B551 /* StoreFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreFlowLayout.h; sourceTree = "<group>"; };
+		76510710165F256D0077B551 /* StoreFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreFlowLayout.m; sourceTree = "<group>"; };
+		76510712165F31180077B551 /* StoreBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBookCell.h; sourceTree = "<group>"; };
+		76510713165F31180077B551 /* StoreBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreBookCell.m; sourceTree = "<group>"; };
 		76520463161ABB0F00EE253C /* CKBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBook.h; sourceTree = "<group>"; };
 		76520464161ABB0F00EE253C /* CKBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBook.m; sourceTree = "<group>"; };
 		7652046C161AD11E00EE253C /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utilities.h"; sourceTree = "<group>"; };
@@ -991,6 +1000,12 @@
 			children = (
 				76CB7EEC165CF4C9007BECA0 /* StoreViewController.h */,
 				76CB7EED165CF4C9007BECA0 /* StoreViewController.m */,
+				7651070B165F22820077B551 /* StoreCollectionViewController.h */,
+				7651070C165F22820077B551 /* StoreCollectionViewController.m */,
+				7651070F165F256D0077B551 /* StoreFlowLayout.h */,
+				76510710165F256D0077B551 /* StoreFlowLayout.m */,
+				76510712165F31180077B551 /* StoreBookCell.h */,
+				76510713165F31180077B551 /* StoreBookCell.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -1682,6 +1697,9 @@
 				76CB7EEE165CF4C9007BECA0 /* StoreViewController.m in Sources */,
 				76BEE77F165DEE600065B97B /* CKBookCover.m in Sources */,
 				76BEE780165DEE600065B97B /* CKBookCoverView.m in Sources */,
+				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
+				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
+				76510714165F31180077B551 /* StoreBookCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

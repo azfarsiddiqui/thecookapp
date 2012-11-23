@@ -115,39 +115,62 @@
     [self showMenu:YES];
 }
 
+- (void)show {
+    [self enable:YES completion:^{
+        [self loadData];
+    }];
+}
+
 - (void)enable:(BOOL)enable {
-    if (enable && !self.overlayView) {
-        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
-        self.overlayView.autoresizingMask = UIViewAutoresizingNone;
-        self.overlayView.alpha = 0.0;
-        [self.view insertSubview:self.overlayView aboveSubview:self.backgroundView];
-    }
-    
+    [self enable:enable completion:^{}];
+}
+
+- (void)enable:(BOOL)enable completion:(void (^)())completion {
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.overlayView.alpha = enable ? 1.0 : 0.0;
+                         [self showOverlay:enable animated:NO];
                      }
                      completion:^(BOOL finished) {
-                         if (!enable) {
-                             [self.overlayView removeFromSuperview];
-                             self.overlayView = nil;
-                         }
                          self.enabled = enable;
-                        
-                         // [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
-                         CKUser *currentUser = [CKUser currentUser];
-                         NSUInteger numSections = 0;
-                         if ([currentUser isSignedIn]) {
-                             numSections =  self.friendsBooks ? 2 : 1;
-                         } else {
-                             numSections = 2;
+                         if (enable) {
+                             
+                             NSInteger numSections = [self numberOfSectionsInCollectionView:self.collectionView];
+                             if (!self.myBook) {
+                                 [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+                             }
+                             
+                             if (numSections == 1 && self.friendsBooks) {
+                                 [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
+                             }
                          }
-                         [self.collectionView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, numSections)]];
-                         [self loadData];
+                         
+                         // Run completion block.
+                         completion();
                      }];
+}
+
+- (void)showOverlay:(BOOL)show animated:(BOOL)animated {
+    if (show && !self.overlayView) {
+        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        self.overlayView.autoresizingMask = UIViewAutoresizingNone;
+        self.overlayView.alpha = 0.0;
+        [self.view insertSubview:self.overlayView aboveSubview:self.collectionView];
+    }
     
+    if (animated) {
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.overlayView.alpha = show ? 1.0 : 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    } else {
+        self.overlayView.alpha = show ? 1.0 : 0.0;
+    }
 }
 
 - (void)freeze:(BOOL)freeze {
@@ -266,7 +289,7 @@
     
     // Nothing to show if not enabled.
     if (!self.enabled) {
-        return 0;
+        return 1;
     }
     
     // Normal operations.
