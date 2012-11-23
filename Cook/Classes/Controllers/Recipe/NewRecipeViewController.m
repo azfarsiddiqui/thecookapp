@@ -17,18 +17,17 @@
 
 #define kIngredientCellTag 112233
 
-@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, UIPopoverControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate>
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate>
 
 //UI
-@property (nonatomic,strong) UIPopoverController *popVc;
 @property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
 @property (nonatomic,strong) IBOutlet UILabel *uploadLabel;
-@property (nonatomic,strong) IBOutlet UILabel *categoryLabel;
 @property (nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
 @property (nonatomic,strong) IBOutlet UITextField *recipeNameTextField;
 @property (nonatomic,strong) IBOutlet UITextView *recipeDescriptionTextView;
 @property (nonatomic,strong) IBOutlet UIImageView *recipeImageView;
 @property (nonatomic,strong) IBOutlet UITableView *ingredientsTableView;
+@property (nonatomic,strong) CategoryListViewController *categoryListViewController;
 
 //Data
 @property (nonatomic,strong) NSArray *categories;
@@ -70,19 +69,6 @@
 }
 
 #pragma mark - Action delegates
-
-
-- (IBAction)selectCategoryTapped:(UIButton*)button {
-    
-    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-    CategoryListViewController *categoryListVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"CategoryListViewController"];
-    categoryListVC.delegate = self;
-    categoryListVC.categories = self.categories;
-    self.popVc = [[UIPopoverController alloc] initWithContentViewController:categoryListVC];
-    self.popVc.delegate = self;
-    self.popVc.popoverContentSize = CGSizeMake(400.0f, 400.0f);
-    [self.popVc presentPopoverFromRect:self.categoryLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
-}
 
 
 - (IBAction)closeTapped:(UIButton*)button {
@@ -148,8 +134,6 @@
 -(void)didSelectCategory:(Category *)category
 {
     self.selectedCategory = category;
-    self.categoryLabel.text = category.name;
-    [self.popVc dismissPopoverAnimated:YES];
 }
 
 #pragma mark - UITableViewDatasource
@@ -220,11 +204,6 @@
     [self.photoEditorController.view removeFromSuperview];
     self.photoEditorController = nil;
 }
-#pragma mark - UIPopoverControlerDelegate
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover
-{
-    self.popVc = nil;
-}
 
 #pragma mark - UITextFieldDelegate
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -250,6 +229,7 @@
     //data needed by categories selection
     [Category listCategories:^(NSArray *results) {
         self.categories = results;
+        [self configCategoriesList];
     } failure:^(NSError *error) {
         DLog(@"Could not retrieve categories: %@", [error description]);
     }];
@@ -257,6 +237,17 @@
     self.ingredients = [NSMutableArray array];
 }
 
+-(void) configCategoriesList
+{
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    self.categoryListViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"CategoryListViewController"];
+    self.categoryListViewController.view.frame = CGRectMake(100.0f, 10.0f, 820.0f, 40.0f);
+    self.categoryListViewController.delegate = self;
+    self.categoryListViewController.categories = self.categories;
+
+    [self.view addSubview:self.categoryListViewController.view];
+    
+}
 -(BOOL)nullOrEmpty:(NSString*)input
 {
     NSString *trimmedString = [input stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];

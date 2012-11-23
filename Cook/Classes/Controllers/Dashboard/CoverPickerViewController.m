@@ -125,19 +125,6 @@
     return cell;
 }
 
-#pragma mark - KVO methods.
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
-                       context:(void *)context {
-    if ([keyPath isEqualToString:@"contentSize"]) {
-        CGRect frame = self.view.frame;
-        frame.size.width = self.collectionView.contentSize.width;
-        self.view.frame = frame;
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
 #pragma mark - Private
 
 - (void)toggleExpansion {

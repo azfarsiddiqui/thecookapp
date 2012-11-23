@@ -54,5 +54,24 @@
     [self.delegate didSelectCategory:categorySelected];
 }
 
+#pragma mark - UICollectionViewDelegateFlowLayout methods
+
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    Category *category = [self.categories objectAtIndex:indexPath.row];
+    NSString *tester = category.name;
+    CGSize labelSize = [tester sizeWithFont:[UIFont systemFontOfSize:14.0f]];
+
+    DLog(@"optimal size is %f, %f for %@", labelSize.width,labelSize.height, tester);
+
+    return CGSizeMake(labelSize.width, 40.0f);
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 5.0f;
+}
+
 #pragma mark - Private methods
 @end
