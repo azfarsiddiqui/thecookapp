@@ -17,7 +17,7 @@
 
 #define kIngredientCellTag 112233
 
-@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate>
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
 
 //UI
 @property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
@@ -48,6 +48,7 @@
 @property (nonatomic,strong) NSMutableArray *ingredients;
 @property (nonatomic,strong) UIImage *recipeImage;
 @property (nonatomic,assign) float cookingTimeInSeconds;
+@property (nonatomic,assign) NSInteger numServes;
 @property (nonatomic,strong) Category *selectedCategory;
 
 @end
@@ -150,6 +151,28 @@
 {
     DLog();
     self.numServesLabel.textColor = [UIColor blackColor];
+    
+	// note we are using CGRectZero for the dimensions of our picker view,
+	// this is because picker views have a built in optimum size,
+	// you just need to set the correct origin in your view.
+	//
+	// position the picker at the bottom
+    
+    UIViewController* popoverContent = [[UIViewController alloc] init];
+
+	UIPickerView *servesPickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
+	servesPickerView.frame = CGRectMake(0,44,320, 216);
+	servesPickerView.showsSelectionIndicator = YES;	// note this is default to NO
+	// this view controller is the data source and delegate
+	servesPickerView.delegate = self;
+	servesPickerView.dataSource = self;
+    [popoverContent.view addSubview:servesPickerView];
+    [servesPickerView selectRow:self.numServes inComponent:0 animated:NO];
+    self.inputPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
+    self.inputPopoverController.delegate=self;
+    [self.inputPopoverController setPopoverContentSize:CGSizeMake(320.0f, 264) animated:NO];
+    [self.inputPopoverController presentPopoverFromRect:self.numServesLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
+
 }
 
 -(void) cookingTimeTapped:(UILabel*)gestureRecognizer;
@@ -177,7 +200,7 @@
     self.inputPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
     self.inputPopoverController.delegate=self;
     [self.inputPopoverController setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
-    [self.inputPopoverController presentPopoverFromRect:self.cookingTimeLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+    [self.inputPopoverController presentPopoverFromRect:self.cookingTimeLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
 
 }
 
@@ -306,6 +329,37 @@
     self.cookingTimeLabel.textColor = [UIColor darkGrayColor];
     self.numServesLabel.textColor = [UIColor darkGrayColor];
 
+}
+
+#pragma mark - UIPickerViewDataSource
+// returns the number of 'columns' to display.
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return 12;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return [NSString stringWithFormat:@"%2d",row];
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
+{
+    return 40.0f;
+}
+
+
+#pragma mark- UIPickerViewDelegate
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    self.numServes = row;
+    self.numServesLabel.text = [NSString stringWithFormat:@"%i", row];
 }
 
 #pragma mark - Private methods
