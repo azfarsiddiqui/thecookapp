@@ -12,12 +12,6 @@
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
 
-@interface CKBook ()
-
-+ (CKBook *)createBookIfRequiredForParseBook:(PFObject *)parseBook user:(CKUser *)user;
-
-@end
-
 @implementation CKBook
 
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {

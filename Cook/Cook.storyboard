@@ -64,7 +64,7 @@
                         <constraints>
                             <constraint firstItem="vIG-HQ-t3i" firstAttribute="leading" secondItem="q8n-fm-OMa" secondAttribute="leading" constant="30" type="user" id="GVN-Cb-JsH"/>
                             <constraint firstItem="vIG-HQ-t3i" firstAttribute="trailing" secondItem="q8n-fm-OMa" secondAttribute="trailing" constant="-40" type="user" id="L8g-gA-bQi"/>
-                            <constraint firstItem="vIG-HQ-t3i" firstAttribute="top" secondItem="q8n-fm-OMa" secondAttribute="top" constant="10" type="user" id="nmU-bM-3l3"/>
+                            <constraint firstItem="vIG-HQ-t3i" firstAttribute="top" secondItem="q8n-fm-OMa" secondAttribute="top" constant="12" type="user" id="nmU-bM-3l3"/>
                         </constraints>
                     </view>
                     <connections>
@@ -162,15 +162,16 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="33M-yp-Iut"/>
+                            <constraint firstItem="8gW-u9-5Bh" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="151" id="3fV-fE-sbC"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="3vA-Cy-UQt"/>
                             <constraint firstItem="xS6-ra-iss" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="650" id="4W3-sC-ko8"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="bottom" secondItem="Pu7-06-VlL" secondAttribute="bottom" type="default" id="9JJ-kx-NUc"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="trailing" secondItem="Jf2-lp-5CN" secondAttribute="trailing" type="default" id="9cA-Fp-2Dj"/>
+                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="150" id="AcL-lO-9JP"/>
                             <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="BSr-Ha-3Xi"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="353" id="FiR-5d-Inf"/>
                             <constraint firstAttribute="bottom" secondItem="94h-kc-7mL" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="HP4-ac-AOP"/>
                             <constraint firstItem="Xia-Kz-dcG" firstAttribute="centerY" secondItem="a8t-x1-NZg" secondAttribute="centerY" type="default" id="IR8-oO-NGV"/>
-                            <constraint firstItem="8gW-u9-5Bh" firstAttribute="centerY" secondItem="dt9-Fo-cZC" secondAttribute="centerY" type="default" id="JHD-JH-o4j"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="367" id="K8a-1N-efv"/>
                             <constraint firstItem="dt9-Fo-cZC" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="KKb-sm-ReB"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="196" id="Lmw-Hm-kgh"/>
@@ -188,14 +189,15 @@
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="gnl-Ie-F1H"/>
                             <constraint firstAttribute="trailing" secondItem="94h-kc-7mL" secondAttribute="trailing" constant="398" id="ira-gc-Kod"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="61" id="qMC-oH-UoG"/>
-                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="149" id="qmr-y7-HvR"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="cookingDirectionsScrollView" destination="xS6-ra-iss" id="2rz-cT-U6U"/>
+                        <outlet property="cookingTimeLabel" destination="dt9-Fo-cZC" id="VxK-BR-tqu"/>
                         <outlet property="ingredientsScrollView" destination="94h-kc-7mL" id="9Oo-wh-xPq"/>
+                        <outlet property="numServesLabel" destination="a8t-x1-NZg" id="uhJ-29-CW2"/>
                         <outlet property="recipeImageScrollView" destination="Jf2-lp-5CN" id="MYA-8p-K0o"/>
                         <outlet property="recipeNameLabel" destination="Pu7-06-VlL" id="XLV-9G-RTk"/>
                     </connections>
@@ -212,11 +214,7 @@
                         <rect key="frame" x="0.0" y="20" width="1024" height="748"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RTn-cl-Ogo">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="586" id="BGL-c1-Tof"/>
-                                </constraints>
-                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RTn-cl-Ogo"/>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h6t-UG-A6Z">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="477" id="z7i-qL-c0W"/>
@@ -228,42 +226,43 @@
                                     <constraint firstAttribute="height" constant="58" id="s1l-pn-G9G"/>
                                 </constraints>
                             </imageView>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="utq-Pe-U96">
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rZq-vn-O5F">
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" image="cook_editrecipe_addphoto.png">
-                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <state key="highlighted">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="uploadButtonTapped:" destination="shd-KT-h88" eventType="touchUpInside" id="Jqd-0F-2nc"/>
-                                        </connections>
-                                    </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5fL-vj-ZFX">
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="102" id="KQI-57-saA"/>
-                                            <constraint firstAttribute="height" constant="76" id="zWK-tH-aq3"/>
-                                        </constraints>
-                                    </imageView>
-                                </subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2W1-BQ-AiG">
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="5fL-vj-ZFX" secondAttribute="trailing" constant="27" id="912-7w-HRw"/>
-                                    <constraint firstAttribute="bottom" secondItem="5fL-vj-ZFX" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Eod-vj-72k"/>
-                                    <constraint firstItem="rZq-vn-O5F" firstAttribute="centerX" secondItem="utq-Pe-U96" secondAttribute="centerX" type="default" id="dqK-Q1-HjJ"/>
-                                    <constraint firstItem="rZq-vn-O5F" firstAttribute="centerY" secondItem="utq-Pe-U96" secondAttribute="centerY" type="default" id="epD-q8-Ipa"/>
-                                    <constraint firstItem="5fL-vj-ZFX" firstAttribute="leading" secondItem="utq-Pe-U96" secondAttribute="leading" constant="247" id="jFG-av-2PZ"/>
-                                    <constraint firstItem="5fL-vj-ZFX" firstAttribute="top" secondItem="utq-Pe-U96" secondAttribute="top" constant="652" id="q1w-Ei-MWX"/>
-                                </constraints>
                             </scrollView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gOR-6g-YFq">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" image="cook_editrecipe_editphoto.png">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="uploadButtonTapped:" destination="shd-KT-h88" eventType="touchUpInside" id="M46-Ti-Evh"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rZq-vn-O5F">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="74" id="nXo-8V-nmV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" image="cook_editrecipe_addphoto.png">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="uploadButtonTapped:" destination="shd-KT-h88" eventType="touchUpInside" id="Jqd-0F-2nc"/>
+                                </connections>
+                            </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rGC-AK-2Id">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="365" id="bgS-MT-pCb"/>
+                                    <constraint firstAttribute="width" constant="365" id="LCs-VA-fGF"/>
+                                    <constraint firstAttribute="height" constant="586" id="mlK-A1-VYa"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -285,7 +284,7 @@
                                 <color key="progressTintColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="   RECIPE NAME" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wa0-dn-372">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder=" RECIPE NAME" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wa0-dn-372">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="58" id="8rJ-71-RiE"/>
                                 </constraints>
@@ -297,8 +296,8 @@
                             </textField>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Uploading..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xmC-eC-N0p">
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="94" id="8vj-1Y-Ek5"/>
                                     <constraint firstAttribute="height" constant="21" id="NHB-UJ-aaa"/>
+                                    <constraint firstAttribute="width" constant="134" id="dYr-m4-cYD"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -357,21 +356,22 @@
                                     <outlet property="delegate" destination="shd-KT-h88" id="L8g-Kp-Tmt"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Serves x-y" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C11-QJ-7d0">
+                            <label opaque="NO" clipsSubviews="YES" contentMode="left" text="SERVES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C11-QJ-7d0">
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="114" id="AyQ-d8-TPO"/>
                                     <constraint firstAttribute="height" constant="20" id="noS-08-d0A"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="cooking time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3J9-3w-spQ">
+                            <label opaque="NO" clipsSubviews="YES" contentMode="left" text="TIME" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3J9-3w-spQ">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="ifA-cX-nqK"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="T5d-16-VEN"/>
@@ -392,45 +392,58 @@
                                     <action selector="addIngredientTapped:" destination="shd-KT-h88" eventType="touchUpInside" id="KFn-xC-wKC"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_customise_btns_textedit.png" translatesAutoresizingMaskIntoConstraints="NO" id="f1J-E5-WiY"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_customise_btns_textedit.png" translatesAutoresizingMaskIntoConstraints="NO" id="Vxn-4N-ySv"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_customise_btns_textedit.png" translatesAutoresizingMaskIntoConstraints="NO" id="GZr-Kh-GAM"/>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="utq-Pe-U96" secondAttribute="trailing" constant="648" id="37s-3t-4Nf"/>
+                            <constraint firstItem="hNd-HF-af5" firstAttribute="centerX" secondItem="63E-Hg-Lwu" secondAttribute="centerX" type="default" id="06o-Rh-4cN"/>
+                            <constraint firstItem="3J9-3w-spQ" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="176" id="2DS-jf-dHd"/>
+                            <constraint firstItem="wa0-dn-372" firstAttribute="leading" secondItem="2W1-BQ-AiG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="2k0-37-3q8"/>
                             <constraint firstAttribute="trailing" secondItem="xmC-eC-N0p" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="3q5-ni-uq1"/>
                             <constraint firstAttribute="trailing" secondItem="wa0-dn-372" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="6Dx-hC-sgE"/>
-                            <constraint firstItem="C11-QJ-7d0" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="152" id="6Md-Bw-iuG"/>
+                            <constraint firstItem="T5d-16-VEN" firstAttribute="centerY" secondItem="C11-QJ-7d0" secondAttribute="centerY" type="default" id="7JZ-b3-33b"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="3J9-3w-spQ" secondAttribute="leading" type="default" id="8hu-Ce-3ma"/>
+                            <constraint firstItem="GZr-Kh-GAM" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="201" id="8lz-h4-WxA"/>
                             <constraint firstItem="rGC-AK-2Id" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="98X-9i-PUa"/>
-                            <constraint firstItem="utq-Pe-U96" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" type="default" id="DC6-8Y-mCh"/>
+                            <constraint firstItem="h6t-UG-A6Z" firstAttribute="centerX" secondItem="hNd-HF-af5" secondAttribute="centerX" type="default" id="IIT-ih-bxz"/>
                             <constraint firstItem="wa0-dn-372" firstAttribute="top" secondItem="dP8-1h-KHq" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IOe-ew-8qo"/>
                             <constraint firstItem="hNd-HF-af5" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IfK-Wi-pQq"/>
-                            <constraint firstItem="3J9-3w-spQ" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="176" id="KU5-7a-ioN"/>
+                            <constraint firstItem="Vxn-4N-ySv" firstAttribute="centerY" secondItem="wa0-dn-372" secondAttribute="centerY" type="default" id="K8J-W5-9rY"/>
+                            <constraint firstItem="f1J-E5-WiY" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="140" id="LHQ-zG-Ji9"/>
+                            <constraint firstItem="2W1-BQ-AiG" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" type="default" id="Lgu-2h-cWI"/>
+                            <constraint firstAttribute="bottom" secondItem="gOR-6g-YFq" secondAttribute="bottom" constant="7" id="N6E-a0-siA"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="leading" secondItem="rGC-AK-2Id" secondAttribute="leading" type="default" id="Nqa-We-IEc"/>
                             <constraint firstItem="oIC-34-ocX" firstAttribute="leading" secondItem="hNd-HF-af5" secondAttribute="leading" type="default" id="Oim-3D-rey"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" type="default" id="QJs-kK-RF2"/>
                             <constraint firstAttribute="trailing" secondItem="dP8-1h-KHq" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="Qh9-rB-gts"/>
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="61" id="S11-OP-ruw"/>
-                            <constraint firstItem="wa0-dn-372" firstAttribute="leading" secondItem="uNT-W3-3X4" secondAttribute="leading" type="default" id="SA7-ZC-hyv"/>
-                            <constraint firstItem="uNT-W3-3X4" firstAttribute="centerX" secondItem="63E-Hg-Lwu" secondAttribute="centerX" type="default" id="SBL-4P-ZHC"/>
-                            <constraint firstItem="utq-Pe-U96" firstAttribute="bottom" secondItem="63E-Hg-Lwu" secondAttribute="bottom" type="default" id="Sod-Xr-yrO"/>
+                            <constraint firstItem="Vxn-4N-ySv" firstAttribute="leading" secondItem="f1J-E5-WiY" secondAttribute="leading" type="default" id="Sr8-N5-y7H"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Vym-mf-zG9"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="trailing" secondItem="3J9-3w-spQ" secondAttribute="trailing" type="default" id="Wxf-7a-d5h"/>
                             <constraint firstItem="uNT-W3-3X4" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="YNl-9x-liu"/>
-                            <constraint firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" constant="19" id="Z1k-mS-HjZ"/>
+                            <constraint firstItem="2W1-BQ-AiG" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" type="default" id="Ybu-32-MQE"/>
+                            <constraint firstItem="rZq-vn-O5F" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="284" id="Ywq-em-DqI"/>
                             <constraint firstAttribute="bottom" secondItem="RTn-cl-Ogo" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Zuh-k4-TVv"/>
+                            <constraint firstAttribute="trailing" secondItem="GZr-Kh-GAM" secondAttribute="trailing" constant="389" id="bS1-01-Cj7"/>
+                            <constraint firstItem="h6t-UG-A6Z" firstAttribute="leading" secondItem="2W1-BQ-AiG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="c58-yN-2fT"/>
                             <constraint firstItem="p0O-vO-Qd6" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="cz6-2s-BUG"/>
                             <constraint firstItem="3J9-3w-spQ" firstAttribute="leading" secondItem="oIC-34-ocX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="eCv-9z-7eR"/>
                             <constraint firstItem="p0O-vO-Qd6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="eiI-f9-FEu"/>
-                            <constraint firstItem="h6t-UG-A6Z" firstAttribute="leading" secondItem="uNT-W3-3X4" secondAttribute="leading" type="default" id="fiL-Ar-anr"/>
+                            <constraint firstItem="gOR-6g-YFq" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="5" type="user" id="esJ-1x-Lqc"/>
                             <constraint firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="gEg-XP-nPR"/>
+                            <constraint firstItem="uNT-W3-3X4" firstAttribute="leading" secondItem="2W1-BQ-AiG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="i6f-Qh-0nK"/>
                             <constraint firstAttribute="bottom" secondItem="41R-Zh-8bY" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="jvI-O3-hIX"/>
                             <constraint firstAttribute="bottom" secondItem="rGC-AK-2Id" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="k1V-Rx-Heh"/>
-                            <constraint firstItem="utq-Pe-U96" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" type="default" id="kfI-hQ-Hij"/>
-                            <constraint firstItem="T5d-16-VEN" firstAttribute="centerY" secondItem="C11-QJ-7d0" secondAttribute="centerY" type="default" id="kih-gq-0GW"/>
-                            <constraint firstItem="h6t-UG-A6Z" firstAttribute="centerX" secondItem="hNd-HF-af5" secondAttribute="centerX" type="default" id="n2x-Rk-J8s"/>
+                            <constraint firstAttribute="trailing" secondItem="Vxn-4N-ySv" secondAttribute="trailing" constant="13" id="lEx-aP-ieI"/>
+                            <constraint firstItem="rZq-vn-O5F" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="160" type="user" id="mcf-Xm-YuJ"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="T5d-16-VEN" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="oag-t4-FY0"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="leading" secondItem="dP8-1h-KHq" secondAttribute="leading" type="default" id="pkl-q8-g3I"/>
+                            <constraint firstAttribute="trailing" secondItem="RTn-cl-Ogo" secondAttribute="trailing" constant="19" id="rlw-K8-c8Y"/>
+                            <constraint firstItem="C11-QJ-7d0" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="152" id="rot-4e-gtU"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="u1u-tS-nQg"/>
+                            <constraint firstItem="2W1-BQ-AiG" firstAttribute="bottom" secondItem="63E-Hg-Lwu" secondAttribute="bottom" type="default" id="wNw-8Q-kmm"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="x0e-x7-gnh"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="trailing" secondItem="uNT-W3-3X4" secondAttribute="trailing" type="default" id="x1J-nC-eOI"/>
                             <constraint firstItem="oIC-34-ocX" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="177" id="yCr-Jf-y5W"/>
@@ -440,18 +453,23 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="addImageButton" destination="rZq-vn-O5F" id="SvI-E3-53S"/>
                         <outlet property="backgroundIngredientImageView" destination="h6t-UG-A6Z" id="Psb-Mg-uM9"/>
                         <outlet property="backgroundRecipeDescriptionImageView" destination="RTn-cl-Ogo" id="ZKA-SL-fp6"/>
                         <outlet property="backgroundServesTimeImageView" destination="uNT-W3-3X4" id="K6E-ve-rFJ"/>
+                        <outlet property="cookingTimeLabel" destination="3J9-3w-spQ" id="Cqf-kU-TCN"/>
+                        <outlet property="editImageButton" destination="gOR-6g-YFq" id="DaH-OJ-qhx"/>
                         <outlet property="ingredientsTableView" destination="hNd-HF-af5" id="AOm-Ko-9bx"/>
+                        <outlet property="numServesLabel" destination="C11-QJ-7d0" id="KBp-fl-fjL"/>
                         <outlet property="recipeDescriptionTextView" destination="rGC-AK-2Id" id="Fme-H9-KrJ"/>
-                        <outlet property="recipeImageView" destination="5fL-vj-ZFX" id="Tcc-iW-9xC"/>
+                        <outlet property="recipeImageScrollView" destination="2W1-BQ-AiG" id="0NS-3V-mQc"/>
                         <outlet property="recipeNameTextField" destination="wa0-dn-372" id="g0I-QL-FsG"/>
                         <outlet property="uploadLabel" destination="xmC-eC-N0p" id="YDd-k6-wQa"/>
                         <outlet property="uploadProgressView" destination="dP8-1h-KHq" id="7PT-nd-Srq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="swh-sC-2oe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="WEg-yM-cqq"/>
             </objects>
             <point key="canvasLocation" x="-1269" y="-680"/>
         </scene>
@@ -463,7 +481,9 @@
         <image name="cook_book_recipe_imageshadow.png" width="8" height="1"/>
         <image name="cook_customise_btns_cancel.png" width="37" height="37"/>
         <image name="cook_customise_btns_done.png" width="37" height="37"/>
+        <image name="cook_customise_btns_textedit.png" width="27" height="27"/>
         <image name="cook_editrecipe_addphoto.png" width="76" height="76"/>
+        <image name="cook_editrecipe_editphoto.png" width="51" height="51"/>
     </resources>
     <classes>
         <class className="BookProfilePageViewController" superclassName="PageViewController">
@@ -494,12 +514,16 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
+                <relationship kind="outlet" name="addImageButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="backgroundRecipeDescriptionImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="backgroundServesTimeImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="cookingTimeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="editImageButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="numServesLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="recipeImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
                 <relationship kind="outlet" name="recipeNameTextField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="uploadLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="uploadProgressView" candidateClass="UIProgressView"/>
@@ -512,7 +536,9 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
             <relationships>
                 <relationship kind="outlet" name="cookingDirectionsScrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="cookingTimeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="ingredientsScrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="numServesLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
                 <relationship kind="outlet" name="recipeNameLabel" candidateClass="UILabel"/>
             </relationships>

@@ -88,7 +88,7 @@
 -(void) style
 {
     self.collectionView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 40.0f);
-    UIImage *cappedImage = [[UIImage imageNamed:@"cook_editrecipe_categorybg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 32.0f, 0.0f, 32.0f)];
+    UIImage *cappedImage = [[UIImage imageNamed:@"cook_editrecipe_categorybg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 34.0f, 0.0f, 34.0f)];
     UIImageView *backgroundImageView = [[UIImageView alloc]initWithImage:cappedImage];
     backgroundImageView.image = cappedImage;
     backgroundImageView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, backgroundImageView.image.size.height);

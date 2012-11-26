@@ -17,7 +17,7 @@
 
 #define kIngredientCellTag 112233
 
-@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate>
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
 
 //UI
 @property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
@@ -28,15 +28,27 @@
 @property (nonatomic,strong) IBOutlet UIImageView *backgroundRecipeDescriptionImageView;
 @property (nonatomic,strong) IBOutlet UIImageView *backgroundServesTimeImageView;
 @property (nonatomic,strong) IBOutlet UIImageView *backgroundIngredientImageView;
-@property (nonatomic,strong) IBOutlet UIImageView *recipeImageView;
+
+@property (nonatomic,strong) IBOutlet UIButton *addImageButton;
+@property (nonatomic,strong) IBOutlet UIButton *editImageButton;
+
+@property (nonatomic,strong) IBOutlet UILabel *numServesLabel;
+@property (nonatomic,strong) IBOutlet UILabel *cookingTimeLabel;
+
+@property (nonatomic,strong) UIImageView *recipeImageView;
+@property (nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
 
 @property (nonatomic,strong) IBOutlet UITableView *ingredientsTableView;
 @property (nonatomic,strong) CategoryListViewController *categoryListViewController;
+
+@property (nonatomic,strong) UIPopoverController *inputPopoverController;
 
 //Data
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) NSMutableArray *ingredients;
 @property (nonatomic,strong) UIImage *recipeImage;
+@property (nonatomic,assign) float cookingTimeInSeconds;
+@property (nonatomic,assign) NSInteger numServes;
 @property (nonatomic,strong) Category *selectedCategory;
 
 @end
@@ -49,10 +61,11 @@
     [self data];
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self style];
+    [self config];
 }
 
 - (void)didReceiveMemoryWarning
@@ -74,7 +87,6 @@
 
 #pragma mark - Action delegates
 
-
 - (IBAction)closeTapped:(UIButton*)button {
     [self.recipeViewDelegate closeRequested];
 }
@@ -88,6 +100,9 @@
         recipe.name = self.recipeNameTextField.text;
         recipe.description = self.recipeDescriptionTextView.text;
         recipe.image = self.recipeImage;
+        recipe.numServes = self.numServes;
+        recipe.cookingTimeInSeconds = self.cookingTimeInSeconds;
+        recipe.recipeViewImageContentOffset = self.recipeImageScrollView.contentOffset;
         
         if ([self.ingredients count] > 0) {
             recipe.ingredients = [NSArray arrayWithArray:self.ingredients];
@@ -106,6 +121,7 @@
             self.uploadLabel.text = [NSString stringWithFormat:@"Uploading (%i%%)",percentDone];
         }];
     }
+    DLog(@"content offset on scrollview = %@", NSStringFromCGPoint(self.recipeImageScrollView.contentOffset));
 }
 
 -(IBAction)uploadButtonTapped:(UIButton *)button
@@ -131,6 +147,69 @@
 {
     [self.ingredients addObject:[Ingredient ingredientwithName:@"ingredient"]];
     [self.ingredientsTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+}
+
+-(void) servesTapped:(UITapGestureRecognizer*)gestureRecognizer;
+{
+    DLog();
+    self.numServesLabel.textColor = [UIColor blackColor];
+    
+	// note we are using CGRectZero for the dimensions of our picker view,
+	// this is because picker views have a built in optimum size,
+	// you just need to set the correct origin in your view.
+	//
+	// position the picker at the bottom
+    
+    UIViewController* popoverContent = [[UIViewController alloc] init];
+
+	UIPickerView *servesPickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
+	servesPickerView.frame = CGRectMake(0,44,320, 216);
+	servesPickerView.showsSelectionIndicator = YES;	// note this is default to NO
+	// this view controller is the data source and delegate
+	servesPickerView.delegate = self;
+	servesPickerView.dataSource = self;
+    [popoverContent.view addSubview:servesPickerView];
+    [servesPickerView selectRow:self.numServes inComponent:0 animated:NO];
+    self.inputPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
+    self.inputPopoverController.delegate=self;
+    [self.inputPopoverController setPopoverContentSize:CGSizeMake(320.0f, 264) animated:NO];
+    [self.inputPopoverController presentPopoverFromRect:self.numServesLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
+
+}
+
+-(void) cookingTimeTapped:(UILabel*)gestureRecognizer;
+{
+    DLog();
+    self.cookingTimeLabel.textColor = [UIColor blackColor];
+    
+    UIViewController* popoverContent = [[UIViewController alloc] init];
+    
+    UIDatePicker *datePicker=[[UIDatePicker alloc]init];
+    datePicker.frame=CGRectMake(0,44,320, 216);
+    datePicker.datePickerMode = UIDatePickerModeCountDownTimer;
+    [datePicker setMinuteInterval:15];
+    if (self.cookingTimeInSeconds > 0.0f) {
+        datePicker.countDownDuration = self.cookingTimeInSeconds;
+    } else {
+        self.cookingTimeInSeconds = 900.0f;
+        self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.cookingTimeInSeconds];
+    }
+    
+    [datePicker addTarget:self action:@selector(cookingTimeChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    [popoverContent.view addSubview:datePicker];
+    
+    self.inputPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
+    self.inputPopoverController.delegate=self;
+    [self.inputPopoverController setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
+    [self.inputPopoverController presentPopoverFromRect:self.cookingTimeLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
+
+}
+
+-(void)cookingTimeChanged:(UIDatePicker*)datePicker
+{
+    self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:datePicker.countDownDuration];
+    self.cookingTimeInSeconds = datePicker.countDownDuration;
 }
 
 #pragma mark - CategoryListViewDelegate
@@ -200,8 +279,27 @@
     self.photoEditorController = nil;
     NSParameterAssert(image);
     self.recipeImage = image;
-    self.recipeImageView.image = self.recipeImage;
+    
+    if (self.recipeImageView) {
+        [self.recipeImageView removeFromSuperview];
+        self.recipeImageView.image = image;
+    } else {
+        self.recipeImageView = [[UIImageView alloc] initWithImage:image];
+    }
+    
+    self.recipeImageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
+    [self.recipeImageScrollView addSubview:self.recipeImageView];
+    self.recipeImageScrollView.contentSize = image.size;
+    [self centerScrollViewContents];
+
+    DLog(@"photo size %@", NSStringFromCGSize(image.size));
+    
+    self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);
+    self.addImageButton.hidden = YES;
+    self.editImageButton.hidden = NO;
 }
+
+
 
 -(void)photoEditorCanceled:(AFPhotoEditorController *)editor
 {
@@ -226,7 +324,67 @@
     }
 }
 
+#pragma mark - UIPopoverDelegate
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    DLog();
+    self.inputPopoverController = nil;
+    self.cookingTimeLabel.textColor = [UIColor darkGrayColor];
+    self.numServesLabel.textColor = [UIColor darkGrayColor];
+
+}
+
+#pragma mark - UIPickerViewDataSource
+// returns the number of 'columns' to display.
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return 12;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return [NSString stringWithFormat:@"%2d",row];
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
+{
+    return 40.0f;
+}
+
+
+#pragma mark- UIPickerViewDelegate
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    self.numServes = row;
+    self.numServesLabel.text = [NSString stringWithFormat:@"%i", row];
+}
+
 #pragma mark - Private methods
+
+- (void)centerScrollViewContents {
+    CGSize boundsSize = self.recipeImageScrollView.bounds.size;
+    CGRect contentsFrame = self.recipeImageView.frame;
+    
+    if (contentsFrame.size.width < boundsSize.width) {
+        contentsFrame.origin.x = (boundsSize.width - contentsFrame.size.width) / 2.0f;
+    } else {
+        contentsFrame.origin.x = 0.0f;
+    }
+    
+    if (contentsFrame.size.height < boundsSize.height) {
+        contentsFrame.origin.y = (boundsSize.height - contentsFrame.size.height) / 2.0f;
+    } else {
+        contentsFrame.origin.y = 0.0f;
+    }
+    
+    self.recipeImageView.frame = contentsFrame;
+}
 
 -(void) data
 {
@@ -241,15 +399,38 @@
     self.ingredients = [NSMutableArray array];
 }
 
--(void) style
+-(void) config
 {
     UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
     self.backgroundRecipeDescriptionImageView.image = backgroundImage;
     self.backgroundServesTimeImageView.image = backgroundImage;
     self.backgroundIngredientImageView.image = backgroundImage;
     self.recipeNameTextField.background = backgroundImage;
+    
+    self.recipeImageScrollView.bounces = NO;
+    self.recipeImageScrollView.showsHorizontalScrollIndicator = NO;
+    self.recipeImageScrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+    self.recipeImageScrollView.showsVerticalScrollIndicator = NO;
+    
+    UITapGestureRecognizer *servesTappedRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(servesTapped:)];
+    [self.numServesLabel addGestureRecognizer:servesTappedRecognizer];
+
+    UITapGestureRecognizer *cookingTimeRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(cookingTimeTapped:)];
+    [self.cookingTimeLabel addGestureRecognizer:cookingTimeRecognizer];
+
+
 }
 
+-(void)zoomForScrollView
+{
+    CGRect scrollViewFrame = self.recipeImageScrollView.frame;
+    CGFloat scaleWidth = scrollViewFrame.size.width / self.recipeImageScrollView.contentSize.width;
+    CGFloat scaleHeight = scrollViewFrame.size.height / self.recipeImageScrollView.contentSize.height;
+    CGFloat minScale = MIN(scaleWidth, scaleHeight);
+    self.recipeImageScrollView.minimumZoomScale = minScale;
+    self.recipeImageScrollView.maximumZoomScale = 1.0f;
+    self.recipeImageScrollView.zoomScale = minScale;
+}
 -(void) configCategoriesList
 {
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];

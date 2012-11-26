@@ -10,6 +10,7 @@
 #import "NSArray+Enumerable.h"
 #import "Ingredient.h"
 #import "FacebookUserView.h"
+#import "ViewHelper.h"
 #import "CKUser.h"
 
 #define kImageViewTag   1122334455
@@ -18,9 +19,12 @@
 @property(nonatomic,strong) IBOutlet UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *cookingDirectionsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
+@property (nonatomic,strong) IBOutlet UILabel *numServesLabel;
+@property (nonatomic,strong) IBOutlet UILabel *cookingTimeLabel;
 
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UILabel *cookingDirectionsLabel;
+
 @property(nonatomic,strong) FacebookUserView *facebookUserView;
 @end
 
@@ -83,6 +87,14 @@
         [self.recipeImageScrollView addSubview:imageView];
     }
     
+    if (self.recipe.numServes > 0) {
+        self.numServesLabel.text = [NSString stringWithFormat:@"%i",self.recipe.numServes];
+    }
+
+    if (self.recipe.cookingTimeInSeconds > 0) {
+        self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.recipe.cookingTimeInSeconds];
+    }
+
     [CKRecipe imagesForRecipe:self.recipe success:^{
         if ([self.recipe imageFile]) {
             imageView.file = [self.recipe imageFile];
@@ -93,11 +105,15 @@
                     imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
                     imageView.image = image;
                     self.recipeImageScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
-                    [self.recipeImageScrollView setContentOffset:CGPointMake(341.0f, 0.0f)];
+                    if (self.recipe.recipeViewImageContentOffset.x!=0 && self.recipe.recipeViewImageContentOffset.y) {
+                        self.recipeImageScrollView.contentOffset = self.recipe.recipeViewImageContentOffset;
+                    } else {
+                        self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);
+                    }
+                    
                 } else {
                     DLog(@"Error loading image in background: %@", [error description]);
                 }
-//                [super dataDidLoad];
             }];
         }
     } failure:^(NSError *error) {
@@ -124,6 +140,7 @@
     if (!_cookingDirectionsLabel) {
         _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.cookingDirectionsScrollView.frame.size.width, 20.0f)];
         _cookingDirectionsLabel.numberOfLines = 0;
+        _cookingDirectionsLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self.cookingDirectionsScrollView addSubview:_cookingDirectionsLabel];
     }
     

@@ -15,7 +15,11 @@
 
 @property (nonatomic, strong) NSString *description;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSArray *ingredients;
+@property (nonatomic, assign) float cookingTimeInSeconds;
+@property (nonatomic, assign) int numServes;
+
 @property(nonatomic,strong) Category *category;
 
 +(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
