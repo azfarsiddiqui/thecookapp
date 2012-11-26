@@ -10,6 +10,7 @@
 #import "NSArray+Enumerable.h"
 #import "Ingredient.h"
 #import "FacebookUserView.h"
+#import "ViewHelper.h"
 #import "CKUser.h"
 
 #define kImageViewTag   1122334455
@@ -18,9 +19,12 @@
 @property(nonatomic,strong) IBOutlet UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *cookingDirectionsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
+@property (nonatomic,strong) IBOutlet UILabel *numServesLabel;
+@property (nonatomic,strong) IBOutlet UILabel *cookingTimeLabel;
 
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UILabel *cookingDirectionsLabel;
+
 @property(nonatomic,strong) FacebookUserView *facebookUserView;
 @end
 
@@ -83,6 +87,14 @@
         [self.recipeImageScrollView addSubview:imageView];
     }
     
+    if (self.recipe.numServes > 0) {
+        self.numServesLabel.text = [NSString stringWithFormat:@"%i",self.recipe.numServes];
+    }
+
+    if (self.recipe.cookingTimeInSeconds > 0) {
+        self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.recipe.cookingTimeInSeconds];
+    }
+
     [CKRecipe imagesForRecipe:self.recipe success:^{
         if ([self.recipe imageFile]) {
             imageView.file = [self.recipe imageFile];

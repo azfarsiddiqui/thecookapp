@@ -43,4 +43,18 @@
     return [[AppHelper sharedInstance] rootView].bounds.size;
 }
 
++(NSString*)formatAsHoursSeconds:(float)timeInSeconds
+{
+    NSString *result = nil;
+    float hours = floor(timeInSeconds/60/60);
+    float minutes = (timeInSeconds - hours*60*60)/60;
+    if (minutes > 1.0f) {
+        result = [NSString stringWithFormat:@"%02.0f:%02.0f", hours,minutes];
+    } else {
+        result = [NSString stringWithFormat:@"%02.0f:00", hours];
+    }
+    
+    return result;
+}
+
 @end

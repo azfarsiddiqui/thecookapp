@@ -100,6 +100,8 @@
         recipe.name = self.recipeNameTextField.text;
         recipe.description = self.recipeDescriptionTextView.text;
         recipe.image = self.recipeImage;
+        recipe.numServes = self.numServes;
+        recipe.cookingTimeInSeconds = self.cookingTimeInSeconds;
         recipe.recipeViewImageContentOffset = self.recipeImageScrollView.contentOffset;
         
         if ([self.ingredients count] > 0) {
@@ -190,7 +192,7 @@
         datePicker.countDownDuration = self.cookingTimeInSeconds;
     } else {
         self.cookingTimeInSeconds = 900.0f;
-        [self formatAsHoursSeconds:900.0f];
+        self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.cookingTimeInSeconds];
     }
     
     [datePicker addTarget:self action:@selector(cookingTimeChanged:) forControlEvents:UIControlEventValueChanged];
@@ -206,7 +208,7 @@
 
 -(void)cookingTimeChanged:(UIDatePicker*)datePicker
 {
-    [self formatAsHoursSeconds:datePicker.countDownDuration];
+    self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:datePicker.countDownDuration];
     self.cookingTimeInSeconds = datePicker.countDownDuration;
 }
 
@@ -472,17 +474,4 @@
     [alertView show];
 }
 
--(void)formatAsHoursSeconds:(float)timeInSeconds
-{
-    self.cookingTimeLabel.text = @"00:00";
-    DLog(@"timeInDuration: %f", timeInSeconds);
-    float hours = floor(timeInSeconds/60/60);
-    float minutes = (timeInSeconds - hours*60*60)/60;
-    DLog(@"minutes: %f", minutes);
-    if (minutes > 1.0f) {
-        self.cookingTimeLabel.text = [NSString stringWithFormat:@"%02.0f:%02.0f", hours,minutes];
-    } else {
-        self.cookingTimeLabel.text = [NSString stringWithFormat:@"%02.0f:00", hours];
-    }
-}
 @end

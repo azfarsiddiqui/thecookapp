@@ -16,5 +16,6 @@
 + (CGSize)bookSize;
 + (CGFloat)singleLineHeightForFont:(UIFont *)font;
 + (CGSize)screenSize;
++(NSString*)formatAsHoursSeconds:(float)timeInSeconds;
 
 @end

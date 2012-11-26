@@ -38,6 +38,18 @@
         if (recipeViewContentOffset) {
             recipe.recipeViewImageContentOffset = CGPointFromString(recipeViewContentOffset);
         }
+        
+        NSNumber *cookingTime = [parseRecipe objectForKey:KRecipeAttrCookingTimeInSeconds];
+        if (cookingTime) {
+            recipe.cookingTimeInSeconds = [cookingTime floatValue];
+        }
+        
+        NSNumber *numServes = [parseRecipe objectForKey:kRecipeAttrNumServes];
+        if (numServes) {
+            recipe.numServes = [numServes intValue];
+        }
+
+        
     }
     
     recipe.user = user;
@@ -106,7 +118,14 @@
     [parseRecipe setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
     [parseRecipe setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
     [parseRecipe setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
-    
+    if (self.numServes > 0) {
+        [parseRecipe setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
+    }
+
+    if (self.cookingTimeInSeconds > 0.0f) {
+        [parseRecipe setObject:[NSNumber numberWithFloat:self.cookingTimeInSeconds] forKey:KRecipeAttrCookingTimeInSeconds];
+    }
+
     if (self.ingredients && [self.ingredients count] > 0) {
         NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
             return ingredient.name;
