@@ -215,7 +215,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RTn-cl-Ogo">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="365" id="RCh-gQ-sS0"/>
-                                    <constraint firstAttribute="height" constant="586" id="mLU-oZ-bff"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h6t-UG-A6Z">
@@ -263,6 +262,9 @@
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rGC-AK-2Id">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="586" id="mlK-A1-VYa"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -295,8 +297,8 @@
                             </textField>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Uploading..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xmC-eC-N0p">
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="94" id="8vj-1Y-Ek5"/>
                                     <constraint firstAttribute="height" constant="21" id="NHB-UJ-aaa"/>
+                                    <constraint firstAttribute="width" constant="134" id="dYr-m4-cYD"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -403,7 +405,6 @@
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="3J9-3w-spQ" secondAttribute="leading" type="default" id="8hu-Ce-3ma"/>
                             <constraint firstItem="GZr-Kh-GAM" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="201" id="8lz-h4-WxA"/>
                             <constraint firstItem="rGC-AK-2Id" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="98X-9i-PUa"/>
-                            <constraint firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" constant="19" id="Exf-hT-haE"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="centerX" secondItem="hNd-HF-af5" secondAttribute="centerX" type="default" id="IIT-ih-bxz"/>
                             <constraint firstItem="wa0-dn-372" firstAttribute="top" secondItem="dP8-1h-KHq" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IOe-ew-8qo"/>
                             <constraint firstItem="hNd-HF-af5" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IfK-Wi-pQq"/>
@@ -411,7 +412,6 @@
                             <constraint firstItem="3J9-3w-spQ" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="176" id="KU5-7a-ioN"/>
                             <constraint firstItem="f1J-E5-WiY" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="140" id="LHQ-zG-Ji9"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" type="default" id="Lgu-2h-cWI"/>
-                            <constraint firstItem="uNT-W3-3X4" firstAttribute="centerX" secondItem="63E-Hg-Lwu" secondAttribute="centerX" type="default" id="Mhk-7N-n83"/>
                             <constraint firstAttribute="bottom" secondItem="gOR-6g-YFq" secondAttribute="bottom" constant="7" id="N6E-a0-siA"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="leading" secondItem="rGC-AK-2Id" secondAttribute="leading" type="default" id="Nqa-We-IEc"/>
                             <constraint firstItem="oIC-34-ocX" firstAttribute="leading" secondItem="hNd-HF-af5" secondAttribute="leading" type="default" id="Oim-3D-rey"/>
@@ -420,6 +420,7 @@
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="61" id="S11-OP-ruw"/>
                             <constraint firstItem="Vxn-4N-ySv" firstAttribute="leading" secondItem="f1J-E5-WiY" secondAttribute="leading" type="default" id="Sr8-N5-y7H"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Vym-mf-zG9"/>
+                            <constraint firstItem="hNd-HF-af5" firstAttribute="centerX" secondItem="63E-Hg-Lwu" secondAttribute="centerX" type="default" id="W2w-Nm-WMN"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="trailing" secondItem="3J9-3w-spQ" secondAttribute="trailing" type="default" id="Wxf-7a-d5h"/>
                             <constraint firstItem="uNT-W3-3X4" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="YNl-9x-liu"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" type="default" id="Ybu-32-MQE"/>
@@ -440,6 +441,7 @@
                             <constraint firstItem="rZq-vn-O5F" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="160" type="user" id="mcf-Xm-YuJ"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="T5d-16-VEN" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="oag-t4-FY0"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="leading" secondItem="dP8-1h-KHq" secondAttribute="leading" type="default" id="pkl-q8-g3I"/>
+                            <constraint firstAttribute="trailing" secondItem="RTn-cl-Ogo" secondAttribute="trailing" constant="19" id="rlw-K8-c8Y"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="u1u-tS-nQg"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="bottom" secondItem="63E-Hg-Lwu" secondAttribute="bottom" type="default" id="wNw-8Q-kmm"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="x0e-x7-gnh"/>
@@ -509,10 +511,6 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
-                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="backgroundRecipeDescriptionImageView" candidateClass="UIImageView"/>

@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) NSString *description;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSArray *ingredients;
 @property(nonatomic,strong) Category *category;
 

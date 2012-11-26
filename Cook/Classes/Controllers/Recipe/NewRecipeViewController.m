@@ -95,6 +95,7 @@
         recipe.name = self.recipeNameTextField.text;
         recipe.description = self.recipeDescriptionTextView.text;
         recipe.image = self.recipeImage;
+        recipe.recipeViewImageContentOffset = self.recipeImageScrollView.contentOffset;
         
         if ([self.ingredients count] > 0) {
             recipe.ingredients = [NSArray arrayWithArray:self.ingredients];

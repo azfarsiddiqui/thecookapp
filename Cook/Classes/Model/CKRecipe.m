@@ -34,6 +34,10 @@
             [ingredientsArray addObject:ingredient];
         }];
         recipe.ingredients = [NSArray arrayWithArray:ingredientsArray];
+        NSString *recipeViewContentOffset = [parseRecipe objectForKey:kRecipeAttrRecipeViewImageContentOffset];
+        if (recipeViewContentOffset) {
+            recipe.recipeViewImageContentOffset = CGPointFromString(recipeViewContentOffset);
+        }
     }
     
     recipe.user = user;
@@ -43,8 +47,7 @@
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
 {
     PFObject *parseRecipe = [PFObject objectWithClassName:kRecipeModelName];
-    CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
-    recipe.user = user;
+    CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
     recipe.book = book;
     recipe.category = category;
     return recipe;
@@ -102,6 +105,7 @@
     [parseRecipe setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipe setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
     [parseRecipe setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
+    [parseRecipe setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
     
     if (self.ingredients && [self.ingredients count] > 0) {
         NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
