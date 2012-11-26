@@ -10,6 +10,7 @@
 
 @interface StoreBookCell : UICollectionViewCell
 
++ (CGFloat)scaleFactor;
 + (CGSize)cellSize;
 
 @end

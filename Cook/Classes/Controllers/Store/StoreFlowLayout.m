@@ -20,4 +20,12 @@
     return self;
 }
 
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+    CGFloat scaleFactor = 0.7;
+    initialAttributes.alpha = 0.0;
+    initialAttributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 0.0);
+    return initialAttributes;
+}
+
 @end

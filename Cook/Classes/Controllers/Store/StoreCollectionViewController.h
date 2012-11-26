@@ -10,4 +10,6 @@
 
 @interface StoreCollectionViewController : UICollectionViewController
 
+- (void)showBooks;
+
 @end

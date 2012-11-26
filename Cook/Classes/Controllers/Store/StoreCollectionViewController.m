@@ -9,14 +9,20 @@
 #import "StoreCollectionViewController.h"
 #import "StoreFlowLayout.h"
 #import "StoreBookCell.h"
+#import "CKBookCover.h"
+#import "CKBookCoverView.h"
 
 @interface StoreCollectionViewController ()
+
+@property (nonatomic, strong) NSMutableArray *bookIllustrations;
+@property (nonatomic, strong) NSMutableArray *bookCovers;
 
 @end
 
 @implementation StoreCollectionViewController
 
 #define kStoreBookCellId            @"StoreBookCell"
+#define kBookCoverViewTag           240
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[StoreFlowLayout alloc] init]]) {
@@ -35,6 +41,17 @@
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[StoreBookCell class] forCellWithReuseIdentifier:kStoreBookCellId];
+}
+
+- (void)showBooks {
+    NSUInteger bookCount = 10;
+    self.bookIllustrations = [NSMutableArray arrayWithCapacity:bookCount];
+    self.bookCovers = [NSMutableArray arrayWithCapacity:bookCount];
+    for (NSUInteger bookIndex = 0; bookIndex < bookCount; bookIndex++) {
+        [self.bookIllustrations addObject:[CKBookCover randomIllustration]];
+        [self.bookCovers addObject:[CKBookCover randomCover]];
+    }
+    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -77,12 +94,22 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return 10;
+    return [self.bookIllustrations count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     StoreBookCell *cell = (StoreBookCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kStoreBookCellId forIndexPath:indexPath];
+    CKBookCoverView *bookCoverView = (CKBookCoverView *)[cell viewWithTag:kBookCoverViewTag];
+    if (!bookCoverView) {
+        CGFloat scaleFactor = 1 / [StoreBookCell scaleFactor];
+        bookCoverView = [[CKBookCoverView alloc] initWithFrame:cell.contentView.bounds];
+        bookCoverView.tag = kBookCoverViewTag;
+        [cell.contentView addSubview:bookCoverView];
+        bookCoverView.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor);
+    }
+    [bookCoverView setCover:[self.bookCovers objectAtIndex:indexPath.item] illustration:[self.bookIllustrations objectAtIndex:indexPath.item]];
+    //[bookCoverView setTitle:@"Cook" author:@"Guest" caption:@"Recipes I love"];
     return cell;
 }
 
