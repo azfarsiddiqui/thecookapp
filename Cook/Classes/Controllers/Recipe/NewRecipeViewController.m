@@ -282,6 +282,7 @@
     
     if (self.recipeImageView) {
         [self.recipeImageView removeFromSuperview];
+        self.recipeImageView.image = image;
     } else {
         self.recipeImageView = [[UIImageView alloc] initWithImage:image];
     }

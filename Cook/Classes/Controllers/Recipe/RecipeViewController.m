@@ -140,6 +140,7 @@
     if (!_cookingDirectionsLabel) {
         _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.cookingDirectionsScrollView.frame.size.width, 20.0f)];
         _cookingDirectionsLabel.numberOfLines = 0;
+        _cookingDirectionsLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self.cookingDirectionsScrollView addSubview:_cookingDirectionsLabel];
     }
     
