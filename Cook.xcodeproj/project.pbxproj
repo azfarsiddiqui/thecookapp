@@ -271,9 +271,6 @@
 		89622195161EA6610023EC30 /* NSDictionary+Enumerable.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962218E161EA6610023EC30 /* NSDictionary+Enumerable.m */; };
 		89622196161EA6610023EC30 /* NSSet+Enumerable.m in Sources */ = {isa = PBXBuildFile; fileRef = 89622190161EA6610023EC30 /* NSSet+Enumerable.m */; };
 		89622197161EA6610023EC30 /* NSSet+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 89622192161EA6610023EC30 /* NSSet+Utilities.m */; };
-		8962219C161EAE370023EC30 /* btn_create_recipe.png in Resources */ = {isa = PBXBuildFile; fileRef = 89622199161EAE370023EC30 /* btn_create_recipe.png */; };
-		8962219D161EAE370023EC30 /* btn_create_recipe@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219A161EAE370023EC30 /* btn_create_recipe@2x.png */; };
-		8962219E161EAE370023EC30 /* image_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219B161EAE370023EC30 /* image_placeholder.png */; };
 		896221A1161EAF4C0023EC30 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219F161EAF4C0023EC30 /* btn_close.png */; };
 		896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896221A0161EAF4C0023EC30 /* btn_close@2x.png */; };
 		8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8976B89C162797A5004155C6 /* RecipeViewController.m */; };
@@ -635,9 +632,6 @@
 		89622190161EA6610023EC30 /* NSSet+Enumerable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+Enumerable.m"; sourceTree = "<group>"; };
 		89622191161EA6610023EC30 /* NSSet+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+Utilities.h"; sourceTree = "<group>"; };
 		89622192161EA6610023EC30 /* NSSet+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+Utilities.m"; sourceTree = "<group>"; };
-		89622199161EAE370023EC30 /* btn_create_recipe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_create_recipe.png; sourceTree = "<group>"; };
-		8962219A161EAE370023EC30 /* btn_create_recipe@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_create_recipe@2x.png"; sourceTree = "<group>"; };
-		8962219B161EAE370023EC30 /* image_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image_placeholder.png; sourceTree = "<group>"; };
 		8962219F161EAF4C0023EC30 /* btn_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_close.png; sourceTree = "<group>"; };
 		896221A0161EAF4C0023EC30 /* btn_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@2x.png"; sourceTree = "<group>"; };
 		8976B89B162797A5004155C6 /* RecipeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeViewController.h; sourceTree = "<group>"; };
@@ -1171,6 +1165,23 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		8902D93F1662E5FD00B98A7B /* buttons */ = {
+			isa = PBXGroup;
+			children = (
+				76324F2516535590007D1EBF /* cook_book_icon_create.png */,
+				76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */,
+				8962219F161EAF4C0023EC30 /* btn_close.png */,
+				896221A0161EAF4C0023EC30 /* btn_close@2x.png */,
+				89E2CA96165F43AA00CDE0D4 /* cook_editrecipe_editphoto.png */,
+				89E2CA97165F43AA00CDE0D4 /* cook_editrecipe_editphoto@2x.png */,
+				89E2CA8E165F40D900CDE0D4 /* cook_editrecipe_addphoto.png */,
+				89E2CA8F165F40D900CDE0D4 /* cook_editrecipe_addphoto@2x.png */,
+				8902D93A1662E0C900B98A7B /* cook_customise_btns_textedit.png */,
+				8902D93B1662E0C900B98A7B /* cook_customise_btns_textedit@2x.png */,
+			);
+			name = buttons;
+			sourceTree = "<group>";
+		};
 		8903B56F165354FC00BB3E5B /* actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1282,14 +1293,9 @@
 		89622198161EAE370023EC30 /* recipes */ = {
 			isa = PBXGroup;
 			children = (
-				8902D93A1662E0C900B98A7B /* cook_customise_btns_textedit.png */,
-				8902D93B1662E0C900B98A7B /* cook_customise_btns_textedit@2x.png */,
-				89E2CA96165F43AA00CDE0D4 /* cook_editrecipe_editphoto.png */,
-				89E2CA97165F43AA00CDE0D4 /* cook_editrecipe_editphoto@2x.png */,
+				8902D93F1662E5FD00B98A7B /* buttons */,
 				89E2CA92165F438300CDE0D4 /* cook_editrecipe_textbox.png */,
 				89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */,
-				89E2CA8E165F40D900CDE0D4 /* cook_editrecipe_addphoto.png */,
-				89E2CA8F165F40D900CDE0D4 /* cook_editrecipe_addphoto@2x.png */,
 				89E2CA8A165F024800CDE0D4 /* cook_editrecipe_categorybg.png */,
 				89E2CA8B165F024800CDE0D4 /* cook_editrecipe_categorybg@2x.png */,
 				89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */,
@@ -1306,18 +1312,11 @@
 				892041CE16509A9600765F96 /* cook_book_icon_time@2x.png */,
 				892041C316509A4F00765F96 /* cook_book_icon_serves.png */,
 				892041C416509A4F00765F96 /* cook_book_icon_serves@2x.png */,
-				76324F2516535590007D1EBF /* cook_book_icon_create.png */,
-				76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */,
 				892041C516509A4F00765F96 /* cook_book_profile_sm.png */,
 				892041C616509A5000765F96 /* cook_book_profile_sm@2x.png */,
 				892041AB165099A400765F96 /* cook_book_recipe_imageshadow.png */,
 				892041AC165099A400765F96 /* cook_book_recipe_imageshadow@2x.png */,
 				89232B851625369400152940 /* test_image.png */,
-				8962219F161EAF4C0023EC30 /* btn_close.png */,
-				896221A0161EAF4C0023EC30 /* btn_close@2x.png */,
-				89622199161EAE370023EC30 /* btn_create_recipe.png */,
-				8962219A161EAE370023EC30 /* btn_create_recipe@2x.png */,
-				8962219B161EAE370023EC30 /* image_placeholder.png */,
 			);
 			path = recipes;
 			sourceTree = "<group>";
@@ -1440,9 +1439,6 @@
 				76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */,
 				76B015B4161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png in Resources */,
 				8936F7F0161E7AA700E6EF1D /* Cook.storyboard in Resources */,
-				8962219C161EAE370023EC30 /* btn_create_recipe.png in Resources */,
-				8962219D161EAE370023EC30 /* btn_create_recipe@2x.png in Resources */,
-				8962219E161EAE370023EC30 /* image_placeholder.png in Resources */,
 				896221A1161EAF4C0023EC30 /* btn_close.png in Resources */,
 				896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */,
 				7620271D16254128005A8B66 /* cook_signin_banner_leftback.png in Resources */,

@@ -93,11 +93,10 @@
                     imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
                     imageView.image = image;
                     self.recipeImageScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
-                    [self.recipeImageScrollView setContentOffset:CGPointMake(341.0f, 0.0f)];
+                    self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);
                 } else {
                     DLog(@"Error loading image in background: %@", [error description]);
                 }
-//                [super dataDidLoad];
             }];
         }
     } failure:^(NSError *error) {
