@@ -212,11 +212,7 @@
                         <rect key="frame" x="0.0" y="20" width="1024" height="748"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RTn-cl-Ogo">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="365" id="RCh-gQ-sS0"/>
-                                </constraints>
-                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RTn-cl-Ogo"/>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h6t-UG-A6Z">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="477" id="z7i-qL-c0W"/>
@@ -263,6 +259,7 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rGC-AK-2Id">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" constant="365" id="LCs-VA-fGF"/>
                                     <constraint firstAttribute="height" constant="586" id="mlK-A1-VYa"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -357,21 +354,22 @@
                                     <outlet property="delegate" destination="shd-KT-h88" id="L8g-Kp-Tmt"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Serves x-y" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C11-QJ-7d0">
+                            <label opaque="NO" clipsSubviews="YES" contentMode="left" text="SERVES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C11-QJ-7d0">
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="114" id="AyQ-d8-TPO"/>
                                     <constraint firstAttribute="height" constant="20" id="noS-08-d0A"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="cooking time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3J9-3w-spQ">
+                            <label opaque="NO" clipsSubviews="YES" contentMode="left" text="TIME" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3J9-3w-spQ">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="ifA-cX-nqK"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="T5d-16-VEN"/>
@@ -398,10 +396,12 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="hNd-HF-af5" firstAttribute="centerX" secondItem="63E-Hg-Lwu" secondAttribute="centerX" type="default" id="06o-Rh-4cN"/>
+                            <constraint firstItem="3J9-3w-spQ" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="176" id="2DS-jf-dHd"/>
                             <constraint firstItem="wa0-dn-372" firstAttribute="leading" secondItem="2W1-BQ-AiG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="2k0-37-3q8"/>
                             <constraint firstAttribute="trailing" secondItem="xmC-eC-N0p" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="3q5-ni-uq1"/>
                             <constraint firstAttribute="trailing" secondItem="wa0-dn-372" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="6Dx-hC-sgE"/>
-                            <constraint firstItem="C11-QJ-7d0" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="152" id="6Md-Bw-iuG"/>
+                            <constraint firstItem="T5d-16-VEN" firstAttribute="centerY" secondItem="C11-QJ-7d0" secondAttribute="centerY" type="default" id="7JZ-b3-33b"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="3J9-3w-spQ" secondAttribute="leading" type="default" id="8hu-Ce-3ma"/>
                             <constraint firstItem="GZr-Kh-GAM" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="201" id="8lz-h4-WxA"/>
                             <constraint firstItem="rGC-AK-2Id" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="98X-9i-PUa"/>
@@ -409,7 +409,6 @@
                             <constraint firstItem="wa0-dn-372" firstAttribute="top" secondItem="dP8-1h-KHq" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IOe-ew-8qo"/>
                             <constraint firstItem="hNd-HF-af5" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IfK-Wi-pQq"/>
                             <constraint firstItem="Vxn-4N-ySv" firstAttribute="centerY" secondItem="wa0-dn-372" secondAttribute="centerY" type="default" id="K8J-W5-9rY"/>
-                            <constraint firstItem="3J9-3w-spQ" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="176" id="KU5-7a-ioN"/>
                             <constraint firstItem="f1J-E5-WiY" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="140" id="LHQ-zG-Ji9"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" type="default" id="Lgu-2h-cWI"/>
                             <constraint firstAttribute="bottom" secondItem="gOR-6g-YFq" secondAttribute="bottom" constant="7" id="N6E-a0-siA"/>
@@ -420,7 +419,6 @@
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="61" id="S11-OP-ruw"/>
                             <constraint firstItem="Vxn-4N-ySv" firstAttribute="leading" secondItem="f1J-E5-WiY" secondAttribute="leading" type="default" id="Sr8-N5-y7H"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Vym-mf-zG9"/>
-                            <constraint firstItem="hNd-HF-af5" firstAttribute="centerX" secondItem="63E-Hg-Lwu" secondAttribute="centerX" type="default" id="W2w-Nm-WMN"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="trailing" secondItem="3J9-3w-spQ" secondAttribute="trailing" type="default" id="Wxf-7a-d5h"/>
                             <constraint firstItem="uNT-W3-3X4" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="YNl-9x-liu"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" type="default" id="Ybu-32-MQE"/>
@@ -436,12 +434,12 @@
                             <constraint firstItem="uNT-W3-3X4" firstAttribute="leading" secondItem="2W1-BQ-AiG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="i6f-Qh-0nK"/>
                             <constraint firstAttribute="bottom" secondItem="41R-Zh-8bY" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="jvI-O3-hIX"/>
                             <constraint firstAttribute="bottom" secondItem="rGC-AK-2Id" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="k1V-Rx-Heh"/>
-                            <constraint firstItem="T5d-16-VEN" firstAttribute="centerY" secondItem="C11-QJ-7d0" secondAttribute="centerY" type="default" id="kih-gq-0GW"/>
                             <constraint firstAttribute="trailing" secondItem="Vxn-4N-ySv" secondAttribute="trailing" constant="13" id="lEx-aP-ieI"/>
                             <constraint firstItem="rZq-vn-O5F" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="160" type="user" id="mcf-Xm-YuJ"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="T5d-16-VEN" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="oag-t4-FY0"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="leading" secondItem="dP8-1h-KHq" secondAttribute="leading" type="default" id="pkl-q8-g3I"/>
                             <constraint firstAttribute="trailing" secondItem="RTn-cl-Ogo" secondAttribute="trailing" constant="19" id="rlw-K8-c8Y"/>
+                            <constraint firstItem="C11-QJ-7d0" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="152" id="rot-4e-gtU"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="u1u-tS-nQg"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="bottom" secondItem="63E-Hg-Lwu" secondAttribute="bottom" type="default" id="wNw-8Q-kmm"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="x0e-x7-gnh"/>
@@ -457,8 +455,10 @@
                         <outlet property="backgroundIngredientImageView" destination="h6t-UG-A6Z" id="Psb-Mg-uM9"/>
                         <outlet property="backgroundRecipeDescriptionImageView" destination="RTn-cl-Ogo" id="ZKA-SL-fp6"/>
                         <outlet property="backgroundServesTimeImageView" destination="uNT-W3-3X4" id="K6E-ve-rFJ"/>
+                        <outlet property="cookingTimeLabel" destination="3J9-3w-spQ" id="Cqf-kU-TCN"/>
                         <outlet property="editImageButton" destination="gOR-6g-YFq" id="DaH-OJ-qhx"/>
                         <outlet property="ingredientsTableView" destination="hNd-HF-af5" id="AOm-Ko-9bx"/>
+                        <outlet property="numServesLabel" destination="C11-QJ-7d0" id="KBp-fl-fjL"/>
                         <outlet property="recipeDescriptionTextView" destination="rGC-AK-2Id" id="Fme-H9-KrJ"/>
                         <outlet property="recipeImageScrollView" destination="2W1-BQ-AiG" id="0NS-3V-mQc"/>
                         <outlet property="recipeNameTextField" destination="wa0-dn-372" id="g0I-QL-FsG"/>
@@ -467,6 +467,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="swh-sC-2oe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="WEg-yM-cqq"/>
             </objects>
             <point key="canvasLocation" x="-1269" y="-680"/>
         </scene>
@@ -511,12 +512,18 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
+                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="backgroundRecipeDescriptionImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="backgroundServesTimeImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="cookingTimeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="editImageButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="numServesLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
                 <relationship kind="outlet" name="recipeNameTextField" candidateClass="UITextField"/>

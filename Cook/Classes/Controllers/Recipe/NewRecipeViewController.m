@@ -17,7 +17,7 @@
 
 #define kIngredientCellTag 112233
 
-@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate>
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate>
 
 //UI
 @property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
@@ -32,17 +32,22 @@
 @property (nonatomic,strong) IBOutlet UIButton *addImageButton;
 @property (nonatomic,strong) IBOutlet UIButton *editImageButton;
 
+@property (nonatomic,strong) IBOutlet UILabel *numServesLabel;
+@property (nonatomic,strong) IBOutlet UILabel *cookingTimeLabel;
+
 @property (nonatomic,strong) UIImageView *recipeImageView;
 @property (nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
 
-
 @property (nonatomic,strong) IBOutlet UITableView *ingredientsTableView;
 @property (nonatomic,strong) CategoryListViewController *categoryListViewController;
+
+@property (nonatomic,strong) UIPopoverController *inputPopoverController;
 
 //Data
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) NSMutableArray *ingredients;
 @property (nonatomic,strong) UIImage *recipeImage;
+@property (nonatomic,assign) float cookingTimeInSeconds;
 @property (nonatomic,strong) Category *selectedCategory;
 
 @end
@@ -80,7 +85,6 @@
 }
 
 #pragma mark - Action delegates
-
 
 - (IBAction)closeTapped:(UIButton*)button {
     [self.recipeViewDelegate closeRequested];
@@ -140,6 +144,47 @@
 {
     [self.ingredients addObject:[Ingredient ingredientwithName:@"ingredient"]];
     [self.ingredientsTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+}
+
+-(void) servesTapped:(UITapGestureRecognizer*)gestureRecognizer;
+{
+    DLog();
+    self.numServesLabel.textColor = [UIColor blackColor];
+}
+
+-(void) cookingTimeTapped:(UILabel*)gestureRecognizer;
+{
+    DLog();
+    self.cookingTimeLabel.textColor = [UIColor blackColor];
+    
+    UIViewController* popoverContent = [[UIViewController alloc] init];
+    
+    UIDatePicker *datePicker=[[UIDatePicker alloc]init];
+    datePicker.frame=CGRectMake(0,44,320, 216);
+    datePicker.datePickerMode = UIDatePickerModeCountDownTimer;
+    [datePicker setMinuteInterval:15];
+    if (self.cookingTimeInSeconds > 0.0f) {
+        datePicker.countDownDuration = self.cookingTimeInSeconds;
+    } else {
+        self.cookingTimeInSeconds = 900.0f;
+        [self formatAsHoursSeconds:900.0f];
+    }
+    
+    [datePicker addTarget:self action:@selector(cookingTimeChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    [popoverContent.view addSubview:datePicker];
+    
+    self.inputPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
+    self.inputPopoverController.delegate=self;
+    [self.inputPopoverController setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
+    [self.inputPopoverController presentPopoverFromRect:self.cookingTimeLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+
+}
+
+-(void)cookingTimeChanged:(UIDatePicker*)datePicker
+{
+    [self formatAsHoursSeconds:datePicker.countDownDuration];
+    self.cookingTimeInSeconds = datePicker.countDownDuration;
 }
 
 #pragma mark - CategoryListViewDelegate
@@ -253,6 +298,16 @@
     }
 }
 
+#pragma mark - UIPopoverDelegate
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    DLog();
+    self.inputPopoverController = nil;
+    self.cookingTimeLabel.textColor = [UIColor darkGrayColor];
+    self.numServesLabel.textColor = [UIColor darkGrayColor];
+
+}
+
 #pragma mark - Private methods
 
 - (void)centerScrollViewContents {
@@ -299,6 +354,13 @@
     self.recipeImageScrollView.showsHorizontalScrollIndicator = NO;
     self.recipeImageScrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     self.recipeImageScrollView.showsVerticalScrollIndicator = NO;
+    
+    UITapGestureRecognizer *servesTappedRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(servesTapped:)];
+    [self.numServesLabel addGestureRecognizer:servesTappedRecognizer];
+
+    UITapGestureRecognizer *cookingTimeRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(cookingTimeTapped:)];
+    [self.cookingTimeLabel addGestureRecognizer:cookingTimeRecognizer];
+
 
 }
 
@@ -356,4 +418,17 @@
     [alertView show];
 }
 
+-(void)formatAsHoursSeconds:(float)timeInSeconds
+{
+    self.cookingTimeLabel.text = @"00:00";
+    DLog(@"timeInDuration: %f", timeInSeconds);
+    float hours = floor(timeInSeconds/60/60);
+    float minutes = (timeInSeconds - hours*60*60)/60;
+    DLog(@"minutes: %f", minutes);
+    if (minutes > 1.0f) {
+        self.cookingTimeLabel.text = [NSString stringWithFormat:@"%02.0f:%02.0f", hours,minutes];
+    } else {
+        self.cookingTimeLabel.text = [NSString stringWithFormat:@"%02.0f:00", hours];
+    }
+}
 @end
