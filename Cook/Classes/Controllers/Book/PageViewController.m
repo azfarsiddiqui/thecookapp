@@ -8,6 +8,7 @@
 
 #import "PageViewController.h"
 #import "APBookmarkNavigationView.h"
+#import "Theme.h"
 #import "ViewHelper.h"
 
 #define kContentsButtonTag 112233445566
@@ -16,15 +17,24 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *pageNumberLabel;
 @property (nonatomic, assign) NavigationButtonStyle navigationButtonStyle;
+@property (nonatomic, strong) NSArray *defaultOptionIcons;
+@property (nonatomic, strong) NSArray *defaultOptionLabels;
 @end
 
 @implementation PageViewController
+
+-(void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self initDefaultOptions];
+}
 
 - (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource withButtonStyle:(NavigationButtonStyle)navigationButtonStyle {
     if (self = [super init]) {
         self.delegate = delegate;
         self.navigationButtonStyle = navigationButtonStyle;
         self.dataSource = dataSource;
+        [self initDefaultOptions];
     }
     return self;
 }
@@ -56,59 +66,56 @@
 
 #pragma mark - APBookmarkNavigationViewDelegate methods
 
-- (UIView *)bookmarkIconView {
-    // return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]];
-    return nil;
-}
-
 - (NSUInteger)bookmarkNumberOfOptions {
-    return 4;
+    return [self.pageOptionIcons count] + [self.defaultOptionIcons count];
 }
 
 - (UIView *)bookmarkOptionViewAtIndex:(NSUInteger)optionIndex {
-    UIView *optionView = nil;
-    switch (optionIndex) {
-        case 0:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_add.png"]];
-            break;
-        case 1:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_facebook.png"]];
-            break;
-        case 2:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_twitter.png"]];
-            break;
-        case 3:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_email.png"]];
-            break;
-        default:
-            break;
+    NSUInteger pageOptionsCount = [self.pageOptionIcons count];
+    NSString *imageName = nil;
+    if (pageOptionsCount > 0 && optionIndex <=pageOptionsCount-1) {
+       imageName = [self.pageOptionIcons objectAtIndex:optionIndex];
+    } else {
+        imageName = [self.defaultOptionIcons objectAtIndex:optionIndex-pageOptionsCount];
     }
-    return optionView;
+    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
 }
 
 - (NSString *)bookmarkOptionLabelAtIndex:(NSUInteger)optionIndex {
-    NSString *optionLabel = nil;
-    switch (optionIndex) {
-        case 0:
-            optionLabel = @"ADD";
-            break;
-        case 1:
-            optionLabel = @"FACEBOOK";
-            break;
-        case 2:
-            optionLabel = @"TWITTER";
-            break;
-        case 3:
-            optionLabel = @"EMAIL";
-            break;
-        default:
-            break;
+    NSUInteger pageOptionsCount = [self.pageOptionLabels count];
+    if (pageOptionsCount > 0 && optionIndex <=pageOptionsCount-1) {
+        return [self.pageOptionLabels objectAtIndex:optionIndex];
+    } else {
+        return [self.defaultOptionLabels objectAtIndex:optionIndex-pageOptionsCount];
     }
-    return optionLabel;
 }
 
 - (void)bookmarkDidSelectOptionAtIndex:(NSUInteger)optionIndex {
-    DLog();
+    NSUInteger pageOptionsCount = [self.pageOptionLabels count];
+    if (pageOptionsCount > 0 && optionIndex <=pageOptionsCount-1) {
+        [self didSelectCustomOptionAtIndex:optionIndex];
+    } else {
+       //default option tap
+        DLog();
+    }
+
+}
+
+
+#pragma mark - PageViewDelegate
+-(NSArray *)pageOptionIcons
+{
+    return nil;
+}
+
+-(NSArray *)pageOptionLabels
+{
+    return nil;
+}
+
+-(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
+{
+    //can be overridden by sub-classes to respond to custom navigation
 }
 
 #pragma mark - Private methods
@@ -180,7 +187,7 @@
     [self loadingIndicator:NO];
     
     UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
-    UIFont *font = [UIFont systemFontOfSize:12.0];
+    UIFont *font = [Theme defaultLabelFont];
     NSInteger pageNumber = [self.dataSource currentPageNumber];
     NSInteger numberOfPages = [self.dataSource numberOfPages];
     DLog(@"page %d of %d", pageNumber, numberOfPages)
@@ -192,12 +199,17 @@
                                                                    size.height)];
     pageLabel.backgroundColor = [UIColor clearColor];
     pageLabel.font = font;
-    pageLabel.textColor = [UIColor blackColor];
     pageLabel.text = pageDisplay;
+    pageLabel.textColor = [Theme defaultLabelColor];
     [self.view addSubview:pageLabel];
     self.pageNumberLabel = pageLabel;
 }
 
+-(void)initDefaultOptions
+{
+    self.defaultOptionLabels = @[@"FACEBOOK",@"TWITTER",@"EMAIL"];
+    self.defaultOptionIcons = @[@"cook_book_icon_facebook.png",@"cook_book_icon_twitter.png",@"cook_book_icon_email.png"];
+}
 - (void)closeTapped:(id)sender {
     [self.delegate bookViewCloseRequested];
 }

@@ -11,7 +11,6 @@
 @protocol APBookmarkNavigationViewDelegate
 
 - (NSUInteger)bookmarkNumberOfOptions;
-- (UIView *)bookmarkIconView;
 - (UIView *)bookmarkOptionViewAtIndex:(NSUInteger)optionIndex;
 - (NSString *)bookmarkOptionLabelAtIndex:(NSUInteger)optionIndex;
 - (void)bookmarkDidSelectOptionAtIndex:(NSUInteger)optionIndex;

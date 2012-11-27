@@ -12,6 +12,7 @@
 #import "FacebookUserView.h"
 #import "ViewHelper.h"
 #import "CKUser.h"
+#import "Theme.h"
 
 #define kImageViewTag   1122334455
 @interface RecipeViewController ()
@@ -42,7 +43,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    DLog();
+    [self style];
 }
 
 - (void)didReceiveMemoryWarning
@@ -51,11 +52,41 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - overridden methods
+-(NSArray *)pageOptionIcons
+{
+    return @[@"cook_book_icon_editpage.png"];
+}
 
-#pragma mark - Overridden methods
+-(NSArray *)pageOptionLabels
+{
+    return @[@"EDIT"];
+}
+
+-(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
+{
+    //custom options
+    DLog();
+}
+
+#pragma mark - private methods
+
+-(void)style
+{
+    self.ingredientsLabel.font = [Theme defaultLabelFont];
+    self.ingredientsLabel.textColor = [Theme ingredientsLabelColor];
+    self.cookingDirectionsLabel.font = [Theme defaultLabelFont];
+    self.cookingDirectionsLabel.textColor = [Theme directionsLabelColor];
+    self.numServesLabel.font = [Theme defaultLabelFont];
+    self.numServesLabel.textColor = [Theme defaultLabelColor];
+    self.cookingTimeLabel.font = [Theme defaultLabelFont];
+    self.cookingTimeLabel.textColor = [Theme defaultLabelColor];
+    self.recipeNameLabel.font = [Theme defaultFontWithSize:42.0f];
+}
+
 -(void)refreshData
 {
-    self.recipeNameLabel.text = self.recipe.name;
+    self.recipeNameLabel.text = [self.recipe.name uppercaseString];
     [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
     [self.recipe.ingredients each:^(Ingredient *ingredient) {
@@ -63,18 +94,18 @@
     }];
     
     if ([mutableIngredientString length] > 0) {
-        CGSize maxSize = CGSizeMake(self.ingredientsScrollView.frame.size.width, CGFLOAT_MAX);
+        CGSize maxSize = CGSizeMake(190.0f, CGFLOAT_MAX);
         self.ingredientsLabel.text = mutableIngredientString;
-        CGSize requiredSize = [self.ingredientsLabel sizeThatFits:maxSize];
+        CGSize requiredSize = [mutableIngredientString sizeWithFont:self.ingredientsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
         self.ingredientsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
         [self adjustScrollView:self.ingredientsScrollView forHeight:requiredSize.height];
 
     }
     
     if (self.recipe.description) {
-        CGSize maxSize = CGSizeMake(self.cookingDirectionsScrollView.frame.size.width, CGFLOAT_MAX);
+        CGSize maxSize = CGSizeMake(330.0f, CGFLOAT_MAX);
         self.cookingDirectionsLabel.text = self.recipe.description;
-        CGSize requiredSize = [self.cookingDirectionsLabel sizeThatFits:maxSize];
+        CGSize requiredSize = [self.recipe.description sizeWithFont:self.cookingDirectionsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
         self.cookingDirectionsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
         [self adjustScrollView:self.cookingDirectionsScrollView forHeight:requiredSize.height];
 
@@ -122,8 +153,6 @@
 
 }
 
-#pragma mark - private methods
-
 -(UILabel *)ingredientsLabel
 {
     if (!_ingredientsLabel) {
@@ -138,7 +167,7 @@
 -(UILabel *)cookingDirectionsLabel
 {
     if (!_cookingDirectionsLabel) {
-        _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.cookingDirectionsScrollView.frame.size.width, 20.0f)];
+        _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f,  330.0f, 20.0f)];
         _cookingDirectionsLabel.numberOfLines = 0;
         _cookingDirectionsLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self.cookingDirectionsScrollView addSubview:_cookingDirectionsLabel];
