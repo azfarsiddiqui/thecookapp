@@ -63,18 +63,18 @@
     }];
     
     if ([mutableIngredientString length] > 0) {
-        CGSize maxSize = CGSizeMake(self.ingredientsScrollView.frame.size.width, CGFLOAT_MAX);
+        CGSize maxSize = CGSizeMake(190.0f, CGFLOAT_MAX);
         self.ingredientsLabel.text = mutableIngredientString;
-        CGSize requiredSize = [self.ingredientsLabel sizeThatFits:maxSize];
+        CGSize requiredSize = [mutableIngredientString sizeWithFont:self.ingredientsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
         self.ingredientsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
         [self adjustScrollView:self.ingredientsScrollView forHeight:requiredSize.height];
 
     }
     
     if (self.recipe.description) {
-        CGSize maxSize = CGSizeMake(self.cookingDirectionsScrollView.frame.size.width, CGFLOAT_MAX);
+        CGSize maxSize = CGSizeMake(330.0f, CGFLOAT_MAX);
         self.cookingDirectionsLabel.text = self.recipe.description;
-        CGSize requiredSize = [self.cookingDirectionsLabel sizeThatFits:maxSize];
+        CGSize requiredSize = [self.recipe.description sizeWithFont:self.cookingDirectionsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
         self.cookingDirectionsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
         [self adjustScrollView:self.cookingDirectionsScrollView forHeight:requiredSize.height];
 
@@ -138,7 +138,7 @@
 -(UILabel *)cookingDirectionsLabel
 {
     if (!_cookingDirectionsLabel) {
-        _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.cookingDirectionsScrollView.frame.size.width, 20.0f)];
+        _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f,  330.0f, 20.0f)];
         _cookingDirectionsLabel.numberOfLines = 0;
         _cookingDirectionsLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self.cookingDirectionsScrollView addSubview:_cookingDirectionsLabel];
