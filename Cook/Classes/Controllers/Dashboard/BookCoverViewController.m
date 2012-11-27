@@ -49,7 +49,7 @@
     CGSize bookSize = [BenchtopBookCell cellSize];
     CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:CGRectMake(0.0, 0.0, bookSize.width, bookSize.height)];
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
-    [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption];
+    [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption editable:NO];
     self.bookCoverView = bookCoverView;
 }
 

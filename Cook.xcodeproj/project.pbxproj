@@ -67,6 +67,20 @@
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
 		7666B40616143713001D1BA1 /* AppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* AppHelper.m */; };
 		766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026F916252B1E005A8B66 /* BenchtopViewController.m */; };
+		766B0DC616643A7900A934FD /* CKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 766B0DC416643A1A00A934FD /* CKTextField.m */; };
+		766B0DD91664495E00A934FD /* BebasNeue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCC1664495E00A934FD /* BebasNeue.otf */; };
+		766B0DDA1664495E00A934FD /* Dharma Type Font License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */; };
+		766B0DDB1664495E00A934FD /* Neutra2Cond-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */; };
+		766B0DDC1664495E00A934FD /* Neutra2Cond-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCF1664495E00A934FD /* Neutra2Cond-Light.otf */; };
+		766B0DDD1664495E00A934FD /* Neutra2Cond-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD01664495E00A934FD /* Neutra2Cond-Medium.otf */; };
+		766B0DDE1664495E00A934FD /* Neutra2Cond-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD11664495E00A934FD /* Neutra2Cond-Thin.otf */; };
+		766B0DDF1664495E00A934FD /* Neutra2Cond-Titling.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD21664495E00A934FD /* Neutra2Cond-Titling.otf */; };
+		766B0DE01664495E00A934FD /* Neutra2Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD31664495E00A934FD /* Neutra2Display-Bold.otf */; };
+		766B0DE11664495E00A934FD /* Neutra2Display-Inline.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD41664495E00A934FD /* Neutra2Display-Inline.otf */; };
+		766B0DE21664495E00A934FD /* Neutra2Display-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD51664495E00A934FD /* Neutra2Display-Light.otf */; };
+		766B0DE31664495E00A934FD /* Neutra2Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD61664495E00A934FD /* Neutra2Display-Medium.otf */; };
+		766B0DE41664495E00A934FD /* Neutra2Display-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */; };
+		766B0DE51664495E00A934FD /* Neutra2Display-Titling.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */; };
 		766BFBE11630D69B0083EB0E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE01630D69B0083EB0E /* Social.framework */; };
 		766BFBE41630D6A00083EB0E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE31630D6A00083EB0E /* Accounts.framework */; };
 		766BFBE61630D6A40083EB0E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE51630D6A40083EB0E /* AdSupport.framework */; };
@@ -173,13 +187,6 @@
 		76BEE77E165DEE600065B97B /* covers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE72F165DEE600065B97B /* covers.plist */; };
 		76BEE77F165DEE600065B97B /* CKBookCover.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BEE731165DEE600065B97B /* CKBookCover.m */; };
 		76BEE780165DEE600065B97B /* CKBookCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BEE733165DEE600065B97B /* CKBookCoverView.m */; };
-		76BEE781165DEE600065B97B /* BebasNeue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE735165DEE600065B97B /* BebasNeue.otf */; };
-		76BEE782165DEE600065B97B /* Dharma Type Font License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE736165DEE600065B97B /* Dharma Type Font License.txt */; };
-		76BEE783165DEE600065B97B /* Neutra2Cond-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE737165DEE600065B97B /* Neutra2Cond-Bold.otf */; };
-		76BEE784165DEE600065B97B /* Neutra2Cond-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE738165DEE600065B97B /* Neutra2Cond-Light.otf */; };
-		76BEE785165DEE600065B97B /* Neutra2Cond-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE739165DEE600065B97B /* Neutra2Cond-Medium.otf */; };
-		76BEE786165DEE600065B97B /* Neutra2Cond-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE73A165DEE600065B97B /* Neutra2Cond-Thin.otf */; };
-		76BEE787165DEE600065B97B /* Neutra2Cond-Titling.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE73B165DEE600065B97B /* Neutra2Cond-Titling.otf */; };
 		76C6CDCB164B3EC3006001BD /* cook_customise_textbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */; };
 		76C6CDCC164B3EC3006001BD /* cook_customise_textbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */; };
 		76C6CDCD164B3EC3006001BD /* cook_dash_icons_customise.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */; };
@@ -380,6 +387,21 @@
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
 		7666B40416143713001D1BA1 /* AppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppHelper.h; sourceTree = "<group>"; };
 		7666B40516143713001D1BA1 /* AppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppHelper.m; sourceTree = "<group>"; };
+		766B0DC316643A1A00A934FD /* CKTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKTextField.h; sourceTree = "<group>"; };
+		766B0DC416643A1A00A934FD /* CKTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKTextField.m; sourceTree = "<group>"; };
+		766B0DCC1664495E00A934FD /* BebasNeue.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BebasNeue.otf; sourceTree = "<group>"; };
+		766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Dharma Type Font License.txt"; sourceTree = "<group>"; };
+		766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Bold.otf"; sourceTree = "<group>"; };
+		766B0DCF1664495E00A934FD /* Neutra2Cond-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Light.otf"; sourceTree = "<group>"; };
+		766B0DD01664495E00A934FD /* Neutra2Cond-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Medium.otf"; sourceTree = "<group>"; };
+		766B0DD11664495E00A934FD /* Neutra2Cond-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Thin.otf"; sourceTree = "<group>"; };
+		766B0DD21664495E00A934FD /* Neutra2Cond-Titling.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Titling.otf"; sourceTree = "<group>"; };
+		766B0DD31664495E00A934FD /* Neutra2Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Bold.otf"; sourceTree = "<group>"; };
+		766B0DD41664495E00A934FD /* Neutra2Display-Inline.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Inline.otf"; sourceTree = "<group>"; };
+		766B0DD51664495E00A934FD /* Neutra2Display-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Light.otf"; sourceTree = "<group>"; };
+		766B0DD61664495E00A934FD /* Neutra2Display-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Medium.otf"; sourceTree = "<group>"; };
+		766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Thin.otf"; sourceTree = "<group>"; };
+		766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Titling.otf"; sourceTree = "<group>"; };
 		766BFBE01630D69B0083EB0E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		766BFBE31630D6A00083EB0E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		766BFBE51630D6A40083EB0E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -498,13 +520,6 @@
 		76BEE731165DEE600065B97B /* CKBookCover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBookCover.m; sourceTree = "<group>"; };
 		76BEE732165DEE600065B97B /* CKBookCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBookCoverView.h; sourceTree = "<group>"; };
 		76BEE733165DEE600065B97B /* CKBookCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverView.m; sourceTree = "<group>"; };
-		76BEE735165DEE600065B97B /* BebasNeue.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BebasNeue.otf; sourceTree = "<group>"; };
-		76BEE736165DEE600065B97B /* Dharma Type Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Dharma Type Font License.txt"; sourceTree = "<group>"; };
-		76BEE737165DEE600065B97B /* Neutra2Cond-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Bold.otf"; sourceTree = "<group>"; };
-		76BEE738165DEE600065B97B /* Neutra2Cond-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Light.otf"; sourceTree = "<group>"; };
-		76BEE739165DEE600065B97B /* Neutra2Cond-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Medium.otf"; sourceTree = "<group>"; };
-		76BEE73A165DEE600065B97B /* Neutra2Cond-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Thin.otf"; sourceTree = "<group>"; };
-		76BEE73B165DEE600065B97B /* Neutra2Cond-Titling.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Titling.otf"; sourceTree = "<group>"; };
 		76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_textbox.png; sourceTree = "<group>"; };
 		76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox@2x.png"; sourceTree = "<group>"; };
 		76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise.png; sourceTree = "<group>"; };
@@ -849,6 +864,26 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		766B0DCB1664495E00A934FD /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				766B0DCC1664495E00A934FD /* BebasNeue.otf */,
+				766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */,
+				766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */,
+				766B0DCF1664495E00A934FD /* Neutra2Cond-Light.otf */,
+				766B0DD01664495E00A934FD /* Neutra2Cond-Medium.otf */,
+				766B0DD11664495E00A934FD /* Neutra2Cond-Thin.otf */,
+				766B0DD21664495E00A934FD /* Neutra2Cond-Titling.otf */,
+				766B0DD31664495E00A934FD /* Neutra2Display-Bold.otf */,
+				766B0DD41664495E00A934FD /* Neutra2Display-Inline.otf */,
+				766B0DD51664495E00A934FD /* Neutra2Display-Light.otf */,
+				766B0DD61664495E00A934FD /* Neutra2Display-Medium.otf */,
+				766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */,
+				766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		76B015AB161C0AC100AF3C2C /* books */ = {
 			isa = PBXGroup;
 			children = (
@@ -868,11 +903,12 @@
 			isa = PBXGroup;
 			children = (
 				76BEE6EC165DEE600065B97B /* books */,
-				76BEE734165DEE600065B97B /* fonts */,
 				76BEE730165DEE600065B97B /* CKBookCover.h */,
 				76BEE731165DEE600065B97B /* CKBookCover.m */,
 				76BEE732165DEE600065B97B /* CKBookCoverView.h */,
 				76BEE733165DEE600065B97B /* CKBookCoverView.m */,
+				766B0DC316643A1A00A934FD /* CKTextField.h */,
+				766B0DC416643A1A00A934FD /* CKTextField.m */,
 			);
 			path = CKBookCoverView;
 			sourceTree = "<group>";
@@ -949,20 +985,6 @@
 				76BEE72F165DEE600065B97B /* covers.plist */,
 			);
 			path = books;
-			sourceTree = "<group>";
-		};
-		76BEE734165DEE600065B97B /* fonts */ = {
-			isa = PBXGroup;
-			children = (
-				76BEE735165DEE600065B97B /* BebasNeue.otf */,
-				76BEE736165DEE600065B97B /* Dharma Type Font License.txt */,
-				76BEE737165DEE600065B97B /* Neutra2Cond-Bold.otf */,
-				76BEE738165DEE600065B97B /* Neutra2Cond-Light.otf */,
-				76BEE739165DEE600065B97B /* Neutra2Cond-Medium.otf */,
-				76BEE73A165DEE600065B97B /* Neutra2Cond-Thin.otf */,
-				76BEE73B165DEE600065B97B /* Neutra2Cond-Titling.otf */,
-			);
-			path = fonts;
 			sourceTree = "<group>";
 		};
 		76C6CDCF164B5495006001BD /* APBookmarkNavigationView */ = {
@@ -1120,6 +1142,7 @@
 		76ED27821612DEA30012E479 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				766B0DCB1664495E00A934FD /* fonts */,
 				8903B56F165354FC00BB3E5B /* actions */,
 				892041B016509A4500765F96 /* navigation */,
 				89622198161EAE370023EC30 /* recipes */,
@@ -1605,13 +1628,6 @@
 				76BEE77C165DEE600065B97B /* cook_book_yellow.png in Resources */,
 				76BEE77D165DEE600065B97B /* cook_book_yellow@2x.png in Resources */,
 				76BEE77E165DEE600065B97B /* covers.plist in Resources */,
-				76BEE781165DEE600065B97B /* BebasNeue.otf in Resources */,
-				76BEE782165DEE600065B97B /* Dharma Type Font License.txt in Resources */,
-				76BEE783165DEE600065B97B /* Neutra2Cond-Bold.otf in Resources */,
-				76BEE784165DEE600065B97B /* Neutra2Cond-Light.otf in Resources */,
-				76BEE785165DEE600065B97B /* Neutra2Cond-Medium.otf in Resources */,
-				76BEE786165DEE600065B97B /* Neutra2Cond-Thin.otf in Resources */,
-				76BEE787165DEE600065B97B /* Neutra2Cond-Titling.otf in Resources */,
 				89E2CA87165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png in Resources */,
 				89E2CA88165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png in Resources */,
 				89E2CA8C165F024800CDE0D4 /* cook_editrecipe_categorybg.png in Resources */,
@@ -1624,6 +1640,19 @@
 				89E2CA99165F43AA00CDE0D4 /* cook_editrecipe_editphoto@2x.png in Resources */,
 				8902D93C1662E0C900B98A7B /* cook_customise_btns_textedit.png in Resources */,
 				8902D93D1662E0C900B98A7B /* cook_customise_btns_textedit@2x.png in Resources */,
+				766B0DD91664495E00A934FD /* BebasNeue.otf in Resources */,
+				766B0DDA1664495E00A934FD /* Dharma Type Font License.txt in Resources */,
+				766B0DDB1664495E00A934FD /* Neutra2Cond-Bold.otf in Resources */,
+				766B0DDC1664495E00A934FD /* Neutra2Cond-Light.otf in Resources */,
+				766B0DDD1664495E00A934FD /* Neutra2Cond-Medium.otf in Resources */,
+				766B0DDE1664495E00A934FD /* Neutra2Cond-Thin.otf in Resources */,
+				766B0DDF1664495E00A934FD /* Neutra2Cond-Titling.otf in Resources */,
+				766B0DE01664495E00A934FD /* Neutra2Display-Bold.otf in Resources */,
+				766B0DE11664495E00A934FD /* Neutra2Display-Inline.otf in Resources */,
+				766B0DE21664495E00A934FD /* Neutra2Display-Light.otf in Resources */,
+				766B0DE31664495E00A934FD /* Neutra2Display-Medium.otf in Resources */,
+				766B0DE41664495E00A934FD /* Neutra2Display-Thin.otf in Resources */,
+				766B0DE51664495E00A934FD /* Neutra2Display-Titling.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1704,6 +1733,7 @@
 				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
 				76510714165F31180077B551 /* StoreBookCell.m in Sources */,
+				766B0DC616643A7900A934FD /* CKTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

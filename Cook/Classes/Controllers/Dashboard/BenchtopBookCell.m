@@ -11,10 +11,9 @@
 #import "ViewHelper.h"
 #import "EventHelper.h"
 
-@interface BenchtopBookCell ()
+@interface BenchtopBookCell () <CKBookCoverViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
@@ -28,7 +27,7 @@
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         
-        CKBookCoverView *bookView = [[CKBookCoverView alloc] initWithFrame:frame];
+        CKBookCoverView *bookView = [[CKBookCoverView alloc] initWithFrame:frame delegate:self];
         bookView.center = self.contentView.center;
         bookView.frame = CGRectIntegral(bookView.frame);
         [self.contentView addSubview:bookView];
@@ -91,20 +90,7 @@
     
     // Update book cover.
     [self.bookCoverView setCover:book.cover illustration:book.illustration];
-    [self.bookCoverView setTitle:book.name author:[book userName] caption:book.caption];
-
-    // Editable if mine.
-    [self.editButton removeFromSuperview];
-    if (mine) {
-        UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]
-                                                    target:self selector:@selector(editTapped:)];
-        editButton.frame = CGRectMake(self.contentView.bounds.size.width - editButton.frame.size.width - 7.0,
-                                      5.0,
-                                      editButton.frame.size.width,
-                                      editButton.frame.size.height);
-        [self.contentView addSubview:editButton];
-        self.editButton = editButton;
-    }
+    [self.bookCoverView setTitle:book.name author:[book userName] caption:book.caption editable:mine];
 }
 
 - (void)openBook:(BOOL)open {
@@ -126,11 +112,14 @@
 - (void)bookViewDidOpen:(BOOL)open {
 }
 
-#pragma mark - Private methods
+#pragma mark - CKBookCoverViewDelegate methods
 
-- (void)editTapped:(id)sender {
+- (void)bookCoverViewEditRequested {
     DLog();
     [EventHelper postEditMode:YES];
 }
+
+#pragma mark - Private methods
+
 
 @end
