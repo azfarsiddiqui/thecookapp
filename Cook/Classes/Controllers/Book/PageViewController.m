@@ -8,6 +8,7 @@
 
 #import "PageViewController.h"
 #import "APBookmarkNavigationView.h"
+#import "Theme.h"
 #import "ViewHelper.h"
 
 #define kContentsButtonTag 112233445566
@@ -186,7 +187,7 @@
     [self loadingIndicator:NO];
     
     UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
-    UIFont *font = [UIFont systemFontOfSize:12.0];
+    UIFont *font = [Theme defaultLabelFont];
     NSInteger pageNumber = [self.dataSource currentPageNumber];
     NSInteger numberOfPages = [self.dataSource numberOfPages];
     DLog(@"page %d of %d", pageNumber, numberOfPages)
@@ -198,8 +199,8 @@
                                                                    size.height)];
     pageLabel.backgroundColor = [UIColor clearColor];
     pageLabel.font = font;
-    pageLabel.textColor = [UIColor blackColor];
     pageLabel.text = pageDisplay;
+    pageLabel.textColor = [Theme defaultLabelColor];
     [self.view addSubview:pageLabel];
     self.pageNumberLabel = pageLabel;
 }

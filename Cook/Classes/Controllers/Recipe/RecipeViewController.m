@@ -12,6 +12,7 @@
 #import "FacebookUserView.h"
 #import "ViewHelper.h"
 #import "CKUser.h"
+#import "Theme.h"
 
 #define kImageViewTag   1122334455
 @interface RecipeViewController ()
@@ -42,7 +43,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    DLog();
+    [self style];
 }
 
 - (void)didReceiveMemoryWarning
@@ -69,9 +70,23 @@
 }
 
 #pragma mark - private methods
+
+-(void)style
+{
+    self.ingredientsLabel.font = [Theme defaultLabelFont];
+    self.ingredientsLabel.textColor = [Theme ingredientsLabelColor];
+    self.cookingDirectionsLabel.font = [Theme defaultLabelFont];
+    self.cookingDirectionsLabel.textColor = [Theme directionsLabelColor];
+    self.numServesLabel.font = [Theme defaultLabelFont];
+    self.numServesLabel.textColor = [Theme defaultLabelColor];
+    self.cookingTimeLabel.font = [Theme defaultLabelFont];
+    self.cookingTimeLabel.textColor = [Theme defaultLabelColor];
+    self.recipeNameLabel.font = [Theme defaultFontWithSize:42.0f];
+}
+
 -(void)refreshData
 {
-    self.recipeNameLabel.text = self.recipe.name;
+    self.recipeNameLabel.text = [self.recipe.name uppercaseString];
     [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
     [self.recipe.ingredients each:^(Ingredient *ingredient) {

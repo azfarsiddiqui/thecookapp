@@ -167,11 +167,9 @@
                             <constraint firstItem="xS6-ra-iss" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="650" id="4W3-sC-ko8"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="bottom" secondItem="Pu7-06-VlL" secondAttribute="bottom" type="default" id="9JJ-kx-NUc"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="trailing" secondItem="Jf2-lp-5CN" secondAttribute="trailing" type="default" id="9cA-Fp-2Dj"/>
-                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="150" id="AcL-lO-9JP"/>
                             <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="BSr-Ha-3Xi"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="353" id="FiR-5d-Inf"/>
                             <constraint firstAttribute="bottom" secondItem="94h-kc-7mL" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="HP4-ac-AOP"/>
-                            <constraint firstItem="Xia-Kz-dcG" firstAttribute="centerY" secondItem="a8t-x1-NZg" secondAttribute="centerY" type="default" id="IR8-oO-NGV"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="367" id="K8a-1N-efv"/>
                             <constraint firstItem="dt9-Fo-cZC" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="KKb-sm-ReB"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="196" id="Lmw-Hm-kgh"/>
@@ -184,11 +182,13 @@
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="436" id="V6L-aS-Qfg"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="leading" type="default" id="Vir-i4-S71"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="top" secondItem="xS6-ra-iss" secondAttribute="top" type="default" id="bua-z7-XEu"/>
+                            <constraint firstItem="a8t-x1-NZg" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="117" id="cOX-qU-3dA"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="leading" type="default" id="dFR-wf-nqT"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="duZ-3G-hVO"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="gnl-Ie-F1H"/>
                             <constraint firstAttribute="trailing" secondItem="94h-kc-7mL" secondAttribute="trailing" constant="398" id="ira-gc-Kod"/>
                             <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="61" id="qMC-oH-UoG"/>
+                            <constraint firstItem="dt9-Fo-cZC" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="152" id="veH-2e-N1W"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>

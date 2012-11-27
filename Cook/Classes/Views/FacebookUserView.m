@@ -7,6 +7,7 @@
 //
 
 #import "FacebookUserView.h"
+#import "Theme.h"
 #import <Parse/Parse.h>
 
 #define kHeight 22.0f
@@ -31,12 +32,16 @@
 {
     if (user) {
         self.userNameLabel.text = [user.name uppercaseString];
+        self.userNameLabel.font = [Theme defaultLabelFont];
+        self.userNameLabel.textColor = [Theme defaultLabelColor];
         CGSize maxSize = CGSizeMake(CGFLOAT_MAX, kHeight);
-        [self.userNameLabel sizeThatFits:maxSize];
+        CGSize requiredSize = [[user.name uppercaseString] sizeWithFont:[Theme defaultLabelFont] constrainedToSize:maxSize lineBreakMode:NSLineBreakByTruncatingTail];
+
+        self.userNameLabel.frame = CGRectMake(self.userNameLabel.frame.origin.x, self.userNameLabel.frame.origin.y, requiredSize.width, requiredSize.height);
         if (user.facebookId) {
             self.fbProfileView.profileID = user.facebookId;
         }
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, 50.0f, kHeight);
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, requiredSize.width, requiredSize.height);
     }
 }
 
@@ -44,8 +49,7 @@
 -(UILabel *)userNameLabel
 {
     if (!_userNameLabel) {
-        _userNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(25.0f, 0.0f, 100.0f, kHeight)];
-        _userNameLabel.font = [UIFont systemFontOfSize:12.0f];
+        _userNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(25.0f, 0.0f, 100.0f, 0.0f)];
         [self addSubview: _userNameLabel];
     }
     return _userNameLabel;
