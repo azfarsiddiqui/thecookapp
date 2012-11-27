@@ -34,11 +34,9 @@
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
-- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate {
+- (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.delegate = delegate;
         [self initBackground];
-        
         if (kOverlayDebug) {
             UIView *contentOverlay = [[UIView alloc] initWithFrame:CGRectMake(kContentInsets.left,
                                                                               kContentInsets.top,
@@ -48,7 +46,13 @@
             contentOverlay.alpha = 0.3;
             [self addSubview:contentOverlay];
         }
-        
+    }
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate {
+    if (self = [self initWithFrame:frame]) {
+        self.delegate = delegate;
     }
     return self;
 }
