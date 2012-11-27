@@ -575,6 +575,14 @@
     [self stackLayout:[layout isKindOfClass:[BenchtopFlowLayout class]]];
 }
 
+- (void)stackLayout {
+    [self stackLayout:YES];
+}
+
+- (void)unstackLayout {
+    [self stackLayout:NO];
+}
+
 - (void)stackLayout:(BOOL)stack {
     BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
     
@@ -628,6 +636,7 @@
     
     // Works
     [self.collectionView setContentOffset:scrollToPoint animated:YES];
+
 }
 
 - (void)resetScrollView {
