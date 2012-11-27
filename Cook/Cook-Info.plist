@@ -67,6 +67,12 @@
 		<string>Neutra2Cond-Medium.otf</string>
 		<string>Neutra2Cond-Thin.otf</string>
 		<string>Neutra2Cond-Titling.otf</string>
+		<string>Neutra2Display-Bold.otf</string>
+		<string>Neutra2Display-Inline.otf</string>
+		<string>Neutra2Display-Light.otf</string>
+		<string>Neutra2Display-Medium.otf</string>
+		<string>Neutra2Display-Thin.otf</string>
+		<string>Neutra2Display-Titling.otf</string>
 	</array>
 </dict>
 </plist>
