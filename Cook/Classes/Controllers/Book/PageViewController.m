@@ -22,13 +22,18 @@
 
 @implementation PageViewController
 
+-(void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self initDefaultOptions];
+}
+
 - (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource withButtonStyle:(NavigationButtonStyle)navigationButtonStyle {
     if (self = [super init]) {
         self.delegate = delegate;
         self.navigationButtonStyle = navigationButtonStyle;
         self.dataSource = dataSource;
-        self.defaultOptionLabels = @[@"ADD",@"FACEBOOK",@"TWITTER",@"EMAIL"];
-        self.defaultOptionIcons = @[@"cook_book_icon_add.png",@"cook_book_icon_facebook.png",@"cook_book_icon_twitter.png",@"cook_book_icon_email.png"];
+        [self initDefaultOptions];
     }
     return self;
 }
@@ -61,19 +66,55 @@
 #pragma mark - APBookmarkNavigationViewDelegate methods
 
 - (NSUInteger)bookmarkNumberOfOptions {
-    return 4;
+    return [self.pageOptionIcons count] + [self.defaultOptionIcons count];
 }
 
 - (UIView *)bookmarkOptionViewAtIndex:(NSUInteger)optionIndex {
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self.defaultOptionIcons objectAtIndex:optionIndex]]];
+    NSUInteger pageOptionsCount = [self.pageOptionIcons count];
+    NSString *imageName = nil;
+    if (pageOptionsCount > 0 && optionIndex <=pageOptionsCount-1) {
+       imageName = [self.pageOptionIcons objectAtIndex:optionIndex];
+    } else {
+        imageName = [self.defaultOptionIcons objectAtIndex:optionIndex-pageOptionsCount];
+    }
+    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
 }
 
 - (NSString *)bookmarkOptionLabelAtIndex:(NSUInteger)optionIndex {
-    return [self.defaultOptionLabels objectAtIndex:optionIndex];
+    NSUInteger pageOptionsCount = [self.pageOptionLabels count];
+    if (pageOptionsCount > 0 && optionIndex <=pageOptionsCount-1) {
+        return [self.pageOptionLabels objectAtIndex:optionIndex];
+    } else {
+        return [self.defaultOptionLabels objectAtIndex:optionIndex-pageOptionsCount];
+    }
 }
 
 - (void)bookmarkDidSelectOptionAtIndex:(NSUInteger)optionIndex {
-    DLog();
+    NSUInteger pageOptionsCount = [self.pageOptionLabels count];
+    if (pageOptionsCount > 0 && optionIndex <=pageOptionsCount-1) {
+        [self didSelectCustomOptionAtIndex:optionIndex];
+    } else {
+       //default option tap
+        DLog();
+    }
+
+}
+
+
+#pragma mark - PageViewDelegate
+-(NSArray *)pageOptionIcons
+{
+    return nil;
+}
+
+-(NSArray *)pageOptionLabels
+{
+    return nil;
+}
+
+-(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
+{
+    //can be overridden by sub-classes to respond to custom navigation
 }
 
 #pragma mark - Private methods
@@ -163,6 +204,11 @@
     self.pageNumberLabel = pageLabel;
 }
 
+-(void)initDefaultOptions
+{
+    self.defaultOptionLabels = @[@"FACEBOOK",@"TWITTER",@"EMAIL"];
+    self.defaultOptionIcons = @[@"cook_book_icon_facebook.png",@"cook_book_icon_twitter.png",@"cook_book_icon_email.png"];
+}
 - (void)closeTapped:(id)sender {
     [self.delegate bookViewCloseRequested];
 }

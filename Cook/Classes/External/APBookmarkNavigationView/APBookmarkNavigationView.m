@@ -316,6 +316,8 @@
     return optionButton;
 }
 
+#pragma mark - Action delegates
+
 - (void)optionHeld:(id)sender {
     UIView *tappedView = (UIView *)sender;
     tappedView.alpha = 0.7;

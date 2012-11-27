@@ -51,6 +51,23 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - overridden methods
+-(NSArray *)pageOptionIcons
+{
+    return @[@"cook_book_icon_editpage.png"];
+}
+
+-(NSArray *)pageOptionLabels
+{
+    return @[@"EDIT"];
+}
+
+-(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
+{
+    //custom options
+    DLog();
+}
+
 #pragma mark - private methods
 -(void)refreshData
 {
