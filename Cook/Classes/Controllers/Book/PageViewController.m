@@ -241,7 +241,7 @@
         UIFont *font = [Theme defaultLabelFont];
         CGSize size = [pagePrefixString sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
         
-        pagePrefixLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - size.width - self.pageNumberLabel.frame.size.width - 2*edgeInsets.right,
+        pagePrefixLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - size.width - 2*self.pageNumberLabel.frame.size.width - edgeInsets.right,
                                                                        self.view.bounds.size.height - size.height - edgeInsets.bottom,
                                                                        size.width,
                                                                        size.height)];
