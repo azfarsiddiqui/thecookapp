@@ -29,7 +29,7 @@
 
 - (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *finalAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:itemIndexPath];
-    CGFloat distance = self.collectionView.bounds.size.width * (itemIndexPath.item + 1);
+    CGFloat distance = self.collectionView.bounds.size.width;
     finalAttributes.transform3D = CATransform3DTranslate(finalAttributes.transform3D, distance, 0.0, 0.0);
     return finalAttributes;
 }

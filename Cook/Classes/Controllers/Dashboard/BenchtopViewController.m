@@ -22,8 +22,9 @@
 #import "BenchtopEditLayout.h"
 #import "BookCoverViewController.h"
 #import "ViewHelper.h"
+#import "StoreViewController.h"
 
-@interface BenchtopViewController () <BookCoverViewControllerDelegate, BenchtopBookCellDelegate>
+@interface BenchtopViewController () <BookCoverViewControllerDelegate, BenchtopBookCellDelegate, StoreViewControllerDelegate>
 
 @property (nonatomic, assign) id<BenchtopViewControlelrDelegate> delegate;
 @property (nonatomic, strong) UIView *backgroundView;
@@ -32,6 +33,7 @@
 @property (nonatomic, assign) BOOL snapActivated;
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSArray *friendsBooks;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
@@ -44,6 +46,7 @@
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) UIView *editOverlayView;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
+@property (nonatomic, strong) StoreViewController *storeViewController;
 
 @end
 
@@ -187,6 +190,10 @@
     return (self.myBook != nil);
 }
 
+- (BOOL)benchtopStoreMode {
+    return self.storeMode;
+}
+
 - (CGSize)benchtopItemSize {
     return [BenchtopBookCell cellSize];
 }
@@ -311,16 +318,30 @@
     
     NSInteger numItems = 0;
     if (section == 0) {
-        numItems = 1;   // My Book
-    } else {
-        CKUser *currentUser = [CKUser currentUser];
-        if ([currentUser isSignedIn]) {
-            numItems = [self.friendsBooks count];
+        
+        if (self.storeMode) {
+            numItems = 0;
         } else {
-            numItems = 2; // Login book and some fake book.
+            numItems = 1;   // My Book
+        }
+    } else {
+        
+        if (self.storeMode) {
+            
+            numItems = 0;
+            
+        } else {
+            
+            CKUser *currentUser = [CKUser currentUser];
+            if ([currentUser isSignedIn]) {
+                numItems = [self.friendsBooks count];
+            } else {
+                numItems = 2; // Login book and some fake book.
+            }
         }
     }
     
+    DLog(@"Num Items in section[%d]: %d", section, numItems);
     return numItems;
 }
 
@@ -512,17 +533,24 @@
 }
 
 - (void)menuViewControllerCancelRequested {
-
-    // Revert to previous illustration/cover.
-    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    self.myBook.illustration = self.illustrationViewController.illustration;
-    self.myBook.cover = self.coverViewController.cover;
-    [cell loadBook:self.myBook mine:YES force:YES];
     
-    // Reload the illustration cover.
-    [self.illustrationViewController changeCover:self.coverViewController.cover];
-
-    [self enableEditMode:NO];
+    if (self.storeMode) {
+        
+        [self enableStoreMode:NO];
+        
+    } else {
+        
+        // Revert to previous illustration/cover.
+        BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        self.myBook.illustration = self.illustrationViewController.illustration;
+        self.myBook.cover = self.coverViewController.cover;
+        [cell loadBook:self.myBook mine:YES force:YES];
+        
+        // Reload the illustration cover.
+        [self.illustrationViewController changeCover:self.coverViewController.cover];
+        
+        [self enableEditMode:NO];
+    }
 }
 
 - (void)menuViewControllerDoneRequested {
@@ -566,6 +594,22 @@
 - (void)benchtopBookCellEditRequestedForIndexPath:(NSIndexPath *)indexPath {
     DLog();
     [EventHelper postEditMode:YES];
+}
+
+#pragma mark - StoreViewControllerDelegate methods
+
+- (void)storeViewControllerCloseRequested {
+    [self enableStoreMode:NO];
+}
+
+- (void)storeViewControllerDataLoaded:(BOOL)loaded {
+    if (loaded) {
+        
+    } else {
+        [self.collectionView reloadData];
+        [self.storeViewController.view removeFromSuperview];
+        self.storeViewController = nil;
+    }
 }
 
 #pragma mark - Private
@@ -1006,7 +1050,33 @@
 }
 
 - (void)storeTapped:(id)sender {
-    [self.delegate benchtopViewControllerStoreRequested];
+    // [self.delegate benchtopViewControllerStoreRequested];
+    [self enableStoreMode:!self.storeMode];
+}
+
+- (void)enableStoreMode:(BOOL)enable {
+    self.storeMode = enable;
+    
+    // [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:1]];
+    
+    // Update menu remove settings button.
+    [self.menuViewController setStoreMode:enable];
+    
+    if (enable) {
+        
+        [self.collectionView reloadData];
+        
+        StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
+        storeViewController.view.frame = self.view.bounds;
+        [self.view insertSubview:storeViewController.view belowSubview:self.overlayView];
+        [storeViewController loadData];
+        self.storeViewController = storeViewController;
+        
+    } else {
+        
+        [self.storeViewController unloadData];
+    }
+    
 }
 
 @end

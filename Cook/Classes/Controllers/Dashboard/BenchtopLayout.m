@@ -58,7 +58,7 @@
     }
     
     // Library header.
-    if (numSections > 1) {
+    if (![self.benchtopDelegate benchtopStoreMode] && numSections > 1) {
     
         // TODO potential optimisation here to exclude header if not in view.
         [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:kLibraryHeader
@@ -111,5 +111,19 @@
     
     return initialAttributes;
 }
+
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *finalAttributes = nil;
+    
+//    if (itemIndexPath.section == 1) {
+//        finalAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+//        CGFloat distance = self.collectionView.bounds.size.width * (itemIndexPath.item + 1);
+//        finalAttributes.alpha = 0.0;
+//        finalAttributes.transform3D = CATransform3DMakeTranslation(distance, 0.0, 0.0);
+//    }
+    
+    return finalAttributes;
+}
+
 
 @end
