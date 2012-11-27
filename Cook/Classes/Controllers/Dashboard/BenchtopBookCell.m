@@ -96,7 +96,7 @@
     // Editable if mine.
     [self.editButton removeFromSuperview];
     if (mine) {
-        UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png.png"]
+        UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]
                                                     target:self selector:@selector(editTapped:)];
         editButton.frame = CGRectMake(self.contentView.bounds.size.width - editButton.frame.size.width - 7.0,
                                       5.0,

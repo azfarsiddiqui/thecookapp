@@ -20,6 +20,10 @@
 
 #define kDivideScaleFactor  2.0
 
++ (CGFloat)scaleFactor {
+    return kDivideScaleFactor;
+}
+
 + (CGSize)cellSize {
     CGSize fullSize = [BenchtopBookCell cellSize];
     return CGSizeMake(fullSize.width / kDivideScaleFactor, fullSize.height / kDivideScaleFactor);

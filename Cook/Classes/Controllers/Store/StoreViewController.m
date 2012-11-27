@@ -15,6 +15,7 @@
 @property (nonatomic, assign) id<StoreViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, strong) StoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) StoreCollectionViewController *friendsViewController;
@@ -41,9 +42,8 @@
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self initBackground];
-    [self initButtons];
     [self initCollectionViews];
-    
+    [self initButtons];
 }
 
 - (void)enable:(BOOL)enable {
@@ -77,6 +77,7 @@
         self.overlayView.autoresizingMask = UIViewAutoresizingNone;
         self.overlayView.alpha = 0.0;
         [self.view addSubview:self.overlayView];
+        [self.view insertSubview:self.overlayView belowSubview:self.closeButton];
     }
     
     if (animated) {
@@ -115,6 +116,7 @@
                                    closeButton.frame.size.width,
                                    closeButton.frame.size.height);
     [self.view addSubview:closeButton];
+    self.closeButton = closeButton;
 }
 
 - (void)initCollectionViews {
@@ -146,11 +148,11 @@
 }
 
 - (void)loadData {
-    
+    [self.featuredViewController showBooks];
+    [self.friendsViewController showBooks];
 }
 
 - (void)unloadData {
-    
 }
 
 @end
