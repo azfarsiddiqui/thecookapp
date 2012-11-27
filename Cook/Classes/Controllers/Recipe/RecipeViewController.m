@@ -63,6 +63,11 @@
     return @[@"EDIT"];
 }
 
+-(NSString *)pageNumberPrefixString
+{
+    return self.recipe.category ? self.recipe.category.name : nil;
+}
+
 -(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
 {
     //custom options

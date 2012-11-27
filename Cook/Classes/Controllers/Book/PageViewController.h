@@ -17,6 +17,7 @@ typedef enum {
 @protocol PageViewDelegate
 -(void)showPageNumber;
 -(void)hidePageNumber;
+-(NSString*)pageNumberPrefixString;
 //sub-classes override these to provide custom icons and labels
 -(NSArray*)pageOptionLabels;
 -(NSArray*)pageOptionIcons;

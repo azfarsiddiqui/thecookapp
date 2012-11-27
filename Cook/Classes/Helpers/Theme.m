@@ -36,9 +36,15 @@
     
 }
 
-+(UIColor *)directionsLabelColor;
++(UIColor *)directionsLabelColor
 {
     return [UIColor colorWithHexString:@"505050"];
     
 }
+
++(UIColor*) pageNumberPrefixLabelColor
+{
+    return [UIColor colorWithHexString:@"2D6CA9"];
+}
+
 @end

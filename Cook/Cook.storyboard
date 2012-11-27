@@ -125,9 +125,7 @@
                         <rect key="frame" x="0.0" y="20" width="1024" height="748"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G8I-BA-gbt" customClass="FacebookUserView">
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G8I-BA-gbt" customClass="FacebookUserView"/>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="RECIPE NAME" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pu7-06-VlL">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="472" id="dqU-r3-udZ"/>
@@ -150,7 +148,7 @@
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Serves x-y" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a8t-x1-NZg">
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="20" id="YaA-MO-9J3"/>
+                                            <constraint firstAttribute="height" constant="20" type="user" id="YaA-MO-9J3"/>
                                             <constraint firstAttribute="width" constant="87" id="r4h-QW-C24"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
@@ -158,20 +156,25 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="Xia-Kz-dcG"/>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh">
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="18" id="eqC-YC-CyS"/>
+                                        </constraints>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="8gW-u9-5Bh" firstAttribute="top" secondItem="Xia-Kz-dcG" secondAttribute="bottom" constant="5" type="user" id="0ir-JO-hF7"/>
+                                    <constraint firstItem="Xia-Kz-dcG" firstAttribute="top" secondItem="a8t-x1-NZg" secondAttribute="top" type="default" id="3NC-Hb-Dh4"/>
                                     <constraint firstItem="age-vf-6If" firstAttribute="trailing" secondItem="ncH-Sa-cAx" secondAttribute="trailing" type="default" id="4ey-g9-8A1"/>
-                                    <constraint firstItem="age-vf-6If" firstAttribute="bottom" secondItem="ncH-Sa-cAx" secondAttribute="bottom" type="default" id="6iI-8B-Tt5"/>
+                                    <constraint firstAttribute="bottom" secondItem="8gW-u9-5Bh" secondAttribute="bottom" constant="1" type="user" id="4rT-rD-qDn"/>
+                                    <constraint firstItem="age-vf-6If" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="C1I-tx-RA2"/>
                                     <constraint firstItem="8gW-u9-5Bh" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" type="default" id="F9Y-l5-CAQ"/>
-                                    <constraint firstItem="Xia-Kz-dcG" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" type="default" id="MGh-Sq-ydQ"/>
                                     <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="RDh-DS-KZj"/>
-                                    <constraint firstItem="8gW-u9-5Bh" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" constant="18" id="b8K-GR-JSi"/>
+                                    <constraint firstItem="age-vf-6If" firstAttribute="top" secondItem="a8t-x1-NZg" secondAttribute="bottom" constant="5" type="user" id="SAI-PD-I2h"/>
                                     <constraint firstItem="age-vf-6If" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="hnF-l3-MZq"/>
                                     <constraint firstItem="Xia-Kz-dcG" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" type="default" id="jIV-Zv-25n"/>
-                                    <constraint firstItem="a8t-x1-NZg" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" type="default" id="n12-1Y-p15"/>
-                                    <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="yEc-mK-JhO"/>
+                                    <constraint firstItem="Xia-Kz-dcG" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" type="user" id="jcF-MY-z6k"/>
                                 </constraints>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz">
