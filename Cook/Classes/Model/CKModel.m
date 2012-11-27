@@ -49,6 +49,15 @@
     [self.parseObject saveEventually];
 }
 
+- (void)saveInBackground {
+    [self saveInBackground:^{
+        // Ignore success.
+    } failure:^(NSError *error) {
+        DLog(@"Error: %@", error);
+        [self saveEventually];
+    }];
+}
+
 - (void)saveInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     [self.parseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {

@@ -34,11 +34,9 @@
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
-- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate {
+- (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.delegate = delegate;
         [self initBackground];
-        
         if (kOverlayDebug) {
             UIView *contentOverlay = [[UIView alloc] initWithFrame:CGRectMake(kContentInsets.left,
                                                                               kContentInsets.top,
@@ -48,7 +46,13 @@
             contentOverlay.alpha = 0.3;
             [self addSubview:contentOverlay];
         }
-        
+    }
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate {
+    if (self = [self initWithFrame:frame]) {
+        self.delegate = delegate;
     }
     return self;
 }
@@ -78,6 +82,19 @@
             [self setTitle:[title uppercaseString]];
             break;
     }
+}
+
+- (void)enableEditMode:(BOOL)enable {
+    self.editMode = enable;
+    
+    self.editButton.hidden = enable;
+    [self.authorTextField enableEditMode:enable];
+    [self.captionTextField enableEditMode:enable];
+}
+
+- (NSString *)currentCaptionThenResign {
+    [self.captionTextField resignFirstResponder];
+    return self.captionTextField.text;
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -452,15 +469,15 @@
         self.titleLabel.numberOfLines = 0;
     }
     
-    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:60];
-    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:68];
-    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:100];
+    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
+    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
+    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:100];
     
     // Paragraph style.
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
-    paragraphStyle.lineSpacing = -10.0;
+//    paragraphStyle.lineSpacing = -10.0;
     paragraphStyle.alignment = [self titleTextAlignment];
     paragraphStyle.paragraphSpacingBefore = 0.0;
     paragraphStyle.paragraphSpacing = 0.0;
@@ -517,16 +534,10 @@
     }
     
     // Reset the editable mode of the fields to NO.
-    [self.authorTextField enableEditMode:NO];
-    [self.captionTextField enableEditMode:NO];
+    [self enableEditMode:NO];
 }
 
 - (void)editTapped:(id)sender {
-    DLog();
-    self.editMode = !self.editMode;
-    
-    [self.authorTextField enableEditMode:self.editMode];
-    [self.captionTextField enableEditMode:self.editMode];
     
     // Inform delegate edit has been requested.
     [self.delegate bookCoverViewEditRequested];

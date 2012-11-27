@@ -346,6 +346,8 @@
 		76324F2F165356F3007D1EBF /* cook_category_seafood@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_category_seafood@2x.png"; sourceTree = "<group>"; };
 		76324F30165356F3007D1EBF /* cook_category_vegetarian.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_category_vegetarian.png; sourceTree = "<group>"; };
 		76324F31165356F3007D1EBF /* cook_category_vegetarian@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_category_vegetarian@2x.png"; sourceTree = "<group>"; };
+		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
+		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
 		76506D62163DF8920047D36B /* cook_dash_icons_store.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_store.png; sourceTree = "<group>"; };
 		76506D63163DF8920047D36B /* cook_dash_icons_store@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_store@2x.png"; sourceTree = "<group>"; };
 		7651070B165F22820077B551 /* StoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreCollectionViewController.h; sourceTree = "<group>"; };
@@ -920,6 +922,8 @@
 				76BEE733165DEE600065B97B /* CKBookCoverView.m */,
 				766B0DC316643A1A00A934FD /* CKTextField.h */,
 				766B0DC416643A1A00A934FD /* CKTextField.m */,
+				7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */,
+				7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */,
 			);
 			path = CKBookCoverView;
 			sourceTree = "<group>";

@@ -23,7 +23,7 @@
 #import "BookCoverViewController.h"
 #import "ViewHelper.h"
 
-@interface BenchtopViewController () <BookCoverViewControllerDelegate>
+@interface BenchtopViewController () <BookCoverViewControllerDelegate, BenchtopBookCellDelegate>
 
 @property (nonatomic, assign) id<BenchtopViewControlelrDelegate> delegate;
 @property (nonatomic, strong) UIView *backgroundView;
@@ -526,7 +526,15 @@
 }
 
 - (void)menuViewControllerDoneRequested {
-    [self.myBook saveEventually];
+    
+    // Force reload my book with the selected illustration.
+    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    
+    // TODO save author and title.
+    self.myBook.caption = [cell.bookCoverView currentCaptionThenResign];
+    [self.myBook saveInBackground];
+    
+    [cell loadBook:self.myBook mine:YES force:YES];
     [self enableEditMode:NO];
 }
 
@@ -551,6 +559,13 @@
     
     // Reload the illustration covers.
     [self.illustrationViewController changeCover:cover];
+}
+
+#pragma mark - BenchtopBookCellDelegate methods
+
+- (void)benchtopBookCellEditRequestedForIndexPath:(NSIndexPath *)indexPath {
+    DLog();
+    [EventHelper postEditMode:YES];
 }
 
 #pragma mark - Private
@@ -735,6 +750,11 @@
     } else {
         [cell loadBook:[CKBook myInitialBook] mine:YES];
     }
+    
+    // Mark delegate and remember indexPath.
+    cell.indexPath = indexPath;
+    cell.delegate = self;
+    
     return cell;
 }
 

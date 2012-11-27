@@ -19,5 +19,7 @@
 - (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration;
 - (void)setTitle:(NSString *)title author:(NSString *)author caption:(NSString *)caption editable:(BOOL)editable;
+- (void)enableEditMode:(BOOL)enable;
+- (NSString *)currentCaptionThenResign;
 
 @end
