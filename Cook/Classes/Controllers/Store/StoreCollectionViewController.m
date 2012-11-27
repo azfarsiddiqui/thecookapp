@@ -44,12 +44,21 @@
 }
 
 - (void)showBooks {
-    NSUInteger bookCount = 10;
-    self.bookIllustrations = [NSMutableArray arrayWithCapacity:bookCount];
-    self.bookCovers = [NSMutableArray arrayWithCapacity:bookCount];
-    for (NSUInteger bookIndex = 0; bookIndex < bookCount; bookIndex++) {
-        [self.bookIllustrations addObject:[CKBookCover randomIllustration]];
-        [self.bookCovers addObject:[CKBookCover randomCover]];
+    [self showBooks:YES];
+}
+
+- (void)showBooks:(BOOL)show {
+    if (show) {
+        NSUInteger bookCount = 10;
+        self.bookIllustrations = [NSMutableArray arrayWithCapacity:bookCount];
+        self.bookCovers = [NSMutableArray arrayWithCapacity:bookCount];
+        for (NSUInteger bookIndex = 0; bookIndex < bookCount; bookIndex++) {
+            [self.bookIllustrations addObject:[CKBookCover randomIllustration]];
+            [self.bookCovers addObject:[CKBookCover randomCover]];
+        }
+    } else {
+        [self.bookCovers removeAllObjects];
+        [self.bookIllustrations removeAllObjects];
     }
     [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
 }
@@ -85,7 +94,6 @@
                    layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return 20.0;
 }
-
 
 #pragma mark - UICollectionViewDataSource methods
 

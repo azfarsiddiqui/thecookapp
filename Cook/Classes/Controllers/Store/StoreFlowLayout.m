@@ -22,10 +22,16 @@
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-    CGFloat scaleFactor = 0.7;
-    initialAttributes.alpha = 0.0;
-    initialAttributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 0.0);
+    CGFloat distance = self.collectionView.bounds.size.width * (itemIndexPath.item + 1);
+    initialAttributes.transform3D = CATransform3DTranslate(initialAttributes.transform3D, distance, 0.0, 0.0);
     return initialAttributes;
+}
+
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *finalAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:itemIndexPath];
+    CGFloat distance = self.collectionView.bounds.size.width * (itemIndexPath.item + 1);
+    finalAttributes.transform3D = CATransform3DTranslate(finalAttributes.transform3D, distance, 0.0, 0.0);
+    return finalAttributes;
 }
 
 @end

@@ -153,6 +153,8 @@
 }
 
 - (void)unloadData {
+    [self.featuredViewController showBooks:NO];
+    [self.friendsViewController showBooks:NO];
 }
 
 @end
