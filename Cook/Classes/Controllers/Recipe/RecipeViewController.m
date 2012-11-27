@@ -51,8 +51,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-#pragma mark - Overridden methods
+#pragma mark - private methods
 -(void)refreshData
 {
     self.recipeNameLabel.text = self.recipe.name;
@@ -121,8 +120,6 @@
     }];
 
 }
-
-#pragma mark - private methods
 
 -(UILabel *)ingredientsLabel
 {

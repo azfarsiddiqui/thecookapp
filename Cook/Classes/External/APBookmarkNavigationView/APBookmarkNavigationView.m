@@ -12,7 +12,6 @@
 
 @property (nonatomic, assign) id<APBookmarkNavigationViewDelegate> delegate;
 @property (nonatomic, assign) BOOL shown;
-@property (nonatomic, strong) UIView *bookmarkIconView;
 @property (nonatomic, strong) UIView *optionContainerView;
 @property (nonatomic, assign) CGRect startPanFrame;
 @property (nonatomic, assign) CGSize initialSize;
@@ -48,7 +47,6 @@
         self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;   // Important so that optionContainerView gets clipped at top.
         
-        [self initIconView];
         [self initOptions];
         [self initInteractions];
     }
@@ -104,17 +102,6 @@
 }
 
 #pragma mark - Private methods
-
-- (void)initIconView {
-    UIView *iconView = [self.delegate bookmarkIconView];
-    iconView.frame = CGRectMake(floorf((self.bounds.size.width - iconView.frame.size.width) / 2.0),
-                                floorf((self.bounds.size.height - iconView.frame.size.height) / 2.0),
-                                iconView.frame.size.width,
-                                iconView.frame.size.height);
-    iconView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    [self addSubview:iconView];
-    self.bookmarkIconView = iconView;
-}
 
 - (void)initOptions {
     

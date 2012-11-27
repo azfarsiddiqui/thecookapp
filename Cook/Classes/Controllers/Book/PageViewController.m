@@ -16,6 +16,8 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *pageNumberLabel;
 @property (nonatomic, assign) NavigationButtonStyle navigationButtonStyle;
+@property (nonatomic, strong) NSArray *defaultOptionIcons;
+@property (nonatomic, strong) NSArray *defaultOptionLabels;
 @end
 
 @implementation PageViewController
@@ -25,6 +27,8 @@
         self.delegate = delegate;
         self.navigationButtonStyle = navigationButtonStyle;
         self.dataSource = dataSource;
+        self.defaultOptionLabels = @[@"ADD",@"FACEBOOK",@"TWITTER",@"EMAIL"];
+        self.defaultOptionIcons = @[@"cook_book_icon_add.png",@"cook_book_icon_facebook.png",@"cook_book_icon_twitter.png",@"cook_book_icon_email.png"];
     }
     return self;
 }
@@ -56,55 +60,16 @@
 
 #pragma mark - APBookmarkNavigationViewDelegate methods
 
-- (UIView *)bookmarkIconView {
-    // return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]];
-    return nil;
-}
-
 - (NSUInteger)bookmarkNumberOfOptions {
     return 4;
 }
 
 - (UIView *)bookmarkOptionViewAtIndex:(NSUInteger)optionIndex {
-    UIView *optionView = nil;
-    switch (optionIndex) {
-        case 0:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_add.png"]];
-            break;
-        case 1:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_facebook.png"]];
-            break;
-        case 2:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_twitter.png"]];
-            break;
-        case 3:
-            optionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_email.png"]];
-            break;
-        default:
-            break;
-    }
-    return optionView;
+    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self.defaultOptionIcons objectAtIndex:optionIndex]]];
 }
 
 - (NSString *)bookmarkOptionLabelAtIndex:(NSUInteger)optionIndex {
-    NSString *optionLabel = nil;
-    switch (optionIndex) {
-        case 0:
-            optionLabel = @"ADD";
-            break;
-        case 1:
-            optionLabel = @"FACEBOOK";
-            break;
-        case 2:
-            optionLabel = @"TWITTER";
-            break;
-        case 3:
-            optionLabel = @"EMAIL";
-            break;
-        default:
-            break;
-    }
-    return optionLabel;
+    return [self.defaultOptionLabels objectAtIndex:optionIndex];
 }
 
 - (void)bookmarkDidSelectOptionAtIndex:(NSUInteger)optionIndex {
