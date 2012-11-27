@@ -16,6 +16,7 @@
 
 #pragma mark - Common Colors
 +(UIColor*) defaultLabelColor;
++(UIColor*) pageNumberPrefixLabelColor;
 
 #pragma mark - Recipe View
 +(UIColor*) ingredientsLabelColor;

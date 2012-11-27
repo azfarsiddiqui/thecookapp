@@ -26,7 +26,7 @@
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UILabel *cookingDirectionsLabel;
 
-@property(nonatomic,strong) FacebookUserView *facebookUserView;
+@property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @end
 
 @implementation RecipeViewController
@@ -61,6 +61,11 @@
 -(NSArray *)pageOptionLabels
 {
     return @[@"EDIT"];
+}
+
+-(NSString *)pageNumberPrefixString
+{
+    return self.recipe.category ? self.recipe.category.name : nil;
 }
 
 -(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
@@ -174,15 +179,6 @@
     }
     
     return _cookingDirectionsLabel;
-}
-
--(FacebookUserView *)facebookUserView
-{
-    if (!_facebookUserView) {
-        _facebookUserView = [[FacebookUserView alloc]initWithFrame:CGRectMake(436.0f, 33.0f, 0.0f, 0.0f)];
-        [self.view addSubview:_facebookUserView];
-    }
-    return _facebookUserView;
 }
 
 -(void) adjustScrollView:(UIScrollView*)scrollView forHeight:(float)height

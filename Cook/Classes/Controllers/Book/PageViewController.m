@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *pageNumberLabel;
+@property (nonatomic, strong) UILabel *pageNumberPrefixLabel;
 @property (nonatomic, assign) NavigationButtonStyle navigationButtonStyle;
 @property (nonatomic, strong) NSArray *defaultOptionIcons;
 @property (nonatomic, strong) NSArray *defaultOptionLabels;
@@ -113,6 +114,10 @@
     return nil;
 }
 
+-(NSString *)pageNumberPrefixString
+{
+    return nil;
+}
 -(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
 {
     //can be overridden by sub-classes to respond to custom navigation
@@ -181,18 +186,40 @@
 -(void) hidePageNumber {
     [self loadingIndicator:YES];
     [self.pageNumberLabel removeFromSuperview];
+    [self.pageNumberPrefixLabel removeFromSuperview];
     
 }
 - (void)showPageNumber {
     [self loadingIndicator:NO];
     
+    UILabel *pageLabel = [self newPageLabel];
+    self.pageNumberLabel = pageLabel;
+    [self.view addSubview:self.pageNumberLabel];
+    
+    UILabel *pagePrefixLabel = [self newPrefixLabel];
+    if (pagePrefixLabel) {
+        self.pageNumberPrefixLabel = pagePrefixLabel;
+        [self.view addSubview:self.pageNumberPrefixLabel];
+    }
+    
+}
+
+-(void)initDefaultOptions
+{
+    self.defaultOptionLabels = @[@"FACEBOOK",@"TWITTER",@"EMAIL"];
+    self.defaultOptionIcons = @[@"cook_book_icon_facebook.png",@"cook_book_icon_twitter.png",@"cook_book_icon_email.png"];
+}
+
+-(UILabel*) newPageLabel
+{
     UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
     UIFont *font = [Theme defaultLabelFont];
     NSInteger pageNumber = [self.dataSource currentPageNumber];
     NSInteger numberOfPages = [self.dataSource numberOfPages];
     DLog(@"page %d of %d", pageNumber, numberOfPages)
-    NSString *pageDisplay = [NSString stringWithFormat:@"Page %d of %d", pageNumber, numberOfPages];
+    NSString *pageDisplay = [NSString stringWithFormat:@"%d", pageNumber];
     CGSize size = [pageDisplay sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
+    
     UILabel *pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - size.width - edgeInsets.right,
                                                                    self.view.bounds.size.height - size.height - edgeInsets.bottom,
                                                                    size.width,
@@ -201,15 +228,32 @@
     pageLabel.font = font;
     pageLabel.text = pageDisplay;
     pageLabel.textColor = [Theme defaultLabelColor];
-    [self.view addSubview:pageLabel];
-    self.pageNumberLabel = pageLabel;
+    return pageLabel;
 }
 
--(void)initDefaultOptions
+
+-(UILabel*) newPrefixLabel
 {
-    self.defaultOptionLabels = @[@"FACEBOOK",@"TWITTER",@"EMAIL"];
-    self.defaultOptionIcons = @[@"cook_book_icon_facebook.png",@"cook_book_icon_twitter.png",@"cook_book_icon_email.png"];
+    NSString *pagePrefixString = [self pageNumberPrefixString];
+    UILabel *pagePrefixLabel = nil;
+    if (pagePrefixString) {
+        UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
+        UIFont *font = [Theme defaultLabelFont];
+        CGSize size = [pagePrefixString sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
+        
+        pagePrefixLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - size.width - 2*self.pageNumberLabel.frame.size.width - edgeInsets.right,
+                                                                       self.view.bounds.size.height - size.height - edgeInsets.bottom,
+                                                                       size.width,
+                                                                       size.height)];
+        pagePrefixLabel.backgroundColor = [UIColor clearColor];
+        pagePrefixLabel.font = font;
+        pagePrefixLabel.text = pagePrefixString;
+        pagePrefixLabel.textColor = [Theme pageNumberPrefixLabelColor];
+    }
+    
+    return pagePrefixLabel;
 }
+
 - (void)closeTapped:(id)sender {
     [self.delegate bookViewCloseRequested];
 }
