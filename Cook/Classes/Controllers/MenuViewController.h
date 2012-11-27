@@ -25,5 +25,6 @@
 
 - (id)initWithDelegate:(id<MenuViewControllerDelegate>)delegate;
 - (void)setEditMode:(BOOL)editMode animated:(BOOL)animated;
+- (void)setStoreMode:(BOOL)storeMode;
 
 @end

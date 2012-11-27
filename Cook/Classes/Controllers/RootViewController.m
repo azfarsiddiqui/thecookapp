@@ -103,15 +103,11 @@
 - (void)showStoreMode:(BOOL)show {  
     if (show) {
         StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
-        storeViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                    -self.view.bounds.size.height,
-                                                    self.view.bounds.size.width,
-                                                    self.view.bounds.size.height);
+        storeViewController.view.frame = self.view.bounds;
+        storeViewController.view.alpha = 0.0;
         [self.view addSubview:storeViewController.view];
         self.storeViewController = storeViewController;
     }
-    
-    CGAffineTransform transform = show ? CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height) : CGAffineTransformIdentity;
     
     if (show) {
         
@@ -122,8 +118,8 @@
                                   delay:0.0
                                 options:UIViewAnimationCurveEaseIn
                              animations:^{
-                                 self.storeViewController.view.transform = transform;
-                                 self.benchtopViewController.view.transform = transform;
+                                 self.storeViewController.view.alpha = 1.0;
+                                 self.benchtopViewController.view.alpha = 0.0;
                              }
                              completion:^(BOOL finished) {
                                  [self.storeViewController enable:YES];
@@ -139,8 +135,8 @@
                                   delay:0.0
                                 options:UIViewAnimationCurveEaseIn
                              animations:^{
-                                 self.storeViewController.view.transform = transform;
-                                 self.benchtopViewController.view.transform = transform;
+                                 self.storeViewController.view.alpha = 0.0;
+                                 self.benchtopViewController.view.alpha = 1.0;
                              }
                              completion:^(BOOL finished) {
                                  [self.benchtopViewController enable:YES];

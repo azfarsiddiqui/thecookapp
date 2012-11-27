@@ -11,5 +11,6 @@
 @interface StoreCollectionViewController : UICollectionViewController
 
 - (void)showBooks;
+- (void)showBooks:(BOOL)show;
 
 @end

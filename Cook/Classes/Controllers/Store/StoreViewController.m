@@ -41,7 +41,7 @@
     [super viewDidLoad];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    [self initBackground];
+//    [self initBackground];
     [self initCollectionViews];
     [self initButtons];
 }
@@ -153,6 +153,14 @@
 }
 
 - (void)unloadData {
+    
+    [self.featuredViewController showBooks:NO];
+    [self.friendsViewController showBooks:NO];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self.delegate storeViewControllerDataLoaded:NO];
+    });
+    
 }
 
 @end

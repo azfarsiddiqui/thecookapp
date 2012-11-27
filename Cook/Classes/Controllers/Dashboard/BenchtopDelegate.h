@@ -12,6 +12,7 @@
 
 - (BOOL)onMyBenchtop;
 - (BOOL)benchtopMyBookLoaded;
+- (BOOL)benchtopStoreMode;
 - (CGSize)benchtopItemSize;
 - (CGFloat)benchtopSideGap;
 - (CGFloat)benchtopBookMinScaleFactor;

@@ -47,31 +47,31 @@
     [self.view addSubview:settingsButton];
     self.settingsButton = settingsButton;
     
-    // Edit cancel button.
-    UIButton *editCancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+    // Cancel button.
+    UIButton *cancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
                                                       target:self
                                                     selector:@selector(editCancelTapped:)];
-    [editCancelButton addTarget:self action:@selector(editCancelTapped:) forControlEvents:UIControlEventTouchUpInside];
-    editCancelButton.frame = CGRectMake(kSideGap,
+    [cancelButton addTarget:self action:@selector(editCancelTapped:) forControlEvents:UIControlEventTouchUpInside];
+    cancelButton.frame = CGRectMake(kSideGap,
                                         floorf((kMenuHeight - settingsButton.frame.size.height) / 2.0),
-                                        editCancelButton.frame.size.width,
-                                        editCancelButton.frame.size.height);
-    editCancelButton.hidden = YES;
-    [self.view addSubview:editCancelButton];
-    self.editCancelButton = editCancelButton;
+                                        cancelButton.frame.size.width,
+                                        cancelButton.frame.size.height);
+    cancelButton.hidden = YES;
+    [self.view addSubview:cancelButton];
+    self.editCancelButton = cancelButton;
     
-    // Edit done button.
-    UIButton *editDoneButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
+    // Done button.
+    UIButton *doneButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
                                                         target:self
                                                         selector:@selector(editDoneTapped:)];
-    [editDoneButton addTarget:self action:@selector(editDoneTapped:) forControlEvents:UIControlEventTouchUpInside];
-    editDoneButton.frame = CGRectMake(self.view.bounds.size.width - editDoneButton.frame.size.width - kSideGap,
-                                      floorf((kMenuHeight - editDoneButton.frame.size.height) / 2.0),
-                                      editDoneButton.frame.size.width,
-                                      editDoneButton.frame.size.height);
-    editDoneButton.hidden = YES;
-    [self.view addSubview:editDoneButton];
-    self.editDoneButton = editDoneButton;
+    [doneButton addTarget:self action:@selector(editDoneTapped:) forControlEvents:UIControlEventTouchUpInside];
+    doneButton.frame = CGRectMake(self.view.bounds.size.width - doneButton.frame.size.width - kSideGap,
+                                      floorf((kMenuHeight - doneButton.frame.size.height) / 2.0),
+                                      doneButton.frame.size.width,
+                                      doneButton.frame.size.height);
+    doneButton.hidden = YES;
+    [self.view addSubview:doneButton];
+    self.editDoneButton = doneButton;
 }
 
 - (void)setEditMode:(BOOL)editMode animated:(BOOL)animated {
@@ -103,6 +103,11 @@
         self.editCancelButton.alpha = editMode ? 1.0 : 0.0;
         self.editDoneButton.alpha = editMode ? 1.0 : 0.0;
     }
+}
+
+- (void)setStoreMode:(BOOL)storeMode {
+    self.settingsButton.hidden = storeMode;
+    self.editCancelButton.hidden = !storeMode;
 }
 
 #pragma mark - Private

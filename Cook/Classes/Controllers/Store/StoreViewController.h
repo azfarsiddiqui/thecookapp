@@ -11,6 +11,7 @@
 @protocol StoreViewControllerDelegate
 
 - (void)storeViewControllerCloseRequested;
+- (void)storeViewControllerDataLoaded:(BOOL)loaded;
 
 @end
 
@@ -19,5 +20,7 @@
 - (id)initWithDelegate:(id<StoreViewControllerDelegate>)delegate;
 - (void)enable:(BOOL)enable;
 - (void)enable:(BOOL)enable completion:(void (^)())completion;
+- (void)loadData;
+- (void)unloadData;
 
 @end
