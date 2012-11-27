@@ -526,7 +526,15 @@
 }
 
 - (void)menuViewControllerDoneRequested {
-    [self.myBook saveEventually];
+    
+    // Force reload my book with the selected illustration.
+    BenchtopBookCell *cell = (BenchtopBookCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    
+    // TODO save author and title.
+    self.myBook.caption = [cell.bookCoverView currentCaptionThenResign];
+    [self.myBook saveInBackground];
+    
+    [cell loadBook:self.myBook mine:YES force:YES];
     [self enableEditMode:NO];
 }
 

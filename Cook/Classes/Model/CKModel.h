@@ -33,6 +33,7 @@ typedef void(^ProgressBlock)(int percentDone);
 
 - (id)initWithParseObject:(PFObject *)parseObject;
 - (void)saveEventually;
+- (void)saveInBackground;
 - (void)saveInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (NSDictionary *)descriptionProperties;
 - (BOOL)persisted;

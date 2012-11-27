@@ -88,6 +88,11 @@
     [self.captionTextField enableEditMode:enable];
 }
 
+- (NSString *)currentCaptionThenResign {
+    [self.captionTextField resignFirstResponder];
+    return self.captionTextField.text;
+}
+
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
