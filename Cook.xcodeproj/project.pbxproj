@@ -67,6 +67,7 @@
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
 		7666B40616143713001D1BA1 /* AppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* AppHelper.m */; };
 		766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026F916252B1E005A8B66 /* BenchtopViewController.m */; };
+		766B0DC616643A7900A934FD /* CKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 766B0DC416643A1A00A934FD /* CKTextField.m */; };
 		766BFBE11630D69B0083EB0E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE01630D69B0083EB0E /* Social.framework */; };
 		766BFBE41630D6A00083EB0E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE31630D6A00083EB0E /* Accounts.framework */; };
 		766BFBE61630D6A40083EB0E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BFBE51630D6A40083EB0E /* AdSupport.framework */; };
@@ -380,6 +381,8 @@
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
 		7666B40416143713001D1BA1 /* AppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppHelper.h; sourceTree = "<group>"; };
 		7666B40516143713001D1BA1 /* AppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppHelper.m; sourceTree = "<group>"; };
+		766B0DC316643A1A00A934FD /* CKTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKTextField.h; sourceTree = "<group>"; };
+		766B0DC416643A1A00A934FD /* CKTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKTextField.m; sourceTree = "<group>"; };
 		766BFBE01630D69B0083EB0E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		766BFBE31630D6A00083EB0E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		766BFBE51630D6A40083EB0E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -873,6 +876,8 @@
 				76BEE731165DEE600065B97B /* CKBookCover.m */,
 				76BEE732165DEE600065B97B /* CKBookCoverView.h */,
 				76BEE733165DEE600065B97B /* CKBookCoverView.m */,
+				766B0DC316643A1A00A934FD /* CKTextField.h */,
+				766B0DC416643A1A00A934FD /* CKTextField.m */,
 			);
 			path = CKBookCoverView;
 			sourceTree = "<group>";
@@ -1704,6 +1709,7 @@
 				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
 				76510714165F31180077B551 /* StoreBookCell.m in Sources */,
+				766B0DC616643A7900A934FD /* CKTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,28 +8,35 @@
 
 #import "CKBookCoverView.h"
 #import "CKBookCover.h"
+#import "CKTextField.h"
 
-@interface CKBookCoverView ()
+@interface CKBookCoverView () <UITextFieldDelegate>
 
+@property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIImageView *overlayImageView;
 @property (nonatomic, strong) UIImageView *illustrationImageView;
 @property (nonatomic, strong) UILabel *layoutLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *authorLabel;
-@property (nonatomic, strong) UILabel *captionLabel;
+
+@property (nonatomic, strong) CKTextField *authorTextField;
+@property (nonatomic, strong) CKTextField *captionTextField;
+@property (nonatomic, strong) UIButton *editButton;
+@property (nonatomic, assign) BOOL editable;
+@property (nonatomic, assign) BOOL editMode;
 
 @end
 
 @implementation CKBookCoverView
 
-#define kContentInsets  UIEdgeInsetsMake(0.0, 10.0, 3.0, 5.0)
+#define kContentInsets  UIEdgeInsetsMake(0.0, 15.0, 3.0, 10.0)
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate {
     if (self = [super initWithFrame:frame]) {
+        self.delegate = delegate;
         [self initBackground];
         
         if (kOverlayDebug) {
@@ -52,7 +59,8 @@
     self.backgroundImageView.image = [CKBookCover imageForCover:cover];
 }
 
-- (void)setTitle:(NSString *)title author:(NSString *)author caption:(NSString *)caption {
+- (void)setTitle:(NSString *)title author:(NSString *)author caption:(NSString *)caption editable:(BOOL)editable {
+    [self enableEditable:editable];
     
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
@@ -70,6 +78,23 @@
             [self setTitle:[title uppercaseString]];
             break;
     }
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
+    replacementString:(NSString *)string {
+    BOOL shouldChange = YES;
+    
+    UIFont *font = textField.font;
+    NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
+    NSString *newCaption = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    CGSize size = [newCaption sizeWithFont:font
+                         constrainedToSize:CGSizeMake(MAXFLOAT, textField.bounds.size.height)
+                             lineBreakMode:lineBreakMode];
+        shouldChange = size.width < self.captionTextField.frame.size.width;
+    
+    return shouldChange;
 }
 
 #pragma mark - Private methods
@@ -155,41 +180,41 @@
 
 #pragma mark - Frames
 
-// BookCoverLayout1: authorLabel
-// BookCoverLayout2: captionLabel
-// BookCoverLayout3: captionLabel
-// BookCoverLayout4: captionLabel
+// BookCoverLayout1: authorTextField
+// BookCoverLayout2: captionTextField
+// BookCoverLayout3: captionTextField
+// BookCoverLayout4: captionTextField
 - (CGRect)titleFrameForSize:(CGSize)size {
     CGRect frame = CGRectZero;
     CGSize availableSize = [self availableContentSize];
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
             frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               self.authorLabel.frame.origin.y + self.authorLabel.frame.size.height + 24.0,
+                               self.authorTextField.frame.origin.y + self.authorTextField.frame.size.height + 24.0,
                                size.width,
                                size.height);
             break;
         case BookCoverLayout2:
             frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               self.captionLabel.frame.origin.y - size.height - 5.0,
+                               self.captionTextField.frame.origin.y - size.height - 5.0,
                                size.width,
                                size.height);
             break;
         case BookCoverLayout3:
             frame = CGRectMake(kContentInsets.left,
-                               self.captionLabel.frame.origin.y - size.height,
+                               self.captionTextField.frame.origin.y - size.height,
                                size.width,
                                size.height);
             break;
         case BookCoverLayout4:
             frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               self.captionLabel.frame.origin.y - size.height,
+                               self.captionTextField.frame.origin.y - size.height,
                                size.width,
                                size.height);
             break;
         case BookCoverLayout5:
             frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               self.captionLabel.frame.origin.y - size.height,
+                               self.captionTextField.frame.origin.y - size.height,
                                size.width,
                                size.height);
             break;
@@ -201,36 +226,39 @@
 
 - (CGRect)authorFrameForSize:(CGSize)size {
     CGRect frame = CGRectZero;
+    CGFloat sideOffset = 30.0;
     CGSize availableSize = [self availableContentSize];
+    UIEdgeInsets authorInsets = UIEdgeInsetsMake(kContentInsets.top, kContentInsets.left + sideOffset, kContentInsets.bottom, kContentInsets.right + sideOffset);
+    availableSize = CGSizeMake(availableSize.width - (sideOffset * 2.0), availableSize.height);
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               kContentInsets.top + 10.0,
-                               size.width,
+            frame = CGRectMake(authorInsets.left,
+                               authorInsets.top + 10.0,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout2:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               self.bounds.size.height - kContentInsets.bottom - size.height - 5.0,
-                               size.width,
+            frame = CGRectMake(authorInsets.left,
+                               authorInsets.top + 10.0,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout3:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+            frame = CGRectMake(authorInsets.left,
                                self.bounds.size.height - kContentInsets.bottom - size.height - 5.0,
-                               size.width,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout4:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+            frame = CGRectMake(authorInsets.left,
                                self.bounds.size.height - kContentInsets.bottom - size.height - 5.0,
-                               size.width,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout5:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+            frame = CGRectMake(authorInsets.left,
                                self.bounds.size.height - kContentInsets.bottom - size.height - 5.0,
-                               size.width,
+                               availableSize.width,
                                size.height);
             break;
         default:
@@ -242,39 +270,39 @@
 // BookCoverLayout1: titleLabel
 // BookCoverLayout2:
 // BookCoverLayout3:
-// BookCoverLayout4: authorLabel
+// BookCoverLayout4: authorTextField
 - (CGRect)captionFrameForSize:(CGSize)size {
     CGRect frame = CGRectZero;
     CGSize availableSize = [self availableContentSize];
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+            frame = CGRectMake(kContentInsets.left,
                                self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height,
-                               size.width,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout2:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+            frame = CGRectMake(kContentInsets.left,
                                floorf((availableSize.height - size.height) / 2.0) - 30.0,
-                               size.width,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout3:
-            frame = CGRectMake(kContentInsets.left + 5.0,
+            frame = CGRectMake(kContentInsets.left,
                                floorf((availableSize.height - size.height) / 2.0) - 70.0,
-                               size.width,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout4:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               self.authorLabel.frame.origin.y - size.height - 5.0,
-                               size.width,
+            frame = CGRectMake(kContentInsets.left,
+                               self.authorTextField.frame.origin.y - size.height - 5.0,
+                               availableSize.width,
                                size.height);
             break;
         case BookCoverLayout5:
-            frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+            frame = CGRectMake(kContentInsets.left,
                                floorf((availableSize.height - size.height) / 2.0),
-                               size.width,
+                               availableSize.width,
                                size.height);
             break;
         default:
@@ -309,59 +337,106 @@
     return textAligntment;
 }
 
+- (NSTextAlignment)authorTextAlignment {
+    NSTextAlignment textAligntment = NSTextAlignmentCenter;
+    switch (self.bookCoverLayout) {
+        case BookCoverLayout1:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        case BookCoverLayout2:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        case BookCoverLayout3:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        case BookCoverLayout4:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        case BookCoverLayout5:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        default:
+            break;
+    }
+    return textAligntment;
+}
+
+- (NSTextAlignment)captionTextAlignment {
+    NSTextAlignment textAligntment = NSTextAlignmentCenter;
+    switch (self.bookCoverLayout) {
+        case BookCoverLayout1:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        case BookCoverLayout2:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        case BookCoverLayout3:
+            textAligntment = NSTextAlignmentLeft;
+            break;
+        case BookCoverLayout4:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        case BookCoverLayout5:
+            textAligntment = NSTextAlignmentCenter;
+            break;
+        default:
+            break;
+    }
+    return textAligntment;
+}
+
 #pragma mark - Elements
 
 - (void)setAuthor:(NSString *)author {
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
     UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:20];
     
-    if (!self.authorLabel) {
-        UILabel *authorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        authorLabel.autoresizingMask = UIViewAutoresizingNone;
-        authorLabel.backgroundColor = [UIColor clearColor];
-        authorLabel.textColor = [UIColor whiteColor];
-        authorLabel.shadowColor = kShadowColour;
-        authorLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        authorLabel.lineBreakMode = lineBreakMode;
-        authorLabel.minimumScaleFactor = 0.7;
-        authorLabel.font = font;
+    if (!self.authorTextField) {
+        CKTextField *authorTextField = [[CKTextField alloc] initWithFrame:CGRectZero];
+        authorTextField.autoresizingMask = UIViewAutoresizingNone;
+        authorTextField.backgroundColor = [UIColor clearColor];
+        authorTextField.font = font;
+        authorTextField.textColor = [UIColor whiteColor];
+        authorTextField.delegate = self;
+        authorTextField.enabled = NO;
         if (kOverlayDebug) {
-            authorLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
+            authorTextField.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
         }
-        [self addSubview:authorLabel];
-        self.authorLabel = authorLabel;
+        [self addSubview:authorTextField];
+        self.authorTextField = authorTextField;
     }
     
     
     CGSize size = [author sizeWithFont:font constrainedToSize:[self singleLineSizeForFont:font] lineBreakMode:lineBreakMode];
-    self.authorLabel.frame = [self authorFrameForSize:size];
-    self.authorLabel.text = author;
+    self.authorTextField.frame = [self authorFrameForSize:size];
+    self.authorTextField.textAlignment = [self authorTextAlignment];
+    self.authorTextField.text = author;
 }
 
 - (void)setCaption:(NSString *)caption {
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
     UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Medium" size:24];
     
-    if (!self.captionLabel) {
-        UILabel *captionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        captionLabel.autoresizingMask = UIViewAutoresizingNone;
-        captionLabel.backgroundColor = [UIColor clearColor];
-        captionLabel.shadowColor = kShadowColour;
-        captionLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        captionLabel.lineBreakMode = lineBreakMode;
-        captionLabel.minimumScaleFactor = 0.7;
-        captionLabel.font = font;
-        captionLabel.textColor = [UIColor whiteColor];
+    if (!self.captionTextField) {
+        CKTextField *captionTextField = [[CKTextField alloc] initWithFrame:CGRectZero];
+        captionTextField.autoresizingMask = UIViewAutoresizingNone;
+        captionTextField.backgroundColor = [UIColor clearColor];
+        captionTextField.font = font;
+        captionTextField.textColor = [UIColor whiteColor];
+        captionTextField.delegate = self;
+        captionTextField.enabled = NO;
+
         if (kOverlayDebug) {
-            captionLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
+            captionTextField.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
         }
-        [self addSubview:captionLabel];
-        self.captionLabel = captionLabel;
+        [self addSubview:captionTextField];
+        self.captionTextField = captionTextField;
     }
     
     CGSize size = [caption sizeWithFont:font constrainedToSize:[self singleLineSizeForFont:font] lineBreakMode:lineBreakMode];
-    self.captionLabel.frame = [self captionFrameForSize:size];
-    self.captionLabel.text = caption;
+    self.captionTextField.frame = [self captionFrameForSize:size];
+    self.captionTextField.textAlignment = [self captionTextAlignment];
+    self.captionTextField.text = caption;
 }
 
 - (void)setTitle:(NSString *)title {
@@ -423,5 +498,38 @@
     self.titleLabel.frame = [self titleFrameForSize:size];
 }
 
+- (void)enableEditable:(BOOL)editable {
+    self.editable = editable;
+    if (editable && !self.editButton) {
+        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *editImage = [UIImage imageNamed:@"cook_dash_icons_customise.png"];
+        [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
+        [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
+        editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width - 7.0,
+                                      5.0,
+                                      editImage.size.width,
+                                      editImage.size.height);
+        [self addSubview:editButton];
+        self.editButton = editButton;
+    } else if (!editable) {
+        [self.editButton removeFromSuperview];
+        self.editButton = nil;
+    }
+    
+    // Reset the editable mode of the fields to NO.
+    [self.authorTextField enableEditMode:NO];
+    [self.captionTextField enableEditMode:NO];
+}
+
+- (void)editTapped:(id)sender {
+    DLog();
+    self.editMode = !self.editMode;
+    
+    [self.authorTextField enableEditMode:self.editMode];
+    [self.captionTextField enableEditMode:self.editMode];
+    
+    // Inform delegate edit has been requested.
+    [self.delegate bookCoverViewEditRequested];
+}
 
 @end

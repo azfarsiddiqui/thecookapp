@@ -8,9 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol CKBookCoverViewDelegate
+
+- (void)bookCoverViewEditRequested;
+
+@end
+
 @interface CKBookCoverView : UIView
 
+- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration;
-- (void)setTitle:(NSString *)title author:(NSString *)author caption:(NSString *)caption;
+- (void)setTitle:(NSString *)title author:(NSString *)author caption:(NSString *)caption editable:(BOOL)editable;
 
 @end
