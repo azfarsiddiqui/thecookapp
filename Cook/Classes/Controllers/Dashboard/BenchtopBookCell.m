@@ -116,7 +116,8 @@
 
 - (void)bookCoverViewEditRequested {
     DLog();
-    [EventHelper postEditMode:YES];
+    [self.bookCoverView enableEditMode:YES];
+    [self.delegate benchtopBookCellEditRequestedForIndexPath:self.indexPath];
 }
 
 #pragma mark - Private methods

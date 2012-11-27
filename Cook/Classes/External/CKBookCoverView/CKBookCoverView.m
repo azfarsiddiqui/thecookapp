@@ -80,6 +80,14 @@
     }
 }
 
+- (void)enableEditMode:(BOOL)enable {
+    self.editMode = enable;
+    
+    self.editButton.hidden = enable;
+    [self.authorTextField enableEditMode:enable];
+    [self.captionTextField enableEditMode:enable];
+}
+
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
@@ -452,15 +460,15 @@
         self.titleLabel.numberOfLines = 0;
     }
     
-    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:60];
-    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:68];
-    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:100];
+    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
+    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
+    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:100];
     
     // Paragraph style.
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
-    paragraphStyle.lineSpacing = -10.0;
+//    paragraphStyle.lineSpacing = -10.0;
     paragraphStyle.alignment = [self titleTextAlignment];
     paragraphStyle.paragraphSpacingBefore = 0.0;
     paragraphStyle.paragraphSpacing = 0.0;
@@ -517,16 +525,10 @@
     }
     
     // Reset the editable mode of the fields to NO.
-    [self.authorTextField enableEditMode:NO];
-    [self.captionTextField enableEditMode:NO];
+    [self enableEditMode:NO];
 }
 
 - (void)editTapped:(id)sender {
-    DLog();
-    self.editMode = !self.editMode;
-    
-    [self.authorTextField enableEditMode:self.editMode];
-    [self.captionTextField enableEditMode:self.editMode];
     
     // Inform delegate edit has been requested.
     [self.delegate bookCoverViewEditRequested];
