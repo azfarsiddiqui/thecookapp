@@ -10,7 +10,6 @@
 
 #pragma mark - Model class
 
-NSString *const kModelAttrId                    = @"objectId";
 NSString *const kModelAttrName                  = @"name";
 NSString *const kModelAttrCreatedAt             = @"createdAt";
 NSString *const kModelAttrUpdatedAt             = @"updatedAt";

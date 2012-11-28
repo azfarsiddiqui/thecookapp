@@ -42,7 +42,7 @@
 }
 
 - (NSString *)objectId {
-    return [self.parseObject objectForKey:kModelAttrId];
+    return self.parseObject.objectId;
 }
 
 - (void)saveEventually {

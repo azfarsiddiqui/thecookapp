@@ -140,13 +140,23 @@
                          if (enable) {
                              
                              NSInteger numSections = [self numberOfSectionsInCollectionView:self.collectionView];
-                             if (!self.myBook) {
-                                 [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+                             for (NSInteger section = 0; section < numSections; section++) {
+                                 NSInteger numItems = [self collectionView:self.collectionView numberOfItemsInSection:section];
+                                 DLog(@"Section[%d] Items[%d]", section, numItems);
                              }
                              
-                             if (numSections == 1 && self.friendsBooks) {
-                                 [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
+                             // TODO FIX THIS NON SIGNED-IN ANIMATION OF DEFAULT BOOK.
+                             if (![[CKUser currentUser] isSignedIn]) {
+                                 [self.collectionView reloadData];
+                             } else {
+                                 if (!self.myBook) {
+                                     [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+                                 }
+                                 if (numSections == 1 && self.friendsBooks) {
+                                     [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
+                                 }
                              }
+                         
                          }
                          
                          // Run completion block.
@@ -324,12 +334,11 @@
         } else {
             numItems = 1;   // My Book
         }
+        
     } else {
         
         if (self.storeMode) {
-            
             numItems = 0;
-            
         } else {
             
             CKUser *currentUser = [CKUser currentUser];
@@ -628,6 +637,10 @@
 }
 
 - (void)stackLayout:(BOOL)stack {
+    [self stackLayout:stack completion:^{}];
+}
+
+- (void)stackLayout:(BOOL)stack completion:(void (^)())completion {
     BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
     
     // Return immediately if we are already on the required layout.
@@ -651,6 +664,8 @@
                      }
                      completion:^(BOOL finished) {
                          self.collectionView.userInteractionEnabled = YES;
+                         
+                         completion();
                      }];
 }
 
@@ -1050,21 +1065,27 @@
 }
 
 - (void)storeTapped:(id)sender {
-    // [self.delegate benchtopViewControllerStoreRequested];
-    [self enableStoreMode:!self.storeMode];
+    BOOL storeMode = !self.storeMode;
+    
+    if (![self stacked]) {
+        [self stackLayout:YES completion:^{
+            [self enableStoreMode:storeMode];
+        }];
+    } else {
+        [self enableStoreMode:storeMode];
+    }
+
 }
 
 - (void)enableStoreMode:(BOOL)enable {
     self.storeMode = enable;
-    
-    // [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:1]];
     
     // Update menu remove settings button.
     [self.menuViewController setStoreMode:enable];
     
     if (enable) {
         
-        [self.collectionView reloadData];
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
         
         StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
         storeViewController.view.frame = self.view.bounds;
