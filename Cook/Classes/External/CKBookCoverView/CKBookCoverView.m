@@ -406,7 +406,7 @@
 
 - (void)setAuthor:(NSString *)author {
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-    UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:18];
+    UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:20];
     
     if (!self.authorTextField) {
         CKTextField *authorTextField = [[CKTextField alloc] initWithFrame:CGRectZero];
