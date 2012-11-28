@@ -22,7 +22,7 @@
 
 @implementation CategoryPageViewController
 
-#define kCategoryFont   [Theme defaultFontBoldWithSize:64.0]
+#define kCategoryFont   [Theme defaultBoldFontWithSize:64.0]
 #define kLabelOffset    CGPointMake(600.0, 190)
 #define kRecipeCellId   @"kRecipeCellId"
 #define kTableInsets    UIEdgeInsetsMake(0.0, 0.0, 50.0, 50.0)
@@ -106,9 +106,9 @@
 {
     UITableViewCell *tableViewCell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
     tableViewCell.textLabel.textColor = [Theme categoryViewTextColor];
-    tableViewCell.textLabel.font = [Theme defaultFontBoldWithSize:16.0f];
+    tableViewCell.textLabel.font = [Theme defaultBoldFontWithSize:16.0f];
     tableViewCell.detailTextLabel.textColor = [Theme defaultLabelColor];
-    tableViewCell.detailTextLabel.font = [Theme defaultFontBoldWithSize:16.0f];
+    tableViewCell.detailTextLabel.font = [Theme defaultBoldFontWithSize:16.0f];
     
     return tableViewCell;
 }

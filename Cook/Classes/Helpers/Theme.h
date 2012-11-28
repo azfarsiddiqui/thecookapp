@@ -12,7 +12,6 @@
 
 #pragma mark - Common Fonts
 +(UIFont*) defaultFontWithSize:(CGFloat)size;
-+(UIFont*) defaultFontBoldWithSize:(CGFloat)size;
 +(UIFont*) defaultLabelFont;
 +(UIFont*) defaultBoldFontWithSize:(CGFloat)size;
 

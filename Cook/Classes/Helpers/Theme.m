@@ -18,13 +18,6 @@
     
 }
 
-+(UIFont *)defaultFontBoldWithSize:(CGFloat)size
-{
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:size];
-    
-}
-
-
 +(UIFont *)defaultLabelFont
 {
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20];
