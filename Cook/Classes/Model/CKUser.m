@@ -79,7 +79,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 #pragma mark - CKModel 
 
 - (NSString *)objectId {
-    return [self.parseUser objectForKey:kModelAttrId];
+    return self.parseUser.objectId;
 }
 
 #pragma mark - CKUser
