@@ -141,7 +141,7 @@
                     imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
                     imageView.image = image;
                     self.recipeImageScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
-                    if (self.recipe.recipeViewImageContentOffset.x!=0 && self.recipe.recipeViewImageContentOffset.y) {
+                    if (self.recipe.recipeViewImageContentOffset.x!=0) {
                         self.recipeImageScrollView.contentOffset = self.recipe.recipeViewImageContentOffset;
                     } else {
                         self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);

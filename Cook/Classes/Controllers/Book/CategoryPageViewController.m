@@ -144,10 +144,11 @@
                                                                            self.view.bounds.size.height - categoryLabelyOffset - categoryLabelHeight - kTableInsets.top - kTableInsets.bottom)
                                                           style:UITableViewStylePlain];
     tableView.backgroundColor = [UIColor clearColor];
+    tableView.scrollEnabled = NO;
     tableView.autoresizingMask = UIViewAutoresizingNone;
     tableView.dataSource = self;
     tableView.delegate = self;
-    tableView.scrollEnabled = YES;
+    tableView.scrollEnabled = NO;
     [self.view addSubview:tableView];
     self.tableView = tableView;
     [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kRecipeCellId];
