@@ -140,13 +140,23 @@
                          if (enable) {
                              
                              NSInteger numSections = [self numberOfSectionsInCollectionView:self.collectionView];
-                             if (!self.myBook) {
-                                 [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+                             for (NSInteger section = 0; section < numSections; section++) {
+                                 NSInteger numItems = [self collectionView:self.collectionView numberOfItemsInSection:section];
+                                 DLog(@"Section[%d] Items[%d]", section, numItems);
                              }
                              
-                             if (numSections == 1 && self.friendsBooks) {
-                                 [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
+                             // TODO FIX THIS NON SIGNED-IN ANIMATION OF DEFAULT BOOK.
+                             if (![[CKUser currentUser] isSignedIn]) {
+                                 [self.collectionView reloadData];
+                             } else {
+                                 if (!self.myBook) {
+                                     [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+                                 }
+                                 if (numSections == 1 && self.friendsBooks) {
+                                     [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:1]];
+                                 }
                              }
+                         
                          }
                          
                          // Run completion block.
@@ -324,12 +334,11 @@
         } else {
             numItems = 1;   // My Book
         }
+        
     } else {
         
         if (self.storeMode) {
-            
             numItems = 0;
-            
         } else {
             
             CKUser *currentUser = [CKUser currentUser];
@@ -1064,7 +1073,9 @@
     
     if (enable) {
         
-        [self.collectionView reloadData];
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
+//        [self.collectionView.collectionViewLayout invalidateLayout];
+//        [self.collectionView reloadData];
         
         StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
         storeViewController.view.frame = self.view.bounds;
