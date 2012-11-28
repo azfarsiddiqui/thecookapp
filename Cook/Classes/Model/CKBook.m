@@ -199,13 +199,22 @@
                 return [[CKBook alloc] initWithParseObject:parseBook];
             }];
             
+            // Only return unique books - workaround for duplicated books because of follow persistence inconsistency.
+            NSMutableArray *bookIds = [NSMutableArray array];
+            NSMutableArray *uniqueFriendsBooks = [NSMutableArray array];
+            for (CKBook *book in friendsBooks) {
+                if (![bookIds containsObject:book.objectId]) {
+                    [bookIds addObject:book.objectId];
+                    [uniqueFriendsBooks addObject:book];
+                }
+            }
+            
             // Sort them by admin, then user names.
-            NSMutableArray *sortedFriendsBooks = [NSMutableArray arrayWithArray:friendsBooks];
             NSSortDescriptor *adminSorter = [[NSSortDescriptor alloc] initWithKey:@"user.admin" ascending:NO];
             NSSortDescriptor *nameSorter = [[NSSortDescriptor alloc] initWithKey:@"user.name" ascending:YES];
             
             // Return my book and friends books.
-            success([sortedFriendsBooks sortedArrayUsingDescriptors:[NSArray arrayWithObjects:adminSorter, nameSorter, nil]]);
+            success([uniqueFriendsBooks sortedArrayUsingDescriptors:[NSArray arrayWithObjects:adminSorter, nameSorter, nil]]);
             
         } else {
             DLog(@"Error loading books: %@", [error localizedDescription]);
