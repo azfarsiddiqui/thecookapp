@@ -23,9 +23,9 @@
 @implementation CategoryPageViewController
 
 #define kCategoryFont   [Theme defaultBoldFontWithSize:64.0]
-#define kLabelOffset    CGPointMake(600.0, 190)
+#define kLabelOffset    CGPointMake(624.0, 190.0)
 #define kRecipeCellId   @"kRecipeCellId"
-#define kTableInsets    UIEdgeInsetsMake(0.0, 0.0, 50.0, 50.0)
+#define kTableInsets    UIEdgeInsetsMake(50.0, 0.0, 0.0, 100.0)
 
 - (void)initPageView {
     [self initCategoryImageView];
@@ -62,7 +62,8 @@
     CGSize size = [categoryDisplay sizeWithFont:kCategoryFont
                               constrainedToSize:CGSizeMake(self.view.bounds.size.width - kLabelOffset.x,
                                                            self.view.bounds.size.height)
-                                  lineBreakMode:NSLineBreakByTruncatingTail];
+                                  lineBreakMode:NSLineBreakByWordWrapping];
+    DLog(@"optimum category label size is %@", NSStringFromCGSize(size));
     self.categoryLabel.frame = CGRectMake(self.categoryLabel.frame.origin.x,
                                           self.categoryLabel.frame.origin.y,
                                           size.width,
@@ -121,6 +122,7 @@
 - (void)initCategoryLabel {
     UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(kLabelOffset.x, kLabelOffset.y, 0.0, 0.0)];
     categoryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    categoryLabel.numberOfLines = 0;
     categoryLabel.backgroundColor = [UIColor clearColor];
     categoryLabel.font = kCategoryFont;
     categoryLabel.textColor = [Theme categoryViewTextColor];
@@ -132,12 +134,14 @@
 }
 
 - (void)initTableView {
-    CGFloat xOffset = self.categoryLabel.frame.origin.x;
-    CGFloat availableWidth = self.view.bounds.size.width - xOffset;
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(xOffset + kTableInsets.left,
-                                                                           self.categoryLabel.frame.origin.y + self.categoryLabel.frame.size.height + kTableInsets.top,
+    CGFloat categoryLabelxOffset = self.categoryLabel.frame.origin.x;
+    CGFloat categoryLabelyOffset = self.categoryLabel.frame.origin.y;
+    CGFloat categoryLabelHeight = self.categoryLabel.frame.size.height;
+    CGFloat availableWidth = self.view.bounds.size.width - categoryLabelxOffset;
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(categoryLabelxOffset + kTableInsets.left,
+                                                                           categoryLabelyOffset + categoryLabelHeight + kTableInsets.top,
                                                                            availableWidth - kTableInsets.left - kTableInsets.right,
-                                                                           self.view.bounds.size.height - self.categoryLabel.frame.origin.y - self.categoryLabel.frame.size.height - kTableInsets.top - kTableInsets.bottom)
+                                                                           self.view.bounds.size.height - categoryLabelyOffset - categoryLabelHeight - kTableInsets.top - kTableInsets.bottom)
                                                           style:UITableViewStylePlain];
     tableView.backgroundColor = [UIColor clearColor];
     tableView.autoresizingMask = UIViewAutoresizingNone;
