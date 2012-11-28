@@ -207,7 +207,7 @@
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
             frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               self.authorTextField.frame.origin.y + self.authorTextField.frame.size.height + 24.0,
+                               self.authorTextField.frame.origin.y + self.authorTextField.frame.size.height + 22.0,
                                size.width,
                                size.height);
             break;
@@ -294,7 +294,7 @@
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
             frame = CGRectMake(kContentInsets.left,
-                               self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height,
+                               self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height - 15.0,
                                availableSize.width,
                                size.height);
             break;
@@ -406,7 +406,7 @@
 
 - (void)setAuthor:(NSString *)author {
     NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-    UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:20];
+    UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:18];
     
     if (!self.authorTextField) {
         CKTextField *authorTextField = [[CKTextField alloc] initWithFrame:CGRectZero];
@@ -470,8 +470,8 @@
     }
     
     UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
-    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
-    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:100];
+    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:70];
+    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:90];
     
     // Paragraph style.
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;

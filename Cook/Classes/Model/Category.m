@@ -24,18 +24,11 @@
     [query orderByAscending:kModelAttrName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *categoryList, NSError *error) {
         if (!error) {
-            if ([categoryList count] == 0) {
-                //no categories. populate with data
-                DLog(@"No categories. populating with seed data");
-                [Category seedData];
-                [self listCategories:success failure:failure];
-            } else {
-                NSLog(@"Found %i categories.", [categoryList count]);
-                NSArray *categories = [categoryList collect:^id(PFObject *parseCategory) {
-                    return [Category categoryForParseCategory:parseCategory];
-                }];
-                success(categories);
-            }
+            NSLog(@"Found %i categories.", [categoryList count]);
+            NSArray *categories = [categoryList collect:^id(PFObject *parseCategory) {
+                return [Category categoryForParseCategory:parseCategory];
+            }];
+            success(categories);
         } else {
             failure(error);
         }
@@ -52,19 +45,4 @@
     return [Category bookImageForCategory:self.name];
 }
 
-#pragma mark - Category population. Populate once only
-
-+(void)seedData
-{
-    NSArray *seedData = @[@"Meat", @"Chicken", @"Fish", @"Vegetarian", @"Snacks and Sides", @"Soup", @"Pasta", @"Baking", @"Dessert", @"Drinks",
-    @"Quick and Easy", @"Allergy Free", @"Kid-friendly", @"Healthy", @"Comfort", @"Festive"];
-    
-    for (NSString *categoryName in seedData) {
-        PFObject *parseCategoryObject = [PFObject objectWithClassName:kCategoryModelName];
-        [parseCategoryObject setObject:categoryName forKey:kModelAttrName];
-        [parseCategoryObject save];
-    }
-    
-    DLog(@"seeding category data completed.");
-}
 @end

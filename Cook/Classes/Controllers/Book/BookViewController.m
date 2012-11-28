@@ -142,6 +142,7 @@
             if (categoryIndex != -1) {
                 // Category page.
                 NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
+                view = self.categoryViewController.view;    // TODO Fix this to make sure viewDidLoad called.
                 viewController = self.categoryViewController;
                 [self.categoryViewController loadCategory:categoryName];
                 view = self.categoryViewController.view;
