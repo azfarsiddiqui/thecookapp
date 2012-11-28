@@ -16,6 +16,7 @@
 #import "ContentsTableViewCell.h"
 #import "ContentsPhotoCell.h"
 #import "ViewHelper.h"
+#import "Theme.h"
 
 @interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate>
 
@@ -63,8 +64,17 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
     NSString *categoryName = [[self.dataSource bookCategoryNames] objectAtIndex:indexPath.row];
+    
+    // Left item.
+    cell.textLabel.font = [Theme defaultBoldFontWithSize:16.0];
     cell.textLabel.text = [categoryName uppercaseString];
+    cell.textLabel.textColor = [Theme contentsItemColor];
+    
+    // Right page num.
+    cell.detailTextLabel.font = [Theme defaultBoldFontWithSize:16.0];
+    cell.detailTextLabel.textColor = [Theme defaultLabelColor];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForCategoryName:categoryName]];
+    
     return cell;
 }
 
@@ -94,7 +104,7 @@
     
     CKBook *book = [self.dataSource currentBook];
     NSString *title = [book.name uppercaseString];
-    UIFont *font = [UIFont bookTitleFontWithSize:50.0];
+    UIFont *font = [Theme defaultFontWithSize:40.0];
     CGSize size = [title sizeWithFont:font constrainedToSize:self.view.bounds.size lineBreakMode:NSLineBreakByTruncatingTail];
     CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;
     CGFloat availableWidth = self.view.bounds.size.width - xOffset;
@@ -104,7 +114,7 @@
                                                                    size.height)];
     nameLabel.backgroundColor = [UIColor clearColor];
     nameLabel.font = font;
-    nameLabel.textColor = [UIColor blackColor];
+    nameLabel.textColor = [Theme contentsTitleColor];
     nameLabel.shadowColor = [UIColor whiteColor];
     nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     nameLabel.text = title;
@@ -114,18 +124,18 @@
 
 - (void)initTableView {
     CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;
-    UIEdgeInsets tableInsets = UIEdgeInsetsMake(20.0, 100.0, 50.0, 100.0);
+    UIEdgeInsets tableInsets = UIEdgeInsetsMake(20.0, 150.0, 50.0, 100.0);
     CGFloat availableWidth = self.view.bounds.size.width - xOffset;
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(xOffset + tableInsets.left,
                                                                            self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + tableInsets.top,
-                                                                           availableWidth - tableInsets.left - tableInsets.right,
+                                                                           350.0,
                                                                            self.view.bounds.size.height - tableInsets.top - tableInsets.bottom)
                                                            style:UITableViewStylePlain];
     tableView.backgroundColor = [UIColor clearColor];
     tableView.autoresizingMask = UIViewAutoresizingNone;
     tableView.dataSource = self;
     tableView.delegate = self;
-    tableView.scrollEnabled = YES;
+    tableView.scrollEnabled = NO;
     [self.view addSubview:tableView];
     self.tableView = tableView;
     [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kCategoryCellId];

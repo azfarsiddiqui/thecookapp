@@ -13,10 +13,15 @@
 #pragma mark - Common Fonts
 +(UIFont*) defaultFontWithSize:(CGFloat)size;
 +(UIFont*) defaultLabelFont;
++(UIFont*) defaultBoldFontWithSize:(CGFloat)size;
 
 #pragma mark - Common Colors
 +(UIColor*) defaultLabelColor;
 +(UIColor*) pageNumberPrefixLabelColor;
+
+#pragma mark - Contents View
++ (UIColor *) contentsTitleColor;
++ (UIColor *) contentsItemColor;
 
 #pragma mark - Recipe View
 +(UIColor*) ingredientsLabelColor;

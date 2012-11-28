@@ -22,11 +22,28 @@
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20];
 }
 
++(UIFont*) defaultBoldFontWithSize:(CGFloat)size
+{
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:size];
+}
+
 #pragma mark - Common Colors
 
 +(UIColor *)defaultLabelColor
 {
     return [UIColor colorWithHexString:@"707070"];
+}
+
+#pragma mark - Contents View
+
++ (UIColor *) contentsTitleColor
+{
+    return [UIColor colorWithHexString:@"505050"];
+}
+
++ (UIColor *) contentsItemColor
+{
+    return [self contentsTitleColor];
 }
 
 #pragma mark - Recipe View
