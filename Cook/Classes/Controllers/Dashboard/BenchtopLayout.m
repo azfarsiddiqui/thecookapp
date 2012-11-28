@@ -58,12 +58,12 @@
     }
     
     // Library header.
-    if (![self.benchtopDelegate benchtopStoreMode] && numSections > 1) {
-    
-        // TODO potential optimisation here to exclude header if not in view.
-        [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:kLibraryHeader
-                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]]];
-    }
+//    if (![self.benchtopDelegate benchtopStoreMode] && numSections > 1) {
+//    
+//        // TODO potential optimisation here to exclude header if not in view.
+//        [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:kLibraryHeader
+//                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]]];
+//    }
     
     return layoutAttributes;
 }
