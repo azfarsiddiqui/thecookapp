@@ -637,6 +637,10 @@
 }
 
 - (void)stackLayout:(BOOL)stack {
+    [self stackLayout:stack completion:^{}];
+}
+
+- (void)stackLayout:(BOOL)stack completion:(void (^)())completion {
     BenchtopLayout *layout = (BenchtopLayout *)self.collectionView.collectionViewLayout;
     
     // Return immediately if we are already on the required layout.
@@ -660,6 +664,8 @@
                      }
                      completion:^(BOOL finished) {
                          self.collectionView.userInteractionEnabled = YES;
+                         
+                         completion();
                      }];
 }
 
@@ -1059,14 +1065,20 @@
 }
 
 - (void)storeTapped:(id)sender {
-    // [self.delegate benchtopViewControllerStoreRequested];
-    [self enableStoreMode:!self.storeMode];
+    BOOL storeMode = !self.storeMode;
+    
+    if (![self stacked]) {
+        [self stackLayout:YES completion:^{
+            [self enableStoreMode:storeMode];
+        }];
+    } else {
+        [self enableStoreMode:storeMode];
+    }
+
 }
 
 - (void)enableStoreMode:(BOOL)enable {
     self.storeMode = enable;
-    
-    // [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:1]];
     
     // Update menu remove settings button.
     [self.menuViewController setStoreMode:enable];
@@ -1074,8 +1086,6 @@
     if (enable) {
         
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
-//        [self.collectionView.collectionViewLayout invalidateLayout];
-//        [self.collectionView reloadData];
         
         StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
         storeViewController.view.frame = self.view.bounds;
