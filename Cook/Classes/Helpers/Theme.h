@@ -26,5 +26,8 @@
 #pragma mark - Recipe View
 +(UIColor*) ingredientsLabelColor;
 +(UIColor*) directionsLabelColor;
+
+#pragma mark - Category View
++(UIColor*)categoryViewTextColor;
 @end
 

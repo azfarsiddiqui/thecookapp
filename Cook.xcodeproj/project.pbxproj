@@ -861,6 +861,7 @@
 		7666B3FB16141B28001D1BA1 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				7652046B161AD11E00EE253C /* Categories */,
 				7666B40116141B7E001D1BA1 /* CKModalView.h */,
 				7666B40216141B7E001D1BA1 /* CKModalView.m */,
 				7666B40416143713001D1BA1 /* AppHelper.h */,
@@ -1140,7 +1141,6 @@
 			isa = PBXGroup;
 			children = (
 				89232B931625431900152940 /* Book */,
-				7652046B161AD11E00EE253C /* Categories */,
 				76520459161A80CB00EE253C /* Dashboard */,
 				76C99D70163A12BD00788679 /* Settings */,
 				76CB7EEA165CF466007BECA0 /* Store */,

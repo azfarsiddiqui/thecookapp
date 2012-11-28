@@ -11,6 +11,7 @@
 @implementation Theme
 
 #pragma mark - Common Fonts
+
 +(UIFont *)defaultFontWithSize:(CGFloat)size
 {
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:size];
@@ -63,5 +64,12 @@
 {
     return [UIColor colorWithHexString:@"2D6CA9"];
 }
+
+#pragma mark - Category View
++(UIColor*)categoryViewTextColor
+{
+    return [UIColor colorWithHexString:@"505050"];
+}
+
 
 @end
