@@ -14,6 +14,8 @@
 #import "Category.h"
 #import "Ingredient.h"
 #import "IngredientTableViewCell.h"
+#import "AppHelper.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 
 #define kIngredientCellTag 112233
 
@@ -28,9 +30,10 @@
 @property (nonatomic,strong) IBOutlet UIImageView *backgroundRecipeDescriptionImageView;
 @property (nonatomic,strong) IBOutlet UIImageView *backgroundServesTimeImageView;
 @property (nonatomic,strong) IBOutlet UIImageView *backgroundIngredientImageView;
-
-@property (nonatomic,strong) IBOutlet UIButton *addImageButton;
+@property (nonatomic,strong) IBOutlet UIView *cameraButtonsView;
 @property (nonatomic,strong) IBOutlet UIButton *editImageButton;
+@property (nonatomic,strong) IBOutlet UIButton *addImageButtonFromCamera;
+@property (nonatomic,strong) IBOutlet UIButton *addImageButtonFromLibrary;
 
 @property (nonatomic,strong) IBOutlet UILabel *numServesLabel;
 @property (nonatomic,strong) IBOutlet UILabel *cookingTimeLabel;
@@ -41,7 +44,8 @@
 @property (nonatomic,strong) IBOutlet UITableView *ingredientsTableView;
 @property (nonatomic,strong) CategoryListViewController *categoryListViewController;
 
-@property (nonatomic,strong) UIPopoverController *inputPopoverController;
+@property (nonatomic,strong) UIPopoverController *inputPopoverCookingTimeServesController;
+@property (nonatomic,strong) UIPopoverController *inputPopoverPhotoLibraryController;
 
 //Data
 @property (nonatomic,strong) NSArray *categories;
@@ -126,12 +130,24 @@
 
 -(IBAction)uploadButtonTapped:(UIButton *)button
 {
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    if (([button isEqual:self.addImageButtonFromCamera] || [button isEqual:self.editImageButton]) && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
     {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.delegate = self;
         [self presentViewController:picker animated:YES completion:nil];
+    } else if ([button isEqual:self.addImageButtonFromLibrary] && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.mediaTypes = @[(NSString *) kUTTypeImage];
+        picker.delegate = self;
+        
+        self.inputPopoverPhotoLibraryController = [[UIPopoverController alloc] initWithContentViewController:picker];
+        self.inputPopoverPhotoLibraryController.delegate=self;
+        UIView *rootView = [[AppHelper sharedInstance] rootView];
+        [self.inputPopoverPhotoLibraryController presentPopoverFromRect:[button.superview convertRect:button.frame toView:rootView] inView:rootView
+                                  permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
+
     } else {
         DLog("** no camera available - stubbed image **");
         //so we simulate an image
@@ -139,7 +155,6 @@
         [self.photoEditorController setDelegate:self];
         self.photoEditorController.view.frame = self.view.bounds;
         [self.view addSubview:self.photoEditorController.view];
-
     }
 }
 
@@ -170,10 +185,10 @@
 	servesPickerView.dataSource = self;
     [popoverContent.view addSubview:servesPickerView];
     [servesPickerView selectRow:self.numServes inComponent:0 animated:NO];
-    self.inputPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
-    self.inputPopoverController.delegate=self;
-    [self.inputPopoverController setPopoverContentSize:CGSizeMake(320.0f, 264) animated:NO];
-    [self.inputPopoverController presentPopoverFromRect:self.numServesLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
+    self.inputPopoverCookingTimeServesController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
+    self.inputPopoverCookingTimeServesController.delegate=self;
+    [self.inputPopoverCookingTimeServesController setPopoverContentSize:CGSizeMake(320.0f, 264) animated:NO];
+    [self.inputPopoverCookingTimeServesController presentPopoverFromRect:self.numServesLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
 
 }
 
@@ -199,10 +214,10 @@
     
     [popoverContent.view addSubview:datePicker];
     
-    self.inputPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
-    self.inputPopoverController.delegate=self;
-    [self.inputPopoverController setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
-    [self.inputPopoverController presentPopoverFromRect:self.cookingTimeLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
+    self.inputPopoverCookingTimeServesController = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
+    self.inputPopoverCookingTimeServesController.delegate=self;
+    [self.inputPopoverCookingTimeServesController setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
+    [self.inputPopoverCookingTimeServesController presentPopoverFromRect:self.cookingTimeLabel.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
 
 }
 
@@ -262,12 +277,21 @@
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     NSParameterAssert(image);
     DLog(@"image size after picker: %f, %f", image.size.width,image.size.height);
-    [self dismissViewControllerAnimated:NO completion:^{
+    if (self.inputPopoverPhotoLibraryController) {
+        //origin via popover for library picker
+        [self.inputPopoverPhotoLibraryController dismissPopoverAnimated:NO];
         self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
         [self.photoEditorController setDelegate:self];
         self.photoEditorController.view.frame = self.view.bounds;
         [self.view addSubview:self.photoEditorController.view];
-    }];
+    } else {
+        [self dismissViewControllerAnimated:NO completion:^{
+            self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
+            [self.photoEditorController setDelegate:self];
+            self.photoEditorController.view.frame = self.view.bounds;
+            [self.view addSubview:self.photoEditorController.view];
+        }];
+    }
 }
 
 #pragma mark - AFPhotoEditorControllerDelegate
@@ -290,12 +314,13 @@
     self.recipeImageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
     [self.recipeImageScrollView addSubview:self.recipeImageView];
     self.recipeImageScrollView.contentSize = image.size;
+    self.recipeImageScrollView.scrollEnabled = YES;
     [self centerScrollViewContents];
 
     DLog(@"photo size %@", NSStringFromCGSize(image.size));
     
     self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);
-    self.addImageButton.hidden = YES;
+    self.cameraButtonsView.hidden = YES;
     self.editImageButton.hidden = NO;
 }
 
@@ -328,10 +353,13 @@
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
     DLog();
-    self.inputPopoverController = nil;
-    self.cookingTimeLabel.textColor = [UIColor darkGrayColor];
-    self.numServesLabel.textColor = [UIColor darkGrayColor];
-
+    if ([popoverController isEqual:self.inputPopoverCookingTimeServesController]) {
+        self.inputPopoverCookingTimeServesController = nil;
+        self.cookingTimeLabel.textColor = [UIColor darkGrayColor];
+        self.numServesLabel.textColor = [UIColor darkGrayColor];
+    } else {
+        self.inputPopoverPhotoLibraryController = nil;
+    }
 }
 
 #pragma mark - UIPickerViewDataSource
