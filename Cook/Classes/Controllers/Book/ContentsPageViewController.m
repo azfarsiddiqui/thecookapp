@@ -17,12 +17,14 @@
 #import "ContentsPhotoCell.h"
 #import "ViewHelper.h"
 #import "Theme.h"
+#import "FacebookUserView.h"
 
 @interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate>
 
 @property (nonatomic, strong) ContentsCollectionViewController *contentsCollectionViewController;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) FacebookUserView *facebookView;
 
 @end
 
@@ -44,6 +46,7 @@
 - (void)initPageView {
     [self initCollectionView];
     [self initTitleView];
+    [self initFacebookView];
     [self initTableView];
     [self initCreateButton];
 }
@@ -122,12 +125,24 @@
     self.nameLabel = nameLabel;
 }
 
+- (void)initFacebookView {
+    CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;
+    CGFloat availableWidth = self.view.bounds.size.width - xOffset;
+    FacebookUserView *facebookView = [[FacebookUserView alloc] initWithFrame:CGRectZero];
+    [facebookView setUser:[[self.dataSource currentBook] user]];
+    facebookView.frame = CGRectMake(xOffset + floorf((availableWidth - facebookView.frame.size.width) / 2.0) - 20.0,
+                                    self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height,
+                                    facebookView.frame.size.width,
+                                    facebookView.frame.size.height);
+    [self.view addSubview:facebookView];
+    self.facebookView = facebookView;
+}
+
 - (void)initTableView {
     CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;
     UIEdgeInsets tableInsets = UIEdgeInsetsMake(20.0, 150.0, 50.0, 100.0);
-    CGFloat availableWidth = self.view.bounds.size.width - xOffset;
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(xOffset + tableInsets.left,
-                                                                           self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + tableInsets.top,
+                                                                           self.facebookView.frame.origin.y + self.facebookView.frame.size.height + tableInsets.top,
                                                                            350.0,
                                                                            self.view.bounds.size.height - tableInsets.top - tableInsets.bottom)
                                                            style:UITableViewStylePlain];
