@@ -11,11 +11,19 @@
 @implementation Theme
 
 #pragma mark - Common Fonts
+
 +(UIFont *)defaultFontWithSize:(CGFloat)size
 {
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:size];
     
 }
+
++(UIFont *)defaultFontBoldWithSize:(CGFloat)size
+{
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:size];
+    
+}
+
 
 +(UIFont *)defaultLabelFont
 {
@@ -46,5 +54,12 @@
 {
     return [UIColor colorWithHexString:@"2D6CA9"];
 }
+
+#pragma mark - Category View
++(UIColor*)categoryViewTextColor
+{
+    return [UIColor colorWithHexString:@"505050"];
+}
+
 
 @end

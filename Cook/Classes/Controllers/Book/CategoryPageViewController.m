@@ -8,6 +8,7 @@
 
 #import "CategoryPageViewController.h"
 #import "Category.h"
+#import "Theme.h"
 #import "ContentsTableViewCell.h"
 
 @interface CategoryPageViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -21,8 +22,7 @@
 
 @implementation CategoryPageViewController
 
-#define kCategoryFont   [UIFont boldSystemFontOfSize:50.0]
-#define kCategoryFont   [UIFont boldSystemFontOfSize:50.0]
+#define kCategoryFont   [Theme defaultFontBoldWithSize:64.0]
 #define kLabelOffset    CGPointMake(600.0, 190)
 #define kRecipeCellId   @"kRecipeCellId"
 #define kTableInsets    UIEdgeInsetsMake(0.0, 0.0, 50.0, 50.0)
@@ -86,7 +86,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CKRecipe *recipe = [[self.dataSource recipesForCategory:self.categoryName] objectAtIndex:indexPath.row];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
+    UITableViewCell *cell = [self cellForTableView:tableView indexPath:indexPath];
     cell.textLabel.text = [recipe.name uppercaseString];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.categoryName]];
     return cell;
@@ -102,6 +102,16 @@
 
 #pragma mark - Private methods
 
+-(UITableViewCell*) cellForTableView:(UITableView*)tableView indexPath:(NSIndexPath*)indexPath
+{
+    UITableViewCell *tableViewCell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
+    tableViewCell.textLabel.textColor = [Theme categoryViewTextColor];
+    tableViewCell.textLabel.font = [Theme defaultFontBoldWithSize:16.0f];
+    tableViewCell.detailTextLabel.textColor = [Theme defaultLabelColor];
+    tableViewCell.detailTextLabel.font = [Theme defaultFontBoldWithSize:16.0f];
+    
+    return tableViewCell;
+}
 - (void)initCategoryImageView {
     UIImageView *categoryImageView = [[UIImageView alloc] initWithImage:nil];
     [self.view addSubview:categoryImageView];
@@ -113,7 +123,7 @@
     categoryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     categoryLabel.backgroundColor = [UIColor clearColor];
     categoryLabel.font = kCategoryFont;
-    categoryLabel.textColor = [UIColor blackColor];
+    categoryLabel.textColor = [Theme categoryViewTextColor];
     categoryLabel.shadowColor = [UIColor whiteColor];
     categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     categoryLabel.minimumScaleFactor = 0.5;

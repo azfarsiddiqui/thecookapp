@@ -12,6 +12,7 @@
 
 #pragma mark - Common Fonts
 +(UIFont*) defaultFontWithSize:(CGFloat)size;
++(UIFont*) defaultFontBoldWithSize:(CGFloat)size;
 +(UIFont*) defaultLabelFont;
 
 #pragma mark - Common Colors
@@ -21,5 +22,8 @@
 #pragma mark - Recipe View
 +(UIColor*) ingredientsLabelColor;
 +(UIColor*) directionsLabelColor;
+
+#pragma mark - Category View
++(UIColor*)categoryViewTextColor;
 @end
 
