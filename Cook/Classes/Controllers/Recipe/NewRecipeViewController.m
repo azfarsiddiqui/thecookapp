@@ -463,7 +463,7 @@
 {
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
     self.categoryListViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"CategoryListViewController"];
-    self.categoryListViewController.view.frame = CGRectMake(100.0f, 6.0f, 760.0f, 66.0f);
+    self.categoryListViewController.view.frame = CGRectMake(100.0f, 6.0f, 830.f, 66.0f);
     self.categoryListViewController.delegate = self;
     self.categoryListViewController.categories = self.categories;
     

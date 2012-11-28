@@ -9,9 +9,14 @@
             <objects>
                 <viewController storyboardIdentifier="CategoryListViewController" id="OVH-v2-aYG" customClass="CategoryListViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="q8n-fm-OMa">
-                        <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
+                        <rect key="frame" x="0.0" y="20" width="1024" height="748"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vFb-wE-nJ9">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="66" id="9Iy-JV-yrh"/>
+                                </constraints>
+                            </imageView>
                             <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="vIG-HQ-t3i">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -62,13 +67,19 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="vFb-wE-nJ9" firstAttribute="top" secondItem="q8n-fm-OMa" secondAttribute="top" type="default" id="AKM-Bv-y2z"/>
                             <constraint firstItem="vIG-HQ-t3i" firstAttribute="leading" secondItem="q8n-fm-OMa" secondAttribute="leading" constant="30" type="user" id="GVN-Cb-JsH"/>
-                            <constraint firstItem="vIG-HQ-t3i" firstAttribute="trailing" secondItem="q8n-fm-OMa" secondAttribute="trailing" constant="-40" type="user" id="L8g-gA-bQi"/>
+                            <constraint firstItem="vFb-wE-nJ9" firstAttribute="leading" secondItem="q8n-fm-OMa" secondAttribute="leading" type="default" id="KZN-CB-AMg"/>
+                            <constraint firstItem="vIG-HQ-t3i" firstAttribute="trailing" secondItem="q8n-fm-OMa" secondAttribute="trailing" constant="-35" type="user" id="L8g-gA-bQi"/>
+                            <constraint firstItem="vFb-wE-nJ9" firstAttribute="trailing" secondItem="q8n-fm-OMa" secondAttribute="trailing" type="default" id="MXV-aB-EQR"/>
                             <constraint firstItem="vIG-HQ-t3i" firstAttribute="top" secondItem="q8n-fm-OMa" secondAttribute="top" constant="12" type="user" id="nmU-bM-3l3"/>
                         </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="collectionView" destination="vIG-HQ-t3i" id="A4C-Ya-xuK"/>
+                        <outlet property="imageView" destination="vFb-wE-nJ9" id="Dfv-Sn-cGe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jsz-dy-bcB" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -575,6 +586,7 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListViewController.h"/>
             <relationships>
                 <relationship kind="outlet" name="collectionView" candidateClass="UICollectionView"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
             </relationships>
         </class>
         <class className="FacebookUserView" superclassName="UIView">
