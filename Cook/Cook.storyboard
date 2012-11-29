@@ -137,15 +137,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G8I-BA-gbt" customClass="FacebookUserView"/>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="RECIPE NAME" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pu7-06-VlL">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="47" type="user" id="jrd-Ce-zf9"/>
-                                    <constraint firstAttribute="width" constant="538" id="sA1-TY-EN9"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="36"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jf2-lp-5CN"/>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ncH-Sa-cAx">
                                 <subviews>
@@ -174,13 +165,13 @@
                                     <constraint firstItem="age-vf-6If" firstAttribute="trailing" secondItem="ncH-Sa-cAx" secondAttribute="trailing" type="default" id="4ey-g9-8A1"/>
                                     <constraint firstItem="age-vf-6If" firstAttribute="leading" secondItem="8gW-u9-5Bh" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="C1I-tx-RA2"/>
                                     <constraint firstItem="8gW-u9-5Bh" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" type="default" id="F9Y-l5-CAQ"/>
+                                    <constraint firstAttribute="bottom" secondItem="Xia-Kz-dcG" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Pxs-sW-h0J"/>
                                     <constraint firstItem="a8t-x1-NZg" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="RDh-DS-KZj"/>
                                     <constraint firstItem="a8t-x1-NZg" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" type="default" id="XQo-Ja-xjM"/>
+                                    <constraint firstItem="8gW-u9-5Bh" firstAttribute="centerY" secondItem="age-vf-6If" secondAttribute="centerY" type="default" id="aVI-Bw-DoS"/>
                                     <constraint firstItem="age-vf-6If" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" constant="22" type="user" id="bu8-p7-4Tm"/>
-                                    <constraint firstItem="Xia-Kz-dcG" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" constant="-1" id="gKH-Ss-nrO"/>
                                     <constraint firstItem="age-vf-6If" firstAttribute="leading" secondItem="Xia-Kz-dcG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="hnF-l3-MZq"/>
                                     <constraint firstItem="Xia-Kz-dcG" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" type="default" id="jIV-Zv-25n"/>
-                                    <constraint firstAttribute="bottom" secondItem="8gW-u9-5Bh" secondAttribute="bottom" constant="5" id="wDA-tF-SQv"/>
                                 </constraints>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz">
@@ -191,28 +182,36 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="94h-kc-7mL"/>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xS6-ra-iss"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="RECIPE NAME" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E4H-Ex-K7C" customClass="CKTextField">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="538" id="3kL-TE-mh8"/>
+                                    <constraint firstAttribute="height" constant="45" type="user" id="ca2-Nf-mvd"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Pu7-06-VlL" firstAttribute="trailing" secondItem="xS6-ra-iss" secondAttribute="trailing" type="default" id="2Ua-jJ-UHE"/>
                             <constraint firstItem="xS6-ra-iss" firstAttribute="leading" secondItem="94h-kc-7mL" secondAttribute="trailing" constant="40" type="user" id="2yC-6e-r1Y"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="33M-yp-Iut"/>
-                            <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="98" type="user" id="33e-aM-cM4"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="3vA-Cy-UQt"/>
                             <constraint firstItem="xS6-ra-iss" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="650" type="user" id="4W3-sC-ko8"/>
-                            <constraint firstItem="ncH-Sa-cAx" firstAttribute="top" secondItem="Pu7-06-VlL" secondAttribute="bottom" constant="25" type="user" id="51v-hO-vkp"/>
-                            <constraint firstAttribute="bottom" secondItem="ncH-Sa-cAx" secondAttribute="bottom" constant="531" type="user" id="AHU-bJ-2CI"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G8I-BA-gbt" secondAttribute="trailing" constant="70" type="user" id="CBb-bW-3HI"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="236" type="user" id="D0N-rT-vYv"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="353" id="FiR-5d-Inf"/>
                             <constraint firstAttribute="trailing" secondItem="G8I-BA-gbt" secondAttribute="trailing" constant="356" id="Guo-Ka-G6b"/>
+                            <constraint firstItem="xS6-ra-iss" firstAttribute="trailing" secondItem="E4H-Ex-K7C" secondAttribute="trailing" type="default" id="HPm-DH-neE"/>
                             <constraint firstItem="ncH-Sa-cAx" firstAttribute="leading" secondItem="94h-kc-7mL" secondAttribute="leading" type="default" id="IBR-yo-FyJ"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="367" type="user" id="K8a-1N-efv"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="bottom" constant="19" type="user" id="MHR-Y0-Sbn"/>
                             <constraint firstAttribute="trailing" secondItem="xS6-ra-iss" secondAttribute="trailing" constant="50" type="user" id="Mkd-ID-MPH"/>
+                            <constraint firstItem="E4H-Ex-K7C" firstAttribute="top" secondItem="G8I-BA-gbt" secondAttribute="bottom" constant="24" type="user" id="NPE-Ow-gc5"/>
                             <constraint firstItem="94h-kc-7mL" firstAttribute="leading" secondItem="Jf2-lp-5CN" secondAttribute="trailing" constant="50" type="user" id="O66-S8-ZiY"/>
                             <constraint firstItem="Jf2-lp-5CN" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" type="default" id="SOa-7l-bl6"/>
+                            <constraint firstItem="E4H-Ex-K7C" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="111" type="user" id="V3G-2o-SRv"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="66" id="X83-t0-qVh"/>
+                            <constraint firstItem="E4H-Ex-K7C" firstAttribute="leading" secondItem="G8I-BA-gbt" secondAttribute="leading" type="default" id="bSe-q5-Kub"/>
                             <constraint firstAttribute="bottom" secondItem="94h-kc-7mL" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="bqS-no-UgY"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="duZ-3G-hVO"/>
                             <constraint firstAttribute="bottom" secondItem="xS6-ra-iss" secondAttribute="bottom" constant="25" id="e1F-0S-YzT"/>
@@ -221,8 +220,7 @@
                             <constraint firstItem="ncH-Sa-cAx" firstAttribute="trailing" secondItem="94h-kc-7mL" secondAttribute="trailing" type="default" id="imB-SW-9IS"/>
                             <constraint firstItem="G8I-BA-gbt" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="70" type="user" id="kVO-r4-CSB"/>
                             <constraint firstItem="xS6-ra-iss" firstAttribute="top" secondItem="94h-kc-7mL" secondAttribute="top" type="default" id="oAv-qh-NnO"/>
-                            <constraint firstItem="Pu7-06-VlL" firstAttribute="top" secondItem="G8I-BA-gbt" secondAttribute="bottom" constant="24" type="user" id="toh-Xx-9iJ"/>
-                            <constraint firstItem="G8I-BA-gbt" firstAttribute="leading" secondItem="Pu7-06-VlL" secondAttribute="leading" type="default" id="yax-Kn-YfG"/>
+                            <constraint firstItem="ncH-Sa-cAx" firstAttribute="top" secondItem="E4H-Ex-K7C" secondAttribute="bottom" constant="25" type="user" id="u5B-gk-veI"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
@@ -234,7 +232,7 @@
                         <outlet property="ingredientsScrollView" destination="94h-kc-7mL" id="9Oo-wh-xPq"/>
                         <outlet property="numServesLabel" destination="a8t-x1-NZg" id="uhJ-29-CW2"/>
                         <outlet property="recipeImageScrollView" destination="Jf2-lp-5CN" id="MYA-8p-K0o"/>
-                        <outlet property="recipeNameLabel" destination="Pu7-06-VlL" id="XLV-9G-RTk"/>
+                        <outlet property="recipeNameTextField" destination="E4H-Ex-K7C" id="pW2-4z-JGy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kNQ-Lb-Rg5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -576,6 +574,9 @@
                 <relationship kind="outlet" name="userNameLabel" candidateClass="UILabel"/>
             </relationships>
         </class>
+        <class className="CKTextField" superclassName="UITextField">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CKTextField.h"/>
+        </class>
         <class className="CategoryListCell" superclassName="UICollectionViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListCell.h"/>
             <relationships>
@@ -630,7 +631,7 @@
                 <relationship kind="outlet" name="ingredientsScrollView" candidateClass="UIScrollView"/>
                 <relationship kind="outlet" name="numServesLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="recipeNameLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="recipeNameTextField" candidateClass="CKTextField"/>
             </relationships>
         </class>
         <class className="UICollectionReusableView" superclassName="UIView">

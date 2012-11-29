@@ -12,16 +12,18 @@
 #import "FacebookUserView.h"
 #import "ViewHelper.h"
 #import "CKUser.h"
+#import "CKTextField.h"
 #import "Theme.h"
 
 #define kImageViewTag   1122334455
 @interface RecipeViewController ()
-@property(nonatomic,strong) IBOutlet UILabel *recipeNameLabel;
 @property(nonatomic,strong) IBOutlet UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *cookingDirectionsScrollView;
 @property(nonatomic,strong) IBOutlet UIScrollView *recipeImageScrollView;
 @property (nonatomic,strong) IBOutlet UILabel *numServesLabel;
 @property (nonatomic,strong) IBOutlet UILabel *cookingTimeLabel;
+
+@property(nonatomic,strong) IBOutlet CKTextField *recipeNameTextField;
 
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UILabel *cookingDirectionsLabel;
@@ -71,6 +73,10 @@
 -(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
 {
     //custom options
+    if (optionIndex == 0) {
+        [self.recipeNameTextField enableEditMode:YES];
+    }
+    
     DLog();
 }
 
@@ -86,12 +92,13 @@
     self.numServesLabel.textColor = [Theme defaultLabelColor];
     self.cookingTimeLabel.font = [Theme defaultLabelFont];
     self.cookingTimeLabel.textColor = [Theme defaultLabelColor];
-    self.recipeNameLabel.font = [Theme defaultFontWithSize:42.0f];
+    self.recipeNameTextField.font = [Theme defaultFontWithSize:42.0f];
+    [self.recipeNameTextField enableEditMode:NO];
 }
 
 -(void)refreshData
 {
-    self.recipeNameLabel.text = [self.recipe.name uppercaseString];
+    self.recipeNameTextField.text = [self.recipe.name uppercaseString];
     [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
     NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
     [self.recipe.ingredients each:^(Ingredient *ingredient) {

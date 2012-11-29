@@ -54,7 +54,7 @@
 }
 
 - (void)show:(BOOL)show animated:(BOOL)animated {
-    NSLog(@"show:%@ animated:%@", show ? @"YES" : @"NO", animated ? @"YES" : @"NO");
+    DLog(@"show:%@ animated:%@", show ? @"YES" : @"NO", animated ? @"YES" : @"NO");
     CGRect frameForShow = [self frameForShow:show];
     CGFloat hideBounceOffset = 5.0;
     if (animated) {
@@ -166,50 +166,54 @@
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
     
-    if (panGesture.state == UIGestureRecognizerStateBegan) {
-        
-        // Remember the startPanFrame.
-        self.startPanFrame = self.frame;
-        
-    } else if (panGesture.state == UIGestureRecognizerStateChanged) {
-        
-        CGPoint translation = [panGesture translationInView:self];
-        self.frame = [self pannedFrameForTranslation:translation];
-        
-	} else if (panGesture.state == UIGestureRecognizerStateEnded) {
-        
-        CGPoint translation = [panGesture translationInView:self];
-        if (translation.y < 0) {
-            
-            // Any upward pan is to hide it.
-            [self show:NO animated:YES];
-            
-        } else {
-            
-            // Downward pans
-            CGRect showFrame = [self frameForShow:YES];
-            CGRect hideFrame = [self frameForShow:NO];
-            CGFloat currentHeight = self.frame.size.height;
-            
-            if (self.shown && currentHeight > (showFrame.size.height + (kBookmarkPanHideRatio * showFrame.size.height))) {
+    switch (panGesture.state) {
+        case UIGestureRecognizerStateBegan:
+            // Remember the startPanFrame.
+            self.startPanFrame = self.frame;
+            break;
+        case UIGestureRecognizerStateChanged:
+        {
+            CGPoint translation = [panGesture translationInView:self];
+            self.frame = [self pannedFrameForTranslation:translation];
+            break;
+        }
+        case UIGestureRecognizerStateEnded: {
+            CGPoint translation = [panGesture translationInView:self];
+            if (translation.y < 0) {
                 
-                // Stretch below to bounce back.
+                // Any upward pan is to hide it.
                 [self show:NO animated:YES];
-                
-            } else if (!self.shown && currentHeight > (hideFrame.size.height + (kBookmarkPanShowRatio * showFrame.size.height))) {
-                
-                // Stretch past to show.
-                [self show:YES animated:YES];
                 
             } else {
                 
-                // Restore to minimised state.
-                [self show:NO animated:YES];
+                // Downward pans
+                CGRect showFrame = [self frameForShow:YES];
+                CGRect hideFrame = [self frameForShow:NO];
+                CGFloat currentHeight = self.frame.size.height;
+                
+                if (self.shown && currentHeight > (showFrame.size.height + (kBookmarkPanHideRatio * showFrame.size.height))) {
+                    
+                    // Stretch below to bounce back.
+                    [self show:NO animated:YES];
+                    
+                } else if (!self.shown && currentHeight > (hideFrame.size.height + (kBookmarkPanShowRatio * showFrame.size.height))) {
+                    
+                    // Stretch past to show.
+                    [self show:YES animated:YES];
+                    
+                } else {
+                    
+                    // Restore to minimised state.
+                    [self show:NO animated:YES];
+                }
             }
+            
+            // Reset the start frame.
+            self.startPanFrame = CGRectZero;
+            break;
         }
-        
-        // Reset the start frame.
-        self.startPanFrame = CGRectZero;
+        default:
+            break;
     }
 }
 
@@ -328,6 +332,7 @@
     NSUInteger tappedIndex = tappedView.tag - kBookmarkOptionTagBase;
     DLog(@"OPTION TAPPED: %d", tappedIndex);
     tappedView.alpha = 1.0;
+    [self show:NO animated:YES];
     [self.delegate bookmarkDidSelectOptionAtIndex:tappedIndex];
 }
 

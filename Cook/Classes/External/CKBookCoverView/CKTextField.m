@@ -16,14 +16,14 @@
 
 @implementation CKTextField
 
+-(void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self config];
+}
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        
-        self.editTextIcon = [UIImage imageNamed:@"cook_customise_btns_textedit.png"];
-        
-        // Toggled via the setEnabled method.
-        self.rightViewMode = UITextFieldViewModeAlways;
-        self.clipsToBounds = NO;
+        [self config];
     }
     return self;
 }
@@ -50,7 +50,7 @@
     
     if (editMode) {
         self.rightView = [self editButton];
-        self.rightView.alpha = 0.0;
+        self.rightView.alpha = 0;
     }
     [UIView animateWithDuration:0.2
                           delay:0.0
@@ -67,6 +67,14 @@
 
 #pragma mark - Private methods
 
+-(void)config
+{
+    self.editTextIcon = [UIImage imageNamed:@"cook_customise_btns_textedit.png"];
+    // Toggled via the setEnabled method.
+    self.rightViewMode = UITextFieldViewModeAlways;
+    self.clipsToBounds = NO;
+
+}
 - (UIImage *)clearImage {
     return [self clearImageOfSize:CGSizeMake(1.0, 1.0)];
 }
@@ -83,7 +91,8 @@
 }
 
 - (UIImage *)textboxImage {
-    return [[UIImage imageNamed:@"cook_customise_textbox.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0, 4.0, 4.0, 4.0)];
+//    return [[UIImage imageNamed:@"cook_editrecipe_textbox.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0, 4.0, 4.0, 4.0)];
+    return [[UIImage imageNamed:@"cook_customise_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0, 4.0, 4.0, 4.0)];
 }
 
 - (UIButton *)editButton {
