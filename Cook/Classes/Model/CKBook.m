@@ -16,8 +16,9 @@
 
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
-    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
+    [query includeKey:kUserModelForeignKeyName];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
         if (!error) {
             success([CKBook createBookIfRequiredForParseBook:parseBook user:user]);
@@ -51,6 +52,24 @@
                        failure:^(NSError *error) {
                            failure(error);
                        }];
+}
+
++ (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query includeKey:kUserModelForeignKeyName];
+    [query setLimit:20];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
+        if (!error) {
+            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
+                return [[CKBook alloc] initWithParseObject:parseBook];
+            }];
+            success(books);
+        } else {
+            failure(error);
+        }
+        
+    }];
 }
 
 + (CKBook *)myInitialBook {
@@ -154,6 +173,10 @@
 
 - (NSString *)userName {
     return self.user.name;
+}
+
+- (BOOL)editable {
+    return [self.user.objectId isEqualToString:[CKUser currentUser].objectId];
 }
 
 #pragma mark - CKModel

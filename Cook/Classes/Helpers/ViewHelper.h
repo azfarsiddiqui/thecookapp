@@ -16,6 +16,10 @@
 + (CGSize)bookSize;
 + (CGFloat)singleLineHeightForFont:(UIFont *)font;
 + (CGSize)screenSize;
-+(NSString*)formatAsHoursSeconds:(float)timeInSeconds;
++ (NSString*)formatAsHoursSeconds:(float)timeInSeconds;
+
+// Convers view to images.
++ (UIImage *)imageWithView:(UIView *)view;
++ (UIImage *)imageWithView:(UIView *)view opaque:(BOOL)opaque;
 
 @end

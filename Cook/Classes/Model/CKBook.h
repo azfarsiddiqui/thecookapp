@@ -29,11 +29,13 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 + (PFObject *)createParseBook;
 + (PFObject *)createParseBookForParseUser:(PFUser *)parseUser;
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (CKBook *)myInitialBook;
 + (CKBook *)defaultBook;
 
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
 - (void)listRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (NSString *)userName;
+- (BOOL)editable;
 
 @end

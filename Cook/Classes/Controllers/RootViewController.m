@@ -1,153 +1,189 @@
 //
-//  RootViewController.m
-//  Cook
+//  CKViewController.m
+//  BenchtopDemo
 //
-//  Created by Jeff Tan-Ang on 26/09/12.
-//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//  Created by Jeff Tan-Ang on 29/11/12.
+//  Copyright (c) 2012 Cook App Pty Ltd. All rights reserved.
 //
 
 #import "RootViewController.h"
-#import "CKUser.h"
-#import "AppHelper.h"
-#import "BenchtopViewController.h"
+#import "BenchtopCollectionViewController.h"
 #import "StoreViewController.h"
 
-@interface RootViewController () <BenchtopViewControlelrDelegate, StoreViewControllerDelegate>
+@interface RootViewController ()
 
-@property (nonatomic, strong) BenchtopViewController *benchtopViewController;
+@property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
+@property (nonatomic, assign) BOOL storeMode;
 
 @end
 
-#define RADIANS(degrees)    ((degrees * (float)M_PI) / 180.0f)
-
 @implementation RootViewController
+
+#define kDragRatio      0.2
+#define kSnapHeight     20.0
+#define kBounceOffset   50.0
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    
+    // Drag to pull
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    [self.view addGestureRecognizer:panGesture];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
-    // Prepare for the dashboard to be transitioned in.
-    self.benchtopViewController = [[BenchtopViewController alloc] initWithDelegate:self];
-    self.benchtopViewController.view.frame = self.view.bounds;
-    [self.view addSubview:self.benchtopViewController.view];
+    StoreViewController *storeViewController = [[StoreViewController alloc] init];
+    storeViewController.view.frame = [self storeFrameForShow:NO];
+    [self.view addSubview:storeViewController.view];
+    self.storeViewController = storeViewController;
     
-    // If this was a new install/upgrade (it checks versions) then slide up intro screen.
-    if ([[AppHelper sharedInstance] newInstall]) {
-        CKIntroViewController *introViewController = [[CKIntroViewController alloc] initWithDelegate:self];
-        CKModalView *modalView = [[CKModalView alloc] initWithViewController:introViewController
-                                                                    delegate:self
-                                                                 dismissable:NO];
-        [modalView showInView:self.view];
-    } else {
-        [self showDashboard];
-    }
-}
-
-#pragma mark - Rotation methods
-
-- (BOOL)shouldAutomaticallyForwardRotationMethods {
-    return NO;
-}
-
-- (BOOL)shouldAutorotate {
-    return YES;
-}
-
-- (NSUInteger)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskLandscape;
-}
-
-#pragma mark - CKModalViewContentDelegate methods
-
-- (void)modalViewDidShow {
-}
-
-- (void)modalViewDidHide {
-}
-
-#pragma mark - CKIntroViewControllerDelegate methods
-
-- (void)introViewDismissRequested {
-    CKModalView *modalView = [CKModalView modalViewInView:self.view];
-    [modalView hideWithCompletion:^{
-        [self showDashboard];
-    }];
-}
-
-#pragma mark - BenchtopViewControlelrDelegate methods
-
-- (void)benchtopViewControllerStoreRequested {
-    DLog();
-    [self showStoreMode:YES];
-}
-
-#pragma mark - StoreViewControllerDelegate methods
-
-- (void)storeViewControllerCloseRequested {
-    DLog();
-    [self showStoreMode:NO];
+    BenchtopCollectionViewController *benchtopViewController = [[BenchtopCollectionViewController alloc] init];
+    benchtopViewController.view.frame = [self benchtopFrameForShow:YES];
+    [self.view addSubview:benchtopViewController.view];
+    self.benchtopViewController = benchtopViewController;
+    
+    [benchtopViewController enable:YES];
 }
 
 #pragma mark - Private methods
 
-- (void)showDashboard {
-    DLog();
-    [self.benchtopViewController show];
-}
-
-- (void)showStoreMode:(BOOL)show {  
-    if (show) {
-        StoreViewController *storeViewController = [[StoreViewController alloc] initWithDelegate:self];
-        storeViewController.view.frame = self.view.bounds;
-        storeViewController.view.alpha = 0.0;
-        [self.view addSubview:storeViewController.view];
-        self.storeViewController = storeViewController;
+- (void)panned:(UIPanGestureRecognizer *)panGesture {
+    
+    CGPoint translation = [panGesture translationInView:self.view];
+    
+    if (panGesture.state == UIGestureRecognizerStateBegan) {
+    } else if (panGesture.state == UIGestureRecognizerStateChanged) {
+        [self panWithTranslation:translation];
+	} else if (panGesture.state == UIGestureRecognizerStateEnded) {
+        [self snapIfRequired];
     }
     
+    [panGesture setTranslation:CGPointZero inView:self.view];
+}
+
+- (void)panWithTranslation:(CGPoint)translation {
+    CGFloat panOffset = ceilf(translation.y * kDragRatio);
+    self.storeViewController.view.frame = [self frame:self.storeViewController.view.frame translatedOffset:panOffset];
+    self.benchtopViewController.view.frame = [self frame:self.benchtopViewController.view.frame translatedOffset:panOffset];
+}
+
+- (void)snapIfRequired {
+    BOOL toggleMode = NO;
+    BOOL currentStoreMode = self.storeMode;
+    
+    if (self.storeMode
+        && CGRectIntersection(self.view.bounds, self.benchtopViewController.view.frame).size.height > kSnapHeight) {
+        
+        toggleMode = YES;
+        currentStoreMode = NO;
+        
+    } else if (!self.storeMode
+               && CGRectIntersection(self.view.bounds, self.storeViewController.view.frame).size.height > kSnapHeight) {
+        
+        toggleMode = YES;
+        currentStoreMode = YES;
+        
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.storeViewController.view.frame = [self storeFrameForShow:currentStoreMode bounce:toggleMode];
+                         self.benchtopViewController.view.frame = [self benchtopFrameForShow:!currentStoreMode bounce:toggleMode];
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // Extra bounce back animation when toggling between modes.
+                         if (toggleMode) {
+                             [UIView animateWithDuration:0.25
+                                                   delay:0.0
+                                                 options:UIViewAnimationCurveEaseIn
+                                              animations:^{
+                                                  self.storeViewController.view.frame = [self storeFrameForShow:currentStoreMode];
+                                                  self.benchtopViewController.view.frame = [self benchtopFrameForShow:!currentStoreMode];
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  if (toggleMode) {
+                                                      self.storeMode = !self.storeMode;
+                                                      
+                                                      // Enable the toggled area.
+                                                      [self.storeViewController enable:self.storeMode];
+                                                      [self.benchtopViewController enable:!self.storeMode];
+                                                  }
+                                              }];
+                         }
+                         
+                     }];
+}
+
+- (CGRect)frame:(CGRect)frame translatedOffset:(CGFloat)offset {
+    frame.origin.y += offset;
+    return frame;
+}
+
+- (CGRect)storeFrameForShow:(BOOL)show {
+    return [self storeFrameForShow:show bounce:NO];
+}
+
+- (CGRect)benchtopFrameForShow:(BOOL)show {
+    return [self benchtopFrameForShow:show bounce:NO];
+}
+
+- (CGRect)storeFrameForShow:(BOOL)show bounce:(BOOL)bounce {
     if (show) {
-        
-        // Disable benchtop first then shift to store mode.
-        [self.benchtopViewController enable:NO completion:^{
-            
-            [UIView animateWithDuration:0.4
-                                  delay:0.0
-                                options:UIViewAnimationCurveEaseIn
-                             animations:^{
-                                 self.storeViewController.view.alpha = 1.0;
-                                 self.benchtopViewController.view.alpha = 0.0;
-                             }
-                             completion:^(BOOL finished) {
-                                 [self.storeViewController enable:YES];
-                             }];
-        }];
-        
+        if (bounce) {
+            return CGRectMake(self.view.bounds.origin.x,
+                              self.view.bounds.origin.y + kBounceOffset,
+                              self.view.bounds.size.width,
+                              self.view.bounds.size.height);
+        } else {
+            return self.view.bounds;
+        }
     } else {
-        
-        // Disable store first then shift to benchtop mode.
-        [self.storeViewController enable:NO completion:^{
-            
-            [UIView animateWithDuration:0.4
-                                  delay:0.0
-                                options:UIViewAnimationCurveEaseIn
-                             animations:^{
-                                 self.storeViewController.view.alpha = 0.0;
-                                 self.benchtopViewController.view.alpha = 1.0;
-                             }
-                             completion:^(BOOL finished) {
-                                 [self.benchtopViewController enable:YES];
-                                 [self.storeViewController.view removeFromSuperview];
-                                 self.storeViewController = nil;
-                             }];
-        }];
-        
+        if (bounce) {
+            return CGRectMake(self.view.bounds.origin.x,
+                              -self.view.bounds.size.height - kBounceOffset,
+                              self.view.bounds.size.width,
+                              self.view.bounds.size.height);
+        } else {
+            return CGRectMake(self.view.bounds.origin.x,
+                              -self.view.bounds.size.height,
+                              self.view.bounds.size.width,
+                              self.view.bounds.size.height);
+        }
     }
-
-    
 }
+
+- (CGRect)benchtopFrameForShow:(BOOL)show bounce:(BOOL)bounce {
+    if (show) {
+        if (bounce) {
+            return CGRectMake(self.view.bounds.origin.x,
+                              self.view.bounds.origin.y - kBounceOffset,
+                              self.view.bounds.size.width,
+                              self.view.bounds.size.height);
+        } else {
+            return self.view.bounds;
+        }
+    } else {
+        if (bounce) {
+            return CGRectMake(self.view.bounds.origin.x,
+                              self.view.bounds.size.height + kBounceOffset,
+                              self.view.bounds.size.width,
+                              self.view.bounds.size.height);
+        } else {
+            return CGRectMake(self.view.bounds.origin.x,
+                              self.view.bounds.size.height,
+                              self.view.bounds.size.width,
+                              self.view.bounds.size.height);
+        }
+    }
+}
+
 
 @end

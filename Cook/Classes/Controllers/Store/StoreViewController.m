@@ -1,166 +1,60 @@
 //
 //  StoreViewController.m
-//  Cook
+//  BenchtopDemo
 //
-//  Created by Jeff Tan-Ang on 21/11/12.
-//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//  Created by Jeff Tan-Ang on 29/11/12.
+//  Copyright (c) 2012 Cook App Pty Ltd. All rights reserved.
 //
 
 #import "StoreViewController.h"
-#import "ViewHelper.h"
-#import "StoreCollectionViewController.h"
+#import "FriendsStoreCollectionViewController.h"
+#import "FeaturedStoreCollectionViewController.h"
+#import "StoreBookCoverViewCell.h"
 
 @interface StoreViewController ()
 
-@property (nonatomic, assign) id<StoreViewControllerDelegate> delegate;
-@property (nonatomic, strong) UIView *backgroundView;
-@property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, strong) UIButton *closeButton;
-@property (nonatomic, assign) BOOL enabled;
-@property (nonatomic, strong) StoreCollectionViewController *featuredViewController;
-@property (nonatomic, strong) StoreCollectionViewController *friendsViewController;
+@property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
+@property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
 
 @end
 
 @implementation StoreViewController
 
-#define kStoreBookCellId    @"StoreBookCell"
-#define kMenuHeight         80.0
-#define kMenuGap            20.0
-#define kSideGap            20.0
-#define kVerticalInset      80.0
-
-- (id)initWithDelegate:(id<StoreViewControllerDelegate>)delegate {
-    if (self = [super init]) {
-        self.delegate = delegate;
-    }
-    return self;
-}
+#define kInsets     UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor lightGrayColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-//    [self initBackground];
-    [self initCollectionViews];
-    [self initButtons];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    CGFloat rowHeight = [StoreBookCoverViewCell cellSize].height;
+    
+    FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] init];
+//    featuredViewController.view.frame = CGRectMake(kInsets.left, kInsets.top, self.view.bounds.size.width, rowHeight);
+    featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, rowHeight);
+    featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:featuredViewController.view];
+    self.featuredViewController = featuredViewController;
+    [featuredViewController loadData];
+    
+    FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] init];
+//    friendsViewController.view.frame = CGRectMake(kInsets.left, self.view.bounds.size.height - rowHeight - kInsets.bottom, self.view.bounds.size.width, rowHeight);
+    friendsViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.size.height - rowHeight, self.view.bounds.size.width, rowHeight);
+    friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    [self.view addSubview:friendsViewController.view];
+    self.friendsViewController = friendsViewController;
+    [friendsViewController loadData];
+    
 }
 
 - (void)enable:(BOOL)enable {
-    [self enable:enable completion:^{}];
-}
-
-- (void)enable:(BOOL)enable completion:(void (^)())completion {
-    [UIView animateWithDuration:0.4
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         [self showOverlay:enable animated:NO];
-                     }
-                     completion:^(BOOL finished) {
-                         self.enabled = enable;
-                         
-                         if (enable) {
-                             [self loadData];
-                         } else {
-                             [self unloadData];
-                         }
-                         
-                         // Run completion block.
-                         completion();
-                     }];
-}
-
-- (void)showOverlay:(BOOL)show animated:(BOOL)animated {
-    if (show && !self.overlayView) {
-        self.overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
-        self.overlayView.autoresizingMask = UIViewAutoresizingNone;
-        self.overlayView.alpha = 0.0;
-        [self.view addSubview:self.overlayView];
-        [self.view insertSubview:self.overlayView belowSubview:self.closeButton];
-    }
-    
-    if (animated) {
-        [UIView animateWithDuration:0.4
-                              delay:0.0
-                            options:UIViewAnimationCurveEaseIn
-                         animations:^{
-                             self.overlayView.alpha = show ? 1.0 : 0.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-    } else {
-        self.overlayView.alpha = show ? 1.0 : 0.0;
-    }
-}
-
-
-#pragma - Private methods
-
-- (void)initBackground {
-    
-    // Tiled background
-    UIView *backgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
-    backgroundView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"cook_dash_bg_tile.png"]];
-    [self.view addSubview:backgroundView];
-    self.backgroundView = backgroundView;
-}
-
-- (void)initButtons {
-    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
-                                                      target:self
-                                                    selector:@selector(closeTapped:)];
-    closeButton.frame = CGRectMake(kSideGap,
-                                   floorf((kMenuHeight - closeButton.frame.size.height) / 2.0),
-                                   closeButton.frame.size.width,
-                                   closeButton.frame.size.height);
-    [self.view addSubview:closeButton];
-    self.closeButton = closeButton;
-}
-
-- (void)initCollectionViews {
-    
-    // First row.
-    StoreCollectionViewController *featuredViewController = [[StoreCollectionViewController alloc] init];
-    featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    featuredViewController.view.frame = CGRectMake(0.0,
-                                                   kVerticalInset,
-                                                   self.view.bounds.size.width,
-                                                   featuredViewController.view.frame.size.height);
-    [self.view addSubview:featuredViewController.view];
-    self.featuredViewController = featuredViewController;
-    
-    // Second row.
-    StoreCollectionViewController *friendsViewController = [[StoreCollectionViewController alloc] init];
-    friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-    friendsViewController.view.frame = CGRectMake(0.0,
-                                                  self.view.bounds.size.height - friendsViewController.view.frame.size.height - kVerticalInset,
-                                                  self.view.bounds.size.width,
-                                                  friendsViewController.view.frame.size.height);
-    [self.view addSubview:friendsViewController.view];
-    self.friendsViewController = friendsViewController;
-    
-}
-
-- (void)closeTapped:(id)sender {
-    [self.delegate storeViewControllerCloseRequested];
-}
-
-- (void)loadData {
-    [self.featuredViewController showBooks];
-    [self.friendsViewController showBooks];
-}
-
-- (void)unloadData {
-    
-    [self.featuredViewController showBooks:NO];
-    [self.friendsViewController showBooks:NO];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self.delegate storeViewControllerDataLoaded:NO];
-    });
-    
+    [self.featuredViewController enable:enable];
+    [self.friendsViewController enable:enable];
 }
 
 @end

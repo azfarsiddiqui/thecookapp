@@ -9,6 +9,7 @@
 #import "CKBookCoverView.h"
 #import "CKBookCover.h"
 #import "CKTextField.h"
+#import "ViewHelper.h"
 
 @interface CKBookCoverView () <UITextFieldDelegate>
 
@@ -541,6 +542,10 @@
     
     // Inform delegate edit has been requested.
     [self.delegate bookCoverViewEditRequested];
+}
+
+- (UIImage *)asImage {
+    return [ViewHelper imageWithView:self opaque:NO];
 }
 
 @end

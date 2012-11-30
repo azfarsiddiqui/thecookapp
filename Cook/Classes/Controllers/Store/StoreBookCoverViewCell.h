@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BenchtopBookCoverViewCell.h"
 
-@interface StoreBookCell : UICollectionViewCell
+@interface StoreBookCoverViewCell : BenchtopBookCoverViewCell
 
-+ (CGFloat)scaleFactor;
 + (CGSize)cellSize;
 
 @end

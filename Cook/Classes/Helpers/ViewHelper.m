@@ -7,6 +7,7 @@
 //  User Interface helper for creation of user interface element
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "ViewHelper.h"
 #import "AppHelper.h"
 
@@ -56,5 +57,18 @@
     
     return result;
 }
+
++ (UIImage *)imageWithView:(UIView *)view {
+    return [self imageWithView:view opaque:YES];
+}
+
++ (UIImage *)imageWithView:(UIView *)view opaque:(BOOL)opaque {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, opaque, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return img;
+}
+
 
 @end

@@ -1,5 +1,5 @@
 //
-//  StoreViewController.h
+//  BenchtopFlowLayout.h
 //  BenchtopDemo
 //
 //  Created by Jeff Tan-Ang on 29/11/12.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface StoreViewController : UIViewController
-
-- (void)enable:(BOOL)enable;
+@interface BenchtopCollectionFlowLayout : UICollectionViewFlowLayout
 
 @end
