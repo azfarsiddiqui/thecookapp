@@ -12,6 +12,7 @@
 #import "BenchtopBookCoverViewCell.h"
 #import "CKBook.h"
 #import "CKBookCoverView.h"
+#import "EventHelper.h"
 
 @interface StoreCollectionViewController ()
 
@@ -21,6 +22,10 @@
 
 #define kCellId         @"StoreBookCellId"
 #define kStoreSection   0
+
+- (void)dealloc {
+    [EventHelper unregisterLoginSucessful:self];
+}
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[StoreFlowLayout alloc] init]]) {
@@ -39,6 +44,8 @@
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
+    
+    [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -104,5 +111,15 @@
 }
 
 #pragma mark - Private methods
+
+- (void)loginSuccessful:(NSNotification *)notification {
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        if (self.books) {
+            [self.books removeAllObjects];
+        }
+        [self loadData];
+    }
+}
 
 @end

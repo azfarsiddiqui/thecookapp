@@ -64,13 +64,19 @@
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-    CATransform3D scaleTransform = CATransform3DMakeScale(kBookScaleFactor, kBookScaleFactor, 0.0);
-    CATransform3D translateTransform = CATransform3DMakeTranslation(0.0, kBookTranslate, 0.0);
+    CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
+    CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, 0.0, kBookTranslate, 0.0);
     initialAttributes.alpha = 0.0;
-//    initialAttributes.transform3D = scaleTransform;
     initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
+//    initialAttributes.transform3D = scaleTransform;
 //    initialAttributes.transform3D = translateTransform;
     return initialAttributes;
+}
+
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *finalAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+    finalAttributes.alpha = 0.0;
+    return finalAttributes;
 }
 
 #pragma mark - Private methods

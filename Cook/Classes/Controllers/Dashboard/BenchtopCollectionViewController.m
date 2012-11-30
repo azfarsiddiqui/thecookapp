@@ -11,11 +11,14 @@
 #import "BenchtopBookCoverViewCell.h"
 #import "CKUser.h"
 #import "CKBook.h"
+#import "CKLoginView.h"
+#import "EventHelper.h"
 
-@interface BenchtopCollectionViewController ()
+@interface BenchtopCollectionViewController () <CKLoginViewDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
+@property (nonatomic, strong) CKLoginView *loginView;
 
 @end
 
@@ -34,11 +37,10 @@
     [super viewDidLoad];
     
     [self initBackground];
-    
-    self.collectionView.backgroundColor = [UIColor clearColor];
+    [self initLoginView];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    
+    self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
@@ -119,6 +121,17 @@
     return cell;
 }
 
+#pragma mark - CKLoginViewDelegate
+
+- (void)loginViewTapped {
+    
+    // Spin the facebook button.
+    [self.loginView loginStarted];
+    
+    // Dispatch login after one second.
+    [self performSelector:@selector(performLogin) withObject:nil afterDelay:1.0];
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -127,6 +140,20 @@
     self.view.clipsToBounds = NO;
     [self.view insertSubview:backgroundView belowSubview:self.collectionView];
     self.backgroundView = backgroundView;
+}
+
+- (void)initLoginView {
+    CKUser *currentUser = [CKUser currentUser];
+    
+    CKLoginView *loginView = [[CKLoginView alloc] initWithDelegate:self];
+    loginView.frame = CGRectMake(floorf((self.view.bounds.size.width - loginView.frame.size.width) / 2.0),
+                                 self.view.bounds.size.height - loginView.frame.size.height - 60.0,
+                                 loginView.frame.size.width,
+                                 loginView.frame.size.height);
+    loginView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
+    loginView.hidden = [currentUser isSignedIn];
+    [self.view addSubview:loginView];
+    self.loginView = loginView;
 }
 
 - (void)loadMyBook {
@@ -142,4 +169,39 @@
                 }];
 }
 
+- (void)performLogin {
+    
+    // Now tries and log the user in.
+    [CKUser loginWithFacebookCompletion:^{
+        
+        CKUser *user = [CKUser currentUser];
+        if (user.admin) {
+            [self.loginView loginAdminDone];
+        } else {
+            [self.loginView loginLoadingFriends:[user numFollows]];
+        }
+        
+        [self informLoginSuccessful:YES];
+        
+    } failure:^(NSError *error) {
+        DLog(@"Error logging in: %@", [error localizedDescription]);
+        
+        // Reset the facebook button.
+        [self.loginView loginFailed];
+        
+        [self informLoginSuccessful:NO];
+    }];
+}
+
+- (void)informLoginSuccessful:(BOOL)success {
+    
+    // Remove the login view.
+    self.loginView.hidden = success;
+    
+    [self loadMyBook];
+    
+    // Inform login successful.
+    [EventHelper postLoginSuccessful:success];
+    
+}
 @end

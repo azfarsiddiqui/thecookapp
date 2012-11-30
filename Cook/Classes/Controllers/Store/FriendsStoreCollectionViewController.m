@@ -8,6 +8,7 @@
 
 #import "FriendsStoreCollectionViewController.h"
 #import "CKBook.h"
+#import "CKUser.h"
 
 @interface FriendsStoreCollectionViewController ()
 
@@ -16,14 +17,18 @@
 @implementation FriendsStoreCollectionViewController
 
 - (void)loadData {
-    [CKBook friendsBooksForUser:[CKUser currentUser]
-                        success:^(NSArray *friendsBooks) {
-                            self.books = [NSMutableArray arrayWithArray:friendsBooks];
-                            [self reloadBooks];
-                        }
-                        failure:^(NSError *error) {
-                            DLog(@"Error: %@", [error localizedDescription]);
-                        }];
+    
+    CKUser *currentUser = [CKUser currentUser];
+    if ([currentUser isSignedIn]) {
+        [CKBook friendsBooksForUser:currentUser
+                            success:^(NSArray *friendsBooks) {
+                                self.books = [NSMutableArray arrayWithArray:friendsBooks];
+                                [self reloadBooks];
+                            }
+                            failure:^(NSError *error) {
+                                DLog(@"Error: %@", [error localizedDescription]);
+                            }];
+    }
 }
 
 @end
