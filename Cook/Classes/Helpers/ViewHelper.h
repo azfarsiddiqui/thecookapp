@@ -16,7 +16,8 @@
 + (CGSize)bookSize;
 + (CGFloat)singleLineHeightForFont:(UIFont *)font;
 + (CGSize)screenSize;
-+ (NSString*)formatAsHoursSeconds:(float)timeInSeconds;
++ (NSString*)formatAsHoursSeconds:(float)timeInSeconds ;
++ (void) adjustScrollContentSize:(UIScrollView*)scrollView forHeight:(float)height;
 
 // Convers view to images.
 + (UIImage *)imageWithView:(UIView *)view;

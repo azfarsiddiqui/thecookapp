@@ -301,6 +301,12 @@
 		896221A1161EAF4C0023EC30 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219F161EAF4C0023EC30 /* btn_close.png */; };
 		896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896221A0161EAF4C0023EC30 /* btn_close@2x.png */; };
 		8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8976B89C162797A5004155C6 /* RecipeViewController.m */; };
+		897E6C121667266000FD7F7B /* RecipeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C111667266000FD7F7B /* RecipeImageView.m */; };
+		897E6C151667268300FD7F7B /* RecipeNameView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C141667268300FD7F7B /* RecipeNameView.m */; };
+		897E6C181667269700FD7F7B /* IngredientsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C171667269700FD7F7B /* IngredientsView.m */; };
+		897E6C1B166726AB00FD7F7B /* ServesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C1A166726AA00FD7F7B /* ServesView.m */; };
+		897E6C1E166726BF00FD7F7B /* CookingTimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C1D166726BF00FD7F7B /* CookingTimeView.m */; };
+		897E6C21166726F600FD7F7B /* CookingDirectionsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C20166726F500FD7F7B /* CookingDirectionsView.m */; };
 		8996A3B0165C653F0099583E /* BookProfilePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8996A3AF165C653F0099583E /* BookProfilePageViewController.m */; };
 		8996A3B3165C66740099583E /* ContentsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8996A3B2165C66740099583E /* ContentsTableViewCell.m */; };
 		89A50499162250F700E6CDF1 /* Ingredient.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A50498162250F700E6CDF1 /* Ingredient.m */; };
@@ -309,6 +315,7 @@
 		89A906F216644DD20056E4CF /* cook_book_icon_editpage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89A906F016644DD20056E4CF /* cook_book_icon_editpage.png */; };
 		89A906F316644DD20056E4CF /* cook_book_icon_editpage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89A906F116644DD20056E4CF /* cook_book_icon_editpage@2x.png */; };
 		89A906F9166460DD0056E4CF /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A906F8166460DD0056E4CF /* Theme.m */; };
+		89B282F916684136007F4BAF /* UIEditableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B282F816684135007F4BAF /* UIEditableView.m */; };
 		89E2CA87165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */; };
 		89E2CA88165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA86165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png */; };
 		89E2CA8C165F024800CDE0D4 /* cook_editrecipe_categorybg.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA8A165F024800CDE0D4 /* cook_editrecipe_categorybg.png */; };
@@ -704,6 +711,18 @@
 		896221A0161EAF4C0023EC30 /* btn_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@2x.png"; sourceTree = "<group>"; };
 		8976B89B162797A5004155C6 /* RecipeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeViewController.h; sourceTree = "<group>"; };
 		8976B89C162797A5004155C6 /* RecipeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeViewController.m; sourceTree = "<group>"; };
+		897E6C101667266000FD7F7B /* RecipeImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecipeImageView.h; path = Subviews/RecipeImageView.h; sourceTree = "<group>"; };
+		897E6C111667266000FD7F7B /* RecipeImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecipeImageView.m; path = Subviews/RecipeImageView.m; sourceTree = "<group>"; };
+		897E6C131667268300FD7F7B /* RecipeNameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecipeNameView.h; path = Subviews/RecipeNameView.h; sourceTree = "<group>"; };
+		897E6C141667268300FD7F7B /* RecipeNameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecipeNameView.m; path = Subviews/RecipeNameView.m; sourceTree = "<group>"; };
+		897E6C161667269600FD7F7B /* IngredientsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IngredientsView.h; path = Subviews/IngredientsView.h; sourceTree = "<group>"; };
+		897E6C171667269700FD7F7B /* IngredientsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IngredientsView.m; path = Subviews/IngredientsView.m; sourceTree = "<group>"; };
+		897E6C19166726AA00FD7F7B /* ServesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServesView.h; path = Subviews/ServesView.h; sourceTree = "<group>"; };
+		897E6C1A166726AA00FD7F7B /* ServesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServesView.m; path = Subviews/ServesView.m; sourceTree = "<group>"; };
+		897E6C1C166726BE00FD7F7B /* CookingTimeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookingTimeView.h; path = Subviews/CookingTimeView.h; sourceTree = "<group>"; };
+		897E6C1D166726BF00FD7F7B /* CookingTimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookingTimeView.m; path = Subviews/CookingTimeView.m; sourceTree = "<group>"; };
+		897E6C1F166726F400FD7F7B /* CookingDirectionsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookingDirectionsView.h; path = Subviews/CookingDirectionsView.h; sourceTree = "<group>"; };
+		897E6C20166726F500FD7F7B /* CookingDirectionsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookingDirectionsView.m; path = Subviews/CookingDirectionsView.m; sourceTree = "<group>"; };
 		8996A3AE165C653F0099583E /* BookProfilePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookProfilePageViewController.h; sourceTree = "<group>"; };
 		8996A3AF165C653F0099583E /* BookProfilePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookProfilePageViewController.m; sourceTree = "<group>"; };
 		8996A3B1165C66730099583E /* ContentsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContentsTableViewCell.h; path = Book/ContentsTableViewCell.h; sourceTree = "<group>"; };
@@ -718,6 +737,8 @@
 		89A906F116644DD20056E4CF /* cook_book_icon_editpage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_editpage@2x.png"; sourceTree = "<group>"; };
 		89A906F5166460970056E4CF /* Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theme.h; sourceTree = "<group>"; };
 		89A906F8166460DD0056E4CF /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
+		89B282F716684135007F4BAF /* UIEditableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIEditableView.h; path = Subviews/UIEditableView.h; sourceTree = "<group>"; };
+		89B282F816684135007F4BAF /* UIEditableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIEditableView.m; path = Subviews/UIEditableView.m; sourceTree = "<group>"; };
 		89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_categoryselected.png; sourceTree = "<group>"; };
 		89E2CA86165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_categoryselected@2x.png"; sourceTree = "<group>"; };
 		89E2CA8A165F024800CDE0D4 /* cook_editrecipe_categorybg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_categorybg.png; sourceTree = "<group>"; };
@@ -1461,10 +1482,32 @@
 		8976B89A16279711004155C6 /* ViewEdit */ = {
 			isa = PBXGroup;
 			children = (
+				897E6C0E1667251000FD7F7B /* SubViews */,
 				8976B89B162797A5004155C6 /* RecipeViewController.h */,
 				8976B89C162797A5004155C6 /* RecipeViewController.m */,
 			);
 			name = ViewEdit;
+			sourceTree = "<group>";
+		};
+		897E6C0E1667251000FD7F7B /* SubViews */ = {
+			isa = PBXGroup;
+			children = (
+				89B282F716684135007F4BAF /* UIEditableView.h */,
+				89B282F816684135007F4BAF /* UIEditableView.m */,
+				897E6C101667266000FD7F7B /* RecipeImageView.h */,
+				897E6C111667266000FD7F7B /* RecipeImageView.m */,
+				897E6C131667268300FD7F7B /* RecipeNameView.h */,
+				897E6C141667268300FD7F7B /* RecipeNameView.m */,
+				897E6C161667269600FD7F7B /* IngredientsView.h */,
+				897E6C171667269700FD7F7B /* IngredientsView.m */,
+				897E6C19166726AA00FD7F7B /* ServesView.h */,
+				897E6C1A166726AA00FD7F7B /* ServesView.m */,
+				897E6C1C166726BE00FD7F7B /* CookingTimeView.h */,
+				897E6C1D166726BF00FD7F7B /* CookingTimeView.m */,
+				897E6C1F166726F400FD7F7B /* CookingDirectionsView.h */,
+				897E6C20166726F500FD7F7B /* CookingDirectionsView.m */,
+			);
+			name = SubViews;
 			sourceTree = "<group>";
 		};
 		8996A3A9165C62A70099583E /* Contents */ = {
@@ -1850,6 +1893,13 @@
 				76510714165F31180077B551 /* StoreBookCoverViewCell.m in Sources */,
 				766B0DC616643A7900A934FD /* CKTextField.m in Sources */,
 				89A906F9166460DD0056E4CF /* Theme.m in Sources */,
+				897E6C121667266000FD7F7B /* RecipeImageView.m in Sources */,
+				897E6C151667268300FD7F7B /* RecipeNameView.m in Sources */,
+				897E6C181667269700FD7F7B /* IngredientsView.m in Sources */,
+				897E6C1B166726AB00FD7F7B /* ServesView.m in Sources */,
+				897E6C1E166726BF00FD7F7B /* CookingTimeView.m in Sources */,
+				897E6C21166726F600FD7F7B /* CookingDirectionsView.m in Sources */,
+				89B282F916684136007F4BAF /* UIEditableView.m in Sources */,
 				76381C9116683C5E00404FB1 /* BenchtopCollectionFlowLayout.m in Sources */,
 				76381C9216683C6300404FB1 /* BenchtopCollectionViewController.m in Sources */,
 				76381C9516683E9500404FB1 /* RootViewController.m in Sources */,

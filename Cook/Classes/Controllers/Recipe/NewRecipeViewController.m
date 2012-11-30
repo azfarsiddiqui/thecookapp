@@ -169,18 +169,11 @@
     DLog();
     self.numServesLabel.textColor = [UIColor blackColor];
     
-	// note we are using CGRectZero for the dimensions of our picker view,
-	// this is because picker views have a built in optimum size,
-	// you just need to set the correct origin in your view.
-	//
-	// position the picker at the bottom
-    
     UIViewController* popoverContent = [[UIViewController alloc] init];
 
 	UIPickerView *servesPickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
 	servesPickerView.frame = CGRectMake(0,44,320, 216);
-	servesPickerView.showsSelectionIndicator = YES;	// note this is default to NO
-	// this view controller is the data source and delegate
+	servesPickerView.showsSelectionIndicator = YES;
 	servesPickerView.delegate = self;
 	servesPickerView.dataSource = self;
     [popoverContent.view addSubview:servesPickerView];

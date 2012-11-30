@@ -58,6 +58,14 @@
     return result;
 }
 
+
++(void) adjustScrollContentSize:(UIScrollView*)scrollView forHeight:(float)height
+{
+   scrollView.contentSize = height > scrollView.frame.size.height ?
+    CGSizeMake(scrollView.frame.size.width, height) :
+    CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
+}
+
 + (UIImage *)imageWithView:(UIView *)view {
     return [self imageWithView:view opaque:YES];
 }
