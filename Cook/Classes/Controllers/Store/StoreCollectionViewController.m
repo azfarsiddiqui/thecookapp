@@ -37,6 +37,7 @@
     
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
+    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
 }
 

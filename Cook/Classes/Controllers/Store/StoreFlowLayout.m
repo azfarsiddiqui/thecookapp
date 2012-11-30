@@ -35,19 +35,18 @@
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+    
+    // Start on the edge of the screen.
+    CGFloat translateOffset = self.collectionView.bounds.size.width - initialAttributes.frame.origin.x;
+    
+    // Make books further apart so that they slide in at different distances.
+    translateOffset += itemIndexPath.item * (initialAttributes.frame.size.width * 2.0);
+    
+    CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, translateOffset, 0.0, 0.0);
     CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kStoreBookInsertScale, kStoreBookInsertScale, 0.0);
-    initialAttributes.alpha = 0.0;
-    initialAttributes.transform3D = scaleTransform;
+    initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
     return initialAttributes;
 }
-
-//- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-//    UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-//    CATransform3D scaleTransform = CATransform3DMakeScale(kStoreBookMinScale, kStoreBookMinScale, 0.0);
-//    initialAttributes.alpha = 0.0;
-//    initialAttributes.transform3D = scaleTransform;
-//    return initialAttributes;
-//}
 
 //- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
 //                                 withScrollingVelocity:(CGPoint)velocity {
