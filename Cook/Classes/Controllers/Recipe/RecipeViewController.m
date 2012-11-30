@@ -104,16 +104,11 @@
     if ([mutableIngredientString length] > 0) {
         self.ingredientsView.ingredients = [NSString stringWithString:mutableIngredientString];
     }
+
+    if (self.recipe.description) {
+        self.cookingDirectionsView.directions = self.recipe.description;
+    }
 //
-//    if (self.recipe.description) {
-//        CGSize maxSize = CGSizeMake(330.0f, CGFLOAT_MAX);
-//        self.cookingDirectionsLabel.text = self.recipe.description;
-//        CGSize requiredSize = [self.recipe.description sizeWithFont:self.cookingDirectionsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
-//        self.cookingDirectionsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
-//        [self adjustScrollView:self.cookingDirectionsScrollView forHeight:requiredSize.height];
-//
-//    }
-//    
 //    PFImageView *imageView = (PFImageView*) [self.recipeImageScrollView viewWithTag:kImageViewTag];
 //    if (!imageView) {
 //        imageView = [[PFImageView alloc] init];

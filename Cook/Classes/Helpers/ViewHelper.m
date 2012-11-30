@@ -57,4 +57,12 @@
     return result;
 }
 
+
++(void) adjustScrollContentSize:(UIScrollView*)scrollView forHeight:(float)height
+{
+   scrollView.contentSize = height > scrollView.frame.size.height ?
+    CGSizeMake(scrollView.frame.size.width, height) :
+    CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
+}
+
 @end

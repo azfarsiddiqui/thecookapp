@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "UIEditableView.h"
 @interface CookingDirectionsView : UIEditableView
-
+@property(nonatomic,strong) NSString *directions;
 @end

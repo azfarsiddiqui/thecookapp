@@ -7,39 +7,64 @@
 //
 
 #import "CookingDirectionsView.h"
+#import "Theme.h"
+#import "ViewHelper.h"
 
+@interface CookingDirectionsView()
+@property(nonatomic,strong) UITextView *directionsTextView;
+@property(nonatomic,strong) UIScrollView *directionsScrollView;
+
+@end
 @implementation CookingDirectionsView
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
 
 -(void)makeEditable:(BOOL)editable
 {
     [super makeEditable:editable];
 }
 
+#pragma mark - Private methods
 
-//-(UILabel *)cookingDirectionsLabel
-//{
-//    if (!_cookingDirectionsLabel) {
-//        _cookingDirectionsLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f,  330.0f, 20.0f)];
-//        _cookingDirectionsLabel.numberOfLines = 0;
-//        _cookingDirectionsLabel.lineBreakMode = NSLineBreakByWordWrapping;
-//        [self.cookingDirectionsScrollView addSubview:_cookingDirectionsLabel];
-//    }
-//    
-//    self.cookingDirectionsLabel.font = [Theme defaultLabelFont];
-//    self.cookingDirectionsLabel.textColor = [Theme directionsLabelColor];
-//
-//    return _cookingDirectionsLabel;
-//}
+//overridden
+-(void) configViews
+{
+    
+    self.directionsScrollView.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
+    
+    CGSize maxSize = CGSizeMake(330.0f, CGFLOAT_MAX);
+    self.directionsTextView.text = self.directions;
+    CGSize requiredSize = [self.directions sizeWithFont:self.directionsTextView.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
+    self.directionsTextView.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
+    [ViewHelper adjustScrollContentSize:self.directionsScrollView forHeight:requiredSize.height];
+}
 
+//overridden
+-(void)styleViews
+{
+    self.directionsTextView.font = [Theme defaultLabelFont];
+    self.directionsTextView.textColor = [Theme directionsLabelColor];
+    self.directionsTextView.backgroundColor = [UIColor clearColor];
+}
+
+-(UITextView *)directionsTextView
+{
+    if (!_directionsTextView) {
+        _directionsTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+        _directionsTextView.editable = NO;
+        [self.directionsScrollView addSubview:_directionsTextView];
+    }
+    
+    return _directionsTextView;
+}
+
+-(UIScrollView *)directionsScrollView
+{
+    if (!_directionsScrollView) {
+        _directionsScrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+        _directionsScrollView.scrollEnabled = YES;
+        [self addSubview:_directionsScrollView];
+    }
+    return _directionsScrollView;
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

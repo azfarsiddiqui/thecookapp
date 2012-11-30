@@ -8,6 +8,7 @@
 
 #import "IngredientsView.h"
 #import "Theme.h"
+#import "ViewHelper.h"
 
 @interface IngredientsView()
 @property(nonatomic,strong) UILabel *ingredientsLabel;
@@ -31,8 +32,7 @@
     self.ingredientsLabel.text = self.ingredients;
     CGSize requiredSize = [self.ingredients sizeWithFont:self.ingredientsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
     self.ingredientsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
-    [self adjustScrollContentSizeToHeight:requiredSize.height];
-
+    [ViewHelper adjustScrollContentSize:self.ingredientsScrollView forHeight:requiredSize.height];
 }
 
 //overridden
@@ -58,7 +58,7 @@
 {
     if (!_ingredientsScrollView) {
         _ingredientsScrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
-        _ingredientsScrollView.scrollEnabled = NO;
+        _ingredientsScrollView.scrollEnabled = YES;
         [self addSubview:_ingredientsScrollView];
     }
     return _ingredientsScrollView;
