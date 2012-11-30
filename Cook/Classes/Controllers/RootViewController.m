@@ -137,17 +137,20 @@
         
     }
     
+    BOOL bounce = (toggleMode && currentStoreMode);
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.storeViewController.view.frame = [self storeFrameForShow:currentStoreMode bounce:toggleMode];
-                         self.benchtopViewController.view.frame = [self benchtopFrameForShow:!currentStoreMode bounce:toggleMode];
+                         self.storeViewController.view.frame = [self storeFrameForShow:currentStoreMode
+                                                                                bounce:bounce];
+                         self.benchtopViewController.view.frame = [self benchtopFrameForShow:!currentStoreMode
+                                                                                      bounce:bounce];
                      }
                      completion:^(BOOL finished) {
                          
                          // Extra bounce back animation when toggling between modes.
-                         if (toggleMode) {
+                         if (bounce) {
                              [UIView animateWithDuration:0.2
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
@@ -156,14 +159,16 @@
                                                   self.benchtopViewController.view.frame = [self benchtopFrameForShow:!currentStoreMode];
                                               }
                                               completion:^(BOOL finished) {
-                                                  if (toggleMode) {
-                                                      self.storeMode = !self.storeMode;
-                                                      
-                                                      // Enable the toggled area.
-                                                      [self.storeViewController enable:self.storeMode];
-                                                      [self.benchtopViewController enable:!self.storeMode];
-                                                  }
                                               }];
+                         }
+                         
+                         // Inform toggle.
+                         if (toggleMode) {
+                             self.storeMode = !self.storeMode;
+                             
+                             // Enable the toggled area.
+                             [self.storeViewController enable:self.storeMode];
+                             [self.benchtopViewController enable:!self.storeMode];
                          }
                          
                      }];
