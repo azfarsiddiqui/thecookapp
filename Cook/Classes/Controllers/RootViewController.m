@@ -9,12 +9,19 @@
 #import "RootViewController.h"
 #import "BenchtopCollectionViewController.h"
 #import "StoreViewController.h"
+#import "BenchtopViewControllerDelegate.h"
+#import "BookCoverViewController.h"
+#import "BookViewController.h"
+#import "CKBook.h"
 
-@interface RootViewController ()
+@interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate, BookViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
+@property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
+@property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, assign) BOOL storeMode;
+@property (nonatomic, strong) CKBook *selectedBook;
 
 @end
 
@@ -41,13 +48,53 @@
     [super viewDidAppear:animated];
     
     self.storeViewController = [[StoreViewController alloc] init];
+    self.storeViewController.delegate = self;
     self.storeViewController.view.frame = [self storeFrameForShow:NO];
     [self.view addSubview:self.storeViewController.view];
     
     self.benchtopViewController = [[BenchtopCollectionViewController alloc] init];
+    self.benchtopViewController.delegate = self;
     self.benchtopViewController.view.frame = [self benchtopFrameForShow:YES];
     [self.view insertSubview:self.benchtopViewController.view belowSubview:self.storeViewController.view];
     [self.benchtopViewController enable:YES];
+}
+
+#pragma mark - BenchtopViewControllerDelegate methods
+
+- (void)openBookRequestedForBook:(CKBook *)book {
+    DLog();
+//    [self openBook:book];
+}
+
+#pragma mark - BookCoverViewControllerDelegate methods
+
+- (void)bookCoverViewWillOpen:(BOOL)open {
+}
+
+- (void)bookCoverViewDidOpen:(BOOL)open {
+    if (open) {
+        
+        // Add the book view.
+        BookViewController *bookViewController = [[BookViewController alloc] initWithBook:self.selectedBook
+                                                                                 delegate:self];
+        [self.view addSubview:bookViewController.view];
+        self.bookViewController = bookViewController;
+        
+    } else {
+        
+        // Remove the book cover.
+        [self.bookCoverViewController cleanUpLayers];
+        [self.bookCoverViewController.view removeFromSuperview];
+        self.bookCoverViewController = nil;
+        
+    }
+}
+
+#pragma mark - BookViewControllerDelegate methods
+
+- (void)bookViewControllerCloseRequested {
+    // [self.bookCoverViewController.view removeFromSuperview];
+    // [self.bookCoverViewController openBook:NO];
 }
 
 #pragma mark - Private methods
@@ -189,5 +236,16 @@
     }
 }
 
+- (void)openBook:(CKBook *)book {
+    
+    // Open book.
+    BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book
+                                                                                            delegate:self];
+    bookCoverViewController.view.frame = self.view.bounds;
+    [self.view addSubview:bookCoverViewController.view];
+    [bookCoverViewController openBook:YES];
+    self.bookCoverViewController = bookCoverViewController;
+    
+}
 
 @end

@@ -31,6 +31,10 @@
 
 #define RADIANS(degrees)        ((degrees * (float)M_PI) / 180.0f)
 
+- (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate {
+    return [self initWithBook:book mine:NO delegate:delegate];
+}
+
 - (id)initWithBook:(CKBook *)book mine:(BOOL)mine delegate:(id<BookCoverViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;

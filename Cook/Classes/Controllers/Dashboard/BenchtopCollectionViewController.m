@@ -66,7 +66,7 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    [self.delegate openBookRequestedForBook:self.myBook];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods

@@ -385,6 +385,7 @@
 		76381CB516688A6400404FB1 /* cook_dash_bg_whole@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_whole@2x.png"; sourceTree = "<group>"; };
 		76381CB916688C7E00404FB1 /* cook_dash_bg_shelves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_shelves.png; sourceTree = "<group>"; };
 		76381CBA16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_shelves@2x.png"; sourceTree = "<group>"; };
+		76386C231668D01700471C44 /* BenchtopViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewControllerDelegate.h; sourceTree = "<group>"; };
 		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
 		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
 		76506D62163DF8920047D36B /* cook_dash_icons_store.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_store.png; sourceTree = "<group>"; };
@@ -910,6 +911,7 @@
 				76DEF052164A285D00B7DB9C /* CoverPickerCell.m */,
 				76DC8DB91659BF23005C472B /* BookCoverViewController.h */,
 				76DC8DBA1659BF23005C472B /* BookCoverViewController.m */,
+				76386C231668D01700471C44 /* BenchtopViewControllerDelegate.h */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";

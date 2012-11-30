@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BenchtopViewControllerDelegate.h"
 
 @interface StoreViewController : UIViewController
+
+@property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
 
 - (void)enable:(BOOL)enable;
 
