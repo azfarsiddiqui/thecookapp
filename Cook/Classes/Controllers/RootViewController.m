@@ -20,11 +20,12 @@
 
 @implementation RootViewController
 
-#define kDragRatio          0.2
-#define kSnapHeight         30.0
-#define kBounceOffset       30.0
-#define kStoreTuckOffset    52.0
-#define kStoreShadowOffset  31.0
+#define kDragRatio              0.2
+#define kSnapHeight             30.0
+#define kBounceOffset           30.0
+#define kStoreHideTuckOffset    52.0
+#define kStoreShadowOffset      31.0
+#define kStoreShowAdjustment    100.0
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -82,7 +83,7 @@
         currentStoreMode = NO;
         
     } else if (!self.storeMode
-               && CGRectIntersection(self.view.bounds, self.storeViewController.view.frame).size.height > (kStoreTuckOffset + kStoreShadowOffset + kSnapHeight)) {
+               && CGRectIntersection(self.view.bounds, self.storeViewController.view.frame).size.height > (kStoreHideTuckOffset + kStoreShadowOffset + kSnapHeight)) {
         
         toggleMode = YES;
         currentStoreMode = YES;
@@ -139,7 +140,7 @@
         
         // Show frame is just the top of the view bounds.
         CGRect showFrame = CGRectMake(self.view.bounds.origin.x,
-                                      self.view.bounds.origin.y,
+                                      self.view.bounds.origin.y - kStoreShowAdjustment,
                                       self.view.bounds.size.width,
                                       self.storeViewController.view.frame.size.height);
         if (bounce) {
@@ -151,7 +152,7 @@
         
         // Hidden frame is above view bounds but lowered to show the bottom shelf.
         CGRect hideFrame = CGRectMake(self.view.bounds.origin.x,
-                                      -self.storeViewController.view.frame.size.height + kStoreTuckOffset,
+                                      -self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
                                       self.view.bounds.size.width,
                                       self.storeViewController.view.frame.size.height);
         if (bounce) {

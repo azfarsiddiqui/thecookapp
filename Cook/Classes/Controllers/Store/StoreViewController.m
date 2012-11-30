@@ -37,14 +37,20 @@
     CGFloat rowHeight = [StoreBookCoverViewCell cellSize].height;
     
     FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] init];
-    featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, rowHeight);
+    featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                   self.view.bounds.origin.y,
+                                                   self.view.bounds.size.width,
+                                                   rowHeight + 93.0);
     featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:featuredViewController.view];
     self.featuredViewController = featuredViewController;
     [featuredViewController loadData];
     
     FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] init];
-    friendsViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.size.height - rowHeight, self.view.bounds.size.width, rowHeight);
+    friendsViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                  self.view.bounds.size.height - rowHeight + 45.0,
+                                                  self.view.bounds.size.width,
+                                                  rowHeight);
     friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
     [self.view addSubview:friendsViewController.view];
     self.friendsViewController = friendsViewController;
