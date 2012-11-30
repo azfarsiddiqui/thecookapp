@@ -33,7 +33,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.collectionView.backgroundColor = [UIColor lightGrayColor];
+    [self initBackground];
+    
+    self.collectionView.backgroundColor = [UIColor clearColor];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
@@ -120,6 +122,11 @@
 #pragma mark - Private methods
 
 - (void)initBackground {
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_whole.png"]];
+    self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, backgroundView.frame.size.width, backgroundView.frame.size.height);
+    self.view.clipsToBounds = NO;
+    [self.view insertSubview:backgroundView belowSubview:self.collectionView];
+    self.backgroundView = backgroundView;
 }
 
 - (void)loadMyBook {
