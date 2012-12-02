@@ -22,6 +22,7 @@
 @property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
+@property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
 
 @end
 
@@ -100,7 +101,7 @@
 #pragma mark - Private methods
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
-    
+
     CGPoint translation = [panGesture translationInView:self.view];
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
@@ -124,7 +125,7 @@
     BOOL currentStoreMode = self.storeMode;
     
     if (self.storeMode
-        && CGRectIntersection(self.view.bounds, self.benchtopViewController.view.frame).size.height > kSnapHeight + kStoreShadowOffset) {
+        && CGRectIntersection(self.view.bounds, self.benchtopViewController.view.frame).size.height > self.benchtopHideOffset + kSnapHeight) {
         
         toggleMode = YES;
         currentStoreMode = NO;
@@ -159,6 +160,7 @@
                                                   self.benchtopViewController.view.frame = [self benchtopFrameForShow:!currentStoreMode];
                                               }
                                               completion:^(BOOL finished) {
+                                                  self.benchtopHideOffset = CGRectIntersection(self.view.bounds, self.benchtopViewController.view.frame).size.height;
                                               }];
                          }
                          
