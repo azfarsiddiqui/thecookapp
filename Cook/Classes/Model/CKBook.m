@@ -43,6 +43,34 @@
     return parseBook;
 }
 
++ (void)followBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    // User Book follows
+    PFQuery *userBookFollowsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
+    [userBookFollowsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [userBookFollowsQuery includeKey:kBookModelForeignKeyName]; // Include the books
+    [userBookFollowsQuery includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];
+    [userBookFollowsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [userBookFollowsQuery orderByAscending:kUserBookFollowAttrOrder];
+    [userBookFollowsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
+        if (!error) {
+            
+            // Extract the books.
+            NSArray *books = [parseFollows collect:^id(PFObject *parseFollow) {
+                PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
+                return [[CKBook alloc] initWithParseObject:parseBook];
+            }];
+            
+            success(books);
+            
+        } else {
+            DLog(@"Error loading books: %@", [error localizedDescription]);
+            failure(error);
+        }
+    }];
+    
+}
+
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     // Auto follow any friends first before loading books.

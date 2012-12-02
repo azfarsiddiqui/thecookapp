@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
+@property (nonatomic, strong) NSArray *followBooks;
 @property (nonatomic, strong) CKLoginView *loginView;
 
 @end
@@ -26,6 +27,7 @@
 
 #define kCellId         @"BenchtopCellId"
 #define kMySection      0
+#define kFollowSection  1
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[BenchtopCollectionFlowLayout alloc] init]]) {
@@ -58,6 +60,11 @@
         NSInteger numMyBooks = [self.collectionView numberOfItemsInSection:kMySection];
         if (numMyBooks == 0) {
             [self loadMyBook];
+        }
+        
+        // Load following books if not there already.
+        if ([self.followBooks count] == 0) {
+            [self loadFollowBooks];
         }
         
     }
@@ -98,16 +105,26 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    NSInteger numSections = 1;
-    return numSections;
+    if ([self.followBooks count] == 0) {
+        return 1;
+    } else {
+        return 2;
+    }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    if (section == kMySection) {
-        return self.myBook ? 1 : 0;
-    } else {
-        return 0;
+    NSInteger numItems = 0;
+    switch (section) {
+        case kMySection:
+            numItems = self.myBook ? 1 : 0;
+            break;
+        case kFollowSection:
+            numItems = [self.followBooks count];
+            break;
+        default:
+            break;
     }
+    return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -116,6 +133,9 @@
                                                                                                                forIndexPath:indexPath];
     if (indexPath.section == kMySection) {
         [cell loadBook:self.myBook];
+    } else if (indexPath.section == kFollowSection) {
+        CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
+        [cell loadBook:book];
     }
     
     return cell;
@@ -167,6 +187,19 @@
                 failure:^(NSError *error) {
                     DLog(@"Error: %@", [error localizedDescription]);
                 }];
+}
+
+- (void)loadFollowBooks {
+    [CKBook followBooksForUser:[CKUser currentUser]
+                       success:^(NSArray *books) {
+                           self.followBooks = books;
+                           if ([books count] > 0) {
+                               [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                           }
+                       }
+                       failure:^(NSError *error) {
+                           DLog(@"Error: %@", [error localizedDescription]);
+                       }];
 }
 
 - (void)performLogin {
