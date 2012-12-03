@@ -14,7 +14,6 @@
 
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
-@property (nonatomic, strong) UICollectionViewLayoutAttributes *deletedLayoutAttributes;
 
 @end
 

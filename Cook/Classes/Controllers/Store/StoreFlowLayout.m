@@ -8,6 +8,13 @@
 
 #import "StoreFlowLayout.h"
 
+@interface StoreFlowLayout ()
+
+@property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
+@property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
+
+@end
+
 @implementation StoreFlowLayout
 
 #define kStoreBookInsertScale   0.5
@@ -32,6 +39,22 @@
     return layoutAttributes;
 }
 
+- (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
+    [super prepareForCollectionViewUpdates:updateItems];
+    
+    self.insertedIndexPaths = [NSMutableArray array];
+    self.deletedIndexPaths = [NSMutableArray array];
+    
+    for (UICollectionViewUpdateItem *updateItem in updateItems) {
+        if (updateItem.updateAction == UICollectionUpdateActionInsert) {
+            [self.insertedIndexPaths addObject:updateItem.indexPathAfterUpdate];
+        }
+        else if (updateItem.updateAction == UICollectionUpdateActionDelete) {
+            [self.deletedIndexPaths addObject:updateItem.indexPathBeforeUpdate];
+        }
+    }
+    
+}
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
@@ -46,6 +69,19 @@
     CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kStoreBookInsertScale, kStoreBookInsertScale, 0.0);
     initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
     return initialAttributes;
+}
+
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *finalAttributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
+    return finalAttributes;
+}
+
+- (void)finalizeCollectionViewUpdates {
+    DLog();
+    [self.insertedIndexPaths removeAllObjects];
+    [self.deletedIndexPaths removeAllObjects];
+    self.insertedIndexPaths = nil;
+    self.deletedIndexPaths = nil;
 }
 
 //- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
