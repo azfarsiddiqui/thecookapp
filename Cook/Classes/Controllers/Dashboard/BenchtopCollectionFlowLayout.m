@@ -11,7 +11,7 @@
 
 @implementation BenchtopCollectionFlowLayout
 
-#define kBookScaleFactor            1.02
+#define kBookScaleFactor            1.1
 #define kBookRotationDegrees        5.0
 #define kBookTranslate              20.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
@@ -64,12 +64,10 @@
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-    CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
-    CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, 0.0, kBookTranslate, 0.0);
-    initialAttributes.alpha = 0.0;
-    initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
-//    initialAttributes.transform3D = scaleTransform;
-//    initialAttributes.transform3D = translateTransform;
+    if (itemIndexPath.section == 0) {
+        CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
+        initialAttributes.transform3D = scaleTransform;
+    }
     return initialAttributes;
 }
 
