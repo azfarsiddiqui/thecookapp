@@ -498,8 +498,8 @@
     // Figure out required line height vs single line height.
     CGSize singleLineSize = [self singleLineSizeForLabel:self.titleLabel attributes:attributes];
     CGSize lineSize = [self lineSizeForLabel:self.titleLabel attributedString:titleDisplay];
-    DLog(@"Required Height: %f", lineSize.height);
-    DLog(@"Single   Height: %f", singleLineSize.height);
+//    DLog(@"Required Height: %f", lineSize.height);
+//    DLog(@"Single   Height: %f", singleLineSize.height);
     if (lineSize.height > singleLineSize.height) {
         
         // If more than 14 characters, bump down the font again.

@@ -14,7 +14,8 @@
 #import "BookViewController.h"
 #import "CKBook.h"
 
-@interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate, BookViewControllerDelegate>
+@interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
+    BookViewControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -42,22 +43,29 @@
     
     // Drag to pull
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    self.storeViewController = [[StoreViewController alloc] init];
-    self.storeViewController.delegate = self;
-    self.storeViewController.view.frame = [self storeFrameForShow:NO];
-    [self.view addSubview:self.storeViewController.view];
+    // If the current user is not persisted, i.e. new, then create a book first.
+    CKUser *currentUser = [CKUser currentUser];
+    if (![currentUser persisted]) {
+        
+        // TODO Tutorial.
+        [CKBook createBookForUser:currentUser
+                         succeess:^{
+                             [self initViewControllers];
+                         } failure:^(NSError *error) {
+                             // TODO Handle initial creation error.
+                         }];
+        
+    } else {
+        [self initViewControllers];
+    }
     
-    self.benchtopViewController = [[BenchtopCollectionViewController alloc] init];
-    self.benchtopViewController.delegate = self;
-    self.benchtopViewController.view.frame = [self benchtopFrameForShow:YES];
-    [self.view insertSubview:self.benchtopViewController.view belowSubview:self.storeViewController.view];
-    [self.benchtopViewController enable:YES];
 }
 
 #pragma mark - BenchtopViewControllerDelegate methods
@@ -96,6 +104,18 @@
 - (void)bookViewControllerCloseRequested {
     // [self.bookCoverViewController.view removeFromSuperview];
     // [self.bookCoverViewController openBook:NO];
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    // Ignore pan gesture if no VC's set up.
+    if (self.storeViewController && self.benchtopViewController) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - Private methods
@@ -253,6 +273,19 @@
     [bookCoverViewController openBook:YES];
     self.bookCoverViewController = bookCoverViewController;
     
+}
+
+- (void)initViewControllers {
+    self.storeViewController = [[StoreViewController alloc] init];
+    self.storeViewController.delegate = self;
+    self.storeViewController.view.frame = [self storeFrameForShow:NO];
+    [self.view addSubview:self.storeViewController.view];
+    
+    self.benchtopViewController = [[BenchtopCollectionViewController alloc] init];
+    self.benchtopViewController.delegate = self;
+    self.benchtopViewController.view.frame = [self benchtopFrameForShow:YES];
+    [self.view insertSubview:self.benchtopViewController.view belowSubview:self.storeViewController.view];
+    [self.benchtopViewController enable:YES];
 }
 
 @end

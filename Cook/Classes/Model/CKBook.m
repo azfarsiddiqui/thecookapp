@@ -28,6 +28,18 @@
     }];
 }
 
++ (void)createBookForUser:(CKUser *)user succeess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFObject *book = [self createParseBookForParseUser:user.parseUser];
+    [book saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            success();
+        } else {
+            DLog(@"Error loading user friends: %@", [error localizedDescription]);
+            failure(error);
+        }
+    }];    
+}
+
 + (PFObject *)createParseBook {
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
@@ -89,6 +101,7 @@
     // Friends books query.
     PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
     [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [friendsBooksQuery includeKey:kUserModelForeignKeyName];
     [friendsBooksQuery whereKey:kUserModelForeignKeyName matchesQuery:friendsQuery];
     [friendsBooksQuery whereKey:kModelObjectId doesNotMatchKey:kBookModelForeignKeyName inQuery:followsQuery];
     [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
