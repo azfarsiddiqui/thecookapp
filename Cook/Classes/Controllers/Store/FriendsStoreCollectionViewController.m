@@ -9,6 +9,7 @@
 #import "FriendsStoreCollectionViewController.h"
 #import "CKBook.h"
 #import "CKUser.h"
+#import "MRCEnumerable.h"
 
 @interface FriendsStoreCollectionViewController ()
 
@@ -23,7 +24,13 @@
         [CKBook friendsBooksForUser:currentUser
                             success:^(NSArray *friendsBooks) {
                                 self.books = [NSMutableArray arrayWithArray:friendsBooks];
-                                [self reloadBooks];
+                                
+                                // Insert the books.
+                                NSArray *insertIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
+                                    return [NSIndexPath indexPathForItem:index inSection:0];
+                                }];
+                                [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+                                
                             }
                             failure:^(NSError *error) {
                                 DLog(@"Error: %@", [error localizedDescription]);
