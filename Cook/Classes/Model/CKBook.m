@@ -73,6 +73,51 @@
 
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
+//    // Facebook friends.
+//    NSArray *facebookFriends = [user.parseUser objectForKey:kUserAttrFacebookFriends];
+//    
+//    // Friends query
+//    PFQuery *friendsQuery = [PFUser query];
+//    [friendsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+//    [friendsQuery whereKey:kUserAttrFacebookId containedIn:facebookFriends];
+//    
+//    // Existing follows.
+//    PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
+//    [followsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+//    [followsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+//
+//    // Friends books query.
+//    PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
+//    [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+//    [friendsBooksQuery whereKey:kUserModelForeignKeyName matchesQuery:friendsQuery];
+//    [friendsBooksQuery whereKey:kModelObjectId doesNotMatchKey:kBookModelForeignKeyName inQuery:followsQuery];
+//    
+//    PFQuery *userFriendsQuery = [PFQuery queryWithClassName:kUserFriendsModelName];
+//    [userFriendsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+//    [userFriendsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+//    [userFriendsQuery getFirstObjectInBackgroundWithBlock:^(PFObject *userFriend, NSError *error) {
+//        
+//        if (!error) {
+//            
+//            // The list of friend objectIds.
+//            NSArray *friendObjectIds = [userFriend objectForKey:kUserFriendsAttrFriends];
+//            
+//            // Now construct the book query based with the above user objectIds.
+//            PFQuery *booksQuery = [PFQuery queryWithClassName:kBookModelName];
+//            [booksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+//            [booksQuery includeKey:kUserModelForeignKeyName];
+//
+//            
+//            
+//            
+//        } else {
+//            DLog(@"Error loading user friends: %@", [error localizedDescription]);
+//            failure(error);
+//        }
+//        
+//    }];
+    
+    
     // Auto follow any friends first before loading books.
     [user autoSuggestCompletion:^{
         [CKBook loadBooksForUser:user success:success failure:failure];
