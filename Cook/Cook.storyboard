@@ -160,11 +160,6 @@
                                     <constraint firstItem="8gW-u9-5Bh" firstAttribute="leading" secondItem="x8d-CU-Nyb" secondAttribute="leading" constant="4" id="tg9-4q-nJx"/>
                                 </constraints>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="18" type="user" id="IgB-e4-iUw"/>
-                                </constraints>
-                            </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H9S-OO-JnT" customClass="IngredientsView">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -180,6 +175,11 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_recipe_imageshadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="fcB-UV-juz">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="18" type="user" id="IgB-e4-iUw"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -205,7 +205,7 @@
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="leading" secondItem="H9S-OO-JnT" secondAttribute="trailing" constant="40" type="user" id="Oxb-C0-EsE"/>
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="top" secondItem="G8I-BA-gbt" secondAttribute="bottom" constant="24" type="user" id="PBR-bl-Twm"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="trailing" secondItem="p0o-T6-Pxs" secondAttribute="trailing" type="default" id="QEQ-kj-1ZS"/>
-                            <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="355" id="RAp-rS-PdM"/>
+                            <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="355" id="TCQ-PE-Bs0"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="leading" secondItem="E4H-Ex-K7C" secondAttribute="leading" type="default" id="TmV-6P-zn5"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="66" id="X83-t0-qVh"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="trailing" secondItem="E4H-Ex-K7C" secondAttribute="trailing" type="default" id="Ywi-UO-da3"/>
