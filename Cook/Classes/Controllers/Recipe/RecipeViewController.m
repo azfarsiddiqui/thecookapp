@@ -108,47 +108,16 @@
     if (self.recipe.description) {
         self.cookingDirectionsView.directions = self.recipe.description;
     }
-//
-//    PFImageView *imageView = (PFImageView*) [self.recipeImageScrollView viewWithTag:kImageViewTag];
-//    if (!imageView) {
-//        imageView = [[PFImageView alloc] init];
-//        imageView.tag = kImageViewTag;
-//        [self.recipeImageScrollView addSubview:imageView];
-//    }
-//    
-//    if (self.recipe.numServes > 0) {
-//        self.numServesLabel.text = [NSString stringWithFormat:@"%i",self.recipe.numServes];
-//    }
-//
-//    if (self.recipe.cookingTimeInSeconds > 0) {
-//        self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.recipe.cookingTimeInSeconds];
-//    }
-//
-//    [CKRecipe imagesForRecipe:self.recipe success:^{
-//        if ([self.recipe imageFile]) {
-//            imageView.file = [self.recipe imageFile];
-//            [imageView loadInBackground:^(UIImage *image, NSError *error) {
-//                if (!error) {
-//                    CGSize imageSize = CGSizeMake(image.size.width, image.size.height);
-//                    DLog(@"recipe image size: %@",NSStringFromCGSize(imageSize));
-//                    imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
-//                    imageView.image = image;
-//                    self.recipeImageScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
-//                    if (self.recipe.recipeViewImageContentOffset.x!=0) {
-//                        self.recipeImageScrollView.contentOffset = self.recipe.recipeViewImageContentOffset;
-//                    } else {
-//                        self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);
-//                    }
-//                    
-//                } else {
-//                    DLog(@"Error loading image in background: %@", [error description]);
-//                }
-//            }];
-//        }
-//    } failure:^(NSError *error) {
-//        DLog(@"Error loading image: %@", [error description]);
-//    }];
-//
+    if (self.recipe.numServes > 0) {
+        self.servesView.serves = self.recipe.numServes;
+    }
+
+    if (self.recipe.cookingTimeInSeconds > 0) {
+        self.cookingTimeView.cookingTimeInSeconds = self.recipe.cookingTimeInSeconds;
+    }
+
+    self.recipeImageView.recipe = self.recipe;
+   
 }
 
 

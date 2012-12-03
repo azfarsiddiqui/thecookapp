@@ -11,7 +11,7 @@
 #import "ViewHelper.h"
 
 @interface CookingDirectionsView()
-@property(nonatomic,strong) UITextView *directionsTextView;
+@property(nonatomic,strong) UILabel *directionsLabel;
 @property(nonatomic,strong) UIScrollView *directionsScrollView;
 
 @end
@@ -27,33 +27,32 @@
 //overridden
 -(void) configViews
 {
-    
+    DLog();
     self.directionsScrollView.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
-    
-    CGSize maxSize = CGSizeMake(330.0f, CGFLOAT_MAX);
-    self.directionsTextView.text = self.directions;
-    CGSize requiredSize = [self.directions sizeWithFont:self.directionsTextView.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
-    self.directionsTextView.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
+    CGSize maxSize = CGSizeMake(self.directionsScrollView.frame.size.width, CGFLOAT_MAX);
+    self.directionsLabel.text = self.directions;
+    CGSize requiredSize = [self.directionsLabel sizeThatFits:maxSize];
+    self.directionsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
     [ViewHelper adjustScrollContentSize:self.directionsScrollView forHeight:requiredSize.height];
 }
 
 //overridden
 -(void)styleViews
 {
-    self.directionsTextView.font = [Theme defaultLabelFont];
-    self.directionsTextView.textColor = [Theme directionsLabelColor];
-    self.directionsTextView.backgroundColor = [UIColor clearColor];
+    self.directionsLabel.font = [Theme defaultLabelFont];
+    self.directionsLabel.textColor = [Theme directionsLabelColor];
+    self.directionsLabel.backgroundColor = [UIColor clearColor];
 }
 
--(UITextView *)directionsTextView
+-(UILabel *)directionsLabel
 {
-    if (!_directionsTextView) {
-        _directionsTextView = [[UITextView alloc] initWithFrame:CGRectZero];
-        _directionsTextView.editable = NO;
-        [self.directionsScrollView addSubview:_directionsTextView];
+    if (!_directionsLabel) {
+        _directionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _directionsLabel.numberOfLines = 0;
+        [self.directionsScrollView addSubview:_directionsLabel];
     }
     
-    return _directionsTextView;
+    return _directionsLabel;
 }
 
 -(UIScrollView *)directionsScrollView

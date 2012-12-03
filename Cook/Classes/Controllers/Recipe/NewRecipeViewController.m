@@ -185,7 +185,7 @@
 
 }
 
--(void) cookingTimeTapped:(UILabel*)gestureRecognizer;
+-(void) cookingTimeTapped:(UITapGestureRecognizer*)gestureRecognizer;
 {
     DLog();
     self.cookingTimeLabel.textColor = [UIColor blackColor];

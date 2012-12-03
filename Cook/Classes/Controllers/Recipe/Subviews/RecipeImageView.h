@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "UIEditableView.h"
+#import "CKRecipe.h"
 @interface RecipeImageView : UIEditableView
 
+-(void)setRecipe:(CKRecipe *)recipe;
 @end

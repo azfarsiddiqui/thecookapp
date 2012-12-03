@@ -9,7 +9,7 @@
 #import "UIEditableView.h"
 
 @interface UIEditableView()
-@property(nonatomic,assign) BOOL editMode;
+@property(nonatomic,assign,readonly) BOOL editMode;
 @end
 
 @implementation UIEditableView
@@ -37,8 +37,12 @@
 
 -(void) makeEditable:(BOOL)editable
 {
-    self.editMode = editable;
-    self.backgroundColor = [UIColor greenColor];
+    _editMode = editable;
+}
+
+-(BOOL)inEditMode
+{
+    return self.editMode;
 }
 
 #pragma mark - Private methods

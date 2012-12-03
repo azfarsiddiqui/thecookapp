@@ -144,7 +144,7 @@
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" translatesAutoresizingMaskIntoConstraints="NO" id="Xia-Kz-dcG"/>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="Xia-Kz-dcG" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" constant="5" id="deh-Lq-weo"/>
                                     <constraint firstItem="Xia-Kz-dcG" firstAttribute="top" secondItem="ncH-Sa-cAx" secondAttribute="top" constant="1" id="rEH-SQ-cLo"/>
@@ -154,7 +154,7 @@
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" translatesAutoresizingMaskIntoConstraints="NO" id="8gW-u9-5Bh"/>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="8gW-u9-5Bh" firstAttribute="top" secondItem="x8d-CU-Nyb" secondAttribute="top" constant="1" id="phw-mL-gZK"/>
                                     <constraint firstItem="8gW-u9-5Bh" firstAttribute="leading" secondItem="x8d-CU-Nyb" secondAttribute="leading" constant="4" id="tg9-4q-nJx"/>
@@ -167,13 +167,13 @@
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H9S-OO-JnT" customClass="IngredientsView">
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gzk-Ze-6Lw" customClass="CookingDirectionsView">
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="RECIPE NAME" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E4H-Ex-K7C" customClass="RecipeNameView">
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" type="user" id="ca2-Nf-mvd"/>
                                 </constraints>
@@ -589,10 +589,10 @@
                 <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
             </relationships>
         </class>
-        <class className="CookingDirectionsView" superclassName="UIView">
+        <class className="CookingDirectionsView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CookingDirectionsView.h"/>
         </class>
-        <class className="CookingTimeView" superclassName="UIView">
+        <class className="CookingTimeView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CookingTimeView.h"/>
         </class>
         <class className="FacebookUserView" superclassName="UIView">
@@ -601,7 +601,7 @@
         <class className="IngredientTableViewCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientTableViewCell.h"/>
         </class>
-        <class className="IngredientsView" superclassName="UIView">
+        <class className="IngredientsView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientsView.h"/>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">
@@ -630,10 +630,10 @@
         <class className="PageViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/PageViewController.h"/>
         </class>
-        <class className="RecipeImageView" superclassName="UIView">
+        <class className="RecipeImageView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeImageView.h"/>
         </class>
-        <class className="RecipeNameView" superclassName="UIView">
+        <class className="RecipeNameView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeNameView.h"/>
         </class>
         <class className="RecipeViewController" superclassName="PageViewController">
@@ -646,10 +646,10 @@
                 <relationship kind="outlet" name="recipeImageView" candidateClass="RecipeImageView"/>
                 <relationship kind="outlet" name="recipeNameView" candidateClass="RecipeNameView"/>
                 <relationship kind="outlet" name="servesView" candidateClass="ServesView"/>
-                <relationship kind="outletCollection" name="editableViews" candidateClass="UIView"/>
+                <relationship kind="outletCollection" name="editableViews" candidateClass="UIEditableView"/>
             </relationships>
         </class>
-        <class className="ServesView" superclassName="UIView">
+        <class className="ServesView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ServesView.h"/>
         </class>
         <class className="UICollectionReusableView" superclassName="UIView">
@@ -660,6 +660,9 @@
         </class>
         <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+        <class className="UIEditableView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UIEditableView.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
