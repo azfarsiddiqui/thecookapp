@@ -90,30 +90,52 @@
     
     // Friends query
     PFQuery *friendsQuery = [PFUser query];
-    [friendsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
     [friendsQuery whereKey:kUserAttrFacebookId containedIn:facebookFriends];
     
-    // Existing follows.
-    PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
-    [followsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
-    [followsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
-
     // Friends books query.
+    // TODO Can this query be combined?
     PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
     [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
     [friendsBooksQuery includeKey:kUserModelForeignKeyName];
     [friendsBooksQuery whereKey:kUserModelForeignKeyName matchesQuery:friendsQuery];
-    [friendsBooksQuery whereKey:kModelObjectId doesNotMatchKey:kBookModelForeignKeyName inQuery:followsQuery];
     [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         
         if (!error) {
             
-            // Extract the books.
-            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
-                return [[CKBook alloc] initWithParseObject:parseBook];
+            // Existing follows.
+            PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
+            [followsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+            [followsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error)  {
+               
+                if (!error) {
+                    
+                    // Collect the object ids.
+                    NSArray *objectIds = [parseFollows collect:^id(PFObject *parseFollow) {
+                        PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
+                        return parseBook.objectId;
+                    }];
+                    
+                    // Filter out the books that are not followed.
+                    NSArray *filteredParsebooks = [parseBooks reject:^BOOL(PFObject *parseBook) {
+                        return [objectIds containsObject:parseBook.objectId];
+                    }];
+                    
+                    // Return CKBook model objects.
+                    NSArray *books = [filteredParsebooks collect:^id(PFObject *parseBook) {
+                        return [[CKBook alloc] initWithParseObject:parseBook];
+                    }];
+                    
+                    success(books);
+                    
+                } else {
+                    
+                    DLog(@"Error filtering friends books by follows: %@", [error localizedDescription]);
+                    failure(error);
+                }
+                
+                
             }];
             
-            success(books);
             
         } else {
             DLog(@"Error loading user friends: %@", [error localizedDescription]);
@@ -247,6 +269,42 @@
 
 - (BOOL)editable {
     return [self.user.objectId isEqualToString:[CKUser currentUser].objectId];
+}
+
+- (void)addFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFObject *follow = [PFObject objectWithClassName:kUserBookFollowModelName];
+    [follow setObject:user.parseUser forKey:kUserModelForeignKeyName];
+    [follow setObject:self.parseObject forKey:kBookModelForeignKeyName];
+    [follow saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            success();
+        } else {
+            DLog(@"Error loading books: %@", [error localizedDescription]);
+            failure(error);
+        }
+    }];
+}
+
+- (void)removeFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *follow = [PFQuery queryWithClassName:kUserBookFollowModelName];
+    [follow whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [follow whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+    [follow getFirstObjectInBackgroundWithBlock:^(PFObject *parseFollow, NSError *error) {
+        if (!error) {
+            [parseFollow deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (!error) {
+                    success();
+                } else {
+                    DLog(@"Error loading follows: %@", [error localizedDescription]);
+                    failure(error);
+                }
+            }];
+        } else {
+            DLog(@"Error loading follows: %@", [error localizedDescription]);
+            failure(error);
+        }
+    }];
+    
 }
 
 #pragma mark - CKModel

@@ -14,7 +14,9 @@
 #import "CKBookCoverView.h"
 #import "EventHelper.h"
 
-@interface StoreCollectionViewController ()
+@interface StoreCollectionViewController () <UIActionSheetDelegate>
+
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
@@ -67,7 +69,12 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog(@"Item %@", indexPath);
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
+                                               destructiveButtonTitle:nil otherButtonTitles:@"Follow", @"Open", nil];
+    actionSheet.delegate = self;
+    [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
+    self.selectedIndexPath = indexPath;
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -110,6 +117,22 @@
     return cell;
 }
 
+#pragma mark - UIActionSheetDelegate methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    DLog(@"Item %d", buttonIndex);
+    switch (buttonIndex) {
+        case 0:
+            [self followBookAtIndexPath:self.selectedIndexPath];
+            break;
+        case 1:
+            [self openBookAtIndexPath:self.selectedIndexPath];
+            break;
+        default:
+            break;
+    }
+}
+
 #pragma mark - Private methods
 
 - (void)loginSuccessful:(NSNotification *)notification {
@@ -120,6 +143,22 @@
         }
         [self loadData];
     }
+}
+
+- (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
+    CKBook *book = [self.books objectAtIndex:indexPath.item];
+    CKUser *currentUser = [CKUser currentUser];
+    [book addFollower:currentUser
+              success:^{
+                  [self.books removeObjectAtIndex:indexPath.item];
+                  [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+             } failure:^(NSError *error) {
+                 DLog(@"Unable to follow.");
+             }];
+}
+
+- (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
+    DLog();
 }
 
 @end

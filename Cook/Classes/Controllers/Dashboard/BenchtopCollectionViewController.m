@@ -14,12 +14,13 @@
 #import "CKLoginView.h"
 #import "EventHelper.h"
 
-@interface BenchtopCollectionViewController () <CKLoginViewDelegate>
+@interface BenchtopCollectionViewController () <CKLoginViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
-@property (nonatomic, strong) NSArray *followBooks;
+@property (nonatomic, strong) NSMutableArray *followBooks;
 @property (nonatomic, strong) CKLoginView *loginView;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
@@ -73,7 +74,20 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self.delegate openBookRequestedForBook:self.myBook];
+    
+    self.selectedIndexPath = indexPath;
+    
+    if (indexPath.section == kMySection) {
+        
+        [self openBookAtIndexPath:indexPath];
+        
+    } else if (indexPath.section == kFollowSection) {
+        UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
+                                                   destructiveButtonTitle:nil otherButtonTitles:@"Unfollow", @"Open", nil];
+        actionSheet.delegate = self;
+        [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
+    }
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -152,6 +166,23 @@
     [self performSelector:@selector(performLogin) withObject:nil afterDelay:1.0];
 }
 
+#pragma mark - UIActionSheetDelegate methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    DLog(@"Item %d", buttonIndex);
+    switch (buttonIndex) {
+        case 0:
+            [self unfollowBookAtIndexPath:self.selectedIndexPath];
+            break;
+        case 1:
+            [self openBookAtIndexPath:self.selectedIndexPath];
+            break;
+        default:
+            break;
+    }
+}
+
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -192,9 +223,14 @@
 - (void)loadFollowBooks {
     [CKBook followBooksForUser:[CKUser currentUser]
                        success:^(NSArray *books) {
-                           self.followBooks = books;
+                           self.followBooks = [NSMutableArray arrayWithArray:books];
                            if ([books count] > 0) {
-                               [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                               NSInteger numSections = [self.collectionView numberOfSections];
+                               if (numSections > 1) {
+                                   [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                               } else {
+                                   [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                               }
                            }
                        }
                        failure:^(NSError *error) {
@@ -237,4 +273,26 @@
     [EventHelper postLoginSuccessful:success];
     
 }
+
+- (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
+    [self.delegate openBookRequestedForBook:self.myBook];
+}
+
+- (void)unfollowBookAtIndexPath:(NSIndexPath *)indexPath {
+    CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
+    CKUser *currentUser = [CKUser currentUser];
+    [book removeFollower:currentUser
+                 success:^{
+                     [self.followBooks removeObjectAtIndex:indexPath.item];
+                     if ([self.followBooks count] == 0) {
+                         [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                     } else {
+                         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                     }
+                     
+                 } failure:^(NSError *error) {
+                     DLog(@"Unable to unfollow.");
+                 }];
+}
+
 @end

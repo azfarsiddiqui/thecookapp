@@ -63,19 +63,20 @@
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    UICollectionViewLayoutAttributes *initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+    UICollectionViewLayoutAttributes *initialAttributes = nil;
     if (itemIndexPath.section == 0) {
+        initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
         CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
         initialAttributes.transform3D = scaleTransform;
     }
     return initialAttributes;
 }
 
-- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    UICollectionViewLayoutAttributes *finalAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-    finalAttributes.alpha = 0.0;
-    return finalAttributes;
-}
+//- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+//    UICollectionViewLayoutAttributes *finalAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+//    finalAttributes.alpha = 0.0;
+//    return finalAttributes;
+//}
 
 #pragma mark - Private methods
 
