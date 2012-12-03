@@ -21,5 +21,6 @@
 - (void)setTitle:(NSString *)title author:(NSString *)author caption:(NSString *)caption editable:(BOOL)editable;
 - (void)enableEditMode:(BOOL)enable;
 - (NSString *)currentCaptionThenResign;
+- (UIImage *)asImage;
 
 @end

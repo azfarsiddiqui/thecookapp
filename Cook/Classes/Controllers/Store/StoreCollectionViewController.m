@@ -1,28 +1,33 @@
 //
 //  StoreCollectionViewController.m
-//  Cook
+//  BenchtopDemo
 //
-//  Created by Jeff Tan-Ang on 23/11/12.
-//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//  Created by Jeff Tan-Ang on 29/11/12.
+//  Copyright (c) 2012 Cook App Pty Ltd. All rights reserved.
 //
 
 #import "StoreCollectionViewController.h"
 #import "StoreFlowLayout.h"
-#import "StoreBookCell.h"
-#import "CKBookCover.h"
+#import "StoreBookCoverViewCell.h"
+#import "BenchtopBookCoverViewCell.h"
+#import "CKBook.h"
 #import "CKBookCoverView.h"
+#import "EventHelper.h"
 
-@interface StoreCollectionViewController ()
+@interface StoreCollectionViewController () <UIActionSheetDelegate>
 
-@property (nonatomic, strong) NSMutableArray *bookIllustrations;
-@property (nonatomic, strong) NSMutableArray *bookCovers;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
 @implementation StoreCollectionViewController
 
-#define kStoreBookCellId            @"StoreBookCell"
-#define kBookCoverViewTag           240
+#define kCellId         @"StoreBookCellId"
+#define kStoreSection   0
+
+- (void)dealloc {
+    [EventHelper unregisterLoginSucessful:self];
+}
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[StoreFlowLayout alloc] init]]) {
@@ -33,56 +38,55 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    CGSize cellSize = [StoreBookCell cellSize];
-    self.view.frame = CGRectMake(0.0, 0.0, cellSize.width, cellSize.height);
+    self.collectionView.backgroundColor = [UIColor clearColor];
+    
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
-    self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self.collectionView registerClass:[StoreBookCell class] forCellWithReuseIdentifier:kStoreBookCellId];
+    [self.collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
+    
+    [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
 }
 
-- (void)showBooks {
-    [self showBooks:YES];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
-- (void)showBooks:(BOOL)show {
-    if (show) {
-        NSUInteger bookCount = 10;
-        self.bookIllustrations = [NSMutableArray arrayWithCapacity:bookCount];
-        self.bookCovers = [NSMutableArray arrayWithCapacity:bookCount];
-        for (NSUInteger bookIndex = 0; bookIndex < bookCount; bookIndex++) {
-            [self.bookIllustrations addObject:[CKBookCover randomIllustration]];
-            [self.bookCovers addObject:[CKBookCover randomCover]];
-        }
-    } else {
-        [self.bookCovers removeAllObjects];
-        [self.bookIllustrations removeAllObjects];
-    }
-    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+- (void)enable:(BOOL)enable {
+    self.enabled = enable;
+}
+
+- (void)loadData {
+    // Subclasses to implement.
+}
+
+- (void)reloadBooks {
+    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kStoreSection]];
 }
 
 #pragma mark - UICollectionViewDelegate methods
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
+                                               destructiveButtonTitle:nil otherButtonTitles:@"Follow", @"Open", nil];
+    actionSheet.delegate = self;
+    [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
+    self.selectedIndexPath = indexPath;
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [StoreBookCell cellSize];
+    return [StoreBookCoverViewCell cellSize];
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(0.0, 200.0, 0.0, 200.0);
+    return UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
@@ -92,7 +96,7 @@
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
                    layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return 20.0;
+    return -120.0;
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -102,23 +106,59 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return [self.bookIllustrations count];
+    return [self.books count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    StoreBookCell *cell = (StoreBookCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kStoreBookCellId forIndexPath:indexPath];
-    CKBookCoverView *bookCoverView = (CKBookCoverView *)[cell viewWithTag:kBookCoverViewTag];
-    if (!bookCoverView) {
-        CGFloat scaleFactor = 1 / [StoreBookCell scaleFactor];
-        bookCoverView = [[CKBookCoverView alloc] initWithFrame:cell.contentView.bounds];
-        bookCoverView.tag = kBookCoverViewTag;
-        [cell.contentView addSubview:bookCoverView];
-        bookCoverView.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor);
-    }
-    [bookCoverView setCover:[self.bookCovers objectAtIndex:indexPath.item] illustration:[self.bookIllustrations objectAtIndex:indexPath.item]];
-    //[bookCoverView setTitle:@"Cook" author:@"Guest" caption:@"Recipes I love"];
+    BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
+                                                                                                             forIndexPath:indexPath];
+    [cell loadBook:[self.books objectAtIndex:indexPath.item]];
     return cell;
+}
+
+#pragma mark - UIActionSheetDelegate methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    DLog(@"Item %d", buttonIndex);
+    switch (buttonIndex) {
+        case 0:
+            [self followBookAtIndexPath:self.selectedIndexPath];
+            break;
+        case 1:
+            [self openBookAtIndexPath:self.selectedIndexPath];
+            break;
+        default:
+            break;
+    }
+}
+
+#pragma mark - Private methods
+
+- (void)loginSuccessful:(NSNotification *)notification {
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        if (self.books) {
+            [self.books removeAllObjects];
+        }
+        [self loadData];
+    }
+}
+
+- (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
+    CKBook *book = [self.books objectAtIndex:indexPath.item];
+    CKUser *currentUser = [CKUser currentUser];
+    [book addFollower:currentUser
+              success:^{
+                  [self.books removeObjectAtIndex:indexPath.item];
+                  [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+             } failure:^(NSError *error) {
+                 DLog(@"Unable to follow.");
+             }];
+}
+
+- (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
+    DLog();
 }
 
 @end

@@ -19,4 +19,8 @@
 + (NSString*)formatAsHoursSeconds:(float)timeInSeconds ;
 + (void) adjustScrollContentSize:(UIScrollView*)scrollView forHeight:(float)height;
 
+// Convers view to images.
++ (UIImage *)imageWithView:(UIView *)view;
++ (UIImage *)imageWithView:(UIView *)view opaque:(BOOL)opaque;
+
 @end

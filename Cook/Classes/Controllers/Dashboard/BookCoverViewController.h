@@ -19,6 +19,7 @@
 
 @interface BookCoverViewController : UIViewController
 
+- (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (id)initWithBook:(CKBook *)book mine:(BOOL)mine delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (void)openBook:(BOOL)open;
 - (void)cleanUpLayers;

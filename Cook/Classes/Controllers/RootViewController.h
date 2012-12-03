@@ -1,15 +1,13 @@
 //
-//  RootViewController.h
-//  Cook
+//  CKViewController.h
+//  BenchtopDemo
 //
-//  Created by Jeff Tan-Ang on 26/09/12.
-//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//  Created by Jeff Tan-Ang on 29/11/12.
+//  Copyright (c) 2012 Cook App Pty Ltd. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "CKModalView.h"
-#import "CKIntroViewController.h"
 
-@interface RootViewController : UIViewController <CKModalViewContentDelegate, CKIntroViewControllerDelegate>
+@interface RootViewController : UIViewController
 
 @end

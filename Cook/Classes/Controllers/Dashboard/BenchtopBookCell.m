@@ -24,6 +24,11 @@
     return CGSizeMake(300.0, 438.0);
 }
 
++ (CGSize)storeCellSize {
+    CGSize size = [self cellSize];
+    return CGSizeMake(size.width / 2, size.height / 2);
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         

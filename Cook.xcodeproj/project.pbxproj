@@ -32,11 +32,22 @@
 		76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0C165343DE007D1EBF /* UIImage+Tint.m */; };
 		76324F2716535591007D1EBF /* cook_book_icon_create.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2516535590007D1EBF /* cook_book_icon_create.png */; };
 		76324F2816535591007D1EBF /* cook_book_icon_create@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */; };
+		76381C9116683C5E00404FB1 /* BenchtopCollectionFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C9016683C5E00404FB1 /* BenchtopCollectionFlowLayout.m */; };
+		76381C9216683C6300404FB1 /* BenchtopCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */; };
+		76381C9516683E9500404FB1 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C9316683DE200404FB1 /* RootViewController.m */; };
+		76381C981668418C00404FB1 /* BenchtopBookCoverViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C971668418C00404FB1 /* BenchtopBookCoverViewCell.m */; };
+		76381CA716685A7500404FB1 /* FeaturedStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381CA616685A7500404FB1 /* FeaturedStoreCollectionViewController.m */; };
+		76381CAB16685A8900404FB1 /* FriendsStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381CAA16685A8900404FB1 /* FriendsStoreCollectionViewController.m */; };
+		76381CB616688A6400404FB1 /* cook_dash_bg_whole.png in Resources */ = {isa = PBXBuildFile; fileRef = 76381CB416688A6400404FB1 /* cook_dash_bg_whole.png */; };
+		76381CB716688A6400404FB1 /* cook_dash_bg_whole@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76381CB516688A6400404FB1 /* cook_dash_bg_whole@2x.png */; };
+		76381CBB16688C7E00404FB1 /* cook_dash_bg_shelves.png in Resources */ = {isa = PBXBuildFile; fileRef = 76381CB916688C7E00404FB1 /* cook_dash_bg_shelves.png */; };
+		76381CBC16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76381CBA16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png */; };
+		763D2777166C293800A43DF9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 763D2776166C293800A43DF9 /* CoreLocation.framework */; };
 		76506D64163DF8920047D36B /* cook_dash_icons_store.png in Resources */ = {isa = PBXBuildFile; fileRef = 76506D62163DF8920047D36B /* cook_dash_icons_store.png */; };
 		76506D65163DF8920047D36B /* cook_dash_icons_store@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76506D63163DF8920047D36B /* cook_dash_icons_store@2x.png */; };
 		7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7651070C165F22820077B551 /* StoreCollectionViewController.m */; };
 		76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76510710165F256D0077B551 /* StoreFlowLayout.m */; };
-		76510714165F31180077B551 /* StoreBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76510713165F31180077B551 /* StoreBookCell.m */; };
+		76510714165F31180077B551 /* StoreBookCoverViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76510713165F31180077B551 /* StoreBookCoverViewCell.m */; };
 		76520465161ABB0F00EE253C /* CKBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 76520464161ABB0F00EE253C /* CKBook.m */; };
 		7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 7652046D161AD11E00EE253C /* NSString+Utilities.m */; };
 		76552743164B87DA001D4BAA /* cook_book_icon_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 7655273B164B87DA001D4BAA /* cook_book_icon_add.png */; };
@@ -82,7 +93,6 @@
 		7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */; };
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
 		7666B40616143713001D1BA1 /* AppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* AppHelper.m */; };
-		766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026F916252B1E005A8B66 /* BenchtopViewController.m */; };
 		766B0DC616643A7900A934FD /* CKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 766B0DC416643A1A00A934FD /* CKTextField.m */; };
 		766B0DD91664495E00A934FD /* BebasNeue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCC1664495E00A934FD /* BebasNeue.otf */; };
 		766B0DDA1664495E00A934FD /* Dharma Type Font License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */; };
@@ -240,7 +250,6 @@
 		76ED27751612DCC60012E479 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276C1612DCC60012E479 /* Security.framework */; };
 		76ED27761612DCC60012E479 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276D1612DCC60012E479 /* StoreKit.framework */; };
 		76ED27771612DCC60012E479 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED276E1612DCC60012E479 /* SystemConfiguration.framework */; };
-		76ED27811612DE140012E479 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED27801612DE140012E479 /* RootViewController.m */; };
 		76ED27851612DEB80012E479 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27831612DEB80012E479 /* Icon.png */; };
 		76ED27861612DEB80012E479 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76ED27841612DEB80012E479 /* Icon@2x.png */; };
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
@@ -361,6 +370,24 @@
 		76324F0C165343DE007D1EBF /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		76324F2516535590007D1EBF /* cook_book_icon_create.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_create.png; sourceTree = "<group>"; };
 		76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_create@2x.png"; sourceTree = "<group>"; };
+		76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BenchtopCollectionViewController.m; sourceTree = "<group>"; };
+		76381C8D16683BB300404FB1 /* BenchtopCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BenchtopCollectionViewController.h; sourceTree = "<group>"; };
+		76381C8F16683C5E00404FB1 /* BenchtopCollectionFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopCollectionFlowLayout.h; sourceTree = "<group>"; };
+		76381C9016683C5E00404FB1 /* BenchtopCollectionFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopCollectionFlowLayout.m; sourceTree = "<group>"; };
+		76381C9316683DE200404FB1 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		76381C9416683DE200404FB1 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		76381C961668418C00404FB1 /* BenchtopBookCoverViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopBookCoverViewCell.h; sourceTree = "<group>"; };
+		76381C971668418C00404FB1 /* BenchtopBookCoverViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopBookCoverViewCell.m; sourceTree = "<group>"; };
+		76381CA516685A7500404FB1 /* FeaturedStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedStoreCollectionViewController.h; sourceTree = "<group>"; };
+		76381CA616685A7500404FB1 /* FeaturedStoreCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedStoreCollectionViewController.m; sourceTree = "<group>"; };
+		76381CA916685A8900404FB1 /* FriendsStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsStoreCollectionViewController.h; sourceTree = "<group>"; };
+		76381CAA16685A8900404FB1 /* FriendsStoreCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsStoreCollectionViewController.m; sourceTree = "<group>"; };
+		76381CB416688A6400404FB1 /* cook_dash_bg_whole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_whole.png; sourceTree = "<group>"; };
+		76381CB516688A6400404FB1 /* cook_dash_bg_whole@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_whole@2x.png"; sourceTree = "<group>"; };
+		76381CB916688C7E00404FB1 /* cook_dash_bg_shelves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_shelves.png; sourceTree = "<group>"; };
+		76381CBA16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_shelves@2x.png"; sourceTree = "<group>"; };
+		76386C231668D01700471C44 /* BenchtopViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewControllerDelegate.h; sourceTree = "<group>"; };
+		763D2776166C293800A43DF9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
 		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
 		76506D62163DF8920047D36B /* cook_dash_icons_store.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_store.png; sourceTree = "<group>"; };
@@ -369,8 +396,8 @@
 		7651070C165F22820077B551 /* StoreCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreCollectionViewController.m; sourceTree = "<group>"; };
 		7651070F165F256D0077B551 /* StoreFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreFlowLayout.h; sourceTree = "<group>"; };
 		76510710165F256D0077B551 /* StoreFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreFlowLayout.m; sourceTree = "<group>"; };
-		76510712165F31180077B551 /* StoreBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBookCell.h; sourceTree = "<group>"; };
-		76510713165F31180077B551 /* StoreBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreBookCell.m; sourceTree = "<group>"; };
+		76510712165F31180077B551 /* StoreBookCoverViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBookCoverViewCell.h; sourceTree = "<group>"; };
+		76510713165F31180077B551 /* StoreBookCoverViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreBookCoverViewCell.m; sourceTree = "<group>"; };
 		76520463161ABB0F00EE253C /* CKBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBook.h; sourceTree = "<group>"; };
 		76520464161ABB0F00EE253C /* CKBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBook.m; sourceTree = "<group>"; };
 		7652046C161AD11E00EE253C /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utilities.h"; sourceTree = "<group>"; };
@@ -614,8 +641,8 @@
 		76ED276C1612DCC60012E479 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		76ED276D1612DCC60012E479 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		76ED276E1612DCC60012E479 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		76ED277F1612DE140012E479 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
-		76ED27801612DE140012E479 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		76ED277F1612DE140012E479 /* OldRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldRootViewController.h; sourceTree = "<group>"; };
+		76ED27801612DE140012E479 /* OldRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldRootViewController.m; sourceTree = "<group>"; };
 		76ED27831612DEB80012E479 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		76ED27841612DEB80012E479 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		76ED278A1612E45B0012E479 /* CKServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKServerManager.h; sourceTree = "<group>"; };
@@ -740,6 +767,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				763D2777166C293800A43DF9 /* CoreLocation.framework in Frameworks */,
 				895A2B901655BC9E0061E687 /* Accelerate.framework in Frameworks */,
 				895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */,
 				895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */,
@@ -770,6 +798,10 @@
 		762C0E4D161A7FC400EBA344 /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				76381CB916688C7E00404FB1 /* cook_dash_bg_shelves.png */,
+				76381CBA16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png */,
+				76381CB416688A6400404FB1 /* cook_dash_bg_whole.png */,
+				76381CB516688A6400404FB1 /* cook_dash_bg_whole@2x.png */,
 				761A966C164C967E008FA0C4 /* cook_dash_library.png */,
 				761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */,
 				769CB34E164A8990007B7BC9 /* cook_customise_colours_blue.png */,
@@ -845,6 +877,12 @@
 		76520459161A80CB00EE253C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				76381C8D16683BB300404FB1 /* BenchtopCollectionViewController.h */,
+				76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */,
+				76381C8F16683C5E00404FB1 /* BenchtopCollectionFlowLayout.h */,
+				76381C9016683C5E00404FB1 /* BenchtopCollectionFlowLayout.m */,
+				76381C961668418C00404FB1 /* BenchtopBookCoverViewCell.h */,
+				76381C971668418C00404FB1 /* BenchtopBookCoverViewCell.m */,
 				7620270116252B1E005A8B66 /* BenchtopViewController.h */,
 				762026F916252B1E005A8B66 /* BenchtopViewController.m */,
 				7620270316252B1E005A8B66 /* BenchtopBookCell.h */,
@@ -876,6 +914,7 @@
 				76DEF052164A285D00B7DB9C /* CoverPickerCell.m */,
 				76DC8DB91659BF23005C472B /* BookCoverViewController.h */,
 				76DC8DBA1659BF23005C472B /* BookCoverViewController.m */,
+				76386C231668D01700471C44 /* BenchtopViewControllerDelegate.h */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -1122,10 +1161,14 @@
 				76CB7EED165CF4C9007BECA0 /* StoreViewController.m */,
 				7651070B165F22820077B551 /* StoreCollectionViewController.h */,
 				7651070C165F22820077B551 /* StoreCollectionViewController.m */,
+				76381CA516685A7500404FB1 /* FeaturedStoreCollectionViewController.h */,
+				76381CA616685A7500404FB1 /* FeaturedStoreCollectionViewController.m */,
+				76381CA916685A8900404FB1 /* FriendsStoreCollectionViewController.h */,
+				76381CAA16685A8900404FB1 /* FriendsStoreCollectionViewController.m */,
 				7651070F165F256D0077B551 /* StoreFlowLayout.h */,
 				76510710165F256D0077B551 /* StoreFlowLayout.m */,
-				76510712165F31180077B551 /* StoreBookCell.h */,
-				76510713165F31180077B551 /* StoreBookCell.m */,
+				76510712165F31180077B551 /* StoreBookCoverViewCell.h */,
+				76510713165F31180077B551 /* StoreBookCoverViewCell.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -1150,6 +1193,7 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				763D2776166C293800A43DF9 /* CoreLocation.framework */,
 				892041D91650C23500765F96 /* CoreText.framework */,
 				892041D71650C20200765F96 /* OpenGLES.framework */,
 				766BFBE51630D6A40083EB0E /* AdSupport.framework */,
@@ -1228,8 +1272,10 @@
 				76520459161A80CB00EE253C /* Dashboard */,
 				76C99D70163A12BD00788679 /* Settings */,
 				76CB7EEA165CF466007BECA0 /* Store */,
-				76ED277F1612DE140012E479 /* RootViewController.h */,
-				76ED27801612DE140012E479 /* RootViewController.m */,
+				76381C9416683DE200404FB1 /* RootViewController.h */,
+				76381C9316683DE200404FB1 /* RootViewController.m */,
+				76ED277F1612DE140012E479 /* OldRootViewController.h */,
+				76ED27801612DE140012E479 /* OldRootViewController.m */,
 				7666B3F8161418E5001D1BA1 /* CKIntroViewController.h */,
 				7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */,
 				76E16E4A163903070044EB9B /* MenuViewController.h */,
@@ -1785,6 +1831,10 @@
 				766585041665CE9F0056AD25 /* cook_category_soup@2x.png in Resources */,
 				766585051665CE9F0056AD25 /* cook_category_vegetarian.png in Resources */,
 				766585061665CE9F0056AD25 /* cook_category_vegetarian@2x.png in Resources */,
+				76381CB616688A6400404FB1 /* cook_dash_bg_whole.png in Resources */,
+				76381CB716688A6400404FB1 /* cook_dash_bg_whole@2x.png in Resources */,
+				76381CBB16688C7E00404FB1 /* cook_dash_bg_shelves.png in Resources */,
+				76381CBC16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1797,7 +1847,6 @@
 			files = (
 				76ED274E1612DC180012E479 /* main.m in Sources */,
 				76ED27521612DC180012E479 /* AppDelegate.m in Sources */,
-				76ED27811612DE140012E479 /* RootViewController.m in Sources */,
 				76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */,
 				7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */,
 				7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */,
@@ -1831,7 +1880,6 @@
 				76FA9A4016267687006EAFBB /* EventHelper.m in Sources */,
 				8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */,
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
-				766A50EE1634FB6A00C3ADA7 /* BenchtopViewController.m in Sources */,
 				76E16E4C163903070044EB9B /* MenuViewController.m in Sources */,
 				76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */,
 				769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */,
@@ -1864,7 +1912,7 @@
 				76BEE780165DEE600065B97B /* CKBookCoverView.m in Sources */,
 				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
-				76510714165F31180077B551 /* StoreBookCell.m in Sources */,
+				76510714165F31180077B551 /* StoreBookCoverViewCell.m in Sources */,
 				766B0DC616643A7900A934FD /* CKTextField.m in Sources */,
 				89A906F9166460DD0056E4CF /* Theme.m in Sources */,
 				897E6C121667266000FD7F7B /* RecipeImageView.m in Sources */,
@@ -1874,6 +1922,12 @@
 				897E6C1E166726BF00FD7F7B /* CookingTimeView.m in Sources */,
 				897E6C21166726F600FD7F7B /* CookingDirectionsView.m in Sources */,
 				89B282F916684136007F4BAF /* UIEditableView.m in Sources */,
+				76381C9116683C5E00404FB1 /* BenchtopCollectionFlowLayout.m in Sources */,
+				76381C9216683C6300404FB1 /* BenchtopCollectionViewController.m in Sources */,
+				76381C9516683E9500404FB1 /* RootViewController.m in Sources */,
+				76381C981668418C00404FB1 /* BenchtopBookCoverViewCell.m in Sources */,
+				76381CA716685A7500404FB1 /* FeaturedStoreCollectionViewController.m in Sources */,
+				76381CAB16685A8900404FB1 /* FriendsStoreCollectionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

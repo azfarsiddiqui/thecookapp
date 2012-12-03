@@ -1,16 +1,20 @@
 //
 //  StoreCollectionViewController.h
-//  Cook
+//  BenchtopDemo
 //
-//  Created by Jeff Tan-Ang on 23/11/12.
-//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//  Created by Jeff Tan-Ang on 29/11/12.
+//  Copyright (c) 2012 Cook App Pty Ltd. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 @interface StoreCollectionViewController : UICollectionViewController
 
-- (void)showBooks;
-- (void)showBooks:(BOOL)show;
+@property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, strong) NSMutableArray *books;
+
+- (void)enable:(BOOL)enable;
+- (void)loadData;
+- (void)reloadBooks;
 
 @end

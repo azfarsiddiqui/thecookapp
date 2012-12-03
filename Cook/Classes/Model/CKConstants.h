@@ -11,6 +11,7 @@
 #pragma mark - Model class
 
 extern NSString *const kModelAttrName;
+extern NSString *const kModelObjectId;
 extern NSString *const kModelAttrCreatedAt;
 extern NSString *const kModelAttrUpdatedAt;
 
@@ -22,6 +23,17 @@ extern NSString *const kUserModelForeignKeyName;
 extern NSString *const kUserAttrFacebookId;
 extern NSString *const kUserAttrBookSuggestions;
 extern NSString *const kUserAttrAdmin;
+extern NSString *const kUserAttrFacebookFriends;
+
+#pragma mark - User Friends class
+
+extern NSString *const kUserFriendsModelName;
+extern NSString *const kUserFriendsAttrFriends;
+
+#pragma mark - User Book Follow class
+
+extern NSString *const kUserBookFollowModelName;
+extern NSString *const kUserBookFollowAttrOrder;
 
 #pragma mark - Book Follow class
 
