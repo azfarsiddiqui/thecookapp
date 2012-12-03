@@ -17,8 +17,6 @@
 #import "AppHelper.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 
-#define kIngredientCellTag 112233
-
 @interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
 
 //UI
@@ -240,14 +238,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *reuseCellID = @"IngredientTableViewCell";
-    IngredientTableViewCell *cell = (IngredientTableViewCell*) [tableView dequeueReusableCellWithIdentifier:reuseCellID];
-    UITextField *ingredientTextField = (UITextField*) [cell viewWithTag:kIngredientCellTag];
-    if (ingredientTextField) {
-        Ingredient *ingredient = [self.ingredients objectAtIndex:indexPath.row];
-        cell.ingredientIndex = indexPath.row;
-        ingredientTextField.placeholder = [NSString stringWithFormat:@"%@ %i",ingredient.name, indexPath.row];
-    }
+    IngredientTableViewCell *cell = (IngredientTableViewCell*) [tableView dequeueReusableCellWithIdentifier:kIngredientTableViewCellReuseIdentifier];
+    cell.delegate = self;
+    Ingredient *ingredient = [self.ingredients objectAtIndex:indexPath.row];
+    [cell setIngredient:ingredient forRow:indexPath.row];
     return cell;
 }
 
@@ -439,6 +433,7 @@
     UITapGestureRecognizer *cookingTimeRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(cookingTimeTapped:)];
     [self.cookingTimeLabel addGestureRecognizer:cookingTimeRecognizer];
 
+    [self.ingredientsTableView registerClass:[IngredientTableViewCell class] forCellReuseIdentifier:kIngredientTableViewCellReuseIdentifier];
 
 }
 

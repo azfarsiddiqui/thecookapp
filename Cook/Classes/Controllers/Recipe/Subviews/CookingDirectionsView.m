@@ -49,7 +49,7 @@
     self.directionsLabel.font = [Theme defaultLabelFont];
     self.directionsLabel.textColor = [Theme directionsLabelColor];
     self.directionsTextView.font = [Theme defaultLabelFont];
-    self.directionsLabel.backgroundColor = [UIColor redColor];
+    self.directionsLabel.backgroundColor = [UIColor clearColor];
 }
 
 -(UILabel *)directionsLabel
@@ -68,7 +68,7 @@
     if (!_directionsTextView) {
         _directionsTextView = [[UITextView alloc]initWithFrame:CGRectZero];
         _directionsTextView.hidden = YES;
-        _directionsTextView.backgroundColor = [UIColor redColor];
+        _directionsTextView.backgroundColor = [UIColor clearColor];
         [self.directionsScrollView addSubview:_directionsTextView];
     }
     return _directionsTextView;

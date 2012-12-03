@@ -409,34 +409,6 @@
                                     <constraint firstAttribute="height" constant="518" id="Ek3-dh-B3K"/>
                                     <constraint firstAttribute="width" constant="223" id="GQy-D9-eBn"/>
                                 </constraints>
-                                <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="IngredientTableViewCell" id="wfa-vv-zag" customClass="IngredientTableViewCell">
-                                        <rect key="frame" x="0.0" y="22" width="223" height="44"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="223" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" tag="112233" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Ingredient name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FgY-Iw-7FR">
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="197" id="FzQ-Yb-gUs"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                    <connections>
-                                                        <outlet property="delegate" destination="shd-KT-h88" id="8gF-Q6-b9b"/>
-                                                    </connections>
-                                                </textField>
-                                            </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </view>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstItem="FgY-Iw-7FR" firstAttribute="leading" secondItem="wfa-vv-zag" secondAttribute="leading" constant="20" type="default" id="AA6-p8-WO4"/>
-                                            <constraint firstItem="FgY-Iw-7FR" firstAttribute="centerY" secondItem="wfa-vv-zag" secondAttribute="centerY" type="default" id="cXv-c9-oQu"/>
-                                        </constraints>
-                                    </tableViewCell>
-                                </prototypes>
                                 <sections/>
                                 <connections>
                                     <outlet property="dataSource" destination="shd-KT-h88" id="MYw-YN-TUc"/>
@@ -597,9 +569,6 @@
         </class>
         <class className="FacebookUserView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FacebookUserView.h"/>
-        </class>
-        <class className="IngredientTableViewCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientTableViewCell.h"/>
         </class>
         <class className="IngredientsView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientsView.h"/>
