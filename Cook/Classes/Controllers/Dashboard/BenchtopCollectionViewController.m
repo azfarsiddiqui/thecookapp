@@ -227,12 +227,30 @@
 }
 
 - (void)loadMyBook {
-    
-    // This will be called twice - once from cache if exists, then from network.
     [CKBook bookForUser:[CKUser currentUser]
                 success:^(CKBook *book) {
-                    self.myBook = book;
-                    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kMySection]];
+                    
+                    if (self.myBook) {
+                        
+                        [self.collectionView performBatchUpdates:^{
+                            
+                            // There is an existing book, so we swap it out first.
+                            self.myBook = nil;
+                            [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
+                            
+                        } completion:^(BOOL finished) {
+                            
+                            // Now reinsert the new book.
+                            self.myBook = book;
+                            [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
+                        }];
+                        
+                        
+                    } else {
+                        self.myBook = book;
+                        [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
+                    }
+                    
                 }
                 failure:^(NSError *error) {
                     DLog(@"Error: %@", [error localizedDescription]);
@@ -303,11 +321,15 @@
     [book removeFollower:currentUser
                  success:^{
                      [self.followBooks removeObjectAtIndex:indexPath.item];
-                     if ([self.followBooks count] == 0) {
-                         [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                     } else {
-                         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                     }
+                     [self.collectionView performBatchUpdates:^{
+                         if ([self.followBooks count] == 0) {
+                             [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                         } else {
+                             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                         }
+                     } completion:^(BOOL finished) {
+                         
+                     }];
                      
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");

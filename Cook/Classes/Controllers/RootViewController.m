@@ -168,7 +168,7 @@
         
     }
     
-    BOOL bounce = (toggleMode && currentStoreMode);
+    BOOL bounce = toggleMode;
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
@@ -260,13 +260,13 @@
     } else {
         
         // Hidden frame depends on the store frame.
-        CGRect storeFrame = [self storeFrameForShow:!show bounce:bounce];
+        CGRect storeFrame = [self storeFrameForShow:!show bounce:NO];
         CGRect hideFrame = CGRectMake(self.view.bounds.origin.x,
                                       storeFrame.origin.y + storeFrame.size.height - kStoreShadowOffset,
                                       self.view.bounds.size.width,
                                       self.view.bounds.size.height);
         if (bounce) {
-            hideFrame.origin.y -= kBounceOffset;
+            hideFrame.origin.y += kBounceOffset;
         }
         
         return hideFrame;

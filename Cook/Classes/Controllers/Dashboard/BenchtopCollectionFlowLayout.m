@@ -8,6 +8,14 @@
 
 #import "BenchtopCollectionFlowLayout.h"
 #import "BenchtopBookCoverViewCell.h"
+#import "MRCEnumerable.h"
+
+@interface BenchtopCollectionFlowLayout ()
+
+@property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
+@property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
+
+@end
 
 @implementation BenchtopCollectionFlowLayout
 
@@ -62,21 +70,77 @@
     return targetContentOffset;
 }
 
-- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    UICollectionViewLayoutAttributes *initialAttributes = nil;
-    if (itemIndexPath.section == 0) {
-        initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-        CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
-        initialAttributes.transform3D = scaleTransform;
+- (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
+    [super prepareForCollectionViewUpdates:updateItems];
+    
+    self.insertedIndexPaths = [NSMutableArray array];
+    self.deletedIndexPaths = [NSMutableArray array];
+    
+    for (UICollectionViewUpdateItem *updateItem in updateItems) {
+        if (updateItem.updateAction == UICollectionUpdateActionInsert) {
+            [self.insertedIndexPaths addObject:updateItem.indexPathAfterUpdate];
+        }
+        else if (updateItem.updateAction == UICollectionUpdateActionDelete) {
+            [self.deletedIndexPaths addObject:updateItem.indexPathBeforeUpdate];
+        }
     }
+
+    DLog(@"INSERTED %@", self.insertedIndexPaths);
+    DLog(@"DELETED  %@", self.deletedIndexPaths);
+
+}
+
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *initialAttributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
+    
+    // Custom inserted item.
+    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
+        
+        if (itemIndexPath.section == 0) {
+            if (initialAttributes == nil) {
+                initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+            }
+            
+            CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
+            initialAttributes.transform3D = scaleTransform;
+        }
+        
+    }
+    
     return initialAttributes;
 }
 
-//- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-//    UICollectionViewLayoutAttributes *finalAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-//    finalAttributes.alpha = 0.0;
-//    return finalAttributes;
-//}
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *finalAttributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
+    
+    // Custom deleted item.
+    if ([self.deletedIndexPaths containsObject:itemIndexPath]) {
+        
+        if (itemIndexPath.section == 0) {
+            
+            if (finalAttributes == nil) {
+//                finalAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:itemIndexPath];
+                finalAttributes = [self findLayoutAttributesForIndexPath:itemIndexPath];
+            }
+            
+            // Deleted my book fades away.
+            finalAttributes.alpha = 0.0;
+//            finalAttributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.center.y + 600.0);
+            finalAttributes.transform3D = CATransform3DMakeTranslation(0.0, self.collectionView.bounds.size.height - finalAttributes.frame.origin.y, 0.0);
+            
+        }
+    }
+    
+    return finalAttributes;
+}
+
+- (void)finalizeCollectionViewUpdates {
+    DLog();
+    [self.insertedIndexPaths removeAllObjects];
+    [self.deletedIndexPaths removeAllObjects];
+    self.insertedIndexPaths = nil;
+    self.deletedIndexPaths = nil;
+}
 
 #pragma mark - Private methods
 
@@ -105,6 +169,14 @@
 - (BOOL)scalingRequiredForAttributes:(UICollectionViewLayoutAttributes *)attributes {
     return YES;     
     // return (attributes.indexPath.section == 1);
+}
+
+- (UICollectionViewLayoutAttributes *)findLayoutAttributesForIndexPath:(NSIndexPath *)indexPath {
+    NSArray *layoutAttributes = [self layoutAttributesForElementsInRect:[self visibleFrame]];
+    UICollectionViewLayoutAttributes *attributes = [layoutAttributes detect:^BOOL(UICollectionViewLayoutAttributes *layoutAttribute) {
+        return (layoutAttribute.indexPath.section == indexPath.section && layoutAttribute.indexPath.item == indexPath.item);
+    }];
+    return attributes;
 }
 
 @end
