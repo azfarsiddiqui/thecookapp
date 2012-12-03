@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "UIEditableView.h"
 @interface CookingTimeView : UIEditableView
-
+@property(nonatomic,assign) float cookingTimeInSeconds;
 @end
