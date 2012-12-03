@@ -10,6 +10,7 @@
 @interface RecipeImageView()
 @property(nonatomic,strong) PFImageView *imageView;
 @property(nonatomic,strong) UIScrollView *recipeImageScrollView;
+@property(nonatomic,assign) BOOL loadingImage;
 @end
 @implementation RecipeImageView
 
@@ -33,25 +34,29 @@
     [CKRecipe imagesForRecipe:recipe success:^{
         if ([recipe imageFile]) {
             self.imageView.file = [recipe imageFile];
-            DLog(@"loading image...");
-            [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
-                if (!error) {
-                    DLog(@"loaded image");
-                    CGSize imageSize = CGSizeMake(image.size.width, image.size.height);
-                    DLog(@"recipe image size: %@",NSStringFromCGSize(imageSize));
-                    self.imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
-                    self.imageView.image = image;
-                    self.recipeImageScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
-                    if (recipe.recipeViewImageContentOffset.x!=0) {
-                        self.recipeImageScrollView.contentOffset = recipe.recipeViewImageContentOffset;
+            if (!self.loadingImage)
+            {
+                self.loadingImage = YES;
+                DLog(@"loading image...");
+                [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
+                    if (!error) {
+                        DLog(@"loaded image");
+                        CGSize imageSize = CGSizeMake(image.size.width, image.size.height);
+                        DLog(@"recipe image size: %@",NSStringFromCGSize(imageSize));
+                        self.imageView.frame = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
+                        self.imageView.image = image;
+                        self.recipeImageScrollView.contentSize = CGSizeMake(imageSize.width,imageSize.height);
+                        if (recipe.recipeViewImageContentOffset.x!=0) {
+                            self.recipeImageScrollView.contentOffset = recipe.recipeViewImageContentOffset;
+                        } else {
+                            self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);
+                        }
+                        
                     } else {
-                        self.recipeImageScrollView.contentOffset = CGPointMake(340.0f, 0.0f);
+                        DLog(@"Error loading image in background: %@", [error description]);
                     }
-                    
-                } else {
-                    DLog(@"Error loading image in background: %@", [error description]);
-                }
-            }];
+                }];
+            }
         }
     } failure:^(NSError *error) {
         DLog(@"Error loading image: %@", [error description]);

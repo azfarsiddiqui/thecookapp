@@ -36,8 +36,8 @@
 
 -(void)configViews
 {
-    self.numServesLabel.frame = CGRectMake(35.0f, 2.0f, self.bounds.size.width-35.0f, self.bounds.size.height);
-    self.numServesLabel.text = [NSString stringWithFormat:@"%i",self.serves];
+    self.numServesLabel.frame = CGRectMake(35.0f, 2.0f, self.bounds.size.width-35.0f, 21.0f);
+    [self refreshTextForServesLabel];
 }
 
 -(UILabel *)numServesLabel
@@ -73,7 +73,7 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     self.serves = row;
-    self.numServesLabel.text = [NSString stringWithFormat:@"%i", row];
+    [self refreshTextForServesLabel];
 }
 #pragma mark - UIPickerViewDataSource
 // returns the number of 'columns' to display.
@@ -99,9 +99,9 @@
 }
 
 #pragma mark - Private Methods
--(void)servesTapped:(UILabel*)label
+-(void)servesTapped:(UITapGestureRecognizer*)gestureRecognizer
 {
-    if (self.editMode == YES ) {
+    if ([self inEditMode]) {
         
         UIViewController* popoverContent = [[UIViewController alloc] init];
         
@@ -119,5 +119,11 @@
         [self.popoverController presentPopoverFromRect:self.numServesLabel.frame inView:self permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
 
     }
+}
+
+-(void)refreshTextForServesLabel
+{
+    self.numServesLabel.text = [NSString stringWithFormat:@"%i",self.serves];
+    [self.numServesLabel sizeToFit];
 }
 @end
