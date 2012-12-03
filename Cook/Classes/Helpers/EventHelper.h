@@ -30,4 +30,8 @@
 + (void)unregisterEditMode:(id)observer;
 + (BOOL)editModeForNotification:(NSNotification *)notification;
 
++ (void)registerFollowUpdated:(id)observer selector:(SEL)selector;
++ (void)postFollowUpdated;
++ (void)unregisterFollowUpdated:(id)observer;
+
 @end

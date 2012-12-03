@@ -30,8 +30,13 @@
 #define kMySection      0
 #define kFollowSection  1
 
+- (void)dealloc {
+    [EventHelper unregisterFollowUpdated:self];
+}
+
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[BenchtopCollectionFlowLayout alloc] init]]) {
+        [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
     }
     return self;
 }
@@ -328,12 +333,16 @@
                              [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
                          }
                      } completion:^(BOOL finished) {
-                         
+                         [EventHelper postFollowUpdated];
                      }];
                      
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");
                  }];
+}
+
+- (void)followUpdated:(NSNotification *)notification {
+    [self loadFollowBooks];
 }
 
 @end

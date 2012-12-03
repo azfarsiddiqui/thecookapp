@@ -13,6 +13,7 @@
 #import "CKBook.h"
 #import "CKBookCoverView.h"
 #import "EventHelper.h"
+#import "MRCEnumerable.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate>
 
@@ -27,6 +28,7 @@
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
+    [EventHelper unregisterFollowUpdated:self];
 }
 
 - (id)init {
@@ -48,6 +50,7 @@
     [self.collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     
     [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
+    [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -60,6 +63,28 @@
 
 - (void)loadData {
     // Subclasses to implement.
+}
+
+- (void)loadBooks:(NSArray *)books {
+    if ([self.books count] > 0) {
+        
+        // Reload the books.
+        [self.books removeAllObjects];
+        self.books = [NSMutableArray arrayWithArray:books];
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        
+    } else {
+        
+        self.books = [NSMutableArray arrayWithArray:books];
+        
+        // Insert the books.
+        NSArray *insertIndexPaths = [books collectWithIndex:^id(CKBook *book, NSUInteger index) {
+            return [NSIndexPath indexPathForItem:index inSection:0];
+        }];
+        [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+        
+    }
+    
 }
 
 - (void)reloadBooks {
@@ -138,9 +163,6 @@
 - (void)loginSuccessful:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-        if (self.books) {
-            [self.books removeAllObjects];
-        }
         [self loadData];
     }
 }
@@ -151,7 +173,12 @@
     [book addFollower:currentUser
               success:^{
                   [self.books removeObjectAtIndex:indexPath.item];
-                  [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+                  [self.collectionView performBatchUpdates:^{
+                      [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+                  } completion:^(BOOL finished) {
+                      [EventHelper postFollowUpdated];
+                  }];
+
              } failure:^(NSError *error) {
                  DLog(@"Unable to follow.");
              }];
@@ -159,6 +186,12 @@
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
     DLog();
+}
+
+#pragma mark - Private methods
+
+- (void)followUpdated:(NSNotification *)notification {
+    [self loadData];
 }
 
 @end

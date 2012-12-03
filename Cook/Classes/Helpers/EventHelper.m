@@ -18,6 +18,7 @@
 #define kBoolOpenBook           @"CKBoolOpenBook"
 #define kEventEditMode          @"CKEventEditMode"
 #define kBoolEditMode           @"CKBoolEditMode"
+#define kEventFollowUpdated     @"CKEventFollowUpdated"
 
 #pragma mark - Login successful event
 
@@ -97,6 +98,20 @@
 
 + (BOOL)editModeForNotification:(NSNotification *)notification {
     return [[[notification userInfo] valueForKey:kBoolEditMode] boolValue];
+}
+
+#pragma mark - Follows
+
++ (void)registerFollowUpdated:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventFollowUpdated];
+}
+
++ (void)postFollowUpdated {
+    [EventHelper postEvent:kEventFollowUpdated];
+}
+
++ (void)unregisterFollowUpdated:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventFollowUpdated];
 }
 
 #pragma mark - Private

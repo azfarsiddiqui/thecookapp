@@ -102,40 +102,8 @@
         
         if (!error) {
             
-            // Existing follows.
-            PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
-            [followsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
-            [followsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error)  {
-               
-                if (!error) {
-                    
-                    // Collect the object ids.
-                    NSArray *objectIds = [parseFollows collect:^id(PFObject *parseFollow) {
-                        PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
-                        return parseBook.objectId;
-                    }];
-                    
-                    // Filter out the books that are not followed.
-                    NSArray *filteredParsebooks = [parseBooks reject:^BOOL(PFObject *parseBook) {
-                        return [objectIds containsObject:parseBook.objectId];
-                    }];
-                    
-                    // Return CKBook model objects.
-                    NSArray *books = [filteredParsebooks collect:^id(PFObject *parseBook) {
-                        return [[CKBook alloc] initWithParseObject:parseBook];
-                    }];
-                    
-                    success(books);
-                    
-                } else {
-                    
-                    DLog(@"Error filtering friends books by follows: %@", [error localizedDescription]);
-                    failure(error);
-                }
-                
-                
-            }];
-            
+            // Remove books that are already followed.
+            [self filterFollowedBooks:parseBooks user:user success:success failure:failure];
             
         } else {
             DLog(@"Error loading user friends: %@", [error localizedDescription]);
@@ -153,13 +121,51 @@
     [query setLimit:20];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         if (!error) {
-            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
-                return [[CKBook alloc] initWithParseObject:parseBook];
-            }];
-            success(books);
+            
+            // Remove books that are already followed.
+            [self filterFollowedBooks:parseBooks user:user success:success failure:failure];
+            
         } else {
             failure(error);
         }
+        
+    }];
+}
+
++ (void)filterFollowedBooks:(NSArray *)parseBooks user:(CKUser *)user success:(ListObjectsSuccessBlock)success
+                    failure:(ObjectFailureBlock)failure {
+    
+    // Existing follows.
+    PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
+    [followsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [followsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error)  {
+        
+        if (!error) {
+            
+            // Collect the object ids.
+            NSArray *objectIds = [parseFollows collect:^id(PFObject *parseFollow) {
+                PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
+                return parseBook.objectId;
+            }];
+            
+            // Filter out the books that are not followed.
+            NSArray *filteredParsebooks = [parseBooks reject:^BOOL(PFObject *parseBook) {
+                return [objectIds containsObject:parseBook.objectId];
+            }];
+            
+            // Return CKBook model objects.
+            NSArray *books = [filteredParsebooks collect:^id(PFObject *parseBook) {
+                return [[CKBook alloc] initWithParseObject:parseBook];
+            }];
+            
+            success(books);
+            
+        } else {
+            
+            DLog(@"Error filtering friends books by follows: %@", [error localizedDescription]);
+            failure(error);
+        }
+        
         
     }];
 }

@@ -19,13 +19,7 @@
 - (void)loadData {
     [CKBook featuredBooksForUser:[CKUser currentUser]
                          success:^(NSArray *featuredBooks) {
-                             self.books = [NSMutableArray arrayWithArray:featuredBooks];
-                             
-                             // Insert the books.
-                             NSArray *insertIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
-                                 return [NSIndexPath indexPathForItem:index inSection:0];
-                             }];
-                             [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+                             [self loadBooks:featuredBooks];
                          }
                          failure:^(NSError *error) {
                             DLog(@"Error: %@", [error localizedDescription]);

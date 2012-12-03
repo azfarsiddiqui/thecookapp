@@ -15,6 +15,7 @@
 
 - (void)enable:(BOOL)enable;
 - (void)loadData;
+- (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
 
 @end
