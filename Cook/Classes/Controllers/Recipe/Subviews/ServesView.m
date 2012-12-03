@@ -36,7 +36,7 @@
 
 -(void)configViews
 {
-    self.numServesLabel.frame = CGRectMake(35.0f, 2.0f, self.bounds.size.width-35.0f, 21.0f);
+    self.numServesLabel.frame = CGRectMake(35.0f, 0.0f, self.bounds.size.width-35.0f, 21.0f);
     [self refreshTextForServesLabel];
 }
 

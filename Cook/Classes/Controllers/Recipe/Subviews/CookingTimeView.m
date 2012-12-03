@@ -49,7 +49,7 @@
         _cookingTimeLabel = [[UILabel alloc]initWithFrame:CGRectZero];
         _cookingTimeLabel.text = @"cooking time";
         _cookingTimeLabel.userInteractionEnabled = YES;
-        _cookingTimeLabel.frame = CGRectMake(35.0f, 2.0f, 90.0f,21.0f);
+        _cookingTimeLabel.frame = CGRectMake(35.0f, 0.0f, 90.0f,21.0f);
 
         UITapGestureRecognizer *cookingTimeRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(cookingTimeTapped:)];
         [_cookingTimeLabel addGestureRecognizer:cookingTimeRecognizer];
