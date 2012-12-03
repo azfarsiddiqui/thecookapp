@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "Ingredient.h"
 
+extern NSString *const kIngredientTableViewCellReuseIdentifier;
 @interface IngredientTableViewCell : UITableViewCell
 @property(nonatomic,assign) NSInteger ingredientIndex;
+@property(nonatomic,assign) id<UITextFieldDelegate> delegate;
+
+-(void)setIngredient:(Ingredient*)ingredient forRow:(NSInteger)row;
 @end

@@ -96,15 +96,11 @@
 {
     [self.recipeNameView setRecipeName:self.recipe.name];
     [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
-    NSMutableString *mutableIngredientString = [[NSMutableString alloc]init];
-    [self.recipe.ingredients each:^(Ingredient *ingredient) {
-        [mutableIngredientString appendFormat:@"%@\n",ingredient.name];
-    }];
 
-    if ([mutableIngredientString length] > 0) {
-        self.ingredientsView.ingredients = [NSString stringWithString:mutableIngredientString];
+    if ([self.recipe.ingredients count] > 0) {
+        self.ingredientsView.ingredients = self.recipe.ingredients;
+        
     }
-
     if (self.recipe.description) {
         self.cookingDirectionsView.directions = self.recipe.description;
     }
