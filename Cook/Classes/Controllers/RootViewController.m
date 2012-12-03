@@ -72,12 +72,20 @@
 
 - (void)openBookRequestedForBook:(CKBook *)book {
     DLog();
-//    [self openBook:book];
+    [self openBook:book];
 }
 
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
+    
+    if (!open) {
+        [self.bookViewController.view removeFromSuperview];
+        self.bookViewController = nil;
+    }
+    
+    // Pass on event to the benchtop to hide the book.
+    [self.benchtopViewController bookWillOpen:open];
 }
 
 - (void)bookCoverViewDidOpen:(BOOL)open {
@@ -97,13 +105,15 @@
         self.bookCoverViewController = nil;
         
     }
+    
+    // Pass on event to the benchtop to restore the book.
+    [self.benchtopViewController bookDidOpen:open];
 }
 
 #pragma mark - BookViewControllerDelegate methods
 
 - (void)bookViewControllerCloseRequested {
-    // [self.bookCoverViewController.view removeFromSuperview];
-    // [self.bookCoverViewController openBook:NO];
+    [self.bookCoverViewController openBook:NO];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -264,6 +274,8 @@
 }
 
 - (void)openBook:(CKBook *)book {
+    
+    self.selectedBook = book;
     
     // Open book.
     BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book

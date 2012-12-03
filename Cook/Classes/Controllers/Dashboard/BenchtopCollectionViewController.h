@@ -14,5 +14,7 @@
 @property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
 
 - (void)enable:(BOOL)enable;
+- (void)bookWillOpen:(BOOL)open;
+- (void)bookDidOpen:(BOOL)open;
 
 @end

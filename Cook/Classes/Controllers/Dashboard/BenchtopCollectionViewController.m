@@ -71,6 +71,25 @@
     }
 }
 
+- (void)bookWillOpen:(BOOL)open {
+    
+    // Hide the bookCover.
+    if (open) {
+        BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        cell.bookCoverView.hidden = YES;
+    }
+}
+
+- (void)bookDidOpen:(BOOL)open {
+    
+    // Restore the bookCover.
+    if (!open) {
+        BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        cell.bookCoverView.hidden = NO;
+    }
+}
+
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
