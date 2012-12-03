@@ -12,7 +12,7 @@
 @interface ServesView()<UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
 @property(nonatomic,strong) UILabel *numServesLabel;
 @property (nonatomic,strong) UIPopoverController *popoverController;
-
+@property (nonatomic,strong) UIImageView *backgroundEditImageView;
 @end
 @implementation ServesView
 
@@ -20,6 +20,7 @@
 -(void)makeEditable:(BOOL)editable
 {
     [super makeEditable:editable];
+    self.backgroundEditImageView.hidden = !editable;
     self.numServesLabel.textColor = editable ? [UIColor blackColor] : [UIColor darkGrayColor];
 }
 
@@ -53,6 +54,17 @@
     return _numServesLabel;
 }
 
+-(UIImageView *)backgroundEditImageView
+{
+    if (!_backgroundEditImageView) {
+        UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
+        _backgroundEditImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height)];
+        _backgroundEditImageView.hidden = YES;
+        _backgroundEditImageView.image = backgroundImage;
+        [self insertSubview:_backgroundEditImageView atIndex:0];
+    }
+    return _backgroundEditImageView;
+}
 /*
  // Only override drawRect: if you perform custom drawing.
  // An empty implementation adversely affects performance during animation.
