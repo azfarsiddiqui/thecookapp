@@ -12,6 +12,8 @@
 // - readOnly (default)
 // - editable
 @interface UIEditableView : UIView
+@property(nonatomic,assign,readonly) BOOL editMode;
+
 //change the view to allow for editing. this might be new sub-views are displayed, or existing sub-views are enabled
 -(void) makeEditable:(BOOL)editable;
 
