@@ -17,6 +17,14 @@
 
 @implementation FriendsStoreCollectionViewController
 
+- (BOOL)updateForFriendsBook:(BOOL)friendsBook {
+    if (friendsBook) {
+        return YES;
+    } else {
+        return [super updateForFriendsBook:friendsBook];
+    }
+}
+
 - (void)loadData {
     CKUser *currentUser = [CKUser currentUser];
     if ([currentUser isSignedIn]) {

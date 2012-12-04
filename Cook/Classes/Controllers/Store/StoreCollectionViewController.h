@@ -17,5 +17,6 @@
 - (void)loadData;
 - (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
+- (BOOL)updateForFriendsBook:(BOOL)friendsBook;
 
 @end

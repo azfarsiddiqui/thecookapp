@@ -91,6 +91,10 @@
     [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kStoreSection]];
 }
 
+- (BOOL)updateForFriendsBook:(BOOL)friendsBook {
+    return NO;
+}
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -179,9 +183,10 @@
     }];
     
     // Then follow in the background.
+    BOOL friendsBook = [book friendsBook];
     [book addFollower:currentUser
               success:^{
-                  [EventHelper postFollowUpdated];
+                  [EventHelper postFollowUpdatedForFriends:friendsBook];
              } failure:^(NSError *error) {
                  DLog(@"Unable to follow.");
              }];
@@ -194,7 +199,10 @@
 #pragma mark - Private methods
 
 - (void)followUpdated:(NSNotification *)notification {
-    [self loadData];
+    BOOL friendsBook = [EventHelper friendsBookFollowUpdatedForNotification:notification];
+    if ([self updateForFriendsBook:friendsBook]) {
+        [self loadData];
+    }
 }
 
 @end

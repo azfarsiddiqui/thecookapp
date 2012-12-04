@@ -31,7 +31,8 @@
 + (BOOL)editModeForNotification:(NSNotification *)notification;
 
 + (void)registerFollowUpdated:(id)observer selector:(SEL)selector;
-+ (void)postFollowUpdated;
++ (void)postFollowUpdatedForFriends:(BOOL)friends;
 + (void)unregisterFollowUpdated:(id)observer;
++ (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification;
 
 @end

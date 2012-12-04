@@ -16,6 +16,14 @@
 
 @implementation FeaturedStoreCollectionViewController
 
+- (BOOL)updateForFriendsBook:(BOOL)friendsBook {
+    if (!friendsBook) {
+        return YES;
+    } else {
+        return [super updateForFriendsBook:friendsBook];
+    }
+}
+
 - (void)loadData {
     [CKBook featuredBooksForUser:[CKUser currentUser]
                          success:^(NSArray *featuredBooks) {

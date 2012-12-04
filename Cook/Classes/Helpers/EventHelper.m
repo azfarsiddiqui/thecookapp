@@ -10,15 +10,16 @@
 
 @implementation EventHelper
 
-#define kEventBenchtopFreeze    @"CKEventBenchtopFreeze"
-#define kBoolBenchtopFreeze     @"CKBoolBenchtopFreeze"
-#define kEventLoginSuccessful   @"CKEventLoginSuccessful"
-#define kBoolLoginSuccessful    @"CKBoolLoginSuccessful"
-#define kEventOpenBook          @"CKEventOpenBook"
-#define kBoolOpenBook           @"CKBoolOpenBook"
-#define kEventEditMode          @"CKEventEditMode"
-#define kBoolEditMode           @"CKBoolEditMode"
-#define kEventFollowUpdated     @"CKEventFollowUpdated"
+#define kEventBenchtopFreeze        @"CKEventBenchtopFreeze"
+#define kBoolBenchtopFreeze         @"CKBoolBenchtopFreeze"
+#define kEventLoginSuccessful       @"CKEventLoginSuccessful"
+#define kBoolLoginSuccessful        @"CKBoolLoginSuccessful"
+#define kEventOpenBook              @"CKEventOpenBook"
+#define kBoolOpenBook               @"CKBoolOpenBook"
+#define kEventEditMode              @"CKEventEditMode"
+#define kBoolEditMode               @"CKBoolEditMode"
+#define kEventFollowUpdated         @"CKEventFollowUpdated"
+#define kBoolFriendsFollowUpdated   @"CKBoolFriendsFollowUpdated"
 
 #pragma mark - Login successful event
 
@@ -106,12 +107,19 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventFollowUpdated];
 }
 
-+ (void)postFollowUpdated {
++ (void)postFollowUpdatedForFriends:(BOOL)friends {
     [EventHelper postEvent:kEventFollowUpdated];
+    [EventHelper postEvent:kEventFollowUpdated
+              withUserInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:friends]
+                                                       forKey:kBoolFriendsFollowUpdated]];
 }
 
 + (void)unregisterFollowUpdated:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventFollowUpdated];
+}
+
++ (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kBoolFriendsFollowUpdated] boolValue];
 }
 
 #pragma mark - Private

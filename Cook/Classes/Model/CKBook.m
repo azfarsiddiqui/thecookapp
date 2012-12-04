@@ -313,6 +313,13 @@
     
 }
 
+- (BOOL)friendsBook {
+    NSString *userId = [self.user facebookId];
+    CKUser *currentUser = [CKUser currentUser];
+    NSArray *friendsIds = [currentUser.parseUser objectForKey:kUserFriendsAttrFriends];
+    return [friendsIds containsObject:userId];
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {
