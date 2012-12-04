@@ -433,10 +433,8 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          
-                         // Inform delegate edit cancelled.
-                         if (!enable) {
-                             [self.delegate editBookRequested:NO];
-                         }
+                         // Inform delegate
+                         [self.delegate editBookRequested:enable];
 
                          self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + bounceOffset) : CGAffineTransformIdentity;
                          self.illustrationViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset) : CGAffineTransformIdentity;

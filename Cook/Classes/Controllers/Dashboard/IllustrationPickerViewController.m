@@ -60,6 +60,11 @@
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kIllustrationCellId];
+    
+    UIImageView *shelfView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_customise_shelves.png"]];
+    shelfView.frame = CGRectMake(0.0, self.view.bounds.size.height - shelfView.frame.size.height, shelfView.frame.size.width, shelfView.frame.size.height);
+    shelfView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
+    //[self.view insertSubview:shelfView belowSubview:self.collectionView];
 }
 
 - (void)changeCover:(NSString *)cover {
