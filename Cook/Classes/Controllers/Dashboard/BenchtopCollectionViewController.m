@@ -321,24 +321,29 @@
 }
 
 - (void)unfollowBookAtIndexPath:(NSIndexPath *)indexPath {
+    
     CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
     CKUser *currentUser = [CKUser currentUser];
+    
+    // Kick off the immediate removal of the book onscreen.
+    [self.followBooks removeObjectAtIndex:indexPath.item];
+    [self.collectionView performBatchUpdates:^{
+        if ([self.followBooks count] == 0) {
+            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+        } else {
+            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+        }
+    } completion:^(BOOL finished) {
+    }];
+    
+    // Unfollow in the background, then inform listeners of the update.
     [book removeFollower:currentUser
                  success:^{
-                     [self.followBooks removeObjectAtIndex:indexPath.item];
-                     [self.collectionView performBatchUpdates:^{
-                         if ([self.followBooks count] == 0) {
-                             [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                         } else {
-                             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                         }
-                     } completion:^(BOOL finished) {
-                         [EventHelper postFollowUpdated];
-                     }];
-                     
+                     [EventHelper postFollowUpdated];
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");
                  }];
+    
 }
 
 - (void)followUpdated:(NSNotification *)notification {

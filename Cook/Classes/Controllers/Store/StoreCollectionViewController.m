@@ -170,15 +170,18 @@
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = [self.books objectAtIndex:indexPath.item];
     CKUser *currentUser = [CKUser currentUser];
+    
+    // Remove the book immediately. 
+    [self.books removeObjectAtIndex:indexPath.item];
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+    } completion:^(BOOL finished) {
+    }];
+    
+    // Then follow in the background.
     [book addFollower:currentUser
               success:^{
-                  [self.books removeObjectAtIndex:indexPath.item];
-                  [self.collectionView performBatchUpdates:^{
-                      [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
-                  } completion:^(BOOL finished) {
-                      [EventHelper postFollowUpdated];
-                  }];
-
+                  [EventHelper postFollowUpdated];
              } failure:^(NSError *error) {
                  DLog(@"Unable to follow.");
              }];
