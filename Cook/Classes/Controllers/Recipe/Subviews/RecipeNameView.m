@@ -13,14 +13,16 @@
 #define kMaxSize CGSizeMake(538.0f, CGFLOAT_MAX)
 
 @interface RecipeNameView ()
-@property(nonatomic,strong) CKTextField *nameTextField;
+@property(nonatomic,strong) UITextField *recipeTextField;
+@property(nonatomic,strong) UIImageView *editIconImageView;
 @end
 @implementation RecipeNameView
 
 -(void)makeEditable:(BOOL)editable
 {
     [super makeEditable:editable];
-    [self.nameTextField enableEditMode:editable];
+    self.editIconImageView.hidden = !editable;
+    self.recipeTextField.enabled = YES;
 }
 
 #pragma mark - Private Methods
@@ -28,27 +30,38 @@
 //overridden
 -(void) configViews
 {
-    self.nameTextField.text = [self.recipeName uppercaseString];
-    self.nameTextField.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
+    self.recipeTextField.text = [self.recipeName uppercaseString];
+    self.recipeTextField.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
 }
 
 //overridden
 -(void)styleViews
 {
-    self.nameTextField.font = kFont;
+    self.recipeTextField.font = kFont;
 }
 
--(CKTextField *)nameTextField
+-(UITextField *)recipeTextField
 {
-    if (!_nameTextField) {
-        _nameTextField = [[CKTextField alloc] initWithFrame:CGRectZero];
-        [_nameTextField enableEditMode:NO];
-        [self addSubview:_nameTextField];
+    if (!_recipeTextField) {
+        _recipeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+        _recipeTextField.enabled = NO;
+        [self addSubview:_recipeTextField];
     }
-    return _nameTextField;
+    return _recipeTextField;
 }
 
-
+-(UIImageView *)editIconImageView
+{
+    if (!_editIconImageView) {
+        UIImage *editIconImage = [UIImage imageNamed:@"cook_customise_btns_textedit.png"];
+        _editIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - floorf(0.75*(editIconImage.size.width)),-5.0f,
+                                                                           editIconImage.size.width, editIconImage.size.height)];
+        _editIconImageView.hidden = YES;
+        _editIconImageView.image = editIconImage;
+        [self addSubview:_editIconImageView];
+    }
+    return _editIconImageView;
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

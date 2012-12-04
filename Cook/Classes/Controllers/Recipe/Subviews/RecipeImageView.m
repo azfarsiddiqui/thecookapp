@@ -24,11 +24,6 @@
 }
 
 #pragma mark - Editable protocol
--(void)makeEditable:(BOOL)editable
-{
-    [super makeEditable:editable];
-}
-
 -(void)setRecipe:(CKRecipe *)recipe
 {
     [CKRecipe imagesForRecipe:recipe success:^{

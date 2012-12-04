@@ -20,7 +20,6 @@
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) UITableView *tableView;
-@property (nonatomic,strong) UIImageView *backgroundEditImageView;
 @end
 
 @implementation IngredientsView
@@ -31,7 +30,6 @@
     self.ingredientsLabel.hidden = editable;
     [self.tableView reloadData];
     self.tableView.hidden = !editable;
-    self.backgroundEditImageView.hidden = !editable;
 }
 
 #pragma mark - Private methods
@@ -88,18 +86,6 @@
         [self addSubview:_tableView];
     }
     return _tableView;
-}
-
--(UIImageView *)backgroundEditImageView
-{
-    if (!_backgroundEditImageView) {
-        UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
-        _backgroundEditImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height)];
-        _backgroundEditImageView.hidden = YES;
-        _backgroundEditImageView.image = backgroundImage;
-        [self insertSubview:_backgroundEditImageView atIndex:0];
-    }
-    return _backgroundEditImageView;
 }
 
 -(void) adjustScrollContentSizeToHeight:(float)height

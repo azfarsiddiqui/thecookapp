@@ -166,7 +166,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gzk-Ze-6Lw" customClass="CookingDirectionsView">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="RECIPE NAME" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E4H-Ex-K7C" customClass="RecipeNameView">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="RECIPE NAME" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E4H-Ex-K7C" customClass="RecipeNameView">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" type="user" id="ca2-Nf-mvd"/>
