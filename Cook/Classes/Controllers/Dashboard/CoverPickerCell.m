@@ -11,11 +11,11 @@
 @implementation CoverPickerCell
 
 + (CGSize)minCellSize {
-    return CGSizeMake(30.0, 26.0);
+    return CGSizeMake(115.0, 97.0);
 }
 
 + (CGSize)maxCellSize {
-    return CGSizeMake(80.0, 26.0);
+    return CGSizeMake(115.0, 137.0);
 }
 
 @end
