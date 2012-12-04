@@ -10,11 +10,13 @@
 
 @protocol CoverPickerViewControllerDelegate
 
+- (void)coverPickerCancelRequested;
+- (void)coverPickerDoneRequested;
 - (void)coverPickerSelected:(NSString *)cover;
 
 @end
 
-@interface CoverPickerViewController : UICollectionViewController <UICollectionViewDelegateFlowLayout>
+@interface CoverPickerViewController : UIViewController
 
 @property (nonatomic, copy) NSString *cover;
 

@@ -7,134 +7,79 @@
 //
 
 #import "CoverPickerViewController.h"
-#import "CoverPickerCell.h"
-#import "MRCEnumerable.h"
-#import "CKBookCover.h"
+#import "CoverPickerView.h"
+#import "ViewHelper.h"
 
-@interface CoverPickerViewController ()
+@interface CoverPickerViewController () <CoverPickerViewDelegate>
 
-@property (nonatomic, assign) NSInteger currentIndex;
-@property (nonatomic, strong) NSArray *availableCovers;
 @property (nonatomic, assign) id<CoverPickerViewControllerDelegate> delegate;
-@property (nonatomic, assign) BOOL expanded;
+@property (nonatomic, strong) CoverPickerView *coverPickerView;
 
 @end
 
 @implementation CoverPickerViewController
 
-#define kIllustrationCellId     @"IllustrationCell"
-#define kCoverTag               260
-
-- (void)dealloc {
-    //[self.collectionView removeObserver:self forKeyPath:@"contentSize"];
-}
+#define kSideGap    20.0
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+    if (self = [super init]) {
         self.cover = cover;
         self.delegate = delegate;
-        self.availableCovers = [CKBookCover covers];
-        self.expanded = YES;
     }
     return self;
 }
 
 - (void)viewDidLoad {
-    CGSize itemSize = self.expanded ? [CoverPickerCell maxCellSize] : [CoverPickerCell minCellSize];
     
-    self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-    self.view.backgroundColor = [UIColor clearColor];
+    CoverPickerView *coverPickerView = [[CoverPickerView alloc] initWithCover:self.cover delegate:self];
+    coverPickerView.frame = CGRectMake(floorf((self.view.bounds.size.width - coverPickerView.frame.size.width) / 2.0),
+                                       0.0,
+                                       coverPickerView.frame.size.width,
+                                       coverPickerView.frame.size.height);
+    coverPickerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [self.view addSubview:coverPickerView];
+    self.coverPickerView = coverPickerView;
     
-    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
-    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    // Update frame to be the same frame of the coverPicker, width will be set by calling VC.
+    self.view.frame = self.coverPickerView.frame;
     
-    self.collectionView.scrollEnabled = NO;
-    self.collectionView.alwaysBounceHorizontal = NO;
-    self.collectionView.showsHorizontalScrollIndicator = NO;
-    self.collectionView.showsVerticalScrollIndicator = NO;
-    self.collectionView.backgroundColor = [UIColor clearColor];
-    self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    [self.collectionView registerClass:[CoverPickerCell class] forCellWithReuseIdentifier:kIllustrationCellId];
+    // Cancel button.
+    UIButton *cancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+                                                  target:self
+                                                selector:@selector(cancelTapped:)];
+    cancelButton.frame = CGRectMake(kSideGap,
+                                    floorf((self.view.bounds.size.height - cancelButton.frame.size.height) / 2.0),
+                                    cancelButton.frame.size.width,
+                                    cancelButton.frame.size.height);
+    cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:cancelButton];
+    
+    // Done button.
+    UIButton *doneButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
+                                                target:self
+                                              selector:@selector(doneTapped:)];
+    doneButton.frame = CGRectMake(self.view.bounds.size.width - doneButton.frame.size.width - kSideGap,
+                                  floorf((self.view.bounds.size.height - doneButton.frame.size.height) / 2.0),
+                                  doneButton.frame.size.width,
+                                  doneButton.frame.size.height);
+    doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:doneButton];
 }
 
-#pragma mark - UICollectionViewDelegate methods
+#pragma mark - CoverPickerViewDelegate methods
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    // Select the cover and toggle expansion.
-    NSString *cover = [self.availableCovers objectAtIndex:indexPath.item];
+- (void)coverPickerSelected:(NSString *)cover {
     [self.delegate coverPickerSelected:cover];
-}
-
-#pragma mark - UICollectionViewDelegateFlowLayout methods
-
-- (CGSize)collectionView:(UICollectionView *)collectionView
-                  layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [CoverPickerCell maxCellSize];
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
-                        layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsZero;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    return 0.0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return 0.0;
-}
-
-#pragma mark - UICollectionViewDataSource methods
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
-}
-
-- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return [self.availableCovers count];
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
-                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *currentCover = [self.availableCovers objectAtIndex:indexPath.item];
-    UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kIllustrationCellId
-                                                                                forIndexPath:indexPath];
-    cell.contentView.backgroundColor = [UIColor clearColor];
-    UIImageView *coverImageView = (UIImageView *)[cell viewWithTag:kCoverTag];
-    if (!coverImageView) {
-        coverImageView = [[UIImageView alloc] initWithImage:nil];
-        coverImageView.frame = cell.contentView.bounds;
-        coverImageView.tag = kCoverTag;
-        coverImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-        [cell.contentView addSubview:coverImageView];
-    }
-    
-    UIImage *coverImage = [[CKBookCover thumbImageForCover:currentCover] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
-    if (indexPath.row == 0 || indexPath.row == [self.availableCovers count] - 1) {
-        coverImage = [coverImage stretchableImageWithLeftCapWidth:12 topCapHeight:0];
-    }
-    coverImageView.image = coverImage;
-    return cell;
 }
 
 #pragma mark - Private
 
-- (void)toggleExpansion {
-    self.expanded = !self.expanded;
-    
-//    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//    [self.collectionView setCollectionViewLayout:flowLayout animated:YES];
-    
-    [self.collectionView reloadData];
+- (void)cancelTapped:(id)sender {
+    [self.delegate coverPickerCancelRequested];
+}
+
+- (void)doneTapped:(id)sender {
+    [self.delegate coverPickerDoneRequested];
 }
 
 @end

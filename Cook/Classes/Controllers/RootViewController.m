@@ -320,10 +320,11 @@
     self.panEnabled = !enable;
     
     // Transition store mode in/out of the way.
-    [UIView animateWithDuration:0.4
+    [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
+                         self.storeViewController.view.alpha = enable ? 0.0 : 1.0;
                          self.storeViewController.view.frame = enable ? [self editFrameForStore] : [self storeFrameForShow:NO];
                      }
                      completion:^(BOOL finished) {

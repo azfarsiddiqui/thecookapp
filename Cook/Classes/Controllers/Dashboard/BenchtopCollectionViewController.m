@@ -13,16 +13,21 @@
 #import "CKBook.h"
 #import "CKLoginView.h"
 #import "EventHelper.h"
-#import "CoverPickerView.h"
+#import "CoverPickerViewController.h"
+#import "IllustrationPickerViewController.h"
 
 @interface BenchtopCollectionViewController () <CKLoginViewDelegate, UIActionSheetDelegate,
-    BenchtopBookCoverViewCellDelegate, CoverPickerViewDelegate>
+    BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
 @property (nonatomic, strong) CKLoginView *loginView;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+@property (nonatomic, strong) CoverPickerViewController *coverViewController;
+@property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
+@property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL editMode;
 
 @end
 
@@ -214,21 +219,28 @@
 #pragma mark - BenchtopBookCoverViewCellDelegate methods
 
 - (void)benchtopBookEditTappedForCell:(UICollectionViewCell *)cell {
-    
-    // Inform delegate that edit of book
-    [self.delegate editBookRequested:YES];
-    
-    CoverPickerView *coverPickerView = [[CoverPickerView alloc] initWithCover:self.myBook.cover delegate:self];
-    coverPickerView.frame = CGRectMake(floorf((self.view.bounds.size.width - coverPickerView.frame.size.width) / 2.0),
-                                       0.0,
-                                       coverPickerView.frame.size.width,
-                                       coverPickerView.frame.size.height);
-    [self.view addSubview:coverPickerView];
+    [self enableEditMode:YES];
 }
 
-#pragma mark - CoverPickerViewDelegate methods
+#pragma mark - CoverPickerViewControllerDelegate methods
+
+- (void)coverPickerCancelRequested {
+    DLog();
+    [self enableEditMode:NO];
+}
+
+- (void)coverPickerDoneRequested {
+    DLog();
+    [self enableEditMode:NO];
+}
 
 - (void)coverPickerSelected:(NSString *)cover {
+    DLog();
+}
+
+#pragma mark - IllustrationPickerViewControllerDelegate methods
+
+- (void)illustrationSelected:(NSString *)illustration {
     DLog();
 }
 
@@ -377,6 +389,78 @@
     if (follow) {
         [self loadFollowBooks];
     }
+}
+
+- (void)enableEditMode:(BOOL)enable {
+    
+    // Ignore if we're already animating.
+    if (self.animating) {
+        return;
+    }
+    
+    // Ignore if we're already in editMode.
+    if (self.editMode && enable) {
+        return;
+    }
+    
+    self.animating = YES;
+    self.editMode = enable;
+    
+    if (enable) {
+        
+        // Cover
+        CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
+        coverViewController.view.frame = CGRectMake(0.0,
+                                                    -coverViewController.view.frame.size.height,
+                                                    self.view.bounds.size.width,
+                                                    coverViewController.view.frame.size.height);
+        [self.view addSubview:coverViewController.view];
+        self.coverViewController = coverViewController;
+        
+        // Illustration.
+        IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
+        illustrationViewController.view.frame = CGRectMake(0.0,
+                                                           self.view.bounds.size.height,
+                                                           self.view.bounds.size.width,
+                                                           illustrationViewController.view.frame.size.height);
+        [self.view addSubview:illustrationViewController.view];
+        self.illustrationViewController = illustrationViewController;
+    }
+    
+    CGFloat bounceOffset = 20.0;
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         
+                         // Inform delegate edit cancelled.
+                         if (!enable) {
+                             [self.delegate editBookRequested:NO];
+                         }
+
+                         self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + bounceOffset) : CGAffineTransformIdentity;
+                         self.illustrationViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset) : CGAffineTransformIdentity;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         if (enable) {
+                             [UIView animateWithDuration:0.2
+                                                   delay:0.0
+                                                 options:UIViewAnimationCurveEaseIn
+                                              animations:^{
+                                                  self.coverViewController.view.transform = CGAffineTransformTranslate(self.coverViewController.view.transform, 0.0, -bounceOffset);
+                                                  self.illustrationViewController.view.transform = CGAffineTransformTranslate(self.illustrationViewController.view.transform, 0.0, bounceOffset);
+                                              } completion:^(BOOL finished) {
+                                                  self.animating = NO;
+                                              }];
+                         } else {
+                             self.animating = NO;
+                             [self.coverViewController.view removeFromSuperview];
+                             [self.illustrationViewController.view removeFromSuperview];
+                             self.coverViewController = nil;
+                             self.illustrationViewController = nil;
+                         }
+                     }];
 }
 
 @end
