@@ -24,6 +24,7 @@
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
+@property (nonatomic, assign) BOOL panEnabled;
 
 @end
 
@@ -71,8 +72,11 @@
 #pragma mark - BenchtopViewControllerDelegate methods
 
 - (void)openBookRequestedForBook:(CKBook *)book {
-    DLog();
     [self openBook:book];
+}
+
+- (void)editBookRequested:(BOOL)editMode {
+    [self enableEditMode:editMode];
 }
 
 #pragma mark - BookCoverViewControllerDelegate methods
@@ -119,13 +123,14 @@
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    BOOL enabled = NO;
     
-    // Ignore pan gesture if no VC's set up.
-    if (self.storeViewController && self.benchtopViewController) {
-        return YES;
-    } else {
-        return NO;
+    // Enable panning when pan enabled and all VC's setup.
+    if (self.panEnabled && self.storeViewController && self.benchtopViewController) {
+        enabled = YES;
     }
+    
+    return enabled;
 }
 
 #pragma mark - Private methods
@@ -273,6 +278,12 @@
     }
 }
 
+- (CGRect)editFrameForStore {
+    CGRect storeFrame = [self storeFrameForShow:NO];
+    storeFrame.origin.y -= kStoreHideTuckOffset;
+    return storeFrame;
+}
+
 - (void)openBook:(CKBook *)book {
     
     self.selectedBook = book;
@@ -298,6 +309,25 @@
     self.benchtopViewController.view.frame = [self benchtopFrameForShow:YES];
     [self.view insertSubview:self.benchtopViewController.view belowSubview:self.storeViewController.view];
     [self.benchtopViewController enable:YES];
+    
+    // Enable pan by default.
+    self.panEnabled = YES;
+}
+
+- (void)enableEditMode:(BOOL)enable {
+    
+    // Disable panning in edit mode.
+    self.panEnabled = !enable;
+    
+    // Transition store mode in/out of the way.
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.storeViewController.view.frame = enable ? [self editFrameForStore] : [self storeFrameForShow:NO];
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 @end

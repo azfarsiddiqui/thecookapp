@@ -37,7 +37,9 @@
 #pragma mark - CKBooKCoverViewDelegate methods
 
 - (void)bookCoverViewEditRequested {
-    DLog();
+    if (self.delegate) {
+        [self.delegate benchtopBookEditTappedForCell:self];
+    }
 }
 
 @end

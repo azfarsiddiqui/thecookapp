@@ -13,8 +13,10 @@
 #import "CKBook.h"
 #import "CKLoginView.h"
 #import "EventHelper.h"
+#import "CoverPickerView.h"
 
-@interface BenchtopCollectionViewController () <CKLoginViewDelegate, UIActionSheetDelegate>
+@interface BenchtopCollectionViewController () <CKLoginViewDelegate, UIActionSheetDelegate,
+    BenchtopBookCoverViewCellDelegate, CoverPickerViewDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
@@ -169,8 +171,11 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
                                                                                                                forIndexPath:indexPath];
+    cell.delegate = self;
+    
     if (indexPath.section == kMySection) {
         [cell loadBook:self.myBook];
+        
     } else if (indexPath.section == kFollowSection) {
         CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
         [cell loadBook:book];
@@ -206,6 +211,26 @@
     }
 }
 
+#pragma mark - BenchtopBookCoverViewCellDelegate methods
+
+- (void)benchtopBookEditTappedForCell:(UICollectionViewCell *)cell {
+    
+    // Inform delegate that edit of book
+    [self.delegate editBookRequested:YES];
+    
+    CoverPickerView *coverPickerView = [[CoverPickerView alloc] initWithCover:self.myBook.cover delegate:self];
+    coverPickerView.frame = CGRectMake(floorf((self.view.bounds.size.width - coverPickerView.frame.size.width) / 2.0),
+                                       0.0,
+                                       coverPickerView.frame.size.width,
+                                       coverPickerView.frame.size.height);
+    [self.view addSubview:coverPickerView];
+}
+
+#pragma mark - CoverPickerViewDelegate methods
+
+- (void)coverPickerSelected:(NSString *)cover {
+    DLog();
+}
 
 #pragma mark - Private methods
 

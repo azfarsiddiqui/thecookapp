@@ -12,5 +12,6 @@
 @protocol BenchtopViewControllerDelegate <NSObject>
 
 - (void)openBookRequestedForBook:(CKBook *)book;
+- (void)editBookRequested:(BOOL)editMode;
 
 @end
