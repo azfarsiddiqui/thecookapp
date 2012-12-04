@@ -94,10 +94,32 @@
 			<key>Thumb</key>
 			<string>cook_customise_colours_lightgreen.png</string>
 		</dict>
+		<key>Brown</key>
+		<dict>
+			<key>Index</key>
+			<integer>10</integer>
+			<key>Image</key>
+			<string>cook_book_brown.png</string>
+			<key>Thumb</key>
+			<string>cook_customise_colours_lightgreen.png</string>
+		</dict>
+		<key>Light Gray</key>
+		<dict>
+			<key>Index</key>
+			<integer>11</integer>
+			<key>Image</key>
+			<string>cook_book_lightgray.png</string>
+			<key>Thumb</key>
+			<string>cook_customise_colours_lightgreen.png</string>
+		</dict>
 		<key>Gray</key>
 		<dict>
+			<key>Index</key>
+			<integer>12</integer>
 			<key>Image</key>
 			<string>cook_book_gray.png</string>
+			<key>Thumb</key>
+			<string>cook_customise_colours_lightgreen.png</string>
 		</dict>
 	</dict>
 	<key>Illustrations</key>
@@ -151,6 +173,13 @@
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>
+		<key>Cow</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_cow.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
+		</dict>
 		<key>Cupcake</key>
 		<dict>
 			<key>Image</key>
@@ -169,6 +198,13 @@
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_eggbeater.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
+		</dict>
+		<key>Egg Plant</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_eggplant.png</string>
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>

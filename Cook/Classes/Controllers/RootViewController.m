@@ -34,7 +34,7 @@
 #define kBounceOffset           30.0
 #define kStoreHideTuckOffset    52.0
 #define kStoreShadowOffset      31.0
-#define kStoreShowAdjustment    100.0
+#define kStoreShowAdjustment    35.0
 
 - (void)viewDidLoad {
     [super viewDidLoad];
