@@ -10,4 +10,6 @@
 
 @interface BenchtopCollectionFlowLayout : UICollectionViewFlowLayout
 
+- (void)enableEditMode:(BOOL)enable;
+
 @end

@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
+@property (nonatomic, assign) BOOL editMode;
 
 @end
 
@@ -31,6 +32,11 @@
     return self;
 }
 
+- (void)enableEditMode:(BOOL)enable {
+    self.editMode = enable;
+    [self invalidateLayout];
+}
+
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
     return YES;
 }
@@ -42,6 +48,14 @@
         if ([self scalingRequiredForAttributes:attributes]) {
             CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
             attributes.transform3D = CATransform3DScale(attributes.transform3D, scaleFactor, scaleFactor, 1.0);
+            
+            if (self.editMode) {
+                if (attributes.indexPath.section == 0) {
+                    attributes.center = CGPointMake(attributes.center.x, attributes.center.y - 50.0);
+                } else {
+                    attributes.center = CGPointMake(attributes.center.x + 50.0, attributes.center.y - 50.0);
+                }
+            }
             
         }
     }

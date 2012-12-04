@@ -433,20 +433,28 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          
+                         // Tell the layout to go into edit mode.
+                         BenchtopCollectionFlowLayout *layout = (BenchtopCollectionFlowLayout *)self.collectionView.collectionViewLayout;
+                         [layout enableEditMode:enable];
+                         
                          // Inform delegate
                          [self.delegate editBookRequested:enable];
 
-                         self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + bounceOffset) : CGAffineTransformIdentity;
+                         // Slide down the cover picker.
+                         self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height) : CGAffineTransformIdentity;
+                         
+                         // Slide up illustration picker with bounce.
                          self.illustrationViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset) : CGAffineTransformIdentity;
                      }
                      completion:^(BOOL finished) {
                          
                          if (enable) {
-                             [UIView animateWithDuration:0.2
+                             [UIView animateWithDuration:0.3
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
                                               animations:^{
-                                                  self.coverViewController.view.transform = CGAffineTransformTranslate(self.coverViewController.view.transform, 0.0, -bounceOffset);
+                                                  
+                                                  // Restore illustration picker after bounce.
                                                   self.illustrationViewController.view.transform = CGAffineTransformTranslate(self.illustrationViewController.view.transform, 0.0, bounceOffset);
                                               } completion:^(BOOL finished) {
                                                   self.animating = NO;
