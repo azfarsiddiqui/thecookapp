@@ -40,7 +40,7 @@
     featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
                                                    self.view.bounds.origin.y,
                                                    self.view.bounds.size.width,
-                                                   rowHeight + 93.0);
+                                                   rowHeight + 250.0);
     featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:featuredViewController.view];
     self.featuredViewController = featuredViewController;

@@ -224,7 +224,7 @@
         
         // Show frame is just the top of the view bounds.
         CGRect showFrame = CGRectMake(self.view.bounds.origin.x,
-                                      self.view.bounds.origin.y - kStoreShowAdjustment,
+                                      self.view.bounds.size.height - self.storeViewController.view.frame.size.height - kStoreShowAdjustment,
                                       self.view.bounds.size.width,
                                       self.storeViewController.view.frame.size.height);
         if (bounce) {
