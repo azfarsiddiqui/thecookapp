@@ -19,7 +19,8 @@
 #define kEventEditMode              @"CKEventEditMode"
 #define kBoolEditMode               @"CKBoolEditMode"
 #define kEventFollowUpdated         @"CKEventFollowUpdated"
-#define kBoolFriendsFollowUpdated   @"CKBoolFriendsFollowUpdated"
+#define kBoolFollow                 @"CKBoolFollow"
+#define kBoolFriendsFollow          @"CKBoolFriends"
 
 #pragma mark - Login successful event
 
@@ -107,19 +108,24 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventFollowUpdated];
 }
 
-+ (void)postFollowUpdatedForFriends:(BOOL)friends {
-    [EventHelper postEvent:kEventFollowUpdated];
++ (void)postFollow:(BOOL)follow friends:(BOOL)friends {
     [EventHelper postEvent:kEventFollowUpdated
-              withUserInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:friends]
-                                                       forKey:kBoolFriendsFollowUpdated]];
+              withUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSNumber numberWithBool:follow], kBoolFollow,
+                            [NSNumber numberWithBool:friends], kBoolFriendsFollow,
+                            nil]];
 }
 
 + (void)unregisterFollowUpdated:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventFollowUpdated];
 }
 
++ (BOOL)followForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kBoolFollow] boolValue];
+}
+
 + (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification {
-    return [[[notification userInfo] valueForKey:kBoolFriendsFollowUpdated] boolValue];
+    return [[[notification userInfo] valueForKey:kBoolFriendsFollow] boolValue];
 }
 
 #pragma mark - Private

@@ -340,7 +340,7 @@
     BOOL friendsBook = [book friendsBook];
     [book removeFollower:currentUser
                  success:^{
-                     [EventHelper postFollowUpdatedForFriends:friendsBook];
+                     [EventHelper postFollow:NO friends:friendsBook];
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");
                  }];
@@ -348,7 +348,10 @@
 }
 
 - (void)followUpdated:(NSNotification *)notification {
-    [self loadFollowBooks];
+    BOOL follow = [EventHelper followForNotification:notification];
+    if (follow) {
+        [self loadFollowBooks];
+    }
 }
 
 @end

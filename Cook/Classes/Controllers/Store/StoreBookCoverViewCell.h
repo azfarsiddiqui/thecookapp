@@ -9,7 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "BenchtopBookCoverViewCell.h"
 
+@protocol StoreBookCoverViewCellDelegate <BenchtopBookCoverViewCellDelegate>
+
+- (void)storeBookFollowTappedForCell:(UICollectionViewCell *)cell;
+
+@end
+
 @interface StoreBookCoverViewCell : BenchtopBookCoverViewCell
+
+@property (nonatomic, assign) id<StoreBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;
 

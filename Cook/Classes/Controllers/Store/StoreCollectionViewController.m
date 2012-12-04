@@ -9,15 +9,12 @@
 #import "StoreCollectionViewController.h"
 #import "StoreFlowLayout.h"
 #import "StoreBookCoverViewCell.h"
-#import "BenchtopBookCoverViewCell.h"
 #import "CKBook.h"
 #import "CKBookCoverView.h"
 #import "EventHelper.h"
 #import "MRCEnumerable.h"
 
-@interface StoreCollectionViewController () <UIActionSheetDelegate>
-
-@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+@interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate>
 
 @end
 
@@ -47,7 +44,7 @@
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self.collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
+    [self.collectionView registerClass:[StoreBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     
     [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
@@ -98,12 +95,7 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
-                                               destructiveButtonTitle:nil otherButtonTitles:@"Follow", @"Open", nil];
-    actionSheet.delegate = self;
-    [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
-    self.selectedIndexPath = indexPath;
+    DLog();
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -140,26 +132,18 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
+    StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
                                                                                                              forIndexPath:indexPath];
+    cell.delegate = self;
     [cell loadBook:[self.books objectAtIndex:indexPath.item]];
     return cell;
 }
 
-#pragma mark - UIActionSheetDelegate methods
+#pragma mark - StoreBookCoverViewCellDelegate methods
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    DLog(@"Item %d", buttonIndex);
-    switch (buttonIndex) {
-        case 0:
-            [self followBookAtIndexPath:self.selectedIndexPath];
-            break;
-        case 1:
-            [self openBookAtIndexPath:self.selectedIndexPath];
-            break;
-        default:
-            break;
-    }
+- (void)storeBookFollowTappedForCell:(UICollectionViewCell *)cell {
+    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+    [self followBookAtIndexPath:indexPath];
 }
 
 #pragma mark - Private methods
@@ -186,7 +170,7 @@
     BOOL friendsBook = [book friendsBook];
     [book addFollower:currentUser
               success:^{
-                  [EventHelper postFollowUpdatedForFriends:friendsBook];
+                  [EventHelper postFollow:YES friends:friendsBook];
              } failure:^(NSError *error) {
                  DLog(@"Unable to follow.");
              }];
@@ -199,8 +183,9 @@
 #pragma mark - Private methods
 
 - (void)followUpdated:(NSNotification *)notification {
+    BOOL follow = [EventHelper followForNotification:notification];
     BOOL friendsBook = [EventHelper friendsBookFollowUpdatedForNotification:notification];
-    if ([self updateForFriendsBook:friendsBook]) {
+    if (!follow && [self updateForFriendsBook:friendsBook]) {
         [self loadData];
     }
 }

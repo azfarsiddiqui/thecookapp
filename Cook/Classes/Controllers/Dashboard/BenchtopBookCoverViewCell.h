@@ -10,9 +10,17 @@
 #import "CKBook.h"
 #import "CKBookCoverView.h"
 
+@protocol BenchtopBookCoverViewCellDelegate
+
+- (void)benchtopBookEditTappedForCell:(UICollectionViewCell *)cell;
+
+@end
+
+
 @interface BenchtopBookCoverViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
+@property (nonatomic, assign) id<BenchtopBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;
 
