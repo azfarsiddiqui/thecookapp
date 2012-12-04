@@ -28,6 +28,7 @@
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) UIImageView *editOverlayView;
 
 @end
 
@@ -405,8 +406,15 @@
     
     self.animating = YES;
     self.editMode = enable;
+    self.collectionView.scrollEnabled = !enable;
     
     if (enable) {
+        
+        // Edit overlay
+        UIImageView *editOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        editOverlayView.alpha = 0.0;
+        [self.view addSubview:editOverlayView];
+        self.editOverlayView = editOverlayView;
         
         // Cover
         CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
@@ -439,6 +447,9 @@
                          
                          // Inform delegate
                          [self.delegate editBookRequested:enable];
+                         
+                         // Fade the edit overlay.
+                         self.editOverlayView.alpha = enable ? 1.0 : 0.0;
 
                          // Slide down the cover picker.
                          self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height) : CGAffineTransformIdentity;
@@ -461,8 +472,10 @@
                                               }];
                          } else {
                              self.animating = NO;
+                             [self.editOverlayView removeFromSuperview];
                              [self.coverViewController.view removeFromSuperview];
                              [self.illustrationViewController.view removeFromSuperview];
+                             self.editOverlayView = nil;
                              self.coverViewController = nil;
                              self.illustrationViewController = nil;
                          }
