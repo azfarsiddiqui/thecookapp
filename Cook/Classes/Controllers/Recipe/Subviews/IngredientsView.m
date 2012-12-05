@@ -20,6 +20,7 @@
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) UITableView *tableView;
+@property(nonatomic,strong) UIButton *addIngredientsButton;
 @end
 
 @implementation IngredientsView
@@ -30,6 +31,7 @@
     self.ingredientsLabel.hidden = editable;
     [self.tableView reloadData];
     self.tableView.hidden = !editable;
+    self.addIngredientsButton.hidden = !editable;
 }
 
 #pragma mark - Private methods
@@ -88,6 +90,17 @@
     return _tableView;
 }
 
+-(UIButton *)addIngredientsButton
+{
+    if (!_addIngredientsButton) {
+        _addIngredientsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_textedit.png"] target:self selector:@selector(addIngredientTapped:)];
+        _addIngredientsButton.hidden =YES;
+        _addIngredientsButton.frame = CGRectMake(self.bounds.size.width - floorf(0.75*(_addIngredientsButton.frame.size.width)),-5.0f,
+                                                 _addIngredientsButton.frame.size.width, _addIngredientsButton.frame.size.height);
+        [self addSubview:_addIngredientsButton];
+    }
+    return _addIngredientsButton;
+}
 -(void) adjustScrollContentSizeToHeight:(float)height
 {
     self.ingredientsScrollView.contentSize = height > self.ingredientsScrollView.frame.size.height ?
@@ -104,6 +117,7 @@
     
     return [NSString stringWithString:mutableIngredientString];
 }
+
 #pragma mark - UITableViewDatasource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -146,6 +160,12 @@
     ingredient.name = textField.text;
 }
 
+#pragma mark - Action buttons
+-(void)addIngredientTapped:(UIButton*)button
+{
+    [self.ingredients addObject:[Ingredient ingredientwithName:@"ingredient"]];
+    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

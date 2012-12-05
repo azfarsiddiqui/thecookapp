@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "UIEditableView.h"
 @interface IngredientsView : UIEditableView
-@property (nonatomic,strong) NSArray *ingredients;
+@property (nonatomic,strong) NSMutableArray *ingredients;
 @end
