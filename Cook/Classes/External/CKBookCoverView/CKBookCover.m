@@ -69,7 +69,7 @@
 
 + (UIImage *)thumbImageForCover:(NSString *)cover {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Thumb", cover]];
-    return [[UIImage imageNamed:imageName] stretchableImageWithLeftCapWidth:0.0 topCapHeight:48.0];
+    return [UIImage imageNamed:imageName];
 }
 
 + (UIImage *)imageForIllustration:(NSString *)illustration {

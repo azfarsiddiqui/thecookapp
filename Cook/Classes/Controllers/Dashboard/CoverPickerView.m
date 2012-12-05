@@ -22,8 +22,8 @@
 
 @implementation CoverPickerView
 
-#define kMinSize    CGSizeMake(115.0, 97.0)
-#define kMaxSize    CGSizeMake(115.0, 137.0)
+#define kMinSize        CGSizeMake(67.0, 59.0)
+#define kMaxSize        CGSizeMake(67.0, 101.0)
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -59,9 +59,13 @@
         
         // Button shadow.
         UIImageView *shadowView = [[UIImageView alloc] initWithImage:shadowImage];
-        shadowView.frame = coverButton.frame;
+        shadowView.frame = CGRectMake(offset + floorf((coverButton.frame.size.width - shadowView.frame.size.width) / 2.0),
+                                      0.0,
+                                      shadowView.frame.size.width,
+                                      shadowView.frame.size.height);
         [self addSubview:shadowView];
         [self.shadows addObject:shadowView];
+        DLog(@"SHADOW FRAME: %@", NSStringFromCGRect(shadowView.frame));
         
         offset += coverButton.frame.size.width;
     }
@@ -96,17 +100,20 @@
                          // Unselect all buttons except the current one.
                          for (NSInteger buttonIndex = 0; buttonIndex < [self.buttons count]; buttonIndex++) {
                              UIButton *button = [self.buttons objectAtIndex:buttonIndex];
+//                             button.alpha = 0.5;
                              UIView *shadowView = [self.shadows objectAtIndex:buttonIndex];
-                             CGRect frame = button.frame;
-                             
+                             CGRect buttonFrame = button.frame;
+                             CGRect shadowFrame = shadowView.frame;
                              if (buttonIndex == coverIndex) {
-                                 frame.size.height = kMaxSize.height;
+                                 buttonFrame.size.height = kMaxSize.height;
+                                 shadowFrame.size.height = buttonFrame.size.height + 31.0;
                              } else {
-                                 frame.size.height = kMinSize.height;
+                                 buttonFrame.size.height = kMinSize.height;
+                                 shadowFrame.size.height = buttonFrame.size.height + 17.0;
                              }
                              
-                             button.frame = frame;
-                             shadowView.frame = frame;
+                             button.frame = buttonFrame;
+                             shadowView.frame = shadowFrame;
                          }
                          
                      }
@@ -116,6 +123,10 @@
                          [self.delegate coverPickerSelected:selectedCover];
                      }];
     
+}
+
+- (UIImage *)imageForCover:(NSString *)cover {
+    return [[CKBookCover thumbImageForCover:cover] stretchableImageWithLeftCapWidth:0 topCapHeight:29];
 }
 
 @end
