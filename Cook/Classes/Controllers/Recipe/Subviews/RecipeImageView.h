@@ -10,6 +10,6 @@
 #import "UIEditableView.h"
 #import "CKRecipe.h"
 @interface RecipeImageView : UIEditableView
-
+@property (nonatomic,strong) UIViewController *parentViewController;
 -(void)setRecipe:(CKRecipe *)recipe;
 @end

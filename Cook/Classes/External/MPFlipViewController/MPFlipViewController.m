@@ -33,7 +33,6 @@ NSString *MPFlipViewControllerDidFinishAnimatingNotification = @"com.markpospese
 @property (assign, nonatomic) CGPoint lastPanPosition;
 @property (assign, nonatomic) BOOL animationDidStartAsPan;
 @property (nonatomic, assign) MPFlipViewControllerDirection direction;
-
 @end
 
 @implementation MPFlipViewController
@@ -147,16 +146,18 @@ NSString *MPFlipViewControllerDidFinishAnimatingNotification = @"com.markpospese
 	right.direction = isHorizontal? UISwipeGestureRecognizerDirectionRight : UISwipeGestureRecognizerDirectionDown;
 	right.delegate = self;
 	[self.view addGestureRecognizer:right];
-	
-	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-	tap.delegate = self;
-	[self.view addGestureRecognizer:tap];
+
+//  disable tap gestures
+//	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+//	tap.delegate = self;
+//	[self.view addGestureRecognizer:tap];
 	
 	UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
 	pan.delegate = self;
 	[self.view addGestureRecognizer:pan];
 	
-	self.gestureRecognizers = [NSArray arrayWithObjects:left, right, tap, pan, nil];
+//	self.gestureRecognizers = [NSArray arrayWithObjects:left, right, tap, pan, nil];
+    self.gestureRecognizers = [NSArray arrayWithObjects:left, right, pan, nil];
 
 	[self setGesturesAdded:YES];
 }

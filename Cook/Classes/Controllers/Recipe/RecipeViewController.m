@@ -114,6 +114,7 @@
     }
 
     self.recipeImageView.recipe = self.recipe;
+    self.recipeImageView.parentViewController = self;
    
 }
 

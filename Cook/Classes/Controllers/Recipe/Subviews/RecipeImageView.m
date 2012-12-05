@@ -8,12 +8,24 @@
 
 #import "RecipeImageView.h"
 #import "ViewHelper.h"
+#import "AppHelper.h"
+#import "AFPhotoEditorController.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 
-@interface RecipeImageView()
+
+@interface RecipeImageView()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate, AFPhotoEditorControllerDelegate>
+//UI
 @property(nonatomic,strong) PFImageView *imageView;
 @property(nonatomic,strong) UIScrollView *recipeImageScrollView;
 @property(nonatomic,strong) UIButton *editImageButton;
+@property(nonatomic,strong) UIButton *addImageButtonFromCamera;
+@property(nonatomic,strong) UIButton *addImageButtonFromLibrary;
+@property (nonatomic,strong) UIPopoverController *popoverController;
+@property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
+
+//data
 @property(nonatomic,assign) BOOL loadingImage;
+@property (nonatomic,strong) UIImage *recipeImage;
 @end
 @implementation RecipeImageView
 
@@ -90,6 +102,11 @@
     if (!_recipeImageScrollView) {
         _recipeImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
         _recipeImageScrollView.scrollEnabled = NO;
+        _recipeImageScrollView.bounces = NO;
+        _recipeImageScrollView.showsHorizontalScrollIndicator = NO;
+        _recipeImageScrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+        _recipeImageScrollView.showsVerticalScrollIndicator = NO;
+
         [self addSubview:_recipeImageScrollView];
     }
     return _recipeImageScrollView;
@@ -107,7 +124,7 @@
 -(UIButton *)editImageButton
 {
     if (!_editImageButton) {
-        _editImageButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_editrecipe_editphoto.png"] target:self selector:@selector(editImageTapped:)];
+        _editImageButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_editrecipe_editphoto.png"] target:self selector:@selector(uploadImageTapped:)];
         _editImageButton.hidden =YES;
         _editImageButton.frame = CGRectMake(5.0f,self.bounds.size.height - _editImageButton.frame.size.height-5.0f,
                                                  _editImageButton.frame.size.width, _editImageButton.frame.size.height);
@@ -116,10 +133,122 @@
     return _editImageButton;
 }
 
+- (void)centerScrollViewContents {
+    CGSize boundsSize = self.recipeImageScrollView.bounds.size;
+    CGRect contentsFrame = self.imageView.frame;
+    
+    if (contentsFrame.size.width < boundsSize.width) {
+        contentsFrame.origin.x = (boundsSize.width - contentsFrame.size.width) / 2.0f;
+    } else {
+        contentsFrame.origin.x = 0.0f;
+    }
+    
+    if (contentsFrame.size.height < boundsSize.height) {
+        contentsFrame.origin.y = (boundsSize.height - contentsFrame.size.height) / 2.0f;
+    } else {
+        contentsFrame.origin.y = 0.0f;
+    }
+    
+    self.imageView.frame = contentsFrame;
+}
+
 #pragma mark - Action methods
--(void)editImageTapped:(UIButton*)button
+-(IBAction)uploadImageTapped:(UIButton *)button
+{
+    if (([button isEqual:self.addImageButtonFromCamera] || [button isEqual:self.editImageButton]) && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        [self.parentViewController presentViewController:picker animated:YES completion:nil];
+    } else if ([button isEqual:self.addImageButtonFromLibrary] && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.mediaTypes = @[(NSString *) kUTTypeImage];
+        picker.delegate = self;
+        
+        self.popoverController = [[UIPopoverController alloc] initWithContentViewController:picker];
+        self.popoverController.delegate=self;
+        UIView *rootView = [[AppHelper sharedInstance] rootView];
+        [self.popoverController presentPopoverFromRect:[button.superview convertRect:button.frame toView:rootView] inView:rootView
+                                               permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
+        
+    } else {
+        DLog("** no camera available - stubbed image **");
+        //so we simulate an image
+        self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:[UIImage imageNamed:@"test_image"]];
+        [self.photoEditorController setDelegate:self];
+        self.photoEditorController.view.frame = self.superview.bounds;
+        [self.superview addSubview:self.photoEditorController.view];
+    }
+}
+
+
+#pragma mark - UIImagePickerControllerDelegate
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self.parentViewController dismissViewControllerAnimated:YES
+                             completion:nil];
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    NSParameterAssert(image);
+    DLog(@"image size after picker: %f, %f", image.size.width,image.size.height);
+    if (self.popoverController) {
+        //origin via popover for library picker
+        [self.popoverController dismissPopoverAnimated:NO];
+        self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
+        [self.photoEditorController setDelegate:self];
+        self.photoEditorController.view.frame = self.superview.bounds;
+        [self.superview addSubview:self.photoEditorController.view];
+    } else {
+        [self.parentViewController dismissViewControllerAnimated:NO completion:^{
+            self.photoEditorController = [[AFPhotoEditorController alloc] initWithImage:image];
+            [self.photoEditorController setDelegate:self];
+            self.photoEditorController.view.frame = self.superview.bounds;
+            [self.superview addSubview:self.photoEditorController.view];
+        }];
+    }
+}
+
+#pragma mark - UIPopoverDelegate
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    self.popoverController = nil;
+}
+
+#pragma mark - AFPhotoEditorControllerDelegate
+-(void)photoEditor:(AFPhotoEditorController *)editor finishedWithImage:(UIImage *)image
 {
     DLog();
+    NSParameterAssert(editor == self.photoEditorController);
+    [self.photoEditorController.view removeFromSuperview];
+    self.photoEditorController = nil;
+    NSParameterAssert(image);
+    self.recipeImage = image;
+    
+//    if (self.recipeImageView) {
+//        [self.recipeImageView removeFromSuperview];
+        self.imageView.image = image;
+//    } else {
+//        self.recipeImageView = [[UIImageView alloc] initWithImage:image];
+//    }
+    
+    self.imageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
+//    [self.recipeImageScrollView addSubview:self.recipeImageView];
+    self.recipeImageScrollView.contentSize = image.size;
+//    self.recipeImageScrollView.scrollEnabled = YES;
+    [self centerScrollViewContents];
+    DLog(@"photo size %@", NSStringFromCGSize(image.size));
+    //TODO for new images: self.cameraButtonsView.hidden = YES;
+}
+
+-(void)photoEditorCanceled:(AFPhotoEditorController *)editor
+{
+    [self.photoEditorController.view removeFromSuperview];
+    self.photoEditorController = nil;
 }
 
 /*

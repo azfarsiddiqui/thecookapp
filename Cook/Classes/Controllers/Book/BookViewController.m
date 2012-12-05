@@ -16,7 +16,6 @@
 #import "RecipeViewController.h"
 #import "BookProfilePageViewController.h"
 #import "MPFlipViewController.h"
-
 #define kContentPageIndex  2
 #define kBookProfilePageIndex 1
 
