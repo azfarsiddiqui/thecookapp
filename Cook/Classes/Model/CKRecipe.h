@@ -14,7 +14,6 @@
 @interface CKRecipe : CKModel
 
 @property (nonatomic, strong) NSString *description;
-@property (nonatomic, strong) UIImage *image;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSArray *ingredients;
 @property (nonatomic, assign) float cookingTimeInSeconds;
@@ -24,9 +23,11 @@
 
 +(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
++(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category;
 
+-(void) setImage:(UIImage *)image;
 -(PFFile*) imageFile;
 -(void) categoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
--(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
+-(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
 @end

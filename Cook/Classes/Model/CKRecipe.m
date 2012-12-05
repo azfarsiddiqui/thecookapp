@@ -56,6 +56,13 @@
     return recipe;
 }
 
++(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book
+{
+    CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
+    recipe.book = book;
+    return recipe;
+}
+
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
 {
     PFObject *parseRecipe = [PFObject objectWithClassName:kRecipeModelName];
