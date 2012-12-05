@@ -37,7 +37,7 @@
 {
     [super viewWillAppear:animated];
     DLog();
-    [self showContentsButton];
+    [self showContentsButton:YES];
 }
 
 -(void)viewDidAppear:(BOOL)animated

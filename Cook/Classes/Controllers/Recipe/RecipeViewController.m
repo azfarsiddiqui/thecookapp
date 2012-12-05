@@ -23,7 +23,7 @@
 #import "Theme.h"
 
 #define kImageViewTag   1122334455
-@interface RecipeViewController ()
+@interface RecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @property(nonatomic,strong) IBOutlet RecipeNameView *recipeNameView;
 @property(nonatomic,strong) IBOutlet RecipeImageView *recipeImageView;
@@ -31,6 +31,9 @@
 @property(nonatomic,strong) IBOutlet CookingDirectionsView *cookingDirectionsView;
 @property(nonatomic,strong) IBOutlet ServesView *servesView;
 @property(nonatomic,strong) IBOutlet CookingTimeView *cookingTimeView;
+
+@property(nonatomic,strong) IBOutlet UIButton *closeButton;
+@property(nonatomic,strong) IBOutlet UIButton *saveButton;
 
 @property(nonatomic,strong) IBOutletCollection(UIEditableView) NSArray *editableViews;
 
@@ -43,7 +46,7 @@
     [super viewWillAppear:animated];
     DLog();
     [self refreshData];
-    [self showContentsButton];
+    [self showContentsButton:YES];
 
 }
 
@@ -83,7 +86,26 @@
         [self.editableViews each:^(UIEditableView *view) {
             [view makeEditable:YES];
         }];
+        [self showPageButtons:NO];
+        [self toggleSaveCloseButtons:YES];
     }
+}
+
+#pragma mark - Action methods
+
+-(IBAction)closeButtonTapped:(UIButton*)button
+{
+    [self.editableViews each:^(UIEditableView *view) {
+        [view makeEditable:NO];
+    }];
+    [self showPageButtons:YES];
+    [self toggleSaveCloseButtons:NO];
+    [self showBookmarkView];
+}
+
+-(IBAction)saveButtonTapped:(UIButton*)button
+{
+    
 }
 
 #pragma mark - private methods
@@ -95,6 +117,7 @@
 
 -(void)refreshData
 {
+    DLog(@"refreshing data");
     [self.recipeNameView setRecipeName:self.recipe.name];
     [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
 
@@ -115,8 +138,13 @@
 
     self.recipeImageView.recipe = self.recipe;
     self.recipeImageView.parentViewController = self;
-   
 }
 
 
+-(void) toggleSaveCloseButtons:(BOOL)show
+{
+    self.closeButton.hidden = !show;
+    self.saveButton.hidden = !show;
+
+}
 @end

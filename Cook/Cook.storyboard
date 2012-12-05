@@ -180,6 +180,32 @@
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="7" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zat-pl-dHa">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" backgroundImage="cook_customise_btns_cancel.png">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="closeButtonTapped:" destination="JDl-m4-0RL" eventType="touchUpInside" id="0LI-15-v8I"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Erb-bR-yfd">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" backgroundImage="cook_customise_btns_done.png">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="saveButtonTapped:" destination="JDl-m4-0RL" eventType="touchUpInside" id="Tm2-tl-gfR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -200,6 +226,7 @@
                             <constraint firstItem="x8d-CU-Nyb" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" type="default" id="HXn-b7-CsX"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="236" id="IRF-Ae-EXN"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="leading" secondItem="p0o-T6-Pxs" secondAttribute="trailing" constant="50" type="user" id="MFa-Kh-SIS"/>
+                            <constraint firstItem="Erb-bR-yfd" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="20" symbolic="YES" type="default" id="Mc8-vr-yM0"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="NJa-Zc-hKk"/>
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="top" secondItem="G8I-BA-gbt" secondAttribute="bottom" constant="24" type="user" id="NPE-Ow-gc5"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="leading" secondItem="H9S-OO-JnT" secondAttribute="trailing" constant="40" type="user" id="Oxb-C0-EsE"/>
@@ -209,6 +236,7 @@
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="66" id="X83-t0-qVh"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="trailing" secondItem="E4H-Ex-K7C" secondAttribute="trailing" type="default" id="Ywi-UO-da3"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="Znz-ch-Hg5"/>
+                            <constraint firstAttribute="trailing" secondItem="Erb-bR-yfd" secondAttribute="trailing" constant="17" id="Zpr-ql-Ruz"/>
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="leading" secondItem="G8I-BA-gbt" secondAttribute="leading" type="user" id="bSe-q5-Kub"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="duZ-3G-hVO"/>
                             <constraint firstItem="G8I-BA-gbt" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="70" type="user" id="kVO-r4-CSB"/>
@@ -216,18 +244,22 @@
                             <constraint firstItem="x8d-CU-Nyb" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="208" id="oOR-XG-Clx"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="181" id="oR3-hC-DxN"/>
                             <constraint firstAttribute="bottom" secondItem="Gzk-Ze-6Lw" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="ouQ-CP-mBn"/>
+                            <constraint firstItem="zat-pl-dHa" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="20" symbolic="YES" type="default" id="ovn-N8-7Cn"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="365" id="tta-xU-kQu"/>
+                            <constraint firstItem="zat-pl-dHa" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="yH8-bC-aRw"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="closeButton" destination="zat-pl-dHa" id="unq-aF-d6l"/>
                         <outlet property="cookingDirectionsView" destination="Gzk-Ze-6Lw" id="JKx-lK-IM0"/>
                         <outlet property="cookingTimeView" destination="x8d-CU-Nyb" id="weD-oA-ixM"/>
                         <outlet property="facebookUserView" destination="G8I-BA-gbt" id="bbE-wb-cg9"/>
                         <outlet property="ingredientsView" destination="H9S-OO-JnT" id="V6F-sF-Aco"/>
                         <outlet property="recipeImageView" destination="p0o-T6-Pxs" id="OzP-KA-PP6"/>
                         <outlet property="recipeNameView" destination="E4H-Ex-K7C" id="9V6-Sg-dWL"/>
+                        <outlet property="saveButton" destination="Erb-bR-yfd" id="fbS-RO-aAq"/>
                         <outlet property="servesView" destination="ncH-Sa-cAx" id="hJq-qo-wRD"/>
                         <outletCollection property="editableViews" destination="p0o-T6-Pxs" id="f56-jL-EV9"/>
                         <outletCollection property="editableViews" destination="E4H-Ex-K7C" id="ewh-Ca-ocN"/>
@@ -367,6 +399,9 @@
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dP8-1h-KHq">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="37" id="N5T-tc-c2u"/>
+                                </constraints>
                                 <color key="progressTintColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
@@ -453,7 +488,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" type="default" id="3TR-hm-pxM"/>
+                            <constraint firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" constant="17" id="4BJ-VN-4Fc"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" type="default" id="6a1-A7-cpa"/>
                             <constraint firstItem="T5d-16-VEN" firstAttribute="centerY" secondItem="C11-QJ-7d0" secondAttribute="centerY" type="default" id="7JZ-b3-33b"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="3J9-3w-spQ" secondAttribute="leading" type="default" id="8hu-Ce-3ma"/>
@@ -461,6 +496,7 @@
                             <constraint firstItem="uNT-W3-3X4" firstAttribute="leading" secondItem="2W1-BQ-AiG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="COM-CP-Het"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="centerY" secondItem="uoV-OH-QaP" secondAttribute="centerY" type="default" id="DE5-WI-HRW"/>
                             <constraint firstAttribute="bottom" secondItem="h6t-UG-A6Z" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="DI9-RK-F9B"/>
+                            <constraint firstItem="cq0-5i-ca6" firstAttribute="trailing" secondItem="RTn-cl-Ogo" secondAttribute="trailing" type="default" id="DnI-L9-kcY"/>
                             <constraint firstAttribute="trailing" secondItem="41R-Zh-8bY" secondAttribute="trailing" constant="385" id="Hpg-9r-8xy"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="centerX" secondItem="hNd-HF-af5" secondAttribute="centerX" type="default" id="IIT-ih-bxz"/>
                             <constraint firstItem="wa0-dn-372" firstAttribute="top" secondItem="dP8-1h-KHq" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IOe-ew-8qo"/>
@@ -481,7 +517,6 @@
                             <constraint firstAttribute="bottom" secondItem="RTn-cl-Ogo" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Zuh-k4-TVv"/>
                             <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="xmC-eC-N0p" secondAttribute="trailing" type="default" id="bNj-un-U5c"/>
                             <constraint firstItem="p0O-vO-Qd6" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="cz6-2s-BUG"/>
-                            <constraint firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" constant="17" id="e3i-Fc-UUj"/>
                             <constraint firstItem="3J9-3w-spQ" firstAttribute="leading" secondItem="oIC-34-ocX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="eCv-9z-7eR"/>
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="trailing" secondItem="wa0-dn-372" secondAttribute="trailing" type="default" id="eUf-Ft-vy1"/>
                             <constraint firstItem="p0O-vO-Qd6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="eiI-f9-FEu"/>
@@ -493,7 +528,6 @@
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="bottom" secondItem="63E-Hg-Lwu" secondAttribute="bottom" type="default" id="n6e-rR-KqG"/>
                             <constraint firstItem="wa0-dn-372" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="396" id="o1U-gb-W7D"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="T5d-16-VEN" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="oag-t4-FY0"/>
-                            <constraint firstItem="cq0-5i-ca6" firstAttribute="leading" secondItem="dP8-1h-KHq" secondAttribute="leading" type="default" id="pkl-q8-g3I"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="152" id="rot-4e-gtU"/>
                             <constraint firstAttribute="trailing" secondItem="Vxn-4N-ySv" secondAttribute="trailing" constant="11" id="sih-e9-q0y"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="u1u-tS-nQg"/>
@@ -608,12 +642,16 @@
         <class className="RecipeViewController" superclassName="PageViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
             <relationships>
+                <relationship kind="action" name="closeButtonTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="saveButtonTapped:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="closeButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="cookingDirectionsView" candidateClass="CookingDirectionsView"/>
                 <relationship kind="outlet" name="cookingTimeView" candidateClass="CookingTimeView"/>
                 <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
                 <relationship kind="outlet" name="ingredientsView" candidateClass="IngredientsView"/>
                 <relationship kind="outlet" name="recipeImageView" candidateClass="RecipeImageView"/>
                 <relationship kind="outlet" name="recipeNameView" candidateClass="RecipeNameView"/>
+                <relationship kind="outlet" name="saveButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="servesView" candidateClass="ServesView"/>
                 <relationship kind="outletCollection" name="editableViews" candidateClass="UIEditableView"/>
             </relationships>

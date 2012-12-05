@@ -30,6 +30,8 @@ typedef enum {
 
 - (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource withButtonStyle:(NavigationButtonStyle)navigationButtonStyle;
 - (void)initPageView;
-- (void)showContentsButton;
+- (void)showContentsButton:(BOOL)show;
+- (void)showPageButtons:(BOOL)show;
 - (void)loadingIndicator:(BOOL)loading;
+- (void)showBookmarkView;
 @end

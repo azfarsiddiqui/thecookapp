@@ -158,6 +158,8 @@
     if (([button isEqual:self.addImageButtonFromCamera] || [button isEqual:self.editImageButton]) && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
     {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        UIView *pickerView = picker.view;
+        pickerView.frame = self.superview.bounds;
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.delegate = self;
         [self.parentViewController presentViewController:picker animated:YES completion:nil];
@@ -222,24 +224,16 @@
 #pragma mark - AFPhotoEditorControllerDelegate
 -(void)photoEditor:(AFPhotoEditorController *)editor finishedWithImage:(UIImage *)image
 {
-    DLog();
     NSParameterAssert(editor == self.photoEditorController);
     [self.photoEditorController.view removeFromSuperview];
     self.photoEditorController = nil;
+    
     NSParameterAssert(image);
     self.recipeImage = image;
-    
-//    if (self.recipeImageView) {
-//        [self.recipeImageView removeFromSuperview];
-        self.imageView.image = image;
-//    } else {
-//        self.recipeImageView = [[UIImageView alloc] initWithImage:image];
-//    }
-    
+    self.imageView.image = image;
+
     self.imageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
-//    [self.recipeImageScrollView addSubview:self.recipeImageView];
     self.recipeImageScrollView.contentSize = image.size;
-//    self.recipeImageScrollView.scrollEnabled = YES;
     [self centerScrollViewContents];
     DLog(@"photo size %@", NSStringFromCGSize(image.size));
     //TODO for new images: self.cameraButtonsView.hidden = YES;

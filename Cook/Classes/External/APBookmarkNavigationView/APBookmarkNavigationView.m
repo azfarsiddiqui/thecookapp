@@ -53,9 +53,14 @@
     return self;
 }
 
-- (void)show:(BOOL)show animated:(BOOL)animated {
+-(void)reset
+{
+    [self show:NO animated:YES hideOnCompletion:NO];
+}
+
+- (void)show:(BOOL)show animated:(BOOL)animated hideOnCompletion:(BOOL)hideOnCompletion {
     DLog(@"show:%@ animated:%@", show ? @"YES" : @"NO", animated ? @"YES" : @"NO");
-    CGRect frameForShow = [self frameForShow:show];
+    CGRect frameForShow = [self frameForShow:show hideOnCompletion:hideOnCompletion];
     CGFloat hideBounceOffset = 5.0;
     if (animated) {
         [UIView animateWithDuration:0.15 
@@ -161,7 +166,7 @@
 }
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
-    [self show:!self.shown animated:YES];
+    [self show:!self.shown animated:YES hideOnCompletion:NO];
 }
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
@@ -182,7 +187,7 @@
             if (translation.y < 0) {
                 
                 // Any upward pan is to hide it.
-                [self show:NO animated:YES];
+                [self show:NO animated:YES hideOnCompletion:NO];
                 
             } else {
                 
@@ -194,17 +199,17 @@
                 if (self.shown && currentHeight > (showFrame.size.height + (kBookmarkPanHideRatio * showFrame.size.height))) {
                     
                     // Stretch below to bounce back.
-                    [self show:NO animated:YES];
+                    [self show:NO animated:YES hideOnCompletion:NO];
                     
                 } else if (!self.shown && currentHeight > (hideFrame.size.height + (kBookmarkPanShowRatio * showFrame.size.height))) {
                     
                     // Stretch past to show.
-                    [self show:YES animated:YES];
+                    [self show:YES animated:YES hideOnCompletion:NO];
                     
                 } else {
                     
                     // Restore to minimised state.
-                    [self show:NO animated:YES];
+                    [self show:NO animated:YES hideOnCompletion:NO];
                 }
             }
             
@@ -253,7 +258,12 @@
     return pannedFrame;
 }
 
-- (CGRect)frameForShow:(BOOL)show {
+- (CGRect)frameForShow:(BOOL)show
+{
+    return [self frameForShow:show hideOnCompletion:NO];
+}
+
+- (CGRect)frameForShow:(BOOL)show hideOnCompletion:(BOOL)hideOnCompletion{
     CGRect frameForShow = CGRectZero;
     if (show) {
         frameForShow = CGRectMake(self.frame.origin.x, 
@@ -261,10 +271,9 @@
                                   self.frame.size.width, 
                                   kBookmarkContentInsets.top + self.optionContainerView.frame.size.height + kBookmarkContentInsets.bottom + self.initialSize.height);
     } else {
-        frameForShow = CGRectMake(self.frame.origin.x, 
-                                  self.frame.origin.y, 
-                                  self.initialSize.width,
-                                  self.initialSize.height);
+        frameForShow = !hideOnCompletion ?
+        CGRectMake(self.frame.origin.x,self.frame.origin.y,self.initialSize.width,self.initialSize.height):
+        CGRectMake(self.frame.origin.x, self.frame.origin.y, self.initialSize.width, 0.0f);
     }
     return frameForShow;
 }
@@ -332,7 +341,7 @@
     NSUInteger tappedIndex = tappedView.tag - kBookmarkOptionTagBase;
     DLog(@"OPTION TAPPED: %d", tappedIndex);
     tappedView.alpha = 1.0;
-    [self show:NO animated:YES];
+    [self show:NO animated:YES hideOnCompletion:YES];
     [self.delegate bookmarkDidSelectOptionAtIndex:tappedIndex];
 }
 

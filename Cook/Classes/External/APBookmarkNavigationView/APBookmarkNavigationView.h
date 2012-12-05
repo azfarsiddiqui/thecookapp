@@ -20,6 +20,5 @@
 @interface APBookmarkNavigationView : UIView <UIGestureRecognizerDelegate>
 
 - (id)initWithDelegate:(id<APBookmarkNavigationViewDelegate>)delegate;
-- (void)show:(BOOL)show animated:(BOOL)animated;
-
+- (void)reset;
 @end
