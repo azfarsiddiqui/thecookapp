@@ -24,8 +24,7 @@
 @property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
 
 //data
-@property(nonatomic,assign) BOOL loadingImage;
-@property (nonatomic,strong) UIImage *recipeImage;
+@property (nonatomic,assign) BOOL loadingImage;
 @end
 @implementation RecipeImageView
 
@@ -82,6 +81,10 @@
     
 }
 
+-(CGPoint)scrollViewContentOffset
+{
+    return self.recipeImageScrollView.contentOffset;
+}
 #pragma mark - Private Methods
 
 //overridden
@@ -231,7 +234,7 @@
     NSParameterAssert(image);
     self.recipeImage = image;
     self.imageView.image = image;
-
+    _imageEdited = YES;
     self.imageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
     self.recipeImageScrollView.contentSize = image.size;
     [self centerScrollViewContents];

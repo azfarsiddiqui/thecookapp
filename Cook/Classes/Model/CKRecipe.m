@@ -110,7 +110,7 @@
 }
 
 
--(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure progress:(ProgressBlock)progress
+-(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress
 {
     
     PFObject *parseRecipe = self.parseObject;
@@ -162,7 +162,7 @@
             }
             
         } progressBlock:^(int percentDone) {
-            progress(percentDone);
+            imageUploadProgress(percentDone);
         }];
     } else {
         [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

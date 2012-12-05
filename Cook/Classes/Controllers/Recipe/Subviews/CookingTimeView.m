@@ -61,7 +61,6 @@
 -(void) cookingTimeTapped:(UILabel*)gestureRecognizer;
 {
     if ([self inEditMode]) {
-        DLog();
         UIViewController* popoverContent = [[UIViewController alloc] init];
         
         UIDatePicker *datePicker=[[UIDatePicker alloc]init];

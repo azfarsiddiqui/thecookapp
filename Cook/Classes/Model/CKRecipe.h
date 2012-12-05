@@ -28,5 +28,5 @@
 
 -(PFFile*) imageFile;
 -(void) categoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
--(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure progress:(ProgressBlock)progress;
+-(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
 @end

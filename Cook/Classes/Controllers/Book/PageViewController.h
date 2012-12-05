@@ -34,6 +34,6 @@ typedef enum {
 -(void) showPageButtons:(BOOL)show;
 -(void) loadingIndicator:(BOOL)loading;
 -(void) showBookmarkView;
--(void) togglePageNumber:(BOOL)show;
+-(void) showPageNumber:(BOOL)show;
 
 @end

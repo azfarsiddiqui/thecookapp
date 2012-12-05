@@ -110,6 +110,7 @@
 -(void)textViewDidEndEditing:(UITextView *)textView
 {
     DLog();
+    self.directions = textView.text;
 }
 
 /*

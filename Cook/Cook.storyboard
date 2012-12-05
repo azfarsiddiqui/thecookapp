@@ -206,6 +206,19 @@
                                     <action selector="saveButtonTapped:" destination="JDl-m4-0RL" eventType="touchUpInside" id="Tm2-tl-gfR"/>
                                 </connections>
                             </button>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Uploading..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lee-HL-iwR">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="134" id="Oew-To-cLu"/>
+                                    <constraint firstAttribute="height" constant="21" id="udr-ti-HeE"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FRb-6a-06G">
+                                <color key="progressTintColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="trackTintColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                            </progressView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -215,15 +228,18 @@
                             <constraint firstItem="ncH-Sa-cAx" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="435" id="4gg-Me-Bnl"/>
                             <constraint firstItem="ncH-Sa-cAx" firstAttribute="trailing" secondItem="x8d-CU-Nyb" secondAttribute="trailing" type="default" id="4hM-Mt-6Q0"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" type="default" id="4zQ-Oi-uWQ"/>
+                            <constraint firstItem="lee-HL-iwR" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="61" id="5rx-N3-73Z"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="656" type="user" id="AWV-2N-jXk"/>
                             <constraint firstAttribute="bottom" secondItem="ncH-Sa-cAx" secondAttribute="bottom" constant="547" id="Axp-Uh-FxE"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="trailing" secondItem="x8d-CU-Nyb" secondAttribute="trailing" type="default" id="C5c-7b-laN"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G8I-BA-gbt" secondAttribute="trailing" constant="70" type="user" id="CBb-bW-3HI"/>
+                            <constraint firstAttribute="trailing" secondItem="FRb-6a-06G" secondAttribute="trailing" constant="17" id="CIN-jD-a52"/>
                             <constraint firstAttribute="trailing" secondItem="Gzk-Ze-6Lw" secondAttribute="trailing" constant="50" type="user" id="CSy-Pg-pC3"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="top" secondItem="x8d-CU-Nyb" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="DDO-km-znl"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="top" secondItem="E4H-Ex-K7C" secondAttribute="bottom" constant="25" type="user" id="Dq5-PZ-W25"/>
                             <constraint firstAttribute="trailing" secondItem="G8I-BA-gbt" secondAttribute="trailing" constant="356" id="Guo-Ka-G6b"/>
                             <constraint firstItem="x8d-CU-Nyb" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" type="default" id="HXn-b7-CsX"/>
+                            <constraint firstItem="FRb-6a-06G" firstAttribute="trailing" secondItem="Erb-bR-yfd" secondAttribute="trailing" type="default" id="Hyd-GF-3vj"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="236" id="IRF-Ae-EXN"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="leading" secondItem="p0o-T6-Pxs" secondAttribute="trailing" constant="50" type="user" id="MFa-Kh-SIS"/>
                             <constraint firstItem="Erb-bR-yfd" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="20" symbolic="YES" type="default" id="Mc8-vr-yM0"/>
@@ -236,9 +252,11 @@
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="66" id="X83-t0-qVh"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="trailing" secondItem="E4H-Ex-K7C" secondAttribute="trailing" type="default" id="Ywi-UO-da3"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="Znz-ch-Hg5"/>
-                            <constraint firstAttribute="trailing" secondItem="Erb-bR-yfd" secondAttribute="trailing" constant="17" id="Zpr-ql-Ruz"/>
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="leading" secondItem="G8I-BA-gbt" secondAttribute="leading" type="user" id="bSe-q5-Kub"/>
+                            <constraint firstAttribute="trailing" secondItem="lee-HL-iwR" secondAttribute="trailing" constant="18" id="bhO-YG-8M9"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="duZ-3G-hVO"/>
+                            <constraint firstItem="FRb-6a-06G" firstAttribute="leading" secondItem="Erb-bR-yfd" secondAttribute="leading" type="default" id="e2L-dh-Gp7"/>
+                            <constraint firstItem="FRb-6a-06G" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="59" id="f1d-98-Jij"/>
                             <constraint firstItem="G8I-BA-gbt" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="70" type="user" id="kVO-r4-CSB"/>
                             <constraint firstAttribute="bottom" secondItem="H9S-OO-JnT" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="nXf-dO-jjA"/>
                             <constraint firstItem="x8d-CU-Nyb" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="208" id="oOR-XG-Clx"/>
@@ -257,10 +275,12 @@
                         <outlet property="cookingTimeView" destination="x8d-CU-Nyb" id="weD-oA-ixM"/>
                         <outlet property="facebookUserView" destination="G8I-BA-gbt" id="bbE-wb-cg9"/>
                         <outlet property="ingredientsView" destination="H9S-OO-JnT" id="V6F-sF-Aco"/>
+                        <outlet property="progressView" destination="FRb-6a-06G" id="sso-uS-fBp"/>
                         <outlet property="recipeImageView" destination="p0o-T6-Pxs" id="OzP-KA-PP6"/>
                         <outlet property="recipeNameView" destination="E4H-Ex-K7C" id="9V6-Sg-dWL"/>
                         <outlet property="saveButton" destination="Erb-bR-yfd" id="fbS-RO-aAq"/>
                         <outlet property="servesView" destination="ncH-Sa-cAx" id="hJq-qo-wRD"/>
+                        <outlet property="uploadProgressLabel" destination="lee-HL-iwR" id="3Kr-Fv-vad"/>
                         <outletCollection property="editableViews" destination="p0o-T6-Pxs" id="f56-jL-EV9"/>
                         <outletCollection property="editableViews" destination="E4H-Ex-K7C" id="ewh-Ca-ocN"/>
                         <outletCollection property="editableViews" destination="ncH-Sa-cAx" id="uvH-Bh-ftw"/>
@@ -399,9 +419,6 @@
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dP8-1h-KHq">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="37" id="N5T-tc-c2u"/>
-                                </constraints>
                                 <color key="progressTintColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
@@ -488,7 +505,6 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" constant="17" id="4BJ-VN-4Fc"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" type="default" id="6a1-A7-cpa"/>
                             <constraint firstItem="T5d-16-VEN" firstAttribute="centerY" secondItem="C11-QJ-7d0" secondAttribute="centerY" type="default" id="7JZ-b3-33b"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="3J9-3w-spQ" secondAttribute="leading" type="default" id="8hu-Ce-3ma"/>
@@ -496,7 +512,6 @@
                             <constraint firstItem="uNT-W3-3X4" firstAttribute="leading" secondItem="2W1-BQ-AiG" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="COM-CP-Het"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="centerY" secondItem="uoV-OH-QaP" secondAttribute="centerY" type="default" id="DE5-WI-HRW"/>
                             <constraint firstAttribute="bottom" secondItem="h6t-UG-A6Z" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="DI9-RK-F9B"/>
-                            <constraint firstItem="cq0-5i-ca6" firstAttribute="trailing" secondItem="RTn-cl-Ogo" secondAttribute="trailing" type="default" id="DnI-L9-kcY"/>
                             <constraint firstAttribute="trailing" secondItem="41R-Zh-8bY" secondAttribute="trailing" constant="385" id="Hpg-9r-8xy"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="centerX" secondItem="hNd-HF-af5" secondAttribute="centerX" type="default" id="IIT-ih-bxz"/>
                             <constraint firstItem="wa0-dn-372" firstAttribute="top" secondItem="dP8-1h-KHq" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="IOe-ew-8qo"/>
@@ -509,13 +524,13 @@
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" type="default" id="QJs-kK-RF2"/>
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="61" id="S11-OP-ruw"/>
                             <constraint firstItem="Vxn-4N-ySv" firstAttribute="leading" secondItem="f1J-E5-WiY" secondAttribute="leading" type="default" id="Sr8-N5-y7H"/>
+                            <constraint firstItem="dP8-1h-KHq" firstAttribute="leading" secondItem="cq0-5i-ca6" secondAttribute="leading" type="default" id="VSp-mX-446"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Vym-mf-zG9"/>
                             <constraint firstItem="41R-Zh-8bY" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="198" id="WIq-RU-VLJ"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="trailing" secondItem="3J9-3w-spQ" secondAttribute="trailing" type="default" id="Wxf-7a-d5h"/>
                             <constraint firstItem="uNT-W3-3X4" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="YNl-9x-liu"/>
                             <constraint firstItem="uoV-OH-QaP" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="120" id="YNs-7i-vXU"/>
                             <constraint firstAttribute="bottom" secondItem="RTn-cl-Ogo" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Zuh-k4-TVv"/>
-                            <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="xmC-eC-N0p" secondAttribute="trailing" type="default" id="bNj-un-U5c"/>
                             <constraint firstItem="p0O-vO-Qd6" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="cz6-2s-BUG"/>
                             <constraint firstItem="3J9-3w-spQ" firstAttribute="leading" secondItem="oIC-34-ocX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="eCv-9z-7eR"/>
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="trailing" secondItem="wa0-dn-372" secondAttribute="trailing" type="default" id="eUf-Ft-vy1"/>
@@ -531,10 +546,13 @@
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="152" id="rot-4e-gtU"/>
                             <constraint firstAttribute="trailing" secondItem="Vxn-4N-ySv" secondAttribute="trailing" constant="11" id="sih-e9-q0y"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="u1u-tS-nQg"/>
+                            <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" type="default" id="wsO-S1-MPn"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="x0e-x7-gnh"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="trailing" secondItem="uNT-W3-3X4" secondAttribute="trailing" type="default" id="x1J-nC-eOI"/>
+                            <constraint firstAttribute="trailing" secondItem="dP8-1h-KHq" secondAttribute="trailing" constant="17" id="xTI-8H-IqO"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" type="default" id="xme-G2-lyX"/>
                             <constraint firstItem="oIC-34-ocX" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="177" id="yCr-Jf-y5W"/>
+                            <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" type="default" id="zDp-cp-M2A"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
@@ -649,10 +667,12 @@
                 <relationship kind="outlet" name="cookingTimeView" candidateClass="CookingTimeView"/>
                 <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
                 <relationship kind="outlet" name="ingredientsView" candidateClass="IngredientsView"/>
+                <relationship kind="outlet" name="progressView" candidateClass="UIProgressView"/>
                 <relationship kind="outlet" name="recipeImageView" candidateClass="RecipeImageView"/>
                 <relationship kind="outlet" name="recipeNameView" candidateClass="RecipeNameView"/>
                 <relationship kind="outlet" name="saveButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="servesView" candidateClass="ServesView"/>
+                <relationship kind="outlet" name="uploadProgressLabel" candidateClass="UILabel"/>
                 <relationship kind="outletCollection" name="editableViews" candidateClass="UIEditableView"/>
             </relationships>
         </class>

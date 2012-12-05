@@ -12,7 +12,7 @@
 #define kFont [Theme defaultFontWithSize:42.0f]
 #define kMaxSize CGSizeMake(538.0f, CGFLOAT_MAX)
 
-@interface RecipeNameView ()
+@interface RecipeNameView ()<UITextFieldDelegate>
 @property(nonatomic,strong) UITextField *recipeTextField;
 @property(nonatomic,strong) UIImageView *editIconImageView;
 @end
@@ -62,6 +62,13 @@
     }
     return _editIconImageView;
 }
+
+#pragma mark - UITextFieldDelegate
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    self.recipeName = textField.text;
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

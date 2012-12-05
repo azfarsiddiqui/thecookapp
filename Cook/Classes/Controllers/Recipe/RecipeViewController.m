@@ -35,7 +35,8 @@
 
 @property(nonatomic,strong) IBOutlet UIButton *closeButton;
 @property(nonatomic,strong) IBOutlet UIButton *saveButton;
-
+@property(nonatomic,strong) IBOutlet UIProgressView *progressView;
+@property(nonatomic,strong) IBOutlet UILabel *uploadProgressLabel;
 @property(nonatomic,strong) IBOutletCollection(UIEditableView) NSArray *editableViews;
 
 @property (nonatomic,strong) CategoryListViewController *categoryListViewController;
@@ -59,13 +60,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self style];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationIsLandscape(interfaceOrientation));
 }
 
 #pragma mark - overridden methods
@@ -92,13 +97,10 @@
         [self.editableViews each:^(UIEditableView *view) {
             [view makeEditable:YES];
         }];
-        [self showPageButtons:NO];
-        [self togglePageNumber:NO];
-        self.facebookUserView.hidden = YES;
-        [self toggleSaveCloseButtons:YES];
-        Category *category = self.recipe.category;
-        [self.categoryListViewController selectCategoryWithName:category.name];
-        [self.categoryListViewController show:YES];
+        
+        [self showPageComponents:YES];
+        self.selectedCategory = self.recipe.category;
+        [self.categoryListViewController selectCategoryWithName:self.selectedCategory.name];
     }
 }
 
@@ -109,25 +111,44 @@
     [self.editableViews each:^(UIEditableView *view) {
         [view makeEditable:NO];
     }];
-    [self showPageButtons:YES];
-    [self togglePageNumber:YES];
-    [self toggleSaveCloseButtons:NO];
-    self.facebookUserView.hidden = NO;
+    
+    [self showPageComponents:NO];
     [self showBookmarkView];
-    [self.categoryListViewController show:NO];
 }
 
 -(IBAction)saveButtonTapped:(UIButton*)button
 {
-    
+    if ([self validate]) {
+        button.enabled = NO;
+        self.recipe.category = self.selectedCategory;
+        self.recipe.name = self.recipeNameView.recipeName;
+        self.recipe.description = self.cookingDirectionsView.directions;
+        if (self.recipeImageView.imageEdited) {
+            self.recipe.image = self.recipeImageView.recipeImage;
+        }
+        self.recipe.numServes = self.servesView.serves;
+        self.recipe.cookingTimeInSeconds = self.cookingTimeView.cookingTimeInSeconds;
+        self.recipe.recipeViewImageContentOffset = self.recipeImageView.scrollViewContentOffset;
+        self.recipe.ingredients = [NSArray arrayWithArray:self.ingredientsView.ingredients];
+        
+        self.uploadProgressLabel.hidden = NO;
+
+        [self.recipe saveWithSuccess:^{
+            [self closeButtonTapped:nil];
+            button.enabled = YES;
+        } failure:^(NSError *error) {
+            DLog(@"An error occurred: %@", [error description]);
+            [self displayMessage:[error description]];
+            button.enabled = YES;
+        } imageUploadProgress:^(int percentDone) {
+            float percentage = percentDone/100.0f;
+            [self.progressView setProgress:percentage animated:YES];
+            self.uploadProgressLabel.text = [NSString stringWithFormat:@"Uploading (%i%%)",percentDone];
+        }];
+    }
 }
 
 #pragma mark - private methods
-
--(void)style
-{
-    
-}
 
 -(void)refreshData
 {
@@ -175,11 +196,51 @@
     
 }
 
--(void) toggleSaveCloseButtons:(BOOL)show
+
+-(void)showPageComponents:(BOOL)show
 {
+    [self showPageButtons:show];
+    [self showPageNumber:show];
+    
     self.closeButton.hidden = !show;
     self.saveButton.hidden = !show;
+    self.progressView.hidden = !show;
+    
+    self.facebookUserView.hidden = !show;
+    [self.categoryListViewController show:!show];
+    
+}
 
+-(BOOL)validate
+{
+    if ([self nullOrEmpty:self.recipeNameView.recipeName]) {
+        [self displayMessage:@"Recipe Name is blank"];
+        return false;
+    }
+    
+    if ([self nullOrEmpty:self.cookingDirectionsView.directions]) {
+        [self displayMessage:@"Recipe Method is blank"];
+        return false;
+    }
+    
+    if (!self.selectedCategory) {
+        [self displayMessage:@"Please select a food category"];
+        return false;
+    }
+    return true;
+}
+
+-(BOOL)nullOrEmpty:(NSString*)input
+{
+    NSString *trimmedString = [input stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return (!input || [@"" isEqualToString:trimmedString]);
+}
+
+-(void)displayMessage:(NSString *)message
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:message
+                                                       delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+    [alertView show];
 }
 
 #pragma mark - CategoryListViewDelegate

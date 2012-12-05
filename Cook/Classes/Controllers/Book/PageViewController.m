@@ -195,7 +195,7 @@
     self.activityView = activityView;
 }
 
--(void) togglePageNumber:(BOOL)show{
+-(void) showPageNumber:(BOOL)show{
     if (show) {
         UILabel *pageLabel = [self newPageLabel];
         self.pageNumberLabel = pageLabel;
@@ -216,12 +216,12 @@
 
 -(void) hidePageNumberAndDisplayLoading {
     [self loadingIndicator:YES];
-    [self togglePageNumber:NO];
+    [self showPageNumber:NO];
 }
 
 - (void)showPageNumberAndHideLoading {
     [self loadingIndicator:NO];
-    [self togglePageNumber:YES];
+    [self showPageNumber:YES];
 }
 
 -(void)initDefaultOptions
