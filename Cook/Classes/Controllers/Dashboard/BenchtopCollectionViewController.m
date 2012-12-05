@@ -146,9 +146,17 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     if (section == kMySection) {
-        return UIEdgeInsetsMake(155.0, 362.0, 155.0, 0.0);
+        
+        // Shift my book up when in edit mode.
+        return self.editMode ? UIEdgeInsetsMake(155.0, 362.0, 230.0, 0.0) : UIEdgeInsetsMake(155.0, 362.0, 155.0, 0.0);
+        
+    } else if (section == kFollowSection) {
+        
+        // Part the follow books away if in edit mode.
+        return self.editMode ? UIEdgeInsetsMake(155.0, 362.0, 155.0, 362.0) : UIEdgeInsetsMake(155.0, 300.0, 155.0, 362.0);
+        
     } else {
-        return UIEdgeInsetsMake(155.0, 300.0, 155.0, 362.0);
+        return UIEdgeInsetsZero;
     }
 }
 
@@ -484,7 +492,7 @@
                          
                          // Tell the layout to go into edit mode.
                          BenchtopCollectionFlowLayout *layout = (BenchtopCollectionFlowLayout *)self.collectionView.collectionViewLayout;
-                         [layout enableEditMode:enable];
+                         [layout invalidateLayout];
                          
                          // Inform delegate
                          [self.delegate editBookRequested:enable];
