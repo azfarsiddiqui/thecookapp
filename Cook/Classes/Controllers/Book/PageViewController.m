@@ -195,25 +195,33 @@
     self.activityView = activityView;
 }
 
--(void) hidePageNumber {
-    [self loadingIndicator:YES];
-    [self.pageNumberLabel removeFromSuperview];
-    [self.pageNumberPrefixLabel removeFromSuperview];
-    
-}
-- (void)showPageNumber {
-    [self loadingIndicator:NO];
-    
-    UILabel *pageLabel = [self newPageLabel];
-    self.pageNumberLabel = pageLabel;
-    [self.view addSubview:self.pageNumberLabel];
-    
-    UILabel *pagePrefixLabel = [self newPrefixLabel];
-    if (pagePrefixLabel) {
-        self.pageNumberPrefixLabel = pagePrefixLabel;
-        [self.view addSubview:self.pageNumberPrefixLabel];
+-(void) togglePageNumber:(BOOL)show{
+    if (show) {
+        UILabel *pageLabel = [self newPageLabel];
+        self.pageNumberLabel = pageLabel;
+        [self.view addSubview:self.pageNumberLabel];
+        
+        UILabel *pagePrefixLabel = [self newPrefixLabel];
+        if (pagePrefixLabel) {
+            self.pageNumberPrefixLabel = pagePrefixLabel;
+            [self.view addSubview:self.pageNumberPrefixLabel];
+        }
+
+    } else  {
+        [self.pageNumberLabel removeFromSuperview];
+        [self.pageNumberPrefixLabel removeFromSuperview];
+
     }
-    
+}
+
+-(void) hidePageNumberAndDisplayLoading {
+    [self loadingIndicator:YES];
+    [self togglePageNumber:NO];
+}
+
+- (void)showPageNumberAndHideLoading {
+    [self loadingIndicator:NO];
+    [self togglePageNumber:YES];
 }
 
 -(void)initDefaultOptions

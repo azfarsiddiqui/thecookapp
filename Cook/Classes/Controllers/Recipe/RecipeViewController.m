@@ -93,6 +93,7 @@
             [view makeEditable:YES];
         }];
         [self showPageButtons:NO];
+        [self togglePageNumber:NO];
         [self toggleSaveCloseButtons:YES];
         Category *category = self.recipe.category;
         [self.categoryListViewController selectCategoryWithName:category.name];
@@ -108,6 +109,7 @@
         [view makeEditable:NO];
     }];
     [self showPageButtons:YES];
+    [self togglePageNumber:YES];
     [self toggleSaveCloseButtons:NO];
     [self showBookmarkView];
     [self.categoryListViewController show:NO];

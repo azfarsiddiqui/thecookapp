@@ -15,12 +15,12 @@ typedef enum {
 } NavigationButtonStyle;
 
 @protocol PageViewDelegate
--(void)showPageNumber;
--(void)hidePageNumber;
--(NSString*)pageNumberPrefixString;
+-(void) showPageNumberAndHideLoading;
+-(void) hidePageNumberAndDisplayLoading;
+-(NSString*) pageNumberPrefixString;
 //sub-classes override these to provide custom icons and labels
--(NSArray*)pageOptionLabels;
--(NSArray*)pageOptionIcons;
+-(NSArray*) pageOptionLabels;
+-(NSArray*) pageOptionIcons;
 -(void) didSelectCustomOptionAtIndex:(NSInteger)optionIndex;
 @end
 @interface PageViewController : UIViewController<PageViewDelegate>
@@ -28,10 +28,12 @@ typedef enum {
 @property (nonatomic, assign) id<BookViewDelegate> delegate;
 @property (nonatomic, assign) id<BookViewDataSource> dataSource;
 
-- (id)initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource withButtonStyle:(NavigationButtonStyle)navigationButtonStyle;
-- (void)initPageView;
-- (void)showContentsButton:(BOOL)show;
-- (void)showPageButtons:(BOOL)show;
-- (void)loadingIndicator:(BOOL)loading;
-- (void)showBookmarkView;
+-(id) initWithBookViewDelegate:(id<BookViewDelegate>)delegate dataSource:(id<BookViewDataSource>)dataSource withButtonStyle:(NavigationButtonStyle)navigationButtonStyle;
+-(void) initPageView;
+-(void) showContentsButton:(BOOL)show;
+-(void) showPageButtons:(BOOL)show;
+-(void) loadingIndicator:(BOOL)loading;
+-(void) showBookmarkView;
+-(void) togglePageNumber:(BOOL)show;
+
 @end
