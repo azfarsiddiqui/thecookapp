@@ -7,12 +7,23 @@
 //
 
 #import "RecipeImageView.h"
+#import "ViewHelper.h"
+
 @interface RecipeImageView()
 @property(nonatomic,strong) PFImageView *imageView;
 @property(nonatomic,strong) UIScrollView *recipeImageScrollView;
+@property(nonatomic,strong) UIButton *editImageButton;
 @property(nonatomic,assign) BOOL loadingImage;
 @end
 @implementation RecipeImageView
+
+
+-(void)makeEditable:(BOOL)editable
+{
+    [super makeEditable:editable];
+    self.recipeImageScrollView.scrollEnabled = YES;
+    self.editImageButton.hidden = !editable;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -78,7 +89,7 @@
 {
     if (!_recipeImageScrollView) {
         _recipeImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
-        _recipeImageScrollView.scrollEnabled = YES;
+        _recipeImageScrollView.scrollEnabled = NO;
         [self addSubview:_recipeImageScrollView];
     }
     return _recipeImageScrollView;
@@ -91,6 +102,24 @@
         [self.recipeImageScrollView addSubview:_imageView];
     }
     return _imageView;
+}
+
+-(UIButton *)editImageButton
+{
+    if (!_editImageButton) {
+        _editImageButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_editrecipe_editphoto.png"] target:self selector:@selector(editImageTapped:)];
+        _editImageButton.hidden =YES;
+        _editImageButton.frame = CGRectMake(5.0f,self.bounds.size.height - _editImageButton.frame.size.height-5.0f,
+                                                 _editImageButton.frame.size.width, _editImageButton.frame.size.height);
+        [self addSubview:_editImageButton];
+    }
+    return _editImageButton;
+}
+
+#pragma mark - Action methods
+-(void)editImageTapped:(UIButton*)button
+{
+    DLog();
 }
 
 /*
