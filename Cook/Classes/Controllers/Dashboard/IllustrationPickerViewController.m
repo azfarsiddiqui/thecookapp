@@ -42,15 +42,16 @@
 }
 
 - (void)viewDidLoad {
+    UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 20.0, 30.0, 20.0);
     CGSize itemSize = [IllustrationBookCell cellSize];
     
-    self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+    self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, insets.top + itemSize.height + insets.bottom);
     self.view.backgroundColor = [UIColor clearColor];
     
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.itemSize = itemSize;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    flowLayout.sectionInset = UIEdgeInsetsMake(0.0, 20.0, 20.0, 20.0);
+    flowLayout.sectionInset = insets;
     flowLayout.minimumLineSpacing = 15.0;
     
     self.collectionView.frame = self.view.bounds;
@@ -62,9 +63,9 @@
     [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kIllustrationCellId];
     
     UIImageView *shelfView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_customise_shelves.png"]];
-    shelfView.frame = CGRectMake(0.0, self.view.bounds.size.height - shelfView.frame.size.height, shelfView.frame.size.width, shelfView.frame.size.height);
+    shelfView.frame = CGRectMake(0.0, self.view.bounds.size.height - shelfView.frame.size.height + 33.0, shelfView.frame.size.width, shelfView.frame.size.height);
     shelfView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-    //[self.view insertSubview:shelfView belowSubview:self.collectionView];
+    [self.view insertSubview:shelfView belowSubview:self.collectionView];
 }
 
 - (void)changeCover:(NSString *)cover {

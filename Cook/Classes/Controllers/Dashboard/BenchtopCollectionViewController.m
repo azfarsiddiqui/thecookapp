@@ -28,6 +28,7 @@
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) UIImageView *editOverlayView;
 
 @end
 
@@ -87,7 +88,7 @@
     
     // Hide the bookCover.
     if (open) {
-        BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
         cell.bookCoverView.hidden = YES;
     }
 }
@@ -96,7 +97,7 @@
     
     // Restore the bookCover.
     if (!open) {
-        BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
         cell.bookCoverView.hidden = NO;
     }
 }
@@ -106,19 +107,33 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.selectedIndexPath = indexPath;
-    
-    if (indexPath.section == kMySection) {
+    // Only open book if book was in the center.
+    UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+    if (CGRectContainsPoint(attributes.frame, CGPointMake(self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0),
+                                                          self.collectionView.center.y))) {
         
-        [self openBookAtIndexPath:indexPath];
+        self.selectedIndexPath = indexPath;
         
-    } else if (indexPath.section == kFollowSection) {
-        UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
-                                                   destructiveButtonTitle:nil otherButtonTitles:@"Unfollow", @"Open", nil];
-        actionSheet.delegate = self;
-        [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
+        if (indexPath.section == kMySection) {
+            [self openBookAtIndexPath:indexPath];
+            
+        } else if (indexPath.section == kFollowSection) {
+            
+            // [self openBookAtIndexPath:indexPath];
+            UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+            UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
+                                                       destructiveButtonTitle:nil otherButtonTitles:@"Unfollow", @"Open", nil];
+            actionSheet.delegate = self;
+            [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
+        }
+        
+
+    } else {
+        [self.collectionView scrollToItemAtIndexPath:indexPath
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:YES];
     }
+    
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -225,23 +240,49 @@
 #pragma mark - CoverPickerViewControllerDelegate methods
 
 - (void)coverPickerCancelRequested {
-    DLog();
+
+    // Revert to previous illustration/cover.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.illustration = self.illustrationViewController.illustration;
+    self.myBook.cover = self.coverViewController.cover;
+    [cell loadBook:self.myBook];
+    
+    // Reload the illustration cover.
+    [self.illustrationViewController changeCover:self.coverViewController.cover];
+    
     [self enableEditMode:NO];
 }
 
 - (void)coverPickerDoneRequested {
-    DLog();
+    
+    // TODO save author and title.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.caption = [cell.bookCoverView currentCaptionThenResign];
+    [self.myBook saveInBackground];
+    
+    [cell loadBook:self.myBook];
     [self enableEditMode:NO];
 }
 
 - (void)coverPickerSelected:(NSString *)cover {
-    DLog();
+    
+    // Force reload my book with the selected illustration.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.cover = cover;
+    [cell loadBook:self.myBook];
+    
+    // Reload the illustration covers.
+    [self.illustrationViewController changeCover:cover];
 }
 
 #pragma mark - IllustrationPickerViewControllerDelegate methods
 
 - (void)illustrationSelected:(NSString *)illustration {
-    DLog();
+    
+    // Force reload my book with the selected illustration.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.illustration = illustration;
+    [cell loadBook:self.myBook];
 }
 
 #pragma mark - Private methods
@@ -354,7 +395,8 @@
 }
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
-    [self.delegate openBookRequestedForBook:self.myBook];
+    CKBook *book = (indexPath.section == kMySection) ? self.myBook : [self.followBooks objectAtIndex:indexPath.item];
+    [self.delegate openBookRequestedForBook:book];
 }
 
 - (void)unfollowBookAtIndexPath:(NSIndexPath *)indexPath {
@@ -405,8 +447,15 @@
     
     self.animating = YES;
     self.editMode = enable;
+    self.collectionView.scrollEnabled = !enable;
     
     if (enable) {
+        
+        // Edit overlay
+        UIImageView *editOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        editOverlayView.alpha = 0.0;
+        [self.view addSubview:editOverlayView];
+        self.editOverlayView = editOverlayView;
         
         // Cover
         CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
@@ -433,32 +482,53 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          
+                         // Tell the layout to go into edit mode.
+                         BenchtopCollectionFlowLayout *layout = (BenchtopCollectionFlowLayout *)self.collectionView.collectionViewLayout;
+                         [layout enableEditMode:enable];
+                         
                          // Inform delegate
                          [self.delegate editBookRequested:enable];
+                         
+                         // Fade the edit overlay.
+                         self.editOverlayView.alpha = enable ? 1.0 : 0.0;
 
-                         self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height + bounceOffset) : CGAffineTransformIdentity;
+                         // Slide down the cover picker.
+                         self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height) : CGAffineTransformIdentity;
+                         
+                         // Slide up illustration picker with bounce.
                          self.illustrationViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset) : CGAffineTransformIdentity;
                      }
                      completion:^(BOOL finished) {
                          
                          if (enable) {
-                             [UIView animateWithDuration:0.2
+                             [UIView animateWithDuration:0.3
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
                                               animations:^{
-                                                  self.coverViewController.view.transform = CGAffineTransformTranslate(self.coverViewController.view.transform, 0.0, -bounceOffset);
+                                                  
+                                                  // Restore illustration picker after bounce.
                                                   self.illustrationViewController.view.transform = CGAffineTransformTranslate(self.illustrationViewController.view.transform, 0.0, bounceOffset);
                                               } completion:^(BOOL finished) {
                                                   self.animating = NO;
                                               }];
                          } else {
                              self.animating = NO;
+                             [self.editOverlayView removeFromSuperview];
                              [self.coverViewController.view removeFromSuperview];
                              [self.illustrationViewController.view removeFromSuperview];
+                             self.editOverlayView = nil;
                              self.coverViewController = nil;
                              self.illustrationViewController = nil;
                          }
                      }];
+}
+
+- (BenchtopBookCoverViewCell *)myBookCell {
+    return [self bookCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kMySection]];
+}
+
+- (BenchtopBookCoverViewCell *)bookCellAtIndexPath:(NSIndexPath *)indexPath {
+    return (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
 }
 
 @end
