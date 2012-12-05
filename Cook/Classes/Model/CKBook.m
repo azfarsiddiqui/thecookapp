@@ -259,7 +259,7 @@
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipes, NSError *error) {
         if (!error) {
             NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
-                return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user];
+                return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
             }];
             DLog(@"fetch returned %i recipes", [recipes count]);
             success(recipes);

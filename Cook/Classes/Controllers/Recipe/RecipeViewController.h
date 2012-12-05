@@ -12,5 +12,4 @@
 #import "CKBook.h"
 @interface RecipeViewController : PageViewController
 @property(nonatomic,strong) CKRecipe *recipe;
-          
 @end

@@ -56,6 +56,13 @@
     return recipe;
 }
 
++(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book
+{
+    CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
+    recipe.book = book;
+    return recipe;
+}
+
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
 {
     PFObject *parseRecipe = [PFObject objectWithClassName:kRecipeModelName];
@@ -110,7 +117,7 @@
 }
 
 
--(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure progress:(ProgressBlock)progress
+-(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress
 {
     
     PFObject *parseRecipe = self.parseObject;
@@ -162,7 +169,7 @@
             }
             
         } progressBlock:^(int percentDone) {
-            progress(percentDone);
+            imageUploadProgress(percentDone);
         }];
     } else {
         [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

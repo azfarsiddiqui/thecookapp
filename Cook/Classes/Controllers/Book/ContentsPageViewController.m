@@ -40,7 +40,7 @@
     DLog();
     [self.tableView reloadData];
     [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
-    [self showPageNumber];
+    [self showPageNumberAndHideLoading];
 }
 
 - (void)initPageView {
@@ -55,7 +55,7 @@
 {
     [super viewDidAppear:animated];
     DLog();
-    [self hidePageNumber];
+    [self hidePageNumberAndDisplayLoading];
 }
 
 #pragma mark - UITableViewDataSource methods

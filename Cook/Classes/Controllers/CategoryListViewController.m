@@ -8,13 +8,14 @@
 
 #import "CategoryListViewController.h"
 #import "CategoryListCell.h"
+#import "NSArray+Enumerable.h"
 
 #define kCellReuseIdentifier    @"CategoryListCell"
 #define kCategoryLabelFont      [UIFont systemFontOfSize:14.0f]
 @interface CategoryListViewController ()
-@property(nonatomic,strong) Category *selectedCategory;
 @property(nonatomic,strong) IBOutlet UICollectionView *collectionView;
 @property(nonatomic,strong) IBOutlet UIImageView *imageView;
+@property(nonatomic,strong) Category *selectedCategory;
 @end
 
 @implementation CategoryListViewController
@@ -35,6 +36,29 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)show:(BOOL)show
+{
+    self.view.hidden = !show;
+}
+
+-(void)selectCategoryWithName:(NSString *)categoryName
+{
+    NSUInteger categoryIndex = NSNotFound;
+    if (categoryName) {
+        for (int i = 0; i < [self.categories count]; i++) {
+            Category *category = [self.categories objectAtIndex:i];
+            if ([categoryName isEqualToString:category.name]) {
+                categoryIndex = i;
+                break;
+            }
+        }
+        if (categoryIndex!= NSNotFound) {
+            self.selectedCategory = [self.categories objectAtIndex:categoryIndex];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:categoryIndex inSection:0];
+            [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+        }
+    }
+}
 
 #pragma mark - IUCollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -90,11 +114,7 @@
 {
     self.collectionView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 40.0f);
     UIImage *cappedImage = [[UIImage imageNamed:@"cook_editrecipe_categorybg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 34.0f, 0.0f, 34.0f)];
-//    UIImageView *backgroundImageView = [[UIImageView alloc]initWithImage:cappedImage];
     self.imageView.image = cappedImage;
-//    backgroundImageView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, backgroundImageView.image.size.height);
-//    [self.view insertSubview:backgroundImageView belowSubview:self.collectionView];
-//
 }
 
 @end

@@ -117,13 +117,12 @@
             DLog(@"An error occurred: %@", [error description]);
             [self displayMessage:[error description]];
             button.enabled = YES;
-        } progress:^(int percentDone) {
+        } imageUploadProgress:^(int percentDone) {
             float percentage = percentDone/100.0f;
             [self.uploadProgressView setProgress:percentage animated:YES];
             self.uploadLabel.text = [NSString stringWithFormat:@"Uploading (%i%%)",percentDone];
         }];
     }
-    DLog(@"content offset on scrollview = %@", NSStringFromCGPoint(self.recipeImageScrollView.contentOffset));
 }
 
 -(IBAction)uploadButtonTapped:(UIButton *)button
@@ -447,6 +446,7 @@
     self.recipeImageScrollView.maximumZoomScale = 1.0f;
     self.recipeImageScrollView.zoomScale = minScale;
 }
+
 -(void) configCategoriesList
 {
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];

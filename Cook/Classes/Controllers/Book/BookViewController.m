@@ -16,7 +16,6 @@
 #import "RecipeViewController.h"
 #import "BookProfilePageViewController.h"
 #import "MPFlipViewController.h"
-
 #define kContentPageIndex  2
 #define kBookProfilePageIndex 1
 
@@ -167,7 +166,7 @@
         }
     }
     if (self.pageViewDelegate) {
-        [self.pageViewDelegate hidePageNumber];
+        [self.pageViewDelegate hidePageNumberAndDisplayLoading];
     }
     return viewController;
 }
@@ -264,7 +263,7 @@
 	if (completed) {
 		self.currentPageIndex = self.tentativeIndex;
         if (self.pageViewDelegate) {
-            [self.pageViewDelegate showPageNumber];
+            [self.pageViewDelegate showPageNumberAndHideLoading];
         }
         DLog(@"updated page index to %i", self.currentPageIndex);
 	}

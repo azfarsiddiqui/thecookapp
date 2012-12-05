@@ -12,6 +12,7 @@
 #import "ViewHelper.h"
 
 #define kContentsButtonTag 112233445566
+#define kCloseButtonTag 223344556677
 @interface PageViewController () <APBookmarkNavigationViewDelegate>
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
@@ -20,6 +21,7 @@
 @property (nonatomic, assign) NavigationButtonStyle navigationButtonStyle;
 @property (nonatomic, strong) NSArray *defaultOptionIcons;
 @property (nonatomic, strong) NSArray *defaultOptionLabels;
+@property (nonatomic, strong) APBookmarkNavigationView *bookmarkView;
 @end
 
 @implementation PageViewController
@@ -134,6 +136,7 @@
                                    15.0,
                                    closeButton.frame.size.width,
                                    closeButton.frame.size.height);
+    closeButton.tag = kCloseButtonTag;
     [self.view addSubview:closeButton];
     
     
@@ -152,22 +155,31 @@
     
 }
 
-- (void)showContentsButton
+-(void)showPageButtons:(BOOL)show
+{
+    [self showContentsButton:show];
+    UIView *closeButton = [self.view viewWithTag:kCloseButtonTag];
+    if (closeButton) {
+        closeButton.hidden = !show;
+    }
+}
+
+- (void)showContentsButton:(BOOL)show
 {
     UIView *contentsButton = [self.view viewWithTag:kContentsButtonTag];
     if (contentsButton) {
-        contentsButton.hidden = NO;
+        contentsButton.hidden = !show;
     }
 }
 
 - (void)initBookmark {
     UIEdgeInsets edgeInsets = [self.delegate bookViewInsets];
-    APBookmarkNavigationView *bookmarkView = [[APBookmarkNavigationView alloc] initWithDelegate:self];
-    bookmarkView.frame = CGRectMake(self.view.bounds.size.width - edgeInsets.right - bookmarkView.frame.size.width,
+    self.bookmarkView = [[APBookmarkNavigationView alloc] initWithDelegate:self];
+    self.bookmarkView.frame = CGRectMake(self.view.bounds.size.width - edgeInsets.right - self.bookmarkView.frame.size.width,
                                     0.0,
-                                    bookmarkView.frame.size.width,
-                                    bookmarkView.frame.size.height);
-    [self.view addSubview:bookmarkView];
+                                    self.bookmarkView.frame.size.width,
+                                    self.bookmarkView.frame.size.height);
+    [self.view addSubview:self.bookmarkView];
     
 }
 
@@ -183,25 +195,33 @@
     self.activityView = activityView;
 }
 
--(void) hidePageNumber {
-    [self loadingIndicator:YES];
-    [self.pageNumberLabel removeFromSuperview];
-    [self.pageNumberPrefixLabel removeFromSuperview];
-    
-}
-- (void)showPageNumber {
-    [self loadingIndicator:NO];
-    
-    UILabel *pageLabel = [self newPageLabel];
-    self.pageNumberLabel = pageLabel;
-    [self.view addSubview:self.pageNumberLabel];
-    
-    UILabel *pagePrefixLabel = [self newPrefixLabel];
-    if (pagePrefixLabel) {
-        self.pageNumberPrefixLabel = pagePrefixLabel;
-        [self.view addSubview:self.pageNumberPrefixLabel];
+-(void) showPageNumber:(BOOL)show{
+    if (show) {
+        UILabel *pageLabel = [self newPageLabel];
+        self.pageNumberLabel = pageLabel;
+        [self.view addSubview:self.pageNumberLabel];
+        
+        UILabel *pagePrefixLabel = [self newPrefixLabel];
+        if (pagePrefixLabel) {
+            self.pageNumberPrefixLabel = pagePrefixLabel;
+            [self.view addSubview:self.pageNumberPrefixLabel];
+        }
+
+    } else  {
+        [self.pageNumberLabel removeFromSuperview];
+        [self.pageNumberPrefixLabel removeFromSuperview];
+
     }
-    
+}
+
+-(void) hidePageNumberAndDisplayLoading {
+    [self loadingIndicator:YES];
+    [self showPageNumber:NO];
+}
+
+- (void)showPageNumberAndHideLoading {
+    [self loadingIndicator:NO];
+    [self showPageNumber:YES];
 }
 
 -(void)initDefaultOptions
@@ -252,6 +272,11 @@
     }
     
     return pagePrefixLabel;
+}
+
+-(void)showBookmarkView
+{
+    [self.bookmarkView reset];
 }
 
 - (void)closeTapped:(id)sender {
