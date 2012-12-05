@@ -447,6 +447,7 @@
     self.recipeImageScrollView.maximumZoomScale = 1.0f;
     self.recipeImageScrollView.zoomScale = minScale;
 }
+
 -(void) configCategoriesList
 {
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];

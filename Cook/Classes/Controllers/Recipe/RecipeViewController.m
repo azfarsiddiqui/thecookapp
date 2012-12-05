@@ -7,6 +7,7 @@
 //
 
 #import "RecipeViewController.h"
+#import "CategoryListViewController.h"
 #import "NSArray+Enumerable.h"
 #import "Ingredient.h"
 #import "FacebookUserView.h"
@@ -23,7 +24,7 @@
 #import "Theme.h"
 
 #define kImageViewTag   1122334455
-@interface RecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface RecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, CategoryListViewDelegate>
 @property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @property(nonatomic,strong) IBOutlet RecipeNameView *recipeNameView;
 @property(nonatomic,strong) IBOutlet RecipeImageView *recipeImageView;
@@ -37,6 +38,11 @@
 
 @property(nonatomic,strong) IBOutletCollection(UIEditableView) NSArray *editableViews;
 
+@property (nonatomic,strong) CategoryListViewController *categoryListViewController;
+
+//data
+@property (nonatomic,strong) Category *selectedCategory;
+@property (nonatomic,strong) NSArray *categories;
 @end
 
 @implementation RecipeViewController
@@ -88,6 +94,9 @@
         }];
         [self showPageButtons:NO];
         [self toggleSaveCloseButtons:YES];
+        Category *category = self.recipe.category;
+        [self.categoryListViewController selectCategoryWithName:category.name];
+        [self.categoryListViewController show:YES];
     }
 }
 
@@ -101,6 +110,7 @@
     [self showPageButtons:YES];
     [self toggleSaveCloseButtons:NO];
     [self showBookmarkView];
+    [self.categoryListViewController show:NO];
 }
 
 -(IBAction)saveButtonTapped:(UIButton*)button
@@ -138,8 +148,28 @@
 
     self.recipeImageView.recipe = self.recipe;
     self.recipeImageView.parentViewController = self;
+    
+    //data needed by categories selection
+    [Category listCategories:^(NSArray *results) {
+        self.categories = results;
+        [self configCategoriesList];
+    } failure:^(NSError *error) {
+        DLog(@"Could not retrieve categories: %@", [error description]);
+    }];
+
 }
 
+-(void) configCategoriesList
+{
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    self.categoryListViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"CategoryListViewController"];
+    self.categoryListViewController.view.frame = CGRectMake(100.0f, 6.0f, 830.f, 66.0f);
+    self.categoryListViewController.delegate = self;
+    self.categoryListViewController.categories = self.categories;
+    [self.categoryListViewController show:NO];
+    [self.view addSubview:self.categoryListViewController.view];
+    
+}
 
 -(void) toggleSaveCloseButtons:(BOOL)show
 {
@@ -147,4 +177,12 @@
     self.saveButton.hidden = !show;
 
 }
+
+#pragma mark - CategoryListViewDelegate
+-(void)didSelectCategory:(Category*)category
+{
+    self.selectedCategory = category;
+
+}
+
 @end

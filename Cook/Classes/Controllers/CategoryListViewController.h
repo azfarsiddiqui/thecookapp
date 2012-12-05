@@ -15,4 +15,6 @@
 @interface CategoryListViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic,strong) NSArray *categories;
 @property(nonatomic,assign) id<CategoryListViewDelegate> delegate;
+-(void)show:(BOOL)show;
+-(void)selectCategoryWithName:(NSString*)categoryName;
 @end
