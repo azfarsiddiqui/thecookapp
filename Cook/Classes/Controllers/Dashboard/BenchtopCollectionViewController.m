@@ -88,7 +88,7 @@
     
     // Hide the bookCover.
     if (open) {
-        BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
         cell.bookCoverView.hidden = YES;
     }
 }
@@ -97,7 +97,7 @@
     
     // Restore the bookCover.
     if (!open) {
-        BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
         cell.bookCoverView.hidden = NO;
     }
 }
@@ -226,23 +226,49 @@
 #pragma mark - CoverPickerViewControllerDelegate methods
 
 - (void)coverPickerCancelRequested {
-    DLog();
+
+    // Revert to previous illustration/cover.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.illustration = self.illustrationViewController.illustration;
+    self.myBook.cover = self.coverViewController.cover;
+    [cell loadBook:self.myBook];
+    
+    // Reload the illustration cover.
+    [self.illustrationViewController changeCover:self.coverViewController.cover];
+    
     [self enableEditMode:NO];
 }
 
 - (void)coverPickerDoneRequested {
-    DLog();
+    
+    // TODO save author and title.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.caption = [cell.bookCoverView currentCaptionThenResign];
+    [self.myBook saveInBackground];
+    
+    [cell loadBook:self.myBook];
     [self enableEditMode:NO];
 }
 
 - (void)coverPickerSelected:(NSString *)cover {
-    DLog();
+    
+    // Force reload my book with the selected illustration.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.cover = cover;
+    [cell loadBook:self.myBook];
+    
+    // Reload the illustration covers.
+    [self.illustrationViewController changeCover:cover];
 }
 
 #pragma mark - IllustrationPickerViewControllerDelegate methods
 
 - (void)illustrationSelected:(NSString *)illustration {
-    DLog();
+    
+    // Force reload my book with the selected illustration.
+    BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.illustration = illustration;
+    [cell loadBook:self.myBook];
 }
 
 #pragma mark - Private methods
@@ -480,6 +506,14 @@
                              self.illustrationViewController = nil;
                          }
                      }];
+}
+
+- (BenchtopBookCoverViewCell *)myBookCell {
+    return [self bookCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kMySection]];
+}
+
+- (BenchtopBookCoverViewCell *)bookCellAtIndexPath:(NSIndexPath *)indexPath {
+    return (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
 }
 
 @end
