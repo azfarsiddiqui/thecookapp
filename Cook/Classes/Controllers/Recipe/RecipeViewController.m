@@ -94,6 +94,7 @@
         }];
         [self showPageButtons:NO];
         [self togglePageNumber:NO];
+        self.facebookUserView.hidden = YES;
         [self toggleSaveCloseButtons:YES];
         Category *category = self.recipe.category;
         [self.categoryListViewController selectCategoryWithName:category.name];
@@ -111,6 +112,7 @@
     [self showPageButtons:YES];
     [self togglePageNumber:YES];
     [self toggleSaveCloseButtons:NO];
+    self.facebookUserView.hidden = NO;
     [self showBookmarkView];
     [self.categoryListViewController show:NO];
 }
