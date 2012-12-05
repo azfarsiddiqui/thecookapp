@@ -90,6 +90,7 @@
 
 -(void)style
 {
+    
 }
 
 -(void)refreshData
@@ -98,7 +99,7 @@
     [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
 
     if ([self.recipe.ingredients count] > 0) {
-        self.ingredientsView.ingredients = self.recipe.ingredients;
+        self.ingredientsView.ingredients = [NSMutableArray arrayWithArray:self.recipe.ingredients];
         
     }
     if (self.recipe.description) {

@@ -10,6 +10,7 @@
 
 @interface UIEditableView()
 @property(nonatomic,assign,readonly) BOOL editMode;
+@property (nonatomic,strong) UIImageView *backgroundEditImageView;
 @end
 
 @implementation UIEditableView
@@ -38,6 +39,7 @@
 -(void) makeEditable:(BOOL)editable
 {
     _editMode = editable;
+    self.backgroundEditImageView.hidden = !editable;
 }
 
 -(BOOL)inEditMode
@@ -45,6 +47,17 @@
     return self.editMode;
 }
 
+-(UIImageView *)backgroundEditImageView
+{
+    if (!_backgroundEditImageView) {
+        UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
+        _backgroundEditImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height)];
+        _backgroundEditImageView.hidden = YES;
+        _backgroundEditImageView.image = backgroundImage;
+        [self insertSubview:_backgroundEditImageView atIndex:0];
+    }
+    return _backgroundEditImageView;
+}
 #pragma mark - Private methods
 -(void) styleViews
 {

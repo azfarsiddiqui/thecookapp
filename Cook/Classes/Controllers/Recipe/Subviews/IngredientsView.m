@@ -20,7 +20,7 @@
 @property(nonatomic,strong) UILabel *ingredientsLabel;
 @property(nonatomic,strong) UIScrollView *ingredientsScrollView;
 @property(nonatomic,strong) UITableView *tableView;
-@property (nonatomic,strong) UIImageView *backgroundEditImageView;
+@property(nonatomic,strong) UIButton *addIngredientsButton;
 @end
 
 @implementation IngredientsView
@@ -31,7 +31,7 @@
     self.ingredientsLabel.hidden = editable;
     [self.tableView reloadData];
     self.tableView.hidden = !editable;
-    self.backgroundEditImageView.hidden = !editable;
+    self.addIngredientsButton.hidden = !editable;
 }
 
 #pragma mark - Private methods
@@ -90,18 +90,17 @@
     return _tableView;
 }
 
--(UIImageView *)backgroundEditImageView
+-(UIButton *)addIngredientsButton
 {
-    if (!_backgroundEditImageView) {
-        UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
-        _backgroundEditImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height)];
-        _backgroundEditImageView.hidden = YES;
-        _backgroundEditImageView.image = backgroundImage;
-        [self insertSubview:_backgroundEditImageView atIndex:0];
+    if (!_addIngredientsButton) {
+        _addIngredientsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_textedit.png"] target:self selector:@selector(addIngredientTapped:)];
+        _addIngredientsButton.hidden =YES;
+        _addIngredientsButton.frame = CGRectMake(self.bounds.size.width - floorf(0.75*(_addIngredientsButton.frame.size.width)),-5.0f,
+                                                 _addIngredientsButton.frame.size.width, _addIngredientsButton.frame.size.height);
+        [self addSubview:_addIngredientsButton];
     }
-    return _backgroundEditImageView;
+    return _addIngredientsButton;
 }
-
 -(void) adjustScrollContentSizeToHeight:(float)height
 {
     self.ingredientsScrollView.contentSize = height > self.ingredientsScrollView.frame.size.height ?
@@ -118,6 +117,7 @@
     
     return [NSString stringWithString:mutableIngredientString];
 }
+
 #pragma mark - UITableViewDatasource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -160,6 +160,12 @@
     ingredient.name = textField.text;
 }
 
+#pragma mark - Action buttons
+-(void)addIngredientTapped:(UIButton*)button
+{
+    [self.ingredients addObject:[Ingredient ingredientwithName:@"ingredient"]];
+    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

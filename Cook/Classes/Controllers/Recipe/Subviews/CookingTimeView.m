@@ -15,7 +15,6 @@
 @interface CookingTimeView()<UIPopoverControllerDelegate>
 @property(nonatomic,strong) UILabel *cookingTimeLabel;
 @property(nonatomic,strong) UIPopoverController *popoverController;
-@property (nonatomic,strong) UIImageView *backgroundEditImageView;
 @end
 @implementation CookingTimeView
 
@@ -23,7 +22,6 @@
 -(void)makeEditable:(BOOL)editable
 {
     [super makeEditable:editable];
-    self.backgroundEditImageView.hidden = !editable;
     self.cookingTimeLabel.textColor = editable ? [UIColor blackColor] : [UIColor darkGrayColor];
 }
 
@@ -58,18 +56,6 @@
         [self addSubview:_cookingTimeLabel];
     }
     return _cookingTimeLabel;
-}
-
--(UIImageView *)backgroundEditImageView
-{
-    if (!_backgroundEditImageView) {
-        UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
-        _backgroundEditImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height)];
-        _backgroundEditImageView.hidden = YES;
-        _backgroundEditImageView.image = backgroundImage;
-        [self insertSubview:_backgroundEditImageView atIndex:0];
-    }
-    return _backgroundEditImageView;
 }
 
 -(void) cookingTimeTapped:(UILabel*)gestureRecognizer;

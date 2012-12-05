@@ -15,7 +15,7 @@
 @interface CookingDirectionsView()<UITextViewDelegate>
 @property(nonatomic,strong) UILabel *directionsLabel;
 @property(nonatomic,strong) UIScrollView *directionsScrollView;
-@property(nonatomic,strong) UIImageView *backgroundEditImageView;
+@property(nonatomic,strong) UIImageView *editIconImageView;
 @property(nonatomic,strong) UITextView *directionsTextView;
 @end
 @implementation CookingDirectionsView
@@ -23,7 +23,7 @@
 -(void)makeEditable:(BOOL)editable
 {
     [super makeEditable:editable];
-    self.backgroundEditImageView.hidden = !editable;
+    self.editIconImageView.hidden = !editable;
     self.directionsLabel.hidden = editable;
     self.directionsTextView.text = self.directions;
     self.directionsTextView.frame = [self editSize];
@@ -84,18 +84,18 @@
     return _directionsScrollView;
 }
 
--(UIImageView *)backgroundEditImageView
+-(UIImageView *)editIconImageView
 {
-    if (!_backgroundEditImageView) {
-        UIImage *backgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
-        _backgroundEditImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height)];
-        _backgroundEditImageView.hidden = YES;
-        _backgroundEditImageView.image = backgroundImage;
-        [self insertSubview:_backgroundEditImageView atIndex:0];
+    if (!_editIconImageView) {
+        UIImage *editIconImage = [UIImage imageNamed:@"cook_customise_btns_textedit.png"];
+        _editIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - floorf(0.75*(editIconImage.size.width)),-5.0f,
+                                                                           editIconImage.size.width, editIconImage.size.height)];
+        _editIconImageView.hidden = YES;
+        _editIconImageView.image = editIconImage;
+        [self addSubview:_editIconImageView];
     }
-    return _backgroundEditImageView;
+    return _editIconImageView;
 }
-
 
 -(CGRect)editSize
 {
