@@ -107,19 +107,33 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.selectedIndexPath = indexPath;
-    
-    if (indexPath.section == kMySection) {
+    // Only open book if book was in the center.
+    UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+    if (CGRectContainsPoint(attributes.frame, CGPointMake(self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0),
+                                                          self.collectionView.center.y))) {
         
-        [self openBookAtIndexPath:indexPath];
+        self.selectedIndexPath = indexPath;
         
-    } else if (indexPath.section == kFollowSection) {
-        UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
-                                                   destructiveButtonTitle:nil otherButtonTitles:@"Unfollow", @"Open", nil];
-        actionSheet.delegate = self;
-        [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
+        if (indexPath.section == kMySection) {
+            [self openBookAtIndexPath:indexPath];
+            
+        } else if (indexPath.section == kFollowSection) {
+            
+            // [self openBookAtIndexPath:indexPath];
+            UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+            UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
+                                                       destructiveButtonTitle:nil otherButtonTitles:@"Unfollow", @"Open", nil];
+            actionSheet.delegate = self;
+            [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
+        }
+        
+
+    } else {
+        [self.collectionView scrollToItemAtIndexPath:indexPath
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:YES];
     }
+    
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -381,7 +395,8 @@
 }
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
-    [self.delegate openBookRequestedForBook:self.myBook];
+    CKBook *book = (indexPath.section == kMySection) ? self.myBook : [self.followBooks objectAtIndex:indexPath.item];
+    [self.delegate openBookRequestedForBook:book];
 }
 
 - (void)unfollowBookAtIndexPath:(NSIndexPath *)indexPath {
