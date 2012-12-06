@@ -16,6 +16,8 @@
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
+@property (nonatomic, strong) UIImageView *featuredBanner;
+@property (nonatomic, strong) UIImageView *friendsBanner;
 
 @end
 
@@ -56,11 +58,13 @@
     self.friendsViewController = friendsViewController;
     [friendsViewController loadData];
     
+    [self initBanners];
 }
 
 - (void)enable:(BOOL)enable {
     [self.featuredViewController enable:enable];
     [self.friendsViewController enable:enable];
+    [self showBanners:enable animated:enable ? YES : NO];
 }
 
 #pragma mark - Private methods
@@ -73,6 +77,44 @@
                                  backgroundView.frame.size.height);
     [self.view addSubview:backgroundView];
     self.backgroundView = backgroundView;
+}
+
+- (void)initBanners {
+    UIImageView *featuredBanner = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_banner_featured.png"]];
+    UIView *featuredContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0, 156.0, featuredBanner.frame.size.width, featuredBanner.frame.size.height)];
+    featuredContainer.clipsToBounds = YES;
+    [featuredContainer addSubview:featuredBanner];
+    [self.view addSubview:featuredContainer];
+    self.featuredBanner = featuredBanner;
+
+    UIImageView *friendsBanner = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_banner_friends.png"]];
+    UIView *friendsContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0, 486.0, friendsBanner.frame.size.width, friendsBanner.frame.size.height)];
+    friendsContainer.clipsToBounds = YES;
+    [friendsContainer addSubview:friendsBanner];
+    [self.view addSubview:friendsContainer];
+    self.friendsBanner = friendsBanner;
+    
+    [self showBanners:NO animated:NO];
+}
+
+- (void)showBanners:(BOOL)show animated:(BOOL)animated {
+    
+    CGAffineTransform featuredTransform = CGAffineTransformMakeTranslation(0.0, -self.featuredBanner.frame.size.height);
+    CGAffineTransform friendsTransform = CGAffineTransformMakeTranslation(0.0, -self.friendsBanner.frame.size.height);
+    if (animated) {
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.featuredBanner.transform = show ? CGAffineTransformIdentity : featuredTransform;
+                             self.friendsBanner.transform = show ? CGAffineTransformIdentity : friendsTransform;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    } else {
+        self.featuredBanner.transform = show ? CGAffineTransformIdentity : featuredTransform;
+        self.friendsBanner.transform = show ? CGAffineTransformIdentity : friendsTransform;
+    }
 }
 
 @end
