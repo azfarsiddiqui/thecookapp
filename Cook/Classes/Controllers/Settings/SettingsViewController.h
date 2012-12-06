@@ -8,10 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsBackgroundView : UIPopoverBackgroundView
-
-@end
-
 @interface SettingsViewController : UIViewController
 
 @end
