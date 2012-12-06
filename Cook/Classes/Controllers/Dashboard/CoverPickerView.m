@@ -22,7 +22,7 @@
 
 @implementation CoverPickerView
 
-#define kMinSize        CGSizeMake(67.0, 59.0)
+#define kMinSize        CGSizeMake(67.0, 61.0)
 #define kMaxSize        CGSizeMake(67.0, 101.0)
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewDelegate>)delegate {
@@ -46,26 +46,29 @@
     CGFloat offset = 0.0;
     
     // Button shadow.
-    UIImage *shadowImage = [UIImage imageNamed:@"cook_customise_colours_bg.png"];
+    UIImage *shadowImage = [[UIImage imageNamed:@"cook_customise_colours_bg.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:48];
     
     for (NSString *cover in self.availableCovers) {
         
         // Button
-        UIImage *coverImage = [CKBookCover thumbImageForCover:cover];
-        UIButton *coverButton = [ViewHelper buttonWithImage:coverImage target:self selector:@selector(coverTapped:)];
-        coverButton.frame = CGRectMake(offset, 0.0, kMinSize.width, kMinSize.height);
+        UIImage *coverImage = [self imageForCover:cover];
+        UIImageView *coverButton = [[UIImageView alloc] initWithImage:coverImage];
+        coverButton.userInteractionEnabled = YES;
+        coverButton.frame = CGRectMake(offset, -2.0, kMinSize.width, kMinSize.height);
         [self addSubview:coverButton];
         [self.buttons addObject:coverButton];
+        
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(coverTapped:)];
+        [coverButton addGestureRecognizer:tapGesture];
         
         // Button shadow.
         UIImageView *shadowView = [[UIImageView alloc] initWithImage:shadowImage];
         shadowView.frame = CGRectMake(offset + floorf((coverButton.frame.size.width - shadowView.frame.size.width) / 2.0),
-                                      0.0,
+                                      -19.0,
                                       shadowView.frame.size.width,
                                       shadowView.frame.size.height);
         [self addSubview:shadowView];
         [self.shadows addObject:shadowView];
-        DLog(@"SHADOW FRAME: %@", NSStringFromCGRect(shadowView.frame));
         
         offset += coverButton.frame.size.width;
     }
@@ -80,11 +83,12 @@
     [self selectCoverAtIndex:selectedIndex];
 }
 
-- (void)coverTapped:(id)sender {
+- (void)coverTapped:(UITapGestureRecognizer *)gesture {
     if (self.animating) {
         return;
     }
     
+    UIView *sender = gesture.view;
     NSUInteger coverIndex = [self.buttons indexOfObject:sender];
     [self selectCoverAtIndex:coverIndex];
 }
@@ -99,19 +103,19 @@
                          
                          // Unselect all buttons except the current one.
                          for (NSInteger buttonIndex = 0; buttonIndex < [self.buttons count]; buttonIndex++) {
-                             UIButton *button = [self.buttons objectAtIndex:buttonIndex];
+                             UIView *button = [self.buttons objectAtIndex:buttonIndex];
 //                             button.alpha = 0.5;
                              UIView *shadowView = [self.shadows objectAtIndex:buttonIndex];
                              CGRect buttonFrame = button.frame;
                              CGRect shadowFrame = shadowView.frame;
+                             
                              if (buttonIndex == coverIndex) {
                                  buttonFrame.size.height = kMaxSize.height;
-                                 shadowFrame.size.height = buttonFrame.size.height + 31.0;
                              } else {
                                  buttonFrame.size.height = kMinSize.height;
-                                 shadowFrame.size.height = buttonFrame.size.height + 17.0;
                              }
                              
+                             shadowFrame.size.height = buttonFrame.size.height + 34.0;
                              button.frame = buttonFrame;
                              shadowView.frame = shadowFrame;
                          }
@@ -126,7 +130,7 @@
 }
 
 - (UIImage *)imageForCover:(NSString *)cover {
-    return [[CKBookCover thumbImageForCover:cover] stretchableImageWithLeftCapWidth:0 topCapHeight:29];
+    return [[CKBookCover thumbImageForCover:cover] stretchableImageWithLeftCapWidth:0 topCapHeight:30];
 }
 
 @end
