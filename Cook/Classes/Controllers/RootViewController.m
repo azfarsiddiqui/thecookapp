@@ -164,7 +164,7 @@
     NSUInteger toggleLevel = self.benchtopLevel;
     
     if (self.benchtopLevel == 2
-        && CGRectIntersection(self.view.bounds, self.benchtopViewController.view.frame).size.height > self.benchtopHideOffset + kSnapHeight) {
+        && CGRectIntersection(self.view.bounds, self.benchtopViewController.view.frame).size.height > kStoreHideTuckOffset + kSnapHeight) {
         
         toggleLevel = 1;
         
