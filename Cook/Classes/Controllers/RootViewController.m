@@ -186,26 +186,42 @@
     }
     
     BOOL toggleMode = (self.benchtopLevel != toggleLevel);
+    CGRect storeFrame = [self storeFrameForLevel:toggleLevel];
+    CGRect benchtopFrame = [self benchtopFrameForLevel:toggleLevel];
+    CGRect settingsFrame = [self settingsFrameForLevel:toggleLevel];
+    
+    // Add a bounce for toggling between levels.
+    if (toggleMode) {
+        BOOL forwardBounce = toggleLevel > self.benchtopLevel;
+        storeFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
+        benchtopFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
+        settingsFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
+    }
+    
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.storeViewController.view.frame = [self storeFrameForLevel:toggleLevel];
-                         self.benchtopViewController.view.frame = [self benchtopFrameForLevel:toggleLevel];
-                         self.settingsViewController.view.frame = [self settingsFrameForLevel:toggleLevel];
-                         
+                         self.storeViewController.view.frame = storeFrame;
+                         self.benchtopViewController.view.frame = benchtopFrame;
+                         self.settingsViewController.view.frame = settingsFrame;
                      }
                      completion:^(BOOL finished) {
                          
-                         self.benchtopLevel = toggleLevel;
-                         
-                         // Inform toggle.
                          if (toggleMode) {
-                             
-                             // Enable the toggled area.
-//                             [self.storeViewController enable:(self.benchtopLevel == 2)];
-//                             [self.benchtopViewController enable:(self.benchtopLevel == 1)];
-//                             [self.settingsViewController enable:(self.benchtopLevel == 0)];
+                             [UIView animateWithDuration:0.2
+                                                   delay:0.0
+                                                 options:UIViewAnimationCurveEaseIn
+                                              animations:^{
+                                                  self.storeViewController.view.frame = [self storeFrameForLevel:toggleLevel];;
+                                                  self.benchtopViewController.view.frame = [self benchtopFrameForLevel:toggleLevel];
+                                                  self.settingsViewController.view.frame = [self settingsFrameForLevel:toggleLevel];
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  self.benchtopLevel = toggleLevel;
+                                                 [self.storeViewController enable:(self.benchtopLevel == 2)];
+                                                 [self.benchtopViewController enable:(self.benchtopLevel == 1)];
+                                              }];
                          }
                          
                      }];
