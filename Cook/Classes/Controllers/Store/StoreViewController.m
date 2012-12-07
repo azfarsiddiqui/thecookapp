@@ -40,9 +40,9 @@
     
     FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] init];
     featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                   self.view.bounds.origin.y,
+                                                   self.view.bounds.size.height - rowHeight - 280.0,
                                                    self.view.bounds.size.width,
-                                                   rowHeight + 250.0);
+                                                   rowHeight);
     featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:featuredViewController.view];
     self.featuredViewController = featuredViewController;
@@ -50,7 +50,7 @@
     
     FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] init];
     friendsViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                  self.view.bounds.size.height - rowHeight + 45.0,
+                                                  self.view.bounds.size.height - rowHeight + 48.0,
                                                   self.view.bounds.size.width,
                                                   rowHeight);
     friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
@@ -81,14 +81,20 @@
 
 - (void)initBanners {
     UIImageView *featuredBanner = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_banner_featured.png"]];
-    UIView *featuredContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0, 156.0, featuredBanner.frame.size.width, featuredBanner.frame.size.height)];
+    UIView *featuredContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0,
+                                                                         self.view.bounds.size.height - 692.0,
+                                                                         featuredBanner.frame.size.width,
+                                                                         featuredBanner.frame.size.height)];
     featuredContainer.clipsToBounds = YES;
     [featuredContainer addSubview:featuredBanner];
     [self.view addSubview:featuredContainer];
     self.featuredBanner = featuredBanner;
 
     UIImageView *friendsBanner = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_banner_friends.png"]];
-    UIView *friendsContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0, 486.0, friendsBanner.frame.size.width, friendsBanner.frame.size.height)];
+    UIView *friendsContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0,
+                                                                        self.view.bounds.size.height - 360.0,
+                                                                        friendsBanner.frame.size.width,
+                                                                        friendsBanner.frame.size.height)];
     friendsContainer.clipsToBounds = YES;
     [friendsContainer addSubview:friendsBanner];
     [self.view addSubview:friendsContainer];
