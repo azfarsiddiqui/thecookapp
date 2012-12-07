@@ -13,5 +13,6 @@
 
 - (void)openBookRequestedForBook:(CKBook *)book;
 - (void)editBookRequested:(BOOL)editMode;
+- (void)panEnabledRequested:(BOOL)enable;
 
 @end

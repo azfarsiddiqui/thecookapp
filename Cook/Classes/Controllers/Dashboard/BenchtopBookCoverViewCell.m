@@ -7,8 +7,11 @@
 //
 
 #import "BenchtopBookCoverViewCell.h"
+#import "ViewHelper.h"
 
 @interface BenchtopBookCoverViewCell () <CKBookCoverViewDelegate>
+
+@property (nonatomic, strong) UIButton *deleteButton;
 
 @end
 

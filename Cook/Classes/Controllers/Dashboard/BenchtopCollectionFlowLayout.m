@@ -87,7 +87,6 @@
 
     DLog(@"INSERTED %@", self.insertedIndexPaths);
     DLog(@"DELETED  %@", self.deletedIndexPaths);
-
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
@@ -96,15 +95,12 @@
     // Custom inserted item.
     if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
         
-        if (itemIndexPath.section == 0) {
-            if (initialAttributes == nil) {
-                initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-            }
-            
-            CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
-            initialAttributes.transform3D = scaleTransform;
+        if (initialAttributes == nil) {
+            initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
         }
         
+        CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
+        initialAttributes.transform3D = scaleTransform;
     }
     
     return initialAttributes;
