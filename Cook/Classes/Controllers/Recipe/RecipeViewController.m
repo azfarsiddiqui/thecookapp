@@ -15,6 +15,7 @@
 #import "CKUser.h"
 #import "RecipeNameView.h"
 #import "RecipeImageView.h"
+#import "RecipeLike.h"
 #import "IngredientsView.h"
 #import "ServesView.h"
 #import "CookingDirectionsView.h"
@@ -38,6 +39,7 @@
 @property(nonatomic,strong) IBOutlet UIButton *likeButton;
 @property(nonatomic,strong) IBOutlet UIProgressView *progressView;
 @property(nonatomic,strong) IBOutlet UILabel *uploadProgressLabel;
+@property(nonatomic,strong) IBOutlet UILabel *likesLabel;
 @property(nonatomic,strong) IBOutletCollection(UIEditableView) NSArray *editableViews;
 
 @property (nonatomic,strong) CategoryListViewController *categoryListViewController;
@@ -45,6 +47,7 @@
 //data
 @property (nonatomic,strong) Category *selectedCategory;
 @property (nonatomic,strong) NSArray *categories;
+@property (nonatomic,assign) BOOL recipeLiked;
 @end
 
 @implementation RecipeViewController
@@ -55,7 +58,7 @@
     DLog();
     [self refreshData];
     [self showContentsButton:YES];
-
+    [self configLikesLabel];
 }
 
 - (void)viewDidLoad
@@ -169,6 +172,19 @@
     }
 }
 
+-(IBAction)likeButtonTapped:(UIButton*)button
+{
+    button.enabled = NO;
+    //do the opposite of the current value
+    [RecipeLike updateRecipeLikeForUser:[CKUser currentUser] recipe:self.recipe liked:!self.recipeLiked withSuccess:^(id object) {
+        button.enabled = YES;
+        button.selected = !button.selected;
+    } failure:^(NSError *error) {
+        button.enabled = YES;
+        DLog(@"could not like/unlike recipe: %@", [error description]);
+    }];
+}
+
 #pragma mark - private methods
 
 -(void)refreshData
@@ -202,9 +218,27 @@
     } failure:^(NSError *error) {
         DLog(@"Could not retrieve categories: %@", [error description]);
     }];
+    
+//    self.recipeLiked = [RecipeLike recipeLI:[CKUser currentUser] forRecipe:self.recipe];
+//    
+//    [RecipeLike fetchRecipeLikeForUser:[CKUser currentUser]
+//                                recipe:self.recipe withSuccess:^(RecipeLike *recipeLike) {
+//                                    self.recipeLike = recipeLike;
+//                                    if (self.recipeLike) {
+//                                        self.likeButton.selected = YES;
+//                                    }
+//                                } failure:^(NSError *error) {
+//                                    DLog(@"Could not fetch recipe likes: %@", [error description]);
+//    }];
+//    
+    self.likesLabel.text = [NSString stringWithFormat:@"%i",0];
 
 }
 
+-(void)updateLikes:(BOOL)liked
+{
+    
+}
 -(void) configCategoriesList
 {
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
@@ -260,6 +294,12 @@
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:message
                                                        delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
     [alertView show];
+}
+
+-(void)configLikesLabel
+{
+    self.likesLabel.font = [Theme defaultFontWithSize:14.0f];
+    self.likesLabel.text = @"0";
 }
 
 #pragma mark - CategoryListViewDelegate

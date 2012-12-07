@@ -160,16 +160,6 @@
     }
 }
 
--(void)incrementLikes
-{
-    _likes++;
-}
-
--(void)decrementLikes
-{
-    _likes++;
-}
-
 #pragma mark - Private Methods
 -(Category *)category
 {
@@ -184,14 +174,11 @@
 
 }
 
-
-
 -(void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject
 {
     [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipeObject setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
     [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
-    [parseRecipeObject setObject:[NSNumber numberWithInt:_likes] forKey:kRecipeAttrLikes];
     [parseRecipeObject setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
     if (self.numServes > 0) {
         [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];

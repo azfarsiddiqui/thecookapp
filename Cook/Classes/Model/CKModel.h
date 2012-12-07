@@ -15,6 +15,7 @@ typedef void(^ObjectSuccessBlock)();
 typedef void(^GetObjectSuccessBlock)(id object);
 typedef void(^NumObjectSuccessBlock)(int numObjects);
 typedef void(^ListObjectsSuccessBlock)(NSArray *results);
+typedef void(^DictionaryObjectsSuccessBlock)(NSDictionary *results);
 typedef void(^ProgressBlock)(int percentDone);
 
 #define kCKErrorDomain                  @"CKErrorDomain"

@@ -37,6 +37,4 @@
 
 -(void) setImage:(UIImage *)image;
 -(PFFile*) imageFile;
--(void)incrementLikes;
-
 @end

@@ -10,12 +10,21 @@
 #import "CKUser.h"
 #import "CKRecipe.h"
 
+extern NSString *const kRecipeLikeKeyNumLikes;
+extern NSString *const kRecipeLikeKeyUserLike;
+
 @interface RecipeLike : CKModel
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKRecipe *recipe;
 
-+(RecipeLike *) recipeLikeForUser:(CKUser *)user recipe:(CKRecipe*)recipe;
+//create
++(RecipeLike*) recipeLikeForUser:(CKUser *)user recipe:(CKRecipe*)recipe;
 
--(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+//action
+//update recipe like. returns a numeric of the 
++(void) updateRecipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe liked:(BOOL)like withSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
+//NSDictionary with recipe like info. likeCount, userLikes - indicates if user likes this recipe
++(void) fetchRecipeLikeInfoForUser:(CKUser*)user recipe:(CKRecipe *)recipe withSuccess:(DictionaryObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end
