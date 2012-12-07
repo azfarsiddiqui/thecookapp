@@ -539,8 +539,21 @@
     if (longPressGesture.state == UIGestureRecognizerStateBegan) {
         NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:[longPressGesture locationInView:self.collectionView]];
         
-        if (indexPath.section == kFollowSection && [self isCenterBookAtIndexPath:indexPath]) {
-            [self setDeleteMode:YES indexPath:indexPath];
+        if (indexPath != nil) {
+            if ([self isCenterBookAtIndexPath:indexPath]) {
+                
+                // Delete mode when in Follow section and book is in the center.
+                if (indexPath.section == kFollowSection) {
+                    [self setDeleteMode:YES indexPath:indexPath];
+                }
+                
+            } else {
+                
+                // Else scroll there.
+                [self.collectionView scrollToItemAtIndexPath:indexPath
+                                            atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                    animated:YES];
+            }
         }
     }
 }
@@ -566,9 +579,11 @@
         [self.view addSubview:overlayView];
         self.overlayView = overlayView;
         
-        // Register tap to dismiss.
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deleteDismissed:)];
+        // Register gestures to dimiss.
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deleteDismissedByTap:)];
         [overlayView addGestureRecognizer:tapGesture];
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(deleteDismissedByPan:)];
+        [overlayView addGestureRecognizer:panGesture];
         
         // Remember the cell to be deleted.
         self.selectedIndexPath = indexPath;
@@ -612,8 +627,14 @@
                      }];
 }
 
-- (void)deleteDismissed:(UITapGestureRecognizer *)tapGesture {
+- (void)deleteDismissedByTap:(UITapGestureRecognizer *)tapGesture {
     [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+}
+
+- (void)deleteDismissedByPan:(UIPanGestureRecognizer *)panGesture {
+    if (panGesture.state == UIGestureRecognizerStateBegan) {
+        [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+    }
 }
 
 - (void)deleteTapped:(id)sender {
