@@ -284,6 +284,8 @@
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
 		76EDC32416702642008EF2CE /* cook_dash_bg_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EDC32216702642008EF2CE /* cook_dash_bg_settings.png */; };
 		76EDC32516702642008EF2CE /* cook_dash_bg_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EDC32316702642008EF2CE /* cook_dash_bg_settings@2x.png */; };
+		76F4C3D61671938D00451998 /* cook_dash_library_nofriends.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F4C3D41671938D00451998 /* cook_dash_library_nofriends.png */; };
+		76F4C3D71671938D00451998 /* cook_dash_library_nofriends@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F4C3D51671938D00451998 /* cook_dash_library_nofriends@2x.png */; };
 		76FA9A371626568B006EAFBB /* cook_btn_dark_facebook_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A331626568B006EAFBB /* cook_btn_dark_facebook_icon.png */; };
 		76FA9A381626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A341626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png */; };
 		76FA9A391626568B006EAFBB /* cook_btn_dark_facebook_tick.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A351626568B006EAFBB /* cook_btn_dark_facebook_tick.png */; };
@@ -710,6 +712,8 @@
 		76ED278B1612E45B0012E479 /* CKServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKServerManager.m; sourceTree = "<group>"; };
 		76EDC32216702642008EF2CE /* cook_dash_bg_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cook_dash_bg_settings.png; path = ../dashboard/cook_dash_bg_settings.png; sourceTree = "<group>"; };
 		76EDC32316702642008EF2CE /* cook_dash_bg_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_dash_bg_settings@2x.png"; path = "../dashboard/cook_dash_bg_settings@2x.png"; sourceTree = "<group>"; };
+		76F4C3D41671938D00451998 /* cook_dash_library_nofriends.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_nofriends.png; sourceTree = "<group>"; };
+		76F4C3D51671938D00451998 /* cook_dash_library_nofriends@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_nofriends@2x.png"; sourceTree = "<group>"; };
 		76FA9A331626568B006EAFBB /* cook_btn_dark_facebook_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btn_dark_facebook_icon.png; sourceTree = "<group>"; };
 		76FA9A341626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btn_dark_facebook_icon@2x.png"; sourceTree = "<group>"; };
 		76FA9A351626568B006EAFBB /* cook_btn_dark_facebook_tick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btn_dark_facebook_tick.png; sourceTree = "<group>"; };
@@ -1270,6 +1274,8 @@
 		76CED55216705A040026E794 /* store */ = {
 			isa = PBXGroup;
 			children = (
+				76F4C3D41671938D00451998 /* cook_dash_library_nofriends.png */,
+				76F4C3D51671938D00451998 /* cook_dash_library_nofriends@2x.png */,
 				76381CB916688C7E00404FB1 /* cook_dash_bg_shelves.png */,
 				76381CBA16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png */,
 				76492D3A166DB9860042CF92 /* cook_dash_library_add.png */,
@@ -1976,6 +1982,8 @@
 				76CED55816705A040026E794 /* cook_dash_library_banner_featured@2x.png in Resources */,
 				76CED55916705A040026E794 /* cook_dash_library_banner_friends.png in Resources */,
 				76CED55A16705A040026E794 /* cook_dash_library_banner_friends@2x.png in Resources */,
+				76F4C3D61671938D00451998 /* cook_dash_library_nofriends.png in Resources */,
+				76F4C3D71671938D00451998 /* cook_dash_library_nofriends@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
