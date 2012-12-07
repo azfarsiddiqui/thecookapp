@@ -28,7 +28,7 @@
 }
 
 - (void)loadRecipe:(CKRecipe *)recipe {
-    [CKRecipe imagesForRecipe:recipe success:^{
+    [CKRecipe fetchImagesForRecipe:recipe success:^{
         if ([recipe imageFile]) {
             self.imageView.file = [recipe imageFile];
             [self.imageView loadInBackground:^(UIImage *image, NSError *error) {

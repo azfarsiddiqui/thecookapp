@@ -48,7 +48,7 @@
 #pragma mark - Editable protocol
 -(void)setRecipe:(CKRecipe *)recipe
 {
-    [CKRecipe imagesForRecipe:recipe success:^{
+    [CKRecipe fetchImagesForRecipe:recipe success:^{
         if ([recipe imageFile]) {
             self.imageView.file = [recipe imageFile];
             if (!self.loadingImage)

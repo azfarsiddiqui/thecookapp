@@ -13,4 +13,9 @@
 @interface RecipeLike : CKModel
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKRecipe *recipe;
+
++(RecipeLike *) recipeLikeForUser:(CKUser *)user recipe:(CKRecipe*)recipe;
+
+-(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 @end

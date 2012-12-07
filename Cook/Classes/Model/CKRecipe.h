@@ -21,14 +21,20 @@
 
 @property(nonatomic,strong) Category *category;
 
-+(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+//creation
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
-+(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
++(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category;
+
+//save
+-(void) saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
+-(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
+//fetch
++(void) fetchImagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+-(void) fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
 
 -(void) setImage:(UIImage *)image;
 -(PFFile*) imageFile;
--(void) categoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
--(void) saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
--(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 @end

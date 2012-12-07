@@ -24,6 +24,7 @@
 
 @synthesize category=_category;
 
+#pragma mark - creation
 +(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     NSArray *ingredients = [parseRecipe objectForKey:kRecipeAttrIngredients];
@@ -48,7 +49,7 @@
         if (numServes) {
             recipe.numServes = [numServes intValue];
         }
-
+        
         
     }
     
@@ -71,9 +72,57 @@
     recipe.category = category;
     return recipe;
 }
+#pragma mark - save
+-(void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress
+{
+    
+    PFObject *parseRecipe = self.parseObject;
+    [self prepareParseRecipeObjectForSave:parseRecipe];
+    
+    if (self.recipeImage) {
+        PFFile *imageFile = [self.recipeImage imageFile];
+        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (error) {
+                failure(error);
+            } else {
+                
+                //must save image reference to get an object id
+                [self.recipeImage.parseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (error) {
+                        failure(error);
+                    } else {
+                        // Save the image relation to recipe.
+                        PFRelation *relation = [parseRecipe relationforKey:kRecipeAttrRecipeImages];
+                        [relation addObject:self.recipeImage.parseObject];
+                        [self saveInBackground:^{
+                            success();
+                        } failure:^(NSError *error) {
+                            failure(error);
+                        }];
+                    }
+                }];
+                
+            }
+            
+        } progressBlock:^(int percentDone) {
+            imageUploadProgress(percentDone);
+        }];
+    }
+}
 
+-(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    PFObject *parseRecipe = self.parseObject;
+    [self prepareParseRecipeObjectForSave:parseRecipe];
+    [self saveInBackground:^{
+        success();
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
+}
 
-+(void) imagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+#pragma mark - fetch
++(void) fetchImagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFRelation *images = [recipe.parseObject objectForKey:kRecipeAttrRecipeImages];
     PFQuery *query = [images query];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
@@ -91,6 +140,15 @@
     }
 }
 
+-(void) fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess
+{
+    [self.category.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        getObjectSuccess(_category.name);
+    }];
+}
+
+
+#pragma mark - Private Methods
 -(Category *)category
 {
     if (!_category) {
@@ -107,69 +165,6 @@
 -(PFFile*) imageFile
 {
     return [self.recipeImage imageFile];
-}
-
--(void) categoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess
-{
-    [self.category.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        getObjectSuccess(_category.name);
-    }];
-}
-
-
--(void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress
-{
-    
-    PFObject *parseRecipe = self.parseObject;
-    [self prepareParseRecipeObjectForSave:parseRecipe];
-
-    if (self.recipeImage) {
-        PFFile *imageFile = [self.recipeImage imageFile];
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (error) {
-                failure(error);
-            } else {
-                
-                //must save image reference to get an object id
-                [self.recipeImage.parseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    if (error) {
-                        failure(error);
-                    } else {
-                        // Save the image relation to recipe.
-                        PFRelation *relation = [parseRecipe relationforKey:kRecipeAttrRecipeImages];
-                        [relation addObject:self.recipeImage.parseObject];
-                        
-                        [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                            if (error) {
-                                failure(error);
-                            } else {
-                                success([CKRecipe recipeForParseRecipe:parseRecipe user:self.user]);
-                            }
-                        }];
-                    }
-                }];
-                
-            }
-            
-        } progressBlock:^(int percentDone) {
-            imageUploadProgress(percentDone);
-        }];
-    }
-}
-
--(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    
-    PFObject *parseRecipe = self.parseObject;
-    [self prepareParseRecipeObjectForSave:parseRecipe];
-
-    [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (error) {
-            failure(error);
-        } else {
-            success([CKRecipe recipeForParseRecipe:parseRecipe user:self.user]);
-        }
-    }];
-
 }
 
 -(void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject
@@ -198,6 +193,7 @@
     // Why is this here?
     [self.book.parseObject addUniqueObject:self.category.parseObject forKey:kBookAttrCategories];
 }
+
 #pragma mark - Overridden methods
 -(NSString *)description
 {
