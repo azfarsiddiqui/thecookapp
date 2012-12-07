@@ -29,5 +29,6 @@
 -(void) setImage:(UIImage *)image;
 -(PFFile*) imageFile;
 -(void) categoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
--(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
+-(void) saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
+-(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 @end

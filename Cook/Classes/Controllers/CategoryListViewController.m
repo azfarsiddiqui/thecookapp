@@ -15,7 +15,6 @@
 @interface CategoryListViewController ()
 @property(nonatomic,strong) IBOutlet UICollectionView *collectionView;
 @property(nonatomic,strong) IBOutlet UIImageView *imageView;
-@property(nonatomic,strong) Category *selectedCategory;
 @end
 
 @implementation CategoryListViewController
@@ -43,19 +42,14 @@
 
 -(void)selectCategoryWithName:(NSString *)categoryName
 {
-    NSUInteger categoryIndex = NSNotFound;
     if (categoryName) {
         for (int i = 0; i < [self.categories count]; i++) {
             Category *category = [self.categories objectAtIndex:i];
             if ([categoryName isEqualToString:category.name]) {
-                categoryIndex = i;
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+                [self collectionView:self.collectionView didSelectItemAtIndexPath:indexPath];
                 break;
             }
-        }
-        if (categoryIndex!= NSNotFound) {
-            self.selectedCategory = [self.categories objectAtIndex:categoryIndex];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:categoryIndex inSection:0];
-            [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
         }
     }
 }
@@ -70,12 +64,17 @@
 {
     CategoryListCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseIdentifier forIndexPath:indexPath];
     Category *category = [self.categories objectAtIndex:indexPath.row];
-    [cell configure:category asSelected:[category isEqual:self.selectedCategory]];
+    [cell configure:category asSelected:[category.name isEqualToString:self.selectedCategoryName]];
     
     return cell;
     
 }
 
+-(void)setSelectedCategoryName:(NSString *)selectedCategoryName
+{
+    _selectedCategoryName = selectedCategoryName;
+    [self.collectionView reloadData];
+}
 
 #pragma mark - IUCollectionViewDelegate
 
@@ -84,8 +83,8 @@
     CategoryListCell *cell = (CategoryListCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell selectCell:YES];
     Category *categorySelected = [self.categories objectAtIndex:indexPath.row];
-    self.selectedCategory = categorySelected;
-    [self.delegate didSelectCategory:categorySelected];
+    self.selectedCategoryName = categorySelected.name;
+    [self.delegate didSelectCategoryWithName:self.selectedCategoryName];
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
