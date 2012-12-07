@@ -131,19 +131,24 @@
             } else {
                 
                 //must save image reference to get an object id
-                [self.recipeImage.parseObject save];
-                
-                // Save the image relation to recipe.
-                PFRelation *relation = [parseRecipe relationforKey:kRecipeAttrRecipeImages];
-                [relation addObject:self.recipeImage.parseObject];
-                
-                [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                [self.recipeImage.parseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (error) {
                         failure(error);
                     } else {
-                        success([CKRecipe recipeForParseRecipe:parseRecipe user:self.user]);
+                        // Save the image relation to recipe.
+                        PFRelation *relation = [parseRecipe relationforKey:kRecipeAttrRecipeImages];
+                        [relation addObject:self.recipeImage.parseObject];
+                        
+                        [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                            if (error) {
+                                failure(error);
+                            } else {
+                                success([CKRecipe recipeForParseRecipe:parseRecipe user:self.user]);
+                            }
+                        }];
                     }
                 }];
+                
             }
             
         } progressBlock:^(int percentDone) {
