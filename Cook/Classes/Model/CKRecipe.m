@@ -123,7 +123,6 @@
     PFObject *parseRecipe = self.parseObject;
     [self prepareParseRecipeObjectForSave:parseRecipe];
 
-    
     if (self.recipeImage) {
         PFFile *imageFile = [self.recipeImage imageFile];
         [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -150,16 +149,7 @@
         } progressBlock:^(int percentDone) {
             imageUploadProgress(percentDone);
         }];
-    } else {
-        [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (error) {
-                failure(error);
-            } else {
-                success([CKRecipe recipeForParseRecipe:parseRecipe user:self.user]);
-            }
-        }];
     }
-    
 }
 
 -(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {

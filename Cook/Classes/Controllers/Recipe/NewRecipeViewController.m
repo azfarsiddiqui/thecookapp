@@ -15,6 +15,7 @@
 #import "Ingredient.h"
 #import "IngredientTableViewCell.h"
 #import "AppHelper.h"
+#import "NSArray+Enumerable.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 
 @interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
@@ -233,9 +234,13 @@
 
 #pragma mark - CategoryListViewDelegate
 
--(void)didSelectCategory:(Category *)category
+-(void)didSelectCategoryWithName:(NSString *)categoryName
 {
-    self.selectedCategory = category;
+    [self.categories each:^(Category *category) {
+        if ([categoryName isEqualToString:category.name]) {
+            self.selectedCategory = category;
+        }
+    }];
 }
 
 #pragma mark - UITableViewDatasource
