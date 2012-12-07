@@ -67,8 +67,9 @@ extern NSString *const kRecipeAttrCategoryIndex;
 extern NSString *const kRecipeAttrRecipeImages;
 extern NSString *const kRecipeAttrIngredients;
 extern NSString *const kRecipeAttrNumServes;
-extern NSString *const KRecipeAttrCookingTimeInSeconds;
+extern NSString *const kRecipeAttrCookingTimeInSeconds;
 extern NSString *const kRecipeAttrRecipeViewImageContentOffset;
+extern NSString *const kRecipeAttrLikes;
 
 #pragma mark - RecipeImage class
 extern NSString *const kRecipeImageModelName;

@@ -35,6 +35,7 @@
 
 @property(nonatomic,strong) IBOutlet UIButton *closeButton;
 @property(nonatomic,strong) IBOutlet UIButton *saveButton;
+@property(nonatomic,strong) IBOutlet UIButton *likeButton;
 @property(nonatomic,strong) IBOutlet UIProgressView *progressView;
 @property(nonatomic,strong) IBOutlet UILabel *uploadProgressLabel;
 @property(nonatomic,strong) IBOutletCollection(UIEditableView) NSArray *editableViews;

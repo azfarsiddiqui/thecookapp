@@ -40,7 +40,7 @@
             recipe.recipeViewImageContentOffset = CGPointFromString(recipeViewContentOffset);
         }
         
-        NSNumber *cookingTime = [parseRecipe objectForKey:KRecipeAttrCookingTimeInSeconds];
+        NSNumber *cookingTime = [parseRecipe objectForKey:kRecipeAttrCookingTimeInSeconds];
         if (cookingTime) {
             recipe.cookingTimeInSeconds = [cookingTime floatValue];
         }
@@ -147,6 +147,28 @@
     }];
 }
 
+#pragma mark - other public
+-(PFFile*) imageFile
+{
+    return [self.recipeImage imageFile];
+}
+
+-(void)setImage:(UIImage *)image
+{
+    if (image) {
+        self.recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipeImage.png"];
+    }
+}
+
+-(void)incrementLikes
+{
+    _likes++;
+}
+
+-(void)decrementLikes
+{
+    _likes++;
+}
 
 #pragma mark - Private Methods
 -(Category *)category
@@ -162,23 +184,21 @@
 
 }
 
--(PFFile*) imageFile
-{
-    return [self.recipeImage imageFile];
-}
+
 
 -(void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject
 {
     [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipeObject setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
     [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
+    [parseRecipeObject setObject:[NSNumber numberWithInt:_likes] forKey:kRecipeAttrLikes];
     [parseRecipeObject setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
     if (self.numServes > 0) {
         [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
     }
     
     if (self.cookingTimeInSeconds > 0.0f) {
-        [parseRecipeObject setObject:[NSNumber numberWithFloat:self.cookingTimeInSeconds] forKey:KRecipeAttrCookingTimeInSeconds];
+        [parseRecipeObject setObject:[NSNumber numberWithFloat:self.cookingTimeInSeconds] forKey:kRecipeAttrCookingTimeInSeconds];
     }
     
     if (self.ingredients && [self.ingredients count] > 0) {
@@ -215,11 +235,5 @@
     [self.parseObject setObject:[NSNumber numberWithInt:categoryIndex]forKey:kRecipeAttrCategoryIndex];
 }
 
--(void)setImage:(UIImage *)image
-{
-    if (image) {
-        self.recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipeImage.png"];
-    }
-}
 
 @end

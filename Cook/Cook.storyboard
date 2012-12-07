@@ -179,7 +179,6 @@
                                     <constraint firstAttribute="width" constant="18" type="user" id="IgB-e4-iUw"/>
                                 </constraints>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_like_off.png" translatesAutoresizingMaskIntoConstraints="NO" id="9m0-6J-wgX"/>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="7" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zat-pl-dHa">
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" backgroundImage="cook_customise_btns_cancel.png">
@@ -219,6 +218,17 @@
                                 <color key="progressTintColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M9N-Be-5T3">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" backgroundImage="cook_book_icon_like_off.png">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="cook_book_icon_like_on.png"/>
+                                <state key="highlighted" backgroundImage="cook_book_icon_like_on.png">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -229,6 +239,8 @@
                             <constraint firstItem="ncH-Sa-cAx" firstAttribute="trailing" secondItem="x8d-CU-Nyb" secondAttribute="trailing" type="default" id="4hM-Mt-6Q0"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" type="default" id="4zQ-Oi-uWQ"/>
                             <constraint firstItem="lee-HL-iwR" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="61" id="5rx-N3-73Z"/>
+                            <constraint firstItem="M9N-Be-5T3" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="66" id="7dC-ie-wbL"/>
+                            <constraint firstItem="H9S-OO-JnT" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="236" id="ACk-7v-mzw"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="656" type="user" id="AWV-2N-jXk"/>
                             <constraint firstAttribute="bottom" secondItem="ncH-Sa-cAx" secondAttribute="bottom" constant="547" id="Axp-Uh-FxE"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="trailing" secondItem="x8d-CU-Nyb" secondAttribute="trailing" type="default" id="C5c-7b-laN"/>
@@ -239,7 +251,6 @@
                             <constraint firstAttribute="trailing" secondItem="G8I-BA-gbt" secondAttribute="trailing" constant="356" id="Guo-Ka-G6b"/>
                             <constraint firstItem="x8d-CU-Nyb" firstAttribute="leading" secondItem="ncH-Sa-cAx" secondAttribute="leading" type="default" id="HXn-b7-CsX"/>
                             <constraint firstItem="FRb-6a-06G" firstAttribute="trailing" secondItem="Erb-bR-yfd" secondAttribute="trailing" type="default" id="Hyd-GF-3vj"/>
-                            <constraint firstItem="H9S-OO-JnT" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="236" id="IRF-Ae-EXN"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="leading" secondItem="p0o-T6-Pxs" secondAttribute="trailing" constant="50" type="user" id="MFa-Kh-SIS"/>
                             <constraint firstItem="Erb-bR-yfd" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="20" symbolic="YES" type="default" id="Mc8-vr-yM0"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="NJa-Zc-hKk"/>
@@ -248,8 +259,8 @@
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="top" secondItem="G8I-BA-gbt" secondAttribute="bottom" constant="24" type="user" id="PBR-bl-Twm"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="trailing" secondItem="p0o-T6-Pxs" secondAttribute="trailing" type="default" id="QEQ-kj-1ZS"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="leading" secondItem="E4H-Ex-K7C" secondAttribute="leading" type="default" id="TmV-6P-zn5"/>
-                            <constraint firstItem="9m0-6J-wgX" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="66" id="X83-t0-qVh"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="trailing" secondItem="E4H-Ex-K7C" secondAttribute="trailing" type="default" id="Ywi-UO-da3"/>
+                            <constraint firstItem="M9N-Be-5T3" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="365" id="ZZ6-y2-Egf"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="Znz-ch-Hg5"/>
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="leading" secondItem="G8I-BA-gbt" secondAttribute="leading" type="user" id="bSe-q5-Kub"/>
                             <constraint firstAttribute="trailing" secondItem="lee-HL-iwR" secondAttribute="trailing" constant="18" id="bhO-YG-8M9"/>
@@ -262,7 +273,6 @@
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="181" id="oR3-hC-DxN"/>
                             <constraint firstAttribute="bottom" secondItem="Gzk-Ze-6Lw" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="ouQ-CP-mBn"/>
                             <constraint firstItem="zat-pl-dHa" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="20" symbolic="YES" type="default" id="ovn-N8-7Cn"/>
-                            <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="365" id="tta-xU-kQu"/>
                             <constraint firstAttribute="trailing" secondItem="Erb-bR-yfd" secondAttribute="trailing" constant="17" id="v9n-Cd-AdB"/>
                             <constraint firstItem="zat-pl-dHa" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="yH8-bC-aRw"/>
                         </constraints>
@@ -275,6 +285,7 @@
                         <outlet property="cookingTimeView" destination="x8d-CU-Nyb" id="weD-oA-ixM"/>
                         <outlet property="facebookUserView" destination="G8I-BA-gbt" id="bbE-wb-cg9"/>
                         <outlet property="ingredientsView" destination="H9S-OO-JnT" id="V6F-sF-Aco"/>
+                        <outlet property="likeButton" destination="M9N-Be-5T3" id="WcH-uh-XYX"/>
                         <outlet property="progressView" destination="FRb-6a-06G" id="sso-uS-fBp"/>
                         <outlet property="recipeImageView" destination="p0o-T6-Pxs" id="OzP-KA-PP6"/>
                         <outlet property="recipeNameView" destination="E4H-Ex-K7C" id="9V6-Sg-dWL"/>
@@ -583,6 +594,7 @@
     </scenes>
     <resources>
         <image name="cook_book_icon_like_off.png" width="48" height="42"/>
+        <image name="cook_book_icon_like_on.png" width="48" height="42"/>
         <image name="cook_book_icon_serves.png" width="17" height="17"/>
         <image name="cook_book_icon_time.png" width="17" height="17"/>
         <image name="cook_book_recipe_imageshadow.png" width="8" height="1"/>
@@ -631,6 +643,10 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
+                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromCamera" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromLibrary" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
@@ -653,6 +669,9 @@
         </class>
         <class className="RecipeImageView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeImageView.h"/>
+            <relationships>
+                <relationship kind="action" name="uploadImageTapped:" candidateClass="UIButton"/>
+            </relationships>
         </class>
         <class className="RecipeNameView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeNameView.h"/>
@@ -660,11 +679,14 @@
         <class className="RecipeViewController" superclassName="PageViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
             <relationships>
+                <relationship kind="action" name="closeButtonTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="saveButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="closeButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="cookingDirectionsView" candidateClass="CookingDirectionsView"/>
                 <relationship kind="outlet" name="cookingTimeView" candidateClass="CookingTimeView"/>
                 <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
                 <relationship kind="outlet" name="ingredientsView" candidateClass="IngredientsView"/>
+                <relationship kind="outlet" name="likeButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="progressView" candidateClass="UIProgressView"/>
                 <relationship kind="outlet" name="recipeImageView" candidateClass="RecipeImageView"/>
                 <relationship kind="outlet" name="recipeNameView" candidateClass="RecipeNameView"/>
@@ -685,6 +707,9 @@
         </class>
         <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+        <class className="UICollectionViewLayout" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewLayout.h"/>
         </class>
         <class className="UIEditableView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UIEditableView.h"/>

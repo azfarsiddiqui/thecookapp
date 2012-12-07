@@ -14,6 +14,7 @@
 @interface CKRecipe : CKModel
 
 @property (nonatomic, strong) NSString *description;
+@property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSArray *ingredients;
 @property (nonatomic, assign) float cookingTimeInSeconds;
@@ -36,5 +37,6 @@
 
 -(void) setImage:(UIImage *)image;
 -(PFFile*) imageFile;
+-(void)incrementLikes;
 
 @end
