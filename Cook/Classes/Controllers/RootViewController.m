@@ -39,7 +39,7 @@
 #define kStoreHideTuckOffset            52.0
 #define kStoreShadowOffset              31.0
 #define kStoreShowAdjustment            35.0
-#define kSettingsOffsetBelowBenchtop    0.0
+#define kSettingsOffsetBelowBenchtop    50.0
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -168,22 +168,26 @@
     NSUInteger toggleLevel = self.benchtopLevel;
     
     if (self.benchtopLevel == 2
-        && CGRectIntersection(self.view.bounds, self.benchtopViewController.view.frame).size.height > kStoreHideTuckOffset + kSnapHeight) {
+        && CGRectIntersection(self.view.bounds,
+                              self.benchtopViewController.view.frame).size.height > kStoreHideTuckOffset + kSnapHeight) {
         
         toggleLevel = 1;
         
     } else if (self.benchtopLevel == 1
-               && CGRectIntersection(self.view.bounds, self.storeViewController.view.frame).size.height > (kStoreHideTuckOffset + kStoreShadowOffset + kSnapHeight)) {
+               && CGRectIntersection(self.view.bounds,
+                                     self.storeViewController.view.frame).size.height > (kStoreHideTuckOffset + kStoreShadowOffset + kSnapHeight)) {
         
         toggleLevel = 2;
         
     } else if (self.benchtopLevel == 1
-               && CGRectIntersection(self.view.bounds, self.settingsViewController.view.frame).size.height > (self.settingsViewController.view.frame.size.height * 0.33)) {
+               && CGRectIntersection(self.view.bounds,
+                                     self.settingsViewController.view.frame).size.height > (self.settingsViewController.view.frame.size.height * 0.33)) {
         
         toggleLevel = 0;
         
     } else if (self.benchtopLevel == 0
-               && CGRectIntersection(self.view.bounds, self.settingsViewController.view.frame).size.height < (self.settingsViewController.view.frame.size.height * 0.75)) {
+               && CGRectIntersection(self.view.bounds,
+                                     self.settingsViewController.view.frame).size.height < (self.settingsViewController.view.frame.size.height * 0.75)) {
         
         // Toggle to level 1 if moved more than 1/3.
         toggleLevel = 1;
@@ -313,7 +317,7 @@
                            self.storeViewController.view.frame.size.height);
     } else if (level == 0) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height + kSettingsOffsetBelowBenchtop - self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
+                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop - self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     }
@@ -333,7 +337,7 @@
         frame = self.view.bounds;
     } else if (level == 0) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height + kSettingsOffsetBelowBenchtop,
+                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop,
                            self.view.bounds.size.width,
                            self.benchtopViewController.view.frame.size.height);
     }
