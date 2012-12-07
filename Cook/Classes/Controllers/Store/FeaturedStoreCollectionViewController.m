@@ -34,4 +34,8 @@
                          }];
 }
 
+- (UIView *)noDataView {
+    return nil;
+}
+
 @end

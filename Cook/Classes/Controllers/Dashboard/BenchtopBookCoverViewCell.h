@@ -12,6 +12,7 @@
 
 @protocol BenchtopBookCoverViewCellDelegate
 
+@optional
 - (void)benchtopBookEditTappedForCell:(UICollectionViewCell *)cell;
 
 @end

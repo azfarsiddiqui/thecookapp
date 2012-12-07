@@ -16,6 +16,8 @@
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate>
 
+@property (nonatomic, strong) UIView *emptyBanner;
+
 @end
 
 @implementation StoreCollectionViewController
@@ -63,6 +65,13 @@
 }
 
 - (void)loadBooks:(NSArray *)books {
+    
+    // Remove the no data view immediately if there were any books to be loaded.
+    if ([books count] > 0) {
+        [self.emptyBanner removeFromSuperview];
+        self.emptyBanner = nil;
+    }
+    
     if ([self.books count] > 0) {
         
         // Reload the books.
@@ -82,6 +91,30 @@
         
     }
     
+    // Empty banner if no books to load.
+    if ([books count] == 0) {
+        UIView *emptyBanner = [self noDataView];
+        if (emptyBanner) {
+            emptyBanner.frame = CGRectMake(floorf((self.view.bounds.size.width - emptyBanner.frame.size.width) / 2.0),
+                                           floorf((self.view.bounds.size.height - emptyBanner.frame.size.height) / 2.0) - 35.0,
+                                           emptyBanner.frame.size.width,
+                                           emptyBanner.frame.size.height);
+            [self.view addSubview:emptyBanner];
+            emptyBanner.alpha = 0.0;
+            self.emptyBanner = emptyBanner;
+        }
+        
+        // Fade it in.
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.emptyBanner.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+
+    }
 }
 
 - (void)reloadBooks {
@@ -90,6 +123,11 @@
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
     return NO;
+}
+
+- (UIView *)noDataView {
+    // Subclasses to implement.
+    return nil;
 }
 
 #pragma mark - UICollectionViewDelegate methods
