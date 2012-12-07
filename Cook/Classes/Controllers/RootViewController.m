@@ -198,7 +198,7 @@
         settingsFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
     }
     
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
