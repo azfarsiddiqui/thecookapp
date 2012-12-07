@@ -136,7 +136,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_bicycle.png</string>
 			<key>Layout</key>
-			<string>Layout3</string>
+			<string>Layout1</string>
 		</dict>
 		<key>Bicycle Back</key>
 		<dict>
@@ -150,7 +150,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_boots.png</string>
 			<key>Layout</key>
-			<string>Layout2</string>
+			<string>Layout3</string>
 		</dict>
 		<key>Bowls</key>
 		<dict>
@@ -185,14 +185,14 @@
 			<key>Image</key>
 			<string>cook_book_graphic_cupcake.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout3</string>
 		</dict>
 		<key>Cutlery</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_cutlery.png</string>
 			<key>Layout</key>
-			<string>Layout5</string>
+			<string>Layout4</string>
 		</dict>
 		<key>Egg Beater</key>
 		<dict>
@@ -206,14 +206,14 @@
 			<key>Image</key>
 			<string>cook_book_graphic_eggplant.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout2</string>
 		</dict>
 		<key>Fork Plate</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_forkplate.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout3</string>
 		</dict>
 		<key>Orange</key>
 		<dict>
@@ -234,7 +234,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_peas.png</string>
 			<key>Layout</key>
-			<string>Layout4</string>
+			<string>Layout2</string>
 		</dict>
 		<key>Plane</key>
 		<dict>
@@ -276,14 +276,14 @@
 			<key>Image</key>
 			<string>cook_book_graphic_spoon.png</string>
 			<key>Layout</key>
-			<string>Layout3</string>
+			<string>Layout1</string>
 		</dict>
 		<key>Tomato</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_tomato.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout3</string>
 		</dict>
 	</dict>
 </dict>
