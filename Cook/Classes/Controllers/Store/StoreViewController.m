@@ -10,27 +10,34 @@
 #import "FriendsStoreCollectionViewController.h"
 #import "FeaturedStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
+#import "CKLoginView.h"
+#import "EventHelper.h"
 
-@interface StoreViewController ()
+@interface StoreViewController () <CKLoginViewDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
 @property (nonatomic, strong) UIImageView *featuredBanner;
 @property (nonatomic, strong) UIImageView *friendsBanner;
+@property (nonatomic, strong) UIView *loginOverlayView;
+@property (nonatomic, strong) UIView *loginBannerView;
+@property (nonatomic, strong) UIView *rightShadowView;
+@property (nonatomic, strong) UIView *leftShadowView;
+@property (nonatomic, strong) CKLoginView *loginButton;
 
 @end
 
 @implementation StoreViewController
 
-#define kInsets     UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
+#define kInsets                 UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
+#define kStoreShadowOffset      31.0
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self initBackground];
-
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    [self initBackground];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -59,12 +66,24 @@
     [friendsViewController loadData];
     
     [self initBanners];
+    [self initLoginViewIfRequired];
 }
 
 - (void)enable:(BOOL)enable {
     [self.featuredViewController enable:enable];
     [self.friendsViewController enable:enable];
-    [self showBanners:enable animated:enable ? YES : NO];
+    [self showBanners:enable animated:enable];
+}
+
+#pragma mark - CKLoginViewDelegate
+
+- (void)loginViewTapped {
+    
+    // Spin the facebook button.
+    [self.loginButton loginStarted];
+    
+    // Dispatch login after one second.
+    [self performSelector:@selector(performLogin) withObject:nil afterDelay:1.0];
 }
 
 #pragma mark - Private methods
@@ -76,6 +95,7 @@
                                  backgroundView.frame.size.width,
                                  backgroundView.frame.size.height);
     [self.view addSubview:backgroundView];
+    [self.view sendSubviewToBack:backgroundView];
     self.backgroundView = backgroundView;
 }
 
@@ -103,6 +123,53 @@
     [self showBanners:NO animated:NO];
 }
 
+- (void)initLoginViewIfRequired {
+    CKUser *currentUser = [CKUser currentUser];
+    if (![currentUser isSignedIn]) {
+        
+        // Login overlay.
+        UIImageView *loginOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_signin_banner_overlay.png"]];
+        loginOverlayView.frame = CGRectMake(self.view.bounds.origin.x,
+                                            self.view.bounds.size.height - loginOverlayView.frame.size.height - kStoreShadowOffset,
+                                            loginOverlayView.frame.size.width,
+                                            loginOverlayView.frame.size.height);
+        loginOverlayView.userInteractionEnabled = YES;
+        [self.view addSubview:loginOverlayView];
+        self.loginOverlayView = loginOverlayView;
+        
+        // Banner.
+        UIImageView *loginBannerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_signin_banner.png"]];
+        loginBannerView.frame = CGRectMake(floorf((loginOverlayView.bounds.size.width - loginBannerView.frame.size.width) / 2.0),
+                                           floorf((loginOverlayView.frame.size.height - loginBannerView.frame.size.height) / 2.0) + 70.0,
+                                           loginBannerView.frame.size.width,
+                                           loginBannerView.frame.size.height);
+//        loginBannerView.alpha = 0.5;
+        loginBannerView.userInteractionEnabled = YES;
+        [loginOverlayView addSubview:loginBannerView];
+        self.loginBannerView = loginBannerView;
+        
+        // Right/Left shadows.
+        UIImageView *rightShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_signin_banner_right.png"]];
+        rightShadowView.userInteractionEnabled = YES;
+        [loginBannerView addSubview:rightShadowView];
+        self.rightShadowView = rightShadowView;
+        UIImageView *leftShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_signin_banner_left.png"]];
+        leftShadowView.userInteractionEnabled = YES;
+        [loginBannerView addSubview:leftShadowView];
+        self.leftShadowView = leftShadowView;
+        
+        // Login button
+        CKLoginView *loginButton = [[CKLoginView alloc] initWithDelegate:self];
+        loginButton.frame = CGRectMake(560.0,
+                                       150.0,
+                                       loginButton.frame.size.width,
+                                       loginButton.frame.size.height);
+        [loginBannerView addSubview:loginButton];
+        self.loginButton = loginButton;
+
+    }
+}
+
 - (void)showBanners:(BOOL)show animated:(BOOL)animated {
     
     CGAffineTransform featuredTransform = CGAffineTransformMakeTranslation(0.0, -self.featuredBanner.frame.size.height);
@@ -121,6 +188,39 @@
         self.featuredBanner.transform = show ? CGAffineTransformIdentity : featuredTransform;
         self.friendsBanner.transform = show ? CGAffineTransformIdentity : friendsTransform;
     }
+}
+
+- (void)performLogin {
+    
+    // Now tries and log the user in.
+    [CKUser loginWithFacebookCompletion:^{
+        
+        CKUser *user = [CKUser currentUser];
+        if (user.admin) {
+            [self.loginButton loginAdminDone];
+        } else {
+            [self.loginButton loginLoadingFriends:[user numFollows]];
+        }
+        
+        [self informLoginSuccessful:YES];
+        
+    } failure:^(NSError *error) {
+        DLog(@"Error logging in: %@", [error localizedDescription]);
+        
+        // Reset the facebook button.
+        [self.loginButton loginFailed];
+        
+        [self informLoginSuccessful:NO];
+    }];
+}
+
+- (void)informLoginSuccessful:(BOOL)success {
+    
+    [self.loginOverlayView removeFromSuperview];
+    
+    // Inform login successful.
+    [EventHelper postLoginSuccessful:success];
+    
 }
 
 @end

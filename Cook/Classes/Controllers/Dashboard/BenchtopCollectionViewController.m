@@ -11,19 +11,17 @@
 #import "BenchtopBookCoverViewCell.h"
 #import "CKUser.h"
 #import "CKBook.h"
-#import "CKLoginView.h"
 #import "EventHelper.h"
 #import "CoverPickerViewController.h"
 #import "IllustrationPickerViewController.h"
 #import "ViewHelper.h"
 
-@interface BenchtopCollectionViewController () <CKLoginViewDelegate, UIActionSheetDelegate,
-    BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
+@interface BenchtopCollectionViewController () <UIActionSheetDelegate, BenchtopBookCoverViewCellDelegate,
+    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
-@property (nonatomic, strong) CKLoginView *loginView;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
@@ -42,11 +40,13 @@
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
+    [EventHelper unregisterLoginSucessful:self];
 }
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[BenchtopCollectionFlowLayout alloc] init]]) {
         [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
+        [EventHelper registerLoginSucessful:self selector:@selector(loginPerformed:)];
     }
     return self;
 }
@@ -55,7 +55,6 @@
     [super viewDidLoad];
     
     [self initBackground];
-    [self initLoginView];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     self.collectionView.backgroundColor = [UIColor clearColor];
@@ -208,17 +207,6 @@
     return cell;
 }
 
-#pragma mark - CKLoginViewDelegate
-
-- (void)loginViewTapped {
-    
-    // Spin the facebook button.
-    [self.loginView loginStarted];
-    
-    // Dispatch login after one second.
-    [self performSelector:@selector(performLogin) withObject:nil afterDelay:1.0];
-}
-
 #pragma mark - UIActionSheetDelegate methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -299,20 +287,6 @@
     self.backgroundView = backgroundView;
 }
 
-- (void)initLoginView {
-    CKUser *currentUser = [CKUser currentUser];
-    
-    CKLoginView *loginView = [[CKLoginView alloc] initWithDelegate:self];
-    loginView.frame = CGRectMake(floorf((self.view.bounds.size.width - loginView.frame.size.width) / 2.0),
-                                 self.view.bounds.size.height - loginView.frame.size.height - 60.0,
-                                 loginView.frame.size.width,
-                                 loginView.frame.size.height);
-    loginView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-    loginView.hidden = [currentUser isSignedIn];
-    [self.view addSubview:loginView];
-    self.loginView = loginView;
-}
-
 - (void)loadMyBook {
     [CKBook fetchBookForUser:[CKUser currentUser]
                 success:^(CKBook *book) {
@@ -362,40 +336,11 @@
                        }];
 }
 
-- (void)performLogin {
-    
-    // Now tries and log the user in.
-    [CKUser loginWithFacebookCompletion:^{
-        
-        CKUser *user = [CKUser currentUser];
-        if (user.admin) {
-            [self.loginView loginAdminDone];
-        } else {
-            [self.loginView loginLoadingFriends:[user numFollows]];
-        }
-        
-        [self informLoginSuccessful:YES];
-        
-    } failure:^(NSError *error) {
-        DLog(@"Error logging in: %@", [error localizedDescription]);
-        
-        // Reset the facebook button.
-        [self.loginView loginFailed];
-        
-        [self informLoginSuccessful:NO];
-    }];
-}
-
-- (void)informLoginSuccessful:(BOOL)success {
-    
-    // Remove the login view.
-    self.loginView.hidden = success;
-    
-    [self loadMyBook];
-    
-    // Inform login successful.
-    [EventHelper postLoginSuccessful:success];
-    
+- (void)loginPerformed:(NSNotification *)notification {
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        [self loadMyBook];
+    }
 }
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
