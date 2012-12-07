@@ -11,6 +11,7 @@
 #import "ViewHelper.h"
 
 #define directionsInputInsets UIEdgeInsetsMake(5.0f,5.0f,0.0f,0.0f)
+#define scrollViewInsets UIEdgeInsetsMake(0.0f,0.0f,15.0f,0.0f)
 
 @interface CookingDirectionsView()<UITextViewDelegate>
 @property(nonatomic,strong) UILabel *directionsLabel;
@@ -105,7 +106,7 @@
 
 -(void)refreshDataViews
 {
-    self.directionsScrollView.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
+    self.directionsScrollView.frame = CGRectMake(scrollViewInsets.left, scrollViewInsets.top, self.bounds.size.width - scrollViewInsets.left - scrollViewInsets.right, self.bounds.size.height - scrollViewInsets.top - scrollViewInsets.bottom );
     self.directionsLabel.text = self.directions;
     CGRect editSize = [self editSize];
     self.directionsLabel.frame = editSize;
