@@ -97,10 +97,9 @@
         [self.editableViews each:^(UIEditableView *view) {
             [view makeEditable:YES];
         }];
-        
-        [self showPageComponents:YES];
+        [self configPageComponentsForEditing:YES];
         self.selectedCategory = self.recipe.category;
-        [self.categoryListViewController selectCategoryWithName:self.selectedCategory.name];
+        self.categoryListViewController.selectedCategoryName = self.selectedCategory.name;
     }
 }
 
@@ -112,7 +111,7 @@
         [view makeEditable:NO];
     }];
     
-    [self showPageComponents:NO];
+    [self configPageComponentsForEditing:NO];
     [self showBookmarkView];
 }
 
@@ -123,28 +122,49 @@
         self.recipe.category = self.selectedCategory;
         self.recipe.name = self.recipeNameView.recipeName;
         self.recipe.description = self.cookingDirectionsView.directions;
-        if (self.recipeImageView.imageEdited) {
+        BOOL imageChanged = self.recipeImageView.imageEdited;
+        if (imageChanged) {
+            DLog(@"image changed");
             self.recipe.image = self.recipeImageView.recipeImage;
+            self.uploadProgressLabel.hidden = NO;
+        } else {
+            DLog(@"image didn't change");
         }
+        
         self.recipe.numServes = self.servesView.serves;
         self.recipe.cookingTimeInSeconds = self.cookingTimeView.cookingTimeInSeconds;
         self.recipe.recipeViewImageContentOffset = self.recipeImageView.scrollViewContentOffset;
         self.recipe.ingredients = [NSArray arrayWithArray:self.ingredientsView.ingredients];
         
-        self.uploadProgressLabel.hidden = NO;
 
-        [self.recipe saveWithSuccess:^{
-            [self closeButtonTapped:nil];
-            button.enabled = YES;
-        } failure:^(NSError *error) {
-            DLog(@"An error occurred: %@", [error description]);
-            [self displayMessage:[error description]];
-            button.enabled = YES;
-        } imageUploadProgress:^(int percentDone) {
-            float percentage = percentDone/100.0f;
-            [self.progressView setProgress:percentage animated:YES];
-            self.uploadProgressLabel.text = [NSString stringWithFormat:@"Uploading (%i%%)",percentDone];
-        }];
+        if (imageChanged) {
+            self.progressView.hidden = NO;
+            self.uploadProgressLabel.hidden = NO;
+            [self.recipe saveAndUploadImageWithSuccess:^{
+                [self closeButtonTapped:nil];
+                button.enabled = YES;
+                self.progressView.hidden = YES;
+                self.uploadProgressLabel.hidden = YES;
+            } failure:^(NSError *error) {
+                DLog(@"An error occurred: %@", [error description]);
+                [self displayMessage:[error description]];
+                button.enabled = YES;
+            } imageUploadProgress:^(int percentDone) {
+                float percentage = percentDone/100.0f;
+                [self.progressView setProgress:percentage animated:YES];
+                self.uploadProgressLabel.text = [NSString stringWithFormat:@"Uploading (%i%%)",percentDone];
+            }];
+        } else {
+            [self.recipe saveWithSuccess:^{
+                [self closeButtonTapped:nil];
+                button.enabled = YES;
+            } failure:^(NSError *error) {
+                DLog(@"An error occurred: %@", [error description]);
+                [self displayMessage:[error description]];
+                button.enabled = YES;
+
+            }];
+        }
     }
 }
 
@@ -197,17 +217,15 @@
 }
 
 
--(void)showPageComponents:(BOOL)show
+-(void)configPageComponentsForEditing:(BOOL)editing
 {
-    [self showPageButtons:show];
-    [self showPageNumber:show];
-    
-    self.closeButton.hidden = !show;
-    self.saveButton.hidden = !show;
-    self.progressView.hidden = !show;
-    
-    self.facebookUserView.hidden = !show;
-    [self.categoryListViewController show:!show];
+    [self showPageButtons:!editing];
+    [self showPageNumber:!editing];
+    self.closeButton.hidden = !editing;
+    self.saveButton.hidden = !editing;
+
+    [self.categoryListViewController show:editing];
+    self.facebookUserView.hidden = editing;
     
 }
 
@@ -244,10 +262,13 @@
 }
 
 #pragma mark - CategoryListViewDelegate
--(void)didSelectCategory:(Category*)category
+-(void)didSelectCategoryWithName:(NSString *)categoryName
 {
-    self.selectedCategory = category;
-
+    [self.categories each:^(Category *category) {
+        if ([category.name isEqualToString:categoryName]) {
+            self.selectedCategory = category;
+        }
+    }];
 }
 
 @end

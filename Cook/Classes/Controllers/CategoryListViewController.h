@@ -10,11 +10,11 @@
 #import "Category.h"
 
 @protocol CategoryListViewDelegate
--(void)didSelectCategory:(Category*)category;
+-(void)didSelectCategoryWithName:(NSString*)categoryName;
 @end
 @interface CategoryListViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic,strong) NSArray *categories;
 @property(nonatomic,assign) id<CategoryListViewDelegate> delegate;
+@property(nonatomic,strong) NSString *selectedCategoryName;
 -(void)show:(BOOL)show;
--(void)selectCategoryWithName:(NSString*)categoryName;
 @end

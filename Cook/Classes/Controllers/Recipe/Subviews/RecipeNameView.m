@@ -45,6 +45,7 @@
     if (!_recipeTextField) {
         _recipeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
         _recipeTextField.enabled = NO;
+        _recipeTextField.delegate = self;
         [self addSubview:_recipeTextField];
     }
     return _recipeTextField;

@@ -39,12 +39,7 @@
 -(void)configViews
 {
     self.ingredientsScrollView.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
-
-    CGSize maxSize = CGSizeMake(190.0f, CGFLOAT_MAX);
-    self.ingredientsLabel.text = [self stringFromIngredients];
-    CGSize requiredSize = [self.ingredientsLabel.text sizeWithFont:self.ingredientsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
-    self.ingredientsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
-    [ViewHelper adjustScrollContentSize:self.ingredientsScrollView forHeight:requiredSize.height];
+    [self updateIngredientsLabelText];
 }
 
 //overridden
@@ -118,6 +113,15 @@
     return [NSString stringWithString:mutableIngredientString];
 }
 
+-(void)updateIngredientsLabelText
+{
+    self.ingredientsLabel.text = [self stringFromIngredients];
+    CGSize maxSize = CGSizeMake(190.0f, CGFLOAT_MAX);
+    CGSize requiredSize = [self.ingredientsLabel.text sizeWithFont:self.ingredientsLabel.font constrainedToSize:maxSize lineBreakMode:NSLineBreakByWordWrapping];
+    self.ingredientsLabel.frame = CGRectMake(0, 0, requiredSize.width, requiredSize.height);
+    [ViewHelper adjustScrollContentSize:self.ingredientsScrollView forHeight:requiredSize.height];
+}
+
 #pragma mark - UITableViewDatasource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -158,6 +162,7 @@
     IngredientTableViewCell *cell = (IngredientTableViewCell*)[parentView superview];
     Ingredient *ingredient = [self.ingredients objectAtIndex:cell.ingredientIndex];
     ingredient.name = textField.text;
+    [self updateIngredientsLabelText];
 }
 
 #pragma mark - Action buttons

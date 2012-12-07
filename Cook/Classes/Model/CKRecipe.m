@@ -117,33 +117,12 @@
 }
 
 
--(void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress
+-(void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress
 {
     
     PFObject *parseRecipe = self.parseObject;
-    [parseRecipe setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
-    [parseRecipe setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
-    [parseRecipe setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
-    [parseRecipe setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
-    if (self.numServes > 0) {
-        [parseRecipe setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
-    }
+    [self prepareParseRecipeObjectForSave:parseRecipe];
 
-    if (self.cookingTimeInSeconds > 0.0f) {
-        [parseRecipe setObject:[NSNumber numberWithFloat:self.cookingTimeInSeconds] forKey:KRecipeAttrCookingTimeInSeconds];
-    }
-
-    if (self.ingredients && [self.ingredients count] > 0) {
-        NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
-            return ingredient.name;
-        }];
-        
-        [parseRecipe setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
-    }
-    
-    // Now add the category to book.
-    // Why is this here?
-    [self.book.parseObject addUniqueObject:self.category.parseObject forKey:kBookAttrCategories];
     
     if (self.recipeImage) {
         PFFile *imageFile = [self.recipeImage imageFile];
@@ -183,6 +162,47 @@
     
 }
 
+-(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    PFObject *parseRecipe = self.parseObject;
+    [self prepareParseRecipeObjectForSave:parseRecipe];
+
+    [parseRecipe saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            failure(error);
+        } else {
+            success([CKRecipe recipeForParseRecipe:parseRecipe user:self.user]);
+        }
+    }];
+
+}
+
+-(void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject
+{
+    [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
+    [parseRecipeObject setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
+    [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
+    [parseRecipeObject setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
+    if (self.numServes > 0) {
+        [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
+    }
+    
+    if (self.cookingTimeInSeconds > 0.0f) {
+        [parseRecipeObject setObject:[NSNumber numberWithFloat:self.cookingTimeInSeconds] forKey:KRecipeAttrCookingTimeInSeconds];
+    }
+    
+    if (self.ingredients && [self.ingredients count] > 0) {
+        NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
+            return ingredient.name;
+        }];
+        
+        [parseRecipeObject setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
+    }
+    
+    // Now add the category to book.
+    // Why is this here?
+    [self.book.parseObject addUniqueObject:self.category.parseObject forKey:kBookAttrCategories];
+}
 #pragma mark - Overridden methods
 -(NSString *)description
 {

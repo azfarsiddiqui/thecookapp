@@ -36,11 +36,7 @@
 -(void) configViews
 {
     DLog();
-    self.directionsScrollView.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
-    self.directionsLabel.text = self.directions;
-    CGRect editSize = [self editSize];
-    self.directionsLabel.frame = editSize;
-    [ViewHelper adjustScrollContentSize:self.directionsScrollView forHeight:editSize.size.height];
+    [self refreshDataViews];
 }
 
 //overridden
@@ -69,6 +65,7 @@
         _directionsTextView = [[UITextView alloc]initWithFrame:CGRectZero];
         _directionsTextView.hidden = YES;
         _directionsTextView.backgroundColor = [UIColor clearColor];
+        _directionsTextView.delegate = self;
         [self.directionsScrollView addSubview:_directionsTextView];
     }
     return _directionsTextView;
@@ -106,11 +103,20 @@
                                                requiredSize.height+directionsInputInsets.top);
 }
 
+-(void)refreshDataViews
+{
+    self.directionsScrollView.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
+    self.directionsLabel.text = self.directions;
+    CGRect editSize = [self editSize];
+    self.directionsLabel.frame = editSize;
+    [ViewHelper adjustScrollContentSize:self.directionsScrollView forHeight:editSize.size.height];
+}
 #pragma mark - UITextViewDelegate
 -(void)textViewDidEndEditing:(UITextView *)textView
 {
     DLog();
     self.directions = textView.text;
+    [self refreshDataViews];
 }
 
 /*
