@@ -18,5 +18,6 @@
 - (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;
+- (UIView *)noDataView;
 
 @end

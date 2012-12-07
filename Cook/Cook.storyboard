@@ -233,7 +233,6 @@
                             <constraint firstAttribute="bottom" secondItem="ncH-Sa-cAx" secondAttribute="bottom" constant="547" id="Axp-Uh-FxE"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="trailing" secondItem="x8d-CU-Nyb" secondAttribute="trailing" type="default" id="C5c-7b-laN"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G8I-BA-gbt" secondAttribute="trailing" constant="70" type="user" id="CBb-bW-3HI"/>
-                            <constraint firstAttribute="trailing" secondItem="FRb-6a-06G" secondAttribute="trailing" constant="17" id="CIN-jD-a52"/>
                             <constraint firstAttribute="trailing" secondItem="Gzk-Ze-6Lw" secondAttribute="trailing" constant="50" type="user" id="CSy-Pg-pC3"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="top" secondItem="x8d-CU-Nyb" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="DDO-km-znl"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="top" secondItem="E4H-Ex-K7C" secondAttribute="bottom" constant="25" type="user" id="Dq5-PZ-W25"/>
@@ -264,6 +263,7 @@
                             <constraint firstAttribute="bottom" secondItem="Gzk-Ze-6Lw" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="ouQ-CP-mBn"/>
                             <constraint firstItem="zat-pl-dHa" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="20" symbolic="YES" type="default" id="ovn-N8-7Cn"/>
                             <constraint firstItem="9m0-6J-wgX" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="365" id="tta-xU-kQu"/>
+                            <constraint firstAttribute="trailing" secondItem="Erb-bR-yfd" secondAttribute="trailing" constant="17" id="v9n-Cd-AdB"/>
                             <constraint firstItem="zat-pl-dHa" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="yH8-bC-aRw"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -370,6 +370,7 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="rZq-vn-O5F" firstAttribute="centerX" secondItem="uoV-OH-QaP" secondAttribute="centerX" type="default" id="41S-we-hhs"/>
                                     <constraint firstItem="z3G-wS-1rv" firstAttribute="top" secondItem="Bpi-mq-vkO" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="5Ki-uQ-pgL"/>
                                     <constraint firstAttribute="bottom" secondItem="z3G-wS-1rv" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="6BK-aP-cck"/>
                                     <constraint firstAttribute="bottom" secondItem="Khd-Ja-XEF" secondAttribute="bottom" constant="1" id="OoS-W6-Ctf"/>
@@ -377,7 +378,6 @@
                                     <constraint firstItem="Bpi-mq-vkO" firstAttribute="leading" secondItem="rZq-vn-O5F" secondAttribute="leading" type="default" id="crt-ft-AeA"/>
                                     <constraint firstItem="Bpi-mq-vkO" firstAttribute="trailing" secondItem="rZq-vn-O5F" secondAttribute="trailing" type="default" id="i7U-IT-z3V"/>
                                     <constraint firstItem="Khd-Ja-XEF" firstAttribute="trailing" secondItem="z3G-wS-1rv" secondAttribute="trailing" type="default" id="j80-UP-fxb"/>
-                                    <constraint firstItem="Bpi-mq-vkO" firstAttribute="centerX" secondItem="uoV-OH-QaP" secondAttribute="centerX" type="default" id="km4-dI-bJ9"/>
                                     <constraint firstItem="Bpi-mq-vkO" firstAttribute="leading" secondItem="z3G-wS-1rv" secondAttribute="leading" type="default" id="lF8-Hz-EY1"/>
                                     <constraint firstItem="Khd-Ja-XEF" firstAttribute="leading" secondItem="z3G-wS-1rv" secondAttribute="leading" type="default" id="rIj-O9-1jl"/>
                                     <constraint firstItem="Bpi-mq-vkO" firstAttribute="trailing" secondItem="z3G-wS-1rv" secondAttribute="trailing" type="default" id="uym-VG-QSL"/>
@@ -505,6 +505,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="RTn-cl-Ogo" secondAttribute="trailing" type="default" id="3h7-j5-NM9"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="leading" secondItem="63E-Hg-Lwu" secondAttribute="leading" type="default" id="6a1-A7-cpa"/>
                             <constraint firstItem="T5d-16-VEN" firstAttribute="centerY" secondItem="C11-QJ-7d0" secondAttribute="centerY" type="default" id="7JZ-b3-33b"/>
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="leading" secondItem="3J9-3w-spQ" secondAttribute="leading" type="default" id="8hu-Ce-3ma"/>
@@ -524,6 +525,7 @@
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" type="default" id="QJs-kK-RF2"/>
                             <constraint firstItem="xmC-eC-N0p" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="61" id="S11-OP-ruw"/>
                             <constraint firstItem="Vxn-4N-ySv" firstAttribute="leading" secondItem="f1J-E5-WiY" secondAttribute="leading" type="default" id="Sr8-N5-y7H"/>
+                            <constraint firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" constant="17" id="T7e-R6-53Z"/>
                             <constraint firstItem="dP8-1h-KHq" firstAttribute="leading" secondItem="cq0-5i-ca6" secondAttribute="leading" type="default" id="VSp-mX-446"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="top" secondItem="3J9-3w-spQ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Vym-mf-zG9"/>
                             <constraint firstItem="41R-Zh-8bY" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="198" id="WIq-RU-VLJ"/>
@@ -546,10 +548,8 @@
                             <constraint firstItem="C11-QJ-7d0" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="152" id="rot-4e-gtU"/>
                             <constraint firstAttribute="trailing" secondItem="Vxn-4N-ySv" secondAttribute="trailing" constant="11" id="sih-e9-q0y"/>
                             <constraint firstItem="RTn-cl-Ogo" firstAttribute="top" secondItem="wa0-dn-372" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="u1u-tS-nQg"/>
-                            <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="rGC-AK-2Id" secondAttribute="trailing" type="default" id="wsO-S1-MPn"/>
                             <constraint firstItem="cq0-5i-ca6" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="20" symbolic="YES" type="default" id="x0e-x7-gnh"/>
                             <constraint firstItem="h6t-UG-A6Z" firstAttribute="trailing" secondItem="uNT-W3-3X4" secondAttribute="trailing" type="default" id="x1J-nC-eOI"/>
-                            <constraint firstAttribute="trailing" secondItem="dP8-1h-KHq" secondAttribute="trailing" constant="17" id="xTI-8H-IqO"/>
                             <constraint firstItem="2W1-BQ-AiG" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" type="default" id="xme-G2-lyX"/>
                             <constraint firstItem="oIC-34-ocX" firstAttribute="top" secondItem="63E-Hg-Lwu" secondAttribute="top" constant="177" id="yCr-Jf-y5W"/>
                             <constraint firstItem="dP8-1h-KHq" firstAttribute="trailing" secondItem="cq0-5i-ca6" secondAttribute="trailing" type="default" id="zDp-cp-M2A"/>
@@ -592,6 +592,104 @@
         <image name="cook_editrecipe_addphoto.png" width="76" height="76"/>
         <image name="cook_editrecipe_editphoto.png" width="51" height="51"/>
     </resources>
+    <classes>
+        <class className="BookProfilePageViewController" superclassName="PageViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/BookProfilePageViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="bookNameLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="userNameLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="CategoryListCell" superclassName="UICollectionViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="categoryNameLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="CategoryListViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="collectionView" candidateClass="UICollectionView"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="CookingDirectionsView" superclassName="UIEditableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CookingDirectionsView.h"/>
+        </class>
+        <class className="CookingTimeView" superclassName="UIEditableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CookingTimeView.h"/>
+        </class>
+        <class className="FacebookUserView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FacebookUserView.h"/>
+        </class>
+        <class className="IngredientsView" superclassName="UIEditableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientsView.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="NewRecipeViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="addImageButtonFromCamera" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="addImageButtonFromLibrary" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="backgroundRecipeDescriptionImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="backgroundServesTimeImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="cameraButtonsView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="cookingTimeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="editImageButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="numServesLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="recipeNameTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="uploadLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="uploadProgressView" candidateClass="UIProgressView"/>
+            </relationships>
+        </class>
+        <class className="PageViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/PageViewController.h"/>
+        </class>
+        <class className="RecipeImageView" superclassName="UIEditableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeImageView.h"/>
+        </class>
+        <class className="RecipeNameView" superclassName="UIEditableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeNameView.h"/>
+        </class>
+        <class className="RecipeViewController" superclassName="PageViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="closeButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="cookingDirectionsView" candidateClass="CookingDirectionsView"/>
+                <relationship kind="outlet" name="cookingTimeView" candidateClass="CookingTimeView"/>
+                <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
+                <relationship kind="outlet" name="ingredientsView" candidateClass="IngredientsView"/>
+                <relationship kind="outlet" name="progressView" candidateClass="UIProgressView"/>
+                <relationship kind="outlet" name="recipeImageView" candidateClass="RecipeImageView"/>
+                <relationship kind="outlet" name="recipeNameView" candidateClass="RecipeNameView"/>
+                <relationship kind="outlet" name="saveButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="servesView" candidateClass="ServesView"/>
+                <relationship kind="outlet" name="uploadProgressLabel" candidateClass="UILabel"/>
+                <relationship kind="outletCollection" name="editableViews" candidateClass="UIEditableView"/>
+            </relationships>
+        </class>
+        <class className="ServesView" superclassName="UIEditableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ServesView.h"/>
+        </class>
+        <class className="UICollectionReusableView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
+        </class>
+        <class className="UICollectionViewCell" superclassName="UICollectionReusableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewCell.h"/>
+        </class>
+        <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+        <class className="UIEditableView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UIEditableView.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

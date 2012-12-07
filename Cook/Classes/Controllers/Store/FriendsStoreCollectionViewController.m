@@ -38,4 +38,8 @@
     }
 }
 
+- (UIView *)noDataView {
+    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_nofriends.png"]];
+}
+
 @end
