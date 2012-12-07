@@ -29,6 +29,7 @@
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, strong) UIImageView *overlayView;
+@property (nonatomic, strong) UIButton *deleteButton;
 
 @end
 
@@ -544,6 +545,7 @@
                                         deleteButton.frame.size.width,
                                         deleteButton.frame.size.height);
         [overlayView addSubview:deleteButton];
+        self.deleteButton = deleteButton;
     }
     
     [UIView animateWithDuration:0.3
@@ -554,19 +556,42 @@
                          // Fade the edit overlay.
                          self.overlayView.alpha = enable ? 1.0 : 0.0;
                          
+                         // Bulge the delete button.
+                         if (enable) {
+                             
+                         }
+                         self.deleteButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
+                         
                      }
                      completion:^(BOOL finished) {
                          
                          // Remember delete mode.
                          self.deleteMode = enable;
                          
-                         if (!enable) {
+                         if (enable) {
+                             [UIView animateWithDuration:0.2
+                                                   delay:0.0
+                                                 options:UIViewAnimationCurveEaseIn
+                                              animations:^{
+                                                  
+                                                  // Restore the delete button.
+                                                  self.deleteButton.transform = CGAffineTransformIdentity;
+                                                  
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  
+                                              }];
+                             
+                         } else {
                              [self.overlayView removeFromSuperview];
+                             [self.deleteButton removeFromSuperview];
                              self.overlayView = nil;
+                             self.deleteButton = nil;
                              self.selectedIndexPath = nil;
                              
                              // Tell root VC to re-enable panning.
                              [self.delegate panEnabledRequested:YES];
+                             
                          }
                          
                      }];
