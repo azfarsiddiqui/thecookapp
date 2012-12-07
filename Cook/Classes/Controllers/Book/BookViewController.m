@@ -333,7 +333,7 @@
 }
 
 - (void)loadData {
-    [self.book listRecipesSuccess:^(NSArray *recipes) {
+    [self.book fetchRecipesSuccess:^(NSArray *recipes) {
         
         self.currentCategoryIndex = 0;
         self.categoryRecipes = [NSMutableDictionary dictionary];

@@ -323,7 +323,7 @@
 }
 
 - (void)loadMyBook {
-    [CKBook bookForUser:[CKUser currentUser]
+    [CKBook fetchBookForUser:[CKUser currentUser]
                 success:^(CKBook *book) {
                     
                     if (self.myBook) {

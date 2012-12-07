@@ -80,3 +80,8 @@ NSString *const kRecipeImageAttrImageName       = @"imageName";
 NSString *const kCategoryModelName              = @"Category";
 NSString *const kCategoryModelForeignKeyName    = @"category";
 
+
+#pragma mark - RecipeLike class
+NSString *const kRecipeLikeModelName           = @"RecipeLike";
+NSString *const kRecipeLikeModelForeignKeyName = @"recipeLike";
+

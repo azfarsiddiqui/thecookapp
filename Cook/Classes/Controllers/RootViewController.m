@@ -60,7 +60,7 @@
     if (![currentUser persisted]) {
         
         // TODO Tutorial.
-        [CKBook createBookForUser:currentUser
+        [CKBook saveBookForUser:currentUser
                          succeess:^{
                              [self initViewControllers];
                          } failure:^(NSError *error) {

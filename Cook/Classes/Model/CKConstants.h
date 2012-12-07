@@ -80,4 +80,9 @@ extern NSString *const kRecipeImageAttrImageName;
 extern NSString *const kCategoryModelName;
 extern NSString *const kCategoryModelForeignKeyName;
 
+#pragma mark - RecipeLike class
+extern NSString *const kRecipeLikeModelName;
+extern NSString *const kRecipeLikeModelForeignKeyName;
+
+
 
