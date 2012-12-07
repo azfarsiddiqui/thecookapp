@@ -545,6 +545,7 @@
                                         deleteButton.frame.size.width,
                                         deleteButton.frame.size.height);
         [overlayView addSubview:deleteButton];
+        deleteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
         self.deleteButton = deleteButton;
     }
     
@@ -558,7 +559,7 @@
                          
                          // Bulge the delete button.
                          if (enable) {
-                             self.deleteButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
+                             self.deleteButton.transform = CGAffineTransformMakeScale(0.9, 0.9);
                          } else {
                              self.deleteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
                          }
