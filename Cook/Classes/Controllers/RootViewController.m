@@ -83,6 +83,10 @@
     [self enableEditMode:editMode];
 }
 
+- (void)panEnabledRequested:(BOOL)enable {
+    self.panEnabled = enable;
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {

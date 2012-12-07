@@ -15,6 +15,7 @@
 #import "EventHelper.h"
 #import "CoverPickerViewController.h"
 #import "IllustrationPickerViewController.h"
+#import "ViewHelper.h"
 
 @interface BenchtopCollectionViewController () <CKLoginViewDelegate, UIActionSheetDelegate,
     BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
@@ -28,7 +29,8 @@
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
-@property (nonatomic, strong) UIImageView *editOverlayView;
+@property (nonatomic, assign) BOOL deleteMode;
+@property (nonatomic, strong) UIImageView *overlayView;
 
 @end
 
@@ -61,6 +63,11 @@
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
+    
+    // Register longpress.
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                                   action:@selector(longPressed:)];
+    [self.collectionView addGestureRecognizer:longPressGesture];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -102,7 +109,6 @@
     }
 }
 
-
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -113,25 +119,10 @@
     }
     
     // Only open book if book was in the center.
-    UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
-    if (CGRectContainsPoint(attributes.frame, CGPointMake(self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0),
-                                                          self.collectionView.center.y))) {
+    if ([self isCenterBookAtIndexPath:indexPath]) {
         
         self.selectedIndexPath = indexPath;
-        
-        if (indexPath.section == kMySection) {
-            [self openBookAtIndexPath:indexPath];
-            
-        } else if (indexPath.section == kFollowSection) {
-            
-            // [self openBookAtIndexPath:indexPath];
-            UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-            UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil
-                                                       destructiveButtonTitle:nil otherButtonTitles:@"Unfollow", @"Open", nil];
-            actionSheet.delegate = self;
-            [actionSheet showFromRect:cell.frame inView:collectionView animated:YES];
-        }
-        
+        [self openBookAtIndexPath:indexPath];
 
     } else {
         [self.collectionView scrollToItemAtIndexPath:indexPath
@@ -468,7 +459,7 @@
         UIImageView *editOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
         editOverlayView.alpha = 0.0;
         [self.view addSubview:editOverlayView];
-        self.editOverlayView = editOverlayView;
+        self.overlayView = editOverlayView;
         
         // Cover
         CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
@@ -503,7 +494,7 @@
                          [self.delegate editBookRequested:enable];
                          
                          // Fade the edit overlay.
-                         self.editOverlayView.alpha = enable ? 1.0 : 0.0;
+                         self.overlayView.alpha = enable ? 1.0 : 0.0;
 
                          // Slide down the cover picker.
                          self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height) : CGAffineTransformIdentity;
@@ -526,10 +517,10 @@
                                               }];
                          } else {
                              self.animating = NO;
-                             [self.editOverlayView removeFromSuperview];
+                             [self.overlayView removeFromSuperview];
                              [self.coverViewController.view removeFromSuperview];
                              [self.illustrationViewController.view removeFromSuperview];
-                             self.editOverlayView = nil;
+                             self.overlayView = nil;
                              self.coverViewController = nil;
                              self.illustrationViewController = nil;
                          }
@@ -542,6 +533,92 @@
 
 - (BenchtopBookCoverViewCell *)bookCellAtIndexPath:(NSIndexPath *)indexPath {
     return (BenchtopBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+}
+
+- (void)longPressed:(UILongPressGestureRecognizer *)longPressGesture {
+    if (longPressGesture.state == UIGestureRecognizerStateBegan) {
+        NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:[longPressGesture locationInView:self.collectionView]];
+        
+        if (indexPath.section == kFollowSection && [self isCenterBookAtIndexPath:indexPath]) {
+            [self setDeleteMode:YES indexPath:indexPath];
+        }
+    }
+}
+
+- (BOOL)isCenterBookAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+    return (CGRectContainsPoint(attributes.frame,
+                                CGPointMake(self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0),
+                                            self.collectionView.center.y)));
+}
+
+- (void)setDeleteMode:(BOOL)enable indexPath:(NSIndexPath *)indexPath {
+    
+    if (enable) {
+        
+        // Tell root VC to disable panning.
+        [self.delegate panEnabledRequested:NO];
+        
+        // Dim overlay view.
+        UIImageView *overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        overlayView.alpha = 0.0;
+        overlayView.userInteractionEnabled = YES;
+        [self.view addSubview:overlayView];
+        self.overlayView = overlayView;
+        
+        // Register tap to dismiss.
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deleteDismissed:)];
+        [overlayView addGestureRecognizer:tapGesture];
+        
+        // Remember the cell to be deleted.
+        self.selectedIndexPath = indexPath;
+        
+        // Position the delete button.
+        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
+        CGRect frame = [self.collectionView convertRect:cell.frame toView:overlayView];
+        UIButton *deleteButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+                                                      target:self
+                                                    selector:@selector(deleteTapped:)];
+        deleteButton.frame = CGRectMake(frame.origin.x - floorf(deleteButton.frame.size.width / 2.0) + 5.0,
+                                        frame.origin.y - floorf(deleteButton.frame.size.height / 2.0) + 5.0,
+                                        deleteButton.frame.size.width,
+                                        deleteButton.frame.size.height);
+        [overlayView addSubview:deleteButton];
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         
+                         // Fade the edit overlay.
+                         self.overlayView.alpha = enable ? 1.0 : 0.0;
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // Remember delete mode.
+                         self.deleteMode = enable;
+                         
+                         if (!enable) {
+                             [self.overlayView removeFromSuperview];
+                             self.overlayView = nil;
+                             self.selectedIndexPath = nil;
+                             
+                             // Tell root VC to re-enable panning.
+                             [self.delegate panEnabledRequested:YES];
+                         }
+                         
+                     }];
+}
+
+- (void)deleteDismissed:(UITapGestureRecognizer *)tapGesture {
+    [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+}
+
+- (void)deleteTapped:(id)sender {
+    [self unfollowBookAtIndexPath:self.selectedIndexPath];
+    [self setDeleteMode:NO indexPath:self.selectedIndexPath];
 }
 
 @end
