@@ -558,9 +558,10 @@
                          
                          // Bulge the delete button.
                          if (enable) {
-                             
+                             self.deleteButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
+                         } else {
+                             self.deleteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
                          }
-                         self.deleteButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
                          
                      }
                      completion:^(BOOL finished) {
