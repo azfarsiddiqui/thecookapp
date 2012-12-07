@@ -91,6 +91,7 @@
 		76582AAF165497310007FCE1 /* MPTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AAA165497310007FCE1 /* MPTransition.m */; };
 		765A192F166F118B00B74E2A /* cook_customise_colours_brown.png in Resources */ = {isa = PBXBuildFile; fileRef = 765A192D166F118B00B74E2A /* cook_customise_colours_brown.png */; };
 		765A1930166F118B00B74E2A /* cook_customise_colours_brown@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 765A192E166F118B00B74E2A /* cook_customise_colours_brown@2x.png */; };
+		765E65C91672144400D5D54E /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765E65C81672144400D5D54E /* LoginViewController.m */; };
 		76622D5C1650C6AB005F4459 /* CategoryPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */; };
 		766584EF1665CE9F0056AD25 /* cook_category_baking.png in Resources */ = {isa = PBXBuildFile; fileRef = 766584D71665CE9F0056AD25 /* cook_category_baking.png */; };
 		766584F01665CE9F0056AD25 /* cook_category_baking@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 766584D81665CE9F0056AD25 /* cook_category_baking@2x.png */; };
@@ -494,6 +495,8 @@
 		76582AAB165497310007FCE1 /* MPTransitionEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTransitionEnumerations.h; sourceTree = "<group>"; };
 		765A192D166F118B00B74E2A /* cook_customise_colours_brown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_colours_brown.png; sourceTree = "<group>"; };
 		765A192E166F118B00B74E2A /* cook_customise_colours_brown@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_colours_brown@2x.png"; sourceTree = "<group>"; };
+		765E65C71672144400D5D54E /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		765E65C81672144400D5D54E /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		76622D5A1650C6A7005F4459 /* CategoryPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CategoryPageViewController.h; path = Book/CategoryPageViewController.h; sourceTree = "<group>"; };
 		76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CategoryPageViewController.m; path = Book/CategoryPageViewController.m; sourceTree = "<group>"; };
 		766584D71665CE9F0056AD25 /* cook_category_baking.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_category_baking.png; sourceTree = "<group>"; };
@@ -1285,6 +1288,8 @@
 				76510710165F256D0077B551 /* StoreFlowLayout.m */,
 				76510712165F31180077B551 /* StoreBookCoverViewCell.h */,
 				76510713165F31180077B551 /* StoreBookCoverViewCell.m */,
+				765E65C71672144400D5D54E /* LoginViewController.h */,
+				765E65C81672144400D5D54E /* LoginViewController.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -2124,6 +2129,7 @@
 				76381CAB16685A8900404FB1 /* FriendsStoreCollectionViewController.m in Sources */,
 				76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */,
 				892282B61671933D002FE936 /* RecipeLike.m in Sources */,
+				765E65C91672144400D5D54E /* LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
