@@ -16,7 +16,7 @@
 
 + (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     [query includeKey:kUserModelForeignKeyName];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {

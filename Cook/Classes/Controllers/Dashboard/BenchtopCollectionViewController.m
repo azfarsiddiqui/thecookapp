@@ -289,23 +289,16 @@
 }
 
 - (void)loadMyBook {
-    [CKBook fetchBookForUser:[CKUser currentUser]
+    CKUser *currentUser = [CKUser currentUser];
+    [CKBook fetchBookForUser:currentUser
                 success:^(CKBook *book) {
                     
                     if (self.myBook) {
                         
-                        [self.collectionView performBatchUpdates:^{
-                            
-                            // There is an existing book, so we swap it out first.
-                            self.myBook = nil;
-                            [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
-                            
-                        } completion:^(BOOL finished) {
-                            
-                            // Now reinsert the new book.
-                            self.myBook = book;
-                            [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
-                        }];
+                        // Reload the book.
+                        self.myBook = book;
+                        BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
+                        [myBookCell loadBook:book];
                         
                         
                     } else {
