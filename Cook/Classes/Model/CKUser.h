@@ -29,5 +29,6 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 - (NSUInteger)numFollows;
 - (void)autoSuggestCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (NSURL *)pictureUrl;
+- (void)signOut;
 
 @end

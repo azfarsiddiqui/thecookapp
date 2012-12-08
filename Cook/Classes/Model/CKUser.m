@@ -172,6 +172,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return pictureUrl;
 }
 
+- (void)signOut {
+    [PFUser logOut];
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {

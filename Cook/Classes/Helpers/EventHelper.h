@@ -15,6 +15,10 @@
 + (void)unregisterLoginSucessful:(id)observer;
 + (BOOL)loginSuccessfulForNotification:(NSNotification *)notification;
 
++ (void)registerLogout:(id)observer selector:(SEL)selector;
++ (void)postLogout;
++ (void)unregisterLogout:(id)observer;
+
 + (void)registerBenchtopFreeze:(id)observer selector:(SEL)selector;
 + (void)postBenchtopFreeze:(BOOL)freeze;
 + (void)unregisterBenchtopFreeze:(id)observer;

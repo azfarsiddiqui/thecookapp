@@ -11,6 +11,7 @@
 #import "FeaturedStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
 #import "LoginViewController.h"
+#import "EventHelper.h"
 
 @interface StoreViewController () <LoginViewControllerDelegate>
 
@@ -28,11 +29,17 @@
 #define kInsets                 UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
 #define kStoreShadowOffset      31.0
 
+- (void)dealloc {
+    [EventHelper unregisterLogout:self];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     [self initBackground];
+    
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -148,6 +155,10 @@
         self.featuredBanner.transform = show ? CGAffineTransformIdentity : featuredTransform;
         self.friendsBanner.transform = show ? CGAffineTransformIdentity : friendsTransform;
     }
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    [self initLoginViewIfRequired];
 }
 
 @end

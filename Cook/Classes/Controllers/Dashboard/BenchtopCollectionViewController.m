@@ -42,12 +42,14 @@
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
     [EventHelper unregisterLoginSucessful:self];
+    [EventHelper unregisterLogout:self];
 }
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[BenchtopCollectionFlowLayout alloc] init]]) {
         [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
         [EventHelper registerLoginSucessful:self selector:@selector(loginPerformed:)];
+        [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     }
     return self;
 }
@@ -335,6 +337,16 @@
     if (success) {
         [self loadMyBook];
     }
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    
+    // Reload book.
+    [self loadMyBook];
+    
+    // Reload follows books
+    [self loadFollowBooks];
+    
 }
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
