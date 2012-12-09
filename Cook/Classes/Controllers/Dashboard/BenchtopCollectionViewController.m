@@ -77,6 +77,10 @@
 }
 
 - (void)enable:(BOOL)enable {
+    
+    // Enable scrolling as appropriate.
+    self.collectionView.userInteractionEnabled = enable;
+    
     if (enable) {
         
         // Start loading my book if not there already.
@@ -315,21 +319,33 @@
 }
 
 - (void)loadFollowBooks {
-    [CKBook followBooksForUser:[CKUser currentUser]
-                       success:^(NSArray *books) {
-                           self.followBooks = [NSMutableArray arrayWithArray:books];
-                           if ([books count] > 0) {
-                               NSInteger numSections = [self.collectionView numberOfSections];
-                               if (numSections > 1) {
-                                   [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                               } else {
-                                   [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+    
+    CKUser *currentUser = [CKUser currentUser];
+    
+    if ([currentUser isSignedIn]) {
+        [CKBook followBooksForUser:currentUser
+                           success:^(NSArray *books) {
+                               self.followBooks = [NSMutableArray arrayWithArray:books];
+                               if ([books count] > 0) {
+                                   NSInteger numSections = [self.collectionView numberOfSections];
+                                   if (numSections > 1) {
+                                       [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                                   } else {
+                                       [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                                   }
                                }
                            }
-                       }
-                       failure:^(NSError *error) {
-                           DLog(@"Error: %@", [error localizedDescription]);
-                       }];
+                           failure:^(NSError *error) {
+                               DLog(@"Error: %@", [error localizedDescription]);
+                           }];
+    } else {
+        
+        [self.followBooks removeAllObjects];
+        NSInteger numSections = [self.collectionView numberOfSections];
+        if (numSections > 1) {
+            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+        }
+    }
 }
 
 - (void)loginPerformed:(NSNotification *)notification {
@@ -346,7 +362,6 @@
     
     // Reload follows books
     [self loadFollowBooks];
-    
 }
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {

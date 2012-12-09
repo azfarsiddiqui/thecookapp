@@ -158,6 +158,12 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    
+    // Reload data.
+    [self.featuredViewController loadData];
+    [self.friendsViewController loadData];
+    
+    // Restore the login view.
     [self initLoginViewIfRequired];
 }
 

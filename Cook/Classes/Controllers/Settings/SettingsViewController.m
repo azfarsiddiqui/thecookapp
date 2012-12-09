@@ -79,11 +79,11 @@
 }
 
 - (void)logoutTapped:(id)sender {
-    CKUser *currentUser = [CKUser currentUser];
-    [currentUser signOut];
-    
-    // Post logout.
-    [EventHelper postLogout];
+    [CKUser logoutWithCompletion:^{
+        // Post logout.
+        [EventHelper postLogout];
+    } failure:^(NSError *error) {
+    }];
 }
 
 - (void)loggedIn:(NSNotification *)notification {
