@@ -39,7 +39,7 @@
 #define kStoreHideTuckOffset            52.0
 #define kStoreShadowOffset              31.0
 #define kStoreShowAdjustment            35.0
-#define kSettingsOffsetBelowBenchtop    50.0
+#define kSettingsOffsetBelowBenchtop    35.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
@@ -195,7 +195,7 @@
         
     } else if (self.benchtopLevel == kBenchtopLevel
                && CGRectIntersection(self.view.bounds,
-                                     self.settingsViewController.view.frame).size.height > (self.settingsViewController.view.frame.size.height * 0.33)) {
+                                     self.settingsViewController.view.frame).size.height > 0) {
         
         toggleLevel = kSettingsLevel;
         
@@ -225,7 +225,17 @@
         settingsFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
     }
     
-    [UIView animateWithDuration:0.25
+    // Forward bounce duration.
+    CGFloat forwardDuration = 0.25;
+    CGFloat bounceDuration = 0.2;
+    
+    // Speed up to Settings, and returning from Settings.
+    if (benchtopLevel == kSettingsLevel || (benchtopLevel == kBenchtopLevel && self.benchtopLevel == kSettingsLevel)) {
+        forwardDuration = 0.2;
+        bounceDuration = 0.15;
+    }
+    
+    [UIView animateWithDuration:forwardDuration
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
@@ -236,7 +246,7 @@
                      completion:^(BOOL finished) {
                          
                          if (toggleMode) {
-                             [UIView animateWithDuration:0.2
+                             [UIView animateWithDuration:bounceDuration
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
                                               animations:^{
