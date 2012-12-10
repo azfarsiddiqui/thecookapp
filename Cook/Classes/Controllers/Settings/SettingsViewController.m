@@ -9,11 +9,14 @@
 #import "SettingsViewController.h"
 #import "CKUser.h"
 #import "EventHelper.h"
+#import "ViewHelper.h"
+#import "Theme.h"
 
 @interface SettingsViewController ()
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIButton *logoutButton;
+@property (nonatomic, strong) UILabel *profileLabel;
 
 @end
 
@@ -68,13 +71,32 @@
 - (void)initLogoutButton {
     CKUser *currentUser = [CKUser currentUser];
     if ([currentUser isSignedIn]) {
-        UIButton *logoutButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
-        [logoutButton addTarget:self action:@selector(logoutTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [logoutButton sizeToFit];
-        logoutButton.frame = CGRectMake(665.0, 75.0, logoutButton.frame.size.width, logoutButton.frame.size.height);
+        
+        // Logout button.
+        UIButton *logoutButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_settings_btn_logout.png"]
+                                                      target:self selector:@selector(logoutTapped:)];
+        logoutButton.frame = CGRectMake(638.0, 85.0, logoutButton.frame.size.width, logoutButton.frame.size.height);
         [self.scrollView addSubview:logoutButton];
         self.logoutButton = logoutButton;
+        
+        // Profile label.
+        UIFont *font = [Theme settingsProfileFont];
+        NSString *name = [currentUser.name uppercaseString];
+        CGFloat availableWidth = 177.0;
+        CGSize size = [name sizeWithFont:font forWidth:availableWidth lineBreakMode:NSLineBreakByTruncatingTail];
+        UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectMake(614.0 + floorf((availableWidth - size.width) / 2.0),
+                                                                          52.0,
+                                                                          size.width,
+                                                                          size.height)];
+        profileLabel.autoresizingMask = UIViewAutoresizingNone;
+        profileLabel.backgroundColor = [UIColor clearColor];
+        profileLabel.font = font;
+        profileLabel.textColor = [UIColor whiteColor];
+        profileLabel.shadowColor = [UIColor blackColor];
+        profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+        profileLabel.text = name;
+        [self.scrollView addSubview:profileLabel];
+        self.profileLabel = profileLabel;
     }
 }
 
@@ -94,7 +116,9 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    [self.profileLabel removeFromSuperview];
     [self.logoutButton removeFromSuperview];
+    self.profileLabel = nil;
     self.logoutButton = nil;
 }
 

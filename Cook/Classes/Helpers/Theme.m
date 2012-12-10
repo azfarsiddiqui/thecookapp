@@ -71,5 +71,10 @@
     return [UIColor colorWithHexString:@"505050"];
 }
 
+#pragma mark - Settings
+
++ (UIFont *)settingsProfileFont {
+    return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:18];
+}
 
 @end
