@@ -273,6 +273,8 @@
 		76DEF05A164A37BB00B7DB9C /* cook_customise_btns_done.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF056164A37BB00B7DB9C /* cook_customise_btns_done.png */; };
 		76DEF05B164A37BB00B7DB9C /* cook_customise_btns_done@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF057164A37BB00B7DB9C /* cook_customise_btns_done@2x.png */; };
 		76E16E4C163903070044EB9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E16E4B163903070044EB9B /* MenuViewController.m */; };
+		76E17A0216756DAB00688D0D /* cook_dash_settings_btn_logout.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E17A0016756DAB00688D0D /* cook_dash_settings_btn_logout.png */; };
+		76E17A0316756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E17A0116756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -706,6 +708,8 @@
 		76DEF057164A37BB00B7DB9C /* cook_customise_btns_done@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_btns_done@2x.png"; sourceTree = "<group>"; };
 		76E16E4A163903070044EB9B /* MenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuViewController.h; sourceTree = "<group>"; };
 		76E16E4B163903070044EB9B /* MenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuViewController.m; sourceTree = "<group>"; };
+		76E17A0016756DAB00688D0D /* cook_dash_settings_btn_logout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_btn_logout.png; sourceTree = "<group>"; };
+		76E17A0116756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_settings_btn_logout@2x.png"; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1297,6 +1301,8 @@
 		76CED54816704E750026E794 /* settings */ = {
 			isa = PBXGroup;
 			children = (
+				76E17A0016756DAB00688D0D /* cook_dash_settings_btn_logout.png */,
+				76E17A0116756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png */,
 				76EDC32216702642008EF2CE /* cook_dash_bg_settings.png */,
 				76EDC32316702642008EF2CE /* cook_dash_bg_settings@2x.png */,
 				76CED54916704E750026E794 /* cook_dash_settingsplaceholder1.png */,
@@ -2034,6 +2040,8 @@
 				761E87701671FB4100206792 /* cook_library_signin_banner@2x.png in Resources */,
 				761E87731671FBA400206792 /* cook_library_signin_banner_overlay.png in Resources */,
 				761E87761671FBCE00206792 /* cook_library_signin_banner_overlay@2x.png in Resources */,
+				76E17A0216756DAB00688D0D /* cook_dash_settings_btn_logout.png in Resources */,
+				76E17A0316756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

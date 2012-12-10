@@ -37,14 +37,13 @@
 - (void)loadBook:(CKBook *)book {
     [self.bookCoverView setCover:book.cover illustration:book.illustration];
     [self.bookCoverView setTitle:book.name author:[book userName] caption:book.caption editable:[book editable]];
+    
+    // Reset delete mode.
+    [self enableDeleteMode:NO];
 }
 
 - (void)enableDeleteMode:(BOOL)enable {
-    if (enable) {
-        [self startWiggle];
-    } else {
-        [self stopWiggle];
-    }
+    [self enableWiggle:enable];
 }
 
 #pragma mark - CKBooKCoverViewDelegate methods
@@ -55,27 +54,28 @@
     }
 }
 
-- (void)startWiggle {
-    self.bookCoverView.transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(-1.5));
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:(UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse)
-                     animations:^ {
-                         self.bookCoverView.transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(1.5));
-                     }
-                     completion:NULL
-     ];
-}
+- (void)enableWiggle:(BOOL)enable {
+    if (enable) {
+        self.bookCoverView.transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(-1.5));
+        [UIView animateWithDuration:0.15
+                              delay:0.0
+                            options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionRepeat|UIViewAnimationOptionAutoreverse
+                         animations:^ {
+                             self.bookCoverView.transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(1.5));
+                         }
+                         completion:NULL
+         ];
 
-- (void)stopWiggle {
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:(UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveLinear)
-                     animations:^ {
-                         self.bookCoverView.transform = CGAffineTransformIdentity;
-                     }
-                     completion:NULL
-     ];
+    } else {
+        [UIView animateWithDuration:0.15
+                              delay:0.0
+                            options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveLinear
+                         animations:^ {
+                             self.bookCoverView.transform = CGAffineTransformIdentity;
+                         }
+                         completion:NULL
+         ];
+    }
 }
 
 @end
