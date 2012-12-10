@@ -544,29 +544,15 @@
         
         if (indexPath != nil) {
             
-            // Delete mode when in Follow section and book is in the center.
+            // Delete mode when in Follow section.
             if (indexPath.section == kFollowSection) {
+                
+                // Scroll to center, then enable delete mode.
                 [self.collectionView scrollToItemAtIndexPath:indexPath
                                             atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                                     animated:YES];
                 [self setDeleteMode:YES indexPath:indexPath];
             }
-            
-//            
-//            if ([self isCenterBookAtIndexPath:indexPath]) {
-//                
-//                // Delete mode when in Follow section and book is in the center.
-//                if (indexPath.section == kFollowSection) {
-//                    [self setDeleteMode:YES indexPath:indexPath];
-//                }
-//                
-//            } else {
-//                
-//                // Else scroll there.
-//                [self.collectionView scrollToItemAtIndexPath:indexPath
-//                                            atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-//                                                    animated:YES];
-//            }
         }
     }
 }
