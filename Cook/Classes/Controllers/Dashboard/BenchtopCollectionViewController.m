@@ -17,7 +17,7 @@
 #import "ViewHelper.h"
 
 @interface BenchtopCollectionViewController () <UIActionSheetDelegate, BenchtopBookCoverViewCellDelegate,
-    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
+    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
@@ -70,6 +70,11 @@
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                                    action:@selector(longPressed:)];
     [self.collectionView addGestureRecognizer:longPressGesture];
+    
+    // Register tap to dismiss.
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    tapGesture.delegate = self;
+    [self.view addGestureRecognizer:tapGesture];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -282,6 +287,18 @@
     BenchtopBookCoverViewCell *cell = [self myBookCell];
     self.myBook.illustration = illustration;
     [cell loadBook:self.myBook];
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        // Recognise taps only when collectionView is disabled.
+        return (!self.collectionView.userInteractionEnabled);
+        
+    }
+    return NO;
 }
 
 #pragma mark - Private methods
@@ -632,6 +649,10 @@
 - (void)deleteTapped:(id)sender {
     [self unfollowBookAtIndexPath:self.selectedIndexPath];
     [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+}
+
+- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    [self.delegate panToBenchtopForSelf:self];
 }
 
 @end

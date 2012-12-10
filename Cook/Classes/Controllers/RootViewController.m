@@ -40,6 +40,9 @@
 #define kStoreShadowOffset              31.0
 #define kStoreShowAdjustment            35.0
 #define kSettingsOffsetBelowBenchtop    50.0
+#define kStoreLevel                     2
+#define kBenchtopLevel                  1
+#define kSettingsLevel                  0
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -85,6 +88,17 @@
 
 - (void)panEnabledRequested:(BOOL)enable {
     self.panEnabled = enable;
+}
+
+- (void)panToBenchtopForSelf:(UIViewController *)viewController {
+    if (viewController == self.storeViewController) {
+        [self snapToLevel:kStoreLevel];
+    } else if (viewController == self.benchtopViewController) {
+        [self snapToLevel:kBenchtopLevel];
+    } else if (viewController == self.settingsViewController) {
+        [self snapToLevel:kSettingsLevel];
+    }
+    
 }
 
 #pragma mark - BookCoverViewControllerDelegate methods
@@ -167,40 +181,45 @@
 - (void)snapIfRequired {
     NSUInteger toggleLevel = self.benchtopLevel;
     
-    if (self.benchtopLevel == 2
+    if (self.benchtopLevel == kStoreLevel
         && CGRectIntersection(self.view.bounds,
                               self.benchtopViewController.view.frame).size.height > kStoreHideTuckOffset + kSnapHeight) {
         
-        toggleLevel = 1;
+        toggleLevel = kBenchtopLevel;
         
-    } else if (self.benchtopLevel == 1
+    } else if (self.benchtopLevel == kBenchtopLevel
                && CGRectIntersection(self.view.bounds,
                                      self.storeViewController.view.frame).size.height > (kStoreHideTuckOffset + kStoreShadowOffset + kSnapHeight)) {
         
-        toggleLevel = 2;
+        toggleLevel = kStoreLevel;
         
-    } else if (self.benchtopLevel == 1
+    } else if (self.benchtopLevel == kBenchtopLevel
                && CGRectIntersection(self.view.bounds,
                                      self.settingsViewController.view.frame).size.height > (self.settingsViewController.view.frame.size.height * 0.33)) {
         
-        toggleLevel = 0;
+        toggleLevel = kSettingsLevel;
         
-    } else if (self.benchtopLevel == 0
+    } else if (self.benchtopLevel == kSettingsLevel
                && CGRectIntersection(self.view.bounds,
                                      self.settingsViewController.view.frame).size.height < (self.settingsViewController.view.frame.size.height * 0.75)) {
         
         // Toggle to level 1 if moved more than 1/3.
-        toggleLevel = 1;
+        toggleLevel = kBenchtopLevel;
     }
     
-    BOOL toggleMode = (self.benchtopLevel != toggleLevel);
-    CGRect storeFrame = [self storeFrameForLevel:toggleLevel];
-    CGRect benchtopFrame = [self benchtopFrameForLevel:toggleLevel];
-    CGRect settingsFrame = [self settingsFrameForLevel:toggleLevel];
+    [self snapToLevel:toggleLevel];
+}
+
+- (void)snapToLevel:(NSUInteger)benchtopLevel {
+    
+    BOOL toggleMode = (self.benchtopLevel != benchtopLevel);
+    CGRect storeFrame = [self storeFrameForLevel:benchtopLevel];
+    CGRect benchtopFrame = [self benchtopFrameForLevel:benchtopLevel];
+    CGRect settingsFrame = [self settingsFrameForLevel:benchtopLevel];
     
     // Add a bounce for toggling between levels.
     if (toggleMode) {
-        BOOL forwardBounce = toggleLevel > self.benchtopLevel;
+        BOOL forwardBounce = benchtopLevel > self.benchtopLevel;
         storeFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
         benchtopFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
         settingsFrame.origin.y += forwardBounce ? kBounceOffset : -kBounceOffset;
@@ -221,14 +240,14 @@
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
                                               animations:^{
-                                                  self.storeViewController.view.frame = [self storeFrameForLevel:toggleLevel];;
-                                                  self.benchtopViewController.view.frame = [self benchtopFrameForLevel:toggleLevel];
-                                                  self.settingsViewController.view.frame = [self settingsFrameForLevel:toggleLevel];
+                                                  self.storeViewController.view.frame = [self storeFrameForLevel:benchtopLevel];;
+                                                  self.benchtopViewController.view.frame = [self benchtopFrameForLevel:benchtopLevel];
+                                                  self.settingsViewController.view.frame = [self settingsFrameForLevel:benchtopLevel];
                                               }
                                               completion:^(BOOL finished) {
-                                                  self.benchtopLevel = toggleLevel;
-                                                 [self.storeViewController enable:(self.benchtopLevel == 2)];
-                                                 [self.benchtopViewController enable:(self.benchtopLevel == 1)];
+                                                  self.benchtopLevel = benchtopLevel;
+                                                  [self.storeViewController enable:(self.benchtopLevel == 2)];
+                                                  [self.benchtopViewController enable:(self.benchtopLevel == 1)];
                                               }];
                          }
                          
@@ -305,17 +324,17 @@
 - (CGRect)storeFrameForLevel:(NSUInteger)level {
     CGRect frame = CGRectZero;
     
-    if (level == 2) {
+    if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height - self.storeViewController.view.frame.size.height - kStoreShowAdjustment,
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
-    } else if (level == 1) {
+    } else if (level == kBenchtopLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            -self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
-    } else if (level == 0) {
+    } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop - self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
                            self.view.bounds.size.width,
@@ -328,14 +347,14 @@
 - (CGRect)benchtopFrameForLevel:(NSUInteger)level {
     CGRect frame = CGRectZero;
     
-    if (level == 2) {
+    if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height - kStoreShowAdjustment - kStoreShadowOffset,
                            self.view.bounds.size.width,
                            self.benchtopViewController.view.frame.size.height);
-    } else if (level == 1) {
+    } else if (level == kBenchtopLevel) {
         frame = self.view.bounds;
-    } else if (level == 0) {
+    } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop,
                            self.view.bounds.size.width,
@@ -348,24 +367,23 @@
 - (CGRect)settingsFrameForLevel:(NSUInteger)level {
     CGRect frame = CGRectZero;
     
-    if (level == 2) {
+    if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height - kStoreShowAdjustment - kStoreShadowOffset + self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop,
                            self.view.bounds.size.width,
                            self.settingsViewController.view.frame.size.height);
-    } else if (level == 1) {
+    } else if (level == kBenchtopLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height + kSettingsOffsetBelowBenchtop,
                            self.view.bounds.size.width,
                            self.settingsViewController.view.frame.size.height);
-    } else if (level == 0) {
+    } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height - self.settingsViewController.view.frame.size.height,
                            self.view.bounds.size.width,
                            self.settingsViewController.view.frame.size.height);
     }
     
-    DLog(@"Settings Frame: %@", NSStringFromCGRect(frame));
     return frame;
 }
 
