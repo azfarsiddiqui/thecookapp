@@ -456,9 +456,9 @@
         self.titleLabel.numberOfLines = 0;
     }
     
-    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:64];
-    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:84];
-    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:100];
+    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
+    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:70];
+    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:96];
     
     // Paragraph style.
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
