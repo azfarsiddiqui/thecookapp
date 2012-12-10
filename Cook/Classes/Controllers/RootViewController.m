@@ -38,7 +38,7 @@
 #define kBounceOffset                   30.0
 #define kStoreHideTuckOffset            57.0
 #define kStoreShadowOffset              31.0
-#define kStoreShowAdjustment            35.0
+#define kStoreShowAdjustment            31.0
 #define kSettingsOffsetBelowBenchtop    35.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
@@ -98,7 +98,6 @@
     } else if (viewController == self.settingsViewController) {
         [self snapToLevel:kSettingsLevel];
     }
-    
 }
 
 #pragma mark - BookCoverViewControllerDelegate methods
