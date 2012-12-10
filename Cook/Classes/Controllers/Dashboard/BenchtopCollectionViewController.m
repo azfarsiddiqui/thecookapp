@@ -301,6 +301,26 @@
     return NO;
 }
 
+#pragma mark - KVO methods
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
+                       context:(void *)context {
+    
+    if ([keyPath isEqualToString:@"contentOffset"] && [object isKindOfClass:[UICollectionView class]]) {
+        
+        // Delete button follows the book.
+        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
+        CGRect frame = [self.collectionView convertRect:cell.frame toView:self.overlayView];
+        self.deleteButton.frame = CGRectMake(frame.origin.x - floorf(self.deleteButton.frame.size.width / 2.0) + 5.0,
+                                        frame.origin.y - floorf(self.deleteButton.frame.size.height / 2.0) + 5.0,
+                                        self.deleteButton.frame.size.width,
+                                        self.deleteButton.frame.size.height);
+
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -523,20 +543,30 @@
         NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:[longPressGesture locationInView:self.collectionView]];
         
         if (indexPath != nil) {
-            if ([self isCenterBookAtIndexPath:indexPath]) {
-                
-                // Delete mode when in Follow section and book is in the center.
-                if (indexPath.section == kFollowSection) {
-                    [self setDeleteMode:YES indexPath:indexPath];
-                }
-                
-            } else {
-                
-                // Else scroll there.
+            
+            // Delete mode when in Follow section and book is in the center.
+            if (indexPath.section == kFollowSection) {
                 [self.collectionView scrollToItemAtIndexPath:indexPath
                                             atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                                     animated:YES];
+                [self setDeleteMode:YES indexPath:indexPath];
             }
+            
+//            
+//            if ([self isCenterBookAtIndexPath:indexPath]) {
+//                
+//                // Delete mode when in Follow section and book is in the center.
+//                if (indexPath.section == kFollowSection) {
+//                    [self setDeleteMode:YES indexPath:indexPath];
+//                }
+//                
+//            } else {
+//                
+//                // Else scroll there.
+//                [self.collectionView scrollToItemAtIndexPath:indexPath
+//                                            atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+//                                                    animated:YES];
+//            }
         }
     }
 }
@@ -584,8 +614,16 @@
                                         deleteButton.frame.size.width,
                                         deleteButton.frame.size.height);
         [overlayView addSubview:deleteButton];
-        deleteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
+        deleteButton.alpha = 0.0;
         self.deleteButton = deleteButton;
+        
+        // Watch the cell frame.
+        [self.collectionView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
+        
+    } else {
+        
+        // Remove observer.
+        [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
     }
     
     [UIView animateWithDuration:0.3
@@ -596,12 +634,8 @@
                          // Fade the edit overlay.
                          self.overlayView.alpha = enable ? 1.0 : 0.0;
                          
-                         // Bulge the delete button.
-                         if (enable) {
-                             self.deleteButton.transform = CGAffineTransformMakeScale(0.9, 0.9);
-                         } else {
-                             self.deleteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
-                         }
+                         // Fade the delete button.
+                         self.deleteButton.alpha = enable ? 1.0 : 0.0;
                          
                      }
                      completion:^(BOOL finished) {
@@ -609,21 +643,7 @@
                          // Remember delete mode.
                          self.deleteMode = enable;
                          
-                         if (enable) {
-                             [UIView animateWithDuration:0.2
-                                                   delay:0.0
-                                                 options:UIViewAnimationCurveEaseIn
-                                              animations:^{
-                                                  
-                                                  // Restore the delete button.
-                                                  self.deleteButton.transform = CGAffineTransformIdentity;
-                                                  
-                                              }
-                                              completion:^(BOOL finished) {
-                                                  
-                                              }];
-                             
-                         } else {
+                         if (!enable) {
                              [self.overlayView removeFromSuperview];
                              [self.deleteButton removeFromSuperview];
                              self.overlayView = nil;
