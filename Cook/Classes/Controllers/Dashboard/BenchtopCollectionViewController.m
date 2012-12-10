@@ -550,6 +550,9 @@
 
 - (void)setDeleteMode:(BOOL)enable indexPath:(NSIndexPath *)indexPath {
     
+    BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
+    [cell enableDeleteMode:enable];
+    
     if (enable) {
         
         // Tell root VC to disable panning.
@@ -572,7 +575,6 @@
         self.selectedIndexPath = indexPath;
         
         // Position the delete button.
-        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
         CGRect frame = [self.collectionView convertRect:cell.frame toView:overlayView];
         UIButton *deleteButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
                                                       target:self

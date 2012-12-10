@@ -26,5 +26,6 @@
 + (CGSize)cellSize;
 
 - (void)loadBook:(CKBook *)book;
+- (void)enableDeleteMode:(BOOL)enable;
 
 @end
