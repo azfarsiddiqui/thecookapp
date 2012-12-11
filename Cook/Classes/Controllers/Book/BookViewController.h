@@ -32,18 +32,26 @@
 
 @protocol BookViewDataSource
 
-- (CKBook *)currentBook;
+//context-related
 - (CKRecipe *)currentRecipe;
-- (NSInteger)numberOfPages;
-- (UIView*)viewForPageAtIndex:(NSInteger) pageIndex;
-- (NSArray *)bookRecipes;
-- (NSArray *)bookCategoryNames;
-- (NSArray *)recipesForCategory:(NSString *)categoryName;
+- (CKBook *)currentBook;
 - (NSInteger)currentPageNumber;
-- (NSString *)bookViewCurrentCategoryName;
+
+//book or recipe-related
+- (NSInteger)numberOfPages;
+- (UIView*)viewForPageAtIndex:(NSUInteger) pageIndex;
+- (NSArray*)recipesInBook;
+- (NSInteger)pageNumForRecipe:(CKRecipe*)recipe;
+
+//page-content
+- (NSUInteger)sectionsInPageContent;
+- (NSString*)sectionNameForPageContentAtIndex:(NSUInteger)sectionIndex;
+- (NSUInteger)pageNumForSectionName:(NSString *)sectionName;
+
+//category-related
 - (NSInteger)numRecipesInCategory:(NSString *)category;
 - (NSInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName;
-- (NSInteger)pageNumForRecipe:(CKRecipe*)recipe;
+- (NSArray *)recipesForCategory:(NSString *)categoryName;
 - (NSInteger)pageNumForCategoryName:(NSString*)categoryName;
 
 @end

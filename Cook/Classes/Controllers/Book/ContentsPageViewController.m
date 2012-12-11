@@ -11,7 +11,6 @@
 #import "UIFont+Cook.h"
 #import "MRCEnumerable.h"
 #import "CKRecipe.h"
-#import "Category.h"
 #import "RecipeLike.h"
 #import "NewRecipeViewController.h"
 #import "ContentsTableViewCell.h"
@@ -25,10 +24,7 @@
 @property (nonatomic, strong) ContentsCollectionViewController *contentsCollectionViewController;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *likesLabel;
-@property (nonatomic, strong) UIButton *likesButton;
 @property (nonatomic, strong) FacebookUserView *facebookView;
-
 @end
 
 @implementation ContentsPageViewController
@@ -36,14 +32,13 @@
 #pragma mark - PageViewController methods
 
 #define kNameYOffset    150.0
-#define kCategoryCellId @"CategoryCellId"
+#define kContentSectionCellId @"ContentSectionCellId"
 
 -(void)refreshData
 {
     DLog();
     [self.tableView reloadData];
-    [self refreshLikes];
-    [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
+    [self.contentsCollectionViewController loadRecipes:[self.dataSource recipesInBook]];
     [self showPageNumberAndHideLoading];
 }
 
@@ -65,22 +60,23 @@
 #pragma mark - UITableViewDataSource methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[self.dataSource bookCategoryNames] count];
+    return [self.dataSource sectionsInPageContent];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryCellId forIndexPath:indexPath];
-    NSString *categoryName = [[self.dataSource bookCategoryNames] objectAtIndex:indexPath.row];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContentSectionCellId forIndexPath:indexPath];
+
     
+    NSString *sectionName = [self.dataSource sectionNameForPageContentAtIndex:indexPath.row];
     // Left item.
     cell.textLabel.font = [Theme defaultBoldFontWithSize:16.0];
-    cell.textLabel.text = [categoryName uppercaseString];
+    cell.textLabel.text = [sectionName uppercaseString];
     cell.textLabel.textColor = [Theme contentsItemColor];
     
     // Right page num.
     cell.detailTextLabel.font = [Theme defaultBoldFontWithSize:16.0];
     cell.detailTextLabel.textColor = [Theme defaultLabelColor];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForCategoryName:categoryName]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForSectionName:sectionName]];
     
     return cell;
 }
@@ -89,8 +85,8 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    NSString *categoryName = [[self.dataSource bookCategoryNames] objectAtIndex:indexPath.row];
-    NSUInteger requestedPageIndex = [self.dataSource pageNumForCategoryName:categoryName];
+    NSString *sectionName = [self.dataSource sectionNameForPageContentAtIndex:indexPath.row];
+    NSUInteger requestedPageIndex = [self.dataSource pageNumForSectionName:sectionName];
     [self.delegate requestedPageIndex:requestedPageIndex];
 }
 
@@ -158,9 +154,7 @@
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:tableView];
     self.tableView = tableView;
-    [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kCategoryCellId];
-    
-    [self initTableFooter];
+    [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kContentSectionCellId];
     
 }
 
@@ -185,27 +179,6 @@
     [self.view addSubview:createButton];
 }
 
--(void)initTableFooter {
-    //add a footer for likes
-    self.likesButton = [ViewHelper buttonWithImagePrefix:@"cook_book_icon_like" target:self selector:@selector(likesButtonTapped:)];
-
-    UIView *footerView = [[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.tableView.frame.size.width, self.likesButton.frame.size.height+20.0f)];
-
-    self.likesButton.frame = CGRectMake(floorf(0.5*(self.tableView.frame.size.width - self.likesButton.frame.size.width)), 0.0f, self.likesButton.frame.size.width, self.likesButton.frame.size.height);
-
-    self.likesButton.hidden = YES;
-    self.likesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, footerView.frame.size.height-20.0f, self.tableView.frame.size.width, 20.0f)];
-    self.likesLabel.textAlignment = NSTextAlignmentCenter;
-    self.likesLabel.font = [Theme defaultBoldFontWithSize:16.0f];
-    self.likesLabel.textColor = [Theme contentsItemColor];
-    
-    [footerView addSubview:self.likesLabel];
-    [footerView addSubview:self.likesButton];
-    
-    self.tableView.tableFooterView = footerView;
-
-}
-
 - (void)createTapped:(id)sender {
     DLog();
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
@@ -213,16 +186,6 @@
     newRecipeViewVC.recipeViewDelegate = self;
     newRecipeViewVC.book = [self.dataSource currentBook];
     [self presentViewController:newRecipeViewVC animated:YES completion:nil];
-}
-
--(void)refreshLikes
-{
-    [RecipeLike fetchRecipeLikesForUser:[CKUser currentUser] withSuccess:^(NSArray *results) {
-        self.likesLabel.text = [NSString stringWithFormat:@"%d LIKES",[results count]];
-        self.likesButton.hidden = NO;
-    } failure:^(NSError *error) {
-        DLog(@"fetch recipe likes for user returned an error: %@", [error description]);
-    }];
 }
 
 #pragma mark - Action buttons
