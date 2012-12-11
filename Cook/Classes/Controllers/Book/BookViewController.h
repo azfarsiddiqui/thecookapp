@@ -35,13 +35,13 @@
 //context-related
 - (CKRecipe *)currentRecipe;
 - (CKBook *)currentBook;
-- (NSInteger)currentPageNumber;
+- (NSUInteger)currentPageNumber;
 
 //book or recipe-related
-- (NSInteger)numberOfPages;
+- (NSUInteger)numberOfPages;
 - (UIView*)viewForPageAtIndex:(NSUInteger) pageIndex;
 - (NSArray*)recipesInBook;
-- (NSInteger)pageNumForRecipe:(CKRecipe*)recipe;
+- (NSUInteger)pageNumForRecipe:(CKRecipe*)recipe;
 
 //page-content
 - (NSUInteger)sectionsInPageContent;
@@ -49,10 +49,10 @@
 - (NSUInteger)pageNumForSectionName:(NSString *)sectionName;
 
 //category-related
-- (NSInteger)numRecipesInCategory:(NSString *)category;
-- (NSInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName;
+- (NSUInteger)numRecipesInCategory:(NSString *)category;
+- (NSUInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName;
 - (NSArray *)recipesForCategory:(NSString *)categoryName;
-- (NSInteger)pageNumForCategoryName:(NSString*)categoryName;
+- (NSUInteger)pageNumForCategoryName:(NSString*)categoryName;
 
 @end
 

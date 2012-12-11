@@ -166,7 +166,7 @@
 
 #pragma mark - BookViewDataSource (book-related)
 
-- (NSInteger)numberOfPages {
+- (NSUInteger)numberOfPages {
     NSInteger numPages = 0;
     numPages += 2;                                  // Contents page and Profile page
     if ([self.bookRecipes count] > 0) {
@@ -188,20 +188,28 @@
 
 #pragma mark - BookviewDataSource (page-contents/section)
 -(NSUInteger)sectionsInPageContent {
-    return [self.categoryNames count];
+    return [self.categoryNames count] + ([self.userLikes count] > 0 ? 1: 0);
 }
 
 -(NSString *)sectionNameForPageContentAtIndex:(NSUInteger)sectionIndex
 {
-    return [self.categoryNames objectAtIndex:sectionIndex];
+    if (([self.userLikes count] > 0) && (sectionIndex == [self.categoryNames count])) {
+        return  @"LIKES";
+    } else {
+        return [self.categoryNames objectAtIndex:sectionIndex];
+    }
 }
 
 -(NSUInteger)pageNumForSectionName:(NSString *)sectionName;
 {
-    return [self pageNumForCategoryName:sectionName];
+    if ([sectionName isEqualToString:@"LIKES"]) {
+        return [self pageNumForLikesSection];
+    }  else {
+        return [self pageNumForCategoryName:sectionName];
+    }
 }
 
--(NSInteger)pageNumForRecipe:(CKRecipe*)recipe
+-(NSUInteger)pageNumForRecipe:(CKRecipe*)recipe
 {
     NSString *categoryName = recipe.category.name;
     NSArray *recipesForCategory = [self recipesForCategory:categoryName];
@@ -227,7 +235,7 @@
     return recipes;
 }
 
-- (NSInteger)numRecipesInCategory:(NSString *)categoryName {
+- (NSUInteger)numRecipesInCategory:(NSString *)categoryName {
     NSInteger recipeCount = 0;
     NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
     if (categoryIndex != NSNotFound) {
@@ -236,16 +244,26 @@
     return recipeCount;
 }
 
--(NSInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName
+-(NSUInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName
 {
     return [self pageNumForCategoryName:categoryName] + recipeIndex + 1;
 }
 
--(NSInteger)pageNumForCategoryName:(NSString *)categoryName
+-(NSUInteger)pageNumForCategoryName:(NSString *)categoryName
 {
     NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
     NSNumber *pageCategoryIndex = [self.categoryPageIndexes objectAtIndex:categoryIndex];
     return [pageCategoryIndex intValue];
+}
+
+-(NSUInteger)pageNumForLikesSection
+{
+    //page number for last category +  number of pages in category
+    NSString *lastCategoryName = [self.categoryNames objectAtIndex:[self.categoryNames count]-1];
+    NSUInteger lastCategoryPageNum = [self pageNumForCategoryName:lastCategoryName];
+    NSUInteger numRecipesInLastCategory = [self numRecipesInCategory:lastCategoryName];
+    
+    return lastCategoryPageNum + numRecipesInLastCategory + 1;
 }
 
 #pragma mark - MPFlipViewControllerDataSource methods
