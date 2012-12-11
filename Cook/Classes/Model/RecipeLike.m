@@ -7,7 +7,7 @@
 //
 
 #import "RecipeLike.h"
-
+#import "NSArray+Enumerable.h"
 NSString *const kRecipeLikeKeyLikesCount = @"likesCount";
 NSString *const kRecipeLikeKeyUserLike = @"userLike";
 
@@ -105,6 +105,24 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
     
 }
 
++(void)fetchRecipeLikesForUser:(CKUser *)user withSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
+{
+    PFQuery *query = [PFQuery queryWithClassName:kRecipeLikeModelName];
+    [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
+
+    [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipeLikes, NSError *error) {
+        if (!error) {
+            NSArray *recipeLikes = [parseRecipeLikes collect:^id(PFObject *parseRecipeLike) {
+                return [RecipeLike recipeLikeForParseObject:parseRecipeLike];
+            }];
+//            DLog(@"fetch returned %i recipe likes for user", [parseRecipeLikes count]);
+            success(recipeLikes);
+        } else {
+            failure(error);
+        }
+    }];
+
+}
 #pragma mark - Private Methods
 -(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     

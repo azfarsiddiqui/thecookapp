@@ -12,6 +12,7 @@
 #import "MRCEnumerable.h"
 #import "CKRecipe.h"
 #import "Category.h"
+#import "RecipeLike.h"
 #import "NewRecipeViewController.h"
 #import "ContentsTableViewCell.h"
 #import "ContentsPhotoCell.h"
@@ -24,6 +25,7 @@
 @property (nonatomic, strong) ContentsCollectionViewController *contentsCollectionViewController;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *likesLabel;
 @property (nonatomic, strong) FacebookUserView *facebookView;
 
 @end
@@ -39,6 +41,7 @@
 {
     DLog();
     [self.tableView reloadData];
+    [self refreshLikes];
     [self.contentsCollectionViewController loadRecipes:[self.dataSource bookRecipes]];
     [self showPageNumberAndHideLoading];
 }
@@ -155,6 +158,9 @@
     [self.view addSubview:tableView];
     self.tableView = tableView;
     [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kCategoryCellId];
+    
+    [self initTableFooter];
+    
 }
 
 - (void)initCollectionView {
@@ -178,6 +184,17 @@
     [self.view addSubview:createButton];
 }
 
+-(void)initTableFooter {
+    //add a footer for likes
+    self.likesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 20.0f)];
+    self.likesLabel.textAlignment = NSTextAlignmentCenter;
+    self.likesLabel.font = [Theme defaultBoldFontWithSize:16.0f];
+    self.likesLabel.textColor = [Theme contentsItemColor];
+
+    self.tableView.tableFooterView = self.likesLabel;
+
+}
+
 - (void)createTapped:(id)sender {
     DLog();
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
@@ -187,4 +204,12 @@
     [self presentViewController:newRecipeViewVC animated:YES completion:nil];
 }
 
+-(void)refreshLikes
+{
+    [RecipeLike fetchRecipeLikesForUser:[CKUser currentUser] withSuccess:^(NSArray *results) {
+        self.likesLabel.text = [NSString stringWithFormat:@"%d LIKES",[results count]];
+    } failure:^(NSError *error) {
+        DLog(@"fetch recipe likes for user returned an error: %@", [error description]);
+    }];
+}
 @end

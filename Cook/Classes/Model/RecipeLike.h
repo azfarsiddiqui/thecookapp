@@ -23,7 +23,10 @@ extern NSString *const kRecipeLikeKeyUserLike;
 //action
 //update recipe like. returns a numeric of the 
 +(void) updateRecipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe liked:(BOOL)like withSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 //NSDictionary with recipe like info. likeCount, userLikes - indicates if user likes this recipe
 +(void) fetchRecipeLikeInfoForUser:(CKUser*)user recipe:(CKRecipe *)recipe withSuccess:(DictionaryObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
++(void) fetchRecipeLikesForUser:(CKUser*)user withSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end
