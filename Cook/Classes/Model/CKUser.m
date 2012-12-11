@@ -70,6 +70,19 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
++ (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    [PFUser logOut];
+    CKUser *loggedOutUser = [CKUser currentUser];
+    [CKBook saveBookForUser:loggedOutUser
+                   succeess:^{
+                       DLog(@"Logged out and created new book for anonymous user.");
+                       success();
+                   } failure:^(NSError *error) {
+                       DLog(@"Unable to create new book for anonymous user.");
+                       failure(error);
+                   }];
+}
+
 #pragma mark - CKModel 
 
 - (NSString *)objectId {

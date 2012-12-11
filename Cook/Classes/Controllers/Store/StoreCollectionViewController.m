@@ -27,6 +27,7 @@
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
+    [EventHelper unregisterLogout:self];
     [EventHelper unregisterFollowUpdated:self];
 }
 
@@ -49,6 +50,7 @@
     [self.collectionView registerClass:[StoreBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     
     [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
 }
 
@@ -169,6 +171,12 @@
     if (success) {
         [self loadData];
     }
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    
+    // Reload data.
+    [self loadData];
 }
 
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {

@@ -456,9 +456,9 @@
         self.titleLabel.numberOfLines = 0;
     }
     
-    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:64];
-    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:70];
-    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:100];
+    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
+    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:70];
+    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:96];
     
     // Paragraph style.
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
@@ -482,9 +482,15 @@
     // Figure out required line height vs single line height.
     CGSize singleLineSize = [self singleLineSizeForLabel:self.titleLabel attributes:attributes];
     CGSize lineSize = [self lineSizeForLabel:self.titleLabel attributedString:titleDisplay];
-    if (lineSize.height > singleLineSize.height) {
+    DLog(@"single: %f", singleLineSize.height);
+    DLog(@"line  : %f", lineSize.height);
+    if (lineSize.height > singleLineSize.height * 2.0) {
         self.multilineTitle = YES;
         [attributes setObject:minFont forKey:NSFontAttributeName];
+        titleDisplay = [[NSMutableAttributedString alloc] initWithString:title attributes:attributes];
+    } else if (lineSize.height > singleLineSize.height) {
+        self.multilineTitle = YES;
+        [attributes setObject:midFont forKey:NSFontAttributeName];
         titleDisplay = [[NSMutableAttributedString alloc] initWithString:title attributes:attributes];
     } else {
         self.multilineTitle = NO;

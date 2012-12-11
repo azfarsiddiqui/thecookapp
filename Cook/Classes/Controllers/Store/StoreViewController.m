@@ -10,12 +10,15 @@
 #import "FriendsStoreCollectionViewController.h"
 #import "FeaturedStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
+#import "LoginViewController.h"
+#import "EventHelper.h"
 
-@interface StoreViewController ()
+@interface StoreViewController () <LoginViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
+@property (nonatomic, strong) LoginViewController *loginViewController;
 @property (nonatomic, strong) UIImageView *featuredBanner;
 @property (nonatomic, strong) UIImageView *friendsBanner;
 
@@ -23,14 +26,20 @@
 
 @implementation StoreViewController
 
-#define kInsets     UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
+#define kInsets                 UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
+#define kStoreShadowOffset      31.0
+
+- (void)dealloc {
+    [EventHelper unregisterLogout:self];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self initBackground];
-
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    [self initBackground];
+    
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -59,12 +68,22 @@
     [friendsViewController loadData];
     
     [self initBanners];
+    [self initLoginViewIfRequired];
 }
 
 - (void)enable:(BOOL)enable {
     [self.featuredViewController enable:enable];
     [self.friendsViewController enable:enable];
-    [self showBanners:enable animated:enable ? YES : NO];
+    [self showBanners:enable animated:enable];
+}
+
+#pragma mark - LoginViewControllerDelegate methods
+
+- (void)loginViewControllerSuccessful:(BOOL)success {
+    if (success) {
+        [self.loginViewController.view removeFromSuperview];
+        self.loginViewController = nil;
+    }
 }
 
 #pragma mark - Private methods
@@ -76,6 +95,7 @@
                                  backgroundView.frame.size.width,
                                  backgroundView.frame.size.height);
     [self.view addSubview:backgroundView];
+    [self.view sendSubviewToBack:backgroundView];
     self.backgroundView = backgroundView;
 }
 
@@ -103,6 +123,20 @@
     [self showBanners:NO animated:NO];
 }
 
+- (void)initLoginViewIfRequired {
+    CKUser *currentUser = [CKUser currentUser];
+    if (![currentUser isSignedIn]) {
+        
+        LoginViewController *loginViewController = [[LoginViewController alloc] initWithDelegate:self];
+        loginViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                    self.view.bounds.size.height - loginViewController.view.frame.size.height - kStoreShadowOffset,
+                                                    loginViewController.view.frame.size.width,
+                                                    loginViewController.view.frame.size.height);
+        [self.view addSubview:loginViewController.view];
+        self.loginViewController = loginViewController;
+    }
+}
+
 - (void)showBanners:(BOOL)show animated:(BOOL)animated {
     
     CGAffineTransform featuredTransform = CGAffineTransformMakeTranslation(0.0, -self.featuredBanner.frame.size.height);
@@ -121,6 +155,16 @@
         self.featuredBanner.transform = show ? CGAffineTransformIdentity : featuredTransform;
         self.friendsBanner.transform = show ? CGAffineTransformIdentity : friendsTransform;
     }
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    
+    // Reload data.
+    [self.featuredViewController loadData];
+    [self.friendsViewController loadData];
+    
+    // Restore the login view.
+    [self initLoginViewIfRequired];
 }
 
 @end

@@ -29,5 +29,9 @@
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
+
+#pragma mark - Settings
++ (UIFont *)settingsProfileFont;
+
 @end
 

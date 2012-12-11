@@ -21,6 +21,7 @@
 #define kEventFollowUpdated         @"CKEventFollowUpdated"
 #define kBoolFollow                 @"CKBoolFollow"
 #define kBoolFriendsFollow          @"CKBoolFriends"
+#define kEventLogout                @"CKEventLogout"
 
 #pragma mark - Login successful event
 
@@ -40,6 +41,20 @@
 
 + (BOOL)loginSuccessfulForNotification:(NSNotification *)notification {
     return [[[notification userInfo] valueForKey:kBoolLoginSuccessful] boolValue];
+}
+
+#pragma mark - Logout 
+
++ (void)registerLogout:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventLogout];
+}
+
++ (void)postLogout {
+    [EventHelper postEvent:kEventLogout];
+}
+
++ (void)unregisterLogout:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventLogout];
 }
 
 #pragma mark - Benchtop events

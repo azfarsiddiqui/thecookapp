@@ -11,19 +11,17 @@
 #import "BenchtopBookCoverViewCell.h"
 #import "CKUser.h"
 #import "CKBook.h"
-#import "CKLoginView.h"
 #import "EventHelper.h"
 #import "CoverPickerViewController.h"
 #import "IllustrationPickerViewController.h"
 #import "ViewHelper.h"
 
-@interface BenchtopCollectionViewController () <CKLoginViewDelegate, UIActionSheetDelegate,
-    BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
+@interface BenchtopCollectionViewController () <UIActionSheetDelegate, BenchtopBookCoverViewCellDelegate,
+    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
-@property (nonatomic, strong) CKLoginView *loginView;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
@@ -31,6 +29,7 @@
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, strong) UIImageView *overlayView;
+@property (nonatomic, strong) UIButton *deleteButton;
 
 @end
 
@@ -42,11 +41,15 @@
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
+    [EventHelper unregisterLoginSucessful:self];
+    [EventHelper unregisterLogout:self];
 }
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[BenchtopCollectionFlowLayout alloc] init]]) {
         [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
+        [EventHelper registerLoginSucessful:self selector:@selector(loginPerformed:)];
+        [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     }
     return self;
 }
@@ -55,7 +58,6 @@
     [super viewDidLoad];
     
     [self initBackground];
-    [self initLoginView];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     self.collectionView.backgroundColor = [UIColor clearColor];
@@ -68,6 +70,11 @@
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                                    action:@selector(longPressed:)];
     [self.collectionView addGestureRecognizer:longPressGesture];
+    
+    // Register tap to dismiss.
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    tapGesture.delegate = self;
+    [self.view addGestureRecognizer:tapGesture];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -75,6 +82,10 @@
 }
 
 - (void)enable:(BOOL)enable {
+    
+    // Enable scrolling as appropriate.
+    self.collectionView.userInteractionEnabled = enable;
+    
     if (enable) {
         
         // Start loading my book if not there already.
@@ -208,17 +219,6 @@
     return cell;
 }
 
-#pragma mark - CKLoginViewDelegate
-
-- (void)loginViewTapped {
-    
-    // Spin the facebook button.
-    [self.loginView loginStarted];
-    
-    // Dispatch login after one second.
-    [self performSelector:@selector(performLogin) withObject:nil afterDelay:1.0];
-}
-
 #pragma mark - UIActionSheetDelegate methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -289,6 +289,38 @@
     [cell loadBook:self.myBook];
 }
 
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        // Recognise taps only when collectionView is disabled.
+        return (!self.collectionView.userInteractionEnabled);
+        
+    }
+    return NO;
+}
+
+#pragma mark - KVO methods
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
+                       context:(void *)context {
+    
+    if ([keyPath isEqualToString:@"contentOffset"] && [object isKindOfClass:[UICollectionView class]]) {
+        
+        // Delete button follows the book.
+        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
+        CGRect frame = [self.collectionView convertRect:cell.frame toView:self.overlayView];
+        self.deleteButton.frame = CGRectMake(frame.origin.x - floorf(self.deleteButton.frame.size.width / 2.0) + 5.0,
+                                        frame.origin.y - floorf(self.deleteButton.frame.size.height / 2.0) + 5.0,
+                                        self.deleteButton.frame.size.width,
+                                        self.deleteButton.frame.size.height);
+
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -299,38 +331,17 @@
     self.backgroundView = backgroundView;
 }
 
-- (void)initLoginView {
-    CKUser *currentUser = [CKUser currentUser];
-    
-    CKLoginView *loginView = [[CKLoginView alloc] initWithDelegate:self];
-    loginView.frame = CGRectMake(floorf((self.view.bounds.size.width - loginView.frame.size.width) / 2.0),
-                                 self.view.bounds.size.height - loginView.frame.size.height - 60.0,
-                                 loginView.frame.size.width,
-                                 loginView.frame.size.height);
-    loginView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-    loginView.hidden = [currentUser isSignedIn];
-    [self.view addSubview:loginView];
-    self.loginView = loginView;
-}
-
 - (void)loadMyBook {
-    [CKBook fetchBookForUser:[CKUser currentUser]
+    CKUser *currentUser = [CKUser currentUser];
+    [CKBook fetchBookForUser:currentUser
                 success:^(CKBook *book) {
                     
                     if (self.myBook) {
                         
-                        [self.collectionView performBatchUpdates:^{
-                            
-                            // There is an existing book, so we swap it out first.
-                            self.myBook = nil;
-                            [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
-                            
-                        } completion:^(BOOL finished) {
-                            
-                            // Now reinsert the new book.
-                            self.myBook = book;
-                            [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
-                        }];
+                        // Reload the book.
+                        self.myBook = book;
+                        BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
+                        [myBookCell loadBook:book];
                         
                         
                     } else {
@@ -345,57 +356,49 @@
 }
 
 - (void)loadFollowBooks {
-    [CKBook followBooksForUser:[CKUser currentUser]
-                       success:^(NSArray *books) {
-                           self.followBooks = [NSMutableArray arrayWithArray:books];
-                           if ([books count] > 0) {
-                               NSInteger numSections = [self.collectionView numberOfSections];
-                               if (numSections > 1) {
-                                   [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                               } else {
-                                   [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+    
+    CKUser *currentUser = [CKUser currentUser];
+    
+    if ([currentUser isSignedIn]) {
+        [CKBook followBooksForUser:currentUser
+                           success:^(NSArray *books) {
+                               self.followBooks = [NSMutableArray arrayWithArray:books];
+                               if ([books count] > 0) {
+                                   NSInteger numSections = [self.collectionView numberOfSections];
+                                   if (numSections > 1) {
+                                       [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                                   } else {
+                                       [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                                   }
                                }
                            }
-                       }
-                       failure:^(NSError *error) {
-                           DLog(@"Error: %@", [error localizedDescription]);
-                       }];
-}
-
-- (void)performLogin {
-    
-    // Now tries and log the user in.
-    [CKUser loginWithFacebookCompletion:^{
+                           failure:^(NSError *error) {
+                               DLog(@"Error: %@", [error localizedDescription]);
+                           }];
+    } else {
         
-        CKUser *user = [CKUser currentUser];
-        if (user.admin) {
-            [self.loginView loginAdminDone];
-        } else {
-            [self.loginView loginLoadingFriends:[user numFollows]];
+        [self.followBooks removeAllObjects];
+        NSInteger numSections = [self.collectionView numberOfSections];
+        if (numSections > 1) {
+            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
         }
-        
-        [self informLoginSuccessful:YES];
-        
-    } failure:^(NSError *error) {
-        DLog(@"Error logging in: %@", [error localizedDescription]);
-        
-        // Reset the facebook button.
-        [self.loginView loginFailed];
-        
-        [self informLoginSuccessful:NO];
-    }];
+    }
 }
 
-- (void)informLoginSuccessful:(BOOL)success {
+- (void)loginPerformed:(NSNotification *)notification {
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        [self loadMyBook];
+    }
+}
+
+- (void)loggedOut:(NSNotification *)notification {
     
-    // Remove the login view.
-    self.loginView.hidden = success;
-    
+    // Reload book.
     [self loadMyBook];
     
-    // Inform login successful.
-    [EventHelper postLoginSuccessful:success];
-    
+    // Reload follows books
+    [self loadFollowBooks];
 }
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
@@ -540,19 +543,15 @@
         NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:[longPressGesture locationInView:self.collectionView]];
         
         if (indexPath != nil) {
-            if ([self isCenterBookAtIndexPath:indexPath]) {
+            
+            // Delete mode when in Follow section.
+            if (indexPath.section == kFollowSection) {
                 
-                // Delete mode when in Follow section and book is in the center.
-                if (indexPath.section == kFollowSection) {
-                    [self setDeleteMode:YES indexPath:indexPath];
-                }
-                
-            } else {
-                
-                // Else scroll there.
+                // Scroll to center, then enable delete mode.
                 [self.collectionView scrollToItemAtIndexPath:indexPath
                                             atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                                     animated:YES];
+                [self setDeleteMode:YES indexPath:indexPath];
             }
         }
     }
@@ -566,6 +565,9 @@
 }
 
 - (void)setDeleteMode:(BOOL)enable indexPath:(NSIndexPath *)indexPath {
+    
+    BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
+    [cell enableDeleteMode:enable];
     
     if (enable) {
         
@@ -589,7 +591,6 @@
         self.selectedIndexPath = indexPath;
         
         // Position the delete button.
-        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
         CGRect frame = [self.collectionView convertRect:cell.frame toView:overlayView];
         UIButton *deleteButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
                                                       target:self
@@ -599,6 +600,16 @@
                                         deleteButton.frame.size.width,
                                         deleteButton.frame.size.height);
         [overlayView addSubview:deleteButton];
+        deleteButton.alpha = 0.0;
+        self.deleteButton = deleteButton;
+        
+        // Watch the cell frame.
+        [self.collectionView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
+        
+    } else {
+        
+        // Remove observer.
+        [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
     }
     
     [UIView animateWithDuration:0.3
@@ -609,6 +620,9 @@
                          // Fade the edit overlay.
                          self.overlayView.alpha = enable ? 1.0 : 0.0;
                          
+                         // Fade the delete button.
+                         self.deleteButton.alpha = enable ? 1.0 : 0.0;
+                         
                      }
                      completion:^(BOOL finished) {
                          
@@ -617,11 +631,14 @@
                          
                          if (!enable) {
                              [self.overlayView removeFromSuperview];
+                             [self.deleteButton removeFromSuperview];
                              self.overlayView = nil;
+                             self.deleteButton = nil;
                              self.selectedIndexPath = nil;
                              
                              // Tell root VC to re-enable panning.
                              [self.delegate panEnabledRequested:YES];
+                             
                          }
                          
                      }];
@@ -640,6 +657,10 @@
 - (void)deleteTapped:(id)sender {
     [self unfollowBookAtIndexPath:self.selectedIndexPath];
     [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+}
+
+- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    [self.delegate panToBenchtopForSelf:self];
 }
 
 @end
