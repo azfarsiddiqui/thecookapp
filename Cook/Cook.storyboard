@@ -218,18 +218,21 @@
                                 <color key="progressTintColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M9N-Be-5T3">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M9N-Be-5T3">
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" backgroundImage="cook_book_icon_like_off.png">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <state key="selected" backgroundImage="cook_book_icon_like_on.png"/>
-                                <state key="highlighted" backgroundImage="cook_book_icon_like_on.png">
+                                <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="likeButtonTapped:" destination="JDl-m4-0RL" eventType="touchUpInside" id="bgw-DZ-atI"/>
+                                </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="likes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dve-8G-tCU">
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="likes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dve-8G-tCU">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="a3e-op-K53"/>
                                 </constraints>
@@ -266,11 +269,11 @@
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="top" secondItem="G8I-BA-gbt" secondAttribute="bottom" constant="24" type="user" id="NPE-Ow-gc5"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="leading" secondItem="H9S-OO-JnT" secondAttribute="trailing" constant="40" type="user" id="Oxb-C0-EsE"/>
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="top" secondItem="G8I-BA-gbt" secondAttribute="bottom" constant="24" type="user" id="PBR-bl-Twm"/>
-                            <constraint firstItem="Dve-8G-tCU" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="104" id="RBL-xn-kGl"/>
                             <constraint firstItem="H9S-OO-JnT" firstAttribute="leading" secondItem="E4H-Ex-K7C" secondAttribute="leading" type="default" id="TmV-6P-zn5"/>
                             <constraint firstItem="M9N-Be-5T3" firstAttribute="leading" secondItem="SEV-hb-8Ja" secondAttribute="leading" constant="365" id="V2X-T1-kbE"/>
                             <constraint firstItem="Gzk-Ze-6Lw" firstAttribute="trailing" secondItem="E4H-Ex-K7C" secondAttribute="trailing" type="default" id="Ywi-UO-da3"/>
                             <constraint firstItem="p0o-T6-Pxs" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" type="default" id="Znz-ch-Hg5"/>
+                            <constraint firstItem="Dve-8G-tCU" firstAttribute="top" secondItem="SEV-hb-8Ja" secondAttribute="top" constant="105" id="aMN-Np-PZv"/>
                             <constraint firstItem="E4H-Ex-K7C" firstAttribute="leading" secondItem="G8I-BA-gbt" secondAttribute="leading" type="user" id="bSe-q5-Kub"/>
                             <constraint firstAttribute="trailing" secondItem="lee-HL-iwR" secondAttribute="trailing" constant="18" id="bhO-YG-8M9"/>
                             <constraint firstItem="fcB-UV-juz" firstAttribute="bottom" secondItem="SEV-hb-8Ja" secondAttribute="bottom" type="default" id="duZ-3G-hVO"/>
@@ -684,6 +687,7 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
             <relationships>
                 <relationship kind="action" name="closeButtonTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="likeButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="action" name="saveButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="closeButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="cookingDirectionsView" candidateClass="CookingDirectionsView"/>

@@ -47,7 +47,8 @@
 //data
 @property (nonatomic,strong) Category *selectedCategory;
 @property (nonatomic,strong) NSArray *categories;
-@property (nonatomic,assign) BOOL recipeLiked;
+@property (nonatomic,assign) BOOL recipeLikedByUser;
+@property (nonatomic,assign) NSUInteger numLikes;
 @end
 
 @implementation RecipeViewController
@@ -174,13 +175,10 @@
 
 -(IBAction)likeButtonTapped:(UIButton*)button
 {
-    button.enabled = NO;
-    //do the opposite of the current value
-    [RecipeLike updateRecipeLikeForUser:[CKUser currentUser] recipe:self.recipe liked:!self.recipeLiked withSuccess:^(id object) {
-        button.enabled = YES;
-        button.selected = !button.selected;
+    [self toggleRecipeLike];
+    [RecipeLike updateRecipeLikeForUser:[CKUser currentUser] recipe:self.recipe liked:self.recipeLikedByUser withSuccess:^() {
     } failure:^(NSError *error) {
-        button.enabled = YES;
+        //TODO: reverse action
         DLog(@"could not like/unlike recipe: %@", [error description]);
     }];
 }
@@ -219,26 +217,21 @@
         DLog(@"Could not retrieve categories: %@", [error description]);
     }];
     
-//    self.recipeLiked = [RecipeLike recipeLI:[CKUser currentUser] forRecipe:self.recipe];
-//    
-//    [RecipeLike fetchRecipeLikeForUser:[CKUser currentUser]
-//                                recipe:self.recipe withSuccess:^(RecipeLike *recipeLike) {
-//                                    self.recipeLike = recipeLike;
-//                                    if (self.recipeLike) {
-//                                        self.likeButton.selected = YES;
-//                                    }
-//                                } failure:^(NSError *error) {
-//                                    DLog(@"Could not fetch recipe likes: %@", [error description]);
-//    }];
-//    
-    self.likesLabel.text = [NSString stringWithFormat:@"%i",0];
 
+    [RecipeLike fetchRecipeLikeInfoForUser:[CKUser currentUser] recipe:self.recipe withSuccess:^(NSDictionary *results) {
+        NSNumber *numLikes = [results objectForKey:kRecipeLikeKeyLikesCount];
+        self.numLikes =[numLikes intValue];
+        [self refreshLikesLabel];
+
+        NSNumber *userLike = [results objectForKey:kRecipeLikeKeyUserLike];
+        self.recipeLikedByUser = [userLike boolValue];
+        [self refreshLikeButton];
+    } failure:^(NSError *error) {
+        DLog(@"Could not fetch recipe likes: %@", [error description]);
+
+    }];
 }
 
--(void)updateLikes:(BOOL)liked
-{
-    
-}
 -(void) configCategoriesList
 {
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
@@ -296,10 +289,33 @@
     [alertView show];
 }
 
+#pragma mark - like-related
+
+-(void)toggleRecipeLike
+{
+    self.recipeLikedByUser = !self.recipeLikedByUser;
+    self.recipeLikedByUser ? self.numLikes++ : self.numLikes--;
+    [self refreshLikesLabel];
+    [self refreshLikeButton];
+}
+
 -(void)configLikesLabel
 {
     self.likesLabel.font = [Theme defaultFontWithSize:14.0f];
     self.likesLabel.text = @"0";
+    self.likesLabel.hidden = YES;
+}
+
+-(void)refreshLikesLabel
+{
+    self.likesLabel.text = [NSString stringWithFormat:@"%d",self.numLikes];
+    self.likesLabel.hidden = NO;
+}
+
+-(void)refreshLikeButton
+{
+    self.likeButton.selected = self.recipeLikedByUser;
+    self.likeButton.hidden = NO;
 }
 
 #pragma mark - CategoryListViewDelegate
