@@ -29,6 +29,7 @@
     UIImage *onImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_on.png",imagePrefix]];
     UIButton *button = [self buttonWithImage:offImage target:target selector:selector];
     [button setBackgroundImage:onImage forState:UIControlStateSelected];
+    [button setBackgroundImage:onImage forState:UIControlStateHighlighted];
     return button;
 }
 

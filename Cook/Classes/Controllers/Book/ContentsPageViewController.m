@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *likesLabel;
+@property (nonatomic, strong) UIButton *likesButton;
 @property (nonatomic, strong) FacebookUserView *facebookView;
 
 @end
@@ -186,12 +187,22 @@
 
 -(void)initTableFooter {
     //add a footer for likes
-    self.likesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 20.0f)];
+    self.likesButton = [ViewHelper buttonWithImagePrefix:@"cook_book_icon_like" target:self selector:@selector(likesButtonTapped:)];
+
+    UIView *footerView = [[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.tableView.frame.size.width, self.likesButton.frame.size.height+20.0f)];
+
+    self.likesButton.frame = CGRectMake(floorf(0.5*(self.tableView.frame.size.width - self.likesButton.frame.size.width)), 0.0f, self.likesButton.frame.size.width, self.likesButton.frame.size.height);
+
+    self.likesButton.hidden = YES;
+    self.likesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, footerView.frame.size.height-20.0f, self.tableView.frame.size.width, 20.0f)];
     self.likesLabel.textAlignment = NSTextAlignmentCenter;
     self.likesLabel.font = [Theme defaultBoldFontWithSize:16.0f];
     self.likesLabel.textColor = [Theme contentsItemColor];
-
-    self.tableView.tableFooterView = self.likesLabel;
+    
+    [footerView addSubview:self.likesLabel];
+    [footerView addSubview:self.likesButton];
+    
+    self.tableView.tableFooterView = footerView;
 
 }
 
@@ -208,8 +219,15 @@
 {
     [RecipeLike fetchRecipeLikesForUser:[CKUser currentUser] withSuccess:^(NSArray *results) {
         self.likesLabel.text = [NSString stringWithFormat:@"%d LIKES",[results count]];
+        self.likesButton.hidden = NO;
     } failure:^(NSError *error) {
         DLog(@"fetch recipe likes for user returned an error: %@", [error description]);
     }];
+}
+
+#pragma mark - Action buttons
+-(void) likesButtonTapped:(UIButton*)likesButton
+{
+    
 }
 @end
