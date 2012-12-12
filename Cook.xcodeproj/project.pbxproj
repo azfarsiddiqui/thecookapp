@@ -338,6 +338,8 @@
 		8936F7FA161E7ABB00E6EF1D /* NewRecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7F3161E7ABB00E6EF1D /* NewRecipeViewController.m */; };
 		8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7FF161E7C1100E6EF1D /* ViewHelper.m */; };
 		8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F802161E959700E6EF1D /* CKRecipeImage.m */; };
+		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
+		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
 		895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D91650C23500765F96 /* CoreText.framework */; };
 		895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D71650C20200765F96 /* OpenGLES.framework */; };
 		895A2B8F1655BC670061E687 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */; };
@@ -794,6 +796,10 @@
 		8936F7FF161E7C1100E6EF1D /* ViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewHelper.m; sourceTree = "<group>"; };
 		8936F801161E959700E6EF1D /* CKRecipeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeImage.h; sourceTree = "<group>"; };
 		8936F802161E959700E6EF1D /* CKRecipeImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeImage.m; sourceTree = "<group>"; };
+		893AC89E16782B3B00B221EC /* LikesPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LikesPageViewController.h; path = Book/LikesPageViewController.h; sourceTree = "<group>"; };
+		893AC89F16782B3B00B221EC /* LikesPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikesPageViewController.m; path = Book/LikesPageViewController.m; sourceTree = "<group>"; };
+		893AC8A016782B3B00B221EC /* SectionPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPageViewController.h; path = Book/SectionPageViewController.h; sourceTree = "<group>"; };
+		893AC8A116782B3C00B221EC /* SectionPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SectionPageViewController.m; path = Book/SectionPageViewController.m; sourceTree = "<group>"; };
 		895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
 		89622173161E9F300023EC30 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
 		89622174161E9F300023EC30 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
@@ -1706,19 +1712,23 @@
 			name = Contents;
 			sourceTree = "<group>";
 		};
-		8996A3AA165C62B00099583E /* Category */ = {
+		8996A3AA165C62B00099583E /* Section */ = {
 			isa = PBXGroup;
 			children = (
+				893AC89E16782B3B00B221EC /* LikesPageViewController.h */,
+				893AC89F16782B3B00B221EC /* LikesPageViewController.m */,
+				893AC8A016782B3B00B221EC /* SectionPageViewController.h */,
+				893AC8A116782B3C00B221EC /* SectionPageViewController.m */,
 				76622D5A1650C6A7005F4459 /* CategoryPageViewController.h */,
 				76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */,
 			);
-			name = Category;
+			name = Section;
 			sourceTree = "<group>";
 		};
 		89B83E8F1659AA130012E03B /* BookPages */ = {
 			isa = PBXGroup;
 			children = (
-				8996A3AA165C62B00099583E /* Category */,
+				8996A3AA165C62B00099583E /* Section */,
 				8996A3A9165C62A70099583E /* Contents */,
 				8936F7F1161E7ABB00E6EF1D /* Recipe */,
 				8996A3AE165C653F0099583E /* BookProfilePageViewController.h */,
@@ -2138,6 +2148,8 @@
 				76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */,
 				892282B61671933D002FE936 /* RecipeLike.m in Sources */,
 				765E65C91672144400D5D54E /* LoginViewController.m in Sources */,
+				893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */,
+				893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

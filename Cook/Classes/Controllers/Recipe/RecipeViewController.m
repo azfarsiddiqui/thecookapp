@@ -91,7 +91,11 @@
 
 -(NSString *)pageNumberPrefixString
 {
-    return self.recipe.category ? self.recipe.category.name : nil;
+    if ([self.recipe.category isDataAvailable]) {
+        return self.recipe.category.name;
+    } else {
+        return @"fetch needed";
+    }
 }
 
 -(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex

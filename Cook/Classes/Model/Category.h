@@ -15,5 +15,5 @@
 + (UIImage *)bookImageForCategory:(NSString *)category;
 
 - (UIImage *)bookImage;
-
+-(BOOL)isDataAvailable;
 @end

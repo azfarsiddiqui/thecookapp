@@ -11,13 +11,8 @@
 #import "Theme.h"
 #import "ContentsTableViewCell.h"
 
-@interface CategoryPageViewController () <UITableViewDataSource, UITableViewDelegate>
-
-@property (nonatomic, strong) NSString *categoryName;
-@property (nonatomic, strong) UILabel *categoryLabel;
+@interface CategoryPageViewController ()
 @property (nonatomic, strong) UIImageView *categoryImageView;
-@property (nonatomic, strong) UITableView *tableView;
-
 @end
 
 @implementation CategoryPageViewController
@@ -28,131 +23,43 @@
 #define kTableInsets    UIEdgeInsetsMake(50.0, 0.0, 0.0, 100.0)
 
 - (void)initPageView {
+    [super initPageView];
     [self initCategoryImageView];
-    [self initCategoryLabel];
-    [self initTableView];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+-(void)setSectionName:(NSString *)sectionName
 {
-    [super viewWillAppear:animated];
-    DLog();
-    [self showContentsButton:YES];
-}
+    [super setSectionName:sectionName];
 
--(void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    DLog();
-}
-- (void)loadCategory:(NSString *)categoryName {
-    
-    self.categoryName = categoryName;
-    
     // Update category image.
-    UIImage *categoryImage = [Category bookImageForCategory:categoryName];
-    self.categoryImageView.frame = CGRectMake(self.view.bounds.origin.x,
-                                              self.view.bounds.origin.y,
-                                              categoryImage.size.width,
-                                              categoryImage.size.height);
-    self.categoryImageView.image = categoryImage;
+    UIImage *categoryImage = [Category bookImageForCategory:self.sectionName];
+    if (categoryImage) {
+        self.categoryImageView.frame = CGRectMake(self.view.bounds.origin.x,
+                                                  self.view.bounds.origin.y,
+                                                  categoryImage.size.width,
+                                                  categoryImage.size.height);
+        self.categoryImageView.image = categoryImage;
+    }
     
-    // Update category label.
-    NSString *categoryDisplay = [categoryName uppercaseString];
-    CGSize size = [categoryDisplay sizeWithFont:kCategoryFont
-                              constrainedToSize:CGSizeMake(self.view.bounds.size.width - kLabelOffset.x,
-                                                           self.view.bounds.size.height)
-                                  lineBreakMode:NSLineBreakByWordWrapping];
-    DLog(@"optimum category label size is %@", NSStringFromCGSize(size));
-    self.categoryLabel.frame = CGRectMake(self.categoryLabel.frame.origin.x,
-                                          self.categoryLabel.frame.origin.y,
-                                          size.width,
-                                          size.height);
-    self.categoryLabel.text = categoryDisplay;
+    self.recipes = [self.dataSource recipesForSection:self.sectionName];
     
-    // Update tableview.
-    self.tableView.frame = CGRectMake(self.tableView.frame.origin.x,
-                                      self.categoryLabel.frame.origin.y + self.categoryLabel.frame.size.height,
-                                      self.tableView.frame.size.width,
-                                      self.view.bounds.size.height - self.categoryLabel.frame.origin.y - self.categoryLabel.frame.size.height - kTableInsets.top - kTableInsets.bottom);
     [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource methods
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.dataSource numRecipesInCategory:self.categoryName];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CKRecipe *recipe = [[self.dataSource recipesForCategory:self.categoryName] objectAtIndex:indexPath.row];
-    
+    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.row];
     UITableViewCell *cell = [self cellForTableView:tableView indexPath:indexPath];
     cell.textLabel.text = [recipe.name uppercaseString];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.categoryName]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.sectionName]];
     return cell;
 }
-#pragma mark - UITableViewDelegate methods
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    NSUInteger requestedPageIndex = [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.categoryName];
-    [self.delegate requestedPageIndex:requestedPageIndex];
-}
-
 #pragma mark - Private methods
 
--(UITableViewCell*) cellForTableView:(UITableView*)tableView indexPath:(NSIndexPath*)indexPath
-{
-    UITableViewCell *tableViewCell = [tableView dequeueReusableCellWithIdentifier:kRecipeCellId forIndexPath:indexPath];
-    tableViewCell.textLabel.textColor = [Theme categoryViewTextColor];
-    tableViewCell.textLabel.font = [Theme defaultBoldFontWithSize:16.0f];
-    tableViewCell.detailTextLabel.textColor = [Theme defaultLabelColor];
-    tableViewCell.detailTextLabel.font = [Theme defaultBoldFontWithSize:16.0f];
-    
-    return tableViewCell;
-}
 - (void)initCategoryImageView {
     UIImageView *categoryImageView = [[UIImageView alloc] initWithImage:nil];
-    [self.view addSubview:categoryImageView];
+    [self.view insertSubview:categoryImageView atIndex:0];
     self.categoryImageView = categoryImageView;
 }
-
-- (void)initCategoryLabel {
-    UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(kLabelOffset.x, kLabelOffset.y, 0.0, 0.0)];
-    categoryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    categoryLabel.numberOfLines = 0;
-    categoryLabel.backgroundColor = [UIColor clearColor];
-    categoryLabel.font = kCategoryFont;
-    categoryLabel.textColor = [Theme categoryViewTextColor];
-    categoryLabel.shadowColor = [UIColor whiteColor];
-    categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-    categoryLabel.minimumScaleFactor = 0.5;
-    [self.view addSubview:categoryLabel];
-    self.categoryLabel = categoryLabel;
-}
-
-- (void)initTableView {
-    CGFloat categoryLabelxOffset = self.categoryLabel.frame.origin.x;
-    CGFloat categoryLabelyOffset = self.categoryLabel.frame.origin.y;
-    CGFloat categoryLabelHeight = self.categoryLabel.frame.size.height;
-    CGFloat availableWidth = self.view.bounds.size.width - categoryLabelxOffset;
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(categoryLabelxOffset + kTableInsets.left,
-                                                                           categoryLabelyOffset + categoryLabelHeight + kTableInsets.top,
-                                                                           availableWidth - kTableInsets.left - kTableInsets.right,
-                                                                           self.view.bounds.size.height - categoryLabelyOffset - categoryLabelHeight - kTableInsets.top - kTableInsets.bottom)
-                                                          style:UITableViewStylePlain];
-    tableView.backgroundColor = [UIColor clearColor];
-    tableView.scrollEnabled = NO;
-    tableView.autoresizingMask = UIViewAutoresizingNone;
-    tableView.dataSource = self;
-    tableView.delegate = self;
-    tableView.scrollEnabled = NO;
-    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self.view addSubview:tableView];
-    self.tableView = tableView;
-    [self.tableView registerClass:[ContentsTableViewCell class] forCellReuseIdentifier:kRecipeCellId];
-}
-
 
 @end

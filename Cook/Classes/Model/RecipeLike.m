@@ -25,8 +25,10 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
 +(RecipeLike*)recipeLikeForParseObject:(PFObject*)parseObject
 {
     RecipeLike *parseRecipeLike = [[RecipeLike alloc]initWithParseObject:parseObject];
-    parseRecipeLike.user = [parseObject objectForKey:kUserModelForeignKeyName];
-    parseRecipeLike.recipe = [parseObject objectForKey:kRecipeModelForeignKeyName];
+    parseRecipeLike.user = [[CKUser alloc] initWithParseUser:[parseObject objectForKey:kUserModelForeignKeyName]];
+
+    PFObject *parseRecipeObject = [parseObject objectForKey:kRecipeModelForeignKeyName];
+    parseRecipeLike.recipe = [CKRecipe recipeForParseRecipe:parseRecipeObject user:parseRecipeLike.user];
     return parseRecipeLike;
 }
 
@@ -34,17 +36,17 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
 +(void) updateRecipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe liked:(BOOL)like withSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     //see if it exists first
-    [RecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(RecipeLike *recipeLike) {
-        if (recipeLike && !like) {
+    [RecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(PFObject *parseRecipeObject) {
+        if (parseRecipeObject && !like) {
             //delete it - if it exists
-            [recipeLike.parseObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            [parseRecipeObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (!error) {
                     DLog(@"successfully deleted RecipeLike");
                     success();
                 }
             }];
         }
-        else if (!recipeLike && like) {
+        else if (!parseRecipeObject && like) {
             RecipeLike *recipeLike = [RecipeLike recipeLikeForUser:user recipe:recipe];
             [recipeLike saveInBackground:^{
                 success();
@@ -64,16 +66,9 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     [query whereKey:kRecipeModelForeignKeyName equalTo:recipe.parseObject];
     
-    [query findObjectsInBackgroundWithBlock:
-     ^(NSArray *recipeLikes, NSError *error) {
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!error) {
-            if (recipeLikes && [recipeLikes count]> 0) {
-                DLog(@"recipe like for this user. returned %d count", [recipeLikes count]);
-                success([RecipeLike recipeLikeForParseObject:[recipeLikes objectAtIndex:0]]);
-            } else {
-                DLog(@"recipe has not been liked by this user");
-                success(nil);
-            }
+           success(object);
         } else {
             failure(error);
         }
@@ -105,15 +100,31 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
     
 }
 
-+(void)fetchRecipeLikesForUser:(CKUser *)user withSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
+
++(void) fetchRecipeLikeCountForUser:(CKUser*)user withSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     PFQuery *query = [PFQuery queryWithClassName:kRecipeLikeModelName];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
+    [query countObjectsInBackgroundWithBlock:^(int count, NSError *error) {
+        if (!error) {
+            success(count);
+        } else {
+            failure(error);
+        }
+    }];
+}
 
++(void)fetchLikedRecipesForUser:(CKUser *)user withSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
+{
+    PFQuery *query = [PFQuery queryWithClassName:kRecipeLikeModelName];
+    [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
+    [query includeKey:kRecipeModelForeignKeyName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipeLikes, NSError *error) {
         if (!error) {
             NSArray *recipeLikes = [parseRecipeLikes collect:^id(PFObject *parseRecipeLike) {
-                return [RecipeLike recipeLikeForParseObject:parseRecipeLike];
+                PFObject *parseRecipeObject = [parseRecipeLike objectForKey:kRecipeModelForeignKeyName];
+                CKRecipe *recipe = [CKRecipe recipeForParseRecipe:parseRecipeObject user:user];
+                return recipe;
             }];
 //            DLog(@"fetch returned %i recipe likes for user", [parseRecipeLikes count]);
             success(recipeLikes);

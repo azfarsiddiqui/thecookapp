@@ -27,6 +27,7 @@
 - (UIEdgeInsets)bookViewInsets;
 - (BookViewController *)bookViewController;
 - (void)bookViewReloadRequested;
+- (void)didLoadLikedUserRecipes:(NSArray*)userLikedRecipes;
 
 @end
 
@@ -47,11 +48,11 @@
 - (NSUInteger)sectionsInPageContent;
 - (NSString*)sectionNameForPageContentAtIndex:(NSUInteger)sectionIndex;
 - (NSUInteger)pageNumForSectionName:(NSString *)sectionName;
+- (NSArray*)recipesForSection:(NSString *)sectionName;
 
 //category-related
 - (NSUInteger)numRecipesInCategory:(NSString *)category;
 - (NSUInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName;
-- (NSArray *)recipesForCategory:(NSString *)categoryName;
 - (NSUInteger)pageNumForCategoryName:(NSString*)categoryName;
 
 @end

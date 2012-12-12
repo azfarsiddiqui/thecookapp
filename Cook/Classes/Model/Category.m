@@ -45,4 +45,9 @@
     return [Category bookImageForCategory:self.name];
 }
 
+-(BOOL)isDataAvailable
+{
+    return [self.parseObject isDataAvailable];
+}
+
 @end
