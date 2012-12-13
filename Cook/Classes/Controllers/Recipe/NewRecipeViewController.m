@@ -18,6 +18,9 @@
 #import "NSArray+Enumerable.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 
+#define kEditHeight 180.0f 
+#define kIngredientsTableViewRestoreHeight 518.0f
+
 @interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
 
 //UI
@@ -173,7 +176,10 @@
 -(IBAction)addIngredientTapped:(UIButton*)button
 {
     [self.ingredients addObject:[Ingredient ingredientwithName:@"ingredient"]];
-    [self.ingredientsTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.ingredients count]> 0 ?[self.ingredients count]-1:0 inSection:0];
+    [self.ingredientsTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    [self.ingredientsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
+
 }
 
 -(void) servesTapped:(UITapGestureRecognizer*)gestureRecognizer;
@@ -263,13 +269,6 @@
     return cell;
 }
 
-#pragma mark - UITableViewDelegate
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    DLog();
-}
-    
-
 #pragma mark - UIImagePickerControllerDelegate
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
@@ -344,6 +343,20 @@
     return YES;
 }
 
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if (textField!= self.recipeNameTextField) {
+        CGRect smallFrame = CGRectMake(self.ingredientsTableView.frame.origin.x, self.ingredientsTableView.frame.origin.y, self.ingredientsTableView.frame.size.width, kEditHeight);
+        self.ingredientsTableView.frame = smallFrame;
+        self.backgroundIngredientImageView.frame = smallFrame;
+        
+        UITableViewCell *tableViewCell = (UITableViewCell*)[[textField superview] superview];
+        NSIndexPath *indexPath = [self.ingredientsTableView indexPathForCell:tableViewCell];
+        [self.ingredientsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:NO];
+    }
+}
+
+
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
     if (textField!= self.recipeNameTextField) {
@@ -351,6 +364,10 @@
         IngredientTableViewCell *cell = (IngredientTableViewCell*)[parentView superview];
         Ingredient *ingredient = [self.ingredients objectAtIndex:cell.ingredientIndex];
         ingredient.name = textField.text;
+        
+        CGRect nonEditingFrame = CGRectMake(self.ingredientsTableView.frame.origin.x, self.ingredientsTableView.frame.origin.y, self.ingredientsTableView.frame.size.width, kIngredientsTableViewRestoreHeight);
+        self.ingredientsTableView.frame = nonEditingFrame;
+        self.backgroundIngredientImageView.frame = nonEditingFrame;
     }
 }
 

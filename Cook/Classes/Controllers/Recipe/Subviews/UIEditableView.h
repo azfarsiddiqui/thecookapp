@@ -14,6 +14,7 @@
 
 @interface UIEditableView : UIView
 //change the view to allow for editing. this might be new sub-views are displayed, or existing sub-views are enabled
+@property (nonatomic,strong) UIImageView *backgroundEditImageView;
 -(void) makeEditable:(BOOL)editable;
 -(BOOL) inEditMode;
 @end
