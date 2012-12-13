@@ -66,9 +66,14 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     [query whereKey:kRecipeModelForeignKeyName equalTo:recipe.parseObject];
     
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+    [query findObjectsInBackgroundWithBlock:^(NSArray *recipeLikes, NSError *error) {
+        
         if (!error) {
-           success(object);
+            if (recipeLikes && [recipeLikes count] > 0) {
+                success([recipeLikes objectAtIndex:0]);
+            } else {
+                success(nil);
+            }
         } else {
             failure(error);
         }
@@ -79,8 +84,8 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
 +(void) fetchRecipeLikeInfoForUser:(CKUser*)user recipe:(CKRecipe *)recipe withSuccess:(DictionaryObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     __block NSMutableDictionary *recipeInfo = [NSMutableDictionary dictionary];
-    [RecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(RecipeLike *recipeLike) {
-        recipeLike ?
+    [RecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(PFObject *parseObject) {
+        parseObject ?
         [recipeInfo setObject:[NSNumber numberWithBool:YES] forKey:kRecipeLikeKeyUserLike]:
         [recipeInfo setObject:[NSNumber numberWithBool:NO] forKey:kRecipeLikeKeyUserLike];
         //now fetch count of likes
