@@ -19,9 +19,11 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 
 #define kEditHeight 180.0f 
+#define kTextViewEditHeight 240.0f
 #define kIngredientsTableViewRestoreHeight 518.0f
+#define kDirectionsTextRestoreHeight 586.0f
 
-@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
+@interface NewRecipeViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, AFPhotoEditorControllerDelegate, CategoryListViewDelegate, UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate, UIPopoverControllerDelegate, UIPickerViewDataSource,UIPickerViewDelegate>
 
 //UI
 @property (nonatomic,strong) AFPhotoEditorController *photoEditorController;
@@ -371,6 +373,24 @@
     }
 }
 
+#pragma mark - UITextViewDelegate
+
+-(void)textViewDidBeginEditing:(UITextView *)textView
+{
+    DLog();
+    CGRect smallFrame = CGRectMake(self.recipeDescriptionTextView.frame.origin.x, self.recipeDescriptionTextView.frame.origin.y, self.recipeDescriptionTextView.frame.size.width, kEditHeight);
+    self.recipeDescriptionTextView.frame = smallFrame;
+    self.backgroundRecipeDescriptionImageView.frame = CGRectMake(self.backgroundRecipeDescriptionImageView.frame.origin.x, self.backgroundRecipeDescriptionImageView.frame.origin.y, self.backgroundRecipeDescriptionImageView.frame.size.width, kTextViewEditHeight);
+}
+
+-(void)textViewDidEndEditing:(UITextView *)textView
+{
+    DLog();
+    self.recipeDescriptionTextView.frame = CGRectMake(self.backgroundRecipeDescriptionImageView.frame.origin.x, self.backgroundRecipeDescriptionImageView.frame.origin.y, self.backgroundRecipeDescriptionImageView.frame.size.width, kDirectionsTextRestoreHeight);
+    self.backgroundRecipeDescriptionImageView.frame = CGRectMake(self.backgroundRecipeDescriptionImageView.frame.origin.x, self.backgroundRecipeDescriptionImageView.frame.origin.y, self.backgroundRecipeDescriptionImageView.frame.size.width, kDirectionsTextRestoreHeight);
+    
+    
+}
 #pragma mark - UIPopoverDelegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {

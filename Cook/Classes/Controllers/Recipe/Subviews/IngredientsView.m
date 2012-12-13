@@ -15,7 +15,7 @@
 
 #define kIngredientCellTag 112233
 #define kIngredientTableViewCellIdentifier @"IngredientTableViewCell"
-#define kEditHeight 140.0f
+#define kEditHeight 150.0f
 
 @interface IngredientsView()<UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate>
 @property(nonatomic,strong) UILabel *ingredientsLabel;
