@@ -87,7 +87,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSString *sectionName = [self.dataSource sectionNameForPageContentAtIndex:indexPath.row];
     NSUInteger requestedPageIndex = [self.dataSource pageNumForSectionName:sectionName];
-    [self.delegate requestedPageIndex:requestedPageIndex];
+    [self.delegate recipeWithIndexRequested:requestedPageIndex];
 }
 
 #pragma mark - NewRecipeViewDelegate methods

@@ -284,7 +284,7 @@
 }
 
 -(void)contentTapped:(id)sender {
-    [self.delegate contentViewRequested];
+    [self.delegate pageContentsViewRequested];
 }
 
 @end

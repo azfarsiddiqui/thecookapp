@@ -21,8 +21,8 @@
 @protocol BookViewDelegate
 
 - (void)bookViewCloseRequested;
-- (void)requestedPageIndex:(NSUInteger)pageIndex;
-- (void)contentViewRequested;
+- (void)recipeWithIndexRequested:(NSUInteger)pageIndex;
+- (void)pageContentsViewRequested;
 - (CGRect)bookViewBounds;
 - (UIEdgeInsets)bookViewInsets;
 - (BookViewController *)bookViewController;

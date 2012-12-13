@@ -87,7 +87,7 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSUInteger requestedPageIndex = [self.dataSource pageNumForRecipeAtCategoryIndex:indexPath.row forCategoryName:self.sectionName];
-    [self.delegate requestedPageIndex:requestedPageIndex];
+    [self.delegate recipeWithIndexRequested:requestedPageIndex];
 }
 
 #pragma mark - Private methods

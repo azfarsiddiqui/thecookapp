@@ -118,7 +118,7 @@
     if (self.bookViewDataSource && self.bookViewDelegate) {
         CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.row];
         NSUInteger requestedPageIndex = [self.bookViewDataSource pageNumForRecipe:recipe];
-        [self.bookViewDelegate requestedPageIndex:requestedPageIndex];
+        [self.bookViewDelegate recipeWithIndexRequested:requestedPageIndex];
     }
 }
 

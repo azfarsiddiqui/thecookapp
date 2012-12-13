@@ -43,9 +43,11 @@
 @property (nonatomic, strong) NSMutableArray *categoryNames;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
-@property (nonatomic, assign) NSInteger currentPageIndex;
-@property (nonatomic, assign) NSInteger tentativeIndex;
 @property (nonatomic, assign) NSUInteger currentCategoryIndex;
+
+@property (nonatomic, assign) NSInteger currentPageIndex;
+@property (nonatomic, assign) NSInteger previousPageIndex;
+@property (nonatomic, assign) NSInteger tentativeIndex;
 
 @end
 
@@ -72,13 +74,13 @@
     [self.delegate bookViewControllerCloseRequested];
 }
 
--(void)contentViewRequested
+-(void)pageContentsViewRequested
 {
     self.currentPageIndex = kContentPageIndex + 1;
     [self.flipViewController gotoPreviousPage];
 }
 
--(void)requestedPageIndex:(NSUInteger)pageIndex
+-(void)recipeWithIndexRequested:(NSUInteger)pageIndex
 {
     self.currentPageIndex = pageIndex-1;
     [self.flipViewController gotoNextPage];
