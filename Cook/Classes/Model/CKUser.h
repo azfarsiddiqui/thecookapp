@@ -28,7 +28,6 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 - (BOOL)isSignedIn;
 - (NSArray *)bookSuggestionIds;
 - (NSUInteger)numFollows;
-- (void)autoSuggestCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (NSURL *)pictureUrl;
 
 @end

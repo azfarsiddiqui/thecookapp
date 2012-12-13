@@ -398,7 +398,6 @@
 		761E87681671FB4100206792 /* cook_library_signin_banner@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_signin_banner@2x.png"; sourceTree = "<group>"; };
 		761E87711671FBA400206792 /* cook_library_signin_banner_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_signin_banner_overlay.png; sourceTree = "<group>"; };
 		761E87751671FBCE00206792 /* cook_library_signin_banner_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_signin_banner_overlay@2x.png"; sourceTree = "<group>"; };
-		762026F916252B1E005A8B66 /* BenchtopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopViewController.m; sourceTree = "<group>"; };
 		762026FA16252B1E005A8B66 /* BenchtopStackLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopStackLayout.m; sourceTree = "<group>"; };
 		762026FB16252B1E005A8B66 /* BenchtopFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopFlowLayout.m; sourceTree = "<group>"; };
 		762026FC16252B1E005A8B66 /* BenchtopFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopFlowLayout.h; sourceTree = "<group>"; };
@@ -406,7 +405,6 @@
 		762026FE16252B1E005A8B66 /* BenchtopLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopLayout.h; sourceTree = "<group>"; };
 		762026FF16252B1E005A8B66 /* BenchtopStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopStackLayout.h; sourceTree = "<group>"; };
 		7620270016252B1E005A8B66 /* BenchtopDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopDelegate.h; sourceTree = "<group>"; };
-		7620270116252B1E005A8B66 /* BenchtopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewController.h; sourceTree = "<group>"; };
 		7620270216252B1E005A8B66 /* BenchtopBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopBookCell.m; sourceTree = "<group>"; };
 		7620270316252B1E005A8B66 /* BenchtopBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopBookCell.h; sourceTree = "<group>"; };
 		7620270E16253D18005A8B66 /* LoginBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginBookCell.h; sourceTree = "<group>"; };
@@ -1024,8 +1022,6 @@
 				76381C9016683C5E00404FB1 /* BenchtopCollectionFlowLayout.m */,
 				76381C961668418C00404FB1 /* BenchtopBookCoverViewCell.h */,
 				76381C971668418C00404FB1 /* BenchtopBookCoverViewCell.m */,
-				7620270116252B1E005A8B66 /* BenchtopViewController.h */,
-				762026F916252B1E005A8B66 /* BenchtopViewController.m */,
 				7620270316252B1E005A8B66 /* BenchtopBookCell.h */,
 				7620270216252B1E005A8B66 /* BenchtopBookCell.m */,
 				7620270E16253D18005A8B66 /* LoginBookCell.h */,

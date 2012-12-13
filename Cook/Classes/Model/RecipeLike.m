@@ -15,7 +15,7 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
 
 +(RecipeLike *)recipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe
 {
-    PFObject *parseRecipeLike = [PFObject objectWithClassName:kRecipeLikeModelName];
+    PFObject *parseRecipeLike = [self objectWithDefaultSecurityWithClassName:kRecipeLikeModelName];
     [parseRecipeLike setObject:user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipeLike setObject:recipe.parseObject forKey:kRecipeModelForeignKeyName];
     RecipeLike *recipeLike = [[RecipeLike alloc] initWithParseObject:parseRecipeLike];
@@ -118,7 +118,8 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
 {
     PFQuery *query = [PFQuery queryWithClassName:kRecipeLikeModelName];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
-    [query includeKey:kRecipeModelForeignKeyName];
+//    [query includeKey:kRecipeModelForeignKeyName];
+    [query includeKey:[NSString stringWithFormat:@"%@.%@", kRecipeModelForeignKeyName,kCategoryModelForeignKeyName]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipeLikes, NSError *error) {
         if (!error) {
             NSArray *recipeLikes = [parseRecipeLikes collect:^id(PFObject *parseRecipeLike) {

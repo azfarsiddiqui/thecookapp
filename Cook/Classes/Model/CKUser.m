@@ -122,60 +122,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [[self.parseUser objectForKey:kUserAttrAdmin] boolValue];
 }
 
-// This method gets all the auto-suggests that was created for the current user, then consolidates them as single
-// entries for myself.
-- (void)autoSuggestCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    
-    // Get all my suggested follow's and consolidate them.
-    PFQuery *followRequestQuery = [PFQuery queryWithClassName:kBookFollowModelName];
-    [followRequestQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
-    [followRequestQuery whereKey:kBookFollowAttrSuggest equalTo:[NSNumber numberWithBool:YES]];
-    [followRequestQuery findObjectsInBackgroundWithBlock:^(NSArray *followRequests, NSError *error) {
-        if (!error) {
-            
-            NSMutableArray *objectsToUpdate = [NSMutableArray array];
-            
-            // Get unique object ids of books.
-            NSMutableSet *uniqueFollowRequests = [NSMutableSet set];
-            for (PFObject *followRequest in followRequests) {
-                PFObject *book = [followRequest objectForKey:kBookModelForeignKeyName];
-                [uniqueFollowRequests addObject:book.objectId];
-            }
-            
-            // Create book follow suggests.
-            for (NSString *bookObjectId in uniqueFollowRequests) {
-                PFObject *friendBookFollow = [PFObject objectWithClassName:kBookFollowModelName];
-                [friendBookFollow setObject:self.parseUser forKey:kUserModelForeignKeyName];
-                [friendBookFollow setObject:[PFObject objectWithoutDataWithClassName:kBookModelName objectId:bookObjectId]
-                                     forKey:kBookModelForeignKeyName];
-                [friendBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrSuggest];
-                [friendBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrMerge];
-                [objectsToUpdate addObject:friendBookFollow];
-            }
-            
-            // Save all in background.
-            [PFObject saveAllInBackground:objectsToUpdate block:^(BOOL succeeded, NSError *error) {
-                
-                if (!error) {
-                    
-                    // Delete the auto follow requests.
-                    [followRequests makeObjectsPerformSelector:@selector(deleteInBackground)];
-                    DLog(@"Deleted follow requests.");
-                    
-                    success();
-                } else {
-                    failure(error);
-                }
-                
-            }];
-            
-        } else {
-            failure(error);
-        }
-    }];
-    
-}
-
 - (NSURL *)pictureUrl {
     NSURL *pictureUrl = nil;
     if ([PFFacebookUtils isLinkedWithUser:self.parseUser]) {
@@ -264,7 +210,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 for (PFObject *adminBook in adminBooksToFollow) {
                     
                     // Create suggested follow of my book for my friends.
-                    PFObject *adminBookFollow = [PFObject objectWithClassName:kBookFollowModelName];
+                    PFObject *adminBookFollow = [self objectWithDefaultSecurityWithClassName:kBookFollowModelName];
                     [adminBookFollow setObject:currentUser.parseUser forKey:kUserModelForeignKeyName];
                     [adminBookFollow setObject:adminBook forKey:kBookModelForeignKeyName];
                     [adminBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrAdmin];

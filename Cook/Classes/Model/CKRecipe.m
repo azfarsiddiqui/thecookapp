@@ -66,7 +66,7 @@
 
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
 {
-    PFObject *parseRecipe = [PFObject objectWithClassName:kRecipeModelName];
+    PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
     CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
     recipe.book = book;
     recipe.category = category;
