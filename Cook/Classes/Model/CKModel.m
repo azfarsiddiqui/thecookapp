@@ -26,6 +26,15 @@
                                                                 forKey:NSLocalizedDescriptionKey]];
 }
 
++ (PFObject *)objectWithDefaultSecurityWithClassName:(NSString *)parseClassName
+{
+    PFObject *pfObject = [PFObject objectWithClassName:parseClassName];
+    PFACL *objectACL = [PFACL ACLWithUser:[PFUser currentUser]];
+    [objectACL setPublicReadAccess:YES];
+    pfObject.ACL = objectACL;
+    return pfObject;
+}
+
 - (id)initWithParseObject:(PFObject *)parseObject {
     if (self = [super init]) {
         self.parseObject = parseObject;

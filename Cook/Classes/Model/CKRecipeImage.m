@@ -14,7 +14,7 @@
 {
     NSData *imageData = UIImagePNGRepresentation(image);
     PFFile *imageFile = [PFFile fileWithName:imageName data:imageData];
-    PFObject *parseRecipeImage = [PFObject objectWithClassName:kRecipeImageModelName];
+    PFObject *parseRecipeImage = [self objectWithDefaultSecurityWithClassName:kRecipeImageModelName];
     [parseRecipeImage setObject:imageName forKey:kRecipeImageAttrImageName];
     [parseRecipeImage setObject:imageFile forKey:kRecipeImageAttrImageFile];
     

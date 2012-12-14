@@ -10,7 +10,6 @@
 
 @interface UIEditableView()
 @property(nonatomic,assign,readonly) BOOL editMode;
-@property (nonatomic,strong) UIImageView *backgroundEditImageView;
 @end
 
 @implementation UIEditableView

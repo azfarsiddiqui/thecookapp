@@ -21,30 +21,39 @@
 @protocol BookViewDelegate
 
 - (void)bookViewCloseRequested;
-- (void)requestedPageIndex:(NSUInteger)pageIndex;
-- (void)contentViewRequested;
+- (void)recipeWithIndexRequested:(NSUInteger)pageIndex;
+- (void)pageContentsViewRequested;
 - (CGRect)bookViewBounds;
 - (UIEdgeInsets)bookViewInsets;
 - (BookViewController *)bookViewController;
 - (void)bookViewReloadRequested;
+- (void)didLoadLikedUserRecipes:(NSArray*)userLikedRecipes;
 
 @end
 
 @protocol BookViewDataSource
 
-- (CKBook *)currentBook;
+//context-related
 - (CKRecipe *)currentRecipe;
-- (NSInteger)numberOfPages;
-- (UIView*)viewForPageAtIndex:(NSInteger) pageIndex;
-- (NSArray *)bookRecipes;
-- (NSArray *)bookCategoryNames;
-- (NSArray *)recipesForCategory:(NSString *)categoryName;
-- (NSInteger)currentPageNumber;
-- (NSString *)bookViewCurrentCategoryName;
-- (NSInteger)numRecipesInCategory:(NSString *)category;
-- (NSInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName;
-- (NSInteger)pageNumForRecipe:(CKRecipe*)recipe;
-- (NSInteger)pageNumForCategoryName:(NSString*)categoryName;
+- (CKBook *)currentBook;
+- (NSUInteger)currentPageNumber;
+
+//book or recipe-related
+- (NSUInteger)numberOfPages;
+- (UIView*)viewForPageAtIndex:(NSUInteger) pageIndex;
+- (NSArray*)recipesInBook;
+- (NSUInteger)pageNumForRecipe:(CKRecipe*)recipe;
+
+//page-content
+- (NSUInteger)sectionsInPageContent;
+- (NSString*)sectionNameForPageContentAtIndex:(NSUInteger)sectionIndex;
+- (NSUInteger)pageNumForSectionName:(NSString *)sectionName;
+- (NSArray*)recipesForSection:(NSString *)sectionName;
+
+//category-related
+- (NSUInteger)numRecipesInCategory:(NSString *)category;
+- (NSUInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName;
+- (NSUInteger)pageNumForCategoryName:(NSString*)categoryName;
 
 @end
 

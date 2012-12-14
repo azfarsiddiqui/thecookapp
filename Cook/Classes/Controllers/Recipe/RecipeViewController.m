@@ -91,7 +91,7 @@
 
 -(NSString *)pageNumberPrefixString
 {
-    return self.recipe.category ? self.recipe.category.name : nil;
+   return self.recipe.category.name;
 }
 
 -(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex

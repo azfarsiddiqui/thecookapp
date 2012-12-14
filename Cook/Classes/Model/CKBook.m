@@ -37,11 +37,12 @@
             DLog(@"Error loading user friends: %@", [error localizedDescription]);
             failure(error);
         }
-    }];    
+    }];
 }
 
 + (PFObject *)createParseBook {
-    PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
+    
+    PFObject *parseBook = [self objectWithDefaultSecurityWithClassName:kBookModelName];
     [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
     [parseBook setObject:kBookAttrDefaultCaptionValue forKey:kBookAttrCaption];
     [parseBook setObject:[CKBookCover initialCover] forKey:kBookAttrCover];
@@ -170,22 +171,6 @@
     }];
 }
 
-+ (CKBook *)myInitialBook {
-    PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
-    [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
-    [parseBook setObject:[CKBookCover initialCover] forKey:kBookAttrCover];
-    [parseBook setObject:[CKBookCover initialIllustration] forKey:kBookAttrIllustration];
-    return [[CKBook alloc] initWithParseObject:parseBook];
-}
-
-+ (CKBook *)defaultBook {
-    PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
-    [parseBook setObject:kBookAttrDefaultNameValue forKey:kModelAttrName];
-    [parseBook setObject:[CKBookCover defaultCover] forKey:kBookAttrCover];
-    [parseBook setObject:[CKBookCover defaultIllustration] forKey:kBookAttrIllustration];
-    return [[CKBook alloc] initWithParseObject:parseBook];
-}
-
 #pragma mark - Instance 
 
 - (id)initWithParseObject:(PFObject *)parseObject {
@@ -278,7 +263,7 @@
 }
 
 - (void)addFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFObject *follow = [PFObject objectWithClassName:kUserBookFollowModelName];
+    PFObject *follow = [CKModel objectWithDefaultSecurityWithClassName:kUserBookFollowModelName];
     [follow setObject:user.parseUser forKey:kUserModelForeignKeyName];
     [follow setObject:self.parseObject forKey:kBookModelForeignKeyName];
     [follow saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

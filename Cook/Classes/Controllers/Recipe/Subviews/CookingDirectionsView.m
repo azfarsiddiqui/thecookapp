@@ -12,6 +12,7 @@
 
 #define directionsInputInsets UIEdgeInsetsMake(5.0f,5.0f,0.0f,0.0f)
 #define scrollViewInsets UIEdgeInsetsMake(0.0f,0.0f,15.0f,0.0f)
+#define kEditHeight 205.0f
 
 @interface CookingDirectionsView()<UITextViewDelegate>
 @property(nonatomic,strong) UILabel *directionsLabel;
@@ -113,11 +114,25 @@
     [ViewHelper adjustScrollContentSize:self.directionsScrollView forHeight:editSize.size.height];
 }
 #pragma mark - UITextViewDelegate
+
+-(void)textViewDidBeginEditing:(UITextView *)textView
+{
+    DLog();
+    CGRect smallFrame = CGRectMake(self.directionsTextView.frame.origin.x, self.directionsTextView.frame.origin.y, self.directionsTextView.frame.size.width, kEditHeight);
+    self.directionsTextView.frame = smallFrame;
+    self.backgroundEditImageView.frame = CGRectMake(self.backgroundEditImageView.frame.origin.x, self.backgroundEditImageView.frame.origin.y, self.backgroundEditImageView.frame.size.width, kEditHeight);
+}
+
 -(void)textViewDidEndEditing:(UITextView *)textView
 {
     DLog();
     self.directions = textView.text;
     [self refreshDataViews];
+    
+    self.backgroundEditImageView.frame = CGRectMake(self.backgroundEditImageView.frame.origin.x, self.backgroundEditImageView.frame.origin.y, self.backgroundEditImageView.frame.size.width, self.bounds.size.height);
+    self.directionsTextView.frame = [self editSize];
+
+
 }
 
 /*

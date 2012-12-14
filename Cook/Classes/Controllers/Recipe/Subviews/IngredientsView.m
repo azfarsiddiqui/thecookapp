@@ -15,6 +15,7 @@
 
 #define kIngredientCellTag 112233
 #define kIngredientTableViewCellIdentifier @"IngredientTableViewCell"
+#define kEditHeight 150.0f
 
 @interface IngredientsView()<UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate>
 @property(nonatomic,strong) UILabel *ingredientsLabel;
@@ -156,6 +157,18 @@
     return YES;
 }
 
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    CGRect smallFrame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width, kEditHeight);
+    self.tableView.frame = smallFrame;
+    self.backgroundEditImageView.frame = smallFrame;
+
+    UITableViewCell *tableViewCell = (UITableViewCell*)[[textField superview] superview];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:tableViewCell];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:NO];
+
+}
+
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
     UIView *parentView = [textField superview];
@@ -163,13 +176,19 @@
     Ingredient *ingredient = [self.ingredients objectAtIndex:cell.ingredientIndex];
     ingredient.name = textField.text;
     [self updateIngredientsLabelText];
+    CGRect nonEditingFrame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width, self.bounds.size.height);
+    self.tableView.frame = nonEditingFrame;
+    self.backgroundEditImageView.frame = nonEditingFrame;
+
 }
 
 #pragma mark - Action buttons
 -(void)addIngredientTapped:(UIButton*)button
 {
     [self.ingredients addObject:[Ingredient ingredientwithName:@"ingredient"]];
-    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredients count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.ingredients count]> 0 ?[self.ingredients count]-1:0 inSection:0];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
 }
 /*
 // Only override drawRect: if you perform custom drawing.

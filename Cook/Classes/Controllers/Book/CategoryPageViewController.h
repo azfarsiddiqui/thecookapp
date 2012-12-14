@@ -7,9 +7,7 @@
 //
 
 #import "PageViewController.h"
-
-@interface CategoryPageViewController : PageViewController
-
-- (void)loadCategory:(NSString *)categoryName;
+#import "SectionPageViewController.h"
+@interface CategoryPageViewController : SectionPageViewController
 
 @end

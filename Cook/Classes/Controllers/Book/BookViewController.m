@@ -12,31 +12,42 @@
 #import "ContentsPageViewController.h"
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
+#import "RecipeLike.h"
 #import "CategoryPageViewController.h"
+#import "LikesPageViewController.h"
 #import "RecipeViewController.h"
 #import "BookProfilePageViewController.h"
 #import "MPFlipViewController.h"
 #define kContentPageIndex  2
 #define kBookProfilePageIndex 1
+#define kLikes  @"LIKES"
 
 @interface BookViewController () <BookViewDelegate, BookViewDataSource, MPFlipViewControllerDataSource, MPFlipViewControllerDelegate>
 
-@property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) CKRecipe *recipe;
-@property (nonatomic, strong) NSArray *recipes;
-@property (nonatomic, strong) NSMutableArray *categoryNames;
-@property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
-@property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
+//ui
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, assign) id<PageViewDelegate> pageViewDelegate;
 @property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
+@property (nonatomic, strong) LikesPageViewController *likesPageViewController;
 @property (nonatomic, strong) BookProfilePageViewController *bookProfilePageViewController;
 @property (nonatomic, strong) MPFlipViewController *flipViewController;
-@property (nonatomic, assign) NSInteger currentPageIndex;
-@property (nonatomic, assign) NSInteger tentativeIndex;
 
+//data
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKRecipe *currentRecipe;
+@property (nonatomic, strong) NSArray *bookRecipes;
+@property (nonatomic, assign) NSUInteger userLikeCount;
+@property (nonatomic, strong) NSArray *likedRecipes;
+
+@property (nonatomic, strong) NSMutableArray *categoryNames;
+@property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
+@property (nonatomic, strong) NSMutableArray *categoryPageIndexes;
 @property (nonatomic, assign) NSUInteger currentCategoryIndex;
+
+@property (nonatomic, assign) NSInteger currentPageIndex;
+@property (nonatomic, assign) NSInteger previousPageIndex;
+@property (nonatomic, assign) NSInteger tentativeIndex;
 
 @end
 
@@ -63,13 +74,13 @@
     [self.delegate bookViewControllerCloseRequested];
 }
 
--(void)contentViewRequested
+-(void)pageContentsViewRequested
 {
     self.currentPageIndex = kContentPageIndex + 1;
     [self.flipViewController gotoPreviousPage];
 }
 
--(void)requestedPageIndex:(NSUInteger)pageIndex
+-(void)recipeWithIndexRequested:(NSUInteger)pageIndex
 {
     self.currentPageIndex = pageIndex-1;
     [self.flipViewController gotoNextPage];
@@ -88,33 +99,13 @@
 
 - (void)bookViewReloadRequested {
     DLog();
-    self.recipes = nil;
+    self.bookRecipes = nil;
     [self loadData];
 }
 
-#pragma mark - BookViewDataSource
-
-- (CKBook *)currentBook {
-    return self.book;
-}
-
-- (CKRecipe *)currentRecipe {
-    return self.recipe;
-}
-
-- (NSInteger)numberOfPages {
-    NSInteger numPages = 0;
-    numPages += 2;                                  // Contents page and Profile page
-    if ([self.recipes count] > 0) {
-        numPages += [self.categoryNames count];        // Number of categories.
-        numPages += [self.recipes count];           // Recipes page.
-    }
-    return numPages;
-}
-
-- (UIView *)viewForPageAtIndex:(NSInteger)pageIndex {
-    UIViewController *viewController = [self viewControllerForPageIndex:pageIndex];
-    return viewController.view;
+-(void)didLoadLikedUserRecipes:(NSArray *)userLikedRecipes
+{
+    self.likedRecipes = userLikedRecipes;
 }
 
 - (UIViewController *)viewControllerForPageIndex:(NSInteger)pageIndex {
@@ -137,32 +128,59 @@
             break;
         }
         default: {
-            NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
-            if (categoryIndex != -1) {
-                // Category page.
-                NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
-                view = self.categoryViewController.view;    // TODO Fix this to make sure viewDidLoad called.
-                viewController = self.categoryViewController;
-                [self.categoryViewController loadCategory:categoryName];
-                view = self.categoryViewController.view;
-                self.pageViewDelegate = self.categoryViewController;
+            NSUInteger likesPageIndex = [self pageNumForLikesSection];
+            if (pageIndex < likesPageIndex) {
+                NSInteger categoryIndex = [self categoryIndexForPageIndex:pageIndex];
+                if (categoryIndex != -1) {
+                    // Category page.
+                    NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
+                    view = self.categoryViewController.view;    // TODO Fix this to make sure viewDidLoad called.
+                    viewController = self.categoryViewController;
+                    self.categoryViewController.sectionName = categoryName;
+                    view = self.categoryViewController.view;
+                    self.pageViewDelegate = self.categoryViewController;
+                } else {
+                    // Recipe page.
+                    categoryIndex = [self currentCategoryIndexForPageIndex:pageIndex];
+                    NSInteger categoryPageIndex = [[self.categoryPageIndexes objectAtIndex:categoryIndex] integerValue];
+                    NSInteger recipeIndex = pageIndex - categoryPageIndex - 1;
+                    NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
+                    NSArray *recipes = [self.categoryRecipes objectForKey:categoryName];
+                    CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
+                    self.currentRecipe = recipe;
+                    RecipeViewController *recipeViewController = [self newRecipeViewController];
+                    recipeViewController.recipe = recipe;
+                    viewController = recipeViewController;
+                    view = recipeViewController.view;
+                    self.pageViewDelegate = recipeViewController;
+                    break;
+                }
             } else {
-                
-                // Recipe page.
-                categoryIndex = [self currentCategoryIndexForPageIndex:pageIndex];
-                NSInteger categoryPageIndex = [[self.categoryPageIndexes objectAtIndex:categoryIndex] integerValue];
-                NSInteger recipeIndex = pageIndex - categoryPageIndex - 1;
-                NSString *categoryName = [self.categoryNames objectAtIndex:categoryIndex];
-                NSArray *recipes = [self.categoryRecipes objectForKey:categoryName];
-                CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
-                self.recipe = recipe;
-                RecipeViewController *recipeViewController = [self newRecipeViewController];
-                recipeViewController.recipe = recipe;
-                viewController = recipeViewController;
-                view = recipeViewController.view;
-                self.pageViewDelegate = recipeViewController;
-                break;
+                if (pageIndex == likesPageIndex) {
+                    view = self.likesPageViewController.view;
+                    viewController = self.likesPageViewController;
+                    self.likesPageViewController.sectionName = kLikes;
+                    view = self.likesPageViewController.view;
+                    self.pageViewDelegate = self.categoryViewController;
+                  } else {
+                    // a recipe within the likes section
+                      DLog(@" a recipe within the likes section");
+                      NSInteger likePageIndex = [self pageNumForLikesSection];
+                      NSInteger recipeIndex = pageIndex - likePageIndex - 1;
+                      [self.likedRecipes each:^(CKRecipe *testRecipe) {
+                          DLog(@"%d", [testRecipe.ingredients count]);
+                      }];
+                      
+                      CKRecipe *recipe = [self.likedRecipes objectAtIndex:recipeIndex];
+                      self.currentRecipe = recipe;
+                      RecipeViewController *recipeViewController = [self newRecipeViewController];
+                      recipeViewController.recipe = recipe;
+                      viewController = recipeViewController;
+                      view = recipeViewController.view;
+                      self.pageViewDelegate = recipeViewController;
+                  }
             }
+
         }
     }
     if (self.pageViewDelegate) {
@@ -171,51 +189,73 @@
     return viewController;
 }
 
-- (NSArray *)bookRecipes {
-    return self.recipes;
+#pragma mark - BookViewDataSource (context-related)
+
+- (CKRecipe *)currentRecipe {
+    return self.currentRecipe;
 }
 
--(NSArray *)bookCategoryNames {
-    return self.categoryNames;
+- (CKBook *)currentBook {
+    return self.book;
 }
 
-- (NSArray *)recipesForCategory:(NSString *)categoryName {
-    NSArray *recipes = nil;
-    NSUInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
-    if (categoryIndex != NSNotFound) {
-        recipes = [self.categoryRecipes objectForKey:categoryName];
-    }
-    return recipes;
-}
-
-- (NSInteger)currentPageNumber {
+- (NSUInteger)currentPageNumber {
     return self.currentPageIndex;
 }
 
-- (NSString *)bookViewCurrentCategoryName {
-    return [self.categoryNames objectAtIndex:self.currentCategoryIndex];
-}
+#pragma mark - BookViewDataSource (book-related)
 
-- (NSInteger)numRecipesInCategory:(NSString *)categoryName {
-    NSInteger recipeCount = 0;
-    NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
-    if (categoryIndex != NSNotFound) {
-        recipeCount = [[self.categoryRecipes objectForKey:categoryName] count];
+- (NSUInteger)numberOfPages {
+    NSInteger numPages = 0;
+    numPages += 2;                                  // Contents page and Profile page
+    if ([self.bookRecipes count] > 0) {
+        numPages += [self.categoryNames count];        // Number of categories.
+        numPages += [self.bookRecipes count];           // Recipes page.
+        numPages += self.userLikeCount > 0 ? self.userLikeCount+1 : 0;        // User likes + cover page for user likes
     }
-    return recipeCount;
+    return numPages;
 }
 
--(NSInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName
+- (UIView *)viewForPageAtIndex:(NSUInteger)pageIndex {
+    UIViewController *viewController = [self viewControllerForPageIndex:pageIndex];
+    return viewController.view;
+}
+
+- (NSArray *)recipesInBook {
+    return self.bookRecipes;
+}
+
+
+#pragma mark - BookviewDataSource (page-contents/section)
+-(NSUInteger)sectionsInPageContent {
+    return [self.categoryNames count] + (self.userLikeCount > 0 ? 1: 0);
+}
+
+-(NSString *)sectionNameForPageContentAtIndex:(NSUInteger)sectionIndex
 {
-    return [self pageNumForCategoryName:categoryName] + recipeIndex + 1;
+    if ((self.userLikeCount > 0) && (sectionIndex == [self.categoryNames count])) {
+        return  kLikes;
+    } else {
+        return [self.categoryNames objectAtIndex:sectionIndex];
+    }
 }
 
--(NSInteger)pageNumForRecipe:(CKRecipe*)recipe
+-(NSUInteger)pageNumForSectionName:(NSString *)sectionName;
+{
+    if ([sectionName isEqualToString:kLikes]) {
+        return [self pageNumForLikesSection];
+    }  else {
+        return [self pageNumForCategoryName:sectionName];
+    }
+}
+
+-(NSUInteger)pageNumForRecipe:(CKRecipe*)recipe
 {
     NSString *categoryName = recipe.category.name;
-    NSArray *recipesForCategory = [self recipesForCategory:categoryName];
+    NSArray *recipesForSection = [self recipesForSection:categoryName];
+    
     NSUInteger i = 0;
-    for (CKRecipe *categoryRecipe in recipesForCategory) {
+    for (CKRecipe *categoryRecipe in recipesForSection) {
         if ([categoryRecipe isEqual:recipe]) {
             DLog(@"found recipe! i is %i", i);
             break;
@@ -225,12 +265,59 @@
     
     return [self pageNumForRecipeAtCategoryIndex:i forCategoryName:categoryName];
 }
--(NSInteger)pageNumForCategoryName:(NSString *)categoryName
+
+-(NSArray*)recipesForSection:(NSString *)sectionName
 {
-    NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
-    NSNumber *pageCategoryIndex = [self.categoryPageIndexes objectAtIndex:categoryIndex];
-    return [pageCategoryIndex intValue];
+    NSArray *recipes = nil;
+    if (![kLikes isEqualToString:sectionName]) {
+        NSUInteger categoryIndex = [self.categoryNames indexOfObject:sectionName];
+        if (categoryIndex != NSNotFound) {
+            recipes = [self.categoryRecipes objectForKey:sectionName];
+        }
+    } 
+    return recipes;
 }
+
+
+#pragma mark - BookviewDataSource (category-related)
+
+- (NSUInteger)numRecipesInCategory:(NSString *)categoryName {
+    NSInteger recipeCount = 0;
+    if (![kLikes isEqualToString:categoryName]) {
+        NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
+        if (categoryIndex != NSNotFound) {
+            recipeCount = [[self.categoryRecipes objectForKey:categoryName] count];
+        }
+    }
+    return recipeCount;
+}
+
+-(NSUInteger)pageNumForRecipeAtCategoryIndex:(NSInteger)recipeIndex forCategoryName:(NSString *)categoryName
+{
+    return [self pageNumForCategoryName:categoryName] + recipeIndex + 1;
+}
+
+-(NSUInteger)pageNumForCategoryName:(NSString *)categoryName
+{
+    if (![kLikes isEqualToString:categoryName]) {
+        NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
+        NSNumber *pageCategoryIndex = [self.categoryPageIndexes objectAtIndex:categoryIndex];
+        return [pageCategoryIndex intValue];
+    } else {
+        return [self pageNumForLikesSection];
+    }
+}
+
+-(NSUInteger)pageNumForLikesSection
+{
+    //page number for last category +  number of pages in category
+    NSString *lastCategoryName = [self.categoryNames objectAtIndex:[self.categoryNames count]-1];
+    NSUInteger lastCategoryPageNum = [self pageNumForCategoryName:lastCategoryName];
+    NSUInteger numRecipesInLastCategory = [self numRecipesInCategory:lastCategoryName];
+    
+    return lastCategoryPageNum + numRecipesInLastCategory + 1;
+}
+
 #pragma mark - MPFlipViewControllerDataSource methods
 
 - (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController viewControllerBeforeViewController:(UIViewController *)viewController {
@@ -290,6 +377,12 @@
     return _categoryViewController;
 }
 
+-(LikesPageViewController *)likesPageViewController {
+    if (!_likesPageViewController) {
+        _likesPageViewController = [[LikesPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleGray];
+    }
+    return _likesPageViewController;
+}
 -(BookProfilePageViewController *)bookProfilePageViewController
 {
     if (!_bookProfilePageViewController) {
@@ -366,8 +459,16 @@
         }
         
         // Set recipes - important for observe (TODO remove this).
-        self.recipes = recipes;
-        [self.contentsViewController refreshData];
+        self.bookRecipes = recipes;
+
+        //fetch likes for user
+        [RecipeLike fetchRecipeLikeCountForUser:[CKUser currentUser] withSuccess:^(int numObjects) {
+            self.userLikeCount = numObjects;
+            [self.contentsViewController refreshData];
+        } failure:^(NSError *error) {
+            DLog(@"error. could not likes count for user: %@", [error description]);
+            [self.contentsViewController refreshData];
+        }];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
