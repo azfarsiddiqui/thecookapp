@@ -46,6 +46,7 @@
 @property (nonatomic, assign) NSUInteger currentCategoryIndex;
 
 @property (nonatomic, assign) NSInteger currentPageIndex;
+@property (nonatomic, assign) NSInteger nonLinearPreviousPageIndex;
 @property (nonatomic, assign) NSInteger previousPageIndex;
 @property (nonatomic, assign) NSInteger tentativeIndex;
 
@@ -76,12 +77,14 @@
 
 -(void)pageContentsViewRequested
 {
+    self.nonLinearPreviousPageIndex = kContentPageIndex;
     self.currentPageIndex = kContentPageIndex + 1;
     [self.flipViewController gotoPreviousPage];
 }
 
 -(void)recipeWithIndexRequested:(NSUInteger)pageIndex
 {
+    self.nonLinearPreviousPageIndex = self.currentPageIndex;
     self.currentPageIndex = pageIndex-1;
     [self.flipViewController gotoNextPage];
 }
@@ -321,8 +324,12 @@
 #pragma mark - MPFlipViewControllerDataSource methods
 
 - (UIViewController *)flipViewController:(MPFlipViewController *)flipViewController viewControllerBeforeViewController:(UIViewController *)viewController {
-	NSInteger index = self.currentPageIndex;
-	index--;
+	NSInteger index = self.previousPageIndex;
+    if (self.nonLinearPreviousPageIndex > 0) {
+        index = self.nonLinearPreviousPageIndex;
+        self.nonLinearPreviousPageIndex = 0;
+    }
+    
 	if (index < kBookProfilePageIndex) {
 		return nil; // reached beginning, don't wrap
     }
@@ -349,6 +356,13 @@
     previousViewController:(UIViewController *)previousViewController transitionCompleted:(BOOL)completed {
 	if (completed) {
 		self.currentPageIndex = self.tentativeIndex;
+        if (self.nonLinearPreviousPageIndex > 0) {
+            self.previousPageIndex = self.nonLinearPreviousPageIndex;
+            self.nonLinearPreviousPageIndex = 0;
+        } else {
+            self.previousPageIndex = self.currentPageIndex-1;
+        }
+        
         if (self.pageViewDelegate) {
             [self.pageViewDelegate showPageNumberAndHideLoading];
         }

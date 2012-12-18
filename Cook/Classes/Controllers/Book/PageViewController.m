@@ -143,7 +143,7 @@
     NSString *contentsImageName = (self.navigationButtonStyle == NavigationButtonStyleGray) ? @"cook_book_icon_contents_gray.png" : @"cook_book_icon_contents_white.png";
     UIButton *contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:contentsImageName]
                                                  target:self
-                                               selector:@selector(contentTapped:)];
+                                               selector:@selector(pageContentsTapped:)];
     contentsButton.frame = CGRectMake(60.0,
                                    15.0,
                                    contentsButton.frame.size.width,
@@ -283,7 +283,7 @@
     [self.delegate bookViewCloseRequested];
 }
 
--(void)contentTapped:(id)sender {
+-(void)pageContentsTapped:(id)sender {
     [self.delegate pageContentsViewRequested];
 }
 

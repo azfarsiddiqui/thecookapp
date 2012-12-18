@@ -660,10 +660,6 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
-                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromCamera" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromLibrary" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
