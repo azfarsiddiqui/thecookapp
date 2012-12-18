@@ -11,13 +11,15 @@
 #import "StoreBookCoverViewCell.h"
 #import "CKBook.h"
 #import "CKBookCoverView.h"
+#import "BookViewController.h"
 #import "EventHelper.h"
+#import "AppHelper.h"
 #import "MRCEnumerable.h"
 
-@interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate>
+@interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate, BookViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *emptyBanner;
-
+@property (nonatomic, strong) BookViewController *bookViewController;
 @end
 
 @implementation StoreCollectionViewController
@@ -114,6 +116,15 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     DLog();
+    
+    CKBook *selectedBook = [self.books objectAtIndex:indexPath.row];
+    //temp - until animation is available
+    BookViewController *bookViewController = [[BookViewController alloc] initWithBook:selectedBook
+                                                                             delegate:self];
+    
+    UIView *rootView = [[AppHelper sharedInstance] rootView];
+    [rootView addSubview:bookViewController.view];
+    self.bookViewController = bookViewController;
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -164,6 +175,13 @@
     [self followBookAtIndexPath:indexPath];
 }
 
+#pragma mark - BookViewControllerDelegate
+
+-(void)bookViewControllerCloseRequested
+{
+    [self.bookViewController.view removeFromSuperview];
+    self.bookViewController = nil;
+}
 #pragma mark - Private methods
 
 - (void)loginSuccessful:(NSNotification *)notification {
