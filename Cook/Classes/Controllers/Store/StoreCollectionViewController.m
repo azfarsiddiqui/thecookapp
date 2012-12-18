@@ -210,10 +210,10 @@
     }];
     
     // Then follow in the background.
-    BOOL friendsBook = [book friendsBook];
+    BOOL isFriendsBook = [book isFriendsBook];
     [book addFollower:currentUser
               success:^{
-                  [EventHelper postFollow:YES friends:friendsBook];
+                  [EventHelper postFollow:YES friends:isFriendsBook];
              } failure:^(NSError *error) {
                  DLog(@"Unable to follow.");
              }];

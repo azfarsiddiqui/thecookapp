@@ -423,10 +423,10 @@
     }];
     
     // Unfollow in the background, then inform listeners of the update.
-    BOOL friendsBook = [book friendsBook];
+    BOOL isFriendsBook = [book isFriendsBook];
     [book removeFollower:currentUser
                  success:^{
-                     [EventHelper postFollow:NO friends:friendsBook];
+                     [EventHelper postFollow:NO friends:isFriendsBook];
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");
                  }];

@@ -18,6 +18,7 @@
 #import "ViewHelper.h"
 #import "Theme.h"
 #import "FacebookUserView.h"
+#import "EventHelper.h"
 
 @interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate>
 
@@ -189,7 +190,17 @@
         newRecipeViewVC.book = [self.dataSource currentBook];
         [self presentViewController:newRecipeViewVC animated:YES completion:nil];
     } else {
-        //add to current book
+        //follow book
+        // Then follow in the background.
+        BOOL isFriendsBook = [book isFriendsBook];
+        [book addFollower:[CKUser currentUser]
+                  success:^{
+                      [EventHelper postFollow:YES friends:isFriendsBook];
+                      UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Success" message:@"Book was added to Dashboard" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                      [alertView show];
+                  } failure:^(NSError *error) {
+                      DLog(@"Unable to follow.");
+                  }];
     }
 
 }
