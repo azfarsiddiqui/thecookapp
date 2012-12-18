@@ -298,6 +298,20 @@
     
 }
 
+- (void)isFollowedByUser:(CKUser *)user success:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *follow = [PFQuery queryWithClassName:kUserBookFollowModelName];
+    [follow whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [follow whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+    [follow countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        if (!error) {
+            success([[NSNumber numberWithInt:number] boolValue]);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
+
 - (BOOL)isFriendsBook {
     NSString *userId = [self.user facebookId];
     CKUser *currentUser = [CKUser currentUser];

@@ -14,6 +14,7 @@ typedef void(^ObjectFailureBlock)(NSError *error);
 typedef void(^ObjectSuccessBlock)();
 typedef void(^GetObjectSuccessBlock)(id object);
 typedef void(^NumObjectSuccessBlock)(int numObjects);
+typedef void(^BoolObjectSuccessBlock)(BOOL yesNo);
 typedef void(^ListObjectsSuccessBlock)(NSArray *results);
 typedef void(^DictionaryObjectsSuccessBlock)(NSDictionary *results);
 typedef void(^ProgressBlock)(int percentDone);

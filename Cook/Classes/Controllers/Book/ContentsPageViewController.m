@@ -20,11 +20,13 @@
 #import "FacebookUserView.h"
 #import "EventHelper.h"
 
-@interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate>
+@interface ContentsPageViewController () <UITableViewDataSource, UITableViewDelegate, NewRecipeViewDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) ContentsCollectionViewController *contentsCollectionViewController;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, assign) BOOL currentUserIsBookAuthor;
+@property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, strong) FacebookUserView *facebookView;
 @end
 
@@ -172,26 +174,43 @@
 }
 
 - (void)initCreateButton {
+    
+    
+    
     UIButton *createButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_addbook.png"]
                                                   target:self selector:@selector(createTapped:)];
     [createButton setFrame:CGRectMake(self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width - floorf(createButton.frame.size.width / 2.0),
                                       self.contentsCollectionViewController.view.frame.origin.y + floorf(([ContentsPhotoCell midSize].height - createButton.frame.size.width) / 2.0),
                                       createButton.frame.size.width, createButton.frame.size.height)];
+    createButton.hidden = YES;
+    
     [self.view addSubview:createButton];
+    
+    CKBook *book = [self.dataSource currentBook];
+    self.currentUserIsBookAuthor = [book isUserBookAuthor:[CKUser currentUser]];
+    createButton.hidden = !self.currentUserIsBookAuthor;
+    
+    if (!self.currentUserIsBookAuthor) {
+        [book isFollowedByUser:[CKUser currentUser] success:^(BOOL boolean) {
+            createButton.hidden = boolean;
+        } failure:^(NSError *error) {
+            DLog(@"could not confirm current user follows this book. %@", [error description]);
+        }];
+    }
+
+    self.createButton = createButton;
 }
 
 - (void)createTapped:(id)sender {
     
-    CKBook *book = [self.dataSource currentBook];
-    if ([book isUserBookAuthor:[CKUser currentUser]]) {
+    if (self.currentUserIsBookAuthor) {
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
         NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
         newRecipeViewVC.recipeViewDelegate = self;
         newRecipeViewVC.book = [self.dataSource currentBook];
         [self presentViewController:newRecipeViewVC animated:YES completion:nil];
     } else {
-        //follow book
-        // Then follow in the background.
+        CKBook *book = [self.dataSource currentBook];
         BOOL isFriendsBook = [book isFriendsBook];
         [book addFollower:[CKUser currentUser]
                   success:^{
@@ -205,9 +224,14 @@
 
 }
 
-#pragma mark - Action buttons
--(void) likesButtonTapped:(UIButton*)likesButton
+#pragma mark - UIAlertViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    
+    DLog();
+    if ([alertView.message isEqualToString:@"Book was added to Dashboard"]) {
+        self.createButton.hidden = YES;
+    }
 }
+
 @end
