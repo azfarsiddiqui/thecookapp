@@ -289,4 +289,36 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 }
 
+
+//overridden
+
+-(BOOL)isEqual:(id)other
+{
+   
+   if(other == self)
+        return YES;
+    
+    if(!other || ![other isKindOfClass:[self class]])
+        return NO;
+    
+    return [self isEqualToUser:other];
+}
+
+- (BOOL)isEqualToUser:(CKUser *)user {
+    
+    if (self == user)
+        return YES;
+    
+    if (![self.name isEqualToString:user.name])
+        return NO;
+    
+    if (![self.facebookId isEqualToString:user.facebookId])
+        return NO;
+    
+    return YES;
+}
+- (unsigned)hash {
+    return [self.name hash] ^ [self.facebookId hash];
+}
+
 @end

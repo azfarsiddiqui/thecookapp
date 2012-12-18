@@ -81,12 +81,12 @@
 #pragma mark - overridden methods
 -(NSArray *)pageOptionIcons
 {
-    return @[@"cook_book_icon_editpage.png"];
+    return [self.recipe isUserRecipeAuthor:[CKUser currentUser]] ? @[@"cook_book_icon_editpage.png"] : nil;
 }
 
 -(NSArray *)pageOptionLabels
 {
-    return @[@"EDIT"];
+    return [self.recipe isUserRecipeAuthor:[CKUser currentUser]] ? @[@"EDIT"] : nil;
 }
 
 -(NSString *)pageNumberPrefixString

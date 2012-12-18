@@ -305,6 +305,11 @@
     return [friendsIds containsObject:userId];
 }
 
+-(BOOL)isUserBookAuthor:(CKUser *)user
+{
+    return [self.user isEqual:user];
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {

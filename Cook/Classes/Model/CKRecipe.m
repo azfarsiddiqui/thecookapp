@@ -160,6 +160,11 @@
     }
 }
 
+-(BOOL)isUserRecipeAuthor:(CKUser *)user
+{
+    return  [self.user isEqual:user];
+}
+
 #pragma mark - Private Methods
 -(Category *)category
 {

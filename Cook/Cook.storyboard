@@ -689,9 +689,6 @@
         <class className="RecipeViewController" superclassName="PageViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
             <relationships>
-                <relationship kind="action" name="closeButtonTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="likeButtonTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="saveButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="closeButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="cookingDirectionsView" candidateClass="CookingDirectionsView"/>
                 <relationship kind="outlet" name="cookingTimeView" candidateClass="CookingTimeView"/>

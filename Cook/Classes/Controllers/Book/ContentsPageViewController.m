@@ -180,12 +180,18 @@
 }
 
 - (void)createTapped:(id)sender {
-    DLog();
-    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-    NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
-    newRecipeViewVC.recipeViewDelegate = self;
-    newRecipeViewVC.book = [self.dataSource currentBook];
-    [self presentViewController:newRecipeViewVC animated:YES completion:nil];
+    
+    CKBook *book = [self.dataSource currentBook];
+    if ([book isUserBookAuthor:[CKUser currentUser]]) {
+        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+        NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
+        newRecipeViewVC.recipeViewDelegate = self;
+        newRecipeViewVC.book = [self.dataSource currentBook];
+        [self presentViewController:newRecipeViewVC animated:YES completion:nil];
+    } else {
+        //add to current book
+    }
+
 }
 
 #pragma mark - Action buttons
