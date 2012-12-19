@@ -62,11 +62,7 @@
 #pragma mark - BenchtopBookCell methods
 
 - (void)enableEditMode:(BOOL)editMode {
-    if (editMode) {
-        
-    } else {
-        
-    }
+    [self.bookCoverView enableEditMode:editMode];
 }
 
 - (BOOL)enabled {

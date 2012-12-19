@@ -27,5 +27,6 @@
 
 - (void)loadBook:(CKBook *)book;
 - (void)enableDeleteMode:(BOOL)enable;
+- (void)enableEditMode:(BOOL)enable;
 
 @end

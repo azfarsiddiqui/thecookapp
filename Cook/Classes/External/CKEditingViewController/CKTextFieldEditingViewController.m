@@ -100,7 +100,7 @@
 - (void)performSave {
     
     UITextField *textField = (UITextField *)self.targetEditingView;
-    [self.delegate editingViewSaveRequestedWithResult:textField.text];
+    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:textField.text];
 
     [super performSave];
 }
@@ -124,6 +124,9 @@
     NSUInteger currentLimit = self.characterLimit - [newString length];
     self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
     [self updateLimitLabel];
+    
+    // No save if no characters
+    self.doneButton.enabled = [newString length] > 0;
     
     return YES;
 }

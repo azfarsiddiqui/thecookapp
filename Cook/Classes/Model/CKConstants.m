@@ -51,6 +51,7 @@ NSString *const kBookAttrIllustration           = @"illustration";
 NSString *const kBookAttrCaption                = @"caption";
 NSString *const kBookAttrNumRecipes             = @"numRecipes";
 NSString *const kBookAttrCategories             = @"categories";
+NSString *const kBookAttrAuthor                 = @"author";
 NSString *const kBookAttrDefaultNameValue       = @"COOK";
 NSString *const kBookAttrDefaultCaptionValue    = @"Tell us more about your book";
 

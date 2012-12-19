@@ -259,9 +259,10 @@
 
 - (void)coverPickerDoneRequested {
     
-    // TODO save author and title.
     BenchtopBookCoverViewCell *cell = [self myBookCell];
-    self.myBook.caption = [cell.bookCoverView currentCaptionThenResign];
+    self.myBook.author = cell.bookCoverView.authorValue;
+    self.myBook.caption = cell.bookCoverView.captionValue;
+    self.myBook.name = cell.bookCoverView.titleValue;
     [self.myBook saveInBackground];
     
     [cell loadBook:self.myBook];
@@ -483,6 +484,8 @@
         self.illustrationViewController = illustrationViewController;
     }
     
+    BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
+    
     CGFloat bounceOffset = 20.0;
     [UIView animateWithDuration:0.3
                           delay:0.0
@@ -507,7 +510,11 @@
                      }
                      completion:^(BOOL finished) {
                          
+                         // Enable edit mode on book cell.
+                         [myBookCell enableEditMode:enable];
+                         
                          if (enable) {
+                             
                              [UIView animateWithDuration:0.3
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
@@ -517,8 +524,11 @@
                                                   self.illustrationViewController.view.transform = CGAffineTransformTranslate(self.illustrationViewController.view.transform, 0.0, bounceOffset);
                                               } completion:^(BOOL finished) {
                                                   self.animating = NO;
+                                                  
+                                                  
                                               }];
                          } else {
+                             
                              self.animating = NO;
                              [self.overlayView removeFromSuperview];
                              [self.coverViewController.view removeFromSuperview];

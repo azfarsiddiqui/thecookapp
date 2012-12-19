@@ -12,7 +12,7 @@
 
 - (void)editingViewWillAppear:(BOOL)appear;
 - (void)editingViewDidAppear:(BOOL)appear;
-- (void)editingViewSaveRequestedWithResult:(id)result;
+- (void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result;
 
 @end
 

@@ -46,6 +46,10 @@
     [self enableWiggle:enable];
 }
 
+- (void)enableEditMode:(BOOL)enable {
+    [self.bookCoverView enableEditMode:enable];
+}
+
 #pragma mark - CKBooKCoverViewDelegate methods
 
 - (void)bookCoverViewEditRequested {

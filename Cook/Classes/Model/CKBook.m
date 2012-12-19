@@ -219,6 +219,14 @@
     }
 }
 
+- (void)setAuthor:(NSString *)author {
+    [self.parseObject setObject:author forKey:kBookAttrAuthor];
+}
+
+- (NSString *)author {
+    return [self userName];
+}
+
 - (void)setNumRecipes:(NSInteger)numRecipes {
     [self.parseObject setObject:[NSNumber numberWithInteger:numRecipes] forKey:kBookAttrNumRecipes];
 }
@@ -255,7 +263,12 @@
 }
 
 - (NSString *)userName {
-    return self.user.name;
+    NSString *author = [self.parseObject objectForKey:kBookAttrAuthor];
+    if ([author length] > 0) {
+        return author;
+    } else {
+        return self.user.name;
+    }
 }
 
 - (BOOL)editable {

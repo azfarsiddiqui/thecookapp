@@ -268,6 +268,7 @@
 		76DA0F4B1636521C00D9325B /* cook_dash_icons_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F471636521C00D9325B /* cook_dash_icons_settings.png */; };
 		76DA0F4C1636521C00D9325B /* cook_dash_icons_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F481636521C00D9325B /* cook_dash_icons_settings@2x.png */; };
 		76DC8DBB1659BF23005C472B /* BookCoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DC8DBA1659BF23005C472B /* BookCoverViewController.m */; };
+		76DCD7F616815D0400492D33 /* CKEditableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DCD7F416815D0400492D33 /* CKEditableView.m */; };
 		76DEF0411649E78D00B7DB9C /* IllustrationFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF0401649E78D00B7DB9C /* IllustrationFlowLayout.m */; };
 		76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF04F164A262B00B7DB9C /* CoverPickerViewController.m */; };
 		76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF052164A285D00B7DB9C /* CoverPickerCell.m */; };
@@ -705,6 +706,8 @@
 		76DA0F481636521C00D9325B /* cook_dash_icons_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_settings@2x.png"; sourceTree = "<group>"; };
 		76DC8DB91659BF23005C472B /* BookCoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCoverViewController.h; sourceTree = "<group>"; };
 		76DC8DBA1659BF23005C472B /* BookCoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCoverViewController.m; sourceTree = "<group>"; };
+		76DCD7F416815D0400492D33 /* CKEditableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKEditableView.m; sourceTree = "<group>"; };
+		76DCD7F516815D0400492D33 /* CKEditableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditableView.h; sourceTree = "<group>"; };
 		76DEF03F1649E78D00B7DB9C /* IllustrationFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationFlowLayout.h; sourceTree = "<group>"; };
 		76DEF0401649E78D00B7DB9C /* IllustrationFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationFlowLayout.m; sourceTree = "<group>"; };
 		76DEF04E164A262B00B7DB9C /* CoverPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPickerViewController.h; sourceTree = "<group>"; };
@@ -1009,6 +1012,8 @@
 				76454E1C16783E7A00B480FA /* CKEditingViewController.m */,
 				76454E1D16783E7A00B480FA /* CKTextFieldEditingViewController.h */,
 				76454E1E16783E7A00B480FA /* CKTextFieldEditingViewController.m */,
+				76DCD7F416815D0400492D33 /* CKEditableView.m */,
+				76DCD7F516815D0400492D33 /* CKEditableView.h */,
 			);
 			path = CKEditingViewController;
 			sourceTree = "<group>";
@@ -2172,6 +2177,7 @@
 				76454E1F16783E7A00B480FA /* CKEditingTextField.m in Sources */,
 				76454E2016783E7A00B480FA /* CKEditingViewController.m in Sources */,
 				76454E2116783E7A00B480FA /* CKTextFieldEditingViewController.m in Sources */,
+				76DCD7F616815D0400492D33 /* CKEditableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
