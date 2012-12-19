@@ -210,7 +210,7 @@
     }];
     
     // Then follow in the background.
-    BOOL isFriendsBook = [book isFriendsBook];
+    BOOL isFriendsBook = [book isThisMyFriendsBook];
     [book addFollower:currentUser
               success:^{
                   [EventHelper postFollow:YES friends:isFriendsBook];

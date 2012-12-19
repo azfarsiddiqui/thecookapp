@@ -423,7 +423,7 @@
     }];
     
     // Unfollow in the background, then inform listeners of the update.
-    BOOL isFriendsBook = [book isFriendsBook];
+    BOOL isFriendsBook = [book isThisMyFriendsBook];
     [book removeFollower:currentUser
                  success:^{
                      [EventHelper postFollow:NO friends:isFriendsBook];

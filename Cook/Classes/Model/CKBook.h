@@ -44,7 +44,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
 - (NSString *)userName;
 - (BOOL)editable;
-- (BOOL)isFriendsBook;
+- (BOOL)isThisMyFriendsBook;
 - (BOOL)isUserBookAuthor:(CKUser*)user;
 
 @end

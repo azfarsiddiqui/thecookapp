@@ -211,10 +211,10 @@
         [self presentViewController:newRecipeViewVC animated:YES completion:nil];
     } else {
         CKBook *book = [self.dataSource currentBook];
-        BOOL isFriendsBook = [book isFriendsBook];
+        BOOL isThisMyFriendsBook = [book isThisMyFriendsBook];
         [book addFollower:[CKUser currentUser]
                   success:^{
-                      [EventHelper postFollow:YES friends:isFriendsBook];
+                      [EventHelper postFollow:YES friends:isThisMyFriendsBook];
                       UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Success" message:@"Book was added to Dashboard" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                       [alertView show];
                   } failure:^(NSError *error) {

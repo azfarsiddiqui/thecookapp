@@ -312,11 +312,11 @@
 }
 
 
-- (BOOL)isFriendsBook {
+- (BOOL)isThisMyFriendsBook {
     NSString *userId = [self.user facebookId];
     CKUser *currentUser = [CKUser currentUser];
-    NSArray *friendsIds = [currentUser.parseUser objectForKey:kUserFriendsAttrFriends];
-    return [friendsIds containsObject:userId];
+    NSArray *facebookFriendIds = [currentUser.parseUser objectForKey:kUserAttrFacebookFriends];
+    return [facebookFriendIds containsObject:userId];
 }
 
 -(BOOL)isUserBookAuthor:(CKUser *)user

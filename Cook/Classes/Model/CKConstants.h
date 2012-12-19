@@ -25,11 +25,6 @@ extern NSString *const kUserAttrBookSuggestions;
 extern NSString *const kUserAttrAdmin;
 extern NSString *const kUserAttrFacebookFriends;
 
-#pragma mark - User Friends class
-
-extern NSString *const kUserFriendsModelName;
-extern NSString *const kUserFriendsAttrFriends;
-
 #pragma mark - User Book Follow class
 
 extern NSString *const kUserBookFollowModelName;

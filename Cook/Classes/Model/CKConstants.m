@@ -25,11 +25,6 @@ NSString *const kUserAttrAdmin                  = @"admin";
 NSString *const kUserAttrBookSuggestions        = @"suggestedBooks";
 NSString *const kUserAttrFacebookFriends        = @"facebookFriends";
 
-#pragma mark - User Friends class
-
-NSString *const kUserFriendsModelName           = @"UserFriends";
-NSString *const kUserFriendsAttrFriends         = @"friends";
-
 #pragma mark - User Book Follow class
 
 NSString *const kUserBookFollowModelName       = @"UserBookFollow";
