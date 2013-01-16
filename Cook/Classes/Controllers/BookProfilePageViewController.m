@@ -30,6 +30,23 @@
     [self refreshData];
 }
 
+#pragma mark - overridden methods
+-(NSArray *)pageOptionIcons
+{
+    return [[self.dataSource currentBook] isUserBookAuthor:[CKUser currentUser]] ? @[@"cook_book_icon_editpage.png"] : nil;
+}
+
+-(NSArray *)pageOptionLabels
+{
+    return [[self.dataSource currentBook] isUserBookAuthor:[CKUser currentUser]] ? @[@"EDIT"] : nil;
+}
+
+-(void)didSelectCustomOptionAtIndex:(NSInteger)optionIndex
+{
+    if (optionIndex == 0) {
+        DLog("EDIT");
+    }
+}
 #pragma mark - Private methods
 
 -(void) refreshData

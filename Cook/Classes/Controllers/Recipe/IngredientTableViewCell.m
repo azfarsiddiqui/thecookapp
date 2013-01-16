@@ -30,7 +30,7 @@ NSString *const kIngredientTableViewCellReuseIdentifier = @"name";
 -(void)setIngredient:(Ingredient*)ingredient forRow:(NSInteger)row
 {
     self.ingredientIndex = row;
-    self.ingredientsTextField.text = [NSString stringWithFormat:@"%@ %i",ingredient.name, row];
+    self.ingredientsTextField.text = [NSString stringWithFormat:@"%@",ingredient.name, row];
 }
 
 #pragma mark - Private Methods

@@ -426,6 +426,7 @@
 
 - (void)initFlipper {
     self.currentPageIndex = kContentPageIndex;
+    self.previousPageIndex = self.currentPageIndex - 1;
     self.flipViewController = [[MPFlipViewController alloc] initWithOrientation:MPFlipViewControllerOrientationHorizontal];
     self.flipViewController.delegate = self;
     self.flipViewController.dataSource = self;
