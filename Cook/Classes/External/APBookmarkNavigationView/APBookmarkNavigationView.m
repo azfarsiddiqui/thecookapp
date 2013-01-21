@@ -155,21 +155,21 @@
     toggleView.frame = self.bounds;
     toggleView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self addSubview:toggleView];
-    UITapGestureRecognizer *tapGestesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    UITapGestureRecognizer *tapGestesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleTapped:)];
     [toggleView addGestureRecognizer:tapGestesture];
     
     // Drag to pull
-    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(togglePanned:)];
 //    panGesture.delegate = self;
     [self addGestureRecognizer:panGesture];
     
 }
 
-- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+- (void)toggleTapped:(UITapGestureRecognizer *)tapGesture {
     [self show:!self.shown animated:YES hideOnCompletion:NO];
 }
 
-- (void)panned:(UIPanGestureRecognizer *)panGesture {
+- (void)togglePanned:(UIPanGestureRecognizer *)panGesture {
     
     switch (panGesture.state) {
         case UIGestureRecognizerStateBegan:

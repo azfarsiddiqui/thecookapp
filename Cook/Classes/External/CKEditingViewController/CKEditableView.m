@@ -14,6 +14,7 @@
 @property (nonatomic, assign) id<CKEditableViewDelegate> delegate;
 @property (nonatomic, strong) UIImageView *editBackgroundView;
 @property (nonatomic, strong) UIImage *editBackgroundImage;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
 @end
 
@@ -41,6 +42,14 @@
     self.editBackgroundView.image = enable ? self.editBackgroundImage : nil;
     self.editBackgroundView.userInteractionEnabled = enable;
     self.editButton.hidden = !enable;
+    
+    if (enable) {
+        self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editTapped:)];
+        [self addGestureRecognizer:self.tapGestureRecognizer];
+    } else if (self.tapGestureRecognizer) {
+       [self removeGestureRecognizer:self.tapGestureRecognizer];
+       self.tapGestureRecognizer = nil;
+   }
 }
 
 - (void)setContentView:(UIView *)contentView {

@@ -621,7 +621,7 @@
     if (!self.captionEditableView) {
         UILabel *captionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         captionLabel.autoresizingMask = UIViewAutoresizingNone;
-        captionLabel.backgroundColor = [UIColor clearColor];
+        captionLabel.backgroundColor = [UIColor greenColor];
         captionLabel.font = font;
         captionLabel.textColor = [UIColor whiteColor];
         if (kOverlayDebug) {
@@ -652,7 +652,7 @@
     if (!self.titleEditableView) {
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         titleLabel.autoresizingMask = UIViewAutoresizingNone;
-        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.backgroundColor = [UIColor redColor];
         titleLabel.numberOfLines = 0;
         if (kOverlayDebug) {
             titleLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];

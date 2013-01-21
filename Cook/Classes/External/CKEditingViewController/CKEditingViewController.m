@@ -41,8 +41,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)enableEditing:(BOOL)enable completion:(void (^)())completion {
@@ -58,8 +58,8 @@
         [self.view sendSubviewToBack:overlayView];
         self.overlayView = overlayView;
         
-        // Register taps for dimiss.
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+        // Register taps for dismiss.
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(overlayTapped:)];
         [overlayView addGestureRecognizer:tapGesture];
         
         // If we have a source editing view, then prepare for it to be transitioned into edit mode.
@@ -252,7 +252,7 @@
 
 #pragma mark - Private methods
 
-- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+- (void)overlayTapped:(UITapGestureRecognizer *)tapGesture {
     
     // If keyboard was visible, dismiss it first.
     if (self.keyboardVisible) {
@@ -263,12 +263,13 @@
     [self enableEditing:NO completion:NULL];
 }
 
-- (void)keyboardShow:(NSNotification *)notification {
+#pragma mark - System Notification events
+- (void)keyboardWillShow:(NSNotification *)notification {
     CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     [self editingViewKeyboardWillAppear:YES keyboardFrame:keyboardFrame];
 }
 
-- (void)keyboardHide:(NSNotification *)notification {
+- (void)keyboardWillHide:(NSNotification *)notification {
     CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     [self editingViewKeyboardWillAppear:NO keyboardFrame:keyboardFrame];
     
