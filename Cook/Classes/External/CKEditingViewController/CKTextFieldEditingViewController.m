@@ -68,28 +68,32 @@
 
 - (void)editingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {
     [super editingViewKeyboardWillAppear:appear keyboardFrame:keyboardFrame];
-    
-    UITextField *textField = (UITextField *)self.targetEditingView;
-    
-    // Convert from rect at window to root view.
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    CGRect keyboardFrameConverted = [self.view convertRect:keyboardFrame fromView:window];
-    
-    // Animate to the shifted position.
-    CGFloat shiftOffset = - floorf(textField.frame.origin.y - ((keyboardFrameConverted.origin.y - textField.bounds.size.height) / 2));
-    
-    CGAffineTransform shiftTransform = appear ? CGAffineTransformMakeTranslation(0.0, shiftOffset) : CGAffineTransformIdentity;
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         self.titleLabel.transform = shiftTransform;
-                         self.limitLabel.transform = shiftTransform;
-                         self.doneButton.transform = shiftTransform;
-                         textField.transform = shiftTransform;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
+    if (appear) {
+        UITextField *textField = (UITextField *)self.targetEditingView;
+        
+        // Convert from rect at window to root view.
+        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        CGRect keyboardFrameConverted = [self.view convertRect:keyboardFrame fromView:window];
+        
+        // Animate to the shifted position.
+        CGFloat shiftOffset = - floorf(textField.frame.origin.y - ((keyboardFrameConverted.origin.y - textField.bounds.size.height) / 2));
+        
+        DLog(@"shift offset is %f", shiftOffset);
+        CGAffineTransform shiftTransform = appear ? CGAffineTransformMakeTranslation(0.0, shiftOffset) : CGAffineTransformIdentity;
+
+            [UIView animateWithDuration:0.3
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.titleLabel.transform = shiftTransform;
+                                 self.limitLabel.transform = shiftTransform;
+                                 self.doneButton.transform = shiftTransform;
+                                 textField.transform = shiftTransform;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+    }
+
 }
 
 - (id)editingResult {

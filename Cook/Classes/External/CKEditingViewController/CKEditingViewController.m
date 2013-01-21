@@ -112,7 +112,6 @@
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
-                             
                              // First fade in/out the source and target.
                              self.sourceEditingView.alpha = 0.0;
                              self.targetEditingView.alpha = kTargetMidAlpha;
@@ -124,7 +123,6 @@
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
                                               animations:^{
-                                                  
                                                   // Scale the target to its intended frame.
                                                   self.targetEditingView.frame = self.targetEditingFrame;
                                                   self.targetEditingView.alpha = 1.0;
@@ -143,7 +141,6 @@
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
-                             
                              // Scale the target to its intended frame.
                              self.targetEditingView.frame = [self.sourceEditingView.superview convertRect:self.sourceEditingView.frame toView:self.view];
                              self.targetEditingView.alpha = kTargetMidAlpha;
@@ -155,7 +152,6 @@
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
                                               animations:^{
-                                                  
                                                   // Now fade return.
                                                   self.targetEditingView.alpha = 0.0;
                                                   self.sourceEditingView.alpha = 1.0;
