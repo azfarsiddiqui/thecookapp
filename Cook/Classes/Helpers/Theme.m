@@ -77,4 +77,47 @@
     return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:18];
 }
 
+#pragma mark - Book Cover
++ (UIFont *)bookCoverEditableAuthorTextFont
+{
+   return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:80];
+}
++ (UIFont *)bookCoverEditableCaptionTextFont
+{
+   return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:55];
+}
++ (UIFont *)bookCoverEditableTitleTextFont
+{
+   return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:80];
+}
+
++(UIFont *)bookCoverEditableFieldDescriptionFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
+}
+
++(UIFont *)bookCoverViewModeTitleMinFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];;
+}
+
++(UIFont *)bookCoverViewModeTitleMidFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:70];
+}
+
++(UIFont *)bookCoverViewModeTitleMaxFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:96];
+}
+
++(UIFont *)bookCoverViewModeAuthorFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:20];
+}
+
++(UIFont *)bookCoverViewModeCaptionFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Medium" size:24];
+}
 @end

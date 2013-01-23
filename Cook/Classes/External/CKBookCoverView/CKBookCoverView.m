@@ -10,7 +10,7 @@
 #import "CKBookCover.h"
 #import "CKTextField.h"
 #import "CKEditableView.h"
-#import "CKEditingViewController.h"
+#import "Theme.h"
 #import "CKTextFieldEditingViewController.h"
 
 @interface CKBookCoverView () <UITextFieldDelegate, CKEditableViewDelegate, CKEditingViewControllerDelegate>
@@ -116,8 +116,6 @@
 - (void)editableViewEditRequestedForView:(UIView *)view {
     UIView *rootView = [self rootView];
     CKTextFieldEditingViewController *editingViewController = [[CKTextFieldEditingViewController alloc] initWithDelegate:self];
-    editingViewController.font = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:80];
-    editingViewController.titleFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
     editingViewController.textAlignment = NSTextAlignmentCenter;
     editingViewController.view.frame = [self rootView].bounds;
     [rootView addSubview:editingViewController.view];
@@ -125,8 +123,8 @@
 
     if (view == self.authorEditableView) {
         UILabel *authorLabel = (UILabel *)self.authorEditableView.contentView;
-        editingViewController.font = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:80];
-        editingViewController.titleFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
+        editingViewController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         editingViewController.characterLimit = 20;
         editingViewController.text = authorLabel.text;
         editingViewController.sourceEditingView = self.authorEditableView;
@@ -134,8 +132,8 @@
         [editingViewController enableEditing:YES completion:nil];
     } else if (view == self.captionEditableView) {
         UILabel *captionLabel = (UILabel *)self.captionEditableView.contentView;
-        editingViewController.font = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:55];
-        editingViewController.titleFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:20];
+        editingViewController.editableTextFont = [Theme bookCoverEditableCaptionTextFont];
+        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         editingViewController.characterLimit = 40;
         editingViewController.text = captionLabel.text;
         editingViewController.sourceEditingView = self.captionEditableView;
@@ -143,14 +141,14 @@
         [editingViewController enableEditing:YES completion:nil];
     } else if (view == self.titleEditableView) {
         UILabel *titleLabel = (UILabel *)self.titleEditableView.contentView;
-        editingViewController.font = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:80];
-        editingViewController.titleFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
+        editingViewController.editableTextFont = [Theme bookCoverEditableTitleTextFont];
+        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         editingViewController.characterLimit = 20;
         editingViewController.text = titleLabel.text;
         editingViewController.sourceEditingView = self.titleEditableView;
         editingViewController.editingTitle = @"Book Title";
         [editingViewController enableEditing:YES completion:nil];
-    }
+    } 
 }
 
 #pragma mark - CKEditingViewControllerDelegate methods
@@ -558,7 +556,7 @@
 
 - (void)setAuthor:(NSString *)author {
     self.authorValue = author;
-    UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:20];
+    UIFont *font = [Theme bookCoverViewModeAuthorFont];
     UIEdgeInsets editableInsets = UIEdgeInsetsMake(3.0, 5.0, -4.0, 4.0);
     CGSize availableSize = [self availableContentSize];
     
@@ -588,33 +586,9 @@
     self.authorEditableView.frame = [self authorEditableAdjustedFrameWithSize:self.authorEditableView.frame.size];
 }
 
-//- (void)setAuthor:(NSString *)author {
-//    NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-//    UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:20];
-//    
-//    if (!self.authorLabel) {
-//        UILabel *authorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-//        authorLabel.autoresizingMask = UIViewAutoresizingNone;
-//        authorLabel.backgroundColor = [UIColor clearColor];
-//        authorLabel.font = font;
-//        authorLabel.textColor = [UIColor whiteColor];
-//        if (kOverlayDebug) {
-//            authorLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
-//        }
-//        [self addSubview:authorLabel];
-//        self.authorLabel = authorLabel;
-//    }
-//    
-//    
-//    CGSize size = [author sizeWithFont:font constrainedToSize:[self singleLineSizeForFont:font] lineBreakMode:lineBreakMode];
-//    self.authorLabel.frame = [self authorFrameForSize:size];
-//    self.authorLabel.textAlignment = [self authorTextAlignment];
-//    self.authorLabel.text = author;
-//}
-
 - (void)setCaption:(NSString *)caption {
     self.captionValue = caption;
-    UIFont *font = [UIFont fontWithName:@"Neutraface2Condensed-Medium" size:24];
+    UIFont *font = [Theme bookCoverViewModeCaptionFont];
     UIEdgeInsets editableInsets = UIEdgeInsetsMake(3.0, 5.0, -4.0, 4.0);
     CGSize availableSize = [self availableContentSize];
     
@@ -665,9 +639,9 @@
         self.titleEditableView = titleEditableView;
     }
     
-    UIFont *minFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];
-    UIFont *midFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:70];
-    UIFont *maxFont = [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:96];
+    UIFont *minFont = [Theme bookCoverViewModeTitleMinFont];
+    UIFont *midFont = [Theme bookCoverViewModeTitleMidFont];
+    UIFont *maxFont = [Theme bookCoverViewModeTitleMaxFont];
     
     UILabel *titleLabel = (UILabel *)self.titleEditableView.contentView;
     titleLabel.textAlignment = [self titleTextAlignment];

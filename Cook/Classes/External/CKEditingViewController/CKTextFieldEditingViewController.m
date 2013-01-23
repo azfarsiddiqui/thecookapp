@@ -24,7 +24,7 @@
 - (UIView *)createTargetEditingView {
     UIEdgeInsets textFieldInsets = UIEdgeInsetsMake(0.0, 50.0, 0.0, 50.0);
     
-    CGSize size = [@"A" sizeWithFont:self.font forWidth:MAXFLOAT lineBreakMode:NSLineBreakByClipping];
+    CGSize size = [@"A" sizeWithFont:self.editableTextFont forWidth:MAXFLOAT lineBreakMode:NSLineBreakByClipping];
     CGRect frame = CGRectMake(textFieldInsets.left,
                               floorf((self.view.bounds.size.height - size.height) / 2.0),
                               self.view.bounds.size.width - textFieldInsets.left - textFieldInsets.right,
@@ -32,7 +32,7 @@
     CKEditingTextField *textField = [[CKEditingTextField alloc] initWithFrame:frame];
     textField.autoresizingMask = UIViewAutoresizingNone;
     textField.backgroundColor = [UIColor blackColor];
-    textField.font = self.font;
+    textField.font = self.editableTextFont;
     textField.textColor = [UIColor whiteColor];
     textField.delegate = self;
     textField.textAlignment = self.textAlignment;
@@ -78,7 +78,6 @@
         // Animate to the shifted position.
         CGFloat shiftOffset = - floorf(textField.frame.origin.y - ((keyboardFrameConverted.origin.y - textField.bounds.size.height) / 2));
         
-        DLog(@"shift offset is %f", shiftOffset);
         CGAffineTransform shiftTransform = appear ? CGAffineTransformMakeTranslation(0.0, shiftOffset) : CGAffineTransformIdentity;
 
             [UIView animateWithDuration:0.3

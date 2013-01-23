@@ -33,5 +33,15 @@
 #pragma mark - Settings
 + (UIFont *)settingsProfileFont;
 
+#pragma mark - Book Cover
++ (UIFont *)bookCoverEditableAuthorTextFont;
++ (UIFont *)bookCoverEditableCaptionTextFont;
++ (UIFont *)bookCoverEditableTitleTextFont;
++ (UIFont *)bookCoverEditableFieldDescriptionFont;
++ (UIFont *)bookCoverViewModeAuthorFont;
++ (UIFont *)bookCoverViewModeCaptionFont;
++ (UIFont *)bookCoverViewModeTitleMinFont;
++ (UIFont *)bookCoverViewModeTitleMidFont;
++ (UIFont *)bookCoverViewModeTitleMaxFont;
 @end
 

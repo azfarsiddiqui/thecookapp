@@ -11,7 +11,9 @@
 
 @interface CKTextFieldEditingViewController : CKEditingViewController
 
-@property (nonatomic, strong) UIFont *font;
+//the font of the editable text
+@property (nonatomic, strong) UIFont *editableTextFont;
+//label title eg 'recipe name'
 @property (nonatomic, strong) UIFont *titleFont;
 @property (nonatomic, assign) NSUInteger characterLimit;
 @property (nonatomic, copy) NSString *text;
