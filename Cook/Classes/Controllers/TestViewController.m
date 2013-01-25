@@ -9,13 +9,16 @@
 #import "TestViewController.h"
 #import "CKEditableView.h"
 #import "CKTextFieldEditingViewController.h"
+#import "TextViewEditingViewController.h"
 #import "Theme.h"
 @interface TestViewController ()<UITableViewDataSource, UITableViewDelegate, CKEditableViewDelegate, CKEditingViewControllerDelegate>
 @property(nonatomic,assign) BOOL inEditMode;
 @property(nonatomic,strong) NSArray *testListData;
+@property(nonatomic,strong) NSString *testTextViewData;
 
-@property(nonatomic,strong) CKEditableView *testEditableView;
-@property(nonatomic,strong) CKTextFieldEditingViewController *textEditingViewController;
+@property(nonatomic,strong) CKEditableView *labelEditableView;
+@property(nonatomic,strong) CKEditableView *textViewEditableView;
+@property(nonatomic,strong) CKEditingViewController *editingViewController;
 @end
 
 @implementation TestViewController
@@ -24,6 +27,7 @@
 {
     [super awakeFromNib];
     self.testListData = @[@"list entry one",@"list entry two",@"list entry three",@"list entry four",@"list entry five",@"list entry six",@"list entry seven"];
+    self.testTextViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef ribs andouille cupidatat eu tongue irure. Dolor tenderloin tongue irure ad chicken.\n\n Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosciutto boudin. Qui drumstick veniam nostrud";
 }
 
 - (void)viewDidLoad
@@ -51,8 +55,8 @@
 -(IBAction)toggledEditMode:(UIButton*)editModeButton
 {
     self.inEditMode = !self.inEditMode;
- 
-    [self.testEditableView enableEditMode:self.inEditMode];
+    [self.labelEditableView enableEditMode:self.inEditMode];
+    [self.textViewEditableView enableEditMode:self.inEditMode];
     [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
 }
 
@@ -76,6 +80,7 @@
 {
     DLog();
     [self setLabelValue:@"initial value"];
+    [self setTextViewValue:self.testTextViewData];
 }
 
 - (UIView *)rootView {
@@ -86,21 +91,41 @@
 
 -(void)editableViewEditRequestedForView:(UIView *)view
 {
-    CKTextFieldEditingViewController *editingViewController = [[CKTextFieldEditingViewController alloc] initWithDelegate:self];
-    editingViewController.textAlignment = NSTextAlignmentCenter;
-    editingViewController.view.frame = [self rootView].bounds;
-    [self.view addSubview:editingViewController.view];
-    self.textEditingViewController = editingViewController;
-    
-    if (view == self.testEditableView) {
-        UILabel *testLabel = (UILabel *)self.testEditableView.contentView;
-        editingViewController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        editingViewController.characterLimit = 20;
-        editingViewController.text = testLabel.text;
-        editingViewController.sourceEditingView = self.testEditableView;
-        editingViewController.editingTitle = @"TEST LABEL";
-        [editingViewController enableEditing:YES completion:nil];
+
+    if (view == self.labelEditableView) {
+        CKTextFieldEditingViewController *textFieldEditingViewController = [[CKTextFieldEditingViewController alloc] initWithDelegate:self];
+        textFieldEditingViewController.textAlignment = NSTextAlignmentCenter;
+        textFieldEditingViewController.view.frame = [self rootView].bounds;
+        [self.view addSubview:textFieldEditingViewController.view];
+        self.editingViewController = textFieldEditingViewController;
+        
+        UILabel *testLabel = (UILabel *)self.labelEditableView.contentView;
+        
+        textFieldEditingViewController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+        textFieldEditingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+        textFieldEditingViewController.characterLimit = 20;
+        textFieldEditingViewController.text = testLabel.text;
+        textFieldEditingViewController.sourceEditingView = self.labelEditableView;
+        textFieldEditingViewController.editingTitle = @"LABEL NAME";
+        [textFieldEditingViewController enableEditing:YES completion:nil];
+    } else {
+        
+        TextViewEditingViewController *textViewEditingController = [[TextViewEditingViewController alloc] initWithDelegate:self];
+//        textFieldEditingViewController.textAlignment = NSTextAlignmentCenter;
+        textViewEditingController.view.frame = [self rootView].bounds;
+        [self.view addSubview:textViewEditingController.view];
+        self.editingViewController = textViewEditingController;
+        
+        UILabel *testLabel = (UILabel *)self.textViewEditableView.contentView;
+        
+        textViewEditingController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+        textViewEditingController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+        textViewEditingController.characterLimit = 300;
+        textViewEditingController.text = testLabel.text;
+        
+        textViewEditingController.sourceEditingView = self.textViewEditableView;
+        textViewEditingController.editingTitle = @"TEXT VIEW";
+        [textViewEditingController enableEditing:YES completion:nil];
     }
 
 }
@@ -112,55 +137,79 @@
 
 - (void)editingViewDidAppear:(BOOL)appear {
     if (!appear) {
-        [self.textEditingViewController.view removeFromSuperview];
-        self.textEditingViewController = nil;
+        [self.editingViewController.view removeFromSuperview];
+        self.editingViewController = nil;
     }
 }
 
 -(void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result {
-    if (editingView == self.testEditableView) {
+    if (editingView == self.labelEditableView) {
         NSString *value = (NSString *)result;
         [self setLabelValue:value];
-        [self.testEditableView enableEditMode:YES];
+        [self.labelEditableView enableEditMode:YES];
+    } else if (editingView == self.textViewEditableView) {
+        NSString *value = (NSString *)result;
+        [self setTextViewValue:value];
+        [self.textViewEditableView enableEditMode:YES];
+        
     }
-
-
 }
 
 #pragma mark - Private Methods
 
 - (void)setLabelValue:(NSString *)labelValue {
-//    self.authorValue = author;
-    
-//    UIFont *font = [Theme bookCoverViewModeAuthorFont];
     UIEdgeInsets editableInsets = UIEdgeInsetsMake(2.0, 2.0, 2.0f, 25.0f);
-    CGSize availableSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);    
-    if (!self.testEditableView) {
-        UILabel *testLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        testLabel.autoresizingMask = UIViewAutoresizingNone;
-        testLabel.backgroundColor = [UIColor clearColor];
-        testLabel.font = [Theme defaultFontWithSize:32.0f];
-        testLabel.textColor = [UIColor blackColor];
+    if (!self.labelEditableView) {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.autoresizingMask = UIViewAutoresizingNone;
+        label.backgroundColor = [UIColor clearColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [Theme defaultFontWithSize:32.0f];
+        label.textColor = [UIColor blackColor];
 
         CKEditableView *testEditableView = [[CKEditableView alloc] initWithDelegate:self];
         testEditableView.contentInsets = editableInsets;
         testEditableView.backgroundColor = [UIColor clearColor];
-        testEditableView.contentView = testLabel;
+        testEditableView.contentView = label;
         [self.view addSubview:testEditableView];
-        self.testEditableView = testEditableView;
+        self.labelEditableView = testEditableView;
     }
     
-    
-    UILabel *testLabel = (UILabel *)self.testEditableView.contentView;
-    testLabel.textAlignment = NSTextAlignmentCenter;
+    UILabel *testLabel = (UILabel *)self.labelEditableView.contentView;
     testLabel.text = labelValue;
     [testLabel sizeToFit];
-//    testLabel.frame = CGRectMake(0.0, 0.0, availableSize.width, testLabel.frame.size.height);
+    self.labelEditableView.contentView = testLabel;
+    //absolute positioning
+    self.labelEditableView.frame = CGRectMake(517.0f, 208.f, self.labelEditableView.frame.size.width, self.labelEditableView.frame.size.height);
+}
 
-    self.testEditableView.contentView = testLabel;
-//    self.testEditableView.frame = [self authorEditableAdjustedFrameWithSize:self.testEditableView.frame.size];
-//    self.testEditableView.frame = CGRectMake(517.0f, 208.f, 322.0f, 45.0f);
+- (void)setTextViewValue:(NSString *)textViewValue {
+    UIEdgeInsets editableInsets = UIEdgeInsetsMake(2.0, 2.0, 2.0f, 25.0f);
+    CGSize textViewSize = CGSizeMake(329.0f,252.0f);
+
+    if (!self.textViewEditableView) {
+        UILabel *textviewLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        textviewLabel.autoresizingMask = UIViewAutoresizingNone;
+        textviewLabel.backgroundColor = [UIColor clearColor];
+        textviewLabel.numberOfLines = 0;
+        textviewLabel.textAlignment = NSTextAlignmentLeft;
+        textviewLabel.font = [Theme defaultFontWithSize:20.0f];
+        textviewLabel.textColor = [UIColor blackColor];
+        
+        CKEditableView *textEditableView = [[CKEditableView alloc] initWithDelegate:self];
+        textEditableView.contentInsets = editableInsets;
+        textEditableView.backgroundColor = [UIColor clearColor];
+        textEditableView.contentView = textviewLabel;
+        [self.view addSubview:textEditableView];
+        self.textViewEditableView = textEditableView;
+    }
     
-    self.testEditableView.frame = CGRectMake(517.0f, 208.f, self.testEditableView.frame.size.width, self.testEditableView.frame.size.height);
+    UILabel *textViewLabel = (UILabel *)self.textViewEditableView.contentView;
+    textViewLabel.text = textViewValue;
+    CGSize labelSize = [textViewValue sizeWithFont:textViewLabel.font constrainedToSize:textViewSize lineBreakMode:NSLineBreakByTruncatingTail];
+    textViewLabel.frame = CGRectMake(0.0f, 0.0f, labelSize.width, labelSize.height);
+    self.textViewEditableView.contentView = textViewLabel;
+    //absolute positioning
+    self.textViewEditableView.frame = CGRectMake(517.0f, 276.0f,self.textViewEditableView.frame.size.width, self.textViewEditableView.frame.size.height);
 }
 @end

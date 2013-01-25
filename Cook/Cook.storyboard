@@ -368,18 +368,6 @@
                                     <action selector="dismissTapped:" destination="6w4-Iv-D8o" eventType="touchUpInside" id="LXI-k6-9ek"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" lineBreakMode="tailTruncation" numberOfLines="12" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="329" translatesAutoresizingMaskIntoConstraints="NO" id="sLz-hJ-0I5">
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="329" id="Zpc-pb-fnU"/>
-                                </constraints>
-                                <string key="text">Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef ribs andouille cupidatat eu tongue irure. Dolor tenderloin tongue irure ad chicken.
-
-Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosciutto boudin. Qui drumstick veniam nostrud</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2vI-Wc-09x">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="248" id="7B7-zS-T0x"/>
@@ -429,9 +417,7 @@ Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosci
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="o57-FE-ie3" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="2ax-r8-2D0"/>
-                            <constraint firstAttribute="trailing" secondItem="sLz-hJ-0I5" secondAttribute="trailing" constant="178" id="7Qo-jT-Ed5"/>
                             <constraint firstAttribute="trailing" secondItem="2vI-Wc-09x" secondAttribute="trailing" constant="53" id="C2c-HX-2Z1"/>
-                            <constraint firstItem="sLz-hJ-0I5" firstAttribute="top" secondItem="npe-k1-kKb" secondAttribute="top" constant="276" id="HGS-EJ-jGv"/>
                             <constraint firstItem="2vI-Wc-09x" firstAttribute="top" secondItem="npe-k1-kKb" secondAttribute="top" constant="114" id="Zpa-GM-A86"/>
                             <constraint firstItem="o57-FE-ie3" firstAttribute="top" secondItem="npe-k1-kKb" secondAttribute="top" constant="20" symbolic="YES" type="default" id="aPu-St-0F6"/>
                             <constraint firstItem="krq-L6-bCf" firstAttribute="leading" secondItem="npe-k1-kKb" secondAttribute="leading" constant="51" id="bEQ-ua-xvu"/>
@@ -788,10 +774,6 @@ Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosci
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
-                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
-                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromCamera" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromLibrary" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
@@ -843,9 +825,8 @@ Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosci
         <class className="TestViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/TestViewController.h"/>
             <relationships>
-                <relationship kind="outlet" name="editLabelButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="editListButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="editTextViewButton" candidateClass="UIButton"/>
+                <relationship kind="action" name="dismissTapped:"/>
+                <relationship kind="action" name="toggledEditMode:" candidateClass="UIButton"/>
             </relationships>
         </class>
         <class className="UICollectionReusableView" superclassName="UIView">
@@ -856,9 +837,6 @@ Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosci
         </class>
         <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
-        </class>
-        <class className="UICollectionViewLayout" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewLayout.h"/>
         </class>
         <class className="UIEditableView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UIEditableView.h"/>

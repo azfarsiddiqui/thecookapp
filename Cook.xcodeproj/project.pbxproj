@@ -358,6 +358,7 @@
 		89622197161EA6610023EC30 /* NSSet+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 89622192161EA6610023EC30 /* NSSet+Utilities.m */; };
 		896221A1161EAF4C0023EC30 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 8962219F161EAF4C0023EC30 /* btn_close.png */; };
 		896221A2161EAF4C0023EC30 /* btn_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896221A0161EAF4C0023EC30 /* btn_close@2x.png */; };
+		8966584116B24A13006AAEEB /* TextViewEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8966584016B24A12006AAEEB /* TextViewEditingViewController.m */; };
 		8969969116A65D4D00BBED05 /* Artichokes.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969968116A65D4D00BBED05 /* Artichokes.png */; };
 		8969969216A65D4D00BBED05 /* Artichokes@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969968216A65D4D00BBED05 /* Artichokes@2x.png */; };
 		8969969316A65D4D00BBED05 /* Beans.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969968316A65D4D00BBED05 /* Beans.png */; };
@@ -850,6 +851,8 @@
 		89622192161EA6610023EC30 /* NSSet+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+Utilities.m"; sourceTree = "<group>"; };
 		8962219F161EAF4C0023EC30 /* btn_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_close.png; sourceTree = "<group>"; };
 		896221A0161EAF4C0023EC30 /* btn_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close@2x.png"; sourceTree = "<group>"; };
+		8966583F16B24A12006AAEEB /* TextViewEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewEditingViewController.h; sourceTree = "<group>"; };
+		8966584016B24A12006AAEEB /* TextViewEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewEditingViewController.m; sourceTree = "<group>"; };
 		8969968116A65D4D00BBED05 /* Artichokes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Artichokes.png; sourceTree = "<group>"; };
 		8969968216A65D4D00BBED05 /* Artichokes@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Artichokes@2x.png"; sourceTree = "<group>"; };
 		8969968316A65D4D00BBED05 /* Beans.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Beans.png; sourceTree = "<group>"; };
@@ -1049,6 +1052,8 @@
 				76454E1E16783E7A00B480FA /* CKTextFieldEditingViewController.m */,
 				76DCD7F416815D0400492D33 /* CKEditableView.m */,
 				76DCD7F516815D0400492D33 /* CKEditableView.h */,
+				8966583F16B24A12006AAEEB /* TextViewEditingViewController.h */,
+				8966584016B24A12006AAEEB /* TextViewEditingViewController.m */,
 			);
 			path = CKEditingViewController;
 			sourceTree = "<group>";
@@ -2256,6 +2261,7 @@
 				76454E2116783E7A00B480FA /* CKTextFieldEditingViewController.m in Sources */,
 				76DCD7F616815D0400492D33 /* CKEditableView.m in Sources */,
 				89B85B9516AF8A5900A0533E /* TestViewController.m in Sources */,
+				8966584116B24A13006AAEEB /* TextViewEditingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
