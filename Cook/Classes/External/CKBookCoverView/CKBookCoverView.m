@@ -13,7 +13,7 @@
 #import "Theme.h"
 #import "CKTextFieldEditingViewController.h"
 
-@interface CKBookCoverView () <UITextFieldDelegate, CKEditableViewDelegate, CKEditingViewControllerDelegate>
+@interface CKBookCoverView () <CKEditableViewDelegate, CKEditingViewControllerDelegate>
 
 @property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
@@ -25,7 +25,6 @@
 @property (nonatomic, strong) CKEditableView *authorEditableView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) CKEditableView *titleEditableView;
-@property (nonatomic, strong) CKTextField *captionTextField;
 @property (nonatomic, strong) CKEditableView *captionEditableView;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) BOOL editable;
@@ -92,23 +91,6 @@
     [self.authorEditableView enableEditMode:enable];
     [self.captionEditableView enableEditMode:enable];
     [self.titleEditableView enableEditMode:enable];
-}
-
-#pragma mark - UITextFieldDelegate methods
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
-    replacementString:(NSString *)string {
-    BOOL shouldChange = YES;
-    
-    UIFont *font = textField.font;
-    NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-    NSString *newCaption = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    CGSize size = [newCaption sizeWithFont:font
-                         constrainedToSize:CGSizeMake(MAXFLOAT, textField.bounds.size.height)
-                             lineBreakMode:lineBreakMode];
-        shouldChange = size.width < self.captionTextField.frame.size.width;
-    
-    return shouldChange;
 }
 
 #pragma mark - CKEditableViewDelegate methods

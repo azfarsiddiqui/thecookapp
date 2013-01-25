@@ -14,6 +14,7 @@
 #import "RecipeLike.h"
 #import "NewRecipeViewController.h"
 #import "ContentsTableViewCell.h"
+#import "TestViewController.h"
 #import "ContentsPhotoCell.h"
 #import "ViewHelper.h"
 #import "Theme.h"
@@ -203,25 +204,31 @@
 
 - (void)createTapped:(id)sender {
     
-    if (self.currentUserIsBookAuthor) {
-        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-        NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
-        newRecipeViewVC.recipeViewDelegate = self;
-        newRecipeViewVC.book = [self.dataSource currentBook];
-        [self presentViewController:newRecipeViewVC animated:YES completion:nil];
-    } else {
-        CKBook *book = [self.dataSource currentBook];
-        BOOL isThisMyFriendsBook = [book isThisMyFriendsBook];
-        [book addFollower:[CKUser currentUser]
-                  success:^{
-                      [EventHelper postFollow:YES friends:isThisMyFriendsBook];
-                      UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Success" message:@"Book was added to Dashboard" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                      [alertView show];
-                  } failure:^(NSError *error) {
-                      DLog(@"Unable to follow.");
-                  }];
-    }
+//    if (self.currentUserIsBookAuthor) {
+//        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+//        NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
+//        newRecipeViewVC.recipeViewDelegate = self;
+//        newRecipeViewVC.book = [self.dataSource currentBook];
+//        [self presentViewController:newRecipeViewVC animated:YES completion:nil];
+//    } else {
+//        CKBook *book = [self.dataSource currentBook];
+//        BOOL isThisMyFriendsBook = [book isThisMyFriendsBook];
+//        [book addFollower:[CKUser currentUser]
+//                  success:^{
+//                      [EventHelper postFollow:YES friends:isThisMyFriendsBook];
+//                      UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Success" message:@"Book was added to Dashboard" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+//                      [alertView show];
+//                  } failure:^(NSError *error) {
+//                      DLog(@"Unable to follow.");
+//                  }];
+//    }
 
+    //use for testing launch concepts
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
+    [self presentViewController:testVC animated:YES completion:nil];
+    
+    
 }
 
 #pragma mark - UIAlertViewDelegate

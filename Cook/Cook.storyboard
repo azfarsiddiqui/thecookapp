@@ -347,6 +347,104 @@
             </objects>
             <point key="canvasLocation" x="-2340" y="-680"/>
         </scene>
+        <!--Test View Controller-->
+        <scene sceneID="Fai-7v-roP">
+            <objects>
+                <viewController storyboardIdentifier="TestViewController" id="6w4-Iv-D8o" customClass="TestViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="npe-k1-kKb">
+                        <rect key="frame" x="0.0" y="20" width="1024" height="748"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o57-FE-ie3">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="dismiz">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="dismissTapped:" destination="6w4-Iv-D8o" eventType="touchUpInside" id="LXI-k6-9ek"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" lineBreakMode="tailTruncation" numberOfLines="12" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="329" translatesAutoresizingMaskIntoConstraints="NO" id="sLz-hJ-0I5">
+                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="329" id="Zpc-pb-fnU"/>
+                                </constraints>
+                                <string key="text">Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef ribs andouille cupidatat eu tongue irure. Dolor tenderloin tongue irure ad chicken.
+
+Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosciutto boudin. Qui drumstick veniam nostrud</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2vI-Wc-09x">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="248" id="7B7-zS-T0x"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Start editing">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="toggledEditMode:" destination="6w4-Iv-D8o" eventType="touchUpInside" id="9ND-J0-PfP"/>
+                                </connections>
+                            </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="krq-L6-bCf">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="460" id="Yeg-CN-1za"/>
+                                    <constraint firstAttribute="width" constant="320" id="w4B-bt-OYe"/>
+                                </constraints>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="tableviewcellidentifier" textLabel="9sk-Uf-khT" style="IBUITableViewCellStyleDefault" id="GbS-b3-Zcd">
+                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9sk-Uf-khT">
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="6w4-Iv-D8o" id="ffA-V7-TdI"/>
+                                    <outlet property="delegate" destination="6w4-Iv-D8o" id="IkI-tH-ka6"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="o57-FE-ie3" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="2ax-r8-2D0"/>
+                            <constraint firstAttribute="trailing" secondItem="sLz-hJ-0I5" secondAttribute="trailing" constant="178" id="7Qo-jT-Ed5"/>
+                            <constraint firstAttribute="trailing" secondItem="2vI-Wc-09x" secondAttribute="trailing" constant="53" id="C2c-HX-2Z1"/>
+                            <constraint firstItem="sLz-hJ-0I5" firstAttribute="top" secondItem="npe-k1-kKb" secondAttribute="top" constant="276" id="HGS-EJ-jGv"/>
+                            <constraint firstItem="2vI-Wc-09x" firstAttribute="top" secondItem="npe-k1-kKb" secondAttribute="top" constant="114" id="Zpa-GM-A86"/>
+                            <constraint firstItem="o57-FE-ie3" firstAttribute="top" secondItem="npe-k1-kKb" secondAttribute="top" constant="20" symbolic="YES" type="default" id="aPu-St-0F6"/>
+                            <constraint firstItem="krq-L6-bCf" firstAttribute="leading" secondItem="npe-k1-kKb" secondAttribute="leading" constant="51" id="bEQ-ua-xvu"/>
+                            <constraint firstItem="krq-L6-bCf" firstAttribute="top" secondItem="npe-k1-kKb" secondAttribute="top" constant="191" id="uVc-9p-5Y1"/>
+                        </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Vrf-qs-v16" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-966" y="-1778"/>
+        </scene>
         <!--New Recipe View Controller - Create Recipe-->
         <scene sceneID="PRn-Of-NMi">
             <objects>
@@ -690,6 +788,10 @@
         <class className="NewRecipeViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
             <relationships>
+                <relationship kind="action" name="addIngredientTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="closeTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="saveTapped:" candidateClass="UIButton"/>
+                <relationship kind="action" name="uploadButtonTapped:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromCamera" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="addImageButtonFromLibrary" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
@@ -738,6 +840,14 @@
         <class className="ServesView" superclassName="UIEditableView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ServesView.h"/>
         </class>
+        <class className="TestViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TestViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="editLabelButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="editListButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="editTextViewButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
         <class className="UICollectionReusableView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
         </class>
@@ -746,6 +856,9 @@
         </class>
         <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+        <class className="UICollectionViewLayout" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewLayout.h"/>
         </class>
         <class className="UIEditableView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UIEditableView.h"/>

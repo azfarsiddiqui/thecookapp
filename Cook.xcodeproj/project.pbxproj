@@ -390,6 +390,7 @@
 		89A906F316644DD20056E4CF /* cook_book_icon_editpage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89A906F116644DD20056E4CF /* cook_book_icon_editpage@2x.png */; };
 		89A906F9166460DD0056E4CF /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A906F8166460DD0056E4CF /* Theme.m */; };
 		89B282F916684136007F4BAF /* UIEditableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B282F816684135007F4BAF /* UIEditableView.m */; };
+		89B85B9516AF8A5900A0533E /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B85B9416AF8A5900A0533E /* TestViewController.m */; };
 		89E2CA87165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */; };
 		89E2CA88165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA86165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png */; };
 		89E2CA8C165F024800CDE0D4 /* cook_editrecipe_categorybg.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA8A165F024800CDE0D4 /* cook_editrecipe_categorybg.png */; };
@@ -895,6 +896,8 @@
 		89A906F8166460DD0056E4CF /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
 		89B282F716684135007F4BAF /* UIEditableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIEditableView.h; path = Subviews/UIEditableView.h; sourceTree = "<group>"; };
 		89B282F816684135007F4BAF /* UIEditableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIEditableView.m; path = Subviews/UIEditableView.m; sourceTree = "<group>"; };
+		89B85B9316AF8A5900A0533E /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		89B85B9416AF8A5900A0533E /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		89E2CA85165EF93C00CDE0D4 /* cook_editrecipe_categoryselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_categoryselected.png; sourceTree = "<group>"; };
 		89E2CA86165EF93C00CDE0D4 /* cook_editrecipe_categoryselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_categoryselected@2x.png"; sourceTree = "<group>"; };
 		89E2CA8A165F024800CDE0D4 /* cook_editrecipe_categorybg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_categorybg.png; sourceTree = "<group>"; };
@@ -1610,6 +1613,8 @@
 				76B9E01C164C85D100345B8D /* PageViewController.h */,
 				76B9E01B164C85D100345B8D /* PageViewController.m */,
 				89B83E8F1659AA130012E03B /* BookPages */,
+				89B85B9316AF8A5900A0533E /* TestViewController.h */,
+				89B85B9416AF8A5900A0533E /* TestViewController.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -2250,6 +2255,7 @@
 				76454E2016783E7A00B480FA /* CKEditingViewController.m in Sources */,
 				76454E2116783E7A00B480FA /* CKTextFieldEditingViewController.m in Sources */,
 				76DCD7F616815D0400492D33 /* CKEditableView.m in Sources */,
+				89B85B9516AF8A5900A0533E /* TestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
