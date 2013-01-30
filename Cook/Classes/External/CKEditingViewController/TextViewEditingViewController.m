@@ -7,6 +7,7 @@
 //
 
 #import "TextViewEditingViewController.h"
+#import "Theme.h"
 
 @interface TextViewEditingViewController () <UITextViewDelegate>
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -16,21 +17,26 @@
 
 @implementation TextViewEditingViewController
 
+-(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate
+{
+    if (self = [super initWithDelegate:delegate]) {
+        [self defaultStyle];
+    }
+    return self;
+}
 - (UIView *)createTargetEditingView {
-    UIEdgeInsets textFieldInsets = UIEdgeInsetsMake(0.0, 50.0, 0.0, 50.0);
+    UIEdgeInsets textViewInsets = UIEdgeInsetsMake(75.0, 50.0, 400.0, 50.0);
     
-//    CGSize size = [@"A" sizeWithFont:self.editableTextFont forWidth:MAXFLOAT lineBreakMode:NSLineBreakByClipping];
-    CGRect frame = CGRectMake(textFieldInsets.left,
-                              floorf((self.view.bounds.size.height) / 2.0),
-                              floorf((self.view.bounds.size.width - textFieldInsets.left - textFieldInsets.right)/2),
-                              50.0f);
+    CGRect frame = CGRectMake(textViewInsets.left,
+                              textViewInsets.top,
+                              self.view.bounds.size.width - textViewInsets.left - textViewInsets.right,
+                              self.view.bounds.size.height - textViewInsets.top - textViewInsets.bottom);
     UITextView *editableTextView = [[UITextView alloc] initWithFrame:frame];
     editableTextView.autoresizingMask = UIViewAutoresizingNone;
-    editableTextView.backgroundColor = [UIColor blackColor];
-//    editableTextView.font = self.editableTextFont;
-    editableTextView.textColor = [UIColor whiteColor];
+    editableTextView.backgroundColor = [UIColor whiteColor];
+    editableTextView.font = self.editableTextFont;
+    editableTextView.textColor = [UIColor blackColor];
     editableTextView.delegate = self;
-//    editableTextView.textAlignment = self.textAlignment;
     return editableTextView;
 }
 
@@ -42,9 +48,8 @@
     
     if (!appear) {
         [self.doneButton removeFromSuperview];
-//        [self.titleLabel removeFromSuperview];
-//        [self.limitLabel removeFromSuperview];
-        
+        [self.titleLabel removeFromSuperview];
+        [self.limitLabel removeFromSuperview];
         textView.text = nil;
         [textView resignFirstResponder];
     }
@@ -68,13 +73,20 @@
     return textView.text;
 }
 
+- (void)performSave {
+    
+    UITextView *textView = (UITextView *)self.targetEditingView;
+    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:textView.text];
+    
+    [super performSave];
+}
+
 
 #pragma mark - UITextViewDelegate methods
 
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView:(UITextField *)textField {
     DLog();
-    //    [self performSave];
-    return YES;
+    [self performSave];
     return YES;
 }
 
@@ -84,6 +96,7 @@
     BOOL isBackspace = [newString length] < [textView.text length];
     
     if ([textView.text length] >= self.characterLimit && !isBackspace) {
+        DLog("text view length %i, character limit is %i, returning NO", [textView.text length] ,self.characterLimit);
         return NO;
     }
     
@@ -95,11 +108,20 @@
     // No save if no characters
     self.doneButton.enabled = [newString length] > 0;
     
+    NSRange scrollRange = NSMakeRange(textView.text.length - 1, 1);
+    [textView scrollRangeToVisible:scrollRange];
+    
     return YES;
 }
 
 #pragma mark - Private Methods
 
+-(void)defaultStyle
+{
+    self.editableTextFont = [Theme textViewEditableTextFont];
+    self.titleFont = [Theme textViewTitleFont];
+
+}
 -(void)addFields
 {
     [self addDoneButton];
@@ -114,7 +136,7 @@
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.text = self.editingTitle;
     titleLabel.font = self.titleFont;
-    titleLabel.textColor = textField.textColor;
+    titleLabel.textColor = [UIColor whiteColor];
     titleLabel.shadowColor = [UIColor blackColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [titleLabel sizeToFit];

@@ -38,10 +38,15 @@
 + (UIFont *)bookCoverEditableCaptionTextFont;
 + (UIFont *)bookCoverEditableTitleTextFont;
 + (UIFont *)bookCoverEditableFieldDescriptionFont;
+
 + (UIFont *)bookCoverViewModeAuthorFont;
 + (UIFont *)bookCoverViewModeCaptionFont;
 + (UIFont *)bookCoverViewModeTitleMinFont;
 + (UIFont *)bookCoverViewModeTitleMidFont;
 + (UIFont *)bookCoverViewModeTitleMaxFont;
+
+#pragma mark - General reusable editable controls
++ (UIFont *)textViewEditableTextFont;
++ (UIFont *)textViewTitleFont;
 @end
 

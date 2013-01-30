@@ -27,7 +27,7 @@
 {
     [super awakeFromNib];
     self.testListData = @[@"list entry one",@"list entry two",@"list entry three",@"list entry four",@"list entry five",@"list entry six",@"list entry seven"];
-    self.testTextViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef ribs andouille cupidatat eu tongue irure. Dolor tenderloin tongue irure ad chicken.\n\n Aute swine adipisicing dolor. Sirloin tri-tip esse in, nisi jerky aliquip prosciutto boudin. Qui drumstick veniam nostrud";
+    self.testTextViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
 }
 
 - (void)viewDidLoad
@@ -111,15 +111,11 @@
     } else {
         
         TextViewEditingViewController *textViewEditingController = [[TextViewEditingViewController alloc] initWithDelegate:self];
-//        textFieldEditingViewController.textAlignment = NSTextAlignmentCenter;
         textViewEditingController.view.frame = [self rootView].bounds;
         [self.view addSubview:textViewEditingController.view];
         self.editingViewController = textViewEditingController;
         
         UILabel *testLabel = (UILabel *)self.textViewEditableView.contentView;
-        
-        textViewEditingController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-        textViewEditingController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         textViewEditingController.characterLimit = 300;
         textViewEditingController.text = testLabel.text;
         

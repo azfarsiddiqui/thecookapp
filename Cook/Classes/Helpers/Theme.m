@@ -120,4 +120,18 @@
 {
     return [UIFont fontWithName:@"Neutraface2Condensed-Medium" size:24];
 }
+
+#pragma mark - General reusable editable controls
++ (UIFont *)textViewTitleFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
+}
+
++ (UIFont *)textViewEditableTextFont
+{
+    return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:55];
+}
+
+
+
 @end
