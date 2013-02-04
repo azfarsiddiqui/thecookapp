@@ -20,12 +20,11 @@
 #pragma mark - CKEditingViewController methods
 
 - (UIView *)createTargetEditingView {
-    UIEdgeInsets tableViewInsets = UIEdgeInsetsMake(0.0, 50.0, 0.0, 50.0);
-    CGSize tableSize = CGSizeMake(100.0f, 100.0f);
+    UIEdgeInsets tableViewInsets = UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0);
     CGRect frame = CGRectMake(tableViewInsets.left,
-                              floorf(0.5f*(self.view.bounds.size.height - tableSize.width)),
+                              tableViewInsets.top,
                               self.view.bounds.size.width - tableViewInsets.left - tableViewInsets.right,
-                              tableSize.height -tableViewInsets.top -tableViewInsets.bottom);
+                              self.view.bounds.size.height - tableViewInsets.top - tableViewInsets.bottom);
     UIView *view = [[UIView alloc] initWithFrame:frame];
     view.backgroundColor = [UIColor greenColor];
     return view;
