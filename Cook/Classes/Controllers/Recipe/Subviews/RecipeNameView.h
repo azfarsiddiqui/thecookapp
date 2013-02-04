@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKTextField.h"
 #import "UIEditableView.h"
 
 @interface RecipeNameView : UIEditableView

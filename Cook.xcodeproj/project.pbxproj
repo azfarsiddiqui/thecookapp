@@ -126,7 +126,6 @@
 		7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */; };
 		7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40216141B7E001D1BA1 /* CKModalView.m */; };
 		7666B40616143713001D1BA1 /* AppHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7666B40516143713001D1BA1 /* AppHelper.m */; };
-		766B0DC616643A7900A934FD /* CKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 766B0DC416643A1A00A934FD /* CKTextField.m */; };
 		766B0DD91664495E00A934FD /* BebasNeue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCC1664495E00A934FD /* BebasNeue.otf */; };
 		766B0DDA1664495E00A934FD /* Dharma Type Font License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */; };
 		766B0DDB1664495E00A934FD /* Neutra2Cond-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */; };
@@ -565,8 +564,6 @@
 		7666B40216141B7E001D1BA1 /* CKModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKModalView.m; sourceTree = "<group>"; };
 		7666B40416143713001D1BA1 /* AppHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppHelper.h; sourceTree = "<group>"; };
 		7666B40516143713001D1BA1 /* AppHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppHelper.m; sourceTree = "<group>"; };
-		766B0DC316643A1A00A934FD /* CKTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKTextField.h; sourceTree = "<group>"; };
-		766B0DC416643A1A00A934FD /* CKTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKTextField.m; sourceTree = "<group>"; };
 		766B0DCC1664495E00A934FD /* BebasNeue.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BebasNeue.otf; sourceTree = "<group>"; };
 		766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Dharma Type Font License.txt"; sourceTree = "<group>"; };
 		766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Bold.otf"; sourceTree = "<group>"; };
@@ -1229,8 +1226,6 @@
 				76BEE731165DEE600065B97B /* CKBookCover.m */,
 				76BEE732165DEE600065B97B /* CKBookCoverView.h */,
 				76BEE733165DEE600065B97B /* CKBookCoverView.m */,
-				766B0DC316643A1A00A934FD /* CKTextField.h */,
-				766B0DC416643A1A00A934FD /* CKTextField.m */,
 				7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */,
 				7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */,
 			);
@@ -2236,7 +2231,6 @@
 				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
 				76510714165F31180077B551 /* StoreBookCoverViewCell.m in Sources */,
-				766B0DC616643A7900A934FD /* CKTextField.m in Sources */,
 				89A906F9166460DD0056E4CF /* Theme.m in Sources */,
 				897E6C121667266000FD7F7B /* RecipeImageView.m in Sources */,
 				897E6C151667268300FD7F7B /* RecipeNameView.m in Sources */,
