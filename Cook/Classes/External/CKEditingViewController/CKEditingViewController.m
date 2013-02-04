@@ -36,6 +36,14 @@
         self.delegate = delegate;
     }
     return self;
+
+}
+
+- (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView *)sourceEditingView {
+    if (self = [self initWithDelegate:delegate]) {
+        self.sourceEditingView = sourceEditingView;
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -78,10 +86,6 @@
 
         }
         
-    } else {
-        
-        // Save the result.
-        self.result = [self editingResult];
     }
     
     // Inform of editing appear.
@@ -170,13 +174,9 @@
     
 }
 
-- (id)editingResult {
-    // Subclasses to provide the result of the editing.
-    return nil;
-}
-
 - (UIView *)createTargetEditingView {
     // Subclasses to provide a target editing view to transition to.
+    NSAssert(NO, @"Subclasses must provide implementation");
     return nil;
 }
 

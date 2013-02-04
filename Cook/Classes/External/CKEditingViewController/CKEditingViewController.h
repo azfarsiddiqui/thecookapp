@@ -23,12 +23,11 @@
 @property (nonatomic, strong) UIView *sourceEditingView;
 @property (nonatomic, strong) UIView *targetEditingView;
 @property (nonatomic, assign) BOOL keyboardVisible;
-@property (nonatomic, strong) id result;
 @property (nonatomic, strong) UIButton *doneButton;
 
 - (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate;
+- (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView*)sourceEditingView;
 - (void)enableEditing:(BOOL)enable completion:(void (^)())completion;
-- (id)editingResult;
 - (UIView *)createTargetEditingView;
 - (UIImage *)imageForView:(UIView *)view;
 - (UIImage *)imageForView:(UIView *)view opaque:(BOOL)opaque;

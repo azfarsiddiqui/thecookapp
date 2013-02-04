@@ -343,6 +343,7 @@
 		8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F802161E959700E6EF1D /* CKRecipeImage.m */; };
 		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
 		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
+		893E535016BF6CA400B316C6 /* IngredientsEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */; };
 		895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D91650C23500765F96 /* CoreText.framework */; };
 		895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D71650C20200765F96 /* OpenGLES.framework */; };
 		895A2B8F1655BC670061E687 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */; };
@@ -825,6 +826,8 @@
 		893AC89F16782B3B00B221EC /* LikesPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikesPageViewController.m; path = Book/LikesPageViewController.m; sourceTree = "<group>"; };
 		893AC8A016782B3B00B221EC /* SectionPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPageViewController.h; path = Book/SectionPageViewController.h; sourceTree = "<group>"; };
 		893AC8A116782B3C00B221EC /* SectionPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SectionPageViewController.m; path = Book/SectionPageViewController.m; sourceTree = "<group>"; };
+		893E534E16BF6CA400B316C6 /* IngredientsEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientsEditingViewController.h; sourceTree = "<group>"; };
+		893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientsEditingViewController.m; sourceTree = "<group>"; };
 		895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
 		89622173161E9F300023EC30 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
 		89622174161E9F300023EC30 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
@@ -1041,16 +1044,13 @@
 		76454E1816783E7A00B480FA /* CKEditingViewController */ = {
 			isa = PBXGroup;
 			children = (
+				893E535116BF6CB300B316C6 /* editors */,
 				76454E1916783E7A00B480FA /* CKEditingTextField.h */,
 				76454E1A16783E7A00B480FA /* CKEditingTextField.m */,
 				76454E1B16783E7A00B480FA /* CKEditingViewController.h */,
 				76454E1C16783E7A00B480FA /* CKEditingViewController.m */,
-				76454E1D16783E7A00B480FA /* CKTextFieldEditingViewController.h */,
-				76454E1E16783E7A00B480FA /* CKTextFieldEditingViewController.m */,
 				76DCD7F416815D0400492D33 /* CKEditableView.m */,
 				76DCD7F516815D0400492D33 /* CKEditableView.h */,
-				8966583F16B24A12006AAEEB /* TextViewEditingViewController.h */,
-				8966584016B24A12006AAEEB /* TextViewEditingViewController.m */,
 			);
 			path = CKEditingViewController;
 			sourceTree = "<group>";
@@ -1626,6 +1626,19 @@
 				8976B895162791F6004155C6 /* Create */,
 			);
 			path = Recipe;
+			sourceTree = "<group>";
+		};
+		893E535116BF6CB300B316C6 /* editors */ = {
+			isa = PBXGroup;
+			children = (
+				76454E1D16783E7A00B480FA /* CKTextFieldEditingViewController.h */,
+				76454E1E16783E7A00B480FA /* CKTextFieldEditingViewController.m */,
+				8966583F16B24A12006AAEEB /* TextViewEditingViewController.h */,
+				8966584016B24A12006AAEEB /* TextViewEditingViewController.m */,
+				893E534E16BF6CA400B316C6 /* IngredientsEditingViewController.h */,
+				893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */,
+			);
+			name = editors;
 			sourceTree = "<group>";
 		};
 		89622170161E9F300023EC30 /* External */ = {
@@ -2256,6 +2269,7 @@
 				76DCD7F616815D0400492D33 /* CKEditableView.m in Sources */,
 				89B85B9516AF8A5900A0533E /* TestViewController.m in Sources */,
 				8966584116B24A13006AAEEB /* TextViewEditingViewController.m in Sources */,
+				893E535016BF6CA400B316C6 /* IngredientsEditingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

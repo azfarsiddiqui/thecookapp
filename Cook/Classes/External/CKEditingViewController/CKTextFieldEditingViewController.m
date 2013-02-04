@@ -56,9 +56,8 @@
     [super editingViewDidAppear:appear];
 
     if (appear) {
-        
-        [self decorateTextField];
-        
+
+        [self addSubviews];
         UITextField *textField = (UITextField *)self.targetEditingView;
         textField.text = self.text;
         [textField becomeFirstResponder];
@@ -93,11 +92,6 @@
                              }];
     }
 
-}
-
-- (id)editingResult {
-    UITextField *textField = (UITextField *)self.targetEditingView;
-    return textField.text;
 }
 
 - (void)performSave {
@@ -136,7 +130,7 @@
 
 #pragma mark - Private methods
 
-- (void)decorateTextField {
+- (void)addSubviews {
     [self addDoneButton];
     [self addTitleLabel];
     [self updateLimitLabel];

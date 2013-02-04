@@ -17,9 +17,9 @@
 
 @implementation TextViewEditingViewController
 
--(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate
+-(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView *)sourceEditingView
 {
-    if (self = [super initWithDelegate:delegate]) {
+    if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
         [self defaultStyle];
     }
     return self;
@@ -60,17 +60,12 @@
     [super editingViewDidAppear:appear];
     
     if (appear) {
-        [self addFields];
+        [self addSubviews];
         UITextView *textView = (UITextView *)self.targetEditingView;
         textView.text = self.text;
         [textView becomeFirstResponder];
         
     }
-}
-
-- (id)editingResult {
-    UITextView *textView = (UITextView *)self.targetEditingView;
-    return textView.text;
 }
 
 - (void)performSave {
@@ -122,7 +117,7 @@
     self.titleFont = [Theme textViewTitleFont];
 
 }
--(void)addFields
+-(void)addSubviews
 {
     [self addDoneButton];
     [self addTitleLabel];

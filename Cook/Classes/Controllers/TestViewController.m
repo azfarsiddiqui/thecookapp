@@ -10,6 +10,8 @@
 #import "CKEditableView.h"
 #import "CKTextFieldEditingViewController.h"
 #import "TextViewEditingViewController.h"
+#import "IngredientsEditingViewController.h"
+
 #import "Theme.h"
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
 @property(nonatomic,assign) BOOL inEditMode;
@@ -97,37 +99,43 @@
 {
 
     if (view == self.labelEditableView) {
-        CKTextFieldEditingViewController *textFieldEditingViewController = [[CKTextFieldEditingViewController alloc] initWithDelegate:self];
-        textFieldEditingViewController.textAlignment = NSTextAlignmentCenter;
-        textFieldEditingViewController.view.frame = [self rootView].bounds;
-        [self.view addSubview:textFieldEditingViewController.view];
-        self.editingViewController = textFieldEditingViewController;
+        CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.labelEditableView];
+        textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
+        textFieldEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:textFieldEditingVC.view];
+        self.editingViewController = textFieldEditingVC;
+        UILabel *textFieldLabel = (UILabel *)self.labelEditableView.contentView;
         
-        UILabel *testLabel = (UILabel *)self.labelEditableView.contentView;
-        
-        textFieldEditingViewController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-        textFieldEditingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        textFieldEditingViewController.characterLimit = 20;
-        textFieldEditingViewController.text = testLabel.text;
-        textFieldEditingViewController.sourceEditingView = self.labelEditableView;
-        textFieldEditingViewController.editingTitle = @"LABEL NAME";
-        [textFieldEditingViewController enableEditing:YES completion:nil];
+        textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+        textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+        textFieldEditingVC.characterLimit = 20;
+        textFieldEditingVC.text = textFieldLabel.text;
+        textFieldEditingVC.editingTitle = @"LABEL NAME";
+        [textFieldEditingVC enableEditing:YES completion:nil];
     } else if (view == self.textViewEditableView){
         
-        TextViewEditingViewController *textViewEditingController = [[TextViewEditingViewController alloc] initWithDelegate:self];
-        textViewEditingController.view.frame = [self rootView].bounds;
-        [self.view addSubview:textViewEditingController.view];
-        self.editingViewController = textViewEditingController;
+        TextViewEditingViewController *textViewEditingVC = [[TextViewEditingViewController alloc] initWithDelegate:self sourceEditingView:self.textViewEditableView];
+        textViewEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:textViewEditingVC.view];
+        self.editingViewController = textViewEditingVC;
         
-        UILabel *testLabel = (UILabel *)self.textViewEditableView.contentView;
-        textViewEditingController.characterLimit = 300;
-        textViewEditingController.text = testLabel.text;
-        
-        textViewEditingController.sourceEditingView = self.textViewEditableView;
-        textViewEditingController.editingTitle = @"TEXT VIEW";
-        [textViewEditingController enableEditing:YES completion:nil];
+        textViewEditingVC.characterLimit = 300;
+        UILabel *textViewLabel = (UILabel *)self.textViewEditableView.contentView;
+        textViewEditingVC.text = textViewLabel.text;
+        textViewEditingVC.editingTitle = @"TEXT VIEW";
+        [textViewEditingVC enableEditing:YES completion:nil];
     } else {
-        DLog(@"edit requested for list");
+        IngredientsEditingViewController *ingredientsEditingVC = [[IngredientsEditingViewController alloc] initWithDelegate:self sourceEditingView:self.listViewEditableView];
+        ingredientsEditingVC.view.frame = [self rootView].bounds;
+        ingredientsEditingVC.characterLimit = 300;
+        [self.view addSubview:ingredientsEditingVC.view];
+        self.editingViewController = ingredientsEditingVC;
+        
+        UILabel *textViewLabel = (UILabel *)self.listViewEditableView.contentView;
+        ingredientsEditingVC.text = textViewLabel.text;
+        ingredientsEditingVC.editingTitle = @"ingredients";
+        [ingredientsEditingVC enableEditing:YES completion:nil];
+        
     }
 
 }
@@ -145,15 +153,16 @@
 }
 
 -(void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result {
+    NSString *value = (NSString *)result;
     if (editingView == self.labelEditableView) {
-        NSString *value = (NSString *)result;
         [self setLabelValue:value];
         [self.labelEditableView enableEditMode:YES];
     } else if (editingView == self.textViewEditableView) {
-        NSString *value = (NSString *)result;
         [self setTextViewValue:value];
         [self.textViewEditableView enableEditMode:YES];
-        
+    } {
+        [self setListViewValue:value];
+        [self.listViewEditableView enableEditMode:YES];
     }
 }
 

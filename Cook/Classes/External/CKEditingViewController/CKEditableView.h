@@ -9,9 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol CKEditableViewDelegate
-
 - (void)editableViewEditRequestedForView:(UIView *)view;
-
 @end
 
 @interface CKEditableView : UIView
@@ -21,7 +19,7 @@
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *containerView;
 
-- (id)initWithDelegate:(id<CKEditableViewDelegate>)delegate;
-- (void)enableEditMode:(BOOL)enable;
+- (id) initWithDelegate:(id<CKEditableViewDelegate>)delegate;
+- (void) enableEditMode:(BOOL)enable;
 
 @end
