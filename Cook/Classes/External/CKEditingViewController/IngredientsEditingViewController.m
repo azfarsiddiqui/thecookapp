@@ -9,9 +9,12 @@
 #import "IngredientsEditingViewController.h"
 #import "CKEditingTextField.h"
 #import "CKTextFieldEditingViewController.h"
+#import "IngredientTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface IngredientsEditingViewController () <UITextFieldDelegate>
+#define kIngredientsTableViewCell   @"IngredientsTableViewCell"
+
+@interface IngredientsEditingViewController () <UITextFieldDelegate, UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic, strong) UILabel *titleLabel;
 @end
 
@@ -20,14 +23,7 @@
 #pragma mark - CKEditingViewController methods
 
 - (UIView *)createTargetEditingView {
-    UIEdgeInsets tableViewInsets = UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0);
-    CGRect frame = CGRectMake(tableViewInsets.left,
-                              tableViewInsets.top,
-                              self.view.bounds.size.width - tableViewInsets.left - tableViewInsets.right,
-                              self.view.bounds.size.height - tableViewInsets.top - tableViewInsets.bottom);
-    UIView *view = [[UIView alloc] initWithFrame:frame];
-    view.backgroundColor = [UIColor greenColor];
-    return view;
+    return self.tableView;
 }
 
 - (void)editingViewWillAppear:(BOOL)appear {
@@ -54,9 +50,10 @@
 
 - (void)performSave {
     
-    UIView *tableView = (UIView *)self.targetEditingView;
+    UITableView *tableView = (UITableView *)self.targetEditingView;
     //result of a save - from incumbent view
-    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:@"performSave"];
+    NSString * delimitedString = [[self.ingredientList valueForKey:@"description"] componentsJoinedByString:@"\n"];
+    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:delimitedString];
     
     [super performSave];
 }
@@ -82,11 +79,51 @@
     return YES;
 }
 
+#pragma mark - UITableViewDataSource
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 90.0f;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.ingredientList.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *data = [self.ingredientList objectAtIndex:indexPath.row];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kIngredientsTableViewCell];
+    cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
+    cell.textLabel.text = data;
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 #pragma mark - Private methods
 
 - (void)addSubviews {
     [self addDoneButton];
     [self addTitleLabel];
+}
+
+- (UITableView*)tableView
+{
+    UIEdgeInsets tableViewInsets = UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0);
+    CGRect frame = CGRectMake(tableViewInsets.left,
+                              tableViewInsets.top,
+                              self.view.bounds.size.width - tableViewInsets.left - tableViewInsets.right,
+                              self.view.bounds.size.height - tableViewInsets.top - tableViewInsets.bottom);
+    UITableView *tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStylePlain];
+    tableView.dataSource = self;
+    tableView.delegate = self;
+    [tableView registerClass:[IngredientTableViewCell class] forCellReuseIdentifier:kIngredientsTableViewCell];
+    return tableView;
 }
 
 - (void)addTitleLabel {

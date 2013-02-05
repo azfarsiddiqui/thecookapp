@@ -1,5 +1,5 @@
 //
-//  IngredientTableViewCell.h
+//  TempIngredientTableViewCell.h
 //  Cook
 //
 //  Created by Jonny Sagorin on 10/10/12.
@@ -10,7 +10,8 @@
 #import "Ingredient.h"
 
 extern NSString *const kIngredientTableViewCellReuseIdentifier;
-@interface IngredientTableViewCell : UITableViewCell
+
+@interface TempIngredientTableViewCell : UITableViewCell
 @property(nonatomic,assign) NSInteger ingredientIndex;
 @property(nonatomic,assign) id<UITextFieldDelegate> delegate;
 

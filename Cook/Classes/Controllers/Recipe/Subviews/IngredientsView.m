@@ -10,7 +10,7 @@
 #import "Theme.h"
 #import "ViewHelper.h"
 #import "Ingredient.h"
-#import "IngredientTableViewCell.h"
+#import "TempIngredientTableViewCell.h"
 #import "NSArray+Enumerable.h"
 
 #define kIngredientCellTag 112233
@@ -80,7 +80,7 @@
         _tableView.delegate = self;
         _tableView.hidden = YES;
         _tableView.backgroundColor = [UIColor clearColor];
-        [_tableView registerClass:[IngredientTableViewCell class] forCellReuseIdentifier:kIngredientTableViewCellIdentifier];
+        [_tableView registerClass:[TempIngredientTableViewCell class] forCellReuseIdentifier:kIngredientTableViewCellIdentifier];
         [self addSubview:_tableView];
     }
     return _tableView;
@@ -137,7 +137,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *reuseCellID = kIngredientTableViewCellIdentifier;
-    IngredientTableViewCell *cell = (IngredientTableViewCell*) [tableView dequeueReusableCellWithIdentifier:reuseCellID];
+    TempIngredientTableViewCell *cell = (TempIngredientTableViewCell*) [tableView dequeueReusableCellWithIdentifier:reuseCellID];
     Ingredient *ingredient = [self.ingredients objectAtIndex:indexPath.row];
     [cell setIngredient:ingredient forRow:indexPath.row];
     cell.delegate = self;
@@ -172,7 +172,7 @@
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
     UIView *parentView = [textField superview];
-    IngredientTableViewCell *cell = (IngredientTableViewCell*)[parentView superview];
+    TempIngredientTableViewCell *cell = (TempIngredientTableViewCell*)[parentView superview];
     Ingredient *ingredient = [self.ingredients objectAtIndex:cell.ingredientIndex];
     ingredient.name = textField.text;
     [self updateIngredientsLabelText];

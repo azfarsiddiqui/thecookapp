@@ -1,20 +1,20 @@
 //
-//  IngredientTableViewCell.m
+//  TempIngredientTableViewCell.m
 //  Cook
 //
 //  Created by Jonny Sagorin on 10/10/12.
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "IngredientTableViewCell.h"
+#import "TempIngredientTableViewCell.h"
 #import "Theme.h"
 
 NSString *const kIngredientTableViewCellReuseIdentifier = @"name";
 
-@interface IngredientTableViewCell()
+@interface TempIngredientTableViewCell()
 @property(nonatomic,strong) UITextField *ingredientsTextField;
 @end
-@implementation IngredientTableViewCell
+@implementation TempIngredientTableViewCell
 
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -30,7 +30,7 @@ NSString *const kIngredientTableViewCellReuseIdentifier = @"name";
 -(void)setIngredient:(Ingredient*)ingredient forRow:(NSInteger)row
 {
     self.ingredientIndex = row;
-    self.ingredientsTextField.text = [NSString stringWithFormat:@"%@",ingredient.name, row];
+    self.ingredientsTextField.text = [NSString stringWithFormat:@"%@ %i",ingredient.name, row];
 }
 
 #pragma mark - Private Methods

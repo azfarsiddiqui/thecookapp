@@ -15,7 +15,7 @@
 #import "Theme.h"
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
 @property(nonatomic,assign) BOOL inEditMode;
-@property(nonatomic,strong) NSArray *testListData;
+@property(nonatomic,strong) NSArray *ingredientListData;
 @property(nonatomic,strong) NSString *testTextViewData;
 
 @property(nonatomic,strong) CKEditableView *labelEditableView;
@@ -29,7 +29,7 @@
 -(void)awakeFromNib
 {
     [super awakeFromNib];
-    self.testListData = @[@"list entry one",@"list entry two",@"list entry three",@"list entry four",@"list entry five",@"list entry six",@"list entry seven"];
+    self.ingredientListData = @[@"list entry one",@"list entry two",@"list entry three",@"list entry four",@"list entry five",@"list entry six",@"list entry seven"];
     self.testTextViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
 }
 
@@ -65,28 +65,13 @@
     [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
 }
 
-#pragma mark - UITableViewDataSource
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.testListData count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *TableViewCellIdentifier = @"tableviewcellidentifier";
-    NSString *data = [self.testListData objectAtIndex:indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:TableViewCellIdentifier];
-    cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
-    cell.textLabel.text = data;
-    return cell;
-}
-
 #pragma mark - Private Methods
 -(void)config
 {
     DLog();
     [self setLabelValue:@"initial value"];
     [self setTextViewValue:self.testTextViewData];
-    [self setListViewValue:[self.testListData componentsJoinedByString:@"\n"]];
+    [self setListViewValue:[self.ingredientListData componentsJoinedByString:@"\n"]];
 }
 
 - (UIView *)rootView {
@@ -131,8 +116,7 @@
         [self.view addSubview:ingredientsEditingVC.view];
         self.editingViewController = ingredientsEditingVC;
         
-        UILabel *textViewLabel = (UILabel *)self.listViewEditableView.contentView;
-        ingredientsEditingVC.text = textViewLabel.text;
+        ingredientsEditingVC.ingredientList = self.ingredientListData;
         ingredientsEditingVC.editingTitle = @"ingredients";
         [ingredientsEditingVC enableEditing:YES completion:nil];
         
@@ -217,7 +201,7 @@
     
     UILabel *listViewLabel = (UILabel *)self.listViewEditableView.contentView;
     listViewLabel.text = listViewValue;
-
+    self.ingredientListData = [listViewValue componentsSeparatedByString:@"\n"];
     CGSize listViewSizeConstraint = CGSizeMake(260.0f, 268.0f);
     CGSize listViewLabelSize = [listViewValue sizeWithFont:listViewFont constrainedToSize:listViewSizeConstraint];
     listViewLabel.frame = CGRectMake(0.0f, 0.0f, listViewLabelSize.width, listViewLabelSize.height);
