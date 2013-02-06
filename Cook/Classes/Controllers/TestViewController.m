@@ -112,6 +112,7 @@
     } else {
         IngredientsEditingViewController *ingredientsEditingVC = [[IngredientsEditingViewController alloc] initWithDelegate:self sourceEditingView:self.listViewEditableView];
         ingredientsEditingVC.view.frame = [self rootView].bounds;
+        ingredientsEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         ingredientsEditingVC.characterLimit = 300;
         [self.view addSubview:ingredientsEditingVC.view];
         self.editingViewController = ingredientsEditingVC;

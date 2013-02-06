@@ -149,7 +149,7 @@
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.text = self.editingTitle;
     titleLabel.font = self.titleFont;
-    titleLabel.textColor = [UIColor blueColor];
+    titleLabel.textColor = [UIColor whiteColor];
     titleLabel.shadowColor = [UIColor blackColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [titleLabel sizeToFit];
