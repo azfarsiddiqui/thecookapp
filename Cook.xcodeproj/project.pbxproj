@@ -383,6 +383,8 @@
 		897E6C1E166726BF00FD7F7B /* CookingTimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C1D166726BF00FD7F7B /* CookingTimeView.m */; };
 		897E6C21166726F600FD7F7B /* CookingDirectionsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C20166726F500FD7F7B /* CookingDirectionsView.m */; };
 		8989E53B16C1CF35009C963D /* IngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8989E53A16C1CF35009C963D /* IngredientTableViewCell.m */; };
+		8989E53E16C1D1F8009C963D /* EditableIngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8989E53D16C1D1F8009C963D /* EditableIngredientTableViewCell.m */; };
+		8989E54116C1D360009C963D /* IngredientEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8989E54016C1D360009C963D /* IngredientEditorViewController.m */; };
 		8996A3B0165C653F0099583E /* BookProfilePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8996A3AF165C653F0099583E /* BookProfilePageViewController.m */; };
 		8996A3B3165C66740099583E /* ContentsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8996A3B2165C66740099583E /* ContentsTableViewCell.m */; };
 		89A50499162250F700E6CDF1 /* Ingredient.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A50498162250F700E6CDF1 /* Ingredient.m */; };
@@ -886,6 +888,10 @@
 		897E6C20166726F500FD7F7B /* CookingDirectionsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookingDirectionsView.m; path = Subviews/CookingDirectionsView.m; sourceTree = "<group>"; };
 		8989E53916C1CF35009C963D /* IngredientTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientTableViewCell.h; sourceTree = "<group>"; };
 		8989E53A16C1CF35009C963D /* IngredientTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientTableViewCell.m; sourceTree = "<group>"; };
+		8989E53C16C1D1F8009C963D /* EditableIngredientTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableIngredientTableViewCell.h; sourceTree = "<group>"; };
+		8989E53D16C1D1F8009C963D /* EditableIngredientTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableIngredientTableViewCell.m; sourceTree = "<group>"; };
+		8989E53F16C1D35F009C963D /* IngredientEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientEditorViewController.h; sourceTree = "<group>"; };
+		8989E54016C1D360009C963D /* IngredientEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientEditorViewController.m; sourceTree = "<group>"; };
 		8996A3AE165C653F0099583E /* BookProfilePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookProfilePageViewController.h; sourceTree = "<group>"; };
 		8996A3AF165C653F0099583E /* BookProfilePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookProfilePageViewController.m; sourceTree = "<group>"; };
 		8996A3B1165C66730099583E /* ContentsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContentsTableViewCell.h; path = Book/ContentsTableViewCell.h; sourceTree = "<group>"; };
@@ -1804,6 +1810,10 @@
 				893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */,
 				8989E53916C1CF35009C963D /* IngredientTableViewCell.h */,
 				8989E53A16C1CF35009C963D /* IngredientTableViewCell.m */,
+				8989E53C16C1D1F8009C963D /* EditableIngredientTableViewCell.h */,
+				8989E53D16C1D1F8009C963D /* EditableIngredientTableViewCell.m */,
+				8989E53F16C1D35F009C963D /* IngredientEditorViewController.h */,
+				8989E54016C1D360009C963D /* IngredientEditorViewController.m */,
 			);
 			name = Ingredients;
 			sourceTree = "<group>";
@@ -2284,6 +2294,8 @@
 				8966584116B24A13006AAEEB /* TextViewEditingViewController.m in Sources */,
 				893E535016BF6CA400B316C6 /* IngredientsEditingViewController.m in Sources */,
 				8989E53B16C1CF35009C963D /* IngredientTableViewCell.m in Sources */,
+				8989E53E16C1D1F8009C963D /* EditableIngredientTableViewCell.m in Sources */,
+				8989E54116C1D360009C963D /* IngredientEditorViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

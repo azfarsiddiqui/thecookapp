@@ -4,6 +4,8 @@
 //
 //  Created by Jonny Sagorin on 2/4/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
+//  View for listing ingredients for editing. Editing not done in this view.
+//  Editing view is IngredientEditorViewController
 //
 
 #import "CKEditingViewController.h"

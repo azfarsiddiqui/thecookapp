@@ -10,4 +10,5 @@
 
 @interface IngredientTableViewCell : UITableViewCell
 
+-(void)configureCellWithText:(NSString*)text;
 @end

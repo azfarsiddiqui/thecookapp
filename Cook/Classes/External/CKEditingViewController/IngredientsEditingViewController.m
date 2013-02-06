@@ -7,6 +7,7 @@
 //
 
 #import "IngredientsEditingViewController.h"
+#import "IngredientEditorViewController.h"
 #import "CKEditingTextField.h"
 #import "CKTextFieldEditingViewController.h"
 #import "IngredientTableViewCell.h"
@@ -93,16 +94,29 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *data = [self.ingredientList objectAtIndex:indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kIngredientsTableViewCell];
-    cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
-    cell.textLabel.text = data;
+    IngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kIngredientsTableViewCell];
+    [cell configureCellWithText:data];
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    CGRect startingFrame = CGRectMake(self.targetEditingView.frame.origin.x,
+                                      self.targetEditingView.frame.origin.y + self.targetEditingView.frame.size.height,
+                                      self.targetEditingView.frame.size.width,
+                                      0.0f);
+    IngredientEditorViewController *ingredientEditorVC = [[IngredientEditorViewController alloc]initWithFrame:startingFrame];
+    ingredientEditorVC.ingredientList = self.ingredientList;
+    ingredientEditorVC.selectedIndex = indexPath.row;
+    ingredientEditorVC.view.alpha = 0.0f;
+    [self.view addSubview:ingredientEditorVC.view];
+    [UIView animateWithDuration:0.3f
+                          delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         ingredientEditorVC.view.alpha = 1.0f;
+                         [ingredientEditorVC updateFrameSize:self.targetEditingView.frame];
+    } completion:nil];
 }
 
 #pragma mark - Private methods
@@ -121,6 +135,8 @@
                               self.view.bounds.size.height - tableViewInsets.top - tableViewInsets.bottom);
     UITableView *tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStylePlain];
     tableView.dataSource = self;
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    tableView.backgroundColor = [UIColor clearColor];
     tableView.delegate = self;
     [tableView registerClass:[IngredientTableViewCell class] forCellReuseIdentifier:kIngredientsTableViewCell];
     return tableView;
