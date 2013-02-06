@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface IngredientTableViewCell : UITableViewCell
-
--(void)configureCellWithText:(NSString*)text;
+-(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath;
+-(void)styleCell;
 @end

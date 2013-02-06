@@ -8,6 +8,7 @@
 
 #import "IngredientEditorViewController.h"
 #import "EditableIngredientTableViewCell.h"
+#import "IngredientTableViewCell.h"
 #define kEditIngredientTableViewCell   @"EditIngredientTableViewCell"
 
 @interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate>
@@ -66,8 +67,6 @@
     NSString *data = [self.ingredientList objectAtIndex:adjustedIndex];
     EditableIngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEditIngredientTableViewCell];
     [cell configureCellWithText:data forRowAtIndexPath:indexPath];
-    cell.textLabel.font = [UIFont systemFontOfSize:16.0f];
-    cell.textLabel.text = data;
     return cell;
 }
 

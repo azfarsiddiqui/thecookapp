@@ -95,7 +95,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *data = [self.ingredientList objectAtIndex:indexPath.row];
     IngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kIngredientsTableViewCell];
-    [cell configureCellWithText:data];
+    [cell configureCellWithText:data forRowAtIndexPath:indexPath];
     return cell;
 }
 

@@ -34,17 +34,15 @@
     [super setSelected:selected animated:animated];
 }
 
--(void)configureCellWithText:(NSString *)text
+-(void)configureCellWithText:(NSString *)text forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.detailTextLabel.text = text;
     self.textLabel.text = [NSString stringWithFormat:@"300 ml"];
 }
-#pragma mark - Private Methods
 
+#pragma mark - Private Methods
 -(void)config
 {
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.contentView.backgroundColor = [UIColor clearColor];
     self.backViewMeasurementView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:self.backViewMeasurementView];
     
@@ -95,6 +93,8 @@
 
 -(void)styleCell
 {
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.contentView.backgroundColor = [UIColor clearColor];
     self.detailTextLabel.textColor = [UIColor blackColor];
     self.textLabel.font = [Theme textEditableTextFont];
     self.detailTextLabel.font = [Theme textEditableTextFont];

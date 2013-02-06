@@ -17,7 +17,7 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
         [self config];
     }
@@ -33,6 +33,8 @@
 
 -(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    self.textLabel.text = text;
+    self.detailTextLabel.text = @"300 ml";
    [self setAsHighlighted:(indexPath.row == 0)];
 }
 
@@ -41,6 +43,7 @@
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.contentView.backgroundColor = [UIColor whiteColor];
     self.textLabel.backgroundColor = [UIColor whiteColor];
+    self.detailTextLabel.backgroundColor = [UIColor whiteColor];
 
     self.maskCellView = [[UIView alloc] initWithFrame:CGRectZero];
     self.maskCellView.backgroundColor = [UIColor blackColor];
