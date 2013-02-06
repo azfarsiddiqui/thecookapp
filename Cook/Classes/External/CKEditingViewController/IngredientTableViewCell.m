@@ -7,12 +7,16 @@
 //
 
 #import "IngredientTableViewCell.h"
+#import "Theme.h"
 
 @interface IngredientTableViewCell()
+@property(nonatomic,strong) UIView *backViewMeasurementView;
+@property(nonatomic,strong) UIView *backViewDescriptionView;
 @end
 
-#define kIngredientCellInsets UIEdgeInsetsMake(10.0f,30.0f,10.0f,10.0f)
-#define kPaddingBetweenFields 10.0f
+#define kIngredientCellInsets UIEdgeInsetsMake(5.0f,10.0f,5.0f,10.0f)
+#define kPaddingWidthBetweenFields 10.0f
+#define kLabelMarginWidth 20.0f
 
 @implementation IngredientTableViewCell
 
@@ -32,8 +36,8 @@
 
 -(void)configureCellWithText:(NSString *)text
 {
-    self.textLabel.text = text;
-    self.detailTextLabel.text = [NSString stringWithFormat:@"300 ml"];
+    self.detailTextLabel.text = text;
+    self.textLabel.text = [NSString stringWithFormat:@"300 ml"];
 }
 #pragma mark - Private Methods
 
@@ -41,6 +45,11 @@
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.contentView.backgroundColor = [UIColor clearColor];
+    self.backViewMeasurementView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.contentView addSubview:self.backViewMeasurementView];
+    
+    self.backViewDescriptionView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.contentView addSubview:self.backViewDescriptionView];
 }
 
 -(void)prepareForReuse
@@ -54,25 +63,44 @@
     [super layoutSubviews];
     //reposition textlabel,detailtextlabel 924,89
     
-    float widthAvailable = self.contentView.frame.size.width - kPaddingBetweenFields - kIngredientCellInsets.left - kIngredientCellInsets.right;
+    float widthAvailable = self.contentView.frame.size.width - kPaddingWidthBetweenFields - kIngredientCellInsets.left - kIngredientCellInsets.right;
     float twentyPercent = floorf(0.2*widthAvailable);
     float eightyPercent = floorf(0.8*widthAvailable);
     
-    self.textLabel.frame = CGRectMake(kIngredientCellInsets.left, kIngredientCellInsets.top, twentyPercent,
+
+    self.backViewMeasurementView.frame = CGRectMake(kIngredientCellInsets.left,
+                                                    kIngredientCellInsets.top,
+                                                    twentyPercent,
+                                                    self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+
+    self.textLabel.frame = CGRectMake(kIngredientCellInsets.left + kLabelMarginWidth,
+                                      kIngredientCellInsets.top,
+                                      twentyPercent - 2*kLabelMarginWidth,
                                       self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
-    self.detailTextLabel.frame = CGRectMake(kIngredientCellInsets.left + twentyPercent + kPaddingBetweenFields,
-                                            kIngredientCellInsets.top, eightyPercent,
+
+    
+    self.backViewDescriptionView.frame = CGRectMake(kIngredientCellInsets.left + twentyPercent + kPaddingWidthBetweenFields,
+                                                    kIngredientCellInsets.top,
+                                                    eightyPercent - kPaddingWidthBetweenFields,
+                                                    self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+
+    self.detailTextLabel.frame = CGRectMake(kIngredientCellInsets.left + twentyPercent + kPaddingWidthBetweenFields + kLabelMarginWidth,
+                                            kIngredientCellInsets.top,
+                                            eightyPercent - kPaddingWidthBetweenFields - 2*kLabelMarginWidth,
                                             self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+    
+
     [self styleCell];
 }
 
 -(void)styleCell
 {
-    self.textLabel.backgroundColor = [UIColor whiteColor];
-    self.textLabel.font =[UIFont systemFontOfSize:16.0f];
-    self.detailTextLabel.backgroundColor = [UIColor whiteColor];
-    self.detailTextLabel.font =[UIFont systemFontOfSize:16.0f];
+    self.detailTextLabel.textColor = [UIColor blackColor];
+    self.textLabel.font = [Theme textEditableTextFont];
+    self.detailTextLabel.font = [Theme textEditableTextFont];
 
+    self.backViewMeasurementView.backgroundColor = [UIColor whiteColor];
+    self.backViewDescriptionView.backgroundColor = [UIColor whiteColor];
 
 }
 @end

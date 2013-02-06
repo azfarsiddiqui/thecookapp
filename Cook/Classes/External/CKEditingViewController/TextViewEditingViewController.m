@@ -113,7 +113,7 @@
 
 -(void)defaultStyle
 {
-    self.editableTextFont = [Theme textViewEditableTextFont];
+    self.editableTextFont = [Theme textEditableTextFont];
     self.titleFont = [Theme textViewTitleFont];
 
 }

@@ -127,10 +127,11 @@
     return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
 }
 
-+ (UIFont *)textViewEditableTextFont
++ (UIFont *)textEditableTextFont
 {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:55];
+    return [UIFont fontWithName:@"Neutraface2Condensed-Medium" size:55];
 }
+
 
 
 

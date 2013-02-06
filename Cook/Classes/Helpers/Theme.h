@@ -46,7 +46,7 @@
 + (UIFont *)bookCoverViewModeTitleMaxFont;
 
 #pragma mark - General reusable editable controls
-+ (UIFont *)textViewEditableTextFont;
++ (UIFont *)textEditableTextFont;
 + (UIFont *)textViewTitleFont;
 @end
 
