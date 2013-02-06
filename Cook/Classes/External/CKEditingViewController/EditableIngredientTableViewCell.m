@@ -9,6 +9,7 @@
 #import "EditableIngredientTableViewCell.h"
 
 @interface EditableIngredientTableViewCell()
+@property(nonatomic,strong) UIView *maskCellView;
 @property(nonatomic,strong) UITextField *measurementTextField;
 @property(nonatomic,strong) UITextField *descriptionTextField;
 @end
@@ -32,12 +33,18 @@
 
 -(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-   [self setAsHighlighted:(indexPath.row == 0) ];
+   [self setAsHighlighted:(indexPath.row == 0)];
 }
 
 -(void)config
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.contentView.backgroundColor = [UIColor whiteColor];
+    self.textLabel.backgroundColor = [UIColor whiteColor];
+
+    self.maskCellView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.maskCellView.backgroundColor = [UIColor blackColor];
+    [self.contentView addSubview:self.maskCellView];
 }
 
 -(void)prepareForReuse
@@ -48,11 +55,16 @@
     [self setAsHighlighted:NO];
 }
 
-#pragma mark - Private Methods
--(void)setAsHighlighted:(BOOL)higlighted {
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
+    self.maskCellView.frame = self.contentView.frame;
+}
 
-    UIColor *backColor = higlighted ? [UIColor redColor] : [UIColor lightGrayColor];
-    self.contentView.backgroundColor = backColor;
-    self.textLabel.backgroundColor = backColor;
+#pragma mark - Private Methods
+-(void)setAsHighlighted:(BOOL)highlighted {
+
+    float maskAlpha = highlighted ? 0.0f : 0.7f;
+    self.maskCellView.alpha = maskAlpha;
 }
 @end
