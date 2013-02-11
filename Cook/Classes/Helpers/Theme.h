@@ -23,6 +23,10 @@
 + (UIColor *) contentsTitleColor;
 + (UIColor *) contentsItemColor;
 
+#pragma mark - Grid recipe cells
++ (UIFont *)recipeGridTitleFont;
++ (UIColor *)recipeGridTitleColour;
+
 #pragma mark - Recipe View
 +(UIColor*) ingredientsLabelColor;
 +(UIColor*) directionsLabelColor;

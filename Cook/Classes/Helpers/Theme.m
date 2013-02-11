@@ -47,6 +47,16 @@
     return [self contentsTitleColor];
 }
 
+#pragma mark - Grid recipe cells
+
++ (UIFont *)recipeGridTitleFont {
+    return [self defaultBoldFontWithSize:30.0];
+}
+
++ (UIColor *)recipeGridTitleColour {
+    return [UIColor colorWithHexString:@"505050"];
+}
+
 #pragma mark - Recipe View
 +(UIColor *)ingredientsLabelColor
 {
