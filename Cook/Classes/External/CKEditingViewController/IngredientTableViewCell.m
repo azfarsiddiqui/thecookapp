@@ -8,10 +8,12 @@
 
 #import "IngredientTableViewCell.h"
 #import "Theme.h"
+#import "ViewHelper.h"
 
 @interface IngredientTableViewCell()
 @property(nonatomic,strong) UIView *backViewMeasurementView;
 @property(nonatomic,strong) UIView *backViewDescriptionView;
+@property(nonatomic,strong) UIButton *doneButton;
 @end
 
 #define kIngredientCellInsets UIEdgeInsetsMake(5.0f,10.0f,5.0f,10.0f)
@@ -87,7 +89,6 @@
                                             eightyPercent - kPaddingWidthBetweenFields - 2*kLabelMarginWidth,
                                             self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
     
-
     [self styleCell];
 }
 

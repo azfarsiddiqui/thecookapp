@@ -7,6 +7,7 @@
 //
 
 #import "CKEditableView.h"
+#import "ViewHelper.h"
 
 @interface CKEditableView ()
 
@@ -106,23 +107,13 @@
 
 - (UIButton *)editButton {
     if (!_editButton) {
-        _editButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_textedit.png"]
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_textedit.png"]
                                      target:self selector:@selector(editTapped:)];
     }
     return _editButton;
 }
 
 #pragma mark - Private methods
-
-- (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
-    button.userInteractionEnabled = (target != nil && selector != nil);
-    button.autoresizingMask = UIViewAutoresizingNone;
-    return button;
-}
 
 - (void)editTapped:(id)sender {
     [self.delegate editableViewEditRequestedForView:self];

@@ -7,11 +7,22 @@
 //
 
 #import "EditableIngredientTableViewCell.h"
+#import "Theme.h"
+#import "ViewHelper.h"
 
-@interface EditableIngredientTableViewCell()
+#define kIngredientCellInsets UIEdgeInsetsMake(5.0f,10.0f,5.0f,10.0f)
+#define kPaddingWidthBetweenFields 10.0f
+#define kLabelMarginWidth 20.0f
+
+@interface EditableIngredientTableViewCell()<UITextFieldDelegate>
 @property(nonatomic,strong) UIView *maskCellView;
 @property(nonatomic,strong) UITextField *measurementTextField;
 @property(nonatomic,strong) UITextField *descriptionTextField;
+@property(nonatomic,strong) UIView *backViewMeasurementView;
+@property(nonatomic,strong) UIView *backViewDescriptionView;
+@property(nonatomic,assign) NSInteger descriptionCharacterLimit;
+@property(nonatomic,assign) NSInteger measurementCharacterLimit;
+
 @end
 @implementation EditableIngredientTableViewCell
 
@@ -19,6 +30,8 @@
 {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.descriptionCharacterLimit = 30;
+        self.measurementCharacterLimit = 10;
         [self config];
     }
     return self;
@@ -33,21 +46,9 @@
 
 -(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.textLabel.text = text;
-    self.detailTextLabel.text = @"300 ml";
+    self.measurementTextField.text = [NSString stringWithFormat:@"300 ml"];
+    self.descriptionTextField.text = text;
    [self setAsHighlighted:(indexPath.row == 0)];
-}
-
--(void)config
-{
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.contentView.backgroundColor = [UIColor whiteColor];
-    self.textLabel.backgroundColor = [UIColor whiteColor];
-    self.detailTextLabel.backgroundColor = [UIColor whiteColor];
-
-    self.maskCellView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.maskCellView.backgroundColor = [UIColor blackColor];
-    [self.contentView addSubview:self.maskCellView];
 }
 
 -(void)prepareForReuse
@@ -62,12 +63,127 @@
 {
     [super layoutSubviews];
     self.maskCellView.frame = self.contentView.frame;
+    
+    float widthAvailable = self.contentView.frame.size.width - kPaddingWidthBetweenFields - kIngredientCellInsets.left - kIngredientCellInsets.right;
+    float twentyPercent = floorf(0.2*widthAvailable);
+    float eightyPercent = floorf(0.8*widthAvailable);
+    
+    
+    self.backViewMeasurementView.frame = CGRectMake(kIngredientCellInsets.left,
+                                                    kIngredientCellInsets.top,
+                                                    twentyPercent,
+                                                    self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+    
+    self.measurementTextField.frame = CGRectMake(kIngredientCellInsets.left + kLabelMarginWidth,
+                                      kIngredientCellInsets.top,
+                                      twentyPercent - 2*kLabelMarginWidth,
+                                      self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+    
+    
+    self.backViewDescriptionView.frame = CGRectMake(kIngredientCellInsets.left + twentyPercent + kPaddingWidthBetweenFields,
+                                                    kIngredientCellInsets.top,
+                                                    eightyPercent - kPaddingWidthBetweenFields,
+                                                    self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+    
+    self.descriptionTextField.frame = CGRectMake(kIngredientCellInsets.left + twentyPercent + kPaddingWidthBetweenFields + kLabelMarginWidth,
+                                            kIngredientCellInsets.top,
+                                            eightyPercent - kPaddingWidthBetweenFields - 2*kLabelMarginWidth,
+                                            self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+    
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self performSave];
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    BOOL isBackspace = [newString length] < [textField.text length];
+
+    NSInteger characterLimit = (textField == self.descriptionTextField) ? self.descriptionCharacterLimit : self.measurementCharacterLimit;
+    if (textField == self.descriptionTextField) {
+        if ([textField.text length] >= characterLimit && !isBackspace) {
+            return NO;
+        }
+    }
+    
+    DLog(@"description: %i, value %@", textField == self.descriptionTextField, textField.text);
+    
+//    // Update character limit.
+//    NSUInteger currentLimit = self.characterLimit - [newString length];
+//    self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
+//    [self updateLimitLabel];
+    
+    // No save if no characters
+//    self.doneButton.enabled = [newString length] > 0;
+    
+    return YES;
 }
 
 #pragma mark - Private Methods
--(void)setAsHighlighted:(BOOL)highlighted {
 
+-(void)config
+{
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.contentView.backgroundColor = [UIColor whiteColor];
+    
+    self.backViewMeasurementView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.contentView addSubview:self.backViewMeasurementView];
+    
+    self.measurementTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+    self.measurementTextField.delegate = self;
+    [self.contentView addSubview:self.measurementTextField];
+    
+    self.backViewDescriptionView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.contentView addSubview:self.backViewDescriptionView];
+    
+    self.descriptionTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+    self.descriptionTextField.delegate = self;
+    
+    [self.contentView addSubview:self.descriptionTextField];
+    
+    self.maskCellView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.contentView addSubview:self.maskCellView];
+    
+    [self style];
+    
+}
+
+-(void) style
+{
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.contentView.backgroundColor = [UIColor clearColor];
+    
+    self.descriptionTextField.backgroundColor = [UIColor clearColor];
+    self.descriptionTextField.textColor = [UIColor blackColor];
+    self.descriptionTextField.font = [Theme textEditableTextFont];
+    
+    self.measurementTextField.backgroundColor = [UIColor clearColor];
+    self.measurementTextField.textColor = [UIColor blackColor];
+    self.measurementTextField.font = [Theme textEditableTextFont];
+    
+    self.backViewMeasurementView.backgroundColor = [UIColor whiteColor];
+    self.backViewDescriptionView.backgroundColor = [UIColor whiteColor];
+    self.maskCellView.backgroundColor = [UIColor blackColor];
+    
+}
+
+- (void)performSave {
+    
+//    UITextField *textField = (UITextField *)self.targetEditingView;
+
+//    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:textField.text];
+//    [super performSave];
+}
+
+-(void)setAsHighlighted:(BOOL)highlighted {
     float maskAlpha = highlighted ? 0.0f : 0.7f;
     self.maskCellView.alpha = maskAlpha;
 }
+
 @end

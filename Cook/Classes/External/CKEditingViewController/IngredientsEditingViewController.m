@@ -15,7 +15,7 @@
 
 #define kIngredientsTableViewCell   @"IngredientsTableViewCell"
 
-@interface IngredientsEditingViewController () <UITextFieldDelegate, UITableViewDataSource,UITableViewDelegate>
+@interface IngredientsEditingViewController () <UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic, strong) UILabel *titleLabel;
 @end
 
@@ -29,7 +29,6 @@
 
 - (void)editingViewWillAppear:(BOOL)appear {
     if (!appear) {
-        [self.doneButton removeFromSuperview];
         [self.titleLabel removeFromSuperview];
     }
     [super editingViewWillAppear:appear];
@@ -44,11 +43,6 @@
     }
 }
 
-- (void)editingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {
-    [super editingViewKeyboardWillAppear:appear keyboardFrame:keyboardFrame];
-    DLog(@"keyboard will appear: %i", appear);
-}
-
 - (void)performSave {
     
     UITableView *tableView = (UITableView *)self.targetEditingView;
@@ -57,27 +51,6 @@
     [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:delimitedString];
     
     [super performSave];
-}
-
-#pragma mark - UITextFieldDelegate methods
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self performSave];
-    return YES;
-}
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    BOOL isBackspace = [newString length] < [textField.text length];
-    
-    if ([textField.text length] >= self.characterLimit && !isBackspace) {
-        return NO;
-    }
-    
-    // No save if no characters
-    self.doneButton.enabled = [newString length] > 0;
-    
-    return YES;
 }
 
 #pragma mark - UITableViewDataSource
@@ -102,9 +75,9 @@
 #pragma mark - UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGRect startingFrame = CGRectMake(self.targetEditingView.frame.origin.x,
-                                      self.targetEditingView.frame.origin.y + self.targetEditingView.frame.size.height,
-                                      self.targetEditingView.frame.size.width,
+    CGRect startingFrame = CGRectMake(self.tableView.frame.origin.x,
+                                      self.tableView.frame.origin.y + self.tableView.frame.size.height,
+                                      self.tableView.frame.size.width,
                                       0.0f);
     IngredientEditorViewController *ingredientEditorVC = [[IngredientEditorViewController alloc]initWithFrame:startingFrame];
     ingredientEditorVC.ingredientList = self.ingredientList;
@@ -115,14 +88,13 @@
                           delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          ingredientEditorVC.view.alpha = 1.0f;
-                         [ingredientEditorVC updateFrameSize:self.targetEditingView.frame];
+                         [ingredientEditorVC updateFrameSize:self.tableView.frame];
     } completion:nil];
 }
 
 #pragma mark - Private methods
 
 - (void)addSubviews {
-    [self addDoneButton];
     [self addTitleLabel];
 }
 
@@ -159,16 +131,6 @@
                                   titleLabel.frame.size.height);
     [self.view addSubview:titleLabel];
     self.titleLabel = titleLabel;
-}
-
-- (void)addDoneButton {
-    UITextField *textField = (UITextField *)self.targetEditingView;
-    
-    self.doneButton.frame = CGRectMake(textField.frame.origin.x + textField.frame.size.width - floorf(self.doneButton.frame.size.width / 2.0),
-                                       textField.frame.origin.y - floorf(self.doneButton.frame.size.height / 3.0),
-                                       self.doneButton.frame.size.width,
-                                       self.doneButton.frame.size.height);
-    [self.view addSubview:self.doneButton];
 }
 
 @end

@@ -9,10 +9,12 @@
 #import "IngredientEditorViewController.h"
 #import "EditableIngredientTableViewCell.h"
 #import "IngredientTableViewCell.h"
+#import "ViewHelper.h"
 #define kEditIngredientTableViewCell   @"EditIngredientTableViewCell"
 
 @interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,strong) UITableView *tableView;
+@property(nonatomic,strong) UIButton *doneButton;
 @end
 
 @implementation IngredientEditorViewController
@@ -23,6 +25,7 @@
     self = [super init];
     if (self) {
         self.view.frame = frame;
+        self.view.backgroundColor = [UIColor greenColor];
         [self config];
     }
     return self;
@@ -45,12 +48,18 @@
     self.view.frame = frame;
     self.tableView.frame = CGRectMake(0.0f, 0.0f, frame.size.width, frame.size.height);
 }
+
+-(void)doneTapped:(UIButton*)doneButton
+{
+    DLog(@"Done button tapped");
+}
+
 #pragma mark - Private Methods
 
 -(void)config
 {
-    self.view.backgroundColor = [UIColor yellowColor];
     [self addTableView];
+//    [self addDoneButton];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -83,6 +92,16 @@
     [self.view addSubview:tableView];
 }
 
+-(void) addDoneButton
+{
+    self.doneButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
+                                           target:self selector:@selector(doneTapped:)];
+    self.doneButton.frame = CGRectMake(self.tableView.frame.origin.x + self.tableView.frame.size.width - floorf(self.doneButton.frame.size.width / 2.0),
+                                       self.tableView.frame.origin.y - floorf(self.doneButton.frame.size.height / 3.0),
+                                       self.doneButton.frame.size.width,
+                                       self.doneButton.frame.size.height);
+    [self.view addSubview:self.doneButton];
 
+}
 
 @end

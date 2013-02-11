@@ -79,7 +79,7 @@
 
 #pragma mark - UITextViewDelegate methods
 
-- (BOOL)textViewShouldEndEditing:(UITextView *)textView:(UITextField *)textField {
+-(BOOL)textViewShouldEndEditing:(UITextView *)textView {
     DLog();
     [self performSave];
     return YES;

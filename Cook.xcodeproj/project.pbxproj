@@ -1599,6 +1599,17 @@
 			path = actions;
 			sourceTree = "<group>";
 		};
+		8906069416C860AE0043CA6C /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				8989E53916C1CF35009C963D /* IngredientTableViewCell.h */,
+				8989E53A16C1CF35009C963D /* IngredientTableViewCell.m */,
+				8989E53C16C1D1F8009C963D /* EditableIngredientTableViewCell.h */,
+				8989E53D16C1D1F8009C963D /* EditableIngredientTableViewCell.m */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		892041B016509A4500765F96 /* navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1806,12 +1817,9 @@
 		8989E53816C1CEFA009C963D /* Ingredients */ = {
 			isa = PBXGroup;
 			children = (
+				8906069416C860AE0043CA6C /* Cells */,
 				893E534E16BF6CA400B316C6 /* IngredientsEditingViewController.h */,
 				893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */,
-				8989E53916C1CF35009C963D /* IngredientTableViewCell.h */,
-				8989E53A16C1CF35009C963D /* IngredientTableViewCell.m */,
-				8989E53C16C1D1F8009C963D /* EditableIngredientTableViewCell.h */,
-				8989E53D16C1D1F8009C963D /* EditableIngredientTableViewCell.m */,
 				8989E53F16C1D35F009C963D /* IngredientEditorViewController.h */,
 				8989E54016C1D360009C963D /* IngredientEditorViewController.m */,
 			);
