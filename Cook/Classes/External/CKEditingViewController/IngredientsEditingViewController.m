@@ -41,7 +41,6 @@
     
     if (appear) {
         [self addSubviews];
-        //appearing set data HERE
     }
 }
 
@@ -105,6 +104,7 @@
     [self.ingredientList replaceObjectAtIndex:rowIndex withObject:ingredientDescription];
     UITableView *tableView = (UITableView *)self.targetEditingView;
     [tableView reloadData];
+    [self performSave];
     [self didDismissIngredientEditor];
 }
 
