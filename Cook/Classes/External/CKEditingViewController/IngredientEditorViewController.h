@@ -9,9 +9,15 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol IngredientEditorDelegate
+-(void)didUpdateIngredient:(NSString*)ingredientDescription atRowIndex:(NSInteger)rowIndex;
+-(void)didDismissIngredientEditor;
+@end
+
 @interface IngredientEditorViewController : UIViewController
 @property(nonatomic,assign) NSInteger selectedIndex;
 @property(nonatomic,strong) NSArray *ingredientList;
-- (id)initWithFrame:(CGRect)frame;
+@property(nonatomic,assign) id<IngredientEditorDelegate>ingredientEditorDelegate;
+- (id)initWithFrame:(CGRect)frame withViewInsets:(UIEdgeInsets)viewInsets;
 - (void)updateFrameSize:(CGRect)frame;
 @end

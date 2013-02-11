@@ -7,25 +7,26 @@
 //
 
 #import "IngredientEditorViewController.h"
-#import "EditableIngredientTableViewCell.h"
 #import "IngredientTableViewCell.h"
+#import "EditableIngredientTableViewCell.h"
 #import "ViewHelper.h"
-#define kEditIngredientTableViewCell   @"EditIngredientTableViewCell"
 
-@interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate>
+#define kEditIngredientTableViewCell   @"EditIngredientTableViewCell"
+#define kCellHeight 90.0f
+
+@interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate, IngredientEditTableViewCellDelegate>
 @property(nonatomic,strong) UITableView *tableView;
-@property(nonatomic,strong) UIButton *doneButton;
+@property(nonatomic,assign) UIEdgeInsets viewInsets;
 @end
 
 @implementation IngredientEditorViewController
 
-
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withViewInsets:(UIEdgeInsets)viewInsets
 {
     self = [super init];
     if (self) {
         self.view.frame = frame;
-        self.view.backgroundColor = [UIColor greenColor];
+        self.viewInsets = viewInsets;
         [self config];
     }
     return self;
@@ -46,12 +47,20 @@
 -(void)updateFrameSize:(CGRect)frame
 {
     self.view.frame = frame;
-    self.tableView.frame = CGRectMake(0.0f, 0.0f, frame.size.width, frame.size.height);
+    CGRect tableViewframe = CGRectMake(self.viewInsets.left,
+                              self.viewInsets.top,
+                              frame.size.width - self.viewInsets.left - self.viewInsets.right,
+                              frame.size.height - self.viewInsets.top - self.viewInsets.bottom);
+    self.tableView.frame = tableViewframe;
 }
 
--(void)doneTapped:(UIButton*)doneButton
+#pragma mark - IngredientEditDelegate
+
+-(void)didUpdateIngredientAtTouch:(UITouch *)touch withMeasurement:(NSString *)measurementString description:(NSString *)ingredientDescription
 {
-    DLog(@"Done button tapped");
+    NSIndexPath * indexPath = [self.tableView indexPathForRowAtPoint: [touch locationInView: self.tableView]];
+    //adjusted index
+    [self.ingredientEditorDelegate didUpdateIngredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
 }
 
 #pragma mark - Private Methods
@@ -59,11 +68,10 @@
 -(void)config
 {
     [self addTableView];
-//    [self addDoneButton];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 90.0f;
+    return kCellHeight;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -75,7 +83,7 @@
     NSInteger adjustedIndex = self.selectedIndex + indexPath.row;
     NSString *data = [self.ingredientList objectAtIndex:adjustedIndex];
     EditableIngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEditIngredientTableViewCell];
-    [cell configureCellWithText:data forRowAtIndexPath:indexPath];
+    [cell configureCellWithText:data forRowAtIndexPath:indexPath editDelegate:self];
     return cell;
 }
 
@@ -90,18 +98,6 @@
     [tableView registerClass:[EditableIngredientTableViewCell class] forCellReuseIdentifier:kEditIngredientTableViewCell];
     self.tableView = tableView;
     [self.view addSubview:tableView];
-}
-
--(void) addDoneButton
-{
-    self.doneButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
-                                           target:self selector:@selector(doneTapped:)];
-    self.doneButton.frame = CGRectMake(self.tableView.frame.origin.x + self.tableView.frame.size.width - floorf(self.doneButton.frame.size.width / 2.0),
-                                       self.tableView.frame.origin.y - floorf(self.doneButton.frame.size.height / 3.0),
-                                       self.doneButton.frame.size.width,
-                                       self.doneButton.frame.size.height);
-    [self.view addSubview:self.doneButton];
-
 }
 
 @end

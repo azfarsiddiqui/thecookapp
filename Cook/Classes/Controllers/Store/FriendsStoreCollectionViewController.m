@@ -38,9 +38,11 @@
     } else {
         
         // Cater for logged out state.
-        [self.books removeAllObjects];
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
-        
+//        [self.books removeAllObjects];
+//        if (self.collectionView) {
+//            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+//        }
+//    
     }
 }
 

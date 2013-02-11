@@ -18,5 +18,5 @@
 @property (nonatomic, assign) NSUInteger characterLimit;
 
 //new-line delimited list of ingredients
-@property (nonatomic, copy) NSArray *ingredientList;
+@property (nonatomic, strong) NSMutableArray *ingredientList;
 @end

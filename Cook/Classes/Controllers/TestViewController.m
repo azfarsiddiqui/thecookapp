@@ -117,7 +117,7 @@
         [self.view addSubview:ingredientsEditingVC.view];
         self.editingViewController = ingredientsEditingVC;
         
-        ingredientsEditingVC.ingredientList = self.ingredientListData;
+        ingredientsEditingVC.ingredientList = [NSMutableArray arrayWithArray:self.ingredientListData];
         ingredientsEditingVC.editingTitle = @"ingredients";
         [ingredientsEditingVC enableEditing:YES completion:nil];
         

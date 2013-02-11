@@ -14,9 +14,11 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define kIngredientsTableViewCell   @"IngredientsTableViewCell"
+#define kTableViewInsets            UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0)
 
-@interface IngredientsEditingViewController () <UITableViewDataSource,UITableViewDelegate>
+@interface IngredientsEditingViewController () <UITableViewDataSource,UITableViewDelegate, IngredientEditorDelegate>
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) IngredientEditorViewController *ingredientEditingViewController;
 @end
 
 @implementation IngredientsEditingViewController
@@ -79,17 +81,39 @@
                                       self.tableView.frame.origin.y + self.tableView.frame.size.height,
                                       self.tableView.frame.size.width,
                                       0.0f);
-    IngredientEditorViewController *ingredientEditorVC = [[IngredientEditorViewController alloc]initWithFrame:startingFrame];
-    ingredientEditorVC.ingredientList = self.ingredientList;
-    ingredientEditorVC.selectedIndex = indexPath.row;
-    ingredientEditorVC.view.alpha = 0.0f;
-    [self.view addSubview:ingredientEditorVC.view];
+    self.ingredientEditingViewController = [[IngredientEditorViewController alloc]initWithFrame:startingFrame
+                                                                                               withViewInsets:kTableViewInsets];
+    self.ingredientEditingViewController.ingredientList = self.ingredientList;
+    self.ingredientEditingViewController.selectedIndex = indexPath.row;
+    self.ingredientEditingViewController.ingredientEditorDelegate = self;
+    [self.view addSubview:self.ingredientEditingViewController.view];
+    self.ingredientEditingViewController.view.alpha = 0.0f;
     [UIView animateWithDuration:0.3f
                           delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         ingredientEditorVC.view.alpha = 1.0f;
-                         [ingredientEditorVC updateFrameSize:self.tableView.frame];
-    } completion:nil];
+                         self.ingredientEditingViewController.view.alpha = 1.0f;
+                         [self.ingredientEditingViewController updateFrameSize:self.view.bounds];
+    }
+                     completion:nil
+    ];
+}
+
+#pragma mark - IngredientEditorDelegate
+
+-(void)didUpdateIngredient:(NSString *)ingredientDescription atRowIndex:(NSInteger)rowIndex
+{
+    [self.ingredientList replaceObjectAtIndex:rowIndex withObject:ingredientDescription];
+    UITableView *tableView = (UITableView *)self.targetEditingView;
+    [tableView reloadData];
+    [self didDismissIngredientEditor];
+}
+
+-(void)didDismissIngredientEditor
+{
+    if (self.ingredientEditingViewController) {
+        [self.ingredientEditingViewController.view removeFromSuperview];
+        self.ingredientEditingViewController = nil;
+    }
 }
 
 #pragma mark - Private methods
@@ -100,11 +124,10 @@
 
 - (UITableView*)tableView
 {
-    UIEdgeInsets tableViewInsets = UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0);
-    CGRect frame = CGRectMake(tableViewInsets.left,
-                              tableViewInsets.top,
-                              self.view.bounds.size.width - tableViewInsets.left - tableViewInsets.right,
-                              self.view.bounds.size.height - tableViewInsets.top - tableViewInsets.bottom);
+    CGRect frame = CGRectMake(kTableViewInsets.left,
+                              kTableViewInsets.top,
+                              self.view.bounds.size.width - kTableViewInsets.left - kTableViewInsets.right,
+                              self.view.bounds.size.height - kTableViewInsets.top - kTableViewInsets.bottom);
     UITableView *tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStylePlain];
     tableView.dataSource = self;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;

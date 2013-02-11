@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+@protocol IngredientEditTableViewCellDelegate
+-(void)didUpdateIngredientAtTouch:(UITouch*)touch withMeasurement:(NSString*)measurementString description:(NSString*)ingredientDescription;
+@end
 
 @interface EditableIngredientTableViewCell : UITableViewCell
--(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath;
+-(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath editDelegate:(id<IngredientEditTableViewCellDelegate>)editDelegate;
+
 @end
