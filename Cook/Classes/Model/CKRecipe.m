@@ -15,7 +15,6 @@
 #import "NSArray+Enumerable.h"
 
 @interface CKRecipe()
-@property(nonatomic,strong) CKRecipeImage *recipeImage;
 @property(nonatomic,strong) CKUser *user;
 @property(nonatomic,strong) CKBook *book;
 @end
