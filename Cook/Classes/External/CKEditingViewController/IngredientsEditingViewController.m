@@ -92,7 +92,7 @@
                           delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          self.ingredientEditingViewController.view.alpha = 1.0f;
-                         [self.ingredientEditingViewController updateFrameSize:self.view.bounds];
+                         [self.ingredientEditingViewController updateFrameSize:self.view.bounds forExpansion:YES];
     }
                      completion:nil
     ];
@@ -111,8 +111,18 @@
 -(void)didDismissIngredientEditor
 {
     if (self.ingredientEditingViewController) {
-        [self.ingredientEditingViewController.view removeFromSuperview];
-        self.ingredientEditingViewController = nil;
+        CGRect endingFrame = CGRectMake(self.tableView.frame.origin.x,
+                                          self.tableView.frame.origin.y + self.tableView.frame.size.height,
+                                          self.tableView.frame.size.width,
+                                          0.0f);
+        [UIView animateWithDuration:0.3f
+                         animations:^{
+                             self.ingredientEditingViewController.view.alpha = 0.0f;
+                             [self.ingredientEditingViewController updateFrameSize:endingFrame forExpansion:NO];
+                         } completion:^(BOOL finished) {
+                             [self.ingredientEditingViewController.view removeFromSuperview];
+                             self.ingredientEditingViewController = nil;
+                         }];
     }
 }
 
