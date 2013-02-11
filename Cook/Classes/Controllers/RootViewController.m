@@ -12,6 +12,7 @@
 #import "BenchtopViewControllerDelegate.h"
 #import "BookCoverViewController.h"
 #import "BookViewController.h"
+#import "BookNavigationViewController.h"
 #import "CKBook.h"
 #import "SettingsViewController.h"
 
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookViewController *bookViewController;
+@property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
@@ -107,6 +109,9 @@
     if (!open) {
         [self.bookViewController.view removeFromSuperview];
         self.bookViewController = nil;
+        
+//        [self.bookNavigationViewController.view removeFromSuperview];
+//        self.bookNavigationViewController = nil;
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -121,6 +126,11 @@
                                                                                  delegate:self];
         [self.view addSubview:bookViewController.view];
         self.bookViewController = bookViewController;
+        
+//        BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook];
+//        bookNavigationViewController.view.frame = self.view.bounds;
+//        [self.view addSubview:bookNavigationViewController.view];
+//        self.bookNavigationViewController = bookNavigationViewController;
         
     } else {
         

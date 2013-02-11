@@ -11,6 +11,8 @@
 #import "CKBook.h"
 #import "Category.h"
 
+@class CKRecipeImage;
+
 @interface CKRecipe : CKModel
 
 @property (nonatomic, strong) NSString *description;
@@ -21,6 +23,7 @@
 @property (nonatomic, assign) int numServes;
 
 @property(nonatomic,strong) Category *category;
+@property(nonatomic,strong) CKRecipeImage *recipeImage;
 
 //creation
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
