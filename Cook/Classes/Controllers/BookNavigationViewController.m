@@ -62,8 +62,7 @@
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
     referenceSizeForHeaderInSection:(NSInteger)section {
     
-    CGSize unitSize = [BookNavigationFlowLayout unitSize];
-    return CGSizeMake(unitSize.width * 2.0, unitSize.height);
+    return [CategoryHeaderView headerSize];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
