@@ -40,12 +40,12 @@
 }
 
 - (void)editingViewWillAppear:(BOOL)appear {
-    UITextField *textField = (UITextField *)self.targetEditingView;
     if (!appear) {
         [self.doneButton removeFromSuperview];
         [self.titleLabel removeFromSuperview];
         [self.limitLabel removeFromSuperview];
-        
+
+        UITextField *textField = (UITextField *)self.targetEditingView;
         textField.text = nil;
         [textField resignFirstResponder];
     }

@@ -44,16 +44,6 @@
     }
 }
 
-- (void)performSave {
-    
-    UITableView *tableView = (UITableView *)self.targetEditingView;
-    //result of a save - from incumbent view
-    NSString * delimitedString = [[self.ingredientList valueForKey:@"description"] componentsJoinedByString:@"\n"];
-    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:delimitedString];
-    
-    [super performSave];
-}
-
 #pragma mark - UITableViewDataSource
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -80,6 +70,7 @@
                                       self.tableView.frame.origin.y + self.tableView.frame.size.height,
                                       self.tableView.frame.size.width,
                                       0.0f);
+    
     self.ingredientEditingViewController = [[IngredientEditorViewController alloc]initWithFrame:startingFrame
                                                                                                withViewInsets:kTableViewInsets];
     self.ingredientEditingViewController.ingredientList = self.ingredientList;
@@ -104,7 +95,11 @@
     [self.ingredientList replaceObjectAtIndex:rowIndex withObject:ingredientDescription];
     UITableView *tableView = (UITableView *)self.targetEditingView;
     [tableView reloadData];
-    [self performSave];
+
+    //update editing view
+    NSString * delimitedString = [[self.ingredientList valueForKey:@"description"] componentsJoinedByString:@"\n"];
+    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:delimitedString];
+
     [self didDismissIngredientEditor];
 }
 
