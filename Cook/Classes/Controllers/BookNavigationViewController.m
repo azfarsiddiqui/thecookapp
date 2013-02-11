@@ -13,8 +13,12 @@
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
+#import "ViewHelper.h"
 
 @interface BookNavigationViewController ()
+
+@property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *categoryNames;
@@ -29,8 +33,9 @@
 #define kRecipeCellId       @"RecipeCellId"
 #define kCategoryHeaderId   @"CategoryHeaderId"
 
-- (id)initWithBook:(CKBook *)book {
+- (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookNavigationFlowLayout alloc] init]]) {
+        self.delegate = delegate;
         self.book = book;
     }
     return self;
@@ -38,6 +43,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self initNavButtons];
     [self initCollectionView];
     [self loadData];
 }
@@ -128,11 +135,26 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     RecipeCollectionViewCell *cell = (RecipeCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kRecipeCellId
                                                                                                            forIndexPath:indexPath];
-    cell.contentView.backgroundColor = [UIColor lightGrayColor];
+    NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
+    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+    CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
+    [cell configureRecipe:recipe];
     return cell;
 }
 
 #pragma mark - Private methods
+
+- (void)initNavButtons {
+    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
+                                                 target:self
+                                               selector:@selector(closeTapped:)];
+    closeButton.frame = CGRectMake(20.0,
+                                   15.0,
+                                   closeButton.frame.size.width,
+                                   closeButton.frame.size.height);
+    [self.view addSubview:closeButton];
+    self.closeButton = closeButton;
+}
 
 - (void)initCollectionView {
     self.collectionView.backgroundColor = [UIColor whiteColor];
@@ -230,6 +252,8 @@
     }
 }
 
-
+- (void)closeTapped:(id)sender {
+    [self.delegate bookNavigationControllerCloseRequested];
+}
 
 @end

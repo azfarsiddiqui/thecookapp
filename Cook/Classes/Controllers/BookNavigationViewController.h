@@ -10,8 +10,14 @@
 
 @class CKBook;
 
+@protocol BookNavigationViewControllerDelegate
+
+- (void)bookNavigationControllerCloseRequested;
+
+@end
+
 @interface BookNavigationViewController : UICollectionViewController
 
-- (id)initWithBook:(CKBook *)book;
+- (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate;
 
 @end
