@@ -33,13 +33,13 @@
 - (void)editingViewWillAppear:(BOOL)appear {
     if (!appear) {
         [self.titleLabel removeFromSuperview];
+        [self.doneButton removeFromSuperview];
     }
     [super editingViewWillAppear:appear];
 }
 
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
-    
     if (appear) {
         [self addSubviews];
     }
@@ -107,6 +107,17 @@
 
 - (void)addSubviews {
     [self addTitleLabel];
+    [self addDoneButton];
+}
+
+- (void)addDoneButton {
+    UIView *tableView = self.targetEditingView;
+    
+    self.doneButton.frame = CGRectMake(tableView.frame.origin.x + tableView.frame.size.width - self.doneButton.frame.size.width,
+                                       tableView.frame.origin.y - floorf(self.doneButton.frame.size.width*0.20),
+                                       self.doneButton.frame.size.width,
+                                       self.doneButton.frame.size.height);
+    [self.view addSubview:self.doneButton];
 }
 
 - (UITableView*)tableView

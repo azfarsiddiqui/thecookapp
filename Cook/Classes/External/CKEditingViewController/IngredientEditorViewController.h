@@ -19,5 +19,4 @@
 @property(nonatomic,strong) NSArray *ingredientList;
 @property(nonatomic,assign) id<IngredientEditorDelegate>ingredientEditorDelegate;
 - (id)initWithFrame:(CGRect)frame withViewInsets:(UIEdgeInsets)viewInsets startingAtFrame:(CGRect)startingFrame;
-- (void)updateFrameSize:(CGRect)frame forExpansion:(BOOL)expansion;
 @end

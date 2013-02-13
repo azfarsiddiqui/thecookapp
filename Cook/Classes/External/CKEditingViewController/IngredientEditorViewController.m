@@ -61,26 +61,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-
--(void)updateFrameSize:(CGRect)frame forExpansion:(BOOL)expansion
-{
-    self.view.frame = frame;
-    CGRect tableViewframe = CGRectZero;
-    if (expansion) {
-        tableViewframe = CGRectMake(self.viewInsets.left,
-                                    self.viewInsets.top,
-                                    frame.size.width - self.viewInsets.left - self.viewInsets.right,
-                                    frame.size.height - self.viewInsets.top - self.viewInsets.bottom);
-    } else {
-        tableViewframe = CGRectMake(0,
-                                    0,
-                                    frame.size.width,
-                                    frame.size.height);
-    }
-    self.tableView.frame = tableViewframe;
-    
-}
-
 #pragma mark - IngredientEditDelegate
 
 -(void)didUpdateIngredientAtRowIndex:(NSNumber *)rowIndex withMeasurement:(NSString *)measurementString description:(NSString *)ingredientDescription
