@@ -20,9 +20,9 @@
 @property(nonatomic,strong) UITextField *descriptionTextField;
 @property(nonatomic,strong) UIView *backViewMeasurementView;
 @property(nonatomic,strong) UIView *backViewDescriptionView;
-@property(nonatomic,strong) UIButton *doneButton;
 @property(nonatomic,assign) NSInteger descriptionCharacterLimit;
 @property(nonatomic,assign) NSInteger measurementCharacterLimit;
+@property(nonatomic,assign) NSNumber *rowIndex;
 @property(nonatomic,assign) id<IngredientEditTableViewCellDelegate> ingredientEditTableViewCellDelegate;
 @end
 @implementation EditableIngredientTableViewCell
@@ -38,26 +38,27 @@
     return self;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
--(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath editDelegate:(id<IngredientEditTableViewCellDelegate>)ingredientEditTableViewCellDelegate
+-(void)configureCellWithText:(NSString *)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<IngredientEditTableViewCellDelegate>)editDelegate
 {
     self.measurementTextField.text = [NSString stringWithFormat:@"300 ml"];
     self.descriptionTextField.text = text;
-    self.ingredientEditTableViewCellDelegate = ingredientEditTableViewCellDelegate;
-   [self setAsHighlighted:(indexPath.row == 0)];
+    self.ingredientEditTableViewCellDelegate = editDelegate;
+    self.rowIndex = rowIndex;
+   [self setAsHighlighted:([rowIndex intValue] == 0)];
 }
 
+-(void)requestMeasurementTextFieldEdit
+{
+    [self.measurementTextField becomeFirstResponder];
+}
+
+#pragma mark -overridden
 -(void)prepareForReuse
 {
     [super prepareForReuse];
     self.descriptionTextField.text = nil;
     self.measurementTextField.text = nil;
+    self.rowIndex = nil;
     [self setAsHighlighted:NO];
 }
 
@@ -90,21 +91,25 @@
                                             kIngredientCellInsets.top,
                                             eightyPercent - kPaddingWidthBetweenFields - 2*kLabelMarginWidth,
                                             self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
-    
-    self.doneButton.frame = CGRectMake(self.descriptionTextField.frame.origin.x + self.descriptionTextField.frame.size.width,
-                                       self.descriptionTextField.frame.origin.y + floorf(0.5f*(self.descriptionTextField.frame.size.height) - floorf(0.5f*self.doneButton.frame.size.height)),
-                                       self.doneButton.frame.size.width,
-                                       self.doneButton.frame.size.height);
+}
 
-    
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+    // Configure the view for the selected state
 }
 
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self performSave];
-    [textField resignFirstResponder];
-    return YES;
+    if (textField == self.measurementTextField) {
+        [self.descriptionTextField becomeFirstResponder];
+        return NO;
+    } else {
+        [self.ingredientEditTableViewCellDelegate didUpdateIngredientAtRowIndex:self.rowIndex withMeasurement:self.measurementTextField.text description:self.descriptionTextField.text];
+        [textField resignFirstResponder];
+        return YES;
+    }
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -126,9 +131,6 @@
 //    self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
 //    [self updateLimitLabel];
     
-    // No save if no characters
-    self.doneButton.enabled = [newString length] > 0;
-    
     return YES;
 }
 
@@ -143,6 +145,7 @@
     [self.contentView addSubview:self.backViewMeasurementView];
     
     self.measurementTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+    [self.measurementTextField setReturnKeyType:UIReturnKeyNext];
     self.measurementTextField.delegate = self;
     [self.contentView addSubview:self.measurementTextField];
     
@@ -157,7 +160,6 @@
     self.maskCellView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:self.maskCellView];
     
-    [self addDoneButton];
     [self style];
     
 }
@@ -181,34 +183,9 @@
     
 }
 
-- (void)performSave {
-    
-//    UITextField *textField = (UITextField *)self.targetEditingView;
-
-//    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:textField.text];
-//    [super performSave];
-}
-
 -(void)setAsHighlighted:(BOOL)highlighted {
     float maskAlpha = highlighted ? 0.0f : 0.7f;
     self.maskCellView.alpha = maskAlpha;
-    self.doneButton.hidden = !highlighted;
-}
-
--(void) addDoneButton
-{
-    self.doneButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
-                                           target:self selector:@selector(doneButtonTapped:withEvent:)];
-
-    self.doneButton.hidden = YES;
-    [self.contentView addSubview:self.doneButton];
-    
-}
-
--(void) doneButtonTapped:(UIButton*)button withEvent:(UIEvent*)event {
-    UITouch *touch = [[event touchesForView:button] anyObject];
-    DLog(@"Done button tapped");
-    [self.ingredientEditTableViewCellDelegate didUpdateIngredientAtTouch:touch withMeasurement:self.measurementTextField.text description:self.descriptionTextField.text];
 }
 
 @end

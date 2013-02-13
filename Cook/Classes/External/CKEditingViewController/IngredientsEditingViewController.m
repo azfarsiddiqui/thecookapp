@@ -19,6 +19,7 @@
 @interface IngredientsEditingViewController () <UITableViewDataSource,UITableViewDelegate, IngredientEditorDelegate>
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) IngredientEditorViewController *ingredientEditingViewController;
+@property (nonatomic, assign) CGRect ingredientTapStartingPoint;
 @end
 
 @implementation IngredientsEditingViewController
@@ -66,26 +67,26 @@
 #pragma mark - UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGRect startingFrame = CGRectMake(self.tableView.frame.origin.x,
-                                      self.tableView.frame.origin.y + self.tableView.frame.size.height,
-                                      self.tableView.frame.size.width,
-                                      0.0f);
     
-    self.ingredientEditingViewController = [[IngredientEditorViewController alloc]initWithFrame:startingFrame
-                                                                                               withViewInsets:kTableViewInsets];
-    self.ingredientEditingViewController.ingredientList = self.ingredientList;
-    self.ingredientEditingViewController.selectedIndex = indexPath.row;
-    self.ingredientEditingViewController.ingredientEditorDelegate = self;
-    [self.view addSubview:self.ingredientEditingViewController.view];
-    self.ingredientEditingViewController.view.alpha = 0.0f;
+    self.ingredientTapStartingPoint = [tableView rectForRowAtIndexPath:indexPath];
+    
+    IngredientEditorViewController *ingredientsEditorViewController = [[IngredientEditorViewController alloc]initWithFrame:self.view.bounds
+                                                                                                            withViewInsets:kTableViewInsets
+                                                                                                           startingAtFrame:self.ingredientTapStartingPoint];
+    ingredientsEditorViewController.ingredientList = self.ingredientList;
+    ingredientsEditorViewController.selectedIndex = indexPath.row;
+    ingredientsEditorViewController.ingredientEditorDelegate = self;
+    
+    [self.view addSubview:ingredientsEditorViewController.view];
+    ingredientsEditorViewController.view.alpha = 0.0f;
     [UIView animateWithDuration:0.3f
                           delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         self.ingredientEditingViewController.view.alpha = 1.0f;
-                         [self.ingredientEditingViewController updateFrameSize:self.view.bounds forExpansion:YES];
-    }
-                     completion:nil
-    ];
+                         ingredientsEditorViewController.view.alpha = 1.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         self.ingredientEditingViewController = ingredientsEditorViewController;
+                     }];
 }
 
 #pragma mark - IngredientEditorDelegate
@@ -95,28 +96,26 @@
     [self.ingredientList replaceObjectAtIndex:rowIndex withObject:ingredientDescription];
     UITableView *tableView = (UITableView *)self.targetEditingView;
     [tableView reloadData];
-
+    
     //update editing view
     NSString * delimitedString = [[self.ingredientList valueForKey:@"description"] componentsJoinedByString:@"\n"];
     [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:delimitedString];
-
+    
     [self didDismissIngredientEditor];
 }
 
 -(void)didDismissIngredientEditor
 {
     if (self.ingredientEditingViewController) {
-        CGRect endingFrame = CGRectMake(self.tableView.frame.origin.x,
-                                          self.tableView.frame.origin.y + self.tableView.frame.size.height,
-                                          self.tableView.frame.size.width,
-                                          0.0f);
         [UIView animateWithDuration:0.3f
+                              delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
+//                             [self.ingredientEditingViewController updateFrameSize:endingFrame forExpansion:NO];
                              self.ingredientEditingViewController.view.alpha = 0.0f;
-                             [self.ingredientEditingViewController updateFrameSize:endingFrame forExpansion:NO];
                          } completion:^(BOOL finished) {
                              [self.ingredientEditingViewController.view removeFromSuperview];
                              self.ingredientEditingViewController = nil;
+                             self.ingredientTapStartingPoint = CGRectZero;
                          }];
     }
 }

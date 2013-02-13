@@ -17,15 +17,18 @@
 @interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate, IngredientEditTableViewCellDelegate>
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,assign) UIEdgeInsets viewInsets;
+@property(nonatomic,assign) CGRect startingFrame;
 @end
 
 @implementation IngredientEditorViewController
 
-- (id)initWithFrame:(CGRect)frame withViewInsets:(UIEdgeInsets)viewInsets
+-(id)initWithFrame:(CGRect)frame withViewInsets:(UIEdgeInsets)viewInsets startingAtFrame:(CGRect)startingFrame
 {
     self = [super init];
     if (self) {
         self.view.frame = frame;
+        self.view.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.5f];
+        self.startingFrame = startingFrame;
         self.viewInsets = viewInsets;
         [self config];
     }
@@ -35,14 +38,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    EditableIngredientTableViewCell *firstCell = [[self.tableView visibleCells]objectAtIndex:0];
+    [firstCell requestMeasurementTextFieldEdit];
+}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 -(void)updateFrameSize:(CGRect)frame forExpansion:(BOOL)expansion
 {
@@ -65,18 +82,58 @@
 
 #pragma mark - IngredientEditDelegate
 
--(void)didUpdateIngredientAtTouch:(UITouch *)touch withMeasurement:(NSString *)measurementString description:(NSString *)ingredientDescription
+-(void)didUpdateIngredientAtRowIndex:(NSNumber *)rowIndex withMeasurement:(NSString *)measurementString description:(NSString *)ingredientDescription
 {
-    NSIndexPath * indexPath = [self.tableView indexPathForRowAtPoint: [touch locationInView: self.tableView]];
-    //adjusted index
+    NSIndexPath * indexPath = [NSIndexPath indexPathForRow:[rowIndex intValue] inSection:0];
     [self.ingredientEditorDelegate didUpdateIngredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
 }
 
+#pragma mark - System Notification events
+- (void)keyboardWillShow:(NSNotification *)notification {
+    UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    
+    CGFloat verticalOffset = -self.startingFrame.origin.y;
+    
+    CGAffineTransform shiftTransform = CGAffineTransformMakeTranslation(0.0, verticalOffset);
+    
+    [UIView animateWithDuration:duration
+                          delay:0.0
+                        options:curve
+                     animations:^{
+                         self.tableView.transform = shiftTransform;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    DLog();
+    UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    CGAffineTransform shiftTransform = CGAffineTransformIdentity;
+    
+    [UIView animateWithDuration:duration
+                          delay:0.0
+                        options:curve
+                     animations:^{
+                         self.tableView.transform = shiftTransform;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    
+}
 #pragma mark - Private Methods
 
 -(void)config
 {
     [self addTableView];
+    
+    self.tableView.frame = CGRectMake(self.viewInsets.left,
+                                        self.startingFrame.origin.y + self.viewInsets.top,
+                                        self.view.bounds.size.width - self.viewInsets.left - self.viewInsets.right,
+                                        self.view.bounds.size.height - self.viewInsets.top - self.viewInsets.bottom);
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -92,7 +149,7 @@
     NSInteger adjustedIndex = self.selectedIndex + indexPath.row;
     NSString *data = [self.ingredientList objectAtIndex:adjustedIndex];
     EditableIngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEditIngredientTableViewCell];
-    [cell configureCellWithText:data forRowAtIndexPath:indexPath editDelegate:self];
+    [cell configureCellWithText:data forRowAtIndex:[NSNumber numberWithInt:indexPath.row] editDelegate:self];
     return cell;
 }
 
