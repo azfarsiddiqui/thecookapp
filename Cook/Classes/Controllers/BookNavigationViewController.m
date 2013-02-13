@@ -8,6 +8,7 @@
 
 #import "BookNavigationViewController.h"
 #import "BookNavigationFlowLayout.h"
+#import "BookNavigationLayout.h"
 #import "RecipeCollectionViewCell.h"
 #import "CategoryHeaderView.h"
 #import "CKBook.h"
@@ -15,7 +16,7 @@
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 
-@interface BookNavigationViewController ()
+@interface BookNavigationViewController () <BookNavigationLayoutDataSource>
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -34,7 +35,7 @@
 #define kCategoryHeaderId   @"CategoryHeaderId"
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[BookNavigationFlowLayout alloc] init]]) {
+    if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
         self.delegate = delegate;
         self.book = book;
     }
@@ -47,6 +48,16 @@
     [self initNavButtons];
     [self initCollectionView];
     [self loadData];
+}
+
+#pragma mark - BookNavigationLayoutDataSource methods
+
+- (NSUInteger)bookNavigationLayoutNumColumns {
+    return 3;
+}
+
+- (NSUInteger)bookNavigationLayoutColumnWidthForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return 1;
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -69,18 +80,21 @@
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
     referenceSizeForHeaderInSection:(NSInteger)section {
     
-    return [CategoryHeaderView headerSize];
+    return CGSizeMake(floorf(self.collectionView.bounds.size.width / 3.0) * 2.0, 500.0);
+//    return [CategoryHeaderView headerSize];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    return [BookNavigationFlowLayout unitSize];
+    return CGSizeMake(floorf(self.collectionView.bounds.size.width / 3.0), 500.0);
+//    return [BookNavigationFlowLayout unitSize];
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(112.0, 50.0, 112.0, 40.0);
+    
+    return UIEdgeInsetsMake(112.0, 0.0, 112.0, 0.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
@@ -93,7 +107,8 @@
                    layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // Gaps between columns.
-    return [BookNavigationFlowLayout columnSeparatorWidth];
+    // return [BookNavigationFlowLayout columnSeparatorWidth];
+    return 0.0;
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -110,25 +125,26 @@
 
 - (UICollectionReusableView *)collectionView: (UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
                                  atIndexPath:(NSIndexPath *)indexPath {
-    CategoryHeaderView *categoryHeaderView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
-    
-    // Configure the category name.
-    NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
-    [categoryHeaderView configureCategoryName:categoryName];
-    
-    // Ensure images for recipes in the category is loaded.
-    [self preloadImagesForCategory:categoryName];
-    
-    // Configure the category image from a random recipe that has an image.
-    CKRecipe *randomRecipe = [self highlightRecipeForCategory:categoryName];
-    if (randomRecipe) {
-        [categoryHeaderView configureImageForRecipe:randomRecipe];
-    }
-    
-    // Hang on to the categoryHeaderView.
-    [self.categoryHeaders setObject:categoryHeaderView forKey:categoryName];
-    
-    return categoryHeaderView;
+//    CategoryHeaderView *categoryHeaderView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
+//    
+//    // Configure the category name.
+//    NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
+//    [categoryHeaderView configureCategoryName:categoryName];
+//    
+//    // Ensure images for recipes in the category is loaded.
+//    [self preloadImagesForCategory:categoryName];
+//    
+//    // Configure the category image from a random recipe that has an image.
+//    CKRecipe *randomRecipe = [self highlightRecipeForCategory:categoryName];
+//    if (randomRecipe) {
+//        [categoryHeaderView configureImageForRecipe:randomRecipe];
+//    }
+//    
+//    // Hang on to the categoryHeaderView.
+//    [self.categoryHeaders setObject:categoryHeaderView forKey:categoryName];
+//    
+//    return categoryHeaderView;
+    return nil;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -138,6 +154,9 @@
     NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
     NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
     CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
+    
+    cell.backgroundColor = [UIColor lightGrayColor];
+    
     [cell configureRecipe:recipe];
     return cell;
 }
@@ -191,10 +210,6 @@
         
         // Now reload the collection.
         [self.collectionView reloadData];
-        
-        // No go ahead and reload each recipes with required relations.
-        
-        
         
         
     } failure:^(NSError *error) {
