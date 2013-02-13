@@ -12,7 +12,6 @@
 
 @interface CategoryHeaderView : UICollectionReusableView
 
-+ (CGSize)headerSize;
 - (void)configureCategoryName:(NSString *)categoryName;
 - (void)configureImageForRecipe:(CKRecipe *)recipe;
 

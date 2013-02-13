@@ -66,49 +66,14 @@
     DLog();
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
+      forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
     // Remove the reference to the category header once it's scrolled off.
     if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
         [self.categoryHeaders removeObjectForKey:categoryName];
     }
-}
-
-#pragma mark - UICollectionViewDelegateFlowLayout methods
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-    referenceSizeForHeaderInSection:(NSInteger)section {
-    
-    return CGSizeMake(floorf(self.collectionView.bounds.size.width / 3.0) * 2.0, 500.0);
-//    return [CategoryHeaderView headerSize];
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView
-                  layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return CGSizeMake(floorf(self.collectionView.bounds.size.width / 3.0), 500.0);
-//    return [BookNavigationFlowLayout unitSize];
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
-                        layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    
-    return UIEdgeInsetsMake(112.0, 0.0, 112.0, 0.0);
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    // Gaps between rows.
-    return 0.0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    
-    // Gaps between columns.
-    // return [BookNavigationFlowLayout columnSeparatorWidth];
-    return 0.0;
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -125,26 +90,25 @@
 
 - (UICollectionReusableView *)collectionView: (UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
                                  atIndexPath:(NSIndexPath *)indexPath {
-//    CategoryHeaderView *categoryHeaderView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
-//    
-//    // Configure the category name.
-//    NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
-//    [categoryHeaderView configureCategoryName:categoryName];
-//    
-//    // Ensure images for recipes in the category is loaded.
-//    [self preloadImagesForCategory:categoryName];
-//    
-//    // Configure the category image from a random recipe that has an image.
-//    CKRecipe *randomRecipe = [self highlightRecipeForCategory:categoryName];
-//    if (randomRecipe) {
-//        [categoryHeaderView configureImageForRecipe:randomRecipe];
-//    }
-//    
-//    // Hang on to the categoryHeaderView.
-//    [self.categoryHeaders setObject:categoryHeaderView forKey:categoryName];
-//    
-//    return categoryHeaderView;
-    return nil;
+    CategoryHeaderView *categoryHeaderView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
+    
+    // Configure the category name.
+    NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
+    [categoryHeaderView configureCategoryName:categoryName];
+    
+    // Ensure images for recipes in the category is loaded.
+    [self preloadImagesForCategory:categoryName];
+    
+    // Configure the category image from a random recipe that has an image.
+    CKRecipe *randomRecipe = [self highlightRecipeForCategory:categoryName];
+    if (randomRecipe) {
+        [categoryHeaderView configureImageForRecipe:randomRecipe];
+    }
+    
+    // Hang on to the categoryHeaderView.
+    [self.categoryHeaders setObject:categoryHeaderView forKey:categoryName];
+    
+    return categoryHeaderView;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
