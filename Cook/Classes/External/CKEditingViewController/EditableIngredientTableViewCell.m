@@ -20,10 +20,8 @@
 @property(nonatomic,strong) UITextField *descriptionTextField;
 @property(nonatomic,strong) UIView *backViewMeasurementView;
 @property(nonatomic,strong) UIView *backViewDescriptionView;
-@property(nonatomic,assign) NSInteger descriptionCharacterLimit;
-@property(nonatomic,assign) NSInteger measurementCharacterLimit;
 @property(nonatomic,assign) NSNumber *rowIndex;
-@property(nonatomic,assign) id<IngredientEditTableViewCellDelegate> ingredientEditTableViewCellDelegate;
+@property(nonatomic,assign) id<EditableIngredientTableViewCellDelegate> ingredientEditTableViewCellDelegate;
 @end
 @implementation EditableIngredientTableViewCell
 
@@ -31,14 +29,12 @@
 {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.descriptionCharacterLimit = 30;
-        self.measurementCharacterLimit = 10;
         [self config];
     }
     return self;
 }
 
--(void)configureCellWithText:(NSString *)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<IngredientEditTableViewCellDelegate>)editDelegate
+-(void)configureCellWithText:(NSString *)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate
 {
     self.measurementTextField.text = [NSString stringWithFormat:@"300 ml"];
     self.descriptionTextField.text = text;
@@ -109,7 +105,7 @@
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    [self.ingredientEditTableViewCellDelegate didSelectTextFieldForEditing:textField];
+    [self.ingredientEditTableViewCellDelegate didSelectTextFieldForEditing:textField isMeasurementField:textField == self.measurementTextField];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -127,17 +123,12 @@
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     BOOL isBackspace = [newString length] < [textField.text length];
 
-   NSInteger characterLimit = (textField == self.descriptionTextField) ? self.descriptionCharacterLimit : self.measurementCharacterLimit;
+   NSInteger characterLimit = [self.ingredientEditTableViewCellDelegate characterLimitForCurrentEditableTextField];
    if ([textField.text length] >= characterLimit && !isBackspace) {
-            return NO;
+        return NO;
    }
 
-    
-//    // Update character limit.
-//    NSUInteger currentLimit = self.characterLimit - [newString length];
-//    self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
-//    [self updateLimitLabel];
-    
+    [self.ingredientEditTableViewCellDelegate updateCharacterLimit:[newString length]];
     return YES;
 }
 

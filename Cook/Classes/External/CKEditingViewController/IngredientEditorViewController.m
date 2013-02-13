@@ -9,16 +9,22 @@
 #import "IngredientEditorViewController.h"
 #import "IngredientTableViewCell.h"
 #import "EditableIngredientTableViewCell.h"
+#import "Theme.h"
 #import "ViewHelper.h"
 
 #define kEditIngredientTableViewCell   @"EditIngredientTableViewCell"
 #define kCellHeight 90.0f
-
-@interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate, IngredientEditTableViewCellDelegate>
+#define kMaxLengthMeasurement 8
+#define kMaxLengthDescription 25
+@interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate, EditableIngredientTableViewCellDelegate>
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,assign) UIEdgeInsets viewInsets;
 @property(nonatomic,assign) CGRect startingFrame;
 @property(nonatomic,strong) UITextField *currentEditableTextField;
+@property(nonatomic,strong) UILabel *limitLabel;
+@property(nonatomic,assign) NSInteger descriptionCharacterLimit;
+@property(nonatomic,assign) NSInteger measurementCharacterLimit;
+@property(nonatomic,assign) BOOL isCurrentEditableTextFieldMeasurementField;
 @end
 
 @implementation IngredientEditorViewController
@@ -69,11 +75,40 @@
     [self.ingredientEditorDelegate didUpdateIngredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
 }
 
--(void)didSelectTextFieldForEditing:(UITextField *)textField
+-(void)didSelectTextFieldForEditing:(UITextField *)textField isMeasurementField:(BOOL)isMeasurementField
 {
     self.currentEditableTextField = textField;
+    self.isCurrentEditableTextFieldMeasurementField = isMeasurementField;
+    [self updateCharacterLimit:self.currentEditableTextField.text.length];
 }
 
+-(NSInteger)characterLimitForCurrentEditableTextField
+{
+    return self.isCurrentEditableTextFieldMeasurementField ? kMaxLengthMeasurement : kMaxLengthDescription;
+}
+
+- (void)updateCharacterLimit:(NSInteger)textFieldLength {
+    
+    if (!self.limitLabel) {
+        UILabel *limitLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        limitLabel.backgroundColor = [UIColor clearColor];
+        limitLabel.font = [Theme bookCoverEditableFieldDescriptionFont];
+        limitLabel.textColor = [UIColor whiteColor];
+        limitLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+        limitLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+        [self.view addSubview:limitLabel];
+        self.limitLabel = limitLabel;
+        self.limitLabel.frame = CGRectMake(590.0f,
+                                           17.0f,
+                                           self.limitLabel.frame.size.width,
+                                           self.limitLabel.frame.size.height);
+
+    }
+    int availableLimit = [self characterLimitForCurrentEditableTextField] - textFieldLength;
+    self.limitLabel.text = [NSString stringWithFormat:@"%d",  availableLimit];
+
+    [self.limitLabel sizeToFit];
+}
 #pragma mark - System Notification events
 - (void)keyboardWillShow:(NSNotification *)notification {
     UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
