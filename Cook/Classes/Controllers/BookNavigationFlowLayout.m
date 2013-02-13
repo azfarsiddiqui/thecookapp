@@ -7,6 +7,7 @@
 //
 
 #import "BookNavigationFlowLayout.h"
+#import "BookNavigationFlowLayoutAttributes.h"
 
 @implementation BookNavigationFlowLayout
 
@@ -18,11 +19,31 @@
     return 40.0;
 }
 
++ (Class)layoutAttributesClass {
+    DLog();
+    return [BookNavigationFlowLayoutAttributes class];
+}
+
 - (id)init {
     if (self = [super init]) {
         self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
     return self;
+}
+
+- (void)prepareLayout {
+    DLog();
+}
+
+#pragma mark - UICollectionViewLayout methods
+
+- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    NSArray *attributes = [super layoutAttributesForElementsInRect:rect];
+    for (UICollectionViewLayoutAttributes *layoutAttributes in attributes) {
+        
+        
+    }
+    return attributes;
 }
 
 @end

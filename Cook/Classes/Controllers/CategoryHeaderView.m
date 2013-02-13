@@ -24,24 +24,12 @@
 
 #define kCategoryFont   [Theme defaultBoldFontWithSize:64.0]
 
-+ (CGSize)headerSize {
-    CGSize unitSize = [BookNavigationFlowLayout unitSize];
-    CGFloat separatorWidth = [BookNavigationFlowLayout columnSeparatorWidth];
-    CGFloat headerUnits = 2.0;
-    return CGSizeMake((unitSize.width * headerUnits) + (separatorWidth * (headerUnits - 1)), unitSize.height);
-}
-
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
         
-        CGSize headerSize = [CategoryHeaderView headerSize];
-        
         // Pre-create the background image view.
         PFImageView *imageView = [[PFImageView alloc] initWithImage:nil];
-        imageView.frame = CGRectIntegral(CGRectMake((self.bounds.size.width - headerSize.width) / 2.0,
-                                                    (self.bounds.size.height - headerSize.height) / 2.0,
-                                                    headerSize.width,
-                                                    headerSize.height));
+        imageView.frame = self.bounds;
         [self addSubview:imageView];
         self.imageView = imageView;
         

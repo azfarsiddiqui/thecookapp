@@ -8,6 +8,7 @@
 
 #import "BookNavigationViewController.h"
 #import "BookNavigationFlowLayout.h"
+#import "BookNavigationLayout.h"
 #import "RecipeCollectionViewCell.h"
 #import "CategoryHeaderView.h"
 #import "CKBook.h"
@@ -15,7 +16,7 @@
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 
-@interface BookNavigationViewController ()
+@interface BookNavigationViewController () <BookNavigationLayoutDataSource>
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -34,7 +35,7 @@
 #define kCategoryHeaderId   @"CategoryHeaderId"
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[BookNavigationFlowLayout alloc] init]]) {
+    if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
         self.delegate = delegate;
         self.book = book;
     }
@@ -49,51 +50,30 @@
     [self loadData];
 }
 
+#pragma mark - BookNavigationLayoutDataSource methods
+
+- (NSUInteger)bookNavigationLayoutNumColumns {
+    return 3;
+}
+
+- (NSUInteger)bookNavigationLayoutColumnWidthForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return 1;
+}
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     DLog();
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
+      forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
     // Remove the reference to the category header once it's scrolled off.
     if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
         [self.categoryHeaders removeObjectForKey:categoryName];
     }
-}
-
-#pragma mark - UICollectionViewDelegateFlowLayout methods
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-    referenceSizeForHeaderInSection:(NSInteger)section {
-    
-    return [CategoryHeaderView headerSize];
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView
-                  layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return [BookNavigationFlowLayout unitSize];
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
-                        layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(112.0, 50.0, 112.0, 40.0);
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    // Gaps between rows.
-    return 0.0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    
-    // Gaps between columns.
-    return [BookNavigationFlowLayout columnSeparatorWidth];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -138,6 +118,9 @@
     NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
     NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
     CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
+    
+    cell.backgroundColor = [UIColor lightGrayColor];
+    
     [cell configureRecipe:recipe];
     return cell;
 }
@@ -191,10 +174,6 @@
         
         // Now reload the collection.
         [self.collectionView reloadData];
-        
-        // No go ahead and reload each recipes with required relations.
-        
-        
         
         
     } failure:^(NSError *error) {
