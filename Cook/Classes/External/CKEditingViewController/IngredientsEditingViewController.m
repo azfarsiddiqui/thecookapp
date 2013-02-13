@@ -76,17 +76,8 @@
     ingredientsEditorViewController.ingredientList = self.ingredientList;
     ingredientsEditorViewController.selectedIndex = indexPath.row;
     ingredientsEditorViewController.ingredientEditorDelegate = self;
-    
     [self.view addSubview:ingredientsEditorViewController.view];
-    ingredientsEditorViewController.view.alpha = 0.0f;
-    [UIView animateWithDuration:0.3f
-                          delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         ingredientsEditorViewController.view.alpha = 1.0f;
-                     }
-                     completion:^(BOOL finished) {
-                         self.ingredientEditingViewController = ingredientsEditorViewController;
-                     }];
+    self.ingredientEditingViewController = ingredientsEditorViewController;
 }
 
 #pragma mark - IngredientEditorDelegate
@@ -100,23 +91,15 @@
     //update editing view
     NSString * delimitedString = [[self.ingredientList valueForKey:@"description"] componentsJoinedByString:@"\n"];
     [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:delimitedString];
-    
-    [self didDismissIngredientEditor];
+   
 }
 
--(void)didDismissIngredientEditor
+-(void)didRequestIngredientEditorViewDismissal
 {
     if (self.ingredientEditingViewController) {
-        [UIView animateWithDuration:0.3f
-                              delay:0.0f options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-//                             [self.ingredientEditingViewController updateFrameSize:endingFrame forExpansion:NO];
-                             self.ingredientEditingViewController.view.alpha = 0.0f;
-                         } completion:^(BOOL finished) {
-                             [self.ingredientEditingViewController.view removeFromSuperview];
-                             self.ingredientEditingViewController = nil;
-                             self.ingredientTapStartingPoint = CGRectZero;
-                         }];
+        [self.ingredientEditingViewController.view removeFromSuperview];
+        self.ingredientEditingViewController = nil;
+        self.ingredientTapStartingPoint = CGRectZero;
     }
 }
 

@@ -96,17 +96,27 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-    // Configure the view for the selected state
+    if (selected && ![self isFirstRow]) {
+    }
 }
 
 #pragma mark - UITextFieldDelegate methods
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    return [self isFirstRow];
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [self.ingredientEditTableViewCellDelegate didSelectTextFieldForEditing:textField];
+}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.measurementTextField) {
         [self.descriptionTextField becomeFirstResponder];
         return NO;
     } else {
-        [self.ingredientEditTableViewCellDelegate didUpdateIngredientAtRowIndex:self.rowIndex withMeasurement:self.measurementTextField.text description:self.descriptionTextField.text];
         [textField resignFirstResponder];
         return YES;
     }
@@ -117,14 +127,11 @@
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     BOOL isBackspace = [newString length] < [textField.text length];
 
-    NSInteger characterLimit = (textField == self.descriptionTextField) ? self.descriptionCharacterLimit : self.measurementCharacterLimit;
-    if (textField == self.descriptionTextField) {
-        if ([textField.text length] >= characterLimit && !isBackspace) {
+   NSInteger characterLimit = (textField == self.descriptionTextField) ? self.descriptionCharacterLimit : self.measurementCharacterLimit;
+   if ([textField.text length] >= characterLimit && !isBackspace) {
             return NO;
-        }
-    }
-    
-    DLog(@"description: %i, value %@", textField == self.descriptionTextField, textField.text);
+   }
+
     
 //    // Update character limit.
 //    NSUInteger currentLimit = self.characterLimit - [newString length];
@@ -134,6 +141,11 @@
     return YES;
 }
 
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    [self.ingredientEditTableViewCellDelegate didUpdateIngredientAtRowIndex:self.rowIndex withMeasurement:self.measurementTextField.text description:self.descriptionTextField.text];
+    return YES;
+}
 #pragma mark - Private Methods
 
 -(void)config
@@ -186,6 +198,11 @@
 -(void)setAsHighlighted:(BOOL)highlighted {
     float maskAlpha = highlighted ? 0.0f : 0.7f;
     self.maskCellView.alpha = maskAlpha;
+}
+
+-(BOOL)isFirstRow
+{
+    return [self.rowIndex isEqualToNumber:[NSNumber numberWithInt:0]];
 }
 
 @end

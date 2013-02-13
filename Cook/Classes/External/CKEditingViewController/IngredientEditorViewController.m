@@ -18,6 +18,7 @@
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,assign) UIEdgeInsets viewInsets;
 @property(nonatomic,assign) CGRect startingFrame;
+@property(nonatomic,strong) UITextField *currentEditableTextField;
 @end
 
 @implementation IngredientEditorViewController
@@ -88,6 +89,11 @@
     [self.ingredientEditorDelegate didUpdateIngredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
 }
 
+-(void)didSelectTextFieldForEditing:(UITextField *)textField
+{
+    self.currentEditableTextField = textField;
+}
+
 #pragma mark - System Notification events
 - (void)keyboardWillShow:(NSNotification *)notification {
     UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
@@ -121,6 +127,7 @@
                          self.tableView.transform = shiftTransform;
                      }
                      completion:^(BOOL finished) {
+                         [self.ingredientEditorDelegate didRequestIngredientEditorViewDismissal];
                      }];
     
 }
@@ -135,6 +142,8 @@
                                         self.view.bounds.size.width - self.viewInsets.left - self.viewInsets.right,
                                         self.view.bounds.size.height - self.viewInsets.top - self.viewInsets.bottom);
 }
+
+#pragma mark - UITableViewDataSource
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return kCellHeight;
@@ -166,4 +175,12 @@
     [self.view addSubview:tableView];
 }
 
+#pragma mark - UITableViewDelegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //dismiss for any rows other than the first one
+    if (indexPath.row!=0&&self.currentEditableTextField) {
+        [self.currentEditableTextField resignFirstResponder];
+    }
+}
 @end

@@ -145,7 +145,7 @@
     } else if (editingView == self.textViewEditableView) {
         [self setTextViewValue:value];
         [self.textViewEditableView enableEditMode:YES];
-    } {
+    } else if (editingView == self.listViewEditableView){
         [self setListViewValue:value];
         [self.listViewEditableView enableEditMode:YES];
     }

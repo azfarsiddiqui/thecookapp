@@ -11,7 +11,7 @@
 
 @protocol IngredientEditorDelegate
 -(void)didUpdateIngredient:(NSString*)ingredientDescription atRowIndex:(NSInteger)rowIndex;
--(void)didDismissIngredientEditor;
+-(void)didRequestIngredientEditorViewDismissal;
 @end
 
 @interface IngredientEditorViewController : UIViewController

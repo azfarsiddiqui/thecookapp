@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 @protocol IngredientEditTableViewCellDelegate
 -(void)didUpdateIngredientAtRowIndex:(NSNumber*)rowIndex withMeasurement:(NSString*)measurementString description:(NSString*)ingredientDescription;
+-(void)didSelectTextFieldForEditing:(UITextField*)textField;
+-(UITextField*)currentEditableTextField;
 @end
 
 @interface EditableIngredientTableViewCell : UITableViewCell
