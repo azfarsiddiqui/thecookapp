@@ -12,6 +12,7 @@
 #import "BookNavigationFlowLayout.h"
 #import "UIImage+ProportionalFill.h"
 #import "CKRecipe.h"
+#import "CKRecipeImage.h"
 
 @interface CategoryHeaderView ()
 
@@ -62,13 +63,14 @@
 
 - (void)configureImageForRecipe:(CKRecipe *)recipe {
     DLog("Configure category header with image from recipe [%@]", recipe.name);
-    if ([recipe imageFile]) {
-       self.imageView.file = [recipe imageFile];
+    if (recipe.recipeImage) {
+        self.imageView.file = [recipe.recipeImage imageFile];
        [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
            if (!error) {
                DLog(@"Loaded image for recipe [%@]", recipe.name);
                UIImage *imageToFit = [image imageCroppedToFitSize:self.imageView.bounds.size];
                self.imageView.image = imageToFit;
+//               self.imageView.image = image;
            } else {
                DLog(@"Error loading image in background: %@", [error description]);
            }
