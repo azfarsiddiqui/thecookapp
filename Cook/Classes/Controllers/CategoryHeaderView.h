@@ -12,6 +12,8 @@
 
 @interface CategoryHeaderView : UICollectionReusableView
 
+@property (nonatomic, strong) NSString *categoryName;
+
 - (void)configureCategoryName:(NSString *)categoryName;
 - (void)configureImageForRecipe:(CKRecipe *)recipe;
 

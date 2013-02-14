@@ -50,6 +50,7 @@
 }
 
 - (void)configureCategoryName:(NSString *)categoryName {
+    self.categoryName = categoryName;
     NSString *name = [categoryName uppercaseString];
     CGSize size = [name sizeWithFont:kCategoryFont forWidth:self.bounds.size.width lineBreakMode:NSLineBreakByCharWrapping];
     self.label.frame = CGRectIntegral(CGRectMake((self.bounds.size.width - size.width) / 2.0,
@@ -61,24 +62,18 @@
 
 - (void)configureImageForRecipe:(CKRecipe *)recipe {
     DLog("Configure category header with image from recipe [%@]", recipe.name);
-    [CKRecipe fetchImagesForRecipe:recipe
-                           success:^{
-                               if ([recipe imageFile]) {
-                                   self.imageView.file = [recipe imageFile];
-                                   [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
-                                       if (!error) {
-                                           DLog(@"Loaded image for recipe [%@]", recipe.name);
-                                           UIImage *imageToFit = [image imageCroppedToFitSize:self.imageView.bounds.size];
-                                           self.imageView.image = imageToFit;
-                                       } else {
-                                           DLog(@"Error loading image in background: %@", [error description]);
-                                       }
-                                   }];
-                               }
-                           }
-                           failure:^(NSError *error) {
-                               DLog(@"Unable to load sample recipe [%@]", recipe.name);
-                           }];
+    if ([recipe imageFile]) {
+       self.imageView.file = [recipe imageFile];
+       [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
+           if (!error) {
+               DLog(@"Loaded image for recipe [%@]", recipe.name);
+               UIImage *imageToFit = [image imageCroppedToFitSize:self.imageView.bounds.size];
+               self.imageView.image = imageToFit;
+           } else {
+               DLog(@"Error loading image in background: %@", [error description]);
+           }
+       }];
+    }
 }
 
 @end

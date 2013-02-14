@@ -99,12 +99,6 @@
     // Ensure images for recipes in the category is loaded.
     [self preloadImagesForCategory:categoryName];
     
-    // Configure the category image from a random recipe that has an image.
-    CKRecipe *randomRecipe = [self highlightRecipeForCategory:categoryName];
-    if (randomRecipe) {
-        [categoryHeaderView configureImageForRecipe:randomRecipe];
-    }
-    
     // Hang on to the categoryHeaderView.
     [self.categoryHeaders setObject:categoryHeaderView forKey:categoryName];
     
@@ -201,13 +195,24 @@
     NSNumber *categoryRecipesLoaded = [self.categoryRecipesLoadingMonitor objectForKey:categoryName];
     if (!categoryRecipesLoaded) {
         
+        DLog(@"Preloading images for category: %@", categoryName);
+        
+        CKRecipe *highlightRecipe = [self highlightRecipeForCategory:categoryName];
+        
         // Start hydrating recipe images as a group.
         NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
         for (CKRecipe *recipe in categoryRecipes) {
             [CKRecipe fetchImagesForRecipe:recipe
                                    success:^{
-                                       DLog(@"Hydrated recipe [%@]", recipe.name);
+                                       DLog(@"Hydrated image for recipe [%@]", recipe.name);
                                        [self updateCellImageForRecipe:recipe];
+                                       
+                                       // Update category headerView if we've loaded the highlight recipe.
+                                       if (highlightRecipe == recipe) {
+                                           CategoryHeaderView *categoryHeaderView = [self.categoryHeaders objectForKey:categoryName];
+                                           [self configureImageForHeaderView:categoryHeaderView recipe:recipe];
+                                       }
+                                       
                                    }
                                    failure:^(NSError *error) {
                                        DLog(@"Unable to hydrate recipe [%@]", recipe.name);
@@ -233,6 +238,12 @@
 
 - (void)closeTapped:(id)sender {
     [self.delegate bookNavigationControllerCloseRequested];
+}
+
+- (void)configureImageForHeaderView:(CategoryHeaderView *)categoryHeaderView recipe:(CKRecipe *)recipe {
+    if (categoryHeaderView) {
+        [categoryHeaderView configureImageForRecipe:recipe];
+    }
 }
 
 @end
