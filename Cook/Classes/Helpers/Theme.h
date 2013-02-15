@@ -37,6 +37,8 @@
 #pragma mark - Settings
 + (UIFont *)settingsProfileFont;
 
+#pragma mark - Ingredients
++ (UIFont *)ingredientAccessoryViewButtonTextFont;
 #pragma mark - Book Cover
 + (UIFont *)bookCoverEditableAuthorTextFont;
 + (UIFont *)bookCoverEditableCaptionTextFont;
@@ -52,5 +54,6 @@
 #pragma mark - General reusable editable controls
 + (UIFont *)textEditableTextFont;
 + (UIFont *)textViewTitleFont;
+
 @end
 

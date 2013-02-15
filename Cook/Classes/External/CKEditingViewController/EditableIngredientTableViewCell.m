@@ -118,18 +118,17 @@
     }
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)appendedString {
 
-    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    BOOL isBackspace = [newString length] < [textField.text length];
+    NSString *newTextFieldValue = [textField.text stringByReplacingCharactersInRange:range withString:appendedString];
+    BOOL isBackspace = [newTextFieldValue length] < [textField.text length];
 
-   NSInteger characterLimit = [self.ingredientEditTableViewCellDelegate characterLimitForCurrentEditableTextField];
-   if ([textField.text length] >= characterLimit && !isBackspace) {
-        return NO;
-   }
-
-    [self.ingredientEditTableViewCellDelegate updateCharacterLimit:[newString length]];
-    return YES;
+    if (isBackspace) {
+        [self.ingredientEditTableViewCellDelegate updateCharacterLimit:[newTextFieldValue length]];
+        return YES;
+    }
+    
+    return [self.ingredientEditTableViewCellDelegate requestedUpdateForCurrentEditableTextField:newTextFieldValue];
 }
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField

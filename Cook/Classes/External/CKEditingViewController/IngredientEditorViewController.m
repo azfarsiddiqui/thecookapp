@@ -9,6 +9,7 @@
 #import "IngredientEditorViewController.h"
 #import "IngredientTableViewCell.h"
 #import "EditableIngredientTableViewCell.h"
+#import "IngredientEditKeyboardAccessoryView.h"
 #import "Theme.h"
 #import "ViewHelper.h"
 
@@ -16,9 +17,10 @@
 #define kCellHeight 90.0f
 #define kMaxLengthMeasurement 8
 #define kMaxLengthDescription 25
-@interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate, EditableIngredientTableViewCellDelegate>
+@interface IngredientEditorViewController ()<UITableViewDataSource,UITableViewDelegate, EditableIngredientTableViewCellDelegate, IngredientEditKeyboardAccessoryViewDelegate>
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,assign) UIEdgeInsets viewInsets;
+@property(nonatomic,strong) IngredientEditKeyboardAccessoryView *ingredientEditKeyboardAccessoryView;
 @property(nonatomic,assign) CGRect startingFrame;
 @property(nonatomic,strong) UITextField *currentEditableTextField;
 @property(nonatomic,strong) UILabel *limitLabel;
@@ -37,6 +39,7 @@
         self.view.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.5f];
         self.startingFrame = startingFrame;
         self.viewInsets = viewInsets;
+        self.ingredientEditKeyboardAccessoryView = [[IngredientEditKeyboardAccessoryView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, 56.0f) delegate:self];
         [self config];
     }
     return self;
@@ -67,7 +70,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - IngredientEditDelegate
+#pragma mark - EditableIngredientTableViewCellDelegate
 
 -(void)didUpdateIngredientAtRowIndex:(NSNumber *)rowIndex withMeasurement:(NSString *)measurementString description:(NSString *)ingredientDescription
 {
@@ -79,12 +82,26 @@
 {
     self.currentEditableTextField = textField;
     self.isCurrentEditableTextFieldMeasurementField = isMeasurementField;
+    self.currentEditableTextField.inputAccessoryView = (self.isCurrentEditableTextFieldMeasurementField) ? self.ingredientEditKeyboardAccessoryView: nil;
+    
     [self updateCharacterLimit:self.currentEditableTextField.text.length];
 }
 
 -(NSInteger)characterLimitForCurrentEditableTextField
 {
     return self.isCurrentEditableTextFieldMeasurementField ? kMaxLengthMeasurement : kMaxLengthDescription;
+}
+
+-(BOOL) requestedUpdateForCurrentEditableTextField:(NSString*)newTextFieldValue
+{
+    NSInteger characterLimit = [self characterLimitForCurrentEditableTextField];
+    if ([self.currentEditableTextField.text length] >= characterLimit) {
+        return NO;
+    }
+    
+    [self updateCharacterLimit:[newTextFieldValue length]];
+
+    return YES;
 }
 
 - (void)updateCharacterLimit:(NSInteger)textFieldLength {
@@ -113,10 +130,19 @@
 - (void)keyboardWillShow:(NSNotification *)notification {
     UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
     double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    
+    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat verticalOffset = -self.startingFrame.origin.y;
     
     CGAffineTransform shiftTransform = CGAffineTransformMakeTranslation(0.0, verticalOffset);
+    
+    
+    // Get the top of the keyboard as the y coordinate of its origin in self's view's coordinate system.
+    // The bottom of the text view's frame should align with the top of the keyboard's final position.
+    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+    CGFloat keyboardTop = keyboardRect.origin.y;
+    CGRect accessoryViewFrame = self.ingredientEditKeyboardAccessoryView.frame;
+    accessoryViewFrame.origin.y = keyboardTop - accessoryViewFrame.size.height;
+    self.ingredientEditKeyboardAccessoryView.frame = accessoryViewFrame;
     
     [UIView animateWithDuration:duration
                           delay:0.0
@@ -196,6 +222,19 @@
     //dismiss for any rows other than the first one
     if (indexPath.row!=0&&self.currentEditableTextField) {
         [self.currentEditableTextField resignFirstResponder];
+    }
+}
+
+#pragma mark - IngredientEditKeyboardAccessoryViewDelegate
+
+-(void)didEnterMeasurementShortCut:(NSString *)name
+{
+    DLog(@"short cut %@", name);
+    NSString *newValue = [NSString stringWithFormat:@"%@%@",self.currentEditableTextField.text,[name lowercaseString]];
+    NSInteger characterLimit = [self characterLimitForCurrentEditableTextField];
+    if (newValue.length < characterLimit) {
+        self.currentEditableTextField.text = newValue;
+        [self updateCharacterLimit:[newValue length]];
     }
 }
 @end

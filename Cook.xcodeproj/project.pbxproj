@@ -350,6 +350,13 @@
 		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
 		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
 		893E535016BF6CA400B316C6 /* IngredientsEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */; };
+		8944C1B716CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8944C1B616CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.m */; };
+		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
+		8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */; };
+		8944C1C116CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */; };
+		8944C1C216CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BC16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png */; };
+		8944C1C316CDB9870087EFC9 /* cook_keyboard_autosuggest_divider.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BD16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider.png */; };
+		8944C1C416CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BE16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png */; };
 		895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D91650C23500765F96 /* CoreText.framework */; };
 		895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D71650C20200765F96 /* OpenGLES.framework */; };
 		895A2B8F1655BC670061E687 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */; };
@@ -849,6 +856,14 @@
 		893AC8A116782B3C00B221EC /* SectionPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SectionPageViewController.m; path = Book/SectionPageViewController.m; sourceTree = "<group>"; };
 		893E534E16BF6CA400B316C6 /* IngredientsEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientsEditingViewController.h; sourceTree = "<group>"; };
 		893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientsEditingViewController.m; sourceTree = "<group>"; };
+		8944C1B516CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientEditKeyboardAccessoryView.h; sourceTree = "<group>"; };
+		8944C1B616CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientEditKeyboardAccessoryView.m; sourceTree = "<group>"; };
+		8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_bg.png; sourceTree = "<group>"; };
+		8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_bg@2x.png"; sourceTree = "<group>"; };
+		8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_btn.png; sourceTree = "<group>"; };
+		8944C1BC16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_btn@2x.png"; sourceTree = "<group>"; };
+		8944C1BD16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_divider.png; sourceTree = "<group>"; };
+		8944C1BE16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_divider@2x.png"; sourceTree = "<group>"; };
 		895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
 		89622173161E9F300023EC30 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
 		89622174161E9F300023EC30 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
@@ -1690,6 +1705,19 @@
 			name = editors;
 			sourceTree = "<group>";
 		};
+		8944C1B816CDB9870087EFC9 /* accessoryView */ = {
+			isa = PBXGroup;
+			children = (
+				8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */,
+				8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */,
+				8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */,
+				8944C1BC16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png */,
+				8944C1BD16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider.png */,
+				8944C1BE16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png */,
+			);
+			path = accessoryView;
+			sourceTree = "<group>";
+		};
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
@@ -1755,6 +1783,7 @@
 		89622198161EAE370023EC30 /* recipes */ = {
 			isa = PBXGroup;
 			children = (
+				8944C1B816CDB9870087EFC9 /* accessoryView */,
 				8902D93F1662E5FD00B98A7B /* buttons */,
 				89E2CA92165F438300CDE0D4 /* cook_editrecipe_textbox.png */,
 				89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */,
@@ -1852,6 +1881,8 @@
 				893E534F16BF6CA400B316C6 /* IngredientsEditingViewController.m */,
 				8989E53F16C1D35F009C963D /* IngredientEditorViewController.h */,
 				8989E54016C1D360009C963D /* IngredientEditorViewController.m */,
+				8944C1B516CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.h */,
+				8944C1B616CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.m */,
 			);
 			name = Ingredients;
 			sourceTree = "<group>";
@@ -2227,6 +2258,12 @@
 				8969969E16A65D4D00BBED05 /* Polkadots@2x.png in Resources */,
 				8969969F16A65D4D00BBED05 /* Utensils.png in Resources */,
 				896996A016A65D4D00BBED05 /* Utensils@2x.png in Resources */,
+				8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */,
+				8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */,
+				8944C1C116CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png in Resources */,
+				8944C1C216CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png in Resources */,
+				8944C1C316CDB9870087EFC9 /* cook_keyboard_autosuggest_divider.png in Resources */,
+				8944C1C416CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2340,6 +2377,7 @@
 				764E46F516C871EB00DD168F /* CategoryHeaderView.m in Sources */,
 				7693D1F916C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m in Sources */,
 				76E355C516C9EB1E00C2B639 /* BookNavigationLayout.m in Sources */,
+				8944C1B716CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
