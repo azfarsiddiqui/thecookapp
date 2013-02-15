@@ -16,7 +16,7 @@
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
-#import "PhotoCache.h"
+#import "ParsePhotoStore.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
 
@@ -27,7 +27,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *categoryNames;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
-@property (nonatomic, strong) PhotoCache *photoCache;
+@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @end
 
@@ -40,7 +40,7 @@
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
         self.delegate = delegate;
         self.book = book;
-        self.photoCache = [[PhotoCache alloc] init];
+        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -261,20 +261,19 @@
                           indexPath:(NSIndexPath *)indexPath {
     
     if ([recipe hasPhotos]) {
+        
         CGSize imageSize = [categoryHeaderView imageSize];
-        UIImage *image = [self.photoCache cachedImageForParseFile:[recipe imageFile] size:imageSize];
-        if (image) {
-            [categoryHeaderView configureImage:image];
-        } else {
-            [self.photoCache downloadImageForParseFile:[recipe imageFile] size:imageSize indexPath:indexPath
-                                            completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
-                                                
-                                                // Check that we have matching indexPaths as cells are re-used.
-                                                if ([indexPath isEqual:completedIndexPath]) {
-                                                    [categoryHeaderView configureImage:image];
-                                                }
-                                            }];
-        }
+        [self.photoStore imageForParseFile:[recipe imageFile]
+                                      size:imageSize
+                                 indexPath:indexPath
+                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+            
+                                    // Check that we have matching indexPaths as cells are re-used.
+                                    if ([indexPath isEqual:completedIndexPath]) {
+                                        [categoryHeaderView configureImage:image];
+                                    }
+        }];
+        
     } else {
         [categoryHeaderView configureImage:nil];
     }
@@ -284,20 +283,19 @@
                           indexPath:(NSIndexPath *)indexPath {
     
     if ([recipe hasPhotos]) {
+        
         CGSize imageSize = [recipeCell imageSize];
-        UIImage *image = [self.photoCache cachedImageForParseFile:[recipe imageFile] size:imageSize];
-        if (image) {
-            [recipeCell configureImage:image];
-        } else {
-            [self.photoCache downloadImageForParseFile:[recipe imageFile] size:imageSize indexPath:indexPath
-                                            completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
-                                                
-                                                // Check that we have matching indexPaths as cells are re-used.
-                                                if ([indexPath isEqual:completedIndexPath]) {
-                                                    [recipeCell configureImage:image];
-                                                }
-                                            }];
-        }
+        [self.photoStore imageForParseFile:[recipe imageFile]
+                                      size:imageSize
+                                 indexPath:indexPath
+                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+                                    
+                                    // Check that we have matching indexPaths as cells are re-used.
+                                    if ([indexPath isEqual:completedIndexPath]) {
+                                        [recipeCell configureImage:image];
+                                    }
+                                }];
+
     } else {
         [recipeCell configureImage:nil];
     }

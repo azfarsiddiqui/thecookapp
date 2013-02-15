@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "PhotoCache.h"
+#import "ParsePhotoStore.h"
 #import "UIImage+ProportionalFill.h"
 
-@interface PhotoCache ()
+@interface ParsePhotoStore ()
 
 // A cache of URL+Size => UIImage
 @property (nonatomic, strong) NSMutableDictionary *cache;
@@ -21,7 +21,7 @@
 
 @end
 
-@implementation PhotoCache
+@implementation ParsePhotoStore
 
 - (id)init {
     if (self = [super init]) {
@@ -33,6 +33,25 @@
 
 - (UIImage *)cachedImageForParseFile:(PFFile *)parseFile size:(CGSize)size {
     return [self.cache objectForKey:[self cacheKeyForParseFile:parseFile size:size]];
+}
+
+- (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size completion:(void (^)(UIImage *image))completion {
+    UIImage *image = [self cachedImageForParseFile:parseFile size:size];
+    if (image) {
+        completion(image);
+    } else {
+        [self downloadImageForParseFile:parseFile size:size completion:^(UIImage *image) {
+            completion(image);
+        }];
+    }
+}
+
+- (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size indexPath:(NSIndexPath *)indexPath
+               completion:(void (^)(NSIndexPath *indexPath, UIImage *image))completion {
+    
+    [self imageForParseFile:parseFile size:size completion:^(UIImage *image) {
+        completion(indexPath, image);
+    }];
 }
 
 - (void)downloadImageForParseFile:(PFFile *)parseFile size:(CGSize)size indexPath:(NSIndexPath *)indexPath
