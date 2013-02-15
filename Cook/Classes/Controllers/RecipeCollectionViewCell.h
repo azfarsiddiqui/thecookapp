@@ -14,9 +14,8 @@
 
 @property (nonatomic, strong) CKRecipe *recipe;
 
+- (CGSize)imageSize;
 - (void)configureRecipe:(CKRecipe *)recipe;
 - (void)configureImage:(UIImage *)image;
-- (void)updateImage;
-- (CGSize)imageSize;
 
 @end

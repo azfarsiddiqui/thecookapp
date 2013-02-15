@@ -63,35 +63,17 @@
 
 - (void)configureImage:(UIImage *)image {
     self.imageView.image = image;
-}
-
-- (void)configureImageForRecipe:(CKRecipe *)recipe {
-//    DLog("Configure category header with image from recipe [%@]", recipe.name);
-//    self.imageView.image = nil;
-//    
-//    if (recipe.recipeImage) {
-//        self.imageView.hidden = NO;
-//        self.imageView.file = [recipe.recipeImage imageFile];
-//        [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
-//           if (!error) {
-//               DLog(@"Loaded image for recipe [%@]", recipe.name);
-//               
-//               dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//               dispatch_async(queue, ^{
-//                   UIImage *imageToFit = [image imageCroppedToFitSize:self.imageView.bounds.size];
-//                   dispatch_async(dispatch_get_main_queue(), ^{
-//                       self.imageView.image = imageToFit;
-//                   });
-//               });
-//
-////               self.imageView.image = image;
-//           } else {
-//               DLog(@"Error loading image in background: %@", [error description]);
-//           }
-//       }];
-//    } else {
-//        self.imageView.hidden = YES;
-//    }
+    if (image) {
+        self.imageView.alpha = 0.0;
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.imageView.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    }
 }
 
 - (CGSize)imageSize {

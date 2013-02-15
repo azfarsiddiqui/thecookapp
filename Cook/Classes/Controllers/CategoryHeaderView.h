@@ -16,7 +16,6 @@
 
 - (void)configureCategoryName:(NSString *)categoryName;
 - (void)configureImage:(UIImage *)image;
-- (void)configureImageForRecipe:(CKRecipe *)recipe;
 - (CGSize)imageSize;
 
 @end

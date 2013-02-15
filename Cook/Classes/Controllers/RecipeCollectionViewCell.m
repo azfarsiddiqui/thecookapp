@@ -60,37 +60,6 @@
     return self.imageView.frame.size;
 }
 
-- (void)updateImage {
-    DLog();
-    
-    if ([self.recipe hasPhotos]) {
-        
-        self.imageView.hidden = NO;
-        self.imageView.file = [self.recipe imageFile];
-        [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
-            if (!error) {
-                
-                dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-                dispatch_async(queue, ^{
-                    UIImage *imageToFit = [image imageCroppedToFitSize:self.imageView.bounds.size];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.imageView.image = imageToFit;
-                    });
-                    
-                });
-                
-//                self.imageView.image = image;
-            } else {
-                DLog(@"Error loading image in background: %@", [error description]);
-            }
-        }];
-        
-    } else {
-        self.imageView.image = nil;
-        self.imageView.hidden = YES;
-    }
-}
-
 #pragma mark - Private methods
 
 - (void)updateTitle {

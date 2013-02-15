@@ -231,18 +231,6 @@
     
 }
 
-- (void)updateCellImageForRecipe:(CKRecipe *)recipe {
-    
-    // Reload cell images.
-    NSArray *visibleCells = [self.collectionView visibleCells];
-    for (RecipeCollectionViewCell *cell in visibleCells) {
-        if (cell.recipe == recipe) {
-            [cell updateImage];
-            break;
-        }
-    }
-}
-
 - (void)closeTapped:(id)sender {
     [self.delegate bookNavigationControllerCloseRequested];
 }
