@@ -16,6 +16,7 @@
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
+#import "PhotoCache.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
 
@@ -26,6 +27,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *categoryNames;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
+@property (nonatomic, strong) PhotoCache *photoCache;
 
 @end
 
@@ -38,6 +40,7 @@
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
         self.delegate = delegate;
         self.book = book;
+        self.photoCache = [[PhotoCache alloc] init];
     }
     return self;
 }
@@ -48,6 +51,12 @@
     [self initNavButtons];
     [self initCollectionView];
     [self loadData];
+}
+
+- (void)didReceiveMemoryWarning {
+    
+    // TODO Clear photo cache?
+    
 }
 
 #pragma mark - BookNavigationLayoutDataSource methods
@@ -66,8 +75,20 @@
     DLog();
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
+    forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    // Clears the image on disappear.
+    RecipeCollectionViewCell *recipeCell = (RecipeCollectionViewCell *)cell;
+    [recipeCell configureImage:nil];
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
       forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
+    
+    // Clears the image on disappear.
+    CategoryHeaderView *recipeCell = (CategoryHeaderView *)view;
+    [recipeCell configureImage:nil];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -92,7 +113,9 @@
     
     // Populate highlighted recipe
     CKRecipe *highlightRecipe = [self highlightRecipeForCategory:categoryName];
-    [self configureImageForHeaderView:categoryHeaderView recipe:highlightRecipe];
+    
+    // Configure image.
+    [self configureImageForHeaderView:categoryHeaderView recipe:highlightRecipe indexPath:indexPath];
     
     return categoryHeaderView;
 }
@@ -108,6 +131,9 @@
     CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
     [cell configureRecipe:recipe];
     
+    // Configure image.
+    [self configureImageForRecipeCell:cell recipe:recipe indexPath:indexPath];
+
     return cell;
 }
 
@@ -231,9 +257,49 @@
     [self presentViewController:newRecipeViewVC animated:YES completion:nil];
 }
 
-- (void)configureImageForHeaderView:(CategoryHeaderView *)categoryHeaderView recipe:(CKRecipe *)recipe {
-    if (categoryHeaderView) {
-        [categoryHeaderView configureImageForRecipe:recipe];
+- (void)configureImageForHeaderView:(CategoryHeaderView *)categoryHeaderView recipe:(CKRecipe *)recipe
+                          indexPath:(NSIndexPath *)indexPath {
+    
+    if ([recipe hasPhotos]) {
+        CGSize imageSize = [categoryHeaderView imageSize];
+        UIImage *image = [self.photoCache cachedImageForParseFile:[recipe imageFile] size:imageSize];
+        if (image) {
+            [categoryHeaderView configureImage:image];
+        } else {
+            [self.photoCache downloadImageForParseFile:[recipe imageFile] size:imageSize indexPath:indexPath
+                                            completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+                                                
+                                                // Check that we have matching indexPaths as cells are re-used.
+                                                if ([indexPath isEqual:completedIndexPath]) {
+                                                    [categoryHeaderView configureImage:image];
+                                                }
+                                            }];
+        }
+    } else {
+        [categoryHeaderView configureImage:nil];
+    }
+}
+
+- (void)configureImageForRecipeCell:(RecipeCollectionViewCell *)recipeCell recipe:(CKRecipe *)recipe
+                          indexPath:(NSIndexPath *)indexPath {
+    
+    if ([recipe hasPhotos]) {
+        CGSize imageSize = [recipeCell imageSize];
+        UIImage *image = [self.photoCache cachedImageForParseFile:[recipe imageFile] size:imageSize];
+        if (image) {
+            [recipeCell configureImage:image];
+        } else {
+            [self.photoCache downloadImageForParseFile:[recipe imageFile] size:imageSize indexPath:indexPath
+                                            completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+                                                
+                                                // Check that we have matching indexPaths as cells are re-used.
+                                                if ([indexPath isEqual:completedIndexPath]) {
+                                                    [recipeCell configureImage:image];
+                                                }
+                                            }];
+        }
+    } else {
+        [recipeCell configureImage:nil];
     }
 }
 

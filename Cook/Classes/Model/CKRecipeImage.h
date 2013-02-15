@@ -11,9 +11,10 @@
 
 @interface CKRecipeImage : CKModel
 
-+(CKRecipeImage *) recipeImageForParseRecipeImage:(PFObject *)parseRecipeImage;
-+(CKRecipeImage*) recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName;
++ (CKRecipeImage *)recipeImageForParseRecipeImage:(PFObject *)parseRecipeImage;
++ (CKRecipeImage*)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName;
 
--(PFFile *)imageFile;
+- (PFFile *)imageFile;
+
 
 @end
