@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) PFImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIView *actionsBar;
 
 @end
 
@@ -24,6 +25,7 @@
 #define kImageHeight        140.0
 #define kTitleOffsetNoImage 70.0
 #define kImageTitleGap      10.0
+#define kActionsBarHeight   44.0
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -42,6 +44,14 @@
         titleLabel.frame = CGRectMake(0.0, imageView.frame.origin.y + imageView.frame.size.height + kTitleOffsetNoImage, 0.0, 0.0);
         [self.contentView addSubview:titleLabel];
         self.titleLabel = titleLabel;
+        
+        UIView *actionsBar = [[UIView alloc] initWithFrame:CGRectMake(0.0,
+                                                                      self.contentView.bounds.size.height - kActionsBarHeight,
+                                                                      self.contentView.bounds.size.width,
+                                                                      kActionsBarHeight)];
+        actionsBar.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+        [self.contentView addSubview:actionsBar];
+        self.actionsBar = actionsBar;
         
     }
     return self;
