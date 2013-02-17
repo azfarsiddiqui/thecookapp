@@ -87,6 +87,11 @@
     return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:18];
 }
 
+#pragma mark - Ingredients
++(UIFont *)ingredientAccessoryViewButtonTextFont
+{
+   return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:24];
+}
 #pragma mark - Book Cover
 + (UIFont *)bookCoverEditableAuthorTextFont
 {

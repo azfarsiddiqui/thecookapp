@@ -13,6 +13,12 @@
 
 @implementation ViewHelper
 
++ (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image target:(id)target selector:(SEL)selector {
+    UIButton *button = [self buttonWithImage:image target:target selector:selector];
+    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button setTitle:title forState:UIControlStateNormal];
+    return button;
+}
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setBackgroundImage:image forState:UIControlStateNormal];

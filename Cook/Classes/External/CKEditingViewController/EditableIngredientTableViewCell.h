@@ -13,6 +13,7 @@
 -(NSInteger)characterLimitForCurrentEditableTextField;
 -(UITextField*) currentEditableTextField;
 -(void) updateCharacterLimit:(NSInteger)textFieldLength;
+-(BOOL) requestedUpdateForCurrentEditableTextField:(NSString*)newTextFieldValue;
 @end
 
 @interface EditableIngredientTableViewCell : UITableViewCell
