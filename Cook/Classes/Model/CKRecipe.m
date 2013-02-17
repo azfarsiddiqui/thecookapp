@@ -24,8 +24,10 @@
 @synthesize category=_category;
 
 #pragma mark - creation
+
 +(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
+    
     NSArray *ingredients = [parseRecipe objectForKey:kRecipeAttrIngredients];
     if (ingredients && [ingredients count] > 0) {
         NSMutableArray *ingredientsArray = [NSMutableArray arrayWithCapacity:[ingredients count]];
@@ -48,8 +50,12 @@
         if (numServes) {
             recipe.numServes = [numServes intValue];
         }
-        
-        
+    }
+    
+    // At the moment, only support one image even though database supports multiple.
+    NSArray *photos = [parseRecipe objectForKey:kRecipeAttrRecipePhotos];
+    if ([photos count] > 0) {
+        recipe.recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[photos objectAtIndex:0]];
     }
     
     recipe.user = user;
@@ -90,9 +96,11 @@
                     if (error) {
                         failure(error);
                     } else {
+                        
+                        // Add as an array to support multiple photos.
+                        [self.parseObject addObject:self.recipeImage.parseObject forKey:kRecipeAttrRecipePhotos];
+                        
                         // Save the image relation to recipe.
-                        PFRelation *relation = [parseRecipe relationforKey:kRecipeAttrRecipeImages];
-                        [relation addObject:self.recipeImage.parseObject];
                         [self saveInBackground:^{
                             success();
                         } failure:^(NSError *error) {
@@ -150,6 +158,10 @@
 -(PFFile*) imageFile
 {
     return [self.recipeImage imageFile];
+}
+
+- (BOOL)hasPhotos {
+    return ([self imageFile] != nil);
 }
 
 -(void)setImage:(UIImage *)image

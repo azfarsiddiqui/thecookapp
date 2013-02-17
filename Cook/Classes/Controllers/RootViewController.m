@@ -17,7 +17,7 @@
 #import "SettingsViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    BookViewControllerDelegate, UIGestureRecognizerDelegate>
+    BookViewControllerDelegate, UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -107,11 +107,11 @@
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
     if (!open) {
-        [self.bookViewController.view removeFromSuperview];
-        self.bookViewController = nil;
+//        [self.bookViewController.view removeFromSuperview];
+//        self.bookViewController = nil;
         
-//        [self.bookNavigationViewController.view removeFromSuperview];
-//        self.bookNavigationViewController = nil;
+        [self.bookNavigationViewController.view removeFromSuperview];
+        self.bookNavigationViewController = nil;
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -122,15 +122,16 @@
     if (open) {
         
         // Add the book view.
-        BookViewController *bookViewController = [[BookViewController alloc] initWithBook:self.selectedBook
-                                                                                 delegate:self];
-        [self.view addSubview:bookViewController.view];
-        self.bookViewController = bookViewController;
+//        BookViewController *bookViewController = [[BookViewController alloc] initWithBook:self.selectedBook
+//                                                                                 delegate:self];
+//        [self.view addSubview:bookViewController.view];
+//        self.bookViewController = bookViewController;
         
-//        BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook];
-//        bookNavigationViewController.view.frame = self.view.bounds;
-//        [self.view addSubview:bookNavigationViewController.view];
-//        self.bookNavigationViewController = bookNavigationViewController;
+        BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
+                                                                                                               delegate:self];
+        bookNavigationViewController.view.frame = self.view.bounds;
+        [self.view addSubview:bookNavigationViewController.view];
+        self.bookNavigationViewController = bookNavigationViewController;
         
     } else {
         
@@ -148,6 +149,12 @@
 #pragma mark - BookViewControllerDelegate methods
 
 - (void)bookViewControllerCloseRequested {
+    [self.bookCoverViewController openBook:NO];
+}
+
+#pragma mark - BookNavigationViewControllerDelegate methods
+
+- (void)bookNavigationControllerCloseRequested {
     [self.bookCoverViewController openBook:NO];
 }
 

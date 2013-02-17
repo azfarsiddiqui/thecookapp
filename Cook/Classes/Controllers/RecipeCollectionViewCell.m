@@ -16,16 +16,22 @@
 
 @property (nonatomic, strong) PFImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIView *actionsBar;
 
 @end
 
 @implementation RecipeCollectionViewCell
 
+#define kImageHeight        140.0
+#define kTitleOffsetNoImage 70.0
+#define kImageTitleGap      10.0
+#define kActionsBarHeight   44.0
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
         PFImageView *imageView = [[PFImageView alloc] initWithImage:nil];
-        imageView.frame = CGRectMake(0.0, 0.0, self.contentView.bounds.size.width, 200.0);
+        imageView.frame = CGRectMake(0.0, 0.0, self.contentView.bounds.size.width, kImageHeight);
         [self.contentView addSubview:imageView];
         self.imageView = imageView;
         
@@ -35,8 +41,17 @@
         titleLabel.textColor = [Theme recipeGridTitleColour];
         titleLabel.numberOfLines = 2;
         titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        titleLabel.frame = CGRectMake(0.0, imageView.frame.origin.y + imageView.frame.size.height + kTitleOffsetNoImage, 0.0, 0.0);
         [self.contentView addSubview:titleLabel];
         self.titleLabel = titleLabel;
+        
+        UIView *actionsBar = [[UIView alloc] initWithFrame:CGRectMake(0.0,
+                                                                      self.contentView.bounds.size.height - kActionsBarHeight,
+                                                                      self.contentView.bounds.size.width,
+                                                                      kActionsBarHeight)];
+        actionsBar.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+        [self.contentView addSubview:actionsBar];
+        self.actionsBar = actionsBar;
         
     }
     return self;
@@ -45,31 +60,30 @@
 - (void)configureRecipe:(CKRecipe *)recipe {
     self.recipe = recipe;
     [self updateTitle];
-    [self updateImage];
 }
 
-- (void)updateImage {
-    DLog();
-    if ([self.recipe imageFile]) {
-//        self.imageView.file = [self.recipe imageFile];
-//        [self.imageView loadInBackground:^(UIImage *image, NSError *error) {
-//            if (!error) {
-//                UIImage *imageToFit = [image imageCroppedToFitSize:self.imageView.bounds.size];
-//                self.imageView.image = imageToFit;
-//            } else {
-//                DLog(@"Error loading image in background: %@", [error description]);
-//            }
-//        }];
-    }
+- (void)configureImage:(UIImage *)image {
+    self.imageView.image = image;
+}
+
+- (CGSize)imageSize {
+    return self.imageView.frame.size;
 }
 
 #pragma mark - Private methods
 
 - (void)updateTitle {
     NSString *title = [self.recipe.name uppercaseString];
+    CGRect frame = self.titleLabel.frame;
     CGSize size = [title sizeWithFont:self.titleLabel.font constrainedToSize:self.contentView.bounds.size
                         lineBreakMode:NSLineBreakByWordWrapping];
-    self.titleLabel.frame = CGRectIntegral(CGRectMake(0.0, 0.0, size.width, size.height));
+    if ([self.recipe hasPhotos]) {
+        frame.origin = CGPointMake(frame.origin.x, self.imageView.frame.origin.y + self.imageView.frame.size.height + kImageTitleGap);
+    } else {
+        frame.origin = CGPointMake(frame.origin.x, kTitleOffsetNoImage);
+    }
+    frame.size = CGSizeMake(size.width, size.height);
+    self.titleLabel.frame = frame;
     self.titleLabel.text = title;
 }
 

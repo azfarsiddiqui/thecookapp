@@ -267,6 +267,9 @@
 		76CED55816705A040026E794 /* cook_dash_library_banner_featured@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76CED55416705A040026E794 /* cook_dash_library_banner_featured@2x.png */; };
 		76CED55916705A040026E794 /* cook_dash_library_banner_friends.png in Resources */ = {isa = PBXBuildFile; fileRef = 76CED55516705A040026E794 /* cook_dash_library_banner_friends.png */; };
 		76CED55A16705A040026E794 /* cook_dash_library_banner_friends@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76CED55616705A040026E794 /* cook_dash_library_banner_friends@2x.png */; };
+		76D84CA416CDB44400FB5FB0 /* ParsePhotoStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D84CA316CDB44400FB5FB0 /* ParsePhotoStore.m */; };
+		76D84CAC16CDF3B500FB5FB0 /* RSMaskedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D84CAB16CDF3B500FB5FB0 /* RSMaskedLabel.m */; };
+		76D84CAF16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D84CAE16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m */; };
 		76DA0F491636521C00D9325B /* cook_dash_icons_friends.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F451636521C00D9325B /* cook_dash_icons_friends.png */; };
 		76DA0F4A1636521C00D9325B /* cook_dash_icons_friends@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F461636521C00D9325B /* cook_dash_icons_friends@2x.png */; };
 		76DA0F4B1636521C00D9325B /* cook_dash_icons_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DA0F471636521C00D9325B /* cook_dash_icons_settings.png */; };
@@ -742,6 +745,12 @@
 		76CED55416705A040026E794 /* cook_dash_library_banner_featured@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_banner_featured@2x.png"; sourceTree = "<group>"; };
 		76CED55516705A040026E794 /* cook_dash_library_banner_friends.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_banner_friends.png; sourceTree = "<group>"; };
 		76CED55616705A040026E794 /* cook_dash_library_banner_friends@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_banner_friends@2x.png"; sourceTree = "<group>"; };
+		76D84CA216CDB44400FB5FB0 /* ParsePhotoStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParsePhotoStore.h; sourceTree = "<group>"; };
+		76D84CA316CDB44400FB5FB0 /* ParsePhotoStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParsePhotoStore.m; sourceTree = "<group>"; };
+		76D84CAA16CDF3B500FB5FB0 /* RSMaskedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSMaskedLabel.h; sourceTree = "<group>"; };
+		76D84CAB16CDF3B500FB5FB0 /* RSMaskedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSMaskedLabel.m; sourceTree = "<group>"; };
+		76D84CAD16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CategoryHeaderLabelView.h; path = ../Views/CategoryHeaderLabelView.h; sourceTree = "<group>"; };
+		76D84CAE16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CategoryHeaderLabelView.m; path = ../Views/CategoryHeaderLabelView.m; sourceTree = "<group>"; };
 		76DA0F451636521C00D9325B /* cook_dash_icons_friends.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_friends.png; sourceTree = "<group>"; };
 		76DA0F461636521C00D9325B /* cook_dash_icons_friends@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_friends@2x.png"; sourceTree = "<group>"; };
 		76DA0F471636521C00D9325B /* cook_dash_icons_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_settings.png; sourceTree = "<group>"; };
@@ -1218,6 +1227,8 @@
 				76FA9A3F16267687006EAFBB /* EventHelper.m */,
 				89A906F5166460970056E4CF /* Theme.h */,
 				89A906F8166460DD0056E4CF /* Theme.m */,
+				76D84CA216CDB44400FB5FB0 /* ParsePhotoStore.h */,
+				76D84CA316CDB44400FB5FB0 /* ParsePhotoStore.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1435,6 +1446,15 @@
 				76CED55616705A040026E794 /* cook_dash_library_banner_friends@2x.png */,
 			);
 			path = store;
+			sourceTree = "<group>";
+		};
+		76D84CA916CDF3B400FB5FB0 /* RSMaskedLabel */ = {
+			isa = PBXGroup;
+			children = (
+				76D84CAA16CDF3B500FB5FB0 /* RSMaskedLabel.h */,
+				76D84CAB16CDF3B500FB5FB0 /* RSMaskedLabel.m */,
+			);
+			path = RSMaskedLabel;
 			sourceTree = "<group>";
 		};
 		76ED27321612DC180012E479 = {
@@ -1676,6 +1696,8 @@
 				764E46EE16C865C900DD168F /* RecipeCollectionViewCell.m */,
 				764E46F316C871EB00DD168F /* CategoryHeaderView.h */,
 				764E46F416C871EB00DD168F /* CategoryHeaderView.m */,
+				76D84CAD16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.h */,
+				76D84CAE16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m */,
 				7693D1F716C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.h */,
 				7693D1F816C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m */,
 				76E355C316C9EB1E00C2B639 /* BookNavigationLayout.h */,
@@ -1721,6 +1743,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76D84CA916CDF3B400FB5FB0 /* RSMaskedLabel */,
 				76454E1816783E7A00B480FA /* CKEditingViewController */,
 				76BEE6EB165DEE600065B97B /* CKBookCoverView */,
 				76582AA1165497310007FCE1 /* MPFlipViewController */,
@@ -2378,6 +2401,9 @@
 				7693D1F916C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m in Sources */,
 				76E355C516C9EB1E00C2B639 /* BookNavigationLayout.m in Sources */,
 				8944C1B716CDB3120087EFC9 /* IngredientEditKeyboardAccessoryView.m in Sources */,
+				76D84CA416CDB44400FB5FB0 /* ParsePhotoStore.m in Sources */,
+				76D84CAC16CDF3B500FB5FB0 /* RSMaskedLabel.m in Sources */,
+				76D84CAF16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

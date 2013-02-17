@@ -40,5 +40,7 @@
 
 -(void) setImage:(UIImage *)image;
 -(PFFile*) imageFile;
+- (BOOL)hasPhotos;
 -(BOOL) isUserRecipeAuthor:(CKUser*)user;
+
 @end

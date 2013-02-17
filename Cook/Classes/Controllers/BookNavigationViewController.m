@@ -15,17 +15,19 @@
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
+#import "NewRecipeViewController.h"
+#import "ParsePhotoStore.h"
 
-@interface BookNavigationViewController () <BookNavigationLayoutDataSource>
+@interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
 
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *categoryNames;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
-@property (nonatomic, strong) NSMutableDictionary *categoryRecipesLoadingMonitor;
-@property (nonatomic, strong) NSMutableDictionary *categoryHeaders;
+@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @end
 
@@ -38,6 +40,7 @@
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
         self.delegate = delegate;
         self.book = book;
+        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -48,6 +51,12 @@
     [self initNavButtons];
     [self initCollectionView];
     [self loadData];
+}
+
+- (void)didReceiveMemoryWarning {
+    
+    // TODO Clear photo cache?
+    
 }
 
 #pragma mark - BookNavigationLayoutDataSource methods
@@ -66,14 +75,20 @@
     DLog();
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
+    forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    // Clears the image on disappear.
+    RecipeCollectionViewCell *recipeCell = (RecipeCollectionViewCell *)cell;
+    [recipeCell configureImage:nil];
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
       forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
-    // Remove the reference to the category header once it's scrolled off.
-    if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-        NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
-        [self.categoryHeaders removeObjectForKey:categoryName];
-    }
+    // Clears the image on disappear.
+    CategoryHeaderView *recipeCell = (CategoryHeaderView *)view;
+    [recipeCell configureImage:nil];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -96,17 +111,11 @@
     NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
     [categoryHeaderView configureCategoryName:categoryName];
     
-    // Ensure images for recipes in the category is loaded.
-    [self preloadImagesForCategory:categoryName];
+    // Populate highlighted recipe
+    CKRecipe *highlightRecipe = [self highlightRecipeForCategory:categoryName];
     
-    // Configure the category image from a random recipe that has an image.
-    CKRecipe *randomRecipe = [self highlightRecipeForCategory:categoryName];
-    if (randomRecipe) {
-        [categoryHeaderView configureImageForRecipe:randomRecipe];
-    }
-    
-    // Hang on to the categoryHeaderView.
-    [self.categoryHeaders setObject:categoryHeaderView forKey:categoryName];
+    // Configure image.
+    [self configureImageForHeaderView:categoryHeaderView recipe:highlightRecipe indexPath:indexPath];
     
     return categoryHeaderView;
 }
@@ -117,17 +126,32 @@
                                                                                                            forIndexPath:indexPath];
     NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
     NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+    
+    // Populate recipe.
     CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
-    
-    cell.backgroundColor = [UIColor lightGrayColor];
-    
     [cell configureRecipe:recipe];
+    
+    // Configure image.
+    [self configureImageForRecipeCell:cell recipe:recipe indexPath:indexPath];
+
     return cell;
+}
+
+#pragma mark - NewRecipeViewDelegate methods
+
+- (void)closeRequested {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)recipeCreated {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Private methods
 
 - (void)initNavButtons {
+    
+    // Close button
     UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
                                                  target:self
                                                selector:@selector(closeTapped:)];
@@ -137,6 +161,18 @@
                                    closeButton.frame.size.height);
     [self.view addSubview:closeButton];
     self.closeButton = closeButton;
+    
+    // Add button.
+    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [createButton setTitle:@"Add" forState:UIControlStateNormal];
+    [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [createButton sizeToFit];
+    createButton.frame = CGRectMake(closeButton.frame.origin.x + closeButton.frame.size.width + 10.0,
+                                    closeButton.frame.origin.y,
+                                    createButton.frame.size.width,
+                                    createButton.frame.size.height);
+    [self.view addSubview:createButton];
+    self.createButton = createButton;
 }
 
 - (void)initCollectionView {
@@ -155,8 +191,6 @@
         
         self.categoryRecipes = [NSMutableDictionary dictionary];
         self.categoryNames = [NSMutableArray array];
-        self.categoryRecipesLoadingMonitor = [NSMutableDictionary dictionary];
-        self.categoryHeaders = [NSMutableDictionary dictionary];
         
         for (CKRecipe *recipe in recipes) {
             
@@ -197,42 +231,62 @@
     
 }
 
-- (void)preloadImagesForCategory:(NSString *)categoryName {
-    NSNumber *categoryRecipesLoaded = [self.categoryRecipesLoadingMonitor objectForKey:categoryName];
-    if (!categoryRecipesLoaded) {
-        
-        // Start hydrating recipe images as a group.
-        NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
-        for (CKRecipe *recipe in categoryRecipes) {
-            [CKRecipe fetchImagesForRecipe:recipe
-                                   success:^{
-                                       DLog(@"Hydrated recipe [%@]", recipe.name);
-                                       [self updateCellImageForRecipe:recipe];
-                                   }
-                                   failure:^(NSError *error) {
-                                       DLog(@"Unable to hydrate recipe [%@]", recipe.name);
-                                   }];
-        }
-        
-        // Mark as loaded.
-        [self.categoryRecipesLoadingMonitor setObject:[NSNumber numberWithBool:YES] forKey:categoryName];
-    }
-}
-
-- (void)updateCellImageForRecipe:(CKRecipe *)recipe {
-    
-    // Reload cell images.
-    NSArray *visibleCells = [self.collectionView visibleCells];
-    for (RecipeCollectionViewCell *cell in visibleCells) {
-        if (cell.recipe == recipe) {
-            [cell updateImage];
-            break;
-        }
-    }
-}
-
 - (void)closeTapped:(id)sender {
     [self.delegate bookNavigationControllerCloseRequested];
+}
+
+- (void)createTapped:(id)sender {
+    DLog();
+    
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
+    newRecipeViewVC.recipeViewDelegate = self;
+    newRecipeViewVC.book = self.book;
+    [self presentViewController:newRecipeViewVC animated:YES completion:nil];
+}
+
+- (void)configureImageForHeaderView:(CategoryHeaderView *)categoryHeaderView recipe:(CKRecipe *)recipe
+                          indexPath:(NSIndexPath *)indexPath {
+    
+    if ([recipe hasPhotos]) {
+        
+        CGSize imageSize = [categoryHeaderView imageSize];
+        [self.photoStore imageForParseFile:[recipe imageFile]
+                                      size:imageSize
+                                 indexPath:indexPath
+                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+            
+                                    // Check that we have matching indexPaths as cells are re-used.
+                                    if ([indexPath isEqual:completedIndexPath]) {
+                                        [categoryHeaderView configureImage:image];
+                                    }
+        }];
+        
+    } else {
+        [categoryHeaderView configureImage:nil];
+    }
+}
+
+- (void)configureImageForRecipeCell:(RecipeCollectionViewCell *)recipeCell recipe:(CKRecipe *)recipe
+                          indexPath:(NSIndexPath *)indexPath {
+    
+    if ([recipe hasPhotos]) {
+        
+        CGSize imageSize = [recipeCell imageSize];
+        [self.photoStore imageForParseFile:[recipe imageFile]
+                                      size:imageSize
+                                 indexPath:indexPath
+                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+                                    
+                                    // Check that we have matching indexPaths as cells are re-used.
+                                    if ([indexPath isEqual:completedIndexPath]) {
+                                        [recipeCell configureImage:image];
+                                    }
+                                }];
+
+    } else {
+        [recipeCell configureImage:nil];
+    }
 }
 
 @end

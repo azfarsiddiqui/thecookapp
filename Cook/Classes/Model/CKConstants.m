@@ -61,6 +61,7 @@ NSString *const kRecipeModelForeignKeyName      = @"recipe";
 NSString *const kRecipeAttrDescription          = @"description";
 NSString *const kRecipeAttrCategoryIndex        = @"categoryIndex";
 NSString *const kRecipeAttrRecipeImages         = @"images";
+NSString *const kRecipeAttrRecipePhotos         = @"photos";
 NSString *const kRecipeAttrIngredients          = @"ingredients";
 NSString *const kRecipeAttrRecipeViewImageContentOffset = @"recipeViewImageContentOffset";
 NSString *const kRecipeAttrNumServes            = @"numServes";

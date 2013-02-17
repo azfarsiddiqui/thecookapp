@@ -249,6 +249,7 @@
     [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
     [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
     [query includeKey:kCategoryModelForeignKeyName];
+    [query includeKey:kRecipeAttrRecipePhotos];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipes, NSError *error) {
         if (!error) {
             NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
