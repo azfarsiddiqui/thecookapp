@@ -36,8 +36,9 @@
 
 -(void)configureCellWithText:(NSString *)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate
 {
-    self.measurementTextField.text = [NSString stringWithFormat:@"300 ml"];
-    self.descriptionTextField.text = text;
+    NSArray *textComponents = [text componentsSeparatedByString:@":"];
+    self.measurementTextField.text = [textComponents objectAtIndex:0];
+    self.descriptionTextField.text = [textComponents objectAtIndex:1];
     self.ingredientEditTableViewCellDelegate = editDelegate;
     self.rowIndex = rowIndex;
    [self setAsHighlighted:([rowIndex intValue] == 0)];

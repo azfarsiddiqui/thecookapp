@@ -75,7 +75,7 @@
 -(void)didUpdateIngredientAtRowIndex:(NSNumber *)rowIndex withMeasurement:(NSString *)measurementString description:(NSString *)ingredientDescription
 {
     NSIndexPath * indexPath = [NSIndexPath indexPathForRow:[rowIndex intValue] inSection:0];
-    [self.ingredientEditorDelegate didUpdateIngredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
+    [self.ingredientEditorDelegate didUpdateMeasuremnt:measurementString ingredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
 }
 
 -(void)didSelectTextFieldForEditing:(UITextField *)textField isMeasurementField:(BOOL)isMeasurementField
