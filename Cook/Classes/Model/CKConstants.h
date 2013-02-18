@@ -58,6 +58,7 @@ extern NSString *const kBookAttrDefaultCaptionValue;
 #pragma mark - Recipe class
 extern NSString *const kRecipeModelName;
 extern NSString *const kRecipeModelForeignKeyName;
+extern NSString *const kRecipeAttrStory;
 extern NSString *const kRecipeAttrDescription;
 extern NSString *const kRecipeAttrCategoryIndex;
 extern NSString *const kRecipeAttrRecipeImages; // PFRelation

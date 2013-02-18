@@ -306,6 +306,9 @@
 		76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED278B1612E45B0012E479 /* CKServerManager.m */; };
 		76EDC32416702642008EF2CE /* cook_dash_bg_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EDC32216702642008EF2CE /* cook_dash_bg_settings.png */; };
 		76EDC32516702642008EF2CE /* cook_dash_bg_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EDC32316702642008EF2CE /* cook_dash_bg_settings@2x.png */; };
+		76FA241F16D1D4AC00DDC439 /* GridRecipeStatsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76FA241E16D1D4AC00DDC439 /* GridRecipeStatsView.m */; };
+		76FA242216D1D5CB00DDC439 /* cook_recipe_iconbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA242016D1D5CB00DDC439 /* cook_recipe_iconbar.png */; };
+		76FA242316D1D5CB00DDC439 /* cook_recipe_iconbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA242116D1D5CB00DDC439 /* cook_recipe_iconbar@2x.png */; };
 		76FA9A371626568B006EAFBB /* cook_btn_dark_facebook_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A331626568B006EAFBB /* cook_btn_dark_facebook_icon.png */; };
 		76FA9A381626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A341626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png */; };
 		76FA9A391626568B006EAFBB /* cook_btn_dark_facebook_tick.png in Resources */ = {isa = PBXBuildFile; fileRef = 76FA9A351626568B006EAFBB /* cook_btn_dark_facebook_tick.png */; };
@@ -800,6 +803,10 @@
 		76ED278B1612E45B0012E479 /* CKServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKServerManager.m; sourceTree = "<group>"; };
 		76EDC32216702642008EF2CE /* cook_dash_bg_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cook_dash_bg_settings.png; path = ../dashboard/cook_dash_bg_settings.png; sourceTree = "<group>"; };
 		76EDC32316702642008EF2CE /* cook_dash_bg_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_dash_bg_settings@2x.png"; path = "../dashboard/cook_dash_bg_settings@2x.png"; sourceTree = "<group>"; };
+		76FA241D16D1D4AC00DDC439 /* GridRecipeStatsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridRecipeStatsView.h; sourceTree = "<group>"; };
+		76FA241E16D1D4AC00DDC439 /* GridRecipeStatsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridRecipeStatsView.m; sourceTree = "<group>"; };
+		76FA242016D1D5CB00DDC439 /* cook_recipe_iconbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_recipe_iconbar.png; sourceTree = "<group>"; };
+		76FA242116D1D5CB00DDC439 /* cook_recipe_iconbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_recipe_iconbar@2x.png"; sourceTree = "<group>"; };
 		76FA9A331626568B006EAFBB /* cook_btn_dark_facebook_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btn_dark_facebook_icon.png; sourceTree = "<group>"; };
 		76FA9A341626568B006EAFBB /* cook_btn_dark_facebook_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btn_dark_facebook_icon@2x.png"; sourceTree = "<group>"; };
 		76FA9A351626568B006EAFBB /* cook_btn_dark_facebook_tick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btn_dark_facebook_tick.png; sourceTree = "<group>"; };
@@ -1262,6 +1269,8 @@
 				76552740164B87DA001D4BAA /* cook_book_icon_facebook@2x.png */,
 				76552741164B87DA001D4BAA /* cook_book_icon_twitter.png */,
 				76552742164B87DA001D4BAA /* cook_book_icon_twitter@2x.png */,
+				76FA242016D1D5CB00DDC439 /* cook_recipe_iconbar.png */,
+				76FA242116D1D5CB00DDC439 /* cook_recipe_iconbar@2x.png */,
 			);
 			path = books;
 			sourceTree = "<group>";
@@ -1697,6 +1706,8 @@
 				7693D1F816C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m */,
 				76E355C316C9EB1E00C2B639 /* BookNavigationLayout.h */,
 				76E355C416C9EB1E00C2B639 /* BookNavigationLayout.m */,
+				76FA241D16D1D4AC00DDC439 /* GridRecipeStatsView.h */,
+				76FA241E16D1D4AC00DDC439 /* GridRecipeStatsView.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -2282,6 +2293,8 @@
 				8944C1C216CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png in Resources */,
 				8944C1C316CDB9870087EFC9 /* cook_keyboard_autosuggest_divider.png in Resources */,
 				8944C1C416CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png in Resources */,
+				76FA242216D1D5CB00DDC439 /* cook_recipe_iconbar.png in Resources */,
+				76FA242316D1D5CB00DDC439 /* cook_recipe_iconbar@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2398,6 +2411,7 @@
 				76D84CA416CDB44400FB5FB0 /* ParsePhotoStore.m in Sources */,
 				76D84CAC16CDF3B500FB5FB0 /* RSMaskedLabel.m in Sources */,
 				76D84CAF16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m in Sources */,
+				76FA241F16D1D4AC00DDC439 /* GridRecipeStatsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

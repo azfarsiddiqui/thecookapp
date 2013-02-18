@@ -26,6 +26,10 @@
 #pragma mark - Grid recipe cells
 + (UIFont *)recipeGridTitleFont;
 + (UIColor *)recipeGridTitleColour;
++ (UIFont *)recipeGridIngredientsFont;
++ (UIColor *)recipeGridIngredientsColour;
++ (UIFont *)recipeGridStoryFont;
++ (UIColor *)recipeGridStoryColour;
 
 #pragma mark - Recipe View
 +(UIColor *) ingredientsListColor;
