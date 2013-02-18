@@ -82,9 +82,11 @@
 
 #pragma mark - IngredientEditorDelegate
 
--(void)didUpdateIngredient:(NSString *)ingredientDescription atRowIndex:(NSInteger)rowIndex
+-(void)didUpdateMeasuremnt:(NSString *)measurementText ingredient:(NSString *)ingredientDescription atRowIndex:(NSInteger)rowIndex
 {
-    [self.ingredientList replaceObjectAtIndex:rowIndex withObject:ingredientDescription];
+    NSString *joinedIngredient = [NSString stringWithFormat:@"%@:%@", measurementText, ingredientDescription];
+    [self.ingredientList replaceObjectAtIndex:rowIndex withObject:joinedIngredient];
+
     UITableView *tableView = (UITableView *)self.targetEditingView;
     [tableView reloadData];
     

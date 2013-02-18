@@ -29,7 +29,7 @@
 -(void)awakeFromNib
 {
     [super awakeFromNib];
-    self.ingredientListData = @[@"list entry one",@"list entry two",@"list entry three",@"list entry four",@"list entry five",@"list entry six",@"list entry seven"];
+    self.ingredientListData = @[@"10 g:salt",@"10 g:sugar",@"200ml:water",@"2 cups:brandy",@"3 spoons:pepper",@"1 kg: flank steak",@"3 cups: lettuce"];
     self.testTextViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
 }
 

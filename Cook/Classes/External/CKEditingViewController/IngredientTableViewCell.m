@@ -38,8 +38,9 @@
 
 -(void)configureCellWithText:(NSString *)text forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.detailTextLabel.text = text;
-    self.textLabel.text = [NSString stringWithFormat:@"300 ml"];
+    NSArray *textComponents = [text componentsSeparatedByString:@":"];
+    self.textLabel.text = [textComponents objectAtIndex:0];
+    self.detailTextLabel.text = [textComponents objectAtIndex:1];
 }
 
 #pragma mark - Private Methods

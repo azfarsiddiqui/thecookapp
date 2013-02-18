@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol IngredientEditorDelegate
--(void)didUpdateIngredient:(NSString*)ingredientDescription atRowIndex:(NSInteger)rowIndex;
+-(void)didUpdateMeasuremnt:(NSString*)measurementText ingredient:(NSString*)ingredientDescription atRowIndex:(NSInteger)rowIndex;
 -(void)didRequestIngredientEditorViewDismissal;
 @end
 

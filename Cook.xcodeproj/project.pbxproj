@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		761A966A164C936E008FA0C4 /* UIFont+Cook.m in Sources */ = {isa = PBXBuildFile; fileRef = 761A9669164C936E008FA0C4 /* UIFont+Cook.m */; };
 		761A966E164C967E008FA0C4 /* cook_dash_library.png in Resources */ = {isa = PBXBuildFile; fileRef = 761A966C164C967E008FA0C4 /* cook_dash_library.png */; };
 		761A966F164C967E008FA0C4 /* cook_dash_library@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */; };
 		761E87691671FB4100206792 /* cook_library_signin_banner_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 761E87611671FB4100206792 /* cook_library_signin_banner_left.png */; };
@@ -427,8 +426,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		761A9668164C936E008FA0C4 /* UIFont+Cook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Cook.h"; sourceTree = "<group>"; };
-		761A9669164C936E008FA0C4 /* UIFont+Cook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Cook.m"; sourceTree = "<group>"; };
 		761A966C164C967E008FA0C4 /* cook_dash_library.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library.png; sourceTree = "<group>"; };
 		761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library@2x.png"; sourceTree = "<group>"; };
 		761E87611671FB4100206792 /* cook_library_signin_banner_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_signin_banner_left.png; sourceTree = "<group>"; };
@@ -1165,8 +1162,6 @@
 				7652046D161AD11E00EE253C /* NSString+Utilities.m */,
 				766BFC201630DE990083EB0E /* UIColor+Expanded.h */,
 				766BFC211630DE990083EB0E /* UIColor+Expanded.m */,
-				761A9668164C936E008FA0C4 /* UIFont+Cook.h */,
-				761A9669164C936E008FA0C4 /* UIFont+Cook.m */,
 			);
 			name = Categories;
 			path = Cook/Classes/Categories;
@@ -2359,7 +2354,6 @@
 				76B9E01E164C85D100345B8D /* ContentsCollectionViewController.m in Sources */,
 				76B9E01F164C85D100345B8D /* ContentsPageViewController.m in Sources */,
 				76B9E020164C85D100345B8D /* PageViewController.m in Sources */,
-				761A966A164C936E008FA0C4 /* UIFont+Cook.m in Sources */,
 				76622D5C1650C6AB005F4459 /* CategoryPageViewController.m in Sources */,
 				76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */,
 				76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */,
