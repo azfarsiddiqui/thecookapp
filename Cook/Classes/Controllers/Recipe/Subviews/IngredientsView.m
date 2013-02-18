@@ -48,7 +48,7 @@
 {
     self.ingredientsLabel.font = [Theme defaultLabelFont];
     self.ingredientsLabel.backgroundColor = [UIColor clearColor];
-    self.ingredientsLabel.textColor = [Theme ingredientsLabelColor];
+    self.ingredientsLabel.textColor = [UIColor blackColor];
 }
 
 -(UILabel *)ingredientsLabel

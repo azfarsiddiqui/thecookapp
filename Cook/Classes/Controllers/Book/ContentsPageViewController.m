@@ -226,8 +226,6 @@
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
     TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
     [self presentViewController:testVC animated:YES completion:nil];
-    
-    
 }
 
 #pragma mark - UIAlertViewDelegate

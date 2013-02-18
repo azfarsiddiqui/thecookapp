@@ -31,7 +31,7 @@
 -(void)styleViews
 {
     self.cookingTimeLabel.font = [Theme defaultLabelFont];
-    self.cookingTimeLabel.textColor = [Theme directionsLabelColor];
+    self.cookingTimeLabel.textColor = [UIColor blackColor];
     self.cookingTimeLabel.backgroundColor = [UIColor clearColor];
     
 }

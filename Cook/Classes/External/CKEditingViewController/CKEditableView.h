@@ -18,6 +18,7 @@
 @property (nonatomic, assign) UIEdgeInsets contentInsets;
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, assign) id<CKEditableViewDelegate> delegate;
 
 - (id) initWithDelegate:(id<CKEditableViewDelegate>)delegate;
 - (void) enableEditMode:(BOOL)enable;

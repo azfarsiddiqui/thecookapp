@@ -45,7 +45,7 @@
 -(void)styleViews
 {
     self.directionsLabel.font = [Theme defaultLabelFont];
-    self.directionsLabel.textColor = [Theme directionsLabelColor];
+    self.directionsLabel.textColor = [UIColor blackColor];
     self.directionsTextView.font = [Theme defaultLabelFont];
     self.directionsLabel.backgroundColor = [UIColor clearColor];
 }

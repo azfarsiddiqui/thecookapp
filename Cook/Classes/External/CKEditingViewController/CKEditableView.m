@@ -12,7 +12,6 @@
 @interface CKEditableView ()
 
 @property (nonatomic, assign) BOOL editable;
-@property (nonatomic, assign) id<CKEditableViewDelegate> delegate;
 @property (nonatomic, strong) UIImageView *editBackgroundView;
 @property (nonatomic, strong) UIImage *editBackgroundImage;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
@@ -23,19 +22,29 @@
 
 #define kEditButtonOffset   CGSizeMake(-24.0, -3.0)
 
+-(void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self config];
+}
+
 - (id)initWithDelegate:(id<CKEditableViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
-        self.backgroundColor = [UIColor clearColor];
-        self.autoresizingMask = UIViewAutoresizingNone;
-        self.clipsToBounds = YES;
-        
-        self.editBackgroundImage = [[UIImage imageNamed:@"cook_customise_textbox.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:4];
-        UIImageView *editBackgroundView = [[UIImageView alloc] initWithImage:self.editBackgroundImage];
-        self.editBackgroundView = editBackgroundView;
-        
+        [self config];
     }
     return self;
+}
+
+-(void)config
+{
+    self.backgroundColor = [UIColor clearColor];
+    self.autoresizingMask = UIViewAutoresizingNone;
+    self.clipsToBounds = YES;
+    
+    self.editBackgroundImage = [[UIImage imageNamed:@"cook_customise_textbox.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:4];
+    UIImageView *editBackgroundView = [[UIImageView alloc] initWithImage:self.editBackgroundImage];
+    self.editBackgroundView = editBackgroundView;
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -71,8 +80,8 @@
     [self.editBackgroundView addSubview:contentView];
     
     // Calculate the overall frame which takes into account the editButton.
-    self.frame = CGRectMake(0.0,
-                            0.0,
+    self.frame = CGRectMake(0.0f,
+                            0.0f,
                             self.editBackgroundView.frame.size.width + self.editButton.frame.size.width + kEditButtonOffset.width,
                             self.editBackgroundView.frame.size.height - kEditButtonOffset.height);
     

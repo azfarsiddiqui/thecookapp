@@ -28,7 +28,7 @@
 -(void)styleViews
 {
     self.numServesLabel.font = [Theme defaultLabelFont];
-    self.numServesLabel.textColor = [Theme directionsLabelColor];
+    self.numServesLabel.textColor = [UIColor blackColor];
     self.numServesLabel.backgroundColor = [UIColor clearColor];
 
 }

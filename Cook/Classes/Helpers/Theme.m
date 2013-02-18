@@ -58,16 +58,15 @@
 }
 
 #pragma mark - Recipe View
-+(UIColor *)ingredientsLabelColor
++(UIColor *)ingredientsListColor
 {
-    return [UIColor colorWithHexString:@"606060"];
+    return [UIColor colorWithHexString:@"3a3a3a"];
     
 }
 
-+(UIColor *)directionsLabelColor
++(UIFont *)ingredientsListFont
 {
-    return [UIColor colorWithHexString:@"505050"];
-    
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
 }
 
 +(UIColor*) pageNumberPrefixLabelColor

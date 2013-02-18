@@ -28,8 +28,8 @@
 + (UIColor *)recipeGridTitleColour;
 
 #pragma mark - Recipe View
-+(UIColor*) ingredientsLabelColor;
-+(UIColor*) directionsLabelColor;
++(UIColor *) ingredientsListColor;
++(UIFont *) ingredientsListFont;
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
@@ -39,6 +39,7 @@
 
 #pragma mark - Ingredients
 + (UIFont *)ingredientAccessoryViewButtonTextFont;
+
 #pragma mark - Book Cover
 + (UIFont *)bookCoverEditableAuthorTextFont;
 + (UIFont *)bookCoverEditableCaptionTextFont;
@@ -54,6 +55,7 @@
 #pragma mark - General reusable editable controls
 + (UIFont *)textEditableTextFont;
 + (UIFont *)textViewTitleFont;
+
 
 @end
 
