@@ -8,7 +8,6 @@
 
 #import "ContentsPageViewController.h"
 #import "ContentsCollectionViewController.h"
-#import "UIFont+Cook.h"
 #import "MRCEnumerable.h"
 #import "CKRecipe.h"
 #import "RecipeLike.h"
