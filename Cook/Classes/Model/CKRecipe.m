@@ -228,6 +228,14 @@
     [self.parseObject setObject:description forKey:kRecipeAttrDescription];
 }
 
+- (NSString *)story {
+    return [self.parseObject objectForKey:kRecipeAttrStory];
+}
+
+-(void)setStory:(NSString *)story {
+    [self.parseObject setObject:story forKey:kRecipeAttrStory];
+}
+
 -(NSInteger)categoryIndex
 {
     return [[self.parseObject objectForKey:kRecipeAttrCategoryIndex] intValue];

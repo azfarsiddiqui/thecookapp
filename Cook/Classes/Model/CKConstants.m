@@ -58,6 +58,7 @@ NSString *const kBookAttrDefaultCaptionValue    = @"Tell us more about your book
 #pragma mark - Recipe class
 NSString *const kRecipeModelName                = @"Recipe";
 NSString *const kRecipeModelForeignKeyName      = @"recipe";
+NSString *const kRecipeAttrStory                = @"story";
 NSString *const kRecipeAttrDescription          = @"description";
 NSString *const kRecipeAttrCategoryIndex        = @"categoryIndex";
 NSString *const kRecipeAttrRecipeImages         = @"images";

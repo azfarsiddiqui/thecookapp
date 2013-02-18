@@ -50,11 +50,27 @@
 #pragma mark - Grid recipe cells
 
 + (UIFont *)recipeGridTitleFont {
-    return [self defaultBoldFontWithSize:30.0];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0];
 }
 
 + (UIColor *)recipeGridTitleColour {
-    return [UIColor colorWithHexString:@"505050"];
+    return [UIColor colorWithHexString:@"3A3A3A"];
+}
+
++ (UIFont *)recipeGridIngredientsFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
+}
+
++ (UIColor *)recipeGridIngredientsColour {
+    return [UIColor colorWithHexString:@"3A3A3A"];
+}
+
++ (UIFont *)recipeGridStoryFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
+}
+
++ (UIColor *)recipeGridStoryColour {
+    return [UIColor colorWithHexString:@"4E4E4E"];
 }
 
 #pragma mark - Recipe View
