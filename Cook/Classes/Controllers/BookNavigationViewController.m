@@ -16,6 +16,7 @@
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
+#import "TestViewController.h"
 #import "ParsePhotoStore.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
@@ -238,11 +239,17 @@
 - (void)createTapped:(id)sender {
     DLog();
     
+//    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+//    NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
+//    newRecipeViewVC.recipeViewDelegate = self;
+//    newRecipeViewVC.book = self.book;
+//    [self presentViewController:newRecipeViewVC animated:YES completion:nil];
+
+    //use for testing launch concepts
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-    NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
-    newRecipeViewVC.recipeViewDelegate = self;
-    newRecipeViewVC.book = self.book;
-    [self presentViewController:newRecipeViewVC animated:YES completion:nil];
+    TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
+    [self presentViewController:testVC animated:YES completion:nil];
+
 }
 
 - (void)configureImageForHeaderView:(CategoryHeaderView *)categoryHeaderView recipe:(CKRecipe *)recipe
