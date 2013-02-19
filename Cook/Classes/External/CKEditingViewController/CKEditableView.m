@@ -80,8 +80,8 @@
     [self.editBackgroundView addSubview:contentView];
     
     // Calculate the overall frame which takes into account the editButton.
-    self.frame = CGRectMake(0.0f,
-                            0.0f,
+    self.frame = CGRectMake(self.frame.origin.x,
+                            self.frame.origin.y,
                             self.editBackgroundView.frame.size.width + self.editButton.frame.size.width + kEditButtonOffset.width,
                             self.editBackgroundView.frame.size.height - kEditButtonOffset.height);
     

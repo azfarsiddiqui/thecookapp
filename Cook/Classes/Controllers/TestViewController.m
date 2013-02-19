@@ -75,8 +75,8 @@
 {
     DLog();
     [self setLabelValue:@"initial value"];
-    [self setTextViewValue:self.testTextViewData];
-    [self setListViewValue:[self.ingredientListData componentsJoinedByString:@"\n"]];
+    [self setMethodValue:self.testTextViewData];
+    [self setIngredientsValue:[self.ingredientListData componentsJoinedByString:@"\n"]];
 }
 
 - (UIView *)rootView {
@@ -148,10 +148,10 @@
         [self setLabelValue:value];
         [self.nameEditableView enableEditMode:YES];
     } else if (editingView == self.methodViewEditableView) {
-        [self setTextViewValue:value];
+        [self setMethodValue:value];
         [self.methodViewEditableView enableEditMode:YES];
     } else if (editingView == self.ingredientsViewEditableView){
-        [self setListViewValue:value];
+        [self setIngredientsValue:value];
         [self.ingredientsViewEditableView enableEditMode:YES];
     }
 }
@@ -183,40 +183,36 @@
     self.nameEditableView.contentView = nameLabel;
 }
 
-- (void)setListViewValue:(NSString *)listViewValue {
+- (void)setIngredientsValue:(NSString *)ingredientsValue {
     UIEdgeInsets editableInsets = UIEdgeInsetsMake(2.0, 10.0, 2.0f, 25.0f);
-    UIFont *listViewFont = [Theme ingredientsListFont];
-    UILabel *listViewLabel = (UILabel *)self.ingredientsViewEditableView.contentView;
+    UIFont *ingredientsViewFont = [Theme ingredientsListFont];
+    UILabel *ingredientsViewLabel = (UILabel *)self.ingredientsViewEditableView.contentView;
 
-    if (!listViewLabel) {
-        listViewLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        listViewLabel.autoresizingMask = UIViewAutoresizingNone;
-        listViewLabel.backgroundColor = [UIColor clearColor];
-        listViewLabel.textAlignment = NSTextAlignmentLeft;
-        listViewLabel.font = listViewFont;
-        listViewLabel.textColor = [Theme ingredientsListColor];
-        listViewLabel.numberOfLines = 0;
+    if (!ingredientsViewLabel) {
+        ingredientsViewLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        ingredientsViewLabel.autoresizingMask = UIViewAutoresizingNone;
+        ingredientsViewLabel.backgroundColor = [UIColor clearColor];
+        ingredientsViewLabel.textAlignment = NSTextAlignmentLeft;
+        ingredientsViewLabel.font = ingredientsViewFont;
+        ingredientsViewLabel.textColor = [Theme ingredientsListColor];
+        ingredientsViewLabel.numberOfLines = 0;
         
         self.ingredientsViewEditableView.delegate = self;
         self.ingredientsViewEditableView.contentInsets = editableInsets;
         self.ingredientsViewEditableView.backgroundColor = [UIColor clearColor];
     }
     
-    listViewLabel.text = listViewValue;
-    self.ingredientListData = [listViewValue componentsSeparatedByString:@"\n"];
-    CGSize listViewSizeConstraint = CGSizeMake(self.ingredientsViewEditableView.frame.size.width, self.ingredientsViewEditableView.frame.size.height);
-    CGSize listViewLabelSize = [listViewValue sizeWithFont:listViewFont constrainedToSize:listViewSizeConstraint];
+    ingredientsViewLabel.text = ingredientsValue;
+    self.ingredientListData = [ingredientsValue componentsSeparatedByString:@"\n"];
+    CGSize sizeConstraint = CGSizeMake(self.ingredientsViewEditableView.frame.size.width, self.ingredientsViewEditableView.frame.size.height);
+    CGSize sizeConstainedToFont = [ingredientsValue sizeWithFont:ingredientsViewFont constrainedToSize:sizeConstraint];
 
-    //TODO something is inherently broken if I have to store the original origin...
-    CGSize originalOrigin = CGSizeMake(self.ingredientsViewEditableView.frame.origin.x,self.ingredientsViewEditableView.frame.origin.y);
-    listViewLabel.frame = CGRectMake(self.ingredientsViewEditableView.frame.origin.x, self.ingredientsViewEditableView.frame.origin.y,
-                                     listViewLabelSize.width, listViewLabelSize.height);
-    self.ingredientsViewEditableView.contentView = listViewLabel;
-    self.ingredientsViewEditableView.frame = CGRectMake(originalOrigin.width, originalOrigin.height, self.ingredientsViewEditableView.frame.size.width,
-                                                        self.ingredientsViewEditableView.frame.size.height);
+    ingredientsViewLabel.frame = CGRectMake(self.ingredientsViewEditableView.frame.origin.x, self.ingredientsViewEditableView.frame.origin.y,
+                                     sizeConstainedToFont.width, sizeConstainedToFont.height);
+    self.ingredientsViewEditableView.contentView = ingredientsViewLabel;
 }
 
-- (void)setTextViewValue:(NSString *)textViewValue {
+- (void)setMethodValue:(NSString *)textViewValue {
     UIEdgeInsets editableInsets = UIEdgeInsetsMake(2.0, 2.0, 2.0f, 25.0f);
 
     UILabel *methodViewLabel = (UILabel *)self.methodViewEditableView.contentView;
