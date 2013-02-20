@@ -516,6 +516,8 @@
 		76386C231668D01700471C44 /* BenchtopViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewControllerDelegate.h; sourceTree = "<group>"; };
 		763CCBA516D44C3400A44AC7 /* BookProfileCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookProfileCollectionViewCell.h; sourceTree = "<group>"; };
 		763CCBA616D44C3400A44AC7 /* BookProfileCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookProfileCollectionViewCell.m; sourceTree = "<group>"; };
+		763CCBA916D4710A00A44AC7 /* BookModalViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookModalViewControllerDelegate.h; sourceTree = "<group>"; };
+		763CCBAA16D4734900A44AC7 /* BookModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookModalViewController.h; sourceTree = "<group>"; };
 		763D2776166C293800A43DF9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
 		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
@@ -1757,6 +1759,8 @@
 				762B375B16D343AA00343F88 /* BookContentsCollectionViewCell.m */,
 				763CCBA516D44C3400A44AC7 /* BookProfileCollectionViewCell.h */,
 				763CCBA616D44C3400A44AC7 /* BookProfileCollectionViewCell.m */,
+				763CCBA916D4710A00A44AC7 /* BookModalViewControllerDelegate.h */,
+				763CCBAA16D4734900A44AC7 /* BookModalViewController.h */,
 			);
 			name = Book;
 			sourceTree = "<group>";

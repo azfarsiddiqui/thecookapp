@@ -15,6 +15,8 @@
 #import "BookNavigationViewController.h"
 #import "CKBook.h"
 #import "SettingsViewController.h"
+#import "TestViewController.h"
+#import "BookModalViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     BookViewControllerDelegate, UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
@@ -25,11 +27,13 @@
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
+@property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
 @property (nonatomic, assign) BOOL panEnabled;
 @property (nonatomic, assign) NSUInteger benchtopLevel;
+@property (nonatomic, strong) UIView *overlayView;
 
 @end
 
@@ -45,6 +49,7 @@
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
+#define kOverlayViewAlpha               0.7
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -158,6 +163,10 @@
     [self.bookCoverViewController openBook:NO];
 }
 
+- (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
+    [self viewRecipe:recipe];
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -169,6 +178,12 @@
     }
     
     return enabled;
+}
+
+#pragma mark - BookModalViewControllerDelegate methods
+
+- (void)closeRequestedForBookModalViewController:(UIViewController *)viewController {
+    [self hideModalViewController:viewController];
 }
 
 #pragma mark - Private methods
@@ -493,6 +508,73 @@
         _settingsViewController = [[SettingsViewController alloc] init];
     }
     return _settingsViewController;
+}
+
+- (void)viewRecipe:(CKRecipe *)recipe {
+    
+    //use for testing launch concepts
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
+    TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
+    [self showModalViewController:testVC];
+    
+}
+
+- (void)showModalViewController:(UIViewController *)modalViewController {
+    
+    // Modal view controller has to be a UIViewController and confirms to BookModalViewControllerDelegate
+    if (![modalViewController isKindOfClass:[UIViewController class]]
+        && ![modalViewController conformsToProtocol:@protocol(BookModalViewController)]) {
+        DLog(@"Not UIViewController or conforms to BookModalViewController protocol.");
+        return;
+    }
+    
+    // Prepare the dimView
+    UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    overlayView.backgroundColor = [UIColor blackColor];
+    overlayView.alpha = 0.0;
+    [self.view addSubview:overlayView];
+    self.overlayView = overlayView;
+    
+    // Prepare the modalVC to be transitioned.
+    modalViewController.view.frame = self.view.bounds;
+    modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
+    [self.view addSubview:modalViewController.view];
+    self.bookModalViewController = modalViewController;
+
+    // Sets the modal view delegate for close callbacks.
+    [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
+    
+    // Animate the book back, and slide up the modalVC.
+    [UIView animateWithDuration:0.4
+                      delay:0.0
+                    options:UIViewAnimationCurveEaseIn
+                 animations:^{
+                     overlayView.alpha = kOverlayViewAlpha;
+                     self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(0.9, 0.9);
+                     modalViewController.view.transform = CGAffineTransformIdentity;
+                 }
+                 completion:^(BOOL finished)  {
+                 }];
+
+}
+
+- (void)hideModalViewController:(UIViewController *)modalViewController {
+    
+    // Animate the book back, and slide up the modalVC.
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.overlayView.alpha = 0.0;
+                         self.bookNavigationViewController.view.transform = CGAffineTransformIdentity;
+                         modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
+                     }
+                     completion:^(BOOL finished)  {
+                         [self.overlayView removeFromSuperview];
+                         self.overlayView = nil;
+                         [modalViewController.view removeFromSuperview];
+                         self.bookModalViewController = nil;
+                     }];
 }
 
 @end
