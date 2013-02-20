@@ -20,20 +20,30 @@
 +(UIColor*) pageNumberPrefixLabelColor;
 
 #pragma mark - Contents View
-+ (UIColor *) contentsTitleColor;
-+ (UIColor *) contentsItemColor;
++ (UIColor*) contentsTitleColor;
++ (UIColor*) contentsItemColor;
 
 #pragma mark - Grid recipe cells
-+ (UIFont *)recipeGridTitleFont;
-+ (UIColor *)recipeGridTitleColour;
-+ (UIFont *)recipeGridIngredientsFont;
-+ (UIColor *)recipeGridIngredientsColour;
-+ (UIFont *)recipeGridStoryFont;
-+ (UIColor *)recipeGridStoryColour;
++ (UIFont*) recipeGridTitleFont;
++ (UIColor*) recipeGridTitleColour;
++ (UIFont*) recipeGridIngredientsFont;
++ (UIColor*)recipeGridIngredientsColour;
++ (UIFont*) recipeGridStoryFont;
++ (UIColor*) recipeGridStoryColour;
 
 #pragma mark - Recipe View
-+(UIColor *) ingredientsListColor;
-+(UIFont *) ingredientsListFont;
++(UIColor*) ingredientsListColor;
++(UIFont*) ingredientsListFont;
++(UIColor*) storyColor;
++(UIFont*) storyFont;
++(UIFont*) recipeNameFont;
++(UIColor*) recipeNameColor;
++(UIFont*) methodFont;
++(UIColor*) methodColor;
++(UIFont*) cookingTimeFont;
++(UIColor*) cookingTimeColor;
++(UIFont*) servesFont;
++(UIColor*) servesColor;
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
