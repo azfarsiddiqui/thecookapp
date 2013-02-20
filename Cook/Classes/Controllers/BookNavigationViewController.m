@@ -7,16 +7,17 @@
 //
 
 #import "BookNavigationViewController.h"
-#import "BookNavigationFlowLayout.h"
 #import "BookNavigationLayout.h"
-#import "RecipeCollectionViewCell.h"
-#import "CategoryHeaderView.h"
+#import "BookRecipeCollectionViewCell.h"
+#import "BookCategoryView.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
 #import "ParsePhotoStore.h"
+#import "BookProfileCollectionViewCell.h"
+#import "BookContentsCollectionViewCell.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
 
@@ -33,8 +34,12 @@
 
 @implementation BookNavigationViewController
 
+#define kProfileSection     0
+#define kContentsSection    1
 #define kRecipeCellId       @"RecipeCellId"
 #define kCategoryHeaderId   @"CategoryHeaderId"
+#define kProfileCellId      @"ProfileCellId"
+#define kContentsCellId     @"ContentsCellId"
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
@@ -61,6 +66,10 @@
 
 #pragma mark - BookNavigationLayoutDataSource methods
 
+- (NSUInteger)bookNavigationContentStartSection {
+    return 2;
+}
+
 - (NSUInteger)bookNavigationLayoutNumColumns {
     return 3;
 }
@@ -72,68 +81,118 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    NSInteger contentStartSection = [self bookNavigationContentStartSection];
+    if (indexPath.section >= contentStartSection) {
+        
+        // TODO Launch recipe view.
+        DLog();
+    }
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
     forItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    // Clears the image on disappear.
-    RecipeCollectionViewCell *recipeCell = (RecipeCollectionViewCell *)cell;
-    [recipeCell configureImage:nil];
+    NSInteger contentStartSection = [self bookNavigationContentStartSection];
+    if (indexPath.section >= contentStartSection) {
+        
+        // Clears the image on disappear.
+        BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)cell;
+        [recipeCell configureImage:nil];
+    }
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
       forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
-    // Clears the image on disappear.
-    CategoryHeaderView *recipeCell = (CategoryHeaderView *)view;
-    [recipeCell configureImage:nil];
+    NSInteger contentStartSection = [self bookNavigationContentStartSection];
+    if (indexPath.section >= contentStartSection) {
+        
+        if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            
+            // Clears the image on disappear.
+            BookCategoryView *recipeCell = (BookCategoryView *)view;
+            [recipeCell configureImage:nil];
+        }
+    }
+    
 }
 
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return [self.categoryNames count];
+    NSInteger numSections = 0;
+    
+    // Info pages
+    numSections += [self bookNavigationContentStartSection];
+    
+    // Categories
+    numSections += [self.categoryNames count];
+    
+    return numSections;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    NSString *categoryName = [self.categoryNames objectAtIndex:section];
-    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
-    return [categoryRecipes count];
+    NSInteger numItems = 0;
+    NSInteger contentStartSection = [self bookNavigationContentStartSection];
+    NSInteger categorySection = section - contentStartSection;
+    
+    if (section >= contentStartSection) {
+        NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+        NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+        numItems = [categoryRecipes count];
+    } else {
+        numItems = 1;
+    }
+    
+    DLog(@"Num Items for Section [%d]: %d", section, numItems);
+    return numItems;
 }
 
 - (UICollectionReusableView *)collectionView: (UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
                                  atIndexPath:(NSIndexPath *)indexPath {
-    CategoryHeaderView *categoryHeaderView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
     
-    // Configure the category name.
-    NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
-    [categoryHeaderView configureCategoryName:categoryName];
+    UICollectionReusableView *headerView = nil;
+    NSInteger contentStartSection = [self bookNavigationContentStartSection];
     
-    // Populate highlighted recipe
-    CKRecipe *highlightRecipe = [self highlightRecipeForCategory:categoryName];
+    if (indexPath.section >= contentStartSection) {
+        
+        NSInteger categorySection = indexPath.section - contentStartSection;
+        
+        if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+            headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                            withReuseIdentifier:kCategoryHeaderId
+                                                                   forIndexPath:indexPath];
+            BookCategoryView *categoryHeaderView = (BookCategoryView *)headerView;
+            
+            // Configure the category name.
+            NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+            [categoryHeaderView configureCategoryName:categoryName];
+            
+            // Populate highlighted recipe
+            CKRecipe *highlightRecipe = [self highlightRecipeForCategory:categoryName];
+            
+            // Configure image.
+            [self configureImageForHeaderView:categoryHeaderView recipe:highlightRecipe indexPath:indexPath];
+        }
+    }
     
-    // Configure image.
-    [self configureImageForHeaderView:categoryHeaderView recipe:highlightRecipe indexPath:indexPath];
-    
-    return categoryHeaderView;
+    return headerView;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    RecipeCollectionViewCell *cell = (RecipeCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kRecipeCellId
-                                                                                                           forIndexPath:indexPath];
-    NSString *categoryName = [self.categoryNames objectAtIndex:indexPath.section];
-    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
     
-    // Populate recipe.
-    CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
-    [cell configureRecipe:recipe];
+    UICollectionViewCell *cell = nil;
+    NSInteger contentStartSection = [self bookNavigationContentStartSection];
     
-    // Configure image.
-    [self configureImageForRecipeCell:cell recipe:recipe indexPath:indexPath];
-
+    if (indexPath.section >= contentStartSection) {
+        cell = [self recipeCellAtIndexPath:indexPath];
+    } else if (indexPath.section == kProfileSection) {
+        cell = [self profileCellAtIndexPath:indexPath];
+    } else if (indexPath.section == kContentsSection) {
+        cell = [self contentsCellAtIndexPath:indexPath];
+    }
+    
     return cell;
 }
 
@@ -179,9 +238,15 @@
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.pagingEnabled = YES;
     
-    [self.collectionView registerClass:[RecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
-    [self.collectionView registerClass:[CategoryHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+    // Profile and Contents
+    [self.collectionView registerClass:[BookProfileCollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
+    [self.collectionView registerClass:[BookContentsCollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
+    
+    // Categories
+    [self.collectionView registerClass:[BookCategoryView class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:kCategoryHeaderId];
+    [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
 }
 
 - (void)loadData {
@@ -245,7 +310,7 @@
     [self presentViewController:newRecipeViewVC animated:YES completion:nil];
 }
 
-- (void)configureImageForHeaderView:(CategoryHeaderView *)categoryHeaderView recipe:(CKRecipe *)recipe
+- (void)configureImageForHeaderView:(BookCategoryView *)categoryHeaderView recipe:(CKRecipe *)recipe
                           indexPath:(NSIndexPath *)indexPath {
     
     if ([recipe hasPhotos]) {
@@ -267,7 +332,7 @@
     }
 }
 
-- (void)configureImageForRecipeCell:(RecipeCollectionViewCell *)recipeCell recipe:(CKRecipe *)recipe
+- (void)configureImageForRecipeCell:(BookRecipeCollectionViewCell *)recipeCell recipe:(CKRecipe *)recipe
                           indexPath:(NSIndexPath *)indexPath {
     
     if ([recipe hasPhotos]) {
@@ -287,6 +352,40 @@
     } else {
         [recipeCell configureImage:nil];
     }
+}
+
+- (UICollectionViewCell *)recipeCellAtIndexPath:(NSIndexPath *)indexPath {
+    NSInteger contentStartSection = [self bookNavigationContentStartSection];
+    NSInteger categorySection = indexPath.section - contentStartSection;
+    
+    BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kRecipeCellId
+                                                                                                                              forIndexPath:indexPath];;
+    
+    NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+    
+    // Populate recipe.
+    CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
+    [recipeCell configureRecipe:recipe];
+    
+    // Configure image.
+    [self configureImageForRecipeCell:recipeCell recipe:recipe indexPath:indexPath];
+    
+    return recipeCell;
+}
+
+- (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
+    BookProfileCollectionViewCell *profileCell = (BookProfileCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId
+                                                                                                                                 forIndexPath:indexPath];;
+    profileCell.contentView.backgroundColor = [UIColor lightGrayColor];
+    return profileCell;
+}
+
+- (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
+    BookContentsCollectionViewCell *contentsCell = (BookContentsCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId
+                                                                                                                                    forIndexPath:indexPath];
+    [contentsCell configureBook:self.book];
+    return contentsCell;
 }
 
 @end

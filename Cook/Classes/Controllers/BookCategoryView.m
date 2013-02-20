@@ -6,23 +6,22 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CategoryHeaderView.h"
+#import "BookCategoryView.h"
 #import <Parse/Parse.h>
 #import "Theme.h"
-#import "BookNavigationFlowLayout.h"
 #import "UIImage+ProportionalFill.h"
 #import "CKRecipe.h"
 #import "CKRecipeImage.h"
 #import "CategoryHeaderLabelView.h"
 
-@interface CategoryHeaderView ()
+@interface BookCategoryView ()
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) CategoryHeaderLabelView *labelView;;
 
 @end
 
-@implementation CategoryHeaderView
+@implementation BookCategoryView
 
 #define kCategoryFont   [Theme defaultFontWithSize:100.0]
 

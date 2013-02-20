@@ -10,6 +10,7 @@
 
 @protocol BookNavigationLayoutDataSource
 
+- (NSUInteger)bookNavigationContentStartSection;
 - (NSUInteger)bookNavigationLayoutNumColumns;
 - (NSUInteger)bookNavigationLayoutColumnWidthForItemAtIndexPath:(NSIndexPath *)indexPath;
 
@@ -21,6 +22,6 @@
 
 + (CGSize)unitSize;
 + (UIEdgeInsets)pageInsets;
-+ (CGFloat)columnSeparatorWidth;
++ (CGFloat)columnSeparatorWidth;;
 
 @end

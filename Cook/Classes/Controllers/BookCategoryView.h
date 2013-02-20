@@ -10,7 +10,7 @@
 
 @class CKRecipe;
 
-@interface CategoryHeaderView : UICollectionReusableView
+@interface BookCategoryView : UICollectionReusableView
 
 @property (nonatomic, strong) NSString *categoryName;
 
