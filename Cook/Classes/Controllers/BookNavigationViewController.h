@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @class CKBook;
+@class CKRecipe;
 
 @protocol BookNavigationViewControllerDelegate
 
 - (void)bookNavigationControllerCloseRequested;
+- (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe;
 
 @end
 

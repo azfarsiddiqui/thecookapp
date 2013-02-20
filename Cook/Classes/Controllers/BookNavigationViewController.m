@@ -15,10 +15,10 @@
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
-#import "TestViewController.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileCollectionViewCell.h"
 #import "BookContentsCollectionViewCell.h"
+#import "TestViewController.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
 
@@ -85,8 +85,11 @@
     NSInteger contentStartSection = [self bookNavigationContentStartSection];
     if (indexPath.section >= contentStartSection) {
         
-        // TODO Launch recipe view.
-        DLog();
+        NSInteger categorySection = indexPath.section - contentStartSection;
+        NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+        NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+        CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
+        [self viewRecipe:recipe];
     }
 }
 
@@ -393,6 +396,10 @@
                                                                                                                                     forIndexPath:indexPath];
     [contentsCell configureBook:self.book];
     return contentsCell;
+}
+
+- (void)viewRecipe:(CKRecipe *)recipe {
+    [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
 @end

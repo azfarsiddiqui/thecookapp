@@ -11,6 +11,7 @@
 #import "CKTextFieldEditingViewController.h"
 #import "TextViewEditingViewController.h"
 #import "IngredientsEditingViewController.h"
+#import "BookModalViewControllerDelegate.h"
 
 #import "Theme.h"
 #define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
@@ -34,6 +35,9 @@
 @property(nonatomic,strong) NSString *servesData;
 @property(nonatomic,strong) NSString *cookingTimeData;
 @property(nonatomic,strong) NSString *storyData;
+
+// delegates
+@property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
 
 @end
 
@@ -72,8 +76,7 @@
 #pragma mark - IBActions
 -(IBAction)dismissTapped:(id)sender
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-    }];
+    [self.modalDelegate closeRequestedForBookModalViewController:self];
 }
 
 -(IBAction)toggledEditMode:(UIButton*)editModeButton
@@ -223,6 +226,12 @@
         [self setServesValue:value];
         [self.servesEditableView enableEditMode:YES];
     } 
+}
+
+#pragma mark - BookModalViewController methods
+
+- (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate {
+    self.modalDelegate = modalViewControllerDelegate;
 }
 
 #pragma mark - Private Methods
