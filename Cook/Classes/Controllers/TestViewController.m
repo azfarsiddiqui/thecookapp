@@ -12,6 +12,7 @@
 #import "TextViewEditingViewController.h"
 #import "IngredientsEditingViewController.h"
 #import "BookModalViewControllerDelegate.h"
+#import "ServesEditingViewController.h"
 
 #import "Theme.h"
 #define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
@@ -154,20 +155,18 @@
         [ingredientsEditingVC enableEditing:YES completion:nil];
         
     } else if (view == self.servesEditableView) {
-        CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesEditableView];
-        textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
-        textFieldEditingVC.view.frame = [self rootView].bounds;
-        [self.view addSubview:textFieldEditingVC.view];
-        self.editingViewController = textFieldEditingVC;
+        ServesEditingViewController *servesEditingVC = [[ServesEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesEditableView];
+        servesEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:servesEditingVC.view];
+        self.editingViewController = servesEditingVC;
+
         UILabel *textFieldLabel = (UILabel *)self.servesEditableView.contentView;
-        
-        textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-        textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        textFieldEditingVC.characterLimit = 20;
-        textFieldEditingVC.text = textFieldLabel.text;
-        textFieldEditingVC.editingTitle = @"SERVES";
-        [textFieldEditingVC enableEditing:YES completion:nil];
-        
+//        servesEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+//        servesEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+        //set value here
+//        servesEditingVC.text = textFieldLabel.text;
+        servesEditingVC.editingTitle = @"SERVES";
+        [servesEditingVC enableEditing:YES completion:nil];
     } else if (view == self.cookingTimeEditableView) {
         CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.cookingTimeEditableView];
         textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
