@@ -20,7 +20,7 @@
 
 @implementation CKEditableView
 
-#define kEditButtonOffset   CGSizeMake(-24.0, -3.0)
+#define kEditButtonOffset   CGSizeMake(3.0, 3.0)
 
 -(void)awakeFromNib
 {
@@ -69,29 +69,17 @@
     _contentView = contentView;
     
     // Background view to contain the contentView.
-    self.editBackgroundView.frame = CGRectMake(0.0,
-                                               0.0,
-                                               self.contentInsets.left + contentView.frame.size.width + self.contentInsets.right,
-                                               self.contentInsets.top + contentView.frame.size.height + self.contentInsets.bottom);
+    self.editBackgroundView.frame = CGRectMake(0.0f,
+                                               kEditButtonOffset.height,
+                                               self.frame.size.width - kEditButtonOffset.width,
+                                               self.frame.size.height - kEditButtonOffset.height);
     contentView.frame = CGRectMake(self.contentInsets.left,
                                    self.contentInsets.top,
-                                   contentView.frame.size.width,
-                                   contentView.frame.size.height);
+                                   contentView.frame.size.width - self.contentInsets.left - self.contentInsets.right,
+                                   contentView.frame.size.height - self.contentInsets.top - self.contentInsets.bottom);
     [self.editBackgroundView addSubview:contentView];
-    
-    // Calculate the overall frame which takes into account the editButton.
-    self.frame = CGRectMake(self.frame.origin.x,
-                            self.frame.origin.y,
-                            self.editBackgroundView.frame.size.width + self.editButton.frame.size.width + kEditButtonOffset.width,
-                            self.editBackgroundView.frame.size.height - kEditButtonOffset.height);
-    
-    // Position the edit background view.
-    self.editBackgroundView.frame = CGRectMake(0.0,
-                                               -kEditButtonOffset.height,
-                                               self.editBackgroundView.frame.size.width,
-                                               self.editBackgroundView.frame.size.height);
     [self addSubview:self.editBackgroundView];
-    
+
     // Position the edit button.
     self.editButton.frame = CGRectMake(self.bounds.size.width - self.editButton.frame.size.width,
                                        0.0,

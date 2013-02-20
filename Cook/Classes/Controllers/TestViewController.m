@@ -129,8 +129,7 @@
         textViewEditingVC.view.frame = [self rootView].bounds;
         [self.view addSubview:textViewEditingVC.view];
         self.editingViewController = textViewEditingVC;
-        
-        textViewEditingVC.characterLimit = 300;
+        textViewEditingVC.characterLimit = 1000;
         UILabel *textViewLabel = (UILabel *)self.methodViewEditableView.contentView;
         textViewEditingVC.text = textViewLabel.text;
         textViewEditingVC.editingTitle = @"RECIPE METHOD";
@@ -178,19 +177,15 @@
         textFieldEditingVC.editingTitle = @"COOKING TIME";
         [textFieldEditingVC enableEditing:YES completion:nil];
     } else if (view == self.storyEditableView) {
-        CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.storyEditableView];
-        textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
-        textFieldEditingVC.view.frame = [self rootView].bounds;
-        [self.view addSubview:textFieldEditingVC.view];
-        self.editingViewController = textFieldEditingVC;
-        UILabel *textFieldLabel = (UILabel *)self.storyEditableView.contentView;
-        
-        textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-        textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        textFieldEditingVC.characterLimit = 20;
-        textFieldEditingVC.text = textFieldLabel.text;
-        textFieldEditingVC.editingTitle = @"RECIPE STORY";
-        [textFieldEditingVC enableEditing:YES completion:nil];
+        TextViewEditingViewController *textViewEditingVC = [[TextViewEditingViewController alloc] initWithDelegate:self sourceEditingView:self.storyEditableView];
+        textViewEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:textViewEditingVC.view];
+        self.editingViewController = textViewEditingVC;
+        textViewEditingVC.characterLimit = 160;
+        UILabel *textViewLabel = (UILabel *)self.storyEditableView.contentView;
+        textViewEditingVC.text = textViewLabel.text;
+        textViewEditingVC.editingTitle = @"YOUR RECIPE STORY";
+        [textViewEditingVC enableEditing:YES completion:nil];
     }
 
 }
@@ -256,9 +251,10 @@
     }
     
     label.text = value;
-    label.frame = CGRectMake(editableView.frame.origin.x, editableView.frame.origin.y,
-                                       editableView.frame.size.width - kEditableInsets.left-kEditableInsets.right,
-                                       editableView.frame.size.height - kEditableInsets.top-kEditableInsets.bottom);
+    label.frame = CGRectMake(editableView.frame.origin.x,
+                             editableView.frame.origin.y,
+                                       editableView.frame.size.width,
+                                       editableView.frame.size.height);
     
     editableView.contentView = label;
 }
@@ -282,12 +278,12 @@
 
     label.text = ingredientsValue;
     CGSize constrainedSize = [ingredientsValue sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
-                        CGSizeMake(self.ingredientsViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
-                                   self.ingredientsViewEditableView.frame.size.height- kEditableInsets.top-kEditableInsets.bottom)];
+                        CGSizeMake(self.ingredientsViewEditableView.frame.size.width,
+                                   self.ingredientsViewEditableView.frame.size.height)];
     
     label.frame = CGRectMake(self.ingredientsViewEditableView.frame.origin.x,
                              self.ingredientsViewEditableView.frame.origin.y,
-                             self.ingredientsViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
+                             self.ingredientsViewEditableView.frame.size.width-kEditableInsets.left - kEditableInsets.right,
                              constrainedSize.height);
     
     self.ingredientsViewEditableView.contentView = label;
@@ -308,7 +304,7 @@
     
     label.frame = CGRectMake(self.methodViewEditableView.frame.origin.x,
                              self.methodViewEditableView.frame.origin.y,
-                             self.methodViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
+                             self.methodViewEditableView.frame.size.width-kEditableInsets.left-kEditableInsets.right,
                              constrainedSize.height);
     
     self.methodViewEditableView.contentView = label;
