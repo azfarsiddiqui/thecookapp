@@ -260,10 +260,7 @@
     }
     
     label.text = value;
-    label.frame = CGRectMake(editableView.frame.origin.x,
-                             editableView.frame.origin.y,
-                                       editableView.frame.size.width,
-                                       editableView.frame.size.height);
+    label.frame = editableView.frame;
     
     editableView.contentView = label;
 }
@@ -292,7 +289,7 @@
     
     label.frame = CGRectMake(self.ingredientsViewEditableView.frame.origin.x,
                              self.ingredientsViewEditableView.frame.origin.y,
-                             self.ingredientsViewEditableView.frame.size.width-kEditableInsets.left - kEditableInsets.right,
+                             self.ingredientsViewEditableView.frame.size.width,
                              constrainedSize.height);
     
     self.ingredientsViewEditableView.contentView = label;
@@ -308,12 +305,12 @@
     
     label.text = methodValue;
     CGSize constrainedSize = [methodValue sizeWithFont:[Theme methodFont] constrainedToSize:
-                              CGSizeMake(self.methodViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
-                                         self.methodViewEditableView.frame.size.height- kEditableInsets.top-kEditableInsets.bottom)];
+                              CGSizeMake(self.methodViewEditableView.frame.size.width,
+                                         self.methodViewEditableView.frame.size.height)];
     
     label.frame = CGRectMake(self.methodViewEditableView.frame.origin.x,
                              self.methodViewEditableView.frame.origin.y,
-                             self.methodViewEditableView.frame.size.width-kEditableInsets.left-kEditableInsets.right,
+                             self.methodViewEditableView.frame.size.width,
                              constrainedSize.height);
     
     self.methodViewEditableView.contentView = label;
