@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BookModalViewController.h"
 
-@interface TestViewController : UIViewController <BookModalViewController>
+@interface TestViewController : UIViewController
 
 @end
