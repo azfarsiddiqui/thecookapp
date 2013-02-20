@@ -337,11 +337,11 @@
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" id="Yve-jT-71M">
-                                <rect key="frame" x="315" y="326" width="17" height="17"/>
+                                <rect key="frame" x="315" y="328" width="17" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" id="8de-ej-4hf">
-                                <rect key="frame" x="515" y="326" width="17" height="17"/>
+                                <rect key="frame" x="515" y="328" width="17" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="social" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZPo-AG-2bS">
