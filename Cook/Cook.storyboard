@@ -302,32 +302,32 @@
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
                             <view contentMode="scaleToFill" id="qTX-Bo-ik8" customClass="CKEditableView">
-                                <rect key="frame" x="10" y="341" width="300" height="392"/>
+                                <rect key="frame" x="10" y="344" width="300" height="388"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" id="HzD-i9-p5Q" customClass="CKEditableView">
-                                <rect key="frame" x="312" y="341" width="406" height="392"/>
+                                <rect key="frame" x="315" y="344" width="400" height="388"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" id="DVC-VY-ybe" customClass="CKEditableView">
-                                <rect key="frame" x="312" y="242" width="406" height="66"/>
+                                <rect key="frame" x="312" y="260" width="406" height="55"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" id="PLz-Or-ETp" customClass="CKEditableView">
-                                <rect key="frame" x="338" y="316" width="160" height="17"/>
+                                <rect key="frame" x="338" y="320" width="160" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" id="b6f-jI-E8T" customClass="CKEditableView">
-                                <rect key="frame" x="538" y="316" width="180" height="17"/>
+                                <rect key="frame" x="538" y="320" width="180" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" id="WWa-fg-cW2" customClass="CKEditableView">
-                                <rect key="frame" x="10" y="190" width="1004" height="50"/>
+                                <rect key="frame" x="10" y="190" width="1004" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
@@ -337,13 +337,15 @@
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" id="Yve-jT-71M">
-                                <rect key="frame" x="314" y="316" width="17" height="17"/>
+                                <rect key="frame" x="315" y="320" width="17" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_time.png" id="8de-ej-4hf">
-                                <rect key="frame" x="515" y="316" width="17" height="17"/>
+                                <rect key="frame" x="515" y="320" width="17" height="17"/>
+                                <autoresizingMask key="autoresizingMask"/>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="social" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZPo-AG-2bS">
-                                <rect key="frame" x="720" y="341" width="300" height="392"/>
+                                <rect key="frame" x="720" y="344" width="300" height="388"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -356,9 +358,12 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="cookingTimeEditableView" destination="b6f-jI-E8T" id="45n-Dj-lbR"/>
                         <outlet property="ingredientsViewEditableView" destination="qTX-Bo-ik8" id="FLh-Tb-jFx"/>
                         <outlet property="methodViewEditableView" destination="HzD-i9-p5Q" id="NeC-cz-7j9"/>
                         <outlet property="nameEditableView" destination="WWa-fg-cW2" id="BDD-fv-wga"/>
+                        <outlet property="servesEditableView" destination="PLz-Or-ETp" id="53J-oy-EXg"/>
+                        <outlet property="storyEditableView" destination="DVC-VY-ybe" id="cTD-Yk-Pa7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vrf-qs-v16" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -682,11 +687,12 @@
         <class className="TestViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/TestViewController.h"/>
             <relationships>
-                <relationship kind="action" name="dismissTapped:"/>
-                <relationship kind="action" name="toggledEditMode:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="cookingTimeEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="ingredientsViewEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="methodViewEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="nameEditableView" candidateClass="CKEditableView"/>
+                <relationship kind="outlet" name="servesEditableView" candidateClass="CKEditableView"/>
+                <relationship kind="outlet" name="storyEditableView" candidateClass="CKEditableView"/>
             </relationships>
         </class>
         <class className="UICollectionReusableView" superclassName="UIView">

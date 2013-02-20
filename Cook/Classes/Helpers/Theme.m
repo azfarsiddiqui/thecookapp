@@ -35,6 +35,11 @@
     return [UIColor colorWithHexString:@"707070"];
 }
 
++(UIColor*) pageNumberPrefixLabelColor
+{
+    return [UIColor colorWithHexString:@"2D6CA9"];
+}
+
 #pragma mark - Contents View
 
 + (UIColor *) contentsTitleColor
@@ -74,6 +79,7 @@
 }
 
 #pragma mark - Recipe View
+
 +(UIColor *)ingredientsListColor
 {
     return [UIColor colorWithHexString:@"3a3a3a"];
@@ -85,10 +91,57 @@
     return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
 }
 
-+(UIColor*) pageNumberPrefixLabelColor
++(UIColor *)storyColor
 {
-    return [UIColor colorWithHexString:@"2D6CA9"];
+    return [UIColor colorWithHexString:@"4e4e4e"];
+    
 }
+
++(UIFont *)storyFont
+{
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+}
+
++(UIFont *)recipeNameFont
+{
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:52.0f];
+}
+
++(UIColor *)recipeNameColor
+{
+    return [UIColor colorWithHexString:@"4e4e4e"];
+    
+}
+
++(UIFont *)methodFont
+{
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+}
+
++(UIColor*) methodColor
+{
+    return [UIColor colorWithHexString:@"4e4e4e"];
+}
+
++(UIFont*) cookingTimeFont
+{
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+}
++(UIColor*) cookingTimeColor
+{
+    return [UIColor colorWithHexString:@"3a3a3a"];
+}
+
++(UIFont*) servesFont
+{
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+}
+
++(UIColor*) servesColor
+{
+    return [UIColor colorWithHexString:@"3a3a3a"];
+}
+
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor

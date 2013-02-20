@@ -13,16 +13,28 @@
 #import "IngredientsEditingViewController.h"
 
 #import "Theme.h"
-@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
-@property(nonatomic,assign) BOOL inEditMode;
-@property(nonatomic,strong) NSArray *ingredientListData;
-@property(nonatomic,strong) NSString *testTextViewData;
+#define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
 
+@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
+
+//ui
 @property(nonatomic,strong) IBOutlet CKEditableView *nameEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *methodViewEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *ingredientsViewEditableView;
-
+@property(nonatomic,strong) IBOutlet CKEditableView *storyEditableView;
+@property(nonatomic,strong) IBOutlet CKEditableView *servesEditableView;
+@property(nonatomic,strong) IBOutlet CKEditableView *cookingTimeEditableView;
 @property(nonatomic,strong) CKEditingViewController *editingViewController;
+
+//data
+@property(nonatomic,assign) BOOL inEditMode;
+@property(nonatomic,strong) NSArray *ingredientListData;
+@property(nonatomic,strong) NSString *methodViewData;
+@property(nonatomic,strong) NSString *recipeTitle;
+@property(nonatomic,strong) NSString *servesData;
+@property(nonatomic,strong) NSString *cookingTimeData;
+@property(nonatomic,strong) NSString *storyData;
+
 @end
 
 @implementation TestViewController
@@ -31,7 +43,11 @@
 {
     [super awakeFromNib];
     self.ingredientListData = @[@"10 g:salt",@"10 g:sugar",@"200ml:water",@"2 cups:brandy",@"3 spoons:pepper",@"1 kg: flank steak",@"3 cups: lettuce"];
-    self.testTextViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
+    self.methodViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
+    self.recipeTitle = @"My Recipe title";
+    self.storyData = @"This recipe reflects my innermost love for monkeys. and hamsters too. I love bacon";
+    self.cookingTimeData = @"20 minutes";
+    self.servesData = @"4-6";
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -66,7 +82,10 @@
     [self.nameEditableView enableEditMode:self.inEditMode];
     [self.methodViewEditableView enableEditMode:self.inEditMode];
     [self.ingredientsViewEditableView enableEditMode:self.inEditMode];
-    
+    [self.storyEditableView enableEditMode:self.inEditMode];
+    [self.servesEditableView enableEditMode:self.inEditMode];
+    [self.cookingTimeEditableView enableEditMode:self.inEditMode];
+
     [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
 }
 
@@ -74,9 +93,12 @@
 -(void)config
 {
     DLog();
-    [self setLabelValue:@"initial value"];
-    [self setMethodValue:self.testTextViewData];
+    [self setRecipeNameValue:self.recipeTitle];
+    [self setMethodValue:self.methodViewData];
     [self setIngredientsValue:[self.ingredientListData componentsJoinedByString:@"\n"]];
+    [self setServesValue:self.servesData];
+    [self setCookingTimeValue:self.cookingTimeData];
+    [self setStoryValue:self.storyData];
 }
 
 - (UIView *)rootView {
@@ -100,10 +122,9 @@
         textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         textFieldEditingVC.characterLimit = 20;
         textFieldEditingVC.text = textFieldLabel.text;
-        textFieldEditingVC.editingTitle = @"LABEL NAME";
+        textFieldEditingVC.editingTitle = @"RECIPE TITLE";
         [textFieldEditingVC enableEditing:YES completion:nil];
     } else if (view == self.methodViewEditableView){
-        
         TextViewEditingViewController *textViewEditingVC = [[TextViewEditingViewController alloc] initWithDelegate:self sourceEditingView:self.methodViewEditableView];
         textViewEditingVC.view.frame = [self rootView].bounds;
         [self.view addSubview:textViewEditingVC.view];
@@ -112,9 +133,9 @@
         textViewEditingVC.characterLimit = 300;
         UILabel *textViewLabel = (UILabel *)self.methodViewEditableView.contentView;
         textViewEditingVC.text = textViewLabel.text;
-        textViewEditingVC.editingTitle = @"TEXT VIEW";
+        textViewEditingVC.editingTitle = @"RECIPE METHOD";
         [textViewEditingVC enableEditing:YES completion:nil];
-    } else {
+    } else if (view == self.ingredientsViewEditableView) {
         IngredientsEditingViewController *ingredientsEditingVC = [[IngredientsEditingViewController alloc] initWithDelegate:self sourceEditingView:self.ingredientsViewEditableView];
         ingredientsEditingVC.view.frame = [self rootView].bounds;
         ingredientsEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
@@ -123,9 +144,53 @@
         self.editingViewController = ingredientsEditingVC;
         
         ingredientsEditingVC.ingredientList = [NSMutableArray arrayWithArray:self.ingredientListData];
-        ingredientsEditingVC.editingTitle = @"ingredients";
+        ingredientsEditingVC.editingTitle = @"INGREDIENTS";
         [ingredientsEditingVC enableEditing:YES completion:nil];
         
+    } else if (view == self.servesEditableView) {
+        CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesEditableView];
+        textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
+        textFieldEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:textFieldEditingVC.view];
+        self.editingViewController = textFieldEditingVC;
+        UILabel *textFieldLabel = (UILabel *)self.servesEditableView.contentView;
+        
+        textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+        textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+        textFieldEditingVC.characterLimit = 20;
+        textFieldEditingVC.text = textFieldLabel.text;
+        textFieldEditingVC.editingTitle = @"SERVES";
+        [textFieldEditingVC enableEditing:YES completion:nil];
+        
+    } else if (view == self.cookingTimeEditableView) {
+        CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.cookingTimeEditableView];
+        textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
+        textFieldEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:textFieldEditingVC.view];
+        self.editingViewController = textFieldEditingVC;
+        
+        UILabel *textFieldLabel = (UILabel *)self.cookingTimeEditableView.contentView;
+        
+        textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+        textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+        textFieldEditingVC.characterLimit = 20;
+        textFieldEditingVC.text = textFieldLabel.text;
+        textFieldEditingVC.editingTitle = @"COOKING TIME";
+        [textFieldEditingVC enableEditing:YES completion:nil];
+    } else if (view == self.storyEditableView) {
+        CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.storyEditableView];
+        textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
+        textFieldEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:textFieldEditingVC.view];
+        self.editingViewController = textFieldEditingVC;
+        UILabel *textFieldLabel = (UILabel *)self.storyEditableView.contentView;
+        
+        textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+        textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+        textFieldEditingVC.characterLimit = 20;
+        textFieldEditingVC.text = textFieldLabel.text;
+        textFieldEditingVC.editingTitle = @"RECIPE STORY";
+        [textFieldEditingVC enableEditing:YES completion:nil];
     }
 
 }
@@ -145,7 +210,7 @@
 -(void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result {
     NSString *value = (NSString *)result;
     if (editingView == self.nameEditableView) {
-        [self setLabelValue:value];
+        [self setRecipeNameValue:value];
         [self.nameEditableView enableEditMode:YES];
     } else if (editingView == self.methodViewEditableView) {
         [self setMethodValue:value];
@@ -153,38 +218,73 @@
     } else if (editingView == self.ingredientsViewEditableView){
         [self setIngredientsValue:value];
         [self.ingredientsViewEditableView enableEditMode:YES];
-    }
+    } else if (editingView == self.storyEditableView) {
+        [self setStoryValue:value];
+        [self.storyEditableView enableEditMode:YES];
+    } else if (editingView == self.cookingTimeEditableView){
+        [self setCookingTimeValue:value];
+        [self.cookingTimeEditableView enableEditMode:YES];
+    } else if (editingView == self.servesEditableView) {
+        [self setServesValue:value];
+        [self.servesEditableView enableEditMode:YES];
+    } 
 }
 
 #pragma mark - Private Methods
 
-- (void)setLabelValue:(NSString *)labelValue {
+- (void)setRecipeNameValue:(NSString *)recipeValue {
 
-    UILabel *nameLabel = (UILabel *)self.nameEditableView.contentView;
-    if (!nameLabel) {
-        nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        nameLabel.autoresizingMask = UIViewAutoresizingNone;
-        nameLabel.backgroundColor = [UIColor clearColor];
-        nameLabel.textAlignment = NSTextAlignmentCenter;
-        nameLabel.font = [Theme defaultFontWithSize:32.0f];
-        nameLabel.textColor = [UIColor blackColor];
-        nameLabel.numberOfLines = 0;
+    UIFont *recipeNameViewFont = [Theme recipeNameFont];
+    UILabel *recipeNameLabel = (UILabel *)self.nameEditableView.contentView;
+    
+    if (!recipeNameLabel) {
+        recipeNameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        recipeNameLabel.autoresizingMask = UIViewAutoresizingNone;
+        recipeNameLabel.backgroundColor = [UIColor clearColor];
+        recipeNameLabel.textAlignment = NSTextAlignmentCenter;
+        recipeNameLabel.font = recipeNameViewFont;
+        //TODO style as defined for name
+        recipeNameLabel.textColor = [Theme recipeNameColor];
+        recipeNameLabel.numberOfLines = 0;
 
         self.nameEditableView.delegate = self;
-        UIEdgeInsets editableInsets = UIEdgeInsetsMake(2.0, 2.0, 2.0f, 25.0f);
-        self.nameEditableView.contentInsets = editableInsets;
-        self.nameEditableView.backgroundColor = [UIColor clearColor];
-        self.nameEditableView.contentView = nameLabel;
+        self.nameEditableView.contentInsets = kEditableInsets;
     }
     
-    nameLabel.text = labelValue;
-//    [nameLabel sizeToFit];
+    recipeNameLabel.text = recipeValue;
+    recipeNameLabel.frame = CGRectMake(self.nameEditableView.frame.origin.x, self.nameEditableView.frame.origin.y,
+                                       self.nameEditableView.frame.size.width - kEditableInsets.left-kEditableInsets.right,
+                                       self.nameEditableView.frame.size.height - kEditableInsets.top-kEditableInsets.bottom);
+
+    self.nameEditableView.contentView = recipeNameLabel;
+}
+
+- (void)setStoryValue:(NSString *)storyValue {
     
-    self.nameEditableView.contentView = nameLabel;
+    UIFont *storyViewFont = [Theme storyFont];
+    UILabel *storyLabel = (UILabel *)self.storyEditableView.contentView;
+    
+    if (!storyLabel) {
+        storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        storyLabel.autoresizingMask = UIViewAutoresizingNone;
+        storyLabel.backgroundColor = [UIColor clearColor];
+        storyLabel.textAlignment = NSTextAlignmentCenter;
+        storyLabel.font = storyViewFont;
+        storyLabel.textColor = [Theme storyColor];
+        storyLabel.numberOfLines = 0;
+        
+        self.storyEditableView.delegate = self;
+        self.storyEditableView.contentInsets = kEditableInsets;
+    }
+    storyLabel.text = storyValue;
+    storyLabel.frame = CGRectMake(self.storyEditableView.frame.origin.x, self.storyEditableView.frame.origin.y,
+                                       self.storyEditableView.frame.size.width - kEditableInsets.left-kEditableInsets.right,
+                                       self.storyEditableView.frame.size.height - kEditableInsets.top-kEditableInsets.bottom);
+    
+    self.storyEditableView.contentView = storyLabel;
 }
 
 - (void)setIngredientsValue:(NSString *)ingredientsValue {
-    UIEdgeInsets editableInsets = UIEdgeInsetsMake(2.0, 10.0, 2.0f, 25.0f);
     UIFont *ingredientsViewFont = [Theme ingredientsListFont];
     UILabel *ingredientsViewLabel = (UILabel *)self.ingredientsViewEditableView.contentView;
 
@@ -198,44 +298,88 @@
         ingredientsViewLabel.numberOfLines = 0;
         
         self.ingredientsViewEditableView.delegate = self;
-        self.ingredientsViewEditableView.contentInsets = editableInsets;
-        self.ingredientsViewEditableView.backgroundColor = [UIColor clearColor];
+        self.ingredientsViewEditableView.contentInsets = kEditableInsets;
     }
     
     ingredientsViewLabel.text = ingredientsValue;
     self.ingredientListData = [ingredientsValue componentsSeparatedByString:@"\n"];
-    CGSize sizeConstraint = CGSizeMake(self.ingredientsViewEditableView.frame.size.width, self.ingredientsViewEditableView.frame.size.height);
-    CGSize sizeConstainedToFont = [ingredientsValue sizeWithFont:ingredientsViewFont constrainedToSize:sizeConstraint];
-
     ingredientsViewLabel.frame = CGRectMake(self.ingredientsViewEditableView.frame.origin.x, self.ingredientsViewEditableView.frame.origin.y,
-                                     sizeConstainedToFont.width, sizeConstainedToFont.height);
+                                  self.ingredientsViewEditableView.frame.size.width - kEditableInsets.left-kEditableInsets.right,
+                                  self.ingredientsViewEditableView.frame.size.height - kEditableInsets.top-kEditableInsets.bottom);
     self.ingredientsViewEditableView.contentView = ingredientsViewLabel;
 }
 
-- (void)setMethodValue:(NSString *)textViewValue {
-    UIEdgeInsets editableInsets = UIEdgeInsetsMake(2.0, 2.0, 2.0f, 25.0f);
-
+- (void)setMethodValue:(NSString *)methodValue {
+    UIFont *methodViewFont = [Theme methodFont];
     UILabel *methodViewLabel = (UILabel *)self.methodViewEditableView.contentView;
-
     if (!methodViewLabel) {
         methodViewLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         methodViewLabel.autoresizingMask = UIViewAutoresizingNone;
         methodViewLabel.backgroundColor = [UIColor clearColor];
         methodViewLabel.numberOfLines = 0;
         methodViewLabel.textAlignment = NSTextAlignmentLeft;
-        methodViewLabel.font = [Theme defaultFontWithSize:20.0f];
-        methodViewLabel.textColor = [UIColor blackColor];
+        methodViewLabel.font = methodViewFont;
+        methodViewLabel.textColor = [Theme methodColor];
         
         self.methodViewEditableView.delegate = self;
-        self.methodViewEditableView.contentInsets = editableInsets;
-        self.methodViewEditableView.backgroundColor = [UIColor clearColor];
-        self.methodViewEditableView.contentView = methodViewLabel;
+        self.methodViewEditableView.contentInsets = kEditableInsets;
     }
     
-    methodViewLabel.text = textViewValue;
-//    CGSize textViewSize = CGSizeMake(329.0f,252.0f);
-//    CGSize labelSize = [textViewValue sizeWithFont:textViewLabel.font constrainedToSize:textViewSize lineBreakMode:NSLineBreakByTruncatingTail];
-//    textViewLabel.frame = CGRectMake(0.0f, 0.0f, labelSize.width, labelSize.height);
+    methodViewLabel.text = methodValue;
+    methodViewLabel.frame = CGRectMake(self.methodViewEditableView.frame.origin.x, self.methodViewEditableView.frame.origin.y,
+                                            self.methodViewEditableView.frame.size.width - kEditableInsets.left-kEditableInsets.right,
+                                            self.methodViewEditableView.frame.size.height - kEditableInsets.top-kEditableInsets.bottom);
+    self.methodViewEditableView.contentView = methodViewLabel;
 
 }
+
+- (void)setCookingTimeValue:(NSString *)cookingTimeValue {
+    
+    UIFont *cookingTimeFont = [Theme cookingTimeFont];
+    UILabel *cookingTimeLabel = (UILabel *)self.cookingTimeEditableView.contentView;
+    
+    if (!cookingTimeLabel) {
+        cookingTimeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        cookingTimeLabel.autoresizingMask = UIViewAutoresizingNone;
+        cookingTimeLabel.backgroundColor = [UIColor clearColor];
+        cookingTimeLabel.font = cookingTimeFont;
+        cookingTimeLabel.textColor = [Theme cookingTimeColor];
+        cookingTimeLabel.numberOfLines = 0;
+        
+        self.cookingTimeEditableView.delegate = self;
+        self.cookingTimeEditableView.contentInsets = kEditableInsets;
+    }
+    
+    cookingTimeLabel.text = cookingTimeValue;
+    cookingTimeLabel.frame = CGRectMake(self.cookingTimeEditableView.frame.origin.x, self.cookingTimeEditableView.frame.origin.y,
+                                       self.cookingTimeEditableView.frame.size.width - kEditableInsets.left-kEditableInsets.right,
+                                       self.cookingTimeEditableView.frame.size.height - kEditableInsets.top-kEditableInsets.bottom);
+    self.cookingTimeEditableView.contentView = cookingTimeLabel;
+}
+
+- (void)setServesValue:(NSString *)servesValue {
+    
+    UIFont *servesFont = [Theme servesFont];
+    UILabel *servesLabel = (UILabel *)self.servesEditableView.contentView;
+    
+    if (!servesLabel) {
+        servesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        servesLabel.autoresizingMask = UIViewAutoresizingNone;
+        servesLabel.backgroundColor = [UIColor clearColor];
+        servesLabel.font = servesFont;
+        servesLabel.textColor = [Theme servesColor];
+        servesLabel.numberOfLines = 0;
+        
+        self.servesEditableView.delegate = self;
+        self.servesEditableView.contentInsets = kEditableInsets;
+    }
+    
+    servesLabel.text = servesValue;
+    servesLabel.frame = CGRectMake(self.servesEditableView.frame.origin.x, self.servesEditableView.frame.origin.y,
+                                        self.servesEditableView.frame.size.width - kEditableInsets.left-kEditableInsets.right,
+                                        self.servesEditableView.frame.size.height - kEditableInsets.top-kEditableInsets.bottom);
+    
+    self.servesEditableView.contentView = servesLabel;
+}
+
 @end
