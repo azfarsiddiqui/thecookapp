@@ -76,7 +76,11 @@
 #pragma mark - IBActions
 -(IBAction)dismissTapped:(id)sender
 {
-    [self.modalDelegate closeRequestedForBookModalViewController:self];
+    if (self.modalDelegate) {
+        [self.modalDelegate closeRequestedForBookModalViewController:self];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 -(IBAction)toggledEditMode:(UIButton*)editModeButton
