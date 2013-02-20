@@ -11,9 +11,12 @@
 #import "CKTextFieldEditingViewController.h"
 #import "TextViewEditingViewController.h"
 #import "IngredientsEditingViewController.h"
+#import "BookModalViewControllerDelegate.h"
 
 #import "Theme.h"
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
+
+@property(nonatomic,assign) id<BookModalViewControllerDelegate> modalDelegate;
 @property(nonatomic,assign) BOOL inEditMode;
 @property(nonatomic,strong) NSArray *ingredientListData;
 @property(nonatomic,strong) NSString *testTextViewData;
@@ -56,8 +59,7 @@
 #pragma mark - IBActions
 -(IBAction)dismissTapped:(id)sender
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-    }];
+    [self.modalDelegate closeRequestedForBookModalViewController:self];
 }
 
 -(IBAction)toggledEditMode:(UIButton*)editModeButton
@@ -154,6 +156,12 @@
         [self setListViewValue:value];
         [self.ingredientsViewEditableView enableEditMode:YES];
     }
+}
+
+#pragma mark - BookModalViewController methods
+
+- (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate {
+    self.modalDelegate = modalViewControllerDelegate;
 }
 
 #pragma mark - Private Methods
