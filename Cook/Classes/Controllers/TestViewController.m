@@ -232,20 +232,27 @@
 
 #pragma mark - Private Methods
 
+-(UILabel*)configLabelForEditableView:(CKEditableView*)editableView withTextAlignment:(NSTextAlignment)textAlignment withFont:(UIFont*)viewFont  withColor:(UIColor*)color
+{
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.autoresizingMask = UIViewAutoresizingNone;
+    label.backgroundColor = [UIColor clearColor];
+    label.textAlignment = textAlignment;
+    label.font = viewFont;
+    label.textColor = color;
+    label.numberOfLines = 0;
+    editableView.delegate = self;
+    editableView.contentInsets = kEditableInsets;
+
+    return label;
+}
+
 -(void) configEditableView:(CKEditableView*)editableView withValue:(NSString*)value withFont:(UIFont*)viewFont  withColor:(UIColor*)color withTextAlignment:(NSTextAlignment)textAlignment
 {
     UILabel *label = (UILabel *)editableView.contentView;
     
     if (!label) {
-        label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.autoresizingMask = UIViewAutoresizingNone;
-        label.backgroundColor = [UIColor clearColor];
-        label.textAlignment = textAlignment;
-        label.font = viewFont;
-        label.textColor = color;
-        label.numberOfLines = 0;
-        editableView.delegate = self;
-        editableView.contentInsets = kEditableInsets;
+        label = [self configLabelForEditableView:editableView withTextAlignment:textAlignment withFont:viewFont withColor:color];
     }
     
     label.text = value;
@@ -267,12 +274,44 @@
 }
 
 - (void)setIngredientsValue:(NSString *)ingredientsValue {
-    [self configEditableView:self.ingredientsViewEditableView withValue:ingredientsValue withFont:[Theme ingredientsListFont] withColor:[Theme ingredientsListColor] withTextAlignment:NSTextAlignmentLeft];
+    UILabel *label = (UILabel *)self.ingredientsViewEditableView.contentView;
+    if (!label) {
+        label = [self configLabelForEditableView:self.ingredientsViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme ingredientsListFont]
+                                       withColor:[Theme ingredientsListColor]];
+    }
+
+    label.text = ingredientsValue;
+    CGSize constrainedSize = [ingredientsValue sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
+                        CGSizeMake(self.ingredientsViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
+                                   self.ingredientsViewEditableView.frame.size.height- kEditableInsets.top-kEditableInsets.bottom)];
+    
+    label.frame = CGRectMake(self.ingredientsViewEditableView.frame.origin.x,
+                             self.ingredientsViewEditableView.frame.origin.y,
+                             self.ingredientsViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
+                             constrainedSize.height);
+    
+    self.ingredientsViewEditableView.contentView = label;
     self.ingredientListData = [ingredientsValue componentsSeparatedByString:@"\n"];
 }
 
 - (void)setMethodValue:(NSString *)methodValue {
-    [self configEditableView:self.methodViewEditableView withValue:methodValue withFont:[Theme methodFont] withColor:[Theme methodColor] withTextAlignment:NSTextAlignmentLeft];
+    UILabel *label = (UILabel *)self.methodViewEditableView.contentView;
+    if (!label) {
+        label = [self configLabelForEditableView:self.methodViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme methodFont]
+                                       withColor:[Theme methodColor]];
+    }
+    
+    label.text = methodValue;
+    CGSize constrainedSize = [methodValue sizeWithFont:[Theme methodFont] constrainedToSize:
+                              CGSizeMake(self.methodViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
+                                         self.methodViewEditableView.frame.size.height- kEditableInsets.top-kEditableInsets.bottom)];
+    
+    label.frame = CGRectMake(self.methodViewEditableView.frame.origin.x,
+                             self.methodViewEditableView.frame.origin.y,
+                             self.methodViewEditableView.frame.size.width- kEditableInsets.left-kEditableInsets.right,
+                             constrainedSize.height);
+    
+    self.methodViewEditableView.contentView = label;
 }
 
 - (void)setCookingTimeValue:(NSString *)cookingTimeValue {
