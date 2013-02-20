@@ -11,10 +11,11 @@
 @interface BookNavigationLayout ()
 
 @property (nonatomic, assign) id<BookNavigationLayoutDataSource> dataSource;
-@property (nonatomic, strong) NSMutableArray *sectionPages;
-@property (nonatomic, strong) NSMutableArray *allLayoutAttributes;
-@property (nonatomic, strong) NSMutableArray *headerAttributes;
-@property (nonatomic, strong) NSMutableDictionary *indexPathAttributes;
+@property (nonatomic, strong) NSMutableArray *contentPages;
+@property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
+@property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
 
 @end
 
@@ -43,17 +44,30 @@
 
 - (CGSize)collectionViewContentSize {
     CGFloat width = 0;
-    for (NSArray *pages in self.sectionPages) {
+    NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
+    
+    // Info pages: Profile, Home.
+    width = contentStartSection * self.collectionView.bounds.size.width;
+    
+    // Category pages.
+    for (NSArray *pages in self.contentPages) {
         
         // Section width is the number of pages multiple of the width.
         width += [pages count] * self.collectionView.bounds.size.width;
         
     }
+    
     return CGSizeMake(width, self.collectionView.bounds.size.height);
 }
 
 - (void)prepareLayout {
-    [self buildLayoutData];
+    self.itemsLayoutAttributes = [NSMutableArray array];
+    self.supplementaryLayoutAttributes = [NSMutableArray array];
+    self.indexPathItemAttributes = [NSMutableDictionary dictionary];
+    self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
+    
+    [self buildInfoLayoutData];
+    [self buildContentsLayoutData];
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
@@ -63,15 +77,22 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray* layoutAttributes = [NSMutableArray array];
     
+//    // Home view.
+//    for (UICollectionViewLayoutAttributes *attributes in self.decorationLayoutAttributes) {
+//        if (CGRectIntersectsRect(rect, attributes.frame)) {
+//            [layoutAttributes addObject:attributes];
+//        }
+//    }
+    
     // Header cells.
-    for (UICollectionViewLayoutAttributes *attributes in self.headerAttributes) {
+    for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
         if (CGRectIntersectsRect(rect, attributes.frame)) {
             [layoutAttributes addObject:attributes];
         }
     }
     
     // Item cells.
-    for (UICollectionViewLayoutAttributes *attributes in self.allLayoutAttributes) {
+    for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
         if (CGRectIntersectsRect(rect, attributes.frame)) {
             [layoutAttributes addObject:attributes];
         }
@@ -81,34 +102,44 @@
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes *attributes = [self.indexPathAttributes objectForKey:indexPath];
+    UICollectionViewLayoutAttributes *attributes = [self.indexPathItemAttributes objectForKey:indexPath];
     return attributes;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes *attributes = nil;
-    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        if (indexPath.section < [self.sectionPages count]) {
-            UIEdgeInsets pageInsets = [BookNavigationLayout pageInsets];
-            CGSize unitSize = [BookNavigationLayout unitSize];
-            CGFloat columnSeparatorWidth = [BookNavigationLayout columnSeparatorWidth];
-            NSInteger numColumns = 2;
-            attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
-            attributes.frame = CGRectMake([self pageOffsetForSection:indexPath.section] + pageInsets.left,
-                                          pageInsets.top,
-                                          (numColumns * unitSize.width) + ((numColumns - 1) * columnSeparatorWidth),
-                                          unitSize.height);
-        }
-        
-    }
+    UICollectionViewLayoutAttributes *attributes = [self.indexPathSupplementaryAttributes objectForKey:indexPath];
     return attributes;
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)decorationViewKind atIndexPath:(NSIndexPath *)indexPath {
+    return [super layoutAttributesForDecorationViewOfKind:decorationViewKind atIndexPath:indexPath];
 }
 
 #pragma mark - Private methods
 
-- (void)buildLayoutData {
-    NSInteger numSections = [self.collectionView numberOfSections];
-    DLog(@"Number of sections [%d]", numSections);
+- (void)buildInfoLayoutData {
+    
+    NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
+    for (NSInteger section = 0; section < contentStartSection; section++) {
+        
+        // Add layout attributes for the meta/info sections before contents start.
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:section];
+        UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+        CGSize size = self.collectionView.bounds.size;
+        layoutAttributes.frame = CGRectMake(section * size.width, 0.0, size.width, size.height);
+        [self.itemsLayoutAttributes addObject:layoutAttributes];
+        [self.indexPathItemAttributes setObject:layoutAttributes forKey:indexPath];
+        
+    }
+    
+}
+
+- (void)buildContentsLayoutData {
+    
+    // Content start section.
+    NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
+    NSInteger numContentSections = [self.collectionView numberOfSections] - contentStartSection;
+    DLog(@"Number of content sections [%d]", numContentSections);
     
     // Page and items params.
     NSInteger numColumns = [self.dataSource bookNavigationLayoutNumColumns];
@@ -118,40 +149,40 @@
     CGFloat firstItemOffset = [self firstItemOffsetForSection];
     
     // Initialise the data structures to store all preloaded pages and attributes.
-    self.sectionPages = [NSMutableArray arrayWithCapacity:numSections];
-    self.allLayoutAttributes = [NSMutableArray array];
-    self.indexPathAttributes = [NSMutableDictionary dictionary];
-    self.headerAttributes = [NSMutableArray array];
+    self.contentPages = [NSMutableArray arrayWithCapacity:numContentSections];
     
     // Loop through each section and assemble the pages for each.
-    for (NSInteger section = 0; section < numSections; section++) {
+    for (NSInteger contentSection = 0; contentSection < numContentSections; contentSection++) {
+        
+        // Real book section.
+        NSInteger section = contentSection + contentStartSection;
         
         CGFloat pageOffsetForSection = [self pageOffsetForSection:section];
         
         // Current xOffset of items.
-        CGFloat xOffset = pageOffsetForSection + firstItemOffset;
+        CGFloat xOffsetForItems = pageOffsetForSection + firstItemOffset;
         
-        // First create the header.
+        // First create the content header.
         NSInteger headerColumns = 2;
         NSIndexPath *sectionIndexPath = [NSIndexPath indexPathForItem:0 inSection:section];
-        UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                                                            withIndexPath:sectionIndexPath];
+        UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:sectionIndexPath];
         headerAttributes.frame = CGRectMake(pageOffsetForSection + pageInsets.left,
                                             pageInsets.top,
                                             (headerColumns * unitSize.width) + ((headerColumns - 1) * columnSeparatorWidth),
                                             unitSize.height);
-        [self.headerAttributes addObject:headerAttributes];
+        [self.supplementaryLayoutAttributes addObject:headerAttributes];
+        [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
         
         // Start off with one available column to make way for the category header.
         NSInteger availableColumns = 1;
         
         // Create pages array if not there already.
         NSMutableArray *pages = nil;
-        if ([self.sectionPages count] > section) {
-            pages = [self.sectionPages objectAtIndex:section];
+        if ([self.contentPages count] > contentSection) {
+            pages = [self.contentPages objectAtIndex:contentSection];
         } else {
             pages = [NSMutableArray array];
-            [self.sectionPages addObject:pages];
+            [self.contentPages addObject:pages];
         }
         
         // Loop through each item in the section and attempt to add them to the page.
@@ -184,7 +215,7 @@
                 availableColumns = numColumns;
                 
                 // Increment xOffset to jump page division.
-                xOffset += pageInsets.right + pageInsets.left;
+                xOffsetForItems += pageInsets.right + pageInsets.left;
                 
             }
             
@@ -193,7 +224,7 @@
                 
                 // Increment xOffset if we have available columns.
                 if (itemIndex > 0 && availableColumns < numColumns) {
-                    xOffset += columnSeparatorWidth;
+                    xOffsetForItems += columnSeparatorWidth;
                 }
                 
                 // Add item indexPath to the currentPage items.
@@ -201,15 +232,15 @@
                 
                 // Add layout attributes for the given indexPath.
                 UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-                layoutAttributes.frame = CGRectMake(xOffset,
+                layoutAttributes.frame = CGRectMake(xOffsetForItems,
                                                     pageInsets.top,
                                                     unitSize.width * columnWidth + (columnSeparatorWidth * (columnWidth - 1)),
                                                     unitSize.height);
-                [self.allLayoutAttributes addObject:layoutAttributes];
-                [self.indexPathAttributes setObject:layoutAttributes forKey:indexPath];
+                [self.itemsLayoutAttributes addObject:layoutAttributes];
+                [self.indexPathItemAttributes setObject:layoutAttributes forKey:indexPath];
                 
                 // Increment xOffset.
-                xOffset += layoutAttributes.frame.size.width;
+                xOffsetForItems += layoutAttributes.frame.size.width;
                 
                 // Decrement the number of available columns.
                 availableColumns -= columnWidth;
@@ -225,14 +256,20 @@
 }
 
 - (CGFloat)pageOffsetForSection:(NSInteger)section {
-    CGFloat pageOffset = 0.0;
-    if (section > 0) {
+    
+    NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
+    NSInteger contentSection = section - contentStartSection;
+    
+    // Items start from the content start section.
+    CGFloat pageOffset = [self.dataSource bookNavigationContentStartSection] * self.collectionView.bounds.size.width;
+    
+    if (contentSection > 0) {
         
         // Loop through the past pages
-        for (NSInteger sectionIndex = 0; sectionIndex < section; sectionIndex++) {
+        for (NSInteger sectionIndex = 0; sectionIndex < contentSection; sectionIndex++) {
             
             // Section width is the number of pages multiple of the width.
-            NSArray *sectionPages = [self.sectionPages objectAtIndex:sectionIndex];
+            NSArray *sectionPages = [self.contentPages objectAtIndex:sectionIndex];
             pageOffset += [sectionPages count] * self.collectionView.bounds.size.width;
             
         }

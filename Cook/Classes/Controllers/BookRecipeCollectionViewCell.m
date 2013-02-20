@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "RecipeCollectionViewCell.h"
+#import "BookRecipeCollectionViewCell.h"
 #import <Parse/Parse.h>
 #import "CKRecipe.h"
 #import "Theme.h"
@@ -15,7 +15,7 @@
 #import "Ingredient.h"
 #import "GridRecipeStatsView.h"
 
-@interface RecipeCollectionViewCell ()
+@interface BookRecipeCollectionViewCell ()
 
 @property (nonatomic, strong) PFImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -26,7 +26,7 @@
 
 @end
 
-@implementation RecipeCollectionViewCell
+@implementation BookRecipeCollectionViewCell
 
 #define kViewDebug              0
 #define kImageHeight            140.0

@@ -10,7 +10,7 @@
 
 @class CKRecipe;
 
-@interface RecipeCollectionViewCell : UICollectionViewCell
+@interface BookRecipeCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) CKRecipe *recipe;
 
