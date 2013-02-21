@@ -13,7 +13,9 @@
 @interface ActivityCollectionViewCell : UICollectionViewCell
 
 + (CGSize)cellSize;
++ (CGSize)imageSize;
 
 - (void)configureActivity:(CKActivity *)activity;
+- (void)configureImage:(UIImage *)image;
 
 @end

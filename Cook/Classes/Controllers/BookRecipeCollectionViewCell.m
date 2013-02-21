@@ -7,17 +7,17 @@
 //
 
 #import "BookRecipeCollectionViewCell.h"
-#import <Parse/Parse.h>
 #import "CKRecipe.h"
 #import "Theme.h"
 #import "UIImage+ProportionalFill.h"
 #import "MRCEnumerable.h"
 #import "Ingredient.h"
 #import "GridRecipeStatsView.h"
+#import "ImageHelper.h"
 
 @interface BookRecipeCollectionViewCell ()
 
-@property (nonatomic, strong) PFImageView *imageView;
+@property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
 @property (nonatomic, strong) UILabel *ingredientsEllipsisLabel;
@@ -40,7 +40,7 @@
     if (self = [super initWithFrame:frame]) {
         
         // Top thumbnail.
-        PFImageView *imageView = [[PFImageView alloc] initWithImage:nil];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
         imageView.frame = CGRectMake(0.0, 0.0, self.contentView.bounds.size.width, kImageHeight);
         [self.contentView addSubview:imageView];
         self.imageView = imageView;
@@ -116,7 +116,7 @@
 }
 
 - (void)configureImage:(UIImage *)image {
-    self.imageView.image = image;
+    [ImageHelper configureImageView:self.imageView image:image];
 }
 
 - (CGSize)imageSize {

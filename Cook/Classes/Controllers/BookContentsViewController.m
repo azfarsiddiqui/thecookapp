@@ -8,14 +8,18 @@
 
 #import "BookContentsViewController.h"
 #import "CKBook.h"
+#import "CKActivity.h"
+#import "CKUser.h"
+#import "CKRecipe.h"
 #import "BookHomeFlowLayout.h"
 #import "ActivityCollectionViewCell.h"
-#import "CKActivity.h"
+#import "ParsePhotoStore.h"
 
 @interface BookContentsViewController ()
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSArray *activities;
+@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @end
 
@@ -27,6 +31,7 @@
 - (id)initWithBook:(CKBook *)book {
     if (self = [super initWithCollectionViewLayout:[[BookHomeFlowLayout alloc] init]]) {
         self.book = book;
+        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -52,6 +57,7 @@
                                                                                                            forIndexPath:indexPath];
     CKActivity *activity = [self.activities objectAtIndex:indexPath.item];
     [cell configureActivity:activity];
+    [self configureImageForActivityCell:cell activity:activity indexPath:indexPath];
     return cell;
 }
 
@@ -72,21 +78,21 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return UIEdgeInsetsMake(80.0, 60.0, 80.0, 60.0);
+    return UIEdgeInsetsMake(80.0, 62.0, 80.0, 62.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // Between rows
-    return 20.0;
+    return 36.0;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     
     // Between columns
-    return 20.0;
+    return 36.0;
 }
 
 #pragma mark - Private methods
@@ -109,5 +115,30 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                           }];
 }
 
+- (void)configureImageForActivityCell:(ActivityCollectionViewCell *)activityCell activity:(CKActivity *)activity
+                            indexPath:(NSIndexPath *)indexPath {
+    CKRecipe *recipe = activity.recipe;
+    
+    // Configure recipe image only if this activity pertains to a recipe.
+    if (recipe) {
+        if ([recipe hasPhotos]) {
+            
+            CGSize imageSize = [ActivityCollectionViewCell imageSize];
+            [self.photoStore imageForParseFile:[recipe imageFile]
+                                          size:imageSize
+                                     indexPath:indexPath
+                                    completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+                                        
+                                        // Check that we have matching indexPaths as cells are re-used.
+                                        if ([indexPath isEqual:completedIndexPath]) {
+                                            [activityCell configureImage:image];
+                                        }
+                                    }];
+            
+        } else {
+            [activityCell configureImage:nil];
+        }
+    }
+}
 
 @end

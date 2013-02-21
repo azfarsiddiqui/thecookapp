@@ -37,11 +37,12 @@
 }
 
 + (void)activitiesForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure; {
-    PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
+    PFQuery *query = [PFQuery queryWithClassName:kActivityModelName];
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
-    [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
+    [query whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
     [query includeKey:kUserModelForeignKeyName];
     [query includeKey:kRecipeModelForeignKeyName];
+    [query includeKey:[NSString stringWithFormat:@"%@.%@", kRecipeModelForeignKeyName, kRecipeAttrRecipePhotos]];
     [query orderByDescending:kModelAttrCreatedAt];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseActivities, NSError *error) {
         if (!error) {
