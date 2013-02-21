@@ -11,7 +11,10 @@
 @implementation ActivityCollectionViewCell
 
 + (CGSize)cellSize {
-    return CGSizeMake(240.0, 240.0);
+    return CGSizeMake(280.0, 260.0);
+}
+
+- (void)configureActivity:(CKActivity *)activity {
 }
 
 @end

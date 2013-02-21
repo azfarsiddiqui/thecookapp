@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKActivity;
+
 @interface ActivityCollectionViewCell : UICollectionViewCell
 
 + (CGSize)cellSize;
+
+- (void)configureActivity:(CKActivity *)activity;
 
 @end

@@ -10,7 +10,7 @@
 
 @class CKBook;
 
-@interface BookHomeViewController : UICollectionViewController
+@interface BookContentsViewController : UICollectionViewController
 
 - (id)initWithBook:(CKBook *)book;
 

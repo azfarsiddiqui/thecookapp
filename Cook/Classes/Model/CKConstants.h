@@ -82,5 +82,9 @@ extern NSString *const kCategoryModelForeignKeyName;
 extern NSString *const kRecipeLikeModelName;
 extern NSString *const kRecipeLikeModelForeignKeyName;
 
-
+#pragma mark - Activity class
+extern NSString *const kActivityModelName;
+extern NSString *const kActivityNameAddRecipe;
+extern NSString *const kActivityNameUpdateRecipe;
+extern NSString *const kActivityNameLikeRecipe;
 

@@ -13,9 +13,9 @@
 #import "CKConstants.h"
 #import "NSArray+Enumerable.h"
 #import "NSArray+Enumerable.h"
+#import "CKActivity.h"
 
 @interface CKRecipe()
-@property(nonatomic,strong) CKUser *user;
 @property(nonatomic,strong) CKBook *book;
 @end
 
@@ -117,11 +117,20 @@
     }
 }
 
--(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    
+- (void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFObject *parseRecipe = self.parseObject;
+    BOOL newRecipe = ![self persisted];
     [self prepareParseRecipeObjectForSave:parseRecipe];
+    
     [self saveInBackground:^{
+        
+        // Save add/update activities.
+        if (newRecipe) {
+            [CKActivity saveAddRecipeActivityForRecipe:self];
+        } else {
+            [CKActivity saveUpdateRecipeActivityForRecipe:self];
+        }
+        
         success();
     } failure:^(NSError *error) {
         failure(error);

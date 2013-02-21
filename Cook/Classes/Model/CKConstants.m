@@ -24,6 +24,7 @@ NSString *const kUserAttrFacebookId             = @"facebookId";
 NSString *const kUserAttrAdmin                  = @"admin";
 NSString *const kUserAttrBookSuggestions        = @"suggestedBooks";
 NSString *const kUserAttrFacebookFriends        = @"facebookFriends";
+NSString *const kUserAttrActivities             = @"activities";
 
 #pragma mark - User Book Follow class
 
@@ -78,8 +79,13 @@ NSString *const kRecipeImageAttrImageName       = @"imageName";
 NSString *const kCategoryModelName              = @"Category";
 NSString *const kCategoryModelForeignKeyName    = @"category";
 
-
 #pragma mark - RecipeLike class
 NSString *const kRecipeLikeModelName           = @"RecipeLike";
 NSString *const kRecipeLikeModelForeignKeyName = @"recipeLike";
+
+#pragma mark - Activity class
+NSString *const kActivityModelName              = @"Activity";
+NSString *const kActivityNameAddRecipe          = @"AddRecipe";
+NSString *const kActivityNameUpdateRecipe       = @"UpdateRecipe";
+NSString *const kActivityNameLikeRecipe         = @"LikeRecipe";
 

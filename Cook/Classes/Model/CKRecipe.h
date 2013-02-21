@@ -23,6 +23,7 @@
 @property (nonatomic, assign) float cookingTimeInSeconds;
 @property (nonatomic, assign) int numServes;
 
+@property(nonatomic,strong) CKUser *user;
 @property(nonatomic,strong) Category *category;
 @property(nonatomic,strong) CKRecipeImage *recipeImage;
 

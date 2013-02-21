@@ -83,6 +83,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
                    }];
 }
 
++ (CKUser *)userWithParseUser:(PFUser *)parseUser {
+    return [[CKUser alloc] initWithParseUser:parseUser];
+}
+
 #pragma mark - CKModel 
 
 - (NSString *)objectId {

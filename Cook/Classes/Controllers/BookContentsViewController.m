@@ -6,24 +6,27 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookHomeViewController.h"
+#import "BookContentsViewController.h"
 #import "CKBook.h"
 #import "BookHomeFlowLayout.h"
 #import "ActivityCollectionViewCell.h"
+#import "CKActivity.h"
 
-@interface BookHomeViewController ()
+@interface BookContentsViewController ()
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) NSArray *activities;
 
 @end
 
-@implementation BookHomeViewController
+@implementation BookContentsViewController
 
 #define kActivityCellId     @"ActivityCellId"
 #define kHomeHeaderId       @"kHomeHeaderId"
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super initWithCollectionViewLayout:[[BookHomeFlowLayout alloc] init]]) {
+        self.book = book;
     }
     return self;
 }
@@ -31,6 +34,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initCollectionView];
+    [self loadData];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -40,13 +44,14 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 25.0;    
+    return [self.activities count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ActivityCollectionViewCell *cell = (ActivityCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kActivityCellId
                                                                                                            forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor lightGrayColor];
+    CKActivity *activity = [self.activities objectAtIndex:indexPath.item];
+    [cell configureActivity:activity];
     return cell;
 }
 
@@ -67,19 +72,21 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return UIEdgeInsetsMake(80.0, 80.0, 80.0, 80.0);
+    return UIEdgeInsetsMake(80.0, 60.0, 80.0, 60.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
-    return 72.0;
+    // Between rows
+    return 20.0;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     
-    return 72.0;
+    // Between columns
+    return 20.0;
 }
 
 #pragma mark - Private methods
@@ -88,8 +95,18 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.collectionView.backgroundColor = [UIColor whiteColor];
     
     [self.collectionView registerClass:[ActivityCollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
-//    [self.collectionView registerClass:[CategoryHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-//                   withReuseIdentifier:kHomeHeaderId];
+}
+
+- (void)loadData {
+    [CKActivity activitiesForUser:self.book.user
+                          success:^(NSArray *activities) {
+                              DLog(@"Activities: %@", activities)
+                              self.activities = activities;
+                              [self.collectionView reloadData];
+                          }
+                          failure:^(NSError *error)  {
+                              DLog(@"Unable to load activities: %@", [error localizedDescription]);
+                          }];
 }
 
 
