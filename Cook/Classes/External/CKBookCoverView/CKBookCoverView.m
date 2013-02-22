@@ -15,16 +15,16 @@
 @interface CKBookCoverView () <CKEditableViewDelegate, CKEditingViewControllerDelegate>
 
 @property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
+@property (nonatomic, strong) CKEditableView *authorEditableView;
+@property (nonatomic, strong) CKEditableView *titleEditableView;
+@property (nonatomic, strong) CKEditableView *captionEditableView;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIImageView *overlayImageView;
 @property (nonatomic, strong) UIImageView *illustrationImageView;
 @property (nonatomic, strong) UILabel *layoutLabel;
 @property (nonatomic, strong) UILabel *authorLabel;
-@property (nonatomic, strong) CKEditableView *authorEditableView;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) CKEditableView *titleEditableView;
-@property (nonatomic, strong) CKEditableView *captionEditableView;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
@@ -345,42 +345,42 @@
     return offset;
 }
 
-- (CGRect)authorFrameForSize:(CGSize)size {
-    CGRect frame = CGRectZero;
-    CGFloat sideOffset = 30.0;
-    CGSize availableSize = [self availableContentSize];
-    UIEdgeInsets authorInsets = UIEdgeInsetsMake(kContentInsets.top, kContentInsets.left + sideOffset, kContentInsets.bottom, kContentInsets.right + sideOffset);
-    availableSize = CGSizeMake(availableSize.width - (sideOffset * 2.0), availableSize.height);
-    switch (self.bookCoverLayout) {
-        case BookCoverLayout1:
-            frame = CGRectMake(authorInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                               authorInsets.top + 10.0,
-                               size.width,
-                               size.height);
-            break;
-        case BookCoverLayout2:
-            frame = CGRectMake(authorInsets.left,
-                               authorInsets.top + 10.0,
-                               availableSize.width,
-                               size.height);
-            break;
-        case BookCoverLayout3:
-            frame = CGRectMake(authorInsets.left,
-                               self.bounds.size.height - kContentInsets.bottom - size.height,
-                               availableSize.width,
-                               size.height);
-            break;
-        case BookCoverLayout4:
-            frame = CGRectMake(authorInsets.left,
-                               self.titleLabel.frame.origin.y - size.height,
-                               availableSize.width,
-                               size.height);
-            break;
-        default:
-            break;
-    }
-    return frame;
-}
+//- (CGRect)authorFrameForSize:(CGSize)size {
+//    CGRect frame = CGRectZero;
+//    CGFloat sideOffset = 30.0;
+//    CGSize availableSize = [self availableContentSize];
+//    UIEdgeInsets authorInsets = UIEdgeInsetsMake(kContentInsets.top, kContentInsets.left + sideOffset, kContentInsets.bottom, kContentInsets.right + sideOffset);
+//    availableSize = CGSizeMake(availableSize.width - (sideOffset * 2.0), availableSize.height);
+//    switch (self.bookCoverLayout) {
+//        case BookCoverLayout1:
+//            frame = CGRectMake(authorInsets.left + floorf((availableSize.width - size.width) / 2.0),
+//                               authorInsets.top + 10.0,
+//                               size.width,
+//                               size.height);
+//            break;
+//        case BookCoverLayout2:
+//            frame = CGRectMake(authorInsets.left,
+//                               authorInsets.top + 10.0,
+//                               availableSize.width,
+//                               size.height);
+//            break;
+//        case BookCoverLayout3:
+//            frame = CGRectMake(authorInsets.left,
+//                               self.bounds.size.height - kContentInsets.bottom - size.height,
+//                               availableSize.width,
+//                               size.height);
+//            break;
+//        case BookCoverLayout4:
+//            frame = CGRectMake(authorInsets.left,
+//                               self.titleLabel.frame.origin.y - size.height,
+//                               availableSize.width,
+//                               size.height);
+//            break;
+//        default:
+//            break;
+//    }
+//    return frame;
+//}
 
 - (CGRect)authorEditableAdjustedFrameWithSize:(CGSize)size {
     CGRect frame = CGRectZero;
@@ -553,7 +553,9 @@
 
         CKEditableView *authorEditableView = [[CKEditableView alloc] initWithDelegate:self];
         authorEditableView.contentInsets = editableInsets;
-        authorEditableView.contentView = authorLabel;
+//        authorEditableView.contentView = authorLabel;
+//        TEMP: until I can understand this implementatation JS
+        [authorEditableView setBookCoverContentView:authorLabel];
         [self addSubview:authorEditableView];
         self.authorEditableView = authorEditableView;
     }
@@ -562,8 +564,10 @@
     authorLabel.textAlignment = [self authorTextAlignment];
     authorLabel.text = author;
     [authorLabel sizeToFit];
-    authorLabel.frame = CGRectMake(0.0, 0.0, availableSize.width, authorLabel.frame.size.height);
-    self.authorEditableView.contentView = authorLabel;
+    authorLabel.frame = CGRectMake(editableInsets.left, 0.0f, availableSize.width, authorLabel.frame.size.height);
+//    self.authorEditableView.contentView = authorLabel;
+//        TEMP: until I can understand this implementatation JS
+    [self.authorEditableView setBookCoverContentView:authorLabel];
     self.authorEditableView.frame = [self authorEditableAdjustedFrameWithSize:self.authorEditableView.frame.size];
 }
 
@@ -585,7 +589,9 @@
 
         CKEditableView *captionEditableView = [[CKEditableView alloc] initWithDelegate:self];
         captionEditableView.contentInsets = editableInsets;
-        captionEditableView.contentView = captionLabel;
+        //        TEMP: until I can understand this implementatation JS
+//        captionEditableView.contentView = captionLabel;
+        [captionEditableView setBookCoverContentView:captionLabel];
         [self addSubview:captionEditableView];
         self.captionEditableView = captionEditableView;
     }
@@ -595,7 +601,9 @@
     captionLabel.text = caption;
     [captionLabel sizeToFit];
     captionLabel.frame = CGRectMake(0.0, 0.0, availableSize.width, captionLabel.frame.size.height);
-    self.captionEditableView.contentView = captionLabel;
+    //        TEMP: until I can understand this implementatation JS
+    //        captionEditableView.contentView = captionLabel;
+    [self.captionEditableView setBookCoverContentView:captionLabel];
     self.captionEditableView.frame = [self captionEditableAdjustedFrameWithSize:self.captionEditableView.frame.size];
 }
 
@@ -615,7 +623,10 @@
         
         CKEditableView *titleEditableView = [[CKEditableView alloc] initWithDelegate:self];
         titleEditableView.contentInsets = editableInsets;
-        titleEditableView.contentView = titleLabel;
+        //        TEMP: until I can understand this implementatation JS
+        //        titleEditableView.contentView = titleLabel;
+        [titleEditableView setBookCoverContentView:titleLabel];
+
         [self addSubview:titleEditableView];
         self.titleEditableView = titleEditableView;
     }
@@ -665,7 +676,10 @@
     [titleLabel sizeToFit];
     CGSize size = [titleLabel sizeThatFits:[self availableContentSize]];
     titleLabel.frame = CGRectMake(0.0, 0.0, availableSize.width, size.height);
-    self.titleEditableView.contentView = titleLabel;
+    //        TEMP: until I can understand this implementatation JS
+    //        titleEditableView.contentView = titleLabel;
+    [self.titleEditableView setBookCoverContentView:titleLabel];
+//    self.titleEditableView.contentView = titleLabel;
     self.titleEditableView.frame = [self titleEditableAdjustedFrameWithSize:size];
 }
 

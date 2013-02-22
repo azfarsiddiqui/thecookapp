@@ -20,7 +20,8 @@
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, assign) id<CKEditableViewDelegate> delegate;
 
-- (id) initWithDelegate:(id<CKEditableViewDelegate>)delegate;
+- (id)   initWithDelegate:(id<CKEditableViewDelegate>)delegate;
 - (void) enableEditMode:(BOOL)enable;
+- (void) setBookCoverContentView:(UIView *)contentView;
 
 @end
