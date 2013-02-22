@@ -12,7 +12,6 @@
 #import "Ingredient.h"
 #import "CKConstants.h"
 #import "NSArray+Enumerable.h"
-#import "NSArray+Enumerable.h"
 #import "CKActivity.h"
 
 @interface CKRecipe()

@@ -64,10 +64,10 @@
 
 - (void)setContentView:(UIView *)contentView {
     
-    // Remove previous and reset with new.
+//    // Remove previous and reset with new.
     [_contentView removeFromSuperview];
     _contentView = contentView;
-    
+
     // Background view to contain the contentView.
     self.editBackgroundView.frame = CGRectMake(0.0f,
                                                kEditButtonOffset.height,
@@ -89,7 +89,51 @@
     
     // Non-edit mode to start off with.
     [self enableEditMode:NO];
+    
 }
+
+- (void)setBookCoverContentView:(UIView *)contentView {
+    
+    //    // Remove previous and reset with new.
+    [_contentView removeFromSuperview];
+    _contentView = contentView;
+    
+    //OLD WAY
+    //Background view to contain the contentView.
+    self.editBackgroundView.frame = CGRectMake(0.0,
+                                               0.0,
+                                               self.contentInsets.left + contentView.frame.size.width + self.contentInsets.right,
+                                               self.contentInsets.top + contentView.frame.size.height + self.contentInsets.bottom);
+    contentView.frame = CGRectMake(self.contentInsets.left,
+                                   self.contentInsets.top,
+                                   contentView.frame.size.width,
+                                   contentView.frame.size.height);
+    [self.editBackgroundView addSubview:contentView];
+
+    // Calculate the overall frame which takes into account the editButton.
+    self.frame = CGRectMake(0.0f,
+                            0.0f,
+                            self.editBackgroundView.frame.size.width + self.editButton.frame.size.width + kEditButtonOffset.width,
+                            self.editBackgroundView.frame.size.height - kEditButtonOffset.height);
+
+    // Position the edit background view.
+    self.editBackgroundView.frame = CGRectMake(0.0,
+                                               -kEditButtonOffset.height,
+                                               self.editBackgroundView.frame.size.width,
+                                               self.editBackgroundView.frame.size.height);
+    [self addSubview:self.editBackgroundView];
+
+    // Position the edit button.
+    self.editButton.frame = CGRectMake(self.bounds.size.width - self.editButton.frame.size.width,
+                                       0.0,
+                                       self.editButton.frame.size.width,
+                                       self.editButton.frame.size.height);
+    [self addSubview:self.editButton];
+    
+    // Non-edit mode to start off with.
+    [self enableEditMode:NO];
+}
+
 
 - (UIView *)containerView {
     if (!_containerView) {

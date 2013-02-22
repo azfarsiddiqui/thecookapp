@@ -296,11 +296,6 @@
                                     <action selector="toggledEditMode:" destination="6w4-Iv-D8o" eventType="touchUpInside" id="9ND-J0-PfP"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="4sx-E4-h5n">
-                                <rect key="frame" x="10" y="12" width="1004" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
-                            </imageView>
                             <view contentMode="scaleToFill" id="qTX-Bo-ik8" customClass="CKEditableView">
                                 <rect key="frame" x="10" y="354" width="300" height="386"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -331,10 +326,9 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
-                            <view contentMode="scaleToFill" id="4QQ-ni-sRD">
-                                <rect key="frame" x="261" y="162" width="502" height="25"/>
+                            <view contentMode="scaleToFill" id="4QQ-ni-sRD" customClass="FacebookUserView">
+                                <rect key="frame" x="396" y="156" width="232" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="cook_book_icon_serves.png" id="Yve-jT-71M">
                                 <rect key="frame" x="315" y="328" width="17" height="17"/>
@@ -359,6 +353,7 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="cookingTimeEditableView" destination="b6f-jI-E8T" id="45n-Dj-lbR"/>
+                        <outlet property="facebookUserView" destination="4QQ-ni-sRD" id="pOW-0M-ky6"/>
                         <outlet property="ingredientsViewEditableView" destination="qTX-Bo-ik8" id="FLh-Tb-jFx"/>
                         <outlet property="methodViewEditableView" destination="HzD-i9-p5Q" id="NeC-cz-7j9"/>
                         <outlet property="nameEditableView" destination="WWa-fg-cW2" id="BDD-fv-wga"/>
@@ -597,117 +592,6 @@
         <image name="cook_editrecipe_addphoto.png" width="76" height="76"/>
         <image name="cook_editrecipe_editphoto.png" width="51" height="51"/>
     </resources>
-    <classes>
-        <class className="BookProfilePageViewController" superclassName="PageViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/BookProfilePageViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="bookNameLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="userNameLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="CKEditableView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CKEditableView.h"/>
-        </class>
-        <class className="CategoryListCell" superclassName="UICollectionViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="categoryNameLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="CategoryListViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CategoryListViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="collectionView" candidateClass="UICollectionView"/>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="CookingDirectionsView" superclassName="UIEditableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CookingDirectionsView.h"/>
-        </class>
-        <class className="CookingTimeView" superclassName="UIEditableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CookingTimeView.h"/>
-        </class>
-        <class className="FacebookUserView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FacebookUserView.h"/>
-        </class>
-        <class className="IngredientsView" superclassName="UIEditableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/IngredientsView.h"/>
-        </class>
-        <class className="NewRecipeViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewRecipeViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="addImageButtonFromCamera" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="addImageButtonFromLibrary" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="backgroundIngredientImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="backgroundRecipeDescriptionImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="backgroundServesTimeImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="cameraButtonsView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="cookingTimeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="editImageButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="ingredientsTableView" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="numServesLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="recipeDescriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="recipeImageScrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="recipeNameTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="uploadLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="uploadProgressView" candidateClass="UIProgressView"/>
-            </relationships>
-        </class>
-        <class className="PageViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PageViewController.h"/>
-        </class>
-        <class className="RecipeImageView" superclassName="UIEditableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeImageView.h"/>
-        </class>
-        <class className="RecipeNameView" superclassName="UIEditableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeNameView.h"/>
-        </class>
-        <class className="RecipeViewController" superclassName="PageViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecipeViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="closeButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="cookingDirectionsView" candidateClass="CookingDirectionsView"/>
-                <relationship kind="outlet" name="cookingTimeView" candidateClass="CookingTimeView"/>
-                <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
-                <relationship kind="outlet" name="ingredientsView" candidateClass="IngredientsView"/>
-                <relationship kind="outlet" name="likeButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="likesLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="progressView" candidateClass="UIProgressView"/>
-                <relationship kind="outlet" name="recipeImageView" candidateClass="RecipeImageView"/>
-                <relationship kind="outlet" name="recipeNameView" candidateClass="RecipeNameView"/>
-                <relationship kind="outlet" name="saveButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="servesView" candidateClass="ServesView"/>
-                <relationship kind="outlet" name="uploadProgressLabel" candidateClass="UILabel"/>
-                <relationship kind="outletCollection" name="editableViews" candidateClass="UIEditableView"/>
-            </relationships>
-        </class>
-        <class className="ServesView" superclassName="UIEditableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ServesView.h"/>
-        </class>
-        <class className="TestViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TestViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="cookingTimeEditableView" candidateClass="CKEditableView"/>
-                <relationship kind="outlet" name="ingredientsViewEditableView" candidateClass="CKEditableView"/>
-                <relationship kind="outlet" name="methodViewEditableView" candidateClass="CKEditableView"/>
-                <relationship kind="outlet" name="nameEditableView" candidateClass="CKEditableView"/>
-                <relationship kind="outlet" name="servesEditableView" candidateClass="CKEditableView"/>
-                <relationship kind="outlet" name="storyEditableView" candidateClass="CKEditableView"/>
-            </relationships>
-        </class>
-        <class className="UICollectionReusableView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
-        </class>
-        <class className="UICollectionViewCell" superclassName="UICollectionReusableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewCell.h"/>
-        </class>
-        <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
-        </class>
-        <class className="UIEditableView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UIEditableView.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

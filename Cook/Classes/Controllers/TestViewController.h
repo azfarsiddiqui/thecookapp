@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "BookModalViewController.h"
+#import "CKRecipe.h"
 
 @interface TestViewController : UIViewController <BookModalViewController>
-
+@property(nonatomic,strong) CKRecipe *recipe;
 @end

@@ -28,7 +28,7 @@
     return [UIFont fontWithName:@"Neutraface2Display-Bold" size:size];
 }
 
-#pragma mark - Common Colors
+#pragma mark - Common Styles
 
 +(UIColor *)defaultLabelColor
 {
@@ -38,6 +38,16 @@
 +(UIColor*) pageNumberPrefixLabelColor
 {
     return [UIColor colorWithHexString:@"2D6CA9"];
+}
+
++(UIColor*) userNameColor
+{
+    return [UIColor colorWithHexString:@"717171"];
+}
+
++(UIFont*) userNameFont
+{
+   return [UIFont fontWithName:@"Neutraface2Display-Medium" size:18.0];
 }
 
 #pragma mark - Contents View

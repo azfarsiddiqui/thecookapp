@@ -515,6 +515,7 @@
     //use for testing launch concepts
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
     TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
+    testVC.recipe = recipe;
     [self showModalViewController:testVC];
     
 }

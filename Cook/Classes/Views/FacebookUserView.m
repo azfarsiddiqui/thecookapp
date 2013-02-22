@@ -32,10 +32,10 @@
 {
     if (user) {
         self.userNameLabel.text = [user.name uppercaseString];
-        self.userNameLabel.font = [Theme defaultLabelFont];
-        self.userNameLabel.textColor = [Theme defaultLabelColor];
+        self.userNameLabel.font = [Theme userNameFont];
+        self.userNameLabel.textColor = [Theme userNameColor];
         CGSize maxSize = CGSizeMake(CGFLOAT_MAX, kHeight);
-        CGSize requiredSize = [[user.name uppercaseString] sizeWithFont:[Theme defaultLabelFont] constrainedToSize:maxSize lineBreakMode:NSLineBreakByTruncatingTail];
+        CGSize requiredSize = [[user.name uppercaseString] sizeWithFont:[Theme userNameFont] constrainedToSize:maxSize lineBreakMode:NSLineBreakByTruncatingTail];
 
         self.userNameLabel.frame = CGRectMake(self.userNameLabel.frame.origin.x, self.userNameLabel.frame.origin.y, requiredSize.width, requiredSize.height);
         if (user.facebookId) {
