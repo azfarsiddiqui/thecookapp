@@ -71,7 +71,20 @@
     }
     return _recipe;
 }
-    
+
+- (NSString *)actionName {
+    NSString *actionName = nil;
+    NSString *name = [self.parseObject objectForKey:kModelAttrName];
+    if ([name isEqualToString:kActivityNameAddRecipe]) {
+        actionName = @"Added";
+    } else if ([name isEqualToString:kActivityNameUpdateRecipe]) {
+        actionName = @"Updated";
+    } else if ([name isEqualToString:kActivityNameLikeRecipe]) {
+        actionName = @"Likes";
+    }
+    return actionName;
+}
+
 #pragma mark - Private methods
 
 + (void)saveActivityForParseRecipe:(PFObject *)parseRecipe name:(NSString *)name {

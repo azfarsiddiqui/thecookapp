@@ -89,6 +89,14 @@
     return (self.parseObject.objectId != nil && [self.parseObject.objectId length] > 0);
 }
 
+- (NSDate *)createdDateTime {
+     return self.parseObject.createdAt;
+}
+
+- (NSDate *)updatedDateTime {
+    return self.parseObject.updatedAt;
+}
+
 #pragma mark - NSObject
 
 - (NSString *)description {

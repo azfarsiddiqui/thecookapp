@@ -24,6 +24,8 @@ extern NSString *const kUserAttrFacebookId;
 extern NSString *const kUserAttrBookSuggestions;
 extern NSString *const kUserAttrAdmin;
 extern NSString *const kUserAttrFacebookFriends;
+extern NSString *const kUserAttrFirstName;
+extern NSString *const kUserAttrLastName;
 
 #pragma mark - User Book Follow class
 

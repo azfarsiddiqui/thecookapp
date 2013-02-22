@@ -29,6 +29,8 @@ typedef void(^ProgressBlock)(int percentDone);
 @property (nonatomic, strong) PFObject *parseObject;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *objectId;
+@property (nonatomic, readonly) NSDate *createdDateTime;
+@property (nonatomic, readonly) NSDate *updatedDateTime;
 
 + (NSError *)errorWithMessage:(NSString *)errorMessage;
 + (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage;

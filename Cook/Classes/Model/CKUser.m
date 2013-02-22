@@ -135,6 +135,22 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return pictureUrl;
 }
 
+- (void)setFirstName:(NSString *)firstName {
+    [self.parseObject setObject:firstName forKey:kUserAttrFirstName];
+}
+
+- (NSString *)firstName {
+    return [self.parseObject objectForKey:kUserAttrFirstName];
+}
+
+- (void)setLastName:(NSString *)lastName {
+    [self.parseObject setObject:lastName forKey:kUserAttrLastName];
+}
+
+- (NSString *)lastName {
+    return [self.parseObject objectForKey:kUserAttrLastName];
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {
@@ -263,6 +279,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
             // Save the username
             currentUser.name = [NSString CK_safeString:userData.name defaultString:kUserAttrDefaultNameValue];
             currentUser.facebookId = userData.id;
+            currentUser.firstName = userData.first_name;
+            currentUser.lastName = userData.last_name;
             
             // Store the facebook friends ids.
             [currentUser.parseUser addUniqueObjectsFromArray:friendIds forKey:kUserAttrFacebookFriends];

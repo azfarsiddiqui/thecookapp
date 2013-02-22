@@ -78,6 +78,44 @@
     return [UIColor colorWithHexString:@"4E4E4E"];
 }
 
+#pragma mark - Book contents/activities.
+
++ (UIColor *)activityInfoViewColour {
+    return [UIColor colorWithHexString:@"3885C4"];
+}
+
++ (UIColor *)activityActionColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)activityActionFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0];
+}
+
++ (UIColor *)activityTimeColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)activityTimeFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0];
+}
+
++ (UIColor *)activityTitleColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)activityTitleFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:20.0];
+}
+
++ (UIColor *)activityNameColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)activityNameFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
+}
+
 #pragma mark - Recipe View
 
 +(UIColor *)ingredientsListColor
