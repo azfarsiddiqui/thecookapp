@@ -44,6 +44,8 @@
 +(UIColor*) cookingTimeColor;
 +(UIFont*) servesFont;
 +(UIColor*) servesColor;
++(UIColor*) userNameColor;
++(UIFont*) userNameFont;
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;

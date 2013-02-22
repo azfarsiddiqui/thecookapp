@@ -13,7 +13,9 @@
 #import "IngredientsEditingViewController.h"
 #import "BookModalViewControllerDelegate.h"
 #import "ServesEditingViewController.h"
-
+#import "NSArray+Enumerable.h"
+#import "FacebookUserView.h"
+#import "Ingredient.h"
 #import "Theme.h"
 #define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
 
@@ -26,6 +28,7 @@
 @property(nonatomic,strong) IBOutlet CKEditableView *storyEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *servesEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *cookingTimeEditableView;
+@property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @property(nonatomic,strong) CKEditingViewController *editingViewController;
 
 //data
@@ -36,6 +39,7 @@
 @property(nonatomic,strong) NSString *servesData;
 @property(nonatomic,strong) NSString *cookingTimeData;
 @property(nonatomic,strong) NSString *storyData;
+@property(nonatomic,strong) CKUser *author;
 
 // delegates
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
@@ -49,7 +53,7 @@
     [super awakeFromNib];
     self.ingredientListData = @[@"10 g:salt",@"10 g:sugar",@"200ml:water",@"2 cups:brandy",@"3 spoons:pepper",@"1 kg: flank steak",@"3 cups: lettuce"];
     self.methodViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
-    self.recipeTitle = @"My Recipe title";
+//    self.recipeTitle = @"My Recipe title";
     self.storyData = @"This recipe reflects my innermost love for monkeys. and hamsters too. I love bacon";
     self.cookingTimeData = @"20 minutes";
     self.servesData = @"4-6";
@@ -73,6 +77,20 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)setRecipe:(CKRecipe *)recipe
+{
+    _recipe = recipe;
+    self.recipeTitle = recipe.name;
+    self.cookingTimeData = [NSString stringWithFormat:@"%f",recipe.cookingTimeInSeconds];
+    self.servesData = [NSString stringWithFormat:@"%i",recipe.numServes];
+    self.methodViewData = recipe.description;
+    self.storyData = recipe.story;
+    self.author = recipe.user;
+
+    self.ingredientListData = [recipe.ingredients collect:^id(Ingredient *ingredient) {
+        return ingredient.name;
+    }];
+}
 
 #pragma mark - IBActions
 -(IBAction)dismissTapped:(id)sender
@@ -107,6 +125,8 @@
     [self setServesValue:self.servesData];
     [self setCookingTimeValue:self.cookingTimeData];
     [self setStoryValue:self.storyData];
+    [self.facebookUserView setUser:self.author];
+
 }
 
 - (UIView *)rootView {
