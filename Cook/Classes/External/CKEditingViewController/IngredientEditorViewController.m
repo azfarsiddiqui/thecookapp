@@ -199,7 +199,7 @@
     NSInteger adjustedIndex = self.selectedIndex + indexPath.row;
     NSString *data = [self.ingredientList objectAtIndex:adjustedIndex];
     EditableIngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEditIngredientTableViewCell];
-    [cell configureCellWithText:data forRowAtIndex:[NSNumber numberWithInt:indexPath.row] editDelegate:self];
+    [cell configureCellWithIngredient:data forRowAtIndex:[NSNumber numberWithInt:indexPath.row] editDelegate:self];
     return cell;
 }
 

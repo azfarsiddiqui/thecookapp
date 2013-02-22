@@ -38,9 +38,13 @@
 
 -(void)configureCellWithText:(NSString *)text forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *textComponents = [text componentsSeparatedByString:@":"];
-    self.textLabel.text = [textComponents objectAtIndex:0];
-    self.detailTextLabel.text = [textComponents objectAtIndex:1];
+    if ([text rangeOfString:@":"].location != NSNotFound) {
+        NSArray *textComponents = [text componentsSeparatedByString:@":"];
+        self.textLabel.text = [textComponents objectAtIndex:0];
+        self.detailTextLabel.text = [textComponents objectAtIndex:1];
+    } else {
+        self.detailTextLabel.text = text;
+    }
 }
 
 #pragma mark - Private Methods

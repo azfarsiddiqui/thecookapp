@@ -17,6 +17,6 @@
 @end
 
 @interface EditableIngredientTableViewCell : UITableViewCell
--(void)configureCellWithText:(NSString*)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate;
+-(void)configureCellWithIngredient:(NSString*)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate;
 -(void)requestMeasurementTextFieldEdit;
 @end

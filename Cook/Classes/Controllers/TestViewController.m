@@ -93,7 +93,7 @@
     self.author = recipe.user;
 
     self.ingredientListData = [recipe.ingredients collect:^id(Ingredient *ingredient) {
-        return ingredient.name;
+        return [NSString stringWithFormat:@"%@ %@",ingredient.measurement,ingredient.name];
     }];
 }
 
@@ -178,7 +178,7 @@
         [self.view addSubview:ingredientsEditingVC.view];
         self.editingViewController = ingredientsEditingVC;
         
-        ingredientsEditingVC.ingredientList = [NSMutableArray arrayWithArray:self.ingredientListData];
+        ingredientsEditingVC.ingredientList = [NSMutableArray arrayWithArray:self.recipe.ingredients];
         ingredientsEditingVC.editingTitle = @"INGREDIENTS";
         [ingredientsEditingVC enableEditing:YES completion:nil];
         
@@ -237,7 +237,10 @@
 }
 
 -(void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result {
-    NSString *value = (NSString *)result;
+    NSString *value = nil;
+    if (editingView!= self.ingredientsViewEditableView) {
+        value = (NSString *)result;
+    }
     if (editingView == self.nameEditableView) {
         [self setRecipeNameValue:value];
         [self.nameEditableView enableEditMode:YES];
@@ -245,6 +248,7 @@
         [self setMethodValue:value];
         [self.methodViewEditableView enableEditMode:YES];
     } else if (editingView == self.ingredientsViewEditableView){
+        NSArray *value = (NSArray*)result;
         [self setIngredientsValue:value];
         [self.ingredientsViewEditableView enableEditMode:YES];
     } else if (editingView == self.storyEditableView) {
@@ -312,15 +316,19 @@
     }
 }
 
-- (void)setIngredientsValue:(NSString *)ingredientsValue {
+- (void)setIngredientsValue:(NSArray *)ingredientsArray {
     UILabel *label = (UILabel *)self.ingredientsViewEditableView.contentView;
     if (!label) {
         label = [self configLabelForEditableView:self.ingredientsViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme ingredientsListFont]
                                        withColor:[Theme ingredientsListColor]];
     }
 
-    label.text = ingredientsValue;
-    CGSize constrainedSize = [ingredientsValue sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
+    self.ingredientListData = [ingredientsArray collect:^id(Ingredient *ingredient) {
+        return [NSString stringWithFormat:@"%@ %@", ingredient.measurement, ingredient.name];
+    }];
+    
+    label.text = [self.ingredientListData componentsJoinedByString:@"\n"];
+    CGSize constrainedSize = [label.text sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
                         CGSizeMake(self.ingredientsViewEditableView.frame.size.width,
                                    self.ingredientsViewEditableView.frame.size.height)];
     
@@ -330,7 +338,7 @@
                              constrainedSize.height);
     
     self.ingredientsViewEditableView.contentView = label;
-    self.ingredientListData = [ingredientsValue componentsSeparatedByString:@"\n"];
+    self.recipe.ingredients = ingredientsArray;
 }
 
 - (void)setMethodValue:(NSString *)methodValue {

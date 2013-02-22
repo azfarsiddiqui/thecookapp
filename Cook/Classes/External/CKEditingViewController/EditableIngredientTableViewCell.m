@@ -36,9 +36,13 @@
 
 -(void)configureCellWithText:(NSString *)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate
 {
-    NSArray *textComponents = [text componentsSeparatedByString:@":"];
-    self.measurementTextField.text = [textComponents objectAtIndex:0];
-    self.descriptionTextField.text = [textComponents objectAtIndex:1];
+    if ([text rangeOfString:@":"].location!=NSNotFound) {
+        NSArray *textComponents = [text componentsSeparatedByString:@":"];
+        self.measurementTextField.text = [textComponents objectAtIndex:0];
+        self.descriptionTextField.text = [textComponents objectAtIndex:1];
+    } else {
+        self.descriptionTextField.text = text;
+    }
     self.ingredientEditTableViewCellDelegate = editDelegate;
     self.rowIndex = rowIndex;
    [self setAsHighlighted:([rowIndex intValue] == 0)];

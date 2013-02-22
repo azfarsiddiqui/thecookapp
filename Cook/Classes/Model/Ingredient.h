@@ -8,5 +8,6 @@
 
 @interface Ingredient : NSObject
 @property(nonatomic,strong) NSString *name;
-+(Ingredient *)ingredientwithName:(NSString*)name;
+@property(nonatomic,strong) NSString *measurement;
++(Ingredient *)ingredientwithName:(NSString *)name measurement:(NSString*)measurement;
 @end

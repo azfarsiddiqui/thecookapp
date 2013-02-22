@@ -70,14 +70,14 @@
     
     self.ingredientTapStartingPoint = [tableView rectForRowAtIndexPath:indexPath];
     
-    IngredientEditorViewController *ingredientsEditorViewController = [[IngredientEditorViewController alloc]initWithFrame:self.view.bounds
+    IngredientEditorViewController *ingredientEditorViewController = [[IngredientEditorViewController alloc]initWithFrame:self.view.bounds
                                                                                                             withViewInsets:kTableViewInsets
                                                                                                            startingAtFrame:self.ingredientTapStartingPoint];
-    ingredientsEditorViewController.ingredientList = self.ingredientList;
-    ingredientsEditorViewController.selectedIndex = indexPath.row;
-    ingredientsEditorViewController.ingredientEditorDelegate = self;
-    [self.view addSubview:ingredientsEditorViewController.view];
-    self.ingredientEditingViewController = ingredientsEditorViewController;
+    ingredientEditorViewController.ingredientList = self.ingredientList;
+    ingredientEditorViewController.selectedIndex = indexPath.row;
+    ingredientEditorViewController.ingredientEditorDelegate = self;
+    [self.view addSubview:ingredientEditorViewController.view];
+    self.ingredientEditingViewController = ingredientEditorViewController;
 }
 
 #pragma mark - IngredientEditorDelegate
