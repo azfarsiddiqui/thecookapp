@@ -291,11 +291,17 @@
 - (void)setRecipeNameValue:(NSString *)recipeValue {
     [self configEditableView:self.nameEditableView withValue:recipeValue withFont:[Theme recipeNameFont]
                  withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
+    if (self.recipe && ![self.recipe.name isEqualToString:recipeValue]) {
+        self.recipe.name = recipeValue;
+    }
 }
 
 - (void)setStoryValue:(NSString *)storyValue {
     
-    [self configEditableView:self.storyEditableView withValue:storyValue withFont:[Theme storyFont] withColor:[Theme storyColor] withTextAlignment:NSTextAlignmentLeft];
+    [self configEditableView:self.storyEditableView withValue:storyValue withFont:[Theme storyFont] withColor:[Theme storyColor] withTextAlignment:NSTextAlignmentCenter];
+    if (self.recipe && ![self.recipe.story isEqualToString:storyValue]) {
+        self.recipe.story = storyValue;
+    }
 }
 
 - (void)setIngredientsValue:(NSString *)ingredientsValue {
@@ -337,6 +343,9 @@
                              constrainedSize.height);
     
     self.methodViewEditableView.contentView = label;
+    if (self.recipe && ![self.recipe.description isEqualToString:methodValue]) {
+        self.recipe.description = methodValue;
+    }
 }
 
 - (void)setCookingTimeValue:(NSString *)cookingTimeValue {
