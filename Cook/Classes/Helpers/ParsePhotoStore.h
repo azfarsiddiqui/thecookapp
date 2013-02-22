@@ -11,9 +11,6 @@
 
 @interface ParsePhotoStore : NSObject
 
-// Returns the cached image that has been resized, nil if not in cache.
-- (UIImage *)cachedImageForParseFile:(PFFile *)parseFile size:(CGSize)size;
-
 // Returns the cached image if exists otherwise initiates downloads. Both cases return in blocks.
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size completion:(void (^)(UIImage *image))completion;
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size indexPath:(NSIndexPath *)indexPath

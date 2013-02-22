@@ -36,13 +36,19 @@
         self.userNameLabel.textColor = [Theme userNameColor];
         CGSize maxSize = CGSizeMake(CGFLOAT_MAX, kHeight);
         CGSize requiredSize = [[user.name uppercaseString] sizeWithFont:[Theme userNameFont] constrainedToSize:maxSize lineBreakMode:NSLineBreakByTruncatingTail];
-
+        
         self.userNameLabel.frame = CGRectMake(self.userNameLabel.frame.origin.x, self.userNameLabel.frame.origin.y, requiredSize.width, requiredSize.height);
         if (user.facebookId) {
             self.fbProfileView.profileID = user.facebookId;
         }
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, requiredSize.width, requiredSize.height);
     }
+}
+
+-(void)setUser:(CKUser *)user inFrame:(CGRect)frame
+{
+    [self setUser:user];
+    self.frame = CGRectMake(floorf(0.5*(frame.size.width - self.frame.size.width)), self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+
 }
 
 #pragma mark - private methods

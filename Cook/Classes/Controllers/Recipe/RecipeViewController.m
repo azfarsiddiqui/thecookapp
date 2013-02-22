@@ -189,7 +189,7 @@
 {
     DLog(@"refreshing data");
     [self.recipeNameView setRecipeName:self.recipe.name];
-    [self.facebookUserView setUser:[[self.dataSource currentBook] user]];
+    [self.facebookUserView setUser:[[self.dataSource currentBook] user] inFrame:self.view.frame];
 
     if ([self.recipe.ingredients count] > 0) {
         self.ingredientsView.ingredients = [NSMutableArray arrayWithArray:self.recipe.ingredients];

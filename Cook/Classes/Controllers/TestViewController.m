@@ -17,6 +17,7 @@
 #import "FacebookUserView.h"
 #import "Ingredient.h"
 #import "Theme.h"
+#import "ParsePhotoStore.h"
 #define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
 
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
@@ -29,6 +30,8 @@
 @property(nonatomic,strong) IBOutlet CKEditableView *servesEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *cookingTimeEditableView;
 @property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
+@property(nonatomic,strong) IBOutlet UIImageView *recipeImageView;
+
 @property(nonatomic,strong) CKEditingViewController *editingViewController;
 
 //data
@@ -40,6 +43,7 @@
 @property(nonatomic,strong) NSString *cookingTimeData;
 @property(nonatomic,strong) NSString *storyData;
 @property(nonatomic,strong) CKUser *author;
+@property(nonatomic,strong) ParsePhotoStore *parsePhotoStore;
 
 // delegates
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
@@ -57,6 +61,7 @@
     self.storyData = @"This recipe reflects my innermost love for monkeys. and hamsters too. I love bacon";
     self.cookingTimeData = @"20 minutes";
     self.servesData = @"4-6";
+    self.parsePhotoStore = [[ParsePhotoStore alloc]init];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -125,8 +130,11 @@
     [self setServesValue:self.servesData];
     [self setCookingTimeValue:self.cookingTimeData];
     [self setStoryValue:self.storyData];
-    [self.facebookUserView setUser:self.author];
 
+    [self.facebookUserView setUser:self.author inFrame:self.view.frame];
+    
+    [self loadRecipeImage];
+    
 }
 
 - (UIView *)rootView {
@@ -357,6 +365,16 @@
 - (void)setServesValue:(NSString *)servesValue {
     
     [self configEditableView:self.servesEditableView withValue:servesValue withFont:[Theme servesFont] withColor:[Theme servesColor] withTextAlignment:NSTextAlignmentLeft];
+}
+
+-(void)loadRecipeImage
+{
+    if ([self.recipe hasPhotos]) {
+        CGSize imageSize = CGSizeMake(self.recipeImageView.frame.size.width, self.recipeImageView.frame.size.height);
+        [self.parsePhotoStore imageForParseFile:[self.recipe imageFile] size:imageSize completion:^(UIImage *image) {
+            self.recipeImageView.image = image;
+        }];
+    }
 }
 
 @end
