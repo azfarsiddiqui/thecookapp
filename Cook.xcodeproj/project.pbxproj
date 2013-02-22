@@ -72,6 +72,7 @@
 		7643B8CE16D7037B001A2452 /* TTTUnitOfInformationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C616D7037B001A2452 /* TTTUnitOfInformationFormatter.m */; };
 		7643B8CF16D7037B001A2452 /* TTTURLRequestFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */; };
 		7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */; };
+		7643B8D516D73708001A2452 /* ActivityHeaderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8D416D73707001A2452 /* ActivityHeaderViewCell.m */; };
 		76454E1F16783E7A00B480FA /* CKEditingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 76454E1A16783E7A00B480FA /* CKEditingTextField.m */; };
 		76454E2016783E7A00B480FA /* CKEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76454E1C16783E7A00B480FA /* CKEditingViewController.m */; };
 		76454E2116783E7A00B480FA /* CKTextFieldEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76454E1E16783E7A00B480FA /* CKTextFieldEditingViewController.m */; };
@@ -546,6 +547,8 @@
 		7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTURLRequestFormatter.m; sourceTree = "<group>"; };
 		7643B8D016D72E67001A2452 /* ActivityRecipeStatsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityRecipeStatsView.h; sourceTree = "<group>"; };
 		7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityRecipeStatsView.m; sourceTree = "<group>"; };
+		7643B8D316D73707001A2452 /* ActivityHeaderViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityHeaderViewCell.h; sourceTree = "<group>"; };
+		7643B8D416D73707001A2452 /* ActivityHeaderViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityHeaderViewCell.m; sourceTree = "<group>"; };
 		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
 		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
 		76454E1916783E7A00B480FA /* CKEditingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingTextField.h; sourceTree = "<group>"; };
@@ -1821,6 +1824,8 @@
 				763CCBA616D44C3400A44AC7 /* BookProfileCollectionViewCell.m */,
 				763CCBA916D4710A00A44AC7 /* BookModalViewControllerDelegate.h */,
 				763CCBAA16D4734900A44AC7 /* BookModalViewController.h */,
+				7643B8D316D73707001A2452 /* ActivityHeaderViewCell.h */,
+				7643B8D416D73707001A2452 /* ActivityHeaderViewCell.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -2560,6 +2565,7 @@
 				7643B8CE16D7037B001A2452 /* TTTUnitOfInformationFormatter.m in Sources */,
 				7643B8CF16D7037B001A2452 /* TTTURLRequestFormatter.m in Sources */,
 				7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */,
+				7643B8D516D73708001A2452 /* ActivityHeaderViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
