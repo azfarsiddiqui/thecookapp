@@ -19,6 +19,8 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 @property (nonatomic, strong) PFUser *parseUser;
 @property (nonatomic, copy) NSString *facebookId;
 @property (nonatomic, readonly) BOOL admin;
+@property (nonatomic, strong) NSString *firstName;
+@property (nonatomic, strong) NSString *lastName;
 
 + (CKUser *)currentUser;
 + (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

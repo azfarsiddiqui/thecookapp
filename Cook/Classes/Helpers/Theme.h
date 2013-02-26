@@ -24,12 +24,24 @@
 + (UIColor*) contentsItemColor;
 
 #pragma mark - Grid recipe cells
-+ (UIFont*) recipeGridTitleFont;
-+ (UIColor*) recipeGridTitleColour;
-+ (UIFont*) recipeGridIngredientsFont;
-+ (UIColor*)recipeGridIngredientsColour;
-+ (UIFont*) recipeGridStoryFont;
-+ (UIColor*) recipeGridStoryColour;
++ (UIFont *)recipeGridTitleFont;
++ (UIColor *)recipeGridTitleColour;
++ (UIFont *)recipeGridIngredientsFont;
++ (UIColor *)recipeGridIngredientsColour;
++ (UIFont *)recipeGridStoryFont;
++ (UIColor *)recipeGridStoryColour;
+
+#pragma mark - Book contents/activities.
++ (UIFont *)bookProfileNameFont;
++ (UIColor *)activityInfoViewColour;
++ (UIColor *)activityActionColour;
++ (UIFont *)activityActionFont;
++ (UIColor *)activityTimeColour;
++ (UIFont *)activityTimeFont;
++ (UIColor *)activityTitleColour;
++ (UIFont *)activityTitleFont;
++ (UIColor *)activityNameColour;
++ (UIFont *)activityNameFont;
 
 #pragma mark - Recipe View
 +(UIColor*) ingredientsListColor;

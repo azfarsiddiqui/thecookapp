@@ -64,6 +64,15 @@
 		76381CBC16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76381CBA16688C7E00404FB1 /* cook_dash_bg_shelves@2x.png */; };
 		763CCBA716D44C3400A44AC7 /* BookProfileCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 763CCBA616D44C3400A44AC7 /* BookProfileCollectionViewCell.m */; };
 		763D2777166C293800A43DF9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 763D2776166C293800A43DF9 /* CoreLocation.framework */; };
+		7643B8C916D7037B001A2452 /* TTTAddressFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8BC16D7037A001A2452 /* TTTAddressFormatter.m */; };
+		7643B8CA16D7037B001A2452 /* TTTArrayFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8BE16D7037B001A2452 /* TTTArrayFormatter.m */; };
+		7643B8CB16D7037B001A2452 /* TTTLocationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C016D7037B001A2452 /* TTTLocationFormatter.m */; };
+		7643B8CC16D7037B001A2452 /* TTTOrdinalNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C216D7037B001A2452 /* TTTOrdinalNumberFormatter.m */; };
+		7643B8CD16D7037B001A2452 /* TTTTimeIntervalFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C416D7037B001A2452 /* TTTTimeIntervalFormatter.m */; };
+		7643B8CE16D7037B001A2452 /* TTTUnitOfInformationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C616D7037B001A2452 /* TTTUnitOfInformationFormatter.m */; };
+		7643B8CF16D7037B001A2452 /* TTTURLRequestFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */; };
+		7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */; };
+		7643B8D516D73708001A2452 /* ActivityHeaderViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8D416D73707001A2452 /* ActivityHeaderViewCell.m */; };
 		76454E1F16783E7A00B480FA /* CKEditingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 76454E1A16783E7A00B480FA /* CKEditingTextField.m */; };
 		76454E2016783E7A00B480FA /* CKEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76454E1C16783E7A00B480FA /* CKEditingViewController.m */; };
 		76454E2116783E7A00B480FA /* CKTextFieldEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76454E1E16783E7A00B480FA /* CKTextFieldEditingViewController.m */; };
@@ -161,6 +170,7 @@
 		766BFC191630D9DD0083EB0E /* cook_dash_bg_tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 766BFC171630D9DD0083EB0E /* cook_dash_bg_tile.png */; };
 		766BFC1A1630D9DD0083EB0E /* cook_dash_bg_tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 766BFC181630D9DD0083EB0E /* cook_dash_bg_tile@2x.png */; };
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
+		766F42F216DC7A5500785ABD /* BookProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F42F116DC7A5500785ABD /* BookProfileViewController.m */; };
 		767C0AA11655201700141355 /* BenchtopPartingFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 767C0AA01655201700141355 /* BenchtopPartingFlowLayout.m */; };
 		769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FA16473F3D00752128 /* BenchtopEditLayout.m */; };
 		769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FE16474A2100752128 /* BenchtopEditViewController.m */; };
@@ -522,6 +532,24 @@
 		763CCBA916D4710A00A44AC7 /* BookModalViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookModalViewControllerDelegate.h; sourceTree = "<group>"; };
 		763CCBAA16D4734900A44AC7 /* BookModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookModalViewController.h; sourceTree = "<group>"; };
 		763D2776166C293800A43DF9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		7643B8BB16D7037A001A2452 /* TTTAddressFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAddressFormatter.h; sourceTree = "<group>"; };
+		7643B8BC16D7037A001A2452 /* TTTAddressFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAddressFormatter.m; sourceTree = "<group>"; };
+		7643B8BD16D7037B001A2452 /* TTTArrayFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTArrayFormatter.h; sourceTree = "<group>"; };
+		7643B8BE16D7037B001A2452 /* TTTArrayFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTArrayFormatter.m; sourceTree = "<group>"; };
+		7643B8BF16D7037B001A2452 /* TTTLocationFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTLocationFormatter.h; sourceTree = "<group>"; };
+		7643B8C016D7037B001A2452 /* TTTLocationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTLocationFormatter.m; sourceTree = "<group>"; };
+		7643B8C116D7037B001A2452 /* TTTOrdinalNumberFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTOrdinalNumberFormatter.h; sourceTree = "<group>"; };
+		7643B8C216D7037B001A2452 /* TTTOrdinalNumberFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTOrdinalNumberFormatter.m; sourceTree = "<group>"; };
+		7643B8C316D7037B001A2452 /* TTTTimeIntervalFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTTimeIntervalFormatter.h; sourceTree = "<group>"; };
+		7643B8C416D7037B001A2452 /* TTTTimeIntervalFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTTimeIntervalFormatter.m; sourceTree = "<group>"; };
+		7643B8C516D7037B001A2452 /* TTTUnitOfInformationFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTUnitOfInformationFormatter.h; sourceTree = "<group>"; };
+		7643B8C616D7037B001A2452 /* TTTUnitOfInformationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTUnitOfInformationFormatter.m; sourceTree = "<group>"; };
+		7643B8C716D7037B001A2452 /* TTTURLRequestFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTURLRequestFormatter.h; sourceTree = "<group>"; };
+		7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTURLRequestFormatter.m; sourceTree = "<group>"; };
+		7643B8D016D72E67001A2452 /* ActivityRecipeStatsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityRecipeStatsView.h; sourceTree = "<group>"; };
+		7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityRecipeStatsView.m; sourceTree = "<group>"; };
+		7643B8D316D73707001A2452 /* ActivityHeaderViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityHeaderViewCell.h; sourceTree = "<group>"; };
+		7643B8D416D73707001A2452 /* ActivityHeaderViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityHeaderViewCell.m; sourceTree = "<group>"; };
 		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
 		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
 		76454E1916783E7A00B480FA /* CKEditingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingTextField.h; sourceTree = "<group>"; };
@@ -648,6 +676,8 @@
 		766BFC181630D9DD0083EB0E /* cook_dash_bg_tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_tile@2x.png"; sourceTree = "<group>"; };
 		766BFC201630DE990083EB0E /* UIColor+Expanded.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Expanded.h"; sourceTree = "<group>"; };
 		766BFC211630DE990083EB0E /* UIColor+Expanded.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Expanded.m"; sourceTree = "<group>"; };
+		766F42F016DC7A5500785ABD /* BookProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookProfileViewController.h; sourceTree = "<group>"; };
+		766F42F116DC7A5500785ABD /* BookProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookProfileViewController.m; sourceTree = "<group>"; };
 		767C0A9F1655201700141355 /* BenchtopPartingFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopPartingFlowLayout.h; sourceTree = "<group>"; };
 		767C0AA01655201700141355 /* BenchtopPartingFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopPartingFlowLayout.m; sourceTree = "<group>"; };
 		769225F916473F3D00752128 /* BenchtopEditLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopEditLayout.h; sourceTree = "<group>"; };
@@ -1136,6 +1166,27 @@
 				76324F0C165343DE007D1EBF /* UIImage+Tint.m */,
 			);
 			path = MGImageUtilities;
+			sourceTree = "<group>";
+		};
+		7643B8BA16D7037A001A2452 /* FormatterKit */ = {
+			isa = PBXGroup;
+			children = (
+				7643B8BB16D7037A001A2452 /* TTTAddressFormatter.h */,
+				7643B8BC16D7037A001A2452 /* TTTAddressFormatter.m */,
+				7643B8BD16D7037B001A2452 /* TTTArrayFormatter.h */,
+				7643B8BE16D7037B001A2452 /* TTTArrayFormatter.m */,
+				7643B8BF16D7037B001A2452 /* TTTLocationFormatter.h */,
+				7643B8C016D7037B001A2452 /* TTTLocationFormatter.m */,
+				7643B8C116D7037B001A2452 /* TTTOrdinalNumberFormatter.h */,
+				7643B8C216D7037B001A2452 /* TTTOrdinalNumberFormatter.m */,
+				7643B8C316D7037B001A2452 /* TTTTimeIntervalFormatter.h */,
+				7643B8C416D7037B001A2452 /* TTTTimeIntervalFormatter.m */,
+				7643B8C516D7037B001A2452 /* TTTUnitOfInformationFormatter.h */,
+				7643B8C616D7037B001A2452 /* TTTUnitOfInformationFormatter.m */,
+				7643B8C716D7037B001A2452 /* TTTURLRequestFormatter.h */,
+				7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */,
+			);
+			path = FormatterKit;
 			sourceTree = "<group>";
 		};
 		76454E1816783E7A00B480FA /* CKEditingViewController */ = {
@@ -1750,6 +1801,8 @@
 				89B85B9416AF8A5900A0533E /* TestViewController.m */,
 				762B375116D33AFF00343F88 /* BookContentsViewController.h */,
 				762B375216D33AFF00343F88 /* BookContentsViewController.m */,
+				766F42F016DC7A5500785ABD /* BookProfileViewController.h */,
+				766F42F116DC7A5500785ABD /* BookProfileViewController.m */,
 				762B375416D33B6A00343F88 /* BookHomeFlowLayout.h */,
 				762B375516D33B6A00343F88 /* BookHomeFlowLayout.m */,
 				762B375716D33C1B00343F88 /* ActivityCollectionViewCell.h */,
@@ -1768,12 +1821,16 @@
 				7693D1F816C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m */,
 				76FA241D16D1D4AC00DDC439 /* GridRecipeStatsView.h */,
 				76FA241E16D1D4AC00DDC439 /* GridRecipeStatsView.m */,
+				7643B8D016D72E67001A2452 /* ActivityRecipeStatsView.h */,
+				7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */,
 				762B375A16D343A900343F88 /* BookContentsCollectionViewCell.h */,
 				762B375B16D343AA00343F88 /* BookContentsCollectionViewCell.m */,
 				763CCBA516D44C3400A44AC7 /* BookProfileCollectionViewCell.h */,
 				763CCBA616D44C3400A44AC7 /* BookProfileCollectionViewCell.m */,
 				763CCBA916D4710A00A44AC7 /* BookModalViewControllerDelegate.h */,
 				763CCBAA16D4734900A44AC7 /* BookModalViewController.h */,
+				7643B8D316D73707001A2452 /* ActivityHeaderViewCell.h */,
+				7643B8D416D73707001A2452 /* ActivityHeaderViewCell.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -1825,6 +1882,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				7643B8BA16D7037A001A2452 /* FormatterKit */,
 				76D84CA916CDF3B400FB5FB0 /* RSMaskedLabel */,
 				76454E1816783E7A00B480FA /* CKEditingViewController */,
 				76BEE6EB165DEE600065B97B /* CKBookCoverView */,
@@ -2504,6 +2562,16 @@
 				894D686116D496D000F9B400 /* ServesEditingViewController.m in Sources */,
 				76C7AE0716D5B55A00690A76 /* CKActivity.m in Sources */,
 				76D6E7EA16D5EEE8007B1851 /* ImageHelper.m in Sources */,
+				7643B8C916D7037B001A2452 /* TTTAddressFormatter.m in Sources */,
+				7643B8CA16D7037B001A2452 /* TTTArrayFormatter.m in Sources */,
+				7643B8CB16D7037B001A2452 /* TTTLocationFormatter.m in Sources */,
+				7643B8CC16D7037B001A2452 /* TTTOrdinalNumberFormatter.m in Sources */,
+				7643B8CD16D7037B001A2452 /* TTTTimeIntervalFormatter.m in Sources */,
+				7643B8CE16D7037B001A2452 /* TTTUnitOfInformationFormatter.m in Sources */,
+				7643B8CF16D7037B001A2452 /* TTTURLRequestFormatter.m in Sources */,
+				7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */,
+				7643B8D516D73708001A2452 /* ActivityHeaderViewCell.m in Sources */,
+				766F42F216DC7A5500785ABD /* BookProfileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,4 +23,6 @@
 + (void)saveLikeRecipeActivityForRecipe:(CKRecipe *)recipe;
 + (void)activitiesForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
+- (NSString *)actionName;
+
 @end

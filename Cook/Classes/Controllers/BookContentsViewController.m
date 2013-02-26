@@ -14,6 +14,7 @@
 #import "BookHomeFlowLayout.h"
 #import "ActivityCollectionViewCell.h"
 #import "ParsePhotoStore.h"
+#import "ActivityHeaderViewCell.h"
 
 @interface BookContentsViewController ()
 
@@ -25,8 +26,9 @@
 
 @implementation BookContentsViewController
 
-#define kActivityCellId     @"ActivityCellId"
-#define kHomeHeaderId       @"kHomeHeaderId"
+#define kActivityCellId         @"ActivityCellId"
+#define kActivityHeaderCellId   @"ActivityHeaderCellId"
+
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super initWithCollectionViewLayout:[[BookHomeFlowLayout alloc] init]]) {
@@ -58,6 +60,14 @@
     CKActivity *activity = [self.activities objectAtIndex:indexPath.item];
     [cell configureActivity:activity];
     [self configureImageForActivityCell:cell activity:activity indexPath:indexPath];
+    return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    ActivityHeaderViewCell *cell = (ActivityHeaderViewCell *)[collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kActivityHeaderCellId forIndexPath:indexPath];
+    cell.backgroundColor = [UIColor lightGrayColor];
     return cell;
 }
 
@@ -95,12 +105,18 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 36.0;
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+    referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeMake(self.collectionView.bounds.size.width, self.collectionView.bounds.size.height / 2.0);
+}
+
 #pragma mark - Private methods
 
 - (void)initCollectionView {
     self.collectionView.backgroundColor = [UIColor whiteColor];
     
     [self.collectionView registerClass:[ActivityCollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
+    [self.collectionView registerClass:[ActivityHeaderViewCell class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kActivityHeaderCellId];
 }
 
 - (void)loadData {

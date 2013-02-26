@@ -8,10 +8,12 @@
 
 #import "BookContentsCollectionViewCell.h"
 #import "BookContentsViewController.h"
+#import "CKBook.h"
 
 @interface BookContentsCollectionViewCell ()
 
 @property (nonatomic, strong) BookContentsViewController *homeViewController;
+@property (nonatomic, strong) CKBook *book;
 
 @end
 
@@ -24,13 +26,17 @@
 }
 
 - (void)configureBook:(CKBook *)book {
-    [self.homeViewController.view removeFromSuperview];
     
+    // Don't update if we've already configured it with a book - to prevent refresh of data.
+    if (self.book) {
+        return;
+    }
+    
+    self.book = book;
     BookContentsViewController *homeViewController = [[BookContentsViewController alloc] initWithBook:book];
     homeViewController.view.frame = self.contentView.bounds;
     [self.contentView addSubview:homeViewController.view];
     self.homeViewController = homeViewController;
-    
 }
 
 @end

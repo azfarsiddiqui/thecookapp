@@ -251,6 +251,12 @@
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:kCategoryHeaderId];
     [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
+    
+    // How to start a page in?
+//    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+//    [self.collectionView setContentOffset:CGPointMake(self.collectionView.bounds.size.width,
+//                                                      self.collectionView.bounds.origin.x)
+//                                 animated:YES];
 }
 
 - (void)loadData {
@@ -387,13 +393,12 @@
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
     BookProfileCollectionViewCell *profileCell = (BookProfileCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId
                                                                                                                                  forIndexPath:indexPath];;
-    profileCell.contentView.backgroundColor = [UIColor lightGrayColor];
+    [profileCell configureBook:self.book];
     return profileCell;
 }
 
 - (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
-    BookContentsCollectionViewCell *contentsCell = (BookContentsCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId
-                                                                                                                                    forIndexPath:indexPath];
+    BookContentsCollectionViewCell *contentsCell = (BookContentsCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
     [contentsCell configureBook:self.book];
     return contentsCell;
 }

@@ -22,19 +22,29 @@
 @implementation GridRecipeStatsView
 
 #define kIconLabelFont      [UIFont systemFontOfSize:14.0]
-#define kIconLabelColour    [UIColor darkGrayColor]
 #define kIconLabelGap       2.0
 #define kContentInsets      UIEdgeInsetsMake(0.0, 0.0, 0.0, 3.0)
 
+- (id)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.iconViews = [NSMutableArray array];
+    }
+    return self;
+}
+
 - (id)init {
-    if (self = [super initWithFrame:CGRectZero]) {
+    if (self = [self initWithFrame:CGRectZero]) {
         UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_iconbar.png"]];
         self.frame = backgroundView.frame;
         [self addSubview:backgroundView];
         self.backgroundView = backgroundView;
-        self.iconViews = [NSMutableArray array];
     }
     return self;
+}
+
+- (void)reset {
+    [self.iconViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self.iconViews removeAllObjects];
 }
 
 - (void)configureRecipe:(CKRecipe *)recipe {
@@ -45,22 +55,15 @@
     [self configureIcon:@"cook_recipe_iconbar_likes.png" value:[NSString stringWithFormat:@"%d", recipe.likes]];
 }
 
-#pragma mark - Private methods
-
-- (void)reset {
-    [self.iconViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [self.iconViews removeAllObjects];
-}
-
 - (void)configureIcon:(NSString *)iconName value:(NSString *)value {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:iconName]];
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.backgroundColor = [UIColor clearColor];
     label.font = kIconLabelFont;
-    label.textColor = kIconLabelColour;
-    label.shadowColor = [UIColor whiteColor];
-    label.shadowOffset = CGSizeMake(0.0, 1.0);
+    label.textColor = [self textColour];
+    label.shadowColor = [self shadowColour];
+    label.shadowOffset = [self shadowOffset];
     label.text = value;
     [label sizeToFit];
     label.frame = CGRectMake(imageView.frame.origin.x + imageView.frame.size.width + kIconLabelGap,
@@ -77,6 +80,20 @@
     // Now layout.
     [self layoutIconViews];
 }
+
+- (UIColor *)textColour {
+    return [UIColor darkGrayColor];
+}
+
+- (UIColor *)shadowColour {
+    return [UIColor whiteColor];
+}
+
+- (CGSize)shadowOffset {
+    return CGSizeMake(0.0, 1.0);
+}
+
+#pragma mark - Private methods
 
 - (void)layoutIconViews {
     if ([self.iconViews count] > 0) {
