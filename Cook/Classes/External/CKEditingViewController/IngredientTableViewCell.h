@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Ingredient.h"
 @interface IngredientTableViewCell : UITableViewCell
 //text is measurument:ingredient
--(void)configureCellWithText:(NSString*)text forRowAtIndexPath:(NSIndexPath *)indexPath;
+-(void)configureCellWithIngredient:(Ingredient*)ingredient forRowAtIndexPath:(NSIndexPath *)indexPath;
 -(void)styleCell;
 @end

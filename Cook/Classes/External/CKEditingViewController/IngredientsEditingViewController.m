@@ -58,9 +58,9 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *data = [self.ingredientList objectAtIndex:indexPath.row];
+    Ingredient *ingredient = [self.ingredientList objectAtIndex:indexPath.row];
     IngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kIngredientsTableViewCell];
-    [cell configureCellWithText:data forRowAtIndexPath:indexPath];
+    [cell configureCellWithIngredient:ingredient forRowAtIndexPath:indexPath];
     return cell;
 }
 
@@ -82,18 +82,16 @@
 
 #pragma mark - IngredientEditorDelegate
 
--(void)didUpdateMeasuremnt:(NSString *)measurementText ingredient:(NSString *)ingredientDescription atRowIndex:(NSInteger)rowIndex
+-(void)didUpdateMeasurement:(NSString *)measurementText ingredient:(NSString *)ingredientDescription atRowIndex:(NSInteger)rowIndex
 {
-    NSString *joinedIngredient = [NSString stringWithFormat:@"%@:%@", measurementText, ingredientDescription];
-    [self.ingredientList replaceObjectAtIndex:rowIndex withObject:joinedIngredient];
+    Ingredient *ingredient = [self.ingredientList objectAtIndex:rowIndex];
+    ingredient.measurement = measurementText;
+    ingredient.name = ingredientDescription;
 
     UITableView *tableView = (UITableView *)self.targetEditingView;
     [tableView reloadData];
     
-    //update editing view
-    NSString * delimitedString = [[self.ingredientList valueForKey:@"description"] componentsJoinedByString:@"\n"];
-    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:delimitedString];
-   
+    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:self.ingredientList];
 }
 
 -(void)didRequestIngredientEditorViewDismissal

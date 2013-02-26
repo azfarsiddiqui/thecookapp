@@ -75,7 +75,7 @@
 -(void)didUpdateIngredientAtRowIndex:(NSNumber *)rowIndex withMeasurement:(NSString *)measurementString description:(NSString *)ingredientDescription
 {
     NSIndexPath * indexPath = [NSIndexPath indexPathForRow:[rowIndex intValue] inSection:0];
-    [self.ingredientEditorDelegate didUpdateMeasuremnt:measurementString ingredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
+    [self.ingredientEditorDelegate didUpdateMeasurement:measurementString ingredient:ingredientDescription atRowIndex:indexPath.row + self.selectedIndex];
 }
 
 -(void)didSelectTextFieldForEditing:(UITextField *)textField isMeasurementField:(BOOL)isMeasurementField
@@ -197,9 +197,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger adjustedIndex = self.selectedIndex + indexPath.row;
-    NSString *data = [self.ingredientList objectAtIndex:adjustedIndex];
+    Ingredient *ingredient = [self.ingredientList objectAtIndex:adjustedIndex];
     EditableIngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEditIngredientTableViewCell];
-    [cell configureCellWithIngredient:data forRowAtIndex:[NSNumber numberWithInt:indexPath.row] editDelegate:self];
+    [cell configureCellWithIngredient:ingredient forRowAtIndex:[NSNumber numberWithInt:indexPath.row] editDelegate:self];
     return cell;
 }
 

@@ -222,7 +222,9 @@
     
     if (self.ingredients && [self.ingredients count] > 0) {
         NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
-            return ingredient.name;
+            return [NSString stringWithFormat:@"%@ %@",
+             ingredient.measurement ? ingredient.measurement : @"",
+             ingredient.name ? ingredient.name : @""];
         }];
         
         [parseRecipeObject setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];

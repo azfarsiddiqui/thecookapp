@@ -36,13 +36,6 @@
 
 //data
 @property(nonatomic,assign) BOOL inEditMode;
-@property(nonatomic,strong) NSArray *ingredientListData;
-@property(nonatomic,strong) NSString *methodViewData;
-@property(nonatomic,strong) NSString *recipeTitle;
-@property(nonatomic,strong) NSString *servesData;
-@property(nonatomic,strong) NSString *cookingTimeData;
-@property(nonatomic,strong) NSString *storyData;
-@property(nonatomic,strong) CKUser *author;
 @property(nonatomic,strong) ParsePhotoStore *parsePhotoStore;
 
 // delegates
@@ -55,12 +48,6 @@
 -(void)awakeFromNib
 {
     [super awakeFromNib];
-    self.ingredientListData = @[@"10 g:salt",@"10 g:sugar",@"200ml:water",@"2 cups:brandy",@"3 spoons:pepper",@"1 kg: flank steak",@"3 cups: lettuce"];
-    self.methodViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
-//    self.recipeTitle = @"My Recipe title";
-    self.storyData = @"This recipe reflects my innermost love for monkeys. and hamsters too. I love bacon";
-    self.cookingTimeData = @"20 minutes";
-    self.servesData = @"4-6";
     self.parsePhotoStore = [[ParsePhotoStore alloc]init];
 }
 
@@ -80,21 +67,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
--(void)setRecipe:(CKRecipe *)recipe
-{
-    _recipe = recipe;
-    self.recipeTitle = recipe.name;
-    self.cookingTimeData = [NSString stringWithFormat:@"%f",recipe.cookingTimeInSeconds];
-    self.servesData = [NSString stringWithFormat:@"%i",recipe.numServes];
-    self.methodViewData = recipe.description;
-    self.storyData = recipe.story;
-    self.author = recipe.user;
-
-    self.ingredientListData = [recipe.ingredients collect:^id(Ingredient *ingredient) {
-        return [NSString stringWithFormat:@"%@ %@",ingredient.measurement,ingredient.name];
-    }];
 }
 
 #pragma mark - IBActions
@@ -124,14 +96,13 @@
 -(void)config
 {
     DLog();
-    [self setRecipeNameValue:self.recipeTitle];
-    [self setMethodValue:self.methodViewData];
-    [self setIngredientsValue:[self.ingredientListData componentsJoinedByString:@"\n"]];
-    [self setServesValue:self.servesData];
-    [self setCookingTimeValue:self.cookingTimeData];
-    [self setStoryValue:self.storyData];
-
-    [self.facebookUserView setUser:self.author inFrame:self.view.frame];
+    [self setRecipeNameValue:self.recipe.name];
+    [self setMethodValue:self.recipe.description];
+    [self setIngredientsValue:self.recipe.ingredients];
+    [self setServesValue:[NSString stringWithFormat:@"%i",self.recipe.numServes]];
+    [self setCookingTimeValue:[NSString stringWithFormat:@"%f",self.recipe.cookingTimeInSeconds]];
+    [self setStoryValue:self.recipe.story];
+    [self.facebookUserView setUser:self.recipe.user inFrame:self.view.frame];
     
     [self loadRecipeImage];
     
@@ -178,7 +149,7 @@
         [self.view addSubview:ingredientsEditingVC.view];
         self.editingViewController = ingredientsEditingVC;
         
-        ingredientsEditingVC.ingredientList = [NSMutableArray arrayWithArray:self.recipe.ingredients];
+        ingredientsEditingVC.ingredientList = self.recipe.ingredients;
         ingredientsEditingVC.editingTitle = @"INGREDIENTS";
         [ingredientsEditingVC enableEditing:YES completion:nil];
         
@@ -248,8 +219,7 @@
         [self setMethodValue:value];
         [self.methodViewEditableView enableEditMode:YES];
     } else if (editingView == self.ingredientsViewEditableView){
-        NSArray *value = (NSArray*)result;
-        [self setIngredientsValue:value];
+        [self setIngredientsValue:(NSArray*)result];
         [self.ingredientsViewEditableView enableEditMode:YES];
     } else if (editingView == self.storyEditableView) {
         [self setStoryValue:value];
@@ -260,7 +230,13 @@
     } else if (editingView == self.servesEditableView) {
         [self setServesValue:value];
         [self.servesEditableView enableEditMode:YES];
-    } 
+    }
+    
+    [self.recipe saveWithSuccess:^{
+        DLog(@"Recipe successfully saved");
+    } failure:^(NSError *error) {
+        DLog(@"An error occurred: %@", [error description]);
+    }];
 }
 
 #pragma mark - BookModalViewController methods
@@ -323,11 +299,13 @@
                                        withColor:[Theme ingredientsListColor]];
     }
 
-    self.ingredientListData = [ingredientsArray collect:^id(Ingredient *ingredient) {
-        return [NSString stringWithFormat:@"%@ %@", ingredient.measurement, ingredient.name];
+    NSArray *displayableArray = [ingredientsArray collect:^id(Ingredient *ingredient) {
+        return [NSString stringWithFormat:@"%@ %@",
+                ingredient.measurement ? ingredient.measurement : @"",
+                ingredient.name ? ingredient.name : @""];
     }];
     
-    label.text = [self.ingredientListData componentsJoinedByString:@"\n"];
+    label.text = [displayableArray componentsJoinedByString:@"\n"];
     CGSize constrainedSize = [label.text sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
                         CGSizeMake(self.ingredientsViewEditableView.frame.size.width,
                                    self.ingredientsViewEditableView.frame.size.height)];

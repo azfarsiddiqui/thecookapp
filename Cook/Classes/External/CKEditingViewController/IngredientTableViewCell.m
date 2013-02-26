@@ -36,15 +36,12 @@
     [super setSelected:selected animated:animated];
 }
 
--(void)configureCellWithText:(NSString *)text forRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)configureCellWithIngredient:(Ingredient *)ingredient forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([text rangeOfString:@":"].location != NSNotFound) {
-        NSArray *textComponents = [text componentsSeparatedByString:@":"];
-        self.textLabel.text = [textComponents objectAtIndex:0];
-        self.detailTextLabel.text = [textComponents objectAtIndex:1];
-    } else {
-        self.detailTextLabel.text = text;
-    }
+        //measurement
+        self.textLabel.text = ingredient.measurement;
+        //name
+        self.detailTextLabel.text = ingredient.name;
 }
 
 #pragma mark - Private Methods

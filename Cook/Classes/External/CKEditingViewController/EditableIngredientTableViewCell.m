@@ -34,15 +34,10 @@
     return self;
 }
 
--(void)configureCellWithText:(NSString *)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate
+-(void)configureCellWithIngredient:(Ingredient*)ingredient forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate
 {
-    if ([text rangeOfString:@":"].location!=NSNotFound) {
-        NSArray *textComponents = [text componentsSeparatedByString:@":"];
-        self.measurementTextField.text = [textComponents objectAtIndex:0];
-        self.descriptionTextField.text = [textComponents objectAtIndex:1];
-    } else {
-        self.descriptionTextField.text = text;
-    }
+    self.measurementTextField.text = ingredient.measurement;
+    self.descriptionTextField.text = ingredient.name;
     self.ingredientEditTableViewCellDelegate = editDelegate;
     self.rowIndex = rowIndex;
    [self setAsHighlighted:([rowIndex intValue] == 0)];
