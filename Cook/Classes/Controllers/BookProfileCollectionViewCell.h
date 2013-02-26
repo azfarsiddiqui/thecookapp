@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKBook;
+
 @interface BookProfileCollectionViewCell : UICollectionViewCell
+
+- (void)configureBook:(CKBook *)book;
 
 @end

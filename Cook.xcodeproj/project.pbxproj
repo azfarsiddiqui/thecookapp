@@ -170,6 +170,7 @@
 		766BFC191630D9DD0083EB0E /* cook_dash_bg_tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 766BFC171630D9DD0083EB0E /* cook_dash_bg_tile.png */; };
 		766BFC1A1630D9DD0083EB0E /* cook_dash_bg_tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 766BFC181630D9DD0083EB0E /* cook_dash_bg_tile@2x.png */; };
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
+		766F42F216DC7A5500785ABD /* BookProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F42F116DC7A5500785ABD /* BookProfileViewController.m */; };
 		767C0AA11655201700141355 /* BenchtopPartingFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 767C0AA01655201700141355 /* BenchtopPartingFlowLayout.m */; };
 		769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FA16473F3D00752128 /* BenchtopEditLayout.m */; };
 		769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769225FE16474A2100752128 /* BenchtopEditViewController.m */; };
@@ -675,6 +676,8 @@
 		766BFC181630D9DD0083EB0E /* cook_dash_bg_tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_tile@2x.png"; sourceTree = "<group>"; };
 		766BFC201630DE990083EB0E /* UIColor+Expanded.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Expanded.h"; sourceTree = "<group>"; };
 		766BFC211630DE990083EB0E /* UIColor+Expanded.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Expanded.m"; sourceTree = "<group>"; };
+		766F42F016DC7A5500785ABD /* BookProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookProfileViewController.h; sourceTree = "<group>"; };
+		766F42F116DC7A5500785ABD /* BookProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookProfileViewController.m; sourceTree = "<group>"; };
 		767C0A9F1655201700141355 /* BenchtopPartingFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopPartingFlowLayout.h; sourceTree = "<group>"; };
 		767C0AA01655201700141355 /* BenchtopPartingFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopPartingFlowLayout.m; sourceTree = "<group>"; };
 		769225F916473F3D00752128 /* BenchtopEditLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopEditLayout.h; sourceTree = "<group>"; };
@@ -1798,6 +1801,8 @@
 				89B85B9416AF8A5900A0533E /* TestViewController.m */,
 				762B375116D33AFF00343F88 /* BookContentsViewController.h */,
 				762B375216D33AFF00343F88 /* BookContentsViewController.m */,
+				766F42F016DC7A5500785ABD /* BookProfileViewController.h */,
+				766F42F116DC7A5500785ABD /* BookProfileViewController.m */,
 				762B375416D33B6A00343F88 /* BookHomeFlowLayout.h */,
 				762B375516D33B6A00343F88 /* BookHomeFlowLayout.m */,
 				762B375716D33C1B00343F88 /* ActivityCollectionViewCell.h */,
@@ -2566,6 +2571,7 @@
 				7643B8CF16D7037B001A2452 /* TTTURLRequestFormatter.m in Sources */,
 				7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */,
 				7643B8D516D73708001A2452 /* ActivityHeaderViewCell.m in Sources */,
+				766F42F216DC7A5500785ABD /* BookProfileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

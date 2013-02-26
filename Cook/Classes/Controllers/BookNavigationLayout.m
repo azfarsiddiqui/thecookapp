@@ -57,7 +57,9 @@
         
     }
     
-    return CGSizeMake(width, self.collectionView.bounds.size.height);
+    CGSize contentSize = CGSizeMake(width, self.collectionView.bounds.size.height);
+    DLog(@"contentSize: %@", NSStringFromCGSize(contentSize));
+    return contentSize;
 }
 
 - (void)prepareLayout {
