@@ -54,11 +54,7 @@
     self.categories = categories;
     
     // Update the frame of the tableView so that we can position it center.
-    CGFloat tableHeight = [self.categories count] * kContentsItemHeight;
-    self.tableView.frame = CGRectMake(self.contentsView.bounds.origin.x,
-                                      floorf((self.contentsView.bounds.size.height - tableHeight) / 2.0),
-                                      self.contentsView.bounds.size.width,
-                                      tableHeight);
+    [self updateTableFrame];
     [self.tableView reloadData];
 }
 
@@ -78,6 +74,8 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        cell.textLabel.textColor = [Theme bookContentsItemColour];
+        cell.textLabel.font = [Theme bookContentsItemFont];
     }
     
     NSString *categoryName = [[self.categories objectAtIndex:indexPath.item] uppercaseString];
@@ -184,16 +182,24 @@
     [self.view addSubview:contentsView];
     self.contentsView = contentsView;
     
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(contentsView.bounds.origin.x,
-                                                                           contentsView.bounds.origin.y,
-                                                                           contentsView.bounds.size.width,
-                                                                           contentsView.bounds.size.height)
-                                                          style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    tableView.backgroundColor = [UIColor clearColor];
     tableView.delegate = self;
     tableView.dataSource = self;
     tableView.scrollEnabled = NO;
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [contentsView addSubview:tableView];
     self.tableView = tableView;
+    [self updateTableFrame];
+}
+
+- (void)updateTableFrame {
+    CGFloat tableHeight = [self.categories count] * kContentsItemHeight;
+    self.tableView.frame = CGRectMake(self.contentsView.bounds.origin.x,
+                                      floorf((self.contentsView.bounds.size.height - tableHeight) / 2.0),
+                                      self.contentsView.bounds.size.width,
+                                      tableHeight);
+
 }
 
 @end

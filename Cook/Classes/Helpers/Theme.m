@@ -114,6 +114,14 @@
     return [UIColor whiteColor];
 }
 
++ (UIFont *)bookContentsItemFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:20.0];
+}
+
++ (UIColor *)bookContentsItemColour {
+    return [UIColor whiteColor];
+}
+
 + (UIColor *)activityInfoViewColour {
     return [UIColor colorWithHexString:@"3885C4"];
 }

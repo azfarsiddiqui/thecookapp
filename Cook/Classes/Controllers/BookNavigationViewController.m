@@ -16,11 +16,9 @@
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
 #import "ParsePhotoStore.h"
-#import "BookProfileCollectionViewCell.h"
-#import "BookHomeCollectionViewCell.h"
 #import "TestViewController.h"
 #import "BookProfileViewController.h"
-#import "BookContentsViewController.h"
+#import "BookHomeViewController.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
 
@@ -34,7 +32,7 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
-@property (nonatomic, strong) BookContentsViewController *contentsViewController;
+@property (nonatomic, strong) BookHomeViewController *homeViewController;
 
 @end
 
@@ -53,7 +51,7 @@
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
-        self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book];
+        self.homeViewController = [[BookHomeViewController alloc] initWithBook:book];
     }
     return self;
 }
@@ -250,8 +248,8 @@
     self.collectionView.pagingEnabled = YES;
     
     // Profile and Contents
-    [self.collectionView registerClass:[BookProfileCollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
-    [self.collectionView registerClass:[BookHomeCollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
     
     // Categories
     [self.collectionView registerClass:[BookCategoryView class]
@@ -289,7 +287,7 @@
         }
         
         // Update the VC's.
-        [self.contentsViewController configureCategories:self.categoryNames];
+        [self.homeViewController configureCategories:self.categoryNames];
         
         // Now reload the collection.
         [self.collectionView reloadData];
@@ -400,17 +398,16 @@
 }
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
-    BookProfileCollectionViewCell *profileCell = (BookProfileCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId
-                                                                                                                                 forIndexPath:indexPath];;
+    UICollectionViewCell *profileCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId forIndexPath:indexPath];;
     self.profileViewController.view.frame = profileCell.contentView.bounds;
     [profileCell.contentView addSubview:self.profileViewController.view];
     return profileCell;
 }
 
 - (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
-    BookHomeCollectionViewCell *contentsCell = (BookHomeCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
-    self.contentsViewController.view.frame = contentsCell.contentView.bounds;
-    [contentsCell.contentView addSubview:self.contentsViewController.view];
+    UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
+    self.homeViewController.view.frame = contentsCell.contentView.bounds;
+    [contentsCell.contentView addSubview:self.homeViewController.view];
     return contentsCell;
 }
 

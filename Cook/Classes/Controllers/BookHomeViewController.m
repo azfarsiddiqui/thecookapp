@@ -14,14 +14,14 @@
 #import "BookHomeFlowLayout.h"
 #import "ActivityCollectionViewCell.h"
 #import "ParsePhotoStore.h"
-#import "BookContentsHeaderView.h"
+#import "BookContentsViewController.h"
 
 @interface BookHomeViewController ()
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSArray *activities;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
-@property (nonatomic, strong) BookContentsHeaderView *contentsHeaderView;
+@property (nonatomic, strong) BookContentsViewController *contentsViewController;
 
 @end
 
@@ -34,6 +34,7 @@
     if (self = [super initWithCollectionViewLayout:[[BookHomeFlowLayout alloc] init]]) {
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
+        self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book];
     }
     return self;
 }
@@ -45,7 +46,7 @@
 }
 
 - (void)configureCategories:(NSArray *)categories {
-    [self.contentsHeaderView configureCategories:categories];
+    [self.contentsViewController configureCategories:categories];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -70,9 +71,9 @@
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
            viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
-    BookContentsHeaderView *cell = (BookContentsHeaderView *)[collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentsHeaderCellId forIndexPath:indexPath];
-    [cell configureBook:self.book];
-    self.contentsHeaderView = cell;
+    UICollectionReusableView *cell = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentsHeaderCellId forIndexPath:indexPath];
+    self.contentsViewController.view.frame = cell.bounds;
+    [cell addSubview:self.contentsViewController.view];
     return cell;
 }
 
@@ -123,7 +124,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.collectionView.backgroundColor = [UIColor whiteColor];
     
     [self.collectionView registerClass:[ActivityCollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
-    [self.collectionView registerClass:[BookContentsHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentsHeaderCellId];
+    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentsHeaderCellId];
 }
 
 - (void)loadData {
