@@ -16,11 +16,12 @@
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
 #import "ParsePhotoStore.h"
-#import "BookProfileCollectionViewCell.h"
-#import "BookContentsCollectionViewCell.h"
 #import "TestViewController.h"
+#import "BookProfileViewController.h"
+#import "BookHomeViewController.h"
+#import "BookNavigationDataSource.h"
 
-@interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
+@interface BookNavigationViewController () <BookNavigationDataSource, NewRecipeViewDelegate>
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *createButton;
@@ -30,6 +31,9 @@
 @property (nonatomic, strong) NSMutableArray *categoryNames;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
+
+@property (nonatomic, strong) BookProfileViewController *profileViewController;
+@property (nonatomic, strong) BookHomeViewController *homeViewController;
 
 @end
 
@@ -47,6 +51,8 @@
         self.delegate = delegate;
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
+        self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
+        self.homeViewController = [[BookHomeViewController alloc] initWithBook:book];
     }
     return self;
 }
@@ -243,8 +249,8 @@
     self.collectionView.pagingEnabled = YES;
     
     // Profile and Contents
-    [self.collectionView registerClass:[BookProfileCollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
-    [self.collectionView registerClass:[BookContentsCollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
     
     // Categories
     [self.collectionView registerClass:[BookCategoryView class]
@@ -281,6 +287,10 @@
             }
         }
         
+        // Update the VC's.
+        [self.homeViewController configureCategories:self.categoryNames];
+        [self.homeViewController configureHeroRecipe:[self highlightRecipeForBook]];
+        
         // Now reload the collection.
         [self.collectionView reloadData];
         
@@ -288,22 +298,6 @@
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
     }];
-}
-
-- (CKRecipe *)highlightRecipeForCategory:(NSString *)categoryName {
-    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
-    
-        // Pick a random recipe with image otherwise return nil.
-    if ([categoryRecipes count] > 0) {
-        
-        // Get first object.
-        return [categoryRecipes objectAtIndex:0];
-//        return [categoryRecipes objectAtIndex:arc4random() % ([categoryRecipes count])];
-        
-    } else {
-        return nil;
-    }
-    
 }
 
 - (void)closeTapped:(id)sender {
@@ -376,7 +370,6 @@
     
     BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kRecipeCellId
                                                                                                                               forIndexPath:indexPath];;
-    
     NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
     NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
     
@@ -391,20 +384,56 @@
 }
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
-    BookProfileCollectionViewCell *profileCell = (BookProfileCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId
-                                                                                                                                 forIndexPath:indexPath];;
-    [profileCell configureBook:self.book];
+    UICollectionViewCell *profileCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId forIndexPath:indexPath];;
+    self.profileViewController.view.frame = profileCell.contentView.bounds;
+    [profileCell.contentView addSubview:self.profileViewController.view];
     return profileCell;
 }
 
 - (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
-    BookContentsCollectionViewCell *contentsCell = (BookContentsCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
-    [contentsCell configureBook:self.book];
+    UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
+    self.homeViewController.view.frame = contentsCell.contentView.bounds;
+    [contentsCell.contentView addSubview:self.homeViewController.view];
     return contentsCell;
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
+}
+
+- (NSArray *)recipesWithPhotosInCategory:(NSString *)categoryName {
+    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+    return [categoryRecipes select:^BOOL(CKRecipe *recipe) {
+        return [recipe hasPhotos];
+    }];
+}
+
+- (NSArray *)recipesWithPhotos {
+    NSMutableArray *allRecipes = [NSMutableArray array];
+    for (NSArray *categoryRecipes in [self.categoryRecipes allValues]) {
+        [allRecipes addObjectsFromArray:categoryRecipes];
+    }
+    return [allRecipes select:^BOOL(CKRecipe *recipe) {
+        return [recipe hasPhotos];
+    }];
+}
+
+- (CKRecipe *)highlightRecipeForCategory:(NSString *)categoryName {
+    NSArray *recipes = [self recipesWithPhotosInCategory:categoryName];
+    if ([recipes count] > 0) {
+        return [recipes objectAtIndex:arc4random_uniform([recipes count])];
+    } else {
+        return nil;
+    }
+}
+
+- (CKRecipe *)highlightRecipeForBook {
+    NSArray *recipes = [self recipesWithPhotos];
+    if ([recipes count] > 0) {
+        return [recipes objectAtIndex:arc4random_uniform([recipes count])];
+    } else {
+        return nil;
+    }
 }
 
 @end

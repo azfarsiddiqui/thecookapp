@@ -33,6 +33,13 @@
 
 #pragma mark - Book contents/activities.
 + (UIFont *)bookProfileNameFont;
++ (UIColor *)bookContentsViewColour;
++ (UIFont *)bookContentsTitleFont;
++ (UIColor *)bookContentsTitleColour;
++ (UIFont *)bookContentsNameFont;
++ (UIColor *)bookContentsNameColour;
++ (UIFont *)bookContentsItemFont;
++ (UIColor *)bookContentsItemColour;
 + (UIColor *)activityInfoViewColour;
 + (UIColor *)activityActionColour;
 + (UIFont *)activityActionFont;

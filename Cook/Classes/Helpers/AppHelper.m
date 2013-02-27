@@ -51,4 +51,8 @@
     return [UIApplication sharedApplication].keyWindow.rootViewController.view;
 }
 
+- (CGRect)fullScreenFrame {
+    return [self rootView].bounds;
+}
+
 @end

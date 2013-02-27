@@ -94,6 +94,34 @@
     return [UIFont fontWithName:@"Neutraface2Display-Bold" size:40.0];
 }
 
++ (UIColor *)bookContentsViewColour {
+    return [UIColor colorWithHexString:@"3885C4"];
+}
+
++ (UIFont *)bookContentsTitleFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:60.0];
+}
+
++ (UIColor *)bookContentsTitleColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)bookContentsNameFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:30.0];
+}
+
++ (UIColor *)bookContentsNameColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)bookContentsItemFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:20.0];
+}
+
++ (UIColor *)bookContentsItemColour {
+    return [UIColor whiteColor];
+}
+
 + (UIColor *)activityInfoViewColour {
     return [UIColor colorWithHexString:@"3885C4"];
 }

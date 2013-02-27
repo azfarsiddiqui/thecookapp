@@ -15,4 +15,7 @@
 - (BOOL)newInstall;
 - (UIView *)rootView;
 
+// Provides a landscape frame which can be tricky to obtain in pre-rotation situations.
+- (CGRect)fullScreenFrame;
+
 @end
