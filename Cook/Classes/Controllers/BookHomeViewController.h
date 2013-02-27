@@ -1,5 +1,5 @@
 //
-//  BookHomeResusableView.h
+//  BookHomeViewController.h
 //  Cook
 //
 //  Created by Jeff Tan-Ang on 19/02/13.
@@ -10,8 +10,8 @@
 
 @class CKBook;
 
-@interface BookContentsCollectionViewCell : UICollectionViewCell
+@interface BookHomeViewController : UICollectionViewController
 
-- (void)configureBook:(CKBook *)book;
+- (id)initWithBook:(CKBook *)book;
 
 @end

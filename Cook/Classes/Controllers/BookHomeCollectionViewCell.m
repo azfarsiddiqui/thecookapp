@@ -6,18 +6,18 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookContentsCollectionViewCell.h"
-#import "BookContentsViewController.h"
+#import "BookHomeCollectionViewCell.h"
+#import "BookHomeViewController.h"
 #import "CKBook.h"
 
-@interface BookContentsCollectionViewCell ()
+@interface BookHomeCollectionViewCell ()
 
-@property (nonatomic, strong) BookContentsViewController *homeViewController;
+@property (nonatomic, strong) BookHomeViewController *homeViewController;
 @property (nonatomic, strong) CKBook *book;
 
 @end
 
-@implementation BookContentsCollectionViewCell
+@implementation BookHomeCollectionViewCell
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -33,7 +33,7 @@
     }
     
     self.book = book;
-    BookContentsViewController *homeViewController = [[BookContentsViewController alloc] initWithBook:book];
+    BookHomeViewController *homeViewController = [[BookHomeViewController alloc] initWithBook:book];
     homeViewController.view.frame = self.contentView.bounds;
     [self.contentView addSubview:homeViewController.view];
     self.homeViewController = homeViewController;

@@ -17,7 +17,7 @@
 #import "NewRecipeViewController.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileCollectionViewCell.h"
-#import "BookContentsCollectionViewCell.h"
+#import "BookHomeCollectionViewCell.h"
 #import "TestViewController.h"
 
 @interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
@@ -244,7 +244,7 @@
     
     // Profile and Contents
     [self.collectionView registerClass:[BookProfileCollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
-    [self.collectionView registerClass:[BookContentsCollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
+    [self.collectionView registerClass:[BookHomeCollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
     
     // Categories
     [self.collectionView registerClass:[BookCategoryView class]
@@ -398,7 +398,7 @@
 }
 
 - (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
-    BookContentsCollectionViewCell *contentsCell = (BookContentsCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
+    BookHomeCollectionViewCell *contentsCell = (BookHomeCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
     [contentsCell configureBook:self.book];
     return contentsCell;
 }

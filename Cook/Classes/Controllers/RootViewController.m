@@ -83,6 +83,18 @@
     
 }
 
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (BOOL)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+}
+
 #pragma mark - BenchtopViewControllerDelegate methods
 
 - (void)openBookRequestedForBook:(CKBook *)book {

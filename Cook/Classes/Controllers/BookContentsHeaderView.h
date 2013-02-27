@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ActivityHeaderViewCell : UICollectionReusableView
+@class CKBook;
+
+@interface BookContentsHeaderView : UICollectionReusableView
+
+- (void)configureBook:(CKBook *)book;
 
 @end
