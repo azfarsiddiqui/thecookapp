@@ -33,12 +33,21 @@
         return;
     }
     self.book = book;
-    
-    BookContentsViewController *contentsViewController = [[BookContentsViewController alloc] initWithBook:book];
-    contentsViewController.view.frame = self.bounds;
-    contentsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    [self addSubview:contentsViewController.view];
-    self.contentsViewController = contentsViewController;
+}
+
+- (void)configureCategories:(NSArray *)categories {
+    [self.contentsViewController configureCategories:categories];
+}
+
+- (BookContentsViewController *)contentsViewController {
+    if (_contentsViewController == nil) {
+        BookContentsViewController *contentsViewController = [[BookContentsViewController alloc] initWithBook:self.book];
+        contentsViewController.view.frame = self.bounds;
+        contentsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+        [self addSubview:contentsViewController.view];
+        _contentsViewController = contentsViewController;
+    }
+    return _contentsViewController;
 }
 
 @end

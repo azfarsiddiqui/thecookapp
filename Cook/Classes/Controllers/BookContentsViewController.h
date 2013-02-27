@@ -13,5 +13,6 @@
 @interface BookContentsViewController : UIViewController
 
 - (id)initWithBook:(CKBook *)book;
+- (void)configureCategories:(NSArray *)categories;
 
 @end

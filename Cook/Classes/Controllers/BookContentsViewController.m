@@ -11,7 +11,7 @@
 #import "Theme.h"
 #import <Parse/Parse.h>
 
-@interface BookContentsViewController ()
+@interface BookContentsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UIView *contentsView;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) NSArray *categories;
 
 @end
 
@@ -29,6 +30,7 @@
 #define kProfileWidth       200.0
 #define kBookTitleInsets    UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 #define kTitleNameGap       0.0
+#define kContentsItemHeight 50.0
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
@@ -46,6 +48,51 @@
     [self initImageView];
     [self initTitleView];
     [self initContentsView];
+}
+
+- (void)configureCategories:(NSArray *)categories {
+    self.categories = categories;
+    
+    // Update the frame of the tableView so that we can position it center.
+    CGFloat tableHeight = [self.categories count] * kContentsItemHeight;
+    self.tableView.frame = CGRectMake(self.contentsView.bounds.origin.x,
+                                      floorf((self.contentsView.bounds.size.height - tableHeight) / 2.0),
+                                      self.contentsView.bounds.size.width,
+                                      tableHeight);
+    [self.tableView reloadData];
+}
+
+#pragma mark - UITableViewDataSource methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.categories count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *cellIdentifier = @"ContentsCellId";
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    
+    NSString *categoryName = [[self.categories objectAtIndex:indexPath.item] uppercaseString];
+    cell.textLabel.text = categoryName;
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kContentsItemHeight;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Private methods
@@ -136,6 +183,17 @@
     contentsView.backgroundColor = [Theme bookContentsViewColour];
     [self.view addSubview:contentsView];
     self.contentsView = contentsView;
+    
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(contentsView.bounds.origin.x,
+                                                                           contentsView.bounds.origin.y,
+                                                                           contentsView.bounds.size.width,
+                                                                           contentsView.bounds.size.height)
+                                                          style:UITableViewStylePlain];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    tableView.scrollEnabled = NO;
+    [contentsView addSubview:tableView];
+    self.tableView = tableView;
 }
 
 @end

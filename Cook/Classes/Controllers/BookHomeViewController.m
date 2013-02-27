@@ -21,6 +21,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSArray *activities;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
+@property (nonatomic, strong) BookContentsHeaderView *contentsHeaderView;
 
 @end
 
@@ -41,6 +42,10 @@
     [super viewDidLoad];
     [self initCollectionView];
     [self loadData];
+}
+
+- (void)configureCategories:(NSArray *)categories {
+    [self.contentsHeaderView configureCategories:categories];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -67,6 +72,7 @@
     
     BookContentsHeaderView *cell = (BookContentsHeaderView *)[collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentsHeaderCellId forIndexPath:indexPath];
     [cell configureBook:self.book];
+    self.contentsHeaderView = cell;
     return cell;
 }
 

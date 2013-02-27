@@ -33,10 +33,20 @@
     }
     
     self.book = book;
-    BookHomeViewController *homeViewController = [[BookHomeViewController alloc] initWithBook:book];
-    homeViewController.view.frame = self.contentView.bounds;
-    [self.contentView addSubview:homeViewController.view];
-    self.homeViewController = homeViewController;
+}
+
+- (void)configureCategories:(NSArray *)categories {
+    [self.homeViewController configureCategories:categories];
+}
+
+- (BookHomeViewController *)homeViewController {
+    if (_homeViewController == nil) {
+        BookHomeViewController *homeViewController = [[BookHomeViewController alloc] initWithBook:self.book];
+        homeViewController.view.frame = self.contentView.bounds;
+        [self.contentView addSubview:homeViewController.view];
+        _homeViewController = homeViewController;
+    }
+    return _homeViewController;
 }
 
 @end

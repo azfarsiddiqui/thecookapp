@@ -13,5 +13,6 @@
 @interface BookContentsHeaderView : UICollectionReusableView
 
 - (void)configureBook:(CKBook *)book;
+- (void)configureCategories:(NSArray *)categories;
 
 @end

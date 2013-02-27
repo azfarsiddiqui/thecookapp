@@ -13,5 +13,6 @@
 @interface BookHomeCollectionViewCell : UICollectionViewCell
 
 - (void)configureBook:(CKBook *)book;
+- (void)configureCategories:(NSArray *)categories;
 
 @end

@@ -13,5 +13,6 @@
 @interface BookHomeViewController : UICollectionViewController
 
 - (id)initWithBook:(CKBook *)book;
+- (void)configureCategories:(NSArray *)categories;
 
 @end

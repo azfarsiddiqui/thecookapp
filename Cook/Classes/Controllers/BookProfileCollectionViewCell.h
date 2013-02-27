@@ -12,6 +12,4 @@
 
 @interface BookProfileCollectionViewCell : UICollectionViewCell
 
-- (void)configureBook:(CKBook *)book;
-
 @end
