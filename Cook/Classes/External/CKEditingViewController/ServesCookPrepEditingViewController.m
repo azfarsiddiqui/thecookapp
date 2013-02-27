@@ -10,12 +10,8 @@
 #import "CKEditingTextField.h"
 #import "Theme.h"
 
-
-//@interface ServesCookPrepEditingViewController ()<UIPickerViewDataSource,UIPickerViewDelegate>
-//@property (nonatomic, strong) UILabel *titleLabel;
-//@property (nonatomic,assign)  NSInteger serves;
-//
-//@end
+#define kPickerWidth        200.0f
+#define kPickerHeight       100.0f
 
 @interface ServesCookPrepEditingViewController ()<UIPickerViewDelegate,UIPickerViewDataSource>
 //ui
@@ -44,7 +40,7 @@
     return self;
 }
 - (UIView *)createTargetEditingView {
-    UIEdgeInsets mainViewInsets = UIEdgeInsetsMake(75.0, 50.0, 75.0, 50.0);
+    UIEdgeInsets mainViewInsets = UIEdgeInsetsMake(100.0f,100.0f,100.0f,100.0f);
     
     CGRect frame = CGRectMake(mainViewInsets.left,
                               mainViewInsets.top,
@@ -115,7 +111,7 @@
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
 {
-	return 80.0f;
+	return kPickerWidth - 10.0f;
 }
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
@@ -150,35 +146,52 @@
 -(void)addSubviews:(UIView*)mainView
 {
     
-    self.servesLabel = [[UILabel alloc]initWithFrame:CGRectMake(50.0f, 0.0f, 200.f, 30.0f)];
+    self.servesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 50.0f, mainView.frame.size.width, 50.0f)];
     self.servesLabel.backgroundColor = [UIColor clearColor];
+    self.servesLabel.textAlignment = NSTextAlignmentCenter;
+    self.servesLabel.font = [Theme cookServesPrepEditTitleFont];
+    self.servesLabel.textColor = [Theme cookServesPrepEditTitleColor];
     self.servesLabel.text = @"SERVES";
-    self.servesLabel.textColor = [UIColor whiteColor];
-
 
     [mainView addSubview:self.servesLabel];
     
-    self.prepLabel = [[UILabel alloc]initWithFrame:CGRectMake(50.0f, 50.0f, 200.f, 30.0f)];
+    self.prepLabel = [[UILabel alloc]initWithFrame:CGRectMake(150.0f, 250.0f, floorf(0.5*mainView.frame.size.width), 30.0f)];
     self.prepLabel.backgroundColor = [UIColor clearColor];
-    self.prepLabel.textColor = [UIColor whiteColor];
+    self.prepLabel.textAlignment = NSTextAlignmentCenter;
+
+    self.prepLabel.textColor = [Theme cookServesPrepEditTitleColor];
+    self.prepLabel.font = [Theme cookServesPrepEditTitleFont];
     self.prepLabel.text = @"PREP";
+    [self.prepLabel sizeToFit];
+    self.prepLabel.frame = CGRectMake(self.prepLabel.frame.origin.x, self.prepLabel.frame.origin.y, kPickerWidth, self.prepLabel.frame.size.height);
 
     [mainView addSubview:self.prepLabel];
 
-    self.cookLabel = [[UILabel alloc]initWithFrame:CGRectMake(50.0f, 100.0f, 200.f, 30.0f)];
+    self.cookLabel = [[UILabel alloc]initWithFrame:CGRectMake(450.0f, self.prepLabel.frame.origin.y, floorf(0.5*mainView.frame.size.width), 30.0f)];
     self.cookLabel.backgroundColor = [UIColor clearColor];
+    self.cookLabel.textAlignment = NSTextAlignmentCenter;
+    self.cookLabel.textColor = [Theme cookServesPrepEditTitleColor];
+    self.cookLabel.font = [Theme cookServesPrepEditTitleFont];
     self.cookLabel.text = @"COOK";
-    self.cookLabel.textColor = [UIColor whiteColor];
+    [self.cookLabel sizeToFit];
+    self.cookLabel.frame = CGRectMake(self.cookLabel.frame.origin.x, self.cookLabel.frame.origin.y, kPickerWidth, self.cookLabel.frame.size.height);
     [mainView addSubview:self.cookLabel];
     
     [self addServesSlider:mainView];
-    self.cookingTimePickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(50.0f, 300.0f, 400.0f, 50.0f)];
+    
+    self.cookingTimePickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(self.cookLabel.frame.origin.x,
+                                                                               self.cookLabel.frame.origin.y + self.cookLabel.frame.size.height,
+                                                                               kPickerWidth,
+                                                                               kPickerHeight)];
     [mainView addSubview:self.cookingTimePickerView];
 	self.cookingTimePickerView.showsSelectionIndicator = YES;
 	self.cookingTimePickerView.delegate = self;
 	self.cookingTimePickerView.dataSource = self;
 	
-    self.prepTimePickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(500.0f, 300.0f, 400.0f, 50.0f)];
+    self.prepTimePickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(self.prepLabel.frame.origin.x,
+                                                                            self.prepLabel.frame.origin.y + self.prepLabel.frame.size.height,
+                                                                            kPickerWidth,
+                                                                            kPickerHeight)];
     self.prepTimePickerView.showsSelectionIndicator = YES;
 	self.prepTimePickerView.delegate = self;
 	self.prepTimePickerView.dataSource = self;
@@ -195,7 +208,7 @@
 
 - (void) addServesSlider:(UIView*)mainView
 {
-        self.servesSlider = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, 200.0f, 600.0f, 100.0f)];
+        self.servesSlider = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, self.servesLabel.frame.origin.y + self.servesLabel.frame.size.height, 600.0f, 100.0f)];
         self.servesSlider.minimumValueImage = [UIImage imageNamed:@"cook_edit_serveslider_icon_one"];
         self.servesSlider.maximumValueImage = [UIImage imageNamed:@"cook_edit_serveslider_icon_many"];
 

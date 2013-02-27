@@ -66,6 +66,11 @@
 +(UIColor*) userNameColor;
 +(UIFont*) userNameFont;
 
+#pragma mark - Recipe Editing
++ (UIFont *) cookServesPrepEditTitleFont;
++ (UIColor *)cookServesPrepEditTitleColor;
++ (UIFont *) cookPrepPickerFont;
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
 

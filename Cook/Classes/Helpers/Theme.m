@@ -222,6 +222,20 @@
     return [UIColor colorWithHexString:@"3a3a3a"];
 }
 
+#pragma mark - Recipe Editing
+
+
++ (UIFont *)cookServesPrepEditTitleFont {
+    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:50.0];
+}
++ (UIColor *)cookServesPrepEditTitleColor {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)cookPrepPickerFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+}
+
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor
