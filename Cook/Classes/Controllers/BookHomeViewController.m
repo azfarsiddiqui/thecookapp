@@ -16,9 +16,10 @@
 #import "ParsePhotoStore.h"
 #import "BookContentsViewController.h"
 
-@interface BookHomeViewController ()
+@interface BookHomeViewController () <BookContentsViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, assign) id<BookHomeViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSArray *activities;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) BookContentsViewController *contentsViewController;
@@ -30,11 +31,12 @@
 #define kActivityCellId         @"ActivityCellId"
 #define kContentsHeaderCellId   @"ContentsHeaderCellId"
 
-- (id)initWithBook:(CKBook *)book  {
+- (id)initWithBook:(CKBook *)book delegate:(id<BookHomeViewControllerDelegate>)delegate  {
     if (self = [super initWithCollectionViewLayout:[[BookHomeFlowLayout alloc] init]]) {
         self.book = book;
+        self.delegate = delegate;
         self.photoStore = [[ParsePhotoStore alloc] init];
-        self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book];
+        self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book delegate:self];
     }
     return self;
 }
@@ -51,6 +53,12 @@
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
     [self.contentsViewController configureRecipe:recipe];
+}
+
+#pragma mark - BookContentsViewControllerDelegate methods
+
+- (void)bookContentsSelectedCategory:(NSString *)category {
+    [self.delegate bookHomeSelectedCategory:category];
 }
 
 #pragma mark - UICollectionViewDataSource methods

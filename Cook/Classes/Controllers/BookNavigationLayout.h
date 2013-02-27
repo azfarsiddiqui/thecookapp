@@ -14,6 +14,7 @@
 @interface BookNavigationLayout : UICollectionViewLayout
 
 - (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource;
+- (CGFloat)pageOffsetForSection:(NSInteger)section;
 
 + (CGSize)unitSize;
 + (UIEdgeInsets)pageInsets;
