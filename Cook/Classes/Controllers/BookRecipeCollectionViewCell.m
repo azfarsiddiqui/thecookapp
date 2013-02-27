@@ -239,7 +239,6 @@
         offset = 48.0;
     }
     
-    DLog(@"OFFSET %f", offset);
     return offset;
 }
 

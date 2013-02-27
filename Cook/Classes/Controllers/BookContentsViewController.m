@@ -7,14 +7,20 @@
 //
 
 #import "BookContentsViewController.h"
+#import <Parse/Parse.h>
 #import "CKBook.h"
 #import "Theme.h"
-#import <Parse/Parse.h>
+#import "ImageHelper.h"
+#import "CKRecipe.h"
+#import "ParsePhotoStore.h"
+#import "AppHelper.h"
 
 @interface BookContentsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImage *heroImage;
 @property (nonatomic, strong) UIView *titleView;
 @property (nonatomic, strong) UIView *contentsView;
 @property (nonatomic, strong) UITableView *tableView;
@@ -28,13 +34,14 @@
 #define kContentsWidth      180.0
 #define kTitleSize          CGSizeMake(600.0, 300.0)
 #define kProfileWidth       200.0
-#define kBookTitleInsets    UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
+#define kBookTitleInsets    UIEdgeInsetsMake(30.0, 20.0, 20.0, 20.0)
 #define kTitleNameGap       0.0
 #define kContentsItemHeight 50.0
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
         self.book = book;
+        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -56,6 +63,17 @@
     // Update the frame of the tableView so that we can position it center.
     [self updateTableFrame];
     [self.tableView reloadData];
+}
+
+- (void)configureRecipe:(CKRecipe *)recipe {
+    [self.photoStore imageForParseFile:[recipe imageFile]
+                                  size:[self imageFrame].size
+                            completion:^(UIImage *image) {
+                                self.heroImage = image;
+                                if (self.imageView) {
+                                    [ImageHelper configureImageView:self.imageView image:self.heroImage];
+                                }
+                            }];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -97,13 +115,18 @@
 
 - (void)initImageView {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
-    imageView.frame = CGRectMake(self.view.bounds.origin.x,
-                                 self.view.bounds.origin.y,
-                                 self.view.bounds.size.width - kContentsWidth,
-                                 self.view.bounds.size.height);
-    imageView.backgroundColor = [UIColor lightGrayColor];
+    imageView.frame = [self imageFrame];
     [self.view addSubview:imageView];
     self.imageView = imageView;
+    [ImageHelper configureImageView:self.imageView image:self.heroImage];
+}
+
+- (CGRect)imageFrame {
+    CGRect fullScreenFrame = [[AppHelper sharedInstance] fullScreenFrame];
+    return CGRectMake(fullScreenFrame.origin.x,
+                      fullScreenFrame.origin.y,
+                      fullScreenFrame.size.width - kContentsWidth,
+                      fullScreenFrame.size.height);
 }
 
 - (void)initTitleView {
@@ -128,6 +151,7 @@
                                                                                   kProfileWidth,
                                                                                   titleView.bounds.size.height)];
     profileImageView.backgroundColor = [UIColor darkGrayColor];
+    profileImageView.alpha = 0.8;
     [titleView addSubview:profileImageView];
     self.profileImageView = profileImageView;
     

@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @class CKBook;
+@class CKRecipe;
 
 @interface BookHomeViewController : UICollectionViewController
 
 - (id)initWithBook:(CKBook *)book;
 - (void)configureCategories:(NSArray *)categories;
+- (void)configureHeroRecipe:(CKRecipe *)recipe;
 
 @end

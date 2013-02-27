@@ -10,7 +10,7 @@
 
 @interface BookNavigationLayout ()
 
-@property (nonatomic, assign) id<BookNavigationLayoutDataSource> dataSource;
+@property (nonatomic, assign) id<BookNavigationDataSource> dataSource;
 @property (nonatomic, strong) NSMutableArray *contentPages;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
@@ -33,7 +33,7 @@
     return 72.0;
 }
 
-- (id)initWithDataSource:(id<BookNavigationLayoutDataSource>)dataSource {
+- (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource {
     if (self = [super init]) {
         self.dataSource = dataSource;
     }

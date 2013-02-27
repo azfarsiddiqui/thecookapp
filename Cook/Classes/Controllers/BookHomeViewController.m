@@ -30,7 +30,7 @@
 #define kActivityCellId         @"ActivityCellId"
 #define kContentsHeaderCellId   @"ContentsHeaderCellId"
 
-- (id)initWithBook:(CKBook *)book {
+- (id)initWithBook:(CKBook *)book  {
     if (self = [super initWithCollectionViewLayout:[[BookHomeFlowLayout alloc] init]]) {
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
@@ -47,6 +47,10 @@
 
 - (void)configureCategories:(NSArray *)categories {
     [self.contentsViewController configureCategories:categories];
+}
+
+- (void)configureHeroRecipe:(CKRecipe *)recipe {
+    [self.contentsViewController configureRecipe:recipe];
 }
 
 #pragma mark - UICollectionViewDataSource methods

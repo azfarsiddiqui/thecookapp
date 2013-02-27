@@ -19,8 +19,9 @@
 #import "TestViewController.h"
 #import "BookProfileViewController.h"
 #import "BookHomeViewController.h"
+#import "BookNavigationDataSource.h"
 
-@interface BookNavigationViewController () <BookNavigationLayoutDataSource, NewRecipeViewDelegate>
+@interface BookNavigationViewController () <BookNavigationDataSource, NewRecipeViewDelegate>
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *createButton;
@@ -288,6 +289,7 @@
         
         // Update the VC's.
         [self.homeViewController configureCategories:self.categoryNames];
+        [self.homeViewController configureHeroRecipe:[self highlightRecipeForBook]];
         
         // Now reload the collection.
         [self.collectionView reloadData];
@@ -296,22 +298,6 @@
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
     }];
-}
-
-- (CKRecipe *)highlightRecipeForCategory:(NSString *)categoryName {
-    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
-    
-        // Pick a random recipe with image otherwise return nil.
-    if ([categoryRecipes count] > 0) {
-        
-        // Get first object.
-        return [categoryRecipes objectAtIndex:0];
-//        return [categoryRecipes objectAtIndex:arc4random() % ([categoryRecipes count])];
-        
-    } else {
-        return nil;
-    }
-    
 }
 
 - (void)closeTapped:(id)sender {
@@ -413,6 +399,41 @@
 
 - (void)viewRecipe:(CKRecipe *)recipe {
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
+}
+
+- (NSArray *)recipesWithPhotosInCategory:(NSString *)categoryName {
+    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+    return [categoryRecipes select:^BOOL(CKRecipe *recipe) {
+        return [recipe hasPhotos];
+    }];
+}
+
+- (NSArray *)recipesWithPhotos {
+    NSMutableArray *allRecipes = [NSMutableArray array];
+    for (NSArray *categoryRecipes in [self.categoryRecipes allValues]) {
+        [allRecipes addObjectsFromArray:categoryRecipes];
+    }
+    return [allRecipes select:^BOOL(CKRecipe *recipe) {
+        return [recipe hasPhotos];
+    }];
+}
+
+- (CKRecipe *)highlightRecipeForCategory:(NSString *)categoryName {
+    NSArray *recipes = [self recipesWithPhotosInCategory:categoryName];
+    if ([recipes count] > 0) {
+        return [recipes objectAtIndex:arc4random_uniform([recipes count])];
+    } else {
+        return nil;
+    }
+}
+
+- (CKRecipe *)highlightRecipeForBook {
+    NSArray *recipes = [self recipesWithPhotos];
+    if ([recipes count] > 0) {
+        return [recipes objectAtIndex:arc4random_uniform([recipes count])];
+    } else {
+        return nil;
+    }
 }
 
 @end
