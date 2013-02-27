@@ -101,7 +101,9 @@
     [self setRecipeNameValue:self.recipe.name];
     [self setMethodValue:self.recipe.description];
     [self setIngredientsValue:self.recipe.ingredients];
-    [self setServesCookPrepWithNumServes:4 cookTimeMins:45 prepTimeMins:20];
+    [self setServesCookPrepWithNumServes:self.recipe.numServes
+                            cookTimeMins:self.recipe.cookingTimeInSeconds/60
+                            prepTimeMins:45];
     [self setStoryValue:self.recipe.story];
     [self.facebookUserView setUser:self.recipe.user inFrame:self.view.frame];
     
@@ -157,6 +159,10 @@
     } else if (view == self.servesCookPrepEditableView) {
         ServesCookPrepEditingViewController *servesEditingVC = [[ServesCookPrepEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesCookPrepEditableView];
         servesEditingVC.view.frame = [self rootView].bounds;
+        servesEditingVC.numServes = [NSNumber numberWithInt:self.recipe.numServes];
+        servesEditingVC.cookingTimeInMinutes = [NSNumber numberWithInt:self.recipe.cookingTimeInSeconds];
+//        servesEditingVC.prepTimeInMinutes = self.recipe.prepTimeInMinutes;
+        
         [self.view addSubview:servesEditingVC.view];
         self.editingViewController = servesEditingVC;
         [servesEditingVC enableEditing:YES completion:nil];
@@ -204,7 +210,11 @@
         [self setStoryValue:value];
         [self.storyEditableView enableEditMode:YES];
     } else if (editingView == self.servesCookPrepEditableView){
-        [self setServesCookPrepWithNumServes:4 cookTimeMins:45 prepTimeMins:20];
+        NSDictionary *values = (NSDictionary*)result;
+        
+        [self setServesCookPrepWithNumServes:[[values objectForKey:@"serves"]intValue]
+                                cookTimeMins:[[values objectForKey:@"cookTime"]intValue]
+                                prepTimeMins:[[values objectForKey:@"prepTime"]intValue]];
         [self.servesCookPrepEditableView enableEditMode:YES];
     }
     
@@ -319,6 +329,7 @@
     
     self.methodViewEditableView.contentView = label;
     
+    //change the value if recipe is not nil, and there was a change
     if (self.recipe && ![self.recipe.description isEqualToString:methodValue]) {
         self.recipe.description = methodValue;
     }
@@ -375,6 +386,9 @@
         cookingTimeLabel.text = [NSString stringWithFormat:@"Prep %im | Cook %im", prepTimeMins, cooktimeMins];
     }
     
+    self.recipe.numServes = serves;
+    self.recipe.cookingTimeInSeconds = cooktimeMins*60;
+//    self.recipe.prepTime = prepTimeMins;
     self.servesCookPrepEditableView.contentView = containerView;
 }
 
