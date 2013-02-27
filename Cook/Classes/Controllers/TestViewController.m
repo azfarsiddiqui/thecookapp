@@ -12,14 +12,19 @@
 #import "TextViewEditingViewController.h"
 #import "IngredientsEditingViewController.h"
 #import "BookModalViewControllerDelegate.h"
-#import "ServesEditingViewController.h"
+#import "ServesCookPrepEditingViewController.h"
 #import "NSArray+Enumerable.h"
 #import "FacebookUserView.h"
 #import "Ingredient.h"
 #import "Theme.h"
+#import "ViewHelper.h"
 #import "ParsePhotoStore.h"
-#define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
 
+#define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
+#define  kCookPrepTimeLabelSize CGSizeMake(200.0f,20.0f)
+#define  kCookLabelTag      112233445566
+#define  kServesLabelTag      223344556677
+#define  kCookPrepLabelLeftPadding  5.0f
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
 
 //ui
@@ -27,8 +32,7 @@
 @property(nonatomic,strong) IBOutlet CKEditableView *methodViewEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *ingredientsViewEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *storyEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *servesEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *cookingTimeEditableView;
+@property(nonatomic,strong) IBOutlet CKEditableView *servesCookPrepEditableView;
 @property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @property(nonatomic,strong) IBOutlet UIImageView *recipeImageView;
 
@@ -86,9 +90,7 @@
     [self.methodViewEditableView enableEditMode:self.inEditMode];
     [self.ingredientsViewEditableView enableEditMode:self.inEditMode];
     [self.storyEditableView enableEditMode:self.inEditMode];
-    [self.servesEditableView enableEditMode:self.inEditMode];
-    [self.cookingTimeEditableView enableEditMode:self.inEditMode];
-
+    [self.servesCookPrepEditableView enableEditMode:self.inEditMode];
     [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
 }
 
@@ -99,8 +101,7 @@
     [self setRecipeNameValue:self.recipe.name];
     [self setMethodValue:self.recipe.description];
     [self setIngredientsValue:self.recipe.ingredients];
-    [self setServesValue:[NSString stringWithFormat:@"%i",self.recipe.numServes]];
-    [self setCookingTimeValue:[NSString stringWithFormat:@"%f",self.recipe.cookingTimeInSeconds]];
+    [self setServesCookPrepWithNumServes:4 cookTimeMins:45 prepTimeMins:20];
     [self setStoryValue:self.recipe.story];
     [self.facebookUserView setUser:self.recipe.user inFrame:self.view.frame];
     
@@ -153,34 +154,12 @@
         ingredientsEditingVC.editingTitle = @"INGREDIENTS";
         [ingredientsEditingVC enableEditing:YES completion:nil];
         
-    } else if (view == self.servesEditableView) {
-        ServesEditingViewController *servesEditingVC = [[ServesEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesEditableView];
+    } else if (view == self.servesCookPrepEditableView) {
+        ServesCookPrepEditingViewController *servesEditingVC = [[ServesCookPrepEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesCookPrepEditableView];
         servesEditingVC.view.frame = [self rootView].bounds;
         [self.view addSubview:servesEditingVC.view];
         self.editingViewController = servesEditingVC;
-
-        UILabel *textFieldLabel = (UILabel *)self.servesEditableView.contentView;
-//        servesEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-//        servesEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        //set value here
-//        servesEditingVC.text = textFieldLabel.text;
-        servesEditingVC.editingTitle = @"SERVES";
         [servesEditingVC enableEditing:YES completion:nil];
-    } else if (view == self.cookingTimeEditableView) {
-        CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.cookingTimeEditableView];
-        textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
-        textFieldEditingVC.view.frame = [self rootView].bounds;
-        [self.view addSubview:textFieldEditingVC.view];
-        self.editingViewController = textFieldEditingVC;
-        
-        UILabel *textFieldLabel = (UILabel *)self.cookingTimeEditableView.contentView;
-        
-        textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-        textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        textFieldEditingVC.characterLimit = 20;
-        textFieldEditingVC.text = textFieldLabel.text;
-        textFieldEditingVC.editingTitle = @"COOKING TIME";
-        [textFieldEditingVC enableEditing:YES completion:nil];
     } else if (view == self.storyEditableView) {
         TextViewEditingViewController *textViewEditingVC = [[TextViewEditingViewController alloc] initWithDelegate:self sourceEditingView:self.storyEditableView];
         textViewEditingVC.view.frame = [self rootView].bounds;
@@ -209,7 +188,7 @@
 
 -(void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result {
     NSString *value = nil;
-    if (editingView!= self.ingredientsViewEditableView) {
+    if (editingView!= self.ingredientsViewEditableView && editingView!=self.servesCookPrepEditableView) {
         value = (NSString *)result;
     }
     if (editingView == self.nameEditableView) {
@@ -224,12 +203,9 @@
     } else if (editingView == self.storyEditableView) {
         [self setStoryValue:value];
         [self.storyEditableView enableEditMode:YES];
-    } else if (editingView == self.cookingTimeEditableView){
-        [self setCookingTimeValue:value];
-        [self.cookingTimeEditableView enableEditMode:YES];
-    } else if (editingView == self.servesEditableView) {
-        [self setServesValue:value];
-        [self.servesEditableView enableEditMode:YES];
+    } else if (editingView == self.servesCookPrepEditableView){
+        [self setServesCookPrepWithNumServes:4 cookTimeMins:45 prepTimeMins:20];
+        [self.servesCookPrepEditableView enableEditMode:YES];
     }
     
     [self.recipe saveWithSuccess:^{
@@ -247,7 +223,7 @@
 
 #pragma mark - Private Methods
 
--(UILabel*)configLabelForEditableView:(CKEditableView*)editableView withTextAlignment:(NSTextAlignment)textAlignment withFont:(UIFont*)viewFont  withColor:(UIColor*)color
+-(UILabel*)displayableLabelWithTextAlignment:(NSTextAlignment)textAlignment withFont:(UIFont*)viewFont  withColor:(UIColor*)color
 {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.autoresizingMask = UIViewAutoresizingNone;
@@ -256,9 +232,14 @@
     label.font = viewFont;
     label.textColor = color;
     label.numberOfLines = 0;
+    return label;
+}
+
+-(UILabel*)newLabelForEditableView:(CKEditableView*)editableView withTextAlignment:(NSTextAlignment)textAlignment withFont:(UIFont*)viewFont  withColor:(UIColor*)color
+{
+    UILabel *label = [self displayableLabelWithTextAlignment:textAlignment withFont:viewFont withColor:color];
     editableView.delegate = self;
     editableView.contentInsets = kEditableInsets;
-
     return label;
 }
 
@@ -267,7 +248,7 @@
     UILabel *label = (UILabel *)editableView.contentView;
     
     if (!label) {
-        label = [self configLabelForEditableView:editableView withTextAlignment:textAlignment withFont:viewFont withColor:color];
+        label = [self newLabelForEditableView:editableView withTextAlignment:textAlignment withFont:viewFont withColor:color];
     }
     
     label.text = value;
@@ -295,7 +276,7 @@
 - (void)setIngredientsValue:(NSArray *)ingredientsArray {
     UILabel *label = (UILabel *)self.ingredientsViewEditableView.contentView;
     if (!label) {
-        label = [self configLabelForEditableView:self.ingredientsViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme ingredientsListFont]
+        label = [self newLabelForEditableView:self.ingredientsViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme ingredientsListFont]
                                        withColor:[Theme ingredientsListColor]];
     }
 
@@ -322,7 +303,7 @@
 - (void)setMethodValue:(NSString *)methodValue {
     UILabel *label = (UILabel *)self.methodViewEditableView.contentView;
     if (!label) {
-        label = [self configLabelForEditableView:self.methodViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme methodFont]
+        label = [self newLabelForEditableView:self.methodViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme methodFont]
                                        withColor:[Theme methodColor]];
     }
     
@@ -337,20 +318,64 @@
                              constrainedSize.height);
     
     self.methodViewEditableView.contentView = label;
+    
     if (self.recipe && ![self.recipe.description isEqualToString:methodValue]) {
         self.recipe.description = methodValue;
     }
 }
 
-- (void)setCookingTimeValue:(NSString *)cookingTimeValue {
-    
-    [self configEditableView:self.cookingTimeEditableView withValue:cookingTimeValue withFont:[Theme cookingTimeFont] withColor:[Theme cookingTimeColor]
-           withTextAlignment:NSTextAlignmentLeft];
-}
+- (void)setServesCookPrepWithNumServes:(NSInteger)serves cookTimeMins:(NSInteger)cooktimeMins prepTimeMins:(NSInteger)prepTimeMins {
+    UIView *containerView = (UIView *)self.servesCookPrepEditableView.contentView;
+    if (!containerView) {
+        containerView = [[UIView alloc]initWithFrame:self.servesCookPrepEditableView.frame];
+        self.servesCookPrepEditableView.contentInsets = kEditableInsets;
+        self.servesCookPrepEditableView.delegate = self;
 
-- (void)setServesValue:(NSString *)servesValue {
+        UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_serves"]];
+        UIImageView *prepCookTimeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_icon_time"]];
+        
+        CGFloat verticalSpacingThird = floorf(0.33*(self.servesCookPrepEditableView.frame.size.height - servesImageView.frame.size.height -
+                                         prepCookTimeImageView.frame.size.height - kEditableInsets.top - kEditableInsets.bottom));
+        
+        servesImageView.frame = CGRectMake(2*kEditableInsets.left,
+                                           verticalSpacingThird,
+                                           servesImageView.frame.size.width,
+                                           servesImageView.frame.size.height);
+        [containerView addSubview:servesImageView];
+
+        UILabel *servesLabel = [self displayableLabelWithTextAlignment:NSTextAlignmentLeft withFont:[Theme servesFont] withColor:[Theme servesColor]];
+        servesLabel.tag = kServesLabelTag;
+        servesLabel.frame = CGRectMake(servesImageView.frame.origin.x + servesImageView.frame.size.width + kCookPrepLabelLeftPadding,
+                                       verticalSpacingThird,
+                                       kCookPrepTimeLabelSize.width,
+                                       kCookPrepTimeLabelSize.height);
+        [containerView addSubview:servesLabel];
+        
+        prepCookTimeImageView.frame = CGRectMake(servesImageView.frame.origin.x,
+                                                 servesImageView.frame.origin.y + servesImageView.frame.size.height + verticalSpacingThird,
+                                                 prepCookTimeImageView.frame.size.width,
+                                                 prepCookTimeImageView.frame.size.height);
+        [containerView addSubview:prepCookTimeImageView];
+        UILabel *prepCookingTimeLabel = [self displayableLabelWithTextAlignment:NSTextAlignmentLeft withFont:[Theme cookingTimeFont] withColor:[Theme cookingTimeColor]];
+        prepCookingTimeLabel.frame = CGRectMake(servesLabel.frame.origin.x,
+                                                prepCookTimeImageView.frame.origin.y,
+                                                kCookPrepTimeLabelSize.width,
+                                                kCookPrepTimeLabelSize.height);
+        prepCookingTimeLabel.tag = kCookLabelTag;
+        [containerView addSubview:prepCookingTimeLabel];
+    }
     
-    [self configEditableView:self.servesEditableView withValue:servesValue withFont:[Theme servesFont] withColor:[Theme servesColor] withTextAlignment:NSTextAlignmentLeft];
+    UILabel *servesLabel = (UILabel*) [containerView viewWithTag:kServesLabelTag];
+    if (servesLabel) {
+        servesLabel.text = [NSString stringWithFormat:@"Serves %i", serves];
+    }
+    
+    UILabel *cookingTimeLabel = (UILabel*) [containerView viewWithTag:kCookLabelTag];
+    if (cookingTimeLabel) {
+        cookingTimeLabel.text = [NSString stringWithFormat:@"Prep %im | Cook %im", prepTimeMins, cooktimeMins];
+    }
+    
+    self.servesCookPrepEditableView.contentView = containerView;
 }
 
 -(void)loadRecipeImage

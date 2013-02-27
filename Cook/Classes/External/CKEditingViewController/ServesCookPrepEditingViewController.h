@@ -8,6 +8,5 @@
 
 #import "CKEditingViewController.h"
 
-@interface ServesEditingViewController : CKEditingViewController
-
+@interface ServesCookPrepEditingViewController : CKEditingViewController
 @end
