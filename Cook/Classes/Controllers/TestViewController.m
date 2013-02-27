@@ -17,6 +17,7 @@
 #import "FacebookUserView.h"
 #import "Ingredient.h"
 #import "Theme.h"
+#import "ParsePhotoStore.h"
 #define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
 
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
@@ -29,17 +30,13 @@
 @property(nonatomic,strong) IBOutlet CKEditableView *servesEditableView;
 @property(nonatomic,strong) IBOutlet CKEditableView *cookingTimeEditableView;
 @property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
+@property(nonatomic,strong) IBOutlet UIImageView *recipeImageView;
+
 @property(nonatomic,strong) CKEditingViewController *editingViewController;
 
 //data
 @property(nonatomic,assign) BOOL inEditMode;
-@property(nonatomic,strong) NSArray *ingredientListData;
-@property(nonatomic,strong) NSString *methodViewData;
-@property(nonatomic,strong) NSString *recipeTitle;
-@property(nonatomic,strong) NSString *servesData;
-@property(nonatomic,strong) NSString *cookingTimeData;
-@property(nonatomic,strong) NSString *storyData;
-@property(nonatomic,strong) CKUser *author;
+@property(nonatomic,strong) ParsePhotoStore *parsePhotoStore;
 
 // delegates
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
@@ -51,12 +48,7 @@
 -(void)awakeFromNib
 {
     [super awakeFromNib];
-    self.ingredientListData = @[@"10 g:salt",@"10 g:sugar",@"200ml:water",@"2 cups:brandy",@"3 spoons:pepper",@"1 kg: flank steak",@"3 cups: lettuce"];
-    self.methodViewData = @"Bacon ipsum dolor sit amet prosciutto sed non beef bresaola venison irure. Ball tip duis meatball, tri-tip anim esse bresaola culpa cillum dolor tenderloin capicola labore est. Brisket kielbasa minim ut cow, aliqua enim jowl capicola beef";
-//    self.recipeTitle = @"My Recipe title";
-    self.storyData = @"This recipe reflects my innermost love for monkeys. and hamsters too. I love bacon";
-    self.cookingTimeData = @"20 minutes";
-    self.servesData = @"4-6";
+    self.parsePhotoStore = [[ParsePhotoStore alloc]init];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -75,21 +67,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
--(void)setRecipe:(CKRecipe *)recipe
-{
-    _recipe = recipe;
-    self.recipeTitle = recipe.name;
-    self.cookingTimeData = [NSString stringWithFormat:@"%f",recipe.cookingTimeInSeconds];
-    self.servesData = [NSString stringWithFormat:@"%i",recipe.numServes];
-    self.methodViewData = recipe.description;
-    self.storyData = recipe.story;
-    self.author = recipe.user;
-
-    self.ingredientListData = [recipe.ingredients collect:^id(Ingredient *ingredient) {
-        return ingredient.name;
-    }];
 }
 
 #pragma mark - IBActions
@@ -119,14 +96,16 @@
 -(void)config
 {
     DLog();
-    [self setRecipeNameValue:self.recipeTitle];
-    [self setMethodValue:self.methodViewData];
-    [self setIngredientsValue:[self.ingredientListData componentsJoinedByString:@"\n"]];
-    [self setServesValue:self.servesData];
-    [self setCookingTimeValue:self.cookingTimeData];
-    [self setStoryValue:self.storyData];
-    [self.facebookUserView setUser:self.author];
-
+    [self setRecipeNameValue:self.recipe.name];
+    [self setMethodValue:self.recipe.description];
+    [self setIngredientsValue:self.recipe.ingredients];
+    [self setServesValue:[NSString stringWithFormat:@"%i",self.recipe.numServes]];
+    [self setCookingTimeValue:[NSString stringWithFormat:@"%f",self.recipe.cookingTimeInSeconds]];
+    [self setStoryValue:self.recipe.story];
+    [self.facebookUserView setUser:self.recipe.user inFrame:self.view.frame];
+    
+    [self loadRecipeImage];
+    
 }
 
 - (UIView *)rootView {
@@ -170,7 +149,7 @@
         [self.view addSubview:ingredientsEditingVC.view];
         self.editingViewController = ingredientsEditingVC;
         
-        ingredientsEditingVC.ingredientList = [NSMutableArray arrayWithArray:self.ingredientListData];
+        ingredientsEditingVC.ingredientList = self.recipe.ingredients;
         ingredientsEditingVC.editingTitle = @"INGREDIENTS";
         [ingredientsEditingVC enableEditing:YES completion:nil];
         
@@ -229,7 +208,10 @@
 }
 
 -(void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result {
-    NSString *value = (NSString *)result;
+    NSString *value = nil;
+    if (editingView!= self.ingredientsViewEditableView) {
+        value = (NSString *)result;
+    }
     if (editingView == self.nameEditableView) {
         [self setRecipeNameValue:value];
         [self.nameEditableView enableEditMode:YES];
@@ -237,7 +219,7 @@
         [self setMethodValue:value];
         [self.methodViewEditableView enableEditMode:YES];
     } else if (editingView == self.ingredientsViewEditableView){
-        [self setIngredientsValue:value];
+        [self setIngredientsValue:(NSArray*)result];
         [self.ingredientsViewEditableView enableEditMode:YES];
     } else if (editingView == self.storyEditableView) {
         [self setStoryValue:value];
@@ -248,7 +230,13 @@
     } else if (editingView == self.servesEditableView) {
         [self setServesValue:value];
         [self.servesEditableView enableEditMode:YES];
-    } 
+    }
+    
+    [self.recipe saveWithSuccess:^{
+        DLog(@"Recipe successfully saved");
+    } failure:^(NSError *error) {
+        DLog(@"An error occurred: %@", [error description]);
+    }];
 }
 
 #pragma mark - BookModalViewController methods
@@ -291,22 +279,34 @@
 - (void)setRecipeNameValue:(NSString *)recipeValue {
     [self configEditableView:self.nameEditableView withValue:recipeValue withFont:[Theme recipeNameFont]
                  withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
+    if (self.recipe && ![self.recipe.name isEqualToString:recipeValue]) {
+        self.recipe.name = recipeValue;
+    }
 }
 
 - (void)setStoryValue:(NSString *)storyValue {
     
-    [self configEditableView:self.storyEditableView withValue:storyValue withFont:[Theme storyFont] withColor:[Theme storyColor] withTextAlignment:NSTextAlignmentLeft];
+    [self configEditableView:self.storyEditableView withValue:storyValue withFont:[Theme storyFont] withColor:[Theme storyColor] withTextAlignment:NSTextAlignmentCenter];
+    if (self.recipe && ![self.recipe.story isEqualToString:storyValue]) {
+        self.recipe.story = storyValue;
+    }
 }
 
-- (void)setIngredientsValue:(NSString *)ingredientsValue {
+- (void)setIngredientsValue:(NSArray *)ingredientsArray {
     UILabel *label = (UILabel *)self.ingredientsViewEditableView.contentView;
     if (!label) {
         label = [self configLabelForEditableView:self.ingredientsViewEditableView withTextAlignment:NSTextAlignmentLeft withFont:[Theme ingredientsListFont]
                                        withColor:[Theme ingredientsListColor]];
     }
 
-    label.text = ingredientsValue;
-    CGSize constrainedSize = [ingredientsValue sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
+    NSArray *displayableArray = [ingredientsArray collect:^id(Ingredient *ingredient) {
+        return [NSString stringWithFormat:@"%@ %@",
+                ingredient.measurement ? ingredient.measurement : @"",
+                ingredient.name ? ingredient.name : @""];
+    }];
+    
+    label.text = [displayableArray componentsJoinedByString:@"\n"];
+    CGSize constrainedSize = [label.text sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
                         CGSizeMake(self.ingredientsViewEditableView.frame.size.width,
                                    self.ingredientsViewEditableView.frame.size.height)];
     
@@ -316,7 +316,7 @@
                              constrainedSize.height);
     
     self.ingredientsViewEditableView.contentView = label;
-    self.ingredientListData = [ingredientsValue componentsSeparatedByString:@"\n"];
+    self.recipe.ingredients = ingredientsArray;
 }
 
 - (void)setMethodValue:(NSString *)methodValue {
@@ -337,6 +337,9 @@
                              constrainedSize.height);
     
     self.methodViewEditableView.contentView = label;
+    if (self.recipe && ![self.recipe.description isEqualToString:methodValue]) {
+        self.recipe.description = methodValue;
+    }
 }
 
 - (void)setCookingTimeValue:(NSString *)cookingTimeValue {
@@ -348,6 +351,16 @@
 - (void)setServesValue:(NSString *)servesValue {
     
     [self configEditableView:self.servesEditableView withValue:servesValue withFont:[Theme servesFont] withColor:[Theme servesColor] withTextAlignment:NSTextAlignmentLeft];
+}
+
+-(void)loadRecipeImage
+{
+    if ([self.recipe hasPhotos]) {
+        CGSize imageSize = CGSizeMake(self.recipeImageView.frame.size.width, self.recipeImageView.frame.size.height);
+        [self.parsePhotoStore imageForParseFile:[self.recipe imageFile] size:imageSize completion:^(UIImage *image) {
+            self.recipeImageView.image = image;
+        }];
+    }
 }
 
 @end

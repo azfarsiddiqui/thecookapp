@@ -177,7 +177,7 @@
 
 -(IBAction)addIngredientTapped:(UIButton*)button
 {
-    [self.ingredients addObject:[Ingredient ingredientwithName:@""]];
+    [self.ingredients addObject:[Ingredient ingredientwithName:@"" measurement:nil]];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.ingredients count]> 0 ?[self.ingredients count]-1:0 inSection:0];
     [self.ingredientsTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     [self.ingredientsTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];

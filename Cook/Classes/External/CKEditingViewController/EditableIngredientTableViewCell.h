@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Ingredient.h"
 @protocol EditableIngredientTableViewCellDelegate
 -(void)didUpdateIngredientAtRowIndex:(NSNumber*)rowIndex withMeasurement:(NSString*)measurementString description:(NSString*)ingredientDescription;
 -(void)didSelectTextFieldForEditing:(UITextField*)textField isMeasurementField:(BOOL)isMeasurementField;
@@ -17,6 +18,6 @@
 @end
 
 @interface EditableIngredientTableViewCell : UITableViewCell
--(void)configureCellWithText:(NSString*)text forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate;
+-(void)configureCellWithIngredient:(Ingredient*)ingredient forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate;
 -(void)requestMeasurementTextFieldEdit;
 @end

@@ -10,4 +10,5 @@
 #import "CKUser.h"
 @interface FacebookUserView : UIView
 -(void)setUser:(CKUser*)user;
+-(void)setUser:(CKUser*)user inFrame:(CGRect)frame;
 @end
