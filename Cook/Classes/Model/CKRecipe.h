@@ -20,8 +20,9 @@
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSArray *ingredients;
-@property (nonatomic, assign) float cookingTimeInSeconds;
-@property (nonatomic, assign) int numServes;
+@property (nonatomic, assign) NSInteger cookingTimeInMinutes;
+@property (nonatomic, assign) NSInteger prepTimeInMinutes;
+@property (nonatomic, assign) NSInteger numServes;
 
 @property(nonatomic,strong) CKUser *user;
 @property(nonatomic,strong) Category *category;

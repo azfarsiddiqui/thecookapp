@@ -55,7 +55,7 @@
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) NSMutableArray *ingredients;
 @property (nonatomic,strong) UIImage *recipeImage;
-@property (nonatomic,assign) float cookingTimeInSeconds;
+@property (nonatomic,assign) float cookingTimeInMinutes;
 @property (nonatomic,assign) NSInteger numServes;
 @property (nonatomic,strong) Category *selectedCategory;
 
@@ -108,7 +108,7 @@
         recipe.name = self.recipeNameTextField.text;
         recipe.description = self.recipeDescriptionTextView.text;
         recipe.numServes = self.numServes;
-        recipe.cookingTimeInSeconds = self.cookingTimeInSeconds;
+        recipe.cookingTimeInMinutes = self.cookingTimeInMinutes;
         recipe.recipeViewImageContentOffset = self.recipeImageScrollView.contentOffset;
         
         if ([self.ingredients count] > 0) {
@@ -216,11 +216,11 @@
     datePicker.frame=CGRectMake(0,44,320, 216);
     datePicker.datePickerMode = UIDatePickerModeCountDownTimer;
     [datePicker setMinuteInterval:15];
-    if (self.cookingTimeInSeconds > 0.0f) {
-        datePicker.countDownDuration = self.cookingTimeInSeconds;
+    if (self.cookingTimeInMinutes > 0.0f) {
+        datePicker.countDownDuration = self.cookingTimeInMinutes;
     } else {
-        self.cookingTimeInSeconds = 900.0f;
-        self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.cookingTimeInSeconds];
+        self.cookingTimeInMinutes = 15;
+        self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.cookingTimeInMinutes];
     }
     
     [datePicker addTarget:self action:@selector(cookingTimeChanged:) forControlEvents:UIControlEventValueChanged];
@@ -237,7 +237,7 @@
 -(void)cookingTimeChanged:(UIDatePicker*)datePicker
 {
     self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:datePicker.countDownDuration];
-    self.cookingTimeInSeconds = datePicker.countDownDuration;
+    self.cookingTimeInMinutes = datePicker.countDownDuration;
 }
 
 #pragma mark - CategoryListViewDelegate

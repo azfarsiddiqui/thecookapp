@@ -7,7 +7,6 @@
 //
 
 #import "BookViewController.h"
-#import "RecipeViewController.h"
 #import "ViewHelper.h"
 #import "ContentsPageViewController.h"
 #import "CKRecipe.h"
@@ -15,7 +14,6 @@
 #import "RecipeLike.h"
 #import "CategoryPageViewController.h"
 #import "LikesPageViewController.h"
-#import "RecipeViewController.h"
 #import "BookProfilePageViewController.h"
 #import "MPFlipViewController.h"
 #define kContentPageIndex  2
@@ -151,11 +149,11 @@
                     NSArray *recipes = [self.categoryRecipes objectForKey:categoryName];
                     CKRecipe *recipe = [recipes objectAtIndex:recipeIndex];
                     self.currentRecipe = recipe;
-                    RecipeViewController *recipeViewController = [self newRecipeViewController];
-                    recipeViewController.recipe = recipe;
-                    viewController = recipeViewController;
-                    view = recipeViewController.view;
-                    self.pageViewDelegate = recipeViewController;
+//                    RecipeViewController *recipeViewController = [self newRecipeViewController];
+//                    recipeViewController.recipe = recipe;
+//                    viewController = recipeViewController;
+//                    view = recipeViewController.view;
+//                    self.pageViewDelegate = recipeViewController;
                     break;
                 }
             } else {
@@ -176,11 +174,11 @@
                       
                       CKRecipe *recipe = [self.likedRecipes objectAtIndex:recipeIndex];
                       self.currentRecipe = recipe;
-                      RecipeViewController *recipeViewController = [self newRecipeViewController];
-                      recipeViewController.recipe = recipe;
-                      viewController = recipeViewController;
-                      view = recipeViewController.view;
-                      self.pageViewDelegate = recipeViewController;
+//                      RecipeViewController *recipeViewController = [self newRecipeViewController];
+//                      recipeViewController.recipe = recipe;
+//                      viewController = recipeViewController;
+//                      view = recipeViewController.view;
+//                      self.pageViewDelegate = recipeViewController;
                   }
             }
 
@@ -406,15 +404,6 @@
         _bookProfilePageViewController.dataSource = self;
     }
     return _bookProfilePageViewController;
-}
-
-- (RecipeViewController *)newRecipeViewController
-{
-    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-    RecipeViewController * recipeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecipeViewController"];
-    recipeViewController.delegate = self;
-    recipeViewController.dataSource = self;
-    return recipeViewController;
 }
 
 -(void) initScreen

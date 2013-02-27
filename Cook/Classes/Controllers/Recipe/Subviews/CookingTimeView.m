@@ -38,7 +38,7 @@
 
 -(void)configViews
 {
-    if (self.cookingTimeInSeconds > 0.0f) {
+    if (self.cookingTimeInMinutes > 0.0f) {
         [self refreshTextForCookingTime];
     }
 }
@@ -68,10 +68,10 @@
         datePicker.datePickerMode = UIDatePickerModeCountDownTimer;
         [datePicker setMinuteInterval:15];
         
-        if (self.cookingTimeInSeconds > 0.0f) {
-            datePicker.countDownDuration = self.cookingTimeInSeconds;
+        if (self.cookingTimeInMinutes > 0.0f) {
+            datePicker.countDownDuration = self.cookingTimeInMinutes;
         } else {
-            self.cookingTimeInSeconds = FIFTEEN_MINUTES;
+            self.cookingTimeInMinutes = FIFTEEN_MINUTES;
         }
 
         [self refreshTextForCookingTime];
@@ -89,13 +89,13 @@
 
 -(void)cookingTimeChanged:(UIDatePicker*)datePicker
 {
-    self.cookingTimeInSeconds = datePicker.countDownDuration;
+    self.cookingTimeInMinutes = datePicker.countDownDuration;
     [self refreshTextForCookingTime];
 }
 
 -(void)refreshTextForCookingTime
 {
-    self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.cookingTimeInSeconds];
+    self.cookingTimeLabel.text = [ViewHelper formatAsHoursSeconds:self.cookingTimeInMinutes];
     [self.cookingTimeLabel sizeToFit];
 }
 @end

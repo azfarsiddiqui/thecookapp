@@ -67,7 +67,8 @@ extern NSString *const kRecipeAttrRecipeImages; // PFRelation
 extern NSString *const kRecipeAttrRecipePhotos; // An array of objectIds.
 extern NSString *const kRecipeAttrIngredients;
 extern NSString *const kRecipeAttrNumServes;
-extern NSString *const kRecipeAttrCookingTimeInSeconds;
+extern NSString *const kRecipeAttrCookingTimeInMinutes;
+extern NSString *const kRecipeAttrPrepTimeInMinutes;
 extern NSString *const kRecipeAttrRecipeViewImageContentOffset;
 
 #pragma mark - RecipeImage class

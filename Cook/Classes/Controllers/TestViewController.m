@@ -102,8 +102,8 @@
     [self setMethodValue:self.recipe.description];
     [self setIngredientsValue:self.recipe.ingredients];
     [self setServesCookPrepWithNumServes:self.recipe.numServes
-                            cookTimeMins:self.recipe.cookingTimeInSeconds/60
-                            prepTimeMins:45];
+                            cookTimeMins:self.recipe.cookingTimeInMinutes
+                            prepTimeMins:self.recipe.prepTimeInMinutes];
     [self setStoryValue:self.recipe.story];
     [self.facebookUserView setUser:self.recipe.user inFrame:self.view.frame];
     
@@ -160,7 +160,7 @@
         ServesCookPrepEditingViewController *servesEditingVC = [[ServesCookPrepEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesCookPrepEditableView];
         servesEditingVC.view.frame = [self rootView].bounds;
         servesEditingVC.numServes = [NSNumber numberWithInt:self.recipe.numServes];
-        servesEditingVC.cookingTimeInMinutes = [NSNumber numberWithInt:self.recipe.cookingTimeInSeconds];
+        servesEditingVC.cookingTimeInMinutes = [NSNumber numberWithInt:self.recipe.cookingTimeInMinutes];
         servesEditingVC.prepTimeInMinutes = @10;
         
         [self.view addSubview:servesEditingVC.view];
@@ -387,8 +387,8 @@
     }
     
     self.recipe.numServes = serves;
-    self.recipe.cookingTimeInSeconds = cooktimeMins*60;
-//    self.recipe.prepTime = prepTimeMins;
+    self.recipe.cookingTimeInMinutes = cooktimeMins;
+    self.recipe.prepTimeInMinutes = prepTimeMins;
     self.servesCookPrepEditableView.contentView = containerView;
 }
 

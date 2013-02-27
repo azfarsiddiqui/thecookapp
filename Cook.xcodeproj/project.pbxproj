@@ -42,7 +42,6 @@
 		762B374B16D3224500343F88 /* cook_recipe_iconbar_serves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762B374316D3224500343F88 /* cook_recipe_iconbar_serves@2x.png */; };
 		762B374C16D3224500343F88 /* cook_recipe_iconbar_time.png in Resources */ = {isa = PBXBuildFile; fileRef = 762B374416D3224500343F88 /* cook_recipe_iconbar_time.png */; };
 		762B374D16D3224500343F88 /* cook_recipe_iconbar_time@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762B374516D3224500343F88 /* cook_recipe_iconbar_time@2x.png */; };
-		762B375016D32E1F00343F88 /* DateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 762B374F16D32E1F00343F88 /* DateHelper.m */; };
 		762B375316D33AFF00343F88 /* BookHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 762B375216D33AFF00343F88 /* BookHomeViewController.m */; };
 		762B375616D33B6A00343F88 /* BookHomeFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762B375516D33B6A00343F88 /* BookHomeFlowLayout.m */; };
 		762B375916D33C1B00343F88 /* ActivityCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 762B375816D33C1B00343F88 /* ActivityCollectionViewCell.m */; };
@@ -416,7 +415,6 @@
 		8969969E16A65D4D00BBED05 /* Polkadots@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969968E16A65D4D00BBED05 /* Polkadots@2x.png */; };
 		8969969F16A65D4D00BBED05 /* Utensils.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969968F16A65D4D00BBED05 /* Utensils.png */; };
 		896996A016A65D4D00BBED05 /* Utensils@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969969016A65D4D00BBED05 /* Utensils@2x.png */; };
-		8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8976B89C162797A5004155C6 /* RecipeViewController.m */; };
 		897E6C121667266000FD7F7B /* RecipeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C111667266000FD7F7B /* RecipeImageView.m */; };
 		897E6C151667268300FD7F7B /* RecipeNameView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C141667268300FD7F7B /* RecipeNameView.m */; };
 		897E6C181667269700FD7F7B /* IngredientsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897E6C171667269700FD7F7B /* IngredientsView.m */; };
@@ -499,8 +497,6 @@
 		762B374316D3224500343F88 /* cook_recipe_iconbar_serves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_recipe_iconbar_serves@2x.png"; sourceTree = "<group>"; };
 		762B374416D3224500343F88 /* cook_recipe_iconbar_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_recipe_iconbar_time.png; sourceTree = "<group>"; };
 		762B374516D3224500343F88 /* cook_recipe_iconbar_time@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_recipe_iconbar_time@2x.png"; sourceTree = "<group>"; };
-		762B374E16D32E1F00343F88 /* DateHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateHelper.h; sourceTree = "<group>"; };
-		762B374F16D32E1F00343F88 /* DateHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateHelper.m; sourceTree = "<group>"; };
 		762B375116D33AFF00343F88 /* BookHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookHomeViewController.h; sourceTree = "<group>"; };
 		762B375216D33AFF00343F88 /* BookHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookHomeViewController.m; sourceTree = "<group>"; };
 		762B375416D33B6A00343F88 /* BookHomeFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookHomeFlowLayout.h; sourceTree = "<group>"; };
@@ -993,8 +989,6 @@
 		8969968E16A65D4D00BBED05 /* Polkadots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Polkadots@2x.png"; sourceTree = "<group>"; };
 		8969968F16A65D4D00BBED05 /* Utensils.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Utensils.png; sourceTree = "<group>"; };
 		8969969016A65D4D00BBED05 /* Utensils@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Utensils@2x.png"; sourceTree = "<group>"; };
-		8976B89B162797A5004155C6 /* RecipeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeViewController.h; sourceTree = "<group>"; };
-		8976B89C162797A5004155C6 /* RecipeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeViewController.m; sourceTree = "<group>"; };
 		897E6C101667266000FD7F7B /* RecipeImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecipeImageView.h; path = Subviews/RecipeImageView.h; sourceTree = "<group>"; };
 		897E6C111667266000FD7F7B /* RecipeImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecipeImageView.m; path = Subviews/RecipeImageView.m; sourceTree = "<group>"; };
 		897E6C131667268300FD7F7B /* RecipeNameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecipeNameView.h; path = Subviews/RecipeNameView.h; sourceTree = "<group>"; };
@@ -1335,8 +1329,6 @@
 				89A906F8166460DD0056E4CF /* Theme.m */,
 				76D84CA216CDB44400FB5FB0 /* ParsePhotoStore.h */,
 				76D84CA316CDB44400FB5FB0 /* ParsePhotoStore.m */,
-				762B374E16D32E1F00343F88 /* DateHelper.h */,
-				762B374F16D32E1F00343F88 /* DateHelper.m */,
 				76D6E7E816D5EEE8007B1851 /* ImageHelper.h */,
 				76D6E7E916D5EEE8007B1851 /* ImageHelper.m */,
 			);
@@ -2018,8 +2010,6 @@
 			isa = PBXGroup;
 			children = (
 				897E6C0E1667251000FD7F7B /* SubViews */,
-				8976B89B162797A5004155C6 /* RecipeViewController.h */,
-				8976B89C162797A5004155C6 /* RecipeViewController.m */,
 			);
 			name = ViewEdit;
 			sourceTree = "<group>";
@@ -2512,7 +2502,6 @@
 				89232B921625431500152940 /* BookViewController.m in Sources */,
 				76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */,
 				76FA9A4016267687006EAFBB /* EventHelper.m in Sources */,
-				8976B89D162797A5004155C6 /* RecipeViewController.m in Sources */,
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
 				76E16E4C163903070044EB9B /* MenuViewController.m in Sources */,
 				76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */,
@@ -2585,7 +2574,6 @@
 				76D84CAC16CDF3B500FB5FB0 /* RSMaskedLabel.m in Sources */,
 				76D84CAF16CDF5AC00FB5FB0 /* CategoryHeaderLabelView.m in Sources */,
 				76FA241F16D1D4AC00DDC439 /* GridRecipeStatsView.m in Sources */,
-				762B375016D32E1F00343F88 /* DateHelper.m in Sources */,
 				762B375316D33AFF00343F88 /* BookHomeViewController.m in Sources */,
 				762B375616D33B6A00343F88 /* BookHomeFlowLayout.m in Sources */,
 				762B375916D33C1B00343F88 /* ActivityCollectionViewCell.m in Sources */,

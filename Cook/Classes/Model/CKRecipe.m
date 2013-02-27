@@ -48,11 +48,16 @@
             recipe.recipeViewImageContentOffset = CGPointFromString(recipeViewContentOffset);
         }
         
-        NSNumber *cookingTime = [parseRecipe objectForKey:kRecipeAttrCookingTimeInSeconds];
+        NSNumber *cookingTime = [parseRecipe objectForKey:kRecipeAttrCookingTimeInMinutes];
         if (cookingTime) {
-            recipe.cookingTimeInSeconds = [cookingTime floatValue];
+            recipe.cookingTimeInMinutes = [cookingTime integerValue];
         }
-        
+
+        NSNumber *prepTime = [parseRecipe objectForKey:kRecipeAttrPrepTimeInMinutes];
+        if (prepTime) {
+            recipe.prepTimeInMinutes = [prepTime integerValue];
+        }
+
         NSNumber *numServes = [parseRecipe objectForKey:kRecipeAttrNumServes];
         if (numServes) {
             recipe.numServes = [numServes intValue];
@@ -216,10 +221,14 @@
         [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
     }
     
-    if (self.cookingTimeInSeconds > 0.0f) {
-        [parseRecipeObject setObject:[NSNumber numberWithFloat:self.cookingTimeInSeconds] forKey:kRecipeAttrCookingTimeInSeconds];
+    if (self.cookingTimeInMinutes > 0) {
+        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
     }
-    
+
+    if (self.prepTimeInMinutes > 0) {
+        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
+    }
+
     if (self.ingredients && [self.ingredients count] > 0) {
         NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
             return [NSString stringWithFormat:@"%@ %@",

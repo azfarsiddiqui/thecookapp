@@ -8,14 +8,13 @@
 
 #import "ActivityRecipeStatsView.h"
 #import "CKRecipe.h"
-#import "DateHelper.h"
 
 @implementation ActivityRecipeStatsView
 
 - (void)configureRecipe:(CKRecipe *)recipe {
     [self reset];
     [self configureIcon:@"cook_recipe_iconbar_serves.png" value:[NSString stringWithFormat:@"%d", recipe.numServes]];
-    [self configureIcon:@"cook_recipe_iconbar_time.png" value:[DateHelper timeDisplayForSeconds:recipe.cookingTimeInSeconds]];
+    [self configureIcon:@"cook_recipe_iconbar_time.png" value:[NSString stringWithFormat:@"%d", recipe.cookingTimeInMinutes]];
     [self configureIcon:@"cook_recipe_iconbar_likes.png" value:[NSString stringWithFormat:@"%d", recipe.likes]];
 }
 
