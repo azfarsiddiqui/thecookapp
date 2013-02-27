@@ -99,7 +99,7 @@
 }
 
 + (UIFont *)bookContentsTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:40.0];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:60.0];
 }
 
 + (UIColor *)bookContentsTitleColour {
