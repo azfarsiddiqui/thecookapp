@@ -21,7 +21,8 @@
 #import "BookHomeViewController.h"
 #import "BookNavigationDataSource.h"
 
-@interface BookNavigationViewController () <BookNavigationDataSource, NewRecipeViewDelegate>
+@interface BookNavigationViewController () <BookNavigationDataSource, NewRecipeViewDelegate,
+    BookHomeViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *createButton;
@@ -52,7 +53,7 @@
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
-        self.homeViewController = [[BookHomeViewController alloc] initWithBook:book];
+        self.homeViewController = [[BookHomeViewController alloc] initWithBook:book delegate:self];
     }
     return self;
 }
@@ -83,6 +84,17 @@
 
 - (NSUInteger)bookNavigationLayoutColumnWidthForItemAtIndexPath:(NSIndexPath *)indexPath {
     return 1;
+}
+
+#pragma mark - BookHomeViewControllerDelegate methods
+
+- (void)bookHomeSelectedCategory:(NSString *)categoryName {
+    DLog();
+    
+    BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
+    NSUInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
+    CGFloat requiredOffset = [layout pageOffsetForSection:categoryIndex + [self bookNavigationContentStartSection]];
+    [self.collectionView setContentOffset:CGPointMake(requiredOffset, 0.0) animated:YES];
 }
 
 #pragma mark - UICollectionViewDelegate methods

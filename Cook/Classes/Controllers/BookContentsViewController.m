@@ -18,6 +18,7 @@
 @interface BookContentsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, assign) id<BookContentsViewControllerDelegate> delegate;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImage *heroImage;
@@ -38,9 +39,10 @@
 #define kTitleNameGap       0.0
 #define kContentsItemHeight 50.0
 
-- (id)initWithBook:(CKBook *)book {
+- (id)initWithBook:(CKBook *)book delegate:(id<BookContentsViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
+        self.delegate = delegate;
         self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
@@ -109,6 +111,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self.delegate bookContentsSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
 }
 
 #pragma mark - Private methods

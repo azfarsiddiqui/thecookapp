@@ -40,6 +40,29 @@
     return self;
 }
 
+- (CGFloat)pageOffsetForSection:(NSInteger)section {
+    
+    NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
+    NSInteger contentSection = section - contentStartSection;
+    
+    // Items start from the content start section.
+    CGFloat pageOffset = [self.dataSource bookNavigationContentStartSection] * self.collectionView.bounds.size.width;
+    
+    if (contentSection > 0) {
+        
+        // Loop through the past pages
+        for (NSInteger sectionIndex = 0; sectionIndex < contentSection; sectionIndex++) {
+            
+            // Section width is the number of pages multiple of the width.
+            NSArray *sectionPages = [self.contentPages objectAtIndex:sectionIndex];
+            pageOffset += [sectionPages count] * self.collectionView.bounds.size.width;
+            
+        }
+        
+    }
+    return pageOffset;
+}
+
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
@@ -255,29 +278,6 @@
             }
         }
     }
-}
-
-- (CGFloat)pageOffsetForSection:(NSInteger)section {
-    
-    NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
-    NSInteger contentSection = section - contentStartSection;
-    
-    // Items start from the content start section.
-    CGFloat pageOffset = [self.dataSource bookNavigationContentStartSection] * self.collectionView.bounds.size.width;
-    
-    if (contentSection > 0) {
-        
-        // Loop through the past pages
-        for (NSInteger sectionIndex = 0; sectionIndex < contentSection; sectionIndex++) {
-            
-            // Section width is the number of pages multiple of the width.
-            NSArray *sectionPages = [self.contentPages objectAtIndex:sectionIndex];
-            pageOffset += [sectionPages count] * self.collectionView.bounds.size.width;
-            
-        }
-        
-    }
-    return pageOffset;
 }
 
 - (CGFloat)firstItemOffsetForSection {
