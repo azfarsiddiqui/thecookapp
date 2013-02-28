@@ -222,6 +222,11 @@
     return [UIColor colorWithHexString:@"3a3a3a"];
 }
 
++(UIFont*) categoryFont
+{
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+}
+
 #pragma mark - Recipe Editing
 
 

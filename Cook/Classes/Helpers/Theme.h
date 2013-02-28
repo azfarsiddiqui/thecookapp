@@ -63,6 +63,7 @@
 +(UIColor*) cookingTimeColor;
 +(UIFont*) servesFont;
 +(UIColor*) servesColor;
++(UIFont*) categoryFont;
 +(UIColor*) userNameColor;
 +(UIFont*) userNameFont;
 

@@ -152,6 +152,10 @@
                                         <rect key="frame" x="10" y="152" width="300" height="63"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </view>
+                                    <view contentMode="scaleToFill" id="Vuf-Ff-bCW" customClass="CKEditableView">
+                                        <rect key="frame" x="34" y="104" width="250" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </view>
                                     <view contentMode="scaleToFill" id="WWa-fg-cW2" customClass="CKEditableView">
                                         <rect key="frame" x="10" y="22" width="1004" height="68"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -197,6 +201,7 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="categoryEditableView" destination="Vuf-Ff-bCW" id="1VW-N5-1tk"/>
                         <outlet property="editButton" destination="2vI-Wc-09x" id="m7Y-4w-Fa9"/>
                         <outlet property="facebookUserView" destination="4QQ-ni-sRD" id="pOW-0M-ky6"/>
                         <outlet property="ingredientsViewEditableView" destination="qTX-Bo-ik8" id="FLh-Tb-jFx"/>
@@ -489,8 +494,7 @@
         <class className="TestViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/TestViewController.h"/>
             <relationships>
-                <relationship kind="action" name="dismissTapped:"/>
-                <relationship kind="action" name="toggledEditMode:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="categoryEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="editButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
                 <relationship kind="outlet" name="ingredientsViewEditableView" candidateClass="CKEditableView"/>

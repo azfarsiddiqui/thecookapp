@@ -381,6 +381,7 @@
 		8938AAB816DF153D001CBC90 /* IngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAB16DF153D001CBC90 /* IngredientTableViewCell.m */; };
 		8938AAB916DF153D001CBC90 /* ServesCookPrepEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */; };
 		8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */; };
+		893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */; };
 		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
 		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
 		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
@@ -946,6 +947,8 @@
 		8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServesCookPrepEditingViewController.m; sourceTree = "<group>"; };
 		8938AAAE16DF153D001CBC90 /* TextViewEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewEditingViewController.h; sourceTree = "<group>"; };
 		8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewEditingViewController.m; sourceTree = "<group>"; };
+		893AB2E116DF18E6000E2AB3 /* CategoryEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryEditViewController.h; sourceTree = "<group>"; };
+		893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryEditViewController.m; sourceTree = "<group>"; };
 		893AC89E16782B3B00B221EC /* LikesPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LikesPageViewController.h; path = Book/LikesPageViewController.h; sourceTree = "<group>"; };
 		893AC89F16782B3B00B221EC /* LikesPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikesPageViewController.m; path = Book/LikesPageViewController.m; sourceTree = "<group>"; };
 		893AC8A016782B3B00B221EC /* SectionPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPageViewController.h; path = Book/SectionPageViewController.h; sourceTree = "<group>"; };
@@ -1823,6 +1826,7 @@
 		8938AA9916DF153C001CBC90 /* CKEditingViewController */ = {
 			isa = PBXGroup;
 			children = (
+				893AB2E016DF18B2000E2AB3 /* categories */,
 				8938AA9A16DF153D001CBC90 /* CKEditableView.h */,
 				8938AA9B16DF153D001CBC90 /* CKEditableView.m */,
 				8938AA9C16DF153D001CBC90 /* CKEditingTextField.h */,
@@ -1871,6 +1875,15 @@
 				8938AAA116DF153D001CBC90 /* CKTextFieldEditingViewController.m */,
 			);
 			name = text;
+			sourceTree = "<group>";
+		};
+		893AB2E016DF18B2000E2AB3 /* categories */ = {
+			isa = PBXGroup;
+			children = (
+				893AB2E116DF18E6000E2AB3 /* CategoryEditViewController.h */,
+				893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */,
+			);
+			name = categories;
 			sourceTree = "<group>";
 		};
 		8944C1B816CDB9870087EFC9 /* accessoryView */ = {
@@ -2582,6 +2595,7 @@
 				8938AAB816DF153D001CBC90 /* IngredientTableViewCell.m in Sources */,
 				8938AAB916DF153D001CBC90 /* ServesCookPrepEditingViewController.m in Sources */,
 				8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */,
+				893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
