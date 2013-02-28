@@ -30,15 +30,15 @@
     NSArray *ingredients = [parseRecipe objectForKey:kRecipeAttrIngredients];
     if (ingredients && [ingredients count] > 0) {
         NSMutableArray *ingredientsArray = [NSMutableArray arrayWithCapacity:[ingredients count]];
-        [ingredients each:^(NSString *ingredient) {
+        [ingredients each:^(NSString *ingredientText) {
             Ingredient *ing = nil;
-            if ([ingredient rangeOfString:@"::"].location != NSNotFound) {
-                NSArray *ingredientComponents = [ingredient componentsSeparatedByString:@"::"];
+            if ([ingredientText rangeOfString:@"::"].location != NSNotFound) {
+                NSArray *ingredientComponents = [ingredientText componentsSeparatedByString:@"::"];
                 NSString *measurement = [ingredientComponents objectAtIndex:0];
                 NSString *ingredientName = [ingredientComponents objectAtIndex:1];
                 ing = [Ingredient ingredientwithName:ingredientName measurement:measurement];
             } else {
-                ing = [Ingredient ingredientwithName:ingredient measurement:nil];
+                ing = [Ingredient ingredientwithName:ingredientText measurement:nil];
             }
             [ingredientsArray addObject:ing];
         }];
@@ -231,9 +231,11 @@
 
     if (self.ingredients && [self.ingredients count] > 0) {
         NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
-            return [NSString stringWithFormat:@"%@ %@",
-             ingredient.measurement ? ingredient.measurement : @"",
-             ingredient.name ? ingredient.name : @""];
+            if (!ingredient.measurement) {
+                return ingredient.name;
+            } else {
+                return [NSString stringWithFormat:@"%@::%@", ingredient.measurement,ingredient.name];
+            }
         }];
         
         [parseRecipeObject setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
