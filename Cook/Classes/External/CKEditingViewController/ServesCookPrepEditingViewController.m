@@ -36,10 +36,8 @@
 -(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView *)sourceEditingView
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
-        [self style];
         self.cookingTimeArray = @[@5,@10,@15,@20,@25,@30,@35,@40,@45,@50,@55,@60,@65,@70,@75,@80,@85,@90,@95,@100,@105,@110,@115,@120];
         self.prepTimeArray = @[@5,@10,@15,@20,@25,@30,@35,@40,@45,@50,@55,@60,@65,@70,@75,@80,@85,@90];
-        
     }
     return self;
 }
@@ -216,13 +214,6 @@
     [mainView addSubview:self.prepTimePickerView];
 }
 
-
--(void)style
-{
-//    self.editableTextFont = [Theme textEditableTextFont];
-//    self.titleFont = [Theme textViewTitleFont];
-    
-}
 
 - (void) addServesSlider:(UIView*)mainView
 {

@@ -92,6 +92,14 @@
     [self.storyEditableView enableEditMode:self.inEditMode];
     [self.servesCookPrepEditableView enableEditMode:self.inEditMode];
     [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
+    if (self.inEditMode == NO) {
+        //just completed edit
+        [self.recipe saveWithSuccess:^{
+            DLog(@"Recipe successfully saved");
+        } failure:^(NSError *error) {
+            DLog(@"An error occurred: %@", [error description]);
+        }];
+    }
 }
 
 #pragma mark - Private Methods
@@ -218,11 +226,6 @@
         [self.servesCookPrepEditableView enableEditMode:YES];
     }
     
-    [self.recipe saveWithSuccess:^{
-        DLog(@"Recipe successfully saved");
-    } failure:^(NSError *error) {
-        DLog(@"An error occurred: %@", [error description]);
-    }];
 }
 
 #pragma mark - BookModalViewController methods

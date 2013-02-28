@@ -161,7 +161,11 @@
         
         // Extract ingredients into line wrapped text.
         NSMutableArray *ingredients = [NSMutableArray arrayWithArray:[[self.recipe ingredients] collect:^id(Ingredient *ingredient) {
-            return ingredient.name;
+            if (ingredient.measurement) {
+                return [NSString stringWithFormat:@"%@ %@", ingredient.measurement, ingredient.name];
+            } else {
+                return ingredient.name;
+            }
         }]];
         NSString *ingredientsDisplay = [ingredients componentsJoinedByString:@"\n"];
         
