@@ -9,13 +9,17 @@
 #import "ServesCookPrepEditingViewController.h"
 #import "CKEditingTextField.h"
 #import "Theme.h"
+#import "UIColor+Expanded.h"
 
 #define kPickerWidth        200.0f
 #define kPickerHeight       100.0f
+#define kPickerRowHeight    30.0f
+#define kLabelTag 1122334455
 
 @interface ServesCookPrepEditingViewController ()<UIPickerViewDelegate,UIPickerViewDataSource>
 //ui
 @property (nonatomic, strong) UILabel *servesLabel;
+@property (nonatomic, strong) UILabel *servesNumberLabel;
 @property (nonatomic, strong) UILabel *prepLabel;
 @property (nonatomic, strong) UILabel *cookLabel;
 @property (nonatomic, strong) UISlider *servesSlider;
@@ -33,8 +37,8 @@
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
         [self style];
-        self.cookingTimeArray = @[@5,@10,@15,@20,@25,@30,@35,@40];
-        self.prepTimeArray = @[@5,@10,@15,@20,@25,@30];
+        self.cookingTimeArray = @[@5,@10,@15,@20,@25,@30,@35,@40,@45,@50,@55,@60,@65,@70,@75,@80,@85,@90,@95,@100,@105,@110,@115,@120];
+        self.prepTimeArray = @[@5,@10,@15,@20,@25,@30,@35,@40,@45,@50,@55,@60,@65,@70,@75,@80,@85,@90];
         
     }
     return self;
@@ -47,7 +51,7 @@
                               self.view.bounds.size.width - mainViewInsets.left - mainViewInsets.right,
                               self.view.bounds.size.height - mainViewInsets.top - mainViewInsets.bottom);
     UIView *mainView = [[UITextView alloc] initWithFrame:frame];
-    mainView.backgroundColor = [UIColor blackColor];
+    mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.5f];
     [self addSubviews:mainView];
     return mainView;
 }
@@ -64,9 +68,9 @@
 
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
-    
     if (appear) {
         [self addDoneButton];
+        [self setValues];
     }
 }
 
@@ -94,21 +98,26 @@
 #pragma mark -
 #pragma mark UIPickerViewDataSource
 
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+-(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
-	NSString *title = @"";
-	
-	// note: custom picker doesn't care about titles, it uses custom views
+    UILabel *label = (UILabel*)view;
+    if (!label) {
+        label = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 0.0f, kPickerWidth, kPickerRowHeight)];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.backgroundColor = [UIColor clearColor];
+        label.font = [Theme cookPrepPickerFont];
+    }
+    
 	if (pickerView == self.cookingTimePickerView)
 	{
-        title = [[self.cookingTimeArray objectAtIndex:row] stringValue];
+        label.text = [NSString stringWithFormat:@"%@ mins", [[self.cookingTimeArray objectAtIndex:row] stringValue]];
 	} else {
-        title = [[self.prepTimeArray objectAtIndex:row] stringValue];
+        label.text = [NSString stringWithFormat:@"%@ mins", [[self.prepTimeArray objectAtIndex:row] stringValue]];
     }
-	
-	return title;
+    
+    return label;
+    
 }
-
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
 {
 	return kPickerWidth - 10.0f;
@@ -116,7 +125,7 @@
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
 {
-	return 30.0f;
+	return kPickerRowHeight;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
@@ -138,7 +147,7 @@
 {
     DLog(@"Num serves %f",slider.value);
     self.numServes = [NSNumber numberWithFloat:roundf(slider.value)];
-    self.servesLabel.text = [NSString stringWithFormat:@"SERVES %0.0f", roundf(slider.value)];
+    self.servesNumberLabel.text = [NSString stringWithFormat:@"%0.0f", roundf(slider.value)];
 }
 
 #pragma mark - Private Methods
@@ -154,6 +163,15 @@
     self.servesLabel.text = @"SERVES";
 
     [mainView addSubview:self.servesLabel];
+
+    self.servesNumberLabel = [[UILabel alloc]initWithFrame:CGRectMake(460.0f, 50.0f, 100.0f, 50.0f)];
+    self.servesNumberLabel.backgroundColor = [UIColor clearColor];
+    self.servesNumberLabel.textAlignment = NSTextAlignmentCenter;
+    self.servesNumberLabel.font = [Theme cookServesPrepEditTitleFont];
+    self.servesNumberLabel.textColor = [Theme cookServesNumberColor];
+    self.servesNumberLabel.text = @"10";
+    [mainView addSubview:self.servesNumberLabel];
+
     
     self.prepLabel = [[UILabel alloc]initWithFrame:CGRectMake(150.0f, 250.0f, floorf(0.5*mainView.frame.size.width), 30.0f)];
     self.prepLabel.backgroundColor = [UIColor clearColor];
@@ -225,7 +243,6 @@
         self.servesSlider.minimumValue = 0.0;
         self.servesSlider.maximumValue = 10.0;
         self.servesSlider.continuous = YES;
-        self.servesSlider.value = 2.0;
     
         [mainView addSubview:self.servesSlider];
 
@@ -238,6 +255,33 @@
                                        self.doneButton.frame.size.width,
                                        self.doneButton.frame.size.height);
     [self.view addSubview:self.doneButton];
+}
+
+- (void)setValues {
+    //set numServes
+    if (self.numServes) {
+        [self.servesSlider setValue:[self.numServes floatValue] animated:YES];
+        self.servesNumberLabel.text = [self.numServes stringValue];
+    }
+    
+    if (self.cookingTimeInMinutes) {
+        [self.cookingTimeArray enumerateObjectsUsingBlock:^(NSNumber *arrayValue, NSUInteger idx, BOOL *stop) {
+            if ([self.cookingTimeInMinutes isEqualToNumber:arrayValue]) {
+                stop = YES;
+                [self.cookingTimePickerView selectRow:idx inComponent:0 animated:NO];
+            }
+        }];
+    }
+    
+    if (self.prepTimeInMinutes) {
+        [self.prepTimeArray enumerateObjectsUsingBlock:^(NSNumber *arrayValue, NSUInteger idx, BOOL *stop) {
+            if ([self.prepTimeInMinutes isEqualToNumber:arrayValue]) {
+                stop = YES;
+                [self.prepTimePickerView selectRow:idx inComponent:0 animated:NO];
+            }
+        }];
+    }
+    
 }
 @end
 

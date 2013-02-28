@@ -228,12 +228,18 @@
 + (UIFont *)cookServesPrepEditTitleFont {
     return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:50.0];
 }
+
+
 + (UIColor *)cookServesPrepEditTitleColor {
     return [UIColor whiteColor];
 }
 
++ (UIColor *)cookServesNumberColor {
+    return [UIColor lightGrayColor];
+}
+
 + (UIFont *)cookPrepPickerFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:24.0f];
 }
 
 

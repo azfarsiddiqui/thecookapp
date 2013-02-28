@@ -69,6 +69,7 @@
 #pragma mark - Recipe Editing
 + (UIFont *) cookServesPrepEditTitleFont;
 + (UIColor *)cookServesPrepEditTitleColor;
++ (UIColor *)cookServesNumberColor;
 + (UIFont *) cookPrepPickerFont;
 
 #pragma mark - Category View
