@@ -397,15 +397,19 @@
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *profileCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId forIndexPath:indexPath];;
-    self.profileViewController.view.frame = profileCell.contentView.bounds;
-    [profileCell.contentView addSubview:self.profileViewController.view];
+    if (!self.profileViewController.view.superview) {
+        self.profileViewController.view.frame = profileCell.contentView.bounds;
+        [profileCell.contentView addSubview:self.profileViewController.view];
+    }
     return profileCell;
 }
 
 - (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
-    self.homeViewController.view.frame = contentsCell.contentView.bounds;
-    [contentsCell.contentView addSubview:self.homeViewController.view];
+    if (!self.homeViewController.view.superview) {
+        self.homeViewController.view.frame = contentsCell.contentView.bounds;
+        [contentsCell.contentView addSubview:self.homeViewController.view];
+    }
     return contentsCell;
 }
 
