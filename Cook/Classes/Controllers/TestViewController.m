@@ -31,7 +31,7 @@
 #define  kPlaceholderTextStory          @"STORY"
 #define  kPlaceholderTextIngredients        @"INGREDIENTS"
 #define  kPlaceholderTextRecipeDescription  @"INSTRUCTIONS"
-#define  kPlaceholderTextCategory                @"RECIPE CATEGORY"
+#define  kPlaceholderTextCategory                @"CATEGORY"
 
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
 
@@ -121,7 +121,7 @@
                             cookTimeMins:self.recipe.cookingTimeInMinutes
                             prepTimeMins:self.recipe.prepTimeInMinutes];
     [self setStoryValue:self.recipe.story];
-    [self.facebookUserView setUser:self.recipe.user inFrame:self.view.frame];
+    [self.facebookUserView setUser:self.recipe.user];
     
     [self loadRecipeImage];
 
@@ -143,16 +143,20 @@
     if (view == self.nameEditableView) {
         CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.nameEditableView];
         textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
-        textFieldEditingVC.view.frame = [self rootView].bounds;
-        [self.view addSubview:textFieldEditingVC.view];
-        self.editingViewController = textFieldEditingVC;
+        
         UILabel *textFieldLabel = (UILabel *)self.nameEditableView.contentView;
         textFieldEditingVC.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
         textFieldEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         textFieldEditingVC.characterLimit = 20;
         textFieldEditingVC.text = textFieldLabel.text;
         textFieldEditingVC.editingTitle = @"RECIPE TITLE";
+        
+        textFieldEditingVC.view.frame = [self rootView].bounds;
+        [self.view addSubview:textFieldEditingVC.view];
+        self.editingViewController = textFieldEditingVC;
         [textFieldEditingVC enableEditing:YES completion:nil];
+
+        
     } else if (view == self.methodViewEditableView){
         TextViewEditingViewController *textViewEditingVC = [[TextViewEditingViewController alloc] initWithDelegate:self sourceEditingView:self.methodViewEditableView];
         textViewEditingVC.view.frame = [self rootView].bounds;
@@ -295,16 +299,17 @@
 - (void)setRecipeNameValue:(NSString *)recipeValue {
     [self configEditableView:self.nameEditableView withValue:recipeValue withFont:[Theme recipeNameFont]
                  withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
+    UILabel *label = (UILabel *)self.nameEditableView.contentView;
     if (!recipeValue) {
-        UILabel *label = (UILabel *)self.nameEditableView.contentView;
         label.text = kPlaceholderTextRecipeName;
     } else if (![self.recipe.name isEqualToString:recipeValue]) {
         self.recipe.name = recipeValue;
     }
+    label.text = [label.text uppercaseString];
 }
 
 - (void)setCategoryValue:(Category*)category {
-    [self configEditableView:self.categoryEditableView withValue:category.name withFont:[Theme recipeNameFont]
+    [self configEditableView:self.categoryEditableView withValue:category.name withFont:[Theme categoryFont]
                    withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
     UILabel *label = (UILabel *)self.categoryEditableView.contentView;
     [label setFont:[Theme categoryFont]];
@@ -313,6 +318,7 @@
     } else if (![self.recipe.category.name isEqualToString:category.name]) {
         self.recipe.category = category;
     }
+    label.text = [label.text uppercaseString];
 }
 
 - (void)setStoryValue:(NSString *)storyValue {

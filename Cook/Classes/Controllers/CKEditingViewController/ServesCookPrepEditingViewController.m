@@ -128,7 +128,6 @@
 #pragma mark - Slider action
 -(void)servesSlid:(UISlider*)slider
 {
-    DLog(@"Num serves %f",slider.value);
     self.numServes = roundf(slider.value);
     self.servesNumberLabel.text = [NSString stringWithFormat:@"%0.0f", roundf(slider.value)];
 }

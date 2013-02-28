@@ -192,7 +192,7 @@
 
 +(UIFont *)recipeNameFont
 {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:52.0f];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:40.0f];
 }
 
 +(UIColor *)recipeNameColor
@@ -232,7 +232,7 @@
 
 +(UIFont*) categoryFont
 {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:30.0f];
 }
 
 #pragma mark - Recipe Editing

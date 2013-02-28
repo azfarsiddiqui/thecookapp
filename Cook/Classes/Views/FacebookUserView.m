@@ -44,13 +44,6 @@
     }
 }
 
--(void)setUser:(CKUser *)user inFrame:(CGRect)frame
-{
-    [self setUser:user];
-    self.frame = CGRectMake(floorf(0.5*(frame.size.width - self.frame.size.width)), self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-
-}
-
 #pragma mark - private methods
 -(UILabel *)userNameLabel
 {
