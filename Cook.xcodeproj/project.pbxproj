@@ -50,6 +50,7 @@
 		76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0C165343DE007D1EBF /* UIImage+Tint.m */; };
 		76324F2716535591007D1EBF /* cook_book_icon_create.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2516535590007D1EBF /* cook_book_icon_create.png */; };
 		76324F2816535591007D1EBF /* cook_book_icon_create@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */; };
+		76367A9616DF02A500BE9AB7 /* BookActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76367A9516DF02A500BE9AB7 /* BookActivityViewController.m */; };
 		76381C9116683C5E00404FB1 /* BenchtopCollectionFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C9016683C5E00404FB1 /* BenchtopCollectionFlowLayout.m */; };
 		76381C9216683C6300404FB1 /* BenchtopCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */; };
 		76381C9516683E9500404FB1 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C9316683DE200404FB1 /* RootViewController.m */; };
@@ -510,6 +511,8 @@
 		76324F0C165343DE007D1EBF /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		76324F2516535590007D1EBF /* cook_book_icon_create.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_create.png; sourceTree = "<group>"; };
 		76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_create@2x.png"; sourceTree = "<group>"; };
+		76367A9416DF02A400BE9AB7 /* BookActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookActivityViewController.h; sourceTree = "<group>"; };
+		76367A9516DF02A500BE9AB7 /* BookActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookActivityViewController.m; sourceTree = "<group>"; };
 		76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BenchtopCollectionViewController.m; sourceTree = "<group>"; };
 		76381C8D16683BB300404FB1 /* BenchtopCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BenchtopCollectionViewController.h; sourceTree = "<group>"; };
 		76381C8F16683C5E00404FB1 /* BenchtopCollectionFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopCollectionFlowLayout.h; sourceTree = "<group>"; };
@@ -1802,10 +1805,12 @@
 				89B83E8F1659AA130012E03B /* BookPages */,
 				89B85B9316AF8A5900A0533E /* TestViewController.h */,
 				89B85B9416AF8A5900A0533E /* TestViewController.m */,
-				766F430E16DD851900785ABD /* BookContentsViewController.h */,
-				766F430F16DD851A00785ABD /* BookContentsViewController.m */,
 				762B375116D33AFF00343F88 /* BookHomeViewController.h */,
 				762B375216D33AFF00343F88 /* BookHomeViewController.m */,
+				766F430E16DD851900785ABD /* BookContentsViewController.h */,
+				766F430F16DD851A00785ABD /* BookContentsViewController.m */,
+				76367A9416DF02A400BE9AB7 /* BookActivityViewController.h */,
+				76367A9516DF02A500BE9AB7 /* BookActivityViewController.m */,
 				766F42F016DC7A5500785ABD /* BookProfileViewController.h */,
 				766F42F116DC7A5500785ABD /* BookProfileViewController.m */,
 				762B375416D33B6A00343F88 /* BookHomeFlowLayout.h */,
@@ -2590,6 +2595,7 @@
 				7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */,
 				766F42F216DC7A5500785ABD /* BookProfileViewController.m in Sources */,
 				766F431016DD851C00785ABD /* BookContentsViewController.m in Sources */,
+				76367A9616DF02A500BE9AB7 /* BookActivityViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
