@@ -1829,24 +1829,48 @@
 				8938AA9D16DF153D001CBC90 /* CKEditingTextField.m */,
 				8938AA9E16DF153D001CBC90 /* CKEditingViewController.h */,
 				8938AA9F16DF153D001CBC90 /* CKEditingViewController.m */,
-				8938AAA016DF153D001CBC90 /* CKTextFieldEditingViewController.h */,
-				8938AAA116DF153D001CBC90 /* CKTextFieldEditingViewController.m */,
+				8938AABC16DF178B001CBC90 /* ingredientEdit */,
+				8938AABB16DF1742001CBC90 /* servesCookPrep */,
+				893AB2DF16DF1830000E2AB3 /* text */,
+			);
+			path = CKEditingViewController;
+			sourceTree = "<group>";
+		};
+		8938AABB16DF1742001CBC90 /* servesCookPrep */ = {
+			isa = PBXGroup;
+			children = (
+				8938AAAC16DF153D001CBC90 /* ServesCookPrepEditingViewController.h */,
+				8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */,
+			);
+			name = servesCookPrep;
+			sourceTree = "<group>";
+		};
+		8938AABC16DF178B001CBC90 /* ingredientEdit */ = {
+			isa = PBXGroup;
+			children = (
 				8938AAA216DF153D001CBC90 /* EditableIngredientTableViewCell.h */,
 				8938AAA316DF153D001CBC90 /* EditableIngredientTableViewCell.m */,
+				8938AAA816DF153D001CBC90 /* IngredientsEditingViewController.h */,
 				8938AAA416DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.h */,
 				8938AAA516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m */,
 				8938AAA616DF153D001CBC90 /* IngredientEditorViewController.h */,
 				8938AAA716DF153D001CBC90 /* IngredientEditorViewController.m */,
-				8938AAA816DF153D001CBC90 /* IngredientsEditingViewController.h */,
-				8938AAA916DF153D001CBC90 /* IngredientsEditingViewController.m */,
 				8938AAAA16DF153D001CBC90 /* IngredientTableViewCell.h */,
 				8938AAAB16DF153D001CBC90 /* IngredientTableViewCell.m */,
-				8938AAAC16DF153D001CBC90 /* ServesCookPrepEditingViewController.h */,
-				8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */,
+				8938AAA916DF153D001CBC90 /* IngredientsEditingViewController.m */,
+			);
+			name = ingredientEdit;
+			sourceTree = "<group>";
+		};
+		893AB2DF16DF1830000E2AB3 /* text */ = {
+			isa = PBXGroup;
+			children = (
 				8938AAAE16DF153D001CBC90 /* TextViewEditingViewController.h */,
 				8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */,
+				8938AAA016DF153D001CBC90 /* CKTextFieldEditingViewController.h */,
+				8938AAA116DF153D001CBC90 /* CKTextFieldEditingViewController.m */,
 			);
-			path = CKEditingViewController;
+			name = text;
 			sourceTree = "<group>";
 		};
 		8944C1B816CDB9870087EFC9 /* accessoryView */ = {
