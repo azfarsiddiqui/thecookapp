@@ -130,6 +130,7 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="aJq-0m-uka">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
                             <view contentMode="scaleToFill" id="p91-m1-pQa">
                                 <rect key="frame" x="0.0" y="220" width="1024" height="528"/>
