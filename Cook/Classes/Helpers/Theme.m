@@ -122,6 +122,14 @@
     return [UIColor whiteColor];
 }
 
++ (UIFont *)bookActivityHeaderFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:80.0];
+}
+
++ (UIColor *)bookActivityHeaderColour {
+    return [UIColor lightGrayColor];
+}
+
 + (UIColor *)activityInfoViewColour {
     return [UIColor colorWithHexString:@"3885C4"];
 }

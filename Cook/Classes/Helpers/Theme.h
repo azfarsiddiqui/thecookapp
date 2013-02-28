@@ -40,6 +40,8 @@
 + (UIColor *)bookContentsNameColour;
 + (UIFont *)bookContentsItemFont;
 + (UIColor *)bookContentsItemColour;
++ (UIFont *)bookActivityHeaderFont;
++ (UIColor *)bookActivityHeaderColour;
 + (UIColor *)activityInfoViewColour;
 + (UIColor *)activityActionColour;
 + (UIFont *)activityActionFont;

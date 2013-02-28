@@ -18,11 +18,12 @@
 #import "ParsePhotoStore.h"
 #import "TestViewController.h"
 #import "BookProfileViewController.h"
-#import "BookHomeViewController.h"
+#import "BookContentsViewController.h"
+#import "BookActivityViewController.h"
 #import "BookNavigationDataSource.h"
 
 @interface BookNavigationViewController () <BookNavigationDataSource, NewRecipeViewDelegate,
-    BookHomeViewControllerDelegate>
+    BookContentsViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *createButton;
@@ -34,7 +35,8 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
-@property (nonatomic, strong) BookHomeViewController *homeViewController;
+@property (nonatomic, strong) BookContentsViewController *contentsViewController;
+@property (nonatomic, strong) BookActivityViewController *activityViewController;
 
 @end
 
@@ -42,10 +44,12 @@
 
 #define kProfileSection     0
 #define kContentsSection    1
+#define kActivitySection    2
 #define kRecipeCellId       @"RecipeCellId"
 #define kCategoryHeaderId   @"CategoryHeaderId"
 #define kProfileCellId      @"ProfileCellId"
 #define kContentsCellId     @"ContentsCellId"
+#define kActivityCellId     @"ActivityCellId"
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
@@ -53,7 +57,8 @@
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
-        self.homeViewController = [[BookHomeViewController alloc] initWithBook:book delegate:self];
+        self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book delegate:self];
+        self.activityViewController = [[BookActivityViewController alloc] initWithBook:book];
     }
     return self;
 }
@@ -75,7 +80,7 @@
 #pragma mark - BookNavigationLayoutDataSource methods
 
 - (NSUInteger)bookNavigationContentStartSection {
-    return 2;
+    return 3;
 }
 
 - (NSUInteger)bookNavigationLayoutNumColumns {
@@ -86,13 +91,11 @@
     return 1;
 }
 
-#pragma mark - BookHomeViewControllerDelegate methods
+#pragma mark - BookContentsViewControllerDelegate methods
 
-- (void)bookHomeSelectedCategory:(NSString *)categoryName {
-    DLog();
-    
+- (void)bookContentsSelectedCategory:(NSString *)category {
     BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
-    NSUInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
+    NSUInteger categoryIndex = [self.categoryNames indexOfObject:category];
     CGFloat requiredOffset = [layout pageOffsetForSection:categoryIndex + [self bookNavigationContentStartSection]];
     [self.collectionView setContentOffset:CGPointMake(requiredOffset, 0.0) animated:YES];
 }
@@ -213,6 +216,8 @@
         cell = [self profileCellAtIndexPath:indexPath];
     } else if (indexPath.section == kContentsSection) {
         cell = [self contentsCellAtIndexPath:indexPath];
+    } else if (indexPath.section == kActivitySection) {
+        cell = [self activityCellAtIndexPath:indexPath];
     }
     
     return cell;
@@ -260,9 +265,10 @@
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.pagingEnabled = YES;
     
-    // Profile and Contents
+    // Profile, Contents, Activity
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
     
     // Categories
     [self.collectionView registerClass:[BookCategoryView class]
@@ -300,8 +306,8 @@
         }
         
         // Update the VC's.
-        [self.homeViewController configureCategories:self.categoryNames];
-        [self.homeViewController configureHeroRecipe:[self highlightRecipeForBook]];
+        [self.contentsViewController configureCategories:self.categoryNames];
+        [self.contentsViewController configureRecipe:[self highlightRecipeForBook]];
         
         // Now reload the collection.
         [self.collectionView reloadData];
@@ -394,9 +400,18 @@
 
 - (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
-    if (!self.homeViewController.view.superview) {
-        self.homeViewController.view.frame = contentsCell.contentView.bounds;
-        [contentsCell.contentView addSubview:self.homeViewController.view];
+    if (!self.contentsViewController.view.superview) {
+        self.contentsViewController.view.frame = contentsCell.contentView.bounds;
+        [contentsCell.contentView addSubview:self.contentsViewController.view];
+    }
+    return contentsCell;
+}
+
+- (UICollectionViewCell *)activityCellAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityCellId forIndexPath:indexPath];
+    if (!self.activityViewController.view.superview) {
+        self.activityViewController.view.frame = contentsCell.contentView.bounds;
+        [contentsCell.contentView addSubview:self.activityViewController.view];
     }
     return contentsCell;
 }
