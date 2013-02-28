@@ -117,6 +117,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)initCollectionView {
     self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.alwaysBounceVertical = NO;
+    self.collectionView.bounces = NO;
     
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;

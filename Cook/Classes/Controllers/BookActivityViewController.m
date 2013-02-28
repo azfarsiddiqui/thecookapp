@@ -12,21 +12,28 @@
 #import "CKRecipe.h"
 #import "ParsePhotoStore.h"
 #import "ActivityCollectionViewCell.h"
+#import "Theme.h"
+#import "AppHelper.h"
 
-@interface BookActivityViewController ()
+@interface BookActivityViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, assign) CKBook *book;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) NSArray *activities;
+@property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UIImageView *headerShadowImageView;
 
 @end
 
 @implementation BookActivityViewController
 
 #define kActivityCellId         @"ActivityCellId"
+#define kHeaderHeight           140.0
+#define kHeaderInsets           UIEdgeInsetsMake(50.0, 55.0, 0.0, 0.0)
 
 - (id)initWithBook:(CKBook *)book {
-    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+    if (self = [super init]) {
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         [self loadData];
@@ -37,7 +44,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self initHeaderView];
     [self initCollectionView];
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self fadeShadowView:NO];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    [self fadeShadowView:(!decelerate && scrollView.contentOffset.y <= 0)];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self fadeShadowView:scrollView.contentOffset.y <= 0];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -76,7 +98,7 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return UIEdgeInsetsMake(80.0, 62.0, 80.0, 62.0);
+    return UIEdgeInsetsMake(25.0, 62.0, 80.0, 62.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -95,13 +117,57 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 #pragma mark - Private methods
 
-- (void)initCollectionView {
-    self.collectionView.backgroundColor = [UIColor whiteColor];
+- (void)initHeaderView {
+    UIImageView *headerShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_update_header_shadow.png"]];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
+                                                                  self.view.bounds.origin.y,
+                                                                  self.view.bounds.size.width,
+                                                                  kHeaderHeight - headerShadowImageView.frame.size.height)];
+    headerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    headerView.backgroundColor = [UIColor whiteColor];
+    headerView.clipsToBounds = YES;
+    [self.view addSubview:headerView];
+    self.headerView = headerView;
     
-    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
+    headerShadowImageView.frame = CGRectMake(self.view.bounds.origin.x,
+                                             headerView.frame.origin.y + headerView.frame.size.height,
+                                             headerShadowImageView.frame.size.width,
+                                             headerShadowImageView.frame.size.height);
+    headerShadowImageView.autoresizingMask = UIViewAutoresizingNone;
+    headerShadowImageView.hidden = YES;
+    [self.view addSubview:headerShadowImageView];
+    self.headerShadowImageView = headerShadowImageView;
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.backgroundColor = [UIColor whiteColor];
+    label.textColor = [Theme bookActivityHeaderColour];
+    label.font = [Theme bookActivityHeaderFont];
+    label.text = @"UPDATES";
+    [label sizeToFit];
+    label.frame = CGRectMake(headerView.bounds.origin.x + kHeaderInsets.left,
+                             headerView.bounds.origin.y + kHeaderInsets.top,
+                             label.frame.size.width,
+                             label.frame.size.height);
+    [headerView addSubview:label];
+}
+
+- (void)initCollectionView {
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
-    [self.collectionView registerClass:[ActivityCollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
+                                                                                          self.headerView.frame.origin.y + self.headerView.frame.size.height,
+                                                                                          self.view.bounds.size.width,
+                                                                                          self.view.bounds.size.height - self.headerView.frame.origin.y - self.headerView.frame.size.height)
+                                                          collectionViewLayout:flowLayout];
+    collectionView.backgroundColor = [UIColor whiteColor];
+    collectionView.dataSource = self;
+    collectionView.delegate = self;
+    collectionView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    [self.view insertSubview:collectionView belowSubview:self.headerShadowImageView];
+    self.collectionView = collectionView;
+    
+    [collectionView registerClass:[ActivityCollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
 }
 
 - (void)loadData {
@@ -139,6 +205,32 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         } else {
             [activityCell configureImage:nil];
         }
+    }
+}
+
+- (void)fadeShadowView:(BOOL)fade {
+    if (!self.headerShadowImageView.hidden && fade) {
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.headerShadowImageView.alpha = 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                             self.headerShadowImageView.hidden = YES;
+                         }];
+        
+    } else if (self.headerShadowImageView.hidden && !fade) {
+        self.headerShadowImageView.alpha = 0.0;
+        self.headerShadowImageView.hidden = NO;
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.headerShadowImageView.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
     }
 }
 
