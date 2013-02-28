@@ -217,13 +217,10 @@
 
 - (void) addServesSlider:(UIView*)mainView
 {
-        self.servesSlider = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, self.servesLabel.frame.origin.y + self.servesLabel.frame.size.height, 600.0f, 100.0f)];
+        self.servesSlider = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, self.servesLabel.frame.origin.y + self.servesLabel.frame.size.height, 600.0f, 57.0f)];
         self.servesSlider.minimumValueImage = [UIImage imageNamed:@"cook_edit_serveslider_icon_one"];
         self.servesSlider.maximumValueImage = [UIImage imageNamed:@"cook_edit_serveslider_icon_many"];
-
         [self.servesSlider addTarget:self action:@selector(servesSlid:) forControlEvents:UIControlEventValueChanged];
-
-        // in case the parent view draws with a custom color or gradient, use a transparent color
         self.servesSlider.backgroundColor = [UIColor clearColor];
 
         UIImage *strechTrack = [[UIImage imageNamed:@"cook_edit_serveslider_bg"]

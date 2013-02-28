@@ -81,11 +81,17 @@
     return recipe;
 }
 
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
++(CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book
 {
     PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
     CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
     recipe.book = book;
+    return recipe;
+}
+
++(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
+{
+    CKRecipe *recipe = [CKRecipe recipeForUser:user book:book];
     recipe.category = category;
     return recipe;
 }
