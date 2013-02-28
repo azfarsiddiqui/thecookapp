@@ -8,7 +8,6 @@
 
 #import "IngredientsEditingViewController.h"
 #import "IngredientEditorViewController.h"
-#import "CKEditingTextField.h"
 #import "CKTextFieldEditingViewController.h"
 #import "IngredientTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>

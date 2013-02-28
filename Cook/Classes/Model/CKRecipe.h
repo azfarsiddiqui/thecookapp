@@ -31,6 +31,7 @@
 //creation
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
++(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book;
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category;
 
 //save

@@ -176,7 +176,7 @@
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
-    [self viewRecipe:recipe];
+        [self viewRecipe:recipe];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -528,6 +528,7 @@
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
     TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
     testVC.recipe = recipe;
+    testVC.selectedBook = self.selectedBook;
     [self showModalViewController:testVC];
     
 }

@@ -130,6 +130,7 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="aJq-0m-uka">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
                             <view contentMode="scaleToFill" id="p91-m1-pQa">
                                 <rect key="frame" x="0.0" y="220" width="1024" height="528"/>
@@ -149,6 +150,10 @@
                                     </view>
                                     <view contentMode="scaleToFill" id="PLz-Or-ETp" customClass="CKEditableView">
                                         <rect key="frame" x="10" y="152" width="300" height="63"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="Vuf-Ff-bCW" customClass="CKEditableView">
+                                        <rect key="frame" x="34" y="104" width="250" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </view>
                                     <view contentMode="scaleToFill" id="WWa-fg-cW2" customClass="CKEditableView">
@@ -196,6 +201,8 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="categoryEditableView" destination="Vuf-Ff-bCW" id="1VW-N5-1tk"/>
+                        <outlet property="editButton" destination="2vI-Wc-09x" id="m7Y-4w-Fa9"/>
                         <outlet property="facebookUserView" destination="4QQ-ni-sRD" id="pOW-0M-ky6"/>
                         <outlet property="ingredientsViewEditableView" destination="qTX-Bo-ik8" id="FLh-Tb-jFx"/>
                         <outlet property="methodViewEditableView" destination="HzD-i9-p5Q" id="NeC-cz-7j9"/>
@@ -424,15 +431,15 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Artichokes.png" width="513" height="748"/>
-        <image name="cook_book_icon_serves.png" width="17" height="17"/>
-        <image name="cook_book_icon_time.png" width="17" height="17"/>
-        <image name="cook_book_recipe_imageshadow.png" width="8" height="1"/>
-        <image name="cook_customise_btns_cancel.png" width="37" height="37"/>
-        <image name="cook_customise_btns_done.png" width="37" height="37"/>
-        <image name="cook_customise_btns_textedit.png" width="27" height="27"/>
-        <image name="cook_editrecipe_addphoto.png" width="76" height="76"/>
-        <image name="cook_editrecipe_editphoto.png" width="51" height="51"/>
+        <image name="Artichokes.png" width="16" height="16"/>
+        <image name="cook_book_icon_serves.png" width="16" height="16"/>
+        <image name="cook_book_icon_time.png" width="16" height="16"/>
+        <image name="cook_book_recipe_imageshadow.png" width="16" height="16"/>
+        <image name="cook_customise_btns_cancel.png" width="16" height="16"/>
+        <image name="cook_customise_btns_done.png" width="16" height="16"/>
+        <image name="cook_customise_btns_textedit.png" width="16" height="16"/>
+        <image name="cook_editrecipe_addphoto.png" width="16" height="16"/>
+        <image name="cook_editrecipe_editphoto.png" width="16" height="16"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>

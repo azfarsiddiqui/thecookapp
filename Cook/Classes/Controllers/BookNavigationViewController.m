@@ -1,4 +1,4 @@
-//
+    //
 //  BookNavigationViewController.m
 //  Cook
 //
@@ -110,7 +110,7 @@
         NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
         NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
         CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
-        [self viewRecipe:recipe];
+        [self.delegate bookNavigationControllerRecipeRequested:recipe];
     }
 }
 
@@ -323,19 +323,7 @@
 }
 
 - (void)createTapped:(id)sender {
-    DLog();
-    
-//    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-//    NewRecipeViewController *newRecipeViewVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NewRecipeViewController"];
-//    newRecipeViewVC.recipeViewDelegate = self;
-//    newRecipeViewVC.book = self.book;
-//    [self presentViewController:newRecipeViewVC animated:YES completion:nil];
-
-    //use for testing launch concepts
-    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-    TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
-    [self presentViewController:testVC animated:YES completion:nil];
-
+    [self.delegate bookNavigationControllerRecipeRequested:nil];
 }
 
 - (void)configureImageForHeaderView:(BookCategoryView *)categoryHeaderView recipe:(CKRecipe *)recipe
@@ -426,10 +414,6 @@
         [contentsCell.contentView addSubview:self.activityViewController.view];
     }
     return contentsCell;
-}
-
-- (void)viewRecipe:(CKRecipe *)recipe {
-    [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
 - (NSArray *)recipesWithPhotosInCategory:(NSString *)categoryName {
