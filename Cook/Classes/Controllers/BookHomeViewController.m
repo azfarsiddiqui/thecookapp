@@ -8,43 +8,39 @@
 
 #import "BookHomeViewController.h"
 #import "CKBook.h"
-#import "CKActivity.h"
 #import "CKUser.h"
 #import "CKRecipe.h"
-#import "BookHomeFlowLayout.h"
-#import "ActivityCollectionViewCell.h"
-#import "ParsePhotoStore.h"
 #import "BookContentsViewController.h"
+#import "BookActivityViewController.h"
 
 @interface BookHomeViewController () <BookContentsViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookHomeViewControllerDelegate> delegate;
-@property (nonatomic, strong) NSArray *activities;
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) BookContentsViewController *contentsViewController;
+@property (nonatomic, strong) BookActivityViewController *activityViewCOntroller;
 
 @end
 
 @implementation BookHomeViewController
 
 #define kActivityCellId         @"ActivityCellId"
-#define kContentsHeaderCellId   @"ContentsHeaderCellId"
+#define kContentsCellId         @"kContentsCellId"
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookHomeViewControllerDelegate>)delegate  {
-    if (self = [super initWithCollectionViewLayout:[[BookHomeFlowLayout alloc] init]]) {
+    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
         self.book = book;
         self.delegate = delegate;
-        self.photoStore = [[ParsePhotoStore alloc] init];
         self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book delegate:self];
+        self.activityViewCOntroller = [[BookActivityViewController alloc] initWithBook:book];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self initCollectionView];
-    [self loadData];
 }
 
 - (void)configureCategories:(NSArray *)categories {
@@ -64,35 +60,29 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.activities count];
+    return 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    ActivityCollectionViewCell *cell = (ActivityCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kActivityCellId
-                                                                                                           forIndexPath:indexPath];
-    CKActivity *activity = [self.activities objectAtIndex:indexPath.item];
-    [cell configureActivity:activity];
-    [self configureImageForActivityCell:cell activity:activity indexPath:indexPath];
+    UICollectionViewCell *cell = nil;
+    if (indexPath.section == 0) {
+        cell = [collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
+        if (!self.contentsViewController.view.superview) {
+            self.contentsViewController.view.frame = cell.contentView.bounds;
+            [cell.contentView addSubview:self.contentsViewController.view];
+        }
+    } else {
+        cell = [collectionView dequeueReusableCellWithReuseIdentifier:kActivityCellId forIndexPath:indexPath];
+        if (!self.activityViewCOntroller.view.superview) {
+            self.activityViewCOntroller.view.frame = cell.contentView.bounds;
+            [cell.contentView addSubview:self.activityViewCOntroller.view];
+        }
+    }
     return cell;
-}
-
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
-           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    
-    UICollectionReusableView *cell = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentsHeaderCellId forIndexPath:indexPath];
-    self.contentsViewController.view.frame = cell.bounds;
-    [cell addSubview:self.contentsViewController.view];
-    return cell;
-}
-
-#pragma mark - UICollectionViewDelegate methods
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -100,34 +90,27 @@
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    return [ActivityCollectionViewCell cellSize];
+    return self.collectionView.bounds.size;
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return UIEdgeInsetsMake(80.0, 62.0, 80.0, 62.0);
+    return UIEdgeInsetsZero;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // Between rows
-    return 36.0;
+    return 0.0;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     
     // Between columns
-    return 36.0;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-    referenceSizeForHeaderInSection:(NSInteger)section {
-    
-    // Size of top header.
-    return self.view.bounds.size;
+    return 0.0;
 }
 
 #pragma mark - Private methods
@@ -135,46 +118,12 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 - (void)initCollectionView {
     self.collectionView.backgroundColor = [UIColor whiteColor];
     
-    [self.collectionView registerClass:[ActivityCollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
-    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentsHeaderCellId];
-}
-
-- (void)loadData {
-    [CKActivity activitiesForUser:self.book.user
-                          success:^(NSArray *activities) {
-                              DLog(@"Activities: %@", activities)
-                              self.activities = activities;
-                              [self.collectionView reloadData];
-                          }
-                          failure:^(NSError *error)  {
-                              DLog(@"Unable to load activities: %@", [error localizedDescription]);
-                          }];
-}
-
-- (void)configureImageForActivityCell:(ActivityCollectionViewCell *)activityCell activity:(CKActivity *)activity
-                            indexPath:(NSIndexPath *)indexPath {
-    CKRecipe *recipe = activity.recipe;
+    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    self.collectionView.pagingEnabled = YES;
     
-    // Configure recipe image only if this activity pertains to a recipe.
-    if (recipe) {
-        if ([recipe hasPhotos]) {
-            
-            CGSize imageSize = [ActivityCollectionViewCell imageSize];
-            [self.photoStore imageForParseFile:[recipe imageFile]
-                                          size:imageSize
-                                     indexPath:indexPath
-                                    completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
-                                        
-                                        // Check that we have matching indexPaths as cells are re-used.
-                                        if ([indexPath isEqual:completedIndexPath]) {
-                                            [activityCell configureImage:image];
-                                        }
-                                    }];
-            
-        } else {
-            [activityCell configureImage:nil];
-        }
-    }
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
 }
 
 @end
