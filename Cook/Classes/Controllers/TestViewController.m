@@ -180,7 +180,7 @@
         servesEditingVC.view.frame = [self rootView].bounds;
         servesEditingVC.numServes = [NSNumber numberWithInt:self.recipe.numServes];
         servesEditingVC.cookingTimeInMinutes = [NSNumber numberWithInt:self.recipe.cookingTimeInMinutes];
-        servesEditingVC.prepTimeInMinutes = @10;
+        servesEditingVC.prepTimeInMinutes = [NSNumber numberWithInt:self.recipe.prepTimeInMinutes];
         
         [self.view addSubview:servesEditingVC.view];
         self.editingViewController = servesEditingVC;

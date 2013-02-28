@@ -1,5 +1,5 @@
 //
-//  CategoryEditViewController.h
+//  BlankEditViewController.h
 //  Cook
 //
 //  Created by Jonny Sagorin on 2/28/13.
@@ -7,8 +7,7 @@
 //
 
 #import "CKEditingViewController.h"
-#import "BlankEditViewController.h"
 
-@interface CategoryEditViewController : BlankEditViewController
+@interface BlankEditViewController : CKEditingViewController
 
 @end
