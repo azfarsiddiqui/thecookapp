@@ -10,8 +10,8 @@
 #import "BlankEditViewController.h"
 
 @interface ServesCookPrepEditingViewController : BlankEditViewController
-@property (nonatomic, strong) NSNumber *numServes;
-@property (nonatomic, strong) NSNumber *cookingTimeInMinutes;
-@property (nonatomic, strong) NSNumber *prepTimeInMinutes;
+@property (nonatomic, assign) NSInteger numServes;
+@property (nonatomic, assign) NSInteger cookingTimeInMinutes;
+@property (nonatomic, assign) NSInteger prepTimeInMinutes;
 
 @end

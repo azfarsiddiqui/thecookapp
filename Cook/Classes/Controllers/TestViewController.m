@@ -178,9 +178,9 @@
     } else if (view == self.servesCookPrepEditableView) {
         ServesCookPrepEditingViewController *servesEditingVC = [[ServesCookPrepEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesCookPrepEditableView];
         servesEditingVC.view.frame = [self rootView].bounds;
-        servesEditingVC.numServes = [NSNumber numberWithInt:self.recipe.numServes];
-        servesEditingVC.cookingTimeInMinutes = [NSNumber numberWithInt:self.recipe.cookingTimeInMinutes];
-        servesEditingVC.prepTimeInMinutes = [NSNumber numberWithInt:self.recipe.prepTimeInMinutes];
+        servesEditingVC.numServes = self.recipe.numServes;
+        servesEditingVC.cookingTimeInMinutes = self.recipe.cookingTimeInMinutes;
+        servesEditingVC.prepTimeInMinutes = self.recipe.prepTimeInMinutes;
         
         [self.view addSubview:servesEditingVC.view];
         self.editingViewController = servesEditingVC;

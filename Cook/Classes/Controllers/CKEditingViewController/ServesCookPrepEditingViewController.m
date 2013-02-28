@@ -57,7 +57,9 @@
 
 - (void)performSave {
     
-    NSDictionary *values = @{@"serves": self.numServes,@"cookTime": self.cookingTimeInMinutes,@"prepTime": self.prepTimeInMinutes};
+    NSDictionary *values = @{@"serves": [NSNumber numberWithInt:self.numServes],
+                             @"cookTime":  [NSNumber numberWithInt:self.cookingTimeInMinutes],
+                             @"prepTime":  [NSNumber numberWithInt:self.prepTimeInMinutes]};
     [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:values];
     [super performSave];
 }
@@ -70,9 +72,9 @@
 {
 	if (pickerView == self.cookingTimePickerView)	// don't show selection for the custom picker
 	{
-        self.cookingTimeInMinutes = [self.cookingTimeArray objectAtIndex:row];
+        self.cookingTimeInMinutes = [[self.cookingTimeArray objectAtIndex:row] integerValue];
 	} else {
-        self.prepTimeInMinutes = [self.prepTimeArray objectAtIndex:row];
+        self.prepTimeInMinutes = [[self.prepTimeArray objectAtIndex:row] integerValue];
     }
 }
 
@@ -127,7 +129,7 @@
 -(void)servesSlid:(UISlider*)slider
 {
     DLog(@"Num serves %f",slider.value);
-    self.numServes = [NSNumber numberWithFloat:roundf(slider.value)];
+    self.numServes = roundf(slider.value);
     self.servesNumberLabel.text = [NSString stringWithFormat:@"%0.0f", roundf(slider.value)];
 }
 
@@ -221,27 +223,33 @@
 
 - (void)setValues {
     //set numServes
-    if (self.numServes) {
-        [self.servesSlider setValue:[self.numServes floatValue] animated:YES];
-        self.servesNumberLabel.text = [self.numServes stringValue];
-    }
+    [self.servesSlider setValue:self.numServes animated:YES];
+    self.servesNumberLabel.text = [NSString stringWithFormat:@"%d",self.numServes];
     
-    if (self.cookingTimeInMinutes) {
+    if (self.cookingTimeInMinutes > 0) {
         [self.cookingTimeArray enumerateObjectsUsingBlock:^(NSNumber *arrayValue, NSUInteger idx, BOOL *stop) {
-            if ([self.cookingTimeInMinutes isEqualToNumber:arrayValue]) {
+            if (self.cookingTimeInMinutes == [arrayValue integerValue]) {
                 stop = YES;
                 [self.cookingTimePickerView selectRow:idx inComponent:0 animated:NO];
             }
         }];
+    } else {
+        //select the first row
+        [self.cookingTimePickerView selectRow:0 inComponent:0 animated:NO];
+        self.cookingTimeInMinutes = [self.cookingTimeArray objectAtIndex:0];
     }
     
-    if (self.prepTimeInMinutes) {
+    if (self.prepTimeInMinutes > 0) {
         [self.prepTimeArray enumerateObjectsUsingBlock:^(NSNumber *arrayValue, NSUInteger idx, BOOL *stop) {
-            if ([self.prepTimeInMinutes isEqualToNumber:arrayValue]) {
+            if (self.prepTimeInMinutes == [arrayValue integerValue]) {
                 stop = YES;
                 [self.prepTimePickerView selectRow:idx inComponent:0 animated:NO];
             }
         }];
+    } else {
+        //select the first row
+        [self.prepTimePickerView selectRow:0 inComponent:0 animated:NO];
+        self.prepTimeInMinutes = [self.prepTimeArray objectAtIndex:0];
     }
     
 }
