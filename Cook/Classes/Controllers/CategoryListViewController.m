@@ -40,6 +40,11 @@
     self.view.hidden = !show;
 }
 
+-(void)refreshData
+{
+    [self.collectionView reloadData];
+}
+
 -(void)selectCategoryWithName:(NSString *)categoryName
 {
     if (categoryName) {

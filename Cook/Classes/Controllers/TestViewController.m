@@ -199,6 +199,7 @@
     } else if (view == self.categoryEditableView) {
         CategoryEditViewController *categoryEditingVC = [[CategoryEditViewController alloc] initWithDelegate:self sourceEditingView:self.categoryEditableView];
         categoryEditingVC.view.frame = [self rootView].bounds;
+        categoryEditingVC.selectedCategory = self.recipe.category;
         [self.view addSubview:categoryEditingVC.view];
         self.editingViewController = categoryEditingVC;
         [categoryEditingVC enableEditing:YES completion:nil];

@@ -17,4 +17,5 @@
 @property(nonatomic,assign) id<CategoryListViewDelegate> delegate;
 @property(nonatomic,strong) NSString *selectedCategoryName;
 -(void)show:(BOOL)show;
+-(void)refreshData;
 @end
