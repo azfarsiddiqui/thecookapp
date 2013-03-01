@@ -7,13 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BookNavigationDataSource.h"
 
 @class CKRecipe;
 
+@protocol BookNavigationDataSource <NSObject>
+
+- (NSUInteger)bookNavigationContentStartSection;
+- (NSUInteger)bookNavigationLayoutNumColumns;
+- (NSUInteger)bookNavigationLayoutColumnWidthForItemAtIndexPath:(NSIndexPath *)indexPath;
+
+@end
+
+@protocol BookNavigationLayoutDelegate <NSObject>
+
+- (void)prepareLayoutDidFinish;
+
+@end
+
 @interface BookNavigationLayout : UICollectionViewLayout
 
-- (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource;
+- (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource delegate:(id<BookNavigationLayoutDelegate>)delegate;
 - (CGFloat)pageOffsetForSection:(NSInteger)section;
 
 + (CGSize)unitSize;

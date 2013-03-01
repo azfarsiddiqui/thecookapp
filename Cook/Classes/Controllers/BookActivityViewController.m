@@ -36,7 +36,6 @@
     if (self = [super init]) {
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
-        [self loadData];
     }
     return self;
 }
@@ -46,6 +45,7 @@
     
     [self initHeaderView];
     [self initCollectionView];
+    [self loadData];
 }
 
 #pragma mark - UIScrollViewDelegate methods

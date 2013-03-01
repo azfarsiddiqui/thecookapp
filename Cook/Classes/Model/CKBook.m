@@ -245,7 +245,7 @@
 
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
     [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
     [query includeKey:kCategoryModelForeignKeyName];

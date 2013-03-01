@@ -11,6 +11,7 @@
 @interface BookNavigationLayout ()
 
 @property (nonatomic, assign) id<BookNavigationDataSource> dataSource;
+@property (nonatomic, assign) id<BookNavigationLayoutDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *contentPages;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
@@ -33,9 +34,10 @@
     return 72.0;
 }
 
-- (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource {
+- (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource delegate:(id<BookNavigationLayoutDelegate>)delegate {
     if (self = [super init]) {
         self.dataSource = dataSource;
+        self.delegate = delegate;
     }
     return self;
 }
@@ -46,7 +48,7 @@
     NSInteger contentSection = section - contentStartSection;
     
     // Items start from the content start section.
-    CGFloat pageOffset = [self.dataSource bookNavigationContentStartSection] * self.collectionView.bounds.size.width;
+    CGFloat pageOffset = contentStartSection * self.collectionView.bounds.size.width;
     
     if (contentSection > 0) {
         
@@ -66,6 +68,7 @@
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
+    DLog(@"NUMBER OF PAGES: %d", [self.contentPages count]);
     CGFloat width = 0;
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     
@@ -91,8 +94,11 @@
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
     
-    [self buildInfoLayoutData];
-    [self buildContentsLayoutData];
+    [self buildBookOtherLayoutData];
+    [self buildBookRecipesLayoutData];
+    
+    // Inform end of layout prep.
+    [self.delegate prepareLayoutDidFinish];
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
@@ -142,7 +148,7 @@
 
 #pragma mark - Private methods
 
-- (void)buildInfoLayoutData {
+- (void)buildBookOtherLayoutData {
     
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     for (NSInteger section = 0; section < contentStartSection; section++) {
@@ -159,7 +165,7 @@
     
 }
 
-- (void)buildContentsLayoutData {
+- (void)buildBookRecipesLayoutData {
     
     // Content start section.
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];

@@ -19,10 +19,9 @@
 #import "BookProfileViewController.h"
 #import "BookContentsViewController.h"
 #import "BookActivityViewController.h"
-#import "BookNavigationDataSource.h"
 
-@interface BookNavigationViewController () <BookNavigationDataSource, NewRecipeViewDelegate,
-    BookContentsViewControllerDelegate>
+@interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
+    NewRecipeViewDelegate, BookContentsViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *createButton;
@@ -37,13 +36,12 @@
 @property (nonatomic, strong) BookContentsViewController *contentsViewController;
 @property (nonatomic, strong) BookActivityViewController *activityViewController;
 
+@property (nonatomic, strong) NSString *selectedCategoryName;
+
 @end
 
 @implementation BookNavigationViewController
 
-#define kProfileSection     0
-#define kContentsSection    1
-#define kActivitySection    2
 #define kRecipeCellId       @"RecipeCellId"
 #define kCategoryHeaderId   @"CategoryHeaderId"
 #define kProfileCellId      @"ProfileCellId"
@@ -51,7 +49,8 @@
 #define kActivityCellId     @"ActivityCellId"
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self]]) {
+    if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self
+                                                                                           delegate:self]]) {
         self.delegate = delegate;
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
@@ -79,7 +78,7 @@
 #pragma mark - BookNavigationLayoutDataSource methods
 
 - (NSUInteger)bookNavigationContentStartSection {
-    return 3;
+    return [self recipeSection];
 }
 
 - (NSUInteger)bookNavigationLayoutNumColumns {
@@ -90,14 +89,44 @@
     return 1;
 }
 
+#pragma mark - BookNavigationLayoutDelegate methods
+
+- (void)prepareLayoutDidFinish {
+    if ([self isCategoryDeepLinked]) {
+        [self.collectionView setContentOffset:CGPointMake([self recipeSection] * self.collectionView.bounds.size.width,
+                                                          0.0)
+                                     animated:YES];
+    }
+}
+
 #pragma mark - BookContentsViewControllerDelegate methods
 
 - (void)bookContentsSelectedCategory:(NSString *)category {
-    BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
-    NSUInteger categoryIndex = [self.categoryNames indexOfObject:category];
-    CGFloat requiredOffset = [layout pageOffsetForSection:categoryIndex + [self bookNavigationContentStartSection]];
-    [self.collectionView setContentOffset:CGPointMake(requiredOffset, 0.0) animated:YES];
+    
+    // Selected a category, run-relayout
+    self.selectedCategoryName = category;
+    
+    // Invalidate the current layout for deep-linking.
+    [self.collectionView.collectionViewLayout invalidateLayout];
+    [self.collectionView reloadData];
 }
+
+#pragma mark - UIScrollViewDelegate methods
+
+// To detect returning from category deep-linking.
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    
+    // Reset category after returning to the contents screen after deep-linking.
+    CGFloat contentsPageOffset = [self contentsSection] * scrollView.bounds.size.width;
+    if (scrollView.contentOffset.x == contentsPageOffset && [self isCategoryDeepLinked]) {
+        self.selectedCategoryName = nil;
+        
+        // Invalidate the current layout for normal book mode.
+        [self.collectionView.collectionViewLayout invalidateLayout];
+        [self.collectionView reloadData];
+    }
+}
+
 
 #pragma mark - UICollectionViewDelegate methods
 
@@ -120,8 +149,10 @@
     if (indexPath.section >= contentStartSection) {
         
         // Clears the image on disappear.
-        BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)cell;
-        [recipeCell configureImage:nil];
+        if ([cell isKindOfClass:[BookRecipeCollectionViewCell class]]) {
+            BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)cell;
+            [recipeCell configureImage:nil];
+        }
     }
 }
 
@@ -150,21 +181,30 @@
     numSections += [self bookNavigationContentStartSection];
     
     // Categories
-    numSections += [self.categoryNames count];
+    if ([self isCategoryDeepLinked]) {
+        numSections += 1;   // Only selected a category to deep link to.
+    } else {
+        numSections += [self.categoryNames count];  // All categories.
+    }
     
+    DLog(@"Number of sections [%d]", numSections);
     return numSections;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     NSInteger contentStartSection = [self bookNavigationContentStartSection];
-    NSInteger categorySection = section - contentStartSection;
     
     if (section >= contentStartSection) {
-        NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+        
+        NSInteger categorySection = section - contentStartSection;
+        NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
         NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
         numItems = [categoryRecipes count];
+        
     } else {
+        
+        // Individual pages for non-recipes sections.
         numItems = 1;
     }
     
@@ -189,7 +229,7 @@
             BookCategoryView *categoryHeaderView = (BookCategoryView *)headerView;
             
             // Configure the category name.
-            NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+            NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
             [categoryHeaderView configureCategoryName:categoryName];
             
             // Populate highlighted recipe
@@ -207,15 +247,14 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = nil;
-    NSInteger contentStartSection = [self bookNavigationContentStartSection];
     
-    if (indexPath.section >= contentStartSection) {
-        cell = [self recipeCellAtIndexPath:indexPath];
-    } else if (indexPath.section == kProfileSection) {
+    if (indexPath.section == [self profileSection]) {
         cell = [self profileCellAtIndexPath:indexPath];
-    } else if (indexPath.section == kContentsSection) {
+    } else if (indexPath.section == [self contentsSection]) {
         cell = [self contentsCellAtIndexPath:indexPath];
-    } else if (indexPath.section == kActivitySection) {
+    } else if (indexPath.section >= [self recipeSection]) {
+        cell = [self recipeCellAtIndexPath:indexPath];
+    } else if (indexPath.section == [self activitySection]) {
         cell = [self activityCellAtIndexPath:indexPath];
     }
     
@@ -248,16 +287,18 @@
     self.closeButton = closeButton;
     
     // Add button.
-    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [createButton setTitle:@"Add" forState:UIControlStateNormal];
-    [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [createButton sizeToFit];
-    createButton.frame = CGRectMake(closeButton.frame.origin.x + closeButton.frame.size.width + 10.0,
-                                    closeButton.frame.origin.y,
-                                    createButton.frame.size.width,
-                                    createButton.frame.size.height);
-    [self.view addSubview:createButton];
-    self.createButton = createButton;
+    if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
+        UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [createButton setTitle:@"Add" forState:UIControlStateNormal];
+        [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [createButton sizeToFit];
+        createButton.frame = CGRectMake(closeButton.frame.origin.x + closeButton.frame.size.width + 10.0,
+                                        closeButton.frame.origin.y,
+                                        createButton.frame.size.width,
+                                        createButton.frame.size.height);
+        [self.view addSubview:createButton];
+        self.createButton = createButton;
+    }
 }
 
 - (void)initCollectionView {
@@ -375,7 +416,7 @@
     
     BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kRecipeCellId
                                                                                                                               forIndexPath:indexPath];;
-    NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+    NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
     NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
     
     // Populate recipe.
@@ -448,6 +489,35 @@
     } else {
         return nil;
     }
+}
+
+- (BOOL)isCategoryDeepLinked {
+    return (self.selectedCategoryName != nil);
+}
+
+- (NSString *)selectedCategoryNameOrForSection:(NSInteger)section {
+    if ([self isCategoryDeepLinked]) {
+        return self.selectedCategoryName;
+    } else {
+        return [self.categoryNames objectAtIndex:section];
+    }
+}
+
+- (NSInteger)profileSection {
+    return 0;
+}
+
+- (NSInteger)contentsSection {
+    return 1;
+}
+
+- (NSInteger)activitySection {
+    return 2;   // Not available in deep-linked mode.
+}
+
+- (NSInteger)recipeSection {
+    return [self isCategoryDeepLinked] ? 2 : 3; // Minus the activity page if deeplinked.
+
 }
 
 @end

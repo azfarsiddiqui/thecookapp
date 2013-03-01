@@ -38,7 +38,7 @@
 
 + (void)activitiesForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure; {
     PFQuery *query = [PFQuery queryWithClassName:kActivityModelName];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
     [query includeKey:kUserModelForeignKeyName];
     [query includeKey:kRecipeModelForeignKeyName];
