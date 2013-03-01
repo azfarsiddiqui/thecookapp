@@ -8,7 +8,6 @@
 
 #import "BookViewController.h"
 #import "ViewHelper.h"
-#import "ContentsPageViewController.h"
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "RecipeLike.h"
@@ -25,7 +24,6 @@
 //ui
 @property (nonatomic, assign) id<BookViewControllerDelegate> delegate;
 @property (nonatomic, assign) id<PageViewDelegate> pageViewDelegate;
-@property (nonatomic, strong) ContentsPageViewController *contentsViewController;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
 @property (nonatomic, strong) LikesPageViewController *likesPageViewController;
 @property (nonatomic, strong) BookProfilePageViewController *bookProfilePageViewController;
@@ -123,10 +121,11 @@
         }
         case kContentPageIndex: {
             // Contents page.
-            view = self.contentsViewController.view;
-            viewController = self.contentsViewController;
-            self.pageViewDelegate = self.contentsViewController;
-            break;
+            //NO LONGER BEING USED. NEEDS CLEANUP
+//            view = self.contentsViewController.view;
+//            viewController = self.contentsViewController;
+//            self.pageViewDelegate = self.contentsViewController;
+//            break;
         }
         default: {
             NSUInteger likesPageIndex = [self pageNumForLikesSection];
@@ -374,14 +373,6 @@
 }
 
 #pragma mark - Private methods
-
-- (ContentsPageViewController *)contentsViewController {
-    if (!_contentsViewController) {
-        _contentsViewController = [[ContentsPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleWhite];
-    }
-    return _contentsViewController;
-}
-
 - (CategoryPageViewController *)categoryViewController {
     if (!_categoryViewController) {
         _categoryViewController = [[CategoryPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleGray];
@@ -423,7 +414,8 @@
 	[self addChildViewController:self.flipViewController];
 	[self.view addSubview:self.flipViewController.view];
 	[self.flipViewController didMoveToParentViewController:self];
-    [self.flipViewController setViewController:self.contentsViewController direction:MPFlipViewControllerDirectionForward animated:NO completion:nil];
+    //flip view controller code needs deleting
+//    [self.flipViewController setViewController:self.contentsViewController direction:MPFlipViewControllerDirectionForward animated:NO completion:nil];
 	
 	// Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
 	self.view.gestureRecognizers = self.flipViewController.gestureRecognizers;
@@ -468,10 +460,12 @@
         //fetch likes for user
         [RecipeLike fetchRecipeLikeCountForUser:[CKUser currentUser] withSuccess:^(int numObjects) {
             self.userLikeCount = numObjects;
-            [self.contentsViewController refreshData];
+//            no longer being used. needs cleanup
+//            [self.contentsViewController refreshData];
         } failure:^(NSError *error) {
             DLog(@"error. could not likes count for user: %@", [error description]);
-            [self.contentsViewController refreshData];
+            //            no longer being used. needs cleanup
+//            [self.contentsViewController refreshData];
         }];
         
     } failure:^(NSError *error) {

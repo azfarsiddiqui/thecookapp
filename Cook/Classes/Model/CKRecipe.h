@@ -39,7 +39,6 @@
 -(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 //fetch
-+(void) fetchImagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 -(void) fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
 
 -(void) setImage:(UIImage *)image;

@@ -16,7 +16,6 @@
 #import "ViewHelper.h"
 #import "NewRecipeViewController.h"
 #import "ParsePhotoStore.h"
-#import "TestViewController.h"
 #import "BookProfileViewController.h"
 #import "BookContentsViewController.h"
 #import "BookActivityViewController.h"

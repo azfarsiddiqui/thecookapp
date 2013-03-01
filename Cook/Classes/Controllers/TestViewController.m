@@ -19,8 +19,10 @@
 #import "FacebookUserView.h"
 #import "Ingredient.h"
 #import "Theme.h"
+#import "AppHelper.h"
 #import "ViewHelper.h"
 #import "ParsePhotoStore.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 
 #define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
 #define  kCookPrepTimeLabelSize CGSizeMake(200.0f,20.0f)
@@ -34,7 +36,7 @@
 #define  kPlaceholderTextRecipeDescription  @"INSTRUCTIONS"
 #define  kPlaceholderTextCategory                @"CATEGORY"
 
-@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate>
+@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
 //ui
 @property(nonatomic,strong) IBOutlet CKEditableView *nameEditableView;
@@ -47,12 +49,15 @@
 @property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
 @property(nonatomic,strong) IBOutlet UIImageView *recipeImageView;
 @property(nonatomic,strong) IBOutlet UIButton *editButton;
+@property(nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
+@property(nonatomic,strong) IBOutlet UILabel *uploadLabel;
 
 @property(nonatomic,strong) CKEditingViewController *editingViewController;
 
 //data/state
 @property(nonatomic,assign) BOOL inEditMode;
 @property(nonatomic,strong) ParsePhotoStore *parsePhotoStore;
+@property(nonatomic,strong) UIImage *recipePickerImage;
 
 // delegates
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
@@ -74,6 +79,11 @@
     [self config];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    DLog();
+}
 #pragma mark - IBActions
 -(IBAction)dismissTapped:(id)sender
 {
@@ -94,6 +104,7 @@
     [self.ingredientsViewEditableView enableEditMode:self.inEditMode];
     [self.storyEditableView enableEditMode:self.inEditMode];
     [self.categoryEditableView enableEditMode:self.inEditMode];
+
     //TODO extend photoeditableview
     UILabel *photoLabel = (UILabel*)self.photoEditableView.contentView;
     photoLabel.hidden = !self.inEditMode;
@@ -101,14 +112,7 @@
     [self.servesCookPrepEditableView enableEditMode:self.inEditMode];
     
     if (self.inEditMode == NO) {
-        //just completed edit
-        if (self.recipe) {
-            [self.recipe saveWithSuccess:^{
-                DLog(@"Recipe successfully saved");
-            } failure:^(NSError *error) {
-                DLog(@"An error occurred: %@", [error description]);
-            }];
-        }
+        [self save];
     }
 }
 
@@ -138,10 +142,6 @@
     if (newRecipe) {
         [self toggledEditMode:self.editButton];
     }
-}
-
-- (UIView *)rootView {
-    return [UIApplication sharedApplication].keyWindow.rootViewController.view;
 }
 
 #pragma mark - CKEditableViewDelegate
@@ -204,11 +204,12 @@
         self.editingViewController = categoryEditingVC;
 
     } else if (view == self.photoEditableView){
-        RecipePhotoEditViewController *photoEditVC = [[RecipePhotoEditViewController alloc] initWithDelegate:self sourceEditingView:self.photoEditableView];
-        self.editingViewController = photoEditVC;
+//        RecipePhotoEditViewController *photoEditVC = [[RecipePhotoEditViewController alloc] initWithDelegate:self sourceEditingView:self.photoEditableView];
+//        self.editingViewController = photoEditVC;
+        [self displayPhotoPicker];
     }
 
-    self.editingViewController.view.frame = [self rootView].bounds;
+    self.editingViewController.view.frame = [[AppHelper sharedInstance] rootView].bounds;
     [self.view addSubview:self.editingViewController.view];
     [self.editingViewController enableEditing:YES completion:nil];
 
@@ -244,10 +245,7 @@
                                 prepTimeMins:[[values objectForKey:@"prepTime"]intValue]];
     } else if (editingView == self.categoryEditableView) {
         [self setCategoryValue:(Category*)result];
-    } else if (editingView == self.photoEditableView) {
-        [self setPhotoValue:(UIImage*)result];
     }
-    
     [editingView enableEditMode:YES];
 }
 
@@ -255,6 +253,67 @@
 
 - (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate {
     self.modalDelegate = modalViewControllerDelegate;
+}
+
+
+#pragma mark - UIImagePickerControllerDelegate
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    NSParameterAssert(image);
+    [self setPhotoValue:image];
+    [self.photoEditableView enableEditMode:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#pragma mark - Image/Photo related
+-(void)setPhotoValue:(UIImage*)image
+{
+    UILabel *label = (UILabel *)self.photoEditableView.contentView;
+    if (!label) {
+        label = [self newLabelForEditableView:self.photoEditableView withFont:[Theme ingredientsListFont] withColor:[Theme ingredientsListColor] withTextAlignment:NSTextAlignmentCenter];
+        label.backgroundColor = [UIColor clearColor];
+        label.textColor = [UIColor whiteColor];
+        label.frame = self.photoEditableView.frame;
+        label.hidden = YES;
+        self.photoEditableView.contentView = label;
+    }
+    label.text = @"ADD PHOTO";
+    self.recipeImageView.image = image;
+    self.recipePickerImage = image;
+}
+
+-(void)displayPhotoPicker
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+        [self presentViewController:picker animated:YES completion:nil];
+    } else {
+        //attempt to retrieve from photo library
+        DLog(@"no picker available");
+    }
+    
+}
+
+-(void)loadRecipeImage
+{
+    if ([self.recipe hasPhotos]) {
+        CGSize imageSize = CGSizeMake(self.recipeImageView.frame.size.width, self.recipeImageView.frame.size.height);
+        [self.parsePhotoStore imageForParseFile:[self.recipe imageFile] size:imageSize completion:^(UIImage *image) {
+            self.recipeImageView.image = image;
+        }];
+    }
 }
 
 #pragma mark - Private Methods
@@ -280,12 +339,13 @@
     return label;
 }
 
--(void) newLabelForEditableView:(CKEditableView*)editableView withValue:(NSString*)value withFont:(UIFont*)viewFont  withColor:(UIColor*)color withTextAlignment:(NSTextAlignment)textAlignment
+-(void) configLabelForEditableView:(CKEditableView*)editableView withValue:(NSString*)value withFont:(UIFont*)viewFont  withColor:(UIColor*)color withTextAlignment:(NSTextAlignment)textAlignment
 {
     UILabel *label = (UILabel *)editableView.contentView;
     
     if (!label) {
         label = [self newLabelForEditableView:editableView withFont:viewFont withColor:color withTextAlignment:textAlignment];
+        label.backgroundColor=[UIColor clearColor];
     }
     
     label.text = value;
@@ -295,7 +355,7 @@
 }
 
 - (void)setRecipeNameValue:(NSString *)recipeValue {
-    [self newLabelForEditableView:self.nameEditableView withValue:recipeValue withFont:[Theme recipeNameFont]
+    [self configLabelForEditableView:self.nameEditableView withValue:recipeValue withFont:[Theme recipeNameFont]
                  withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
     UILabel *label = (UILabel *)self.nameEditableView.contentView;
     if (!recipeValue) {
@@ -307,7 +367,7 @@
 }
 
 - (void)setCategoryValue:(Category*)category {
-    [self newLabelForEditableView:self.categoryEditableView withValue:category.name withFont:[Theme categoryFont]
+    [self configLabelForEditableView:self.categoryEditableView withValue:category.name withFont:[Theme categoryFont]
                    withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
     UILabel *label = (UILabel *)self.categoryEditableView.contentView;
     [label setFont:[Theme categoryFont]];
@@ -321,7 +381,7 @@
 
 - (void)setStoryValue:(NSString *)storyValue {
     
-    [self newLabelForEditableView:self.storyEditableView withValue:storyValue withFont:[Theme storyFont] withColor:[Theme storyColor] withTextAlignment:NSTextAlignmentCenter];
+    [self configLabelForEditableView:self.storyEditableView withValue:storyValue withFont:[Theme storyFont] withColor:[Theme storyColor] withTextAlignment:NSTextAlignmentCenter];
     if (!storyValue) {
         UILabel *label = (UILabel *)self.storyEditableView.contentView;
         label.text = kPlaceholderTextStory;
@@ -451,29 +511,36 @@
     self.servesCookPrepEditableView.contentView = containerView;
 }
 
--(void)setPhotoValue:(UIImage*)image
+-(void)save
 {
-    UILabel *label = (UILabel *)self.photoEditableView.contentView;
-    if (!label) {
-        label = [self newLabelForEditableView:self.photoEditableView withFont:[Theme ingredientsListFont] withColor:[Theme ingredientsListColor] withTextAlignment:NSTextAlignmentCenter];
-        label.text = @"ADD PHOTO";
-        label.textColor = [UIColor whiteColor];
-        label.frame = self.photoEditableView.frame;
-        label.hidden = YES;
-    }
-    
-    self.photoEditableView.contentView = label;
-    self.recipeImageView.image = image;
-}
-
--(void)loadRecipeImage
-{
-    if ([self.recipe hasPhotos]) {
-        CGSize imageSize = CGSizeMake(self.recipeImageView.frame.size.width, self.recipeImageView.frame.size.height);
-        [self.parsePhotoStore imageForParseFile:[self.recipe imageFile] size:imageSize completion:^(UIImage *image) {
-            self.recipeImageView.image = image;
+    if (self.recipePickerImage) {
+        self.recipe.image = self.recipePickerImage;
+        [self displayProgress:YES];
+        //a new image was picked
+        [self.recipe saveAndUploadImageWithSuccess:^{
+            [self displayProgress:NO];
+        } failure:^(NSError *error) {
+            DLog(@"An error occurred: %@", [error description]);
+            [self displayProgress:NO];
+        } imageUploadProgress:^(int percentDone) {
+            float percentage = percentDone/100.0f;
+            [self.uploadProgressView setProgress:percentage animated:YES];
+            self.uploadLabel.text = [NSString stringWithFormat:@"Uploading (%i%%)",percentDone];
+        }];
+    } else {
+        [self.recipe saveWithSuccess:^{
+        } failure:^(NSError *error) {
+            DLog(@"An error occurred: %@", [error description]);
         }];
     }
+}
+
+-(void)displayProgress:(BOOL)progress
+{
+    self.uploadLabel.text = @"";
+    self.uploadLabel.hidden = !progress;
+    self.uploadProgressView.hidden = !progress;
+
 }
 
 @end

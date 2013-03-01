@@ -114,9 +114,8 @@
                     if (error) {
                         failure(error);
                     } else {
-                        
-                        // Add as an array to support multiple photos.
-                        [self.parseObject addObject:self.recipeImage.parseObject forKey:kRecipeAttrRecipePhotos];
+                        // Add as an array - replace entire photos collection
+                        [self.parseObject setObject:@[self.recipeImage.parseObject] forKey:kRecipeAttrRecipePhotos];
                         
                         // Save the image relation to recipe.
                         [self saveInBackground:^{
@@ -124,6 +123,7 @@
                         } failure:^(NSError *error) {
                             failure(error);
                         }];
+                        
                     }
                 }];
                 
@@ -156,24 +156,6 @@
 }
 
 #pragma mark - fetch
-+(void) fetchImagesForRecipe:(CKRecipe*)recipe success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFRelation *images = [recipe.parseObject objectForKey:kRecipeAttrRecipeImages];
-    PFQuery *query = [images query];
-    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
-    if (images) {
-        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            if (objects && [objects count] > 0) {
-                recipe.recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[objects objectAtIndex:0]];
-                if (!error) {
-                    success();
-                } else {
-                    failure(error);
-                }
-            }
-        }];
-    }
-}
-
 -(void) fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess
 {
     [self.category.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
