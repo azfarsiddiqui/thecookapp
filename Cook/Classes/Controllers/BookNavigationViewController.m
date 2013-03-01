@@ -38,6 +38,8 @@
 @property (nonatomic, strong) BookContentsViewController *contentsViewController;
 @property (nonatomic, strong) BookActivityViewController *activityViewController;
 
+@property (nonatomic, strong) NSString *selectedCategoryName;
+
 @end
 
 @implementation BookNavigationViewController
@@ -94,11 +96,29 @@
 #pragma mark - BookContentsViewControllerDelegate methods
 
 - (void)bookContentsSelectedCategory:(NSString *)category {
-    BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
-    NSUInteger categoryIndex = [self.categoryNames indexOfObject:category];
-    CGFloat requiredOffset = [layout pageOffsetForSection:categoryIndex + [self bookNavigationContentStartSection]];
-    [self.collectionView setContentOffset:CGPointMake(requiredOffset, 0.0) animated:YES];
+//    BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
+//    NSUInteger categoryIndex = [self.categoryNames indexOfObject:category];
+//    CGFloat requiredOffset = [layout pageOffsetForSection:categoryIndex + [self bookNavigationContentStartSection]];
+//    [self.collectionView setContentOffset:CGPointMake(requiredOffset, 0.0) animated:YES];
+    
+    // Selected a category, run-relayout
+    self.selectedCategoryName = category;
+    [self.collectionView.collectionViewLayout invalidateLayout];
 }
+
+#pragma mark - UIScrollViewDelegate methods
+
+// To detect returning from category deep-linking.
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    
+    // Reset category after returning to the contents screen.
+    CGFloat contentsPageOffset = kContentsSection * scrollView.bounds.size.width;
+    if (scrollView.contentOffset.x == contentsPageOffset) {
+        self.selectedCategoryName = nil;
+        [self.collectionView.collectionViewLayout invalidateLayout];
+    }
+}
+
 
 #pragma mark - UICollectionViewDelegate methods
 
@@ -121,8 +141,10 @@
     if (indexPath.section >= contentStartSection) {
         
         // Clears the image on disappear.
-        BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)cell;
-        [recipeCell configureImage:nil];
+        if ([cell isKindOfClass:[BookRecipeCollectionViewCell class]]) {
+            BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)cell;
+            [recipeCell configureImage:nil];
+        }
     }
 }
 
@@ -151,7 +173,11 @@
     numSections += [self bookNavigationContentStartSection];
     
     // Categories
-    numSections += [self.categoryNames count];
+    if ([self isCategoryDeepLinked]) {
+        numSections += 1;   // Only selected a category to deep link to.
+    } else {
+        numSections += [self.categoryNames count];  // All categories.
+    }
     
     return numSections;
 }
@@ -159,13 +185,17 @@
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     NSInteger contentStartSection = [self bookNavigationContentStartSection];
-    NSInteger categorySection = section - contentStartSection;
     
     if (section >= contentStartSection) {
-        NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+        
+        NSInteger categorySection = section - contentStartSection;
+        NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
         NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
         numItems = [categoryRecipes count];
+        
     } else {
+        
+        // Individual pages for non-recipes sections.
         numItems = 1;
     }
     
@@ -190,7 +220,7 @@
             BookCategoryView *categoryHeaderView = (BookCategoryView *)headerView;
             
             // Configure the category name.
-            NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+            NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
             [categoryHeaderView configureCategoryName:categoryName];
             
             // Populate highlighted recipe
@@ -378,7 +408,7 @@
     
     BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kRecipeCellId
                                                                                                                               forIndexPath:indexPath];;
-    NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+    NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
     NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
     
     // Populate recipe.
@@ -450,6 +480,18 @@
         return [recipes objectAtIndex:arc4random_uniform([recipes count])];
     } else {
         return nil;
+    }
+}
+
+- (BOOL)isCategoryDeepLinked {
+    return (self.selectedCategoryName != nil);
+}
+
+- (NSString *)selectedCategoryNameOrForSection:(NSInteger)section {
+    if ([self isCategoryDeepLinked]) {
+        return self.selectedCategoryName;
+    } else {
+        return [self.categoryNames objectAtIndex:section];
     }
 }
 
