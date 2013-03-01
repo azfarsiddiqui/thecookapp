@@ -32,7 +32,7 @@
 
 @implementation ServesCookPrepEditingViewController
 
--(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView *)sourceEditingView
+-(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
         self.cookingTimeArray = @[@5,@10,@15,@20,@25,@30,@35,@40,@45,@50,@55,@60,@65,@70,@75,@80,@85,@90,@95,@100,@105,@110,@115,@120];
@@ -41,39 +41,25 @@
     return self;
 }
 - (UIView *)createTargetEditingView {
-    UIEdgeInsets mainViewInsets = UIEdgeInsetsMake(100.0f,100.0f,100.0f,100.0f);
-    
-    CGRect frame = CGRectMake(mainViewInsets.left,
-                              mainViewInsets.top,
-                              self.view.bounds.size.width - mainViewInsets.left - mainViewInsets.right,
-                              self.view.bounds.size.height - mainViewInsets.top - mainViewInsets.bottom);
-    UIView *mainView = [[UITextView alloc] initWithFrame:frame];
-    mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.5f];
+    UIView *mainView = [super createTargetEditingView];
     [self addSubviews:mainView];
     return mainView;
 }
 
 //overridden methods
 
-- (void)editingViewWillAppear:(BOOL)appear {
-    [super editingViewWillAppear:appear];
-    if (!appear) {
-        [self.doneButton removeFromSuperview];
-    }
-    
-}
-
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
     if (appear) {
-        [self addDoneButton];
         [self setValues];
     }
 }
 
 - (void)performSave {
     
-    NSDictionary *values = @{@"serves": self.numServes,@"cookTime": self.cookingTimeInMinutes,@"prepTime": self.prepTimeInMinutes};
+    NSDictionary *values = @{@"serves": [NSNumber numberWithInt:self.numServes],
+                             @"cookTime":  [NSNumber numberWithInt:self.cookingTimeInMinutes],
+                             @"prepTime":  [NSNumber numberWithInt:self.prepTimeInMinutes]};
     [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:values];
     [super performSave];
 }
@@ -86,9 +72,9 @@
 {
 	if (pickerView == self.cookingTimePickerView)	// don't show selection for the custom picker
 	{
-        self.cookingTimeInMinutes = [self.cookingTimeArray objectAtIndex:row];
+        self.cookingTimeInMinutes = [[self.cookingTimeArray objectAtIndex:row] integerValue];
 	} else {
-        self.prepTimeInMinutes = [self.prepTimeArray objectAtIndex:row];
+        self.prepTimeInMinutes = [[self.prepTimeArray objectAtIndex:row] integerValue];
     }
 }
 
@@ -142,8 +128,7 @@
 #pragma mark - Slider action
 -(void)servesSlid:(UISlider*)slider
 {
-    DLog(@"Num serves %f",slider.value);
-    self.numServes = [NSNumber numberWithFloat:roundf(slider.value)];
+    self.numServes = roundf(slider.value);
     self.servesNumberLabel.text = [NSString stringWithFormat:@"%0.0f", roundf(slider.value)];
 }
 
@@ -235,38 +220,35 @@
 
 }
 
-- (void)addDoneButton {
-    UIView *mainView = (UIView *)self.targetEditingView;
-    self.doneButton.frame = CGRectMake(mainView.frame.origin.x + mainView.frame.size.width - floorf(self.doneButton.frame.size.width / 2.0),
-                                       mainView.frame.origin.y - floorf(self.doneButton.frame.size.height / 3.0),
-                                       self.doneButton.frame.size.width,
-                                       self.doneButton.frame.size.height);
-    [self.view addSubview:self.doneButton];
-}
-
 - (void)setValues {
     //set numServes
-    if (self.numServes) {
-        [self.servesSlider setValue:[self.numServes floatValue] animated:YES];
-        self.servesNumberLabel.text = [self.numServes stringValue];
-    }
+    [self.servesSlider setValue:self.numServes animated:YES];
+    self.servesNumberLabel.text = [NSString stringWithFormat:@"%d",self.numServes];
     
-    if (self.cookingTimeInMinutes) {
+    if (self.cookingTimeInMinutes > 0) {
         [self.cookingTimeArray enumerateObjectsUsingBlock:^(NSNumber *arrayValue, NSUInteger idx, BOOL *stop) {
-            if ([self.cookingTimeInMinutes isEqualToNumber:arrayValue]) {
+            if (self.cookingTimeInMinutes == [arrayValue integerValue]) {
                 stop = YES;
                 [self.cookingTimePickerView selectRow:idx inComponent:0 animated:NO];
             }
         }];
+    } else {
+        //select the first row
+        [self.cookingTimePickerView selectRow:0 inComponent:0 animated:NO];
+        self.cookingTimeInMinutes = [self.cookingTimeArray objectAtIndex:0];
     }
     
-    if (self.prepTimeInMinutes) {
+    if (self.prepTimeInMinutes > 0) {
         [self.prepTimeArray enumerateObjectsUsingBlock:^(NSNumber *arrayValue, NSUInteger idx, BOOL *stop) {
-            if ([self.prepTimeInMinutes isEqualToNumber:arrayValue]) {
+            if (self.prepTimeInMinutes == [arrayValue integerValue]) {
                 stop = YES;
                 [self.prepTimePickerView selectRow:idx inComponent:0 animated:NO];
             }
         }];
+    } else {
+        //select the first row
+        [self.prepTimePickerView selectRow:0 inComponent:0 animated:NO];
+        self.prepTimeInMinutes = [self.prepTimeArray objectAtIndex:0];
     }
     
 }

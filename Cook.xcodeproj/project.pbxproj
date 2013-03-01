@@ -50,7 +50,6 @@
 		76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0C165343DE007D1EBF /* UIImage+Tint.m */; };
 		76324F2716535591007D1EBF /* cook_book_icon_create.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2516535590007D1EBF /* cook_book_icon_create.png */; };
 		76324F2816535591007D1EBF /* cook_book_icon_create@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */; };
-		76367A9616DF02A500BE9AB7 /* BookActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76367A9516DF02A500BE9AB7 /* BookActivityViewController.m */; };
 		76367A9916DF173D00BE9AB7 /* cook_book_update_header_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 76367A9716DF173D00BE9AB7 /* cook_book_update_header_shadow.png */; };
 		76367A9A16DF173D00BE9AB7 /* cook_book_update_header_shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76367A9816DF173D00BE9AB7 /* cook_book_update_header_shadow@2x.png */; };
 		76381C9116683C5E00404FB1 /* BenchtopCollectionFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76381C9016683C5E00404FB1 /* BenchtopCollectionFlowLayout.m */; };
@@ -386,8 +385,10 @@
 		8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */; };
 		893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */; };
 		893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */; };
+		893AB2E916DF232E000E2AB3 /* BlankEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E816DF232E000E2AB3 /* BlankEditViewController.m */; };
 		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
 		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
+		8944A2A716E028BE003B78BD /* RecipePhotoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8944A2A616E028BE003B78BD /* RecipePhotoEditViewController.m */; };
 		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
 		8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */; };
 		8944C1C116CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */; };
@@ -515,8 +516,6 @@
 		76324F0C165343DE007D1EBF /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		76324F2516535590007D1EBF /* cook_book_icon_create.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_create.png; sourceTree = "<group>"; };
 		76324F2616535591007D1EBF /* cook_book_icon_create@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_create@2x.png"; sourceTree = "<group>"; };
-		76367A9416DF02A400BE9AB7 /* BookActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookActivityViewController.h; sourceTree = "<group>"; };
-		76367A9516DF02A500BE9AB7 /* BookActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookActivityViewController.m; sourceTree = "<group>"; };
 		76367A9716DF173D00BE9AB7 /* cook_book_update_header_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_update_header_shadow.png; sourceTree = "<group>"; };
 		76367A9816DF173D00BE9AB7 /* cook_book_update_header_shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_update_header_shadow@2x.png"; sourceTree = "<group>"; };
 		76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BenchtopCollectionViewController.m; sourceTree = "<group>"; };
@@ -959,10 +958,14 @@
 		893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryEditViewController.m; sourceTree = "<group>"; };
 		893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookActivityViewController.h; sourceTree = "<group>"; };
 		893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookActivityViewController.m; sourceTree = "<group>"; };
+		893AB2E716DF232D000E2AB3 /* BlankEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlankEditViewController.h; sourceTree = "<group>"; };
+		893AB2E816DF232E000E2AB3 /* BlankEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlankEditViewController.m; sourceTree = "<group>"; };
 		893AC89E16782B3B00B221EC /* LikesPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LikesPageViewController.h; path = Book/LikesPageViewController.h; sourceTree = "<group>"; };
 		893AC89F16782B3B00B221EC /* LikesPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikesPageViewController.m; path = Book/LikesPageViewController.m; sourceTree = "<group>"; };
 		893AC8A016782B3B00B221EC /* SectionPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPageViewController.h; path = Book/SectionPageViewController.h; sourceTree = "<group>"; };
 		893AC8A116782B3C00B221EC /* SectionPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SectionPageViewController.m; path = Book/SectionPageViewController.m; sourceTree = "<group>"; };
+		8944A2A516E028BE003B78BD /* RecipePhotoEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipePhotoEditViewController.h; sourceTree = "<group>"; };
+		8944A2A616E028BE003B78BD /* RecipePhotoEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipePhotoEditViewController.m; sourceTree = "<group>"; };
 		8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_bg.png; sourceTree = "<group>"; };
 		8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_bg@2x.png"; sourceTree = "<group>"; };
 		8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_btn.png; sourceTree = "<group>"; };
@@ -1840,6 +1843,7 @@
 		8938AA9916DF153C001CBC90 /* CKEditingViewController */ = {
 			isa = PBXGroup;
 			children = (
+				8944A2A416E02896003B78BD /* photo */,
 				893AB2E016DF18B2000E2AB3 /* categories */,
 				8938AA9A16DF153D001CBC90 /* CKEditableView.h */,
 				8938AA9B16DF153D001CBC90 /* CKEditableView.m */,
@@ -1847,6 +1851,8 @@
 				8938AA9D16DF153D001CBC90 /* CKEditingTextField.m */,
 				8938AA9E16DF153D001CBC90 /* CKEditingViewController.h */,
 				8938AA9F16DF153D001CBC90 /* CKEditingViewController.m */,
+				893AB2E716DF232D000E2AB3 /* BlankEditViewController.h */,
+				893AB2E816DF232E000E2AB3 /* BlankEditViewController.m */,
 				8938AABC16DF178B001CBC90 /* ingredientEdit */,
 				8938AABB16DF1742001CBC90 /* servesCookPrep */,
 				893AB2DF16DF1830000E2AB3 /* text */,
@@ -1868,13 +1874,13 @@
 			children = (
 				8938AAA216DF153D001CBC90 /* EditableIngredientTableViewCell.h */,
 				8938AAA316DF153D001CBC90 /* EditableIngredientTableViewCell.m */,
-				8938AAA816DF153D001CBC90 /* IngredientsEditingViewController.h */,
 				8938AAA416DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.h */,
 				8938AAA516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m */,
 				8938AAA616DF153D001CBC90 /* IngredientEditorViewController.h */,
 				8938AAA716DF153D001CBC90 /* IngredientEditorViewController.m */,
 				8938AAAA16DF153D001CBC90 /* IngredientTableViewCell.h */,
 				8938AAAB16DF153D001CBC90 /* IngredientTableViewCell.m */,
+				8938AAA816DF153D001CBC90 /* IngredientsEditingViewController.h */,
 				8938AAA916DF153D001CBC90 /* IngredientsEditingViewController.m */,
 			);
 			name = ingredientEdit;
@@ -1898,6 +1904,15 @@
 				893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */,
 			);
 			name = categories;
+			sourceTree = "<group>";
+		};
+		8944A2A416E02896003B78BD /* photo */ = {
+			isa = PBXGroup;
+			children = (
+				8944A2A516E028BE003B78BD /* RecipePhotoEditViewController.h */,
+				8944A2A616E028BE003B78BD /* RecipePhotoEditViewController.m */,
+			);
+			name = photo;
 			sourceTree = "<group>";
 		};
 		8944C1B816CDB9870087EFC9 /* accessoryView */ = {
@@ -2613,6 +2628,8 @@
 				8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */,
 				893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */,
 				893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */,
+				893AB2E916DF232E000E2AB3 /* BlankEditViewController.m in Sources */,
+				8944A2A716E028BE003B78BD /* RecipePhotoEditViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

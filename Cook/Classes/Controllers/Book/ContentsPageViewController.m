@@ -132,7 +132,7 @@
     CGFloat xOffset = self.contentsCollectionViewController.view.frame.origin.x + self.contentsCollectionViewController.view.frame.size.width;
     CGFloat availableWidth = self.view.bounds.size.width - xOffset;
     FacebookUserView *facebookView = [[FacebookUserView alloc] initWithFrame:CGRectZero];
-    [facebookView setUser:[[self.dataSource currentBook] user] inFrame:self.view.frame];
+    [facebookView setUser:[[self.dataSource currentBook] user]];
     facebookView.frame = CGRectMake(xOffset + floorf((availableWidth - facebookView.frame.size.width) / 2.0) - 20.0,
                                     self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height,
                                     facebookView.frame.size.width,

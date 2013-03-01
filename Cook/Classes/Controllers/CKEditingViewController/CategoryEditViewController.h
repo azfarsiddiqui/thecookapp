@@ -7,7 +7,10 @@
 //
 
 #import "CKEditingViewController.h"
+#import "BlankEditViewController.h"
+#import "Category.h"
 
-@interface CategoryEditViewController : CKEditingViewController
+@interface CategoryEditViewController : BlankEditViewController
+@property (nonatomic,strong) Category *selectedCategory;
 
 @end

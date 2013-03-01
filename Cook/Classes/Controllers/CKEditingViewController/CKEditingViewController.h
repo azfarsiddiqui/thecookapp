@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "CKEditableView.h"
 @protocol CKEditingViewControllerDelegate
 
 - (void)editingViewWillAppear:(BOOL)appear;
 - (void)editingViewDidAppear:(BOOL)appear;
-- (void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result;
+- (void)editingView:(CKEditableView *)editingView saveRequestedWithResult:(id)result;
 
 @end
 
@@ -20,13 +20,13 @@
 
 @property (nonatomic, assign) id<CKEditingViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSString *editingTitle;
-@property (nonatomic, strong) UIView *sourceEditingView;
+@property (nonatomic, strong) CKEditableView *sourceEditingView;
 @property (nonatomic, strong) UIView *targetEditingView;
 @property (nonatomic, assign) BOOL keyboardVisible;
 @property (nonatomic, strong) UIButton *doneButton;
 
 - (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate;
-- (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView*)sourceEditingView;
+- (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView*)sourceEditingView;
 - (void)enableEditing:(BOOL)enable completion:(void (^)())completion;
 - (UIView *)createTargetEditingView;
 - (UIImage *)imageForView:(UIView *)view;

@@ -7,62 +7,103 @@
 //
 
 #import "CategoryEditViewController.h"
+#import "NSArray+Enumerable.h"
 
-@interface CategoryEditViewController ()
+#define kCategoryTableViewCellIdentifier @"CategoryTableViewCellIdentifier"
 
+@interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
+@property (nonatomic,strong) NSArray *categories;
+@property (nonatomic,strong) UITableView *tableView;
 @end
 
 @implementation CategoryEditViewController
 
--(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView *)sourceEditingView
+-(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
     }
     return self;
 }
-- (UIView *)createTargetEditingView {
-    UIEdgeInsets mainViewInsets = UIEdgeInsetsMake(100.0f,100.0f,100.0f,100.0f);
-    
-    CGRect frame = CGRectMake(mainViewInsets.left,
-                              mainViewInsets.top,
-                              self.view.bounds.size.width - mainViewInsets.left - mainViewInsets.right,
-                              self.view.bounds.size.height - mainViewInsets.top - mainViewInsets.bottom);
-    UIView *mainView = [[UITextView alloc] initWithFrame:frame];
-    mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.5f];
+
+-(UIView *)createTargetEditingView
+{
+    UIView *mainView = [super createTargetEditingView];
+    [self addTableView:mainView];
     return mainView;
 }
 
-//overridden methods
-
-- (void)editingViewWillAppear:(BOOL)appear {
-    [super editingViewWillAppear:appear];
-    if (!appear) {
-        [self.doneButton removeFromSuperview];
-    }
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self data];
     
 }
 
-- (void)editingViewDidAppear:(BOOL)appear {
-    [super editingViewDidAppear:appear];
-    if (appear) {
-        [self addDoneButton];
-        [self setValues];
+- (void)performSave {
+    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:self.selectedCategory];
+    [super performSave];
+}
+
+#pragma mark - UITableViewDataSource
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.categories count];
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCategoryTableViewCellIdentifier];
     }
+    Category *category = [self.categories objectAtIndex:indexPath.row];
+    cell.textLabel.text = category.name;
+    return cell;
+}
+#pragma mark - UITableViewDelegate
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
 }
 
 #pragma mark - Private Methods
-- (void)addDoneButton {
-    
-    UIView *mainView = (UIView *)self.targetEditingView;
-    self.doneButton.frame = CGRectMake(mainView.frame.origin.x + mainView.frame.size.width - floorf(self.doneButton.frame.size.width / 2.0),
-                                       mainView.frame.origin.y - floorf(self.doneButton.frame.size.height / 3.0),
-                                       self.doneButton.frame.size.width,
-                                       self.doneButton.frame.size.height);
-    [self.view addSubview:self.doneButton];
+-(void) data
+{
+    //data needed by categories selection
+    [Category listCategories:^(NSArray *results) {
+        self.categories = results;
+        [self.tableView reloadData];
+        [self setCategoryInList];
+    } failure:^(NSError *error) {
+        DLog(@"Could not retrieve categories: %@", [error description]);
+    }];
 }
 
-- (void)setValues {
-
+-(void) addTableView:(UIView*)mainView
+{
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, mainView.frame.size.width, mainView.frame.size.height)
+                                                  style:UITableViewStylePlain];
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    self.tableView.autoresizingMask = UIViewAutoresizingNone;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    self.tableView.scrollEnabled = NO;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [mainView addSubview:self.tableView];
 }
 
+-(void) setCategoryInList
+{
+    if (self.selectedCategory) {
+        [self.categories enumerateObjectsUsingBlock:^(Category *category, NSUInteger idx, BOOL *stop) {
+            if ([self.selectedCategory.name isEqualToString:category.name]) {
+                stop = YES;
+                [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:NO
+                                      scrollPosition:UITableViewScrollPositionMiddle];
+            }
+        }];
+    }
+}
 @end

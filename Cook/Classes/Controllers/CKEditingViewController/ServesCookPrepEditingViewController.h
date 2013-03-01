@@ -7,10 +7,11 @@
 //
 
 #import "CKEditingViewController.h"
+#import "BlankEditViewController.h"
 
-@interface ServesCookPrepEditingViewController : CKEditingViewController
-@property (nonatomic, strong) NSNumber *numServes;
-@property (nonatomic, strong) NSNumber *cookingTimeInMinutes;
-@property (nonatomic, strong) NSNumber *prepTimeInMinutes;
+@interface ServesCookPrepEditingViewController : BlankEditViewController
+@property (nonatomic, assign) NSInteger numServes;
+@property (nonatomic, assign) NSInteger cookingTimeInMinutes;
+@property (nonatomic, assign) NSInteger prepTimeInMinutes;
 
 @end
