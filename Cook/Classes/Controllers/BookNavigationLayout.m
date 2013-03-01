@@ -91,8 +91,8 @@
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
     
-    [self buildInfoLayoutData];
-    [self buildContentsLayoutData];
+    [self buildBookOtherLayoutData];
+    [self buildBookRecipesLayoutData];
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
@@ -142,7 +142,7 @@
 
 #pragma mark - Private methods
 
-- (void)buildInfoLayoutData {
+- (void)buildBookOtherLayoutData {
     
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     for (NSInteger section = 0; section < contentStartSection; section++) {
@@ -159,7 +159,7 @@
     
 }
 
-- (void)buildContentsLayoutData {
+- (void)buildBookRecipesLayoutData {
     
     // Content start section.
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
