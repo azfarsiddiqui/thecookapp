@@ -195,6 +195,10 @@
                                     <action selector="toggledEditMode:" destination="6w4-Iv-D8o" eventType="touchUpInside" id="9ND-J0-PfP"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" id="lNw-LU-0oY" customClass="CKEditableView">
+                                <rect key="frame" x="416" y="80" width="192" height="45"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -207,6 +211,7 @@
                         <outlet property="ingredientsViewEditableView" destination="qTX-Bo-ik8" id="FLh-Tb-jFx"/>
                         <outlet property="methodViewEditableView" destination="HzD-i9-p5Q" id="NeC-cz-7j9"/>
                         <outlet property="nameEditableView" destination="WWa-fg-cW2" id="BDD-fv-wga"/>
+                        <outlet property="photoEditableView" destination="lNw-LU-0oY" id="l1D-ez-a30"/>
                         <outlet property="recipeImageView" destination="aJq-0m-uka" id="QOG-GY-dkt"/>
                         <outlet property="servesCookPrepEditableView" destination="PLz-Or-ETp" id="OWn-A5-KSp"/>
                         <outlet property="storyEditableView" destination="DVC-VY-ybe" id="cTD-Yk-Pa7"/>
@@ -494,12 +499,15 @@
         <class className="TestViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/TestViewController.h"/>
             <relationships>
+                <relationship kind="action" name="dismissTapped:"/>
+                <relationship kind="action" name="toggledEditMode:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="categoryEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="editButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="facebookUserView" candidateClass="FacebookUserView"/>
                 <relationship kind="outlet" name="ingredientsViewEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="methodViewEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="nameEditableView" candidateClass="CKEditableView"/>
+                <relationship kind="outlet" name="photoEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="recipeImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="servesCookPrepEditableView" candidateClass="CKEditableView"/>
                 <relationship kind="outlet" name="storyEditableView" candidateClass="CKEditableView"/>
@@ -513,6 +521,9 @@
         </class>
         <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+        <class className="UICollectionViewLayout" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewLayout.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

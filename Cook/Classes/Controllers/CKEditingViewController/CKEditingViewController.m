@@ -39,7 +39,7 @@
 
 }
 
-- (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(UIView *)sourceEditingView {
+- (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView {
     if (self = [self initWithDelegate:delegate]) {
         self.sourceEditingView = sourceEditingView;
     }

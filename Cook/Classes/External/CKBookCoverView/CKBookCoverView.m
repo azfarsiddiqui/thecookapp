@@ -145,7 +145,7 @@
     }
 }
 
--(void)editingView:(UIView *)editingView saveRequestedWithResult:(id)result {
+-(void)editingView:(CKEditableView *)editingView saveRequestedWithResult:(id)result {
     if (editingView == self.authorEditableView) {
         NSString *author = (NSString *)result;
         [self setAuthor:author];
