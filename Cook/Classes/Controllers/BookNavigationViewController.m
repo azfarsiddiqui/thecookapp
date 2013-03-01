@@ -210,14 +210,14 @@
     UICollectionViewCell *cell = nil;
     NSInteger contentStartSection = [self bookNavigationContentStartSection];
     
-    if (indexPath.section >= contentStartSection) {
-        cell = [self recipeCellAtIndexPath:indexPath];
-    } else if (indexPath.section == kProfileSection) {
+    if (indexPath.section == kProfileSection) {
         cell = [self profileCellAtIndexPath:indexPath];
     } else if (indexPath.section == kContentsSection) {
         cell = [self contentsCellAtIndexPath:indexPath];
     } else if (indexPath.section == kActivitySection) {
         cell = [self activityCellAtIndexPath:indexPath];
+    } else if (indexPath.section >= contentStartSection) {
+        cell = [self recipeCellAtIndexPath:indexPath];
     }
     
     return cell;
@@ -249,16 +249,18 @@
     self.closeButton = closeButton;
     
     // Add button.
-    UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [createButton setTitle:@"Add" forState:UIControlStateNormal];
-    [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [createButton sizeToFit];
-    createButton.frame = CGRectMake(closeButton.frame.origin.x + closeButton.frame.size.width + 10.0,
-                                    closeButton.frame.origin.y,
-                                    createButton.frame.size.width,
-                                    createButton.frame.size.height);
-    [self.view addSubview:createButton];
-    self.createButton = createButton;
+    if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
+        UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [createButton setTitle:@"Add" forState:UIControlStateNormal];
+        [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [createButton sizeToFit];
+        createButton.frame = CGRectMake(closeButton.frame.origin.x + closeButton.frame.size.width + 10.0,
+                                        closeButton.frame.origin.y,
+                                        createButton.frame.size.width,
+                                        createButton.frame.size.height);
+        [self.view addSubview:createButton];
+        self.createButton = createButton;
+    }
 }
 
 - (void)initCollectionView {
