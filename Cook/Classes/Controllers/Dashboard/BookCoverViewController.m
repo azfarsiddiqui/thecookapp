@@ -82,10 +82,11 @@
     DLog(@"Open book finished: %@", [NSString CK_stringForBoolean:self.opened]);
     
 //    if (!self.opened) {
-        [self.rootBookLayer removeAllAnimations];
-    [self.leftOpenLayer removeAllAnimations];
-        [self.bookCoverLayer removeAllAnimations];
+//        [self.rootBookLayer removeAllAnimations];
+//    [self.leftOpenLayer removeAllAnimations];
+//        [self.bookCoverLayer removeAllAnimations];
 //    }
+    
     [self.delegate bookCoverViewDidOpen:self.opened];
 }
 
