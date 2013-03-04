@@ -7,6 +7,8 @@
 //
 
 #import "BookNavigationLayout.h"
+#import "BookLeftPageDividerView.h"
+#import "BookRightPageDividerView.h"
 
 @interface BookNavigationLayout ()
 
@@ -15,12 +17,17 @@
 @property (nonatomic, strong) NSMutableArray *contentPages;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
+@property (nonatomic, strong) NSMutableArray *decorationLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathDecorationAttributes;
 
 @end
 
 @implementation BookNavigationLayout
+
+#define kPageDividerLeftKind    @"PageDividerLeftKind"
+#define kPageDividerRightKind   @"PageDividerRightKind"
 
 + (CGSize)unitSize {
     return CGSizeMake(240.0, 596.0);
@@ -38,6 +45,9 @@
     if (self = [super init]) {
         self.dataSource = dataSource;
         self.delegate = delegate;
+        
+        [self registerClass:[BookLeftPageDividerView class] forDecorationViewOfKind:kPageDividerLeftKind];
+        [self registerClass:[BookRightPageDividerView class] forDecorationViewOfKind:kPageDividerRightKind];
     }
     return self;
 }
@@ -68,7 +78,7 @@
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
-    DLog(@"NUMBER OF PAGES: %d", [self.contentPages count]);
+    DLog(@"Number of sections [%d]", [self.contentPages count]);
     CGFloat width = 0;
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     
@@ -84,15 +94,16 @@
     }
     
     CGSize contentSize = CGSizeMake(width, self.collectionView.bounds.size.height);
-    DLog(@"contentSize: %@", NSStringFromCGSize(contentSize));
     return contentSize;
 }
 
 - (void)prepareLayout {
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.supplementaryLayoutAttributes = [NSMutableArray array];
+    self.decorationLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
+    self.indexPathDecorationAttributes = [NSMutableDictionary dictionary];
     
     [self buildBookOtherLayoutData];
     [self buildBookRecipesLayoutData];
@@ -108,13 +119,6 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray* layoutAttributes = [NSMutableArray array];
     
-//    // Home view.
-//    for (UICollectionViewLayoutAttributes *attributes in self.decorationLayoutAttributes) {
-//        if (CGRectIntersectsRect(rect, attributes.frame)) {
-//            [layoutAttributes addObject:attributes];
-//        }
-//    }
-    
     // Header cells.
     for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
         if (CGRectIntersectsRect(rect, attributes.frame)) {
@@ -129,21 +133,28 @@
         }
     }
     
+    // Decoration views.
+    for (UICollectionViewLayoutAttributes *attributes in self.decorationLayoutAttributes) {
+        if (CGRectIntersectsRect(rect, attributes.frame)) {
+            [layoutAttributes addObject:attributes];
+        }
+    }
+    
     return layoutAttributes;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes *attributes = [self.indexPathItemAttributes objectForKey:indexPath];
-    return attributes;
+    return [self.indexPathItemAttributes objectForKey:indexPath];
 }
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes *attributes = [self.indexPathSupplementaryAttributes objectForKey:indexPath];
-    return attributes;
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryElementOfKind:(NSString *)kind
+                                                                        atIndexPath:(NSIndexPath *)indexPath {
+    return [self.indexPathSupplementaryAttributes objectForKey:indexPath];
 }
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)decorationViewKind atIndexPath:(NSIndexPath *)indexPath {
-    return [super layoutAttributesForDecorationViewOfKind:decorationViewKind atIndexPath:indexPath];
+- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)decorationViewKind
+                                                                  atIndexPath:(NSIndexPath *)indexPath {
+    return [self.indexPathDecorationAttributes objectForKey:indexPath];
 }
 
 #pragma mark - Private methods
@@ -210,8 +221,13 @@
         // Create pages array if not there already.
         NSMutableArray *pages = nil;
         if ([self.contentPages count] > contentSection) {
+            
+            // Existing section.
             pages = [self.contentPages objectAtIndex:contentSection];
+            
         } else {
+            
+            // New section.
             pages = [NSMutableArray array];
             [self.contentPages addObject:pages];
         }
@@ -284,6 +300,51 @@
             }
         }
     }
+    
+    // Create page dividers between the content pages.
+    for (NSUInteger sectionIndex = 0; sectionIndex < [self.contentPages count]; sectionIndex++) {
+        
+        BOOL firstSection = (sectionIndex == 0);
+        BOOL lastSection = (sectionIndex == [self.contentPages count] - 1);
+        
+        NSInteger collectionSection = contentStartSection + sectionIndex;
+        CGFloat sectionPageOffset = [self pageOffsetForSection:collectionSection];
+        
+        NSArray *pagesInSection = [self.contentPages objectAtIndex:sectionIndex];
+        
+        // Loop through each page within the section.
+        for (NSInteger pageIndex = 0; pageIndex < [pagesInSection count]; pageIndex++) {
+            
+            CGFloat pageOffset = sectionPageOffset + (pageIndex * self.collectionView.bounds.size.width) * self.collectionView.bounds.size.width;
+            NSArray *pageIndexPaths = [pagesInSection objectAtIndex:pageIndex];
+            NSIndexPath *anyIndexPath = [pageIndexPaths lastObject];
+            
+            // Left page divider if not the first page.
+            if (!(firstSection && pageIndex == 0)) {
+                
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:anyIndexPath.section];
+                UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kPageDividerLeftKind
+                                                                                                                                 withIndexPath:indexPath];
+                layoutAttributes.frame = CGRectMake(pageOffset, 0.0, 1.0, self.collectionView.bounds.size.height);
+                [self.decorationLayoutAttributes addObject:layoutAttributes];
+                [self.indexPathDecorationAttributes setObject:layoutAttributes forKey:indexPath];
+            }
+            
+            // Right page divider if not the last page.
+            if (!(lastSection && pageIndex == [pagesInSection count] - 1)) {
+                
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:anyIndexPath.section];
+                UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kPageDividerRightKind
+                                                                                                                                 withIndexPath:indexPath];
+                layoutAttributes.frame = CGRectMake(pageOffset + self.collectionView.bounds.size.width, 0.0, 1.0, self.collectionView.bounds.size.height);
+                [self.decorationLayoutAttributes addObject:layoutAttributes];
+                [self.indexPathDecorationAttributes setObject:layoutAttributes forKey:indexPath];
+            }
+            
+        }
+        
+    }
+    
 }
 
 - (CGFloat)firstItemOffsetForSection {
