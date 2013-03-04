@@ -100,6 +100,7 @@
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
         cell.textLabel.textColor = [Theme bookContentsItemColour];
         cell.textLabel.font = [Theme bookContentsItemFont];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     NSInteger numRows = [self tableView:tableView numberOfRowsInSection:0];
