@@ -286,7 +286,7 @@
 - (void)initNavButtons {
     
     // Close button - hidden to start off with.
-    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
+    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"]
                                                  target:self
                                                selector:@selector(closeTapped:)];
     closeButton.frame = CGRectMake(kNavTopLeftOffset.x,
