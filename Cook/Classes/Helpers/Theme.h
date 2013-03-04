@@ -32,6 +32,8 @@
 + (UIColor *)recipeGridStoryColour;
 
 #pragma mark - Book contents/activities.
++ (UIFont *)bookNavigationTitleFont;
++ (UIColor *)bookNavigationTitleColour;
 + (UIFont *)bookProfileNameFont;
 + (UIColor *)bookContentsViewColour;
 + (UIFont *)bookContentsTitleFont;

@@ -28,6 +28,7 @@
 
 - (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource delegate:(id<BookNavigationLayoutDelegate>)delegate;
 - (CGFloat)pageOffsetForSection:(NSInteger)section;
+- (NSArray *)pageOffsetsForContentsSections;
 
 + (CGSize)unitSize;
 + (UIEdgeInsets)pageInsets;

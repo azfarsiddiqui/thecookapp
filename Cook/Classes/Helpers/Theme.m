@@ -90,6 +90,14 @@
 
 #pragma mark - Book contents/activities.
 
++ (UIFont *)bookNavigationTitleFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
+}
+
++ (UIColor *)bookNavigationTitleColour {
+    return [UIColor colorWithHexString:@"888888"];
+}
+
 + (UIFont *)bookProfileNameFont {
     return [UIFont fontWithName:@"Neutraface2Display-Bold" size:40.0];
 }

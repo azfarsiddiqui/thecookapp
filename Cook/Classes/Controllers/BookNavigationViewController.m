@@ -19,12 +19,14 @@
 #import "BookProfileViewController.h"
 #import "BookContentsViewController.h"
 #import "BookActivityViewController.h"
+#import "Theme.h"
 
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
     NewRecipeViewDelegate, BookContentsViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *homeButton;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) CKBook *book;
@@ -37,6 +39,7 @@
 @property (nonatomic, strong) BookActivityViewController *activityViewController;
 
 @property (nonatomic, strong) NSString *selectedCategoryName;
+@property (nonatomic, strong) NSString *currentCategoryName;
 
 @end
 
@@ -48,6 +51,7 @@
 #define kContentsCellId     @"ContentsCellId"
 #define kActivityCellId     @"ActivityCellId"
 #define kNavTopLeftOffset   CGPointMake(20.0, 15.0)
+#define kNavTitleOffset     CGPointMake(20.0, 28.0)
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self
@@ -65,7 +69,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self initNavButtons];
+    [self initNav];
     [self initCollectionView];
     [self loadData];
 }
@@ -120,6 +124,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self updateNavButtons];
+    [self updateNavTitle];
 }
 
 // To detect returning from category deep-linking.
@@ -283,7 +288,7 @@
 
 #pragma mark - Private methods
 
-- (void)initNavButtons {
+- (void)initNav {
     
     // Close button - hidden to start off with.
     UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"]
@@ -308,6 +313,14 @@
     [self.view addSubview:homeButton];
     self.homeButton = homeButton;
     
+    // Title
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, kNavTitleOffset.y, 0.0, 0.0)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.font = [Theme bookNavigationTitleFont];
+    titleLabel.textColor = [Theme bookNavigationTitleColour];
+    titleLabel.hidden = YES;
+    [self.view addSubview:titleLabel];
+    self.titleLabel = titleLabel;
 }
 
 - (void)initCollectionView {
@@ -545,5 +558,64 @@
     }
     
 }
+
+- (void)updateNavTitle {
+    CGFloat contentsPageOffset = [self recipeSection] * self.collectionView.bounds.size.width;
+    if (self.collectionView.contentOffset.x >= contentsPageOffset) {
+        self.titleLabel.hidden = NO;
+        
+        NSString *categoryName = [self currentCategoryNameFromOffset];
+        if (![self.currentCategoryName isEqualToString:categoryName]) {
+            NSString *navTitle = [self navigationTitle];
+            self.titleLabel.text = navTitle;
+            [self.titleLabel sizeToFit];
+            self.titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
+                                               self.titleLabel.frame.origin.y,
+                                               self.titleLabel.frame.size.width,
+                                               self.titleLabel.frame.size.height);
+            self.currentCategoryName = navTitle;
+        }
+        
+    } else {
+        self.currentCategoryName = nil;
+        self.titleLabel.hidden = YES;
+    }
+}
+
+- (NSString *)navigationTitle {
+    NSMutableString *title = [NSMutableString stringWithString:self.book.name];
+    NSString *currentCategoryName = [self currentCategoryNameFromOffset];
+    if ([currentCategoryName length] > 0) {
+        [title appendFormat:@" - %@", [currentCategoryName uppercaseString]];
+    }
+    return title;
+}
+
+- (NSString *)currentCategoryNameFromOffset {
+    // Start off with the first category name.
+    NSString *categoryName = categoryName = [self.categoryNames objectAtIndex:0];
+    CGFloat recipePageOffset = [self recipeSection] * self.collectionView.bounds.size.width;
+    
+    if (self.collectionView.contentOffset.x >= recipePageOffset) {
+        BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
+        
+        NSArray *pageOffsets = [layout pageOffsetsForContentsSections];
+        CGFloat currentOffset = self.collectionView.contentOffset.x;
+        
+        for (NSInteger pageOffsetIndex = 0; pageOffsetIndex < [pageOffsets count]; pageOffsetIndex++) {
+            
+            NSNumber *pageOffsetNumber = [pageOffsets objectAtIndex:pageOffsetIndex];
+            if (currentOffset < [pageOffsetNumber floatValue]) {
+                break;
+            }
+            
+            // Update category name.
+            categoryName = [self.categoryNames objectAtIndex:pageOffsetIndex];
+        }
+        
+    }
+    return categoryName;
+}
+
 
 @end

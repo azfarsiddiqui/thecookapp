@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathDecorationAttributes;
+@property (nonatomic, strong) NSMutableArray *pageOffsetsForSections;
 
 @end
 
@@ -75,6 +76,10 @@
     return pageOffset;
 }
 
+- (NSArray *)pageOffsetsForContentsSections {
+    return self.pageOffsetsForSections;
+}
+
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
@@ -104,6 +109,7 @@
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
     self.indexPathDecorationAttributes = [NSMutableDictionary dictionary];
+    self.pageOffsetsForSections = [NSMutableArray array];
     
     [self buildBookOtherLayoutData];
     [self buildBookRecipesLayoutData];
@@ -214,6 +220,9 @@
                                             unitSize.height);
         [self.supplementaryLayoutAttributes addObject:headerAttributes];
         [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
+        
+        // Keep track of page offsets for sections.
+        [self.pageOffsetsForSections addObject:[NSNumber numberWithFloat:pageOffsetForSection]];
         
         // Start off with one available column to make way for the category header.
         NSInteger availableColumns = 1;
