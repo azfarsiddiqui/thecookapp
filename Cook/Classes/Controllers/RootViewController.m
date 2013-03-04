@@ -11,7 +11,6 @@
 #import "StoreViewController.h"
 #import "BenchtopViewControllerDelegate.h"
 #import "BookCoverViewController.h"
-#import "BookViewController.h"
 #import "BookNavigationViewController.h"
 #import "CKBook.h"
 #import "SettingsViewController.h"
@@ -19,13 +18,12 @@
 #import "BookModalViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    BookViewControllerDelegate, UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
-@property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
@@ -124,9 +122,6 @@
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
     if (!open) {
-//        [self.bookViewController.view removeFromSuperview];
-//        self.bookViewController = nil;
-        
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
     }
@@ -137,13 +132,6 @@
 
 - (void)bookCoverViewDidOpen:(BOOL)open {
     if (open) {
-        
-        // Add the book view.
-//        BookViewController *bookViewController = [[BookViewController alloc] initWithBook:self.selectedBook
-//                                                                                 delegate:self];
-//        [self.view addSubview:bookViewController.view];
-//        self.bookViewController = bookViewController;
-        
         BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
                                                                                                                delegate:self];
         bookNavigationViewController.view.frame = self.view.bounds;
@@ -161,12 +149,6 @@
     
     // Pass on event to the benchtop to restore the book.
     [self.benchtopViewController bookDidOpen:open];
-}
-
-#pragma mark - BookViewControllerDelegate methods
-
-- (void)bookViewControllerCloseRequested {
-    [self.bookCoverViewController openBook:NO];
 }
 
 #pragma mark - BookNavigationViewControllerDelegate methods
@@ -559,12 +541,14 @@
     [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
     
     // Animate the book back, and slide up the modalVC.
+    CGAffineTransform transform = CGAffineTransformMakeScale(0.9, 0.9);
     [UIView animateWithDuration:0.4
                       delay:0.0
                     options:UIViewAnimationCurveEaseIn
                  animations:^{
                      overlayView.alpha = kOverlayViewAlpha;
-                     self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(0.9, 0.9);
+                     self.bookCoverViewController.view.transform = transform;
+                     self.bookNavigationViewController.view.transform = transform;
                      modalViewController.view.transform = CGAffineTransformIdentity;
                  }
                  completion:^(BOOL finished)  {
