@@ -118,6 +118,9 @@
         BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
         cell.bookCoverView.hidden = NO;
     }
+    
+    // Enable panning based on book opened or not.
+    [self.delegate panEnabledRequested:!open];
 }
 
 #pragma mark - UICollectionViewDelegate methods
