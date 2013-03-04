@@ -85,7 +85,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.categories count];
+    NSInteger numRows = [self.categories count];
+    if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
+        numRows += 1;   // Add Recipe
+    }
+    return numRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -98,8 +102,13 @@
         cell.textLabel.font = [Theme bookContentsItemFont];
     }
     
-    NSString *categoryName = [[self.categories objectAtIndex:indexPath.item] uppercaseString];
-    cell.textLabel.text = categoryName;
+    NSInteger numRows = [self tableView:tableView numberOfRowsInSection:0];
+    if (indexPath.item == (numRows - 1)) {
+        cell.textLabel.text = @"ADD RECIPE";
+    } else {
+        NSString *categoryName = [[self.categories objectAtIndex:indexPath.item] uppercaseString];
+        cell.textLabel.text = categoryName;
+    }
     return cell;
 }
 
@@ -111,7 +120,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [self.delegate bookContentsSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+    NSInteger numRows = [self tableView:tableView numberOfRowsInSection:0];
+    if (indexPath.item == (numRows - 1)) {
+        [self.delegate bookContentsAddRecipeRequested];
+    } else {
+        [self.delegate bookContentsSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+    }
 }
 
 #pragma mark - Private methods
@@ -221,7 +235,7 @@
 }
 
 - (void)updateTableFrame {
-    CGFloat tableHeight = [self.categories count] * kContentsItemHeight;
+    CGFloat tableHeight = [self tableView:self.tableView numberOfRowsInSection:0] * kContentsItemHeight;
     self.tableView.frame = CGRectMake(self.contentsView.bounds.origin.x,
                                       floorf((self.contentsView.bounds.size.height - tableHeight) / 2.0),
                                       self.contentsView.bounds.size.width,

@@ -14,6 +14,7 @@
 @protocol BookContentsViewControllerDelegate
 
 - (void)bookContentsSelectedCategory:(NSString *)category;
+- (void)bookContentsAddRecipeRequested;
 
 @end
 
