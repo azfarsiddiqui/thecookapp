@@ -129,7 +129,15 @@
 }
 
 - (void)configureImage:(UIImage *)image {
-    [ImageHelper configureImageView:self.imageView image:image];
+    if (image) {
+        [ImageHelper configureImageView:self.imageView image:image];
+        self.infoView.frame = CGRectMake(0.0,
+                                         floorf(self.contentView.bounds.size.height / 2.0),
+                                         self.contentView.bounds.size.width,
+                                         floorf(self.contentView.bounds.size.height / 2.0));
+    } else {
+        self.infoView.frame = self.contentView.bounds;
+    }
 }
 
 #pragma mark - Private methods
