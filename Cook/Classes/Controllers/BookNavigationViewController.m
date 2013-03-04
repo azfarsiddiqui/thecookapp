@@ -1,4 +1,4 @@
-    //
+//
 //  BookNavigationViewController.m
 //  Cook
 //
@@ -23,8 +23,8 @@
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
     NewRecipeViewDelegate, BookContentsViewControllerDelegate>
 
+@property (nonatomic, strong) UIButton *homeButton;
 @property (nonatomic, strong) UIButton *closeButton;
-@property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) CKBook *book;
@@ -47,6 +47,7 @@
 #define kProfileCellId      @"ProfileCellId"
 #define kContentsCellId     @"ContentsCellId"
 #define kActivityCellId     @"ActivityCellId"
+#define kNavTopLeftOffset   CGPointMake(20.0, 15.0)
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDataSource:self
@@ -111,7 +112,15 @@
     [self.collectionView reloadData];
 }
 
+- (void)bookContentsAddRecipeRequested {
+    [self.delegate bookNavigationControllerRecipeRequested:nil];
+}
+
 #pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self updateNavButtons];
+}
 
 // To detect returning from category deep-linking.
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -125,6 +134,7 @@
         [self.collectionView.collectionViewLayout invalidateLayout];
         [self.collectionView reloadData];
     }
+    
 }
 
 
@@ -275,30 +285,29 @@
 
 - (void)initNavButtons {
     
-    // Close button
+    // Close button - hidden to start off with.
     UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
                                                  target:self
                                                selector:@selector(closeTapped:)];
-    closeButton.frame = CGRectMake(20.0,
-                                   15.0,
+    closeButton.frame = CGRectMake(kNavTopLeftOffset.x,
+                                   kNavTopLeftOffset.y,
                                    closeButton.frame.size.width,
                                    closeButton.frame.size.height);
+    closeButton.hidden = YES;
     [self.view addSubview:closeButton];
     self.closeButton = closeButton;
     
-    // Add button.
-    if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
-        UIButton *createButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [createButton setTitle:@"Add" forState:UIControlStateNormal];
-        [createButton addTarget:self action:@selector(createTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [createButton sizeToFit];
-        createButton.frame = CGRectMake(closeButton.frame.origin.x + closeButton.frame.size.width + 10.0,
-                                        closeButton.frame.origin.y,
-                                        createButton.frame.size.width,
-                                        createButton.frame.size.height);
-        [self.view addSubview:createButton];
-        self.createButton = createButton;
-    }
+    // Home button
+    UIButton *homeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_home_gray.png"]
+                                                 target:self
+                                               selector:@selector(homeTapped:)];
+    homeButton.frame = CGRectMake(kNavTopLeftOffset.x,
+                                  kNavTopLeftOffset.y,
+                                  homeButton.frame.size.width,
+                                  homeButton.frame.size.height);
+    [self.view addSubview:homeButton];
+    self.homeButton = homeButton;
+    
 }
 
 - (void)initCollectionView {
@@ -362,8 +371,9 @@
     [self.delegate bookNavigationControllerCloseRequested];
 }
 
-- (void)createTapped:(id)sender {
-    [self.delegate bookNavigationControllerRecipeRequested:nil];
+- (void)homeTapped:(id)sender {
+    CGFloat contentsPageOffset = [self contentsSection] * self.collectionView.bounds.size.width;
+    [self.collectionView setContentOffset:CGPointMake(contentsPageOffset, 0.0) animated:YES];
 }
 
 - (void)configureImageForHeaderView:(BookCategoryView *)categoryHeaderView recipe:(CKRecipe *)recipe
@@ -518,6 +528,22 @@
 - (NSInteger)recipeSection {
     return [self isCategoryDeepLinked] ? 2 : 3; // Minus the activity page if deeplinked.
 
+}
+
+- (void)updateNavButtons {
+    
+    CGFloat contentsPageOffset = [self contentsSection] * self.collectionView.bounds.size.width;
+    
+    // Close button visible only on the contents page.
+    if (self.collectionView.contentOffset.x >= contentsPageOffset
+        && self.collectionView.contentOffset.x < (contentsPageOffset + (self.collectionView.bounds.size.width) / 2.0)) {
+        self.closeButton.hidden = NO;
+        self.homeButton.hidden = YES;
+    } else {
+        self.closeButton.hidden = YES;
+        self.homeButton.hidden = NO;
+    }
+    
 }
 
 @end
