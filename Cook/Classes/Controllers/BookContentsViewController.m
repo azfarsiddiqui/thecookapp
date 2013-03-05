@@ -86,7 +86,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     NSInteger numRows = [self.categories count];
-    if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
+    if ([self canAddRecipe]) {
         numRows += 1;   // Add Recipe
     }
     return numRows;
@@ -104,7 +104,7 @@
     }
     
     NSInteger numRows = [self tableView:tableView numberOfRowsInSection:0];
-    if (indexPath.item == (numRows - 1)) {
+    if ([self canAddRecipe] && indexPath.item == (numRows - 1)) {
         cell.textLabel.text = @"ADD RECIPE";
     } else {
         NSString *categoryName = [[self.categories objectAtIndex:indexPath.item] uppercaseString];
@@ -122,7 +122,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger numRows = [self tableView:tableView numberOfRowsInSection:0];
-    if (indexPath.item == (numRows - 1)) {
+    if ([self canAddRecipe] && indexPath.item == (numRows - 1)) {
         [self.delegate bookContentsAddRecipeRequested];
     } else {
         [self.delegate bookContentsSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
@@ -242,6 +242,10 @@
                                       self.contentsView.bounds.size.width,
                                       tableHeight);
 
+}
+
+- (BOOL)canAddRecipe {
+    return ([self.book.user isEqual:[CKUser currentUser]]);
 }
 
 @end

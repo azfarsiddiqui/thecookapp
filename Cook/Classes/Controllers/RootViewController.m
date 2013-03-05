@@ -158,7 +158,7 @@
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
-        [self viewRecipe:recipe];
+    [self viewRecipe:recipe];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
