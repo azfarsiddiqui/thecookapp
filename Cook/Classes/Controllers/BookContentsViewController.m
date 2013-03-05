@@ -18,6 +18,7 @@
 @interface BookContentsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, assign) id<BookContentsViewControllerDelegate> delegate;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) UIImageView *imageView;
@@ -67,7 +68,14 @@
     [self.tableView reloadData];
 }
 
-- (void)configureRecipe:(CKRecipe *)recipe {
+- (void)configureHeroRecipe:(CKRecipe *)recipe {
+    
+    // Only set the hero recipe once.
+    if (self.heroRecipe) {
+        return;
+    }
+    
+    self.heroRecipe = recipe;
     [self.photoStore imageForParseFile:[recipe imageFile]
                                   size:[self imageFrame].size
                             completion:^(UIImage *image) {

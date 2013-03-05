@@ -22,6 +22,6 @@
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookContentsViewControllerDelegate>)delegate;
 - (void)configureCategories:(NSArray *)categories;
-- (void)configureRecipe:(CKRecipe *)recipe;
+- (void)configureHeroRecipe:(CKRecipe *)recipe;
 
 @end
