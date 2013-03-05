@@ -15,6 +15,7 @@
 @interface BookProfileViewController ()
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *introView;
 
 @end
@@ -36,12 +37,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor lightGrayColor];
     
+    [self initImageView];
     [self initIntroView];
 }
 
 #pragma mark - Private methods
+
+- (void)initImageView {
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
+    imageView.frame = self.view.bounds;
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:imageView];
+    self.imageView = imageView;
+}
 
 - (void)initIntroView {
     
