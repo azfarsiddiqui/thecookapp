@@ -40,6 +40,7 @@
 
 @property (nonatomic, strong) NSString *selectedCategoryName;
 @property (nonatomic, strong) NSString *currentCategoryName;
+@property (nonatomic, assign) BOOL justOpened;
 
 @end
 
@@ -72,6 +73,9 @@
     [self initNav];
     [self initCollectionView];
     [self loadData];
+    
+    // Mark as just opened.
+    self.justOpened = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -98,9 +102,17 @@
 
 - (void)prepareLayoutDidFinish {
     if ([self isCategoryDeepLinked]) {
+        
         [self.collectionView setContentOffset:CGPointMake([self recipeSection] * self.collectionView.bounds.size.width,
                                                           0.0)
                                      animated:YES];
+    } else if (self.justOpened) {
+        
+        // Start on page 1.
+        [self.collectionView setContentOffset:CGPointMake([self contentsSection] * self.collectionView.bounds.size.width,
+                                                          0.0)
+                                     animated:NO];
+        self.justOpened = NO;
     }
 }
 
@@ -375,7 +387,7 @@
         
         // Update the VC's.
         [self.contentsViewController configureCategories:self.categoryNames];
-        [self.contentsViewController configureRecipe:[self highlightRecipeForBook]];
+        [self.contentsViewController configureHeroRecipe:[self highlightRecipeForBook]];
         
         // Now reload the collection.
         [self.collectionView reloadData];
