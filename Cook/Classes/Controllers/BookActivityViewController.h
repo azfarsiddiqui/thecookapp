@@ -9,9 +9,16 @@
 #import <UIKit/UIKit.h>
 
 @class CKBook;
+@class CKRecipe;
+
+@protocol BookActivityViewControllerDelegate
+
+- (void)bookActivityViewControllerSelectedRecipe:(CKRecipe *)recipe;
+
+@end
 
 @interface BookActivityViewController : UIViewController
 
-- (id)initWithBook:(CKBook *)book;
+- (id)initWithBook:(CKBook *)book delegate:(id<BookActivityViewControllerDelegate>)delegate;
 
 @end

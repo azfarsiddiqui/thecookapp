@@ -18,6 +18,7 @@
 @interface BookActivityViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, assign) CKBook *book;
+@property (nonatomic, assign) id<BookActivityViewControllerDelegate> delegate;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) NSArray *activities;
 @property (nonatomic, strong) UIView *headerView;
@@ -32,9 +33,10 @@
 #define kHeaderHeight           140.0
 #define kHeaderInsets           UIEdgeInsetsMake(50.0, 55.0, 0.0, 0.0)
 
-- (id)initWithBook:(CKBook *)book {
+- (id)initWithBook:(CKBook *)book delegate:(id<BookActivityViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
+        self.delegate = delegate;
         self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
@@ -84,7 +86,8 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    CKActivity *activity = [self.activities objectAtIndex:indexPath.item];
+    [self.delegate bookActivityViewControllerSelectedRecipe:activity.recipe];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods

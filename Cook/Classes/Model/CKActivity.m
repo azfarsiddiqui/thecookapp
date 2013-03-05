@@ -43,6 +43,7 @@
     [query includeKey:kUserModelForeignKeyName];
     [query includeKey:kRecipeModelForeignKeyName];
     [query includeKey:[NSString stringWithFormat:@"%@.%@", kRecipeModelForeignKeyName, kRecipeAttrRecipePhotos]];
+    [query includeKey:[NSString stringWithFormat:@"%@.%@", kRecipeModelForeignKeyName, kCategoryModelForeignKeyName]];
     [query orderByDescending:kModelAttrCreatedAt];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseActivities, NSError *error) {
         if (!error) {

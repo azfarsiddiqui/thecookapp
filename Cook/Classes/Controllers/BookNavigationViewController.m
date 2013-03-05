@@ -22,7 +22,7 @@
 #import "Theme.h"
 
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
-    NewRecipeViewDelegate, BookContentsViewControllerDelegate>
+    NewRecipeViewDelegate, BookContentsViewControllerDelegate, BookActivityViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *homeButton;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -61,7 +61,7 @@
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book delegate:self];
-        self.activityViewController = [[BookActivityViewController alloc] initWithBook:book];
+        self.activityViewController = [[BookActivityViewController alloc] initWithBook:book delegate:self];
     }
     return self;
 }
@@ -118,6 +118,12 @@
 
 - (void)bookContentsAddRecipeRequested {
     [self.delegate bookNavigationControllerRecipeRequested:nil];
+}
+
+#pragma mark - BookActivityViewControllerDelegate methods
+
+- (void)bookActivityViewControllerSelectedRecipe:(CKRecipe *)recipe {
+    [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
 #pragma mark - UIScrollViewDelegate methods
