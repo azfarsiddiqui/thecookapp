@@ -210,7 +210,9 @@ typedef enum {
     //new ingredient
     Ingredient *ingredient = [[Ingredient alloc]init];
     [self.ingredientList addObject:ingredient];
-    [tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredientList count]-1 inSection:0]]withRowAnimation:UITableViewRowAnimationTop];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:[self.ingredientList count]-1 inSection:0];
+    [tableView insertRowsAtIndexPaths:@[newIndexPath]withRowAnimation:UITableViewScrollPositionNone];
+    [self tableView:tableView didSelectRowAtIndexPath:newIndexPath];
 }
 
 @end
