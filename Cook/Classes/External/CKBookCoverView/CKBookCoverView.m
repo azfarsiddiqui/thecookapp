@@ -553,6 +553,7 @@
 
         CKEditableView *authorEditableView = [[CKEditableView alloc] initWithDelegate:self];
         authorEditableView.contentInsets = editableInsets;
+        authorEditableView.editButtonOffset = CGSizeMake(3.0, 3.0);
 //        authorEditableView.contentView = authorLabel;
 //        TEMP: until I can understand this implementatation JS
         [authorEditableView setBookCoverContentView:authorLabel];
@@ -589,6 +590,8 @@
 
         CKEditableView *captionEditableView = [[CKEditableView alloc] initWithDelegate:self];
         captionEditableView.contentInsets = editableInsets;
+        captionEditableView.editButtonOffset = CGSizeMake(3.0, 3.0);
+
         //        TEMP: until I can understand this implementatation JS
 //        captionEditableView.contentView = captionLabel;
         [captionEditableView setBookCoverContentView:captionLabel];
@@ -623,6 +626,8 @@
         
         CKEditableView *titleEditableView = [[CKEditableView alloc] initWithDelegate:self];
         titleEditableView.contentInsets = editableInsets;
+        titleEditableView.editButtonOffset = CGSizeMake(3.0, 3.0);
+
         //        TEMP: until I can understand this implementatation JS
         //        titleEditableView.contentView = titleLabel;
         [titleEditableView setBookCoverContentView:titleLabel];

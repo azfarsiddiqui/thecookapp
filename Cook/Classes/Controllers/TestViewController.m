@@ -24,7 +24,7 @@
 #import "ParsePhotoStore.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 
-#define  kEditableInsets    UIEdgeInsetsMake(2.0, 5.0, 2.0f, 25.0f) //tlbr
+#define  kEditableInsets    UIEdgeInsetsMake(5.0, 5.0, 5.0f, 30.0f) //tlbr
 #define  kCookPrepTimeLabelSize CGSizeMake(200.0f,20.0f)
 #define  kCookLabelTag      112233445566
 #define  kServesLabelTag      223344556677
@@ -35,6 +35,9 @@
 #define  kPlaceholderTextIngredients        @"INGREDIENTS"
 #define  kPlaceholderTextRecipeDescription  @"INSTRUCTIONS"
 #define  kPlaceholderTextCategory                @"CATEGORY"
+
+#define kEditableColor  [UIColor whiteColor]
+#define kNonEditableColor  [UIColor blackColor]
 
 @interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
@@ -100,16 +103,27 @@
     [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
 
     [self.nameEditableView enableEditMode:self.inEditMode];
+    [self setLabelForEditableView:self.nameEditableView asEditable:self.inEditMode];
+    
     [self.methodViewEditableView enableEditMode:self.inEditMode];
+    [self setLabelForEditableView:self.methodViewEditableView asEditable:self.inEditMode];
+    
     [self.ingredientsViewEditableView enableEditMode:self.inEditMode];
+    [self setLabelForEditableView:self.ingredientsViewEditableView asEditable:self.inEditMode];
+
     [self.storyEditableView enableEditMode:self.inEditMode];
+    [self setLabelForEditableView:self.storyEditableView asEditable:self.inEditMode];
+
     [self.categoryEditableView enableEditMode:self.inEditMode];
+    [self setLabelForEditableView:self.categoryEditableView asEditable:self.inEditMode];
 
     //TODO extend photoeditableview
     UILabel *photoLabel = (UILabel*)self.photoEditableView.contentView;
     photoLabel.hidden = !self.inEditMode;
     [self.photoEditableView enableEditMode:self.inEditMode];
+    
     [self.servesCookPrepEditableView enableEditMode:self.inEditMode];
+    [self setServesCookPrepColorAsEditable:self.inEditMode];
     
     if (self.inEditMode == NO) {
         [self save];
@@ -352,6 +366,7 @@
     editableView.contentView = label;
 }
 
+#pragma mark - editable view value setting
 - (void)setRecipeNameValue:(NSString *)recipeValue {
     [self configLabelForEditableView:self.nameEditableView withValue:recipeValue withFont:[Theme recipeNameFont]
                  withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
@@ -507,6 +522,32 @@
     self.recipe.cookingTimeInMinutes = cooktimeMins;
     self.recipe.prepTimeInMinutes = prepTimeMins;
     self.servesCookPrepEditableView.contentView = containerView;
+}
+
+#pragma mark - editable view color settings
+-(void) setServesCookPrepColorAsEditable:(BOOL)editable
+{
+    UIView *containerView = (UIView *)self.servesCookPrepEditableView.contentView;
+    if (containerView) {
+        UILabel *servesLabel = (UILabel*) [containerView viewWithTag:kServesLabelTag];
+        if (servesLabel) {
+            servesLabel.textColor = editable? kEditableColor: kNonEditableColor;
+            
+        }
+        UILabel *cookingTimeLabel = (UILabel*) [containerView viewWithTag:kCookLabelTag];
+        if (cookingTimeLabel) {
+            cookingTimeLabel.textColor = editable? kEditableColor: kNonEditableColor;
+        }
+    }
+}
+
+
+-(void)setLabelForEditableView:(CKEditableView*)editableView asEditable:(BOOL)editable
+{
+    UILabel *label = (UILabel *) editableView.contentView;
+    if (label) {
+        label.textColor = editable? kEditableColor: kNonEditableColor;
+    }
 }
 
 -(void)save
