@@ -115,6 +115,9 @@
     [self setLabelForEditableView:self.storyEditableView asEditable:self.inEditMode];
 
     [self.categoryEditableView enableEditMode:self.inEditMode];
+    self.categoryEditableView.hidden = !self.inEditMode;
+    self.facebookUserView.hidden = self.inEditMode;
+    
     [self setLabelForEditableView:self.categoryEditableView asEditable:self.inEditMode];
 
     //TODO extend photoeditableview
@@ -148,7 +151,7 @@
                             prepTimeMins:self.recipe.prepTimeInMinutes];
     [self setStoryValue:self.recipe.story];
     [self.facebookUserView setUser:self.recipe.user];
-    
+    self.categoryEditableView.hidden = YES;
     [self loadRecipeImage];
     [self setPhotoValue:nil];
 
@@ -431,7 +434,7 @@
                              self.ingredientsViewEditableView.frame.origin.y,
                              self.ingredientsViewEditableView.frame.size.width,
                              constrainedSize.height);
-    
+    label.backgroundColor = [UIColor redColor];
     self.ingredientsViewEditableView.contentView = label;
     
 }
