@@ -167,16 +167,15 @@ typedef enum {
     UIEdgeInsets ingredientCellInsets = [IngredientConstants editableIngredientCellInsets];
     float paddingWidthBetweenCells = [IngredientConstants editableIngredientCellPaddingWidthBetweenFields];
     float widthAvailable = footerView.frame.size.width - paddingWidthBetweenCells - ingredientCellInsets.left - ingredientCellInsets.right;
-    float twentyPercent = floorf(0.2*widthAvailable);
-    float eightyPercent = floorf(0.8*widthAvailable);
 
-    UILabel *addIngredientLabel = [[UILabel alloc] initWithFrame:CGRectMake(twentyPercent + paddingWidthBetweenCells,
+    UILabel *addIngredientLabel = [[UILabel alloc] initWithFrame:CGRectMake(ingredientCellInsets.left,
                                                                            ingredientCellInsets.top,
-                                                                           eightyPercent - kTableViewInsets.right,
+                                                                           widthAvailable - kTableViewInsets.right,
                                                                            footerView.frame.size.height - ingredientCellInsets.top - ingredientCellInsets.bottom)];
 
     addIngredientLabel.text = @"  ADD INGREDIENT";
     addIngredientLabel.font = [Theme textEditableTextFont];
+    addIngredientLabel.textAlignment = NSTextAlignmentCenter;
     addIngredientLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addIngredientTapped:)];
     [addIngredientLabel addGestureRecognizer:tapGesture];
