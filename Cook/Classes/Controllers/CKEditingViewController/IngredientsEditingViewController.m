@@ -10,15 +10,23 @@
 #import "IngredientEditorViewController.h"
 #import "CKTextFieldEditingViewController.h"
 #import "IngredientTableViewCell.h"
+#import "IngredientConstants.h"
+#import "Theme.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kIngredientsTableViewCell   @"IngredientsTableViewCell"
 #define kTableViewInsets            UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0)
 
+typedef enum {
+    IngredientEditingIngredients,
+    IngredientEditingNoIngredients
+} IngredientEditing;
+
 @interface IngredientsEditingViewController () <UITableViewDataSource,UITableViewDelegate, IngredientEditorDelegate>
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) IngredientEditorViewController *ingredientEditingViewController;
 @property (nonatomic, assign) CGRect ingredientTapStartingPoint;
+@property (nonatomic, assign) IngredientEditing ingredientsEditing;
 @end
 
 @implementation IngredientsEditingViewController
@@ -26,7 +34,7 @@
 #pragma mark - CKEditingViewController methods
 
 - (UIView *)createTargetEditingView {
-    return self.tableView;
+    return [self newTableView];
 }
 
 - (void)editingViewWillAppear:(BOOL)appear {
@@ -44,6 +52,11 @@
     }
 }
 
+-(void)setIngredientList:(NSArray *)ingredientList
+{
+    _ingredientList = [NSMutableArray arrayWithArray:ingredientList];
+    self.ingredientsEditing = [_ingredientList count] == 0 ? IngredientEditingNoIngredients : IngredientEditingIngredients;
+}
 #pragma mark - UITableViewDataSource
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -53,11 +66,21 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.ingredientList.count;
+    //return 1 row when there are no ingredients
+    return self.ingredientsEditing == IngredientEditingIngredients ? self.ingredientList.count : 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+
+    if (self.ingredientsEditing == IngredientEditingNoIngredients) {
+        Ingredient *ingredient = [[Ingredient alloc]init];
+        [self.ingredientList addObject:ingredient];
+        self.ingredientsEditing = IngredientEditingIngredients;
+    }
+    
     Ingredient *ingredient = [self.ingredientList objectAtIndex:indexPath.row];
+
     IngredientTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kIngredientsTableViewCell];
     [cell configureCellWithIngredient:ingredient forRowAtIndexPath:indexPath];
     return cell;
@@ -119,7 +142,7 @@
     [self.view addSubview:self.doneButton];
 }
 
-- (UITableView*)tableView
+- (UITableView*)newTableView
 {
     CGRect frame = CGRectMake(kTableViewInsets.left,
                               kTableViewInsets.top,
@@ -130,10 +153,38 @@
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableView.backgroundColor = [UIColor clearColor];
     tableView.delegate = self;
+    tableView.tableFooterView = [self newTableFooterView];
     [tableView registerClass:[IngredientTableViewCell class] forCellReuseIdentifier:kIngredientsTableViewCell];
     return tableView;
 }
 
+-(UIView*)newTableFooterView
+{
+    UIView *footerView = [[UIView alloc]initWithFrame:CGRectMake(0.0f,
+                                                                kTableViewInsets.top,
+                                                                self.view.bounds.size.width - kTableViewInsets.right,
+                                                                100.0f)];
+    UIEdgeInsets ingredientCellInsets = [IngredientConstants editableIngredientCellInsets];
+    float paddingWidthBetweenCells = [IngredientConstants editableIngredientCellPaddingWidthBetweenFields];
+    float widthAvailable = footerView.frame.size.width - paddingWidthBetweenCells - ingredientCellInsets.left - ingredientCellInsets.right;
+    float twentyPercent = floorf(0.2*widthAvailable);
+    float eightyPercent = floorf(0.8*widthAvailable);
+
+    UILabel *addIngredientLabel = [[UILabel alloc] initWithFrame:CGRectMake(twentyPercent + paddingWidthBetweenCells,
+                                                                           ingredientCellInsets.top,
+                                                                           eightyPercent - kTableViewInsets.right,
+                                                                           footerView.frame.size.height - ingredientCellInsets.top - ingredientCellInsets.bottom)];
+
+    addIngredientLabel.text = @"  ADD INGREDIENT";
+    addIngredientLabel.font = [Theme textEditableTextFont];
+    addIngredientLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addIngredientTapped:)];
+    [addIngredientLabel addGestureRecognizer:tapGesture];
+    addIngredientLabel.backgroundColor = [UIColor grayColor];
+    [footerView addSubview:addIngredientLabel];
+    footerView.backgroundColor = [UIColor clearColor];
+    return footerView;
+}
 - (void)addTitleLabel {
     UIView *tableView = (UIView *)self.targetEditingView;
     
@@ -151,6 +202,16 @@
                                   titleLabel.frame.size.height);
     [self.view addSubview:titleLabel];
     self.titleLabel = titleLabel;
+}
+
+-(void)addIngredientTapped:(UITapGestureRecognizer*)tapGestureRecognizer
+{
+    DLog();
+    UITableView *tableView = (UITableView*)self.targetEditingView;
+    //new ingredient
+    Ingredient *ingredient = [[Ingredient alloc]init];
+    [self.ingredientList addObject:ingredient];
+    [tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.ingredientList count]-1 inSection:0]]withRowAnimation:UITableViewRowAnimationTop];
 }
 
 @end

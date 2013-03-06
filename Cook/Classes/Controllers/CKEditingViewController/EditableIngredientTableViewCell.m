@@ -8,11 +8,8 @@
 
 #import "EditableIngredientTableViewCell.h"
 #import "Theme.h"
+#import "IngredientConstants.h"
 #import "ViewHelper.h"
-
-#define kIngredientCellInsets UIEdgeInsetsMake(5.0f,10.0f,5.0f,10.0f)
-#define kPaddingWidthBetweenFields 10.0f
-#define kLabelMarginWidth 20.0f
 
 @interface EditableIngredientTableViewCell()<UITextFieldDelegate>
 @property(nonatomic,strong) UIView *maskCellView;
@@ -62,31 +59,34 @@
 {
     [super layoutSubviews];
     self.maskCellView.frame = self.contentView.frame;
-    
-    float widthAvailable = self.contentView.frame.size.width - kPaddingWidthBetweenFields - kIngredientCellInsets.left - kIngredientCellInsets.right;
+
+    UIEdgeInsets ingredientCellInsets = [IngredientConstants editableIngredientCellInsets];
+    float paddingWidthBetweenCells = [IngredientConstants editableIngredientCellPaddingWidthBetweenFields];
+    float labelMarginWidths = [IngredientConstants editableIngredientCellLabelMarginWidth];
+    float widthAvailable = self.contentView.frame.size.width - paddingWidthBetweenCells - ingredientCellInsets.left - ingredientCellInsets.right;
     float twentyPercent = floorf(0.2*widthAvailable);
     float eightyPercent = floorf(0.8*widthAvailable);
     
     
-    self.backViewMeasurementView.frame = CGRectMake(kIngredientCellInsets.left,
-                                                    kIngredientCellInsets.top,
+    self.backViewMeasurementView.frame = CGRectMake(ingredientCellInsets.left,
+                                                    ingredientCellInsets.top,
                                                     twentyPercent,
-                                                    self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+                                                    self.contentView.frame.size.height - ingredientCellInsets.top - ingredientCellInsets.bottom);
     
-    self.measurementTextField.frame = CGRectMake(kIngredientCellInsets.left + kLabelMarginWidth,
-                                      kIngredientCellInsets.top,
-                                      twentyPercent - 2*kLabelMarginWidth,
-                                      self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+    self.measurementTextField.frame = CGRectMake(ingredientCellInsets.left + labelMarginWidths,
+                                      ingredientCellInsets.top,
+                                      twentyPercent - 2*labelMarginWidths,
+                                      self.contentView.frame.size.height - ingredientCellInsets.top - ingredientCellInsets.bottom);
+    self.measurementTextField.keyboardType = UIKeyboardTypeNumberPad;
+    self.backViewDescriptionView.frame = CGRectMake(ingredientCellInsets.left + twentyPercent + paddingWidthBetweenCells,
+                                                    ingredientCellInsets.top,
+                                                    eightyPercent - paddingWidthBetweenCells,
+                                                    self.contentView.frame.size.height - ingredientCellInsets.top - ingredientCellInsets.bottom);
     
-    self.backViewDescriptionView.frame = CGRectMake(kIngredientCellInsets.left + twentyPercent + kPaddingWidthBetweenFields,
-                                                    kIngredientCellInsets.top,
-                                                    eightyPercent - kPaddingWidthBetweenFields,
-                                                    self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
-    
-    self.descriptionTextField.frame = CGRectMake(kIngredientCellInsets.left + twentyPercent + kPaddingWidthBetweenFields + kLabelMarginWidth,
-                                            kIngredientCellInsets.top,
-                                            eightyPercent - kPaddingWidthBetweenFields - 2*kLabelMarginWidth,
-                                            self.contentView.frame.size.height - kIngredientCellInsets.top - kIngredientCellInsets.bottom);
+    self.descriptionTextField.frame = CGRectMake(ingredientCellInsets.left + twentyPercent + paddingWidthBetweenCells + labelMarginWidths,
+                                            ingredientCellInsets.top,
+                                            eightyPercent - paddingWidthBetweenCells - 2*labelMarginWidths,
+                                            self.contentView.frame.size.height - ingredientCellInsets.top - ingredientCellInsets.bottom);
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

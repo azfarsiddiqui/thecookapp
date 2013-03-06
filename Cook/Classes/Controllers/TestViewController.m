@@ -204,8 +204,6 @@
         self.editingViewController = categoryEditingVC;
 
     } else if (view == self.photoEditableView){
-//        RecipePhotoEditViewController *photoEditVC = [[RecipePhotoEditViewController alloc] initWithDelegate:self sourceEditingView:self.photoEditableView];
-//        self.editingViewController = photoEditVC;
         [self displayPhotoPicker];
     }
 
@@ -234,7 +232,7 @@
     } else if (editingView == self.methodViewEditableView) {
         [self setMethodValue:(NSString *)result];
     } else if (editingView == self.ingredientsViewEditableView){
-        [self setIngredientsValue:(NSArray*)result];
+        [self setIngredientsValue:(NSMutableArray*)result];
     } else if (editingView == self.storyEditableView) {
         [self setStoryValue:(NSString *)result];
     } else if (editingView == self.servesCookPrepEditableView){
@@ -390,7 +388,7 @@
     }
 }
 
-- (void)setIngredientsValue:(NSArray *)ingredientsArray {
+- (void)setIngredientsValue:(NSMutableArray *)ingredientsArray {
     UILabel *label = (UILabel *)self.ingredientsViewEditableView.contentView;
     if (!label) {
         label = [self newLabelForEditableView:self.ingredientsViewEditableView withFont:[Theme ingredientsListFont]
