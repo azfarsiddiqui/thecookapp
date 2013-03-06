@@ -336,12 +336,13 @@
 -(UILabel*)displayableLabelWithFont:(UIFont*)viewFont withColor:(UIColor*)color withTextAlignment:(NSTextAlignment)textAlignment
 {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.autoresizingMask = UIViewAutoresizingNone;
+//    label.autoresizingMask = UIViewAutoresizingNone;
     label.backgroundColor = [UIColor clearColor];
     label.textAlignment = textAlignment;
     label.font = viewFont;
     label.textColor = color;
     label.numberOfLines = 0;
+//    label.lineBreakMode = NSLineBreakByWordWrapping;
     return label;
 }
 
@@ -426,16 +427,15 @@
         self.recipe.ingredients = ingredientsArray;
     }
     
-    CGSize constrainedSize = [label.text sizeWithFont:[Theme ingredientsListFont] constrainedToSize:
-                        CGSizeMake(self.ingredientsViewEditableView.frame.size.width,
-                                   self.ingredientsViewEditableView.frame.size.height)];
-    
-    label.frame = CGRectMake(self.ingredientsViewEditableView.frame.origin.x,
-                             self.ingredientsViewEditableView.frame.origin.y,
-                             self.ingredientsViewEditableView.frame.size.width,
-                             constrainedSize.height);
-    label.backgroundColor = [UIColor redColor];
+    label.frame = self.ingredientsViewEditableView.frame;
     self.ingredientsViewEditableView.contentView = label;
+    //now size label correctly
+    CGSize constrainedSize = [label.text sizeWithFont:[Theme ingredientsListFont]
+                                    constrainedToSize:
+                              CGSizeMake(self.ingredientsViewEditableView.frame.size.width-kEditableInsets.left-kEditableInsets.right,
+                                         self.ingredientsViewEditableView.frame.size.height -kEditableInsets.top-kEditableInsets.bottom)
+                                        lineBreakMode:NSLineBreakByWordWrapping];
+    label.frame = CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, constrainedSize.height);
     
 }
 
