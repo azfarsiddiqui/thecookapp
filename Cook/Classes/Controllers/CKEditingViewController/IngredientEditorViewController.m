@@ -227,7 +227,7 @@
 
 #pragma mark - IngredientEditKeyboardAccessoryViewDelegate
 
--(void)didEnterMeasurementShortCut:(NSString *)name
+-(void)didEnterMeasurementShortCut:(NSString *)name isAmount:(BOOL)isAmount
 {
     DLog(@"short cut %@", name);
     NSString *newValue = [NSString stringWithFormat:@"%@%@",self.currentEditableTextField.text,[name lowercaseString]];
@@ -235,6 +235,11 @@
     if (newValue.length < characterLimit) {
         self.currentEditableTextField.text = newValue;
         [self updateCharacterLimit:[newValue length]];
+    }
+    
+    if (isAmount) {
+        EditableIngredientTableViewCell *firstCell = [[self.tableView visibleCells]objectAtIndex:0];
+        [firstCell requestDescriptionTextFieldEdit];
     }
 }
 @end

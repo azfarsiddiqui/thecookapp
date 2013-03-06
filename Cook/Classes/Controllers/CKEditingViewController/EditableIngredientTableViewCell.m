@@ -45,6 +45,11 @@
     [self.measurementTextField becomeFirstResponder];
 }
 
+-(void)requestDescriptionTextFieldEdit
+{
+    [self.descriptionTextField becomeFirstResponder];
+}
+
 #pragma mark -overridden
 -(void)prepareForReuse
 {

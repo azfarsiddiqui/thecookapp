@@ -22,4 +22,5 @@
 @interface EditableIngredientTableViewCell : UITableViewCell
 -(void)configureCellWithIngredient:(Ingredient*)ingredient forRowAtIndex:(NSNumber *)rowIndex editDelegate:(id<EditableIngredientTableViewCellDelegate>)editDelegate;
 -(void)requestMeasurementTextFieldEdit;
+-(void)requestDescriptionTextFieldEdit;
 @end
