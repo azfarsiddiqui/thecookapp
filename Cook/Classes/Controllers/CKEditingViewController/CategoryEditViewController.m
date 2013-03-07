@@ -16,6 +16,8 @@
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) UITableView *tableView;
+@property (nonatomic, strong) UILabel *titleLabel;
+
 @end
 
 @implementation CategoryEditViewController
@@ -34,11 +36,22 @@
     return mainView;
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self data];
+
+- (void)editingViewWillAppear:(BOOL)appear {
+    [super editingViewWillAppear:appear];
+    if (!appear) {
+        [self.titleLabel removeFromSuperview];
+    } else {
+        [self data];
+    }
     
+}
+
+- (void)editingViewDidAppear:(BOOL)appear {
+    [super editingViewDidAppear:appear];
+    if (appear) {
+        [self addTitleLabel];
+    }
 }
 
 - (void)performSave {
@@ -111,6 +124,25 @@
             }
         }];
     }
+}
+
+- (void)addTitleLabel {
+    UITableView *tableView = (UITableView *)self.targetEditingView;
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.text = self.editingTitle;
+    titleLabel.font = self.titleFont;
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.shadowColor = [UIColor blackColor];
+    titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    [titleLabel sizeToFit];
+    titleLabel.frame = CGRectMake(tableView.frame.origin.x + floorf((tableView.frame.size.width - titleLabel.frame.size.width) / 2.0),
+                                  tableView.frame.origin.y - titleLabel.frame.size.height + 5.0,
+                                  titleLabel.frame.size.width,
+                                  titleLabel.frame.size.height);
+    [self.view addSubview:titleLabel];
+    self.titleLabel = titleLabel;
 }
 
 @end

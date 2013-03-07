@@ -12,5 +12,6 @@
 
 @interface CategoryEditViewController : BlankEditViewController
 @property (nonatomic,strong) Category *selectedCategory;
+@property (nonatomic, strong) UIFont *titleFont;
 
 @end

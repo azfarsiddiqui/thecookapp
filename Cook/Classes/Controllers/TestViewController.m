@@ -219,6 +219,8 @@
         CategoryEditViewController *categoryEditingVC = [[CategoryEditViewController alloc] initWithDelegate:self sourceEditingView:self.categoryEditableView];
         categoryEditingVC.backgroundAlpha = 0.0f;
         categoryEditingVC.selectedCategory = self.recipe.category;
+        categoryEditingVC.editingTitle = @"RECIPE CATEGORY";
+        categoryEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         self.editingViewController = categoryEditingVC;
 
     } else if (view == self.photoEditableView){
