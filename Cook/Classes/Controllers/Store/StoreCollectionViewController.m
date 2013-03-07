@@ -68,7 +68,20 @@
     // Subclasses to implement.
 }
 
+- (void)unloadData {
+    DLog(@"Unloading Books [%d]", [self.books count]);
+    if ([self.books count] > 0) {
+        
+        NSArray *deletedIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
+            return [NSIndexPath indexPathForItem:index inSection:0];
+        }];
+        [self.books removeAllObjects];
+        [self.collectionView deleteItemsAtIndexPaths:deletedIndexPaths];
+    }
+}
+
 - (void)loadBooks:(NSArray *)books {
+    DLog(@"Books [%d] Existing [%d]", [books count], [self.books count]);
     
     // Remove the no data view immediately if there were any books to be loaded.
     if ([books count] > 0) {
@@ -96,7 +109,6 @@
     }
     
     [self updateNoDataView];
-    
 }
 
 - (void)reloadBooks {

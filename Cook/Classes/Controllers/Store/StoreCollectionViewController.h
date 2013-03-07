@@ -15,6 +15,7 @@
 
 - (void)enable:(BOOL)enable;
 - (void)loadData;
+- (void)unloadData;
 - (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;

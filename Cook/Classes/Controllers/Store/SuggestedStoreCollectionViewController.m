@@ -1,20 +1,19 @@
 //
-//  FeaturedStoreCollectionViewController.m
+//  SuggestedStoreCollectionViewController.m
 //  Cook
 //
-//  Created by Jeff Tan-Ang on 30/11/12.
-//  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
+//  Created by Jeff Tan-Ang on 7/03/13.
+//  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "FeaturedStoreCollectionViewController.h"
+#import "SuggestedStoreCollectionViewController.h"
 #import "CKBook.h"
-#import "MRCEnumerable.h"
 
-@interface FeaturedStoreCollectionViewController ()
+@interface SuggestedStoreCollectionViewController ()
 
 @end
 
-@implementation FeaturedStoreCollectionViewController
+@implementation SuggestedStoreCollectionViewController
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
     if (!friendsBook) {
@@ -25,13 +24,13 @@
 }
 
 - (void)loadData {
-    DLog()
+    DLog();
     [CKBook featuredBooksForUser:[CKUser currentUser]
                          success:^(NSArray *featuredBooks) {
                              [self loadBooks:featuredBooks];
                          }
                          failure:^(NSError *error) {
-                            DLog(@"Error: %@", [error localizedDescription]);
+                             DLog(@"Error: %@", [error localizedDescription]);
                          }];
 }
 

@@ -31,6 +31,11 @@
 + (UIFont *)recipeGridStoryFont;
 + (UIColor *)recipeGridStoryColour;
 
+#pragma mark - Store
++ (UIFont *)storeTabFont;
++ (UIColor *)storeTabTextColour;
++ (UIColor *)storeTabTextShadowColour;
+
 #pragma mark - Book contents/activities.
 + (UIFont *)bookNavigationTitleFont;
 + (UIColor *)bookNavigationTitleColour;

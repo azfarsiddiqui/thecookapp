@@ -62,6 +62,20 @@
     return [self contentsTitleColor];
 }
 
+#pragma mark - Store
+
++ (UIFont *)storeTabFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Titling" size:16.0];
+}
+
++ (UIColor *)storeTabTextColour {
+    return [UIColor whiteColor];
+}
+
++ (UIColor *)storeTabTextShadowColour {
+    return [UIColor colorWithHexString:@"0d60b1"];
+}
+
 #pragma mark - Grid recipe cells
 
 + (UIFont *)recipeGridTitleFont {

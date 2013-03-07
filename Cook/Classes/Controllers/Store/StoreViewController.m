@@ -9,18 +9,21 @@
 #import "StoreViewController.h"
 #import "FriendsStoreCollectionViewController.h"
 #import "FeaturedStoreCollectionViewController.h"
+#import "SuggestedStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
 #import "LoginViewController.h"
 #import "EventHelper.h"
+#import "StoreTabView.h"
 
-@interface StoreViewController () <LoginViewControllerDelegate>
+@interface StoreViewController () <LoginViewControllerDelegate, StoreTabViewDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
+@property (nonatomic, strong) SuggestedStoreCollectionViewController *suggestedViewController;
 @property (nonatomic, strong) LoginViewController *loginViewController;
-@property (nonatomic, strong) UIImageView *featuredBanner;
-@property (nonatomic, strong) UIImageView *friendsBanner;
+@property (nonatomic, strong) StoreTabView *storeTabView;
+@property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
 
 @end
 
@@ -45,36 +48,14 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    CGFloat rowHeight = [StoreBookCoverViewCell cellSize].height;
-    
-    FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] init];
-    featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                   self.view.bounds.size.height - rowHeight - 280.0,
-                                                   self.view.bounds.size.width,
-                                                   rowHeight);
-    featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-    [self.view addSubview:featuredViewController.view];
-    self.featuredViewController = featuredViewController;
-    [featuredViewController loadData];
-    
-    FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] init];
-    friendsViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                  self.view.bounds.size.height - rowHeight + 48.0,
-                                                  self.view.bounds.size.width,
-                                                  rowHeight);
-    friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    [self.view addSubview:friendsViewController.view];
-    self.friendsViewController = friendsViewController;
-    [friendsViewController loadData];
-    
-    [self initBanners];
-    [self initLoginViewIfRequired];
+    [self initStores];
+    [self initTabs];
+//    [self initLoginViewIfRequired];
 }
 
 - (void)enable:(BOOL)enable {
     [self.featuredViewController enable:enable];
     [self.friendsViewController enable:enable];
-    [self showBanners:enable animated:enable];
 }
 
 #pragma mark - LoginViewControllerDelegate methods
@@ -84,6 +65,20 @@
         [self.loginViewController.view removeFromSuperview];
         self.loginViewController = nil;
     }
+}
+
+#pragma mark - StoreTabView methods
+
+- (void)storeTabSelectedFeatured {
+    [self selectedStoreCollectionViewController:self.featuredViewController];
+}
+
+- (void)storeTabSelectedFriends {
+    [self selectedStoreCollectionViewController:self.friendsViewController];
+}
+
+- (void)storeTabSelectedSuggested {
+    [self selectedStoreCollectionViewController:self.suggestedViewController];
 }
 
 #pragma mark - Private methods
@@ -99,28 +94,46 @@
     self.backgroundView = backgroundView;
 }
 
-- (void)initBanners {
-    UIImageView *featuredBanner = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_banner_featured.png"]];
-    UIView *featuredContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0,
-                                                                         self.view.bounds.size.height - 692.0,
-                                                                         featuredBanner.frame.size.width,
-                                                                         featuredBanner.frame.size.height)];
-    featuredContainer.clipsToBounds = YES;
-    [featuredContainer addSubview:featuredBanner];
-    [self.view addSubview:featuredContainer];
-    self.featuredBanner = featuredBanner;
-
-    UIImageView *friendsBanner = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_banner_friends.png"]];
-    UIView *friendsContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0,
-                                                                        self.view.bounds.size.height - 360.0,
-                                                                        friendsBanner.frame.size.width,
-                                                                        friendsBanner.frame.size.height)];
-    friendsContainer.clipsToBounds = YES;
-    [friendsContainer addSubview:friendsBanner];
-    [self.view addSubview:friendsContainer];
-    self.friendsBanner = friendsBanner;
+- (void)initStores {
+    CGFloat rowHeight = [StoreBookCoverViewCell cellSize].height;
+    self.storeCollectionViewControllers = [NSMutableArray arrayWithCapacity:3];
     
-    [self showBanners:NO animated:NO];
+    FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] init];
+    featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                   self.view.bounds.size.height - rowHeight + 45.0,
+                                                   self.view.bounds.size.width,
+                                                   rowHeight);
+    featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    featuredViewController.view.hidden = YES;
+    [self.view addSubview:featuredViewController.view];
+    self.featuredViewController = featuredViewController;
+    [self.storeCollectionViewControllers addObject:featuredViewController];
+    
+    FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] init];
+    friendsViewController.view.frame = featuredViewController.view.frame;
+    friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    friendsViewController.view.hidden = YES;
+    [self.view addSubview:friendsViewController.view];
+    self.friendsViewController = friendsViewController;
+    [self.storeCollectionViewControllers addObject:friendsViewController];
+    
+    SuggestedStoreCollectionViewController *suggestedViewController = [[SuggestedStoreCollectionViewController alloc] init];
+    suggestedViewController.view.frame = featuredViewController.view.frame;
+    suggestedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    suggestedViewController.view.hidden = YES;
+    [self.view addSubview:suggestedViewController.view];
+    self.suggestedViewController = suggestedViewController;
+    [self.storeCollectionViewControllers addObject:suggestedViewController];
+}
+
+- (void)initTabs {
+    StoreTabView *storeTabView = [[StoreTabView alloc] initWithDelegate:self];
+    storeTabView.frame = CGRectMake(floorf((self.view.bounds.size.width - storeTabView.frame.size.width) / 2.0),
+                                    floorf((self.view.bounds.size.height - storeTabView.frame.size.height) / 2.0) - 18.0,
+                                    storeTabView.frame.size.width,
+                                    storeTabView.frame.size.height);
+    [self.view addSubview:storeTabView];
+    self.storeTabView = storeTabView;
 }
 
 - (void)initLoginViewIfRequired {
@@ -137,34 +150,43 @@
     }
 }
 
-- (void)showBanners:(BOOL)show animated:(BOOL)animated {
-    
-    CGAffineTransform featuredTransform = CGAffineTransformMakeTranslation(0.0, -self.featuredBanner.frame.size.height);
-    CGAffineTransform friendsTransform = CGAffineTransformMakeTranslation(0.0, -self.friendsBanner.frame.size.height);
-    if (animated) {
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationCurveEaseIn
-                         animations:^{
-                             self.featuredBanner.transform = show ? CGAffineTransformIdentity : featuredTransform;
-                             self.friendsBanner.transform = show ? CGAffineTransformIdentity : friendsTransform;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-    } else {
-        self.featuredBanner.transform = show ? CGAffineTransformIdentity : featuredTransform;
-        self.friendsBanner.transform = show ? CGAffineTransformIdentity : friendsTransform;
-    }
-}
-
 - (void)loggedOut:(NSNotification *)notification {
     
-    // Reload data.
-    [self.featuredViewController loadData];
-    [self.friendsViewController loadData];
+//    // Reload data.
+//    [self.featuredViewController loadData];
+//    [self.friendsViewController loadData];
+//    
+//    // Restore the login view.
+//    [self initLoginViewIfRequired];
+}
+
+- (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
     
-    // Restore the login view.
-    [self initLoginViewIfRequired];
+    // Unload existing data.
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         for (StoreCollectionViewController *viewController in self.storeCollectionViewControllers) {
+                             if (viewController != storeCollectionViewController) {
+                                 [viewController unloadData];
+                             }
+                         }
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                             for (StoreCollectionViewController *viewController in self.storeCollectionViewControllers) {
+                                 if (viewController != storeCollectionViewController) {
+                                     viewController.view.hidden = YES;
+                                 }
+                             }
+                             storeCollectionViewController.view.hidden = NO;
+                             [storeCollectionViewController loadData];
+                         });
+                         
+                         
+                     }];
 }
 
 @end

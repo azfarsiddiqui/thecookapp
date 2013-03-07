@@ -75,6 +75,7 @@
             CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, translateOffset, 0.0, 0.0);
             CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kStoreBookInsertScale, kStoreBookInsertScale, 0.0);
             initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
+            initialAttributes.alpha = 1.0;
         }
         
     }
@@ -84,6 +85,12 @@
 
 - (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *finalAttributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
+    DLog(@"FINAL ATTRIBUTES %@", finalAttributes);
+    DLog(@"DELETED INDEX PATHS %@", self.deletedIndexPaths);
+    if ([self.deletedIndexPaths containsObject:itemIndexPath]) {
+        finalAttributes.alpha = 0.0;
+        finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, 0.1, 0.1, 0.0);
+    }
     return finalAttributes;
 }
 

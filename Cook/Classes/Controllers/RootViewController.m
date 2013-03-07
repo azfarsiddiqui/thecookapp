@@ -42,7 +42,7 @@
 #define kBounceOffset                   30.0
 #define kStoreHideTuckOffset            57.0
 #define kStoreShadowOffset              31.0
-#define kStoreShowAdjustment            31.0
+#define kStoreShowAdjustment            354.0
 #define kSettingsOffsetBelowBenchtop    35.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
