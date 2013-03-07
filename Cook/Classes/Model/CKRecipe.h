@@ -19,7 +19,7 @@
 @property (nonatomic, strong) NSString *description;
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
-@property (nonatomic, strong) NSArray *ingredients;
+@property (nonatomic, strong) NSMutableArray *ingredients;
 @property (nonatomic, assign) NSInteger cookingTimeInMinutes;
 @property (nonatomic, assign) NSInteger prepTimeInMinutes;
 @property (nonatomic, assign) NSInteger numServes;

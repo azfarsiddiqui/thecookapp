@@ -11,5 +11,4 @@
 @interface IngredientTableViewCell : UITableViewCell
 //text is measurument:ingredient
 -(void)configureCellWithIngredient:(Ingredient*)ingredient forRowAtIndexPath:(NSIndexPath *)indexPath;
--(void)styleCell;
 @end

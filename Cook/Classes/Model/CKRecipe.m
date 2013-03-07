@@ -29,7 +29,7 @@
     
     NSArray *ingredients = [parseRecipe objectForKey:kRecipeAttrIngredients];
     if (ingredients && [ingredients count] > 0) {
-        NSMutableArray *ingredientsArray = [NSMutableArray arrayWithCapacity:[ingredients count]];
+        NSMutableArray *mutableIngredientsArray = [NSMutableArray arrayWithCapacity:[ingredients count]];
         [ingredients each:^(NSString *ingredientText) {
             Ingredient *ing = nil;
             if ([ingredientText rangeOfString:@"::"].location != NSNotFound) {
@@ -40,9 +40,9 @@
             } else {
                 ing = [Ingredient ingredientwithName:ingredientText measurement:nil];
             }
-            [ingredientsArray addObject:ing];
+            [mutableIngredientsArray addObject:ing];
         }];
-        recipe.ingredients = [NSArray arrayWithArray:ingredientsArray];
+        recipe.ingredients = mutableIngredientsArray;
         NSString *recipeViewContentOffset = [parseRecipe objectForKey:kRecipeAttrRecipeViewImageContentOffset];
         if (recipeViewContentOffset) {
             recipe.recipeViewImageContentOffset = CGPointFromString(recipeViewContentOffset);

@@ -18,9 +18,9 @@
 
 @end
 
-@implementation CKEditableView
+#define kDefaultEditButtonOffset   CGSizeMake(14.0, 10.0)
 
-#define kEditButtonOffset   CGSizeMake(3.0, 3.0)
+@implementation CKEditableView
 
 -(void)awakeFromNib
 {
@@ -38,11 +38,13 @@
 
 -(void)config
 {
+    self.editButtonOffset = kDefaultEditButtonOffset;
     self.backgroundColor = [UIColor clearColor];
     self.autoresizingMask = UIViewAutoresizingNone;
     self.clipsToBounds = YES;
+    //TODO: book cover use this: cook_customise_textbox.png
     
-    self.editBackgroundImage = [[UIImage imageNamed:@"cook_customise_textbox.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:4];
+    self.editBackgroundImage = [[UIImage imageNamed:@"cook_editrecipe_textbox.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:4];
     UIImageView *editBackgroundView = [[UIImageView alloc] initWithImage:self.editBackgroundImage];
     self.editBackgroundView = editBackgroundView;
 }
@@ -70,9 +72,9 @@
 
     // Background view to contain the contentView.
     self.editBackgroundView.frame = CGRectMake(0.0f,
-                                               kEditButtonOffset.height,
-                                               self.frame.size.width - kEditButtonOffset.width,
-                                               self.frame.size.height - kEditButtonOffset.height);
+                                               self.editButtonOffset.height,
+                                               self.frame.size.width - self.editButtonOffset.width,
+                                               self.frame.size.height - self.editButtonOffset.height);
     contentView.frame = CGRectMake(self.contentInsets.left,
                                    self.contentInsets.top,
                                    contentView.frame.size.width - self.contentInsets.left - self.contentInsets.right,
@@ -113,12 +115,12 @@
     // Calculate the overall frame which takes into account the editButton.
     self.frame = CGRectMake(0.0f,
                             0.0f,
-                            self.editBackgroundView.frame.size.width + self.editButton.frame.size.width + kEditButtonOffset.width,
-                            self.editBackgroundView.frame.size.height - kEditButtonOffset.height);
+                            self.editBackgroundView.frame.size.width + self.editButton.frame.size.width + self.editButtonOffset.width,
+                            self.editBackgroundView.frame.size.height - self.editButtonOffset.height);
 
     // Position the edit background view.
     self.editBackgroundView.frame = CGRectMake(0.0,
-                                               -kEditButtonOffset.height,
+                                               -self.editButtonOffset.height,
                                                self.editBackgroundView.frame.size.width,
                                                self.editBackgroundView.frame.size.height);
     [self addSubview:self.editBackgroundView];
@@ -132,18 +134,6 @@
     
     // Non-edit mode to start off with.
     [self enableEditMode:NO];
-}
-
-
-- (UIView *)containerView {
-    if (!_containerView) {
-        _containerView = [[UIView alloc] initWithFrame:CGRectZero];
-        UIImageView *editBackgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"cook_customise_textbox.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:4]];
-        editBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        [_containerView addSubview:editBackgroundView];
-        self.editBackgroundView = editBackgroundView;
-    }
-    return _containerView;
 }
 
 - (UIButton *)editButton {

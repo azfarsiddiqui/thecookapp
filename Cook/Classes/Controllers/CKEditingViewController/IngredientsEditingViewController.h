@@ -16,7 +16,6 @@
 //label title eg 'recipe name'
 @property (nonatomic, strong) UIFont *titleFont;
 @property (nonatomic, assign) NSUInteger characterLimit;
+@property (nonatomic, strong) NSMutableArray *ingredientList;
 
-//new-line delimited list of ingredients
-@property (nonatomic, strong) NSArray *ingredientList;
 @end

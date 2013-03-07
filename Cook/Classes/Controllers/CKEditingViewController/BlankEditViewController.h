@@ -9,5 +9,5 @@
 #import "CKEditingViewController.h"
 
 @interface BlankEditViewController : CKEditingViewController
-
+@property(nonatomic,assign) float backgroundAlpha;
 @end

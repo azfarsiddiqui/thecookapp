@@ -17,7 +17,7 @@
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) UIEdgeInsets contentInsets;
 @property (nonatomic, strong) UIView *contentView;
-@property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, assign) CGSize editButtonOffset;
 @property (nonatomic, assign) id<CKEditableViewDelegate> delegate;
 
 - (id)   initWithDelegate:(id<CKEditableViewDelegate>)delegate;

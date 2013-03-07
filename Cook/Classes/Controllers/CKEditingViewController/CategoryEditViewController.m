@@ -8,12 +8,16 @@
 
 #import "CategoryEditViewController.h"
 #import "NSArray+Enumerable.h"
+#import "CategoryTableViewCell.h"
+#import "Theme.h"
 
 #define kCategoryTableViewCellIdentifier @"CategoryTableViewCellIdentifier"
 
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) UITableView *tableView;
+@property (nonatomic, strong) UILabel *titleLabel;
+
 @end
 
 @implementation CategoryEditViewController
@@ -32,11 +36,22 @@
     return mainView;
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self data];
+
+- (void)editingViewWillAppear:(BOOL)appear {
+    [super editingViewWillAppear:appear];
+    if (!appear) {
+        [self.titleLabel removeFromSuperview];
+    } else {
+        [self data];
+    }
     
+}
+
+- (void)editingViewDidAppear:(BOOL)appear {
+    [super editingViewDidAppear:appear];
+    if (appear) {
+        [self addTitleLabel];
+    }
 }
 
 - (void)performSave {
@@ -53,14 +68,17 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCategoryTableViewCellIdentifier];
-    }
+    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
     Category *category = [self.categories objectAtIndex:indexPath.row];
-    cell.textLabel.text = category.name;
+    [cell configureCellWithCategory:category];
     return cell;
 }
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 90.0f;
+}
+
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -85,12 +103,13 @@
 {
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, mainView.frame.size.width, mainView.frame.size.height)
                                                   style:UITableViewStylePlain];
-    self.tableView.backgroundColor = [UIColor whiteColor];
+    self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.autoresizingMask = UIViewAutoresizingNone;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    self.tableView.scrollEnabled = NO;
+    self.tableView.scrollEnabled = YES;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.tableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:kCategoryTableViewCellIdentifier];
     [mainView addSubview:self.tableView];
 }
 
@@ -106,4 +125,24 @@
         }];
     }
 }
+
+- (void)addTitleLabel {
+    UITableView *tableView = (UITableView *)self.targetEditingView;
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.text = self.editingTitle;
+    titleLabel.font = self.titleFont;
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.shadowColor = [UIColor blackColor];
+    titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    [titleLabel sizeToFit];
+    titleLabel.frame = CGRectMake(tableView.frame.origin.x + floorf((tableView.frame.size.width - titleLabel.frame.size.width) / 2.0),
+                                  tableView.frame.origin.y - titleLabel.frame.size.height + 5.0,
+                                  titleLabel.frame.size.width,
+                                  titleLabel.frame.size.height);
+    [self.view addSubview:titleLabel];
+    self.titleLabel = titleLabel;
+}
+
 @end

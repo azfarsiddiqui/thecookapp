@@ -277,6 +277,13 @@
     return [UIFont fontWithName:@"AvenirNext-Regular" size:24.0f];
 }
 
++(UIFont *)categoryListFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:52.0];
+}
+
++(UIColor *)categoryListSelectedColor {
+    return [UIColor colorWithHexString:@"1b76b6"];
+}
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor

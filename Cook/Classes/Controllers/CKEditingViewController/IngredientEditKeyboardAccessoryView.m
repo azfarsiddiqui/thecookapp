@@ -15,6 +15,7 @@
 
 @interface IngredientEditKeyboardAccessoryView()
 @property(nonatomic,strong) NSArray *shortNames;
+@property(nonatomic,strong) NSArray *measureNames;
 @property(nonatomic,assign) id<IngredientEditKeyboardAccessoryViewDelegate> delegate;
 @end
 @implementation IngredientEditKeyboardAccessoryView
@@ -24,6 +25,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.shortNames = @[@"1/4",@"1/3",@"1/2",@"",@"ML",@"L",@"",@"MG",@"G",@"KG",@"",@"TSP",@"TBSP",@"CUP"];
+        self.measureNames = @[@"1/4",@"1/3",@"1/2"];
         self.delegate = delegate;
         [self style];
     }
@@ -68,6 +70,7 @@
 
 -(void)buttonTapped:(UIButton*)button
 {
-    [self.delegate didEnterMeasurementShortCut:button.titleLabel.text];
+    BOOL isAmount = ![self.measureNames containsObject:button.titleLabel.text];
+    [self.delegate didEnterMeasurementShortCut:button.titleLabel.text isAmount:isAmount];
 }
 @end

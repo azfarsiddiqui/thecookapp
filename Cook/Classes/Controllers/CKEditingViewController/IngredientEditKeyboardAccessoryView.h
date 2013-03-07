@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol IngredientEditKeyboardAccessoryViewDelegate
--(void)didEnterMeasurementShortCut:(NSString*)name;
+-(void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount;
 @end
 
 @interface IngredientEditKeyboardAccessoryView : UIView
