@@ -20,7 +20,7 @@
 +(void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     PFQuery *query = [PFQuery queryWithClassName:kCategoryModelName];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query setCachePolicy:kPFCachePolicyCacheElseNetwork];
     [query orderByAscending:kModelAttrName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *categoryList, NSError *error) {
         if (!error) {

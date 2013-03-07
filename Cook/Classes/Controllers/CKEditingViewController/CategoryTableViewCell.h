@@ -11,6 +11,6 @@
 
 @interface CategoryTableViewCell : UITableViewCell
 
--(void)configureCellWithCategory:(Category *)category forRowAtIndexPath:(NSIndexPath *)indexPath;
+-(void)configureCellWithCategory:(Category *)category;
 
 @end

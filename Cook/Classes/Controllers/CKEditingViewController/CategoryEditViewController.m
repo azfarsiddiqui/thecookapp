@@ -57,7 +57,7 @@
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
     Category *category = [self.categories objectAtIndex:indexPath.row];
-    [cell configureCellWithCategory:category forRowAtIndexPath:indexPath];
+    [cell configureCellWithCategory:category];
     return cell;
 }
 
@@ -94,7 +94,7 @@
     self.tableView.autoresizingMask = UIViewAutoresizingNone;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    self.tableView.scrollEnabled = NO;
+    self.tableView.scrollEnabled = YES;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:kCategoryTableViewCellIdentifier];
     [mainView addSubview:self.tableView];
@@ -112,4 +112,5 @@
         }];
     }
 }
+
 @end
