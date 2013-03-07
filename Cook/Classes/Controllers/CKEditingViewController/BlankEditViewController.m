@@ -17,6 +17,7 @@
 -(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
+        self.backgroundAlpha = 0.5f;
     }
     return self;
 }
@@ -28,7 +29,7 @@
                               self.view.bounds.size.width - mainViewInsets.left - mainViewInsets.right,
                               self.view.bounds.size.height - mainViewInsets.top - mainViewInsets.bottom);
     UIView *mainView = [[UITextView alloc] initWithFrame:frame];
-    mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.5f];
+    mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:self.backgroundAlpha];
     return mainView;
 }
 
