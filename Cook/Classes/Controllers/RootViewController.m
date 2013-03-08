@@ -208,7 +208,7 @@
     
     if (self.benchtopLevel == kStoreLevel
         && CGRectIntersection(self.view.bounds,
-                              self.benchtopViewController.view.frame).size.height > kStoreHideTuckOffset + kSnapHeight) {
+                              self.benchtopViewController.view.frame).size.height > kStoreHideTuckOffset + kStoreShowAdjustment + kSnapHeight) {
         
         toggleLevel = kBenchtopLevel;
         
@@ -232,6 +232,7 @@
         toggleLevel = kBenchtopLevel;
     }
     
+    DLog("Snap to Level: %d", toggleLevel);
     [self snapToLevel:toggleLevel];
 }
 
