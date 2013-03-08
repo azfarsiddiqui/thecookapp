@@ -119,12 +119,17 @@
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query includeKey:kUserModelForeignKeyName];
-    [query setLimit:20];
+    [query whereKey:kBookAttrFeatured equalTo:[NSNumber numberWithBool:YES]];
+    [query setLimit:10];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         if (!error) {
             
-            // Remove books that are already followed.
-            [self filterFollowedBooks:parseBooks user:user success:success failure:failure];
+            // Return CKBook model objects.
+            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
+                return [[CKBook alloc] initWithParseObject:parseBook];
+            }];
+            
+            success(books);
             
         } else {
             failure(error);
