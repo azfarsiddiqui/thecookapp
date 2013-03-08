@@ -67,6 +67,7 @@
 @property(nonatomic,assign) BOOL inEditMode;
 @property(nonatomic,strong) ParsePhotoStore *parsePhotoStore;
 @property(nonatomic,strong) UIImage *recipePickerImage;
+@property(nonatomic,assign) BOOL isNewRecipe;
 
 // delegates
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
@@ -107,7 +108,15 @@
 
 -(IBAction)toggledEditMode:(UIButton*)editModeButton
 {
+    
+    //validate if editing
+    if (self.inEditMode && ![self validate]) {
+        return;
+    }
+    
     self.inEditMode = !self.inEditMode;
+    self.isNewRecipe = NO;
+
     [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
 
     [self.nameEditableView enableEditMode:self.inEditMode];
@@ -137,7 +146,9 @@
     [self setServesCookPrepColorAsEditable:self.inEditMode];
     
     if (self.inEditMode == NO) {
+        //done editing
         [self save];
+        self.recipeMaskView.hidden = YES;
     }
 }
 
@@ -148,11 +159,11 @@
 #pragma mark - Private Methods
 -(void)config
 {
-    BOOL newRecipe = !self.recipe;
+    self.isNewRecipe = !self.recipe;
     
     self.recipeMaskBackgroundImageView.image = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
 
-    if (newRecipe) {
+    if (self.isNewRecipe) {
         self.recipe = [CKRecipe recipeForUser:[CKUser currentUser] book:self.selectedBook];
     }
     
@@ -169,13 +180,13 @@
     [self loadRecipeImage];
     [self setPhotoValue:nil];
 
-    if (newRecipe) {
+    if (self.isNewRecipe) {
         [self toggledEditMode:self.editButton];
         UITapGestureRecognizer *newRecipeMaskViewTapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(newRecipeMaskTapped:)];
         [self.recipeMaskView addGestureRecognizer:newRecipeMaskViewTapped];
     }
     
-    [self toggleViewsForNewRecipe:newRecipe];
+    [self toggleViewsForNewRecipe:self.isNewRecipe];
 }
 
 #pragma mark - CKEditableViewDelegate
@@ -471,7 +482,6 @@
         label.text = kPlaceholderTextRecipeDescription;
     } else {
         label.text = methodValue;
-        //change the value if recipe is not nil, and there was a change
         if (![self.recipe.description isEqualToString:methodValue]) {
             self.recipe.description = methodValue;
         }
@@ -574,8 +584,35 @@
     }
 }
 
+-(BOOL)validate
+{
+    NSMutableString *validationErrors = [NSMutableString string];
+    if (!self.recipe.name) {
+        [validationErrors appendString:@"Your recipe has no name\n"];
+    }
+    
+    if (!self.recipe.story) {
+        [validationErrors appendString:@"Your recipe has no story.\nTell us a freekin' story!\n"];
+    }
+    if (!self.recipe.category) {
+        [validationErrors appendString:@"Your recipe has no category."];
+    }
+    
+    if ([validationErrors length] > 0) {
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Cannot create Recipe" message:validationErrors
+    delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        [alertView show];
+    }
+  
+    return [validationErrors length] == 0;
+    
+}
+
 -(void)save
 {
+    //validation
+    //name, story and categoyr was must be filled in
+    
     if (self.recipePickerImage) {
         self.recipe.image = self.recipePickerImage;
         [self displayProgress:YES];
