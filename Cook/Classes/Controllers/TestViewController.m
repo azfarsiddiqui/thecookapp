@@ -31,7 +31,7 @@
 #define  kCookPrepLabelLeftPadding  5.0f
 
 #define  kPlaceholderTextRecipeName     @"RECIPE NAME"
-#define  kPlaceholderTextStory          @"STORY"
+#define  kPlaceholderTextStory          @"STORY - TELL US A LITTLE ABOUT YOUR RECIPE"
 #define  kPlaceholderTextIngredients        @"INGREDIENTS"
 #define  kPlaceholderTextRecipeDescription  @"INSTRUCTIONS"
 #define  kPlaceholderTextCategory                @"CATEGORY"
@@ -55,6 +55,12 @@
 @property(nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
 @property(nonatomic,strong) IBOutlet UILabel *uploadLabel;
 
+//recipe mask view
+@property(nonatomic,strong) IBOutlet UIView  *recipeMaskView;
+@property(nonatomic,strong) IBOutlet UIImageView  *recipeMaskBackgroundImageView;
+@property(nonatomic,strong) IBOutlet UILabel *typeItUpLabel;
+@property(nonatomic,strong) IBOutlet UILabel *orJustAddLabel;
+
 @property(nonatomic,strong) CKEditingViewController *editingViewController;
 
 //data/state
@@ -73,6 +79,7 @@
 {
     [super awakeFromNib];
     self.parsePhotoStore = [[ParsePhotoStore alloc]init];
+    [self configAndStyle];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -87,7 +94,8 @@
     [super viewWillDisappear:animated];
     DLog();
 }
-#pragma mark - IBActions
+
+#pragma mark - button actions / gesture recognizers
 -(IBAction)dismissTapped:(id)sender
 {
     if (self.modalDelegate) {
@@ -133,11 +141,17 @@
     }
 }
 
+-(void) newRecipeMaskTapped:(UITapGestureRecognizer*)tapGesture
+{
+    [self toggleViewsForNewRecipe:NO];
+}
 #pragma mark - Private Methods
 -(void)config
 {
     BOOL newRecipe = !self.recipe;
     
+    self.recipeMaskBackgroundImageView.image = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
+
     if (newRecipe) {
         self.recipe = [CKRecipe recipeForUser:[CKUser currentUser] book:self.selectedBook];
     }
@@ -155,10 +169,13 @@
     [self loadRecipeImage];
     [self setPhotoValue:nil];
 
-    //new recipe. toggle edit mode
     if (newRecipe) {
         [self toggledEditMode:self.editButton];
+        UITapGestureRecognizer *newRecipeMaskViewTapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(newRecipeMaskTapped:)];
+        [self.recipeMaskView addGestureRecognizer:newRecipeMaskViewTapped];
     }
+    
+    [self toggleViewsForNewRecipe:newRecipe];
 }
 
 #pragma mark - CKEditableViewDelegate
@@ -233,7 +250,7 @@
 
 }
 
-#pragma mark CKEditableViewControllerDelegate
+#pragma mark - CKEditableViewControllerDelegate
 - (void)editingViewWillAppear:(BOOL)appear {
     
 }
@@ -432,6 +449,7 @@
     
     label.frame = self.ingredientsViewEditableView.frame;
     self.ingredientsViewEditableView.contentView = label;
+
     //now size label correctly
     CGSize constrainedSize = [label.text sizeWithFont:[Theme ingredientsListFont]
                                     constrainedToSize:
@@ -585,7 +603,19 @@
     self.uploadLabel.text = @"";
     self.uploadLabel.hidden = !progress;
     self.uploadProgressView.hidden = !progress;
-
 }
 
+-(void) configAndStyle
+{
+    self.typeItUpLabel.font = [Theme typeItUpFont];
+    self.orJustAddLabel.font = [Theme orJustAddFont];
+}
+
+-(void) toggleViewsForNewRecipe:(BOOL)isNewRecipe
+{
+        self.recipeMaskView.hidden = !isNewRecipe;
+        self.servesCookPrepEditableView.hidden = isNewRecipe;
+        self.ingredientsViewEditableView.hidden = isNewRecipe;
+        self.methodViewEditableView.hidden = isNewRecipe;
+}
 @end

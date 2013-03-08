@@ -209,7 +209,7 @@
 
 +(UIFont *)storyFont
 {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:28.0f];
 }
 
 +(UIFont *)recipeNameFont
@@ -283,6 +283,15 @@
 
 +(UIColor *)categoryListSelectedColor {
     return [UIColor colorWithHexString:@"1b76b6"];
+}
+
+
++ (UIFont *) typeItUpFont {
+    return [Theme defaultBoldFontWithSize:28.0f];
+}
+
++ (UIFont *) orJustAddFont {
+   return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0f];
 }
 
 #pragma mark - Category View

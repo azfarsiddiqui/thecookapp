@@ -83,6 +83,8 @@
 + (UIFont *) cookPrepPickerFont;
 + (UIFont *) categoryListFont;
 + (UIColor *) categoryListSelectedColor;
++ (UIFont *) typeItUpFont;
++ (UIFont *) orJustAddFont;
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
 

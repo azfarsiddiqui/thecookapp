@@ -203,7 +203,9 @@
 {
     [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipeObject setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
-    [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
+    if (self.category && self.category.parseObject) {
+        [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
+    }
     [parseRecipeObject setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
     if (self.numServes > 0) {
         [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
