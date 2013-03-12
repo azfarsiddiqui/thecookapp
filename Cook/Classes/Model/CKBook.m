@@ -28,7 +28,7 @@
     }];
 }
 
-+ (void)saveBookForUser:(CKUser *)user succeess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)createBookForUser:(CKUser *)user succeess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFObject *book = [self createParseBookForParseUser:user.parseUser];
     [book saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {

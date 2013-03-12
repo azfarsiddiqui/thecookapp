@@ -10,6 +10,7 @@
 #import "CKLoginView.h"
 #import "EventHelper.h"
 #import "CKUser.h"
+#import "AppHelper.h"
 
 @interface LoginViewController () <CKLoginViewDelegate>
 
@@ -33,6 +34,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
+    
     [self initLoginView];
 }
 
@@ -50,9 +54,13 @@
 #pragma mark - Private methods
 
 - (void)initLoginView {
+    
     // Login overlay.
     UIImageView *loginOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_signin_banner_overlay.png"]];
-    self.view.frame = loginOverlayView.frame;
+    loginOverlayView.frame = CGRectMake(floorf((self.view.bounds.size.width - loginOverlayView.frame.size.width) / 2.0),
+                                        floorf((self.view.bounds.size.height - loginOverlayView.frame.size.height) / 2.0),
+                                        loginOverlayView.frame.size.width,
+                                        loginOverlayView.frame.size.height);
     loginOverlayView.userInteractionEnabled = YES;
     [self.view addSubview:loginOverlayView];
     self.loginOverlayView = loginOverlayView;
@@ -60,10 +68,9 @@
     // Banner.
     UIImageView *loginBannerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_signin_banner.png"]];
     loginBannerView.frame = CGRectMake(floorf((self.view.bounds.size.width - loginBannerView.frame.size.width) / 2.0),
-                                       floorf((self.view.frame.size.height - loginBannerView.frame.size.height) / 2.0) + 70.0,
+                                       floorf((self.view.frame.size.height - loginBannerView.frame.size.height) / 2.0),
                                        loginBannerView.frame.size.width,
                                        loginBannerView.frame.size.height);
-    //        loginBannerView.alpha = 0.5;
     loginBannerView.userInteractionEnabled = YES;
     [self.view addSubview:loginBannerView];
     self.loginBannerView = loginBannerView;

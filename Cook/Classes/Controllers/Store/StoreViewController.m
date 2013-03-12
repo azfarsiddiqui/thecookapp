@@ -11,17 +11,15 @@
 #import "FeaturedStoreCollectionViewController.h"
 #import "SuggestedStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
-#import "LoginViewController.h"
 #import "EventHelper.h"
 #import "StoreTabView.h"
 
-@interface StoreViewController () <LoginViewControllerDelegate, StoreTabViewDelegate>
+@interface StoreViewController () <StoreTabViewDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
 @property (nonatomic, strong) SuggestedStoreCollectionViewController *suggestedViewController;
-@property (nonatomic, strong) LoginViewController *loginViewController;
 @property (nonatomic, strong) StoreTabView *storeTabView;
 @property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
 
@@ -33,6 +31,7 @@
 #define kStoreShadowOffset      31.0
 
 - (void)dealloc {
+    [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
 }
 
@@ -42,6 +41,7 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     [self initBackground];
     
+    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
@@ -50,21 +50,11 @@
     
     [self initStores];
     [self initTabs];
-//    [self initLoginViewIfRequired];
 }
 
 - (void)enable:(BOOL)enable {
     [self.featuredViewController enable:enable];
     [self.friendsViewController enable:enable];
-}
-
-#pragma mark - LoginViewControllerDelegate methods
-
-- (void)loginViewControllerSuccessful:(BOOL)success {
-    if (success) {
-        [self.loginViewController.view removeFromSuperview];
-        self.loginViewController = nil;
-    }
 }
 
 #pragma mark - StoreTabView methods
@@ -136,18 +126,8 @@
     self.storeTabView = storeTabView;
 }
 
-- (void)initLoginViewIfRequired {
-    CKUser *currentUser = [CKUser currentUser];
-    if (![currentUser isSignedIn]) {
-        
-        LoginViewController *loginViewController = [[LoginViewController alloc] initWithDelegate:self];
-        loginViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                    self.view.bounds.size.height - loginViewController.view.frame.size.height - kStoreShadowOffset,
-                                                    loginViewController.view.frame.size.width,
-                                                    loginViewController.view.frame.size.height);
-        [self.view addSubview:loginViewController.view];
-        self.loginViewController = loginViewController;
-    }
+- (void)loggedIn:(NSNotification *)notification {
+    DLog();
 }
 
 - (void)loggedOut:(NSNotification *)notification {

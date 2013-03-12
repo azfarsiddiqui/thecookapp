@@ -36,9 +36,6 @@
     [Parse setApplicationId:@"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS"
                   clientKey:@"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN"];
     
-    // Automatic creation of anonymous user.
-    [PFUser enableAutomaticUser];
-    
     // Set up Facebook
     [PFFacebookUtils initializeFacebook];
     

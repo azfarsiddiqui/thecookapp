@@ -15,6 +15,7 @@
 #import "CoverPickerViewController.h"
 #import "IllustrationPickerViewController.h"
 #import "ViewHelper.h"
+#import "MRCEnumerable.h"
 
 @interface BenchtopCollectionViewController () <UIActionSheetDelegate, BenchtopBookCoverViewCellDelegate,
     CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, UIGestureRecognizerDelegate>
@@ -48,7 +49,7 @@
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[BenchtopCollectionFlowLayout alloc] init]]) {
         [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
-        [EventHelper registerLoginSucessful:self selector:@selector(loginPerformed:)];
+        [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
         [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     }
     return self;
@@ -75,6 +76,11 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     tapGesture.delegate = self;
     [self.view addGestureRecognizer:tapGesture];
+    
+    // Load benchtop.
+    if ([CKUser isLoggedIn]) {
+        [self loadBenchtop:YES];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -82,24 +88,7 @@
 }
 
 - (void)enable:(BOOL)enable {
-    
-    // Enable scrolling as appropriate.
     self.collectionView.userInteractionEnabled = enable;
-    
-    if (enable) {
-        
-        // Start loading my book if not there already.
-        NSInteger numMyBooks = [self.collectionView numberOfItemsInSection:kMySection];
-        if (numMyBooks == 0) {
-            [self loadMyBook];
-        }
-        
-        // Load following books if not there already.
-        if ([self.followBooks count] == 0) {
-            [self loadFollowBooks];
-        }
-        
-    }
 }
 
 - (void)bookWillOpen:(BOOL)open {
@@ -183,11 +172,18 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    if ([self.followBooks count] == 0) {
-        return 1;
-    } else {
-        return 2;
-    }
+    NSInteger numSections = 0;
+    
+    numSections += 1;   // My book
+    numSections += 1;   // Followed books
+    
+//    if ([CKUser isLoggedIn]) {
+//        
+//        if ([self.followBooks count] > 0) {
+//        }
+//    }
+    
+    return numSections;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
@@ -347,7 +343,6 @@
                         BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
                         [myBookCell loadBook:book];
                         
-                        
                     } else {
                         self.myBook = book;
                         [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:kMySection]]];
@@ -360,49 +355,29 @@
 }
 
 - (void)loadFollowBooks {
-    
     CKUser *currentUser = [CKUser currentUser];
-    
-    if ([currentUser isSignedIn]) {
-        [CKBook followBooksForUser:currentUser
-                           success:^(NSArray *books) {
-                               self.followBooks = [NSMutableArray arrayWithArray:books];
-                               if ([books count] > 0) {
-                                   NSInteger numSections = [self.collectionView numberOfSections];
-                                   if (numSections > 1) {
-                                       [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                                   } else {
-                                       [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                                   }
-                               }
-                           }
-                           failure:^(NSError *error) {
-                               DLog(@"Error: %@", [error localizedDescription]);
+    [CKBook followBooksForUser:currentUser
+                       success:^(NSArray *books) {
+                           self.followBooks = [NSMutableArray arrayWithArray:books];
+                           NSArray *indexPathsToInsert = [self.followBooks collectWithIndex:^id(CKBook *book, NSUInteger bookIndex) {
+                               return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
                            }];
-    } else {
-        
-        [self.followBooks removeAllObjects];
-        NSInteger numSections = [self.collectionView numberOfSections];
-        if (numSections > 1) {
-            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-        }
-    }
+                           [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                       }
+                       failure:^(NSError *error) {
+                           DLog(@"Error: %@", [error localizedDescription]);
+                       }];
 }
 
-- (void)loginPerformed:(NSNotification *)notification {
+- (void)loggedIn:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-        [self loadMyBook];
+        [self loadBenchtop:YES];
     }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    
-    // Reload book.
-    [self loadMyBook];
-    
-    // Reload follows books
-    [self loadFollowBooks];
+    [self loadBenchtop:NO];
 }
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
@@ -674,6 +649,20 @@
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
     [self.delegate panToBenchtopForSelf:self];
+}
+
+- (void)loadBenchtop:(BOOL)load {
+    if (load) {
+        [self loadMyBook];
+        [self loadFollowBooks];
+    } else {
+        self.myBook = nil;
+        [self.followBooks removeAllObjects];
+        self.followBooks = nil;
+        
+        [self.collectionView reloadData];
+    }
+    
 }
 
 @end

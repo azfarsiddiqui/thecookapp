@@ -23,6 +23,7 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 @property (nonatomic, strong) NSString *lastName;
 
 + (CKUser *)currentUser;
++ (BOOL)isLoggedIn;
 + (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (CKUser *)userWithParseUser:(PFUser *)parseUser;

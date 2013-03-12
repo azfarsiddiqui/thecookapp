@@ -92,15 +92,21 @@
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *initialAttributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
     
-    // Custom inserted item.
+    // Drop my book onto the benchtop.
     if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
         
         if (initialAttributes == nil) {
             initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
         }
         
-        CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
-        initialAttributes.transform3D = scaleTransform;
+        if (itemIndexPath.section == 0) {
+            CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kBookScaleFactor, kBookScaleFactor, 0.0);
+            initialAttributes.transform3D = scaleTransform;
+        } else if (itemIndexPath.section == 1) {
+            CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, 62.0, 0.0, 0.0);
+            initialAttributes.transform3D = translateTransform;
+        }
+        
     }
     
     return initialAttributes;

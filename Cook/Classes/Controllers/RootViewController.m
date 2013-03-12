@@ -16,13 +16,16 @@
 #import "SettingsViewController.h"
 #import "TestViewController.h"
 #import "BookModalViewController.h"
+#import "LoginViewController.h"
+#import "EventHelper.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
+@property (nonatomic, strong) LoginViewController *loginViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
@@ -49,6 +52,10 @@
 #define kSettingsLevel                  0
 #define kOverlayViewAlpha               0.7
 
+- (void)dealloc {
+    [EventHelper unregisterLogout:self];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -58,27 +65,13 @@
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
+    
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    // If the current user is not persisted, i.e. new, then create a book first.
-    CKUser *currentUser = [CKUser currentUser];
-    if (![currentUser persisted]) {
-        
-        // TODO Tutorial.
-        [CKBook saveBookForUser:currentUser
-                         succeess:^{
-                             [self initViewControllers];
-                         } failure:^(NSError *error) {
-                             // TODO Handle initial creation error.
-                         }];
-        
-    } else {
-        [self initViewControllers];
-    }
-    
+    [self initViewControllers];
 }
 
 - (BOOL)shouldAutorotate {
@@ -180,6 +173,12 @@
     [self hideModalViewController:viewController];
 }
 
+#pragma mark - LoginViewControllerDelegate methods
+
+- (void)loginViewControllerSuccessful:(BOOL)success {
+    [self enable:success];
+}
+
 #pragma mark - Private methods
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
@@ -237,6 +236,10 @@
 }
 
 - (void)snapToLevel:(NSUInteger)benchtopLevel {
+    [self snapToLevel:benchtopLevel completion:^{}];
+}
+
+- (void)snapToLevel:(NSUInteger)benchtopLevel completion:(void (^)())completion {
     
     BOOL toggleMode = (self.benchtopLevel != benchtopLevel);
     CGRect storeFrame = [self storeFrameForLevel:benchtopLevel];
@@ -282,8 +285,8 @@
                                               }
                                               completion:^(BOOL finished) {
                                                   self.benchtopLevel = benchtopLevel;
-                                                  [self.storeViewController enable:(self.benchtopLevel == 2)];
-                                                  [self.benchtopViewController enable:(self.benchtopLevel == 1)];
+                                                  [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
+                                                  completion();
                                               }];
                          }
                          
@@ -372,7 +375,7 @@
                            self.storeViewController.view.frame.size.height);
     } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop - self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
+                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.view.bounds.size.height - kSettingsOffsetBelowBenchtop - self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     }
@@ -387,14 +390,14 @@
         frame = CGRectMake(self.view.bounds.origin.x,
                            self.view.bounds.size.height - kStoreShowAdjustment - kStoreShadowOffset,
                            self.view.bounds.size.width,
-                           self.benchtopViewController.view.frame.size.height);
+                           self.view.bounds.size.height);
     } else if (level == kBenchtopLevel) {
         frame = self.view.bounds;
     } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop,
+                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.view.bounds.size.height - kSettingsOffsetBelowBenchtop,
                            self.view.bounds.size.width,
-                           self.benchtopViewController.view.frame.size.height);
+                           self.view.bounds.size.height);
     }
     
     return frame;
@@ -405,7 +408,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - kStoreShowAdjustment - kStoreShadowOffset + self.benchtopViewController.view.frame.size.height - kSettingsOffsetBelowBenchtop,
+                           self.view.bounds.size.height - kStoreShowAdjustment - kStoreShadowOffset + self.view.bounds.size.height - kSettingsOffsetBelowBenchtop,
                            self.view.bounds.size.width,
                            self.settingsViewController.view.frame.size.height);
     } else if (level == kBenchtopLevel) {
@@ -445,6 +448,8 @@
 
 - (void)initViewControllers {
     
+    BOOL isLoggedIn = [self isLoggedIn];
+    
     // Start off on the middle level.
     self.benchtopLevel = 1;
     
@@ -455,14 +460,16 @@
     // Benchtop on Level 1
     self.benchtopViewController.view.frame = [self benchtopFrameForLevel:self.benchtopLevel];
     [self.view insertSubview:self.benchtopViewController.view belowSubview:self.storeViewController.view];
-    [self.benchtopViewController enable:YES];
     
     // Settings on Level 0
     self.settingsViewController.view.frame = [self settingsFrameForLevel:self.benchtopLevel];
     [self.view addSubview:self.settingsViewController.view];
     
-    // Enable pan by default.
-    self.panEnabled = YES;
+    // Enable?
+    [self enable:isLoggedIn];
+    
+    // Login/intro view.
+    [self showLoginView:!isLoggedIn];
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -573,6 +580,43 @@
                          self.overlayView = nil;
                          [modalViewController.view removeFromSuperview];
                          self.bookModalViewController = nil;
+                     }];
+}
+
+- (BOOL)isLoggedIn {
+    return [CKUser isLoggedIn];
+}
+
+- (void)enable:(BOOL)enable {
+    self.panEnabled = enable;
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    [self snapToLevel:kBenchtopLevel completion:^{
+        [self showLoginView:YES];
+    }];
+}
+
+- (void)showLoginView:(BOOL)show {
+    if (show) {
+        LoginViewController *loginViewController = [[LoginViewController alloc] initWithDelegate:self];
+        loginViewController.view.frame = self.view.bounds;
+        loginViewController.view.alpha = 0.0;
+        [self.view addSubview:loginViewController.view];
+        self.loginViewController = loginViewController;
+    }
+    
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.loginViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.loginViewController.view removeFromSuperview];
+                             self.loginViewController = nil;
+                         }
                      }];
 }
 
