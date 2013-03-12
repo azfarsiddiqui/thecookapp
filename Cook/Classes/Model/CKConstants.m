@@ -28,6 +28,12 @@ NSString *const kUserAttrActivities             = @"activities";
 NSString *const kUserAttrFirstName              = @"firstName";
 NSString *const kUserAttrLastName               = @"lastName";
 
+#pragma mark - UserFriend class
+
+NSString *const kUserFriendModelName            = @"UserFriend";
+NSString *const kUserFriendTarget               = @"friend";
+NSString *const kUserFriendAttrConnected        = @"connected";
+
 #pragma mark - User Book Follow class
 
 NSString *const kUserBookFollowModelName       = @"UserBookFollow";
@@ -86,8 +92,14 @@ NSString *const kRecipeLikeModelName           = @"RecipeLike";
 NSString *const kRecipeLikeModelForeignKeyName = @"recipeLike";
 
 #pragma mark - Activity class
+
 NSString *const kActivityModelName              = @"Activity";
 NSString *const kActivityNameAddRecipe          = @"AddRecipe";
 NSString *const kActivityNameUpdateRecipe       = @"UpdateRecipe";
 NSString *const kActivityNameLikeRecipe         = @"LikeRecipe";
 
+#pragma mark - UserNotification class
+
+NSString *const kUserNotificationModelName          = @"UserNotification";
+NSString *const kUserNotificationNameFriendRequest  = @"FriendRequest";
+NSString *const kUserNotificationUserFriend         = @"UserFriend";

@@ -27,6 +27,12 @@ extern NSString *const kUserAttrFacebookFriends;
 extern NSString *const kUserAttrFirstName;
 extern NSString *const kUserAttrLastName;
 
+#pragma mark - UserFriend class
+
+extern NSString *const kUserFriendModelName;
+extern NSString *const kUserFriendTarget;
+extern NSString *const kUserFriendAttrConnected;
+
 #pragma mark - User Book Follow class
 
 extern NSString *const kUserBookFollowModelName;
@@ -86,8 +92,15 @@ extern NSString *const kRecipeLikeModelName;
 extern NSString *const kRecipeLikeModelForeignKeyName;
 
 #pragma mark - Activity class
+
 extern NSString *const kActivityModelName;
 extern NSString *const kActivityNameAddRecipe;
 extern NSString *const kActivityNameUpdateRecipe;
 extern NSString *const kActivityNameLikeRecipe;
+
+#pragma mark - UserNotification class
+
+extern NSString *const kUserNotificationModelName;
+extern NSString *const kUserNotificationNameFriendRequest;  // Name of the notification type
+extern NSString *const kUserNotificationUserFriend;         // References the UserFriend model
 
