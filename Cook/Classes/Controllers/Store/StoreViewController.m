@@ -20,6 +20,7 @@
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
 @property (nonatomic, strong) SuggestedStoreCollectionViewController *suggestedViewController;
+@property (nonatomic, strong) StoreCollectionViewController *currentStoreCollectionViewController;
 @property (nonatomic, strong) StoreTabView *storeTabView;
 @property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
 
@@ -127,20 +128,21 @@
 }
 
 - (void)loggedIn:(NSNotification *)notification {
-    DLog();
+    [self.storeTabView selectFeatured];
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    
-//    // Reload data.
-//    [self.featuredViewController loadData];
-//    [self.friendsViewController loadData];
-//    
-//    // Restore the login view.
-//    [self initLoginViewIfRequired];
+    [self.currentStoreCollectionViewController unloadData];
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
+    
+    if (![CKUser isLoggedIn]) {
+        return;
+    }
+    
+    // Remember selected store tab.
+    self.currentStoreCollectionViewController = storeCollectionViewController;
     
     // Unload existing data.
     [UIView animateWithDuration:0.2

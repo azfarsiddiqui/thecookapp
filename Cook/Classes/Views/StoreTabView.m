@@ -29,6 +29,9 @@
 #define kMaxSize        CGSizeMake(140.0, 77.0)
 #define kMinTabHeight   57.0
 #define kMaxTabHeight   77.0
+#define kFeaturedTab    0
+#define kFriendsTab     1
+#define kSuggestedTab   2
 
 - (id)initWithDelegate:(id<StoreTabViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -47,15 +50,15 @@
 }
 
 - (void)selectFeatured {
-    
+    [self selectTabAtIndex:kFeaturedTab];
 }
 
 - (void)selectFriends {
-    
+    [self selectTabAtIndex:kFriendsTab];
 }
 
 - (void)selectSuggested {
-    
+    [self selectTabAtIndex:kSuggestedTab];
 }
 
 #pragma mark - Private methods
@@ -134,7 +137,7 @@
     }
     
     // Select the first tab.
-    [self selectTabAtIndex:0];
+    [self selectFeatured];
 }
 
 #pragma mark - Private methods
@@ -151,13 +154,13 @@
 
 - (void)selectedTabAtIndex:(NSUInteger)tabIndex {
     switch (tabIndex) {
-        case 0:
+        case kFeaturedTab:
             [self.delegate storeTabSelectedFeatured];
             break;
-        case 1:
+        case kFriendsTab:
             [self.delegate storeTabSelectedFriends];
             break;
-        case 2:
+        case kSuggestedTab:
             [self.delegate storeTabSelectedSuggested];
             break;
         default:
