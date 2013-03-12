@@ -34,24 +34,6 @@
                          failure:^(NSError *error) {
                              DLog(@"Error: %@", [error localizedDescription]);
                          }];
-//    CKUser *currentUser = [CKUser currentUser];
-//    if ([currentUser isSignedIn]) {
-//        [CKBook friendsBooksForUser:currentUser
-//                            success:^(NSArray *friendsBooks) {
-//                                [self loadBooks:friendsBooks];
-//                            }
-//                            failure:^(NSError *error) {
-//                                DLog(@"Error: %@", [error localizedDescription]);
-//                            }];
-//    } else {
-//        
-//        // Cater for logged out state.
-////        [self.books removeAllObjects];
-////        if (self.collectionView) {
-////            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
-////        }
-////    
-//    }
 }
 
 - (UIView *)noDataView {
