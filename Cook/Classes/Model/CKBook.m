@@ -86,6 +86,50 @@
 
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
+    // Friends query.
+    PFQuery *friendsQuery = [PFQuery queryWithClassName:kUserFriendModelName];
+    [friendsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [friendsQuery whereKey:kUserFriendAttrConnected equalTo:[NSNumber numberWithBool:YES]];
+    [friendsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [friendsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseUserFriends, NSError *error) {
+        
+        if (!error) {
+            
+            // Get friends' user references.
+            NSArray *friends = [parseUserFriends collect:^id(PFObject *parseUserFriend) {
+                return [parseUserFriend objectForKey:kUserFriendTarget];
+            }];
+            
+            // Make another query for friends' books.
+            PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
+            [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
+            [friendsBooksQuery includeKey:kUserModelForeignKeyName];
+            [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friends];
+            [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
+                
+                if (!error) {
+                    
+                    // Remove books that are already followed.
+                    [self filterFollowedBooks:parseBooks user:user success:success failure:failure];
+                    
+                } else {
+                    DLog(@"Error loading user friends: %@", [error localizedDescription]);
+                    failure(error);
+                }
+                
+            }];
+
+        } else {
+            DLog(@"Error loading user friends: %@", [error localizedDescription]);
+            failure(error);
+        }
+        
+    }];
+    
+}
+
++ (void)suggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
     // Facebook friends.
     NSArray *facebookFriends = [user.parseUser objectForKey:kUserAttrFacebookFriends];
     
@@ -94,7 +138,6 @@
     [friendsQuery whereKey:kUserAttrFacebookId containedIn:facebookFriends];
     
     // Friends books query.
-    // TODO Can this query be combined?
     PFQuery *friendsBooksQuery = [PFQuery queryWithClassName:kBookModelName];
     [friendsBooksQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
     [friendsBooksQuery includeKey:kUserModelForeignKeyName];
@@ -112,7 +155,6 @@
         }
         
     }];
-    
 }
 
 + (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
