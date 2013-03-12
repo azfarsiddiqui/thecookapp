@@ -45,8 +45,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb289425251158959</string>
-				<string>fb205980009473724</string>
-				<string>fb194406683965631</string>
 			</array>
 		</dict>
 	</array>
@@ -74,5 +72,7 @@
 		<string>Neutra2Display-Thin.otf</string>
 		<string>Neutra2Display-Titling.otf</string>
 	</array>
+	<key>FacebookAppID</key>
+	<string>289425251158959</string>
 </dict>
 </plist>

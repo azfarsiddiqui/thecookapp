@@ -40,7 +40,7 @@
     [PFUser enableAutomaticUser];
     
     // Set up Facebook
-    [PFFacebookUtils initializeWithApplicationId:@"289425251158959"];
+    [PFFacebookUtils initializeFacebook];
     
     DLog(@"Started ServerManager");
 }

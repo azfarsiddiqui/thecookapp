@@ -10,6 +10,7 @@
 #import "NSString+Utilities.h"
 #import "CKBook.h"
 #import "MRCEnumerable.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface CKUser ()
 
@@ -53,9 +54,9 @@ static ObjectFailureBlock loginFailureBlock = nil;
         } else {
             
             // Update user details and friends.
-            [[PF_FBRequest requestForMe] startWithCompletionHandler:
-             ^(PF_FBRequestConnection *connection,
-               NSDictionary<PF_FBGraphUser> *userData,
+            [[FBRequest requestForMe] startWithCompletionHandler:
+             ^(FBRequestConnection *connection,
+               NSDictionary<FBGraphUser> *userData,
                NSError *error) {
                  if (error) {
                      loginFailureBlock(error);
@@ -165,7 +166,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 #pragma mark - Private methods
 
-+ (void)populateUserDetailsFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
++ (void)populateUserDetailsFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
     CKUser *currentUser = [CKUser currentUser];
     DLog(@"Logged in user %@", currentUser);
     if (currentUser.admin) {
@@ -198,7 +199,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [[CKUser alloc] initWithParseUser:parseUser];
 }
 
-+ (void)handleAdminLoginFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
++ (void)handleAdminLoginFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
     DLog(@"Logged in as admin");
     
     CKUser *currentUser = [CKUser currentUser];
@@ -262,17 +263,17 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }];
 }
 
-+ (void)handleUserLoginFromFacebookData:(NSDictionary<PF_FBGraphUser> *)userData {
++ (void)handleUserLoginFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
     
     // Find the user's friends, and see if any of them are Cook users
-    [[PF_FBRequest requestForMyFriends] startWithCompletionHandler:^(PF_FBRequestConnection *connection,
+    [[FBRequest requestForMyFriends] startWithCompletionHandler:^(FBRequestConnection *connection,
                                                                      NSDictionary *jsonDictionary, NSError *error) {
         CKUser *currentUser = [CKUser currentUser];
         
         if (!error) {
             
             // Grab the facebook ids of friends.
-            NSArray *friendIds = [[jsonDictionary objectForKey:@"data"] collect:^id(NSDictionary<PF_FBGraphUser> *friendData) {
+            NSArray *friendIds = [[jsonDictionary objectForKey:@"data"] collect:^id(NSDictionary<FBGraphUser> *friendData) {
                 return friendData.id;
             }];
             

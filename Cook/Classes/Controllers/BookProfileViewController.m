@@ -11,6 +11,7 @@
 #import "CKUser.h"
 #import "Theme.h"
 #import <Parse/Parse.h>
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface BookProfileViewController ()
 
@@ -89,10 +90,10 @@
     [introView addSubview:nameLabel];
     
     // Profile photo
-    PF_FBProfilePictureView *profileView = [[PF_FBProfilePictureView alloc] initWithFrame:CGRectMake(floorf((introView.bounds.size.width - kProfileSize.width) / 2.0),
-                                                                                                     nameLabel.frame.origin.y - kProfileNameGap - kProfileSize.height,
-                                                                                                     kProfileSize.width,
-                                                                                                     kProfileSize.height)];
+    FBProfilePictureView *profileView = [[FBProfilePictureView alloc] initWithFrame:CGRectMake(floorf((introView.bounds.size.width - kProfileSize.width) / 2.0),
+                                                                                               nameLabel.frame.origin.y - kProfileNameGap - kProfileSize.height,
+                                                                                               kProfileSize.width,
+                                                                                               kProfileSize.height)];
     profileView.profileID = self.book.user.facebookId;
     [introView addSubview:profileView];
 }

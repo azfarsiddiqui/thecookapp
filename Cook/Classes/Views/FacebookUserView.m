@@ -9,12 +9,13 @@
 #import "FacebookUserView.h"
 #import "Theme.h"
 #import <Parse/Parse.h>
+#import <FacebookSDK/FacebookSDK.h>
 
 #define kHeight 22.0f
 #define kWidth 22.0f
 
 @interface FacebookUserView()
-@property(nonatomic,strong) PF_FBProfilePictureView *fbProfileView;
+@property(nonatomic,strong) FBProfilePictureView *fbProfileView;
 @property(nonatomic,strong) UILabel *userNameLabel;
 @end
 
@@ -54,10 +55,10 @@
     return _userNameLabel;
 }
 
--(PF_FBProfilePictureView *)fbProfileView
+-(FBProfilePictureView *)fbProfileView
 {
     if (!_fbProfileView) {
-        _fbProfileView = [[PF_FBProfilePictureView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, kWidth, kHeight)];
+        _fbProfileView = [[FBProfilePictureView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, kWidth, kHeight)];
         [self addSubview: _fbProfileView];
         UIImageView *maskOverlayImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"cook_book_profile_sm.png"]];
         maskOverlayImageView.frame = CGRectMake(0.0f, 0.0f, kWidth, kWidth);
