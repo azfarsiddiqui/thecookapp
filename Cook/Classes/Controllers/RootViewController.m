@@ -66,6 +66,7 @@
     panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
     
+    // Register login/logout events.
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
@@ -157,14 +158,7 @@
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    BOOL enabled = NO;
-    
-    // Enable panning when pan enabled and all VC's setup.
-    if (self.panEnabled && self.storeViewController && self.benchtopViewController) {
-        enabled = YES;
-    }
-    
-    return enabled;
+    return self.panEnabled;
 }
 
 #pragma mark - BookModalViewControllerDelegate methods
@@ -176,7 +170,7 @@
 #pragma mark - LoginViewControllerDelegate methods
 
 - (void)loginViewControllerSuccessful:(BOOL)success {
-    [self enable:success];
+    [self showLoginView:!success];
 }
 
 #pragma mark - Private methods
@@ -599,6 +593,11 @@
 
 - (void)showLoginView:(BOOL)show {
     if (show) {
+        // Remove any existing one.
+        [self.loginViewController.view removeFromSuperview];
+        self.loginViewController = nil;
+        
+        // Recreate the login.
         LoginViewController *loginViewController = [[LoginViewController alloc] initWithDelegate:self];
         loginViewController.view.frame = self.view.bounds;
         loginViewController.view.alpha = 0.0;
@@ -613,6 +612,9 @@
                          self.loginViewController.view.alpha = show ? 1.0 : 0.0;
                      }
                      completion:^(BOOL finished) {
+                         [self enable:!show];
+                         [self.benchtopViewController enable:!show];
+                         
                          if (!show) {
                              [self.loginViewController.view removeFromSuperview];
                              self.loginViewController = nil;

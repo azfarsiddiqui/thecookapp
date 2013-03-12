@@ -88,6 +88,7 @@
 }
 
 - (void)enable:(BOOL)enable {
+    DLog(@"ENABLE: %@", enable ? @"YES" : @"NO");
     self.collectionView.userInteractionEnabled = enable;
 }
 
@@ -176,12 +177,6 @@
     
     numSections += 1;   // My book
     numSections += 1;   // Followed books
-    
-//    if ([CKUser isLoggedIn]) {
-//        
-//        if ([self.followBooks count] > 0) {
-//        }
-//    }
     
     return numSections;
 }
@@ -652,6 +647,8 @@
 }
 
 - (void)loadBenchtop:(BOOL)load {
+    [self enable:load];
+    
     if (load) {
         [self loadMyBook];
         [self loadFollowBooks];
@@ -659,7 +656,6 @@
         self.myBook = nil;
         [self.followBooks removeAllObjects];
         self.followBooks = nil;
-        
         [self.collectionView reloadData];
     }
     
