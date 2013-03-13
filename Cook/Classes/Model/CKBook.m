@@ -106,17 +106,12 @@
             [friendsBooksQuery includeKey:kUserModelForeignKeyName];
             [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friends];
             [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
-                
                 if (!error) {
-                    
-                    // Remove books that are already followed.
-                    [self filterFollowedBooks:parseBooks user:user success:success failure:failure];
-                    
+                    success([self booksFromParseBooks:parseBooks]);
                 } else {
                     DLog(@"Error loading user friends: %@", [error localizedDescription]);
                     failure(error);
                 }
-                
             }];
 
         } else {
@@ -143,17 +138,12 @@
     [friendsBooksQuery includeKey:kUserModelForeignKeyName];
     [friendsBooksQuery whereKey:kUserModelForeignKeyName matchesQuery:friendsQuery];
     [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
-        
         if (!error) {
-            
-            // Remove books that are already followed.
-            [self filterFollowedBooks:parseBooks user:user success:success failure:failure];
-            
+            success([self booksFromParseBooks:parseBooks]);
         } else {
             DLog(@"Error loading user friends: %@", [error localizedDescription]);
             failure(error);
         }
-        
     }];
 }
 
@@ -165,18 +155,10 @@
     [query setLimit:10];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         if (!error) {
-            
-            // Return CKBook model objects.
-            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
-                return [[CKBook alloc] initWithParseObject:parseBook];
-            }];
-            
-            success(books);
-            
+            success([self booksFromParseBooks:parseBooks]);
         } else {
             failure(error);
         }
-        
     }];
 }
 
@@ -218,7 +200,13 @@
     }];
 }
 
-#pragma mark - Instance 
++ (NSArray *)booksFromParseBooks:(NSArray *)parseBooks {
+    return [parseBooks collect:^id(PFObject *parseBook) {
+        return [[CKBook alloc] initWithParseObject:parseBook];
+    }];
+}
+
+#pragma mark - Instance
 
 - (id)initWithParseObject:(PFObject *)parseObject {
     if (self = [super initWithParseObject:parseObject]) {
