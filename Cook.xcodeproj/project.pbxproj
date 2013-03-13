@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		761186BC16EFFE16004F631B /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */; };
+		761186BF16F04831004F631B /* StoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761186BE16F04830004F631B /* StoreBookViewController.m */; };
 		76166F3716E83F580077DE09 /* cook_dash_library_tab_wrap.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3516E83F580077DE09 /* cook_dash_library_tab_wrap.png */; };
 		76166F3816E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */; };
 		76166F3B16E850950077DE09 /* SuggestedStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76166F3A16E850950077DE09 /* SuggestedStoreCollectionViewController.m */; };
@@ -491,6 +492,8 @@
 /* Begin PBXFileReference section */
 		761186B916EFFDF2004F631B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
+		761186BD16F04830004F631B /* StoreBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBookViewController.h; sourceTree = "<group>"; };
+		761186BE16F04830004F631B /* StoreBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreBookViewController.m; sourceTree = "<group>"; };
 		76166F3516E83F580077DE09 /* cook_dash_library_tab_wrap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_tab_wrap.png; sourceTree = "<group>"; };
 		76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_tab_wrap@2x.png"; sourceTree = "<group>"; };
 		76166F3916E850950077DE09 /* SuggestedStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestedStoreCollectionViewController.h; sourceTree = "<group>"; };
@@ -1590,6 +1593,8 @@
 				76510713165F31180077B551 /* StoreBookCoverViewCell.m */,
 				765E65C71672144400D5D54E /* LoginViewController.h */,
 				765E65C81672144400D5D54E /* LoginViewController.m */,
+				761186BD16F04830004F631B /* StoreBookViewController.h */,
+				761186BE16F04830004F631B /* StoreBookViewController.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -2740,6 +2745,7 @@
 				89655BEA16E81501006D9928 /* CategoryTableViewCell.m in Sources */,
 				76D69AB216E705BB0028E036 /* StoreTabView.m in Sources */,
 				76166F3B16E850950077DE09 /* SuggestedStoreCollectionViewController.m in Sources */,
+				761186BF16F04831004F631B /* StoreBookViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

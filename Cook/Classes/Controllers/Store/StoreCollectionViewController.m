@@ -15,11 +15,15 @@
 #import "EventHelper.h"
 #import "AppHelper.h"
 #import "MRCEnumerable.h"
+#import "StoreBookViewController.h"
 
-@interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate, BookViewControllerDelegate>
+@interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
+    StoreBookViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *emptyBanner;
 @property (nonatomic, strong) BookViewController *bookViewController;
+@property (nonatomic, strong) StoreBookViewController *storeBookViewController;
+
 @end
 
 @implementation StoreCollectionViewController
@@ -130,13 +134,7 @@
     DLog();
     
     CKBook *selectedBook = [self.books objectAtIndex:indexPath.row];
-    //temp - until animation is available
-    BookViewController *bookViewController = [[BookViewController alloc] initWithBook:selectedBook
-                                                                             delegate:self];
-    
-    UIView *rootView = [[AppHelper sharedInstance] rootView];
-    [rootView addSubview:bookViewController.view];
-    self.bookViewController = bookViewController;
+    [self showBook:selectedBook];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -187,13 +185,12 @@
     [self followBookAtIndexPath:indexPath];
 }
 
-#pragma mark - BookViewControllerDelegate
+#pragma mark - StoreBookViewControllerDelegate methods
 
--(void)bookViewControllerCloseRequested
-{
-    [self.bookViewController.view removeFromSuperview];
-    self.bookViewController = nil;
+- (void)storeBookViewControllerCloseRequested {
+    [self closeBook];
 }
+
 #pragma mark - Private methods
 
 - (void)loginSuccessful:(NSNotification *)notification {
@@ -271,6 +268,37 @@
                          }];
         
     }
+}
+
+- (void)showBook:(CKBook *)book {
+    UIView *rootView = [[AppHelper sharedInstance] rootView];
+    StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book delegate:self];
+    storeBookViewController.view.alpha = 0.0;
+    [rootView addSubview:storeBookViewController.view];
+    self.storeBookViewController = storeBookViewController;
+    
+    // Fade it in.
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.storeBookViewController.view.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+
+- (void)closeBook {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.storeBookViewController.view.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.storeBookViewController.view removeFromSuperview];
+                         self.storeBookViewController = nil;
+                     }];
 }
 
 @end
