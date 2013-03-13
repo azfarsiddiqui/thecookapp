@@ -30,7 +30,7 @@ extern NSString *const kUserAttrLastName;
 #pragma mark - UserFriend class
 
 extern NSString *const kUserFriendModelName;
-extern NSString *const kUserFriendTarget;
+extern NSString *const kUserFriendFriend;
 extern NSString *const kUserFriendAttrConnected;
 
 #pragma mark - User Book Follow class

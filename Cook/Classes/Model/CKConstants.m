@@ -31,7 +31,7 @@ NSString *const kUserAttrLastName               = @"lastName";
 #pragma mark - UserFriend class
 
 NSString *const kUserFriendModelName            = @"UserFriend";
-NSString *const kUserFriendTarget               = @"friend";
+NSString *const kUserFriendFriend               = @"friend";
 NSString *const kUserFriendAttrConnected        = @"connected";
 
 #pragma mark - User Book Follow class

@@ -97,7 +97,7 @@
             
             // Get friends' user references.
             NSArray *friends = [parseUserFriends collect:^id(PFObject *parseUserFriend) {
-                return [parseUserFriend objectForKey:kUserFriendTarget];
+                return [parseUserFriend objectForKey:kUserFriendFriend];
             }];
             
             // Make another query for friends' books.
