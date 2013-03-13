@@ -204,9 +204,7 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    
-    // Reload data.
-    [self loadData];
+    [self unloadData];
 }
 
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {

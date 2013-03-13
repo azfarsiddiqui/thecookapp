@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		761186B616EEA33C004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B516EEA33C004F631B /* FacebookSDK.framework */; };
-		761186B816EEA355004F631B /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 761186B716EEA355004F631B /* FacebookSDKResources.bundle */; };
+		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
+		761186BC16EFFE16004F631B /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */; };
 		76166F3716E83F580077DE09 /* cook_dash_library_tab_wrap.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3516E83F580077DE09 /* cook_dash_library_tab_wrap.png */; };
 		76166F3816E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */; };
 		76166F3B16E850950077DE09 /* SuggestedStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76166F3A16E850950077DE09 /* SuggestedStoreCollectionViewController.m */; };
@@ -489,8 +489,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		761186B516EEA33C004F631B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
-		761186B716EEA355004F631B /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = ../../../FacebookSDK/FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
+		761186B916EFFDF2004F631B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		76166F3516E83F580077DE09 /* cook_dash_library_tab_wrap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_tab_wrap.png; sourceTree = "<group>"; };
 		76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_tab_wrap@2x.png"; sourceTree = "<group>"; };
 		76166F3916E850950077DE09 /* SuggestedStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestedStoreCollectionViewController.h; sourceTree = "<group>"; };
@@ -1143,7 +1143,7 @@
 				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
 				76ED27651612DC720012E479 /* Parse.framework in Frameworks */,
 				8962217B161E9F300023EC30 /* libAviarySDK.a in Frameworks */,
-				761186B616EEA33C004F631B /* FacebookSDK.framework in Frameworks */,
+				761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1668,8 +1668,8 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				761186B716EEA355004F631B /* FacebookSDKResources.bundle */,
-				761186B516EEA33C004F631B /* FacebookSDK.framework */,
+				761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */,
+				761186B916EFFDF2004F631B /* FacebookSDK.framework */,
 				763D2776166C293800A43DF9 /* CoreLocation.framework */,
 				892041D91650C23500765F96 /* CoreText.framework */,
 				892041D71650C20200765F96 /* OpenGLES.framework */,
@@ -2602,7 +2602,7 @@
 				76166F3816E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png in Resources */,
 				8926728316E9A3040006A055 /* cook_editrecipe_typeup.png in Resources */,
 				8926728416E9A3040006A055 /* cook_editrecipe_typeup@2x.png in Resources */,
-				761186B816EEA355004F631B /* FacebookSDKResources.bundle in Resources */,
+				761186BC16EFFE16004F631B /* FacebookSDKResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
