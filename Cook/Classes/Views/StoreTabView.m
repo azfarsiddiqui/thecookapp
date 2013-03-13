@@ -50,15 +50,15 @@
 }
 
 - (void)selectFeatured {
-    [self selectTabAtIndex:kFeaturedTab];
+    [self selectTabAtIndex:kFeaturedTab force:YES];
 }
 
 - (void)selectFriends {
-    [self selectTabAtIndex:kFriendsTab];
+    [self selectTabAtIndex:kFriendsTab force:YES];
 }
 
 - (void)selectSuggested {
-    [self selectTabAtIndex:kSuggestedTab];
+    [self selectTabAtIndex:kSuggestedTab force:YES];
 }
 
 #pragma mark - Private methods
@@ -169,7 +169,11 @@
 }
 
 - (void)selectTabAtIndex:(NSUInteger)tabIndex {
-    if (self.selectedTabIndex == tabIndex) {
+    [self selectTabAtIndex:tabIndex force:NO];
+}
+
+- (void)selectTabAtIndex:(NSUInteger)tabIndex force:(BOOL)force {
+    if (!force && self.selectedTabIndex == tabIndex) {
         return;
     }
     

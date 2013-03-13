@@ -247,6 +247,8 @@
     
     // Empty banner if no books to load.
     if ([self.books count] == 0) {
+        [self.emptyBanner removeFromSuperview];
+        
         UIView *emptyBanner = [self noDataView];
         if (emptyBanner) {
             emptyBanner.frame = CGRectMake(floorf((self.view.bounds.size.width - emptyBanner.frame.size.width) / 2.0),
