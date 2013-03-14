@@ -209,7 +209,7 @@
 
 +(UIFont *)storyFont
 {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:28.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
 }
 
 +(UIFont *)recipeNameFont

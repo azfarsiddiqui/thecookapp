@@ -38,28 +38,32 @@
 
 #define kEditableColor  [UIColor whiteColor]
 #define kNonEditableColor  [UIColor blackColor]
+#define kButtonEdgeInsets   UIEdgeInsetsMake(15.0,20.0f,0,50.0f)
+#define kTableViewCellIdentifier               @"TableViewCellIdentifier"
 
-@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, UINavigationControllerDelegate,UIImagePickerControllerDelegate>
+@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate>
 
 //ui
-@property(nonatomic,strong) IBOutlet CKEditableView *nameEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *methodViewEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *ingredientsViewEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *storyEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *categoryEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *photoEditableView;
-@property(nonatomic,strong) IBOutlet CKEditableView *servesCookPrepEditableView;
-@property(nonatomic,strong) IBOutlet FacebookUserView *facebookUserView;
-@property(nonatomic,strong) IBOutlet UIImageView *recipeImageView;
-@property(nonatomic,strong) IBOutlet UIButton *editButton;
-@property(nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
-@property(nonatomic,strong) IBOutlet UILabel *uploadLabel;
+
+@property(nonatomic,strong)  UITableView *tableView;
+@property(nonatomic,strong)  CKEditableView *nameEditableView;
+@property(nonatomic,strong)  CKEditableView *methodViewEditableView;
+@property(nonatomic,strong)  CKEditableView *ingredientsViewEditableView;
+@property(nonatomic,strong)  CKEditableView *storyEditableView;
+@property(nonatomic,strong)  CKEditableView *categoryEditableView;
+@property(nonatomic,strong)  CKEditableView *photoEditableView;
+@property(nonatomic,strong)  CKEditableView *servesCookPrepEditableView;
+@property(nonatomic,strong)  FacebookUserView *facebookUserView;
+@property(nonatomic,strong)  UIImageView *recipeImageView;
+@property(nonatomic,strong)  UIButton *editButton;
+@property(nonatomic,strong)  UIProgressView *uploadProgressView;
+@property(nonatomic,strong)  UILabel *uploadLabel;
 
 //recipe mask view
-@property(nonatomic,strong) IBOutlet UIView  *recipeMaskView;
-@property(nonatomic,strong) IBOutlet UIImageView  *recipeMaskBackgroundImageView;
-@property(nonatomic,strong) IBOutlet UILabel *typeItUpLabel;
-@property(nonatomic,strong) IBOutlet UILabel *orJustAddLabel;
+@property(nonatomic,strong)  UIView  *recipeMaskView;
+@property(nonatomic,strong)  UIImageView  *recipeMaskBackgroundImageView;
+@property(nonatomic,strong)  UILabel *typeItUpLabel;
+@property(nonatomic,strong)  UILabel *orJustAddLabel;
 
 @property(nonatomic,strong) CKEditingViewController *editingViewController;
 
@@ -68,6 +72,8 @@
 @property(nonatomic,strong) ParsePhotoStore *parsePhotoStore;
 @property(nonatomic,strong) UIImage *recipePickerImage;
 @property(nonatomic,assign) BOOL isNewRecipe;
+@property(nonatomic,strong) CKRecipe *recipe;
+@property(nonatomic,strong) CKBook *selectedBook;
 
 // delegates
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
@@ -76,18 +82,23 @@
 
 @implementation TestViewController
 
--(void)awakeFromNib
+-(id) initWithRecipe:(CKRecipe*)recipe selectedBook:(CKBook*)book
 {
-    [super awakeFromNib];
-    self.parsePhotoStore = [[ParsePhotoStore alloc]init];
-    [self configAndStyle];
+    if (self=[super init]) {
+        self.recipe = recipe;
+        self.selectedBook = book;
+        self.parsePhotoStore = [[ParsePhotoStore alloc]init];
+    }
+    
+    return self;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     DLog();
     [super viewWillAppear:animated];
-    [self config];
+    [self configAndInitUIComponents];
+    [self configData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -96,8 +107,66 @@
     DLog();
 }
 
+#pragma mark - UITableViewDatasource
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    //second row is just padding
+    return 2;
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+#pragma mark - UITableViewDelegate
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kTableViewCellIdentifier];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.contentView.backgroundColor = [UIColor whiteColor];
+    if (indexPath.row == 0) {
+        [cell.contentView addSubview:self.servesCookPrepEditableView];
+        [cell.contentView addSubview:self.ingredientsViewEditableView];
+        [cell.contentView addSubview:self.methodViewEditableView];
+        [cell.contentView addSubview:self.storyEditableView];
+    }
+    
+    return cell;
+}
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    //customised view with username, recipe title, recipe story
+    UIView *containerView = [[UIView alloc]initWithFrame:CGRectZero];
+    [containerView addSubview:self.nameEditableView];
+    [containerView addSubview:self.facebookUserView];
+    [containerView addSubview:self.storyEditableView];
+    [containerView addSubview:self.categoryEditableView];
+    containerView.backgroundColor = [UIColor whiteColor];
+    [containerView setFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, [self tableView:self.tableView heightForHeaderInSection:0])];
+    return containerView;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        float leftSideHeight = self.ingredientsViewEditableView.frame.origin.y + self.ingredientsViewEditableView.frame.size.height;
+        float rightSideHeight = self.methodViewEditableView.frame.origin.y + self.methodViewEditableView.frame.size.height;
+        return leftSideHeight > rightSideHeight ? leftSideHeight : rightSideHeight;
+    } else {
+        return 200.0f;
+    }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return self.nameEditableView.frame.origin.y + self.nameEditableView.frame.size.height +
+    self.facebookUserView.frame.size.height + self.storyEditableView.frame.size.height;
+}
+
 #pragma mark - button actions / gesture recognizers
--(IBAction)dismissTapped:(id)sender
+-(IBAction)closeTapped:(id)sender
 {
     if (self.modalDelegate) {
         [self.modalDelegate closeRequestedForBookModalViewController:self];
@@ -116,8 +185,6 @@
     
     self.inEditMode = !self.inEditMode;
     self.isNewRecipe = NO;
-
-    [editModeButton setTitle:self.inEditMode ? @"End Editing" : @"Start Editing" forState:UIControlStateNormal];
 
     [self.nameEditableView enableEditMode:self.inEditMode];
     [self setLabelForEditableView:self.nameEditableView asEditable:self.inEditMode];
@@ -157,7 +224,7 @@
     [self toggleViewsForNewRecipe:NO];
 }
 #pragma mark - Private Methods
--(void)config
+-(void)configData
 {
     self.isNewRecipe = !self.recipe;
     
@@ -186,7 +253,7 @@
         [self.recipeMaskView addGestureRecognizer:newRecipeMaskViewTapped];
     }
     
-    [self toggleViewsForNewRecipe:self.isNewRecipe];
+//    [self toggleViewsForNewRecipe:self.isNewRecipe];
 }
 
 #pragma mark - CKEditableViewDelegate
@@ -642,8 +709,62 @@
     self.uploadProgressView.hidden = !progress;
 }
 
--(void) configAndStyle
+-(void) configAndInitUIComponents
 {
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    self.recipeImageView = [[UIImageView alloc]initWithFrame:self.view.bounds];
+    self.recipeImageView.backgroundColor = [UIColor lightGrayColor];
+    [self.view addSubview:self.recipeImageView];
+    
+    self.photoEditableView = [[CKEditableView alloc]initWithDelegate:self];
+    self.photoEditableView.frame = CGRectMake(416.0f, 80.0f, 192.0f, 45.0f);
+    [self.view addSubview:self.photoEditableView];
+
+    float twentyPercent = floorf(0.2*self.view.frame.size.width);
+    float eightyPercent = floorf(0.8*self.view.frame.size.width);
+
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, twentyPercent, self.view.frame.size.width, eightyPercent) style:UITableViewStylePlain];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kTableViewCellIdentifier];
+    self.tableView.separatorColor = [UIColor whiteColor];
+    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.view addSubview:self.tableView];
+    
+    //instantiate ui components for section header
+    self.facebookUserView = [[FacebookUserView alloc] initWithFrame:CGRectMake(416.0f,44.0f,232.0f,17.0f)];
+    
+    self.categoryEditableView = [[CKEditableView alloc] initWithDelegate:self];
+    self.categoryEditableView.frame = CGRectMake(416.0f, 20.0f,192.0f,45.0f);
+    
+    self.nameEditableView = [[CKEditableView alloc] initWithDelegate:self];
+    self.nameEditableView.frame = CGRectMake(135.0f, self.facebookUserView.frame.origin.y + self.facebookUserView.frame.size.height, 754.0f, 68.0f);
+    self.storyEditableView = [[CKEditableView alloc] initWithDelegate:self];
+    self.storyEditableView.frame = CGRectMake(135.0f,self.nameEditableView.frame.origin.y + self.nameEditableView.frame.size.height,754.0f,56.0f);
+
+    //instaniate ui components for table view cell
+    self.servesCookPrepEditableView = [[CKEditableView alloc] initWithDelegate:self];
+    self.servesCookPrepEditableView.frame = CGRectMake(135.0f,0.0f,230.0f,71.0f);
+
+    self.ingredientsViewEditableView = [[CKEditableView alloc] initWithDelegate:self];
+    self.ingredientsViewEditableView.frame = CGRectMake(135.0f,self.servesCookPrepEditableView.frame.origin.y + self.servesCookPrepEditableView.frame.size.height,230.0f,240.0f);
+
+    self.methodViewEditableView = [[CKEditableView alloc] initWithDelegate:self];
+    self.methodViewEditableView.frame = CGRectMake(396.0f,0.0f,493.0f,311.0f);
+
+    [self addCloseButton];
+    [self addEditButton];
+
+//    @property(nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
+//    @property(nonatomic,strong) IBOutlet UILabel *uploadLabel;
+//
+
+//    //recipe mask view
+//    @property(nonatomic,strong) IBOutlet UIView  *recipeMaskView;
+//    @property(nonatomic,strong) IBOutlet UIImageView  *recipeMaskBackgroundImageView;
+//    @property(nonatomic,strong) IBOutlet UILabel *typeItUpLabel;
+//    @property(nonatomic,strong) IBOutlet UILabel *orJustAddLabel;
     self.typeItUpLabel.font = [Theme typeItUpFont];
     self.orJustAddLabel.font = [Theme orJustAddFont];
 }
@@ -654,5 +775,32 @@
         self.servesCookPrepEditableView.hidden = isNewRecipe;
         self.ingredientsViewEditableView.hidden = isNewRecipe;
         self.methodViewEditableView.hidden = isNewRecipe;
+}
+
+
+-(void) addCloseButton
+{
+    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"]
+                                                 target:self
+                                               selector:@selector(closeTapped:)];
+    closeButton.frame = CGRectMake(kButtonEdgeInsets.left,
+                                   kButtonEdgeInsets.top,
+                                   closeButton.frame.size.width,
+                                   closeButton.frame.size.height);
+    [self.view addSubview:closeButton];
+
+}
+
+-(void) addEditButton
+{
+    UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self
+                                              selector:@selector(toggledEditMode:)];
+    editButton.frame = CGRectMake(self.view.frame.size.width - kButtonEdgeInsets.right,
+                                   kButtonEdgeInsets.top,
+                                   editButton.frame.size.width,
+                                   editButton.frame.size.height);
+    self.editButton = editButton;
+    [self.view addSubview:editButton];
+    
 }
 @end

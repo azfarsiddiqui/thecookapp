@@ -509,10 +509,7 @@
 - (void)viewRecipe:(CKRecipe *)recipe {
     
     //use for testing launch concepts
-    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-    TestViewController *testVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"TestViewController"];
-    testVC.recipe = recipe;
-    testVC.selectedBook = self.selectedBook;
+    TestViewController *testVC = [[TestViewController alloc] initWithRecipe:recipe selectedBook:self.selectedBook];
     [self showModalViewController:testVC];
     
 }
