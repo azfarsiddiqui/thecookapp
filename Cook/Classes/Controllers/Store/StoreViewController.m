@@ -14,7 +14,7 @@
 #import "EventHelper.h"
 #import "StoreTabView.h"
 
-@interface StoreViewController () <StoreTabViewDelegate>
+@interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
@@ -72,6 +72,12 @@
     [self selectedStoreCollectionViewController:self.suggestedViewController];
 }
 
+#pragma mark - StoreCollectionViewControllerDelegate methods
+
+- (void)storeCollectionViewControllerPanRequested:(BOOL)enabled {
+    [self.delegate panEnabledRequested:enabled];
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -89,7 +95,7 @@
     CGFloat rowHeight = [StoreBookCoverViewCell cellSize].height;
     self.storeCollectionViewControllers = [NSMutableArray arrayWithCapacity:3];
     
-    FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] init];
+    FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self];
     featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
                                                    self.view.bounds.size.height - rowHeight + 45.0,
                                                    self.view.bounds.size.width,
@@ -100,7 +106,7 @@
     self.featuredViewController = featuredViewController;
     [self.storeCollectionViewControllers addObject:featuredViewController];
     
-    FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] init];
+    FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] initWithDelegate:self];
     friendsViewController.view.frame = featuredViewController.view.frame;
     friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
     friendsViewController.view.hidden = YES;
@@ -108,7 +114,7 @@
     self.friendsViewController = friendsViewController;
     [self.storeCollectionViewControllers addObject:friendsViewController];
     
-    SuggestedStoreCollectionViewController *suggestedViewController = [[SuggestedStoreCollectionViewController alloc] init];
+    SuggestedStoreCollectionViewController *suggestedViewController = [[SuggestedStoreCollectionViewController alloc] initWithDelegate:self];
     suggestedViewController.view.frame = featuredViewController.view.frame;
     suggestedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
     suggestedViewController.view.hidden = YES;

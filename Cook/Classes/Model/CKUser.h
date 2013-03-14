@@ -13,6 +13,7 @@
 @class CKUser;
 
 typedef void(^LoginSuccessBlock)(CKUser *user);
+typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected);
 
 @interface CKUser : CKModel
 
@@ -34,6 +35,7 @@ typedef void(^LoginSuccessBlock)(CKUser *user);
 - (NSArray *)bookSuggestionIds;
 - (NSUInteger)numFollows;
 - (NSURL *)pictureUrl;
+- (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 @end

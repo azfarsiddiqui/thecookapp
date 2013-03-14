@@ -20,6 +20,7 @@
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
     StoreBookViewControllerDelegate>
 
+@property (nonatomic, assign) id<StoreCollectionViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *emptyBanner;
 @property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, strong) StoreBookViewController *storeBookViewController;
@@ -37,8 +38,9 @@
     [EventHelper unregisterFollowUpdated:self];
 }
 
-- (id)init {
+- (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[StoreFlowLayout alloc] init]]) {
+        self.delegate = delegate;
     }
     return self;
 }
@@ -271,6 +273,8 @@
 }
 
 - (void)showBook:(CKBook *)book {
+    [self.delegate storeCollectionViewControllerPanRequested:NO];
+    
     UIView *rootView = [[AppHelper sharedInstance] rootView];
     StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book delegate:self];
     storeBookViewController.view.alpha = 0.0;
@@ -298,6 +302,7 @@
                      completion:^(BOOL finished) {
                          [self.storeBookViewController.view removeFromSuperview];
                          self.storeBookViewController = nil;
+                         [self.delegate storeCollectionViewControllerPanRequested:YES];
                      }];
 }
 

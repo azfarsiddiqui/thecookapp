@@ -76,6 +76,18 @@
     return [UIColor colorWithHexString:@"0d60b1"];
 }
 
++ (UIFont *)storeBookActionButtonFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
+}
+
++ (UIColor *)storeBookActionButtonColour {
+    return [UIColor whiteColor];
+}
+
++ (UIColor *)storeBookActionButtonShadowColour {
+    return [UIColor blackColor];
+}
+
 #pragma mark - Grid recipe cells
 
 + (UIFont *)recipeGridTitleFont {

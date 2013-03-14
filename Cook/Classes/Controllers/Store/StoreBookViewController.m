@@ -8,27 +8,38 @@
 
 #import "StoreBookViewController.h"
 #import "CKBook.h"
+#import "CKUser.h"
 #import "CKBookCoverView.h"
 #import "AppHelper.h"
 #import "ViewHelper.h"
 #import "BenchtopBookCoverViewCell.h"
+#import "Theme.h"
+#import "CKButtonView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface StoreBookViewController () <CKBookCoverViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, assign) id<StoreBookViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIView *bookContainerView;
+@property (nonatomic, strong) CKBookCoverView *bookCoverView;
+@property (nonatomic, strong) CKButtonView *actionButtonView;
 
 @end
 
 @implementation StoreBookViewController
 
-#define kBookViewContentInsets  UIEdgeInsetsMake(100.0, 100.0, 100.0, 100.0)
+#define kBookViewContentInsets  UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0)
+#define kBookViewSize           CGSizeMake(740.0, 540.0)
+#define kBookShadowAdjustment   10.0
 
 - (id)initWithBook:(CKBook *)book delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
         self.delegate = delegate;
+        self.currentUser = [CKUser currentUser];
     }
     return self;
 }
@@ -38,11 +49,24 @@
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     [self initBackground];
     [self initBookView];
+    if ([self.book isPublic]) {
+        [self initFollowButton];
+    } else {
+        [self initFriendsButton];
+    }
 }
 
 #pragma mark - CKBookCoverViewDelegate methods
 
 - (void)bookCoverViewEditRequested {
+}
+
+#pragma mark - CKButtonViewDelegate methods
+
+- (void)buttonViewTapped {
+    if ([self.book isPublic]) {
+    } else {
+    }
 }
 
 #pragma mark - Private methods
@@ -60,12 +84,15 @@
 - (void)initBookView {
     
     // Container view.
-    UIView *bookContainerView = [[UIView alloc] initWithFrame:CGRectMake(kBookViewContentInsets.left,
-                                                                         kBookViewContentInsets.top,
-                                                                         self.view.bounds.size.width - kBookViewContentInsets.left - kBookViewContentInsets.right,
-                                                                         self.view.bounds.size.height - kBookViewContentInsets.top - kBookViewContentInsets.bottom)];
+    UIView *bookContainerView = [[UIView alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - kBookViewSize.width) / 2.0),
+                                                                         floorf((self.view.bounds.size.height - kBookViewSize.height) / 2.0),
+                                                                         kBookViewSize.width,
+                                                                         kBookViewSize.height)];
     bookContainerView.backgroundColor = [UIColor clearColor];
+    bookContainerView.layer.borderColor = [[UIColor blackColor] CGColor];
+    bookContainerView.layer.borderWidth = 3.0;
     [self.view addSubview:bookContainerView];
+    self.bookContainerView = bookContainerView;
     
     // Black overlay.
     UIView *overlayView = [[UIView alloc] initWithFrame:bookContainerView.bounds];
@@ -80,14 +107,93 @@
     
     // Book cover.
     CGSize size = [BenchtopBookCoverViewCell cellSize];
-    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:CGRectMake(50.0, 50.0, size.width, size.height) delegate:self];
+    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:CGRectMake(kBookViewContentInsets.left,
+                                                                                       kBookViewContentInsets.top + kBookShadowAdjustment,
+                                                                                       size.width,
+                                                                                       size.height) delegate:self];
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
     [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption editable:[self.book editable]];
     [bookContainerView addSubview:bookCoverView];
+    self.bookCoverView = bookCoverView;
 }
 
 - (void)closeTapped {
     [self.delegate storeBookViewControllerCloseRequested];
+}
+
+- (void)initFollowButton {
+    [self initActionButtonWithSelector:@selector(addTapped:)];
+    [self updateAddButtonText:@"Add Book" activity:YES enabled:NO];
+    
+    [self.book isFollowedByUser:self.currentUser
+                        success:^(BOOL followed) {
+                            if (followed) {
+                                [self updateAddButtonText:@"Already Added" activity:NO enabled:NO];
+                            } else {
+                                [self updateAddButtonText:@"Add Book" activity:NO enabled:YES];
+                            }
+                        }
+                        failure:^(NSError *error) {
+                            [self updateAddButtonText:@"Add Book" activity:NO enabled:NO];
+                        }];
+}
+
+- (void)initFriendsButton {
+    [self initActionButtonWithSelector:@selector(requestTapped:)];
+    [self updateRequestButtonText:@"Send Friend Request" activity:YES enabled:NO];
+    
+    [self.currentUser checkIsFriendsWithUser:self.book.user
+                                  completion:^(BOOL alreadySent, BOOL alreadyConnected) {
+                                      if (alreadyConnected) {
+                                          [self updateRequestButtonText:@"Already Friends" activity:NO enabled:NO];
+                                      } else if (alreadySent) {
+                                          [self updateRequestButtonText:@"Already Requested" activity:NO enabled:NO];
+                                      } else {
+                                          [self updateRequestButtonText:@"Send Friend Request" activity:NO enabled:YES];
+                                      }
+                                  } failure:^(NSError *error) {
+                                      [self updateRequestButtonText:@"Send Friend Request" activity:NO enabled:NO];
+                                  }];
+}
+
+- (void)initActionButtonWithSelector:(SEL)selector {
+    CKButtonView *actionButtonView = [[CKButtonView alloc] initWithTarget:self action:selector];
+    actionButtonView.frame = CGRectMake(self.bookCoverView.frame.origin.x + self.bookCoverView.frame.size.width + floorf((self.bookContainerView.bounds.size.width - self.bookCoverView.frame.origin.x - self.bookCoverView.frame.size.width - actionButtonView.frame.size.width) / 2.0),
+                                        self.bookContainerView.bounds.size.height - kBookViewContentInsets.bottom - actionButtonView.frame.size.height,
+                                        actionButtonView.frame.size.width,
+                                        actionButtonView.frame.size.height);
+    [self.bookContainerView addSubview:actionButtonView];
+    self.actionButtonView = actionButtonView;
+}
+
+- (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
+    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_profile_icon_addtodash.png"];
+    [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled];
+}
+
+- (void)updateRequestButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
+    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_profile_icon_friendrequest.png"];
+    [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled];
+}
+
+- (void)requestTapped:(id)sender {
+    [self.currentUser requestFriend:self.book.user
+                         completion:^{
+                             [self updateRequestButtonText:@"Friend Request Sent" activity:NO enabled:NO];
+                         }
+                            failure:^(NSError *error) {
+                                [self updateRequestButtonText:@"Unable to Send" activity:NO enabled:NO];
+                            }];
+}
+
+- (void)addTapped:(id)sender {
+    [self.book addFollower:self.currentUser
+                   success:^{
+                       [self updateAddButtonText:@"Book Added" activity:NO enabled:NO];
+                   }
+                   failure:^(NSError *error) {
+                       [self updateAddButtonText:@"Unable to Add" activity:NO enabled:NO];
+                   }];
 }
 
 @end

@@ -24,15 +24,15 @@
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
-        // Follow button.
-        UIButton *followButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_add.png"]
-                                                      target:self
-                                                    selector:@selector(followTapped:)];
-        followButton.frame = CGRectMake(self.contentView.bounds.size.width - 70.0,
-                                        -20.0,
-                                        followButton.frame.size.width,
-                                        followButton.frame.size.height);
-        [self.contentView addSubview:followButton];
+//        // Follow button.
+//        UIButton *followButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_add.png"]
+//                                                      target:self
+//                                                    selector:@selector(followTapped:)];
+//        followButton.frame = CGRectMake(self.contentView.bounds.size.width - 70.0,
+//                                        -20.0,
+//                                        followButton.frame.size.width,
+//                                        followButton.frame.size.height);
+//        [self.contentView addSubview:followButton];
         
     }
     return self;
