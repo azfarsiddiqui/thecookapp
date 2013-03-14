@@ -62,6 +62,7 @@
 //recipe mask view
 @property(nonatomic,strong)  UIView  *recipeMaskView;
 @property(nonatomic,strong)  UIImageView  *recipeMaskBackgroundImageView;
+@property(nonatomic,strong)  UIImageView  *typeUpImageView;
 @property(nonatomic,strong)  UILabel *typeItUpLabel;
 @property(nonatomic,strong)  UILabel *orJustAddLabel;
 
@@ -131,6 +132,7 @@
         [cell.contentView addSubview:self.ingredientsViewEditableView];
         [cell.contentView addSubview:self.methodViewEditableView];
         [cell.contentView addSubview:self.storyEditableView];
+        [cell.contentView addSubview:self.recipeMaskView];
     }
     
     return cell;
@@ -184,7 +186,6 @@
     }
     
     self.inEditMode = !self.inEditMode;
-    self.isNewRecipe = NO;
 
     [self.nameEditableView enableEditMode:self.inEditMode];
     [self setLabelForEditableView:self.nameEditableView asEditable:self.inEditMode];
@@ -216,6 +217,7 @@
         //done editing
         [self save];
         self.recipeMaskView.hidden = YES;
+        self.isNewRecipe = NO;
     }
 }
 
@@ -227,8 +229,6 @@
 -(void)configData
 {
     self.isNewRecipe = !self.recipe;
-    
-    self.recipeMaskBackgroundImageView.image = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
 
     if (self.isNewRecipe) {
         self.recipe = [CKRecipe recipeForUser:[CKUser currentUser] book:self.selectedBook];
@@ -253,7 +253,7 @@
         [self.recipeMaskView addGestureRecognizer:newRecipeMaskViewTapped];
     }
     
-//    [self toggleViewsForNewRecipe:self.isNewRecipe];
+    [self toggleViewsForNewRecipe:self.isNewRecipe];
 }
 
 #pragma mark - CKEditableViewDelegate
@@ -429,7 +429,7 @@
     }
 }
 
-#pragma mark - Private Methods
+#pragma mark - label configuration
 
 -(UILabel*)displayableLabelWithFont:(UIFont*)viewFont withColor:(UIColor*)color withTextAlignment:(NSTextAlignment)textAlignment
 {
@@ -468,7 +468,7 @@
     editableView.contentView = label;
 }
 
-#pragma mark - editable view value setting
+#pragma mark - setting values
 - (void)setRecipeNameValue:(NSString *)recipeValue {
     [self configLabelForEditableView:self.nameEditableView withValue:recipeValue withFont:[Theme recipeNameFont]
                  withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
@@ -755,18 +755,9 @@
 
     [self addCloseButton];
     [self addEditButton];
+    [self addUploadViews];
+    [self addNewRecipeMaskView];
 
-//    @property(nonatomic,strong) IBOutlet UIProgressView *uploadProgressView;
-//    @property(nonatomic,strong) IBOutlet UILabel *uploadLabel;
-//
-
-//    //recipe mask view
-//    @property(nonatomic,strong) IBOutlet UIView  *recipeMaskView;
-//    @property(nonatomic,strong) IBOutlet UIImageView  *recipeMaskBackgroundImageView;
-//    @property(nonatomic,strong) IBOutlet UILabel *typeItUpLabel;
-//    @property(nonatomic,strong) IBOutlet UILabel *orJustAddLabel;
-    self.typeItUpLabel.font = [Theme typeItUpFont];
-    self.orJustAddLabel.font = [Theme orJustAddFont];
 }
 
 -(void) toggleViewsForNewRecipe:(BOOL)isNewRecipe
@@ -777,7 +768,7 @@
         self.methodViewEditableView.hidden = isNewRecipe;
 }
 
-
+#pragma mark - subView additions
 -(void) addCloseButton
 {
     UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"]
@@ -802,5 +793,66 @@
     self.editButton = editButton;
     [self.view addSubview:editButton];
     
+}
+
+-(void) addUploadViews
+{
+    self.uploadProgressView = [[UIProgressView alloc]initWithFrame:CGRectMake(416.0f,135.0f,192,9)];
+    self.uploadLabel = [[UILabel alloc]initWithFrame:CGRectMake(416.0f, 133.0f, 192.0f, 21.0f)];
+}
+
+-(void) addNewRecipeMaskView
+{
+    self.recipeMaskView = [[UIView alloc] initWithFrame:CGRectMake(135.0f, 0.0f, 740.0f, 311.0f)];
+    self.recipeMaskBackgroundImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, 740.0f, 311.0f)];
+    self.recipeMaskBackgroundImageView.image = [[UIImage imageNamed:@"cook_editrecipe_textbox"] resizableImageWithCapInsets:UIEdgeInsetsMake(4.0f,4.0f,4.0f,4.0f)];
+    [self.recipeMaskView addSubview:self.recipeMaskBackgroundImageView];
+    
+    
+    float totalHeight = 0.0f;
+    float vertPadding = 10.0f;
+    UIView *containerView = [[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, 270.0f,220.0f)];
+    CGPoint centerPoint = [ViewHelper centerPointForSmallerView:containerView inLargerView:self.recipeMaskView];
+    containerView.frame = CGRectMake(centerPoint.x, centerPoint.y, containerView.frame.size.width, containerView.frame.size.height);
+    [self.recipeMaskView addSubview:containerView];
+
+    UIButton *typeItUpButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_editrecipe_typeup.png"] target:self
+                                                  selector:@selector(newRecipeMaskTapped:)];
+    typeItUpButton.frame = CGRectMake(0.0f,
+                                      0.0f,
+                                      typeItUpButton.frame.size.width,
+                                      typeItUpButton.frame.size.height);
+    
+    centerPoint = [ViewHelper centerPointForSmallerView:typeItUpButton inLargerView:containerView];
+    typeItUpButton.frame = CGRectMake(centerPoint.x, 0.0f, typeItUpButton.frame.size.width, typeItUpButton.frame.size.height);
+    [containerView addSubview:typeItUpButton];
+    totalHeight = typeItUpButton.frame.size.height;
+    
+    self.typeItUpLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, typeItUpButton.frame.origin.y + typeItUpButton.frame.size.height + vertPadding,
+                                                                  containerView.frame.size.width, 27.0f)];
+    self.typeItUpLabel.backgroundColor = [UIColor clearColor];
+    self.typeItUpLabel.textAlignment = NSTextAlignmentCenter;
+    self.typeItUpLabel.font = [Theme typeItUpFont];
+    self.typeItUpLabel.textColor = [UIColor whiteColor];
+    self.typeItUpLabel.text = @"TYPE IT UP";
+    [containerView addSubview:self.typeItUpLabel];
+    totalHeight+= typeItUpButton.frame.size.height + vertPadding;
+    
+    self.orJustAddLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.0f,self.typeItUpLabel.frame.origin.y+self.typeItUpLabel.frame.size.height,
+                                                                   containerView.frame.size.width, 50.0f)];
+    self.orJustAddLabel.textColor = [UIColor whiteColor];
+    self.orJustAddLabel.backgroundColor = [UIColor clearColor];
+    self.orJustAddLabel.textAlignment = NSTextAlignmentCenter;
+    self.orJustAddLabel.numberOfLines = 2;
+    self.orJustAddLabel.font = [Theme orJustAddFont];
+    self.orJustAddLabel.text = @"OR JUST ADD A PHOTO OF THE ORIGINAL AT THE TOP";
+    [containerView addSubview:self.orJustAddLabel];
+    totalHeight+=self.typeItUpLabel.frame.size.height;
+    
+    containerView.frame = CGRectMake(containerView.frame.origin.x, containerView.frame.origin.y, containerView.frame.size.width, totalHeight);
+    centerPoint = [ViewHelper centerPointForSmallerView:containerView inLargerView:self.recipeMaskView];
+    containerView.frame = CGRectMake(containerView.frame.origin.x, centerPoint.y, containerView.frame.size.width, containerView.frame.size.height);
+    
+
 }
 @end
