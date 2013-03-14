@@ -54,6 +54,9 @@
     } else {
         [self initFriendsButton];
     }
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
+    [self.view addGestureRecognizer:tapGesture];
 }
 
 #pragma mark - CKBookCoverViewDelegate methods
@@ -196,6 +199,13 @@
                    failure:^(NSError *error) {
                        [self updateAddButtonText:@"Unable to Add" activity:NO enabled:NO];
                    }];
+}
+
+- (void)tapDismissed:(UITapGestureRecognizer *)tapGesture {
+    CGPoint tappedPoint = [tapGesture locationInView:self.view];
+    if (!CGRectContainsPoint(self.bookContainerView.frame, tappedPoint)) {
+        [self closeTapped];
+    }
 }
 
 @end
