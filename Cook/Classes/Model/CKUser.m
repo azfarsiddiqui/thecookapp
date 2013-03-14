@@ -10,6 +10,8 @@
 #import "NSString+Utilities.h"
 #import "CKBook.h"
 #import "MRCEnumerable.h"
+#import "CKUserNotification.h"
+#import "CKUserFriend.h"
 #import <FacebookSDK/FacebookSDK.h>
 
 @interface CKUser ()
@@ -171,6 +173,28 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseObject objectForKey:kUserAttrLastName];
 }
 
+- (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion failure:(ObjectFailureBlock)failure {
+    PFQuery *friendsQuery = [PFQuery queryWithClassName:kUserFriendModelName];
+    [friendsQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+    [friendsQuery whereKey:kUserFriendFriend equalTo:friendUser.parseUser];
+    [friendsQuery findObjectsInBackgroundWithBlock:^(NSArray *friendRequests, NSError *error) {
+        if (!error) {
+            
+            BOOL alreadySent = NO;
+            BOOL alreadyConnected = [friendRequests detect:^BOOL(PFObject *friendRequest) {
+                return [[friendRequest objectForKey:kUserFriendAttrConnected] boolValue];
+            }];
+            
+            if (!alreadyConnected) {
+                alreadySent = ([friendRequests count] > 0);
+            }
+            completion(alreadySent, alreadyConnected);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     // Is there an existing friend request in flight?
@@ -189,7 +213,9 @@ static ObjectFailureBlock loginFailureBlock = nil;
     [existingFriendRequestQuery findObjectsInBackgroundWithBlock:^(NSArray *friendRequests, NSError *error) {
         if (!error) {
             
-            BOOL existingRequestorFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
+            BOOL newRequest = NO;
+            
+            NSInteger existingRequestorFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
                 return [[parseFriendRequest objectForKey:kUserModelForeignKeyName] isEqual:self.parseUser];
             }];
             NSInteger existingRequesteeFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
@@ -217,10 +243,19 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 
             } else {
                 requesteeFriendRequest = [CKUser createUserFriendObjectForUser:friendUser.parseUser friend:self.parseUser];
+                newRequest = YES;
             }
             
-            // Save both.
-            NSArray *batchSaves = @[requestorFriendRequest, requesteeFriendRequest];
+            // Save requests.
+            NSMutableArray *batchSaves = [NSMutableArray arrayWithArray:@[requestorFriendRequest, requesteeFriendRequest]];
+            
+            // Do we need a user notification?
+            if (newRequest) {
+                PFObject *parseNotification = [CKUserNotification createNotificationForParseUser:friendUser.parseUser
+                                                                              parseFriendRequest:requesteeFriendRequest];
+                [batchSaves addObject:parseNotification];
+            }
+            
             [PFObject saveAllInBackground:batchSaves block:^(BOOL succeeded, NSError *error) {
                 if (!error) {
                     success();

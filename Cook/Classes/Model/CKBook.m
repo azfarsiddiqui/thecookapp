@@ -280,7 +280,7 @@
 
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
-    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
     [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
     [query includeKey:kCategoryModelForeignKeyName];
@@ -368,9 +368,13 @@
     return [facebookFriendIds containsObject:userId];
 }
 
--(BOOL)isUserBookAuthor:(CKUser *)user
-{
+- (BOOL)isUserBookAuthor:(CKUser *)user {
     return [self.user isEqual:user];
+}
+
+- (BOOL)isPublic {
+    // Featured books are public.
+    return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
 }
 
 #pragma mark - CKModel

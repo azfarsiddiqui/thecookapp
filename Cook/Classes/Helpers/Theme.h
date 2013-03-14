@@ -35,6 +35,9 @@
 + (UIFont *)storeTabFont;
 + (UIColor *)storeTabTextColour;
 + (UIColor *)storeTabTextShadowColour;
++ (UIFont *)storeBookActionButtonFont;
++ (UIColor *)storeBookActionButtonColour;
++ (UIColor *)storeBookActionButtonShadowColour;
 
 #pragma mark - Book contents/activities.
 + (UIFont *)bookNavigationTitleFont;

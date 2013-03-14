@@ -10,11 +10,18 @@
 
 @class CKBook;
 
+@protocol StoreCollectionViewControllerDelegate
+
+- (void)storeCollectionViewControllerPanRequested:(BOOL)enabled;
+
+@end
+
 @interface StoreCollectionViewController : UICollectionViewController
 
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, strong) NSMutableArray *books;
 
+- (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate;
 - (void)enable:(BOOL)enable;
 - (void)loadData;
 - (void)unloadData;

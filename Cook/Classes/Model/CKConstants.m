@@ -103,3 +103,4 @@ NSString *const kActivityNameLikeRecipe         = @"LikeRecipe";
 NSString *const kUserNotificationModelName          = @"UserNotification";
 NSString *const kUserNotificationNameFriendRequest  = @"FriendRequest";
 NSString *const kUserNotificationUserFriend         = @"UserFriend";
+NSString *const kUserNotificationUnread             = @"Unread";

@@ -48,5 +48,6 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 - (BOOL)editable;
 - (BOOL)isThisMyFriendsBook;
 - (BOOL)isUserBookAuthor:(CKUser*)user;
+- (BOOL)isPublic;
 
 @end
