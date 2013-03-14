@@ -73,6 +73,12 @@
     CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
 }
 
++(CGPoint)centerPointForSmallerView:(UIView *)smallerView inLargerView:(UIView *)largerView
+{
+    return CGPointMake(floorf(0.5f*largerView.frame.size.width) - floorf(0.5f*smallerView.frame.size.width),
+    floorf(0.5f*largerView.frame.size.height) - floorf(0.5f*smallerView.frame.size.height));
+}
+
 + (UIImage *)imageWithView:(UIView *)view {
     return [self imageWithView:view opaque:YES];
 }

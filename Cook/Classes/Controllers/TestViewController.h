@@ -7,11 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BookModalViewController.h"
 #import "CKRecipe.h"
+#import "BookModalViewController.h"
 
 @interface TestViewController : UIViewController <BookModalViewController>
-@property(nonatomic,strong) CKRecipe *recipe;
-@property(nonatomic,strong) CKBook *selectedBook;
-
+-(id) initWithRecipe:(CKRecipe*)recipe selectedBook:(CKBook*)book;
 @end

@@ -19,6 +19,7 @@
 + (CGSize)screenSize;
 + (NSString*)formatAsHoursSeconds:(float)timeInSeconds ;
 + (void) adjustScrollContentSize:(UIScrollView*)scrollView forHeight:(float)height;
++ (CGPoint) centerPointForSmallerView:(UIView*)smallerView inLargerView:(UIView*)largerView;
 
 // Convers view to images.
 + (UIImage *)imageWithView:(UIView *)view;
