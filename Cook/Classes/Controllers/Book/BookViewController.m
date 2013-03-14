@@ -13,7 +13,6 @@
 #import "RecipeLike.h"
 #import "CategoryPageViewController.h"
 #import "LikesPageViewController.h"
-#import "BookProfilePageViewController.h"
 #import "MPFlipViewController.h"
 #define kContentPageIndex  2
 #define kBookProfilePageIndex 1
@@ -26,7 +25,6 @@
 @property (nonatomic, assign) id<PageViewDelegate> pageViewDelegate;
 @property (nonatomic, strong) CategoryPageViewController *categoryViewController;
 @property (nonatomic, strong) LikesPageViewController *likesPageViewController;
-@property (nonatomic, strong) BookProfilePageViewController *bookProfilePageViewController;
 @property (nonatomic, strong) MPFlipViewController *flipViewController;
 
 //data
@@ -114,9 +112,11 @@
     switch (pageIndex) {
         case kBookProfilePageIndex: {
             // Contents page.
-            view = self.bookProfilePageViewController.view;
-            viewController = self.bookProfilePageViewController;
-            self.pageViewDelegate = self.bookProfilePageViewController;
+//            //NO LONGER BEING USED. NEEDS CLEANUP
+//
+//            view = self.bookProfilePageViewController.view;
+//            viewController = self.bookProfilePageViewController;
+//            self.pageViewDelegate = self.bookProfilePageViewController;
             break;
         }
         case kContentPageIndex: {
@@ -125,7 +125,7 @@
 //            view = self.contentsViewController.view;
 //            viewController = self.contentsViewController;
 //            self.pageViewDelegate = self.contentsViewController;
-//            break;
+            break;
         }
         default: {
             NSUInteger likesPageIndex = [self pageNumForLikesSection];
@@ -385,16 +385,6 @@
         _likesPageViewController = [[LikesPageViewController alloc] initWithBookViewDelegate:self dataSource:self withButtonStyle:NavigationButtonStyleGray];
     }
     return _likesPageViewController;
-}
--(BookProfilePageViewController *)bookProfilePageViewController
-{
-    if (!_bookProfilePageViewController) {
-        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Cook" bundle:nil];
-        _bookProfilePageViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BookProfilePageViewController"];
-        _bookProfilePageViewController.delegate = self;
-        _bookProfilePageViewController.dataSource = self;
-    }
-    return _bookProfilePageViewController;
 }
 
 -(void) initScreen

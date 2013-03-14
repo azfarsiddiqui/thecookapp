@@ -11,7 +11,6 @@
 #import "StoreBookCoverViewCell.h"
 #import "CKBook.h"
 #import "CKBookCoverView.h"
-#import "BookViewController.h"
 #import "EventHelper.h"
 #import "AppHelper.h"
 #import "MRCEnumerable.h"
@@ -22,7 +21,6 @@
 
 @property (nonatomic, assign) id<StoreCollectionViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *emptyBanner;
-@property (nonatomic, strong) BookViewController *bookViewController;
 @property (nonatomic, strong) StoreBookViewController *storeBookViewController;
 
 @end
