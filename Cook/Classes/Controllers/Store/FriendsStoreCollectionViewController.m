@@ -40,4 +40,8 @@
     return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_nofriends.png"]];
 }
 
+- (BOOL)addMode {
+    return YES;
+}
+
 @end

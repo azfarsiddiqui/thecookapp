@@ -18,6 +18,6 @@
 
 @interface StoreBookViewController : UIViewController
 
-- (id)initWithBook:(CKBook *)book delegate:(id<StoreBookViewControllerDelegate>)delegate;
+- (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate;
 
 @end

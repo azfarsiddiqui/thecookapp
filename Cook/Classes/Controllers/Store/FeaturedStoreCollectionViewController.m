@@ -38,4 +38,8 @@
     return nil;
 }
 
+- (BOOL)addMode {
+    return YES;
+}
+
 @end

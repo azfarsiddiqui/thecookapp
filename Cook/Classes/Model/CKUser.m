@@ -91,7 +91,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [[CKUser alloc] initWithParseUser:parseUser];
 }
 
-+ (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend {
++ (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend
+                                  requestor:(PFUser *)parseRequestor {
     
     // Read-write for both parties only.
     PFACL *acl = [PFACL ACL];
@@ -103,6 +104,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     PFObject *userFriend = [PFObject objectWithClassName:kUserFriendModelName];
     [userFriend setObject:parseUser forKey:kUserModelForeignKeyName];
     [userFriend setObject:parseFriend forKey:kUserFriendFriend];
+    [userFriend setObject:parseRequestor forKey:kUserFriendAttrRequestor];
     [userFriend setObject:@NO forKey:kUserFriendAttrConnected];
     [userFriend setACL:acl];
     
@@ -174,21 +176,48 @@ static ObjectFailureBlock loginFailureBlock = nil;
 }
 
 - (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion failure:(ObjectFailureBlock)failure {
-    PFQuery *friendsQuery = [PFQuery queryWithClassName:kUserFriendModelName];
-    [friendsQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
-    [friendsQuery whereKey:kUserFriendFriend equalTo:friendUser.parseUser];
-    [friendsQuery findObjectsInBackgroundWithBlock:^(NSArray *friendRequests, NSError *error) {
+    PFQuery *requestorQuery = [PFQuery queryWithClassName:kUserFriendModelName];
+    [requestorQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+    [requestorQuery whereKey:kUserFriendFriend equalTo:friendUser.parseUser];
+    
+    PFQuery *requesteeQuery = [PFQuery queryWithClassName:kUserFriendModelName];
+    [requesteeQuery whereKey:kUserModelForeignKeyName equalTo:friendUser.parseUser];
+    [requesteeQuery whereKey:kUserFriendFriend equalTo:self.parseUser];
+    
+    PFQuery *query = [PFQuery orQueryWithSubqueries:@[requestorQuery, requesteeQuery]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *friendRequests, NSError *error) {
         if (!error) {
-            
             BOOL alreadySent = NO;
+            
+            // Are we already connected?
             BOOL alreadyConnected = [friendRequests detect:^BOOL(PFObject *friendRequest) {
-                return [[friendRequest objectForKey:kUserFriendAttrConnected] boolValue];
+                PFUser *user = [friendRequest objectForKey:kUserModelForeignKeyName];
+                return ([user.objectId isEqualToString:self.parseUser.objectId]
+                        && [[friendRequest objectForKey:kUserFriendAttrConnected] boolValue]);
             }];
             
+            // If we are not connected, are there an existing request already?
             if (!alreadyConnected) {
-                alreadySent = ([friendRequests count] > 0);
+                alreadySent = [friendRequests detect:^BOOL(PFObject *friendRequest) {
+                    PFUser *user = [friendRequest objectForKey:kUserModelForeignKeyName];
+                    PFUser *requestor = [friendRequest objectForKey:kUserFriendAttrRequestor];
+                    return ([user.objectId isEqualToString:self.parseUser.objectId]
+                            && [requestor.objectId isEqualToString:self.parseUser.objectId]
+                            && ![[friendRequest objectForKey:kUserFriendAttrConnected] boolValue]);
+                }];
             }
-            completion(alreadySent, alreadyConnected);
+            
+            // Is there a pending acceptance from the other party?
+            BOOL pendingAcceptance = [friendRequests detect:^BOOL(PFObject *friendRequest) {
+                PFUser *user = [friendRequest objectForKey:kUserFriendFriend];
+                PFUser *requestor = [friendRequest objectForKey:kUserFriendAttrRequestor];
+                return ([user.objectId isEqualToString:self.parseUser.objectId]
+                        && ![requestor.objectId isEqualToString:self.parseUser.objectId]
+                        && ![[friendRequest objectForKey:kUserFriendAttrConnected] boolValue]);
+            }];
+            
+            completion(alreadySent, alreadyConnected, pendingAcceptance);
+            
         } else {
             failure(error);
         }
@@ -197,12 +226,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    // Is there an existing friend request in flight?
+    // Existing request for me?
     PFQuery *requestorFriendRequestQuery = [PFQuery queryWithClassName:kUserFriendModelName];
     [requestorFriendRequestQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
     [requestorFriendRequestQuery whereKey:kUserFriendFriend equalTo:friendUser.parseUser];
     
-    // Is there an existing friend request from the requestee?
+    // Existing request from requestee?
     PFQuery *requesteeFriendRequestQuery = [PFQuery queryWithClassName:kUserFriendModelName];
     [requesteeFriendRequestQuery whereKey:kUserModelForeignKeyName equalTo:friendUser.parseUser];
     [requesteeFriendRequestQuery whereKey:kUserFriendFriend equalTo:self.parseUser];
@@ -213,37 +242,43 @@ static ObjectFailureBlock loginFailureBlock = nil;
     [existingFriendRequestQuery findObjectsInBackgroundWithBlock:^(NSArray *friendRequests, NSError *error) {
         if (!error) {
             
+            PFObject *requestorFriendRequest = nil;
+            PFObject *requesteeFriendRequest = nil;
             BOOL newRequest = NO;
             
-            NSInteger existingRequestorFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
-                return [[parseFriendRequest objectForKey:kUserModelForeignKeyName] isEqual:self.parseUser];
-            }];
-            NSInteger existingRequesteeFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
-                return [[parseFriendRequest objectForKey:kUserFriendFriend] isEqual:self.parseUser];
-            }];
-            
-            // Existing requestor request?
-            PFObject *requestorFriendRequest = nil;
-            if (existingRequestorFriendRequestId != -1) {
-                requestorFriendRequest = [friendRequests objectAtIndex:existingRequestorFriendRequestId];
-            } else {
-                requestorFriendRequest = [CKUser createUserFriendObjectForUser:self.parseUser friend:friendUser.parseUser];
-            }
-            
-            // Existing requestee request?
-            PFObject *requesteeFriendRequest = nil;
-            if (existingRequesteeFriendRequestId != -1) {
-                requesteeFriendRequest = [friendRequests objectAtIndex:existingRequesteeFriendRequestId];
-                BOOL connected = [[requesteeFriendRequest objectForKey:kUserFriendAttrConnected] boolValue];
+            if ([friendRequests count] > 0) {
                 
-                // If requestee is connected but requestor is not, connect requestor.
-                if (connected && ![[requestorFriendRequest objectForKey:kUserFriendAttrConnected] boolValue]) {
+                // Requestor request.
+                NSInteger existingRequestorFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
+                    PFUser *parseUser = [parseFriendRequest objectForKey:kUserModelForeignKeyName];
+                    return [parseUser.objectId isEqual:self.parseUser.objectId];
+                }];
+                if (existingRequestorFriendRequestId != -1) {
+                    requestorFriendRequest = [friendRequests objectAtIndex:existingRequestorFriendRequestId];
+                }
+                
+                // Requestee request.
+                NSInteger existingRequesteeFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
+                    PFUser *parseUser = [parseFriendRequest objectForKey:kUserModelForeignKeyName];
+                    return [parseUser.objectId isEqual:friendUser.parseUser.objectId];
+                }];
+                if (existingRequestorFriendRequestId != -1) {
+                    requesteeFriendRequest = [friendRequests objectAtIndex:existingRequesteeFriendRequestId];
+                }
+                
+                // If both were requestee's request, then we can connect them straight away.
+                PFUser *requestorOriginUser = [requestorFriendRequest objectForKey:kUserFriendAttrRequestor];
+                PFUser *requesteeOriginUser = [requesteeFriendRequest objectForKey:kUserFriendAttrRequestor];
+                if ([requestorOriginUser.objectId isEqualToString:friendUser.parseUser.objectId]
+                    && [requesteeOriginUser.objectId isEqualToString:friendUser.parseUser.objectId]) {
                     [requestorFriendRequest setObject:@YES forKey:kUserFriendAttrConnected];
+                    [requesteeFriendRequest setObject:@YES forKey:kUserFriendAttrConnected];
                 }
                 
             } else {
-                requesteeFriendRequest = [CKUser createUserFriendObjectForUser:friendUser.parseUser friend:self.parseUser];
                 newRequest = YES;
+                requestorFriendRequest = [CKUser createUserFriendObjectForUser:self.parseUser friend:friendUser.parseUser requestor:self.parseUser];
+                requesteeFriendRequest = [CKUser createUserFriendObjectForUser:friendUser.parseUser friend:self.parseUser requestor:self.parseUser];
             }
             
             // Save requests.
@@ -251,8 +286,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
             
             // Do we need a user notification?
             if (newRequest) {
-                PFObject *parseNotification = [CKUserNotification createNotificationForParseUser:friendUser.parseUser
-                                                                              parseFriendRequest:requesteeFriendRequest];
+                PFObject *parseNotification = [PFObject objectWithClassName:kUserNotificationModelName];
+                [parseNotification setObject:friendUser.parseUser forKey:kUserModelForeignKeyName];
+                [parseNotification setObject:kUserNotificationNameFriendRequest forKey:kModelAttrName];
+                [parseNotification setObject:requesteeFriendRequest forKey:kUserNotificationUserFriend];
+                [parseNotification setObject:@NO forKey:kUserNotificationUnread];
+                [parseNotification setACL:[PFACL ACLWithUser:friendUser.parseUser]];
                 [batchSaves addObject:parseNotification];
             }
             

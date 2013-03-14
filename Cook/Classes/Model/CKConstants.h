@@ -32,6 +32,7 @@ extern NSString *const kUserAttrLastName;
 extern NSString *const kUserFriendModelName;
 extern NSString *const kUserFriendFriend;
 extern NSString *const kUserFriendAttrConnected;
+extern NSString *const kUserFriendAttrRequestor;
 
 #pragma mark - User Book Follow class
 
@@ -104,4 +105,3 @@ extern NSString *const kUserNotificationModelName;
 extern NSString *const kUserNotificationNameFriendRequest;  // Name of the notification type
 extern NSString *const kUserNotificationUserFriend;         // References the UserFriend model
 extern NSString *const kUserNotificationUnread;             // Whether notification was read.
-

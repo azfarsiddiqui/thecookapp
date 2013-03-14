@@ -8,7 +8,6 @@
 
 #import "CKUserNotification.h"
 #import "CKUser.h"
-#import "CKUserFriend.h"
 #import "MRCEnumerable.h"
 
 @implementation CKUserNotification

@@ -33,6 +33,7 @@ NSString *const kUserAttrLastName               = @"lastName";
 NSString *const kUserFriendModelName            = @"UserFriend";
 NSString *const kUserFriendFriend               = @"friend";
 NSString *const kUserFriendAttrConnected        = @"connected";
+NSString *const kUserFriendAttrRequestor        = @"requestor";
 
 #pragma mark - User Book Follow class
 

@@ -26,6 +26,8 @@
 @property (nonatomic, strong) UIView *bookContainerView;
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
 @property (nonatomic, strong) CKButtonView *actionButtonView;
+@property (nonatomic, assign) BOOL pendingAcceptance;
+@property (nonatomic, assign) BOOL addMode;
 
 @end
 
@@ -35,9 +37,10 @@
 #define kBookViewSize           CGSizeMake(740.0, 540.0)
 #define kBookShadowAdjustment   10.0
 
-- (id)initWithBook:(CKBook *)book delegate:(id<StoreBookViewControllerDelegate>)delegate {
+- (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
+        self.addMode = addMode;
         self.delegate = delegate;
         self.currentUser = [CKUser currentUser];
     }
@@ -49,8 +52,8 @@
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     [self initBackground];
     [self initBookView];
-    if ([self.book isPublic]) {
-        [self initFollowButton];
+    if (self.addMode) {
+        [self initAddButton];
     } else {
         [self initFriendsButton];
     }
@@ -124,7 +127,7 @@
     [self.delegate storeBookViewControllerCloseRequested];
 }
 
-- (void)initFollowButton {
+- (void)initAddButton {
     [self initActionButtonWithSelector:@selector(addTapped:)];
     [self updateAddButtonText:@"Add Book" activity:YES enabled:NO];
     
@@ -146,9 +149,12 @@
     [self updateRequestButtonText:@"Send Friend Request" activity:YES enabled:NO];
     
     [self.currentUser checkIsFriendsWithUser:self.book.user
-                                  completion:^(BOOL alreadySent, BOOL alreadyConnected) {
+                                  completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
                                       if (alreadyConnected) {
                                           [self updateRequestButtonText:@"Already Friends" activity:NO enabled:NO];
+                                      } else if (pendingAcceptance) {
+                                          self.pendingAcceptance = pendingAcceptance;
+                                          [self updateRequestButtonText:@"Accept Friend Request" activity:NO enabled:YES];
                                       } else if (alreadySent) {
                                           [self updateRequestButtonText:@"Already Requested" activity:NO enabled:NO];
                                       } else {
@@ -170,8 +176,12 @@
 }
 
 - (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
+    [self updateAddButtonText:text activity:activity enabled:enabled selector:nil];
+}
+
+- (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled selector:(SEL)selector {
     UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_profile_icon_addtodash.png"];
-    [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled];
+    [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled selector:selector];
 }
 
 - (void)updateRequestButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
@@ -180,10 +190,18 @@
 }
 
 - (void)requestTapped:(id)sender {
-    [self updateRequestButtonText:@"Sending Friend Request" activity:YES enabled:NO];
+    if (self.pendingAcceptance) {
+        [self updateRequestButtonText:@"AcceptingFriend Request" activity:YES enabled:NO];
+    } else {
+        [self updateRequestButtonText:@"Sending Friend Request" activity:YES enabled:NO];
+    }
     [self.currentUser requestFriend:self.book.user
                          completion:^{
-                             [self updateRequestButtonText:@"Friend Request Sent" activity:NO enabled:NO];
+                             if (self.pendingAcceptance) {
+                                 [self updateRequestButtonText:@"Friend Request Accepted" activity:NO enabled:NO];
+                             } else {
+                                 [self updateRequestButtonText:@"Friend Request Sent" activity:NO enabled:NO];
+                             }
                          }
                             failure:^(NSError *error) {
                                 [self updateRequestButtonText:@"Unable to Send" activity:NO enabled:NO];

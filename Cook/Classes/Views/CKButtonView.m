@@ -41,6 +41,15 @@
 }
 
 - (void)setText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)icon enabled:(BOOL)enabled {
+    [self setText:text activity:activity icon:icon enabled:enabled selector:nil];
+}
+
+- (void)setText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)icon enabled:(BOOL)enabled selector:(SEL)selector {
+    
+    // Change selector?
+    if (selector) {
+        self.action = selector;
+    }
     
     // Icon
     [self.activityView stopAnimating];

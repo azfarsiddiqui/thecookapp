@@ -9,8 +9,6 @@
 #import "CKModel.h"
 
 @class CKUser;
-@class CKUserFriend;
-@class CKUserNotification;
 
 @interface CKUserNotification : CKModel
 

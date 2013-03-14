@@ -29,5 +29,6 @@
 - (void)reloadBooks;
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;
 - (UIView *)noDataView;
+- (BOOL)addMode;
 
 @end

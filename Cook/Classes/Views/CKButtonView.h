@@ -13,5 +13,6 @@
 - (id)initWithTarget:(id)target action:(SEL)selector;
 - (id)initWithTarget:(id)target action:(SEL)selector backgroundImage:(UIImage *)backgroundImage;
 - (void)setText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)icon enabled:(BOOL)enabled;
+- (void)setText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)icon enabled:(BOOL)enabled selector:(SEL)selector;
 
 @end

@@ -128,6 +128,10 @@
     return nil;
 }
 
+- (BOOL)addMode {
+    return NO;
+}
+
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -274,7 +278,9 @@
     [self.delegate storeCollectionViewControllerPanRequested:NO];
     
     UIView *rootView = [[AppHelper sharedInstance] rootView];
-    StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book delegate:self];
+    StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book
+                                                                                             addMode:[self addMode]
+                                                                                            delegate:self];
     storeBookViewController.view.alpha = 0.0;
     [rootView addSubview:storeBookViewController.view];
     self.storeBookViewController = storeBookViewController;

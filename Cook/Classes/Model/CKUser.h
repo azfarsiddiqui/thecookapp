@@ -13,7 +13,7 @@
 @class CKUser;
 
 typedef void(^LoginSuccessBlock)(CKUser *user);
-typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected);
+typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance);
 
 @interface CKUser : CKModel
 
@@ -28,7 +28,7 @@ typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected);
 + (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (CKUser *)userWithParseUser:(PFUser *)parseUser;
-+ (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend;
++ (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend requestor:(PFUser *)parseRequestor;
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
