@@ -177,6 +177,7 @@
 }
 
 - (void)requestTapped:(id)sender {
+    [self updateRequestButtonText:@"Sending Friend Request" activity:YES enabled:NO];
     [self.currentUser requestFriend:self.book.user
                          completion:^{
                              [self updateRequestButtonText:@"Friend Request Sent" activity:NO enabled:NO];
@@ -187,6 +188,7 @@
 }
 
 - (void)addTapped:(id)sender {
+    [self updateAddButtonText:@"Adding Book" activity:YES enabled:NO];
     [self.book addFollower:self.currentUser
                    success:^{
                        [self updateAddButtonText:@"Book Added" activity:NO enabled:NO];

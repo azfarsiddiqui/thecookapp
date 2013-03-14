@@ -9,9 +9,17 @@
 #import "CKModel.h"
 
 @class CKUser;
+@class CKUserFriend;
+@class CKUserNotification;
 
 @interface CKUserNotification : CKModel
 
-+ (void)notificationsForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+@property (nonatomic, assign) BOOL unread;
+
++ (void)hasNotificationsForUser:(CKUser *)user completion:(BoolObjectSuccessBlock)completion
+                        failure:(ObjectFailureBlock)failure;
++ (void)notificationsForUser:(CKUser *)user completion:(ListObjectsSuccessBlock)completion
+                     failure:(ObjectFailureBlock)failure;
++ (PFObject *)createNotificationForParseUser:(PFUser *)parseUser parseFriendRequest:(PFObject *)parseFriendRequest;
 
 @end

@@ -10,6 +10,8 @@
 #import "NSString+Utilities.h"
 #import "CKBook.h"
 #import "MRCEnumerable.h"
+#import "CKUserNotification.h"
+#import "CKUserFriend.h"
 #import <FacebookSDK/FacebookSDK.h>
 
 @interface CKUser ()
@@ -211,6 +213,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
     [existingFriendRequestQuery findObjectsInBackgroundWithBlock:^(NSArray *friendRequests, NSError *error) {
         if (!error) {
             
+            BOOL newRequest = NO;
+            
             NSInteger existingRequestorFriendRequestId = [friendRequests findIndexWithBlock:^BOOL(PFObject *parseFriendRequest) {
                 return [[parseFriendRequest objectForKey:kUserModelForeignKeyName] isEqual:self.parseUser];
             }];
@@ -239,10 +243,19 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 
             } else {
                 requesteeFriendRequest = [CKUser createUserFriendObjectForUser:friendUser.parseUser friend:self.parseUser];
+                newRequest = YES;
             }
             
-            // Save both.
-            NSArray *batchSaves = @[requestorFriendRequest, requesteeFriendRequest];
+            // Save requests.
+            NSMutableArray *batchSaves = [NSMutableArray arrayWithArray:@[requestorFriendRequest, requesteeFriendRequest]];
+            
+            // Do we need a user notification?
+            if (newRequest) {
+                PFObject *parseNotification = [CKUserNotification createNotificationForParseUser:friendUser.parseUser
+                                                                              parseFriendRequest:requesteeFriendRequest];
+                [batchSaves addObject:parseNotification];
+            }
+            
             [PFObject saveAllInBackground:batchSaves block:^(BOOL succeeded, NSError *error) {
                 if (!error) {
                     success();
