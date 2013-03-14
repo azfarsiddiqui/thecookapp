@@ -14,15 +14,13 @@
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
-#import "NewRecipeViewController.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
 #import "BookContentsViewController.h"
 #import "BookActivityViewController.h"
 #import "Theme.h"
 
-@interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
-    NewRecipeViewDelegate, BookContentsViewControllerDelegate, BookActivityViewControllerDelegate>
+@interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate, BookContentsViewControllerDelegate, BookActivityViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *homeButton;
 @property (nonatomic, strong) UIButton *closeButton;
