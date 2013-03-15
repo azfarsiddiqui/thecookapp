@@ -38,6 +38,8 @@
 #define kBookViewContentInsets  UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0)
 #define kBookViewSize           CGSizeMake(740.0, 540.0)
 #define kBookShadowAdjustment   10.0
+#define kOverlayAlpha           0.5
+#define kBookViewAlpha          0.7
 
 - (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -87,7 +89,6 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         self.imageView.alpha = 0.8;
                          bookCoverView.transform = CGAffineTransformIdentity;
                          bookCoverView.center = CGPointMake(self.view.center.x, self.view.center.y + kBookShadowAdjustment);
                      }
@@ -95,7 +96,7 @@
                          
                          // Slide book aside.
                          [UIView animateWithDuration:0.3
-                                               delay:0.2
+                                               delay:0.1
                                              options:UIViewAnimationOptionCurveEaseIn
                                           animations:^{
                                               self.bookCoverView.frame = CGRectMake(self.bookContainerView.frame.origin.x + kBookViewContentInsets.left,
@@ -112,11 +113,11 @@
     
     // Transition the imageView in.
     self.imageView.alpha = 0.0;
-    [UIView animateWithDuration:0.4
+    [UIView animateWithDuration:0.3
                           delay:0.1
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.imageView.alpha = 0.8;
+                         self.imageView.alpha = kOverlayAlpha;
                      }
                      completion:^(BOOL finished) {
                          self.animating = NO;
@@ -154,7 +155,7 @@
     // Black overlay.
     UIView *overlayView = [[UIView alloc] initWithFrame:bookContainerView.bounds];
     overlayView.backgroundColor = [UIColor blackColor];
-    overlayView.alpha = 0.7;
+    overlayView.alpha = kBookViewAlpha;
     [bookContainerView addSubview:overlayView];
     
     // Close button.
