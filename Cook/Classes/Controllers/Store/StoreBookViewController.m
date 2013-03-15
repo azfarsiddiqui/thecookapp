@@ -28,6 +28,8 @@
 @property (nonatomic, strong) CKButtonView *actionButtonView;
 @property (nonatomic, assign) BOOL pendingAcceptance;
 @property (nonatomic, assign) BOOL addMode;
+@property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) CGPoint originPoint;
 
 @end
 
@@ -36,6 +38,8 @@
 #define kBookViewContentInsets  UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0)
 #define kBookViewSize           CGSizeMake(740.0, 540.0)
 #define kBookShadowAdjustment   10.0
+#define kOverlayAlpha           0.5
+#define kBookViewAlpha          0.7
 
 - (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -57,22 +61,73 @@
     } else {
         [self initFriendsButton];
     }
-    
+
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
     [self.view addGestureRecognizer:tapGesture];
+}
+
+- (void)transitionFromPoint:(CGPoint)point {
+    self.animating = YES;
+    self.originPoint = point;
+    self.imageView.alpha = 0.0;
+    self.bookContainerView.alpha = 0.0;
+    
+    CGFloat scale = [BenchtopBookCoverViewCell storeScale];
+    CGSize size = [BenchtopBookCoverViewCell cellSize];
+    
+    // Book cover.
+    CGRect bookFrame = CGRectMake(point.x - (size.width * 0.5), point.y - (size.height * 0.5), size.width, size.height);
+    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:bookFrame];
+    bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
+    [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
+    [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption editable:[self.book editable]];
+    [self.view addSubview:bookCoverView];
+    self.bookCoverView = bookCoverView;
+    
+    // Move the book to the center of the screen.
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         bookCoverView.transform = CGAffineTransformIdentity;
+                         bookCoverView.center = CGPointMake(self.view.center.x, self.view.center.y + kBookShadowAdjustment);
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // Slide book aside.
+                         [UIView animateWithDuration:0.3
+                                               delay:0.1
+                                             options:UIViewAnimationOptionCurveEaseIn
+                                          animations:^{
+                                              self.bookCoverView.frame = CGRectMake(self.bookContainerView.frame.origin.x + kBookViewContentInsets.left,
+                                                                                    self.bookContainerView.frame.origin.y + kBookViewContentInsets.top + kBookShadowAdjustment,
+                                                                                    self.bookCoverView.frame.size.width,
+                                                                                    self.bookCoverView.frame.size.height);
+                                              self.bookContainerView.alpha = 1.0;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              self.animating = NO;
+                                          }];
+                         
+                     }];
+    
+    // Transition the imageView in.
+    self.imageView.alpha = 0.0;
+    [UIView animateWithDuration:0.3
+                          delay:0.1
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.imageView.alpha = kOverlayAlpha;
+                     }
+                     completion:^(BOOL finished) {
+                         self.animating = NO;
+                     }];
 }
 
 #pragma mark - CKBookCoverViewDelegate methods
 
 - (void)bookCoverViewEditRequested {
-}
-
-#pragma mark - CKButtonViewDelegate methods
-
-- (void)buttonViewTapped {
-    if ([self.book isPublic]) {
-    } else {
-    }
+    
 }
 
 #pragma mark - Private methods
@@ -82,7 +137,6 @@
     // Background imageView.
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     imageView.backgroundColor = [UIColor blackColor];
-    imageView.alpha = 0.8;
     [self.view addSubview:imageView];
     self.imageView = imageView;
 }
@@ -95,36 +149,50 @@
                                                                          kBookViewSize.width,
                                                                          kBookViewSize.height)];
     bookContainerView.backgroundColor = [UIColor clearColor];
-    bookContainerView.layer.borderColor = [[UIColor blackColor] CGColor];
-    bookContainerView.layer.borderWidth = 3.0;
     [self.view addSubview:bookContainerView];
     self.bookContainerView = bookContainerView;
     
     // Black overlay.
     UIView *overlayView = [[UIView alloc] initWithFrame:bookContainerView.bounds];
     overlayView.backgroundColor = [UIColor blackColor];
-    overlayView.alpha = 0.7;
+    overlayView.alpha = kBookViewAlpha;
     [bookContainerView addSubview:overlayView];
     
     // Close button.
     UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"btn_close.png"] target:self selector:@selector(closeTapped)];
     closeButton.frame = CGRectMake(15.0, 10.0, closeButton.frame.size.width, closeButton.frame.size.height);
     [bookContainerView addSubview:closeButton];
-    
-    // Book cover.
-    CGSize size = [BenchtopBookCoverViewCell cellSize];
-    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:CGRectMake(kBookViewContentInsets.left,
-                                                                                       kBookViewContentInsets.top + kBookShadowAdjustment,
-                                                                                       size.width,
-                                                                                       size.height) delegate:self];
-    [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
-    [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption editable:[self.book editable]];
-    [bookContainerView addSubview:bookCoverView];
-    self.bookCoverView = bookCoverView;
 }
 
 - (void)closeTapped {
-    [self.delegate storeBookViewControllerCloseRequested];
+    
+    self.animating = YES;
+    CGFloat scale = [BenchtopBookCoverViewCell storeScale];
+    
+    // Transition book back to shelf.
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                         self.bookContainerView.alpha = 0.0;
+                         self.imageView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // Transition book back to shelf.
+                         [UIView animateWithDuration:0.3
+                                               delay:0.0
+                                             options:UIViewAnimationOptionCurveEaseInOut
+                                          animations:^{
+                                              self.bookCoverView.center = self.originPoint;
+                                              self.bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
+                                          }
+                                          completion:^(BOOL finished) {
+                                              self.animating = NO;
+                                              [self.delegate storeBookViewControllerCloseRequested];
+                                          }];
+                     }];
+    
 }
 
 - (void)initAddButton {
@@ -167,7 +235,7 @@
 
 - (void)initActionButtonWithSelector:(SEL)selector {
     CKButtonView *actionButtonView = [[CKButtonView alloc] initWithTarget:self action:selector];
-    actionButtonView.frame = CGRectMake(self.bookCoverView.frame.origin.x + self.bookCoverView.frame.size.width + floorf((self.bookContainerView.bounds.size.width - self.bookCoverView.frame.origin.x - self.bookCoverView.frame.size.width - actionButtonView.frame.size.width) / 2.0),
+    actionButtonView.frame = CGRectMake(floorf(self.bookContainerView.bounds.size.width / 2.0) + floorf(((self.bookContainerView.bounds.size.width / 2.0) - actionButtonView.frame.size.width) / 2.0),
                                         self.bookContainerView.bounds.size.height - kBookViewContentInsets.bottom - actionButtonView.frame.size.height,
                                         actionButtonView.frame.size.width,
                                         actionButtonView.frame.size.height);
@@ -220,6 +288,10 @@
 }
 
 - (void)tapDismissed:(UITapGestureRecognizer *)tapGesture {
+    if (self.animating) {
+        return;
+    }
+    
     CGPoint tappedPoint = [tapGesture locationInView:self.view];
     if (!CGRectContainsPoint(self.bookContainerView.frame, tappedPoint)) {
         [self closeTapped];

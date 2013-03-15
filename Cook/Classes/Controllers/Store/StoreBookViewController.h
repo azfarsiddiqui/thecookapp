@@ -19,5 +19,6 @@
 @interface StoreBookViewController : UIViewController
 
 - (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate;
+- (void)transitionFromPoint:(CGPoint)point;
 
 @end

@@ -24,9 +24,8 @@
     return CGSizeMake(300.0, 438.0);
 }
 
-+ (CGSize)storeCellSize {
-    CGSize size = [self cellSize];
-    return CGSizeMake(size.width / 2, size.height / 2);
++ (CGFloat)storeScale {
+    return 0.5;
 }
 
 - (id)initWithFrame:(CGRect)frame {

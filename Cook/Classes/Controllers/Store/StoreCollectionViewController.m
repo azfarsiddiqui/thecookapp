@@ -22,6 +22,7 @@
 @property (nonatomic, assign) id<StoreCollectionViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *emptyBanner;
 @property (nonatomic, strong) StoreBookViewController *storeBookViewController;
+@property (nonatomic, strong) UICollectionViewCell *selectedBookCell;
 
 @end
 
@@ -137,8 +138,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     DLog();
     
-    CKBook *selectedBook = [self.books objectAtIndex:indexPath.row];
-    [self showBook:selectedBook];
+    [self showBookAtIndexPath:indexPath];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -176,7 +176,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
-                                                                                                             forIndexPath:indexPath];
+                                                                                                       forIndexPath:indexPath];
     cell.delegate = self;
     [cell loadBook:[self.books objectAtIndex:indexPath.item]];
     return cell;
@@ -274,40 +274,33 @@
     }
 }
 
-- (void)showBook:(CKBook *)book {
+- (void)showBookAtIndexPath:(NSIndexPath *)indexPath {
+    UIView *rootView = [[AppHelper sharedInstance] rootView];
+    
+    // Remember the cell to transition from.
+    UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+    cell.hidden = YES;
+    self.selectedBookCell = cell;
+    
+    // Determine the point to transition from.
+    CGPoint pointAtRootView = [self.collectionView convertPoint:cell.center toView:rootView];
+    
+    CKBook *book = [self.books objectAtIndex:indexPath.row];
     [self.delegate storeCollectionViewControllerPanRequested:NO];
     
-    UIView *rootView = [[AppHelper sharedInstance] rootView];
     StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book
                                                                                              addMode:[self addMode]
                                                                                             delegate:self];
-    storeBookViewController.view.alpha = 0.0;
     [rootView addSubview:storeBookViewController.view];
+    [storeBookViewController transitionFromPoint:pointAtRootView];
     self.storeBookViewController = storeBookViewController;
-    
-    // Fade it in.
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.storeBookViewController.view.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
 }
 
 - (void)closeBook {
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.storeBookViewController.view.alpha = 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         [self.storeBookViewController.view removeFromSuperview];
-                         self.storeBookViewController = nil;
-                         [self.delegate storeCollectionViewControllerPanRequested:YES];
-                     }];
+    [self.storeBookViewController.view removeFromSuperview];
+    self.storeBookViewController = nil;
+    self.selectedBookCell.hidden = NO;
+    [self.delegate storeCollectionViewControllerPanRequested:YES];
 }
 
 @end
