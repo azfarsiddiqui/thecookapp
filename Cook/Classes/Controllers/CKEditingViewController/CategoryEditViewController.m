@@ -12,6 +12,7 @@
 #import "Theme.h"
 
 #define kCategoryTableViewCellIdentifier @"CategoryTableViewCellIdentifier"
+#define kRowHeight          90.0f
 
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
@@ -25,6 +26,8 @@
 -(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
+        self.mainViewInsets = UIEdgeInsetsMake(0.0f,100.0f,0.0f,100.0f);
+        self.transparentOverlayRect = CGRectMake(100.0f,0.0f,824.0f, 90.0f);
     }
     return self;
 }
@@ -63,27 +66,33 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.categories count];
+    //padder row
+    return [self.categories count] + 1;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-    Category *category = [self.categories objectAtIndex:indexPath.row];
-    [cell configureCellWithCategory:category];
+    if (indexPath.row > 0) {
+        Category *category = [self.categories objectAtIndex:indexPath.row-1];
+        [cell configureCellWithCategory:category];
+    } else {
+    }
     return cell;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 90.0f;
+    return kRowHeight;
 }
 
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
+    if (indexPath.row > 0) {
+        self.selectedCategory = [self.categories objectAtIndex:indexPath.row-1];
+    }
 }
 
 #pragma mark - Private Methods
@@ -108,6 +117,7 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.scrollEnabled = YES;
+    self.tableView.showsVerticalScrollIndicator = NO;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:kCategoryTableViewCellIdentifier];
     [mainView addSubview:self.tableView];
@@ -130,17 +140,19 @@
     UITableView *tableView = (UITableView *)self.targetEditingView;
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.alpha = 0.7f;
+    titleLabel.backgroundColor = [UIColor blackColor];
     titleLabel.text = self.editingTitle;
+    titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = self.titleFont;
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.shadowColor = [UIColor blackColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [titleLabel sizeToFit];
-    titleLabel.frame = CGRectMake(tableView.frame.origin.x + floorf((tableView.frame.size.width - titleLabel.frame.size.width) / 2.0),
-                                  tableView.frame.origin.y - titleLabel.frame.size.height + 5.0,
-                                  titleLabel.frame.size.width,
-                                  titleLabel.frame.size.height);
+    titleLabel.frame = CGRectMake(tableView.frame.origin.x,
+                                  tableView.frame.origin.y,
+                                  tableView.frame.size.width,
+                                  90.0f);
     [self.view addSubview:titleLabel];
     self.titleLabel = titleLabel;
 }

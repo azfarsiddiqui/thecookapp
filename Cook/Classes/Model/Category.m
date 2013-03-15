@@ -24,7 +24,6 @@
     [query orderByAscending:kModelAttrName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *categoryList, NSError *error) {
         if (!error) {
-            NSLog(@"Found %i categories.", [categoryList count]);
             NSArray *categories = [categoryList collect:^id(PFObject *parseCategory) {
                 return [Category categoryForParseCategory:parseCategory];
             }];

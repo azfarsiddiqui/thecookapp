@@ -10,4 +10,6 @@
 
 @interface BlankEditViewController : CKEditingViewController
 @property(nonatomic,assign) float backgroundAlpha;
+@property (nonatomic,assign) UIEdgeInsets mainViewInsets;
+
 @end

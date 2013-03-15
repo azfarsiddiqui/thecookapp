@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UIView *targetEditingView;
 @property (nonatomic, assign) BOOL keyboardVisible;
 @property (nonatomic, strong) UIButton *doneButton;
+@property (nonatomic, assign) CGRect transparentOverlayRect;
 
 - (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate;
 - (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView*)sourceEditingView;

@@ -8,10 +8,10 @@
 
 #import "CKEditingViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "EditingOverlayView.h"
+@interface CKEditingViewController ()<EditingOverlayViewDelegate>
 
-@interface CKEditingViewController ()
-
-@property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) EditingOverlayView *overlayView;
 @property (nonatomic, assign) CGRect targetEditingFrame;
 @property (nonatomic, assign) BOOL saveMode;
 
@@ -34,6 +34,7 @@
 - (id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
+        self.transparentOverlayRect = CGRectZero;
     }
     return self;
 
@@ -58,12 +59,11 @@
     if (enable) {
         
         // Add overlay to be faded in.
-        UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-        overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        overlayView.backgroundColor = [UIColor blackColor];
-        overlayView.alpha = 0.0;
+        EditingOverlayView *overlayView = [[EditingOverlayView alloc] initWithFrame:
+                                           self.view.bounds withTransparentOverlay:self.transparentOverlayRect withEditViewDelegate:self];
         [self.view addSubview:overlayView];
         [self.view sendSubviewToBack:overlayView];
+
         self.overlayView = overlayView;
         
         // Register taps for dismiss.
@@ -106,8 +106,9 @@
                          if (!enable) {
                              [self.overlayView removeFromSuperview];
                              self.overlayView = nil;
+                         } else {
+                             [self.overlayView viewAppeared];
                          }
-                         
                      }];
     
     if (enable) {
@@ -231,6 +232,15 @@
     [self performSave];
 }
 
+- (void)overlayTapped:(UITapGestureRecognizer *)tapGesture {
+    [self doneTapped];
+}
+
+-(void)editOverlayViewDidRequestDone
+{
+    [self doneTapped];
+}
+
 - (void)performSave {
     self.saveMode = NO;
     [self enableEditing:NO completion:NULL];
@@ -244,19 +254,6 @@
     button.userInteractionEnabled = (target != nil && selector != nil);
     button.autoresizingMask = UIViewAutoresizingNone;
     return button;
-}
-
-#pragma mark - Private methods
-
-- (void)overlayTapped:(UITapGestureRecognizer *)tapGesture {
-    
-    // If keyboard was visible, dismiss it first.
-    if (self.keyboardVisible) {
-        [self.view endEditing:YES];
-        return;
-    }
-
-    [self enableEditing:NO completion:NULL];
 }
 
 #pragma mark - System Notification events

@@ -9,7 +9,6 @@
 #import "BlankEditViewController.h"
 
 @interface BlankEditViewController ()
-
 @end
 
 @implementation BlankEditViewController
@@ -17,17 +16,17 @@
 -(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
-        self.backgroundAlpha = 0.5f;
+        self.backgroundAlpha = 0.0f;
+        self.mainViewInsets = UIEdgeInsetsMake(100.0f,100.0f,100.0f,100.0f);
     }
     return self;
 }
 - (UIView *)createTargetEditingView {
-    UIEdgeInsets mainViewInsets = UIEdgeInsetsMake(100.0f,100.0f,100.0f,100.0f);
     
-    CGRect frame = CGRectMake(mainViewInsets.left,
-                              mainViewInsets.top,
-                              self.view.bounds.size.width - mainViewInsets.left - mainViewInsets.right,
-                              self.view.bounds.size.height - mainViewInsets.top - mainViewInsets.bottom);
+    CGRect frame = CGRectMake(self.mainViewInsets.left,
+                              self.mainViewInsets.top,
+                              self.view.bounds.size.width - self.mainViewInsets.left - self.mainViewInsets.right,
+                              self.view.bounds.size.height - self.mainViewInsets.top - self.mainViewInsets.bottom);
     UIView *mainView = [[UITextView alloc] initWithFrame:frame];
     mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:self.backgroundAlpha];
     return mainView;
@@ -46,21 +45,11 @@
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
     if (appear) {
-        [self addDoneButton];
         [self setValues];
     }
 }
 
 #pragma mark - Private Methods
-- (void)addDoneButton {
-    
-    UIView *mainView = (UIView *)self.targetEditingView;
-    self.doneButton.frame = CGRectMake(mainView.frame.origin.x + mainView.frame.size.width - floorf(self.doneButton.frame.size.width / 2.0),
-                                       mainView.frame.origin.y - floorf(self.doneButton.frame.size.height / 3.0),
-                                       self.doneButton.frame.size.width,
-                                       self.doneButton.frame.size.height);
-    [self.view addSubview:self.doneButton];
-}
 
 - (void)setValues {
     
