@@ -7,6 +7,7 @@
 //
 
 #import "StoreFlowLayout.h"
+#import "BenchtopBookCell.h"
 
 @interface StoreFlowLayout ()
 
@@ -18,7 +19,6 @@
 @implementation StoreFlowLayout
 
 #define kStoreBookInsertScale   0.5
-#define kStoreBookScale         0.5
 
 - (id)init {
     if (self = [super init]) {
@@ -33,8 +33,9 @@
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
+    CGFloat scale = [BenchtopBookCell storeScale];
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        attributes.transform3D = CATransform3DScale(attributes.transform3D, kStoreBookScale, kStoreBookScale, 1.0);
+        attributes.transform3D = CATransform3DScale(attributes.transform3D, scale, scale, 1.0);
     }
     return layoutAttributes;
 }

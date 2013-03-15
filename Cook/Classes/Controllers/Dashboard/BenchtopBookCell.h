@@ -24,7 +24,7 @@
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
 
 + (CGSize)cellSize;
-+ (CGSize)storeCellSize;
++ (CGFloat)storeScale;
 
 - (void)enableEditMode:(BOOL)editMode;
 - (BOOL)enabled;

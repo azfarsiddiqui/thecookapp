@@ -23,6 +23,10 @@
     return CGSizeMake(300.0, 438.0);
 }
 
++ (CGFloat)storeScale {
+    return 0.5;
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         CKBookCoverView *bookView = [[CKBookCoverView alloc] initWithFrame:frame delegate:self];
