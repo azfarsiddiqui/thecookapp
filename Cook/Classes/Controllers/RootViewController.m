@@ -279,6 +279,7 @@
                                               }
                                               completion:^(BOOL finished) {
                                                   self.benchtopLevel = benchtopLevel;
+                                                  [self.storeViewController enable:benchtopLevel == kStoreLevel];
                                                   [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
                                                   completion();
                                               }];

@@ -54,8 +54,7 @@
 }
 
 - (void)enable:(BOOL)enable {
-    [self.featuredViewController enable:enable];
-    [self.friendsViewController enable:enable];
+    DLog();
 }
 
 #pragma mark - StoreTabView methods
