@@ -24,11 +24,14 @@
 #import "ParsePhotoStore.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 
-#define  kEditableInsets    UIEdgeInsetsMake(5.0, 5.0, 5.0f, 30.0f) //tlbr
-#define  kCookPrepTimeLabelSize CGSizeMake(200.0f,20.0f)
-#define  kCookLabelTag      112233445566
-#define  kServesLabelTag      223344556677
-#define  kCookPrepLabelLeftPadding  5.0f
+#define kEditableInsets             UIEdgeInsetsMake(5.0, 5.0, 5.0f, 30.0f) //tlbr
+#define kCookPrepTimeLabelSize      CGSizeMake(200.0f,20.0f)
+#define kCookLabelTag               112233445566
+#define kServesLabelTag             223344556677
+#define kCookPrepLabelLeftPadding   5.0f
+#define kPhotoPeekWindowOffset      150.0
+#define kPhotoCollapseOffset        75.0
+#define kPhotoExpandOffset          225.0
 
 #define  kPlaceholderTextRecipeName     @"RECIPE NAME"
 #define  kPlaceholderTextStory          @"STORY - TELL US A LITTLE ABOUT YOUR RECIPE"
@@ -75,6 +78,7 @@
 @property(nonatomic,assign) BOOL isNewRecipe;
 @property(nonatomic,strong) CKRecipe *recipe;
 @property(nonatomic,strong) CKBook *selectedBook;
+@property (nonatomic, assign) BOOL photoExpanded;
 
 // delegates
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
@@ -106,6 +110,22 @@
 {
     [super viewWillDisappear:animated];
     DLog();
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return !self.tableView.scrollEnabled;
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    // Disable scrolling when we've reached the top of tableView content.
+    if (scrollView.contentOffset.y <= 0.0) {
+        self.tableView.scrollEnabled = NO;
+    }
 }
 
 #pragma mark - UITableViewDatasource
@@ -720,13 +740,11 @@
     self.photoEditableView.frame = CGRectMake(416.0f, 80.0f, 192.0f, 45.0f);
     [self.view addSubview:self.photoEditableView];
 
-    float twentyPercent = floorf(0.2*self.view.frame.size.width);
-    float eightyPercent = floorf(0.8*self.view.frame.size.width);
-
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, twentyPercent, self.view.frame.size.width, eightyPercent) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, kPhotoPeekWindowOffset, self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStylePlain];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kTableViewCellIdentifier];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     self.tableView.separatorColor = [UIColor whiteColor];
-    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
@@ -756,7 +774,11 @@
     [self addEditButton];
     [self addUploadViews];
     [self addNewRecipeMaskView];
-
+    
+    // Register panning if there was an image.
+    self.tableView.scrollEnabled = NO;
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    [self.view addGestureRecognizer:panGesture];
 }
 
 -(void) toggleViewsForNewRecipe:(BOOL)isNewRecipe
@@ -851,7 +873,80 @@
     containerView.frame = CGRectMake(containerView.frame.origin.x, containerView.frame.origin.y, containerView.frame.size.width, totalHeight);
     centerPoint = [ViewHelper centerPointForSmallerView:containerView inLargerView:self.recipeMaskView];
     containerView.frame = CGRectMake(containerView.frame.origin.x, centerPoint.y, containerView.frame.size.width, containerView.frame.size.height);
-    
-
 }
+
+- (void)panned:(UIPanGestureRecognizer *)panGesture {
+    
+    CGPoint translation = [panGesture translationInView:self.view];
+    
+    if (panGesture.state == UIGestureRecognizerStateBegan) {
+    } else if (panGesture.state == UIGestureRecognizerStateChanged) {
+        [self panWithTranslation:translation];
+	} else if (panGesture.state == UIGestureRecognizerStateEnded) {
+        [self snapIfRequired];
+    }
+    
+    [panGesture setTranslation:CGPointZero inView:self.view];
+}
+
+- (void)panWithTranslation:(CGPoint)translation {
+    CGFloat dragRatio = 0.5;
+    CGFloat panOffset = ceilf(translation.y * dragRatio);
+    CGRect tableFrame = self.tableView.frame;
+    tableFrame.origin.y += panOffset;
+    
+    // Reached the top
+    if (tableFrame.origin.y <= 0.0) {
+//        self.tableView.scrollEnabled = YES;
+        tableFrame.origin.y = 0.0;
+    }
+    
+    self.tableView.frame = tableFrame;
+}
+
+- (void)snapIfRequired {
+    CGRect tableFrame = self.tableView.frame;
+    CGFloat snapDuration = 0.2;
+    CGFloat expandedOffset = self.view.bounds.size.height - [self tableView:self.tableView heightForHeaderInSection:0];
+    
+    if (self.photoExpanded && tableFrame.origin.y < expandedOffset - 100.0) {
+        
+        // Restore to peek from expanded.
+        tableFrame.origin.y = kPhotoPeekWindowOffset;
+        self.photoExpanded = NO;
+        
+    } else if (tableFrame.origin.y <= kPhotoCollapseOffset) {
+        
+        // Collapse photo.
+        tableFrame.origin.y = 0.0;
+        self.photoExpanded = NO;
+        snapDuration = 0.2;
+        self.tableView.scrollEnabled = YES;
+        
+    } else if (tableFrame.origin.y >= kPhotoExpandOffset) {
+        
+        // Expand photo.
+        tableFrame.origin.y = expandedOffset;
+        self.photoExpanded = YES;
+        snapDuration = 0.2;
+        
+    } else {
+        
+        // Restore peek.
+        tableFrame.origin.y = kPhotoPeekWindowOffset;
+        self.photoExpanded = NO;
+        snapDuration = 0.2;
+    }
+    
+    [UIView animateWithDuration:snapDuration
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.tableView.frame = tableFrame;
+                     }
+                     completion:^(BOOL finished) {        
+                     }];
+    
+}
+
 @end
