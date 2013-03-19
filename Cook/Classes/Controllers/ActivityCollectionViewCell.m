@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UILabel *activityNameLabel;
 @property (nonatomic, strong) TTTTimeIntervalFormatter *timeIntervalFormatter;
 @property (nonatomic, strong) ActivityRecipeStatsView *gridStatsView;
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
@@ -47,8 +48,19 @@
         // Background image.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
         imageView.frame = self.bounds;
+        imageView.backgroundColor = [Theme activityInfoViewColour];
         [self.contentView addSubview:imageView];
         self.imageView = imageView;
+        
+        // Activity view.
+        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        activityView.frame = CGRectMake(floorf((imageView.bounds.size.width - activityView.frame.size.width) / 2.0),
+                                        floorf((imageView.bounds.size.height / 2.0 - activityView.frame.size.height) / 2.0),
+                                        activityView.frame.size.width,
+                                        activityView.frame.size.height);
+        [activityView startAnimating];
+        [imageView addSubview:activityView];
+        self.activityView = activityView;
         
         // Info view.
         UIView *infoView = [[UIView alloc] initWithFrame:CGRectMake(0.0,
@@ -126,9 +138,16 @@
     [self configureTitle];
     [self configureName];
     [self configureStats];
+    
+    // Start spinner on imageView.
+    [self.activityView startAnimating];
 }
 
 - (void)configureImage:(UIImage *)image {
+    
+    // Stop spinner no matter what.
+    [self.activityView stopAnimating];
+    
     if (image) {
         [ImageHelper configureImageView:self.imageView image:image];
         self.infoView.frame = CGRectMake(0.0,
