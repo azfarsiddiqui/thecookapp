@@ -88,7 +88,17 @@
     return [UIColor blackColor];
 }
 
+#pragma mark - Grid category headers
+
++ (UIColor *)categoryHeaderBackgroundColour {
+    return [self activityInfoViewColour];
+}
+
 #pragma mark - Grid recipe cells
+
++ (UIColor *)recipeGridImageBackgroundColour {
+    return [UIColor colorWithHexString:@"EFEFEF"];
+}
 
 + (UIFont *)recipeGridTitleFont {
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0];

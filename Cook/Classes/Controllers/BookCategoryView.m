@@ -13,6 +13,8 @@
 #import "CKRecipe.h"
 #import "CKRecipeImage.h"
 #import "CategoryHeaderLabelView.h"
+#import "ViewHelper.h"
+#import "ImageHelper.h"
 
 @interface BookCategoryView ()
 
@@ -30,6 +32,7 @@
         
         // Pre-create the background image view.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
+        imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
         imageView.frame = self.bounds;
         [self addSubview:imageView];
         self.imageView = imageView;
@@ -53,18 +56,7 @@
 }
 
 - (void)configureImage:(UIImage *)image {
-    self.imageView.image = image;
-    if (image) {
-        self.imageView.alpha = 0.0;
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationCurveEaseIn
-                         animations:^{
-                             self.imageView.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-    }
+    [ImageHelper configureImageView:self.imageView image:image];
 }
 
 - (CGSize)imageSize {

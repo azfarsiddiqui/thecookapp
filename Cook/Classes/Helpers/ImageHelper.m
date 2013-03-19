@@ -16,8 +16,6 @@
     }
     
     if (image) {
-        imageView.hidden = NO;
-        
         // Fade image in if there were no prior images.
         if (!imageView.image) {
             imageView.alpha = 0.0;
@@ -38,7 +36,6 @@
         }
     } else {
         imageView.image = nil;
-        imageView.hidden = YES;
     }
     
 }

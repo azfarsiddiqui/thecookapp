@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UILabel *ingredientsEllipsisLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) GridRecipeStatsView *statsView;
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
@@ -41,9 +42,20 @@
         
         // Top thumbnail.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
+        imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
         imageView.frame = CGRectMake(0.0, 0.0, self.contentView.bounds.size.width, kImageHeight);
         [self.contentView addSubview:imageView];
         self.imageView = imageView;
+        
+        // Image spinner.
+        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityView.frame = CGRectMake(floorf((imageView.bounds.size.width - activityView.frame.size.width) / 2.0),
+                                        floorf((imageView.bounds.size.height - activityView.frame.size.height) / 2.0),
+                                        activityView.frame.size.width,
+                                        activityView.frame.size.height);
+        [imageView addSubview:activityView];
+        [activityView startAnimating];
+        self.activityView = activityView;
         
         // Recipe title that spans 2 lines.
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -113,9 +125,22 @@
     [self updateStory];
     [self updateIngredients];
     [self updateStats];
+    
+    // Nil the image and start spinning if required.
+    self.imageView.image = nil;
+    if ([recipe hasPhotos]) {
+        [self.activityView startAnimating];
+        self.imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
+    } else {
+        [self.activityView stopAnimating];
+        self.imageView.backgroundColor = [UIColor clearColor];
+    }
 }
 
 - (void)configureImage:(UIImage *)image {
+    if (image) {
+        [self.activityView stopAnimating];
+    }
     [ImageHelper configureImageView:self.imageView image:image];
 }
 

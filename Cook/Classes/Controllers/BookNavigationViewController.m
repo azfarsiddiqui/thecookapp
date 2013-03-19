@@ -353,12 +353,6 @@
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:kCategoryHeaderId];
     [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
-    
-    // How to start a page in?
-//    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
-//    [self.collectionView setContentOffset:CGPointMake(self.collectionView.bounds.size.width,
-//                                                      self.collectionView.bounds.origin.x)
-//                                 animated:YES];
 }
 
 - (void)loadData {
@@ -443,9 +437,6 @@
                                         [recipeCell configureImage:image];
                                     }
                                 }];
-
-    } else {
-        [recipeCell configureImage:nil];
     }
 }
 

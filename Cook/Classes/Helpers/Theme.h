@@ -23,7 +23,11 @@
 + (UIColor*) contentsTitleColor;
 + (UIColor*) contentsItemColor;
 
+#pragma mark - Grid category headers
++ (UIColor *)categoryHeaderBackgroundColour;
+
 #pragma mark - Grid recipe cells
++ (UIColor *)recipeGridImageBackgroundColour;
 + (UIFont *)recipeGridTitleFont;
 + (UIColor *)recipeGridTitleColour;
 + (UIFont *)recipeGridIngredientsFont;

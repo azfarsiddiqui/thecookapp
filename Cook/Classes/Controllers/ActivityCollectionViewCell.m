@@ -58,6 +58,7 @@
                                         floorf((imageView.bounds.size.height / 2.0 - activityView.frame.size.height) / 2.0),
                                         activityView.frame.size.width,
                                         activityView.frame.size.height);
+        activityView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
         [activityView startAnimating];
         [imageView addSubview:activityView];
         self.activityView = activityView;
@@ -139,24 +140,29 @@
     [self configureName];
     [self configureStats];
     
-    // Start spinner on imageView.
-    [self.activityView startAnimating];
-}
-
-- (void)configureImage:(UIImage *)image {
-    
-    // Stop spinner no matter what.
-    [self.activityView stopAnimating];
-    
-    if (image) {
-        [ImageHelper configureImageView:self.imageView image:image];
+    // Start spinner on imageView if there was a recipe/photo
+    self.imageView.image = nil;
+    CKRecipe *recipe = activity.recipe;
+    if ([recipe hasPhotos]) {
+        [self.activityView startAnimating];
         self.infoView.frame = CGRectMake(0.0,
                                          floorf(self.contentView.bounds.size.height / 2.0),
                                          self.contentView.bounds.size.width,
                                          floorf(self.contentView.bounds.size.height / 2.0));
     } else {
+        [self.activityView stopAnimating];
         self.infoView.frame = self.contentView.bounds;
     }
+}
+
+- (void)configureImage:(UIImage *)image {
+    
+    // Stop spinner no matter what.
+    if (image) {
+        [self.activityView stopAnimating];
+    }
+    
+    [ImageHelper configureImageView:self.imageView image:image];
 }
 
 #pragma mark - Private methods
