@@ -44,7 +44,8 @@
 #define kButtonEdgeInsets   UIEdgeInsetsMake(15.0,20.0f,0,50.0f)
 #define kTableViewCellIdentifier               @"TableViewCellIdentifier"
 
-@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate>
+@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, UINavigationControllerDelegate,
+    UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate, UIGestureRecognizerDelegate>
 
 //ui
 
@@ -59,6 +60,9 @@
 @property(nonatomic,strong)  FacebookUserView *facebookUserView;
 @property(nonatomic,strong)  UIImageView *recipeImageView;
 @property(nonatomic,strong)  UIButton *editButton;
+@property(nonatomic,strong)  UIButton *closeButton;
+@property(nonatomic,strong)  UIButton *cancelButton;
+@property(nonatomic,strong)  UIButton *saveButton;
 @property(nonatomic,strong)  UIProgressView *uploadProgressView;
 @property(nonatomic,strong)  UILabel *uploadLabel;
 
@@ -115,7 +119,11 @@
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return !self.tableView.scrollEnabled;
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        return (!self.inEditMode && !self.tableView.scrollEnabled);
+    } else {
+        return YES;
+    }
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -197,16 +205,32 @@
     }
 }
 
--(IBAction)toggledEditMode:(UIButton*)editModeButton
-{
+- (IBAction)cancelTapped:(id)sender {
+    if (self.isNewRecipe) {
+        [self closeTapped:nil];
+    } else {
+        [self toggleEditModeValidateAndSave:NO];
+    }
+}
+
+- (IBAction)toggledEditMode:(UIButton*)editModeButton {
+    [self toggleEditModeValidateAndSave:YES];
+}
+
+- (void)toggleEditModeValidateAndSave:(BOOL)save {
     
     //validate if editing
-    if (self.inEditMode && ![self validate]) {
+    if (self.inEditMode && save && ![self validate]) {
         return;
     }
     
     self.inEditMode = !self.inEditMode;
-
+    [self updateNavButtons];
+    
+    if (self.inEditMode) {
+        [self resetTableView];
+    }
+    
     [self.nameEditableView enableEditMode:self.inEditMode];
     [self setLabelForEditableView:self.nameEditableView asEditable:self.inEditMode];
     
@@ -215,16 +239,16 @@
     
     [self.ingredientsViewEditableView enableEditMode:self.inEditMode];
     [self setLabelForEditableView:self.ingredientsViewEditableView asEditable:self.inEditMode];
-
+    
     [self.storyEditableView enableEditMode:self.inEditMode];
     [self setLabelForEditableView:self.storyEditableView asEditable:self.inEditMode];
-
+    
     [self.categoryEditableView enableEditMode:self.inEditMode];
     self.categoryEditableView.hidden = !self.inEditMode;
     self.facebookUserView.hidden = self.inEditMode;
     
     [self setLabelForEditableView:self.categoryEditableView asEditable:self.inEditMode];
-
+    
     //TODO extend photoeditableview
     UILabel *photoLabel = (UILabel*)self.photoEditableView.contentView;
     photoLabel.hidden = !self.inEditMode;
@@ -233,7 +257,7 @@
     [self.servesCookPrepEditableView enableEditMode:self.inEditMode];
     [self setServesCookPrepColorAsEditable:self.inEditMode];
     
-    if (self.inEditMode == NO) {
+    if (!self.inEditMode && save) {
         //done editing
         [self save];
         self.recipeMaskView.hidden = YES;
@@ -274,6 +298,64 @@
     }
     
     [self toggleViewsForNewRecipe:self.isNewRecipe];
+}
+
+- (UIButton *)closeButton {
+    if (!_closeButton) {
+        UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"]
+                                                     target:self
+                                                   selector:@selector(closeTapped:)];
+        closeButton.frame = CGRectMake(kButtonEdgeInsets.left,
+                                       kButtonEdgeInsets.top,
+                                       closeButton.frame.size.width,
+                                       closeButton.frame.size.height);
+        [self.view addSubview:closeButton];
+        _closeButton = closeButton;
+    }
+    return _closeButton;
+}
+
+- (UIButton *)editButton {
+    if (!_editButton) {
+        UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self
+                                                  selector:@selector(toggledEditMode:)];
+        editButton.frame = CGRectMake(self.view.frame.size.width - kButtonEdgeInsets.right,
+                                      kButtonEdgeInsets.top,
+                                      editButton.frame.size.width,
+                                      editButton.frame.size.height);
+        [self.view addSubview:editButton];
+        _editButton = editButton;
+    }
+    return _editButton;
+}
+
+- (UIButton *)cancelButton {
+    if (!_cancelButton) {
+        UIButton *cancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+                                                     target:self
+                                                   selector:@selector(cancelTapped:)];
+        cancelButton.frame = CGRectMake(kButtonEdgeInsets.left,
+                                        kButtonEdgeInsets.top,
+                                        cancelButton.frame.size.width,
+                                        cancelButton.frame.size.height);
+        [self.view addSubview:cancelButton];
+        _cancelButton = cancelButton;
+    }
+    return _cancelButton;
+}
+
+- (UIButton *)saveButton {
+    if (!_saveButton) {
+        UIButton *saveButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"] target:self
+                                                  selector:@selector(toggledEditMode:)];
+        saveButton.frame = CGRectMake(self.view.frame.size.width - kButtonEdgeInsets.right,
+                                      kButtonEdgeInsets.top,
+                                      saveButton.frame.size.width,
+                                      saveButton.frame.size.height);
+        [self.view addSubview:saveButton];
+        _saveButton = saveButton;
+    }
+    return _saveButton;
 }
 
 #pragma mark - CKEditableViewDelegate
@@ -770,14 +852,14 @@
     self.methodViewEditableView = [[CKEditableView alloc] initWithDelegate:self];
     self.methodViewEditableView.frame = CGRectMake(396.0f,0.0f,493.0f,311.0f);
 
-    [self addCloseButton];
-    [self addEditButton];
+    [self updateNavButtons];
     [self addUploadViews];
     [self addNewRecipeMaskView];
     
     // Register panning if there was an image.
     self.tableView.scrollEnabled = NO;
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
 }
 
@@ -790,30 +872,12 @@
 }
 
 #pragma mark - subView additions
--(void) addCloseButton
-{
-    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"]
-                                                 target:self
-                                               selector:@selector(closeTapped:)];
-    closeButton.frame = CGRectMake(kButtonEdgeInsets.left,
-                                   kButtonEdgeInsets.top,
-                                   closeButton.frame.size.width,
-                                   closeButton.frame.size.height);
-    [self.view addSubview:closeButton];
 
-}
-
--(void) addEditButton
-{
-    UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self
-                                              selector:@selector(toggledEditMode:)];
-    editButton.frame = CGRectMake(self.view.frame.size.width - kButtonEdgeInsets.right,
-                                   kButtonEdgeInsets.top,
-                                   editButton.frame.size.width,
-                                   editButton.frame.size.height);
-    self.editButton = editButton;
-    [self.view addSubview:editButton];
-    
+- (void)updateNavButtons {
+    self.editButton.hidden = self.inEditMode;
+    self.closeButton.hidden = self.inEditMode;
+    self.cancelButton.hidden = !self.inEditMode;
+    self.saveButton.hidden = !self.inEditMode;
 }
 
 -(void) addUploadViews
@@ -938,15 +1002,25 @@
         snapDuration = 0.2;
     }
     
-    [UIView animateWithDuration:snapDuration
+    [self snapTableViewToFrame:tableFrame duration:snapDuration];
+}
+
+- (void)resetTableView {
+    CGRect tableFrame = self.tableView.frame;
+    tableFrame.origin.y = kPhotoPeekWindowOffset;
+    self.photoExpanded = NO;
+    [self snapTableViewToFrame:tableFrame duration:0.2];
+}
+
+- (void)snapTableViewToFrame:(CGRect)tableFrame duration:(CGFloat)duration {
+    [UIView animateWithDuration:duration
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.tableView.frame = tableFrame;
                      }
-                     completion:^(BOOL finished) {        
+                     completion:^(BOOL finished) {
                      }];
-    
 }
 
 @end
