@@ -46,8 +46,7 @@
     } else {
         [self.tableView removeFromSuperview];
         [self.padderView removeFromSuperview];
-        UIView *mainView = self.targetEditingView;
-        mainView.backgroundColor = [UIColor blackColor];
+        [self updateViewAlphas:1.0f];
     }
 }
 
@@ -59,18 +58,16 @@
         [self addTableView:mainView];
         [self data];
         self.tableView.alpha = 0.0f;
-        self.padderView.alpha = 0.0f;
         [UIView animateWithDuration:0.15f
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              self.tableView.alpha = 1.0f;
-                             self.padderView.alpha = 0.7f;
                          }
                          completion:^(BOOL finished) {
                              [UIView animateWithDuration: 0.15
                                               animations:^{
-                                                  mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
+                                                  [self updateViewAlphas:0.0f];
                                               }];
                          }];
     }
@@ -172,6 +169,7 @@
 - (UIView*)newPadderView
 {
     UIView *padderView = [[UIView alloc] initWithFrame:CGRectZero];
+    padderView.alpha = 0.7f;
     padderView.backgroundColor = [UIColor blackColor];
     padderView.frame = CGRectMake(0.0f, 0.0f, kOverlayRect.size.width, kOverlayRect.size.height);
     return padderView;

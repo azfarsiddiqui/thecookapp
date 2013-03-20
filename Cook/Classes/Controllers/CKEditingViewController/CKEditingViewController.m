@@ -77,6 +77,7 @@
             UIView *targetEditingView = [self createTargetEditingView];
             self.targetEditingFrame = targetEditingView.frame;
             targetEditingView.alpha = 0.0;
+            
             [self.view addSubview:targetEditingView];
             self.targetEditingView = targetEditingView;
 
@@ -133,7 +134,6 @@
                                                   // Scale the target to its intended frame.
                                                   self.targetEditingView.frame = self.targetEditingFrame;
                                                   self.targetEditingView.alpha = 1.0;
-                                                  
                                               }
                                               completion:^(BOOL finished) {
                                                   
@@ -150,7 +150,7 @@
                          animations:^{
                              // Scale the target to its intended frame.
                              CGRect adjustForContentInsetsFrame =   CGRectMake(self.sourceEditingView.frame.origin.x,
-                                                                               self.sourceEditingView.frame.origin.y + self.sourceEditingView.editButtonOffset.height,
+                                                                               self.sourceEditingView.frame.origin.y + self.sourceEditingView.editButtonOffset.height ,
                                                                                self.sourceEditingView.frame.size.width - self.sourceEditingView.editButtonOffset.width,
                                                                                self.sourceEditingView.frame.size.height- self.sourceEditingView.editButtonOffset.height);
 
@@ -170,9 +170,7 @@
                                                   
                                               }
                                               completion:^(BOOL finished) {
-                                                  
                                                   [self editingViewDidAppear:NO];
-                                                  
                                               }];
                              
                          }];

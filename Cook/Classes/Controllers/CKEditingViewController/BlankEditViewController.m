@@ -9,6 +9,7 @@
 #import "BlankEditViewController.h"
 
 @interface BlankEditViewController ()
+@property(nonatomic,strong) UIView *mostlyBlackView;
 @end
 
 @implementation BlankEditViewController
@@ -27,11 +28,29 @@
                               self.mainViewInsets.top,
                               self.view.bounds.size.width - self.mainViewInsets.left - self.mainViewInsets.right,
                               self.view.bounds.size.height - self.mainViewInsets.top - self.mainViewInsets.bottom);
-    UIView *mainView = [[UITextView alloc] initWithFrame:frame];
-    mainView.backgroundColor = [UIColor blackColor];
+    
+    UIView *mainView = [[UIView alloc] initWithFrame:frame];
+    mainView.backgroundColor = [UIColor clearColor];
+
+    //two views
+
+    //UIView
+    CGRect adjustForTopPaddingRect = CGRectMake(0.0f, 20.0f, mainView.frame.size.width, mainView.frame.size.height-20.0f);
+    UIView *mostlyBlackView = [[UIView alloc]initWithFrame:adjustForTopPaddingRect];
+    mostlyBlackView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    mostlyBlackView.backgroundColor = [UIColor blackColor];
+    self.mostlyBlackView = mostlyBlackView;
+    [mainView addSubview:mostlyBlackView];
+    
     return mainView;
 }
 
+-(void)updateViewAlphas:(float)alpha
+{
+    self.targetEditingView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:alpha];
+    self.mostlyBlackView.alpha = alpha;
+
+}
 //overridden methods
 
 - (void)editingViewWillAppear:(BOOL)appear {
