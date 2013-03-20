@@ -13,11 +13,13 @@
 
 #define kCategoryTableViewCellIdentifier @"CategoryTableViewCellIdentifier"
 #define kRowHeight          90.0f
+#define kHeaderHeight       20.0f
+#define kOverlayRect        CGRectMake(100.0f,0.0f,824.0f, 20.0f)
 
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) UITableView *tableView;
-@property (nonatomic,strong) UILabel     *titleLabel;
+@property (nonatomic,strong) UIView *padderView;
 @end
 
 @implementation CategoryEditViewController
@@ -26,7 +28,7 @@
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
         self.mainViewInsets = UIEdgeInsetsMake(0.0f,100.0f,0.0f,100.0f);
-        self.transparentOverlayRect = CGRectMake(100.0f,0.0f,824.0f, 90.0f);
+        self.transparentOverlayRect = kOverlayRect;
     }
     return self;
 }
@@ -42,8 +44,8 @@
     [super editingViewWillAppear:appear];
     if (appear) {
     } else {
-        [self.titleLabel removeFromSuperview];
         [self.tableView removeFromSuperview];
+        [self.padderView removeFromSuperview];
         UIView *mainView = self.targetEditingView;
         mainView.backgroundColor = [UIColor blackColor];
     }
@@ -53,25 +55,23 @@
     [super editingViewDidAppear:appear];
     if (appear) {
         UIView *mainView = self.targetEditingView;
-        
+        [self addPadderView:mainView];
         [self addTableView:mainView];
-        [self addTitleLabel:mainView];
         [self data];
         self.tableView.alpha = 0.0f;
-        self.titleLabel.alpha = 0.0f;
+        self.padderView.alpha = 0.0f;
         [UIView animateWithDuration:0.15f
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              self.tableView.alpha = 1.0f;
-                             self.titleLabel.alpha = 0.7;
-                             mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
-
+                             self.padderView.alpha = 0.7f;
                          }
                          completion:^(BOOL finished) {
-//                             [UIView animateWithDuration: 0.15
-//                                              animations:^{
-//                                              }];
+                             [UIView animateWithDuration: 0.15
+                                              animations:^{
+                                                  mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
+                                              }];
                          }];
     }
 }
@@ -85,15 +85,16 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *spacerView = [[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width, kRowHeight)];
-    spacerView.backgroundColor = [UIColor clearColor];
-    return spacerView;
+    UIView *headerView = [self newPadderView];
+    headerView.backgroundColor = [UIColor clearColor];
+    return headerView;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return kRowHeight;
+    return kHeaderHeight;
 }
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     //padder row
@@ -103,8 +104,8 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-    Category *category = [self.categories objectAtIndex:indexPath.row];
-    [cell configureCellWithCategory:category];
+        Category *category = [self.categories objectAtIndex:indexPath.row];
+        [cell configureCellWithCategory:category];
     return cell;
 }
 
@@ -117,8 +118,8 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-   self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
-   [self doneTapped];
+        self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
+        [self doneTapped];
 }
 
 #pragma mark - Private Methods
@@ -160,23 +161,20 @@
 
             }
         }];
-    }
+    } 
 }
 
-- (void)addTitleLabel:(UIView*)mainView {
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.backgroundColor = [UIColor blackColor];
-    titleLabel.text = self.editingTitle;
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.font = self.titleFont;
-    titleLabel.textColor = [UIColor whiteColor];
-    titleLabel.shadowColor = [UIColor blackColor];
-    titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    [titleLabel sizeToFit];
-    titleLabel.frame = CGRectMake(0.0f, 0.0f, mainView.frame.size.width, 90.0f);
-    self.titleLabel = titleLabel;
-    [mainView addSubview:titleLabel];
+- (void)addPadderView:(UIView*)mainView {
+    self.padderView = [self newPadderView];
+    [mainView addSubview:self.padderView];
+}
+
+- (UIView*)newPadderView
+{
+    UIView *padderView = [[UIView alloc] initWithFrame:CGRectZero];
+    padderView.backgroundColor = [UIColor blackColor];
+    padderView.frame = CGRectMake(0.0f, 0.0f, kOverlayRect.size.width, kOverlayRect.size.height);
+    return padderView;
 }
 
 @end
