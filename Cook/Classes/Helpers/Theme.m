@@ -300,7 +300,7 @@
 }
 
 +(UIFont *)categoryListFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:52.0];
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:50.0];
 }
 
 +(UIColor *)categoryListSelectedColor {

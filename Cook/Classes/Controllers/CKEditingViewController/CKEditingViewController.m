@@ -80,8 +80,13 @@
             [self.view addSubview:targetEditingView];
             self.targetEditingView = targetEditingView;
 
+            CGRect adjustForContentInsetsFrame =   CGRectMake(self.sourceEditingView.frame.origin.x,
+                                                              self.sourceEditingView.frame.origin.y + self.sourceEditingView.editButtonOffset.height,
+                                                              self.sourceEditingView.frame.size.width - self.sourceEditingView.editButtonOffset.width,
+                                                              self.sourceEditingView.frame.size.height- self.sourceEditingView.editButtonOffset.height);
+
             // Now get the frame of the source relative to the overlay.
-            CGRect relativeFrame = [self.sourceEditingView.superview convertRect:self.sourceEditingView.frame toView:self.view];
+            CGRect relativeFrame = [self.sourceEditingView.superview convertRect:adjustForContentInsetsFrame toView:self.view];
             self.targetEditingView.frame = relativeFrame;
 
         }
@@ -144,7 +149,12 @@
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
                              // Scale the target to its intended frame.
-                             self.targetEditingView.frame = [self.sourceEditingView.superview convertRect:self.sourceEditingView.frame toView:self.view];
+                             CGRect adjustForContentInsetsFrame =   CGRectMake(self.sourceEditingView.frame.origin.x,
+                                                                               self.sourceEditingView.frame.origin.y + self.sourceEditingView.editButtonOffset.height,
+                                                                               self.sourceEditingView.frame.size.width - self.sourceEditingView.editButtonOffset.width,
+                                                                               self.sourceEditingView.frame.size.height- self.sourceEditingView.editButtonOffset.height);
+
+                             self.targetEditingView.frame = [self.sourceEditingView.superview convertRect:adjustForContentInsetsFrame toView:self.view];
                              self.targetEditingView.alpha = kTargetMidAlpha;
                              
                          }

@@ -65,14 +65,13 @@
                          animations:^{
                              self.tableView.alpha = 1.0f;
                              self.titleLabel.alpha = 0.7;
-//                             mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
+                             mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
 
                          }
                          completion:^(BOOL finished) {
-                             [UIView animateWithDuration: 0.15
-                                              animations:^{
-                                                  mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
-                                              }];
+//                             [UIView animateWithDuration: 0.15
+//                                              animations:^{
+//                                              }];
                          }];
     }
 }
@@ -119,6 +118,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
    self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
+   [self doneTapped];
 }
 
 #pragma mark - Private Methods
@@ -156,7 +156,7 @@
             if ([self.selectedCategory.name isEqualToString:category.name]) {
                 stop = YES;
                 [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:NO
-                                      scrollPosition:UITableViewScrollPositionTop];
+                                      scrollPosition:UITableViewScrollPositionMiddle];
 
             }
         }];
