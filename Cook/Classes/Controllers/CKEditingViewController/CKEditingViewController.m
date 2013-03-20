@@ -96,13 +96,10 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         
-                         // Fade in the overlay.
+                         // Fade in/out the overlay.
                          self.overlayView.alpha = enable ? kOverlayAlpha : 0.0;
-                         
                      }
                      completion:^(BOOL finished) {
-                         
                          if (!enable) {
                              [self.overlayView removeFromSuperview];
                              self.overlayView = nil;

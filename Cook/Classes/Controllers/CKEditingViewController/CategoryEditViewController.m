@@ -17,8 +17,7 @@
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) UITableView *tableView;
-@property (nonatomic, strong) UILabel *titleLabel;
-
+@property (nonatomic,strong) UILabel     *titleLabel;
 @end
 
 @implementation CategoryEditViewController
@@ -36,24 +35,24 @@
 {
     UIView *mainView = [super createTargetEditingView];
     [self addTableView:mainView];
+    [self addTitleLabel:mainView];
     return mainView;
 }
 
 
 - (void)editingViewWillAppear:(BOOL)appear {
     [super editingViewWillAppear:appear];
-    if (!appear) {
-        [self.titleLabel removeFromSuperview];
-    } else {
+    if (appear) {
         [self data];
     }
-    
 }
 
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
     if (appear) {
-        [self addTitleLabel];
+        self.titleLabel.backgroundColor = [UIColor blackColor];
+        self.titleLabel.textColor = [UIColor whiteColor];
+        self.titleLabel.alpha = 0.7;
     }
 }
 
@@ -87,6 +86,15 @@
 }
 
 #pragma mark - UITableViewDelegate
+
+-(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        //first row is not selectable
+        return nil;
+    }
+    return indexPath;
+}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -136,25 +144,21 @@
     }
 }
 
-- (void)addTitleLabel {
-    UITableView *tableView = (UITableView *)self.targetEditingView;
+- (void)addTitleLabel:(UIView*)mainView {
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.alpha = 0.7f;
-    titleLabel.backgroundColor = [UIColor blackColor];
+    titleLabel.alpha = 1.0f;
+    titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.text = self.editingTitle;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = self.titleFont;
-    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.textColor = [UIColor clearColor];
     titleLabel.shadowColor = [UIColor blackColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [titleLabel sizeToFit];
-    titleLabel.frame = CGRectMake(tableView.frame.origin.x,
-                                  tableView.frame.origin.y,
-                                  tableView.frame.size.width,
-                                  90.0f);
-    [self.view addSubview:titleLabel];
+    titleLabel.frame = CGRectMake(0.0f, 0.0f, mainView.frame.size.width, 90.0f);
     self.titleLabel = titleLabel;
+    [mainView addSubview:titleLabel];
 }
 
 @end
