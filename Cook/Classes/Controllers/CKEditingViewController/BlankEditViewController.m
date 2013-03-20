@@ -28,7 +28,7 @@
                               self.view.bounds.size.width - self.mainViewInsets.left - self.mainViewInsets.right,
                               self.view.bounds.size.height - self.mainViewInsets.top - self.mainViewInsets.bottom);
     UIView *mainView = [[UITextView alloc] initWithFrame:frame];
-    mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:self.backgroundAlpha];
+    mainView.backgroundColor = [UIColor blackColor];
     return mainView;
 }
 

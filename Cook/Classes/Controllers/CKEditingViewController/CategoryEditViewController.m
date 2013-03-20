@@ -34,8 +34,6 @@
 -(UIView *)createTargetEditingView
 {
     UIView *mainView = [super createTargetEditingView];
-    [self addTableView:mainView];
-    [self addTitleLabel:mainView];
     return mainView;
 }
 
@@ -43,16 +41,39 @@
 - (void)editingViewWillAppear:(BOOL)appear {
     [super editingViewWillAppear:appear];
     if (appear) {
-        [self data];
+    } else {
+        [self.titleLabel removeFromSuperview];
+        [self.tableView removeFromSuperview];
+        UIView *mainView = self.targetEditingView;
+        mainView.backgroundColor = [UIColor blackColor];
     }
 }
 
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
     if (appear) {
-        self.titleLabel.backgroundColor = [UIColor blackColor];
-        self.titleLabel.textColor = [UIColor whiteColor];
-        self.titleLabel.alpha = 0.7;
+        UIView *mainView = self.targetEditingView;
+        
+        [self addTableView:mainView];
+        [self addTitleLabel:mainView];
+        [self data];
+        self.tableView.alpha = 0.0f;
+        self.titleLabel.alpha = 0.0f;
+        [UIView animateWithDuration:0.15f
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.tableView.alpha = 1.0f;
+                             self.titleLabel.alpha = 0.7;
+//                             mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
+
+                         }
+                         completion:^(BOOL finished) {
+                             [UIView animateWithDuration: 0.15
+                                              animations:^{
+                                                  mainView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.0f alpha:0.0f];
+                                              }];
+                         }];
     }
 }
 
@@ -63,20 +84,28 @@
 
 #pragma mark - UITableViewDataSource
 
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *spacerView = [[UIView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width, kRowHeight)];
+    spacerView.backgroundColor = [UIColor clearColor];
+    return spacerView;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return kRowHeight;
+}
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     //padder row
-    return [self.categories count] + 1;
+    return [self.categories count];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-    if (indexPath.row > 0) {
-        Category *category = [self.categories objectAtIndex:indexPath.row-1];
-        [cell configureCellWithCategory:category];
-    } else {
-    }
+    Category *category = [self.categories objectAtIndex:indexPath.row];
+    [cell configureCellWithCategory:category];
     return cell;
 }
 
@@ -87,20 +116,9 @@
 
 #pragma mark - UITableViewDelegate
 
--(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == 0) {
-        //first row is not selectable
-        return nil;
-    }
-    return indexPath;
-}
-
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row > 0) {
-        self.selectedCategory = [self.categories objectAtIndex:indexPath.row-1];
-    }
+   self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
 }
 
 #pragma mark - Private Methods
@@ -138,7 +156,8 @@
             if ([self.selectedCategory.name isEqualToString:category.name]) {
                 stop = YES;
                 [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:NO
-                                      scrollPosition:UITableViewScrollPositionMiddle];
+                                      scrollPosition:UITableViewScrollPositionTop];
+
             }
         }];
     }
@@ -147,12 +166,11 @@
 - (void)addTitleLabel:(UIView*)mainView {
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.alpha = 1.0f;
-    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.backgroundColor = [UIColor blackColor];
     titleLabel.text = self.editingTitle;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = self.titleFont;
-    titleLabel.textColor = [UIColor clearColor];
+    titleLabel.textColor = [UIColor whiteColor];
     titleLabel.shadowColor = [UIColor blackColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [titleLabel sizeToFit];

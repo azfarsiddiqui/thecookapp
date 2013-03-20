@@ -13,7 +13,6 @@
 #import "CategoryEditViewController.h"
 #import "IngredientsEditingViewController.h"
 #import "BookModalViewControllerDelegate.h"
-#import "RecipePhotoEditViewController.h"
 #import "ServesCookPrepEditingViewController.h"
 #import "NSArray+Enumerable.h"
 #import "FacebookUserView.h"
