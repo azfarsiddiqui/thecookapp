@@ -12,7 +12,7 @@
 @interface CategoryTableViewCell()
 @end
 
-#define kCategoryCellInsets UIEdgeInsetsMake(5.0f,0.0f,5.0f,0.0f)
+#define kCategoryCellInsets UIEdgeInsetsMake(0.0f,0.0f,5.0f,0.0f)
 
 @implementation CategoryTableViewCell
 

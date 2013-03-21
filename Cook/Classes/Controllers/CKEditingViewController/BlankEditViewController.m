@@ -22,6 +22,7 @@
     }
     return self;
 }
+
 - (UIView *)createTargetEditingView {
     
     CGRect frame = CGRectMake(self.mainViewInsets.left,

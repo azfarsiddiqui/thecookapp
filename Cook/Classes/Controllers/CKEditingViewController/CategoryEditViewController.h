@@ -7,11 +7,9 @@
 //
 
 #import "CKEditingViewController.h"
-#import "BlankEditViewController.h"
+#import "EditingViewController.h"
 #import "Category.h"
 
-@interface CategoryEditViewController : BlankEditViewController
+@interface CategoryEditViewController : EditingViewController
 @property (nonatomic,strong) Category *selectedCategory;
-@property (nonatomic, strong) UIFont *titleFont;
-
 @end
