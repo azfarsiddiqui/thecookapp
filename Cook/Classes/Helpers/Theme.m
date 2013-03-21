@@ -147,7 +147,7 @@
 }
 
 + (UIColor *)bookContentsTitleColour {
-    return [UIColor whiteColor];
+    return [UIColor blackColor];
 }
 
 + (UIFont *)bookContentsNameFont {
@@ -155,7 +155,7 @@
 }
 
 + (UIColor *)bookContentsNameColour {
-    return [UIColor whiteColor];
+    return [UIColor blackColor];
 }
 
 + (UIFont *)bookContentsItemFont {
