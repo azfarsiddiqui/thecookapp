@@ -12,4 +12,5 @@
 @property(nonatomic,assign) float backgroundAlpha;
 @property (nonatomic,assign) UIEdgeInsets mainViewInsets;
 
+-(void)updateViewAlphas:(float)alphas;
 @end

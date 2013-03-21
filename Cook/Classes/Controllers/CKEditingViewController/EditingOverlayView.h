@@ -14,5 +14,6 @@
 @interface EditingOverlayView : UIView
 
 - (id)initWithFrame:(CGRect)frame withTransparentOverlay:(CGRect)transparentOverlayRect withEditViewDelegate:(id<EditingOverlayViewDelegate>)editingOverlayViewDelegate;
-- (void)viewAppeared;
+- (void) viewAppeared;
+-(void) drawTransparentOverlayRect;
 @end

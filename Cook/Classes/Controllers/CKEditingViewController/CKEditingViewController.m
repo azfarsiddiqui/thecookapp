@@ -77,11 +77,17 @@
             UIView *targetEditingView = [self createTargetEditingView];
             self.targetEditingFrame = targetEditingView.frame;
             targetEditingView.alpha = 0.0;
+            
             [self.view addSubview:targetEditingView];
             self.targetEditingView = targetEditingView;
 
+            CGRect adjustForContentInsetsFrame =   CGRectMake(self.sourceEditingView.frame.origin.x,
+                                                              self.sourceEditingView.frame.origin.y + self.sourceEditingView.editButtonOffset.height,
+                                                              self.sourceEditingView.frame.size.width - self.sourceEditingView.editButtonOffset.width,
+                                                              self.sourceEditingView.frame.size.height- self.sourceEditingView.editButtonOffset.height);
+
             // Now get the frame of the source relative to the overlay.
-            CGRect relativeFrame = [self.sourceEditingView.superview convertRect:self.sourceEditingView.frame toView:self.view];
+            CGRect relativeFrame = [self.sourceEditingView.superview convertRect:adjustForContentInsetsFrame toView:self.view];
             self.targetEditingView.frame = relativeFrame;
 
         }
@@ -96,13 +102,10 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         
-                         // Fade in the overlay.
+                         // Fade in/out the overlay.
                          self.overlayView.alpha = enable ? kOverlayAlpha : 0.0;
-                         
                      }
                      completion:^(BOOL finished) {
-                         
                          if (!enable) {
                              [self.overlayView removeFromSuperview];
                              self.overlayView = nil;
@@ -131,7 +134,6 @@
                                                   // Scale the target to its intended frame.
                                                   self.targetEditingView.frame = self.targetEditingFrame;
                                                   self.targetEditingView.alpha = 1.0;
-                                                  
                                               }
                                               completion:^(BOOL finished) {
                                                   
@@ -147,7 +149,12 @@
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
                              // Scale the target to its intended frame.
-                             self.targetEditingView.frame = [self.sourceEditingView.superview convertRect:self.sourceEditingView.frame toView:self.view];
+                             CGRect adjustForContentInsetsFrame =   CGRectMake(self.sourceEditingView.frame.origin.x,
+                                                                               self.sourceEditingView.frame.origin.y + self.sourceEditingView.editButtonOffset.height ,
+                                                                               self.sourceEditingView.frame.size.width - self.sourceEditingView.editButtonOffset.width,
+                                                                               self.sourceEditingView.frame.size.height- self.sourceEditingView.editButtonOffset.height);
+
+                             self.targetEditingView.frame = [self.sourceEditingView.superview convertRect:adjustForContentInsetsFrame toView:self.view];
                              self.targetEditingView.alpha = kTargetMidAlpha;
                              
                          }
@@ -163,9 +170,7 @@
                                                   
                                               }
                                               completion:^(BOOL finished) {
-                                                  
                                                   [self editingViewDidAppear:NO];
-                                                  
                                               }];
                              
                          }];

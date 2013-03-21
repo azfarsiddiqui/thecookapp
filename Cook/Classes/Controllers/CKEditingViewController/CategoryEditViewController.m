@@ -13,12 +13,13 @@
 
 #define kCategoryTableViewCellIdentifier @"CategoryTableViewCellIdentifier"
 #define kRowHeight          90.0f
+#define kHeaderHeight       20.0f
+#define kOverlayRect        CGRectMake(100.0f,0.0f,824.0f, 20.0f)
 
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) UITableView *tableView;
-@property (nonatomic, strong) UILabel *titleLabel;
-
+@property (nonatomic,strong) UIView *padderView;
 @end
 
 @implementation CategoryEditViewController
@@ -27,7 +28,7 @@
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
         self.mainViewInsets = UIEdgeInsetsMake(0.0f,100.0f,0.0f,100.0f);
-        self.transparentOverlayRect = CGRectMake(100.0f,0.0f,824.0f, 90.0f);
+        self.transparentOverlayRect = kOverlayRect;
     }
     return self;
 }
@@ -35,25 +36,40 @@
 -(UIView *)createTargetEditingView
 {
     UIView *mainView = [super createTargetEditingView];
-    [self addTableView:mainView];
     return mainView;
 }
 
 
 - (void)editingViewWillAppear:(BOOL)appear {
     [super editingViewWillAppear:appear];
-    if (!appear) {
-        [self.titleLabel removeFromSuperview];
+    if (appear) {
     } else {
-        [self data];
+        [self.tableView removeFromSuperview];
+        [self.padderView removeFromSuperview];
+        [self updateViewAlphas:1.0f];
     }
-    
 }
 
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
     if (appear) {
-        [self addTitleLabel];
+        UIView *mainView = self.targetEditingView;
+        [self addPadderView:mainView];
+        [self addTableView:mainView];
+        [self data];
+        self.tableView.alpha = 0.0f;
+        [UIView animateWithDuration:0.15f
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.tableView.alpha = 1.0f;
+                         }
+                         completion:^(BOOL finished) {
+                             [UIView animateWithDuration: 0.15
+                                              animations:^{
+                                                  [self updateViewAlphas:0.0f];
+                                              }];
+                         }];
     }
 }
 
@@ -64,20 +80,29 @@
 
 #pragma mark - UITableViewDataSource
 
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *headerView = [self newPadderView];
+    headerView.backgroundColor = [UIColor clearColor];
+    return headerView;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return kHeaderHeight;
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     //padder row
-    return [self.categories count] + 1;
+    return [self.categories count];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-    if (indexPath.row > 0) {
-        Category *category = [self.categories objectAtIndex:indexPath.row-1];
+        Category *category = [self.categories objectAtIndex:indexPath.row];
         [cell configureCellWithCategory:category];
-    } else {
-    }
     return cell;
 }
 
@@ -90,9 +115,8 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row > 0) {
-        self.selectedCategory = [self.categories objectAtIndex:indexPath.row-1];
-    }
+        self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
+        [self doneTapped];
 }
 
 #pragma mark - Private Methods
@@ -131,30 +155,24 @@
                 stop = YES;
                 [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:NO
                                       scrollPosition:UITableViewScrollPositionMiddle];
+
             }
         }];
-    }
+    } 
 }
 
-- (void)addTitleLabel {
-    UITableView *tableView = (UITableView *)self.targetEditingView;
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.alpha = 0.7f;
-    titleLabel.backgroundColor = [UIColor blackColor];
-    titleLabel.text = self.editingTitle;
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.font = self.titleFont;
-    titleLabel.textColor = [UIColor whiteColor];
-    titleLabel.shadowColor = [UIColor blackColor];
-    titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    [titleLabel sizeToFit];
-    titleLabel.frame = CGRectMake(tableView.frame.origin.x,
-                                  tableView.frame.origin.y,
-                                  tableView.frame.size.width,
-                                  90.0f);
-    [self.view addSubview:titleLabel];
-    self.titleLabel = titleLabel;
+- (void)addPadderView:(UIView*)mainView {
+    self.padderView = [self newPadderView];
+    [mainView addSubview:self.padderView];
+}
+
+- (UIView*)newPadderView
+{
+    UIView *padderView = [[UIView alloc] initWithFrame:CGRectZero];
+    padderView.alpha = 0.7f;
+    padderView.backgroundColor = [UIColor blackColor];
+    padderView.frame = CGRectMake(0.0f, 0.0f, kOverlayRect.size.width, kOverlayRect.size.height);
+    return padderView;
 }
 
 @end

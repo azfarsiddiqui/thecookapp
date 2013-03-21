@@ -426,7 +426,6 @@
 		893AB2E916DF232E000E2AB3 /* BlankEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E816DF232E000E2AB3 /* BlankEditViewController.m */; };
 		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
 		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
-		8944A2A716E028BE003B78BD /* RecipePhotoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8944A2A616E028BE003B78BD /* RecipePhotoEditViewController.m */; };
 		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
 		8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */; };
 		8944C1C116CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */; };
@@ -1038,8 +1037,6 @@
 		893AC89F16782B3B00B221EC /* LikesPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikesPageViewController.m; path = Book/LikesPageViewController.m; sourceTree = "<group>"; };
 		893AC8A016782B3B00B221EC /* SectionPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPageViewController.h; path = Book/SectionPageViewController.h; sourceTree = "<group>"; };
 		893AC8A116782B3C00B221EC /* SectionPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SectionPageViewController.m; path = Book/SectionPageViewController.m; sourceTree = "<group>"; };
-		8944A2A516E028BE003B78BD /* RecipePhotoEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipePhotoEditViewController.h; sourceTree = "<group>"; };
-		8944A2A616E028BE003B78BD /* RecipePhotoEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipePhotoEditViewController.m; sourceTree = "<group>"; };
 		8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_bg.png; sourceTree = "<group>"; };
 		8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_bg@2x.png"; sourceTree = "<group>"; };
 		8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_btn.png; sourceTree = "<group>"; };
@@ -1952,7 +1949,6 @@
 		8938AA9916DF153C001CBC90 /* CKEditingViewController */ = {
 			isa = PBXGroup;
 			children = (
-				8944A2A416E02896003B78BD /* photo */,
 				893AB2E016DF18B2000E2AB3 /* categories */,
 				8938AA9A16DF153D001CBC90 /* CKEditableView.h */,
 				8938AA9B16DF153D001CBC90 /* CKEditableView.m */,
@@ -2019,15 +2015,6 @@
 				89655BE916E81501006D9928 /* CategoryTableViewCell.m */,
 			);
 			name = categories;
-			sourceTree = "<group>";
-		};
-		8944A2A416E02896003B78BD /* photo */ = {
-			isa = PBXGroup;
-			children = (
-				8944A2A516E028BE003B78BD /* RecipePhotoEditViewController.h */,
-				8944A2A616E028BE003B78BD /* RecipePhotoEditViewController.m */,
-			);
-			name = photo;
 			sourceTree = "<group>";
 		};
 		8944C1B816CDB9870087EFC9 /* accessoryView */ = {
@@ -2712,7 +2699,6 @@
 				893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */,
 				893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */,
 				893AB2E916DF232E000E2AB3 /* BlankEditViewController.m in Sources */,
-				8944A2A716E028BE003B78BD /* RecipePhotoEditViewController.m in Sources */,
 				76A7D43016E4327200118749 /* BookLeftPageDividerView.m in Sources */,
 				76A7D43316E432E600118749 /* BookRightPageDividerView.m in Sources */,
 				8904B2C916E6CCB3005CEF90 /* IngredientConstants.m in Sources */,
