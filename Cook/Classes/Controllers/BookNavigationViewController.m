@@ -16,11 +16,13 @@
 #import "ViewHelper.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
-#import "BookContentsViewController.h"
+#import "BookIndexViewController.h"
 #import "BookActivityViewController.h"
 #import "Theme.h"
+#import "BookTitleViewController.h"
 
-@interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate, BookContentsViewControllerDelegate, BookActivityViewControllerDelegate>
+@interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
+    BookIndexViewControllerDelegate, BookActivityViewControllerDelegate, BookTitleViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *homeButton;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -33,8 +35,9 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
-@property (nonatomic, strong) BookContentsViewController *contentsViewController;
+@property (nonatomic, strong) BookIndexViewController *indexViewController;
 @property (nonatomic, strong) BookActivityViewController *activityViewController;
+@property (nonatomic, strong) BookTitleViewController *titleViewController;
 
 @property (nonatomic, strong) NSString *selectedCategoryName;
 @property (nonatomic, strong) NSString *currentCategoryName;
@@ -47,7 +50,7 @@
 #define kRecipeCellId       @"RecipeCellId"
 #define kCategoryHeaderId   @"CategoryHeaderId"
 #define kProfileCellId      @"ProfileCellId"
-#define kContentsCellId     @"ContentsCellId"
+#define kTitleCellId        @"TitleCellId"
 #define kActivityCellId     @"ActivityCellId"
 #define kNavTopLeftOffset   CGPointMake(20.0, 15.0)
 #define kNavTitleOffset     CGPointMake(20.0, 28.0)
@@ -59,8 +62,9 @@
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
-        self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book delegate:self];
+        self.indexViewController = [[BookIndexViewController alloc] initWithBook:book delegate:self];
         self.activityViewController = [[BookActivityViewController alloc] initWithBook:book delegate:self];
+        self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
     }
     return self;
 }
@@ -107,14 +111,14 @@
     } else if (self.justOpened) {
         
         // Start on page 1.
-        [self.collectionView setContentOffset:CGPointMake([self contentsSection] * self.collectionView.bounds.size.width,
+        [self.collectionView setContentOffset:CGPointMake([self titleSection] * self.collectionView.bounds.size.width,
                                                           0.0)
                                      animated:NO];
         self.justOpened = NO;
     }
 }
 
-#pragma mark - BookContentsViewControllerDelegate methods
+#pragma mark - BookIndexViewControllerDelegate methods
 
 - (void)bookContentsSelectedCategory:(NSString *)category {
     
@@ -136,6 +140,12 @@
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
+#pragma mark - BookTitleViewControllerDelegate methods
+
+- (void)bookTitleViewControllerSelectedRecipe:(CKRecipe *)recipe {
+    [self.delegate bookNavigationControllerRecipeRequested:recipe];
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -147,7 +157,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
     // Reset category after returning to the contents screen after deep-linking.
-    CGFloat contentsPageOffset = [self contentsSection] * scrollView.bounds.size.width;
+    CGFloat contentsPageOffset = [self titleSection] * scrollView.bounds.size.width;
     if (scrollView.contentOffset.x == contentsPageOffset && [self isCategoryDeepLinked]) {
         self.selectedCategoryName = nil;
         
@@ -218,7 +228,6 @@
         numSections += [self.categoryNames count];  // All categories.
     }
     
-    DLog(@"Number of sections [%d]", numSections);
     return numSections;
 }
 
@@ -239,7 +248,6 @@
         numItems = 1;
     }
     
-    DLog(@"Num Items for Section [%d]: %d", section, numItems);
     return numItems;
 }
 
@@ -281,12 +289,12 @@
     
     if (indexPath.section == [self profileSection]) {
         cell = [self profileCellAtIndexPath:indexPath];
-    } else if (indexPath.section == [self contentsSection]) {
-        cell = [self contentsCellAtIndexPath:indexPath];
+    } else if (indexPath.section == [self titleSection]) {
+        cell = [self titleCellAtIndexPath:indexPath];
     } else if (indexPath.section >= [self recipeSection]) {
         cell = [self recipeCellAtIndexPath:indexPath];
-    } else if (indexPath.section == [self activitySection]) {
-        cell = [self activityCellAtIndexPath:indexPath];
+    } else if (indexPath.section == [self indexSection]) {
+        cell = [self indexCellAtIndexPath:indexPath];
     }
     
     return cell;
@@ -345,7 +353,7 @@
     
     // Profile, Contents, Activity
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kContentsCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kTitleCellId];
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityCellId];
     
     // Categories
@@ -378,8 +386,8 @@
         }
         
         // Update the VC's.
-        [self.contentsViewController configureCategories:self.categoryNames];
-        [self.contentsViewController configureHeroRecipe:[self highlightRecipeForBook]];
+        [self.indexViewController configureCategories:self.categoryNames];
+        [self.titleViewController configureHeroRecipe:[self highlightRecipeForBook]];
         
         // Now reload the collection.
         [self.collectionView reloadData];
@@ -395,7 +403,7 @@
 }
 
 - (void)homeTapped:(id)sender {
-    CGFloat contentsPageOffset = [self contentsSection] * self.collectionView.bounds.size.width;
+    CGFloat contentsPageOffset = [self titleSection] * self.collectionView.bounds.size.width;
     [self.collectionView setContentOffset:CGPointMake(contentsPageOffset, 0.0) animated:YES];
 }
 
@@ -468,20 +476,20 @@
     return profileCell;
 }
 
-- (UICollectionViewCell *)contentsCellAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kContentsCellId forIndexPath:indexPath];
-    if (!self.contentsViewController.view.superview) {
-        self.contentsViewController.view.frame = contentsCell.contentView.bounds;
-        [contentsCell.contentView addSubview:self.contentsViewController.view];
+- (UICollectionViewCell *)titleCellAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kTitleCellId forIndexPath:indexPath];
+    if (!self.titleViewController.view.superview) {
+        self.titleViewController.view.frame = contentsCell.contentView.bounds;
+        [contentsCell.contentView addSubview:self.titleViewController.view];
     }
     return contentsCell;
 }
 
-- (UICollectionViewCell *)activityCellAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *)indexCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityCellId forIndexPath:indexPath];
-    if (!self.activityViewController.view.superview) {
-        self.activityViewController.view.frame = contentsCell.contentView.bounds;
-        [contentsCell.contentView addSubview:self.activityViewController.view];
+    if (!self.indexViewController.view.superview) {
+        self.indexViewController.view.frame = contentsCell.contentView.bounds;
+        [contentsCell.contentView addSubview:self.indexViewController.view];
     }
     return contentsCell;
 }
@@ -537,22 +545,22 @@
     return 0;
 }
 
-- (NSInteger)contentsSection {
+- (NSInteger)titleSection {
     return 1;
 }
 
-- (NSInteger)activitySection {
-    return 2;   // Not available in deep-linked mode.
+- (NSInteger)indexSection {
+    return 2;
 }
 
 - (NSInteger)recipeSection {
-    return [self isCategoryDeepLinked] ? 2 : 3; // Minus the activity page if deeplinked.
+    return 3;
 
 }
 
 - (void)updateNavButtons {
     
-    CGFloat contentsPageOffset = [self contentsSection] * self.collectionView.bounds.size.width;
+    CGFloat contentsPageOffset = [self titleSection] * self.collectionView.bounds.size.width;
     
     // Close button visible only on the contents page.
     if (self.collectionView.contentOffset.x >= contentsPageOffset
