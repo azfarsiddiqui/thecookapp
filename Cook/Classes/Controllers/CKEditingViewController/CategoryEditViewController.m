@@ -19,7 +19,6 @@
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) UITableView *tableView;
-//@property (nonatomic,strong) UIView *padderView;
 @end
 
 @implementation CategoryEditViewController
@@ -42,11 +41,11 @@
 
 -(UIView *)createTargetEditingView
 {
-    //full-screen
+    //full-screen - override top padding
     CGRect mainViewFrame = CGRectMake(self.contentViewInsets.left,
-                                        0.0f,
-                                        self.view.bounds.size.width - self.contentViewInsets.left - self.contentViewInsets.right,
-                                        self.view.bounds.size.height);
+                                      0.0f,
+                                      self.view.bounds.size.width - self.contentViewInsets.left - self.contentViewInsets.right,
+                                      self.view.bounds.size.height);
     UIView *mainView = [[UIView alloc] initWithFrame:mainViewFrame];
     [self addTableView:mainView];
     return mainView;
@@ -73,8 +72,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *headerView = [self newPadderView];
-    return headerView;
+    return [self newPadderView];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -91,8 +89,8 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-        Category *category = [self.categories objectAtIndex:indexPath.row];
-        [cell configureCellWithCategory:category];
+    Category *category = [self.categories objectAtIndex:indexPath.row];
+    [cell configureCellWithCategory:category];
     return cell;
 }
 
@@ -105,8 +103,8 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-        self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
-        [self doneTapped];
+    self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
+    [self doneTapped];
 }
 
 #pragma mark - Private Methods
@@ -145,10 +143,10 @@
                 stop = YES;
                 [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:NO
                                       scrollPosition:UITableViewScrollPositionMiddle];
-
+                
             }
         }];
-    } 
+    }
 }
 
 - (UIView*)newPadderView

@@ -19,7 +19,7 @@
 
 #define kDefaultContentViewInsets  UIEdgeInsetsMake(100.0f,100.0f,100.0f,100.0f)
 #define kButtonEdgeInsets   UIEdgeInsetsMake(15.0,20.0f,0,50.0f)
-#define kContentViewBackgroundColor [UIColor whiteColor]
+#define kContentViewBackgroundColor [UIColor blackColor]
 
 @interface EditingViewController ()
 @property (nonatomic, assign) BOOL saveMode;
@@ -185,8 +185,12 @@
 }
 
 - (UIView *)createTargetEditingView {
-    NSAssert(NO, @"Subclasses must provide implementation");
-    return nil;
+    
+    CGRect targetViewFrame = CGRectMake(self.contentViewInsets.left,
+                                      self.contentViewInsets.top,
+                                      self.view.bounds.size.width - self.contentViewInsets.left - self.contentViewInsets.right,
+                                      self.view.bounds.size.height - self.contentViewInsets.top - self.contentViewInsets.bottom);
+    return [[UIView alloc] initWithFrame:targetViewFrame];
 }
 
 - (void)editingViewWillAppear:(BOOL)appear {

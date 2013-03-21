@@ -400,7 +400,7 @@
         servesEditingVC.cookingTimeInMinutes = self.recipe.cookingTimeInMinutes;
         servesEditingVC.prepTimeInMinutes = self.recipe.prepTimeInMinutes;
 
-        self.ckEditingViewController = servesEditingVC;
+        self.editingViewController = servesEditingVC;
 
     } else if (view == self.storyEditableView) {
         TextViewEditingViewController *textViewEditingVC = [[TextViewEditingViewController alloc] initWithDelegate:self sourceEditingView:self.storyEditableView];
