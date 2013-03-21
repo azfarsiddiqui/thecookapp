@@ -361,7 +361,7 @@
 
 -(void)editableViewEditRequestedForView:(UIView *)view
 {
-
+    //TODO sub-class CKTextFieldEditingViewController, TextViewEditingViewController,IngredientsEditingViewController off of EditViewcontroller
     if (view == self.nameEditableView) {
         CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.nameEditableView];
         textFieldEditingVC.textAlignment = NSTextAlignmentCenter;

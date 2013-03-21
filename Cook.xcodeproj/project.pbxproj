@@ -419,7 +419,6 @@
 		8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */; };
 		893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */; };
 		893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */; };
-		893AB2E916DF232E000E2AB3 /* BlankEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E816DF232E000E2AB3 /* BlankEditViewController.m */; };
 		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
 		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
 		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
@@ -1022,8 +1021,6 @@
 		893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryEditViewController.m; sourceTree = "<group>"; };
 		893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookActivityViewController.h; sourceTree = "<group>"; };
 		893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookActivityViewController.m; sourceTree = "<group>"; };
-		893AB2E716DF232D000E2AB3 /* BlankEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlankEditViewController.h; sourceTree = "<group>"; };
-		893AB2E816DF232E000E2AB3 /* BlankEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlankEditViewController.m; sourceTree = "<group>"; };
 		893AC89E16782B3B00B221EC /* LikesPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LikesPageViewController.h; path = Book/LikesPageViewController.h; sourceTree = "<group>"; };
 		893AC89F16782B3B00B221EC /* LikesPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikesPageViewController.m; path = Book/LikesPageViewController.m; sourceTree = "<group>"; };
 		893AC8A016782B3B00B221EC /* SectionPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPageViewController.h; path = Book/SectionPageViewController.h; sourceTree = "<group>"; };
@@ -1945,8 +1942,6 @@
 				8938AA9D16DF153D001CBC90 /* CKEditingTextField.m */,
 				8938AA9E16DF153D001CBC90 /* CKEditingViewController.h */,
 				8938AA9F16DF153D001CBC90 /* CKEditingViewController.m */,
-				893AB2E716DF232D000E2AB3 /* BlankEditViewController.h */,
-				893AB2E816DF232E000E2AB3 /* BlankEditViewController.m */,
 				8963B5C216F2DAA300A3888C /* EditingOverlayView.h */,
 				8963B5C316F2DAA300A3888C /* EditingOverlayView.m */,
 				8938AABC16DF178B001CBC90 /* ingredientEdit */,
@@ -2686,7 +2681,6 @@
 				8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */,
 				893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */,
 				893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */,
-				893AB2E916DF232E000E2AB3 /* BlankEditViewController.m in Sources */,
 				76A7D43016E4327200118749 /* BookLeftPageDividerView.m in Sources */,
 				76A7D43316E432E600118749 /* BookRightPageDividerView.m in Sources */,
 				8904B2C916E6CCB3005CEF90 /* IngredientConstants.m in Sources */,
