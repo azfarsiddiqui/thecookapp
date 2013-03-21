@@ -43,6 +43,8 @@
 - (void)editingViewWillAppear:(BOOL)appear {
     [super editingViewWillAppear:appear];
     if (appear) {
+        UIView *mainView = self.targetEditingView;
+        [self addPadderView:mainView];
     } else {
         [self.tableView removeFromSuperview];
         [self.padderView removeFromSuperview];
@@ -54,7 +56,6 @@
     [super editingViewDidAppear:appear];
     if (appear) {
         UIView *mainView = self.targetEditingView;
-        [self addPadderView:mainView];
         [self addTableView:mainView];
         [self data];
         self.tableView.alpha = 0.0f;
@@ -163,6 +164,8 @@
 
 - (void)addPadderView:(UIView*)mainView {
     self.padderView = [self newPadderView];
+//    self.padderView.backgroundColor = [UIColor greenColor];
+    self.padderView.frame = CGRectMake(0.0f, 0.0f, 0.0f, kOverlayRect.size.height);
     [mainView addSubview:self.padderView];
 }
 
@@ -170,8 +173,8 @@
 {
     UIView *padderView = [[UIView alloc] initWithFrame:CGRectZero];
     padderView.alpha = 0.7f;
+    padderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin;
     padderView.backgroundColor = [UIColor blackColor];
-    padderView.frame = CGRectMake(0.0f, 0.0f, kOverlayRect.size.width, kOverlayRect.size.height);
     return padderView;
 }
 
