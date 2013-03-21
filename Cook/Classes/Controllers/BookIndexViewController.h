@@ -11,17 +11,16 @@
 @class CKBook;
 @class CKRecipe;
 
-@protocol BookContentsViewControllerDelegate
+@protocol BookIndexViewControllerDelegate
 
 - (void)bookContentsSelectedCategory:(NSString *)category;
 - (void)bookContentsAddRecipeRequested;
 
 @end
 
-@interface BookContentsViewController : UIViewController
+@interface BookIndexViewController : UIViewController
 
-- (id)initWithBook:(CKBook *)book delegate:(id<BookContentsViewControllerDelegate>)delegate;
+- (id)initWithBook:(CKBook *)book delegate:(id<BookIndexViewControllerDelegate>)delegate;
 - (void)configureCategories:(NSArray *)categories;
-- (void)configureHeroRecipe:(CKRecipe *)recipe;
 
 @end

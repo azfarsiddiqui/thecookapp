@@ -16,13 +16,13 @@
 #import "ViewHelper.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
-#import "BookContentsViewController.h"
+#import "BookIndexViewController.h"
 #import "BookActivityViewController.h"
 #import "Theme.h"
 #import "BookTitleViewController.h"
 
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
-    BookContentsViewControllerDelegate, BookActivityViewControllerDelegate, BookTitleViewControllerDelegate>
+    BookIndexViewControllerDelegate, BookActivityViewControllerDelegate, BookTitleViewControllerDelegate>
 
 @property (nonatomic, strong) UIButton *homeButton;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -35,7 +35,7 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
-@property (nonatomic, strong) BookContentsViewController *contentsViewController;
+@property (nonatomic, strong) BookIndexViewController *indexViewController;
 @property (nonatomic, strong) BookActivityViewController *activityViewController;
 @property (nonatomic, strong) BookTitleViewController *titleViewController;
 
@@ -62,7 +62,7 @@
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
-        self.contentsViewController = [[BookContentsViewController alloc] initWithBook:book delegate:self];
+        self.indexViewController = [[BookIndexViewController alloc] initWithBook:book delegate:self];
         self.activityViewController = [[BookActivityViewController alloc] initWithBook:book delegate:self];
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
     }
@@ -118,7 +118,7 @@
     }
 }
 
-#pragma mark - BookContentsViewControllerDelegate methods
+#pragma mark - BookIndexViewControllerDelegate methods
 
 - (void)bookContentsSelectedCategory:(NSString *)category {
     
@@ -293,8 +293,8 @@
         cell = [self titleCellAtIndexPath:indexPath];
     } else if (indexPath.section >= [self recipeSection]) {
         cell = [self recipeCellAtIndexPath:indexPath];
-    } else if (indexPath.section == [self activitySection]) {
-        cell = [self activityCellAtIndexPath:indexPath];
+    } else if (indexPath.section == [self indexSection]) {
+        cell = [self indexCellAtIndexPath:indexPath];
     }
     
     return cell;
@@ -386,8 +386,7 @@
         }
         
         // Update the VC's.
-        [self.contentsViewController configureCategories:self.categoryNames];
-        [self.contentsViewController configureHeroRecipe:[self highlightRecipeForBook]];
+        [self.indexViewController configureCategories:self.categoryNames];
         [self.titleViewController configureHeroRecipe:[self highlightRecipeForBook]];
         
         // Now reload the collection.
@@ -486,11 +485,11 @@
     return contentsCell;
 }
 
-- (UICollectionViewCell *)activityCellAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *)indexCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *contentsCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityCellId forIndexPath:indexPath];
-    if (!self.activityViewController.view.superview) {
-        self.activityViewController.view.frame = contentsCell.contentView.bounds;
-        [contentsCell.contentView addSubview:self.activityViewController.view];
+    if (!self.indexViewController.view.superview) {
+        self.indexViewController.view.frame = contentsCell.contentView.bounds;
+        [contentsCell.contentView addSubview:self.indexViewController.view];
     }
     return contentsCell;
 }
@@ -550,12 +549,12 @@
     return 1;
 }
 
-- (NSInteger)activitySection {
-    return 2;   // Not available in deep-linked mode.
+- (NSInteger)indexSection {
+    return 2;
 }
 
 - (NSInteger)recipeSection {
-    return [self isCategoryDeepLinked] ? 2 : 3; // Minus the activity page if deeplinked.
+    return 3;
 
 }
 
