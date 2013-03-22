@@ -156,17 +156,6 @@
     <resources>
         <image name="cook_editrecipe_typeup.png" width="59" height="46"/>
     </resources>
-    <classes>
-        <class className="CKEditableView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CKEditableView.h"/>
-        </class>
-        <class className="FacebookUserView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FacebookUserView.h"/>
-        </class>
-        <class className="TestViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TestViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

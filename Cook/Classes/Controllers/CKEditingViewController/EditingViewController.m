@@ -132,11 +132,10 @@
                                                   self.contentView.alpha = 1.0;
                                               }
                                               completion:^(BOOL finished) {
-                                                  [self editingViewDidAppear:YES];
                                                   self.targetEditingView = [self createTargetEditingView];
                                                   self.targetEditingView.alpha = 0.0f;
                                                   [self.view addSubview:self.targetEditingView];
-
+                                                  [self editingViewDidAppear:YES];
                                                   [UIView animateWithDuration:kTargetViewDuration
                                                                         delay:0.0
                                                                       options:UIViewAnimationOptionCurveEaseIn

@@ -171,7 +171,7 @@
     self.servesNumberLabel.textAlignment = NSTextAlignmentCenter;
     self.servesNumberLabel.font = [Theme cookServesPrepEditTitleFont];
     self.servesNumberLabel.textColor = [Theme cookServesNumberColor];
-    self.servesNumberLabel.text = @"10";
+    self.servesNumberLabel.text = @"0";
     [mainView addSubview:self.servesNumberLabel];
 
     self.prepTimePickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(floorf(0.5*(containerView.frame.size.width-2*kPickerWidth - kPaddingPickers)),
