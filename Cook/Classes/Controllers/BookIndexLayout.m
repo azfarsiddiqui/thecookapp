@@ -21,8 +21,8 @@
 
 #define kNumCellsPerColumn   5
 #define kMaxCells           10
-#define kColumnGap          50.0
-#define kRowGap             20.0
+#define kColumnGap          30.0
+#define kRowGap             15.0
 #define kIndexYOffset       150.0
 
 - (id)initWithDataSource:(id<BookIndexLayoutDataSource>)dataSource {
@@ -69,7 +69,6 @@
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:categoryIndex inSection:0];
         UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
         layoutAttributes.frame = [self frameForCategoryIndex:categoryIndex];
-        DLog(@"INDEX FRAME INDEXPATH %@ %@", indexPath, NSStringFromCGRect(layoutAttributes.frame));
         [self.itemsLayoutAttributes addObject:layoutAttributes];
         [self.indexPathItemAttributes setObject:layoutAttributes forKey:indexPath];
     }
@@ -96,7 +95,10 @@
 - (CGPoint)originForColumn:(NSInteger)column {
     CGSize cellSize = [BookIndexCell cellSize];
     CGSize availableSize = self.collectionView.bounds.size;
-    return CGPointMake(floorf((availableSize.width - ((cellSize.width * column) + (kColumnGap * (column - 1)))) / 2.0), kIndexYOffset);
+    NSInteger numColumns = [self numberOfColumns];
+    CGFloat requiredWidth = (numColumns * cellSize.width) + ((numColumns - 1) * kColumnGap);
+    CGFloat columnOffset = floorf((availableSize.width - requiredWidth) / 2.0) + ((column - 1) * (cellSize.width + kColumnGap));
+    return CGPointMake(columnOffset, kIndexYOffset);
 }
 
 - (NSInteger)columnForCategoryIndex:(NSInteger)categoyIndex {
