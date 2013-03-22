@@ -161,7 +161,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
     // Reset category after returning to the contents screen after deep-linking.
-    CGFloat contentsPageOffset = [self titleSection] * scrollView.bounds.size.width;
+    CGFloat contentsPageOffset = [self indexSection] * scrollView.bounds.size.width;
     if (scrollView.contentOffset.x == contentsPageOffset && [self isCategoryDeepLinked]) {
         self.selectedCategoryName = nil;
         
