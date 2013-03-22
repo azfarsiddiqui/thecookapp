@@ -212,6 +212,8 @@
 		76A7D43B16E447AC00118749 /* cook_book_icon_home_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D43716E447AC00118749 /* cook_book_icon_home_white@2x.png */; };
 		76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */; };
 		76B015B4161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B2161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png */; };
+		76B3E5B216FBE52F002B5080 /* BookIndexLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3E5B116FBE52F002B5080 /* BookIndexLayout.m */; };
+		76B3E5B516FBE862002B5080 /* BookIndexCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3E5B416FBE861002B5080 /* BookIndexCell.m */; };
 		76B9E020164C85D100345B8D /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B9E01B164C85D100345B8D /* PageViewController.m */; };
 		76BEE73C165DEE600065B97B /* cook_book_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE6ED165DEE600065B97B /* cook_book_blue.png */; };
 		76BEE73D165DEE600065B97B /* cook_book_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BEE6EE165DEE600065B97B /* cook_book_blue@2x.png */; };
@@ -765,6 +767,10 @@
 		76A7D43716E447AC00118749 /* cook_book_icon_home_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_home_white@2x.png"; sourceTree = "<group>"; };
 		76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_overlay.png; sourceTree = "<group>"; };
 		76B015B2161C0DBB00AF3C2C /* cook_dash_bg_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_overlay@2x.png"; sourceTree = "<group>"; };
+		76B3E5B016FBE52F002B5080 /* BookIndexLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookIndexLayout.h; sourceTree = "<group>"; };
+		76B3E5B116FBE52F002B5080 /* BookIndexLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookIndexLayout.m; sourceTree = "<group>"; };
+		76B3E5B316FBE861002B5080 /* BookIndexCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookIndexCell.h; sourceTree = "<group>"; };
+		76B3E5B416FBE861002B5080 /* BookIndexCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookIndexCell.m; sourceTree = "<group>"; };
 		76B9E01B164C85D100345B8D /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PageViewController.m; path = Book/PageViewController.m; sourceTree = "<group>"; };
 		76B9E01C164C85D100345B8D /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PageViewController.h; path = Book/PageViewController.h; sourceTree = "<group>"; };
 		76BEE6ED165DEE600065B97B /* cook_book_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_blue.png; sourceTree = "<group>"; };
@@ -1907,6 +1913,10 @@
 				89B85B9416AF8A5900A0533E /* TestViewController.m */,
 				766F430E16DD851900785ABD /* BookIndexViewController.h */,
 				766F430F16DD851A00785ABD /* BookIndexViewController.m */,
+				76B3E5B016FBE52F002B5080 /* BookIndexLayout.h */,
+				76B3E5B116FBE52F002B5080 /* BookIndexLayout.m */,
+				76B3E5B316FBE861002B5080 /* BookIndexCell.h */,
+				76B3E5B416FBE861002B5080 /* BookIndexCell.m */,
 				766F42F016DC7A5500785ABD /* BookProfileViewController.h */,
 				766F42F116DC7A5500785ABD /* BookProfileViewController.m */,
 				762B375416D33B6A00343F88 /* BookHomeFlowLayout.h */,
@@ -2713,6 +2723,8 @@
 				898990F816FA8FEF000AEAA3 /* EditingViewController.m in Sources */,
 				765E21AA16F829CC00D06401 /* BookTitleViewController.m in Sources */,
 				765E21AD16F82F9800D06401 /* BookTitleView.m in Sources */,
+				76B3E5B216FBE52F002B5080 /* BookIndexLayout.m in Sources */,
+				76B3E5B516FBE862002B5080 /* BookIndexCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

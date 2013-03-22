@@ -25,7 +25,7 @@
 #define kIconOffset     10.0
 #define kTextFont       [UIFont boldSystemFontOfSize:12.0];
 
-- (id)initWithTarget:(id)target action:(SEL)selector {
+- (id)initWithTarget:(id)target action:(SEL)selector {  
     return [self initWithTarget:target action:selector backgroundImage:[UIImage imageNamed:@"cook_dash_library_profile_btn.png"]];
 }
 

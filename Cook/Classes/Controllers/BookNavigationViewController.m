@@ -120,7 +120,7 @@
 
 #pragma mark - BookIndexViewControllerDelegate methods
 
-- (void)bookContentsSelectedCategory:(NSString *)category {
+- (void)bookIndexSelectedCategory:(NSString *)category {
     
     // Selected a category, run-relayout
     self.selectedCategoryName = category;
@@ -130,8 +130,12 @@
     [self.collectionView reloadData];
 }
 
-- (void)bookContentsAddRecipeRequested {
+- (void)bookIndexAddRecipeRequested {
     [self.delegate bookNavigationControllerRecipeRequested:nil];
+}
+
+- (NSArray *)bookIndexRecipesForCategory:(NSString *)category {
+    return [self.categoryRecipes objectForKey:category];
 }
 
 #pragma mark - BookActivityViewControllerDelegate methods
@@ -167,7 +171,6 @@
     }
     
 }
-
 
 #pragma mark - UICollectionViewDelegate methods
 
@@ -403,7 +406,7 @@
 }
 
 - (void)homeTapped:(id)sender {
-    CGFloat contentsPageOffset = [self titleSection] * self.collectionView.bounds.size.width;
+    CGFloat contentsPageOffset = [self indexSection] * self.collectionView.bounds.size.width;
     [self.collectionView setContentOffset:CGPointMake(contentsPageOffset, 0.0) animated:YES];
 }
 

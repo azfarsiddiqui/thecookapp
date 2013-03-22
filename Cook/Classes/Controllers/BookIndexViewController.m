@@ -14,8 +14,10 @@
 #import "CKRecipe.h"
 #import "ParsePhotoStore.h"
 #import "AppHelper.h"
+#import "BookIndexLayout.h"
+#import "BookIndexCell.h"
 
-@interface BookIndexViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface BookIndexViewController () <UITableViewDataSource, UITableViewDelegate, BookIndexLayoutDataSource>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
@@ -35,9 +37,10 @@
 #define kBookTitleInsets    UIEdgeInsetsMake(30.0, 20.0, 20.0, 20.0)
 #define kTitleNameGap       0.0
 #define kContentsItemHeight 50.0
+#define kCellId             @"kIndexCcellId"
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookIndexViewControllerDelegate>)delegate {
-    if (self = [super init]) {
+    if (self = [super initWithCollectionViewLayout:[[BookIndexLayout alloc] initWithDataSource:self]]) {
         self.book = book;
         self.delegate = delegate;
         self.photoStore = [[ParsePhotoStore alloc] init];
@@ -47,18 +50,60 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.collectionView.backgroundColor = [Theme activityInfoViewColour];
+    [self.collectionView registerClass:[BookIndexCell class] forCellWithReuseIdentifier:kCellId];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self initContentsView];
+    //[self initContentsView];
 }
 
 - (void)configureCategories:(NSArray *)categories {
     self.categories = categories;
     
+    [self.collectionView reloadData];
+    
     // Update the frame of the tableView so that we can position it center.
     [self updateTableFrame];
     [self.tableView reloadData];
+}
+
+#pragma mark - BookIndexLayoutDataSource methods
+
+- (NSArray *)bookIndexLayoutCategories {
+    return self.categories;
+}
+
+#pragma mark - UICollectionViewDelegate methods
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSInteger numCategoriesToDisplay = [collectionView numberOfItemsInSection:0];
+    if ([self canAddRecipe] && indexPath.item == (numCategoriesToDisplay - 1)) {
+        [self.delegate bookIndexAddRecipeRequested];
+    } else {
+        [self.delegate bookIndexSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+    }
+}
+
+#pragma mark - UICollectionViewDataSource methods
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+    BookIndexLayout *indexLayout = (BookIndexLayout *)self.collectionView.collectionViewLayout;
+    return [indexLayout numberOfCategoriesToDisplay];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    BookIndexCell *cell = (BookIndexCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
+    NSString *category = [self.categories objectAtIndex:indexPath.item];
+    [cell configureCategory:category recipes:[self.delegate bookIndexRecipesForCategory:category]];
+    return cell;
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -106,9 +151,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger numRows = [self tableView:tableView numberOfRowsInSection:0];
     if ([self canAddRecipe] && indexPath.item == (numRows - 1)) {
-        [self.delegate bookContentsAddRecipeRequested];
+        [self.delegate bookIndexAddRecipeRequested];
     } else {
-        [self.delegate bookContentsSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+        [self.delegate bookIndexSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
     }
 }
 

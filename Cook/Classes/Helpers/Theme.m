@@ -210,6 +210,30 @@
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
 }
 
++ (UIFont *)bookIndexFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:52.0];
+}
+
++ (UIColor *)bookIndexColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)bookIndexSubtitleFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
+}
+
++ (UIColor *)bookIndexSubtitleColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)bookIndexNumRecipesFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:64.0];
+}
+
++ (UIColor *)bookIndexNumRecipesColour {
+    return [UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5];
+}
+
 #pragma mark - Recipe View
 
 +(UIColor *)ingredientsListColor

@@ -13,12 +13,13 @@
 
 @protocol BookIndexViewControllerDelegate
 
-- (void)bookContentsSelectedCategory:(NSString *)category;
-- (void)bookContentsAddRecipeRequested;
+- (void)bookIndexSelectedCategory:(NSString *)category;
+- (void)bookIndexAddRecipeRequested;
+- (NSArray *)bookIndexRecipesForCategory:(NSString *)category;
 
 @end
 
-@interface BookIndexViewController : UIViewController
+@interface BookIndexViewController : UICollectionViewController
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookIndexViewControllerDelegate>)delegate;
 - (void)configureCategories:(NSArray *)categories;

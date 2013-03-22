@@ -65,6 +65,12 @@
 + (UIFont *)activityTitleFont;
 + (UIColor *)activityNameColour;
 + (UIFont *)activityNameFont;
++ (UIFont *)bookIndexFont;
++ (UIColor *)bookIndexColour;
++ (UIFont *)bookIndexSubtitleFont;
++ (UIColor *)bookIndexSubtitleColour;
++ (UIFont *)bookIndexNumRecipesFont;
++ (UIColor *)bookIndexNumRecipesColour;
 
 #pragma mark - Recipe View
 +(UIColor*) ingredientsListColor;
