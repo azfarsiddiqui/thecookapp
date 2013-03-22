@@ -34,8 +34,12 @@
     return CGSizeMake(240.0, 596.0);
 }
 
-+ (UIEdgeInsets)pageInsets {
++ (UIEdgeInsets)contentPageInsets {
     return UIEdgeInsetsMake(80.0, 80.0, 72.0, 80.0);
+}
+
++ (UIEdgeInsets)otherPageInsets {
+    return UIEdgeInsetsMake(80.0, 30.0, 30.0, 30.0);
 }
 
 + (CGFloat)columnSeparatorWidth {
@@ -167,6 +171,7 @@
 
 - (void)buildBookOtherLayoutData {
     
+    UIEdgeInsets pageInsets = [BookNavigationLayout otherPageInsets];
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     for (NSInteger section = 0; section < contentStartSection; section++) {
         
@@ -174,7 +179,10 @@
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:section];
         UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
         CGSize size = self.collectionView.bounds.size;
-        layoutAttributes.frame = CGRectMake(section * size.width, 0.0, size.width, size.height);
+        layoutAttributes.frame = CGRectMake((section * size.width) + pageInsets.left,
+                                            pageInsets.top,
+                                            size.width - pageInsets.left - pageInsets.right,
+                                            size.height - pageInsets.top - pageInsets.bottom);
         [self.itemsLayoutAttributes addObject:layoutAttributes];
         [self.indexPathItemAttributes setObject:layoutAttributes forKey:indexPath];
         
@@ -192,7 +200,7 @@
     // Page and items params.
     NSInteger numColumns = [self.dataSource bookNavigationLayoutNumColumns];
     CGSize unitSize = [BookNavigationLayout unitSize];
-    UIEdgeInsets pageInsets = [BookNavigationLayout pageInsets];
+    UIEdgeInsets pageInsets = [BookNavigationLayout contentPageInsets];
     CGFloat columnSeparatorWidth = [BookNavigationLayout columnSeparatorWidth];
     CGFloat firstItemOffset = [self firstItemOffsetForSection];
     
@@ -357,7 +365,7 @@
 }
 
 - (CGFloat)firstItemOffsetForSection {
-    return [BookNavigationLayout pageInsets].left + (2 * [BookNavigationLayout unitSize].width) + (2 * [BookNavigationLayout columnSeparatorWidth]);
+    return [BookNavigationLayout contentPageInsets].left + (2 * [BookNavigationLayout unitSize].width) + (2 * [BookNavigationLayout columnSeparatorWidth]);
 }
 
 @end

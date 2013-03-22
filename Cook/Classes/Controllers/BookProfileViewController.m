@@ -23,8 +23,8 @@
 
 @implementation BookProfileViewController
 
-#define kIntroOffset    CGPointMake(50.0, 100.0)
-#define kIntroSize      CGSizeMake(400.0, 600.0)
+#define kIntroOffset    CGPointMake(30.0, 30.0)
+#define kIntroWidth     400.0
 #define kProfileSize    CGSizeMake(80.0, 80.0)
 #define kProfileNameGap 20.0
 
@@ -37,9 +37,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.view.backgroundColor = [UIColor lightGrayColor];
-    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
     [self initImageView];
     [self initIntroView];
 }
@@ -59,8 +60,8 @@
     
     UIView *introView = [[UIView alloc] initWithFrame:CGRectMake(kIntroOffset.x,
                                                                  kIntroOffset.y,
-                                                                 kIntroSize.width,
-                                                                 kIntroSize.height)];
+                                                                 kIntroWidth,
+                                                                 self.view.bounds.size.height - (kIntroOffset.y * 2.0))];
     introView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     introView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:introView];

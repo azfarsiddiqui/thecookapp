@@ -35,7 +35,6 @@
 
 #define kActivityCellId         @"ActivityCellId"
 #define kHeaderId               @"HeaderId"
-#define kCollectionViewInsets   UIEdgeInsetsMake(80.0, 0.0, 30.0, 0.0)
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -138,7 +137,7 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return UIEdgeInsetsMake(25.0, 62.0, 80.0, 62.0);
+    return UIEdgeInsetsMake(25.0, 32.0, 80.0, 32.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -166,10 +165,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(kCollectionViewInsets.left,
-                                                                                          kCollectionViewInsets.top,
-                                                                                          self.view.bounds.size.width - kCollectionViewInsets.left - kCollectionViewInsets.right,
-                                                                                          self.view.bounds.size.height - kCollectionViewInsets.top - kCollectionViewInsets.bottom)
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
                                                             collectionViewLayout:flowLayout];
     collectionView.backgroundColor = [UIColor whiteColor];
     collectionView.dataSource = self;

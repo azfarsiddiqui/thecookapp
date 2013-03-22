@@ -31,7 +31,8 @@
 - (NSArray *)pageOffsetsForContentsSections;
 
 + (CGSize)unitSize;
-+ (UIEdgeInsets)pageInsets;
++ (UIEdgeInsets)contentPageInsets;
++ (UIEdgeInsets)otherPageInsets;
 + (CGFloat)columnSeparatorWidth;;
 
 @end
