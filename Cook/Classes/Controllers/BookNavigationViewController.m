@@ -24,7 +24,7 @@
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
     BookIndexViewControllerDelegate, BookActivityViewControllerDelegate, BookTitleViewControllerDelegate>
 
-@property (nonatomic, strong) UIButton *homeButton;
+@property (nonatomic, strong) UIButton *contentsButton;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -329,16 +329,16 @@
     [self.view addSubview:closeButton];
     self.closeButton = closeButton;
     
-    // Home button
-    UIButton *homeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_home_gray.png"]
+    // Contents button
+    UIButton *contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_contents_gray.png"]
                                                  target:self
-                                               selector:@selector(homeTapped:)];
-    homeButton.frame = CGRectMake(kNavTopLeftOffset.x,
+                                               selector:@selector(contentsTapped:)];
+    contentsButton.frame = CGRectMake(kNavTopLeftOffset.x,
                                   kNavTopLeftOffset.y,
-                                  homeButton.frame.size.width,
-                                  homeButton.frame.size.height);
-    [self.view addSubview:homeButton];
-    self.homeButton = homeButton;
+                                  contentsButton.frame.size.width,
+                                  contentsButton.frame.size.height);
+    [self.view addSubview:contentsButton];
+    self.contentsButton = contentsButton;
     
     // Title
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, kNavTitleOffset.y, 0.0, 0.0)];
@@ -405,7 +405,7 @@
     [self.delegate bookNavigationControllerCloseRequested];
 }
 
-- (void)homeTapped:(id)sender {
+- (void)contentsTapped:(id)sender {
     CGFloat contentsPageOffset = [self indexSection] * self.collectionView.bounds.size.width;
     [self.collectionView setContentOffset:CGPointMake(contentsPageOffset, 0.0) animated:YES];
 }
@@ -563,16 +563,15 @@
 
 - (void)updateNavButtons {
     
-    CGFloat contentsPageOffset = [self titleSection] * self.collectionView.bounds.size.width;
+    CGFloat recipePageOffset = [self recipeSection] * self.collectionView.bounds.size.width;
     
     // Close button visible only on the contents page.
-    if (self.collectionView.contentOffset.x >= contentsPageOffset
-        && self.collectionView.contentOffset.x < (contentsPageOffset + (self.collectionView.bounds.size.width) / 2.0)) {
-        self.closeButton.hidden = NO;
-        self.homeButton.hidden = YES;
-    } else {
+    if (self.collectionView.contentOffset.x >= recipePageOffset) {
         self.closeButton.hidden = YES;
-        self.homeButton.hidden = NO;
+        self.contentsButton.hidden = NO;
+    } else {
+        self.closeButton.hidden = NO;
+        self.contentsButton.hidden = YES;
     }
     
 }
