@@ -14,67 +14,57 @@
 #define kCategoryTableViewCellIdentifier @"CategoryTableViewCellIdentifier"
 #define kRowHeight          90.0f
 #define kHeaderHeight       20.0f
-#define kOverlayRect        CGRectMake(100.0f,0.0f,824.0f, 20.0f)
+#define kContentViewInsets  UIEdgeInsetsMake(20.0f,100.0f,0.0f,100.0f)
 
 @interface CategoryEditViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *categories;
 @property (nonatomic,strong) UITableView *tableView;
-@property (nonatomic,strong) UIView *padderView;
 @end
 
 @implementation CategoryEditViewController
 
--(id)initWithDelegate:(id<CKEditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView
+-(id)initWithDelegate:(id<EditingViewControllerDelegate>)delegate
+{
+    if (self = [super initWithDelegate:delegate]) {
+        self.contentViewInsets = kContentViewInsets;
+    }
+    return self;
+}
+
+-(id)initWithDelegate:(id<EditingViewControllerDelegate>)delegate sourceEditingView:(CKEditableView *)sourceEditingView
 {
     if (self = [super initWithDelegate:delegate sourceEditingView:sourceEditingView]) {
-        self.mainViewInsets = UIEdgeInsetsMake(0.0f,100.0f,0.0f,100.0f);
-        self.transparentOverlayRect = kOverlayRect;
+        self.contentViewInsets = kContentViewInsets;
     }
     return self;
 }
 
 -(UIView *)createTargetEditingView
 {
-    UIView *mainView = [super createTargetEditingView];
+    //full-screen - override top padding
+    CGRect mainViewFrame = CGRectMake(self.contentViewInsets.left,
+                                      0.0f,
+                                      self.view.bounds.size.width - self.contentViewInsets.left - self.contentViewInsets.right,
+                                      self.view.bounds.size.height);
+    UIView *mainView = [[UIView alloc] initWithFrame:mainViewFrame];
+    [self addTableView:mainView];
     return mainView;
 }
 
-
 - (void)editingViewWillAppear:(BOOL)appear {
     [super editingViewWillAppear:appear];
-    if (appear) {
-    } else {
-        [self.tableView removeFromSuperview];
-        [self.padderView removeFromSuperview];
-        [self updateViewAlphas:1.0f];
-    }
 }
 
 - (void)editingViewDidAppear:(BOOL)appear {
     [super editingViewDidAppear:appear];
     if (appear) {
-        UIView *mainView = self.targetEditingView;
-        [self addPadderView:mainView];
-        [self addTableView:mainView];
         [self data];
-        self.tableView.alpha = 0.0f;
-        [UIView animateWithDuration:0.15f
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.tableView.alpha = 1.0f;
-                         }
-                         completion:^(BOOL finished) {
-                             [UIView animateWithDuration: 0.15
-                                              animations:^{
-                                                  [self updateViewAlphas:0.0f];
-                                              }];
-                         }];
     }
 }
 
 - (void)performSave {
-    [self.delegate editingView:self.sourceEditingView saveRequestedWithResult:self.selectedCategory];
+    [self.delegate editingView:self.sourceEditingView
+       saveRequestedWithResult:self.selectedCategory];
     [super performSave];
 }
 
@@ -82,9 +72,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *headerView = [self newPadderView];
-    headerView.backgroundColor = [UIColor clearColor];
-    return headerView;
+    return [self newPadderView];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -101,8 +89,8 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-        Category *category = [self.categories objectAtIndex:indexPath.row];
-        [cell configureCellWithCategory:category];
+    Category *category = [self.categories objectAtIndex:indexPath.row];
+    [cell configureCellWithCategory:category];
     return cell;
 }
 
@@ -115,8 +103,8 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-        self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
-        [self doneTapped];
+    self.selectedCategory = [self.categories objectAtIndex:indexPath.row];
+    [self doneTapped];
 }
 
 #pragma mark - Private Methods
@@ -155,23 +143,18 @@
                 stop = YES;
                 [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:NO
                                       scrollPosition:UITableViewScrollPositionMiddle];
-
+                
             }
         }];
-    } 
-}
-
-- (void)addPadderView:(UIView*)mainView {
-    self.padderView = [self newPadderView];
-    [mainView addSubview:self.padderView];
+    }
 }
 
 - (UIView*)newPadderView
 {
     UIView *padderView = [[UIView alloc] initWithFrame:CGRectZero];
     padderView.alpha = 0.7f;
-    padderView.backgroundColor = [UIColor blackColor];
-    padderView.frame = CGRectMake(0.0f, 0.0f, kOverlayRect.size.width, kOverlayRect.size.height);
+    padderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin;
+    padderView.backgroundColor = [UIColor clearColor];
     return padderView;
 }
 

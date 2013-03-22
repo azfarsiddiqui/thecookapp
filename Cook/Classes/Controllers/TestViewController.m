@@ -43,7 +43,7 @@
 #define kButtonEdgeInsets   UIEdgeInsetsMake(15.0,20.0f,0,50.0f)
 #define kTableViewCellIdentifier               @"TableViewCellIdentifier"
 
-@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, UINavigationControllerDelegate,
+@interface TestViewController ()<CKEditableViewDelegate, CKEditingViewControllerDelegate, EditingViewControllerDelegate, UINavigationControllerDelegate,
     UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate, UIGestureRecognizerDelegate>
 
 //ui
@@ -72,8 +72,8 @@
 @property(nonatomic,strong)  UILabel *typeItUpLabel;
 @property(nonatomic,strong)  UILabel *orJustAddLabel;
 
-@property(nonatomic,strong) CKEditingViewController *editingViewController;
-
+@property(nonatomic,strong) CKEditingViewController *ckEditingViewController;
+@property(nonatomic,strong) EditingViewController *editingViewController;
 //data/state
 @property(nonatomic,assign) BOOL inEditMode;
 @property(nonatomic,strong) ParsePhotoStore *parsePhotoStore;
@@ -361,7 +361,7 @@
 
 -(void)editableViewEditRequestedForView:(UIView *)view
 {
-
+    //TODO sub-class CKTextFieldEditingViewController, TextViewEditingViewController,IngredientsEditingViewController off of EditViewcontroller
     if (view == self.nameEditableView) {
         CKTextFieldEditingViewController *textFieldEditingVC = [[CKTextFieldEditingViewController alloc] initWithDelegate:self sourceEditingView:self.nameEditableView];
         textFieldEditingVC.textAlignment = NSTextAlignmentCenter;
@@ -373,7 +373,7 @@
         textFieldEditingVC.text = textFieldLabel.text;
         textFieldEditingVC.editingTitle = @"RECIPE TITLE";
 
-        self.editingViewController = textFieldEditingVC;
+        self.ckEditingViewController = textFieldEditingVC;
 
     } else if (view == self.methodViewEditableView){
         TextViewEditingViewController *textViewEditingVC = [[TextViewEditingViewController alloc] initWithDelegate:self
@@ -382,7 +382,7 @@
         UILabel *textViewLabel = (UILabel *)self.methodViewEditableView.contentView;
         textViewEditingVC.text = textViewLabel.text;
         textViewEditingVC.editingTitle = @"RECIPE METHOD";
-        self.editingViewController = textViewEditingVC;
+        self.ckEditingViewController = textViewEditingVC;
         
     } else if (view == self.ingredientsViewEditableView) {
         IngredientsEditingViewController *ingredientsEditingVC = [[IngredientsEditingViewController alloc] initWithDelegate:self sourceEditingView:self.ingredientsViewEditableView];
@@ -391,7 +391,7 @@
         ingredientsEditingVC.ingredientList = self.recipe.ingredients;
         ingredientsEditingVC.editingTitle = @"INGREDIENTS";
 
-        self.editingViewController = ingredientsEditingVC;
+        self.ckEditingViewController = ingredientsEditingVC;
         
     } else if (view == self.servesCookPrepEditableView) {
         ServesCookPrepEditingViewController *servesEditingVC = [[ServesCookPrepEditingViewController alloc] initWithDelegate:self sourceEditingView:self.servesCookPrepEditableView];
@@ -409,22 +409,28 @@
         UILabel *textViewLabel = (UILabel *)self.storyEditableView.contentView;
         textViewEditingVC.text = textViewLabel.text;
         textViewEditingVC.editingTitle = @"YOUR RECIPE STORY";
-        self.editingViewController = textViewEditingVC;
+        self.ckEditingViewController = textViewEditingVC;
         
     } else if (view == self.categoryEditableView) {
         CategoryEditViewController *categoryEditingVC = [[CategoryEditViewController alloc] initWithDelegate:self sourceEditingView:self.categoryEditableView];
         categoryEditingVC.selectedCategory = self.recipe.category;
-        categoryEditingVC.editingTitle = @"RECIPE CATEGORY";
-        categoryEditingVC.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
         self.editingViewController = categoryEditingVC;
 
     } else if (view == self.photoEditableView){
         [self displayPhotoPicker];
     }
 
-    self.editingViewController.view.frame = [[AppHelper sharedInstance] rootView].bounds;
-    [self.view addSubview:self.editingViewController.view];
-    [self.editingViewController enableEditing:YES completion:nil];
+    if (self.editingViewController) {
+        self.editingViewController.view.frame = [[AppHelper sharedInstance] rootView].bounds;
+        [self.view addSubview:self.editingViewController.view];
+        [self.editingViewController enableEditing:YES completion:nil];
+    }
+
+    if (self.ckEditingViewController) {
+        self.ckEditingViewController.view.frame = [[AppHelper sharedInstance] rootView].bounds;
+        [self.view addSubview:self.ckEditingViewController.view];
+        [self.ckEditingViewController enableEditing:YES completion:nil];
+    }
 
 }
 
@@ -435,8 +441,14 @@
 
 - (void)editingViewDidAppear:(BOOL)appear {
     if (!appear) {
-        [self.editingViewController.view removeFromSuperview];
-        self.editingViewController = nil;
+        if (self.editingViewController) {
+            [self.editingViewController.view removeFromSuperview];
+            self.editingViewController = nil;
+        }
+        if (self.ckEditingViewController) {
+            [self.ckEditingViewController.view removeFromSuperview];
+            self.ckEditingViewController = nil;
+        }
     }
 }
 
