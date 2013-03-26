@@ -26,8 +26,9 @@
 
 @implementation BookCategoryView
 
-#define kCategoryFont   [Theme defaultFontWithSize:100.0]
-#define kCategoryInsets UIEdgeInsetsMake(40.0, 30.0, 10.0, 30.0)
+#define kCategoryFont       [Theme defaultFontWithSize:100.0]
+#define kCategoryMinFont    [Theme defaultFontWithSize:90.0]
+#define kCategoryInsets     UIEdgeInsetsMake(40.0, 40.0, 28.0, 40.0)
 
 - (id)initWithFrame:(CGRect)frame {
     if ([super initWithFrame:frame]) {
@@ -61,10 +62,25 @@
 - (void)configureCategoryName:(NSString *)categoryName {
     self.categoryName = [categoryName uppercaseString];
     
-    // Figure ou the required size with padding.
-    CGSize size = [self.categoryName sizeWithFont:kCategoryFont constrainedToSize:self.bounds.size lineBreakMode:NSLineBreakByWordWrapping];
+    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:kCategoryFont];
+    NSAttributedString *titleDisplay = [[NSAttributedString alloc] initWithString:self.categoryName attributes:paragraphAttributes];
+    self.maskedLabel.attributedText = titleDisplay;
+    
+    // Figure out the required size with padding.
+    CGSize availableSize = CGSizeMake(self.bounds.size.width - kCategoryInsets.left - kCategoryInsets.right, self.bounds.size.height);
+    CGSize size = [self.maskedLabel sizeThatFits:availableSize];
     size.width += kCategoryInsets.left + kCategoryInsets.right;
     size.height += kCategoryInsets.top + kCategoryInsets.bottom;
+    
+    // Bump down font if exceeds maximum width.
+    if (size.width >= availableSize.width) {
+        paragraphAttributes = [self paragraphAttributesForFont:kCategoryMinFont];
+        titleDisplay = [[NSAttributedString alloc] initWithString:self.categoryName attributes:paragraphAttributes];
+        self.maskedLabel.attributedText = titleDisplay;
+        size = [self.maskedLabel sizeThatFits:availableSize];
+        size.width += kCategoryInsets.left + kCategoryInsets.right;
+        size.height += kCategoryInsets.top + kCategoryInsets.bottom;
+    }
     
     // Set the frame in motion.
     self.maskedLabel.frame = CGRectMake(floorf((self.bounds.size.width - size.width) / 2.0),
@@ -73,7 +89,6 @@
                                         size.height);
     self.overlayView.frame = self.maskedLabel.frame;
     self.maskedLabel.insets = kCategoryInsets;
-    self.maskedLabel.text = self.categoryName;
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -82,6 +97,22 @@
 
 - (CGSize)imageSize {
     return self.imageView.frame.size;
+}
+
+#pragma mark - Private methods
+
+- (NSDictionary *)paragraphAttributesForFont:(UIFont *)font {
+    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = lineBreakMode;
+    paragraphStyle.lineSpacing = -10.0;
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            font, NSFontAttributeName,
+            [UIColor whiteColor], NSForegroundColorAttributeName,
+            paragraphStyle, NSParagraphStyleAttributeName,
+            nil];
 }
 
 @end
