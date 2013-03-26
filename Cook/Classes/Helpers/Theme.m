@@ -143,7 +143,11 @@
 }
 
 + (UIFont *)bookContentsTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:60.0];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:100.0];
+}
+
++ (UIFont *)bookContentsTitleMinFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:90.0];
 }
 
 + (UIColor *)bookContentsTitleColour {
@@ -151,7 +155,7 @@
 }
 
 + (UIFont *)bookContentsNameFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:30.0];
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:30.0];
 }
 
 + (UIColor *)bookContentsNameColour {

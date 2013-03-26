@@ -52,6 +52,7 @@
         maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
         maskedLabel.numberOfLines = 2;
         maskedLabel.font = kCategoryFont;
+        maskedLabel.insets = kCategoryInsets;
         [self addSubview:maskedLabel];
         self.maskedLabel = maskedLabel;
         
@@ -88,7 +89,6 @@
                                         size.width,
                                         size.height);
     self.overlayView.frame = self.maskedLabel.frame;
-    self.maskedLabel.insets = kCategoryInsets;
 }
 
 - (void)configureImage:(UIImage *)image {

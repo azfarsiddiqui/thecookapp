@@ -47,6 +47,7 @@
 + (UIFont *)bookNavigationTitleFont;
 + (UIColor *)bookNavigationTitleColour;
 + (UIFont *)bookProfileNameFont;
++ (UIFont *)bookContentsTitleMinFont;
 + (UIColor *)bookContentsViewColour;
 + (UIFont *)bookContentsTitleFont;
 + (UIColor *)bookContentsTitleColour;
