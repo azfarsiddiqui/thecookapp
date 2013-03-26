@@ -201,6 +201,14 @@
 		769CB373164A8990007B7BC9 /* cook_customise_colours_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 769CB35F164A8990007B7BC9 /* cook_customise_colours_red@2x.png */; };
 		769CB374164A8990007B7BC9 /* cook_customise_colours_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 769CB360164A8990007B7BC9 /* cook_customise_colours_yellow.png */; };
 		769CB375164A8990007B7BC9 /* cook_customise_colours_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 769CB361164A8990007B7BC9 /* cook_customise_colours_yellow@2x.png */; };
+		76A3714A170178070067BDB1 /* CKNotificationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A37140170178070067BDB1 /* CKNotificationItem.m */; };
+		76A3714B170178070067BDB1 /* CKNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A37142170178070067BDB1 /* CKNotificationView.m */; };
+		76A3714C170178070067BDB1 /* cook_dash_icons_notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A37144170178070067BDB1 /* cook_dash_icons_notifications.png */; };
+		76A3714D170178070067BDB1 /* cook_dash_icons_notifications@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A37145170178070067BDB1 /* cook_dash_icons_notifications@2x.png */; };
+		76A3714E170178070067BDB1 /* cook_dash_notitifcations_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A37146170178070067BDB1 /* cook_dash_notitifcations_bg.png */; };
+		76A3714F170178070067BDB1 /* cook_dash_notitifcations_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A37147170178070067BDB1 /* cook_dash_notitifcations_bg@2x.png */; };
+		76A37150170178070067BDB1 /* cook_dash_notitifcations_bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A37148170178070067BDB1 /* cook_dash_notitifcations_bubble.png */; };
+		76A37151170178070067BDB1 /* cook_dash_notitifcations_bubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A37149170178070067BDB1 /* cook_dash_notitifcations_bubble@2x.png */; };
 		76A7D42A16E4234100118749 /* cook_book_pagedivider_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D42616E4234100118749 /* cook_book_pagedivider_left.png */; };
 		76A7D42B16E4234100118749 /* cook_book_pagedivider_left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D42716E4234100118749 /* cook_book_pagedivider_left@2x.png */; };
 		76A7D42C16E4234100118749 /* cook_book_pagedivider_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D42816E4234100118749 /* cook_book_pagedivider_right.png */; };
@@ -756,6 +764,16 @@
 		769CB35F164A8990007B7BC9 /* cook_customise_colours_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_colours_red@2x.png"; sourceTree = "<group>"; };
 		769CB360164A8990007B7BC9 /* cook_customise_colours_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_colours_yellow.png; sourceTree = "<group>"; };
 		769CB361164A8990007B7BC9 /* cook_customise_colours_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_colours_yellow@2x.png"; sourceTree = "<group>"; };
+		76A3713F170178070067BDB1 /* CKNotificationItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKNotificationItem.h; sourceTree = "<group>"; };
+		76A37140170178070067BDB1 /* CKNotificationItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKNotificationItem.m; sourceTree = "<group>"; };
+		76A37141170178070067BDB1 /* CKNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKNotificationView.h; sourceTree = "<group>"; };
+		76A37142170178070067BDB1 /* CKNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKNotificationView.m; sourceTree = "<group>"; };
+		76A37144170178070067BDB1 /* cook_dash_icons_notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_notifications.png; sourceTree = "<group>"; };
+		76A37145170178070067BDB1 /* cook_dash_icons_notifications@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_notifications@2x.png"; sourceTree = "<group>"; };
+		76A37146170178070067BDB1 /* cook_dash_notitifcations_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_notitifcations_bg.png; sourceTree = "<group>"; };
+		76A37147170178070067BDB1 /* cook_dash_notitifcations_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_notitifcations_bg@2x.png"; sourceTree = "<group>"; };
+		76A37148170178070067BDB1 /* cook_dash_notitifcations_bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_notitifcations_bubble.png; sourceTree = "<group>"; };
+		76A37149170178070067BDB1 /* cook_dash_notitifcations_bubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_notitifcations_bubble@2x.png"; sourceTree = "<group>"; };
 		76A7D42616E4234100118749 /* cook_book_pagedivider_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_pagedivider_left.png; sourceTree = "<group>"; };
 		76A7D42716E4234100118749 /* cook_book_pagedivider_left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_pagedivider_left@2x.png"; sourceTree = "<group>"; };
 		76A7D42816E4234100118749 /* cook_book_pagedivider_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_pagedivider_right.png; sourceTree = "<group>"; };
@@ -1424,6 +1442,31 @@
 			path = fonts;
 			sourceTree = "<group>";
 		};
+		76A3713E170178070067BDB1 /* CKNotificationView */ = {
+			isa = PBXGroup;
+			children = (
+				76A3713F170178070067BDB1 /* CKNotificationItem.h */,
+				76A37140170178070067BDB1 /* CKNotificationItem.m */,
+				76A37141170178070067BDB1 /* CKNotificationView.h */,
+				76A37142170178070067BDB1 /* CKNotificationView.m */,
+				76A37143170178070067BDB1 /* Resources */,
+			);
+			path = CKNotificationView;
+			sourceTree = "<group>";
+		};
+		76A37143170178070067BDB1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				76A37144170178070067BDB1 /* cook_dash_icons_notifications.png */,
+				76A37145170178070067BDB1 /* cook_dash_icons_notifications@2x.png */,
+				76A37146170178070067BDB1 /* cook_dash_notitifcations_bg.png */,
+				76A37147170178070067BDB1 /* cook_dash_notitifcations_bg@2x.png */,
+				76A37148170178070067BDB1 /* cook_dash_notitifcations_bubble.png */,
+				76A37149170178070067BDB1 /* cook_dash_notitifcations_bubble@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		76B015AB161C0AC100AF3C2C /* books */ = {
 			isa = PBXGroup;
 			children = (
@@ -2049,6 +2092,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76A3713E170178070067BDB1 /* CKNotificationView */,
 				7643B8BA16D7037A001A2452 /* FormatterKit */,
 				76D84CA916CDF3B400FB5FB0 /* RSMaskedLabel */,
 				76BEE6EB165DEE600065B97B /* CKBookCoverView */,
@@ -2597,6 +2641,12 @@
 				76F6449A16F152C200F86223 /* cook_dash_library_profile_icon_friendrequest@2x.png in Resources */,
 				76E1E8A616FA8C3600031B28 /* cook_book_update_header_shadow_bottom.png in Resources */,
 				76E1E8A716FA8C3600031B28 /* cook_book_update_header_shadow_bottom@2x.png in Resources */,
+				76A3714C170178070067BDB1 /* cook_dash_icons_notifications.png in Resources */,
+				76A3714D170178070067BDB1 /* cook_dash_icons_notifications@2x.png in Resources */,
+				76A3714E170178070067BDB1 /* cook_dash_notitifcations_bg.png in Resources */,
+				76A3714F170178070067BDB1 /* cook_dash_notitifcations_bg@2x.png in Resources */,
+				76A37150170178070067BDB1 /* cook_dash_notitifcations_bubble.png in Resources */,
+				76A37151170178070067BDB1 /* cook_dash_notitifcations_bubble@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2731,6 +2781,8 @@
 				76B3E5B216FBE52F002B5080 /* BookIndexLayout.m in Sources */,
 				76B3E5B516FBE862002B5080 /* BookIndexCell.m in Sources */,
 				762F62D517012BF1006769E5 /* CKMaskedLabel.m in Sources */,
+				76A3714A170178070067BDB1 /* CKNotificationItem.m in Sources */,
+				76A3714B170178070067BDB1 /* CKNotificationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
