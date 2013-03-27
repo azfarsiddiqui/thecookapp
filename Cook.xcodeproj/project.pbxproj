@@ -77,6 +77,11 @@
 		7643B8CE16D7037B001A2452 /* TTTUnitOfInformationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C616D7037B001A2452 /* TTTUnitOfInformationFormatter.m */; };
 		7643B8CF16D7037B001A2452 /* TTTURLRequestFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */; };
 		7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */; };
+		7646E90C170291B100F26844 /* CKBenchtopLevelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7646E906170291B100F26844 /* CKBenchtopLevelView.m */; };
+		7646E90D170291B100F26844 /* cook_dash_dot_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E908170291B100F26844 /* cook_dash_dot_off.png */; };
+		7646E90E170291B100F26844 /* cook_dash_dot_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E909170291B100F26844 /* cook_dash_dot_off@2x.png */; };
+		7646E90F170291B100F26844 /* cook_dash_dot_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E90A170291B100F26844 /* cook_dash_dot_on.png */; };
+		7646E910170291B100F26844 /* cook_dash_dot_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E90B170291B100F26844 /* cook_dash_dot_on@2x.png */; };
 		76492D3C166DB9860042CF92 /* cook_dash_library_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 76492D3A166DB9860042CF92 /* cook_dash_library_add.png */; };
 		76492D3D166DB9860042CF92 /* cook_dash_library_add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76492D3B166DB9860042CF92 /* cook_dash_library_add@2x.png */; };
 		76492D41166DC4910042CF92 /* cook_book_graphic_cow.png in Resources */ = {isa = PBXBuildFile; fileRef = 76492D3F166DC4910042CF92 /* cook_book_graphic_cow.png */; };
@@ -606,6 +611,12 @@
 		7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityRecipeStatsView.m; sourceTree = "<group>"; };
 		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
 		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
+		7646E905170291B100F26844 /* CKBenchtopLevelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopLevelView.h; sourceTree = "<group>"; };
+		7646E906170291B100F26844 /* CKBenchtopLevelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBenchtopLevelView.m; sourceTree = "<group>"; };
+		7646E908170291B100F26844 /* cook_dash_dot_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_dot_off.png; sourceTree = "<group>"; };
+		7646E909170291B100F26844 /* cook_dash_dot_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_dot_off@2x.png"; sourceTree = "<group>"; };
+		7646E90A170291B100F26844 /* cook_dash_dot_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_dot_on.png; sourceTree = "<group>"; };
+		7646E90B170291B100F26844 /* cook_dash_dot_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_dot_on@2x.png"; sourceTree = "<group>"; };
 		76492D3A166DB9860042CF92 /* cook_dash_library_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cook_dash_library_add.png; path = ../dashboard/cook_dash_library_add.png; sourceTree = "<group>"; };
 		76492D3B166DB9860042CF92 /* cook_dash_library_add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_dash_library_add@2x.png"; path = "../dashboard/cook_dash_library_add@2x.png"; sourceTree = "<group>"; };
 		76492D3F166DC4910042CF92 /* cook_book_graphic_cow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_cow.png; sourceTree = "<group>"; };
@@ -1293,6 +1304,27 @@
 				7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */,
 			);
 			path = FormatterKit;
+			sourceTree = "<group>";
+		};
+		7646E904170291B100F26844 /* CKBenchtopLevelView */ = {
+			isa = PBXGroup;
+			children = (
+				7646E905170291B100F26844 /* CKBenchtopLevelView.h */,
+				7646E906170291B100F26844 /* CKBenchtopLevelView.m */,
+				7646E907170291B100F26844 /* Resources */,
+			);
+			path = CKBenchtopLevelView;
+			sourceTree = "<group>";
+		};
+		7646E907170291B100F26844 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7646E908170291B100F26844 /* cook_dash_dot_off.png */,
+				7646E909170291B100F26844 /* cook_dash_dot_off@2x.png */,
+				7646E90A170291B100F26844 /* cook_dash_dot_on.png */,
+				7646E90B170291B100F26844 /* cook_dash_dot_on@2x.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		76520459161A80CB00EE253C /* Dashboard */ = {
@@ -2092,6 +2124,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				7646E904170291B100F26844 /* CKBenchtopLevelView */,
 				76A3713E170178070067BDB1 /* CKNotificationView */,
 				7643B8BA16D7037A001A2452 /* FormatterKit */,
 				76D84CA916CDF3B400FB5FB0 /* RSMaskedLabel */,
@@ -2647,6 +2680,10 @@
 				76A3714F170178070067BDB1 /* cook_dash_notitifcations_bg@2x.png in Resources */,
 				76A37150170178070067BDB1 /* cook_dash_notitifcations_bubble.png in Resources */,
 				76A37151170178070067BDB1 /* cook_dash_notitifcations_bubble@2x.png in Resources */,
+				7646E90D170291B100F26844 /* cook_dash_dot_off.png in Resources */,
+				7646E90E170291B100F26844 /* cook_dash_dot_off@2x.png in Resources */,
+				7646E90F170291B100F26844 /* cook_dash_dot_on.png in Resources */,
+				7646E910170291B100F26844 /* cook_dash_dot_on@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2783,6 +2820,7 @@
 				762F62D517012BF1006769E5 /* CKMaskedLabel.m in Sources */,
 				76A3714A170178070067BDB1 /* CKNotificationItem.m in Sources */,
 				76A3714B170178070067BDB1 /* CKNotificationView.m in Sources */,
+				7646E90C170291B100F26844 /* CKBenchtopLevelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

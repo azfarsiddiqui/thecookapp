@@ -18,6 +18,7 @@
 #import "BookModalViewController.h"
 #import "LoginViewController.h"
 #import "EventHelper.h"
+#import "CKBenchtopLevelView.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate>
@@ -35,6 +36,7 @@
 @property (nonatomic, assign) BOOL panEnabled;
 @property (nonatomic, assign) NSUInteger benchtopLevel;
 @property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) CKBenchtopLevelView *benchtopLevelView;
 
 @end
 
@@ -281,6 +283,7 @@
                                                   self.benchtopLevel = benchtopLevel;
                                                   [self.storeViewController enable:benchtopLevel == kStoreLevel];
                                                   [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
+                                                  [self updateBenchtopLevelView];
                                                   completion();
                                               }];
                          }
@@ -442,8 +445,15 @@
 }
 
 - (void)initViewControllers {
-    
     BOOL isLoggedIn = [self isLoggedIn];
+    [self initBenchtop];
+    [self initLevelDots];
+    [self initNotificationView];
+    [self showLoginView:!isLoggedIn];
+    [self enable:isLoggedIn];
+}
+
+- (void)initBenchtop {
     
     // Start off on the middle level.
     self.benchtopLevel = 1;
@@ -460,11 +470,21 @@
     self.settingsViewController.view.frame = [self settingsFrameForLevel:self.benchtopLevel];
     [self.view addSubview:self.settingsViewController.view];
     
-    // Enable?
-    [self enable:isLoggedIn];
+}
+
+- (void)initLevelDots {
+    CKBenchtopLevelView *benchtopLevelView = [[CKBenchtopLevelView alloc] initWithLevels:3];
+    benchtopLevelView.frame = CGRectMake(30.0,
+                                         floorf((self.view.bounds.size.height - benchtopLevelView.frame.size.height) / 2.0),
+                                         benchtopLevelView.frame.size.width,
+                                         benchtopLevelView.frame.size.height);
+    [self.view addSubview:benchtopLevelView];
+    self.benchtopLevelView = benchtopLevelView;
+    [self updateBenchtopLevelView];
+}
+
+- (void)initNotificationView {
     
-    // Login/intro view.
-    [self showLoginView:!isLoggedIn];
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -590,6 +610,10 @@
 }
 
 - (void)showLoginView:(BOOL)show {
+    
+    // Only show page dots in non-logged in view.
+    self.benchtopLevelView.hidden = show;
+    
     if (show) {
         // Remove any existing one.
         [self.loginViewController.view removeFromSuperview];
@@ -618,6 +642,23 @@
                              self.loginViewController = nil;
                          }
                      }];
+    
+}
+
+- (void)updateBenchtopLevelView {
+    switch (self.benchtopLevel) {
+        case kStoreLevel:
+            [self.benchtopLevelView setLevel:0];
+            break;
+        case kBenchtopLevel:
+            [self.benchtopLevelView setLevel:1];
+            break;
+        case kSettingsLevel:
+            [self.benchtopLevelView setLevel:2];
+            break;
+        default:
+            break;
+    }
 }
 
 @end
