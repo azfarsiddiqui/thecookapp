@@ -28,6 +28,10 @@
 #define kBadgeFont              [UIFont boldSystemFontOfSize:16]
 #define kItemCount              4
 #define kInterItemGap           5.0
+#define kFadeInDuration         0.2
+#define kItemFadeInDuration     0.2
+#define kItemFadeInDelay        0.2
+#define kFadeOutDuration        0.2
 
 - (id)initWithDelegate:(id<CKNotificationViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -51,7 +55,6 @@
         notifyBackgroundView.frame = CGRectMake(5.0, 5.0, notifyBackgroundView.frame.size.width, notifyBackgroundView.frame.size.height);
         notifyBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         [self insertSubview:notifyBackgroundView belowSubview:notifyIconView];
-        notifyBackgroundView.hidden = YES;
         self.notifyBackgroundView = notifyBackgroundView;
         
         // Register tap for background.
@@ -77,12 +80,74 @@
 }
 
 - (void)clear {
-    [self setNotificationItems:nil];
+    [self fadeItems:NO];
+    [self setUpItems:nil];
 }
 
 - (void)setNotificationItems:(NSArray *)notificationItems {
-    self.items = [NSMutableArray arrayWithArray:notificationItems];
+    
+    // Hide straight away if this was updating items.
+    if ([self.itemViews count] > 0) {
+        [self.itemViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    }
+    
+    // Set up items and badge.
+    [self setUpItems:notificationItems];
+    
+    // Transitions
+    if ([notificationItems count] > 0) {
+    
+        self.badgeLabel.hidden = NO;
+        self.badgeLabel.alpha = 0.0;
+        self.badgeLabel.transform = CGAffineTransformMakeScale(0.9, 0.9);
+        
+        // Animate them all in,
+        [UIView animateWithDuration:kFadeInDuration
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.badgeLabel.alpha = 1.0;
+                             self.badgeLabel.transform = CGAffineTransformIdentity;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+        
+        // Fade in items.
+        [self fadeItems:YES];
+        
+    } else {
+        
+        // Animate them all out.,
+        self.badgeLabel.hidden = NO;
+        self.badgeLabel.alpha = 1.0;
+        [UIView animateWithDuration:kFadeOutDuration
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.badgeLabel.alpha = 0.0;
+                             self.badgeLabel.transform = CGAffineTransformMakeScale(0.9, 0.9);
+                         }
+                         completion:^(BOOL finished) {
+                             self.badgeLabel.hidden = YES;
+                             self.badgeLabel.transform = CGAffineTransformIdentity;
+                         }];
+        
+        // Fade out items.
+        [self fadeItems:NO];
+    }
+    
+}
+
+- (BOOL)hasNotificationItems {
+    return ([self.items count] > 0);
+}
+
+#pragma mark - Private methods
+
+- (void)setUpItems:(NSArray *)items {
+    self.items = [NSMutableArray arrayWithArray:items];
     self.notifyBackgroundView.hidden = ([self.items count] == 0);
+    self.badgeLabel.hidden = ([self.items count] == 0);
     
     if ([self.items count] > 0) {
         self.badgeLabel.text = [NSString stringWithFormat:@"%d", [self.items count]];
@@ -120,12 +185,7 @@
             
             // Register taps on individual item views.
             UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(itemViewTapped:)];
-            [itemView addGestureRecognizer:tapGesture];            
-            
-            // Prepare for transition.
-            itemView.transform = CGAffineTransformMakeTranslation(-20.0, 0.0);
-            //itemView.transform = CGAffineTransformMakeScale(0.9, 0.9);
-            itemView.alpha = 0.0;
+            [itemView addGestureRecognizer:tapGesture];
         }
         
         // Update frame to accomodate.
@@ -133,30 +193,6 @@
                                 self.frame.origin.y,
                                 itemOffset,
                                 self.notifyIconView.frame.size.height);
-        
-        self.badgeLabel.hidden = NO;
-        self.notifyBackgroundView.hidden = NO;
-        self.badgeLabel.alpha = 0.0;
-        self.notifyBackgroundView.alpha = 0.0;
-        self.badgeLabel.transform = CGAffineTransformMakeScale(0.9, 0.9);
-        
-        // Animate them all in,
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.badgeLabel.alpha = 1.0;
-                             self.notifyBackgroundView.alpha = 1.0;
-                             self.badgeLabel.transform = CGAffineTransformIdentity;
-                             for (UIView *itemView in self.itemViews) {
-                                 itemView.transform = CGAffineTransformIdentity;
-                                 itemView.alpha = 1.0;
-                             }
-                         }
-                         completion:^(BOOL finished) {
-            
-                         }];
-        
     } else {
         
         // Update self frame.
@@ -164,35 +200,8 @@
                                 self.frame.origin.y,
                                 self.notifyIconView.frame.origin.x + self.notifyIconView.frame.size.width,
                                 self.notifyIconView.frame.size.height);
-        
-        // Animate them all out.,
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.badgeLabel.alpha = 0.0;
-                             self.badgeLabel.transform = CGAffineTransformMakeScale(0.9, 0.9);
-                             self.notifyBackgroundView.alpha = 0.0;
-                             for (UIView *itemView in self.itemViews) {
-                                 itemView.transform = CGAffineTransformMakeScale(0.9, 0.9);
-                                 itemView.alpha = 0.0;
-                             }
-                         }
-                         completion:^(BOOL finished) {
-                             self.badgeLabel.hidden = YES;
-                             self.notifyBackgroundView.hidden = YES;
-                             self.badgeLabel.transform = CGAffineTransformIdentity;
-                             [self.itemViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-                         }];
-
     }
 }
-
-- (BOOL)hasNotificationItems {
-    return ([self.items count] > 0);
-}
-
-#pragma mark - Private methods
 
 - (void)iconTapped:(UITapGestureRecognizer *)tapGesture {
     [self.delegate notificationViewTapped:self];
@@ -201,6 +210,26 @@
 - (void)itemViewTapped:(UITapGestureRecognizer *)tapGesture {
     UIView *tappedView = [tapGesture view];
     [self.delegate notificationView:self tappedForItemIndex:[self.itemViews indexOfObject:tappedView]];
+}
+
+- (void)fadeItems:(BOOL)appear {
+    for (NSInteger itemViewIndex = 0; itemViewIndex < [self.itemViews count]; itemViewIndex++) {
+        UIView *itemView = [self.itemViews objectAtIndex:itemViewIndex];
+        itemView.transform = appear ? CGAffineTransformMakeTranslation(-10.0, 0.0) : CGAffineTransformIdentity;
+        itemView.alpha = appear ? 0.0 : 1.0;
+        [UIView animateWithDuration:appear ? kItemFadeInDuration : kItemFadeInDuration
+                              delay:appear ? (kItemFadeInDelay * itemViewIndex) : 0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             itemView.transform = appear ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.9, 0.9);
+                             itemView.alpha = appear ? 1.0 : 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                             if (!appear) {
+                                 [self.itemViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                             }
+                         }];
+    }    
 }
 
 @end
