@@ -26,6 +26,7 @@
 
 @property (nonatomic, strong) UIButton *contentsButton;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *addButton;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 
@@ -153,7 +154,6 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self updateNavButtons];
     [self updateNavTitle];
 }
 
@@ -325,7 +325,6 @@
                                    kNavTopLeftOffset.y,
                                    closeButton.frame.size.width,
                                    closeButton.frame.size.height);
-    closeButton.hidden = YES;
     [self.view addSubview:closeButton];
     self.closeButton = closeButton;
     
@@ -333,10 +332,10 @@
     UIButton *contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_contents_gray.png"]
                                                  target:self
                                                selector:@selector(contentsTapped:)];
-    contentsButton.frame = CGRectMake(kNavTopLeftOffset.x,
-                                  kNavTopLeftOffset.y,
-                                  contentsButton.frame.size.width,
-                                  contentsButton.frame.size.height);
+    contentsButton.frame = CGRectMake(closeButton.frame.origin.x + closeButton.frame.size.width,
+                                      kNavTopLeftOffset.y,
+                                      contentsButton.frame.size.width,
+                                      contentsButton.frame.size.height);
     [self.view addSubview:contentsButton];
     self.contentsButton = contentsButton;
     
@@ -348,6 +347,21 @@
     titleLabel.hidden = YES;
     [self.view addSubview:titleLabel];
     self.titleLabel = titleLabel;
+    
+    // Add Recipe button.
+    if ([self canAddRecipe]) {
+        UIButton *addButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_btn_addrecipe.png"]
+                                            selectedImage:[UIImage imageNamed:@"cook_book_btn_addrecipe_onpress.png"]
+                                                   target:self
+                                                 selector:@selector(addRecipeTapped)];
+        addButton.frame = CGRectMake(self.view.bounds.size.width - addButton.frame.size.width - 30.0,
+                                     20.0,
+                                     addButton.frame.size.width,
+                                     addButton.frame.size.height);
+        addButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [self.view addSubview:addButton];
+        self.addButton = addButton;
+    }
 }
 
 - (void)initCollectionView {
@@ -561,21 +575,6 @@
 
 }
 
-- (void)updateNavButtons {
-    
-    CGFloat recipePageOffset = [self recipeSection] * self.collectionView.bounds.size.width;
-    
-    // Close button visible only on the contents page.
-    if (self.collectionView.contentOffset.x >= recipePageOffset) {
-        self.closeButton.hidden = YES;
-        self.contentsButton.hidden = NO;
-    } else {
-        self.closeButton.hidden = NO;
-        self.contentsButton.hidden = YES;
-    }
-    
-}
-
 - (void)updateNavTitle {
     CGFloat contentsPageOffset = [self recipeSection] * self.collectionView.bounds.size.width;
     if (self.collectionView.contentOffset.x >= contentsPageOffset) {
@@ -632,6 +631,14 @@
         
     }
     return categoryName;
+}
+
+- (BOOL)canAddRecipe {
+    return ([self.book.user isEqual:[CKUser currentUser]]);
+}
+
+- (void)addRecipeTapped {
+    [self.delegate bookNavigationControllerRecipeRequested:nil];
 }
 
 @end

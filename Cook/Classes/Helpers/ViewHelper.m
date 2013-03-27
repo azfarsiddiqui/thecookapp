@@ -19,9 +19,22 @@
     [button setTitle:title forState:UIControlStateNormal];
     return button;
 }
+
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
+    button.userInteractionEnabled = (target != nil && selector != nil);
+    button.autoresizingMask = UIViewAutoresizingNone;
+    return button;
+}
+
++ (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target selector:(SEL)selector {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
+    [button setBackgroundImage:selectedImage forState:UIControlStateHighlighted];
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
     button.userInteractionEnabled = (target != nil && selector != nil);
