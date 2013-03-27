@@ -197,7 +197,8 @@
 #pragma mark - Private methods
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
-
+    self.notificationView.hidden = YES;
+    
     CGPoint translation = [panGesture translationInView:self.view];
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
@@ -299,6 +300,7 @@
                                                   self.settingsViewController.view.frame = [self settingsFrameForLevel:benchtopLevel];
                                               }
                                               completion:^(BOOL finished) {
+                                                  self.notificationView.hidden = (benchtopLevel != kBenchtopLevel);
                                                   self.benchtopLevel = benchtopLevel;
                                                   [self.storeViewController enable:benchtopLevel == kStoreLevel];
                                                   [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
@@ -486,13 +488,13 @@
     // Settings on Level 0
     self.settingsViewController.view.frame = [self settingsFrameForLevel:self.benchtopLevel];
     [self.view addSubview:self.settingsViewController.view];
-    
 }
 
 - (void)initNotificationView {
     CKNotificationView *notificationView = [[CKNotificationView alloc] initWithDelegate:self];
-    notificationView.frame = CGRectMake(30.0, 30.0, notificationView.frame.size.width, notificationView.frame.size.height);
-    //[self.view addSubview:notificationView];
+    notificationView.frame = CGRectMake(13.0, 50.0, notificationView.frame.size.width, notificationView.frame.size.height);
+    [self.view addSubview:notificationView];
+    [notificationView setNotificationItems:nil];
     self.notificationView = notificationView;
 }
 
