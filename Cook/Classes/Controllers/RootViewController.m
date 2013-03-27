@@ -183,6 +183,7 @@
 #pragma mark - CKNotificationViewDelegate methods
 
 - (void)notificationViewTapped:(CKNotificationView *)notifyView {
+    DLog();
     [notifyView clear];
 }
 
@@ -584,7 +585,6 @@
                  }
                  completion:^(BOOL finished)  {
                  }];
-
 }
 
 - (void)hideModalViewController:(UIViewController *)modalViewController {

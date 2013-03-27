@@ -73,6 +73,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self initBookOutlineView];
     [self initNav];
     [self initCollectionView];
     [self loadData];
@@ -314,6 +315,13 @@
 }
 
 #pragma mark - Private methods
+
+- (void)initBookOutlineView {
+    UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge.png"]];
+    bookOutlineView.frame = CGRectMake(-46.0, -26.0, bookOutlineView.frame.size.width, bookOutlineView.frame.size.height);
+    [self.view addSubview:bookOutlineView];
+    [self.view sendSubviewToBack:bookOutlineView];
+}
 
 - (void)initNav {
     

@@ -67,12 +67,7 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSInteger numCategoriesToDisplay = [collectionView numberOfItemsInSection:0];
-    if ([self canAddRecipe] && indexPath.item == (numCategoriesToDisplay + 1)) {
-        [self.delegate bookIndexAddRecipeRequested];
-    } else {
-        [self.delegate bookIndexSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
-    }
+    [self.delegate bookIndexSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -97,8 +92,5 @@
 
 #pragma mark - Private methods
 
-- (BOOL)canAddRecipe {
-    return ([self.book.user isEqual:[CKUser currentUser]]);
-}
 
 @end
