@@ -18,10 +18,11 @@
 #import "BookModalViewController.h"
 #import "LoginViewController.h"
 #import "EventHelper.h"
-#import "CKBenchtopLevelView.h"
+#import "CKNotificationView.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate,
+    CKNotificationViewDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -36,7 +37,7 @@
 @property (nonatomic, assign) BOOL panEnabled;
 @property (nonatomic, assign) NSUInteger benchtopLevel;
 @property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, strong) CKBenchtopLevelView *benchtopLevelView;
+@property (nonatomic, strong) CKNotificationView *notificationView;
 
 @end
 
@@ -113,6 +114,10 @@
     }
 }
 
+- (NSInteger)currentBenchtopLevel {
+    return self.benchtopLevel;
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
@@ -173,6 +178,20 @@
 
 - (void)loginViewControllerSuccessful:(BOOL)success {
     [self showLoginView:!success];
+}
+
+#pragma mark - CKNotificationViewDelegate methods
+
+- (void)notificationViewTapped:(CKNotificationView *)notifyView {
+    [notifyView clear];
+}
+
+- (UIView *)notificationItemViewForIndex:(NSInteger)itemIndex {
+    return nil;
+}
+
+- (void)notificationView:(CKNotificationView *)notifyView tappedForItemIndex:(NSInteger)itemIndex {
+    [notifyView clear];
 }
 
 #pragma mark - Private methods
@@ -283,7 +302,6 @@
                                                   self.benchtopLevel = benchtopLevel;
                                                   [self.storeViewController enable:benchtopLevel == kStoreLevel];
                                                   [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
-                                                  [self updateBenchtopLevelView];
                                                   completion();
                                               }];
                          }
@@ -447,7 +465,6 @@
 - (void)initViewControllers {
     BOOL isLoggedIn = [self isLoggedIn];
     [self initBenchtop];
-    [self initLevelDots];
     [self initNotificationView];
     [self showLoginView:!isLoggedIn];
     [self enable:isLoggedIn];
@@ -472,19 +489,11 @@
     
 }
 
-- (void)initLevelDots {
-    CKBenchtopLevelView *benchtopLevelView = [[CKBenchtopLevelView alloc] initWithLevels:3];
-    benchtopLevelView.frame = CGRectMake(30.0,
-                                         floorf((self.view.bounds.size.height - benchtopLevelView.frame.size.height) / 2.0),
-                                         benchtopLevelView.frame.size.width,
-                                         benchtopLevelView.frame.size.height);
-    [self.view addSubview:benchtopLevelView];
-    self.benchtopLevelView = benchtopLevelView;
-    [self updateBenchtopLevelView];
-}
-
 - (void)initNotificationView {
-    
+    CKNotificationView *notificationView = [[CKNotificationView alloc] initWithDelegate:self];
+    notificationView.frame = CGRectMake(30.0, 30.0, notificationView.frame.size.width, notificationView.frame.size.height);
+    //[self.view addSubview:notificationView];
+    self.notificationView = notificationView;
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -611,9 +620,6 @@
 
 - (void)showLoginView:(BOOL)show {
     
-    // Only show page dots in non-logged in view.
-    self.benchtopLevelView.hidden = show;
-    
     if (show) {
         // Remove any existing one.
         [self.loginViewController.view removeFromSuperview];
@@ -643,22 +649,6 @@
                          }
                      }];
     
-}
-
-- (void)updateBenchtopLevelView {
-    switch (self.benchtopLevel) {
-        case kStoreLevel:
-            [self.benchtopLevelView setLevel:0];
-            break;
-        case kBenchtopLevel:
-            [self.benchtopLevelView setLevel:1];
-            break;
-        case kSettingsLevel:
-            [self.benchtopLevelView setLevel:2];
-            break;
-        default:
-            break;
-    }
 }
 
 @end

@@ -16,6 +16,7 @@
 #import "IllustrationPickerViewController.h"
 #import "ViewHelper.h"
 #import "MRCEnumerable.h"
+#import "CKBenchtopLevelView.h"
 
 @interface BenchtopCollectionViewController () <UIActionSheetDelegate, BenchtopBookCoverViewCellDelegate,
     CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, UIGestureRecognizerDelegate>
@@ -31,6 +32,7 @@
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) CKBenchtopLevelView *benchtopLevelView;
 
 @end
 
@@ -39,6 +41,7 @@
 #define kCellId         @"BenchtopCellId"
 #define kMySection      0
 #define kFollowSection  1
+#define kLevelXOffset   30.0
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
@@ -59,6 +62,7 @@
     [super viewDidLoad];
     
     [self initBackground];
+    [self initBenchtopLevelView];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     self.collectionView.backgroundColor = [UIColor clearColor];
@@ -88,8 +92,8 @@
 }
 
 - (void)enable:(BOOL)enable {
-    DLog(@"ENABLE: %@", enable ? @"YES" : @"NO");
     self.collectionView.userInteractionEnabled = enable;
+    [self updateBenchtopLevelView];
 }
 
 - (void)bookWillOpen:(BOOL)open {
@@ -111,6 +115,26 @@
     
     // Enable panning based on book opened or not.
     [self.delegate panEnabledRequested:!open];
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    self.benchtopLevelView.hidden = YES;
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    self.benchtopLevelView.hidden = NO;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        self.benchtopLevelView.hidden = NO;
+    }
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    self.benchtopLevelView.hidden = NO;
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -324,6 +348,17 @@
     self.view.clipsToBounds = NO;
     [self.view insertSubview:backgroundView belowSubview:self.collectionView];
     self.backgroundView = backgroundView;
+}
+
+- (void)initBenchtopLevelView {
+    CKBenchtopLevelView *benchtopLevelView = [[CKBenchtopLevelView alloc] initWithLevels:3];
+    benchtopLevelView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    benchtopLevelView.frame = CGRectMake(kLevelXOffset,
+                                         floorf((self.view.bounds.size.height - benchtopLevelView.frame.size.height) / 2.0),
+                                         benchtopLevelView.frame.size.width,
+                                         benchtopLevelView.frame.size.height);
+    [self.view addSubview:benchtopLevelView];
+    self.benchtopLevelView = benchtopLevelView;
 }
 
 - (void)loadMyBook {
@@ -659,6 +694,23 @@
         [self.collectionView reloadData];
     }
     
+}
+
+- (void)updateBenchtopLevelView {
+    NSInteger level = [self.delegate currentBenchtopLevel];
+    switch (level) {
+        case 2:
+            [self.benchtopLevelView setLevel:0];
+            break;
+        case 1:
+            [self.benchtopLevelView setLevel:1];
+            break;
+        case 0:
+            [self.benchtopLevelView setLevel:2];
+            break;
+        default:
+            break;
+    }
 }
 
 @end

@@ -15,5 +15,6 @@
 - (void)editBookRequested:(BOOL)editMode;
 - (void)panEnabledRequested:(BOOL)enable;
 - (void)panToBenchtopForSelf:(UIViewController *)viewController;
+- (NSInteger)currentBenchtopLevel;
 
 @end
