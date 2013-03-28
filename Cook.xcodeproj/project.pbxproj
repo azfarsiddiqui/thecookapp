@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		760A1D6417045C1700AF5CD3 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 760A1D6317045C1700AF5CD3 /* Default-Landscape~ipad.png */; };
+		760A1D6617045C1900AF5CD3 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 760A1D6517045C1900AF5CD3 /* Default-Landscape@2x~ipad.png */; };
 		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		761186BC16EFFE16004F631B /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */; };
 		761186BF16F04831004F631B /* StoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761186BE16F04830004F631B /* StoreBookViewController.m */; };
@@ -520,6 +522,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		760A1D6317045C1700AF5CD3 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape~ipad.png"; path = "../../Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		760A1D6517045C1900AF5CD3 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape@2x~ipad.png"; path = "../../Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
 		761186B916EFFDF2004F631B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		761186BD16F04830004F631B /* StoreBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBookViewController.h; sourceTree = "<group>"; };
@@ -1924,6 +1928,8 @@
 				89622198161EAE370023EC30 /* recipes */,
 				76B015AB161C0AC100AF3C2C /* books */,
 				762C0E4D161A7FC400EBA344 /* dashboard */,
+				760A1D6517045C1900AF5CD3 /* Default-Landscape@2x~ipad.png */,
+				760A1D6317045C1700AF5CD3 /* Default-Landscape~ipad.png */,
 				76ED27831612DEB80012E479 /* Icon.png */,
 				76ED27841612DEB80012E479 /* Icon@2x.png */,
 			);
@@ -2747,6 +2753,8 @@
 				76375A8A1702B73E008D8B63 /* cook_book_edge@2x.png in Resources */,
 				76E7B45E1703EDAF00263DBA /* cook_popover_bg.png in Resources */,
 				76E7B45F1703EDAF00263DBA /* cook_popover_bg@2x.png in Resources */,
+				760A1D6417045C1700AF5CD3 /* Default-Landscape~ipad.png in Resources */,
+				760A1D6617045C1900AF5CD3 /* Default-Landscape@2x~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
