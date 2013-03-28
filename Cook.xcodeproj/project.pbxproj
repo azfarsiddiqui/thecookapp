@@ -360,6 +360,7 @@
 		76E7B45D1703EDAF00263DBA /* CKPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E7B4591703EDAF00263DBA /* CKPopoverViewController.m */; };
 		76E7B45E1703EDAF00263DBA /* cook_popover_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E7B45B1703EDAF00263DBA /* cook_popover_bg.png */; };
 		76E7B45F1703EDAF00263DBA /* cook_popover_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E7B45C1703EDAF00263DBA /* cook_popover_bg@2x.png */; };
+		76E7B462170401D500263DBA /* NotificationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E7B461170401D400263DBA /* NotificationTableViewCell.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -965,6 +966,8 @@
 		76E7B4591703EDAF00263DBA /* CKPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPopoverViewController.m; sourceTree = "<group>"; };
 		76E7B45B1703EDAF00263DBA /* cook_popover_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_popover_bg.png; sourceTree = "<group>"; };
 		76E7B45C1703EDAF00263DBA /* cook_popover_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_popover_bg@2x.png"; sourceTree = "<group>"; };
+		76E7B460170401D400263DBA /* NotificationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationTableViewCell.h; sourceTree = "<group>"; };
+		76E7B461170401D400263DBA /* NotificationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationTableViewCell.m; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1394,6 +1397,8 @@
 				76492D64166DCC5F0042CF92 /* CoverPickerView.m */,
 				76375A841702B3A5008D8B63 /* NotificationsViewController.h */,
 				76375A851702B3A5008D8B63 /* NotificationsViewController.m */,
+				76E7B460170401D400263DBA /* NotificationTableViewCell.h */,
+				76E7B461170401D400263DBA /* NotificationTableViewCell.m */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -2881,6 +2886,7 @@
 				7646E90C170291B100F26844 /* CKBenchtopLevelView.m in Sources */,
 				76375A861702B3A5008D8B63 /* NotificationsViewController.m in Sources */,
 				76E7B45D1703EDAF00263DBA /* CKPopoverViewController.m in Sources */,
+				76E7B462170401D500263DBA /* NotificationTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

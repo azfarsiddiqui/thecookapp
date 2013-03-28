@@ -7,19 +7,25 @@
 //
 
 #import "NotificationsViewController.h"
+#import "NotificationTableViewCell.h"
+#import "CKUserNotification.h"
+#import "CKUser.h"
 #import "Theme.h"
 
 @interface NotificationsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSMutableArray *notifications;
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
 @implementation NotificationsViewController
 
 #define kTitleYOffset   10.0
-#define kHeaderHeight   100.0
+#define kHeaderHeight   70.0
+#define kCellId         @"NotificationCellId"
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -29,16 +35,21 @@
     
     [self initTitleLabel];
     [self initTableView];
+    [self loadData];
 }
 
 #pragma mark - UITableViewDataSource methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return [self.notifications count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
+    NotificationTableViewCell *cell = (NotificationTableViewCell *)[tableView dequeueReusableCellWithIdentifier:kCellId
+                                                                                                   forIndexPath:indexPath];
+    CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
+    cell.textLabel.text = notification.name;
+    return cell;
 }
 
 #pragma mark - UITableViewDelegate methods
@@ -66,9 +77,12 @@
 }
 
 - (void)initTableView {
-    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
+                                                                           kHeaderHeight,
+                                                                           self.view.bounds.size.width,
+                                                                           self.view.bounds.size.height - kHeaderHeight)
                                                           style:UITableViewStylePlain];
-    tableView.backgroundColor = [UIColor clearColor];
+    tableView.backgroundColor = [UIColor whiteColor];
     tableView.scrollEnabled = NO;
     tableView.autoresizingMask = UIViewAutoresizingNone;
     tableView.dataSource = self;
@@ -77,6 +91,29 @@
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:tableView];
     self.tableView = tableView;
+    [tableView registerClass:[NotificationTableViewCell class] forCellReuseIdentifier:kCellId];
+    
+    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityView.frame = CGRectMake(floorf((tableView.bounds.size.width - activityView.frame.size.width) / 2.0),
+                                    floorf((tableView.bounds.size.height - activityView.frame.size.height - kHeaderHeight) / 2.0),
+                                    activityView.frame.size.width,
+                                    activityView.frame.size.height);
+    [tableView addSubview:activityView];
+    self.activityView = activityView;
+}
+
+- (void)loadData {
+    [self.activityView startAnimating];
+    CKUser *currentUser = [CKUser currentUser];
+    [CKUserNotification notificationsForUser:currentUser
+                                  completion:^(NSArray *notifications) {
+                                      self.notifications = [NSMutableArray arrayWithArray:notifications];
+                                      [self.activityView stopAnimating];
+                                      [self.tableView reloadData];
+                                  } failure:^(NSError *error) {
+                                      DLog(@"Error %@", [error localizedDescription]);
+                                      [self.activityView stopAnimating];
+                                  }];
 }
 
 @end
