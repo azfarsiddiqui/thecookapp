@@ -14,13 +14,17 @@
 
 @implementation NotificationsViewController
 
-#define kContentInsets  UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
-
 - (id)init {
     if (self = [super init]) {
-        
     }
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.frame = CGRectMake(0.0, 0.0, 500.0, 650.0);
 }
 
 #pragma mark - Private methods

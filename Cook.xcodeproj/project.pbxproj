@@ -357,6 +357,9 @@
 		76E1E8A616FA8C3600031B28 /* cook_book_update_header_shadow_bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E1E8A416FA8C3600031B28 /* cook_book_update_header_shadow_bottom.png */; };
 		76E1E8A716FA8C3600031B28 /* cook_book_update_header_shadow_bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E1E8A516FA8C3600031B28 /* cook_book_update_header_shadow_bottom@2x.png */; };
 		76E355C516C9EB1E00C2B639 /* BookNavigationLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E355C416C9EB1E00C2B639 /* BookNavigationLayout.m */; };
+		76E7B45D1703EDAF00263DBA /* CKPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E7B4591703EDAF00263DBA /* CKPopoverViewController.m */; };
+		76E7B45E1703EDAF00263DBA /* cook_popover_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E7B45B1703EDAF00263DBA /* cook_popover_bg.png */; };
+		76E7B45F1703EDAF00263DBA /* cook_popover_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E7B45C1703EDAF00263DBA /* cook_popover_bg@2x.png */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -958,6 +961,10 @@
 		76E1E8A516FA8C3600031B28 /* cook_book_update_header_shadow_bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_update_header_shadow_bottom@2x.png"; sourceTree = "<group>"; };
 		76E355C316C9EB1E00C2B639 /* BookNavigationLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationLayout.h; sourceTree = "<group>"; };
 		76E355C416C9EB1E00C2B639 /* BookNavigationLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationLayout.m; sourceTree = "<group>"; };
+		76E7B4581703EDAF00263DBA /* CKPopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPopoverViewController.h; sourceTree = "<group>"; };
+		76E7B4591703EDAF00263DBA /* CKPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPopoverViewController.m; sourceTree = "<group>"; };
+		76E7B45B1703EDAF00263DBA /* cook_popover_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_popover_bg.png; sourceTree = "<group>"; };
+		76E7B45C1703EDAF00263DBA /* cook_popover_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_popover_bg@2x.png"; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1767,6 +1774,25 @@
 			path = RSMaskedLabel;
 			sourceTree = "<group>";
 		};
+		76E7B4571703EDAF00263DBA /* CKPopoverViewController */ = {
+			isa = PBXGroup;
+			children = (
+				76E7B4581703EDAF00263DBA /* CKPopoverViewController.h */,
+				76E7B4591703EDAF00263DBA /* CKPopoverViewController.m */,
+				76E7B45A1703EDAF00263DBA /* Resources */,
+			);
+			path = CKPopoverViewController;
+			sourceTree = "<group>";
+		};
+		76E7B45A1703EDAF00263DBA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				76E7B45B1703EDAF00263DBA /* cook_popover_bg.png */,
+				76E7B45C1703EDAF00263DBA /* cook_popover_bg@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		76ED27321612DC180012E479 = {
 			isa = PBXGroup;
 			children = (
@@ -2147,6 +2173,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76E7B4571703EDAF00263DBA /* CKPopoverViewController */,
 				7646E904170291B100F26844 /* CKBenchtopLevelView */,
 				76A3713E170178070067BDB1 /* CKNotificationView */,
 				7643B8BA16D7037A001A2452 /* FormatterKit */,
@@ -2713,6 +2740,8 @@
 				76375A831702AC3A008D8B63 /* cook_book_btn_addrecipe@2x.png in Resources */,
 				76375A891702B73E008D8B63 /* cook_book_edge.png in Resources */,
 				76375A8A1702B73E008D8B63 /* cook_book_edge@2x.png in Resources */,
+				76E7B45E1703EDAF00263DBA /* cook_popover_bg.png in Resources */,
+				76E7B45F1703EDAF00263DBA /* cook_popover_bg@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2851,6 +2880,7 @@
 				76A3714B170178070067BDB1 /* CKNotificationView.m in Sources */,
 				7646E90C170291B100F26844 /* CKBenchtopLevelView.m in Sources */,
 				76375A861702B3A5008D8B63 /* NotificationsViewController.m in Sources */,
+				76E7B45D1703EDAF00263DBA /* CKPopoverViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

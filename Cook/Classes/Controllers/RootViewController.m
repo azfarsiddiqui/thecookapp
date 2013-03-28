@@ -19,10 +19,12 @@
 #import "LoginViewController.h"
 #import "EventHelper.h"
 #import "CKNotificationView.h"
+#import "CKPopoverViewController.h"
+#import "NotificationsViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate,
-    CKNotificationViewDelegate>
+    CKNotificationViewDelegate, CKPopoverViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -30,6 +32,7 @@
 @property (nonatomic, strong) LoginViewController *loginViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
+@property (nonatomic, strong) CKPopoverViewController *popoverViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
@@ -185,6 +188,12 @@
 - (void)notificationViewTapped:(CKNotificationView *)notifyView {
     DLog();
     [notifyView clear];
+    
+    NotificationsViewController *notificationsViewController = [[NotificationsViewController alloc] init];
+    CKPopoverViewController *popoverViewController = [[CKPopoverViewController alloc] initWithContentViewController:notificationsViewController delegate:self];
+    [popoverViewController showInView:self.view direction:CKPopoverViewControllerLeft atPoint:CGPointMake(notifyView.frame.origin.x + notifyView.frame.size.width,
+                                                                                                          notifyView.frame.origin.y + floorf(notifyView.frame.size.height / 2.0))];
+    self.popoverViewController = popoverViewController;
 }
 
 - (UIView *)notificationItemViewForIndex:(NSInteger)itemIndex {
@@ -193,6 +202,18 @@
 
 - (void)notificationView:(CKNotificationView *)notifyView tappedForItemIndex:(NSInteger)itemIndex {
     [notifyView clear];
+}
+
+#pragma mark - CKPopoverViewControllerDelegate methods
+
+- (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
+    
+}
+
+- (void)popoverViewController:(CKPopoverViewController *)popoverViewController didAppear:(BOOL)appear {
+    if (!appear) {
+        self.popoverViewController = nil;
+    }
 }
 
 #pragma mark - Private methods
