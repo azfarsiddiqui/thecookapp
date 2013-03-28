@@ -124,6 +124,16 @@
     return [UIColor colorWithHexString:@"4E4E4E"];
 }
 
+#pragma mark - Notifications
+
++ (UIFont *)notificationsTitleFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:36.0];
+}
+
++ (UIColor *)notificationsTitleColour {
+    return [UIColor blackColor];
+}
+
 #pragma mark - Book contents/activities.
 
 + (UIFont *)bookNavigationTitleFont {

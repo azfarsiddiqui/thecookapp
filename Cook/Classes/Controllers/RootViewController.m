@@ -207,12 +207,15 @@
 #pragma mark - CKPopoverViewControllerDelegate methods
 
 - (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
-    
+    if (appear) {
+        [self enable:NO];
+    }
 }
 
 - (void)popoverViewController:(CKPopoverViewController *)popoverViewController didAppear:(BOOL)appear {
     if (!appear) {
         self.popoverViewController = nil;
+        [self enable:YES];
     }
 }
 

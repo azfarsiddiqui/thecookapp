@@ -8,7 +8,7 @@
 
 #import "CKPopoverViewController.h"
 
-@interface CKPopoverViewController ()
+@interface CKPopoverViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIViewController *contentViewController;
 @property (nonatomic, assign) CGPoint anchorOffset;
@@ -83,6 +83,10 @@
                      completion:^(BOOL finished) {
                          [self.delegate popoverViewController:self didAppear:YES];
                      }];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(overlayTapped:)];
+    tapGesture.delegate = self;
+    [self.view addGestureRecognizer:tapGesture];
 }
 
 - (void)hide {
@@ -94,6 +98,13 @@
         [self.delegate popoverViewController:self didAppear:NO];
         
     }];
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    CGPoint tapPoint = [touch locationInView:self.view];
+    return !CGRectContainsPoint(self.contentViewController.view.frame, tapPoint);
 }
 
 #pragma mark - Private methods
@@ -110,9 +121,6 @@
         overlayView.alpha = 0.0;
         [self.view addSubview:overlayView];
         self.overlayView = overlayView;
-        
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(overlayTapped:)];
-        [overlayView addGestureRecognizer:tapGesture];
     }
     
     [UIView animateWithDuration:show ? kOverlayViewFadeInDuration : kOverlayViewFadeOutDuration
