@@ -325,14 +325,14 @@
                                                   self.settingsViewController.view.frame = [self settingsFrameForLevel:benchtopLevel];
                                               }
                                               completion:^(BOOL finished) {
-                                                  self.notificationView.hidden = (benchtopLevel != kBenchtopLevel);
-                                                  self.benchtopLevel = benchtopLevel;
                                                   [self.storeViewController enable:benchtopLevel == kStoreLevel];
                                                   [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
                                                   completion();
                                               }];
                          }
                          
+                         self.notificationView.hidden = (benchtopLevel != kBenchtopLevel);
+                         self.benchtopLevel = benchtopLevel;
                      }];
 }
 
