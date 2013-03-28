@@ -44,8 +44,12 @@
 + (UIColor *)storeBookActionButtonShadowColour;
 
 #pragma mark - Notifications
-+ (UIFont *)notificationsTitleFont;
-+ (UIColor *)notificationsTitleColour;
++ (UIFont *)notificationsHeaderFont;
++ (UIColor *)notificationsHeaderColour;
++ (UIFont *)notificationCellNameFont;
++ (UIColor *)notificationsCellNameColour;
++ (UIFont *)notificationCellActionFont;
++ (UIColor *)notificationsCellActionColour;
 
 #pragma mark - Book contents/activities.
 + (UIFont *)bookNavigationTitleFont;

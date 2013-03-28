@@ -126,12 +126,28 @@
 
 #pragma mark - Notifications
 
-+ (UIFont *)notificationsTitleFont {
++ (UIFont *)notificationsHeaderFont {
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:36.0];
 }
 
-+ (UIColor *)notificationsTitleColour {
-    return [UIColor blackColor];
++ (UIColor *)notificationsHeaderColour {
+    return [UIColor darkGrayColor];
+}
+
++ (UIFont *)notificationCellNameFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:20.0];
+}
+
++ (UIColor *)notificationsCellNameColour {
+    return [UIColor darkGrayColor];
+}
+
++ (UIFont *)notificationCellActionFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:18.0];
+}
+
++ (UIColor *)notificationsCellActionColour {
+    return [UIColor darkGrayColor];
 }
 
 #pragma mark - Book contents/activities.

@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKUserNotification;
+
 @interface NotificationTableViewCell : UITableViewCell
+
++ (CGFloat)heightForNotification:(CKUserNotification *)notification;
 
 @end

@@ -32,6 +32,7 @@
     
     PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [query includeKey:kUserModelForeignKeyName];
     [query orderByDescending:kModelAttrCreatedAt];
     [query findObjectsInBackgroundWithBlock:^(NSArray *notificationObjects, NSError *error) {
         if (!error) {
@@ -61,6 +62,10 @@
     [parseNotification setObject:@NO forKey:kUserNotificationUnread];
     [parseNotification setACL:[PFACL ACLWithUser:parseUser]];
     return parseNotification;
+}
+
+- (CKUser *)user {
+    return [CKUser userWithParseUser:[self.parseObject objectForKey:kUserModelForeignKeyName]];
 }
 
 - (void)setUnread:(BOOL)unread {

@@ -48,11 +48,17 @@
     NotificationTableViewCell *cell = (NotificationTableViewCell *)[tableView dequeueReusableCellWithIdentifier:kCellId
                                                                                                    forIndexPath:indexPath];
     CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
-    cell.textLabel.text = notification.name;
+    cell.textLabel.text = [notification.user.name uppercaseString];
+    cell.detailTextLabel.text = [notification.name uppercaseString];
     return cell;
 }
 
 #pragma mark - UITableViewDelegate methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
+    return [NotificationTableViewCell heightForNotification:notification];
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
@@ -64,8 +70,8 @@
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.font = [Theme notificationsTitleFont];
-    titleLabel.textColor = [Theme notificationsTitleColour];
+    titleLabel.font = [Theme notificationsHeaderFont];
+    titleLabel.textColor = [Theme notificationsHeaderColour];
     titleLabel.text = @"NOTIFICATIONS";
     [titleLabel sizeToFit];
     titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - titleLabel.frame.size.width) / 2.0),

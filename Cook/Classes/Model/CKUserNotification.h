@@ -20,4 +20,6 @@
                      failure:(ObjectFailureBlock)failure;
 + (PFObject *)createNotificationForParseUser:(PFUser *)parseUser parseFriendRequest:(PFObject *)parseFriendRequest;
 
+- (CKUser *)user;
+
 @end
