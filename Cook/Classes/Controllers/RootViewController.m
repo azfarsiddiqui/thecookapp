@@ -636,6 +636,7 @@
 
 - (void)enable:(BOOL)enable {
     self.panEnabled = enable;
+    self.notificationView.hidden = !enable;
 }
 
 - (void)loggedOut:(NSNotification *)notification {
