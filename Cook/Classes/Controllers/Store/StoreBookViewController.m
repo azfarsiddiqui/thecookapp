@@ -15,6 +15,7 @@
 #import "BenchtopBookCoverViewCell.h"
 #import "Theme.h"
 #import "CKButtonView.h"
+#import "CKUserProfilePhotoView.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface StoreBookViewController () <CKBookCoverViewDelegate>
@@ -24,6 +25,7 @@
 @property (nonatomic, assign) id<StoreBookViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *bookContainerView;
+@property (nonatomic, strong) UIView *bookSummaryView;
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
 @property (nonatomic, strong) CKButtonView *actionButtonView;
 @property (nonatomic, assign) BOOL pendingAcceptance;
@@ -40,6 +42,7 @@
 #define kBookShadowAdjustment   10.0
 #define kOverlayAlpha           0.5
 #define kBookViewAlpha          0.7
+#define kProfileNameGap         20.0
 
 - (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -56,11 +59,7 @@
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     [self initBackground];
     [self initBookView];
-    if (self.addMode) {
-        [self initAddButton];
-    } else {
-        [self initFriendsButton];
-    }
+    [self initBookSummaryView];
 
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
     [self.view addGestureRecognizer:tapGesture];
@@ -164,6 +163,50 @@
     [bookContainerView addSubview:closeButton];
 }
 
+- (void)initBookSummaryView {
+    
+    UIEdgeInsets summaryInsets = UIEdgeInsetsMake(kBookViewContentInsets.top + 4.0, 0.0, kBookViewContentInsets.bottom, kBookViewContentInsets.right);
+    UIView *bookSummaryView = [[UIView alloc] initWithFrame:CGRectMake(summaryInsets.left + floorf(self.bookContainerView.bounds.size.width / 2.0),
+                                                                       summaryInsets.top,
+                                                                       floorf(self.bookContainerView.bounds.size.width / 2.0) - summaryInsets.left - summaryInsets.right,
+                                                                       self.bookContainerView.bounds.size.height - summaryInsets.top - summaryInsets.bottom)];
+    bookSummaryView.backgroundColor = [UIColor clearColor];
+    [self.bookContainerView addSubview:bookSummaryView];
+    self.bookSummaryView = bookSummaryView;
+    
+    // Top profile photo.
+    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user profileSize:ProfileViewSizeLarge];
+    profilePhotoView.frame = CGRectMake(floorf((bookSummaryView.bounds.size.width - profilePhotoView.frame.size.width) / 2.0),
+                                        0.0,
+                                        profilePhotoView.frame.size.width,
+                                        profilePhotoView.frame.size.height);
+    [bookSummaryView addSubview:profilePhotoView];
+    
+    // User name
+    NSString *name = [self.book.user.name uppercaseString];
+    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    nameLabel.font = [Theme storeBookSummaryNameFont];
+    nameLabel.backgroundColor = [UIColor clearColor];
+    nameLabel.textColor = [Theme storeBookSummaryNameColour];
+    nameLabel.shadowColor = [UIColor blackColor];
+    nameLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    nameLabel.text = name;
+    nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    [nameLabel sizeToFit];
+    nameLabel.frame = CGRectMake(floorf((bookSummaryView.bounds.size.width - nameLabel.frame.size.width) / 2.0),
+                                 profilePhotoView.frame.origin.y + profilePhotoView.frame.size.height + kProfileNameGap,
+                                 nameLabel.frame.size.width,
+                                 nameLabel.frame.size.height);
+    [bookSummaryView addSubview:nameLabel];
+    
+    // Action button.
+    if (self.addMode) {
+        [self initAddButton];
+    } else {
+        [self initFriendsButton];
+    }
+}
+
 - (void)closeTapped {
     
     self.animating = YES;
@@ -235,11 +278,11 @@
 
 - (void)initActionButtonWithSelector:(SEL)selector {
     CKButtonView *actionButtonView = [[CKButtonView alloc] initWithTarget:self action:selector];
-    actionButtonView.frame = CGRectMake(floorf(self.bookContainerView.bounds.size.width / 2.0) + floorf(((self.bookContainerView.bounds.size.width / 2.0) - actionButtonView.frame.size.width) / 2.0),
-                                        self.bookContainerView.bounds.size.height - kBookViewContentInsets.bottom - actionButtonView.frame.size.height,
+    actionButtonView.frame = CGRectMake(floorf((self.bookSummaryView.bounds.size.width - actionButtonView.frame.size.width) / 2.0),
+                                        self.bookSummaryView.bounds.size.height - actionButtonView.frame.size.height,
                                         actionButtonView.frame.size.width,
                                         actionButtonView.frame.size.height);
-    [self.bookContainerView addSubview:actionButtonView];
+    [self.bookSummaryView addSubview:actionButtonView];
     self.actionButtonView = actionButtonView;
 }
 

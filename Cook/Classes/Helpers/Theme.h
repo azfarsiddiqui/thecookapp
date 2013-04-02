@@ -42,6 +42,8 @@
 + (UIFont *)storeBookActionButtonFont;
 + (UIColor *)storeBookActionButtonColour;
 + (UIColor *)storeBookActionButtonShadowColour;
++ (UIFont *)storeBookSummaryNameFont;
++ (UIColor *)storeBookSummaryNameColour;
 
 #pragma mark - Notifications
 + (UIFont *)notificationsHeaderFont;

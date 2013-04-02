@@ -88,6 +88,14 @@
     return [UIColor blackColor];
 }
 
++ (UIFont *)storeBookSummaryNameFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:30.0];
+}
+
++ (UIColor *)storeBookSummaryNameColour {
+    return [UIColor whiteColor];
+}
+
 #pragma mark - Grid category headers
 
 + (UIColor *)categoryHeaderBackgroundColour {

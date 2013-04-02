@@ -50,6 +50,7 @@
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize]]) {
         self.profileSize = profileSize;
         self.backgroundColor = [UIColor lightGrayColor];
+        [self applyRoundMask];
         [self loadProfilePhotoForUser:user];
     }
     return self;
@@ -57,14 +58,7 @@
 
 - (void)loadProfilePhotoForUser:(CKUser *)user {
     self.user = user;
-    
-    // Weak reference so we don't have retain cycles.
-    __weak typeof(self) weakSelf = self;
-    [self setImageWithURL:[user profilePhotoUrl]
-                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                    DLog();
-        [weakSelf applyRoundMask];
-    }];
+    [self setImageWithURL:[user profilePhotoUrl]];
 }
 
 #pragma mark - Private methods
