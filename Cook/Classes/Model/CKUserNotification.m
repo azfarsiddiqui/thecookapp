@@ -76,4 +76,8 @@
     return [[self.parseObject objectForKey:kUserNotificationUnread] boolValue];
 }
 
+- (NSString *)actionName {
+    return [self.parseObject objectForKey:kModelAttrName];
+}
+
 @end

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7605B4BD170A54B800216DF1 /* RoundedProfileView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7605B4BC170A54B800216DF1 /* RoundedProfileView.m */; };
 		760A1D6417045C1700AF5CD3 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 760A1D6317045C1700AF5CD3 /* Default-Landscape~ipad.png */; };
 		760A1D6617045C1900AF5CD3 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 760A1D6517045C1900AF5CD3 /* Default-Landscape@2x~ipad.png */; };
 		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
@@ -522,6 +523,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7605B4BB170A54B800216DF1 /* RoundedProfileView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedProfileView.h; sourceTree = "<group>"; };
+		7605B4BC170A54B800216DF1 /* RoundedProfileView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedProfileView.m; sourceTree = "<group>"; };
 		760A1D6317045C1700AF5CD3 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape~ipad.png"; path = "../../Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		760A1D6517045C1900AF5CD3 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape@2x~ipad.png"; path = "../../Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
 		761186B916EFFDF2004F631B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
@@ -1980,6 +1983,8 @@
 				76F6449C16F15DF300F86223 /* CKButtonView.m */,
 				762F62D317012BF1006769E5 /* CKMaskedLabel.h */,
 				762F62D417012BF1006769E5 /* CKMaskedLabel.m */,
+				7605B4BB170A54B800216DF1 /* RoundedProfileView.h */,
+				7605B4BC170A54B800216DF1 /* RoundedProfileView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2895,6 +2900,7 @@
 				76375A861702B3A5008D8B63 /* NotificationsViewController.m in Sources */,
 				76E7B45D1703EDAF00263DBA /* CKPopoverViewController.m in Sources */,
 				76E7B462170401D500263DBA /* NotificationTableViewCell.m in Sources */,
+				7605B4BD170A54B800216DF1 /* RoundedProfileView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

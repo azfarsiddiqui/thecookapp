@@ -50,6 +50,8 @@
 + (UIColor *)notificationsCellNameColour;
 + (UIFont *)notificationCellActionFont;
 + (UIColor *)notificationsCellActionColour;
++ (UIFont *)notificationCellTimeFont;
++ (UIColor *)notificationsCellTimeColour;
 
 #pragma mark - Book contents/activities.
 + (UIFont *)bookNavigationTitleFont;

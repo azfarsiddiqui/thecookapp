@@ -14,4 +14,6 @@
 
 + (CGFloat)heightForNotification:(CKUserNotification *)notification;
 
+- (void)configureUserNotification:(CKUserNotification *)userNotification;
+
 @end

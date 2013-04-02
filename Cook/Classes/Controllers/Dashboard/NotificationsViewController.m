@@ -48,8 +48,7 @@
     NotificationTableViewCell *cell = (NotificationTableViewCell *)[tableView dequeueReusableCellWithIdentifier:kCellId
                                                                                                    forIndexPath:indexPath];
     CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
-    cell.textLabel.text = [notification.user.name uppercaseString];
-    cell.detailTextLabel.text = [notification.name uppercaseString];
+    [cell configureUserNotification:notification];
     return cell;
 }
 

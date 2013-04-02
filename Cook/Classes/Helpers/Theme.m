@@ -143,11 +143,19 @@
 }
 
 + (UIFont *)notificationCellActionFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:18.0];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0];
 }
 
 + (UIColor *)notificationsCellActionColour {
     return [UIColor darkGrayColor];
+}
+
++ (UIFont *)notificationCellTimeFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
+}
+
++ (UIColor *)notificationsCellTimeColour {
+    return [UIColor lightGrayColor];
 }
 
 #pragma mark - Book contents/activities.

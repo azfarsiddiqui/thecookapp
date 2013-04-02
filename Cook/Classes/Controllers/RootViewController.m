@@ -636,7 +636,6 @@
 
 - (void)enable:(BOOL)enable {
     self.panEnabled = enable;
-    self.notificationView.hidden = !enable;
 }
 
 - (void)loggedOut:(NSNotification *)notification {
@@ -674,6 +673,8 @@
                              [self.loginViewController.view removeFromSuperview];
                              self.loginViewController = nil;
                          }
+                         
+                         self.notificationView.hidden = show;
                      }];
     
 }

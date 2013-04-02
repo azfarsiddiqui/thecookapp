@@ -21,5 +21,6 @@
 + (PFObject *)createNotificationForParseUser:(PFUser *)parseUser parseFriendRequest:(PFObject *)parseFriendRequest;
 
 - (CKUser *)user;
+- (NSString *)actionName;
 
 @end
