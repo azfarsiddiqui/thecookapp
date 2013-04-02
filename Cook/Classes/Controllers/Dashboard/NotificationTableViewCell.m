@@ -8,7 +8,7 @@
 
 #import "NotificationTableViewCell.h"
 #import "Theme.h"
-#import "RoundedProfileView.h"
+#import "CKUserProfilePhotoView.h"
 #import "CKUserNotification.h"
 #import "CKUser.h"
 #import "TTTTimeIntervalFormatter.h"
@@ -16,7 +16,7 @@
 @interface NotificationTableViewCell ()
 
 @property (nonatomic, strong) CKUserNotification *notification;
-@property (nonatomic, strong) RoundedProfileView *profileView;
+@property (nonatomic, strong) CKUserProfilePhotoView *profileView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
@@ -33,7 +33,7 @@
 
 + (CGFloat)heightForNotification:(CKUserNotification *)notification {
     CGFloat height = kContentInsets.top + kContentInsets.bottom;
-    height += [RoundedProfileView sizeForProfileSize:RoundedProfileViewSizeMedium].height;
+    height += [CKUserProfilePhotoView sizeForProfileSize:ProfileViewSizeMedium].height;
     return height;
 }
 
@@ -41,7 +41,7 @@
     if (self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier]) {
         
         // Profile view.
-        RoundedProfileView *profileView = [[RoundedProfileView alloc] initWithProfileSize:RoundedProfileViewSizeMedium];
+        CKUserProfilePhotoView *profileView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium];
         profileView.frame = CGRectMake(kContentInsets.left, kContentInsets.top, profileView.frame.size.width, profileView.frame.size.height);
         [self.contentView addSubview:profileView];
         self.profileView = profileView;
@@ -82,7 +82,8 @@
     self.notification = userNotification;
     
     // Trigger load of profile picture.
-    self.profileView.profileID = userNotification.user.facebookId;
+    [self.profileView loadProfilePhotoForUser:userNotification.user];
+    
     self.profileView.frame = CGRectMake(kContentInsets.left,
                                         floorf((self.contentView.bounds.size.height - self.profileView.frame.size.height) / 2.0),
                                         self.profileView.frame.size.width,

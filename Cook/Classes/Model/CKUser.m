@@ -150,9 +150,14 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [[self.parseUser objectForKey:kUserAttrAdmin] boolValue];
 }
 
-- (NSURL *)pictureUrl {
+- (NSURL *)profilePhotoUrl {
     NSURL *pictureUrl = nil;
-    if ([PFFacebookUtils isLinkedWithUser:self.parseUser]) {
+    
+    // CHeck profilePhoto first before falling back to FB photo.
+    PFFile *profilePhoto = [self.parseUser objectForKey:kUserAttrProfilePhoto];
+    if (profilePhoto != nil) {
+        pictureUrl = [NSURL URLWithString:profilePhoto.url];
+    } else if ([self.facebookId length] > 0) {
         pictureUrl = [NSURL URLWithString:
                       [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", self.facebookId]];
     }

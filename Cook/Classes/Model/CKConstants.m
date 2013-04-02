@@ -27,6 +27,8 @@ NSString *const kUserAttrFacebookFriends        = @"facebookFriends";
 NSString *const kUserAttrActivities             = @"activities";
 NSString *const kUserAttrFirstName              = @"firstName";
 NSString *const kUserAttrLastName               = @"lastName";
+NSString *const kUserAttrProfilePhoto           = @"profilePhoto";
+NSString *const kUserAttrCoverPhoto             = @"coverPhoto";
 
 #pragma mark - UserFriend class
 

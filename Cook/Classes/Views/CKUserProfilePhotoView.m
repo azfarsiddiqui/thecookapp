@@ -1,0 +1,88 @@
+//
+//  RoundedProfileView.m
+//  Cook
+//
+//  Created by Jeff Tan-Ang on 2/04/13.
+//  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
+//
+
+#import "CKUserProfilePhotoView.h"
+#import "CKUser.h"
+#import <QuartzCore/QuartzCore.h>
+#import "UIImageView+WebCache.h"
+
+@interface CKUserProfilePhotoView ()
+
+@property (nonatomic, assign) ProfileViewSize profileSize;
+@property (nonatomic, strong) CKUser *user;
+
+@end
+
+@implementation CKUserProfilePhotoView
+
+#define kSmallSize  CGSizeMake(30.0, 30.0)
+#define kMediumSize CGSizeMake(60.0, 60.0)
+#define kLargeSize  CGSizeMake(90.0, 90.0)
+
++ (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize {
+    CGSize size = kSmallSize;
+    switch (profileSize) {
+        case ProfileViewSizeSmall:
+            size = kSmallSize;
+            break;
+        case ProfileViewSizeMedium:
+            size = kMediumSize;
+            break;
+        case ProfileViewSizeLarge:
+            size = kLargeSize;
+            break;
+        default:
+            break;
+    }
+    return size;
+}
+
+- (id)initWithProfileSize:(ProfileViewSize)profileSize {
+    return [self initWithUser:nil profileSize:profileSize];
+}
+
+- (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize {
+    if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize]]) {
+        self.profileSize = profileSize;
+        self.backgroundColor = [UIColor lightGrayColor];
+        [self loadProfilePhotoForUser:user];
+    }
+    return self;
+}
+
+- (void)loadProfilePhotoForUser:(CKUser *)user {
+    self.user = user;
+    
+    // Weak reference so we don't have retain cycles.
+    __weak typeof(self) weakSelf = self;
+    [self setImageWithURL:[user profilePhotoUrl]
+                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                    DLog();
+        [weakSelf applyRoundMask];
+    }];
+}
+
+#pragma mark - Private methods
+
++ (CGRect)frameForProfileSize:(ProfileViewSize)profileSize {
+    CGSize size = [self sizeForProfileSize:profileSize];
+    return CGRectMake(0.0, 0.0, size.width, size.height);
+}
+
+- (void)applyRoundMask {
+    CGSize size = [CKUserProfilePhotoView sizeForProfileSize:self.profileSize];
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds
+                                                   byRoundingCorners:UIRectCornerAllCorners
+                                                         cornerRadii:CGSizeMake(floorf(size.width / 2.0), floorf(size.height / 2.0))];
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    maskLayer.frame = self.bounds;
+    maskLayer.path = maskPath.CGPath;
+    self.layer.mask = maskLayer;
+}
+
+@end

@@ -26,6 +26,8 @@ extern NSString *const kUserAttrAdmin;
 extern NSString *const kUserAttrFacebookFriends;
 extern NSString *const kUserAttrFirstName;
 extern NSString *const kUserAttrLastName;
+extern NSString *const kUserAttrProfilePhoto;
+extern NSString *const kUserAttrCoverPhoto;
 
 #pragma mark - UserFriend class
 

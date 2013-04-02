@@ -34,7 +34,7 @@ typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, B
 - (BOOL)isSignedIn;
 - (NSArray *)bookSuggestionIds;
 - (NSUInteger)numFollows;
-- (NSURL *)pictureUrl;
+- (NSURL *)profilePhotoUrl;
 - (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 

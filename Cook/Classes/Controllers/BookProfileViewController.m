@@ -10,6 +10,7 @@
 #import "CKBook.h"
 #import "CKUser.h"
 #import "Theme.h"
+#import "CKUserProfilePhotoView.h"
 #import <Parse/Parse.h>
 #import <FacebookSDK/FacebookSDK.h>
 
@@ -25,7 +26,6 @@
 
 #define kIntroOffset    CGPointMake(30.0, 30.0)
 #define kIntroWidth     400.0
-#define kProfileSize    CGSizeMake(80.0, 80.0)
 #define kProfileNameGap 20.0
 
 - (id)initWithBook:(CKBook *)book {
@@ -91,11 +91,11 @@
     [introView addSubview:nameLabel];
     
     // Profile photo
-    FBProfilePictureView *profileView = [[FBProfilePictureView alloc] initWithFrame:CGRectMake(floorf((introView.bounds.size.width - kProfileSize.width) / 2.0),
-                                                                                               nameLabel.frame.origin.y - kProfileNameGap - kProfileSize.height,
-                                                                                               kProfileSize.width,
-                                                                                               kProfileSize.height)];
-    profileView.profileID = self.book.user.facebookId;
+    CKUserProfilePhotoView *profileView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user profileSize:ProfileViewSizeLarge];
+    profileView.frame = CGRectMake(floorf((introView.bounds.size.width - profileView.frame.size.width) / 2.0),
+                                   nameLabel.frame.origin.y - kProfileNameGap - profileView.frame.size.height,
+                                   profileView.frame.size.width,
+                                   profileView.frame.size.height);
     [introView addSubview:profileView];
 }
 

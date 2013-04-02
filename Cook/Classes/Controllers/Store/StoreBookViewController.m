@@ -278,12 +278,15 @@
 
 - (void)addTapped:(id)sender {
     [self updateAddButtonText:@"Adding Book" activity:YES enabled:NO];
+    
+    // Weak reference so we don't have retain cycles.
+    __weak typeof(self) weakSelf = self;
     [self.book addFollower:self.currentUser
                    success:^{
-                       [self updateAddButtonText:@"Book Added" activity:NO enabled:NO];
+                       [weakSelf updateAddButtonText:@"Book Added" activity:NO enabled:NO];
                    }
                    failure:^(NSError *error) {
-                       [self updateAddButtonText:@"Unable to Add" activity:NO enabled:NO];
+                       [weakSelf updateAddButtonText:@"Unable to Add" activity:NO enabled:NO];
                    }];
 }
 
