@@ -40,7 +40,7 @@
         self.delegate = delegate;
         
         // Notify icon.
-        UIImageView *notifyIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_icons_notifications.png"]];
+        UIImageView *notifyIconView = [[UIImageView alloc] initWithImage:[self iconImageEnabled:NO]];
         notifyIconView.userInteractionEnabled = YES;
         notifyIconView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         notifyIconView.frame = CGRectMake(kIconOffset, 0.0, notifyIconView.frame.size.width, notifyIconView.frame.size.height);
@@ -201,6 +201,9 @@
                                 self.notifyIconView.frame.origin.x + self.notifyIconView.frame.size.width,
                                 self.notifyIconView.frame.size.height);
     }
+    
+    // Update icon.
+    self.notifyIconView.image = [self iconImageEnabled:([self.items count] > 0)];
 }
 
 - (void)iconTapped:(UITapGestureRecognizer *)tapGesture {
@@ -230,6 +233,10 @@
                              }
                          }];
     }    
+}
+
+- (UIImage *)iconImageEnabled:(BOOL)enabled {
+    return enabled ? [UIImage imageNamed:@"cook_dash_icons_notifications.png"] : [UIImage imageNamed:@"cook_dash_icons_notifications_off.png"];
 }
 
 @end
