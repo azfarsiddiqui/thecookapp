@@ -229,6 +229,20 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }];
 }
 
+- (void)numFriendsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure {
+    PFQuery *friendsQuery = [PFQuery queryWithClassName:kUserFriendModelName];
+    [friendsQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+    [friendsQuery whereKey:kUserFriendAttrConnected equalTo:[NSNumber numberWithBool:YES]];
+    [friendsQuery countObjectsInBackgroundWithBlock:^(int num, NSError *error) {
+        if (!error) {
+            completion(num);
+        } else {
+            failure(error);
+        }
+    }];
+
+}
+
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     // Existing request for me?

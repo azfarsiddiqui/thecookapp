@@ -271,6 +271,19 @@
     }];
 }
 
+- (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+    [query countObjectsInBackgroundWithBlock:^(int num, NSError *error) {
+        if (!error) {
+            success(num);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 - (NSString *)userName {
     NSString *author = [self.parseObject objectForKey:kBookAttrAuthor];
     if ([author length] > 0) {

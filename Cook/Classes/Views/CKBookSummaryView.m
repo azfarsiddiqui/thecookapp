@@ -36,6 +36,7 @@
         self.book = book;
         self.backgroundColor = [UIColor clearColor];
         [self initViews];
+        [self loadData];
     }
     return self;
 }
@@ -108,8 +109,6 @@
     [self addSubview:storyLabel];
 }
 
-#pragma mark - Private methods
-
 - (void)updateStatViews {
     CGSize availableSize = [self availableSize];
     CGFloat totalWidth = self.friendsStatView.frame.size.width + kInterStatsGap + self.recipesStatView.frame.size.width;
@@ -118,7 +117,7 @@
     friendsFrame.origin = CGPointMake(kContentInsets.left + floorf((availableSize.width - totalWidth) / 2.0),
                                       self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameStatsGap);
     recipesFrame.origin = CGPointMake(friendsFrame.origin.x + friendsFrame.size.width + kInterStatsGap,
-                                      friendsFrame.origin.y);
+                                      self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameStatsGap);
     self.friendsStatView.frame = friendsFrame;
     self.recipesStatView.frame = recipesFrame;
 }
@@ -126,6 +125,25 @@
 - (CGSize)availableSize {
     return CGSizeMake(self.bounds.size.width - kContentInsets.left - kContentInsets.right,
                       self.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
+}
+
+- (void)loadData {
+    
+    // Load the number of friends.
+    [self.book.user numFriendsCompletion:^(int numFriends) {
+        [self.friendsStatView updateNumber:numFriends];
+        [self updateStatViews];
+    } failure:^(NSError *error) {
+        // Ignore failure.
+    }];
+    
+    // Load the number of recipes.
+    [self.book numRecipesSuccess:^(int numRecipes) {
+        [self.recipesStatView updateNumber:numRecipes];
+        [self updateStatViews];
+    } failure:^(NSError *error) {
+        // Ignore failure.
+    }];
 }
 
 @end

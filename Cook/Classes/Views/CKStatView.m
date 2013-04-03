@@ -23,7 +23,7 @@
 #define kNumberFont     [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0]
 #define kUnitFont       [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0]
 #define kContentInsets  UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
-#define kNumberUnitGap  15.0
+#define kNumberUnitGap  5.0
 
 - (id)initWithNumber:(NSUInteger)number unit:(NSString *)unit {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -59,7 +59,7 @@
         unitLabel.text = [self numberAdjustedUnit];
         unitLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [unitLabel sizeToFit];
-        unitLabel.frame = CGRectMake(numberLabel.frame.origin.x + kNumberUnitGap,
+        unitLabel.frame = CGRectMake(numberLabel.frame.origin.x + numberLabel.frame.size.width + kNumberUnitGap,
                                      kContentInsets.top,
                                      unitLabel.frame.size.width,
                                      unitLabel.frame.size.height);
@@ -74,16 +74,18 @@
 
 - (void)updateNumber:(NSUInteger)number {
     self.number = number;
-    CGRect numberFrame = self.numberLabel.frame;
-    CGRect unitFrame = self.unitLabel.frame;
     self.numberLabel.text = [NSString stringWithFormat:@"%d", number];
     [self.numberLabel sizeToFit];
-    numberFrame.origin.x = kContentInsets.left;
+    self.numberLabel.frame = CGRectMake(kContentInsets.left,
+                                        self.numberLabel.frame.origin.y,
+                                        self.numberLabel.frame.size.width,
+                                        self.numberLabel.frame.size.height);
     self.unitLabel.text = [self numberAdjustedUnit];
     [self.unitLabel sizeToFit];
-    unitFrame.origin.x = numberFrame.origin.x + kNumberUnitGap;
-    self.numberLabel.frame = numberFrame;
-    self.unitLabel.frame = unitFrame;
+    self.unitLabel.frame = CGRectMake(self.numberLabel.frame.origin.x + self.numberLabel.frame.size.width + kNumberUnitGap,
+                                      self.unitLabel.frame.origin.y,
+                                      self.unitLabel.frame.size.width,
+                                      self.unitLabel.frame.size.height);
     
     [self updateFrame];
 }
