@@ -96,6 +96,14 @@
     return [UIColor whiteColor];
 }
 
++ (UIFont *)storeBookSummaryStoryFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:14.0];
+}
+
++ (UIColor *)storeBookSummaryStoryColour {
+    return [UIColor whiteColor];
+}
+
 #pragma mark - Grid category headers
 
 + (UIColor *)categoryHeaderBackgroundColour {

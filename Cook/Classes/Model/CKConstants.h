@@ -66,6 +66,7 @@ extern NSString *const kBookAttrAuthor;
 extern NSString *const kBookAttrFeatured;
 extern NSString *const kBookAttrDefaultNameValue;
 extern NSString *const kBookAttrDefaultCaptionValue;
+extern NSString *const kBookAttrStory;
 
 #pragma mark - Recipe class
 extern NSString *const kRecipeModelName;

@@ -227,6 +227,14 @@
     return [self userName];
 }
 
+- (void)setStory:(NSString *)story {
+    [self.parseObject setObject:story forKey:kBookAttrStory];
+}
+
+- (NSString *)story {
+    return [self.parseObject objectForKey:kBookAttrStory];
+}
+
 - (void)setNumRecipes:(NSInteger)numRecipes {
     [self.parseObject setObject:[NSNumber numberWithInteger:numRecipes] forKey:kBookAttrNumRecipes];
 }

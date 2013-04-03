@@ -67,6 +67,7 @@ NSString *const kBookAttrAuthor                 = @"author";
 NSString *const kBookAttrFeatured               = @"featured";
 NSString *const kBookAttrDefaultNameValue       = @"COOK";
 NSString *const kBookAttrDefaultCaptionValue    = @"Tell us more about your book";
+NSString *const kBookAttrStory                  = @"story";
 
 #pragma mark - Recipe class
 NSString *const kRecipeModelName                = @"Recipe";

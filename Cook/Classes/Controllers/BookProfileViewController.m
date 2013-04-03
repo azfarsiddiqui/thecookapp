@@ -11,6 +11,7 @@
 #import "CKUser.h"
 #import "Theme.h"
 #import "CKUserProfilePhotoView.h"
+#import "CKBookSummaryView.h"
 #import <Parse/Parse.h>
 #import <FacebookSDK/FacebookSDK.h>
 
@@ -73,30 +74,13 @@
     introOverlay.alpha = 0.8;
     [introView addSubview:introOverlay];
     
-    // Name
-    NSString *name = [[self.book userName] uppercaseString];
-    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    nameLabel.font = [Theme bookProfileNameFont];
-    nameLabel.backgroundColor = [UIColor clearColor];
-    nameLabel.textColor = [UIColor whiteColor];
-    nameLabel.shadowColor = [UIColor blackColor];
-    nameLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    nameLabel.text = name;
-    nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    [nameLabel sizeToFit];
-    nameLabel.frame = CGRectMake(floorf((introView.bounds.size.width - nameLabel.frame.size.width) / 2.0),
-                                 floorf((introView.bounds.size.height - nameLabel.frame.size.height) / 2.0),
-                                 nameLabel.frame.size.width,
-                                 nameLabel.frame.size.height);
-    [introView addSubview:nameLabel];
-    
-    // Profile photo
-    CKUserProfilePhotoView *profileView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user profileSize:ProfileViewSizeLarge];
-    profileView.frame = CGRectMake(floorf((introView.bounds.size.width - profileView.frame.size.width) / 2.0),
-                                   nameLabel.frame.origin.y - kProfileNameGap - profileView.frame.size.height,
-                                   profileView.frame.size.width,
-                                   profileView.frame.size.height);
-    [introView addSubview:profileView];
+    // Book summary view.
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book];
+    bookSummaryView.frame = CGRectMake(floorf((introView.bounds.size.width - bookSummaryView.frame.size.width) / 2.0),
+                                       floorf((introView.bounds.size.height - bookSummaryView.frame.size.height) / 2.0),
+                                       bookSummaryView.frame.size.width,
+                                       bookSummaryView.frame.size.height);
+    [introView addSubview:bookSummaryView];
 }
 
 @end

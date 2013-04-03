@@ -22,6 +22,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @property (nonatomic, copy) NSString *illustration;
 @property (nonatomic, copy) NSString *caption;
 @property (nonatomic, copy) NSString *author;
+@property (nonatomic, copy) NSString *story;
 @property (nonatomic, assign) NSInteger numRecipes;
 @property (nonatomic, assign) NSInteger numCategories;
 @property (nonatomic, strong) NSArray *categories;
