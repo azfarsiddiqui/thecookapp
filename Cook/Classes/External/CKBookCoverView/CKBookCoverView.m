@@ -384,31 +384,34 @@
 
 - (CGRect)authorEditableAdjustedFrameWithSize:(CGSize)size {
     CGRect frame = CGRectZero;
-    CGFloat sideOffset = 30.0;
+    CGFloat sideOffset = 18.0;
     CGSize availableSize = [self availableContentSize];
-    UIEdgeInsets authorInsets = UIEdgeInsetsMake(kContentInsets.top, kContentInsets.left + sideOffset, kContentInsets.bottom, kContentInsets.right + sideOffset);
+    UIEdgeInsets authorInsets = UIEdgeInsetsMake(kContentInsets.top,
+                                                 kContentInsets.left + sideOffset,
+                                                 kContentInsets.bottom,
+                                                 kContentInsets.right + sideOffset);
     availableSize = CGSizeMake(availableSize.width - (sideOffset * 2.0), availableSize.height);
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
-            frame = CGRectMake(authorInsets.left + floorf((availableSize.width - size.width) / 2.0) - 2.0,
+            frame = CGRectMake(sideOffset,
                                authorInsets.top + 4.0,
                                size.width,
                                size.height);
             break;
         case BookCoverLayout2:
-            frame = CGRectMake(authorInsets.left + floorf((availableSize.width - size.width) / 2.0) - 2.0,
+            frame = CGRectMake(sideOffset,
                                authorInsets.top + 4.0,
                                size.width,
                                size.height);
             break;
         case BookCoverLayout3:
-            frame = CGRectMake(authorInsets.left + floorf((availableSize.width - size.width) / 2.0) - 2.0,
+            frame = CGRectMake(sideOffset,
                                self.bounds.size.height - kContentInsets.bottom - size.height,
                                size.width,
                                size.height);
             break;
         case BookCoverLayout4:
-            frame = CGRectMake(authorInsets.left + floorf((availableSize.width - size.width) / 2.0) - 2.0,
+            frame = CGRectMake(sideOffset,
                                self.titleLabel.frame.origin.y - size.height,
                                size.width,
                                size.height);
@@ -569,7 +572,7 @@
 //    self.authorEditableView.contentView = authorLabel;
 //        TEMP: until I can understand this implementatation JS
     [self.authorEditableView setBookCoverContentView:authorLabel];
-    self.authorEditableView.frame = [self authorEditableAdjustedFrameWithSize:self.authorEditableView.frame.size];
+    self.authorEditableView.frame = [self authorEditableAdjustedFrameWithSize:authorLabel.frame.size];
 }
 
 - (void)setCaption:(NSString *)caption {
