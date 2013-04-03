@@ -537,6 +537,7 @@
                          self.storeViewController.view.frame = enable ? [self editFrameForStore] : [self storeFrameForShow:NO];
                      }
                      completion:^(BOOL finished) {
+                         self.notificationView.hidden = enable;
                      }];
 }
 
