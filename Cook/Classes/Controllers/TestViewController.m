@@ -826,7 +826,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.recipeImageView = [[UIImageView alloc]initWithFrame:self.view.bounds];
-    self.recipeImageView.backgroundColor = [UIColor lightGrayColor];
+    self.recipeImageView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.recipeImageView];
     
     self.photoEditableView = [[CKEditableView alloc]initWithDelegate:self];
