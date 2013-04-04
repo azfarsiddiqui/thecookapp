@@ -78,9 +78,11 @@
     self.nameLabel = nameLabel;
     
     // Friends
-    CKStatView *friendsStatView = [[CKStatView alloc] initWithNumber:0 unit:@"FRIEND"];
-    [self addSubview:friendsStatView];
-    self.friendsStatView = friendsStatView;
+    if (!self.book.featured) {
+        CKStatView *friendsStatView = [[CKStatView alloc] initWithNumber:0 unit:@"FRIEND"];
+        [self addSubview:friendsStatView];
+        self.friendsStatView = friendsStatView;
+    }
     
     // Recipes
     CKStatView *recipesStatView = [[CKStatView alloc] initWithNumber:0 unit:@"RECIPE"];
@@ -114,11 +116,12 @@
 }
 
 - (void)updateStatViews {
+    CGFloat xOffset = self.friendsStatView ? kContentInsets.left : 0.0;
     CGSize availableSize = [self availableSize];
     CGFloat totalWidth = self.friendsStatView.frame.size.width + kInterStatsGap + self.recipesStatView.frame.size.width;
     CGRect friendsFrame = self.friendsStatView.frame;
     CGRect recipesFrame = self.recipesStatView.frame;
-    friendsFrame.origin = CGPointMake(kContentInsets.left + floorf((availableSize.width - totalWidth) / 2.0),
+    friendsFrame.origin = CGPointMake(xOffset + floorf((availableSize.width - totalWidth) / 2.0),
                                       self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameStatsGap);
     recipesFrame.origin = CGPointMake(friendsFrame.origin.x + friendsFrame.size.width + kInterStatsGap,
                                       self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameStatsGap);
