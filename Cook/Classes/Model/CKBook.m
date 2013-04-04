@@ -161,6 +161,7 @@
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query includeKey:kUserModelForeignKeyName];
     [query whereKey:kBookAttrFeatured equalTo:[NSNumber numberWithBool:YES]];
+    [query orderByAscending:kBookAttrFeaturedOrder];
     [query setLimit:10];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         if (!error) {
@@ -249,6 +250,10 @@
 
 - (NSArray *)categories {
     return [self.parseObject objectForKey:kBookAttrCategories];
+}
+
+- (BOOL)featured {
+    return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
 }
 
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -360,7 +365,7 @@
 
 - (BOOL)isPublic {
     // Featured books are public.
-    return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
+    return self.featured;
 }
 
 #pragma mark - CKModel

@@ -75,8 +75,12 @@
 + (UIImage *)imageForIllustration:(NSString *)illustration {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
     if (!imageName) {
-        imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image",
-                                                           [CKBookCover randomIllustration]]];
+        
+        // Direct image loading.
+        imageName = illustration;
+//        imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image",
+//                                                           [CKBookCover randomIllustration]]];
+        
     }
     return [UIImage imageNamed:imageName];
 }

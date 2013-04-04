@@ -81,7 +81,13 @@
     CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:bookFrame];
     bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
-    [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption editable:[self.book editable]];
+    
+    if (self.book.featured) {
+        [bookCoverView setTitle:self.book.name author:nil caption:self.book.caption editable:NO];
+    } else {
+        [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption editable:[self.book editable]];
+    }
+    
     [self.view addSubview:bookCoverView];
     self.bookCoverView = bookCoverView;
     

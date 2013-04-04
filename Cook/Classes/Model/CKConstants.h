@@ -64,6 +64,7 @@ extern NSString *const kBookAttrNumRecipes;
 extern NSString *const kBookAttrCategories;
 extern NSString *const kBookAttrAuthor;
 extern NSString *const kBookAttrFeatured;
+extern NSString *const kBookAttrFeaturedOrder;
 extern NSString *const kBookAttrDefaultNameValue;
 extern NSString *const kBookAttrDefaultCaptionValue;
 extern NSString *const kBookAttrStory;

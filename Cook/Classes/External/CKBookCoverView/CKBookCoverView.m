@@ -668,7 +668,12 @@
     // Figure out required line height vs single line height.
     CGSize singleLineSize = [self singleLineSizeForLabel:titleLabel attributes:attributes];
     CGSize lineSize = [self lineSizeForLabel:titleLabel attributedString:titleDisplay];
+    
     if (lineSize.height > singleLineSize.height * 2.0) {
+        self.multilineTitle = YES;
+        [attributes setObject:minFont forKey:NSFontAttributeName];
+        titleDisplay = [[NSMutableAttributedString alloc] initWithString:title attributes:attributes];
+    } else if (lineSize.width > 240.0) {
         self.multilineTitle = YES;
         [attributes setObject:minFont forKey:NSFontAttributeName];
         titleDisplay = [[NSMutableAttributedString alloc] initWithString:title attributes:attributes];
@@ -679,6 +684,8 @@
     } else {
         self.multilineTitle = NO;
     }
+    
+    // DLog(@"Book Title [%@] Size [%@] Available [%@] Font [%@]", title, NSStringFromCGSize(lineSize), NSStringFromCGSize([self availableContentSize]), [attributes objectForKey:NSFontAttributeName]);
     
     titleLabel.attributedText = titleDisplay;
     [titleLabel sizeToFit];

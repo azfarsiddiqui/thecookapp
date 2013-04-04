@@ -49,7 +49,7 @@
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize {
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize]]) {
         self.profileSize = profileSize;
-        self.backgroundColor = [UIColor lightGrayColor];
+        self.backgroundColor = [UIColor darkGrayColor];
         [self applyRoundMask];
         [self loadProfilePhotoForUser:user];
     }

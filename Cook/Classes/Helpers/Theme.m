@@ -432,7 +432,7 @@
 
 +(UIFont *)bookCoverViewModeTitleMinFont
 {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:60];;
+    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:55];;
 }
 
 +(UIFont *)bookCoverViewModeTitleMidFont
