@@ -48,7 +48,11 @@
     CGSize availableSize = [self availableSize];
     
     // Top profile photo.
-    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user profileSize:ProfileViewSizeLarge];
+    UIImage *placeholderImage = self.book.featured ? [UIImage imageNamed:@"cook_featured_profileimage.png"] : nil;
+    CKUser *user = self.book.featured ? nil : self.book.user;
+    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:user
+                                                                                placeholder:placeholderImage
+                                                                                profileSize:ProfileViewSizeLarge];
     profilePhotoView.frame = CGRectMake(floorf((self.bounds.size.width - profilePhotoView.frame.size.width) / 2.0),
                                         kContentInsets.top,
                                         profilePhotoView.frame.size.width,

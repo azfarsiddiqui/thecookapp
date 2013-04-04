@@ -15,6 +15,7 @@
 
 @property (nonatomic, assign) ProfileViewSize profileSize;
 @property (nonatomic, strong) CKUser *user;
+@property (nonatomic, strong) UIImage *placeholderImage;
 
 @end
 
@@ -47,11 +48,18 @@
 }
 
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize {
+    return [self initWithUser:user placeholder:nil profileSize:profileSize];
+}
+
+- (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize {
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize]]) {
+        self.placeholderImage = placeholderImage;
         self.profileSize = profileSize;
-        self.backgroundColor = [UIColor darkGrayColor];
+        self.image = placeholderImage;
         [self applyRoundMask];
-        [self loadProfilePhotoForUser:user];
+        if (user) {
+            [self loadProfilePhotoForUser:user];
+        }
     }
     return self;
 }

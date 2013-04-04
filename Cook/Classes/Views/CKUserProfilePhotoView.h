@@ -22,6 +22,7 @@ typedef enum {
 
 - (id)initWithProfileSize:(ProfileViewSize)profileSize;
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize;
+- (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize;
 - (void)loadProfilePhotoForUser:(CKUser *)user;
 
 @end
