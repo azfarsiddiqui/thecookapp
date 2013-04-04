@@ -27,6 +27,8 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @property (nonatomic, assign) NSInteger numCategories;
 @property (nonatomic, strong) NSArray *categories;
 @property (nonatomic, assign) BOOL featured;
+@property (nonatomic, assign) BOOL followed;
+
 
 //fetch
 + (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

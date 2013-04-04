@@ -42,13 +42,7 @@
     
     // Update cover.
     [self.bookCoverView setCover:book.cover illustration:book.illustration];
-    
-    // Featured books is completely illustration-based only.
-    if (book.featured) {
-        [self.bookCoverView setTitle:book.name author:nil caption:book.caption editable:NO];
-    } else {
-        [self.bookCoverView setTitle:book.name author:[book userName] caption:book.caption editable:[book editable]];
-    }
+    [self.bookCoverView setTitle:book.name author:[book userName] caption:book.caption editable:[book editable]];
     
     // Reset delete mode.
     [self enableDeleteMode:NO];

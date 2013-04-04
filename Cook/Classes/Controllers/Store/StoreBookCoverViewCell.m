@@ -13,6 +13,8 @@
 
 @interface StoreBookCoverViewCell ()
 
+@property (nonatomic, strong) UIView *followedIconView;
+
 @end
 
 @implementation StoreBookCoverViewCell
@@ -21,22 +23,16 @@
     return [BenchtopBookCoverViewCell cellSize];
 }
 
-- (id)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
-        
-//        // Follow button.
-//        UIButton *followButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_add.png"]
-//                                                      target:self
-//                                                    selector:@selector(followTapped:)];
-//        followButton.frame = CGRectMake(self.contentView.bounds.size.width - 70.0,
-//                                        -20.0,
-//                                        followButton.frame.size.width,
-//                                        followButton.frame.size.height);
-//        [self.contentView addSubview:followButton];
-        
+- (void)loadBook:(CKBook *)book {
+    [super loadBook:book];
+    
+    if (book.featured) {
+        [self.bookCoverView setTitle:book.name author:nil caption:book.caption editable:NO];
     }
-    return self;
+    
+    [self updateFollowedIcon:book.followed];
 }
+
 
 #pragma mark - Private methods
 
@@ -46,5 +42,20 @@
     }
 }
 
+- (void)updateFollowedIcon:(BOOL)followed {
+    if (followed) {
+        if (!self.followedIconView) {
+            UIImageView *followedIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_icon_added.png"]];
+            followedIconView.frame = CGRectMake(-30.0,
+                                                -30.0,
+                                                followedIconView.frame.size.width,
+                                                followedIconView.frame.size.height);
+            self.followedIconView = followedIconView;
+        }
+        [self.contentView addSubview:self.followedIconView];
+    } else {
+        [self.followedIconView removeFromSuperview];
+    }
+}
 
 @end

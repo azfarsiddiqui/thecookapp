@@ -17,6 +17,7 @@
 #import "CKButtonView.h"
 #import "CKUserProfilePhotoView.h"
 #import "CKBookSummaryView.h"
+#import "EventHelper.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface StoreBookViewController () <CKBookCoverViewDelegate>
@@ -309,6 +310,8 @@
     [self.book addFollower:self.currentUser
                    success:^{
                        [weakSelf updateAddButtonText:@"Book Added" activity:NO enabled:NO];
+                       [weakSelf.delegate storeBookViewControllerUpdatedBook:weakSelf.book];
+                       [EventHelper postFollow:YES friends:NO];
                    }
                    failure:^(NSError *error) {
                        [weakSelf updateAddButtonText:@"Unable to Add" activity:NO enabled:NO];

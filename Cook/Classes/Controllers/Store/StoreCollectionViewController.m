@@ -195,6 +195,12 @@
     [self closeBook];
 }
 
+- (void)storeBookViewControllerUpdatedBook:(CKBook *)book {
+    NSUInteger updatedBookIndex = [self.books indexOfObject:book];
+    [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:updatedBookIndex
+                                                                                              inSection:0]]];
+}
+
 #pragma mark - Private methods
 
 - (void)loginSuccessful:(NSNotification *)notification {

@@ -107,7 +107,16 @@
             [friendsBooksQuery whereKey:kUserModelForeignKeyName containedIn:friends];
             [friendsBooksQuery findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
                 if (!error) {
-                    success([self booksFromParseBooks:parseBooks]);
+                    
+                    [self annotateFollowedBooks:parseBooks
+                                           user:user
+                                        success:^(NSArray *annotatedBooks) {
+                                            success(annotatedBooks);
+                                        }
+                                        failure:^(NSError *error) {
+                                            failure(error);
+                                        }];
+                    
                 } else {
                     DLog(@"Error loading user friends: %@", [error localizedDescription]);
                     failure(error);
@@ -165,7 +174,16 @@
     [query setLimit:10];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         if (!error) {
-            success([self booksFromParseBooks:parseBooks]);
+            
+            [self annotateFollowedBooks:parseBooks
+                                   user:user
+                                success:^(NSArray *annotatedBooks) {
+                                    success(annotatedBooks);
+                                }
+                                failure:^(NSError *error) {
+                                    failure(error);
+                                }];
+            
         } else {
             failure(error);
         }
@@ -432,6 +450,41 @@
             DLog(@"Error loading books: %@", [error localizedDescription]);
             failure(error);
         }
+    }];
+}
+
++ (void)annotateFollowedBooks:(NSArray *)parseBooks user:(CKUser *)user success:(ListObjectsSuccessBlock)success
+                      failure:(ObjectFailureBlock)failure {
+    
+    // Existing follows.
+    PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
+    [followsQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [followsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error)  {
+        
+        if (!error) {
+            
+            // Collect the object ids.
+            NSArray *objectIds = [parseFollows collect:^id(PFObject *parseFollow) {
+                PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
+                return parseBook.objectId;
+            }];
+            
+            // Return CKBook model objects.
+            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
+                CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
+                book.followed = [objectIds containsObject:book.objectId];
+                return book;
+            }];
+            
+            success(books);
+            
+        } else {
+            
+            DLog(@"Error filtering friends books by follows: %@", [error localizedDescription]);
+            failure(error);
+        }
+        
+        
     }];
 }
 

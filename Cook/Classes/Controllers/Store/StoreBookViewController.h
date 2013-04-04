@@ -13,6 +13,7 @@
 @protocol StoreBookViewControllerDelegate
 
 - (void)storeBookViewControllerCloseRequested;
+- (void)storeBookViewControllerUpdatedBook:(CKBook *)book;
 
 @end
 
