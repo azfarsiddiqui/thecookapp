@@ -33,6 +33,7 @@
 @property (nonatomic, assign) BOOL pendingAcceptance;
 @property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL updated;
 @property (nonatomic, assign) CGPoint originPoint;
 
 @end
@@ -215,6 +216,10 @@
                                           }
                                           completion:^(BOOL finished) {
                                               self.animating = NO;
+                                              
+                                              if (self.updated) {
+                                                  [self.delegate storeBookViewControllerUpdatedBook:self.book];
+                                              }
                                               [self.delegate storeBookViewControllerCloseRequested];
                                           }];
                      }];
@@ -310,7 +315,7 @@
     [self.book addFollower:self.currentUser
                    success:^{
                        [weakSelf updateAddButtonText:@"Book Added" activity:NO enabled:NO];
-                       [weakSelf.delegate storeBookViewControllerUpdatedBook:weakSelf.book];
+                       self.updated = YES;
                        [EventHelper postFollow:YES friends:NO];
                    }
                    failure:^(NSError *error) {

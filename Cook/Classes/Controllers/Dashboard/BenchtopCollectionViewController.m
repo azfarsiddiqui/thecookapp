@@ -385,6 +385,10 @@
 }
 
 - (void)loadFollowBooks {
+    [self loadFollowBooksReload:NO];
+}
+
+- (void)loadFollowBooksReload:(BOOL)reload {
     CKUser *currentUser = [CKUser currentUser];
     [CKBook followBooksForUser:currentUser
                        success:^(NSArray *books) {
@@ -392,7 +396,12 @@
                            NSArray *indexPathsToInsert = [self.followBooks collectWithIndex:^id(CKBook *book, NSUInteger bookIndex) {
                                return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
                            }];
-                           [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                           
+                           if (reload) {
+                               [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                           } else {
+                               [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                           }
                        }
                        failure:^(NSError *error) {
                            DLog(@"Error: %@", [error localizedDescription]);
@@ -422,14 +431,7 @@
     
     // Kick off the immediate removal of the book onscreen.
     [self.followBooks removeObjectAtIndex:indexPath.item];
-    [self.collectionView performBatchUpdates:^{
-        if ([self.followBooks count] == 0) {
-            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-        } else {
-            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-        }
-    } completion:^(BOOL finished) {
-    }];
+    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
     
     // Unfollow in the background, then inform listeners of the update.
     BOOL isFriendsBook = [book isThisMyFriendsBook];
@@ -445,7 +447,7 @@
 - (void)followUpdated:(NSNotification *)notification {
     BOOL follow = [EventHelper followForNotification:notification];
     if (follow) {
-        [self loadFollowBooks];
+        [self loadFollowBooksReload:YES];
     }
 }
 

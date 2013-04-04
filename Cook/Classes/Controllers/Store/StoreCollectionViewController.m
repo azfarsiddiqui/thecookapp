@@ -196,6 +196,7 @@
 }
 
 - (void)storeBookViewControllerUpdatedBook:(CKBook *)book {
+    book.followed = YES;
     NSUInteger updatedBookIndex = [self.books indexOfObject:book];
     [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:updatedBookIndex
                                                                                               inSection:0]]];
