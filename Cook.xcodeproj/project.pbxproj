@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */; };
 		7605B4BD170A54B800216DF1 /* CKUserProfilePhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7605B4BC170A54B800216DF1 /* CKUserProfilePhotoView.m */; };
 		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		761186BC16EFFE16004F631B /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */; };
@@ -554,6 +555,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		76025410170EFDAD00950571 /* CKPhotoPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPhotoPickerViewController.h; sourceTree = "<group>"; };
+		76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPhotoPickerViewController.m; sourceTree = "<group>"; };
 		7605B4BB170A54B800216DF1 /* CKUserProfilePhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUserProfilePhotoView.h; sourceTree = "<group>"; };
 		7605B4BC170A54B800216DF1 /* CKUserProfilePhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUserProfilePhotoView.m; sourceTree = "<group>"; };
 		761186B916EFFDF2004F631B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
@@ -1300,6 +1303,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7602540F170EFDAD00950571 /* CKPhotoPickerViewController */ = {
+			isa = PBXGroup;
+			children = (
+				76025410170EFDAD00950571 /* CKPhotoPickerViewController.h */,
+				76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */,
+			);
+			path = CKPhotoPickerViewController;
+			sourceTree = "<group>";
+		};
 		762C0E4D161A7FC400EBA344 /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -2327,6 +2339,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				7602540F170EFDAD00950571 /* CKPhotoPickerViewController */,
 				76EE2CBC170AE7A30043D128 /* SDWebImage */,
 				76E7B4571703EDAF00263DBA /* CKPopoverViewController */,
 				7646E904170291B100F26844 /* CKBenchtopLevelView */,
@@ -3069,6 +3082,7 @@
 				76EE2CDB170AE7A30043D128 /* UIImageView+WebCache.m in Sources */,
 				76819813170BCC840091F91F /* CKBookSummaryView.m in Sources */,
 				768E735E170BD5440063CF49 /* CKStatView.m in Sources */,
+				76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
