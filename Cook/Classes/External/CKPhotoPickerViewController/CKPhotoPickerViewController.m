@@ -8,6 +8,7 @@
 
 #import "CKPhotoPickerViewController.h"
 #import "UIImage+ProportionalFill.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate>
@@ -30,7 +31,7 @@
 @implementation CKPhotoPickerViewController
 
 #define kToolbarHeight  44.0
-#define kContentInsets  UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
+#define kContentInsets  UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -43,7 +44,7 @@
     [super viewDidLoad];
     
     self.view.frame = [UIApplication sharedApplication].keyWindow.rootViewController.view.bounds;
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.backgroundColor = [UIColor lightGrayColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
     [self initImagePicker];
@@ -54,7 +55,7 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIView *parentView = [self parentView];
-    self.selectedImage = [[info valueForKey:UIImagePickerControllerOriginalImage] imageScaledToFitSize:parentView.bounds.size];
+    self.selectedImage = [[info valueForKey:UIImagePickerControllerOriginalImage] imageCroppedToFitSize:parentView.bounds.size];
     [self.popoverViewController dismissPopoverAnimated:YES];
     self.popoverViewController = nil;
     self.libraryPickerViewController = nil;
@@ -103,11 +104,8 @@
 - (UIButton *)libraryButton {
     if (!_libraryButton) {
         UIView *parentView = [self parentView];
-        _libraryButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        _libraryButton = [self buttonWithImage:[UIImage imageNamed:@"cook_book_btn_selectphoto.png"] target:self action:@selector(libraryTapped:)];
         _libraryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-        [_libraryButton addTarget:self action:@selector(libraryTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [_libraryButton setTitle:@"Library" forState:UIControlStateNormal];
-        [_libraryButton sizeToFit];
         [_libraryButton setFrame:CGRectMake(kContentInsets.left,
                                             parentView.bounds.size.height - _libraryButton.frame.size.height - kContentInsets.bottom,
                                             _libraryButton.frame.size.width,
@@ -119,11 +117,8 @@
 - (UIButton *)snapButton {
     if (!_snapButton && [self cameraSupported]) {
         UIView *parentView = [self parentView];
-        _snapButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        _snapButton = [self buttonWithImage:[UIImage imageNamed:@"cook_book_btn_takephoto.png"] target:self action:@selector(snapTapped:)];
         _snapButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        [_snapButton addTarget:self action:@selector(snapTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [_snapButton setTitle:@"Snap" forState:UIControlStateNormal];
-        [_snapButton sizeToFit];
         [_snapButton setFrame:CGRectMake(floorf((parentView.bounds.size.width - _snapButton.frame.size.width) / 2.0),
                                          parentView.bounds.size.height - _snapButton.frame.size.height - kContentInsets.bottom,
                                         _snapButton.frame.size.width,
@@ -134,14 +129,10 @@
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        UIView *parentView = [self parentView];
-        _closeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        _closeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin;
-        [_closeButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [_closeButton setTitle:@"Close" forState:UIControlStateNormal];
-        [_closeButton sizeToFit];
-        [_closeButton setFrame:CGRectMake(parentView.bounds.size.width - _closeButton.frame.size.width - kContentInsets.right,
-                                          parentView.bounds.size.height - _closeButton.frame.size.height - kContentInsets.bottom,
+        _closeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_takephoto_close.png"] target:self action:@selector(closeTapped:)];
+        _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_closeButton setFrame:CGRectMake(kContentInsets.left,
+                                          kContentInsets.top,
                                           _closeButton.frame.size.width,
                                           _closeButton.frame.size.height)];
     }
@@ -150,14 +141,10 @@
 
 - (UIButton *)retakeButton {
     if (!_retakeButton) {
-        UIView *parentView = [self parentView];
-        _retakeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        _retakeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-        [_retakeButton addTarget:self action:@selector(retakeTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [_retakeButton setTitle:@"Retake" forState:UIControlStateNormal];
-        [_retakeButton sizeToFit];
+        _retakeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_takephoto_cancel.png"] target:self action:@selector(retakeTapped:)];
+        _retakeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_retakeButton setFrame:CGRectMake(kContentInsets.left,
-                                           parentView.bounds.size.height - _retakeButton.frame.size.height - kContentInsets.bottom,
+                                           kContentInsets.top,
                                            _retakeButton.frame.size.width,
                                            _retakeButton.frame.size.height)];
     }
@@ -167,13 +154,10 @@
 - (UIButton *)saveButton {
     if (!_saveButton) {
         UIView *parentView = [self parentView];
-        _saveButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin;
-        [_saveButton addTarget:self action:@selector(saveTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [_saveButton setTitle:@"Save" forState:UIControlStateNormal];
-        [_saveButton sizeToFit];
+        _saveButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_takephoto_done.png"] target:self action:@selector(saveTapped:)];
+        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_saveButton setFrame:CGRectMake(parentView.bounds.size.width - _saveButton.frame.size.width - kContentInsets.right,
-                                         parentView.bounds.size.height - _saveButton.frame.size.height - kContentInsets.bottom,
+                                         kContentInsets.top,
                                          _saveButton.frame.size.width,
                                          _saveButton.frame.size.height)];
     }
@@ -204,23 +188,15 @@
     NSLog(@"ScrollView Scale: %f", self.previewScrollView.zoomScale);
     NSLog(@"ScrollView contentOffset: %@", NSStringFromCGPoint(self.previewScrollView.contentOffset));
     
-    CGFloat imageScale = self.previewScrollView.zoomScale;
-    CGRect imageFrame = CGRectMake(self.previewScrollView.contentOffset.x,
-                                   self.previewScrollView.contentOffset.y,
-                                   self.previewScrollView.bounds.size.width,
-                                   self.previewScrollView.bounds.size.height);
-    NSLog(@"imageScale: %f", imageScale);
-    NSLog(@"imageFrame: %@", NSStringFromCGRect(imageFrame));
+    float scale = 1.0f / self.previewScrollView.zoomScale;
+    CGRect visibleRect = CGRectMake(self.previewScrollView.contentOffset.x * scale,
+                                    self.previewScrollView.contentOffset.y * scale,
+                                    self.previewScrollView.bounds.size.width * scale,
+                                    self.previewScrollView.bounds.size.height * scale);
     
-    // Maximum size is the scrollView size.
-    CGSize imageSize = self.previewScrollView.bounds.size;
-    if (imageScale > 1.0) {
-        imageSize = CGSizeMake(imageSize.width * imageScale, imageSize.height * imageScale);
-    }
-    
-    // Now resize the image.
-    UIImage *resizedImage = [self cropImage:[self.selectedImage imageScaledToFitSize:imageSize] rect:imageFrame];
-    [self.delegate photoPickerViewControllerSelectedImage:resizedImage];
+    // Crop out the visible image off the scrollView.
+    UIImage *visibleImage = [self cropSelectedImageAtRect:visibleRect scale:scale];
+    [self.delegate photoPickerViewControllerSelectedImage:visibleImage];
 }
 
 - (BOOL)cameraSupported {
@@ -288,7 +264,13 @@
     UIView *parentView = [self parentView];
     BOOL photoSelected = (self.selectedImage != nil);
     if (photoSelected) {
+        CGRect visibleFrame = parentView.bounds;
+        
+        UIImageView *previewImageView = [[UIImageView alloc] initWithImage:[self.selectedImage imageCroppedToFitSize:visibleFrame.size]];
+        previewImageView.autoresizingMask = UIViewAutoresizingNone;
+        
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:parentView.bounds];
+        scrollView.contentSize = previewImageView.frame.size;
         scrollView.alwaysBounceHorizontal = YES;
         scrollView.alwaysBounceVertical = YES;
         scrollView.maximumZoomScale = 2.0;
@@ -298,9 +280,6 @@
         [parentView addSubview:scrollView];
         self.previewScrollView = scrollView;
         
-        UIImageView *previewImageView = [[UIImageView alloc] initWithImage:self.selectedImage];
-        previewImageView.frame = scrollView.bounds;
-        previewImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
         [scrollView addSubview:previewImageView];
         self.previewImageView = previewImageView;
     }
@@ -319,17 +298,21 @@
                      }];
 }
 
-- (UIImage *)cropImage:(UIImage *)image rect:(CGRect)rect {
-    if (image.scale > 1.0f) {
-        rect = CGRectMake(rect.origin.x * image.scale,
-                          rect.origin.y * image.scale,
-                          rect.size.width * image.scale,
-                          rect.size.height * image.scale);
-    }
-    
-    CGImageRef imageRef = CGImageCreateWithImageInRect(image.CGImage, rect);
-    UIImage *result = [UIImage imageWithCGImage:imageRef scale:image.scale orientation:image.imageOrientation];
-    CGImageRelease(imageRef);
-    return result;
+- (UIImage *)cropSelectedImageAtRect:(CGRect)rect scale:(CGFloat)scale {
+    CGImageRef croppedImageRef = CGImageCreateWithImageInRect([self.selectedImage CGImage], rect);
+    UIImage* croppedImage = [[UIImage alloc] initWithCGImage:croppedImageRef
+                                                       scale:scale
+                                                 orientation:self.selectedImage.imageOrientation];
+    CGImageRelease(croppedImageRef);
+    return croppedImage;
 }
+
+- (UIButton *)buttonWithImage:(UIImage *)image target:(id)target action:(SEL)action {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
+    return button;
+}
+
 @end
