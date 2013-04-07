@@ -18,5 +18,6 @@
 @interface CKPhotoPickerViewController : UIViewController
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate;
+- (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate saveToPhotoAlbum:(BOOL)saveToPhotoAlbum;
 
 @end

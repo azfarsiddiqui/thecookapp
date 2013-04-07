@@ -9,11 +9,13 @@
 #import "CKPhotoPickerViewController.h"
 #import "UIImage+ProportionalFill.h"
 #import <QuartzCore/QuartzCore.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, assign) id<CKPhotoPickerViewControllerDelegate> delegate;
+@property (nonatomic, assign) BOOL saveToPhotoAlbum;
 @property (nonatomic, strong) UIImagePickerController *cameraPickerViewController;
 @property (nonatomic, strong) UIImagePickerController *libraryPickerViewController;
 @property (nonatomic, strong) UIPopoverController *popoverViewController;
@@ -25,6 +27,7 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *retakeButton;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
@@ -34,7 +37,12 @@
 #define kContentInsets  UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
+    return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
+}
+
+- (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate saveToPhotoAlbum:(BOOL)saveToPhotoAlbum {
     if (self = [super init]) {
+        self.saveToPhotoAlbum = saveToPhotoAlbum;
         self.delegate = delegate;
     }
     return self;
@@ -45,8 +53,11 @@
     
     self.view.frame = [UIApplication sharedApplication].keyWindow.rootViewController.view.bounds;
     self.view.backgroundColor = [UIColor lightGrayColor];
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self initImagePicker];
     [self updateButtons];
 }
@@ -101,6 +112,10 @@
     return self.cameraPickerViewController ? self.cameraPickerViewController.view : self.view;
 }
 
+- (CGRect)parentBounds {
+    return self.view.bounds;
+}
+
 - (UIButton *)libraryButton {
     if (!_libraryButton) {
         UIView *parentView = [self parentView];
@@ -118,7 +133,7 @@
     if (!_snapButton && [self cameraSupported]) {
         UIView *parentView = [self parentView];
         _snapButton = [self buttonWithImage:[UIImage imageNamed:@"cook_book_btn_takephoto.png"] target:self action:@selector(snapTapped:)];
-        _snapButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        _snapButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
         [_snapButton setFrame:CGRectMake(floorf((parentView.bounds.size.width - _snapButton.frame.size.width) / 2.0),
                                          parentView.bounds.size.height - _snapButton.frame.size.height - kContentInsets.bottom,
                                         _snapButton.frame.size.width,
@@ -153,10 +168,10 @@
 
 - (UIButton *)saveButton {
     if (!_saveButton) {
-        UIView *parentView = [self parentView];
+        CGRect parentBounds = [self parentBounds];
         _saveButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_takephoto_done.png"] target:self action:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_saveButton setFrame:CGRectMake(parentView.bounds.size.width - _saveButton.frame.size.width - kContentInsets.right,
+        [_saveButton setFrame:CGRectMake(parentBounds.size.width - _saveButton.frame.size.width - kContentInsets.right,
                                          kContentInsets.top,
                                          _saveButton.frame.size.width,
                                          _saveButton.frame.size.height)];
@@ -183,12 +198,24 @@
 }
 
 - (void)saveTapped:(id)sender {
-    NSLog(@"ImageView: %@", NSStringFromCGRect(self.previewImageView.frame));
-    NSLog(@"ScrollView: %@", NSStringFromCGRect(self.previewScrollView.frame));
-    NSLog(@"ScrollView Scale: %f", self.previewScrollView.zoomScale);
-    NSLog(@"ScrollView contentOffset: %@", NSStringFromCGPoint(self.previewScrollView.contentOffset));
+    UIView *parentView = [self parentView];
     
-    float scale = 1.0f / self.previewScrollView.zoomScale;
+    // Spin activity and disable buttons.
+    [self updateButtonsEnabled:NO];
+    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [activityView startAnimating];
+    activityView.center = parentView.center;
+    [parentView addSubview:activityView];
+    self.activityView = activityView;
+    
+    // Detach and save photo asynchronously.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self savePhoto];
+    });
+}
+
+- (void)savePhoto {
+    float scale = [self deviceScale] / self.previewScrollView.zoomScale;
     CGRect visibleRect = CGRectMake(self.previewScrollView.contentOffset.x * scale,
                                     self.previewScrollView.contentOffset.y * scale,
                                     self.previewScrollView.bounds.size.width * scale,
@@ -196,6 +223,22 @@
     
     // Crop out the visible image off the scrollView.
     UIImage *visibleImage = [self cropSelectedImageAtRect:visibleRect scale:scale];
+    
+    // Save to photo album.
+    if (self.cameraPickerViewController.sourceType == UIImagePickerControllerSourceTypeCamera && self.saveToPhotoAlbum) {
+        
+        // Check status
+        ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+        if (status != ALAuthorizationStatusAuthorized) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention"
+                                                            message:@"Please give Cook permission to access your photo library in your settings app." delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
+            [alert show];
+        } else {
+            NSLog(@"Saved to camera roll.");
+            UIImageWriteToSavedPhotosAlbum(visibleImage, nil, nil, nil);
+        }
+    }
+    
     [self.delegate photoPickerViewControllerSelectedImage:visibleImage];
 }
 
@@ -223,6 +266,10 @@
 }
 
 - (void)updateButtons {
+    [self updateButtonsEnabled:YES];
+}
+
+- (void)updateButtonsEnabled:(BOOL)enabled {
     UIView *parentView = [self parentView];
     BOOL photoSelected = (self.selectedImage != nil);
     if (photoSelected) {
@@ -232,10 +279,10 @@
         [parentView addSubview:self.saveButton];
     } else {
         self.libraryButton.alpha = 0.0;
-        self.saveButton.alpha = 0.0;
+        self.snapButton.alpha = 0.0;
         self.closeButton.alpha = 0.0;
         [parentView addSubview:self.libraryButton];
-        [parentView addSubview:self.saveButton];
+        [parentView addSubview:self.snapButton];
         [parentView addSubview:self.closeButton];
     }
     [UIView animateWithDuration:0.2
@@ -247,6 +294,11 @@
                          self.closeButton.alpha = photoSelected ? 0.0 : 1.0;
                          self.retakeButton.alpha = photoSelected ? 1.0 : 0.0;
                          self.saveButton.alpha = photoSelected ? 1.0 : 0.0;
+                         self.libraryButton.userInteractionEnabled = enabled;
+                         self.snapButton.userInteractionEnabled = enabled;
+                         self.closeButton.userInteractionEnabled = enabled;
+                         self.retakeButton.userInteractionEnabled = enabled;
+                         self.saveButton.userInteractionEnabled = enabled;
                      }
                      completion:^(BOOL finished)  {
                          if (photoSelected) {
@@ -270,6 +322,7 @@
         previewImageView.autoresizingMask = UIViewAutoresizingNone;
         
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:parentView.bounds];
+        scrollView.backgroundColor = [UIColor blackColor];
         scrollView.contentSize = previewImageView.frame.size;
         scrollView.alwaysBounceHorizontal = YES;
         scrollView.alwaysBounceVertical = YES;
@@ -313,6 +366,10 @@
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
     return button;
+}
+
+- (CGFloat)deviceScale {
+    return [UIScreen mainScreen].scale;
 }
 
 @end
