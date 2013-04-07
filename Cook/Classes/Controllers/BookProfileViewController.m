@@ -12,14 +12,21 @@
 #import "Theme.h"
 #import "CKUserProfilePhotoView.h"
 #import "CKBookSummaryView.h"
+#import "ViewHelper.h"
+#import "EventHelper.h"
+#import "CKPhotoPickerViewController.h"
+#import "AppHelper.h"
 #import <Parse/Parse.h>
-#import <FacebookSDK/FacebookSDK.h>
 
-@interface BookProfileViewController ()
+@interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *introView;
+@property (nonatomic, strong) UIButton *editButton;
+@property (nonatomic, strong) UIButton *editPhotoButton;
+@property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 
 @end
 
@@ -39,11 +46,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor lightGrayColor];
+    [EventHelper registerEditMode:self selector:@selector(editModeReceived:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [self initImageView];
     [self initIntroView];
+}
+
+#pragma mark - CKPhotoPickerViewControllerDelegate methods
+
+- (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
+    [self showPhotoPicker:NO];
+    
+    self.imageView.frame = CGRectMake(floorf((self.view.bounds.size.width - image.size.width) / 2.0),
+                                      floorf((self.view.bounds.size.height - image.size.height) / 2.0),
+                                      image.size.width,
+                                      image.size.height);
+    self.imageView.image = image;
+}
+
+- (void)photoPickerViewControllerCloseRequested {
+    [self showPhotoPicker:NO];
 }
 
 #pragma mark - Private methods
@@ -81,6 +105,101 @@
                                        bookSummaryView.frame.size.width,
                                        bookSummaryView.frame.size.height);
     [introView addSubview:bookSummaryView];
+    
+    // Buttons for the page.
+    [self updateButtons];
+}
+
+- (void)updateButtons {
+    
+    // Add edit button if not already.
+    CKUser *currentUser = [CKUser currentUser];
+    if ([self.book isUserBookAuthor:currentUser] && !self.editButton.superview) {
+        [self.introView addSubview:self.editButton];
+    }
+    
+    if (self.editMode) {
+        self.editPhotoButton.alpha = 0.0;
+        [self.view addSubview:self.editPhotoButton];
+    }
+    
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.editPhotoButton.alpha = self.editMode ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished)  {
+                         if (!self.editMode) {
+                             [self.editPhotoButton removeFromSuperview];
+                         }
+                     }];
+}
+
+- (UIButton *)editButton {
+    if (!_editButton) {
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editTapped:)];
+        _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_editButton setFrame:CGRectMake(self.introView.bounds.size.width - _editButton.frame.size.width - 15.0,
+                                         15.0,
+                                         _editButton.frame.size.width,
+                                         _editButton.frame.size.height)];
+    }
+    return _editButton;
+}
+
+- (UIButton *)editPhotoButton {
+    if (!_editPhotoButton) {
+        _editPhotoButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editPhotoTapped:)];
+        _editPhotoButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        CGFloat availableWidth = self.view.bounds.size.width - (self.introView.frame.origin.x + self.introView.frame.size.width);
+        [_editPhotoButton setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_editPhotoButton.frame.size.width) / 2.0),
+                                              floorf((self.view.bounds.size.height - _editPhotoButton.frame.size.height) / 2.0),
+                                              _editPhotoButton.frame.size.width,
+                                              _editPhotoButton.frame.size.height)];
+    }
+    return _editPhotoButton;
+}
+
+- (void)editTapped:(id)sender {
+    [EventHelper postEditMode:!self.editMode];
+}
+
+- (void)editPhotoTapped:(id)sender {
+    [self showPhotoPicker:YES];
+}
+
+- (void)editModeReceived:(NSNotification *)notification {
+    self.editMode = [EventHelper editModeForNotification:notification];
+    [self updateButtons];
+}
+
+- (void)showPhotoPicker:(BOOL)show {
+    if (show) {
+        // Present photo picker fullscreen.
+        UIView *rootView = [[AppHelper sharedInstance] rootView];
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self];
+        self.photoPickerViewController = photoPickerViewController;
+        self.photoPickerViewController.view.alpha = 0.0;
+        [rootView addSubview:self.photoPickerViewController.view];
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.photoPickerViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self cleanupPhotoPicker];
+                         }
+                     }];
+}
+
+- (void)cleanupPhotoPicker {
+    [self.photoPickerViewController.view removeFromSuperview];
+    self.photoPickerViewController = nil;
 }
 
 @end

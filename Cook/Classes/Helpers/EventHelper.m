@@ -18,6 +18,7 @@
 #define kBoolOpenBook               @"CKBoolOpenBook"
 #define kEventEditMode              @"CKEventEditMode"
 #define kBoolEditMode               @"CKBoolEditMode"
+#define kBoolEditModeSave           @"CKBoolEditModeSave"
 #define kEventFollowUpdated         @"CKEventFollowUpdated"
 #define kBoolFollow                 @"CKBoolFollow"
 #define kBoolFriendsFollow          @"CKBoolFriends"
@@ -104,9 +105,14 @@
 }
 
 + (void)postEditMode:(BOOL)editMode {
+    [self postEditMode:editMode save:NO];
+}
+
++ (void)postEditMode:(BOOL)editMode save:(BOOL)save {
     [EventHelper postEvent:kEventEditMode
-              withUserInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:editMode]
-                                                       forKey:kBoolEditMode]];
+              withUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:editMode], kBoolEditMode,
+                            [NSNumber numberWithBool:save], kBoolEditModeSave,
+                            nil]];
 }
 
 + (void)unregisterEditMode:(id)observer {
@@ -115,6 +121,10 @@
 
 + (BOOL)editModeForNotification:(NSNotification *)notification {
     return [[[notification userInfo] valueForKey:kBoolEditMode] boolValue];
+}
+
++ (BOOL)editModeSaveForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kBoolEditModeSave] boolValue];
 }
 
 #pragma mark - Follows

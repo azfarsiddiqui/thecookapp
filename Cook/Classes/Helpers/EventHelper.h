@@ -31,8 +31,10 @@
 
 + (void)registerEditMode:(id)observer selector:(SEL)selector;
 + (void)postEditMode:(BOOL)editMode;
++ (void)postEditMode:(BOOL)editMode save:(BOOL)save;
 + (void)unregisterEditMode:(id)observer;
 + (BOOL)editModeForNotification:(NSNotification *)notification;
++ (BOOL)editModeSaveForNotification:(NSNotification *)notification;
 
 + (void)registerFollowUpdated:(id)observer selector:(SEL)selector;
 + (void)postFollow:(BOOL)follow friends:(BOOL)friends;
