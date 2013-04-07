@@ -506,9 +506,7 @@
 		8944C1C416CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BE16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png */; };
 		895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D91650C23500765F96 /* CoreText.framework */; };
 		895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D71650C20200765F96 /* OpenGLES.framework */; };
-		895A2B8F1655BC670061E687 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */; };
 		895A2B901655BC9E0061E687 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962217D161E9F830023EC30 /* Accelerate.framework */; };
-		8962217B161E9F300023EC30 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89622178161E9F300023EC30 /* libAviarySDK.a */; };
 		89622180161E9F970023EC30 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962217F161E9F970023EC30 /* libz.1.2.5.dylib */; };
 		89622182161E9FA80023EC30 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89622181161E9FA80023EC30 /* CoreData.framework */; };
 		89622193161EA6610023EC30 /* NSArray+Enumerable.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962218A161EA6610023EC30 /* NSArray+Enumerable.m */; };
@@ -1212,13 +1210,6 @@
 		8944C1BC16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_btn@2x.png"; sourceTree = "<group>"; };
 		8944C1BD16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_divider.png; sourceTree = "<group>"; };
 		8944C1BE16CDB9870087EFC9 /* cook_keyboard_autosuggest_divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_divider@2x.png"; sourceTree = "<group>"; };
-		895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
-		89622173161E9F300023EC30 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
-		89622174161E9F300023EC30 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
-		89622175161E9F300023EC30 /* AFPhotoEditorControllerOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorControllerOptions.h; sourceTree = "<group>"; };
-		89622176161E9F300023EC30 /* AFPhotoEditorSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorSession.h; sourceTree = "<group>"; };
-		89622177161E9F300023EC30 /* AFPhotoEditorStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorStyle.h; sourceTree = "<group>"; };
-		89622178161E9F300023EC30 /* libAviarySDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAviarySDK.a; sourceTree = "<group>"; };
 		8962217D161E9F830023EC30 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		8962217F161E9F970023EC30 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		89622181161E9FA80023EC30 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -1318,7 +1309,6 @@
 				76ED27421612DC180012E479 /* UIKit.framework in Frameworks */,
 				76ED27441612DC180012E479 /* Foundation.framework in Frameworks */,
 				76ED27651612DC720012E479 /* Parse.framework in Frameworks */,
-				8962217B161E9F300023EC30 /* libAviarySDK.a in Frameworks */,
 				761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2393,39 +2383,8 @@
 				76324F07165343DE007D1EBF /* MGImageUtilities */,
 				76C6CDCF164B5495006001BD /* APBookmarkNavigationView */,
 				89622187161EA6610023EC30 /* MRCEnumerable */,
-				89622171161E9F300023EC30 /* AviarySDK */,
 			);
 			path = External;
-			sourceTree = "<group>";
-		};
-		89622171161E9F300023EC30 /* AviarySDK */ = {
-			isa = PBXGroup;
-			children = (
-				89622172161E9F300023EC30 /* Headers */,
-				89622178161E9F300023EC30 /* libAviarySDK.a */,
-				89622179161E9F300023EC30 /* Resources */,
-			);
-			path = AviarySDK;
-			sourceTree = "<group>";
-		};
-		89622172161E9F300023EC30 /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				89622173161E9F300023EC30 /* AFPhotoEditorContext.h */,
-				89622174161E9F300023EC30 /* AFPhotoEditorController.h */,
-				89622175161E9F300023EC30 /* AFPhotoEditorControllerOptions.h */,
-				89622176161E9F300023EC30 /* AFPhotoEditorSession.h */,
-				89622177161E9F300023EC30 /* AFPhotoEditorStyle.h */,
-			);
-			path = Headers;
-			sourceTree = "<group>";
-		};
-		89622179161E9F300023EC30 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				895A2B8E1655BC670061E687 /* AviarySDKResources.bundle */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		89622187161EA6610023EC30 /* MRCEnumerable */ = {
@@ -2691,7 +2650,6 @@
 				8903B577165354FC00BB3E5B /* cook_book_icon_like_on@2x.png in Resources */,
 				76324F2716535591007D1EBF /* cook_book_icon_create.png in Resources */,
 				76324F2816535591007D1EBF /* cook_book_icon_create@2x.png in Resources */,
-				895A2B8F1655BC670061E687 /* AviarySDKResources.bundle in Resources */,
 				76BEE73C165DEE600065B97B /* cook_book_blue.png in Resources */,
 				76BEE73D165DEE600065B97B /* cook_book_blue@2x.png in Resources */,
 				76BEE73E165DEE600065B97B /* cook_book_burntorange.png in Resources */,
