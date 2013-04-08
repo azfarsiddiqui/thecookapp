@@ -11,6 +11,9 @@
 
 @interface ParsePhotoStore : NSObject
 
+// Manually store an image into the cache.
+- (void)storeImage:(UIImage *)image parseFile:(PFFile *)parseFile size:(CGSize)size;
+
 // Returns the cached image if exists otherwise initiates downloads. Both cases return in blocks.
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size completion:(void (^)(UIImage *image))completion;
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size indexPath:(NSIndexPath *)indexPath

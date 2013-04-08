@@ -31,8 +31,8 @@
     return self;
 }
 
-- (UIImage *)cachedImageForParseFile:(PFFile *)parseFile size:(CGSize)size {
-    return [self.cache objectForKey:[self cacheKeyForParseFile:parseFile size:size]];
+- (void)storeImage:(UIImage *)image parseFile:(PFFile *)parseFile size:(CGSize)size {
+    [self.cache setObject:image forKey:[self cacheKeyForParseFile:parseFile size:size]];
 }
 
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size completion:(void (^)(UIImage *image))completion {
@@ -97,6 +97,10 @@
 }
 
 #pragma mark - Private methods
+
+- (UIImage *)cachedImageForParseFile:(PFFile *)parseFile size:(CGSize)size {
+    return [self.cache objectForKey:[self cacheKeyForParseFile:parseFile size:size]];
+}
 
 - (NSString *)cacheKeyForParseFile:(PFFile *)parseFile size:(CGSize)size {
     return [NSString stringWithFormat:@"%@_%@", parseFile.url, NSStringFromCGSize(size)];

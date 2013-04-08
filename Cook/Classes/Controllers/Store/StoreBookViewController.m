@@ -18,6 +18,7 @@
 #import "CKUserProfilePhotoView.h"
 #import "CKBookSummaryView.h"
 #import "EventHelper.h"
+#import "ParsePhotoStore.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface StoreBookViewController () <CKBookCoverViewDelegate>
@@ -26,6 +27,7 @@
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, assign) id<StoreBookViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIView *imageOverlayView;
 @property (nonatomic, strong) UIView *bookContainerView;
 @property (nonatomic, strong) CKBookSummaryView *bookSummaryView;
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
@@ -35,6 +37,7 @@
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL updated;
 @property (nonatomic, assign) CGPoint originPoint;
+@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @end
 
@@ -54,6 +57,7 @@
         self.addMode = addMode;
         self.delegate = delegate;
         self.currentUser = [CKUser currentUser];
+        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -67,12 +71,12 @@
 
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
     [self.view addGestureRecognizer:tapGesture];
+    
 }
 
 - (void)transitionFromPoint:(CGPoint)point {
     self.animating = YES;
     self.originPoint = point;
-    self.imageView.alpha = 0.0;
     self.bookContainerView.alpha = 0.0;
     
     CGFloat scale = [BenchtopBookCoverViewCell storeScale];
@@ -116,17 +120,18 @@
                                           }
                                           completion:^(BOOL finished) {
                                               self.animating = NO;
+                                              [self loadData];
                                           }];
                          
                      }];
     
-    // Transition the imageView in.
+    // Transition the imageView overlay in.
     self.imageView.alpha = 0.0;
     [UIView animateWithDuration:0.3
                           delay:0.1
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.imageView.alpha = kOverlayAlpha;
+                         self.imageOverlayView.alpha = kOverlayAlpha;
                      }
                      completion:^(BOOL finished) {
                          self.animating = NO;
@@ -143,10 +148,22 @@
 
 - (void)initBackground {
     
+    // Background container view.
+    UIView *backgroundContainerView = [[UIView alloc] initWithFrame:self.view.bounds];
+    backgroundContainerView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:backgroundContainerView];
+    
+    // Image black overlay.
+    UIView *imageOverlayView = [[UIView alloc] initWithFrame:backgroundContainerView.bounds];
+    imageOverlayView.alpha = 0.0;
+    imageOverlayView.backgroundColor = [UIColor blackColor];
+    [backgroundContainerView addSubview:imageOverlayView];
+    self.imageOverlayView = imageOverlayView;
+    
     // Background imageView.
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    imageView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:imageView];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:backgroundContainerView.bounds];
+    imageView.backgroundColor = [UIColor clearColor];
+    [backgroundContainerView addSubview:imageView];
     self.imageView = imageView;
 }
 
@@ -203,6 +220,7 @@
                      animations:^{
                          self.bookContainerView.alpha = 0.0;
                          self.imageView.alpha = 0.0;
+                         self.imageOverlayView.alpha = 0.0;
                      }
                      completion:^(BOOL finished) {
                          
@@ -315,7 +333,7 @@
     [self.book addFollower:self.currentUser
                    success:^{
                        [weakSelf updateAddButtonText:@"Book Added" activity:NO enabled:NO];
-                       self.updated = YES;
+                       weakSelf.updated = YES;
                        [EventHelper postFollow:YES friends:NO];
                    }
                    failure:^(NSError *error) {
@@ -332,6 +350,28 @@
     if (!CGRectContainsPoint(self.bookContainerView.frame, tappedPoint)) {
         [self closeTapped];
     }
+}
+
+- (void)loadData {
+    [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
+                                  size:self.imageView.bounds.size
+                            completion:^(UIImage *image) {
+                                
+                                // Set the image and prepare for fade-in.
+                                self.imageView.image = image;
+                                self.imageView.alpha = 0.0;
+                                
+                                // Fade it in.
+                                [UIView animateWithDuration:0.6
+                                                      delay:0.0
+                                                    options:UIViewAnimationOptionCurveEaseIn
+                                                 animations:^{
+                                                     self.imageView.alpha = 1.0;
+                                                 }
+                                                 completion:^(BOOL finished) {
+                                                 }];
+                                
+                            }];
 }
 
 @end

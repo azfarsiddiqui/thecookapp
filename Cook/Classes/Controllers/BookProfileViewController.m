@@ -16,6 +16,8 @@
 #import "EventHelper.h"
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
+#import "ParsePhotoStore.h"
+#import "UIImage+ProportionalFill.h"
 #import <Parse/Parse.h>
 
 @interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate>
@@ -27,6 +29,8 @@
 @property (nonatomic, strong) UIButton *editPhotoButton;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
+@property (nonatomic, strong) ParsePhotoStore *photoStore;
+@property (nonatomic, strong) UIImage *uploadedCoverPhoto;
 
 @end
 
@@ -39,6 +43,7 @@
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
         self.book = book;
+        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -52,6 +57,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [self initImageView];
     [self initIntroView];
+    [self loadData];
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
@@ -59,11 +65,12 @@
 - (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
     [self showPhotoPicker:NO];
     
-    self.imageView.frame = CGRectMake(floorf((self.view.bounds.size.width - image.size.width) / 2.0),
-                                      floorf((self.view.bounds.size.height - image.size.height) / 2.0),
-                                      image.size.width,
-                                      image.size.height);
-    self.imageView.image = image;
+    // Present the image.
+    UIImage *croppedImage = [image imageCroppedToFitSize:self.imageView.bounds.size];
+    self.imageView.image = croppedImage;
+    
+    // Save photo to be uploaded.
+    self.uploadedCoverPhoto = image;
 }
 
 - (void)photoPickerViewControllerCloseRequested {
@@ -73,7 +80,6 @@
 #pragma mark - Private methods
 
 - (void)initImageView {
-    
     UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
     imageView.frame = self.view.bounds;
     imageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
@@ -171,7 +177,12 @@
 
 - (void)editModeReceived:(NSNotification *)notification {
     self.editMode = [EventHelper editModeForNotification:notification];
+    BOOL saveMode = [EventHelper editModeSaveForNotification:notification];
     [self updateButtons];
+    
+    if (!self.editMode && saveMode) {
+        [self.book.user saveCoverPhoto:self.uploadedCoverPhoto];
+    }
 }
 
 - (void)showPhotoPicker:(BOOL)show {
@@ -200,6 +211,14 @@
 - (void)cleanupPhotoPicker {
     [self.photoPickerViewController.view removeFromSuperview];
     self.photoPickerViewController = nil;
+}
+
+- (void)loadData {
+    [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
+                                  size:self.imageView.bounds.size
+                            completion:^(UIImage *image) {
+                                self.imageView.image = image;
+                            }];
 }
 
 @end
