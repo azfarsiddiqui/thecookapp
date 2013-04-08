@@ -329,6 +329,18 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
+- (void)saveCoverPhoto:(UIImage *)coverPhoto {
+    PFFile *coverPhotoFile = [PFFile fileWithName:@"cover.jpg" data:UIImageJPEGRepresentation(coverPhoto, 1.0)];
+    [coverPhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        [self.parseUser setObject:coverPhotoFile forKey:kUserAttrCoverPhoto];
+        [self.parseUser saveInBackground];
+    }];
+}
+
+- (PFFile *)parseCoverPhotoFile {
+    return [self.parseUser objectForKey:kUserAttrCoverPhoto];
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {
