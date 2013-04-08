@@ -181,7 +181,9 @@
     [self updateButtons];
     
     if (!self.editMode && saveMode) {
-        [self.book.user saveCoverPhoto:self.uploadedCoverPhoto];
+        [self.book.user saveCoverPhoto:self.uploadedCoverPhoto
+                            completion:^{
+                            }];
     }
 }
 
@@ -217,7 +219,18 @@
     [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
                                   size:self.imageView.bounds.size
                             completion:^(UIImage *image) {
+                                self.imageView.alpha = 0.0;
                                 self.imageView.image = image;
+                                
+                                // Fade it in.
+                                [UIView animateWithDuration:0.6
+                                                      delay:0.0
+                                                    options:UIViewAnimationOptionCurveEaseIn
+                                                 animations:^{
+                                                     self.imageView.alpha = 1.0;
+                                                 }
+                                                 completion:^(BOOL finished) {
+                                                 }];
                             }];
 }
 

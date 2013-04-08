@@ -329,11 +329,13 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
-- (void)saveCoverPhoto:(UIImage *)coverPhoto {
+- (void)saveCoverPhoto:(UIImage *)coverPhoto completion:(ObjectSuccessBlock)completion {
     PFFile *coverPhotoFile = [PFFile fileWithName:@"cover.jpg" data:UIImageJPEGRepresentation(coverPhoto, 1.0)];
     [coverPhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         [self.parseUser setObject:coverPhotoFile forKey:kUserAttrCoverPhoto];
-        [self.parseUser saveInBackground];
+        [self.parseUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            completion();
+        }];
     }];
 }
 

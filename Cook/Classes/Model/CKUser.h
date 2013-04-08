@@ -38,7 +38,7 @@ typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, B
 - (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 - (void)numFriendsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-- (void)saveCoverPhoto:(UIImage *)coverPhoto;
+- (void)saveCoverPhoto:(UIImage *)coverPhoto completion:(ObjectSuccessBlock)completion;
 - (PFFile *)parseCoverPhotoFile;
 
 @end
