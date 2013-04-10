@@ -588,6 +588,9 @@
         return;
     }
     
+    // Disable panning.
+    self.panEnabled = NO;
+    
     // Prepare the dimView
     UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
     overlayView.backgroundColor = [UIColor blackColor];
@@ -614,7 +617,14 @@
                       delay:0.0
                     options:UIViewAnimationCurveEaseIn
                  animations:^{
+                     
+                     // Fade the store away.
+                     self.storeViewController.view.alpha = 0.0;
+                     
+                     // Fade in overlay.
                      overlayView.alpha = kOverlayViewAlpha;
+                     
+                     // Scale back.
                      self.bookCoverViewController.view.transform = transform;
                      self.bookNavigationViewController.view.transform = transform;
                      modalViewController.view.transform = CGAffineTransformIdentity;
@@ -637,7 +647,9 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          self.overlayView.alpha = 0.0;
+                         self.storeViewController.view.alpha = 1.0;
                          self.bookNavigationViewController.view.transform = CGAffineTransformIdentity;
+                         self.bookCoverViewController.view.transform = CGAffineTransformIdentity;
                          modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
                      }
                      completion:^(BOOL finished)  {
@@ -648,6 +660,9 @@
                          self.overlayView = nil;
                          [modalViewController.view removeFromSuperview];
                          self.bookModalViewController = nil;
+                         
+                         // Re-enable panning.
+                         self.panEnabled = YES;
                      }];
 }
 
