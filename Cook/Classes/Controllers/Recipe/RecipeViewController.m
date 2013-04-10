@@ -63,6 +63,7 @@ typedef enum {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor clearColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
     [self initContentContainerView];
@@ -315,7 +316,7 @@ typedef enum {
 - (void)initBackgroundImageView {
     UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:nil];
     backgroundImageView.userInteractionEnabled = YES;
-    backgroundImageView.backgroundColor = [UIColor darkGrayColor];
+    backgroundImageView.backgroundColor = [UIColor clearColor];
     backgroundImageView.frame = self.view.bounds;
     backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view insertSubview:backgroundImageView belowSubview:self.contentContainerView];
