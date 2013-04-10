@@ -200,7 +200,7 @@ typedef enum {
 }
 
 - (UIButton *)editButton {
-    if (!_editButton) {
+    if (!_editButton && [self canEditRecipe]) {
         _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"]
                                                     target:self
                                                   selector:@selector(editTapped:)];
@@ -788,6 +788,10 @@ typedef enum {
                          completion:^(BOOL finished)  {
                          }];
     });
+}
+
+- (BOOL)canEditRecipe {
+    return ([self.book.user isEqual:[CKUser currentUser]]);
 }
 
 @end
