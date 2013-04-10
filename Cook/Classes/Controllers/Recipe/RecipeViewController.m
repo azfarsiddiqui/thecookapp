@@ -238,6 +238,51 @@ typedef enum {
 
 #pragma mark - Private methods
 
+- (void)swiped:(UISwipeGestureRecognizer *)swipeGesture {
+    UISwipeGestureRecognizerDirection direction = swipeGesture.direction;
+    if (direction == UISwipeGestureRecognizerDirectionUp) {
+        [self snapContentToPhotoWindowHeight:[self nextDownPhotoWindowHeight]];
+    } else if (direction == UISwipeGestureRecognizerDirectionDown) {
+        [self snapContentToPhotoWindowHeight:[self nextUpPhotoWindowHeight]];
+    }
+}
+
+- (PhotoWindowHeight)nextUpPhotoWindowHeight {
+    PhotoWindowHeight nextWindowHeight = PhotoWindowHeightMid;
+    switch (self.photoWindowHeight) {
+        case PhotoWindowHeightMin:
+            nextWindowHeight = PhotoWindowHeightMin;
+            break;
+        case PhotoWindowHeightMid:
+            nextWindowHeight = PhotoWindowHeightMin;
+            break;
+        case PhotoWindowHeightMax:
+            nextWindowHeight = PhotoWindowHeightMid;
+            break;
+        default:
+            break;
+    }
+    return nextWindowHeight;
+}
+
+- (PhotoWindowHeight)nextDownPhotoWindowHeight {
+    PhotoWindowHeight nextWindowHeight = PhotoWindowHeightMid;
+    switch (self.photoWindowHeight) {
+        case PhotoWindowHeightMin:
+            nextWindowHeight = PhotoWindowHeightMid;
+            break;
+        case PhotoWindowHeightMid:
+            nextWindowHeight = PhotoWindowHeightMax;
+            break;
+        case PhotoWindowHeightMax:
+            nextWindowHeight = PhotoWindowHeightMax;
+            break;
+        default:
+            break;
+    }
+    return nextWindowHeight;
+}
+
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
     CGPoint translation = [panGesture translationInView:self.view];
     
@@ -417,6 +462,17 @@ typedef enum {
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [contentContainerView addGestureRecognizer:panGesture];
+    
+    // Register swipes.
+    UISwipeGestureRecognizer *upSwipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
+    upSwipeGesture.delegate = self;
+    upSwipeGesture.direction = UISwipeGestureRecognizerDirectionDown;
+    [contentContainerView addGestureRecognizer:upSwipeGesture];
+    
+    UISwipeGestureRecognizer *downSwipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
+    downSwipeGesture.delegate = self;
+    downSwipeGesture.direction = UISwipeGestureRecognizerDirectionDown;
+    [contentContainerView addGestureRecognizer:downSwipeGesture];
 }
 
 - (void)initHeaderView {
