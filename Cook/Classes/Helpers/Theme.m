@@ -314,7 +314,7 @@
 
 +(UIFont *)recipeNameFont
 {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:40.0f];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:50.0];
 }
 
 +(UIColor *)recipeNameColor

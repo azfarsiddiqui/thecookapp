@@ -89,7 +89,6 @@ typedef enum {
     [self initTableView];
     [self initBackgroundImageView];
     [self initStartState];
-    [self loadData];
 }
 
 #pragma mark - BookModalViewController methods
@@ -120,6 +119,7 @@ typedef enum {
         
         [self updateButtons];
         [self loadPhoto];
+        [self loadData];
         
     } else {
     }
@@ -535,13 +535,23 @@ typedef enum {
     [headerView addSubview:profilePhotoView];
     [headerView addSubview:nameLabel];
     
-    
-    
+    // Recipe title.
+    NSString *recipeName = [self.recipe.name uppercaseString];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.font = [Theme recipeNameFont];
+    titleLabel.textColor = [Theme recipeNameColor];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    titleLabel.shadowColor = [UIColor whiteColor];
+    titleLabel.text = recipeName;
+    titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    [titleLabel sizeToFit];
+    titleLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - titleLabel.frame.size.width) / 2.0),
+                                  profilePhotoView.frame.origin.y + profilePhotoView.frame.size.height + 10.0,
+                                  titleLabel.frame.size.width,
+                                  titleLabel.frame.size.height);
+    [headerView addSubview:titleLabel];
 
-    
-    
-    
-    
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped:)];
     [headerView addGestureRecognizer:tapGesture];
