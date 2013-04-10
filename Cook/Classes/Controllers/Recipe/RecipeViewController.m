@@ -49,7 +49,7 @@ typedef enum {
 #define kWindowMidHeight        260.0
 #define kWindowMinSnapOffset    175.0
 #define kWindowMaxSnapOffset    400.0
-#define kWindowBounceOffset     20.0
+#define kWindowBounceOffset     10.0
 
 #define kHeaderHeight           210.0
 #define kContentMaxHeight       468.0
@@ -73,11 +73,16 @@ typedef enum {
     
     self.view.backgroundColor = [UIColor clearColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
     [self initContentContainerView];
     [self initHeaderView];
     [self initTableView];
     [self initBackgroundImageView];
+    [self initStartState];
 }
 
 #pragma mark - BookModalViewController methods
@@ -252,11 +257,18 @@ typedef enum {
     CGRect contentFrame = self.contentContainerView.frame;
     contentFrame.origin.y += panOffset;
     
+    // Adjust height of contentFrame.
     if (contentFrame.origin.y <= kWindowMinHeight) {
         contentFrame.origin.y = kWindowMinHeight;
     }
+    contentFrame.size.height = self.view.bounds.size.height - contentFrame.origin.y;
+    
+    // Background image frame.
+    CGRect imageFrame = self.backgroundImageView.frame;
+    imageFrame.origin.y = floorf((contentFrame.origin.y - imageFrame.size.height) / 2.0);
 
     self.contentContainerView.frame = contentFrame;
+    self.backgroundImageView.frame = imageFrame;
 }
 
 - (void)panSnapIfRequired {
@@ -297,12 +309,15 @@ typedef enum {
     
     // Target contentFrame to snap to.
     CGRect contentFrame = [self contentFrameForPhotoWindowHeight:photoWindowHeight];
+    CGRect imageFrame = [self imageFrameForPhotoWindowHeight:photoWindowHeight];
     
     // Figure out the required bounce in the same direction.
     CGFloat bounceOffset = kWindowBounceOffset;
     bounceOffset *= (self.photoWindowHeight > self.previousPhotoWindowHeight) ? 1.0 : -1.0;
     CGRect bounceFrame = contentFrame;
     bounceFrame.origin.y += bounceOffset;
+    CGRect imageBounceFrame = imageFrame;
+    imageBounceFrame.origin.y += bounceOffset;
     
     // Animate to the contentFrame via a bounce.
     [UIView animateWithDuration:snapDuration
@@ -310,6 +325,7 @@ typedef enum {
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.contentContainerView.frame = bounceFrame;
+                         self.backgroundImageView.frame = imageBounceFrame;
                      }
                      completion:^(BOOL finished) {
                          
@@ -319,6 +335,7 @@ typedef enum {
                                              options:UIViewAnimationOptionCurveEaseIn
                                           animations:^{
                                               self.contentContainerView.frame = contentFrame;
+                                              self.backgroundImageView.frame = imageFrame;
                                           }
                                           completion:^(BOOL finished) {
                                               
@@ -342,21 +359,48 @@ typedef enum {
     switch (photoWindowHeight) {
         case PhotoWindowHeightMin:
             contentFrame.origin.y = kWindowMinHeight;
+            contentFrame.size.height = self.view.bounds.size.height - kWindowMinHeight;
             break;
         case PhotoWindowHeightMid:
             contentFrame.origin.y = kWindowMidHeight;
+            contentFrame.size.height = self.view.bounds.size.height - kWindowMidHeight;
             break;
         case PhotoWindowHeightMax:
             contentFrame.origin.y = self.view.bounds.size.height - self.headerView.frame.size.height;
+            contentFrame.size.height = self.view.bounds.size.height - kWindowMidHeight;
             break;
         case PhotoWindowHeightFullScreen:
             contentFrame.origin.y = self.view.bounds.size.height;
+            contentFrame.size.height = self.view.bounds.size.height - kWindowMidHeight;
             break;
         default:
             contentFrame.origin.y = kWindowMidHeight;
+            contentFrame.size.height = self.view.bounds.size.height - kWindowMidHeight;
             break;
     }
     return contentFrame;
+}
+
+- (CGRect)imageFrameForPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight {
+    CGRect imageFrame = self.backgroundImageView.frame;
+    switch (photoWindowHeight) {
+        case PhotoWindowHeightMin:
+            imageFrame.origin.y = floorf((kWindowMinHeight - imageFrame.size.height) / 2.0);
+            break;
+        case PhotoWindowHeightMid:
+            imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0);
+            break;
+        case PhotoWindowHeightMax:
+            imageFrame.origin.y = floorf((self.view.bounds.size.height - self.headerView.frame.size.height - imageFrame.size.height) / 2.0);
+            break;
+        case PhotoWindowHeightFullScreen:
+            imageFrame.origin.y = self.view.bounds.origin.y;
+            break;
+        default:
+            imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0);
+            break;
+    }
+    return imageFrame;
 }
 
 - (void)initContentContainerView {
@@ -373,9 +417,6 @@ typedef enum {
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [contentContainerView addGestureRecognizer:panGesture];
-    
-    self.previousPhotoWindowHeight = PhotoWindowHeightMid;
-    self.photoWindowHeight = PhotoWindowHeightMid;
 }
 
 - (void)initHeaderView {
@@ -518,7 +559,14 @@ typedef enum {
 }
 
 - (void)closeTapped:(id)sender {
+    
     [self hideButtons];
+    self.view.backgroundColor = [UIColor clearColor];
+    
+    [self fadeOutBackgroundImageThenClose];
+}
+
+- (void)fadeOutBackgroundImageThenClose {
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -571,9 +619,24 @@ typedef enum {
                                                               self.backgroundImageView.alpha = 1.0;
                                                           }
                                                           completion:^(BOOL finished)  {
+                                                              
+                                                              // Set the background to be white opaque.
+                                                              self.view.backgroundColor = [UIColor whiteColor];
+                                                              
                                                           }];
         }];
     }
+}
+
+- (void)initStartState {
+    self.previousPhotoWindowHeight = PhotoWindowHeightMid;
+    self.photoWindowHeight = PhotoWindowHeightMid;
+    self.contentContainerView.frame = [self contentFrameForPhotoWindowHeight:self.photoWindowHeight];
+    self.backgroundImageView.Frame = [self imageFrameForPhotoWindowHeight:self.photoWindowHeight];
+    
+    CGRect imageFrame = self.backgroundImageView.frame;
+    imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0);
+    self.backgroundImageView.frame = imageFrame;
 }
 
 @end
