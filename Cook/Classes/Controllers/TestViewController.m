@@ -28,9 +28,13 @@
 #define kCookLabelTag               112233445566
 #define kServesLabelTag             223344556677
 #define kCookPrepLabelLeftPadding   5.0f
-#define kPhotoPeekWindowOffset      150.0
-#define kPhotoCollapseOffset        75.0
-#define kPhotoExpandOffset          225.0
+#define kPhotoPeekWindowOffset      260.0
+#define kPhotoCollapseOffset        70.0
+#define kPhotoExpandOffset          300.0
+
+#define kPhotoMinWindowOffset       70.0
+#define kPhotoMidWindowOffset       260.0
+#define kPhotoMaxWindowOffset       468.0
 
 #define  kPlaceholderTextRecipeName     @"RECIPE NAME"
 #define  kPlaceholderTextStory          @"STORY - TELL US A LITTLE ABOUT YOUR RECIPE"
@@ -119,7 +123,8 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        return (!self.inEditMode && !self.tableView.scrollEnabled);
+        //return (!self.inEditMode && !self.tableView.userInteractionEnabled);
+        return !self.inEditMode;
     } else {
         return YES;
     }
@@ -131,7 +136,7 @@
     
     // Disable scrolling when we've reached the top of tableView content.
     if (scrollView.contentOffset.y <= 0.0) {
-        self.tableView.scrollEnabled = NO;
+        self.tableView.userInteractionEnabled = NO;
     }
 }
 
@@ -840,6 +845,7 @@
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.bounces = NO;
     [self.view addSubview:self.tableView];
     
     //instantiate ui components for section header
@@ -868,7 +874,7 @@
     [self addNewRecipeMaskView];
     
     // Register panning if there was an image.
-    self.tableView.scrollEnabled = NO;
+    self.tableView.userInteractionEnabled = NO;
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
@@ -951,7 +957,7 @@
 }
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
-    
+    DLog();
     CGPoint translation = [panGesture translationInView:self.view];
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
@@ -971,9 +977,9 @@
     tableFrame.origin.y += panOffset;
     
     // Reached the top
-    if (tableFrame.origin.y <= 0.0) {
+    if (tableFrame.origin.y <= kPhotoMinWindowOffset) {
 //        self.tableView.scrollEnabled = YES;
-        tableFrame.origin.y = 0.0;
+        tableFrame.origin.y = kPhotoMinWindowOffset;
     }
     
     self.tableView.frame = tableFrame;
@@ -981,36 +987,37 @@
 
 - (void)snapIfRequired {
     CGRect tableFrame = self.tableView.frame;
-    CGFloat snapDuration = 0.2;
+    CGFloat snapDuration = 0.0;
     CGFloat expandedOffset = self.view.bounds.size.height - [self tableView:self.tableView heightForHeaderInSection:0];
     
-    if (self.photoExpanded && tableFrame.origin.y < expandedOffset - 100.0) {
+    if (self.photoExpanded && tableFrame.origin.y < floorf((expandedOffset - kPhotoMidWindowOffset) / 2.0) + kPhotoMidWindowOffset) {
         
-        // Restore to peek from expanded.
-        tableFrame.origin.y = kPhotoPeekWindowOffset;
+        // Restore to mid from expanded.
+        tableFrame.origin.y = kPhotoMidWindowOffset;
         self.photoExpanded = NO;
+        snapDuration = 0.15;
         
-    } else if (tableFrame.origin.y <= kPhotoCollapseOffset) {
+    } else if (tableFrame.origin.y <= floorf((kPhotoMidWindowOffset - kPhotoMinWindowOffset) / 2.0) + kPhotoMinWindowOffset) {
         
-        // Collapse photo.
-        tableFrame.origin.y = 0.0;
+        // Collapse photo to min height.
+        tableFrame.origin.y = kPhotoMinWindowOffset;
         self.photoExpanded = NO;
-        snapDuration = 0.2;
-        self.tableView.scrollEnabled = YES;
+        snapDuration = 0.15;
+        self.tableView.userInteractionEnabled = YES;
         
-    } else if (tableFrame.origin.y >= kPhotoExpandOffset) {
+    } else if (tableFrame.origin.y >= floorf((expandedOffset - kPhotoMidWindowOffset) / 2.0) + kPhotoMidWindowOffset) {
         
         // Expand photo.
         tableFrame.origin.y = expandedOffset;
         self.photoExpanded = YES;
-        snapDuration = 0.2;
+        snapDuration = 0.15;
         
     } else {
         
         // Restore peek.
-        tableFrame.origin.y = kPhotoPeekWindowOffset;
+        tableFrame.origin.y = kPhotoMidWindowOffset;
         self.photoExpanded = NO;
-        snapDuration = 0.2;
+        snapDuration = 0.15;
     }
     
     [self snapTableViewToFrame:tableFrame duration:snapDuration];
