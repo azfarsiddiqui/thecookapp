@@ -13,6 +13,7 @@
 #import "ParsePhotoStore.h"
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
+#import "CKRecipeSocialView.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -41,6 +42,7 @@ typedef enum {
 @property (nonatomic, strong) UIButton *shareButton;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) CKRecipeSocialView *socialView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
 
@@ -87,14 +89,7 @@ typedef enum {
     [self initTableView];
     [self initBackgroundImageView];
     [self initStartState];
-    
-    // Top shadow.
-    UIImageView *topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_background_overlay.png"]];
-    topShadowView.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, topShadowView.frame.size.height);
-    topShadowView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth;
-    [self.view insertSubview:topShadowView aboveSubview:self.backgroundImageView];
-    topShadowView.alpha = 0.0;
-    self.topShadowView = topShadowView;
+    [self loadData];
 }
 
 #pragma mark - BookModalViewController methods
@@ -259,7 +254,6 @@ typedef enum {
     }
     return _saveButton;
 }
-
 
 #pragma mark - Private methods
 
@@ -577,6 +571,14 @@ typedef enum {
     [self.view insertSubview:backgroundImageView belowSubview:self.contentContainerView];
     self.backgroundImageView = backgroundImageView;
     
+    // Top shadow.
+    UIImageView *topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_background_overlay.png"]];
+    topShadowView.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, topShadowView.frame.size.height);
+    topShadowView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth;
+    [self.view insertSubview:topShadowView aboveSubview:self.backgroundImageView];
+    topShadowView.alpha = 0.0;
+    self.topShadowView = topShadowView;
+    
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(windowTapped:)];
     [backgroundImageView addGestureRecognizer:tapGesture];
@@ -630,9 +632,11 @@ typedef enum {
         [self.view addSubview:self.saveButton];
     } else {
         self.closeButton.alpha = 0.0;
+        self.socialView.alpha = 0.0;
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
         [self.view addSubview:self.closeButton];
+        [self.view addSubview:self.socialView];
         [self.view addSubview:self.editButton];
         [self.view addSubview:self.shareButton];
     }
@@ -640,11 +644,12 @@ typedef enum {
     // Buttons are hidden on full screen mode only.
     CGFloat buttonsVisibleAlpha = (self.photoWindowHeight == PhotoWindowHeightFullScreen) ? 0.0 : alpha;
     
-    [UIView animateWithDuration:0.2
+    [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.closeButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
+                         self.socialView.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.editButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.shareButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.cancelButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
@@ -658,6 +663,7 @@ typedef enum {
                      completion:^(BOOL finished)  {
                          if (self.editMode) {
                              [self.closeButton removeFromSuperview];
+                             [self.socialView removeFromSuperview];
                              [self.editButton removeFromSuperview];
                              [self.shareButton removeFromSuperview];
                              
@@ -757,6 +763,31 @@ typedef enum {
     CGRect imageFrame = self.backgroundImageView.frame;
     imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0);
     self.backgroundImageView.frame = imageFrame;
+}
+
+- (void)loadData {
+    
+    // TODO Load data.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0];
+        socialView.frame = CGRectMake(floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
+                                      kButtonInsets.top,
+                                      socialView.frame.size.width,
+                                      socialView.frame.size.height);
+        socialView.alpha = 0.0;
+        [self.view addSubview:socialView];
+        self.socialView = socialView;
+        
+        // Fade it in.
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.socialView.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished)  {
+                         }];
+    });
 }
 
 @end
