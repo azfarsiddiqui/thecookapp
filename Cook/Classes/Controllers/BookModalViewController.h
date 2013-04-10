@@ -12,5 +12,7 @@
 @protocol BookModalViewController <NSObject>
 
 - (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate;
+- (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber;
+- (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber;
 
 @end

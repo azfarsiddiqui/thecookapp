@@ -21,6 +21,7 @@
 #import "CKNotificationView.h"
 #import "CKPopoverViewController.h"
 #import "NotificationsViewController.h"
+#import "RecipeViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate,
@@ -570,8 +571,11 @@
 - (void)viewRecipe:(CKRecipe *)recipe {
     
     //use for testing launch concepts
-    TestViewController *testVC = [[TestViewController alloc] initWithRecipe:recipe selectedBook:self.selectedBook];
-    [self showModalViewController:testVC];
+//    TestViewController *testVC = [[TestViewController alloc] initWithRecipe:recipe selectedBook:self.selectedBook];
+//    [self showModalViewController:testVC];
+    
+    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
+    [self showModalViewController:recipeViewController];
     
 }
 
@@ -600,6 +604,10 @@
     // Sets the modal view delegate for close callbacks.
     [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
     
+    // Inform will appear.
+    [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
+                              withObject:[NSNumber numberWithBool:YES]];
+    
     // Animate the book back, and slide up the modalVC.
     CGAffineTransform transform = CGAffineTransformMakeScale(0.9, 0.9);
     [UIView animateWithDuration:0.4
@@ -612,10 +620,16 @@
                      modalViewController.view.transform = CGAffineTransformIdentity;
                  }
                  completion:^(BOOL finished)  {
+                     [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                                               withObject:[NSNumber numberWithBool:YES]];
                  }];
 }
 
 - (void)hideModalViewController:(UIViewController *)modalViewController {
+    
+    // Inform will disappear.
+    [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
+                              withObject:[NSNumber numberWithBool:NO]];
     
     // Animate the book back, and slide up the modalVC.
     [UIView animateWithDuration:0.4
@@ -627,6 +641,9 @@
                          modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
                      }
                      completion:^(BOOL finished)  {
+                         [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                                                   withObject:[NSNumber numberWithBool:NO]];
+                         
                          [self.overlayView removeFromSuperview];
                          self.overlayView = nil;
                          [modalViewController.view removeFromSuperview];

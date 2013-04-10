@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BookModalViewController.h"
 
 @class CKRecipe;
+@class CKBook;
 
-@interface RecipeViewController : UIViewController
+@interface RecipeViewController : UIViewController <BookModalViewController>
 
-- (id)initWithRecipe:(CKRecipe *)recipe;
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 
 @end

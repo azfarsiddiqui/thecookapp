@@ -8,7 +8,9 @@
 
 #import "RecipeViewController.h"
 #import "CKRecipe.h"
+#import "CKBook.h"
 #import "ViewHelper.h"
+#import "ParsePhotoStore.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -17,9 +19,11 @@ typedef enum {
 	PhotoWindowHeightFullScreen,
 } PhotoWindowHeight;
 
-@interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) CKBook *book;
+@property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
 
 @property (nonatomic, strong) UIView *contentContainerView;
 @property (nonatomic, strong) UITableView *tableView;
@@ -34,6 +38,8 @@ typedef enum {
 @property (nonatomic, strong) UIButton *shareButton;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
+
+@property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
 
 @end
 
@@ -53,9 +59,11 @@ typedef enum {
 
 #define kButtonInsets  UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
 
-- (id)initWithRecipe:(CKRecipe *)recipe {
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
         self.recipe = recipe;
+        self.book = book;
+        self.parsePhotoStore = [[ParsePhotoStore alloc]init];
     }
     return self;
 }
@@ -70,7 +78,27 @@ typedef enum {
     [self initHeaderView];
     [self initTableView];
     [self initBackgroundImageView];
-    [self updateButtons];
+}
+
+#pragma mark - BookModalViewController methods
+
+- (void)setModalViewControllerDelegate:(id<BookModalViewControllerDelegate>)modalViewControllerDelegate {
+    self.modalDelegate = modalViewControllerDelegate;
+}
+
+- (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
+    if ([appearNumber boolValue]) {
+    } else {
+        [self hideButtons];
+    }
+}
+
+- (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
+    if ([appearNumber boolValue]) {
+        [self updateButtons];
+        [self loadPhoto];
+    } else {
+    }
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -123,7 +151,11 @@ typedef enum {
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        return !self.editMode;
+    } else {
+        return YES;
+    }
 }
 
 #pragma mark - Lazy getters.
@@ -142,12 +174,64 @@ typedef enum {
     return _closeButton;
 }
 
-#pragma mark - Private methods
-
-- (void)initPanGesture {
-    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
-    [self.view addGestureRecognizer:panGesture];
+- (UIButton *)editButton {
+    if (!_editButton) {
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"]
+                                                    target:self
+                                                  selector:@selector(editTapped:)];
+        _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _editButton.frame = CGRectMake(self.shareButton.frame.origin.x - 15.0 - _editButton.frame.size.width,
+                                      kButtonInsets.top,
+                                      _editButton.frame.size.width,
+                                      _editButton.frame.size.height);
+    }
+    return _editButton;
 }
+
+- (UIButton *)shareButton {
+    if (!_shareButton) {
+        _shareButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_share_white.png"]
+                                           target:self
+                                         selector:@selector(shareTapped:)];
+        _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _shareButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _shareButton.frame.size.width,
+                                       kButtonInsets.top,
+                                       _shareButton.frame.size.width,
+                                       _shareButton.frame.size.height);
+    }
+    return _shareButton;
+}
+
+- (UIButton *)cancelButton {
+    if (!_cancelButton) {
+        _cancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+                                             target:self
+                                           selector:@selector(cancelTapped:)];
+        _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_cancelButton setFrame:CGRectMake(kButtonInsets.left,
+                                           kButtonInsets.top,
+                                           _cancelButton.frame.size.width,
+                                           _cancelButton.frame.size.height)];
+    }
+    return _cancelButton;
+}
+
+- (UIButton *)saveButton {
+    if (!_saveButton) {
+        _saveButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
+                                            target:self
+                                          selector:@selector(saveTapped:)];
+        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kButtonInsets.right,
+                                         kButtonInsets.top,
+                                         _saveButton.frame.size.width,
+                                         _saveButton.frame.size.height)];
+    }
+    return _saveButton;
+}
+
+
+#pragma mark - Private methods
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
     CGPoint translation = [panGesture translationInView:self.view];
@@ -200,6 +284,10 @@ typedef enum {
 }
 
 - (void)snapContentToPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight {
+    [self snapContentToPhotoWindowHeight:photoWindowHeight completion:NULL];
+}
+
+- (void)snapContentToPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight completion:(void (^)())completion {
     CGFloat snapDuration = 0.15;
     CGFloat bounceDuration = 0.2;
     
@@ -239,6 +327,12 @@ typedef enum {
                                                   || self.photoWindowHeight == PhotoWindowHeightFullScreen) {
                                                   [self updateButtons];
                                               }
+                                              
+                                              // Run completion block.
+                                              if (completion != NULL) {
+                                                  completion();
+                                              }
+                          
                                           }];
                      }];
 }
@@ -277,6 +371,7 @@ typedef enum {
     
     // Register pan on the content container.
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    panGesture.delegate = self;
     [contentContainerView addGestureRecognizer:panGesture];
     
     self.previousPhotoWindowHeight = PhotoWindowHeightMid;
@@ -289,7 +384,7 @@ typedef enum {
                                                                   self.contentContainerView.bounds.size.width,
                                                                   kHeaderHeight)];
     headerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    headerView.backgroundColor = [UIColor lightGrayColor];
+    headerView.backgroundColor = [UIColor whiteColor];
     [self.contentContainerView addSubview:headerView];
     self.headerView = headerView;
     
@@ -360,22 +455,30 @@ typedef enum {
 }
 
 - (void)updateButtons {
+    [self updateButtonsWithAlpha:1.0];
+}
+
+- (void)hideButtons {
+    [self updateButtonsWithAlpha:0.0];
+}
+
+- (void)updateButtonsWithAlpha:(CGFloat)alpha {
     if (self.editMode) {
         self.cancelButton.alpha = 0.0;
         self.saveButton.alpha = 0.0;
-        [self.backgroundImageView addSubview:self.cancelButton];
-        [self.backgroundImageView addSubview:self.saveButton];
+        [self.view addSubview:self.cancelButton];
+        [self.view addSubview:self.saveButton];
     } else {
         self.closeButton.alpha = 0.0;
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
-        [self.backgroundImageView addSubview:self.closeButton];
-        [self.backgroundImageView addSubview:self.editButton];
-        [self.backgroundImageView addSubview:self.shareButton];
+        [self.view addSubview:self.closeButton];
+        [self.view addSubview:self.editButton];
+        [self.view addSubview:self.shareButton];
     }
     
     // Buttons are hidden on full screen mode only.
-    CGFloat buttonsVisibleAlpha = (self.photoWindowHeight == PhotoWindowHeightFullScreen) ? 0.0 : 1.0;
+    CGFloat buttonsVisibleAlpha = (self.photoWindowHeight == PhotoWindowHeightFullScreen) ? 0.0 : alpha;
     
     [UIView animateWithDuration:0.2
                           delay:0.0
@@ -386,12 +489,27 @@ typedef enum {
                          self.shareButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.cancelButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          self.saveButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
+                         
+                         if (self.editMode) {
+                             self.cancelButton.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                             self.saveButton.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                         }
                      }
                      completion:^(BOOL finished)  {
                          if (self.editMode) {
                              [self.closeButton removeFromSuperview];
                              [self.editButton removeFromSuperview];
                              [self.shareButton removeFromSuperview];
+                             
+                             [UIView animateWithDuration:0.1
+                                                   delay:0.0
+                                                 options:UIViewAnimationOptionCurveEaseIn
+                                              animations:^{
+                                                  self.cancelButton.transform = CGAffineTransformIdentity;
+                                                  self.saveButton.transform = CGAffineTransformIdentity;
+                                              }
+                                              completion:^(BOOL finished)  {
+                                              }];
                          } else {
                              [self.cancelButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
@@ -400,7 +518,62 @@ typedef enum {
 }
 
 - (void)closeTapped:(id)sender {
+    [self hideButtons];
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.backgroundImageView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished)  {
+                         [self.modalDelegate closeRequestedForBookModalViewController:self];
+                     }];
+}
+
+- (void)editTapped:(id)sender {
+    self.editMode = YES;
+    
+    // Snap to mid height then toggle buttons.
+    if (self.photoWindowHeight != PhotoWindowHeightMid) {
+        [self snapContentToPhotoWindowHeight:kWindowMidHeight completion:^{
+            [self updateButtons];
+        }];
+    } else {
+        [self updateButtons];
+    }
+}
+
+- (void)shareTapped:(id)sender {
     DLog();
+}
+
+- (void)cancelTapped:(id)sender {
+    self.editMode = NO;
+    [self updateButtons];
+}
+
+- (void)saveTapped:(id)sender {
+    self.editMode = NO;
+    [self updateButtons];
+}
+
+- (void)loadPhoto {
+    if ([self.recipe hasPhotos]) {
+        [self.parsePhotoStore imageForParseFile:[self.recipe imageFile]
+                                           size:self.backgroundImageView.bounds.size
+                                     completion:^(UIImage *image) {
+                                         self.backgroundImageView.image = image;
+                                         self.backgroundImageView.alpha = 0.0;
+                                         [UIView animateWithDuration:0.4
+                                                               delay:0.0
+                                                             options:UIViewAnimationOptionCurveEaseIn
+                                                          animations:^{
+                                                              self.backgroundImageView.alpha = 1.0;
+                                                          }
+                                                          completion:^(BOOL finished)  {
+                                                          }];
+        }];
+    }
 }
 
 @end
