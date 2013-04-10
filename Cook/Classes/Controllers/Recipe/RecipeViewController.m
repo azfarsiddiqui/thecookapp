@@ -11,6 +11,8 @@
 #import "CKBook.h"
 #import "ViewHelper.h"
 #import "ParsePhotoStore.h"
+#import "CKUserProfilePhotoView.h"
+#import "Theme.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -25,6 +27,7 @@ typedef enum {
 @property (nonatomic, strong) CKBook *book;
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
 
+@property (nonatomic, strong) UIView *topShadowView;
 @property (nonatomic, strong) UIView *contentContainerView;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *windowView;
@@ -73,6 +76,7 @@ typedef enum {
     
     self.view.backgroundColor = [UIColor clearColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -83,6 +87,14 @@ typedef enum {
     [self initTableView];
     [self initBackgroundImageView];
     [self initStartState];
+    
+    // Top shadow.
+    UIImageView *topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_background_overlay.png"]];
+    topShadowView.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, topShadowView.frame.size.height);
+    topShadowView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth;
+    [self.view insertSubview:topShadowView aboveSubview:self.backgroundImageView];
+    topShadowView.alpha = 0.0;
+    self.topShadowView = topShadowView;
 }
 
 #pragma mark - BookModalViewController methods
@@ -100,8 +112,20 @@ typedef enum {
 
 - (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
     if ([appearNumber boolValue]) {
+        
+        // Fade in the top shadow.
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.topShadowView.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+        
         [self updateButtons];
         [self loadPhoto];
+        
     } else {
     }
 }
@@ -124,7 +148,8 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContentCellId forIndexPath:indexPath];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
+    cell.contentView.backgroundColor = [Theme recipeViewBackgroundColour];
+    // cell.contentView.backgroundColor = [UIColor greenColor];
     
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
@@ -453,7 +478,7 @@ typedef enum {
                                                                             kWindowMidHeight,
                                                                             self.view.bounds.size.width,
                                                                             self.view.bounds.size.height - kWindowMidHeight)];
-    contentContainerView.backgroundColor = [UIColor whiteColor];
+    contentContainerView.backgroundColor = [UIColor clearColor];
     contentContainerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:contentContainerView];
     self.contentContainerView = contentContainerView;
@@ -476,14 +501,52 @@ typedef enum {
 }
 
 - (void)initHeaderView {
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(self.contentContainerView.bounds.origin.x,
-                                                                  self.contentContainerView.bounds.origin.y,
-                                                                  self.contentContainerView.bounds.size.width,
-                                                                  kHeaderHeight)];
+    UIImage *headerImage = [[UIImage imageNamed:@"cook_recipe_background_tile.png"] stretchableImageWithLeftCapWidth:0.0 topCapHeight:52.0];
+    UIImageView *headerView = [[UIImageView alloc] initWithImage:headerImage];
+    headerView.frame = CGRectMake(self.contentContainerView.bounds.origin.x,
+                                  self.contentContainerView.bounds.origin.y,
+                                  self.contentContainerView.bounds.size.width,
+                                  kHeaderHeight);
     headerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    headerView.backgroundColor = [UIColor whiteColor];
+    headerView.backgroundColor = [UIColor clearColor];
+    headerView.userInteractionEnabled = YES;
     [self.contentContainerView addSubview:headerView];
     self.headerView = headerView;
+    
+    // Profile photo.
+    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
+                                                                                profileSize:ProfileViewSizeSmall];
+    // User name
+    NSString *name = [self.book.user.name uppercaseString];
+    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    nameLabel.font = [Theme userNameFont];
+    nameLabel.textColor = [Theme userNameColor];
+    nameLabel.backgroundColor = [UIColor clearColor];
+    nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    nameLabel.shadowColor = [UIColor whiteColor];
+    nameLabel.text = name;
+    [nameLabel sizeToFit];
+    
+    // Lay them out side-by-side.
+    CGFloat photoNameOffset = 10.0;
+    CGFloat combinedWidth = profilePhotoView.frame.size.width + 5.0 + nameLabel.frame.size.width;
+    nameLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - combinedWidth) / 2.0) + profilePhotoView.frame.size.width + photoNameOffset,
+                                 40.0,
+                                 nameLabel.frame.size.width,
+                                 nameLabel.frame.size.height);
+    profilePhotoView.frame = CGRectMake(floorf((headerView.bounds.size.width - combinedWidth) / 2.0),
+                                        nameLabel.center.y - floorf(profilePhotoView.frame.size.height / 2.0) - 2.0,
+                                        profilePhotoView.frame.size.width,
+                                        profilePhotoView.frame.size.height);
+    [headerView addSubview:profilePhotoView];
+    [headerView addSubview:nameLabel];
+    
+    
+    
+
+    
+    
+    
     
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped:)];
@@ -627,6 +690,7 @@ typedef enum {
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         self.topShadowView.alpha = 0.0;
                          self.backgroundImageView.alpha = 0.0;
                      }
                      completion:^(BOOL finished)  {
@@ -677,7 +741,7 @@ typedef enum {
                                                           completion:^(BOOL finished)  {
                                                               
                                                               // Set the background to be white opaque.
-                                                              self.view.backgroundColor = [UIColor whiteColor];
+                                                              self.view.backgroundColor = [Theme recipeViewBackgroundColour];
                                                               
                                                           }];
         }];

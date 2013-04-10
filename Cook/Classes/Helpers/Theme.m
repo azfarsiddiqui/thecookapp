@@ -357,6 +357,10 @@
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:30.0f];
 }
 
++ (UIColor *)recipeViewBackgroundColour {
+    return [UIColor colorWithHexString:@"F8F8F8"];
+}
+
 #pragma mark - Recipe Editing
 
 

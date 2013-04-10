@@ -103,6 +103,7 @@
 +(UIFont*) categoryFont;
 +(UIColor*) userNameColor;
 +(UIFont*) userNameFont;
++ (UIColor *)recipeViewBackgroundColour;
 
 #pragma mark - Recipe Editing
 + (UIFont *) cookServesPrepEditTitleFont;
