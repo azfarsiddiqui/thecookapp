@@ -118,19 +118,28 @@ typedef enum {
 - (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
     if ([appearNumber boolValue]) {
         
-        // Fade in the top shadow.
-        [UIView animateWithDuration:0.4
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.topShadowView.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
+        // Start window height state.
+        PhotoWindowHeight startWindowHeight = [self startWindowHeight];
         
-        [self updateButtons];
-        [self loadPhoto];
-        [self loadData];
+        // Snap to required width.
+        [self snapContentToPhotoWindowHeight:startWindowHeight completion:^{
+            
+            // Fade in the top shadow.
+            [UIView animateWithDuration:0.4
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.topShadowView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+            
+            // Load stuff.
+            [self updateButtons];
+            [self loadPhoto];
+            [self loadData];
+        }];
+        
         
     } else {
     }
@@ -945,8 +954,8 @@ typedef enum {
 }
 
 - (void)initStartState {
-    self.previousPhotoWindowHeight = PhotoWindowHeightMid;
-    self.photoWindowHeight = PhotoWindowHeightMid;
+    self.previousPhotoWindowHeight = PhotoWindowHeightFullScreen;
+    self.photoWindowHeight = PhotoWindowHeightFullScreen;
     self.contentContainerView.frame = [self contentFrameForPhotoWindowHeight:self.photoWindowHeight];
     self.backgroundImageView.Frame = [self imageFrameForPhotoWindowHeight:self.photoWindowHeight];
     
@@ -1002,6 +1011,16 @@ typedef enum {
     text = [text length] > 0 ? text : @"";
     NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font colour:colour];
     return [[NSMutableAttributedString alloc] initWithString:text attributes:paragraphAttributes];
+}
+
+- (PhotoWindowHeight)startWindowHeight {
+    PhotoWindowHeight windowHeight = PhotoWindowHeightMid;
+    if (!self.recipe) {
+        windowHeight = PhotoWindowHeightMid;
+    } else if (![self.recipe hasPhotos]) {
+        windowHeight = PhotoWindowHeightMax;
+    }
+    return windowHeight;
 }
 
 @end

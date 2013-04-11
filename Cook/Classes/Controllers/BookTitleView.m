@@ -82,7 +82,7 @@
 }
 
 - (void)configureBook:(CKBook *)book {
-    NSString *bookAuthor = [book.author uppercaseString];
+    NSString *bookAuthor = [book.user.name uppercaseString];
     NSString *bookTitle = [NSString stringWithFormat:@"%@\u2028%@",[book.name uppercaseString], bookAuthor];
     NSAttributedString *titleDisplay = [self attributedTextForTitle:bookTitle titleFont:[Theme bookContentsTitleFont]
                                                              author:bookAuthor authorFont:[Theme bookContentsNameFont]];
