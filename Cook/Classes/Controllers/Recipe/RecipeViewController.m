@@ -41,6 +41,7 @@ typedef enum {
 @property (nonatomic, assign) PhotoWindowHeight photoWindowHeight;
 @property (nonatomic, assign) PhotoWindowHeight previousPhotoWindowHeight;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) UIView *navContainerView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIButton *shareButton;
@@ -181,11 +182,12 @@ typedef enum {
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    BOOL shouldReceive = YES;
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        return !self.editMode;
-    } else {
-        return YES;
+        shouldReceive = !self.editMode;
     }
+    
+    return shouldReceive;
 }
 
 #pragma mark - Lazy getters.
@@ -756,6 +758,7 @@ typedef enum {
     
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(windowTapped:)];
+    tapGesture.delegate = self;
     [backgroundImageView addGestureRecognizer:tapGesture];
 }
 
@@ -800,24 +803,36 @@ typedef enum {
 }
 
 - (void)updateButtonsWithAlpha:(CGFloat)alpha {
+    if (!self.navContainerView) {
+        UIView *navContainerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
+                                                                            self.view.bounds.origin.y,
+                                                                            self.view.bounds.size.width,
+                                                                            kWindowMinHeight)];
+        navContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+        [self.view addSubview:navContainerView];
+        self.navContainerView = navContainerView;
+    }
+    
+    
     if (self.editMode) {
         self.cancelButton.alpha = 0.0;
         self.saveButton.alpha = 0.0;
-        [self.view addSubview:self.cancelButton];
-        [self.view addSubview:self.saveButton];
+        [self.navContainerView addSubview:self.cancelButton];
+        [self.navContainerView addSubview:self.saveButton];
     } else {
         self.closeButton.alpha = 0.0;
         self.socialView.alpha = 0.0;
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
-        [self.view addSubview:self.closeButton];
-        [self.view addSubview:self.socialView];
-        [self.view addSubview:self.editButton];
-        [self.view addSubview:self.shareButton];
+        [self.navContainerView addSubview:self.closeButton];
+        [self.navContainerView addSubview:self.socialView];
+        [self.navContainerView addSubview:self.editButton];
+        [self.navContainerView addSubview:self.shareButton];
     }
     
     // Buttons are hidden on full screen mode only.
     CGFloat buttonsVisibleAlpha = (self.photoWindowHeight == PhotoWindowHeightFullScreen) ? 0.0 : alpha;
+    self.navContainerView.userInteractionEnabled = (buttonsVisibleAlpha != 0.0);
     
     [UIView animateWithDuration:0.3
                           delay:0.0
