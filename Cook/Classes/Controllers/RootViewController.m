@@ -611,9 +611,6 @@
     [self.view addSubview:overlayView];
     self.overlayView = overlayView;
     
-    // Bounce offset
-    CGFloat bounceOffset = 10.0;
-    
     // Prepare the modalVC to be transitioned.
     modalViewController.view.frame = self.view.bounds;
     modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
@@ -640,6 +637,8 @@
                      // Scale back.
                      self.bookCoverViewController.view.transform = transform;
                      self.bookNavigationViewController.view.transform = transform;
+                     
+                     // Slide up the modal.
                      modalViewController.view.transform = CGAffineTransformIdentity;
                  }
                  completion:^(BOOL finished)  {
