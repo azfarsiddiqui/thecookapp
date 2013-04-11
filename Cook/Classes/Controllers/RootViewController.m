@@ -126,6 +126,8 @@
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
+    [self showStoreShelf:!open];
+
     if (!open) {
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
@@ -149,7 +151,7 @@
         [self.bookCoverViewController cleanUpLayers];
         [self.bookCoverViewController.view removeFromSuperview];
         self.bookCoverViewController = nil;
-        
+     
     }
     
     // Pass on event to the benchtop to restore the book.
@@ -493,6 +495,17 @@
     
 }
 
+- (void)showStoreShelf:(BOOL)show {
+    [UIView animateWithDuration:0.3
+                          delay:show ? 0.1 : 0.2
+                        options:show ? UIViewAnimationOptionCurveEaseOut : UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.storeViewController.view.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -kStoreHideTuckOffset);
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+
 - (void)initViewControllers {
     BOOL isLoggedIn = [self isLoggedIn];
     [self initBenchtop];
@@ -598,6 +611,9 @@
     [self.view addSubview:overlayView];
     self.overlayView = overlayView;
     
+    // Bounce offset
+    CGFloat bounceOffset = 10.0;
+    
     // Prepare the modalVC to be transitioned.
     modalViewController.view.frame = self.view.bounds;
     modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
@@ -617,9 +633,6 @@
                       delay:0.0
                     options:UIViewAnimationCurveEaseIn
                  animations:^{
-                     
-                     // Fade the store away.
-                     self.storeViewController.view.alpha = 0.0;
                      
                      // Fade in overlay.
                      overlayView.alpha = kOverlayViewAlpha;
@@ -647,7 +660,6 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          self.overlayView.alpha = 0.0;
-                         self.storeViewController.view.alpha = 1.0;
                          self.bookNavigationViewController.view.transform = CGAffineTransformIdentity;
                          self.bookCoverViewController.view.transform = CGAffineTransformIdentity;
                          modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
