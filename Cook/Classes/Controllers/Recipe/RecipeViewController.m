@@ -42,6 +42,8 @@ typedef enum {
 @property (nonatomic, strong) UIButton *shareButton;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
@@ -551,6 +553,28 @@ typedef enum {
                                   titleLabel.frame.size.width,
                                   titleLabel.frame.size.height);
     [headerView addSubview:titleLabel];
+    self.titleLabel = titleLabel;
+    
+    // Recipe story.
+    CGFloat titleStoryGap = 0.0;
+    CGSize storyAvailableSize = CGSizeMake(660.0, headerView.bounds.size.height - titleLabel.frame.origin.y - titleLabel.frame.size.height);
+    NSString *story = self.recipe.story;
+    CGSize size = [story sizeWithFont:[Theme storyFont] constrainedToSize:storyAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
+    UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((headerView.bounds.size.width - size.width) / 2.0),
+                                                                    titleLabel.frame.origin.y + titleLabel.frame.size.height + titleStoryGap,
+                                                                    size.width,
+                                                                    size.height)];
+    storyLabel.font = [Theme storyFont];
+    storyLabel.numberOfLines = 2;
+    storyLabel.textAlignment = NSTextAlignmentCenter;
+    storyLabel.textColor = [Theme storyColor];
+    storyLabel.backgroundColor = [UIColor clearColor];
+    storyLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    storyLabel.shadowColor = [UIColor whiteColor];
+    storyLabel.text = story;
+    storyLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [headerView addSubview:storyLabel];
+    self.storyLabel = storyLabel;
 
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped:)];
@@ -778,7 +802,7 @@ typedef enum {
 - (void)loadData {
     
     // TODO Load data.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0];
         socialView.frame = CGRectMake(floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
                                       kButtonInsets.top,
