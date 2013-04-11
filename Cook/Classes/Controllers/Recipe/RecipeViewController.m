@@ -68,6 +68,7 @@ typedef enum {
 #define kWindowMinSnapOffset    175.0
 #define kWindowMaxSnapOffset    400.0
 #define kWindowBounceOffset     10.0
+#define kPhotoOffset            20.0
 
 #define kHeaderHeight           210.0
 #define kContentMaxHeight       468.0
@@ -437,7 +438,7 @@ typedef enum {
     
     // Background image frame.
     CGRect imageFrame = self.backgroundImageView.frame;
-    imageFrame.origin.y = floorf((contentFrame.origin.y - imageFrame.size.height) / 2.0);
+    imageFrame.origin.y = floorf((contentFrame.origin.y - imageFrame.size.height) / 2.0) + kPhotoOffset;
 
     self.contentContainerView.frame = contentFrame;
     self.backgroundImageView.frame = imageFrame;
@@ -557,19 +558,19 @@ typedef enum {
     CGRect imageFrame = self.backgroundImageView.frame;
     switch (photoWindowHeight) {
         case PhotoWindowHeightMin:
-            imageFrame.origin.y = floorf((kWindowMinHeight - imageFrame.size.height) / 2.0);
+            imageFrame.origin.y = floorf((kWindowMinHeight - imageFrame.size.height) / 2.0) + kPhotoOffset;
             break;
         case PhotoWindowHeightMid:
-            imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0);
+            imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0) + kPhotoOffset;
             break;
         case PhotoWindowHeightMax:
-            imageFrame.origin.y = floorf((self.view.bounds.size.height - self.headerView.frame.size.height - imageFrame.size.height) / 2.0);
+            imageFrame.origin.y = floorf((self.view.bounds.size.height - self.headerView.frame.size.height - imageFrame.size.height) / 2.0) + kPhotoOffset;
             break;
         case PhotoWindowHeightFullScreen:
             imageFrame.origin.y = self.view.bounds.origin.y;
             break;
         default:
-            imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0);
+            imageFrame.origin.y = floorf((kWindowMidHeight - imageFrame.size.height) / 2.0) + kPhotoOffset;
             break;
     }
     return imageFrame;
