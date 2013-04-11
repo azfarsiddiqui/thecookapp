@@ -14,6 +14,8 @@
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
 #import "CKRecipeSocialView.h"
+#import "MRCEnumerable.h"
+#import "Ingredient.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -47,6 +49,7 @@ typedef enum {
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *methodLabel;
+@property (nonatomic, strong) UILabel *ingredientsLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
@@ -278,6 +281,15 @@ typedef enum {
 }
 
 #pragma mark - Private methods
+
+- (NSString *)ingredientsText {
+    NSArray *ingredientsDisplay = [self.recipe.ingredients collect:^id(Ingredient *ingredient) {
+        return [NSString stringWithFormat:@"%@ %@",
+                ingredient.measurement ? ingredient.measurement : @"",
+                ingredient.name ? ingredient.name : @""];
+    }];
+    return ([ingredientsDisplay count] > 0) ? [ingredientsDisplay componentsJoinedByString:@"\n"] : @"";
+}
 
 - (UIView *)iconTextViewForIcon:(UIImage *)icon text:(NSString *)text {
     UIView *iconTextView = [[UIView alloc] initWithFrame:CGRectZero];;
@@ -659,7 +671,9 @@ typedef enum {
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
     CGRect contentFrame = contentView.frame;
     
-    CGFloat requiredHeight = 0.0;
+    CGFloat requiredLeftHeight = 0.0;
+    CGFloat requiredRightHeight = 0.0;
+    CGFloat servesIngredientsGap = 30.0;
     
     // Left Frame.
     self.servesCookView.frame = CGRectMake(contentInsets.left,
@@ -667,11 +681,34 @@ typedef enum {
                                            self.servesCookView.frame.size.width,
                                            self.servesCookView.frame.size.height);
     [contentView addSubview:self.servesCookView];
+    requiredRightHeight += contentInsets.top + self.servesCookView.frame.size.height;
+    
+    CGSize ingredientsAvailableSize = CGSizeMake(leftFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
+    NSString *ingredients = [self ingredientsText];
+    CGSize size = [ingredients sizeWithFont:[Theme ingredientsListFont] constrainedToSize:ingredientsAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
+    UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectMake(leftFrame.origin.x + contentInsets.left + floorf((ingredientsAvailableSize.width - size.width) / 2.0),
+                                                                          requiredRightHeight + servesIngredientsGap,
+                                                                          size.width,
+                                                                          size.height)];
+    ingredientsLabel.font = [Theme ingredientsListFont];
+    ingredientsLabel.numberOfLines = 0;
+    ingredientsLabel.textAlignment = NSTextAlignmentLeft;
+    ingredientsLabel.textColor = [Theme ingredientsListColor];
+    ingredientsLabel.backgroundColor = [UIColor clearColor];
+    ingredientsLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    ingredientsLabel.shadowColor = [UIColor whiteColor];
+    ingredientsLabel.text = ingredients;
+    ingredientsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [contentView addSubview:ingredientsLabel];
+    self.ingredientsLabel = ingredientsLabel;
+    
+    requiredRightHeight += servesIngredientsGap + ingredientsLabel.frame.size.height;
+    requiredRightHeight += contentInsets.bottom;
     
     // Right Frame.
     CGSize descriptionAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
     NSString *story = self.recipe.description;
-    CGSize size = [story sizeWithFont:[Theme methodFont] constrainedToSize:descriptionAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
+    size = [story sizeWithFont:[Theme methodFont] constrainedToSize:descriptionAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
     UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((descriptionAvailableSize.width - size.width) / 2.0),
                                                                      rightFrame.origin.y + contentInsets.top,
                                                                      size.width,
@@ -687,9 +724,12 @@ typedef enum {
     methodLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     [contentView addSubview:methodLabel];
     self.methodLabel = methodLabel;
-    requiredHeight += methodLabel.frame.origin.y + methodLabel.frame.size.height;
     
-    contentFrame.size.height = requiredHeight;
+    requiredRightHeight += contentInsets.top + methodLabel.frame.size.height;
+    requiredRightHeight += contentInsets.bottom;
+    
+    // Adjust contentView frame.
+    contentFrame.size.height = MAX(requiredLeftHeight, requiredRightHeight);
     self.contentView.frame = contentFrame;
     self.contentView = contentView;
 }
