@@ -625,7 +625,11 @@
                               withObject:[NSNumber numberWithBool:YES]];
     
     // Animate the book back, and slide up the modalVC.
-    CGAffineTransform transform = CGAffineTransformMakeScale(0.9, 0.9);
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
+    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 40.0);
+//    CGAffineTransform transform = scaleTransform;
+    CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, translateTransform);
+    
     [UIView animateWithDuration:0.4
                       delay:0.0
                     options:UIViewAnimationCurveEaseIn
