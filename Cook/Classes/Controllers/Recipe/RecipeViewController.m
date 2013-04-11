@@ -995,7 +995,7 @@ typedef enum {
 - (void)loadData {
     
     // TODO Load data.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0 delegate:self];
         socialView.frame = CGRectMake(floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
                                       kButtonInsets.top,
