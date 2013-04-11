@@ -33,6 +33,8 @@ typedef enum {
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *windowView;
 @property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) UIView *contentView;
+@property (nonatomic, strong) UIView *servesCookView;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, assign) PhotoWindowHeight photoWindowHeight;
 @property (nonatomic, assign) PhotoWindowHeight previousPhotoWindowHeight;
@@ -44,6 +46,7 @@ typedef enum {
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
+@property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
@@ -60,6 +63,7 @@ typedef enum {
 
 #define kHeaderHeight           210.0
 #define kContentMaxHeight       468.0
+#define kContentMaxWidth        660.0
 #define kContentCellId          @"kContentCellId"
 #define kWindowSection          0
 #define kContentSection         1
@@ -89,6 +93,7 @@ typedef enum {
     [self initContentContainerView];
     [self initHeaderView];
     [self initTableView];
+    [self initContentView];
     [self initBackgroundImageView];
     [self initStartState];
 }
@@ -146,20 +151,15 @@ typedef enum {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContentCellId forIndexPath:indexPath];
     cell.contentView.backgroundColor = [Theme recipeViewBackgroundColour];
-    // cell.contentView.backgroundColor = [UIColor greenColor];
+//    cell.contentView.backgroundColor = [UIColor greenColor];
     
+    // Reset the contentView.
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    contentLabel.text = @"Some description about this recipe.";
-    contentLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-    [contentLabel sizeToFit];
-    contentLabel.frame = CGRectMake(floorf((cell.contentView.bounds.size.width - contentLabel.frame.size.width) / 2.0),
-                                    10.0,
-                                    contentLabel.frame.size.width,
-                                    contentLabel.frame.size.height);
-    [cell.contentView addSubview:contentLabel];
-    
+    self.contentView.frame = CGRectMake(floorf((cell.contentView.bounds.size.width - self.contentView.frame.size.width) / 2.0),
+                                        0.0,
+                                        self.contentView.frame.size.width,
+                                        self.contentView.frame.size.height);
+    [cell.contentView addSubview:self.contentView];
     return cell;
 }
 
@@ -257,7 +257,63 @@ typedef enum {
     return _saveButton;
 }
 
+- (UIView *)servesCookView {
+    if (!_servesCookView) {
+        
+        CGFloat iconOffset = -2.0;
+        UIView *servesView = [self iconTextViewForIcon:[UIImage imageNamed:@"cook_book_icon_serves.png"]
+                                                  text:[NSString stringWithFormat:@"Serves %d", self.recipe.numServes]];
+        UIView *prepCookView = [self iconTextViewForIcon:[UIImage imageNamed:@"cook_book_icon_time.png"]
+                                                  text:[NSString stringWithFormat:@"Prep %dm | Cook %dm",
+                                                        self.recipe.prepTimeInMinutes, self.recipe.cookingTimeInMinutes]];
+        CGRect prepCookFrame = prepCookView.frame;
+        prepCookFrame.origin.y = servesView.frame.origin.y + servesView.frame.size.height + iconOffset;
+        prepCookView.frame = prepCookFrame;
+        
+        _servesCookView = [[UIView alloc] initWithFrame:CGRectUnion(servesView.frame, prepCookView.frame)];
+        [_servesCookView addSubview:servesView];
+        [_servesCookView addSubview:prepCookView];
+    }
+    return _servesCookView;
+}
+
 #pragma mark - Private methods
+
+- (UIView *)iconTextViewForIcon:(UIImage *)icon text:(NSString *)text {
+    UIView *iconTextView = [[UIView alloc] initWithFrame:CGRectZero];;
+    CGFloat iconTextGap = 8.0;
+    UIEdgeInsets edgeInsets = UIEdgeInsetsMake(2.0, 2.0, 2.0, 2.0);
+    
+    // Icon view.
+    UIImageView *servesIconView = [[UIImageView alloc] initWithImage:icon];
+    
+    // Text label.
+    UILabel *servesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    servesLabel.font = [Theme servesFont];
+    servesLabel.textColor = [Theme servesColor];
+    servesLabel.backgroundColor = [UIColor clearColor];
+    servesLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    servesLabel.shadowColor = [UIColor whiteColor];
+    servesLabel.text = text;
+    [servesLabel sizeToFit];
+    
+    // Position them
+    CGFloat maxHeight = MAX(servesIconView.frame.size.height, servesLabel.frame.size.height) + edgeInsets.top + edgeInsets.bottom;
+    servesIconView.frame = CGRectMake(edgeInsets.left,
+                                      floorf((maxHeight - servesIconView.frame.size.height) / 2.0),
+                                      servesIconView.frame.size.width,
+                                      servesIconView.frame.size.height);
+    servesLabel.frame = CGRectMake(servesIconView.frame.origin.x + servesIconView.frame.size.width + iconTextGap,
+                                   floorf((maxHeight - servesLabel.frame.size.height) / 2.0),
+                                   servesLabel.frame.size.width,
+                                   servesLabel.frame.size.height);
+    CGRect combinedFrame = CGRectUnion(servesIconView.frame, servesLabel.frame);
+    iconTextView.frame = CGRectMake(0.0, 0.0, edgeInsets.left + combinedFrame.size.width + edgeInsets.right, maxHeight);
+    [iconTextView addSubview:servesIconView];
+    [iconTextView addSubview:servesLabel];
+    
+    return iconTextView;
+}
 
 - (void)swiped:(UISwipeGestureRecognizer *)swipeGesture {
     UISwipeGestureRecognizerDirection direction = swipeGesture.direction;
@@ -557,7 +613,7 @@ typedef enum {
     
     // Recipe story.
     CGFloat titleStoryGap = 0.0;
-    CGSize storyAvailableSize = CGSizeMake(660.0, headerView.bounds.size.height - titleLabel.frame.origin.y - titleLabel.frame.size.height);
+    CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, headerView.bounds.size.height - titleLabel.frame.origin.y - titleLabel.frame.size.height);
     NSString *story = self.recipe.story;
     CGSize size = [story sizeWithFont:[Theme storyFont] constrainedToSize:storyAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
     UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((headerView.bounds.size.width - size.width) / 2.0),
@@ -594,6 +650,48 @@ typedef enum {
     [self.contentContainerView addSubview:tableView];
     self.tableView = tableView;
     [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kContentCellId];
+}
+
+- (void)initContentView {
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
+    CGRect leftFrame = CGRectMake(0.0, 0.0, 240.0, 0.0);
+    CGRect rightFrame = CGRectMake(240.0, 0.0, 420.0, 0.0);
+    UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
+    CGRect contentFrame = contentView.frame;
+    
+    CGFloat requiredHeight = 0.0;
+    
+    // Left Frame.
+    self.servesCookView.frame = CGRectMake(contentInsets.left,
+                                           contentInsets.top,
+                                           self.servesCookView.frame.size.width,
+                                           self.servesCookView.frame.size.height);
+    [contentView addSubview:self.servesCookView];
+    
+    // Right Frame.
+    CGSize descriptionAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
+    NSString *story = self.recipe.description;
+    CGSize size = [story sizeWithFont:[Theme methodFont] constrainedToSize:descriptionAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
+    UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((descriptionAvailableSize.width - size.width) / 2.0),
+                                                                     rightFrame.origin.y + contentInsets.top,
+                                                                     size.width,
+                                                                     size.height)];
+    methodLabel.font = [Theme methodFont];
+    methodLabel.numberOfLines = 0;
+    methodLabel.textAlignment = NSTextAlignmentLeft;
+    methodLabel.textColor = [Theme methodColor];
+    methodLabel.backgroundColor = [UIColor clearColor];
+    methodLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    methodLabel.shadowColor = [UIColor whiteColor];
+    methodLabel.text = story;
+    methodLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [contentView addSubview:methodLabel];
+    self.methodLabel = methodLabel;
+    requiredHeight += methodLabel.frame.origin.y + methodLabel.frame.size.height;
+    
+    contentFrame.size.height = requiredHeight;
+    self.contentView.frame = contentFrame;
+    self.contentView = contentView;
 }
 
 - (void)initBackgroundImageView {
