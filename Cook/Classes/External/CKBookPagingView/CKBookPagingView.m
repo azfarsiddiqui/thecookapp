@@ -43,9 +43,17 @@
         }
     }
 }
+
+- (void)setNumPages:(NSUInteger)numPages {
+    _numPages = numPages;
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self setUpDots];
+}
+
 #pragma mark - Private methods
 
 - (void)setUpDots {
+    self.frame = CGRectZero;
     CGFloat xOffset = 0.0;
     self.dotViews = [NSMutableArray arrayWithCapacity:self.numPages + 1];
     for (NSInteger page = 0; page < self.numPages + 1; page++) {

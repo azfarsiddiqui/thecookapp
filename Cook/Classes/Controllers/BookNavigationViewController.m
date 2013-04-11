@@ -21,6 +21,7 @@
 #import "Theme.h"
 #import "BookTitleViewController.h"
 #import "EventHelper.h"
+#import "CKBookPagingView.h"
 
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
     BookIndexViewControllerDelegate, BookActivityViewControllerDelegate, BookTitleViewControllerDelegate>
@@ -32,6 +33,7 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) CKBookPagingView *bookPagingView;
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *categoryNames;
@@ -81,6 +83,7 @@
     
     [self initBookOutlineView];
     [self initCollectionView];
+    [self initBookPagingView];
     [self loadData];
     
     // Mark as just opened.
@@ -91,7 +94,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self updateNavigation];
+    [self updateNavigationButtons];
 }
 
 #pragma mark - BookNavigationDataSource methods
@@ -124,6 +127,11 @@
                                      animated:NO];
         self.justOpened = NO;
     }
+    
+    // Update book paging.
+    BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
+    NSInteger numRecipePages = [layout numberOfPages];
+    [self updateBookPagingViewWithNumPages:numRecipePages];
 }
 
 #pragma mark - BookIndexViewControllerDelegate methods
@@ -162,6 +170,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self updateNavTitle];
+    [self updateBookPagingViewAndDots:NO];
 }
 
 // To detect returning from category deep-linking.
@@ -177,6 +186,7 @@
         [self.collectionView reloadData];
     }
     
+    [self updateBookPagingViewAndDots:YES];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -320,6 +330,87 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - Lazy getters
+
+- (UILabel *)titleLabel {
+    if (!_titleLabel) {
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, kNavTitleOffset.y, 0.0, 0.0)];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.font = [Theme bookNavigationTitleFont];
+        _titleLabel.textColor = [Theme bookNavigationTitleColour];
+        //        _titleLabel.hidden = YES;
+    }
+    return _titleLabel;
+}
+
+- (UIButton *)closeButton {
+    if (!_closeButton) {
+        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
+                                            target:self
+                                          selector:@selector(closeTapped:)];
+        _closeButton.frame = CGRectMake(kNavTopLeftOffset.x,
+                                        kNavTopLeftOffset.y,
+                                        _closeButton.frame.size.width,
+                                        _closeButton.frame.size.height);
+    }
+    return _closeButton;
+}
+
+- (UIButton *)contentsButton {
+    if (!_contentsButton) {
+        _contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_contents_gray.png"]
+                                               target:self
+                                             selector:@selector(contentsTapped:)];
+        _contentsButton.frame = CGRectMake(self.closeButton.frame.origin.x + self.closeButton.frame.size.width,
+                                           kNavTopLeftOffset.y,
+                                           _contentsButton.frame.size.width,
+                                           _contentsButton.frame.size.height);
+    }
+    return _contentsButton;
+}
+
+- (UIButton *)addButton {
+    if (!_addButton && [self canAddRecipe]) {
+        _addButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_btn_addrecipe.png"]
+                                   selectedImage:[UIImage imageNamed:@"cook_book_btn_addrecipe_onpress.png"]
+                                          target:self
+                                        selector:@selector(addRecipeTapped)];
+        _addButton.frame = CGRectMake(self.view.bounds.size.width - _addButton.frame.size.width - 30.0,
+                                      20.0,
+                                      _addButton.frame.size.width,
+                                      _addButton.frame.size.height);
+        _addButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+    }
+    return _addButton;
+}
+
+- (UIButton *)cancelButton {
+    if (!_cancelButton) {
+        _cancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+                                             target:self
+                                           selector:@selector(cancelTapped:)];
+        _cancelButton.frame = CGRectMake(kNavTopLeftOffset.x,
+                                         kNavTopLeftOffset.y,
+                                         _cancelButton.frame.size.width,
+                                         _cancelButton.frame.size.height);
+    }
+    return _cancelButton;
+}
+
+- (UIButton *)saveButton {
+    if (!_saveButton) {
+        _saveButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
+                                           target:self
+                                         selector:@selector(saveTapped:)];
+        _saveButton.frame = CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kNavTopLeftOffset.x,
+                                       kNavTopLeftOffset.y,
+                                       _saveButton.frame.size.width,
+                                       _saveButton.frame.size.height);
+        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+    }
+    return _saveButton;
+}
+
 #pragma mark - Private methods
 
 - (void)initBookOutlineView {
@@ -329,7 +420,7 @@
     [self.view sendSubviewToBack:bookOutlineView];
 }
 
-- (void)updateNavigation {
+- (void)updateNavigationButtons {
     if (self.editMode) {
         self.cancelButton.alpha = 0.0;
         self.saveButton.alpha = 0.0;
@@ -370,88 +461,10 @@
                      }];
 }
 
-- (UILabel *)titleLabel {
-    if (!_titleLabel) {
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, kNavTitleOffset.y, 0.0, 0.0)];
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.font = [Theme bookNavigationTitleFont];
-        _titleLabel.textColor = [Theme bookNavigationTitleColour];
-//        _titleLabel.hidden = YES;
-    }
-    return _titleLabel;
-}
-
-- (UIButton *)closeButton {
-    if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
-                                           target:self
-                                         selector:@selector(closeTapped:)];
-        _closeButton.frame = CGRectMake(kNavTopLeftOffset.x,
-                                        kNavTopLeftOffset.y,
-                                        _closeButton.frame.size.width,
-                                        _closeButton.frame.size.height);
-    }
-    return _closeButton;
-}
-
-- (UIButton *)contentsButton {
-    if (!_contentsButton) {
-        _contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_contents_gray.png"]
-                                               target:self
-                                             selector:@selector(contentsTapped:)];
-        _contentsButton.frame = CGRectMake(self.closeButton.frame.origin.x + self.closeButton.frame.size.width,
-                                           kNavTopLeftOffset.y,
-                                           _contentsButton.frame.size.width,
-                                           _contentsButton.frame.size.height);
-    }
-    return _contentsButton;
-}
-
-- (UIButton *)addButton {
-    if (!_addButton && [self canAddRecipe]) {
-        _addButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_btn_addrecipe.png"]
-                                   selectedImage:[UIImage imageNamed:@"cook_book_btn_addrecipe_onpress.png"]
-                                          target:self
-                                        selector:@selector(addRecipeTapped)];
-        _addButton.frame = CGRectMake(self.view.bounds.size.width - _addButton.frame.size.width - 30.0,
-                                      20.0,
-                                      _addButton.frame.size.width,
-                                      _addButton.frame.size.height);
-        _addButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    }
-    return _addButton;
-}
-
-- (UIButton *)cancelButton {
-    if (!_cancelButton) {
-        _cancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
-                                            target:self
-                                          selector:@selector(cancelTapped:)];
-        _cancelButton.frame = CGRectMake(kNavTopLeftOffset.x,
-                                         kNavTopLeftOffset.y,
-                                         _cancelButton.frame.size.width,
-                                         _cancelButton.frame.size.height);
-    }
-    return _cancelButton;
-}
-
-- (UIButton *)saveButton {
-    if (!_saveButton) {
-        _saveButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
-                                           target:self
-                                         selector:@selector(saveTapped:)];
-        _saveButton.frame = CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kNavTopLeftOffset.x,
-                                       kNavTopLeftOffset.y,
-                                      _saveButton.frame.size.width,
-                                      _saveButton.frame.size.height);
-        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    }
-    return _saveButton;
-}
-
 - (void)initCollectionView {
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.pagingEnabled = YES;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
     
     // Profile, Contents, Activity
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
@@ -463,6 +476,25 @@
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:kCategoryHeaderId];
     [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
+}
+
+- (void)initBookPagingView {
+    [self updateBookPagingViewWithNumPages:0];
+}
+
+- (void)updateBookPagingViewWithNumPages:(NSInteger)numPages {
+    if (!self.bookPagingView) {
+        CKBookPagingView *bookPagingView = [[CKBookPagingView alloc] initWithNumPages:numPages];
+        bookPagingView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
+        [self.view addSubview:bookPagingView];
+        self.bookPagingView = bookPagingView;
+    } else {
+        [self.bookPagingView setNumPages:numPages];
+    }
+    self.bookPagingView.frame = CGRectMake(floor((self.view.bounds.size.width - self.bookPagingView.frame.size.width) / 2.0),
+                                           self.view.bounds.size.height - self.bookPagingView.frame.size.height - 28.0,
+                                           self.bookPagingView.frame.size.width,
+                                           self.bookPagingView.frame.size.height);
 }
 
 - (void)loadData {
@@ -493,7 +525,6 @@
         
         // Now reload the collection.
         [self.collectionView reloadData];
-        
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
@@ -657,7 +688,6 @@
 
 - (NSInteger)recipeSection {
     return 3;
-
 }
 
 - (void)updateNavTitle {
@@ -690,6 +720,22 @@
         [title appendFormat:@" - %@", [currentCategoryName uppercaseString]];
     }
     return title;
+}
+
+- (void)updateBookPagingViewAndDots:(BOOL)updateDots {
+    CGFloat contentsPageOffset = [self recipeSection] * self.collectionView.bounds.size.width;
+    if (self.collectionView.contentOffset.x >= contentsPageOffset) {
+        self.bookPagingView.hidden = NO;
+        
+        if (updateDots) {
+            CGFloat pageSpan = self.collectionView.contentOffset.x + self.collectionView.bounds.size.width - contentsPageOffset;
+            NSInteger page = (pageSpan / self.collectionView.bounds.size.width);
+            [self.bookPagingView setPage:page];
+        }
+        
+    } else {
+        self.bookPagingView.hidden = YES;
+    }
 }
 
 - (NSString *)currentCategoryNameFromOffset {
@@ -728,17 +774,17 @@
 
 - (void)editModeReceived:(NSNotification *)notification {
     self.editMode = [EventHelper editModeForNotification:notification];
-    [self updateNavigation];
+    [self updateNavigationButtons];
 }
 
 - (void)cancelTapped:(id)sender {
     [EventHelper postEditMode:NO save:NO];
-    [self updateNavigation];
+    [self updateNavigationButtons];
 }
 
 - (void)saveTapped:(id)sender {
     [EventHelper postEditMode:NO save:YES];
-    [self updateNavigation];
+    [self updateNavigationButtons];
 }
 
 @end

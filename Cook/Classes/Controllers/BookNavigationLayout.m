@@ -80,6 +80,16 @@
     return pageOffset;
 }
 
+- (NSInteger)numberOfPages {
+    NSInteger numSections = self.collectionView.numberOfSections - [self.dataSource bookNavigationContentStartSection];
+    NSInteger numPages = 0;
+    for (NSInteger sectionIndex = 0; sectionIndex < numSections; sectionIndex++) {
+        NSArray *sectionPages = [self.contentPages objectAtIndex:sectionIndex];
+        numPages += [sectionPages count];
+    }
+    return numPages;
+}
+
 - (NSArray *)pageOffsetsForContentsSections {
     return self.pageOffsetsForSections;
 }
