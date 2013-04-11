@@ -60,15 +60,14 @@
     
     // Prepare contentView within the popover.
     UIEdgeInsets contentInsets = [self contentInsetsForDirection:direction];
-    CGPoint anchorPoint = [self anchorPointForDirection:direction];
     UIView *contentView = self.contentViewController.view;
     UIImageView *popoverContainerView = [[UIImageView alloc] initWithImage:[self popoverBackgroundImageForDirection:direction]];
     popoverContainerView.userInteractionEnabled = YES;
-    popoverContainerView.frame = CGRectMake(point.x - anchorPoint.x,
-                                            point.y - anchorPoint.y,
-                                            contentInsets.left + contentView.frame.size.width + contentInsets.right,
-                                            contentInsets.top + contentView.frame.size.height + contentInsets.bottom);
-    contentView.frame = CGRectMake(contentInsets.left, contentInsets.top, contentView.frame.size.width, contentView.frame.size.height);
+    popoverContainerView.frame = [self popoverContainerFrameForDirection:direction point:point];
+    contentView.frame = CGRectMake(contentInsets.left,
+                                   contentInsets.top,
+                                   contentView.frame.size.width,
+                                   contentView.frame.size.height);
     [popoverContainerView addSubview:contentView];
     //popoverContainerView.alpha = 0.0;
     [self.view addSubview:popoverContainerView];
@@ -104,7 +103,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     CGPoint tapPoint = [touch locationInView:self.view];
-    return !CGRectContainsPoint(self.contentViewController.view.frame, tapPoint);
+    return !CGRectContainsPoint(self.popoverContainerView.frame, tapPoint);
 }
 
 #pragma mark - Private methods
@@ -142,11 +141,13 @@
     [self hide];
 }
 
-// TODO for Top, Bottom and Right directions.
+// TODO for Bottom and Right directions.
 - (UIImage *)popoverBackgroundImageForDirection:(CKPopoverViewControllerDirection)direction {
     UIImage *popoverImage = nil;
     switch (direction) {
         case CKPopoverViewControllerTop:
+            popoverImage = [[UIImage imageNamed:@"cook_popover_social_bg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(43.0, 0.0, 43.0, 0.0)];
+            break;
         case CKPopoverViewControllerLeft:
         case CKPopoverViewControllerBottom:
         case CKPopoverViewControllerRight:
@@ -157,10 +158,40 @@
     return popoverImage;
 }
 
+- (CGRect)popoverContainerFrameForDirection:(CKPopoverViewControllerDirection)direction
+                                      point:(CGPoint)point {
+    CGPoint anchorPoint = [self anchorPointForDirection:direction];
+    UIEdgeInsets contentInsets = [self contentInsetsForDirection:direction];
+    UIView *contentView = self.contentViewController.view;
+    CGRect frame = CGRectZero;
+    switch (direction) {
+        case CKPopoverViewControllerTop:
+            frame = CGRectMake(point.x - floorf((contentInsets.left + contentView.frame.size.width + contentInsets.right) / 2.0) - anchorPoint.x,
+                               point.y - anchorPoint.y,
+                               contentInsets.left + contentView.frame.size.width + contentInsets.right,
+                               contentInsets.top + contentView.frame.size.height + contentInsets.bottom);
+            break;
+        case CKPopoverViewControllerLeft:
+            frame = CGRectMake(point.x - anchorPoint.x,
+                               point.y - anchorPoint.y,
+                               contentInsets.left + contentView.frame.size.width + contentInsets.right,
+                               contentInsets.top + contentView.frame.size.height + contentInsets.bottom);
+            break;
+        case CKPopoverViewControllerBottom:
+            break;
+        case CKPopoverViewControllerRight:
+            break;
+        default:
+            break;
+    }
+    return frame;
+}
+
 - (UIEdgeInsets)contentInsetsForDirection:(CKPopoverViewControllerDirection)direction {
     UIEdgeInsets insets = UIEdgeInsetsZero;
     switch (direction) {
         case CKPopoverViewControllerTop:
+            insets = UIEdgeInsetsMake(46.0, 56.0, 59.0, 56.0);
         case CKPopoverViewControllerLeft:
         case CKPopoverViewControllerBottom:
         case CKPopoverViewControllerRight:
@@ -175,6 +206,8 @@
     CGPoint anchorPoint = CGPointZero;
     switch (direction) {
         case CKPopoverViewControllerTop:
+            anchorPoint = CGPointMake(-2.0, 30.0);
+            break;
         case CKPopoverViewControllerLeft:
         case CKPopoverViewControllerBottom:
         case CKPopoverViewControllerRight:

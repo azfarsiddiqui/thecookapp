@@ -10,6 +10,7 @@
 
 @interface CKRecipeSocialView ()
 
+@property (nonatomic, assign) id<CKRecipeSocialViewDelegate> delegate;
 @property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) UIImageView *messageIconView;
 @property (nonatomic, strong) UIImageView *likeIconView;
@@ -25,9 +26,12 @@
 #define kIconStatGap    5.0
 #define kFont           [UIFont boldSystemFontOfSize:15]
 
-- (id)initWithNumComments:(NSInteger)numComments numLikes:(NSInteger)numLikes {
+- (id)initWithNumComments:(NSInteger)numComments numLikes:(NSInteger)numLikes
+                 delegate:(id<CKRecipeSocialViewDelegate>)delegate {
+    
     if (self = [super initWithFrame:CGRectZero]) {
         
+        self.delegate = delegate;
         UIImage *backgroundImage = [[UIImage imageNamed:@"cook_dash_notitifcations_bg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 19.0, 0.0, 19.0)];
         
         // Keeps track of the required width.
@@ -100,8 +104,15 @@
         
         // BackgroundView is self frame.
         self.frame = backgroundView.frame;;
+        
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+        [self addGestureRecognizer:tapGesture];
     }
     return self;
+}
+
+- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    [self.delegate recipeSocialViewTapped];
 }
 
 @end

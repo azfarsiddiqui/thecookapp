@@ -16,6 +16,8 @@
 #import "CKRecipeSocialView.h"
 #import "MRCEnumerable.h"
 #import "Ingredient.h"
+#import "RecipeSocialViewController.h"
+#import "CKPopoverViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -24,11 +26,13 @@ typedef enum {
 	PhotoWindowHeightFullScreen,
 } PhotoWindowHeight;
 
-@interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+@interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
+    CKRecipeSocialViewDelegate, CKPopoverViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKBook *book;
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
+@property (nonatomic, strong) CKPopoverViewController *popoverViewController;
 
 @property (nonatomic, strong) UIView *topShadowView;
 @property (nonatomic, strong) UIView *contentContainerView;
@@ -197,6 +201,29 @@ typedef enum {
     }
     
     return shouldReceive;
+}
+
+#pragma mark - CKRecipeSocialViewDelegate methods
+
+- (void)recipeSocialViewTapped {
+    RecipeSocialViewController *socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe];
+    CKPopoverViewController *popoverViewController = [[CKPopoverViewController alloc] initWithContentViewController:socialViewController
+                                                                                                           delegate:self];
+    [popoverViewController showInView:self.view direction:CKPopoverViewControllerTop
+                              atPoint:CGPointMake(self.socialView.center.x,
+                                                  self.socialView.frame.origin.y + self.socialView.frame.size.height + 10.0)];
+    self.popoverViewController = popoverViewController;
+}
+
+#pragma mark - CKPopoverViewControllerDelegate methods
+
+- (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
+}
+
+- (void)popoverViewController:(CKPopoverViewController *)popoverViewController didAppear:(BOOL)appear {
+    if (!appear) {
+        self.popoverViewController = nil;
+    }
 }
 
 #pragma mark - Lazy getters.
@@ -968,7 +995,7 @@ typedef enum {
     
     // TODO Load data.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0];
+        CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0 delegate:self];
         socialView.frame = CGRectMake(floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
                                       kButtonInsets.top,
                                       socialView.frame.size.width,
