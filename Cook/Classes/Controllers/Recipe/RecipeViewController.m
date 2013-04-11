@@ -999,6 +999,7 @@ typedef enum {
 }
 
 - (NSMutableAttributedString *)attributedTextForText:(NSString *)text font:(UIFont *)font colour:(UIColor *)colour {
+    text = [text length] > 0 ? text : @"";
     NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font colour:colour];
     return [[NSMutableAttributedString alloc] initWithString:text attributes:paragraphAttributes];
 }
