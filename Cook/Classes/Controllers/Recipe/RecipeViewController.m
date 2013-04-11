@@ -288,7 +288,7 @@ typedef enum {
                 ingredient.measurement ? ingredient.measurement : @"",
                 ingredient.name ? ingredient.name : @""];
     }];
-    return ([ingredientsDisplay count] > 0) ? [ingredientsDisplay componentsJoinedByString:@"\n"] : @"";
+    return [ingredientsDisplay componentsJoinedByString:@""];
 }
 
 - (UIView *)iconTextViewForIcon:(UIImage *)icon text:(NSString *)text {
@@ -694,43 +694,37 @@ typedef enum {
     
     // Left Frame: Ingredients
     CGSize ingredientsAvailableSize = CGSizeMake(leftFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
-    NSString *ingredients = [self ingredientsText];
-    CGSize size = [ingredients sizeWithFont:[Theme ingredientsListFont] constrainedToSize:ingredientsAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
-    UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectMake(leftFrame.origin.x + contentInsets.left + floorf((ingredientsAvailableSize.width - size.width) / 2.0),
-                                                                          requiredLeftHeight + dividerGap,
-                                                                          size.width,
-                                                                          size.height)];
-    ingredientsLabel.font = [Theme ingredientsListFont];
+    NSAttributedString *ingredientsDisplay = [self attributedTextForText:[self ingredientsText] font:[Theme ingredientsListFont] colour:[Theme ingredientsListColor]];
+    UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     ingredientsLabel.numberOfLines = 0;
-    ingredientsLabel.textAlignment = NSTextAlignmentLeft;
-    ingredientsLabel.textColor = [Theme ingredientsListColor];
     ingredientsLabel.backgroundColor = [UIColor clearColor];
-    ingredientsLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-    ingredientsLabel.shadowColor = [UIColor whiteColor];
-    ingredientsLabel.text = ingredients;
-    ingredientsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    ingredientsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    ingredientsLabel.textAlignment = NSTextAlignmentLeft;
+    ingredientsLabel.attributedText = ingredientsDisplay;
+    CGSize size = [ingredientsLabel sizeThatFits:ingredientsAvailableSize];
+    ingredientsLabel.frame = CGRectMake(leftFrame.origin.x + contentInsets.left + floorf((ingredientsAvailableSize.width - size.width) / 2.0),
+                                        requiredLeftHeight + dividerGap,
+                                        size.width,
+                                        size.height);
     [contentView addSubview:ingredientsLabel];
     self.ingredientsLabel = ingredientsLabel;
     requiredLeftHeight += dividerGap + ingredientsLabel.frame.size.height;
     requiredLeftHeight += contentInsets.bottom;
     
     // Right Frame.
-    CGSize descriptionAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
-    NSString *story = self.recipe.description;
-    size = [story sizeWithFont:[Theme methodFont] constrainedToSize:descriptionAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
-    UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((descriptionAvailableSize.width - size.width) / 2.0),
-                                                                     rightFrame.origin.y + contentInsets.top,
-                                                                     size.width,
-                                                                     size.height)];
-    methodLabel.font = [Theme methodFont];
+    CGSize methodAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
+    NSAttributedString *storyDisplay = [self attributedTextForText:self.recipe.description font:[Theme methodFont] colour:[Theme methodColor]];
+    UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     methodLabel.numberOfLines = 0;
+    methodLabel.lineBreakMode = NSLineBreakByWordWrapping;
     methodLabel.textAlignment = NSTextAlignmentLeft;
-    methodLabel.textColor = [Theme methodColor];
     methodLabel.backgroundColor = [UIColor clearColor];
-    methodLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-    methodLabel.shadowColor = [UIColor whiteColor];
-    methodLabel.text = story;
-    methodLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    methodLabel.attributedText = storyDisplay;
+    size = [methodLabel sizeThatFits:methodAvailableSize];
+    methodLabel.frame = CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((methodAvailableSize.width - size.width) / 2.0),
+                                   rightFrame.origin.y + contentInsets.top,
+                                   size.width,
+                                   size.height);
     [contentView addSubview:methodLabel];
     self.methodLabel = methodLabel;
     
@@ -973,6 +967,25 @@ typedef enum {
 
 - (BOOL)canEditRecipe {
     return ([self.book.user isEqual:[CKUser currentUser]]);
+}
+
+- (NSDictionary *)paragraphAttributesForFont:(UIFont *)font colour:(UIColor *)colour {
+    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = lineBreakMode;
+    paragraphStyle.lineSpacing = 10.0;
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            font, NSFontAttributeName,
+            colour, NSForegroundColorAttributeName,
+            paragraphStyle, NSParagraphStyleAttributeName,
+            nil];
+}
+
+- (NSMutableAttributedString *)attributedTextForText:(NSString *)text font:(UIFont *)font colour:(UIColor *)colour {
+    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font colour:colour];
+    return [[NSMutableAttributedString alloc] initWithString:text attributes:paragraphAttributes];
 }
 
 @end
