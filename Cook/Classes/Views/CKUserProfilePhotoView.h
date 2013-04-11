@@ -16,13 +16,18 @@ typedef enum {
 	ProfileViewSizeLarge,
 } ProfileViewSize;
 
-@interface CKUserProfilePhotoView : UIImageView
+@interface CKUserProfilePhotoView : UIView
 
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize;
++ (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
 
 - (id)initWithProfileSize:(ProfileViewSize)profileSize;
+- (id)initWithProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize;
+- (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize border:(BOOL)border;
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize;
+- (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
+            border:(BOOL)border;
 - (void)loadProfilePhotoForUser:(CKUser *)user;
 
 @end

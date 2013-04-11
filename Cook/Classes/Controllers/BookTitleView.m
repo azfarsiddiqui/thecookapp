@@ -80,7 +80,8 @@
         self.authorLabel = authorLabel;
         
         // Profile photo view.
-        CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium];
+        CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium
+                                                                                                border:YES];
         [self addSubview:profilePhotoView];
         self.profilePhotoView = profilePhotoView;
         
