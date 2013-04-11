@@ -60,7 +60,7 @@
     [self addSubview:profilePhotoView];
     
     // User name
-    NSString *name = self.book.featured ? [self.book.name uppercaseString] : [self.book.userName uppercaseString];
+    NSString *name = self.book.featured ? [self.book.name uppercaseString] : [self.book.user.name uppercaseString];
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     nameLabel.font = [Theme storeBookSummaryNameFont];
     nameLabel.backgroundColor = [UIColor clearColor];
