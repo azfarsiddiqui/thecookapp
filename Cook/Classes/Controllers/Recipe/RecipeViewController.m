@@ -673,21 +673,31 @@ typedef enum {
     
     CGFloat requiredLeftHeight = 0.0;
     CGFloat requiredRightHeight = 0.0;
-    CGFloat servesIngredientsGap = 30.0;
+    CGFloat dividerGap = 18.0;
     
-    // Left Frame.
+    // Left Frame: Serves
     self.servesCookView.frame = CGRectMake(contentInsets.left,
                                            contentInsets.top,
                                            self.servesCookView.frame.size.width,
                                            self.servesCookView.frame.size.height);
     [contentView addSubview:self.servesCookView];
-    requiredRightHeight += contentInsets.top + self.servesCookView.frame.size.height;
+    requiredLeftHeight += contentInsets.top + self.servesCookView.frame.size.height;
     
+    // Left Frame: Divider.
+    UIImageView *dividerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_details_divider.png"]];
+    dividerImageView.frame = CGRectMake(floorf((leftFrame.size.width - dividerImageView.frame.size.width) / 2.0),
+                                        requiredLeftHeight + dividerGap,
+                                        dividerImageView.frame.size.width,
+                                        dividerImageView.frame.size.height);
+    [contentView addSubview:dividerImageView];
+    requiredLeftHeight += dividerGap + dividerImageView.frame.size.height;
+    
+    // Left Frame: Ingredients
     CGSize ingredientsAvailableSize = CGSizeMake(leftFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
     NSString *ingredients = [self ingredientsText];
     CGSize size = [ingredients sizeWithFont:[Theme ingredientsListFont] constrainedToSize:ingredientsAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
     UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectMake(leftFrame.origin.x + contentInsets.left + floorf((ingredientsAvailableSize.width - size.width) / 2.0),
-                                                                          requiredRightHeight + servesIngredientsGap,
+                                                                          requiredLeftHeight + dividerGap,
                                                                           size.width,
                                                                           size.height)];
     ingredientsLabel.font = [Theme ingredientsListFont];
@@ -701,9 +711,8 @@ typedef enum {
     ingredientsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     [contentView addSubview:ingredientsLabel];
     self.ingredientsLabel = ingredientsLabel;
-    
-    requiredRightHeight += servesIngredientsGap + ingredientsLabel.frame.size.height;
-    requiredRightHeight += contentInsets.bottom;
+    requiredLeftHeight += dividerGap + ingredientsLabel.frame.size.height;
+    requiredLeftHeight += contentInsets.bottom;
     
     // Right Frame.
     CGSize descriptionAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
