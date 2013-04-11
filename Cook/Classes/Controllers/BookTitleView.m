@@ -11,6 +11,7 @@
 #import "CKBook.h"
 #import "ImageHelper.h"
 #import "CKMaskedLabel.h"
+#import "CKUserProfilePhotoView.h"
 
 @interface BookTitleView ()
 
@@ -18,6 +19,7 @@
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKMaskedLabel *maskedLabel;
 @property (nonatomic, strong) UILabel *authorLabel;
+@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 
 @end
 
@@ -77,6 +79,11 @@
         [self.maskedLabel addSubview:authorLabel];
         self.authorLabel = authorLabel;
         
+        // Profile photo view.
+        CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium];
+        [self addSubview:profilePhotoView];
+        self.profilePhotoView = profilePhotoView;
+        
     }
     return self;
 }
@@ -110,6 +117,13 @@
                                         size.width,
                                         size.height);
     self.overlayView.frame = self.maskedLabel.frame;
+    
+    // Load profile photoView.
+    self.profilePhotoView.frame = CGRectMake(self.maskedLabel.frame.origin.x + floorf((self.maskedLabel.frame.size.width - self.profilePhotoView.frame.size.width) / 2.0),
+                                             self.maskedLabel.frame.origin.y - floorf(self.profilePhotoView.frame.size.height / 2.0),
+                                             self.profilePhotoView.frame.size.width,
+                                             self.profilePhotoView.frame.size.height);
+    [self.profilePhotoView loadProfilePhotoForUser:book.user];
 }
 
 - (void)configureImage:(UIImage *)image {
