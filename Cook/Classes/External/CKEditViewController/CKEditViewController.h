@@ -8,12 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKEditingViewHelper;
+
+@protocol CKEditViewControllerDelegate <NSObject>
+
+- (void)editViewControllerDidAppear:(BOOL)appear;
+- (void)editViewControllerDismissRequested;
+
+@end
+
 @interface CKEditViewController : UIViewController
 
 @property (nonatomic, strong) UIColor *editingBackgroundColour;
 
-- (id)initWithEditView:(UIView *)editView;
-- (id)initWithEditView:(UIView *)editView contentInsets:(UIEdgeInsets)contentInsets;
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
+         editingHelper:(CKEditingViewHelper *)editingHelper;
 - (void)performEditing:(BOOL)editing;
+- (UIView *)createTargetEditView;
 
 @end

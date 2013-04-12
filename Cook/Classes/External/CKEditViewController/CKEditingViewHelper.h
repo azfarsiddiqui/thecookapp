@@ -8,12 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+@class CKEditingTextBoxView;
+
 @interface CKEditingViewHelper : NSObject
 
-+ (CKEditingViewHelper *)sharedInstance;
-- (void)wrapEditingView:(UIView *)editingView;
-- (void)unwrapEditingView:(UIView *)editingView;
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap animated:(BOOL)animated;
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+               animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap target:(id)target selector:(SEL)selector;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap target:(id)target selector:(SEL)selector
+               animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                 target:(id)target selector:(SEL)selector;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                 target:(id)target selector:(SEL)selector animated:(BOOL)animated;
+- (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView;
 
 @end
