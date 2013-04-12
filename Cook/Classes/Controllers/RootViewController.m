@@ -126,7 +126,7 @@
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
-    [self showStoreShelf:!open];
+//    [self showStoreShelf:!open];
 
     if (!open) {
         [self.bookNavigationViewController.view removeFromSuperview];
