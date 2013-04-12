@@ -17,14 +17,13 @@
 #import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
 #import "BookIndexViewController.h"
-#import "BookActivityViewController.h"
 #import "Theme.h"
 #import "BookTitleViewController.h"
 #import "EventHelper.h"
 #import "CKBookPagingView.h"
 
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
-    BookIndexViewControllerDelegate, BookActivityViewControllerDelegate, BookTitleViewControllerDelegate>
+    BookIndexViewControllerDelegate, BookTitleViewControllerDelegate>
 
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *contentsButton;
@@ -41,9 +40,8 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
-@property (nonatomic, strong) BookIndexViewController *indexViewController;
-@property (nonatomic, strong) BookActivityViewController *activityViewController;
 @property (nonatomic, strong) BookTitleViewController *titleViewController;
+@property (nonatomic, strong) BookIndexViewController *indexViewController;
 
 @property (nonatomic, strong) NSString *selectedCategoryName;
 @property (nonatomic, strong) NSString *currentCategoryName;
@@ -69,9 +67,8 @@
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
-        self.indexViewController = [[BookIndexViewController alloc] initWithBook:book delegate:self];
-        self.activityViewController = [[BookActivityViewController alloc] initWithBook:book delegate:self];
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
+        self.indexViewController = [[BookIndexViewController alloc] initWithBook:book delegate:self];
     }
     return self;
 }
@@ -152,12 +149,6 @@
 
 - (NSArray *)bookIndexRecipesForCategory:(NSString *)category {
     return [self.categoryRecipes objectForKey:category];
-}
-
-#pragma mark - BookActivityViewControllerDelegate methods
-
-- (void)bookActivityViewControllerSelectedRecipe:(CKRecipe *)recipe {
-    [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
 #pragma mark - BookTitleViewControllerDelegate methods
@@ -311,10 +302,10 @@
         cell = [self profileCellAtIndexPath:indexPath];
     } else if (indexPath.section == [self titleSection]) {
         cell = [self titleCellAtIndexPath:indexPath];
-    } else if (indexPath.section >= [self recipeSection]) {
-        cell = [self recipeCellAtIndexPath:indexPath];
     } else if (indexPath.section == [self indexSection]) {
         cell = [self indexCellAtIndexPath:indexPath];
+    } else if (indexPath.section >= [self recipeSection]) {
+        cell = [self recipeCellAtIndexPath:indexPath];
     }
     
     return cell;

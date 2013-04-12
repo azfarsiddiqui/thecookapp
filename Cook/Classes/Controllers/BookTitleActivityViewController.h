@@ -2,7 +2,7 @@
 //  BookTitleViewController.h
 //  Cook
 //
-//  Created by Jeff Tan-Ang on 12/04/13.
+//  Created by Jeff Tan-Ang on 19/03/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
@@ -11,16 +11,15 @@
 @class CKBook;
 @class CKRecipe;
 
-@protocol BookTitleViewControllerDelegate <NSObject>
+@protocol BookTitleActivityViewControllerDelegate <NSObject>
 
 - (void)bookTitleViewControllerSelectedRecipe:(CKRecipe *)recipe;
 
 @end
 
+@interface BookTitleActivityViewController : UIViewController
 
-@interface BookTitleViewController : UIViewController
-
-- (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate;
+- (id)initWithBook:(CKBook *)book delegate:(id<BookTitleActivityViewControllerDelegate>)delegate;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;
 
 @end
