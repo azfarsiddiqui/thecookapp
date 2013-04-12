@@ -1046,7 +1046,7 @@ typedef enum {
     if (!self.recipe) {
         windowHeight = PhotoWindowHeightMid;
     } else if (![self.recipe hasPhotos]) {
-        windowHeight = PhotoWindowHeightMax;
+        windowHeight = PhotoWindowHeightMin;
     }
     return windowHeight;
 }
