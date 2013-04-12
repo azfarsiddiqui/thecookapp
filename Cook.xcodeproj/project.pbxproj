@@ -231,6 +231,9 @@
 		767515A4170D361A008B675D /* cook_library_icon_added.png in Resources */ = {isa = PBXBuildFile; fileRef = 767515A2170D361A008B675D /* cook_library_icon_added.png */; };
 		767515A5170D361A008B675D /* cook_library_icon_added@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767515A3170D361A008B675D /* cook_library_icon_added@2x.png */; };
 		767C0AA11655201700141355 /* BenchtopPartingFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 767C0AA01655201700141355 /* BenchtopPartingFlowLayout.m */; };
+		767E75D817182CCC003CCCD2 /* cook_book_texture_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 767E75D617182CCC003CCCD2 /* cook_book_texture_bg.png */; };
+		767E75D917182CCC003CCCD2 /* cook_book_texture_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767E75D717182CCC003CCCD2 /* cook_book_texture_bg@2x.png */; };
+		767E75DC17182D14003CCCD2 /* CKEditingTextBoxView.m in Sources */ = {isa = PBXBuildFile; fileRef = 767E75DA17182D14003CCCD2 /* CKEditingTextBoxView.m */; };
 		76819813170BCC840091F91F /* CKBookSummaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76819812170BCC840091F91F /* CKBookSummaryView.m */; };
 		768E735E170BD5440063CF49 /* CKStatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 768E735D170BD5440063CF49 /* CKStatView.m */; };
 		768E7365170BF1270063CF49 /* cook_dash_icons_notifications_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 768E7363170BF1270063CF49 /* cook_dash_icons_notifications_off.png */; };
@@ -889,6 +892,10 @@
 		767515A3170D361A008B675D /* cook_library_icon_added@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_icon_added@2x.png"; sourceTree = "<group>"; };
 		767C0A9F1655201700141355 /* BenchtopPartingFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopPartingFlowLayout.h; sourceTree = "<group>"; };
 		767C0AA01655201700141355 /* BenchtopPartingFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopPartingFlowLayout.m; sourceTree = "<group>"; };
+		767E75D617182CCC003CCCD2 /* cook_book_texture_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_texture_bg.png; sourceTree = "<group>"; };
+		767E75D717182CCC003CCCD2 /* cook_book_texture_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_texture_bg@2x.png"; sourceTree = "<group>"; };
+		767E75DA17182D14003CCCD2 /* CKEditingTextBoxView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKEditingTextBoxView.m; sourceTree = "<group>"; };
+		767E75DB17182D14003CCCD2 /* CKEditingTextBoxView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingTextBoxView.h; sourceTree = "<group>"; };
 		76819811170BCC840091F91F /* CKBookSummaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBookSummaryView.h; sourceTree = "<group>"; };
 		76819812170BCC840091F91F /* CKBookSummaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBookSummaryView.m; sourceTree = "<group>"; };
 		768E735C170BD5440063CF49 /* CKStatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKStatView.h; sourceTree = "<group>"; };
@@ -1833,6 +1840,8 @@
 				769B5E10171541AC0046934D /* cook_recipe_background_tile@2x.png */,
 				769B5E131715458A0046934D /* cook_recipe_background_overlay.png */,
 				769B5E141715458A0046934D /* cook_recipe_background_overlay@2x.png */,
+				767E75D617182CCC003CCCD2 /* cook_book_texture_bg.png */,
+				767E75D717182CCC003CCCD2 /* cook_book_texture_bg@2x.png */,
 			);
 			path = books;
 			sourceTree = "<group>";
@@ -1842,6 +1851,8 @@
 			children = (
 				76BE37291717A8E9000C0755 /* CKEditingViewHelper.h */,
 				76BE372A1717A8E9000C0755 /* CKEditingViewHelper.m */,
+				767E75DA17182D14003CCCD2 /* CKEditingTextBoxView.m */,
+				767E75DB17182D14003CCCD2 /* CKEditingTextBoxView.h */,
 				76BE372B1717A8E9000C0755 /* CKEditViewController.h */,
 				76BE372C1717A8E9000C0755 /* CKEditViewController.m */,
 				76BE373E1717EDFA000C0755 /* CKTextFieldEditViewController.m */,
@@ -3124,6 +3135,8 @@
 				76BE37351717A8E9000C0755 /* cook_customise_btns_textedit_white@2x.png in Resources */,
 				76BE37361717A8E9000C0755 /* cook_customise_textbox_white.png in Resources */,
 				76BE37371717A8E9000C0755 /* cook_customise_textbox_white@2x.png in Resources */,
+				767E75D817182CCC003CCCD2 /* cook_book_texture_bg.png in Resources */,
+				767E75D917182CCC003CCCD2 /* cook_book_texture_bg@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3285,6 +3298,7 @@
 				76BE37321717A8E9000C0755 /* CKEditingViewHelper.m in Sources */,
 				76BE37331717A8E9000C0755 /* CKEditViewController.m in Sources */,
 				76BE37401717EDFA000C0755 /* CKTextFieldEditViewController.m in Sources */,
+				767E75DC17182D14003CCCD2 /* CKEditingTextBoxView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
