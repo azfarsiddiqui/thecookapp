@@ -19,6 +19,7 @@
 @interface CKEditingTextBoxView : UIView
 
 @property (nonatomic, assign) CGRect editViewFrame;
+@property (nonatomic, assign) UIEdgeInsets contentInsets;
 
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
                   delegate:(id<CKEditingTextBoxViewDelegate>)delegate;

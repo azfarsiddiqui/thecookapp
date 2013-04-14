@@ -36,6 +36,18 @@
     [self wrapEditingView:editingView wrap:wrap delegate:nil white:white animated:animated];
 }
 
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                  white:(BOOL)white {
+    
+    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets white:white animated:YES];
+}
+
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                  white:(BOOL)white animated:(BOOL)animated {
+    
+    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets delegate:nil white:white animated:animated];
+}
+
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
                   white:(BOOL)white {
     
@@ -101,7 +113,6 @@
         
         // Get the textbox belonging to the editingView.
         CKEditingTextBoxView *textEditImageView = [self textBoxViewForEditingView:editingView];
-        NSLog(@"textEditImageView %@", textEditImageView);
         
         // Return immediately if none was found.
         if (textEditImageView == nil) {

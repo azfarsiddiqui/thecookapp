@@ -389,6 +389,9 @@
 - (void)mockAndWrapOriginalEditingView {
     UIView *rootView = [self rootView];
     
+    // Get original textbox view to obtain its contentInsets.
+    CKEditingTextBoxView *originalTextBoxView = [self.editingHelper textBoxViewForEditingView:self.originalEditView];
+    
     // Capture the editing view as a mock image on the editing view. Editing view needs to be opaque.
     self.originalEditView.backgroundColor = [self editingBackgroundColour];
     
@@ -402,7 +405,8 @@
     self.mockedEditView = mockedEditView;
 
     // Wrap textField textbox.
-    [self.editingHelper wrapEditingView:mockedEditView wrap:YES white:self.white animated:NO];
+    [self.editingHelper wrapEditingView:mockedEditView wrap:YES contentInsets:originalTextBoxView.contentInsets
+                                  white:self.white animated:NO];
 }
 
 - (void)targetEditingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {

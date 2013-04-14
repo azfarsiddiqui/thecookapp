@@ -94,7 +94,9 @@
     self.editMode = enable;
     self.editButton.hidden = enable;
     
-    [self.editingHelper wrapEditingView:self.authorLabel wrap:enable delegate:self white:NO];
+//    [self.editingHelper wrapEditingView:self.authorLabel wrap:enable delegate:self white:NO];
+    [self.editingHelper wrapEditingView:self.authorLabel wrap:enable
+                          contentInsets:UIEdgeInsetsMake(20.0, 34.0, 15.0, 25.0) delegate:self white:NO];
 
 //    TODO
 //    [self.captionEditableView enableEditMode:enable];

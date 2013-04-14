@@ -15,7 +15,6 @@
 @property (nonatomic, strong) UIView *textEditingPencilView;
 @property (nonatomic, strong) UIView *textEditImageView;
 @property (nonatomic, strong) UIButton *textEditingSaveButton;
-@property (nonatomic, assign) UIEdgeInsets contentInsets;
 @property (nonatomic, assign) CGPoint pencilOffsets;
 
 @end

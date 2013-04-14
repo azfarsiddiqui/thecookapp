@@ -15,6 +15,10 @@
 
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white;
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                  white:(BOOL)white;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                  white:(BOOL)white animated:(BOOL)animated;
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
                   white:(BOOL)white;
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
