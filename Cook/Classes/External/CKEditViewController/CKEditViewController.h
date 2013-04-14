@@ -12,18 +12,28 @@
 
 @protocol CKEditViewControllerDelegate <NSObject>
 
+- (void)editViewControllerWillAppear:(BOOL)appear;
 - (void)editViewControllerDidAppear:(BOOL)appear;
 - (void)editViewControllerDismissRequested;
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value;
 
 @end
 
 @interface CKEditViewController : UIViewController
 
-@property (nonatomic, strong) UIColor *editingBackgroundColour;
+@property (nonatomic, assign) BOOL dismissableOverlay;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
-         editingHelper:(CKEditingViewHelper *)editingHelper;
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
 - (void)performEditing:(BOOL)editing;
 - (UIView *)createTargetEditView;
+- (NSString *)currentTextValue;
+- (NSString *)updatedTextValue;
+- (UIColor *)editingTextColour;
+- (UIColor *)editingBackgroundColour;
+
+// Lifecycle events.
+- (void)targetTextEditingViewWillAppear:(BOOL)appear;
+- (void)targetTextEditingViewDidAppear:(BOOL)appear;
 
 @end

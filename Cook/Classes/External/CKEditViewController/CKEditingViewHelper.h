@@ -7,23 +7,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CKEditingTextBoxView.h"
 
 @class CKEditingTextBoxView;
 
 @interface CKEditingViewHelper : NSObject
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap animated:(BOOL)animated;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
+                  white:(BOOL)white;
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
+                white:(BOOL)white animated:(BOOL)animated;
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-               animated:(BOOL)animated;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap target:(id)target selector:(SEL)selector;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap target:(id)target selector:(SEL)selector
-               animated:(BOOL)animated;
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-                 target:(id)target selector:(SEL)selector;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-                 target:(id)target selector:(SEL)selector animated:(BOOL)animated;
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated;
+
+- (void)updateEditingView:(UIView *)editingView;
+- (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated;
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView;
 
 @end

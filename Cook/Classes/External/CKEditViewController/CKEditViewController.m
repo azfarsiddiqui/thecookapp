@@ -11,7 +11,7 @@
 #import "CKEditingTextBoxView.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface CKEditViewController () <UIGestureRecognizerDelegate>
+@interface CKEditViewController () <UIGestureRecognizerDelegate, CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) UIView *originalEditView;
 @property (nonatomic, strong) UIView *mockedEditView;
@@ -21,21 +21,23 @@
 @property (nonatomic, assign) id<CKEditViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIColor *editingViewBackgroundOriginalColour;
 @property (nonatomic, assign) CGRect startTextBoxFrame;
+@property (nonatomic, assign) BOOL white;
 
 @end
 
 @implementation CKEditViewController
 
-#define kOverlayAlpha   0.5
+#define kOverlayAlpha   0.2
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
-         editingHelper:(CKEditingViewHelper *)editingHelper {
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white {
     if (self = [super init]) {
         self.originalEditView = editView;
         self.editingHelper = editingHelper;
         self.delegate = delegate;
+        self.white = white;
         self.editingViewBackgroundOriginalColour = editView.backgroundColor;
-        self.editingBackgroundColour = [UIColor whiteColor];
+        self.dismissableOverlay = YES;
     }
     return self;
 }
@@ -56,29 +58,27 @@
         // Overlay.
         [self initOverlay];
         
-        // Capture the editing view as a mock image on the editing view. Editing view needs to be opaque.
-        self.originalEditView.backgroundColor = self.editingBackgroundColour;
-        CGRect editingViewFrame = [rootView convertRect:self.originalEditView.frame fromView:self.originalEditView.superview];
-        UIImage *editViewImage = [self screenshotView:self.originalEditView];
-        UIImageView *mockedEditView = [[UIImageView alloc] initWithImage:editViewImage];
-        mockedEditView.userInteractionEnabled = YES;
-        mockedEditView.frame = editingViewFrame;
-        [self.view addSubview:mockedEditView];
-        self.mockedEditView = mockedEditView;
+        // Wrap up 
+        [self mockAndWrapOriginalEditingView];
         
-        // Get orignal textbox to fade out.
+        // Get original textbox to fade out.
         CKEditingTextBoxView *originalTextBoxView = [self.editingHelper textBoxViewForEditingView:self.originalEditView];
         
-        // Wrap textField textbox.
-        [self.editingHelper wrapEditingView:mockedEditView wrap:YES animated:NO];
-        CKEditingTextBoxView *textBoxView = [self.editingHelper textBoxViewForEditingView:mockedEditView];
+        // Get mocked textbox to be scaled up.
+        CKEditingTextBoxView *mockedTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
         
         // Remember the start frame for the textbox so that we can transition back.
-        self.startTextBoxFrame = textBoxView.frame;
+        self.startTextBoxFrame = mockedTextBoxView.frame;
+        
+        // Also hide it too.
+        self.originalEditView.hidden = YES;
+        
+        // Lifecycle start event.
+        [self targetTextEditingViewWillAppear:YES];
         
         // Animate into fullscreen edit mode.
         [UIView animateWithDuration:0.3
-                              delay:0.1
+                              delay:0.0
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
                              
@@ -90,7 +90,7 @@
                              self.overlayView.alpha = kOverlayAlpha;
                              
                              // Hide the pencil icon.
-                             [textBoxView showEditingIcon:NO animated:NO];
+                             [mockedTextBoxView showEditingIcon:NO animated:NO];
                          }
                          completion:^(BOOL finished) {
                              
@@ -102,7 +102,6 @@
         
         // Target textbox to hide.
         CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:self.targetEditView];
-        targetTextBoxView.hidden = YES;
 
         // Get mocked textbox to scale back.
         CKEditingTextBoxView *mockedTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
@@ -111,51 +110,87 @@
         // Get original textbox to fade in.
         CKEditingTextBoxView *originalTextBoxView = [self.editingHelper textBoxViewForEditingView:self.originalEditView];
         
-        [UIView animateWithDuration:0.3
+        // Lifecycle start event.
+        [self targetTextEditingViewWillAppear:NO];
+        
+        [UIView animateWithDuration:0.2
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              
-                             // Resize the original textbox back to its original frame.
-                             mockedTextBoxView.frame = self.startTextBoxFrame;
-                             
-                             // Fade out the overlay view.
-                             self.overlayView.alpha = 0.0;
+                             // Fade out the target editing view.
+                             self.targetEditView.alpha = 0.0;
+                             targetTextBoxView.alpha = 0.0;
                              
                          }
                          completion:^(BOOL finished) {
                              
-                             // Restore the background colour the editing view.
-                             self.originalEditView.backgroundColor = self.editingViewBackgroundOriginalColour;
+                             targetTextBoxView.hidden = YES;
                              
-                             [UIView animateWithDuration:0.2
+                             [UIView animateWithDuration:0.3
                                                    delay:0.0
-                                                 options:UIViewAnimationOptionCurveLinear
+                                                 options:UIViewAnimationOptionCurveEaseOut
                                               animations:^{
                                                   
-                                                  // Fade mock out.
-                                                  mockedTextBoxView.alpha = 0.0;
-                                                  
-                                                  // Fade original in.
-                                                  originalTextBoxView.alpha = 1.0;
+                                                  // Resize the original textbox back to its original frame.
+                                                  mockedTextBoxView.frame = self.startTextBoxFrame;
                                                   
                                               }
                                               completion:^(BOOL finished) {
                                                   
-                                                  mockedTextBoxView.hidden = YES;
+                                                  // Restore the background colour the editing view.
+                                                  self.originalEditView.hidden = NO;
+                                                  self.originalEditView.alpha = 1.0;
+                                                  self.originalEditView.backgroundColor = self.editingViewBackgroundOriginalColour;
                                                   
-                                                  // Clean up editing helper.
-                                                  [self.editingHelper wrapEditingView:self.mockedEditView wrap:NO animated:NO];
-                                                  [self.editingHelper wrapEditingView:self.targetEditView wrap:NO animated:NO];
-                                                  
-                                                  // Remove myself from the parent.
-                                                  [self.view removeFromSuperview];
-                                                  
-                                                  // Inform delegate.
-                                                  [self.delegate editViewControllerDidAppear:NO];
+                                                  [UIView animateWithDuration:0.2
+                                                                        delay:0.0
+                                                                      options:UIViewAnimationOptionCurveEaseIn
+                                                                   animations:^{
+                                                                       
+                                                                       // Show pencil.
+                                                                       [mockedTextBoxView showEditingIcon:YES animated:NO];
+                                                                       
+                                                                       // Fade in the mocked edit view.
+                                                                       self.mockedEditView.alpha = 1.0;
+                                                                       
+                                                                       // Show the original box
+                                                                       originalTextBoxView.alpha = 1.0;
+                                                                       
+                                                                   }
+                                                                   completion:^(BOOL finished) {
+                                                                       
+                                                                       // Fade out the overlay.
+                                                                       [UIView animateWithDuration:0.3
+                                                                                             delay:0.0
+                                                                                           options:UIViewAnimationOptionCurveEaseOut
+                                                                                        animations:^{
+                                                                                            
+                                                                                            // Fade out the overlay view.
+                                                                                            self.overlayView.alpha = 0.0;
+                                                                                            
+                                                                                        }
+                                                                                        completion:^(BOOL finished) {
+                                                                                            
+                                                                                            // Hide mocked text view.
+                                                                                            mockedTextBoxView.hidden = YES;
+                                                                                            
+                                                                                            // Clean up editing helper.
+                                                                                            [self.editingHelper wrapEditingView:self.mockedEditView wrap:NO white:self.white animated:NO];
+                                                                                            [self.editingHelper wrapEditingView:self.targetEditView wrap:NO white:self.white animated:NO];
+                                                                                            
+                                                                                            // Remove myself from the parent.
+                                                                                            [self.view removeFromSuperview];
+                                                                                            
+                                                                                            // Lifecycle end event.
+                                                                                            [self targetTextEditingViewDidAppear:NO];
+                                                                                            
+                                                                                        }];
+                                                                       
+                                                                       
+                                                                   }];
                                                   
                                               }];
-                             
                          }];
     }
 }
@@ -165,10 +200,95 @@
     return nil;
 }
 
+- (NSString *)currentTextValue {
+    NSString *textValue = nil;
+    if ([self.originalEditView isKindOfClass:[UILabel class]]) {
+        textValue = ((UILabel *)self.originalEditView).text;
+    }
+    return textValue;
+}
+
+- (NSString *)updatedTextValue {
+    NSString *textValue = nil;
+    if ([self.targetEditView isKindOfClass:[UITextField class]]) {
+        textValue = ((UITextField *)self.targetEditView).text;
+    }
+    return textValue;
+}
+
+- (UIColor *)editingTextColour {
+    return self.white ? [UIColor blackColor] : [UIColor whiteColor];
+}
+
+- (UIColor *)editingBackgroundColour {
+    return self.white ? [UIColor whiteColor] : [UIColor darkGrayColor];
+}
+
+#pragma mark - Lifecycle events
+
+- (void)targetTextEditingViewWillAppear:(BOOL)appear {
+    [self.delegate editViewControllerWillAppear:appear];
+}
+
+- (void)targetTextEditingViewDidAppear:(BOOL)appear {
+    [self.delegate editViewControllerDidAppear:appear];
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
+    if (self.dismissableOverlay) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+#pragma mark - System Notification events
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self targetEditingViewKeyboardWillAppear:YES keyboardFrame:keyboardFrame];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self targetEditingViewKeyboardWillAppear:NO keyboardFrame:keyboardFrame];
+}
+
+#pragma mark - CKEditingTextBoxViewDelegate methods
+
+// Note that editingView is actually the targetEditingView (e.g.UITextField)
+- (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
+    
+    // Tell original editingView to update with new value.
+    [self.delegate editViewControllerUpdateEditView:self.originalEditView value:[self updatedTextValue]];
+    
+    // Remove current mock and its wrapper.
+    [self.editingHelper wrapEditingView:self.mockedEditView wrap:NO white:self.white animated:NO];
+    [self.mockedEditView removeFromSuperview];
+    self.mockedEditView = nil;
+    
+    // Recreate mock and corresponding textbox.
+    self.originalEditView.hidden = NO;
+    [self mockAndWrapOriginalEditingView];
+    
+    // Get mocked textbox and prepare for transition.
+    CKEditingTextBoxView *mockedTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
+    
+    // Get current targetTextbox to obtain its current frame.
+    CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:self.targetEditView];
+    
+    // Remember the start frame for the textbox so that we can transition back.
+    self.startTextBoxFrame = mockedTextBoxView.frame;
+
+    // Prepare for transitions back.
+    self.mockedEditView.alpha = 0.0;
+    self.originalEditView.alpha = 0.0;
+    mockedTextBoxView.frame = targetTextBoxView.frame;
+    
+    // Transition back.
+    [self performEditing:NO];
 }
 
 #pragma mark - Private methods.
@@ -208,37 +328,79 @@
 - (void)transitionToEditView {
     
     // Original textBoxView.
-    CKEditingTextBoxView *originalTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
+    CKEditingTextBoxView *mockedTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
     
     // Create target editing view.
     UIView *targetEditView = [self createTargetEditView];
-    targetEditView.hidden = YES;
+    targetEditView.alpha = 0.0;
     [self.view addSubview:targetEditView];
     self.targetEditView = targetEditView;
 
     // Wrap target textField textbox.
-    [self.editingHelper wrapEditingView:targetEditView wrap:YES animated:NO];
+    [self.editingHelper wrapEditingView:targetEditView wrap:YES delegate:self white:self.white animated:NO];
     CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:targetEditView];
     [targetTextBoxView showEditingIcon:NO animated:NO];
     targetTextBoxView.hidden = YES;
     
     // Animate into fullscreen edit mode.
-    [UIView animateWithDuration:0.25
+    [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          
                          // Move the original textbox to the target textbox
-                         originalTextBoxView.frame = targetTextBoxView.frame;
+                         mockedTextBoxView.frame = targetTextBoxView.frame;
                          
                      }
                      completion:^(BOOL finished) {
                          
-                         // Hide original textbox view.
+                         // Show target textbox view.
                          targetTextBoxView.hidden = NO;
-                         originalTextBoxView.hidden = YES;
                          
+                         // Hide mocked textbox view.
+                         mockedTextBoxView.hidden = YES;
+                         
+                         [UIView animateWithDuration:0.2
+                                               delay:0.0
+                                             options:UIViewAnimationOptionCurveEaseIn
+                                          animations:^{
+                                              
+                                              // Fade in target editing view.
+                                              targetEditView.alpha = 1.0;
+                                              
+                                              // Show the save icon.
+                                              [targetTextBoxView showSaveIcon:YES animated:NO];
+                                              
+                                          }
+                                          completion:^(BOOL finished) {
+                                              
+                                              // Lifecycle event.
+                                              [self targetTextEditingViewDidAppear:YES];
+                                              
+                                          }];
                      }];
+}
+
+- (void)mockAndWrapOriginalEditingView {
+    UIView *rootView = [self rootView];
+    
+    // Capture the editing view as a mock image on the editing view. Editing view needs to be opaque.
+    self.originalEditView.backgroundColor = [self editingBackgroundColour];
+    
+    // Wrap up the mock edit view in a textbox.
+    CGRect editingViewFrame = [rootView convertRect:self.originalEditView.frame fromView:self.originalEditView.superview];
+    UIImage *editViewImage = [self screenshotView:self.originalEditView];
+    UIImageView *mockedEditView = [[UIImageView alloc] initWithImage:editViewImage];
+    mockedEditView.userInteractionEnabled = YES;
+    mockedEditView.frame = editingViewFrame;
+    [self.view addSubview:mockedEditView];
+    self.mockedEditView = mockedEditView;
+
+    // Wrap textField textbox.
+    [self.editingHelper wrapEditingView:mockedEditView wrap:YES white:self.white animated:NO];
+}
+
+- (void)targetEditingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {
 }
 
 @end

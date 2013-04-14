@@ -8,7 +8,9 @@
 
 #import "CKTextFieldEditViewController.h"
 
-@interface CKTextFieldEditViewController ()
+@interface CKTextFieldEditViewController () <UITextFieldDelegate>
+
+@property (nonatomic, strong) UITextField *textField;
 
 @end
 
@@ -16,20 +18,35 @@
 
 - (UIView *)createTargetEditView {
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.backgroundColor = [UIColor clearColor];
-    label.font = [UIFont boldSystemFontOfSize:100.0];
-    label.textColor = [UIColor darkGrayColor];
-    label.shadowColor = [UIColor lightGrayColor];
-    label.shadowOffset = CGSizeMake(0.0, 1.0);
-    label.text = @"NERD RECIPES";
-    [label sizeToFit];
-    label.frame = CGRectMake(floorf((self.view.bounds.size.width - label.frame.size.width) / 2.0),
-                             floorf((self.view.bounds.size.height - label.frame.size.height) / 2.0),
-                             label.frame.size.width,
-                             label.frame.size.height);
-    return label;
+    CGSize size = CGSizeMake(800.0, 90.0);
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
+                                                                           160.0,
+                                                                           size.width,
+                                                                           size.height)];
+    textField.font = [UIFont boldSystemFontOfSize:80.0];
+    textField.textColor = [self editingTextColour];
+    textField.backgroundColor = [UIColor clearColor];
+    textField.textAlignment = NSTextAlignmentCenter;
+    textField.delegate = self;
+    textField.text = [self currentTextValue];
+    self.textField = textField;
+    return textField;
 }
 
+- (void)targetTextEditingViewWillAppear:(BOOL)appear {
+    [self.textField resignFirstResponder];
+    [super targetTextEditingViewWillAppear:appear];
+}
+
+- (void)targetTextEditingViewDidAppear:(BOOL)appear {
+    [self.textField becomeFirstResponder];
+    [super targetTextEditingViewDidAppear:appear];
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    return YES;
+}
 
 @end

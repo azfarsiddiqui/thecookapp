@@ -7,7 +7,6 @@
 //
 
 #import "CKEditingViewHelper.h"
-#import "CKEditingTextBoxView.h"
 
 @interface CKEditingViewHelper ()
 
@@ -27,59 +26,52 @@
     return self;
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap {
-    [self wrapEditingView:editingView wrap:wrap animated:YES];
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white {
+    
+    [self wrapEditingView:editingView wrap:wrap delegate:nil white:white animated:YES];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap animated:(BOOL)animated {
-    [self wrapEditingView:editingView wrap:wrap target:nil selector:nil animated:animated];
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white animated:(BOOL)animated {
+    
+    [self wrapEditingView:editingView wrap:wrap delegate:nil white:white animated:animated];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets {
-    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets animated:YES];
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
+                  white:(BOOL)white {
+    
+    [self wrapEditingView:editingView wrap:wrap delegate:delegate white:white animated:YES];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-               animated:(BOOL)animated {
-    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets target:nil selector:nil animated:animated];
-}
-
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap target:(id)target selector:(SEL)selector {
-    [self wrapEditingView:editingView wrap:wrap target:target selector:selector animated:YES];
-}
-
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap target:(id)target selector:(SEL)selector
-               animated:(BOOL)animated {
-    [self wrapEditingView:editingView wrap:wrap contentInsets:kContentInsets target:target selector:selector animated:animated];
+- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
+                white:(BOOL)white animated:(BOOL)animated {
+    
+    [self wrapEditingView:editingView wrap:wrap contentInsets:kContentInsets delegate:delegate white:white
+                 animated:animated];
 }
 
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-                 target:(id)target selector:(SEL)selector {
-    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets target:target selector:selector animated:YES];
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white {
+    
+    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets delegate:delegate white:white animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-                 target:(id)target selector:(SEL)selector animated:(BOOL)animated {
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated {
     
     UIView *parentView = editingView.superview;
     
     if (wrap) {
         
         // Add a textbox.
-        CKEditingTextBoxView *textBoxView = [[CKEditingTextBoxView alloc] initWithEditingFrame:editingView.frame
-                                                                                 contentInsets:contentInsets
-                                                                                         white:YES];
+        CKEditingTextBoxView *textBoxView = [[CKEditingTextBoxView alloc] initWithEditingView:editingView
+                                                                                contentInsets:contentInsets
+                                                                                        white:white
+                                                                                     delegate:delegate];
         [parentView insertSubview:textBoxView belowSubview:editingView];
         
         // Keep a reference to the textbox.
         [self.editingViewTextBoxViews setObject:textBoxView
                                          forKey:[NSValue valueWithNonretainedObject:editingView]];
-        
-        // Register tap on editing view.
-        if (target != nil && [target respondsToSelector:selector]) {
-            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:target action:selector];
-            [textBoxView addGestureRecognizer:tapGesture];
-        }
         
         if (animated) {
             
@@ -102,7 +94,7 @@
         
     } else {
         
-        // Get the textbox belonging to the editinView.
+        // Get the textbox belonging to the editingView.
         CKEditingTextBoxView *textEditImageView = [self textBoxViewForEditingView:editingView];
         
         if (animated) {
@@ -130,6 +122,15 @@
             
         }
     }
+}
+
+- (void)updateEditingView:(UIView *)editingView {
+    [self updateEditingView:editingView animated:YES];
+}
+
+- (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated {
+    CKEditingTextBoxView *textBoxView = [self textBoxViewForEditingView:editingView];
+    [textBoxView updateEditingView:editingView];
 }
 
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView {
