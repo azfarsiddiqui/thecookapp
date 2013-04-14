@@ -101,15 +101,33 @@
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
-                                                                                              delegate:self
-                                                                                         editingHelper:self.editingHelper
-                                                                                                 white:NO];
-    if (editingView == self.captionLabel) {
+    if (editingView == self.authorLabel) {
+        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+                                                                                                           delegate:self
+                                                                                                      editingHelper:self.editingHelper
+                                                                                                              white:NO
+                                                                                                              title:@"Author"
+                                                                                                     characterLimit:20];
+        self.editViewController = editViewController;
+    } else if (editingView == self.titleLabel) {
+        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+                                                                                                           delegate:self
+                                                                                                      editingHelper:self.editingHelper
+                                                                                                              white:NO
+                                                                                                              title:@"Title"
+                                                                                                     characterLimit:20];
+        self.editViewController = editViewController;
+    } else if (editingView == self.captionLabel) {
+        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+                                                                                                           delegate:self
+                                                                                                      editingHelper:self.editingHelper
+                                                                                                              white:NO
+                                                                                                              title:@"Caption"
+                                                                                                     characterLimit:40];
         editViewController.fontSize = 40.0;
+        self.editViewController = editViewController;
     }
-    [editViewController performEditing:YES];
-    self.editViewController = editViewController;
+    [self.editViewController performEditing:YES];
 }
 
 #pragma mark - CKEditViewControllerDelegate methods

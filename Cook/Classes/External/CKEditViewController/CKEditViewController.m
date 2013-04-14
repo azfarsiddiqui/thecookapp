@@ -13,11 +13,8 @@
 
 @interface CKEditViewController () <UIGestureRecognizerDelegate, CKEditingTextBoxViewDelegate>
 
-@property (nonatomic, strong) UIView *originalEditView;
 @property (nonatomic, strong) UIView *mockedEditView;
-@property (nonatomic, strong) UIView *targetEditView;
 @property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, assign) id<CKEditViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIColor *editingViewBackgroundOriginalColour;
 @property (nonatomic, assign) CGRect startTextBoxFrame;
@@ -226,6 +223,11 @@
 
 - (UIColor *)editingOverlayColour {
 //    return self.white ? [UIColor blackColor] : [UIColor whiteColor];
+    return [UIColor blackColor];
+}
+
+- (UIColor *)titleColour {
+//    return self.white ? [UIColor whiteColor] : [UIColor blackColor];
     return [UIColor blackColor];
 }
 

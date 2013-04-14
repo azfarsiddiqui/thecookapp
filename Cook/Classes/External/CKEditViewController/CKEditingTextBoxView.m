@@ -123,6 +123,10 @@
 }
 
 - (void)showSaveIcon:(BOOL)show animated:(BOOL)animated {
+    [self showSaveIcon:show enabled:YES animated:animated];
+}
+
+- (void)showSaveIcon:(BOOL)show enabled:(BOOL)enabled animated:(BOOL)animated {
     if (show) {
         self.textEditingSaveButton.hidden = NO;
         self.textEditingSaveButton.alpha = 0.0;
@@ -135,8 +139,10 @@
                              self.textEditingSaveButton.alpha = show ? 1.0 : 0.0;
                          }
                          completion:^(BOOL finished) {
+                             self.textEditingSaveButton.enabled = enabled;
                          }];
     } else {
+        self.textEditingSaveButton.enabled = enabled;
         self.textEditingSaveButton.hidden = show ? NO : YES;
         self.textEditingSaveButton.alpha = 1.0;
     }

@@ -21,6 +21,9 @@
 
 @interface CKEditViewController : UIViewController
 
+@property (nonatomic, strong) UIView *originalEditView;
+@property (nonatomic, strong) UIView *targetEditView;
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, assign) BOOL dismissableOverlay;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
@@ -32,6 +35,7 @@
 - (UIColor *)editingTextColour;
 - (UIColor *)editingBackgroundColour;
 - (UIColor *)editingOverlayColour;
+- (UIColor *)titleColour;
 
 // Lifecycle events.
 - (void)targetTextEditingViewWillAppear:(BOOL)appear;

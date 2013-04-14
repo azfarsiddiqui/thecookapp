@@ -26,6 +26,7 @@
 - (void)updateEditingView:(UIView *)editingView;
 - (void)showEditingIcon:(BOOL)show animated:(BOOL)animated;
 - (void)showSaveIcon:(BOOL)show animated:(BOOL)animated;
+- (void)showSaveIcon:(BOOL)show enabled:(BOOL)enabled animated:(BOOL)animated;
 - (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
 
 @end

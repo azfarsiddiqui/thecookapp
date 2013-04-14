@@ -12,4 +12,8 @@
 
 @property (nonatomic, assign) CGFloat fontSize;
 
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title
+                 characterLimit:(NSUInteger)characterLimit;
+
 @end
