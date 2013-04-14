@@ -10,4 +10,6 @@
 
 @interface CKTextFieldEditViewController : CKEditViewController
 
+@property (nonatomic, assign) CGFloat fontSize;
+
 @end

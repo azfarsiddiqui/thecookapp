@@ -100,12 +100,6 @@
     // Restore intended resizing mask so that scaling works in transit.
     self.textEditingPencilView.autoresizingMask = [self editIconResizingMask];
     self.textEditImageView.autoresizingMask = [self textBoxResizingMask];
-    
-//    if ([editingView isKindOfClass:[UILabel class]]) {
-//        NSLog(@"       FRAME %@", NSStringFromCGRect(self.frame));
-//        NSLog(@"LABEL   SIZE %@", NSStringFromCGSize(editingView.frame.size));
-//        NSLog(@"TEXTBOX SIZE %@", NSStringFromCGSize(self.frame.size));
-//    }
 }
 
 - (void)showEditingIcon:(BOOL)show animated:(BOOL)animated {
