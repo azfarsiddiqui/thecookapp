@@ -10,15 +10,13 @@
 #import "CKBookCover.h"
 #import "CKEditableView.h"
 #import "Theme.h"
-#import "CKTextFieldEditingViewController.h"
 #import "CKTextFieldEditViewController.h"
 #import "CKEditingViewHelper.h"
 
-@interface CKBookCoverView () <CKEditableViewDelegate, CKEditingViewControllerDelegate, CKEditingTextBoxViewDelegate,
+@interface CKBookCoverView () <CKEditableViewDelegate, CKEditingTextBoxViewDelegate,
     CKEditViewControllerDelegate>
 
 @property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
-@property (nonatomic, strong) CKEditableView *captionEditableView;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIImageView *overlayImageView;
@@ -26,6 +24,7 @@
 @property (nonatomic, strong) UILabel *layoutLabel;
 @property (nonatomic, strong) UILabel *authorLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *captionLabel;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
@@ -33,8 +32,6 @@
 
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
-
-@property (nonatomic, strong) CKTextFieldEditingViewController *textEditingViewController;
 
 @end
 
@@ -97,6 +94,8 @@
                           contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0) delegate:self white:NO];
     [self.editingHelper wrapEditingView:self.titleLabel wrap:enable
                           contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0) delegate:self white:NO];
+    [self.editingHelper wrapEditingView:self.captionLabel wrap:enable
+                          contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0) delegate:self white:NO];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -156,79 +155,19 @@
             [self.editingHelper updateEditingView:self.titleLabel animated:NO];
         }
         
+    } else if (editingView == self.captionLabel) {
+        
+        // Get updated value and update label.
+        NSString *text = (NSString *)value;
+        if (![text isEqualToString:self.captionLabel.text]) {
+            [self setCaption:text];
+            
+            // Update the editing wrapper.
+            [self.editingHelper updateEditingView:self.captionLabel animated:NO];
+        }
+        
     }
     
-}
-
-#pragma mark - CKEditableViewDelegate methods
-
-- (void)editableViewEditRequestedForView:(UIView *)view {
-    UIView *rootView = [self rootView];
-    CKTextFieldEditingViewController *editingViewController = [[CKTextFieldEditingViewController alloc] initWithDelegate:self];
-    editingViewController.textAlignment = NSTextAlignmentCenter;
-    editingViewController.view.frame = [self rootView].bounds;
-    [rootView addSubview:editingViewController.view];
-    self.textEditingViewController = editingViewController;
-
-//    if (view == self.authorEditableView) {
-//        UILabel *authorLabel = (UILabel *)self.authorEditableView.contentView;
-//        editingViewController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-//        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-//        editingViewController.characterLimit = 20;
-//        editingViewController.text = authorLabel.text;
-//        editingViewController.sourceEditingView = self.authorEditableView;
-//        editingViewController.editingTitle = @"Book Author";
-//        [editingViewController enableEditing:YES completion:nil];
-//    } else
-        if (view == self.captionEditableView) {
-        UILabel *captionLabel = (UILabel *)self.captionEditableView.contentView;
-        editingViewController.editableTextFont = [Theme bookCoverEditableCaptionTextFont];
-        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        editingViewController.characterLimit = 40;
-        editingViewController.text = captionLabel.text;
-        editingViewController.sourceEditingView = self.captionEditableView;
-        editingViewController.editingTitle = @"Book Caption";
-        [editingViewController enableEditing:YES completion:nil];
-//    } else if (view == self.titleEditableView) {
-//        UILabel *titleLabel = (UILabel *)self.titleEditableView.contentView;
-//        editingViewController.editableTextFont = [Theme bookCoverEditableTitleTextFont];
-//        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-//        editingViewController.characterLimit = 20;
-//        editingViewController.text = titleLabel.text;
-//        editingViewController.sourceEditingView = self.titleEditableView;
-//        editingViewController.editingTitle = @"Book Title";
-//        [editingViewController enableEditing:YES completion:nil];
-    }
-}
-
-#pragma mark - CKEditingViewControllerDelegate methods
-
-- (void)editingViewWillAppear:(BOOL)appear {
-    
-}
-
-- (void)editingViewDidAppear:(BOOL)appear {
-    if (!appear) {
-        [self.textEditingViewController.view removeFromSuperview];
-        self.textEditingViewController = nil;
-    }
-}
-
--(void)editingView:(CKEditableView *)editingView saveRequestedWithResult:(id)result {
-//    if (editingView == self.authorEditableView) {
-//        NSString *author = (NSString *)result;
-//        [self setAuthor:author];
-//        [self.authorEditableView enableEditMode:YES];
-//    } else
-        if (editingView == self.captionEditableView) {
-        NSString *caption = (NSString *)result;
-        [self setCaption:caption];
-        [self.captionEditableView enableEditMode:YES];
-//    } else if (editingView == self.titleEditableView) {
-//        NSString *title = (NSString *)result;
-//        [self setTitle:title];
-//        [self.titleEditableView enableEditMode:YES];
-    }
 }
 
 #pragma mark - Private methods
@@ -513,7 +452,7 @@
     return frame;
 }
 
-- (CGRect)captionEditableAdjustedFrameWithSize:(CGSize)size {
+- (CGRect)captionLabelAdjustedFrameWithSize:(CGSize)size {
     CGRect frame = CGRectZero;
     CGSize availableSize = [self availableContentSize];
     CGFloat width = (size.width > availableSize.width) ? size.width : availableSize.width;
@@ -523,7 +462,7 @@
         case BookCoverLayout3:
         case BookCoverLayout4:
         default:
-            frame = CGRectMake(kContentInsets.left - 5.0,
+            frame = CGRectMake(kContentInsets.left,
                                self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + (self.multilineTitle ? -7.0 : -18.0),
                                width,
                                size.height);
@@ -637,10 +576,8 @@
 - (void)setCaption:(NSString *)caption {
     self.captionValue = caption;
     UIFont *font = [Theme bookCoverViewModeCaptionFont];
-    UIEdgeInsets editableInsets = UIEdgeInsetsMake(3.0, 5.0, -4.0, 4.0);
-    CGSize availableSize = [self availableContentSize];
     
-    if (!self.captionEditableView) {
+    if (!self.captionLabel) {
         UILabel *captionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         captionLabel.autoresizingMask = UIViewAutoresizingNone;
         captionLabel.backgroundColor = [UIColor clearColor];
@@ -650,32 +587,18 @@
             captionLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
         }
 
-        CKEditableView *captionEditableView = [[CKEditableView alloc] initWithDelegate:self];
-        captionEditableView.contentInsets = editableInsets;
-        captionEditableView.editButtonOffset = CGSizeMake(3.0, 3.0);
-
-        //        TEMP: until I can understand this implementatation JS
-//        captionEditableView.contentView = captionLabel;
-        [captionEditableView setBookCoverContentView:captionLabel];
-        [self addSubview:captionEditableView];
-        self.captionEditableView = captionEditableView;
+        [self addSubview:captionLabel];
+        self.captionLabel = captionLabel;
     }
     
-    UILabel *captionLabel = (UILabel *)self.captionEditableView.contentView;
-    captionLabel.textAlignment = [self captionTextAlignment];
-    captionLabel.text = caption;
-    [captionLabel sizeToFit];
-    captionLabel.frame = CGRectMake(0.0, 0.0, availableSize.width, captionLabel.frame.size.height);
-    //        TEMP: until I can understand this implementatation JS
-    //        captionEditableView.contentView = captionLabel;
-    [self.captionEditableView setBookCoverContentView:captionLabel];
-    self.captionEditableView.frame = [self captionEditableAdjustedFrameWithSize:self.captionEditableView.frame.size];
+    self.captionLabel.textAlignment = [self captionTextAlignment];
+    self.captionLabel.text = caption;
+    [self.captionLabel sizeToFit];
+    self.captionLabel.frame = [self captionLabelAdjustedFrameWithSize:self.captionLabel.frame.size];
 }
 
 - (void)setTitle:(NSString *)title {
     self.titleValue = title;
-    UIEdgeInsets editableInsets = UIEdgeInsetsMake(3.0, 5.0, -4.0, 4.0);
-    CGSize availableSize = [self availableContentSize];
     
     if (!self.titleLabel) {
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
