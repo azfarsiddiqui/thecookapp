@@ -18,6 +18,10 @@
 #import "Ingredient.h"
 #import "RecipeSocialViewController.h"
 #import "CKPopoverViewController.h"
+#import "CKEditViewController.h"
+#import "CKEditingTextBoxView.h"
+#import "CKEditingViewHelper.h"
+#import "CKTextFieldEditViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -27,7 +31,8 @@ typedef enum {
 } PhotoWindowHeight;
 
 @interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
-    CKRecipeSocialViewDelegate, CKPopoverViewControllerDelegate>
+    CKRecipeSocialViewDelegate, CKPopoverViewControllerDelegate, CKEditViewControllerDelegate,
+CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKBook *book;
@@ -39,6 +44,7 @@ typedef enum {
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *windowView;
 @property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *servesCookView;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
@@ -58,6 +64,9 @@ typedef enum {
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
+
+@property (nonatomic, strong) CKEditViewController *editViewController;
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 
 @end
 
@@ -84,6 +93,7 @@ typedef enum {
         self.recipe = recipe;
         self.book = book;
         self.parsePhotoStore = [[ParsePhotoStore alloc]init];
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
     return self;
 }
@@ -196,11 +206,7 @@ typedef enum {
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    BOOL shouldReceive = YES;
-    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        shouldReceive = !self.editMode;
-    }
-    
+    BOOL shouldReceive = !self.editMode;
     return shouldReceive;
 }
 
@@ -225,6 +231,61 @@ typedef enum {
     if (!appear) {
         self.popoverViewController = nil;
     }
+}
+
+#pragma mark - CKEditingTextBoxViewDelegate methods
+
+- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    if (editingView == self.titleLabel) {
+        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+                                                                                                           delegate:self
+                                                                                                      editingHelper:self.editingHelper
+                                                                                                              white:YES];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+    }
+}
+
+#pragma mark - CKEditViewControllerDelegate methods
+
+- (void)editViewControllerWillAppear:(BOOL)appear {
+    DLog(@"%@", appear ? @"YES" : @"NO");
+}
+
+- (void)editViewControllerDidAppear:(BOOL)appear {
+    DLog(@"%@", appear ? @"YES" : @"NO");
+    if (!appear) {
+        [self.editViewController.view removeFromSuperview];
+        self.editViewController = nil;
+    }
+}
+
+- (void)editViewControllerDismissRequested {
+    [self.editViewController performEditing:NO];
+}
+
+- (void)editViewControllerEditRequested {
+    // TODO REMOVE
+}
+
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+    
+    if (editingView == self.titleLabel) {
+        
+        // Get updated value and update label.
+        NSString *text = (NSString *)value;
+        if (![text isEqualToString:self.titleLabel.text]) {
+            
+            [self.titleLabel sizeToFit];
+            self.titleLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
+                                               self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + 10.0,
+                                               self.titleLabel.frame.size.width,
+                                               self.titleLabel.frame.size.height);
+            // Update the editing wrapper.
+            [self.editingHelper updateEditingView:self.titleLabel animated:NO];
+        }
+    }
+    
 }
 
 #pragma mark - Lazy getters.
@@ -641,6 +702,7 @@ typedef enum {
                                         nameLabel.center.y - floorf(profilePhotoView.frame.size.height / 2.0) - 2.0,
                                         profilePhotoView.frame.size.width,
                                         profilePhotoView.frame.size.height);
+    self.profilePhotoView = profilePhotoView;
     [headerView addSubview:profilePhotoView];
     [headerView addSubview:nameLabel];
     
@@ -685,6 +747,7 @@ typedef enum {
 
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped:)];
+    tapGesture.delegate = self;
     [headerView addGestureRecognizer:tapGesture];
 }
 
@@ -933,15 +996,7 @@ typedef enum {
 
 - (void)editTapped:(id)sender {
     self.editMode = YES;
-    
-    // Snap to mid height then toggle buttons.
-    if (self.photoWindowHeight != PhotoWindowHeightMid) {
-        [self snapContentToPhotoWindowHeight:kWindowMidHeight completion:^{
-            [self updateButtons];
-        }];
-    } else {
-        [self updateButtons];
-    }
+    [self enableEditMode:YES];
 }
 
 - (void)shareTapped:(id)sender {
@@ -1049,6 +1104,23 @@ typedef enum {
         windowHeight = PhotoWindowHeightMin;
     }
     return windowHeight;
+}
+
+- (void)enableEditMode:(BOOL)enable {
+    
+    // Snap to mid height then toggle buttons.
+    if (enable && self.photoWindowHeight != PhotoWindowHeightMid) {
+        [self snapContentToPhotoWindowHeight:kWindowMidHeight completion:^{
+            [self updateButtons];
+        }];
+    } else {
+        [self updateButtons];
+    }
+    
+    // Set fields to be editable.
+    [self.editingHelper wrapEditingView:self.titleLabel wrap:enable
+                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+    
 }
 
 @end
