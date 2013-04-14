@@ -101,10 +101,13 @@
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    CKEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+    CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                               delegate:self
                                                                                          editingHelper:self.editingHelper
                                                                                                  white:NO];
+    if (editingView == self.captionLabel) {
+        editViewController.fontSize = 40.0;
+    }
     [editViewController performEditing:YES];
     self.editViewController = editViewController;
 }
