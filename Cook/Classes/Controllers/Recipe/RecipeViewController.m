@@ -22,6 +22,10 @@
 #import "CKEditingTextBoxView.h"
 #import "CKEditingViewHelper.h"
 #import "CKTextFieldEditViewController.h"
+#import "CKPhotoPickerViewController.h"
+#import "UIImage+ProportionalFill.h"
+#import "CKEditingTextBoxView.h"
+#import "AppHelper.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -32,7 +36,7 @@ typedef enum {
 
 @interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, CKPopoverViewControllerDelegate, CKEditViewControllerDelegate,
-    CKEditingTextBoxViewDelegate>
+    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKBook *book;
@@ -62,12 +66,16 @@ typedef enum {
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
+@property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
 
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+
+@property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
+@property (nonatomic, strong) UIImage *recipeImageToUpload;
 
 @end
 
@@ -245,6 +253,12 @@ typedef enum {
         editViewController.fontSize = 48.0;
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
+        
+    } else if (editingView == self.photoLabel) {
+        
+        [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen completion:^{
+            [self showPhotoPicker:YES];
+        }];
     }
 }
 
@@ -289,6 +303,32 @@ typedef enum {
         }
     }
     
+}
+
+#pragma mark - CKPhotoPickerViewControllerDelegate methods
+
+- (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
+    // Present the image.
+    UIImage *croppedImage = [image imageCroppedToFitSize:self.backgroundImageView.bounds.size];
+    self.backgroundImageView.image = croppedImage;
+    
+    // Save photo to be uploaded.
+    self.recipeImageToUpload = image;
+    
+    // Close and revert to mid height.
+    [self showPhotoPicker:NO completion:^{
+        [self snapContentToPhotoWindowHeight:PhotoWindowHeightMid];
+        
+    }];
+}
+
+- (void)photoPickerViewControllerCloseRequested {
+    
+    // Close and revert to mid height.
+    [self showPhotoPicker:NO completion:^{
+        [self snapContentToPhotoWindowHeight:PhotoWindowHeightMid];
+        
+    }];
 }
 
 #pragma mark - Lazy getters.
@@ -381,6 +421,23 @@ typedef enum {
         [_servesCookView addSubview:prepCookView];
     }
     return _servesCookView;
+}
+
+- (UILabel *)photoLabel {
+    if (!_photoLabel) {
+        _photoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _photoLabel.font = [UIFont boldSystemFontOfSize:16.0];
+        _photoLabel.backgroundColor = [UIColor clearColor];
+        _photoLabel.textColor = [UIColor blackColor];
+        _photoLabel.text = @"PHOTO";
+        [_photoLabel sizeToFit];
+        _photoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_photoLabel setFrame:CGRectMake(floorf((self.view.bounds.size.width - _photoLabel.frame.size.width) / 2.0),
+                                         floorf((kWindowMidHeight - _photoLabel.frame.size.height) / 2.0) + 20.0,
+                                         _photoLabel.frame.size.width,
+                                         _photoLabel.frame.size.height)];
+    }
+    return _photoLabel;
 }
 
 #pragma mark - Private methods
@@ -916,6 +973,12 @@ typedef enum {
         self.saveButton.alpha = 0.0;
         [self.navContainerView addSubview:self.cancelButton];
         [self.navContainerView addSubview:self.saveButton];
+        
+        // Photo label and its wrapping.
+        self.photoLabel.alpha = 0.0;
+        [self.view addSubview:self.photoLabel];
+        [self.editingHelper wrapEditingView:self.photoLabel wrap:YES delegate:self white:YES animated:NO];
+        
     } else {
         self.closeButton.alpha = 0.0;
         self.socialView.alpha = 0.0;
@@ -931,6 +994,9 @@ typedef enum {
     CGFloat buttonsVisibleAlpha = (self.photoWindowHeight == PhotoWindowHeightFullScreen) ? 0.0 : alpha;
     self.navContainerView.userInteractionEnabled = (buttonsVisibleAlpha != 0.0);
     
+    // Get the edit wrapper for photoLabel.
+    CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoLabel];
+    
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -939,8 +1005,11 @@ typedef enum {
                          self.socialView.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.editButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.shareButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
+                         
                          self.cancelButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          self.saveButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
+                         self.photoLabel.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
+                         photoBoxView.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          
                          if (self.editMode) {
                              self.cancelButton.transform = CGAffineTransformMakeScale(1.1, 1.1);
@@ -966,6 +1035,10 @@ typedef enum {
                          } else {
                              [self.cancelButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
+                             
+                             // Unwrap editing wrapper.
+                             [self.editingHelper wrapEditingView:self.photoLabel wrap:NO white:YES];
+                             [self.photoLabel removeFromSuperview];
                          }
                      }];
 }
@@ -1136,6 +1209,39 @@ typedef enum {
                                        self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + 10.0,
                                        self.titleLabel.frame.size.width,
                                        self.titleLabel.frame.size.height);
+}
+
+- (void)showPhotoPicker:(BOOL)show {
+    [self showPhotoPicker:show completion:^{}];
+}
+
+- (void)showPhotoPicker:(BOOL)show completion:(void (^)())completion {
+    if (show) {
+        // Present photo picker fullscreen.
+        UIView *rootView = [[AppHelper sharedInstance] rootView];
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self];
+        self.photoPickerViewController = photoPickerViewController;
+        self.photoPickerViewController.view.alpha = 0.0;
+        [rootView addSubview:self.photoPickerViewController.view];
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.photoPickerViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self cleanupPhotoPicker];
+                         }
+                         completion();
+                     }];
+}
+
+- (void)cleanupPhotoPicker {
+    [self.photoPickerViewController.view removeFromSuperview];
+    self.photoPickerViewController = nil;
 }
 
 @end

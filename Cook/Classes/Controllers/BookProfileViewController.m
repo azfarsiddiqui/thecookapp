@@ -27,7 +27,6 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *introView;
 @property (nonatomic, strong) UIButton *editButton;
-@property (nonatomic, strong) UIButton *editPhotoButton;
 @property (nonatomic, strong) UILabel *editPhotoLabel;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
@@ -101,19 +100,6 @@
                                          _editButton.frame.size.height)];
     }
     return _editButton;
-}
-
-- (UIButton *)editPhotoButton {
-    if (!_editPhotoButton) {
-        _editPhotoButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editPhotoTapped:)];
-        _editPhotoButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        CGFloat availableWidth = self.view.bounds.size.width - (self.introView.frame.origin.x + self.introView.frame.size.width);
-        [_editPhotoButton setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_editPhotoButton.frame.size.width) / 2.0),
-                                              floorf((self.view.bounds.size.height - _editPhotoButton.frame.size.height) / 2.0),
-                                              _editPhotoButton.frame.size.width,
-                                              _editPhotoButton.frame.size.height)];
-    }
-    return _editPhotoButton;
 }
 
 - (UILabel *)editPhotoLabel {
@@ -192,10 +178,6 @@
 
 - (void)editTapped:(id)sender {
     [EventHelper postEditMode:!self.editMode];
-}
-
-- (void)editPhotoTapped:(id)sender {
-    [self showPhotoPicker:YES];
 }
 
 - (void)editModeReceived:(NSNotification *)notification {
