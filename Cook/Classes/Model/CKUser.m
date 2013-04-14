@@ -343,6 +343,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseUser objectForKey:kUserAttrCoverPhoto];
 }
 
+- (BOOL)hasCoverPhoto {
+    return ([self parseCoverPhotoFile] != nil);
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {
