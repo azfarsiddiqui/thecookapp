@@ -18,19 +18,22 @@
 #import "AppHelper.h"
 #import "ParsePhotoStore.h"
 #import "UIImage+ProportionalFill.h"
+#import "CKEditingViewHelper.h"
 #import <Parse/Parse.h>
 
-@interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate>
+@interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *introView;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIButton *editPhotoButton;
+@property (nonatomic, strong) UILabel *editPhotoLabel;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) UIImage *uploadedCoverPhoto;
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 
 @end
 
@@ -44,6 +47,7 @@
     if (self = [super init]) {
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
     return self;
 }
@@ -75,6 +79,59 @@
 
 - (void)photoPickerViewControllerCloseRequested {
     [self showPhotoPicker:NO];
+}
+
+#pragma mark - CKEditingTextBoxViewDelegate methods
+
+- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    if (editingView == self.editPhotoLabel) {
+        [self showPhotoPicker:YES];
+    }
+}
+
+#pragma mark - Lazy getters
+
+- (UIButton *)editButton {
+    if (!_editButton && [self canEditBook]) {
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editTapped:)];
+        _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_editButton setFrame:CGRectMake(self.introView.bounds.size.width - _editButton.frame.size.width - 15.0,
+                                         15.0,
+                                         _editButton.frame.size.width,
+                                         _editButton.frame.size.height)];
+    }
+    return _editButton;
+}
+
+- (UIButton *)editPhotoButton {
+    if (!_editPhotoButton) {
+        _editPhotoButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editPhotoTapped:)];
+        _editPhotoButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        CGFloat availableWidth = self.view.bounds.size.width - (self.introView.frame.origin.x + self.introView.frame.size.width);
+        [_editPhotoButton setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_editPhotoButton.frame.size.width) / 2.0),
+                                              floorf((self.view.bounds.size.height - _editPhotoButton.frame.size.height) / 2.0),
+                                              _editPhotoButton.frame.size.width,
+                                              _editPhotoButton.frame.size.height)];
+    }
+    return _editPhotoButton;
+}
+
+- (UILabel *)editPhotoLabel {
+    if (!_editPhotoLabel) {
+        _editPhotoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _editPhotoLabel.font = [UIFont boldSystemFontOfSize:16.0];
+        _editPhotoLabel.backgroundColor = [UIColor clearColor];
+        _editPhotoLabel.textColor = [UIColor blackColor];
+        _editPhotoLabel.text = @"PHOTO";
+        [_editPhotoLabel sizeToFit];
+        _editPhotoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        CGFloat availableWidth = self.view.bounds.size.width - (self.introView.frame.origin.x + self.introView.frame.size.width);
+        [_editPhotoLabel setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_editPhotoLabel.frame.size.width) / 2.0),
+                                              floorf((self.view.bounds.size.height - _editPhotoLabel.frame.size.height) / 2.0),
+                                              _editPhotoLabel.frame.size.width,
+                                              _editPhotoLabel.frame.size.height)];
+    }
+    return _editPhotoLabel;
 }
 
 #pragma mark - Private methods
@@ -118,53 +175,19 @@
 
 - (void)updateButtons {
     
-    // Add edit button if not already.
-    CKUser *currentUser = [CKUser currentUser];
-    if ([self.book isUserBookAuthor:currentUser] && !self.editButton.superview) {
+    // Add edit button if own book.
+    if (self.editButton && !self.editButton.superview) {
         [self.introView addSubview:self.editButton];
     }
     
     if (self.editMode) {
-        self.editPhotoButton.alpha = 0.0;
-        [self.view addSubview:self.editPhotoButton];
+        [self.view addSubview:self.editPhotoLabel];
+        [self.editingHelper wrapEditingView:self.editPhotoLabel wrap:YES delegate:self white:YES];
+    } else {
+        [self.editingHelper wrapEditingView:self.editPhotoLabel wrap:NO delegate:self white:YES];
+        [self.editPhotoLabel removeFromSuperview];
     }
     
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.editPhotoButton.alpha = self.editMode ? 1.0 : 0.0;
-                     }
-                     completion:^(BOOL finished)  {
-                         if (!self.editMode) {
-                             [self.editPhotoButton removeFromSuperview];
-                         }
-                     }];
-}
-
-- (UIButton *)editButton {
-    if (!_editButton) {
-        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editTapped:)];
-        _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_editButton setFrame:CGRectMake(self.introView.bounds.size.width - _editButton.frame.size.width - 15.0,
-                                         15.0,
-                                         _editButton.frame.size.width,
-                                         _editButton.frame.size.height)];
-    }
-    return _editButton;
-}
-
-- (UIButton *)editPhotoButton {
-    if (!_editPhotoButton) {
-        _editPhotoButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editPhotoTapped:)];
-        _editPhotoButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        CGFloat availableWidth = self.view.bounds.size.width - (self.introView.frame.origin.x + self.introView.frame.size.width);
-        [_editPhotoButton setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_editPhotoButton.frame.size.width) / 2.0),
-                                              floorf((self.view.bounds.size.height - _editPhotoButton.frame.size.height) / 2.0),
-                                              _editPhotoButton.frame.size.width,
-                                              _editPhotoButton.frame.size.height)];
-    }
-    return _editPhotoButton;
 }
 
 - (void)editTapped:(id)sender {
@@ -216,22 +239,28 @@
 }
 
 - (void)loadData {
-    [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
-                                  size:self.imageView.bounds.size
-                            completion:^(UIImage *image) {
-                                self.imageView.alpha = 0.0;
-                                self.imageView.image = image;
-                                
-                                // Fade it in.
-                                [UIView animateWithDuration:0.6
-                                                      delay:0.0
-                                                    options:UIViewAnimationOptionCurveEaseIn
-                                                 animations:^{
-                                                     self.imageView.alpha = 1.0;
-                                                 }
-                                                 completion:^(BOOL finished) {
-                                                 }];
-                            }];
+    if ([self.book.user hasCoverPhoto]) {
+        [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
+                                      size:self.imageView.bounds.size
+                                completion:^(UIImage *image) {
+                                    self.imageView.alpha = 0.0;
+                                    self.imageView.image = image;
+                                    
+                                    // Fade it in.
+                                    [UIView animateWithDuration:0.6
+                                                          delay:0.0
+                                                        options:UIViewAnimationOptionCurveEaseIn
+                                                     animations:^{
+                                                         self.imageView.alpha = 1.0;
+                                                     }
+                                                     completion:^(BOOL finished) {
+                                                     }];
+                                }];
+    }
+}
+
+- (BOOL)canEditBook {
+    return ([self.book.user isEqual:[CKUser currentUser]]);
 }
 
 @end
