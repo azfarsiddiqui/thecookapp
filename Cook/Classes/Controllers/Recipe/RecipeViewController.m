@@ -32,7 +32,7 @@ typedef enum {
 
 @interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, CKPopoverViewControllerDelegate, CKEditViewControllerDelegate,
-CKEditingTextBoxViewDelegate>
+    CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKBook *book;
@@ -51,6 +51,7 @@ CKEditingTextBoxViewDelegate>
 @property (nonatomic, assign) PhotoWindowHeight photoWindowHeight;
 @property (nonatomic, assign) PhotoWindowHeight previousPhotoWindowHeight;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, strong) UIView *navContainerView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *editButton;
@@ -241,6 +242,7 @@ CKEditingTextBoxViewDelegate>
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:YES];
+        editViewController.fontSize = 48.0;
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
     }
@@ -276,11 +278,12 @@ CKEditingTextBoxViewDelegate>
         NSString *text = (NSString *)value;
         if (![text isEqualToString:self.titleLabel.text]) {
             
-            [self.titleLabel sizeToFit];
-            self.titleLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-                                               self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + 10.0,
-                                               self.titleLabel.frame.size.width,
-                                               self.titleLabel.frame.size.height);
+            // Update title.
+            [self setTitle:text];
+            
+            // Mark save is required.
+            self.saveRequired = YES;
+            
             // Update the editing wrapper.
             [self.editingHelper updateEditingView:self.titleLabel animated:NO];
         }
@@ -707,22 +710,16 @@ CKEditingTextBoxViewDelegate>
     [headerView addSubview:nameLabel];
     
     // Recipe title.
-    NSString *recipeName = [self.recipe.name uppercaseString];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel.font = [Theme recipeNameFont];
     titleLabel.textColor = [Theme recipeNameColor];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     titleLabel.shadowColor = [UIColor whiteColor];
-    titleLabel.text = recipeName;
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    [titleLabel sizeToFit];
-    titleLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - titleLabel.frame.size.width) / 2.0),
-                                  profilePhotoView.frame.origin.y + profilePhotoView.frame.size.height + 10.0,
-                                  titleLabel.frame.size.width,
-                                  titleLabel.frame.size.height);
     [headerView addSubview:titleLabel];
     self.titleLabel = titleLabel;
+    [self setTitle:[self.recipe.name uppercaseString]];
     
     // Recipe story.
     CGFloat titleStoryGap = 0.0;
@@ -995,7 +992,6 @@ CKEditingTextBoxViewDelegate>
 }
 
 - (void)editTapped:(id)sender {
-    self.editMode = YES;
     [self enableEditMode:YES];
 }
 
@@ -1004,13 +1000,22 @@ CKEditingTextBoxViewDelegate>
 }
 
 - (void)cancelTapped:(id)sender {
-    self.editMode = NO;
-    [self updateButtons];
+    self.saveRequired = NO;
+    [self enableEditMode:NO];
 }
 
 - (void)saveTapped:(id)sender {
-    self.editMode = NO;
-    [self updateButtons];
+    
+    // Save any changes off.
+    if (self.saveRequired) {
+        self.recipe.name = self.titleLabel.text;
+        [self.recipe saveInBackground];
+    }
+    
+    [self enableEditMode:NO];
+    
+    // Reset save flag.
+    self.saveRequired = NO;
 }
 
 - (void)loadPhoto {
@@ -1107,6 +1112,7 @@ CKEditingTextBoxViewDelegate>
 }
 
 - (void)enableEditMode:(BOOL)enable {
+    self.editMode = enable;
     
     // Snap to mid height then toggle buttons.
     if (enable && self.photoWindowHeight != PhotoWindowHeightMid) {
@@ -1121,6 +1127,15 @@ CKEditingTextBoxViewDelegate>
     [self.editingHelper wrapEditingView:self.titleLabel wrap:enable
                           contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
     
+}
+
+- (void)setTitle:(NSString *)title {
+    self.titleLabel.text = title;
+    [self.titleLabel sizeToFit];
+    self.titleLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
+                                       self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + 10.0,
+                                       self.titleLabel.frame.size.width,
+                                       self.titleLabel.frame.size.height);
 }
 
 @end
