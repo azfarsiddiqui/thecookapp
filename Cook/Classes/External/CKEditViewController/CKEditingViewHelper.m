@@ -62,6 +62,11 @@
     
     if (wrap) {
         
+        // Return immediately if editing view has already been created.
+        if ([self textBoxViewForEditingView:editingView] != nil) {
+            return;
+        }
+        
         // Add a textbox.
         CKEditingTextBoxView *textBoxView = [[CKEditingTextBoxView alloc] initWithEditingView:editingView
                                                                                 contentInsets:contentInsets
@@ -96,6 +101,12 @@
         
         // Get the textbox belonging to the editingView.
         CKEditingTextBoxView *textEditImageView = [self textBoxViewForEditingView:editingView];
+        NSLog(@"textEditImageView %@", textEditImageView);
+        
+        // Return immediately if none was found.
+        if (textEditImageView == nil) {
+            return;
+        }
         
         if (animated) {
             

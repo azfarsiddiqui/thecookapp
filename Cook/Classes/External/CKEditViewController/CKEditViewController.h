@@ -31,6 +31,7 @@
 - (NSString *)updatedTextValue;
 - (UIColor *)editingTextColour;
 - (UIColor *)editingBackgroundColour;
+- (UIColor *)editingOverlayColour;
 
 // Lifecycle events.
 - (void)targetTextEditingViewWillAppear:(BOOL)appear;

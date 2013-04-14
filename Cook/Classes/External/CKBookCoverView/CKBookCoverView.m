@@ -11,11 +11,13 @@
 #import "CKEditableView.h"
 #import "Theme.h"
 #import "CKTextFieldEditingViewController.h"
+#import "CKTextFieldEditViewController.h"
+#import "CKEditingViewHelper.h"
 
-@interface CKBookCoverView () <CKEditableViewDelegate, CKEditingViewControllerDelegate>
+@interface CKBookCoverView () <CKEditableViewDelegate, CKEditingViewControllerDelegate, CKEditingTextBoxViewDelegate,
+    CKEditViewControllerDelegate>
 
 @property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
-@property (nonatomic, strong) CKEditableView *authorEditableView;
 @property (nonatomic, strong) CKEditableView *titleEditableView;
 @property (nonatomic, strong) CKEditableView *captionEditableView;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
@@ -29,6 +31,9 @@
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL multilineTitle;
+
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+@property (nonatomic, strong) CKEditViewController *editViewController;
 
 @property (nonatomic, strong) CKTextFieldEditingViewController *textEditingViewController;
 
@@ -70,6 +75,7 @@
 }
 
 - (void)setTitle:(NSString *)title author:(NSString *)author caption:(NSString *)caption editable:(BOOL)editable {
+    DLog(@"Book[%@] Author[%@] Layout[%d]", title, author, self.bookCoverLayout);
     switch (self.bookCoverLayout) {
         case BookCoverLayout1:
         case BookCoverLayout2:
@@ -87,9 +93,63 @@
 - (void)enableEditMode:(BOOL)enable {
     self.editMode = enable;
     self.editButton.hidden = enable;
-    [self.authorEditableView enableEditMode:enable];
-    [self.captionEditableView enableEditMode:enable];
-    [self.titleEditableView enableEditMode:enable];
+    
+    [self.editingHelper wrapEditingView:self.authorLabel wrap:enable delegate:self white:NO];
+
+//    TODO
+//    [self.captionEditableView enableEditMode:enable];
+//    [self.titleEditableView enableEditMode:enable];
+}
+
+#pragma mark - CKEditingTextBoxViewDelegate methods
+
+- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    if (editingView == self.authorLabel) {
+        CKEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:self.authorLabel
+                                                                                                  delegate:self
+                                                                                             editingHelper:self.editingHelper
+                                                                                                     white:NO];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+    }
+}
+
+#pragma mark - CKEditViewControllerDelegate methods
+
+- (void)editViewControllerWillAppear:(BOOL)appear {
+    DLog(@"%@", appear ? @"YES" : @"NO");
+}
+
+- (void)editViewControllerDidAppear:(BOOL)appear {
+    DLog(@"%@", appear ? @"YES" : @"NO");
+    if (!appear) {
+        [self.editViewController.view removeFromSuperview];
+        self.editViewController = nil;
+    }
+}
+
+- (void)editViewControllerDismissRequested {
+    [self.editViewController performEditing:NO];
+}
+
+- (void)editViewControllerEditRequested {
+    // TODO REMOVE
+}
+
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+    
+    if (editingView == self.authorLabel) {
+        
+        // Get updated value and update label.
+        NSString *text = (NSString *)value;
+        if (![text isEqualToString:self.authorLabel.text]) {
+            [self setAuthor:text];
+            
+            // Update the editing wrapper.
+            [self.editingHelper updateEditingView:self.authorLabel animated:NO];
+        }
+    }
+    
 }
 
 #pragma mark - CKEditableViewDelegate methods
@@ -102,16 +162,17 @@
     [rootView addSubview:editingViewController.view];
     self.textEditingViewController = editingViewController;
 
-    if (view == self.authorEditableView) {
-        UILabel *authorLabel = (UILabel *)self.authorEditableView.contentView;
-        editingViewController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
-        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
-        editingViewController.characterLimit = 20;
-        editingViewController.text = authorLabel.text;
-        editingViewController.sourceEditingView = self.authorEditableView;
-        editingViewController.editingTitle = @"Book Author";
-        [editingViewController enableEditing:YES completion:nil];
-    } else if (view == self.captionEditableView) {
+//    if (view == self.authorEditableView) {
+//        UILabel *authorLabel = (UILabel *)self.authorEditableView.contentView;
+//        editingViewController.editableTextFont = [Theme bookCoverEditableAuthorTextFont];
+//        editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
+//        editingViewController.characterLimit = 20;
+//        editingViewController.text = authorLabel.text;
+//        editingViewController.sourceEditingView = self.authorEditableView;
+//        editingViewController.editingTitle = @"Book Author";
+//        [editingViewController enableEditing:YES completion:nil];
+//    } else
+        if (view == self.captionEditableView) {
         UILabel *captionLabel = (UILabel *)self.captionEditableView.contentView;
         editingViewController.editableTextFont = [Theme bookCoverEditableCaptionTextFont];
         editingViewController.titleFont = [Theme bookCoverEditableFieldDescriptionFont];
@@ -146,11 +207,12 @@
 }
 
 -(void)editingView:(CKEditableView *)editingView saveRequestedWithResult:(id)result {
-    if (editingView == self.authorEditableView) {
-        NSString *author = (NSString *)result;
-        [self setAuthor:author];
-        [self.authorEditableView enableEditMode:YES];
-    } else if (editingView == self.captionEditableView) {
+//    if (editingView == self.authorEditableView) {
+//        NSString *author = (NSString *)result;
+//        [self setAuthor:author];
+//        [self.authorEditableView enableEditMode:YES];
+//    } else
+        if (editingView == self.captionEditableView) {
         NSString *caption = (NSString *)result;
         [self setCaption:caption];
         [self.captionEditableView enableEditMode:YES];
@@ -382,9 +444,9 @@
 //    return frame;
 //}
 
-- (CGRect)authorEditableAdjustedFrameWithSize:(CGSize)size {
+- (CGRect)authorLabelAdjustedFrameWithSize:(CGSize)size {
     CGRect frame = CGRectZero;
-    CGFloat sideOffset = 18.0;
+    CGFloat sideOffset = kContentInsets.left;
     CGSize availableSize = [self availableContentSize];
     UIEdgeInsets authorInsets = UIEdgeInsetsMake(kContentInsets.top,
                                                  kContentInsets.left + sideOffset,
@@ -544,7 +606,7 @@
     UIEdgeInsets editableInsets = UIEdgeInsetsMake(3.0, 5.0, -4.0, 4.0);
     CGSize availableSize = [self availableContentSize];
     
-    if (!self.authorEditableView) {
+    if (!self.authorLabel) {
         UILabel *authorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         authorLabel.autoresizingMask = UIViewAutoresizingNone;
         authorLabel.backgroundColor = [UIColor clearColor];
@@ -553,26 +615,15 @@
         if (kOverlayDebug) {
             authorLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
         }
-
-        CKEditableView *authorEditableView = [[CKEditableView alloc] initWithDelegate:self];
-        authorEditableView.contentInsets = editableInsets;
-        authorEditableView.editButtonOffset = CGSizeMake(3.0, 3.0);
-//        authorEditableView.contentView = authorLabel;
-//        TEMP: until I can understand this implementatation JS
-        [authorEditableView setBookCoverContentView:authorLabel];
-        [self addSubview:authorEditableView];
-        self.authorEditableView = authorEditableView;
+        [self addSubview:authorLabel];
+        self.authorLabel = authorLabel;
     }
     
-    UILabel *authorLabel = (UILabel *)self.authorEditableView.contentView;
-    authorLabel.textAlignment = [self authorTextAlignment];
-    authorLabel.text = author;
-    [authorLabel sizeToFit];
-    authorLabel.frame = CGRectMake(editableInsets.left, 0.0f, availableSize.width, authorLabel.frame.size.height);
-//    self.authorEditableView.contentView = authorLabel;
-//        TEMP: until I can understand this implementatation JS
-    [self.authorEditableView setBookCoverContentView:authorLabel];
-    self.authorEditableView.frame = [self authorEditableAdjustedFrameWithSize:authorLabel.frame.size];
+    self.authorLabel.textAlignment = [self authorTextAlignment];
+    self.authorLabel.text = author;
+    [self.authorLabel sizeToFit];
+    self.authorLabel.frame = CGRectMake(editableInsets.left, 0.0f, availableSize.width, self.authorLabel.frame.size.height);
+    self.authorLabel.frame = [self authorLabelAdjustedFrameWithSize:self.authorLabel.frame.size];
 }
 
 - (void)setCaption:(NSString *)caption {
@@ -700,20 +751,30 @@
 
 - (void)enableEditable:(BOOL)editable {
     self.editable = editable;
-    if (editable && !self.editButton) {
-        UIButton *editButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *editImage = [UIImage imageNamed:@"cook_dash_icons_customise.png"];
-        [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
-        [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
-        editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width - 7.0,
-                                      5.0,
-                                      editImage.size.width,
-                                      editImage.size.height);
-        [self addSubview:editButton];
-        self.editButton = editButton;
-    } else if (!editable) {
+    if (editable) {
+        if (!self.editButton) {
+            UIButton *editButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            UIImage *editImage = [UIImage imageNamed:@"cook_dash_icons_customise.png"];
+            [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
+            [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
+            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width - 7.0,
+                                          5.0,
+                                          editImage.size.width,
+                                          editImage.size.height);
+            [self addSubview:editButton];
+            self.editButton = editButton;
+        }
+        
+        // Create editing helper if not already.
+        if (!self.editingHelper) {
+            self.editingHelper = [[CKEditingViewHelper alloc] init];
+        }
+        
+    } else {
+        
         [self.editButton removeFromSuperview];
         self.editButton = nil;
+        self.editingHelper = nil;
     }
     
     // Reset the editable mode of the fields to NO.

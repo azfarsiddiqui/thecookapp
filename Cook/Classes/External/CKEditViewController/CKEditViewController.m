@@ -27,7 +27,7 @@
 
 @implementation CKEditViewController
 
-#define kOverlayAlpha   0.2
+#define kOverlayAlpha   0.5
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white {
@@ -224,6 +224,11 @@
     return self.white ? [UIColor whiteColor] : [UIColor darkGrayColor];
 }
 
+- (UIColor *)editingOverlayColour {
+//    return self.white ? [UIColor blackColor] : [UIColor whiteColor];
+    return [UIColor blackColor];
+}
+
 #pragma mark - Lifecycle events
 
 - (void)targetTextEditingViewWillAppear:(BOOL)appear {
@@ -297,7 +302,7 @@
     
     // Black overlay.
     UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-    overlayView.backgroundColor = [UIColor blackColor];
+    overlayView.backgroundColor = [self editingOverlayColour];
     overlayView.alpha = 0.0;
     [self.view addSubview:overlayView];
     self.overlayView = overlayView;
