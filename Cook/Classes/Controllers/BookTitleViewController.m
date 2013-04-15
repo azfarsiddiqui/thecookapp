@@ -57,6 +57,7 @@
     [self initBackgroundImageView];
     [self initTitleView];
     [self initShadowViews];
+    [self initActivities];
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
@@ -192,4 +193,43 @@
     footerShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:footerShadowImageView];
 }
+
+- (void)initActivities {
+    CGFloat yOffset = 8.0;
+    UIImage *tempImage = [UIImage imageNamed:@"cook_temp_featuredrecipes.png"];
+    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:tempImage];
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
+                                                                              self.view.bounds.size.height - tempImageView.frame.size.height - yOffset,
+                                                                              self.view.bounds.size.width,
+                                                                              tempImageView.frame.size.height)];
+    tempImageView.frame = CGRectMake(floorf((scrollView.bounds.size.width - tempImageView.frame.size.width) / 2.0),
+                                     scrollView.bounds.origin.y,
+                                     tempImageView.frame.size.width,
+                                     tempImageView.frame.size.height);
+    scrollView.backgroundColor = [UIColor clearColor];
+    [scrollView addSubview:tempImageView];
+    [self.view addSubview:scrollView];
+    
+    // Shift everything else up.
+    CGFloat shiftOffset = scrollView.frame.size.height + yOffset;
+    CGAffineTransform shiftTransform = CGAffineTransformMakeTranslation(0.0, -55.0);
+    scrollView.transform = CGAffineTransformMakeTranslation(0.0, shiftOffset);;
+    
+    [UIView animateWithDuration:0.4
+                          delay:0.1
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         scrollView.transform = CGAffineTransformIdentity;
+                         self.maskedLabel.transform = shiftTransform;
+                         self.overlayView.transform = shiftTransform;
+                         self.profilePhotoView.transform = shiftTransform;
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         
+                     }];
+    
+}
+
 @end
