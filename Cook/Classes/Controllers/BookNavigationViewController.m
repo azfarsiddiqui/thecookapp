@@ -187,7 +187,7 @@
     if (indexPath.section >= contentStartSection) {
         
         NSInteger categorySection = indexPath.section - contentStartSection;
-        NSString *categoryName = [self.categoryNames objectAtIndex:categorySection];
+        NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
         NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
         CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
         [self.delegate bookNavigationControllerRecipeRequested:recipe];
