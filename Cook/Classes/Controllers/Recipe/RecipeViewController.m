@@ -249,7 +249,7 @@ typedef enum {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
-                                                                                                              white:NO
+                                                                                                              white:YES
                                                                                                               title:@"Name"
                                                                                                      characterLimit:30];
         editViewController.fontSize = 48.0;
