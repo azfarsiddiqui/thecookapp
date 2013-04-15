@@ -428,10 +428,10 @@ typedef enum {
 - (UILabel *)photoLabel {
     if (!_photoLabel) {
         _photoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _photoLabel.font = [UIFont boldSystemFontOfSize:16.0];
+        _photoLabel.font = [Theme editPhotoFont];
         _photoLabel.backgroundColor = [UIColor clearColor];
-        _photoLabel.textColor = [UIColor blackColor];
-        _photoLabel.text = @"PHOTO";
+        _photoLabel.textColor = [Theme editPhotoColour];
+        _photoLabel.text = @"EDIT PHOTO";
         [_photoLabel sizeToFit];
         _photoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_photoLabel setFrame:CGRectMake(floorf((self.view.bounds.size.width - _photoLabel.frame.size.width) / 2.0),
@@ -1200,8 +1200,15 @@ typedef enum {
     
     // Set fields to be editable.
     [self.editingHelper wrapEditingView:self.titleLabel wrap:enable
+                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, -4.0, 20.0) delegate:self white:YES];
+    [self.editingHelper wrapEditingView:self.storyLabel wrap:enable
+                          contentInsets:UIEdgeInsetsMake(5.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+    [self.editingHelper wrapEditingView:self.servesCookView wrap:enable
+                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, 10.0, 20.0) delegate:self white:YES];
+    [self.editingHelper wrapEditingView:self.ingredientsLabel wrap:enable
                           contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
-    
+    [self.editingHelper wrapEditingView:self.methodLabel wrap:enable
+                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
 }
 
 - (void)setTitle:(NSString *)title {

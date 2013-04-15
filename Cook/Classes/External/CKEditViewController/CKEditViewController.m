@@ -9,6 +9,7 @@
 #import "CKEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "CKEditingTextBoxView.h"
+#import "UIColor+Expanded.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface CKEditViewController () <UIGestureRecognizerDelegate, CKEditingTextBoxViewDelegate>
@@ -218,7 +219,7 @@
 }
 
 - (UIColor *)editingBackgroundColour {
-    return self.white ? [UIColor whiteColor] : [UIColor darkGrayColor];
+    return self.white ? [UIColor whiteColor] : [UIColor colorWithHexString:@"363839"];
 }
 
 - (UIColor *)editingOverlayColour {
@@ -228,7 +229,7 @@
 
 - (UIColor *)titleColour {
 //    return self.white ? [UIColor whiteColor] : [UIColor blackColor];
-    return [UIColor blackColor];
+    return [UIColor whiteColor];
 }
 
 #pragma mark - Lifecycle events

@@ -164,6 +164,7 @@
         _limitLabel.alpha = 0.5;
         _limitLabel.text = [NSString stringWithFormat:@"%d", self.characterLimit - [self.textField.text length]];
         _limitLabel.font = self.titleLabel.font;
+        _limitLabel.textColor = self.titleLabel.textColor;
         [_limitLabel sizeToFit];
         
         // Reposition both title and limit labels.

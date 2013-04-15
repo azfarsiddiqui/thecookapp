@@ -361,6 +361,14 @@
     return [UIColor colorWithHexString:@"F8F8F8"];
 }
 
++ (UIFont *)editPhotoFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:18.0];
+}
+
++ (UIColor *)editPhotoColour {
+    return [UIColor colorWithHexString:@"4e4e4e"];
+}
+
 #pragma mark - Recipe Editing
 
 
