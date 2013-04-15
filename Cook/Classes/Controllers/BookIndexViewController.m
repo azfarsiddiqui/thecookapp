@@ -53,18 +53,18 @@
     self.collectionView.backgroundColor = [Theme activityInfoViewColour];
     [self.collectionView registerClass:[BookIndexCell class] forCellWithReuseIdentifier:kCellId];
     
-    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
-    activityView.center = self.view.center;
-    [self.view addSubview:activityView];
-    [activityView startAnimating];
-    self.activityView = activityView;
+//    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+//    activityView.center = self.view.center;
+//    [self.view addSubview:activityView];
+//    [activityView startAnimating];
+//    self.activityView = activityView;
 }
 
 - (void)configureCategories:(NSArray *)categories {
-    [self.activityView stopAnimating];
-    [self.activityView removeFromSuperview];
-    self.activityView = nil;
+//    [self.activityView stopAnimating];
+//    [self.activityView removeFromSuperview];
+//    self.activityView = nil;
     
     self.categories = categories;
     [self.collectionView reloadData];

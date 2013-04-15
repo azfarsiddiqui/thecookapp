@@ -26,6 +26,7 @@
 #import "UIImage+ProportionalFill.h"
 #import "CKEditingTextBoxView.h"
 #import "AppHelper.h"
+#import "CKImageEditViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -245,6 +246,7 @@ typedef enum {
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    DLog();
     if (editingView == self.titleLabel) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                                            delegate:self
@@ -261,6 +263,16 @@ typedef enum {
         [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen completion:^{
             [self showPhotoPicker:YES];
         }];
+        
+    } else if (editingView == self.servesCookView) {
+        
+        CKImageEditViewController *editViewController = [[CKImageEditViewController alloc] initWithEditView:editingView
+                                                                                                   delegate:self
+                                                                                              editingHelper:self.editingHelper
+                                                                                                      white:YES
+                                                                                                      image:[UIImage imageNamed:@"cook_editrecipe_details.png"]];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
     }
 }
 
@@ -268,6 +280,16 @@ typedef enum {
 
 - (void)editViewControllerWillAppear:(BOOL)appear {
     DLog(@"%@", appear ? @"YES" : @"NO");
+    
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.cancelButton.alpha = appear ? 0.0 : 1.0;
+                         self.saveButton.alpha = appear ? 0.0 : 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 - (void)editViewControllerDidAppear:(BOOL)appear {
@@ -817,6 +839,7 @@ typedef enum {
     tableView.dataSource = self;
     tableView.delegate = self;
     tableView.userInteractionEnabled = NO;
+    tableView.scrollEnabled = NO;
     [self.contentContainerView addSubview:tableView];
     self.tableView = tableView;
     [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kContentCellId];
@@ -825,7 +848,8 @@ typedef enum {
 - (void)initContentView {
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
     CGRect leftFrame = CGRectMake(0.0, 0.0, 240.0, 0.0);
-    CGRect rightFrame = CGRectMake(240.0, 0.0, 420.0, 0.0);
+//    CGRect rightFrame = CGRectMake(240.0, 0.0, 420.0, 0.0);
+    CGRect rightFrame = CGRectMake(265.0, 0.0, 395.0, 0.0);
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
     CGRect contentFrame = contentView.frame;
     
@@ -979,7 +1003,8 @@ typedef enum {
         // Photo label and its wrapping.
         self.photoLabel.alpha = 0.0;
         [self.view addSubview:self.photoLabel];
-        [self.editingHelper wrapEditingView:self.photoLabel wrap:YES delegate:self white:YES animated:NO];
+        [self.editingHelper wrapEditingView:self.photoLabel wrap:YES
+                              contentInsets:UIEdgeInsetsMake(15.0, 20.0, 10.0, 20.0) delegate:self white:YES];
         
     } else {
         self.closeButton.alpha = 0.0;
