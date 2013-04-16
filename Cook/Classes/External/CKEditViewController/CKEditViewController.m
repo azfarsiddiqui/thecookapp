@@ -14,12 +14,15 @@
 
 @interface CKEditViewController () <UIGestureRecognizerDelegate, CKEditingTextBoxViewDelegate>
 
+@property (nonatomic, strong) UIView *sourceEditView;
+@property (nonatomic, strong) UIView *targetEditView;
 @property (nonatomic, strong) UIView *mockedEditView;
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) id<CKEditViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIColor *editingViewBackgroundOriginalColour;
 @property (nonatomic, assign) CGRect startTextBoxFrame;
 @property (nonatomic, assign) BOOL white;
+@property (nonatomic, assign) CGRect keyboardFrame;
 
 @end
 
@@ -27,15 +30,31 @@
 
 #define kOverlayAlpha   0.5
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white {
+    return [self initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:nil];
+}
+
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title {
+    
     if (self = [super init]) {
-        self.originalEditView = editView;
+        self.sourceEditView = editView;
         self.editingHelper = editingHelper;
         self.delegate = delegate;
         self.white = white;
+        self.editTitle = title;
         self.editingViewBackgroundOriginalColour = editView.backgroundColor;
         self.dismissableOverlay = YES;
+        
+        // Register for keyboard events.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     }
     return self;
 }
@@ -60,16 +79,16 @@
         [self mockAndWrapOriginalEditingView];
         
         // Get original textbox to fade out.
-        CKEditingTextBoxView *originalTextBoxView = [self.editingHelper textBoxViewForEditingView:self.originalEditView];
+        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
         
         // Get mocked textbox to be scaled up.
-        CKEditingTextBoxView *mockedTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
+        CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
         
         // Remember the start frame for the textbox so that we can transition back.
         self.startTextBoxFrame = mockedTextBoxView.frame;
         
         // Also hide it too.
-        self.originalEditView.hidden = YES;
+        self.sourceEditView.hidden = YES;
         
         // Lifecycle start event.
         [self targetTextEditingViewWillAppear:YES];
@@ -145,14 +164,14 @@
     } else {
         
         // Target textbox to hide.
-        CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:self.targetEditView];
+        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
 
         // Get mocked textbox to scale back.
-        CKEditingTextBoxView *mockedTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
+        CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
         mockedTextBoxView.hidden = NO;
         
         // Get original textbox to fade in.
-        CKEditingTextBoxView *originalTextBoxView = [self.editingHelper textBoxViewForEditingView:self.originalEditView];
+        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
         
         // Lifecycle start event.
         [self targetTextEditingViewWillAppear:NO];
@@ -183,9 +202,9 @@
                                               completion:^(BOOL finished) {
                                                   
                                                   // Restore the background colour the editing view.
-                                                  self.originalEditView.hidden = NO;
-                                                  self.originalEditView.alpha = 1.0;
-                                                  self.originalEditView.backgroundColor = self.editingViewBackgroundOriginalColour;
+                                                  self.sourceEditView.hidden = NO;
+                                                  self.sourceEditView.alpha = 1.0;
+                                                  self.sourceEditView.backgroundColor = self.editingViewBackgroundOriginalColour;
                                                   
                                                   [UIView animateWithDuration:0.2
                                                                         delay:0.0
@@ -246,18 +265,14 @@
 
 - (NSString *)currentTextValue {
     NSString *textValue = nil;
-    if ([self.originalEditView isKindOfClass:[UILabel class]]) {
-        textValue = ((UILabel *)self.originalEditView).text;
+    if ([self.sourceEditView isKindOfClass:[UILabel class]]) {
+        textValue = ((UILabel *)self.sourceEditView).text;
     }
     return textValue;
 }
 
 - (NSString *)updatedTextValue {
-    NSString *textValue = nil;
-    if ([self.targetEditView isKindOfClass:[UITextField class]]) {
-        textValue = ((UITextField *)self.targetEditView).text;
-    }
-    return textValue;
+    return nil;
 }
 
 - (UIColor *)editingTextColour {
@@ -276,6 +291,22 @@
 - (UIColor *)titleColour {
 //    return self.white ? [UIColor whiteColor] : [UIColor blackColor];
     return [UIColor whiteColor];
+}
+
+- (UIEdgeInsets)contentInsets {
+    return UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
+}
+
+- (CKEditingTextBoxView *)sourceEditTextBoxView {
+    return [self.editingHelper textBoxViewForEditingView:self.sourceEditView];
+}
+
+- (CKEditingTextBoxView *)targetEditTextBoxView {
+    return [self.editingHelper textBoxViewForEditingView:self.targetEditView];
+}
+
+- (CKEditingTextBoxView *)mockedEditTextBoxView {
+    return [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
 }
 
 #pragma mark - Lifecycle events
@@ -298,7 +329,7 @@
     }
 }
 
-#pragma mark - System Notification events
+#pragma mark - Keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -316,7 +347,7 @@
 - (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
     
     // Tell original editingView to update with new value.
-    [self.delegate editViewControllerUpdateEditView:self.originalEditView value:[self updatedTextValue]];
+    [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedTextValue]];
     
     // Remove current mock and its wrapper.
     [self.editingHelper unwrapEditingView:self.mockedEditView];
@@ -324,25 +355,47 @@
     self.mockedEditView = nil;
     
     // Recreate mock and corresponding textbox.
-    self.originalEditView.hidden = NO;
+    self.sourceEditView.hidden = NO;
     [self mockAndWrapOriginalEditingView];
     
     // Get mocked textbox and prepare for transition.
-    CKEditingTextBoxView *mockedTextBoxView = [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
+    CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
     
     // Get current targetTextbox to obtain its current frame.
-    CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:self.targetEditView];
+    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     
     // Remember the start frame for the textbox so that we can transition back.
     self.startTextBoxFrame = mockedTextBoxView.frame;
 
     // Prepare for transitions back.
     self.mockedEditView.alpha = 0.0;
-    self.originalEditView.alpha = 0.0;
+    self.sourceEditView.alpha = 0.0;
     mockedTextBoxView.frame = targetTextBoxView.frame;
     
     // Transition back.
     [self performEditing:NO];
+}
+
+#pragma mark - Lazy getters.
+
+- (UILabel *)titleLabel {
+    if (!_titleLabel) {
+        
+        // Get a reference to the target textbox for relative positioning.
+        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+        
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.text = [self.editTitle uppercaseString];
+        _titleLabel.font = [UIFont boldSystemFontOfSize:30.0];
+        _titleLabel.textColor = [self titleColour];
+        [_titleLabel sizeToFit];
+        _titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - _titleLabel.frame.size.width) / 2.0),
+                                       targetTextBoxView.frame.origin.y - _titleLabel.frame.size.height + 5.0,
+                                       _titleLabel.frame.size.width,
+                                       _titleLabel.frame.size.height);
+    }
+    return _titleLabel;
 }
 
 #pragma mark - Private methods.
@@ -383,14 +436,14 @@
     UIView *rootView = [self rootView];
     
     // Get original textbox view to obtain its contentInsets.
-    CKEditingTextBoxView *originalTextBoxView = [self.editingHelper textBoxViewForEditingView:self.originalEditView];
+    CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
     
     // Capture the editing view as a mock image on the editing view. Editing view needs to be opaque.
-    self.originalEditView.backgroundColor = [self editingBackgroundColour];
+    self.sourceEditView.backgroundColor = [self editingBackgroundColour];
     
     // Wrap up the mock edit view in a textbox.
-    CGRect editingViewFrame = [rootView convertRect:self.originalEditView.frame fromView:self.originalEditView.superview];
-    UIImage *editViewImage = [self screenshotView:self.originalEditView];
+    CGRect editingViewFrame = [rootView convertRect:self.sourceEditView.frame fromView:self.sourceEditView.superview];
+    UIImage *editViewImage = [self screenshotView:self.sourceEditView];
     UIImageView *mockedEditView = [[UIImageView alloc] initWithImage:editViewImage];
     mockedEditView.userInteractionEnabled = YES;
     mockedEditView.frame = editingViewFrame;
@@ -403,6 +456,7 @@
 }
 
 - (void)targetEditingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {
+    self.keyboardFrame = appear ? keyboardFrame : CGRectZero;
 }
 
 @end

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class CKEditingViewHelper;
+@class CKEditingTextBoxView;
 
 @protocol CKEditViewControllerDelegate <NSObject>
 
@@ -21,13 +22,16 @@
 
 @interface CKEditViewController : UIViewController
 
-@property (nonatomic, strong) UIView *originalEditView;
-@property (nonatomic, strong) UIView *targetEditView;
+@property (nonatomic, strong) NSString *editTitle;
+@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, assign) BOOL dismissableOverlay;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title;
+
 - (void)performEditing:(BOOL)editing;
 - (UIView *)createTargetEditView;
 - (NSString *)currentTextValue;
@@ -36,6 +40,10 @@
 - (UIColor *)editingBackgroundColour;
 - (UIColor *)editingOverlayColour;
 - (UIColor *)titleColour;
+- (UIEdgeInsets)contentInsets;
+- (CKEditingTextBoxView *)sourceEditTextBoxView;
+- (CKEditingTextBoxView *)targetEditTextBoxView;
+- (CKEditingTextBoxView *)mockedEditTextBoxView;
 
 // Lifecycle events.
 - (void)targetTextEditingViewWillAppear:(BOOL)appear;

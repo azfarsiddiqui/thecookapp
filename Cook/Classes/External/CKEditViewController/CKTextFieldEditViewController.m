@@ -13,10 +13,8 @@
 @interface CKTextFieldEditViewController () <UITextFieldDelegate>
 
 @property (nonatomic, assign) NSUInteger characterLimit;
-@property (nonatomic, strong) NSString *title;
 
 @property (nonatomic, strong) UITextField *textField;
-@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *limitLabel;
 
 @end
@@ -31,8 +29,7 @@
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title
         characterLimit:(NSUInteger)characterLimit {
     
-    if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white]) {
-        self.title = title;
+    if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title]) {
         self.characterLimit = characterLimit;
         self.fontSize = 70.0;
     }
@@ -56,6 +53,12 @@
     self.textField = textField;
     return textField;
 }
+
+- (NSString *)updatedTextValue {
+    return self.textField.text;
+}
+
+#pragma mark - Lifecycle events
 
 - (void)targetTextEditingViewWillAppear:(BOOL)appear {
     [super targetTextEditingViewWillAppear:appear];
@@ -128,33 +131,13 @@
                                        self.limitLabel.frame.size.height);
 
     // No save if no characters
-    CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:self.targetEditView];
+    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     [targetTextBoxView showSaveIcon:YES enabled:([newString length] > 0) animated:NO];
     
     return YES;
 }
 
 #pragma mark - Lazy getters
-
-- (UILabel *)titleLabel {
-    if (!_titleLabel) {
-        
-        // Get a reference to the target textbox for relative positioning.
-        CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:self.targetEditView];
-        
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.text = [self.title uppercaseString];
-        _titleLabel.font = [UIFont boldSystemFontOfSize:30.0];
-        _titleLabel.textColor = [self titleColour];
-        [_titleLabel sizeToFit];
-        _titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - _titleLabel.frame.size.width) / 2.0),
-                                       targetTextBoxView.frame.origin.y - _titleLabel.frame.size.height + 5.0,
-                                       _titleLabel.frame.size.width,
-                                       _titleLabel.frame.size.height);
-    }
-    return _titleLabel;
-}
 
 - (UILabel *)limitLabel {
     if (!_limitLabel) {
