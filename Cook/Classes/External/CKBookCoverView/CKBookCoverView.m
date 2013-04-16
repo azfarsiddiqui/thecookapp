@@ -90,12 +90,18 @@
     self.editMode = enable;
     self.editButton.hidden = enable;
     
-    [self.editingHelper wrapEditingView:self.authorLabel wrap:enable
-                          contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0) delegate:self white:NO];
-    [self.editingHelper wrapEditingView:self.titleLabel wrap:enable
-                          contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0) delegate:self white:NO];
-    [self.editingHelper wrapEditingView:self.captionLabel wrap:enable
-                          contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0) delegate:self white:NO];
+    if (enable) {
+        [self.editingHelper wrapEditingView:self.authorLabel contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0)
+                                   delegate:self white:NO];
+        [self.editingHelper wrapEditingView:self.titleLabel contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0)
+                                   delegate:self white:NO];
+        [self.editingHelper wrapEditingView:self.captionLabel contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0)
+                                   delegate:self white:NO];
+    } else {
+        [self.editingHelper unwrapEditingView:self.authorLabel];
+        [self.editingHelper unwrapEditingView:self.titleLabel];
+        [self.editingHelper unwrapEditingView:self.captionLabel];
+    }
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods

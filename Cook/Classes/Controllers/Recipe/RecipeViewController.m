@@ -46,7 +46,7 @@ typedef enum {
 
 @property (nonatomic, strong) UIView *topShadowView;
 @property (nonatomic, strong) UIView *contentContainerView;
-@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *windowView;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
@@ -92,9 +92,6 @@ typedef enum {
 #define kHeaderHeight           210.0
 #define kContentMaxHeight       468.0
 #define kContentMaxWidth        660.0
-#define kContentCellId          @"kContentCellId"
-#define kWindowSection          0
-#define kContentSection         1
 
 #define kButtonInsets  UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
 
@@ -121,8 +118,8 @@ typedef enum {
     
     [self initContentContainerView];
     [self initHeaderView];
-    [self initTableView];
     [self initContentView];
+    [self initScrollView];
     [self initBackgroundImageView];
     [self initStartState];
 }
@@ -174,43 +171,6 @@ typedef enum {
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     NSLog(@"Content Offset: %@", NSStringFromCGPoint(scrollView.contentOffset));
-}
-
-#pragma mark - UITableViewDataSource methods
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContentCellId forIndexPath:indexPath];
-    cell.contentView.backgroundColor = [Theme recipeViewBackgroundColour];
-//    cell.contentView.backgroundColor = [UIColor greenColor];
-    
-    // Reset the contentView.
-    [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    self.contentView.frame = CGRectMake(floorf((cell.contentView.bounds.size.width - self.contentView.frame.size.width) / 2.0),
-                                        0.0,
-                                        self.contentView.frame.size.width,
-                                        self.contentView.frame.size.height);
-    [cell.contentView addSubview:self.contentView];
-    return cell;
-}
-
-#pragma mark - UITableViewDelegate methods
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return kContentMaxHeight;
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    // Unselectable.
-    return nil;
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -453,7 +413,7 @@ typedef enum {
         _photoLabel.font = [Theme editPhotoFont];
         _photoLabel.backgroundColor = [UIColor clearColor];
         _photoLabel.textColor = [Theme editPhotoColour];
-        _photoLabel.text = @"EDIT PHOTO";
+        _photoLabel.text = [self.recipe hasPhotos] ? @"EDIT PHOTO" : @"ADD PHOTO";
         [_photoLabel sizeToFit];
         _photoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_photoLabel setFrame:CGRectMake(floorf((self.view.bounds.size.width - _photoLabel.frame.size.width) / 2.0),
@@ -829,20 +789,24 @@ typedef enum {
     [headerView addGestureRecognizer:tapGesture];
 }
 
-- (void)initTableView {
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(self.contentContainerView.bounds.origin.x,
-                                                                           self.headerView.frame.origin.y + self.headerView.frame.size.height,
-                                                                           self.contentContainerView.bounds.size.width,
-                                                                           self.contentContainerView.bounds.size.height - self.headerView.frame.size.height)];
-    tableView.backgroundColor = [UIColor clearColor];
-    tableView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    tableView.dataSource = self;
-    tableView.delegate = self;
-    tableView.userInteractionEnabled = NO;
-    tableView.scrollEnabled = NO;
-    [self.contentContainerView addSubview:tableView];
-    self.tableView = tableView;
-    [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kContentCellId];
+- (void)initScrollView {
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.contentContainerView.bounds.origin.x,
+                                                                              self.headerView.frame.origin.y + self.headerView.frame.size.height,
+                                                                              self.contentContainerView.bounds.size.width,
+                                                                              self.contentContainerView.bounds.size.height - self.headerView.frame.size.height)];
+    scrollView.backgroundColor = [Theme recipeViewBackgroundColour];
+    scrollView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    scrollView.delegate = self;
+    scrollView.scrollEnabled = NO;
+    [self.contentContainerView addSubview:scrollView];
+    self.scrollView = scrollView;
+    
+    // Add content to the middle.
+    self.contentView.frame = CGRectMake(floorf((scrollView.bounds.size.width - self.contentView.frame.size.width) / 2.0),
+                                        0.0,
+                                        self.contentView.frame.size.width,
+                                        self.contentView.frame.size.height);
+    [scrollView addSubview:self.contentView];
 }
 
 - (void)initContentView {
@@ -915,7 +879,8 @@ typedef enum {
     
     // Adjust contentView frame.
     contentFrame.size.height = MAX(requiredLeftHeight, requiredRightHeight);
-    self.contentView.frame = contentFrame;
+    contentView.frame = contentFrame;
+    contentView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     self.contentView = contentView;
 }
 
@@ -1003,8 +968,8 @@ typedef enum {
         // Photo label and its wrapping.
         self.photoLabel.alpha = 0.0;
         [self.view addSubview:self.photoLabel];
-        [self.editingHelper wrapEditingView:self.photoLabel wrap:YES
-                              contentInsets:UIEdgeInsetsMake(15.0, 20.0, 10.0, 20.0) delegate:self white:YES];
+        [self.editingHelper wrapEditingView:self.photoLabel contentInsets:UIEdgeInsetsMake(15.0, 20.0, 10.0, 20.0)
+                                   delegate:self white:YES];
         
     } else {
         self.closeButton.alpha = 0.0;
@@ -1064,8 +1029,11 @@ typedef enum {
                              [self.saveButton removeFromSuperview];
                              
                              // Unwrap editing wrapper.
-                             [self.editingHelper wrapEditingView:self.photoLabel wrap:NO white:YES];
+                             [self.editingHelper unwrapEditingView:self.photoLabel];
                              [self.photoLabel removeFromSuperview];
+                             
+                             // Nil it so we can update its label.
+                             _photoLabel = nil;
                          }
                      }];
 }
@@ -1223,17 +1191,25 @@ typedef enum {
         [self updateButtons];
     }
     
-    // Set fields to be editable.
-    [self.editingHelper wrapEditingView:self.titleLabel wrap:enable
-                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, -4.0, 20.0) delegate:self white:YES];
-    [self.editingHelper wrapEditingView:self.storyLabel wrap:enable
-                          contentInsets:UIEdgeInsetsMake(5.0, 20.0, 2.0, 20.0) delegate:self white:YES];
-    [self.editingHelper wrapEditingView:self.servesCookView wrap:enable
-                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, 10.0, 20.0) delegate:self white:YES];
-    [self.editingHelper wrapEditingView:self.ingredientsLabel wrap:enable
-                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
-    [self.editingHelper wrapEditingView:self.methodLabel wrap:enable
-                          contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+    // Set fields to be editable/non
+    if (enable) {
+        [self.editingHelper wrapEditingView:self.titleLabel
+                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, -4.0, 20.0) delegate:self white:YES];
+        [self.editingHelper wrapEditingView:self.storyLabel
+                              contentInsets:UIEdgeInsetsMake(5.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+        [self.editingHelper wrapEditingView:self.servesCookView
+                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, 10.0, 20.0) delegate:self white:YES];
+        [self.editingHelper wrapEditingView:self.ingredientsLabel
+                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+        [self.editingHelper wrapEditingView:self.methodLabel
+                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+    } else {
+        [self.editingHelper unwrapEditingView:self.titleLabel];
+        [self.editingHelper unwrapEditingView:self.storyLabel];
+        [self.editingHelper unwrapEditingView:self.servesCookView];
+        [self.editingHelper unwrapEditingView:self.ingredientsLabel];
+        [self.editingHelper unwrapEditingView:self.methodLabel];
+    }
 }
 
 - (void)setTitle:(NSString *)title {

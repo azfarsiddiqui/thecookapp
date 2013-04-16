@@ -27,7 +27,7 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *introView;
 @property (nonatomic, strong) UIButton *editButton;
-@property (nonatomic, strong) UILabel *editPhotoLabel;
+@property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
@@ -83,7 +83,7 @@
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    if (editingView == self.editPhotoLabel) {
+    if (editingView == self.photoLabel) {
         [self showPhotoPicker:YES];
     }
 }
@@ -103,21 +103,21 @@
 }
 
 - (UILabel *)editPhotoLabel {
-    if (!_editPhotoLabel) {
-        _editPhotoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _editPhotoLabel.font = [UIFont boldSystemFontOfSize:16.0];
-        _editPhotoLabel.backgroundColor = [UIColor clearColor];
-        _editPhotoLabel.textColor = [UIColor blackColor];
-        _editPhotoLabel.text = @"PHOTO";
-        [_editPhotoLabel sizeToFit];
-        _editPhotoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+    if (!_photoLabel) {
+        _photoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _photoLabel.font = [Theme editPhotoFont];
+        _photoLabel.backgroundColor = [UIColor clearColor];
+        _photoLabel.textColor = [Theme editPhotoColour];
+        _photoLabel.text = @"EDIT PHOTO";
+        [_photoLabel sizeToFit];
+        _photoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         CGFloat availableWidth = self.view.bounds.size.width - (self.introView.frame.origin.x + self.introView.frame.size.width);
-        [_editPhotoLabel setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_editPhotoLabel.frame.size.width) / 2.0),
-                                              floorf((self.view.bounds.size.height - _editPhotoLabel.frame.size.height) / 2.0),
-                                              _editPhotoLabel.frame.size.width,
-                                              _editPhotoLabel.frame.size.height)];
+        [_photoLabel setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_photoLabel.frame.size.width) / 2.0),
+                                              floorf((self.view.bounds.size.height - _photoLabel.frame.size.height) / 2.0),
+                                              _photoLabel.frame.size.width,
+                                              _photoLabel.frame.size.height)];
     }
-    return _editPhotoLabel;
+    return _photoLabel;
 }
 
 #pragma mark - Private methods
@@ -167,11 +167,13 @@
     }
     
     if (self.editMode) {
-        [self.view addSubview:self.editPhotoLabel];
-        [self.editingHelper wrapEditingView:self.editPhotoLabel wrap:YES delegate:self white:YES];
+        [self.view addSubview:self.photoLabel];
+        [self.editingHelper wrapEditingView:self.photoLabel contentInsets:UIEdgeInsetsMake(15.0, 20.0, 10.0, 20.0)
+                                   delegate:self white:YES];
     } else {
-        [self.editingHelper wrapEditingView:self.editPhotoLabel wrap:NO delegate:self white:YES];
-        [self.editPhotoLabel removeFromSuperview];
+        [self.editingHelper unwrapEditingView:self.photoLabel];
+        [self.photoLabel removeFromSuperview];
+        self.photoLabel = nil;
     }
     
 }

@@ -26,49 +26,102 @@
     return self;
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white {
-    
-    [self wrapEditingView:editingView wrap:wrap delegate:nil white:white animated:YES];
+- (void)unwrapEditingView:(UIView *)editingView {
+    [self unwrapEditingView:editingView animated:YES];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white animated:(BOOL)animated {
+- (void)unwrapEditingView:(UIView *)editingView animated:(BOOL)animated {
+    // Get the textbox belonging to the editingView.
+    CKEditingTextBoxView *textEditImageView = [self textBoxViewForEditingView:editingView];
     
-    [self wrapEditingView:editingView wrap:wrap delegate:nil white:white animated:animated];
+    // Return immediately if none was found.
+    if (textEditImageView == nil) {
+        return;
+    }
+    
+    if (animated) {
+        
+        // Animate in the editing box.
+        [UIView animateWithDuration:0.1
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             textEditImageView.alpha = 0.0;
+                             textEditImageView.transform = CGAffineTransformMakeScale(kTextBoxScale, kTextBoxScale);
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             // Remove the textbox.
+                             [textEditImageView removeFromSuperview];
+                             [self.editingViewTextBoxViews removeObjectForKey:[NSValue valueWithNonretainedObject:editingView]];
+                             
+                         }];
+    } else {
+        
+        // Remove the textbox.
+        [textEditImageView removeFromSuperview];
+        [self.editingViewTextBoxViews removeObjectForKey:[NSValue valueWithNonretainedObject:editingView]];
+        
+    }
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+- (void)wrapEditingView:(UIView *)editingView white:(BOOL)white {
+    
+    [self wrapEditingView:editingView delegate:nil white:white animated:YES];
+}
+
+- (void)wrapEditingView:(UIView *)editingView white:(BOOL)white animated:(BOOL)animated {
+    
+    [self wrapEditingView:editingView delegate:nil white:white animated:animated];
+}
+
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                   white:(BOOL)white {
     
-    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets white:white animated:YES];
+    [self wrapEditingView:editingView contentInsets:contentInsets white:white animated:YES];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-                  white:(BOOL)white animated:(BOOL)animated {
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
+               animated:(BOOL)animated {
     
-    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets delegate:nil white:white animated:animated];
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:nil white:white animated:animated];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
-                  white:(BOOL)white {
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white {
     
-    [self wrapEditingView:editingView wrap:wrap delegate:delegate white:white animated:YES];
+    [self wrapEditingView:editingView delegate:delegate white:white animated:YES];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
-                white:(BOOL)white animated:(BOOL)animated {
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
+               animated:(BOOL)animated {
     
-    [self wrapEditingView:editingView wrap:wrap contentInsets:kContentInsets delegate:delegate white:white
+    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white
                  animated:animated];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white {
     
-    [self wrapEditingView:editingView wrap:wrap contentInsets:contentInsets delegate:delegate white:white animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white animated:YES];
 }
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated {
+- (void)updateEditingView:(UIView *)editingView {
+    [self updateEditingView:editingView animated:YES];
+}
+
+- (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated {
+    CKEditingTextBoxView *textBoxView = [self textBoxViewForEditingView:editingView];
+    [textBoxView updateEditingView:editingView];
+}
+
+- (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView {
+    return [self.editingViewTextBoxViews objectForKey:[NSValue valueWithNonretainedObject:editingView]];
+}
+
+#pragma mark - Private methods
+
+- (void)decorateEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                   delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated {
     
     UIView *parentView = editingView.superview;
     
@@ -110,55 +163,8 @@
         }
         
     } else {
-        
-        // Get the textbox belonging to the editingView.
-        CKEditingTextBoxView *textEditImageView = [self textBoxViewForEditingView:editingView];
-        
-        // Return immediately if none was found.
-        if (textEditImageView == nil) {
-            return;
-        }
-        
-        if (animated) {
-            
-            // Animate in the editing box.
-            [UIView animateWithDuration:0.1
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 textEditImageView.alpha = 0.0;
-                                 textEditImageView.transform = CGAffineTransformMakeScale(kTextBoxScale, kTextBoxScale);
-                             }
-                             completion:^(BOOL finished) {
-                                 
-                                 // Remove the textbox.
-                                 [textEditImageView removeFromSuperview];
-                                 [self.editingViewTextBoxViews removeObjectForKey:[NSValue valueWithNonretainedObject:editingView]];
-                                 
-                             }];
-        } else {
-            
-            // Remove the textbox.
-            [textEditImageView removeFromSuperview];
-            [self.editingViewTextBoxViews removeObjectForKey:[NSValue valueWithNonretainedObject:editingView]];
-            
-        }
+        [self unwrapEditingView:editingView animated:animated];
     }
 }
-
-- (void)updateEditingView:(UIView *)editingView {
-    [self updateEditingView:editingView animated:YES];
-}
-
-- (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated {
-    CKEditingTextBoxView *textBoxView = [self textBoxViewForEditingView:editingView];
-    [textBoxView updateEditingView:editingView];
-}
-
-- (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView {
-    return [self.editingViewTextBoxViews objectForKey:[NSValue valueWithNonretainedObject:editingView]];
-}
-
-#pragma mark - Private methods
 
 @end

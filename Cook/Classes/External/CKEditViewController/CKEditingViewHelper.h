@@ -13,23 +13,27 @@
 
 @interface CKEditingViewHelper : NSObject
 
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap white:(BOOL)white animated:(BOOL)animated;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-                  white:(BOOL)white;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-                  white:(BOOL)white animated:(BOOL)animated;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
-                  white:(BOOL)white;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap delegate:(id<CKEditingTextBoxViewDelegate>)delegate
-                white:(BOOL)white animated:(BOOL)animated;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
-- (void)wrapEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
-               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated;
+// Unwraps editing box around the given editingView.
+- (void)unwrapEditingView:(UIView *)editingView;
+- (void)unwrapEditingView:(UIView *)editingView animated:(BOOL)animated;
 
+// Wraps the given with configured editingView.
+- (void)wrapEditingView:(UIView *)editingView white:(BOOL)white;
+- (void)wrapEditingView:(UIView *)editingView white:(BOOL)white animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white;
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+                  white:(BOOL)white animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
+               animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
+
+// Updates the editing box around an updated editingView.
 - (void)updateEditingView:(UIView *)editingView;
 - (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated;
+
+// Returns the textbox view for the given editingView.
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView;
 
 @end

@@ -29,7 +29,7 @@
     UIImageView *imageView = [[UIImageView alloc] initWithImage:self.image];
     imageView.userInteractionEnabled = YES;
     imageView.frame = CGRectMake(floorf((self.view.bounds.size.width - imageView.frame.size.width) / 2.0),
-                                 floorf((self.view.bounds.size.height) / 2.0),
+                                 floorf((self.view.bounds.size.height - imageView.frame.size.height) / 2.0),
                                  imageView.frame.size.width,
                                  imageView.frame.size.height);
     self.imageView = imageView;
