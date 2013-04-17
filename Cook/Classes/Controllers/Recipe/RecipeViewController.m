@@ -99,6 +99,13 @@ typedef enum {
 #define kContentRightFrame      CGRectMake(265.0, 0.0, 395.0, 0.0)
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 
+
+- (id)initWithBook:(CKBook *)book category:(NSString *)category {
+    if (self = [self initWithRecipe:nil book:book]) {
+        self.recipe = [CKRecipe recipeForUser:book.user book:book category:nil];
+    }
+    return self;
+}
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
         self.recipe = recipe;
@@ -1138,22 +1145,29 @@ typedef enum {
         [self.parsePhotoStore imageForParseFile:[self.recipe imageFile]
                                            size:self.backgroundImageView.bounds.size
                                      completion:^(UIImage *image) {
-                                         self.backgroundImageView.image = image;
-                                         self.backgroundImageView.alpha = 0.0;
-                                         [UIView animateWithDuration:0.4
-                                                               delay:0.0
-                                                             options:UIViewAnimationOptionCurveEaseIn
-                                                          animations:^{
-                                                              self.backgroundImageView.alpha = 1.0;
-                                                          }
-                                                          completion:^(BOOL finished)  {
-                                                              
-                                                              // Set the background to be white opaque.
-                                                              self.view.backgroundColor = [Theme recipeViewBackgroundColour];
-                                                              
-                                                          }];
+                                         [self loadImageViewWithPhoto:image];
         }];
+    } else {
+        [self loadImageViewWithPhoto:[UIImage imageNamed:@"cook_editrecipe_bg.png"]];
     }
+    
+}
+
+- (void)loadImageViewWithPhoto:(UIImage *)image {
+    self.backgroundImageView.alpha = 0.0;
+    self.backgroundImageView.image = image;
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.backgroundImageView.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished)  {
+                         
+                         // Set the background to be white opaque.
+                         self.view.backgroundColor = [Theme recipeViewBackgroundColour];
+                         
+                     }];
 }
 
 - (void)initStartState {
