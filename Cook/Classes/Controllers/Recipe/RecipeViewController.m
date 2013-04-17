@@ -27,6 +27,7 @@
 #import "CKEditingTextBoxView.h"
 #import "AppHelper.h"
 #import "CKImageEditViewController.h"
+#import "CKTextViewEditViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -93,7 +94,10 @@ typedef enum {
 #define kContentMaxHeight       468.0
 #define kContentMaxWidth        660.0
 
-#define kButtonInsets  UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
+#define kButtonInsets           UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
+#define kContentLeftFrame       CGRectMake(0.0, 0.0, 240.0, 0.0)
+#define kContentRightFrame      CGRectMake(265.0, 0.0, 395.0, 0.0)
+#define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
@@ -207,7 +211,13 @@ typedef enum {
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
     DLog();
-    if (editingView == self.titleLabel) {
+    if (editingView == self.photoLabel) {
+        
+        [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen completion:^{
+            [self showPhotoPicker:YES];
+        }];
+        
+    } else if (editingView == self.titleLabel) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
@@ -218,12 +228,19 @@ typedef enum {
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
-    } else if (editingView == self.photoLabel) {
+    } else if (editingView == self.storyLabel) {
         
-        [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen completion:^{
-            [self showPhotoPicker:YES];
-        }];
         
+    } else if (editingView == self.methodLabel) {
+        
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.methodLabel
+                                                                                                         delegate:self
+                                                                                                    editingHelper:self.editingHelper
+                                                                                                            white:YES
+                                                                                                            title:@"Methods"];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+    
     } else if (editingView == self.servesCookView) {
         
         CKImageEditViewController *editViewController = [[CKImageEditViewController alloc] initWithEditView:editingView
@@ -233,6 +250,9 @@ typedef enum {
                                                                                                       image:[UIImage imageNamed:@"cook_editrecipe_details.png"]];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
+        
+    } else if (editingView == self.ingredientsLabel) {
+        
     }
 }
 
@@ -285,6 +305,23 @@ typedef enum {
             // Update the editing wrapper.
             [self.editingHelper updateEditingView:self.titleLabel animated:NO];
         }
+        
+    } else if (editingView == self.methodLabel) {
+        
+        // Get updated value and update label.
+        NSString *text = (NSString *)value;
+        if (![text isEqualToString:self.methodLabel.text]) {
+            
+            // Update title.
+            [self setMethod:text];
+            
+            // Mark save is required.
+            self.saveRequired = YES;
+            
+            // Update the editing wrapper.
+            [self.editingHelper updateEditingView:self.titleLabel animated:NO];
+        }
+        
     }
     
 }
@@ -401,6 +438,7 @@ typedef enum {
         prepCookView.frame = prepCookFrame;
         
         _servesCookView = [[UIView alloc] initWithFrame:CGRectUnion(servesView.frame, prepCookView.frame)];
+        _servesCookView.userInteractionEnabled = NO;
         [_servesCookView addSubview:servesView];
         [_servesCookView addSubview:prepCookView];
     }
@@ -779,6 +817,7 @@ typedef enum {
     storyLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     storyLabel.shadowColor = [UIColor whiteColor];
     storyLabel.text = story;
+    storyLabel.userInteractionEnabled = NO;
     storyLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     [headerView addSubview:storyLabel];
     self.storyLabel = storyLabel;
@@ -810,10 +849,10 @@ typedef enum {
 }
 
 - (void)initContentView {
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
-    CGRect leftFrame = CGRectMake(0.0, 0.0, 240.0, 0.0);
+    UIEdgeInsets contentInsets = kContentInsets;
+    CGRect leftFrame = kContentLeftFrame;
 //    CGRect rightFrame = CGRectMake(240.0, 0.0, 420.0, 0.0);
-    CGRect rightFrame = CGRectMake(265.0, 0.0, 395.0, 0.0);
+    CGRect rightFrame = kContentRightFrame;
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
     CGRect contentFrame = contentView.frame;
     
@@ -853,6 +892,7 @@ typedef enum {
                                         size.width,
                                         size.height);
     [contentView addSubview:ingredientsLabel];
+    ingredientsLabel.userInteractionEnabled = NO;
     self.ingredientsLabel = ingredientsLabel;
     requiredLeftHeight += dividerGap + ingredientsLabel.frame.size.height;
     requiredLeftHeight += contentInsets.bottom;
@@ -866,6 +906,7 @@ typedef enum {
     methodLabel.textAlignment = NSTextAlignmentLeft;
     methodLabel.backgroundColor = [UIColor clearColor];
     methodLabel.attributedText = storyDisplay;
+    methodLabel.userInteractionEnabled = NO;
     size = [methodLabel sizeThatFits:methodAvailableSize];
     methodLabel.frame = CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((methodAvailableSize.width - size.width) / 2.0),
                                    rightFrame.origin.y + contentInsets.top,
@@ -968,7 +1009,8 @@ typedef enum {
         // Photo label and its wrapping.
         self.photoLabel.alpha = 0.0;
         [self.view addSubview:self.photoLabel];
-        [self.editingHelper wrapEditingView:self.photoLabel contentInsets:UIEdgeInsetsMake(15.0, 20.0, 10.0, 20.0)
+        [self.editingHelper wrapEditingView:self.photoLabel
+                              contentInsets:UIEdgeInsetsMake(30.0, 20.0, 3.0, 20.0)
                                    delegate:self white:YES];
         
     } else {
@@ -1068,6 +1110,10 @@ typedef enum {
 }
 
 - (void)cancelTapped:(id)sender {
+    
+    [self setTitle:self.recipe.name];
+    [self setMethod:self.recipe.description];
+    
     self.saveRequired = NO;
     [self enableEditMode:NO];
 }
@@ -1077,6 +1123,7 @@ typedef enum {
     // Save any changes off.
     if (self.saveRequired) {
         self.recipe.name = self.titleLabel.text;
+        self.recipe.description = self.methodLabel.text;
         [self.recipe saveInBackground];
     }
     
@@ -1194,15 +1241,20 @@ typedef enum {
     // Set fields to be editable/non
     if (enable) {
         [self.editingHelper wrapEditingView:self.titleLabel
-                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, -4.0, 20.0) delegate:self white:YES];
+                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, -17.0, 20.0)
+                                   delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.storyLabel
-                              contentInsets:UIEdgeInsetsMake(5.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, 0.0, 20.0)
+                                   delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.servesCookView
-                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, 10.0, 20.0) delegate:self white:YES];
+                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, 0.0, 20.0)
+                                   delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.ingredientsLabel
-                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, 2.0, 20.0)
+                                   delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.methodLabel
-                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, 2.0, 20.0) delegate:self white:YES];
+                              contentInsets:UIEdgeInsetsMake(25.0, 20.0, 2.0, 20.0)
+                                   delegate:self white:YES];
     } else {
         [self.editingHelper unwrapEditingView:self.titleLabel];
         [self.editingHelper unwrapEditingView:self.storyLabel];
@@ -1219,6 +1271,19 @@ typedef enum {
                                        self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + 10.0,
                                        self.titleLabel.frame.size.width,
                                        self.titleLabel.frame.size.height);
+}
+
+- (void)setMethod:(NSString *)method {
+    CGRect rightFrame = kContentRightFrame;
+    UIEdgeInsets contentInsets = kContentInsets;
+    CGSize methodAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
+    NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
+    self.methodLabel.attributedText = methodDisplay;
+    CGSize size = [self.methodLabel sizeThatFits:methodAvailableSize];
+    self.methodLabel.frame = CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((methodAvailableSize.width - size.width) / 2.0),
+                                        rightFrame.origin.y + contentInsets.top,
+                                        size.width,
+                                        size.height);
 }
 
 - (void)showPhotoPicker:(BOOL)show {

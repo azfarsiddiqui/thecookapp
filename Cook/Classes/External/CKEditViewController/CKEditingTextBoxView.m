@@ -82,6 +82,11 @@
     self.textEditImageView.autoresizingMask = UIViewAutoresizingNone;
     self.editViewFrame = editingView.frame;
     
+    // Get the updatedFrame given the new editViewFrame.
+    CGRect updatedFrame = [self updatedFrameForProposedEditingViewFrame:self.editViewFrame];
+    self.frame = updatedFrame;
+    
+    // Reset all the subviews.
     self.textEditingPencilView.frame = CGRectMake(self.contentInsets.left + self.editViewFrame.size.width + self.contentInsets.right + self.pencilOffsets.x,
                                                   0.0,
                                                   self.textEditingPencilView.frame.size.width,
@@ -91,15 +96,26 @@
                                               self.contentInsets.left + self.editViewFrame.size.width + self.contentInsets.right,
                                               self.contentInsets.top + self.editViewFrame.size.height + self.contentInsets.bottom);
     
-    // Overall frame.
-    CGRect frame = CGRectUnion(self.textEditingPencilView.frame, self.textEditImageView.frame);
-    frame.origin.x = self.editViewFrame.origin.x - self.contentInsets.left;
-    frame.origin.y = self.editViewFrame.origin.y - self.contentInsets.top + self.pencilOffsets.y;
-    self.frame = frame;
-    
     // Restore intended resizing mask so that scaling works in transit.
     self.textEditingPencilView.autoresizingMask = [self editIconResizingMask];
     self.textEditImageView.autoresizingMask = [self textBoxResizingMask];
+}
+
+- (CGRect)updatedFrameForProposedEditingViewFrame:(CGRect)editViewFrame {
+    CGRect pencilViewFrame = CGRectMake(self.contentInsets.left + editViewFrame.size.width + self.contentInsets.right + self.pencilOffsets.x,
+                                        0.0,
+                                        self.textEditingPencilView.frame.size.width,
+                                        self.textEditingPencilView.frame.size.height);
+    CGRect textBoxImageFrame = CGRectMake(0.0,
+                                          pencilViewFrame.origin.y - self.pencilOffsets.y,
+                                          self.contentInsets.left + editViewFrame.size.width + self.contentInsets.right,
+                                          self.contentInsets.top + editViewFrame.size.height + self.contentInsets.bottom);
+    
+    // Overall frame.
+    CGRect frame = CGRectUnion(pencilViewFrame, textBoxImageFrame);
+    frame.origin.x = editViewFrame.origin.x - self.contentInsets.left;
+    frame.origin.y = editViewFrame.origin.y - self.contentInsets.top;
+    return frame;
 }
 
 - (void)showEditingIcon:(BOOL)show animated:(BOOL)animated {

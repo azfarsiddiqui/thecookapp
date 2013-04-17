@@ -19,6 +19,8 @@
 
 @implementation CKTextViewEditViewController
 
+#define kTextViewMinHeight 232.0
+
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title {
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title]) {
         self.fontSize = 30.0;
@@ -27,7 +29,7 @@
 }
 
 - (UIView *)createTargetEditView {
-    NSString *text = [self currentTextValue];
+    UIEdgeInsets contentInsets = [self contentInsets];
     CGFloat width = 800.0;
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
     textView.font = [UIFont systemFontOfSize:self.fontSize];
@@ -37,25 +39,34 @@
     textView.delegate = self;
     textView.scrollEnabled = NO;
     textView.text = [self currentTextValue];
-    textView.text = @"Facebook director of product Adam Mosseri revealed to Bloomberg on Monday that talks were underway with both Apple and Microsoft, saying the social network titan is looking to expand the reach of its newest initiative to other smartphone platforms.";
-    [textView sizeToFit];
     textView.frame = CGRectMake(floorf((self.view.bounds.size.width - width) / 2.0),
-                                100.0,
+                                contentInsets.top,
                                 width,
-                                220.0);
+                                kTextViewMinHeight);
     self.textView = textView;
+    
+    // Set contentSize to be same as bounds.
+    textView.contentSize = textView.bounds.size;
+    
+    // Set the textview frame as large as its contentSize height.
+    CGRect textViewFrame = self.textView.frame;
+    textViewFrame.size.height = self.textView.contentSize.height;
+    self.textView.frame = textViewFrame;
     
     // Register pan on the textView.
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [textView addGestureRecognizer:panGesture];
 
-    
     return textView;
 }
 
 - (NSString *)updatedTextValue {
     return self.textView.text;
+}
+
+- (UIEdgeInsets)contentInsets {
+    return UIEdgeInsetsMake(93.0, 20.0, 50.0, 20.0);
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -67,19 +78,7 @@
 #pragma mark - UITextViewDelegate methods
 
 - (void)textViewDidChange:(UITextView *)textView {
-    NSLog(@"");
-    
-    CGRect textViewFrame = self.textView.frame;
-    
-    // Set the textview frame as large as its contentSize height.
-    textViewFrame.size.height = self.textView.contentSize.height;
-    self.textView.frame = textViewFrame;
-    
-    // Update the textbox view for textView and change mockedTextBoxView to match.
-    [self.editingHelper updateEditingView:self.textView animated:NO];
-    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
-    mockedTextBoxView.frame = targetTextBoxView.frame;
+    [self updateContentSize];
 }
 
 #pragma mark - Lifecycle events
@@ -87,7 +86,10 @@
 - (void)targetTextEditingViewWillAppear:(BOOL)appear {
     [super targetTextEditingViewWillAppear:appear];
     
-    if (!appear) {
+    if (appear) {
+
+        
+    } else {
         [self.textView resignFirstResponder];
         
         // Fade the titleLabel out.
@@ -124,6 +126,9 @@
                          }
                          completion:^(BOOL finished) {
                          }];
+        
+        [self updateContentSize];
+        
     }
 }
 
@@ -160,6 +165,52 @@
     targetTextBoxView.frame = textBoxFrame;
     mockedTextBoxView.frame = mockedTextBoxFrame;
     self.textView.frame = contentFrame;
+}
+
+- (void)updateContentSize {
+    
+    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+    CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
+    
+    // Various frames to update.
+    CGRect textViewFrame = self.textView.frame;
+    
+    // Set the textview frame as large as its contentSize height.
+    textViewFrame.size.height =  self.textView.contentSize.height;
+    textViewFrame.size.height = (textViewFrame.size.height < kTextViewMinHeight) ? kTextViewMinHeight : textViewFrame.size.height;
+    
+    // Work out the no-go area for the textbox.
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGRect keyboardFrame = [self currentKeyboardFrame];
+    CGRect noGoFrame = keyboardFrame;
+    noGoFrame.origin.y -= contentInsets.bottom;
+    noGoFrame.size.height += contentInsets.bottom;
+    
+    // Adjust positioning.
+    CGRect proposedTargetTextBoxFrame = [targetTextBoxView updatedFrameForProposedEditingViewFrame:textViewFrame];
+    
+    // Flush to the bottom of the visible area.
+    proposedTargetTextBoxFrame.origin.y = noGoFrame.origin.y - proposedTargetTextBoxFrame.size.height;
+    textViewFrame.origin.y = proposedTargetTextBoxFrame.origin.y + targetTextBoxView.contentInsets.top;
+
+    // Animate frame around to fit content.
+    [UIView animateWithDuration:0.1
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         self.textView.frame = textViewFrame;
+                         targetTextBoxView.frame = proposedTargetTextBoxFrame;
+                         mockedTextBoxView.frame = proposedTargetTextBoxFrame;
+
+                         [self updateTitleLabel];
+                         
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    
+    NSLog(@"TEXTVIEW FRAME %@", NSStringFromCGRect(textViewFrame));
+    NSLog(@"TEXTBOX  FRAME %@", NSStringFromCGRect(proposedTargetTextBoxFrame));
 }
 
 @end

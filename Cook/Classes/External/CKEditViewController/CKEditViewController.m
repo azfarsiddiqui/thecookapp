@@ -51,6 +51,7 @@
         self.editTitle = title;
         self.editingViewBackgroundOriginalColour = editView.backgroundColor;
         self.dismissableOverlay = YES;
+        self.keyboardFrame = CGRectZero;
         
         // Register for keyboard events.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -93,6 +94,9 @@
         // Lifecycle start event.
         [self targetTextEditingViewWillAppear:YES];
         
+        // Create target editing view.
+        UIView *targetEditView = [self createTargetEditView];
+        
         // Animate into fullscreen edit mode.
         [UIView animateWithDuration:0.2
                               delay:0.0
@@ -108,8 +112,6 @@
                          }
                          completion:^(BOOL finished) {
                              
-                             // Create target editing view.
-                             UIView *targetEditView = [self createTargetEditView];
                              targetEditView.alpha = 0.0;
                              [self.view addSubview:targetEditView];
                              self.targetEditView = targetEditView;
@@ -121,7 +123,7 @@
                              targetTextBoxView.hidden = YES;
                              
                              // Animate into fullscreen edit mode.
-                             [UIView animateWithDuration:0.2
+                             [UIView animateWithDuration:0.15
                                                    delay:0.0
                                                  options:UIViewAnimationOptionCurveEaseIn
                                               animations:^{
@@ -190,9 +192,9 @@
                              
                              targetTextBoxView.hidden = YES;
                              
-                             [UIView animateWithDuration:0.3
+                             [UIView animateWithDuration:0.2
                                                    delay:0.0
-                                                 options:UIViewAnimationOptionCurveEaseOut
+                                                 options:UIViewAnimationOptionCurveEaseIn
                                               animations:^{
                                                   
                                                   // Resize the original textbox back to its original frame.
@@ -294,7 +296,7 @@
 }
 
 - (UIEdgeInsets)contentInsets {
-    return UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
+    return UIEdgeInsetsMake(110.0, 20.0, 110.0, 20.0);
 }
 
 - (CKEditingTextBoxView *)sourceEditTextBoxView {
@@ -307,6 +309,18 @@
 
 - (CKEditingTextBoxView *)mockedEditTextBoxView {
     return [self.editingHelper textBoxViewForEditingView:self.mockedEditView];
+}
+
+- (CGRect)currentKeyboardFrame {
+    return self.keyboardFrame;
+}
+
+- (void)updateTitleLabel {
+    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+    self.titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
+                                       targetTextBoxView.frame.origin.y - self.titleLabel.frame.size.height + 5.0,
+                                       self.titleLabel.frame.size.width,
+                                       self.titleLabel.frame.size.height);
 }
 
 #pragma mark - Lifecycle events
@@ -332,13 +346,13 @@
 #pragma mark - Keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    [self targetEditingViewKeyboardWillAppear:YES keyboardFrame:keyboardFrame];
+    CGRect windowKeyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self targetEditingViewKeyboardWillAppear:YES keyboardFrame:[self convertedKeyboardFrame:windowKeyboardFrame]];
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    [self targetEditingViewKeyboardWillAppear:NO keyboardFrame:keyboardFrame];
+    CGRect windowKeyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self targetEditingViewKeyboardWillAppear:NO keyboardFrame:[self convertedKeyboardFrame:windowKeyboardFrame]];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -457,6 +471,12 @@
 
 - (void)targetEditingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {
     self.keyboardFrame = appear ? keyboardFrame : CGRectZero;
+}
+
+- (CGRect)convertedKeyboardFrame:(CGRect)keyboardFrame {
+    // fromView:nil means convert from Window.
+    CGRect convertedKeyboardFrame = [self.view convertRect:keyboardFrame fromView:nil];
+    return convertedKeyboardFrame;
 }
 
 @end

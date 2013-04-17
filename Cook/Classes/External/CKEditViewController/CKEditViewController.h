@@ -44,6 +44,8 @@
 - (CKEditingTextBoxView *)sourceEditTextBoxView;
 - (CKEditingTextBoxView *)targetEditTextBoxView;
 - (CKEditingTextBoxView *)mockedEditTextBoxView;
+- (CGRect)currentKeyboardFrame;
+- (void)updateTitleLabel;
 
 // Lifecycle events.
 - (void)targetTextEditingViewWillAppear:(BOOL)appear;

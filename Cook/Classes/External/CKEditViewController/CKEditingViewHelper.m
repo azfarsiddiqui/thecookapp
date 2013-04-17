@@ -16,7 +16,7 @@
 
 @implementation CKEditingViewHelper
 
-#define kContentInsets  UIEdgeInsetsMake(20.0, 34.0, 20.0, 34.0)
+#define kContentInsets  UIEdgeInsetsMake(30.0, 34.0, 10.0, 34.0)
 #define kTextBoxScale   0.98
 
 - (id)init {

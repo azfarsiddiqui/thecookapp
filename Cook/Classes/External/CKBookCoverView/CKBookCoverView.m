@@ -91,11 +91,14 @@
     self.editButton.hidden = enable;
     
     if (enable) {
-        [self.editingHelper wrapEditingView:self.authorLabel contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0)
+        [self.editingHelper wrapEditingView:self.authorLabel
+                              contentInsets:UIEdgeInsetsMake(18.0, 9.0, -7.0, 11.0)
                                    delegate:self white:NO];
-        [self.editingHelper wrapEditingView:self.titleLabel contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0)
+        [self.editingHelper wrapEditingView:self.titleLabel
+                              contentInsets:UIEdgeInsetsMake(18.0, 9.0, -7.0, 11.0)
                                    delegate:self white:NO];
-        [self.editingHelper wrapEditingView:self.captionLabel contentInsets:UIEdgeInsetsMake(8.0, 9.0, 2.0, 11.0)
+        [self.editingHelper wrapEditingView:self.captionLabel
+                              contentInsets:UIEdgeInsetsMake(18.0, 9.0, -7.0, 11.0)
                                    delegate:self white:NO];
     } else {
         [self.editingHelper unwrapEditingView:self.authorLabel];

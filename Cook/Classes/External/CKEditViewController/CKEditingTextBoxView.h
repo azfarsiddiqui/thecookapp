@@ -24,6 +24,7 @@
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
                   delegate:(id<CKEditingTextBoxViewDelegate>)delegate;
 - (void)updateEditingView:(UIView *)editingView;
+- (CGRect)updatedFrameForProposedEditingViewFrame:(CGRect)editViewFrame;
 - (void)showEditingIcon:(BOOL)show animated:(BOOL)animated;
 - (void)showSaveIcon:(BOOL)show animated:(BOOL)animated;
 - (void)showSaveIcon:(BOOL)show enabled:(BOOL)enabled animated:(BOOL)animated;

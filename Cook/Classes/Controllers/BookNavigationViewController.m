@@ -366,7 +366,7 @@
                                    selectedImage:[UIImage imageNamed:@"cook_book_btn_addrecipe_onpress.png"]
                                           target:self
                                         selector:@selector(addRecipeTapped)];
-        _addButton.frame = CGRectMake(self.view.bounds.size.width - _addButton.frame.size.width - 30.0,
+        _addButton.frame = CGRectMake(self.view.bounds.size.width - _addButton.frame.size.width - kNavTopLeftOffset.x,
                                       20.0,
                                       _addButton.frame.size.width,
                                       _addButton.frame.size.height);
