@@ -57,7 +57,7 @@
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
-#define kOverlayViewAlpha               0.7
+#define kOverlayViewAlpha               0.3
 
 - (void)dealloc {
     [EventHelper unregisterLogout:self];
