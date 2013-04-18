@@ -14,7 +14,6 @@
 
 @interface CKEditViewController () <UIGestureRecognizerDelegate, CKEditingTextBoxViewDelegate>
 
-@property (nonatomic, strong) UIView *sourceEditView;
 @property (nonatomic, strong) UIView *targetEditView;
 @property (nonatomic, strong) UIView *mockedEditView;
 @property (nonatomic, strong) UIView *overlayView;

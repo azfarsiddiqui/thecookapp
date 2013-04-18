@@ -219,6 +219,7 @@
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
 		766F42F216DC7A5500785ABD /* BookProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F42F116DC7A5500785ABD /* BookProfileViewController.m */; };
 		766F431016DD851C00785ABD /* BookIndexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F430F16DD851A00785ABD /* BookIndexViewController.m */; };
+		76726E24171FA0BE00F93214 /* CKLabelEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76726E23171FA0BE00F93214 /* CKLabelEditViewController.m */; };
 		76751590170CFF52008B675D /* cook_book_graphic_featured_hongkong.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751582170CFF52008B675D /* cook_book_graphic_featured_hongkong.png */; };
 		76751591170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751583170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png */; };
 		76751592170CFF52008B675D /* cook_book_graphic_featured_london.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751584170CFF52008B675D /* cook_book_graphic_featured_london.png */; };
@@ -892,6 +893,8 @@
 		766F42F116DC7A5500785ABD /* BookProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookProfileViewController.m; sourceTree = "<group>"; };
 		766F430E16DD851900785ABD /* BookIndexViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookIndexViewController.h; sourceTree = "<group>"; };
 		766F430F16DD851A00785ABD /* BookIndexViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookIndexViewController.m; sourceTree = "<group>"; };
+		76726E22171FA0BE00F93214 /* CKLabelEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKLabelEditViewController.h; sourceTree = "<group>"; };
+		76726E23171FA0BE00F93214 /* CKLabelEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKLabelEditViewController.m; sourceTree = "<group>"; };
 		76751582170CFF52008B675D /* cook_book_graphic_featured_hongkong.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_featured_hongkong.png; sourceTree = "<group>"; };
 		76751583170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_featured_hongkong@2x.png"; sourceTree = "<group>"; };
 		76751584170CFF52008B675D /* cook_book_graphic_featured_london.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_featured_london.png; sourceTree = "<group>"; };
@@ -1887,6 +1890,8 @@
 				76BE373F1717EDFA000C0755 /* CKTextFieldEditViewController.h */,
 				76424ACF171D317B0086231F /* CKTextViewEditViewController.h */,
 				76424AD0171D317B0086231F /* CKTextViewEditViewController.m */,
+				76726E22171FA0BE00F93214 /* CKLabelEditViewController.h */,
+				76726E23171FA0BE00F93214 /* CKLabelEditViewController.m */,
 				768BBB92171B93FA00E8809F /* CKImageEditViewController.h */,
 				768BBB91171B93FA00E8809F /* CKImageEditViewController.m */,
 				76BE372D1717A8E9000C0755 /* Resources */,
@@ -3351,6 +3356,7 @@
 				767E75DC17182D14003CCCD2 /* CKEditingTextBoxView.m in Sources */,
 				768BBB93171B93FA00E8809F /* CKImageEditViewController.m in Sources */,
 				76424AD1171D317B0086231F /* CKTextViewEditViewController.m in Sources */,
+				76726E24171FA0BE00F93214 /* CKLabelEditViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

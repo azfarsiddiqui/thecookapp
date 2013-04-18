@@ -24,6 +24,7 @@
 
 @property (nonatomic, strong) NSString *editTitle;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIView *sourceEditView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, assign) BOOL dismissableOverlay;
 
