@@ -28,6 +28,7 @@
 #import "AppHelper.h"
 #import "CKImageEditViewController.h"
 #import "CKTextViewEditViewController.h"
+#import "CKLabelEditViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -238,6 +239,16 @@ typedef enum {
     } else if (editingView == self.storyLabel) {
         
         
+        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+                                                                                                           delegate:self
+                                                                                                      editingHelper:self.editingHelper
+                                                                                                              white:YES
+                                                                                                              title:@"Story"
+                                                                                                     characterLimit:120];
+        editViewController.fontSize = 15.0;
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
     } else if (editingView == self.methodLabel) {
         
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.methodLabel
@@ -260,6 +271,13 @@ typedef enum {
         
     } else if (editingView == self.ingredientsLabel) {
         
+        CKLabelEditViewController *editViewController = [[CKLabelEditViewController alloc] initWithEditView:editingView
+                                                                                                   delegate:self
+                                                                                              editingHelper:self.editingHelper
+                                                                                                      white:YES
+                                                                                                      title:@"Coming Soon"];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
     }
 }
 
