@@ -6,10 +6,12 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKEditViewController.h"
+#import "CKTextEditViewController.h"
 
-@interface CKTextViewEditViewController : CKEditViewController
+@interface CKTextViewEditViewController : CKTextEditViewController
 
-@property (nonatomic, assign) CGFloat fontSize;
+@property (nonatomic, assign) NSInteger numLines;
+
+- (BOOL)contentScrollable;
 
 @end

@@ -8,26 +8,22 @@
 
 #import "CKEditViewController.h"
 #import "CKEditingViewHelper.h"
-#import "CKEditingTextBoxView.h"
 #import "UIColor+Expanded.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface CKEditViewController () <UIGestureRecognizerDelegate, CKEditingTextBoxViewDelegate>
 
-@property (nonatomic, strong) UIView *targetEditView;
 @property (nonatomic, strong) UIView *mockedEditView;
 @property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, assign) id<CKEditViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIColor *editingViewBackgroundOriginalColour;
 @property (nonatomic, assign) CGRect startTextBoxFrame;
-@property (nonatomic, assign) BOOL white;
 @property (nonatomic, assign) CGRect keyboardFrame;
 
 @end
 
 @implementation CKEditViewController
 
-#define kOverlayAlpha   0.5
+#define kOverlayAlpha   0.8
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -53,8 +49,8 @@
         self.keyboardFrame = CGRectZero;
         
         // Register for keyboard events.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardDidHideNotification object:nil];
     }
     return self;
 }
@@ -115,8 +111,11 @@
                              [self.view addSubview:targetEditView];
                              self.targetEditView = targetEditView;
                              
+                             // Lifecycle event to inform of creation/adding of target editing view.
+                             [self targetTextEditingViewDidCreated];
+                             
                              // Wrap target textField textbox.
-                             [self.editingHelper wrapEditingView:targetEditView delegate:self white:self.white animated:NO];
+                             [self wrapTargetEditView:targetEditView delegate:self];
                              CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:targetEditView];
                              [targetTextBoxView showEditingIcon:NO animated:NO];
                              targetTextBoxView.hidden = YES;
@@ -151,8 +150,10 @@
                                                                        targetEditView.alpha = 1.0;
                                                                        
                                                                        // Show the save icon.
-                                                                       [targetTextBoxView showSaveIcon:YES animated:NO];
-                                                                       
+                                                                       if ([self showSaveIcon]) {
+                                                                           [targetTextBoxView showSaveIcon:YES animated:NO];
+                                                                       }
+                                                   
                                                                    }
                                                                    completion:^(BOOL finished) {
                                                                        
@@ -314,15 +315,44 @@
     return self.keyboardFrame;
 }
 
-- (void)updateTitleLabel {
+- (CGRect)defaultKeyboardFrame {
+    return CGRectMake(self.view.bounds.origin.x, 396.0, self.view.bounds.size.width, 352.0);
+}
+
+- (void)updateInfoLabels {
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    self.titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
+    self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x,
                                        targetTextBoxView.frame.origin.y - self.titleLabel.frame.size.height + 5.0,
                                        self.titleLabel.frame.size.width,
                                        self.titleLabel.frame.size.height);
 }
 
+- (void)wrapTargetEditView:(UIView *)targetEditView delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
+    [self.editingHelper wrapEditingView:targetEditView delegate:delegate white:self.white animated:NO];
+}
+
+- (BOOL)showTitleLabel {
+    return YES;
+}
+
+- (BOOL)showSaveIcon {
+    return YES;
+}
+
+- (void)dismissEditView {
+    [self.delegate editViewControllerDismissRequested];
+}
+
+- (void)keyboardWillAppear:(BOOL)appear {
+}
+
 #pragma mark - Lifecycle events
+
+- (void)targetTextEditingViewDidCreated {
+    if ([self.delegate respondsToSelector:@selector(editViewControllerDidCreated)]) {
+        [self.delegate editViewControllerDidCreated];
+    }
+}
 
 - (void)targetTextEditingViewWillAppear:(BOOL)appear {
     [self.delegate editViewControllerWillAppear:appear];
@@ -392,7 +422,7 @@
 #pragma mark - Lazy getters.
 
 - (UILabel *)titleLabel {
-    if (!_titleLabel) {
+    if (!_titleLabel && [self showTitleLabel]) {
         
         // Get a reference to the target textbox for relative positioning.
         CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
@@ -442,7 +472,7 @@
 }
 
 - (void)overlayTapped:(UITapGestureRecognizer *)tapGesture {
-    [self.delegate editViewControllerDismissRequested];
+    [self dismissEditView];
 }
 
 - (void)mockAndWrapOriginalEditingView {
@@ -470,6 +500,7 @@
 
 - (void)targetEditingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {
     self.keyboardFrame = appear ? keyboardFrame : CGRectZero;
+    [self keyboardWillAppear:appear];
 }
 
 - (CGRect)convertedKeyboardFrame:(CGRect)keyboardFrame {

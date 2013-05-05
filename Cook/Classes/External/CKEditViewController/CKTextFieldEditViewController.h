@@ -6,14 +6,8 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKEditViewController.h"
+#import "CKTextEditViewController.h"
 
-@interface CKTextFieldEditViewController : CKEditViewController
-
-@property (nonatomic, assign) CGFloat fontSize;
-
-- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
-         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title
-                 characterLimit:(NSUInteger)characterLimit;
+@interface CKTextFieldEditViewController : CKTextEditViewController
 
 @end

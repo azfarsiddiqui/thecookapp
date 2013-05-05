@@ -477,6 +477,15 @@
 		76EE2CDB170AE7A30043D128 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EE2CD1170AE7A30043D128 /* UIImageView+WebCache.m */; };
 		76EE2CDD170AEAB80043D128 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76EE2CDC170AEAB80043D128 /* CoreImage.framework */; };
 		76EE2CDF170AEADF0043D128 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76EE2CDE170AEADF0043D128 /* ImageIO.framework */; };
+		76EF95C017363BD50033DBCE /* cook_customise_textbox_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EF95BE17363BD50033DBCE /* cook_customise_textbox_blue.png */; };
+		76EF95C117363BD50033DBCE /* cook_customise_textbox_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EF95BF17363BD50033DBCE /* cook_customise_textbox_blue@2x.png */; };
+		76EF95D017363BF50033DBCE /* CKListCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95C317363BF50033DBCE /* CKListCollectionViewCell.m */; };
+		76EF95D117363BF50033DBCE /* CKListCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95C517363BF50033DBCE /* CKListCollectionViewFlowLayout.m */; };
+		76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95C717363BF50033DBCE /* CKListCollectionViewLayout.m */; };
+		76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95C917363BF50033DBCE /* CKListEditViewController.m */; };
+		76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95CB17363BF50033DBCE /* CKTableEditViewController.m */; };
+		76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95CD17363BF50033DBCE /* CKTableViewCell.m */; };
+		76EF95D617363BF50033DBCE /* CKTextEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95CF17363BF50033DBCE /* CKTextEditViewController.m */; };
 		76F6448E16F1522A00F86223 /* CKUserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 76F6448D16F1522A00F86223 /* CKUserNotification.m */; };
 		76F6449516F152C200F86223 /* cook_dash_library_profile_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F6448F16F152C200F86223 /* cook_dash_library_profile_btn.png */; };
 		76F6449616F152C200F86223 /* cook_dash_library_profile_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F6449016F152C200F86223 /* cook_dash_library_profile_btn@2x.png */; };
@@ -1214,6 +1223,22 @@
 		76EE2CDE170AEADF0043D128 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		76EE2CE0170AEB2B0043D128 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		76EE2CE1170AEB2B0043D128 /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
+		76EF95BE17363BD50033DBCE /* cook_customise_textbox_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_textbox_blue.png; sourceTree = "<group>"; };
+		76EF95BF17363BD50033DBCE /* cook_customise_textbox_blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox_blue@2x.png"; sourceTree = "<group>"; };
+		76EF95C217363BF50033DBCE /* CKListCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListCollectionViewCell.h; sourceTree = "<group>"; };
+		76EF95C317363BF50033DBCE /* CKListCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListCollectionViewCell.m; sourceTree = "<group>"; };
+		76EF95C417363BF50033DBCE /* CKListCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListCollectionViewFlowLayout.h; sourceTree = "<group>"; };
+		76EF95C517363BF50033DBCE /* CKListCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListCollectionViewFlowLayout.m; sourceTree = "<group>"; };
+		76EF95C617363BF50033DBCE /* CKListCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListCollectionViewLayout.h; sourceTree = "<group>"; };
+		76EF95C717363BF50033DBCE /* CKListCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListCollectionViewLayout.m; sourceTree = "<group>"; };
+		76EF95C817363BF50033DBCE /* CKListEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListEditViewController.h; sourceTree = "<group>"; };
+		76EF95C917363BF50033DBCE /* CKListEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListEditViewController.m; sourceTree = "<group>"; };
+		76EF95CA17363BF50033DBCE /* CKTableEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTableEditViewController.h; sourceTree = "<group>"; };
+		76EF95CB17363BF50033DBCE /* CKTableEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTableEditViewController.m; sourceTree = "<group>"; };
+		76EF95CC17363BF50033DBCE /* CKTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTableViewCell.h; sourceTree = "<group>"; };
+		76EF95CD17363BF50033DBCE /* CKTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTableViewCell.m; sourceTree = "<group>"; };
+		76EF95CE17363BF50033DBCE /* CKTextEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTextEditViewController.h; sourceTree = "<group>"; };
+		76EF95CF17363BF50033DBCE /* CKTextEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextEditViewController.m; sourceTree = "<group>"; };
 		76F6448C16F1522A00F86223 /* CKUserNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUserNotification.h; sourceTree = "<group>"; };
 		76F6448D16F1522A00F86223 /* CKUserNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUserNotification.m; sourceTree = "<group>"; };
 		76F6448F16F152C200F86223 /* cook_dash_library_profile_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_profile_btn.png; sourceTree = "<group>"; };
@@ -1886,6 +1911,8 @@
 				767E75DB17182D14003CCCD2 /* CKEditingTextBoxView.h */,
 				76BE372B1717A8E9000C0755 /* CKEditViewController.h */,
 				76BE372C1717A8E9000C0755 /* CKEditViewController.m */,
+				76EF95CE17363BF50033DBCE /* CKTextEditViewController.h */,
+				76EF95CF17363BF50033DBCE /* CKTextEditViewController.m */,
 				76BE373E1717EDFA000C0755 /* CKTextFieldEditViewController.m */,
 				76BE373F1717EDFA000C0755 /* CKTextFieldEditViewController.h */,
 				76424ACF171D317B0086231F /* CKTextViewEditViewController.h */,
@@ -1894,6 +1921,18 @@
 				76726E23171FA0BE00F93214 /* CKLabelEditViewController.m */,
 				768BBB92171B93FA00E8809F /* CKImageEditViewController.h */,
 				768BBB91171B93FA00E8809F /* CKImageEditViewController.m */,
+				76EF95C217363BF50033DBCE /* CKListCollectionViewCell.h */,
+				76EF95C317363BF50033DBCE /* CKListCollectionViewCell.m */,
+				76EF95C417363BF50033DBCE /* CKListCollectionViewFlowLayout.h */,
+				76EF95C517363BF50033DBCE /* CKListCollectionViewFlowLayout.m */,
+				76EF95C617363BF50033DBCE /* CKListCollectionViewLayout.h */,
+				76EF95C717363BF50033DBCE /* CKListCollectionViewLayout.m */,
+				76EF95C817363BF50033DBCE /* CKListEditViewController.h */,
+				76EF95C917363BF50033DBCE /* CKListEditViewController.m */,
+				76EF95CA17363BF50033DBCE /* CKTableEditViewController.h */,
+				76EF95CB17363BF50033DBCE /* CKTableEditViewController.m */,
+				76EF95CC17363BF50033DBCE /* CKTableViewCell.h */,
+				76EF95CD17363BF50033DBCE /* CKTableViewCell.m */,
 				76BE372D1717A8E9000C0755 /* Resources */,
 			);
 			path = CKEditViewController;
@@ -1910,6 +1949,8 @@
 				761EEC7B171A4F5F006F3A67 /* cook_customise_btns_textedit_black@2x.png */,
 				761EEC7C171A4F5F006F3A67 /* cook_customise_textbox_black.png */,
 				761EEC7D171A4F5F006F3A67 /* cook_customise_textbox_black@2x.png */,
+				76EF95BE17363BD50033DBCE /* cook_customise_textbox_blue.png */,
+				76EF95BF17363BD50033DBCE /* cook_customise_textbox_blue@2x.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3192,6 +3233,8 @@
 				768BBB97171B941100E8809F /* cook_editrecipe_details@2x.png in Resources */,
 				762C78E2171E825C009CCAA8 /* cook_editrecipe_bg.png in Resources */,
 				762C78E3171E825C009CCAA8 /* cook_editrecipe_bg@2x.png in Resources */,
+				76EF95C017363BD50033DBCE /* cook_customise_textbox_blue.png in Resources */,
+				76EF95C117363BD50033DBCE /* cook_customise_textbox_blue@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3357,6 +3400,13 @@
 				768BBB93171B93FA00E8809F /* CKImageEditViewController.m in Sources */,
 				76424AD1171D317B0086231F /* CKTextViewEditViewController.m in Sources */,
 				76726E24171FA0BE00F93214 /* CKLabelEditViewController.m in Sources */,
+				76EF95D017363BF50033DBCE /* CKListCollectionViewCell.m in Sources */,
+				76EF95D117363BF50033DBCE /* CKListCollectionViewFlowLayout.m in Sources */,
+				76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */,
+				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
+				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,
+				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,
+				76EF95D617363BF50033DBCE /* CKTextEditViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

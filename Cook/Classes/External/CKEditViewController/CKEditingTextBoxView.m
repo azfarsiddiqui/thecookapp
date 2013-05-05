@@ -12,14 +12,39 @@
 
 @property (nonatomic, assign) id<CKEditingTextBoxViewDelegate> delegate;
 @property (nonatomic, strong) UIView *editingView;
+@property (nonatomic, strong) UIView *textEditBoxImageView;
 @property (nonatomic, strong) UIView *textEditingPencilView;
-@property (nonatomic, strong) UIView *textEditImageView;
 @property (nonatomic, strong) UIButton *textEditingSaveButton;
 @property (nonatomic, assign) CGPoint pencilOffsets;
 
 @end
 
 @implementation CKEditingTextBoxView
+
++ (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
+    return button;
+}
+
++ (UIImage *)textEditingBoxWhite:(BOOL)white {
+    UIImage *textEditingImage = nil;
+    if (white) {
+        textEditingImage = [[UIImage imageNamed:@"cook_customise_textbox_white.png"]
+                            resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 5.0, 6.0, 5.0)];
+    } else {
+        textEditingImage = [[UIImage imageNamed:@"cook_customise_textbox_black.png"]
+                            resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 5.0, 6.0, 5.0)];
+    }
+    return textEditingImage;
+}
+
++ (UIImage *)textEditingSelectionBoxWhite:(BOOL)white {
+    return [[UIImage imageNamed:@"cook_customise_textbox_blue.png"]
+            resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 5.0, 6.0, 5.0)];
+}
 
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
                  delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
@@ -35,10 +60,10 @@
         self.pencilOffsets = pencilOffsets;
         
         // Text box.
-        UIImageView *textEditImageView = [[UIImageView alloc] initWithImage:[self textEditingBoxWhite:white]];
+        UIImageView *textEditImageView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:white]];
         textEditImageView.userInteractionEnabled = YES;
         textEditImageView.autoresizingMask = [self textBoxResizingMask];
-        self.textEditImageView = textEditImageView;
+        self.textEditBoxImageView = textEditImageView;
         
         // Corner pencil icon.
         UIImageView *textEditingPencilView = [[UIImageView alloc] initWithImage:[self textEditingPencilWhite:white]];
@@ -50,9 +75,9 @@
         [self updateEditingView:editingView];
         
         // Save icon to be hidden at first, and positioned in the top-right corner.
-        UIButton *textEditingSaveButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
-                                                         target:self
-                                                       selector:@selector(saveTapped:)];
+        UIButton *textEditingSaveButton = [CKEditingTextBoxView buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
+                                                                         target:self
+                                                                       selector:@selector(saveTapped:)];
         textEditingSaveButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin;
         textEditingSaveButton.frame = CGRectMake(self.bounds.size.width - textEditingSaveButton.frame.size.width,
                                                  0.0,
@@ -79,7 +104,7 @@
     
     // First set them to no auto-resize as we're gonna position/size them ourselves.
     self.textEditingPencilView.autoresizingMask = UIViewAutoresizingNone;
-    self.textEditImageView.autoresizingMask = UIViewAutoresizingNone;
+    self.textEditBoxImageView.autoresizingMask = UIViewAutoresizingNone;
     self.editViewFrame = editingView.frame;
     
     // Get the updatedFrame given the new editViewFrame.
@@ -91,14 +116,14 @@
                                                   0.0,
                                                   self.textEditingPencilView.frame.size.width,
                                                   self.textEditingPencilView.frame.size.height);
-    self.textEditImageView.frame = CGRectMake(0.0,
+    self.textEditBoxImageView.frame = CGRectMake(0.0,
                                               self.textEditingPencilView.frame.origin.y - self.pencilOffsets.y,
                                               self.contentInsets.left + self.editViewFrame.size.width + self.contentInsets.right,
                                               self.contentInsets.top + self.editViewFrame.size.height + self.contentInsets.bottom);
     
     // Restore intended resizing mask so that scaling works in transit.
     self.textEditingPencilView.autoresizingMask = [self editIconResizingMask];
-    self.textEditImageView.autoresizingMask = [self textBoxResizingMask];
+    self.textEditBoxImageView.autoresizingMask = [self textBoxResizingMask];
 }
 
 - (CGRect)updatedFrameForProposedEditingViewFrame:(CGRect)editViewFrame {
@@ -164,12 +189,8 @@
     }
 }
 
-- (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
-    return button;
+- (CGRect)textBoxFrame {
+    return self.textEditBoxImageView.frame;
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -179,18 +200,6 @@
 }
 
 #pragma mark - Private methods
-
-- (UIImage *)textEditingBoxWhite:(BOOL)white {
-    UIImage *textEditingImage = nil;
-    if (white) {
-        textEditingImage = [[UIImage imageNamed:@"cook_customise_textbox_white.png"]
-                            resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 5.0, 6.0, 5.0)];
-    } else {
-        textEditingImage = [[UIImage imageNamed:@"cook_customise_textbox_black.png"]
-                            resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 5.0, 6.0, 5.0)];
-    }
-    return textEditingImage;
-}
 
 - (UIImage *)textEditingPencilWhite:(BOOL)white {
     UIImage *textEditingPencilImage = nil;

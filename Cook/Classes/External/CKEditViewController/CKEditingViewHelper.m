@@ -19,6 +19,10 @@
 #define kContentInsets  UIEdgeInsetsMake(30.0, 34.0, 10.0, 34.0)
 #define kTextBoxScale   0.98
 
++ (CGFloat)singleLineHeightForFont:(UIFont *)font size:(CGSize)size {
+    return [@"A" sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByClipping].height;
+}
+
 - (id)init {
     if (self = [super init]) {
         self.editingViewTextBoxViews = [NSMutableDictionary dictionary];
@@ -67,18 +71,18 @@
 
 - (void)wrapEditingView:(UIView *)editingView white:(BOOL)white {
     
-    [self wrapEditingView:editingView delegate:nil white:white animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:nil white:white animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView white:(BOOL)white animated:(BOOL)animated {
     
-    [self wrapEditingView:editingView delegate:nil white:white animated:animated];
+    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:nil white:white animated:animated];
 }
 
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                   white:(BOOL)white {
     
-    [self wrapEditingView:editingView contentInsets:contentInsets white:white animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:nil white:white animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
@@ -89,7 +93,7 @@
 
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white {
     
-    [self wrapEditingView:editingView delegate:delegate white:white animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
@@ -102,7 +106,15 @@
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white {
     
-    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
+                     animated:YES];
+}
+
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated {
+    
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
+                     animated:animated];
 }
 
 - (void)updateEditingView:(UIView *)editingView {

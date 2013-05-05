@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKEditingTextBoxView.h"
 
 @class CKEditingViewHelper;
-@class CKEditingTextBoxView;
 
 @protocol CKEditViewControllerDelegate <NSObject>
 
@@ -18,15 +18,21 @@
 - (void)editViewControllerDismissRequested;
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value;
 
+@optional
+- (void)editViewControllerDidCreated;
+
 @end
 
 @interface CKEditViewController : UIViewController
 
+@property (nonatomic, assign) id<CKEditViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSString *editTitle;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIView *sourceEditView;
+@property (nonatomic, strong) UIView *targetEditView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, assign) BOOL dismissableOverlay;
+@property (nonatomic, assign) BOOL white;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
@@ -46,9 +52,16 @@
 - (CKEditingTextBoxView *)targetEditTextBoxView;
 - (CKEditingTextBoxView *)mockedEditTextBoxView;
 - (CGRect)currentKeyboardFrame;
-- (void)updateTitleLabel;
+- (CGRect)defaultKeyboardFrame;
+- (void)updateInfoLabels;
+- (void)wrapTargetEditView:(UIView *)targetEditView delegate:(id<CKEditingTextBoxViewDelegate>)delegate;
+- (BOOL)showTitleLabel;
+- (BOOL)showSaveIcon;
+- (void)dismissEditView;
+- (void)keyboardWillAppear:(BOOL)appear;
 
 // Lifecycle events.
+- (void)targetTextEditingViewDidCreated;
 - (void)targetTextEditingViewWillAppear:(BOOL)appear;
 - (void)targetTextEditingViewDidAppear:(BOOL)appear;
 

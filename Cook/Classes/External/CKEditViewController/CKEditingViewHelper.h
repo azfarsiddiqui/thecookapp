@@ -13,6 +13,8 @@
 
 @interface CKEditingViewHelper : NSObject
 
++ (CGFloat)singleLineHeightForFont:(UIFont *)font size:(CGSize)size;
+
 // Unwraps editing box around the given editingView.
 - (void)unwrapEditingView:(UIView *)editingView;
 - (void)unwrapEditingView:(UIView *)editingView animated:(BOOL)animated;
@@ -28,6 +30,8 @@
                animated:(BOOL)animated;
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated;
 
 // Updates the editing box around an updated editingView.
 - (void)updateEditingView:(UIView *)editingView;

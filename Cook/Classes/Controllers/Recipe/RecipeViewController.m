@@ -238,14 +238,13 @@ typedef enum {
         
     } else if (editingView == self.storyLabel) {
         
-        
-        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
-                                                                                                           delegate:self
-                                                                                                      editingHelper:self.editingHelper
-                                                                                                              white:YES
-                                                                                                              title:@"Story"
-                                                                                                     characterLimit:120];
-        editViewController.fontSize = 15.0;
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+                                                                                                         delegate:self
+                                                                                                    editingHelper:self.editingHelper
+                                                                                                            white:YES
+                                                                                                            title:@"Story"
+                                                                                                   characterLimit:120];
+        ((CKTextViewEditViewController *)editViewController).numLines = 2;
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
@@ -317,36 +316,15 @@ typedef enum {
     
     if (editingView == self.titleLabel) {
         
-        // Get updated value and update label.
-        NSString *text = (NSString *)value;
-        if (![text isEqualToString:self.titleLabel.text]) {
-            
-            // Update title.
-            [self setTitle:text];
-            
-            // Mark save is required.
-            self.saveRequired = YES;
-            
-            // Update the editing wrapper.
-            [self.editingHelper updateEditingView:self.titleLabel animated:NO];
-        }
+        [self saveTitleValue:value];
+        
+    } else if (editingView == self.storyLabel) {
+        
+        [self saveStoryValue:value];
         
     } else if (editingView == self.methodLabel) {
         
-        // Get updated value and update label.
-        NSString *text = (NSString *)value;
-        if (![text isEqualToString:self.methodLabel.text]) {
-            
-            // Update title.
-            [self setMethod:text];
-            
-            // Mark save is required.
-            self.saveRequired = YES;
-            
-            // Update the editing wrapper.
-            [self.editingHelper updateEditingView:self.titleLabel animated:NO];
-        }
-        
+        [self saveMethodValue:value];
     }
     
 }
@@ -826,14 +804,7 @@ typedef enum {
     [self setTitle:[self.recipe.name uppercaseString]];
     
     // Recipe story.
-    CGFloat titleStoryGap = 0.0;
-    CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, headerView.bounds.size.height - titleLabel.frame.origin.y - titleLabel.frame.size.height);
-    NSString *story = self.recipe.story;
-    CGSize size = [story sizeWithFont:[Theme storyFont] constrainedToSize:storyAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
-    UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(floorf((headerView.bounds.size.width - size.width) / 2.0),
-                                                                    titleLabel.frame.origin.y + titleLabel.frame.size.height + titleStoryGap,
-                                                                    size.width,
-                                                                    size.height)];
+    UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     storyLabel.font = [Theme storyFont];
     storyLabel.numberOfLines = 2;
     storyLabel.textAlignment = NSTextAlignmentCenter;
@@ -841,11 +812,11 @@ typedef enum {
     storyLabel.backgroundColor = [UIColor clearColor];
     storyLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     storyLabel.shadowColor = [UIColor whiteColor];
-    storyLabel.text = story;
     storyLabel.userInteractionEnabled = NO;
     storyLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     [headerView addSubview:storyLabel];
     self.storyLabel = storyLabel;
+    [self setStory:self.recipe.story];
 
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped:)];
@@ -1135,27 +1106,11 @@ typedef enum {
 }
 
 - (void)cancelTapped:(id)sender {
-    
-    [self setTitle:self.recipe.name];
-    [self setMethod:self.recipe.description];
-    
-    self.saveRequired = NO;
-    [self enableEditMode:NO];
+    [self exitEditModeThenSave:NO];
 }
 
 - (void)saveTapped:(id)sender {
-    
-    // Save any changes off.
-    if (self.saveRequired) {
-        self.recipe.name = self.titleLabel.text;
-        self.recipe.description = self.methodLabel.text;
-        [self.recipe saveInBackground];
-    }
-    
-    [self enableEditMode:NO];
-    
-    // Reset save flag.
-    self.saveRequired = NO;
+    [self exitEditModeThenSave:YES];
 }
 
 - (void)loadPhoto {
@@ -1305,6 +1260,17 @@ typedef enum {
                                        self.titleLabel.frame.size.height);
 }
 
+- (void)setStory:(NSString *)story {
+    CGFloat titleStoryGap = 0.0;
+    CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, self.headerView.bounds.size.height - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height);
+    CGSize size = [story sizeWithFont:[Theme storyFont] constrainedToSize:storyAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
+    self.storyLabel.text = story;
+    self.storyLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - size.width) / 2.0),
+                                       self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + titleStoryGap,
+                                       size.width,
+                                       size.height);
+}
+
 - (void)setMethod:(NSString *)method {
     CGRect rightFrame = kContentRightFrame;
     UIEdgeInsets contentInsets = kContentInsets;
@@ -1349,6 +1315,87 @@ typedef enum {
 - (void)cleanupPhotoPicker {
     [self.photoPickerViewController.view removeFromSuperview];
     self.photoPickerViewController = nil;
+}
+
+- (void)saveTitleValue:(id)value {
+    
+    // Get updated value and update label.
+    NSString *text = (NSString *)value;
+    if (![text isEqualToString:self.titleLabel.text]) {
+        
+        // Update title.
+        [self setTitle:text];
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+        
+        // Update the editing wrapper.
+        [self.editingHelper updateEditingView:self.titleLabel animated:NO];
+    }
+}
+
+- (void)saveStoryValue:(id)value {
+    
+    // Get updated value and update label.
+    NSString *text = (NSString *)value;
+    if (![text isEqualToString:self.storyLabel.text]) {
+        
+        // Update title.
+        [self setStory:text];
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+        
+        // Update the editing wrapper.
+        [self.editingHelper updateEditingView:self.storyLabel animated:NO];
+    }
+
+}
+
+- (void)saveMethodValue:(id)value {
+    
+    // Get updated value and update label.
+    NSString *text = (NSString *)value;
+    if (![text isEqualToString:self.methodLabel.text]) {
+        
+        // Update title.
+        [self setMethod:text];
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+        
+        // Update the editing wrapper.
+        [self.editingHelper updateEditingView:self.titleLabel animated:NO];
+    }
+    
+}
+
+- (void)exitEditModeThenSave:(BOOL)save {
+    
+    if (save) {
+        
+        // Save any changes off.
+        if (self.saveRequired) {
+            
+            self.recipe.name = self.titleLabel.text;
+            self.recipe.description = self.methodLabel.text;
+            self.recipe.story = self.storyLabel.text;
+            
+            [self.recipe saveInBackground];
+        }
+        
+    } else {
+        
+        // Restore value
+        [self setTitle:self.recipe.name];
+        [self setStory:self.recipe.story];
+        [self setMethod:self.recipe.description];
+        
+    }
+    
+    // Reset edit flags.
+    self.saveRequired = NO;
+    [self enableEditMode:NO];
 }
 
 @end

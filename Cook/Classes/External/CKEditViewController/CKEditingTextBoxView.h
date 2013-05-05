@@ -21,6 +21,10 @@
 @property (nonatomic, assign) CGRect editViewFrame;
 @property (nonatomic, assign) UIEdgeInsets contentInsets;
 
++ (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
++ (UIImage *)textEditingBoxWhite:(BOOL)white;
++ (UIImage *)textEditingSelectionBoxWhite:(BOOL)white;
+
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
                   delegate:(id<CKEditingTextBoxViewDelegate>)delegate;
 - (void)updateEditingView:(UIView *)editingView;
@@ -28,6 +32,6 @@
 - (void)showEditingIcon:(BOOL)show animated:(BOOL)animated;
 - (void)showSaveIcon:(BOOL)show animated:(BOOL)animated;
 - (void)showSaveIcon:(BOOL)show enabled:(BOOL)enabled animated:(BOOL)animated;
-- (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
+- (CGRect)textBoxFrame;
 
 @end
