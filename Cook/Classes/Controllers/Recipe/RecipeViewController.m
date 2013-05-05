@@ -50,8 +50,19 @@ typedef enum {
 @property (nonatomic, strong) UIView *contentContainerView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *windowView;
+
+// Header view.
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *categoryLabel;
+
+// Content view.
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *storyLabel;
+@property (nonatomic, strong) UILabel *methodLabel;
+@property (nonatomic, strong) UILabel *ingredientsLabel;
+
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *servesCookView;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
@@ -65,10 +76,6 @@ typedef enum {
 @property (nonatomic, strong) UIButton *shareButton;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *storyLabel;
-@property (nonatomic, strong) UILabel *methodLabel;
-@property (nonatomic, strong) UILabel *ingredientsLabel;
 @property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
@@ -765,6 +772,8 @@ typedef enum {
     // Profile photo.
     CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
                                                                                 profileSize:ProfileViewSizeSmall];
+    self.profilePhotoView = profilePhotoView;
+    
     // User name
     NSString *name = [self.book.user.name uppercaseString];
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -775,6 +784,7 @@ typedef enum {
     nameLabel.shadowColor = [UIColor whiteColor];
     nameLabel.text = name;
     [nameLabel sizeToFit];
+    self.nameLabel = nameLabel;
     
     // Lay them out side-by-side.
     CGFloat photoNameOffset = 10.0;
@@ -787,9 +797,26 @@ typedef enum {
                                         nameLabel.center.y - floorf(profilePhotoView.frame.size.height / 2.0) - 2.0,
                                         profilePhotoView.frame.size.width,
                                         profilePhotoView.frame.size.height);
-    self.profilePhotoView = profilePhotoView;
     [headerView addSubview:profilePhotoView];
     [headerView addSubview:nameLabel];
+    
+    // Category label for edit mode.
+    NSString *category = [self.recipe.category.name uppercaseString];
+    UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    categoryLabel.font = [Theme userNameFont];
+    categoryLabel.textColor = [Theme userNameColor];
+    categoryLabel.backgroundColor = [UIColor clearColor];
+    categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+    categoryLabel.shadowColor = [UIColor whiteColor];
+    categoryLabel.text = category;
+    [categoryLabel sizeToFit];
+    categoryLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - categoryLabel.frame.size.width) / 2.0),
+                                     35.0,
+                                     categoryLabel.frame.size.width,
+                                     categoryLabel.frame.size.height);
+    categoryLabel.hidden = YES;
+    [headerView addSubview:categoryLabel];
+    self.categoryLabel = categoryLabel;
     
     // Recipe title.
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -1225,8 +1252,16 @@ typedef enum {
         [self updateButtons];
     }
     
+    // Hide/show appropriate labels.
+    self.profilePhotoView.hidden = enable;
+    self.nameLabel.hidden = enable;
+    self.categoryLabel.hidden = !enable;
+    
     // Set fields to be editable/non
     if (enable) {
+        [self.editingHelper wrapEditingView:self.categoryLabel
+                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, -5.0, 30.0)
+                                   delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.titleLabel
                               contentInsets:UIEdgeInsetsMake(20.0, 20.0, -17.0, 20.0)
                                    delegate:self white:YES];
@@ -1243,6 +1278,7 @@ typedef enum {
                               contentInsets:UIEdgeInsetsMake(25.0, 20.0, 2.0, 20.0)
                                    delegate:self white:YES];
     } else {
+        [self.editingHelper unwrapEditingView:self.categoryLabel];
         [self.editingHelper unwrapEditingView:self.titleLabel];
         [self.editingHelper unwrapEditingView:self.storyLabel];
         [self.editingHelper unwrapEditingView:self.servesCookView];
