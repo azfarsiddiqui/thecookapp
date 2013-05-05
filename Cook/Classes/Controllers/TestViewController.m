@@ -474,7 +474,7 @@
                                 cookTimeMins:[[values objectForKey:@"cookTime"]intValue]
                                 prepTimeMins:[[values objectForKey:@"prepTime"]intValue]];
     } else if (editingView == self.categoryEditableView) {
-        [self setCategoryValue:(Category*)result];
+        [self setCategoryValue:(CKCategory*)result];
     }
     [editingView enableEditMode:YES];
 }
@@ -598,7 +598,7 @@
     label.text = [label.text uppercaseString];
 }
 
-- (void)setCategoryValue:(Category*)category {
+- (void)setCategoryValue:(CKCategory*)category {
     [self configLabelForEditableView:self.categoryEditableView withValue:category.name withFont:[Theme categoryFont]
                    withColor:[Theme recipeNameColor] withTextAlignment:NSTextAlignmentCenter];
     UILabel *label = (UILabel *)self.categoryEditableView.contentView;

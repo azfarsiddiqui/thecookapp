@@ -91,6 +91,7 @@ extern NSString *const kRecipeImageAttrImageName;
 #pragma mark - Category class
 extern NSString *const kCategoryModelName;
 extern NSString *const kCategoryModelForeignKeyName;
+extern NSString *const kCategoryAttrOrder;
 
 #pragma mark - RecipeLike class
 extern NSString *const kRecipeLikeModelName;

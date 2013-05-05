@@ -6,14 +6,15 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "Category.h"
+#import "CKCategory.h"
 #import "NSArray+Enumerable.h"
+#import "NSString+Utilities.h"
 
-@implementation Category
+@implementation CKCategory
 
 
-+(Category *)categoryForParseCategory:(PFObject *)parseCategory {
-    Category *category = [[Category alloc] initWithParseObject:parseCategory];
++(CKCategory *)categoryForParseCategory:(PFObject *)parseCategory {
+    CKCategory *category = [[CKCategory alloc] initWithParseObject:parseCategory];
     return category;
 }
 
@@ -25,7 +26,7 @@
     [query findObjectsInBackgroundWithBlock:^(NSArray *categoryList, NSError *error) {
         if (!error) {
             NSArray *categories = [categoryList collect:^id(PFObject *parseCategory) {
-                return [Category categoryForParseCategory:parseCategory];
+                return [CKCategory categoryForParseCategory:parseCategory];
             }];
             success(categories);
         } else {
@@ -41,12 +42,28 @@
 }
 
 - (UIImage *)bookImage {
-    return [Category bookImageForCategory:self.name];
+    return [CKCategory bookImageForCategory:self.name];
 }
 
 -(BOOL)isDataAvailable
 {
     return [self.parseObject isDataAvailable];
+}
+
+- (void)setOrder:(NSNumber *)order {
+    [self.parseObject setObject:order forKey:kCategoryAttrOrder];
+}
+
+- (NSNumber *)order {
+    return [self.parseObject objectForKey:kCategoryAttrOrder];
+}
+
+#pragma mark - CKModel
+
+- (NSDictionary *)descriptionProperties {
+    NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.order integerValue]] forKey:kCategoryAttrOrder];
+    return descriptionProperties;
 }
 
 @end

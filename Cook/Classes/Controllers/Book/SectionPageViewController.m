@@ -7,7 +7,7 @@
 //
 
 #import "SectionPageViewController.h"
-#import "Category.h"
+#import "CKCategory.h"
 #import "Theme.h"
 #import "ContentsTableViewCell.h"
 

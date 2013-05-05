@@ -538,7 +538,7 @@
 		8926728316E9A3040006A055 /* cook_editrecipe_typeup.png in Resources */ = {isa = PBXBuildFile; fileRef = 8926728116E9A3040006A055 /* cook_editrecipe_typeup.png */; };
 		8926728416E9A3040006A055 /* cook_editrecipe_typeup@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8926728216E9A3040006A055 /* cook_editrecipe_typeup@2x.png */; };
 		8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7E8161E78AE00E6EF1D /* CKRecipe.m */; };
-		8936F7ED161E78CE00E6EF1D /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7EC161E78CE00E6EF1D /* Category.m */; };
+		8936F7ED161E78CE00E6EF1D /* CKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7EC161E78CE00E6EF1D /* CKCategory.m */; };
 		8936F7F0161E7AA700E6EF1D /* Cook.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8936F7EF161E7AA700E6EF1D /* Cook.storyboard */; };
 		8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7FF161E7C1100E6EF1D /* ViewHelper.m */; };
 		8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F802161E959700E6EF1D /* CKRecipeImage.m */; };
@@ -1304,8 +1304,8 @@
 		8926728216E9A3040006A055 /* cook_editrecipe_typeup@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_typeup@2x.png"; sourceTree = "<group>"; };
 		8936F7E7161E78AE00E6EF1D /* CKRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipe.h; sourceTree = "<group>"; };
 		8936F7E8161E78AE00E6EF1D /* CKRecipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipe.m; sourceTree = "<group>"; };
-		8936F7EB161E78CD00E6EF1D /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
-		8936F7EC161E78CE00E6EF1D /* Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Category.m; sourceTree = "<group>"; };
+		8936F7EB161E78CD00E6EF1D /* CKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCategory.h; sourceTree = "<group>"; };
+		8936F7EC161E78CE00E6EF1D /* CKCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCategory.m; sourceTree = "<group>"; };
 		8936F7EF161E7AA700E6EF1D /* Cook.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Cook.storyboard; sourceTree = "<group>"; };
 		8936F7FE161E7C1100E6EF1D /* ViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewHelper.h; sourceTree = "<group>"; };
 		8936F7FF161E7C1100E6EF1D /* ViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewHelper.m; sourceTree = "<group>"; };
@@ -2339,8 +2339,8 @@
 				76520464161ABB0F00EE253C /* CKBook.m */,
 				8936F7E7161E78AE00E6EF1D /* CKRecipe.h */,
 				8936F7E8161E78AE00E6EF1D /* CKRecipe.m */,
-				8936F7EB161E78CD00E6EF1D /* Category.h */,
-				8936F7EC161E78CE00E6EF1D /* Category.m */,
+				8936F7EB161E78CD00E6EF1D /* CKCategory.h */,
+				8936F7EC161E78CE00E6EF1D /* CKCategory.m */,
 				8936F801161E959700E6EF1D /* CKRecipeImage.h */,
 				8936F802161E959700E6EF1D /* CKRecipeImage.m */,
 				89A50497162250F700E6CDF1 /* Ingredient.h */,
@@ -3257,7 +3257,7 @@
 				76520465161ABB0F00EE253C /* CKBook.m in Sources */,
 				7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */,
 				8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */,
-				8936F7ED161E78CE00E6EF1D /* Category.m in Sources */,
+				8936F7ED161E78CE00E6EF1D /* CKCategory.m in Sources */,
 				8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */,
 				8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */,
 				89622193161EA6610023EC30 /* NSArray+Enumerable.m in Sources */,

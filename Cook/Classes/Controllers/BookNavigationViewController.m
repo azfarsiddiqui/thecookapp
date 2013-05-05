@@ -12,6 +12,7 @@
 #import "BookCategoryView.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
+#import "CKCategory.h"
 #import "MRCEnumerable.h"
 #import "ViewHelper.h"
 #import "ParsePhotoStore.h"
@@ -36,6 +37,7 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *categoryNames;
+@property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
@@ -495,20 +497,36 @@
         
         self.categoryRecipes = [NSMutableDictionary dictionary];
         self.categoryNames = [NSMutableArray array];
+        self.categories = [NSMutableArray array];
         
         for (CKRecipe *recipe in recipes) {
             
+            CKCategory *category = recipe.category;
             NSString *categoryName = recipe.category.name;
             
-            if (![self.categoryNames containsObject:categoryName]) {
+            if (![self.categories detect:^BOOL(CKCategory *existingCategory) {
+                return [existingCategory.name isEqualToString:categoryName];
+                
+            }]) {
+                
                 NSMutableArray *recipes = [NSMutableArray arrayWithObject:recipe];
                 [self.categoryRecipes setObject:recipes forKey:categoryName];
-                [self.categoryNames addObject:categoryName];
+                [self.categories addObject:category];
+                
             } else {
+                
                 NSMutableArray *recipes = [self.categoryRecipes objectForKey:categoryName];
                 [recipes addObject:recipe];
             }
+
         }
+        
+        // Sort the categories and extract category name list.
+        NSSortDescriptor *categoryOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+        [self.categories sortUsingDescriptors:@[categoryOrder]];
+        self.categoryNames = [NSMutableArray arrayWithArray:[self.categories collect:^id(CKCategory *category) {
+            return category.name;
+        }]];
         
         // Update the VC's.
         [self.indexViewController configureCategories:self.categoryNames];

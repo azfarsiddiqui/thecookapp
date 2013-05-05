@@ -89,7 +89,7 @@
     return recipe;
 }
 
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category
++(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category
 {
     CKRecipe *recipe = [CKRecipe recipeForUser:user book:book];
     recipe.category = category;
@@ -186,12 +186,12 @@
 }
 
 #pragma mark - Private Methods
--(Category *)category
+-(CKCategory *)category
 {
     if (!_category) {
         PFObject *parseCategory = [self.parseObject objectForKey:kCategoryModelForeignKeyName];
         if (parseCategory) {
-            _category = [Category categoryForParseCategory:parseCategory];
+            _category = [CKCategory categoryForParseCategory:parseCategory];
         }
     }
     

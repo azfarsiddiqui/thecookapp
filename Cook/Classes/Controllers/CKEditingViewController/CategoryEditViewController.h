@@ -8,8 +8,8 @@
 
 #import "CKEditingViewController.h"
 #import "EditingViewController.h"
-#import "Category.h"
+#import "CKCategory.h"
 
 @interface CategoryEditViewController : EditingViewController
-@property (nonatomic,strong) Category *selectedCategory;
+@property (nonatomic,strong) CKCategory *selectedCategory;
 @end

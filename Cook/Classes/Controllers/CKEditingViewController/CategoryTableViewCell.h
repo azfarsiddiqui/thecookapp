@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Category.h"
+#import "CKCategory.h"
 
 @interface CategoryTableViewCell : UITableViewCell
 
--(void)configureCellWithCategory:(Category *)category;
+-(void)configureCellWithCategory:(CKCategory *)category;
 
 @end

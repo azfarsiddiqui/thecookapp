@@ -8,9 +8,11 @@
 
 #import "CKModel.h"
 
-@interface Category : CKModel
+@interface CKCategory : CKModel
 
-+ (Category *)categoryForParseCategory:(PFObject *)parseCategory;
+@property (nonatomic, strong) NSNumber *order;
+
++ (CKCategory *)categoryForParseCategory:(PFObject *)parseCategory;
 + (void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (UIImage *)bookImageForCategory:(NSString *)category;
 

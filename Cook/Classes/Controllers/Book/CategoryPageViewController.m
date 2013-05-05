@@ -7,7 +7,7 @@
 //
 
 #import "CategoryPageViewController.h"
-#import "Category.h"
+#import "CKCategory.h"
 #import "Theme.h"
 #import "ContentsTableViewCell.h"
 
@@ -32,7 +32,7 @@
     [super setSectionName:sectionName];
 
     // Update category image.
-    UIImage *categoryImage = [Category bookImageForCategory:self.sectionName];
+    UIImage *categoryImage = [CKCategory bookImageForCategory:self.sectionName];
     if (categoryImage) {
         self.categoryImageView.frame = CGRectMake(self.view.bounds.origin.x,
                                                   self.view.bounds.origin.y,

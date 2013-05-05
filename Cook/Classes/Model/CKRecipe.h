@@ -9,7 +9,7 @@
 #import "CKModel.h"
 #import "CKUser.h"
 #import "CKBook.h"
-#import "Category.h"
+#import "CKCategory.h"
 
 @class CKRecipeImage;
 
@@ -25,14 +25,14 @@
 @property (nonatomic, assign) NSInteger numServes;
 
 @property(nonatomic,strong) CKUser *user;
-@property(nonatomic,strong) Category *category;
+@property(nonatomic,strong) CKCategory *category;
 @property(nonatomic,strong) CKRecipeImage *recipeImage;
 
 //creation
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
 +(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
 +(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book;
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(Category *)category;
++(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category;
 
 //save
 -(void) saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;

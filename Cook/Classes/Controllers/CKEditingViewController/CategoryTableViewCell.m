@@ -32,7 +32,7 @@
     self.textLabel.backgroundColor = selected ? [Theme categoryListSelectedColor] : [UIColor whiteColor];
 }
 
--(void)configureCellWithCategory:(Category *)category
+-(void)configureCellWithCategory:(CKCategory *)category
 {
     //categoryName
     self.textLabel.text = [category.name uppercaseString];

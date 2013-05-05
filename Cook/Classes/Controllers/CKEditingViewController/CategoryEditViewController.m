@@ -89,7 +89,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCategoryTableViewCellIdentifier];
-    Category *category = [self.categories objectAtIndex:indexPath.row];
+    CKCategory *category = [self.categories objectAtIndex:indexPath.row];
     [cell configureCellWithCategory:category];
     return cell;
 }
@@ -111,7 +111,7 @@
 -(void) data
 {
     //data needed by categories selection
-    [Category listCategories:^(NSArray *results) {
+    [CKCategory listCategories:^(NSArray *results) {
         self.categories = results;
         [self.tableView reloadData];
         [self setCategoryInList];
@@ -138,7 +138,7 @@
 -(void) setCategoryInList
 {
     if (self.selectedCategory) {
-        [self.categories enumerateObjectsUsingBlock:^(Category *category, NSUInteger idx, BOOL *stop) {
+        [self.categories enumerateObjectsUsingBlock:^(CKCategory *category, NSUInteger idx, BOOL *stop) {
             if ([self.selectedCategory.name isEqualToString:category.name]) {
                 stop = YES;
                 [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:NO
