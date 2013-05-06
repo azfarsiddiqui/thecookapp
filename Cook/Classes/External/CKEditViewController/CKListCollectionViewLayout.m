@@ -12,6 +12,8 @@
 
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
+@property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
 @property (nonatomic, assign) CGSize itemSize;
 @property (nonatomic, assign) BOOL insertionDeletionAnimation;
 
@@ -79,17 +81,19 @@
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-//    NSMutableArray* layoutAttributes = [NSMutableArray array];
-//    
-//    for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
-//        if (CGRectIntersectsRect(rect, attributes.frame)) {
-//            [layoutAttributes addObject:attributes];
-//        }
-//    }
-//    
-//    return layoutAttributes;
+    NSMutableArray* layoutAttributes = [NSMutableArray array];
     
-    return self.itemsLayoutAttributes;
+    // Header cells.
+    for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
+        [layoutAttributes addObject:attributes];
+    }
+    
+    // Item cells.
+    for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
+        [layoutAttributes addObject:attributes];
+    }
+    
+    return layoutAttributes;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -116,12 +120,27 @@
 #pragma mark - Private methods
 
 - (void)buildItemLayout {
-    self.itemsLayoutAttributes = [NSMutableArray array];
-    self.indexPathItemAttributes = [NSMutableDictionary dictionary];
+    [self buildHeaderLayout];
     [self buildListLayout];
 }
 
+- (void)buildHeaderLayout {
+    self.supplementaryLayoutAttributes = [NSMutableArray array];
+    self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
+    
+    NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
+    CGRect frame = self.collectionView.bounds;
+    frame.size.height = kHeaderHeight;
+    headerAttributes.frame = frame;
+    [self.supplementaryLayoutAttributes addObject:headerAttributes];
+    [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:headerIndexPath];
+}
+
 - (void)buildListLayout {
+    self.itemsLayoutAttributes = [NSMutableArray array];
+    self.indexPathItemAttributes = [NSMutableDictionary dictionary];
+    
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
     CGFloat itemOffset = kHeaderHeight;
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {

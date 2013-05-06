@@ -33,5 +33,9 @@
 
 - (NSString *)addItemText;
 - (void)selectedItemAtIndex:(NSInteger)index;
+- (void)loadData;
+- (void)showItems;
+- (void)showItems:(BOOL)show;
+- (void)showItems:(BOOL)show completion:(void (^)())completion;
 
 @end

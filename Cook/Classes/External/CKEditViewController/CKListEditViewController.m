@@ -112,6 +112,58 @@
 - (void)keyboardWillAppear:(BOOL)appear {
 }
 
+- (void)loadData {
+    [self performSelector:@selector(showItems) withObject:nil afterDelay:0.1];
+}
+
+- (void)showItems {
+    [self showItems:YES];
+}
+
+- (void)showItems:(BOOL)show {
+    [self showItems:show completion:^{}];
+}
+
+- (void)showItems:(BOOL)show completion:(void (^)())completion {
+    self.loadItems = show;
+    
+    // Gather items to insert/delete.
+    NSInteger numItems = [self numListItems];
+    if (self.canAddItems) {
+        numItems += 1;
+    }
+    NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems - 1];
+    for (NSInteger itemIndex = 1; itemIndex < numItems; itemIndex++) {
+        [itemsToAnimate addObject:[NSIndexPath indexPathForItem:itemIndex inSection:0]];
+    }
+    
+    // Perform the insert/delete animation
+    [self.collectionView performBatchUpdates:^{
+        if (show) {
+            [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+            [self.collectionView insertItemsAtIndexPaths:itemsToAnimate];
+        } else {
+            [self.collectionView deleteItemsAtIndexPaths:itemsToAnimate];
+        }
+    } completion:^(BOOL finished) {
+        
+        if (show && self.selectedIndexNumber) {
+            
+            NSInteger selectedIndex = [self.selectedIndexNumber integerValue];
+            if (self.addItemsFromTop) {
+                selectedIndex += 1;
+            }
+            
+            [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]
+                                              animated:YES
+                                        scrollPosition:UICollectionViewScrollPositionNone];
+        }
+        
+        completion();
+    }];
+    
+}
+
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -132,6 +184,21 @@
         numItems = 1;
     }
     return numItems;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderId forIndexPath:indexPath];
+    headerView.backgroundColor = [UIColor clearColor];
+    
+    if (!self.headerLabel.superview) {
+        self.headerLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - self.headerLabel.frame.size.width) / 2.0),
+                                            headerView.bounds.size.height - self.headerLabel.frame.size.height - 15.0,
+                                            self.headerLabel.frame.size.width,
+                                            self.headerLabel.frame.size.height);
+        [headerView addSubview:self.headerLabel];
+    }
+    return headerView;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -304,7 +371,7 @@
         [self showButtons:YES animated:YES];
         
         // Load items.
-        [self performSelector:@selector(showItems) withObject:nil afterDelay:0.1];
+        [self loadData];
         
     } else {
         
@@ -390,53 +457,6 @@
 
 - (CGFloat)footerHeight {
     return [self headerHeight];
-}
-
-- (void)showItems {
-    [self showItems:YES];
-}
-
-- (void)showItems:(BOOL)show {
-    [self showItems:show completion:^{}];
-}
-
-- (void)showItems:(BOOL)show completion:(void (^)())completion {
-    self.loadItems = show;
-    
-    // Gather items to insert/delete.
-    NSInteger numItems = [self numListItems];
-    if (self.canAddItems) {
-        numItems += 1;
-    }
-    NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems - 1];
-    for (NSInteger itemIndex = 1; itemIndex < numItems; itemIndex++) {
-        [itemsToAnimate addObject:[NSIndexPath indexPathForItem:itemIndex inSection:0]];
-    }
-    
-    // Perform the insert/delete animation
-    [self.collectionView performBatchUpdates:^{
-        if (show) {
-            [self.collectionView insertItemsAtIndexPaths:itemsToAnimate];
-        } else {
-            [self.collectionView deleteItemsAtIndexPaths:itemsToAnimate];
-        }
-    } completion:^(BOOL finished) {
-        
-        if (show && self.selectedIndexNumber) {
-            
-            NSInteger selectedIndex = [self.selectedIndexNumber integerValue];
-            if (self.addItemsFromTop) {
-                selectedIndex += 1;
-            }
-            
-            [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]
-                                              animated:YES
-                                        scrollPosition:UICollectionViewScrollPositionNone];
-        }
-        
-        completion();
-    }];
-    
 }
 
 - (UIButton *)buttonWithImage:(UIImage *)image target:(id)target action:(SEL)action {
