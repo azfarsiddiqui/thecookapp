@@ -42,7 +42,7 @@
 - (void)performEditing:(BOOL)editing;
 - (UIView *)createTargetEditView;
 - (NSString *)currentTextValue;
-- (NSString *)updatedTextValue;
+- (id)updatedValue;
 - (UIColor *)editingTextColour;
 - (UIColor *)editingBackgroundColour;
 - (UIColor *)editingOverlayColour;

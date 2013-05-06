@@ -20,4 +20,6 @@
 // Create with the given recipe and book.
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 
+- (id)initWithRecipe:(CKRecipe *)recipe;
+
 @end

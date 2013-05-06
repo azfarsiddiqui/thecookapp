@@ -28,7 +28,7 @@
     return label;
 }
 
-- (NSString *)updatedTextValue {
+- (id)updatedValue {
     NSString *textValue = nil;
     if ([self.sourceEditView isKindOfClass:[UILabel class]]) {
         textValue = ((UILabel *)self.sourceEditView).text;

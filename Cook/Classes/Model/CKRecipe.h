@@ -24,26 +24,27 @@
 @property (nonatomic, assign) NSInteger prepTimeInMinutes;
 @property (nonatomic, assign) NSInteger numServes;
 
-@property(nonatomic,strong) CKUser *user;
-@property(nonatomic,strong) CKCategory *category;
-@property(nonatomic,strong) CKRecipeImage *recipeImage;
+@property(nonatomic, strong) CKBook *book;
+@property(nonatomic, strong) CKUser *user;
+@property(nonatomic, strong) CKCategory *category;
+@property(nonatomic, strong) CKRecipeImage *recipeImage;
 
 //creation
-+(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
-+(CKRecipe*) recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book;
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category;
++ (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
++ (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
++ (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book;
++ (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category;
 
 //save
--(void) saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
--(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
+- (void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 //fetch
--(void) fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
+- (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
 
--(void) setImage:(UIImage *)image;
--(PFFile*) imageFile;
+- (void)setImage:(UIImage *)image;
+- (PFFile *)imageFile;
 - (BOOL)hasPhotos;
--(BOOL) isUserRecipeAuthor:(CKUser*)user;
+- (BOOL)isUserRecipeAuthor:(CKUser*)user;
 
 @end

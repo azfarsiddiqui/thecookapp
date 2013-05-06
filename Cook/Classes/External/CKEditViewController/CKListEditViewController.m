@@ -37,7 +37,7 @@
 #define kHeaderId           @"ListHeaderId"
 #define kPlaceholderSize    CGSizeMake(800.0, 50.0)
 
-- (id)initWithEditView:(UIView *)editView delegate:(id<CKListEditViewControllerDelegate>)delegate
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
                  items:(NSArray *)items editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white
                  title:(NSString *)title {
     
@@ -45,7 +45,7 @@
                             white:white title:title];
 }
 
-- (id)initWithEditView:(UIView *)editView delegate:(id<CKListEditViewControllerDelegate>)delegate
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
                  items:(NSArray *)items selectedIndex:(NSNumber *)selectedIndexNumber
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title {
     
@@ -164,6 +164,16 @@
     
 }
 
+- (id)updatedValue {
+    NSString *value = nil;
+    
+    if (self.selectedIndexNumber) {
+        value = [self.listItems objectAtIndex:[self.selectedIndexNumber integerValue]];
+    }
+    
+    return value;
+}
+
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -244,10 +254,13 @@
         
         [self unfocusCellIfApplicable];
         
-        if ([self.delegate respondsToSelector:@selector(listEditViewControllerSelectedItemAtIndex:)]) {
-            [self.delegate performSelector:@selector(listEditViewControllerSelectedItemAtIndex:)
-                                withObject:[NSNumber numberWithInteger:indexPath.item]];
+        // Update selected index number.
+        NSInteger selectedIndex = indexPath.item;
+        if (self.addItemsFromTop) {
+            selectedIndex -= 1;
         }
+        self.selectedIndexNumber = [NSNumber numberWithInteger:selectedIndex];
+
     }
     
 }
@@ -468,11 +481,10 @@
 }
 
 - (void)saveTapped:(id)sender {
-    [self dismissEditView];
+    [self saveEditView];
 }
 
 - (void)cancelTapped:(id)sender {
-    
     [self dismissEditView];
 }
 
@@ -599,6 +611,24 @@
 
 - (CKListCollectionViewLayout *)currentLayout {
     return (CKListCollectionViewLayout *)self.collectionView.collectionViewLayout;
+}
+
+- (void)saveEditView {
+    
+    // Unfocus if it was focussed.
+    if (self.focusedCell) {
+        [self.focusedCell focus:NO];
+    }
+    
+    // Hide all items then dismiss.
+    [self showItems:NO completion:^{
+        
+        // Calls save on the the textbox view, which in turn triggers update via delegate.
+        CKEditingTextBoxView *textBoxView = [self targetEditTextBoxView];
+        [textBoxView.delegate editingTextBoxViewSaveTappedForEditingView:self.targetEditView];
+        
+    }];
+    
 }
 
 // Fixes the missing action method when the keyboard is visible

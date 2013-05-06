@@ -10,7 +10,6 @@
 
 @interface CKEditingTextBoxView () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, assign) id<CKEditingTextBoxViewDelegate> delegate;
 @property (nonatomic, strong) UIView *editingView;
 @property (nonatomic, strong) UIView *textEditBoxImageView;
 @property (nonatomic, strong) UIView *textEditingPencilView;

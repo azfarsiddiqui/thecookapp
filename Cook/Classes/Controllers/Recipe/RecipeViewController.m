@@ -29,6 +29,8 @@
 #import "CKImageEditViewController.h"
 #import "CKTextViewEditViewController.h"
 #import "CKLabelEditViewController.h"
+#import "CKListEditViewController.h"
+#import "BookNavigationHelper.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -70,6 +72,7 @@ typedef enum {
 @property (nonatomic, assign) PhotoWindowHeight previousPhotoWindowHeight;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL saveRequired;
+@property (nonatomic, assign) BOOL saveInProgress;
 @property (nonatomic, strong) UIView *navContainerView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *editButton;
@@ -78,6 +81,7 @@ typedef enum {
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
 
@@ -114,6 +118,11 @@ typedef enum {
     }
     return self;
 }
+
+- (id)initWithRecipe:(CKRecipe *)recipe {
+    return [self initWithRecipe:recipe book:recipe.book];
+}
+
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
         self.recipe = recipe;
@@ -243,6 +252,33 @@ typedef enum {
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
+    } else if (editingView == self.categoryLabel) {
+        
+        // Get the current categories from the book.
+        NSArray *currentCategories = [self.book.currentCategories collect:^id(CKCategory *category) {
+            return category.name;
+        }];
+        
+        // Find the index of the recipe category.
+        NSNumber *currentCategoryIndexNumber = nil;
+        NSInteger currentCategoryIndex = [currentCategories findIndex:self.recipe.category.name];
+        if (currentCategoryIndex >= 0) {
+            currentCategoryIndexNumber = [NSNumber numberWithInteger:currentCategoryIndex];
+        }
+        
+        CKListEditViewController *editViewController = [[CKListEditViewController alloc] initWithEditView:self.categoryLabel
+                                                                                                 delegate:self
+                                                                                                    items:currentCategories
+                                                                                            selectedIndex:currentCategoryIndexNumber
+                                                                                            editingHelper:self.editingHelper
+                                                                                                    white:YES
+                                                                                                    title:@"Categories"];
+        editViewController.allowSelection = YES;
+        editViewController.addItemsFromTop = YES;
+        editViewController.canAddItemText = @"ADD CATEGORY";
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
     } else if (editingView == self.storyLabel) {
         
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
@@ -325,6 +361,10 @@ typedef enum {
         
         [self saveTitleValue:value];
         
+    } else if (editingView == self.categoryLabel) {
+        
+        [self saveCategoryValue:value];
+    
     } else if (editingView == self.storyLabel) {
         
         [self saveStoryValue:value];
@@ -801,22 +841,16 @@ typedef enum {
     [headerView addSubview:nameLabel];
     
     // Category label for edit mode.
-    NSString *category = [self.recipe.category.name uppercaseString];
     UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     categoryLabel.font = [Theme userNameFont];
     categoryLabel.textColor = [Theme userNameColor];
     categoryLabel.backgroundColor = [UIColor clearColor];
     categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     categoryLabel.shadowColor = [UIColor whiteColor];
-    categoryLabel.text = category;
-    [categoryLabel sizeToFit];
-    categoryLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - categoryLabel.frame.size.width) / 2.0),
-                                     35.0,
-                                     categoryLabel.frame.size.width,
-                                     categoryLabel.frame.size.height);
     categoryLabel.hidden = YES;
     [headerView addSubview:categoryLabel];
     self.categoryLabel = categoryLabel;
+    [self setCategory:self.recipe.category.name];
     
     // Recipe title.
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -1104,7 +1138,6 @@ typedef enum {
 }
 
 - (void)closeTapped:(id)sender {
-    
     [self hideButtons];
     self.view.backgroundColor = [UIColor clearColor];
     
@@ -1296,6 +1329,15 @@ typedef enum {
                                        self.titleLabel.frame.size.height);
 }
 
+- (void)setCategory:(NSString *)category {
+    self.categoryLabel.text = category;
+    [self.categoryLabel sizeToFit];
+    self.categoryLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.categoryLabel.frame.size.width) / 2.0),
+                                          35.0,
+                                          self.categoryLabel.frame.size.width,
+                                          self.categoryLabel.frame.size.height);
+}
+
 - (void)setStory:(NSString *)story {
     CGFloat titleStoryGap = 0.0;
     CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, self.headerView.bounds.size.height - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height);
@@ -1370,6 +1412,22 @@ typedef enum {
     }
 }
 
+- (void)saveCategoryValue:(id)value {
+    NSString *categoryName = (NSString *)value;
+    
+    if (![categoryName isEqualToString:self.categoryLabel.text]) {
+        
+        // Update category.
+        [self setCategory:categoryName];
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+        
+        // Update the editing wrapper.
+        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
+    }
+}
+
 - (void)saveStoryValue:(id)value {
     
     // Get updated value and update label.
@@ -1413,25 +1471,68 @@ typedef enum {
         // Save any changes off.
         if (self.saveRequired) {
             
+            // Set current values.
             self.recipe.name = self.titleLabel.text;
             self.recipe.description = self.methodLabel.text;
             self.recipe.story = self.storyLabel.text;
+            CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
+                return [category.name isEqualToString:self.categoryLabel.text];
+            }];
+            self.recipe.category = category;
             
-            [self.recipe saveInBackground];
+            // Reset edit flags.
+            self.saveRequired = NO;
+            [self enableEditMode:NO];
+            
+            // Saving...
+            self.saveInProgress = YES;
+            
+            // Hide buttons.
+            self.closeButton.hidden = YES;
+            self.shareButton.hidden = YES;
+            self.socialView.hidden = YES;
+            
+            // Save the recipe now.
+            [self.recipe saveInBackground:^{
+                
+                // Ask the opened book to relayout.
+                [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                           completion:^{
+                    self.saveInProgress = NO;
+                    self.closeButton.hidden = NO;
+                    self.shareButton.hidden = NO;
+                    self.socialView.hidden = NO;
+                    
+                }];
+                
+            } failure:^(NSError *error) {
+                self.saveInProgress = NO;
+                self.closeButton.hidden = NO;
+                self.shareButton.hidden = NO;
+                self.socialView.hidden = NO;
+            }];
+            
+        } else {
+            
+            // Reset edit flags.
+            self.saveRequired = NO;
+            [self enableEditMode:NO];
+            
         }
         
     } else {
         
         // Restore value
         [self setTitle:self.recipe.name];
+        [self setCategory:self.recipe.category.name];
         [self setStory:self.recipe.story];
         [self setMethod:self.recipe.description];
         
+        // Reset edit flags.
+        self.saveRequired = NO;
+        [self enableEditMode:NO];
     }
     
-    // Reset edit flags.
-    self.saveRequired = NO;
-    [self enableEditMode:NO];
 }
 
 @end

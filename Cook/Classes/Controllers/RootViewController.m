@@ -22,6 +22,7 @@
 #import "CKPopoverViewController.h"
 #import "NotificationsViewController.h"
 #import "RecipeViewController.h"
+#import "BookNavigationHelper.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate,
@@ -126,8 +127,6 @@
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
-//    [self showStoreShelf:!open];
-
     if (!open) {
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
@@ -139,11 +138,16 @@
 
 - (void)bookCoverViewDidOpen:(BOOL)open {
     if (open) {
+        
+        // Create book navigation.
         BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
                                                                                                                delegate:self];
         bookNavigationViewController.view.frame = self.view.bounds;
         [self.view addSubview:bookNavigationViewController.view];
         self.bookNavigationViewController = bookNavigationViewController;
+        
+        // Inform the helper that coordinates book navigation and any updated recipes.
+        [BookNavigationHelper sharedInstance].bookNavigationViewController = bookNavigationViewController;
         
     } else {
         
@@ -151,7 +155,9 @@
         [self.bookCoverViewController cleanUpLayers];
         [self.bookCoverViewController.view removeFromSuperview];
         self.bookCoverViewController = nil;
-     
+        
+        // Cleanup book navigation helper.
+        [BookNavigationHelper sharedInstance].bookNavigationViewController = nil;
     }
     
     // Pass on event to the benchtop to restore the book.
@@ -583,13 +589,8 @@
 
 - (void)viewRecipe:(CKRecipe *)recipe {
     
-    //use for testing launch concepts
-//    TestViewController *testVC = [[TestViewController alloc] initWithRecipe:recipe selectedBook:self.selectedBook];
-//    [self showModalViewController:testVC];
-    
-    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
+    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe];
     [self showModalViewController:recipeViewController];
-    
 }
 
 - (void)showModalViewController:(UIViewController *)modalViewController {

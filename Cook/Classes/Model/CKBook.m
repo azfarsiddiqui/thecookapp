@@ -262,14 +262,6 @@
     return [[self.parseObject objectForKey:kBookAttrNumRecipes] integerValue];
 }
 
-- (NSInteger)numCategories {
-    return [self.categories count];
-}
-
-- (NSArray *)categories {
-    return [self.parseObject objectForKey:kBookAttrCategories];
-}
-
 - (BOOL)featured {
     return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
 }

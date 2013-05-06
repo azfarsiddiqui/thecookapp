@@ -30,6 +30,7 @@
 - (CGFloat)pageOffsetForSection:(NSInteger)section;
 - (NSInteger)numberOfPages;
 - (NSArray *)pageOffsetsForContentsSections;
+- (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath;
 
 + (CGSize)unitSize;
 + (UIEdgeInsets)contentPageInsets;

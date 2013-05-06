@@ -36,6 +36,8 @@
 @property (nonatomic, strong) CKBookPagingView *bookPagingView;
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKRecipe *actionedRecipe;
+@property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableArray *categoryNames;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
@@ -49,6 +51,8 @@
 @property (nonatomic, strong) NSString *currentCategoryName;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL editMode;
+
+@property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
 
 @end
 
@@ -96,6 +100,34 @@
     [self updateNavigationButtons];
 }
 
+- (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
+    DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.category);
+    
+    // Check if this was a new recipe, in which case add it to the recipes list
+    if (![self.recipes detect:^BOOL(CKRecipe *existingRecipe) {
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }]) {
+        
+        // Add to the list of recipes.
+        [self.recipes addObject:recipe];
+    }
+    
+    // Remember the recipe that was actioned.
+    self.actionedRecipe = recipe;
+    
+    // Check if we need to clear deep linking.
+    NSString *categoryName = self.actionedRecipe.category.name;
+    if (![categoryName isEqualToString:self.selectedCategoryName]) {
+        self.selectedCategoryName = nil;
+    }
+    
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
+
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
+}
+
 #pragma mark - BookNavigationDataSource methods
 
 - (NSUInteger)bookNavigationContentStartSection {
@@ -113,7 +145,40 @@
 #pragma mark - BookNavigationLayoutDelegate methods
 
 - (void)prepareLayoutDidFinish {
-    if ([self isCategoryDeepLinked]) {
+    
+    if (self.bookUpdatedBlock != nil) {
+        
+        // If we have an actioned recipe, then navigate there.
+        if (self.actionedRecipe) {
+            
+            // Get the index of the category within the book.
+            NSString *categoryName = self.actionedRecipe.category.name;
+            NSInteger categoryIndex = [self.categoryNames indexOfObject:categoryName];
+            
+            // Get the index of the recipe within the category.
+            NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
+            NSInteger recipeIndex = [categoryRecipes indexOfObject:self.actionedRecipe];
+            
+            // Figure out the section to go to.
+            NSInteger bookSection = [self bookNavigationContentStartSection];
+            if (![self isCategoryDeepLinked]) {
+                bookSection += categoryIndex;
+            }
+            
+            // Now deep link there.
+            BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
+            NSIndexPath *actionedIndexPath = [NSIndexPath indexPathForItem:recipeIndex inSection:bookSection];
+            CGFloat categoryOffset = [layout pageOffsetForSection:bookSection];
+            // CGFloat pageOffset = [layout pageOffsetForIndexPath:actionedIndexPath];
+            [self.collectionView setContentOffset:CGPointMake(categoryOffset, 0.0)
+                                         animated:YES];
+        }
+        
+        // Invoked from recipe edit/added block.
+        self.bookUpdatedBlock();
+        self.bookUpdatedBlock = nil;
+        
+    } else if ([self isCategoryDeepLinked]) {
         
         [self.collectionView setContentOffset:CGPointMake([self recipeSection] * self.collectionView.bounds.size.width,
                                                           0.0)
@@ -192,6 +257,7 @@
         NSString *categoryName = [self selectedCategoryNameOrForSection:categorySection];
         NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
         CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
+        
         [self.delegate bookNavigationControllerRecipeRequested:recipe];
     }
 }
@@ -495,45 +561,8 @@
     // Fetch all recipes for the book and partition them into their categories.
     [self.book fetchRecipesSuccess:^(NSArray *recipes) {
         
-        self.categoryRecipes = [NSMutableDictionary dictionary];
-        self.categoryNames = [NSMutableArray array];
-        self.categories = [NSMutableArray array];
-        
-        for (CKRecipe *recipe in recipes) {
-            
-            CKCategory *category = recipe.category;
-            NSString *categoryName = recipe.category.name;
-            
-            if (![self.categories detect:^BOOL(CKCategory *existingCategory) {
-                return [existingCategory.name isEqualToString:categoryName];
-                
-            }]) {
-                
-                NSMutableArray *recipes = [NSMutableArray arrayWithObject:recipe];
-                [self.categoryRecipes setObject:recipes forKey:categoryName];
-                [self.categories addObject:category];
-                
-            } else {
-                
-                NSMutableArray *recipes = [self.categoryRecipes objectForKey:categoryName];
-                [recipes addObject:recipe];
-            }
-
-        }
-        
-        // Sort the categories and extract category name list.
-        NSSortDescriptor *categoryOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
-        [self.categories sortUsingDescriptors:@[categoryOrder]];
-        self.categoryNames = [NSMutableArray arrayWithArray:[self.categories collect:^id(CKCategory *category) {
-            return category.name;
-        }]];
-        
-        // Update the VC's.
-        [self.indexViewController configureCategories:self.categoryNames];
-        [self.titleViewController configureHeroRecipe:[self highlightRecipeForBook]];
-        
-        // Now reload the collection.
-        [self.collectionView reloadData];
+        self.recipes = [NSMutableArray arrayWithArray:recipes];
+        [self loadRecipes];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
@@ -794,6 +823,52 @@
 - (void)saveTapped:(id)sender {
     [EventHelper postEditMode:NO save:YES];
     [self updateNavigationButtons];
+}
+
+- (void)loadRecipes {
+    self.categoryRecipes = [NSMutableDictionary dictionary];
+    self.categoryNames = [NSMutableArray array];
+    self.categories = [NSMutableArray array];
+    
+    for (CKRecipe *recipe in self.recipes) {
+        
+        CKCategory *category = recipe.category;
+        NSString *categoryName = recipe.category.name;
+        
+        if (![self.categories detect:^BOOL(CKCategory *existingCategory) {
+            return [existingCategory.name isEqualToString:categoryName];
+            
+        }]) {
+            
+            NSMutableArray *recipes = [NSMutableArray arrayWithObject:recipe];
+            [self.categoryRecipes setObject:recipes forKey:categoryName];
+            [self.categories addObject:category];
+            
+        } else {
+            
+            NSMutableArray *recipes = [self.categoryRecipes objectForKey:categoryName];
+            [recipes addObject:recipe];
+        }
+        
+    }
+    
+    // Sort the categories and extract category name list.
+    NSSortDescriptor *categoryOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+    [self.categories sortUsingDescriptors:@[categoryOrder]];
+    self.categoryNames = [NSMutableArray arrayWithArray:[self.categories collect:^id(CKCategory *category) {
+        return category.name;
+    }]];
+    
+    // Update the categories for the book.
+    self.book.currentCategories = self.categories;
+    
+    // Update the VC's.
+    [self.indexViewController configureCategories:self.categoryNames];
+    [self.titleViewController configureHeroRecipe:[self highlightRecipeForBook]];
+    
+    // Now reload the collection.
+    [self.collectionView reloadData];
+
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BookNavigationHelper.h"
 
 @class CKBook;
 @class CKRecipe;
@@ -21,5 +22,6 @@
 @interface BookNavigationViewController : UICollectionViewController
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate;
+- (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 
 @end

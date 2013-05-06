@@ -14,13 +14,13 @@
 #import "NSArray+Enumerable.h"
 #import "CKActivity.h"
 
-@interface CKRecipe()
-@property(nonatomic,strong) CKBook *book;
+@interface CKRecipe ()
+
 @end
 
 @implementation CKRecipe
 
-@synthesize category=_category;
+@synthesize category = _category;
 
 #pragma mark - creation
 
@@ -186,18 +186,6 @@
 }
 
 #pragma mark - Private Methods
--(CKCategory *)category
-{
-    if (!_category) {
-        PFObject *parseCategory = [self.parseObject objectForKey:kCategoryModelForeignKeyName];
-        if (parseCategory) {
-            _category = [CKCategory categoryForParseCategory:parseCategory];
-        }
-    }
-    
-    return _category;
-
-}
 
 -(void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject
 {
@@ -265,5 +253,20 @@
     [self.parseObject setObject:[NSNumber numberWithInt:categoryIndex]forKey:kRecipeAttrCategoryIndex];
 }
 
+- (CKCategory *)category {
+    if (!_category) {
+        PFObject *parseCategory = [self.parseObject objectForKey:kCategoryModelForeignKeyName];
+        if (parseCategory) {
+            _category = [CKCategory categoryForParseCategory:parseCategory];
+        }
+    }
+    
+    return _category;
+}
+
+- (void)setCategory:(CKCategory *)category {
+    _category = category;
+    [self.parseObject setObject:category.parseObject forKey:kCategoryModelForeignKeyName];
+}
 
 @end

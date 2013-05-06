@@ -82,7 +82,7 @@
     return self.textView;
 }
 
-- (NSString *)updatedTextValue {
+- (id)updatedValue {
     return self.textView.text;
 }
 

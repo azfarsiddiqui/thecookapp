@@ -18,6 +18,7 @@
 
 @interface CKEditingTextBoxView : UIView
 
+@property (nonatomic, assign) id<CKEditingTextBoxViewDelegate> delegate;
 @property (nonatomic, assign) CGRect editViewFrame;
 @property (nonatomic, assign) UIEdgeInsets contentInsets;
 

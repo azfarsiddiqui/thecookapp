@@ -38,7 +38,7 @@
     return textField;
 }
 
-- (NSString *)updatedTextValue {
+- (id)updatedValue {
     return self.textField.text;
 }
 

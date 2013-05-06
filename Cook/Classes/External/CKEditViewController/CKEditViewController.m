@@ -273,7 +273,7 @@
     return textValue;
 }
 
-- (NSString *)updatedTextValue {
+- (id)updatedValue {
     return nil;
 }
 
@@ -390,7 +390,7 @@
 - (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
     
     // Tell original editingView to update with new value.
-    [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedTextValue]];
+    [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedValue]];
     
     // Remove current mock and its wrapper.
     [self.editingHelper unwrapEditingView:self.mockedEditView];

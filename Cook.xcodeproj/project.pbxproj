@@ -486,6 +486,7 @@
 		76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95CB17363BF50033DBCE /* CKTableEditViewController.m */; };
 		76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95CD17363BF50033DBCE /* CKTableViewCell.m */; };
 		76EF95D617363BF50033DBCE /* CKTextEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95CF17363BF50033DBCE /* CKTextEditViewController.m */; };
+		76EF95D9173779CA0033DBCE /* BookNavigationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EF95D8173779C90033DBCE /* BookNavigationHelper.m */; };
 		76F6448E16F1522A00F86223 /* CKUserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 76F6448D16F1522A00F86223 /* CKUserNotification.m */; };
 		76F6449516F152C200F86223 /* cook_dash_library_profile_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F6448F16F152C200F86223 /* cook_dash_library_profile_btn.png */; };
 		76F6449616F152C200F86223 /* cook_dash_library_profile_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F6449016F152C200F86223 /* cook_dash_library_profile_btn@2x.png */; };
@@ -1239,6 +1240,8 @@
 		76EF95CD17363BF50033DBCE /* CKTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTableViewCell.m; sourceTree = "<group>"; };
 		76EF95CE17363BF50033DBCE /* CKTextEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTextEditViewController.h; sourceTree = "<group>"; };
 		76EF95CF17363BF50033DBCE /* CKTextEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextEditViewController.m; sourceTree = "<group>"; };
+		76EF95D7173779C90033DBCE /* BookNavigationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationHelper.h; sourceTree = "<group>"; };
+		76EF95D8173779C90033DBCE /* BookNavigationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationHelper.m; sourceTree = "<group>"; };
 		76F6448C16F1522A00F86223 /* CKUserNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUserNotification.h; sourceTree = "<group>"; };
 		76F6448D16F1522A00F86223 /* CKUserNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUserNotification.m; sourceTree = "<group>"; };
 		76F6448F16F152C200F86223 /* cook_dash_library_profile_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_profile_btn.png; sourceTree = "<group>"; };
@@ -1771,6 +1774,8 @@
 				76D84CA316CDB44400FB5FB0 /* ParsePhotoStore.m */,
 				76D6E7E816D5EEE8007B1851 /* ImageHelper.h */,
 				76D6E7E916D5EEE8007B1851 /* ImageHelper.m */,
+				76EF95D7173779C90033DBCE /* BookNavigationHelper.h */,
+				76EF95D8173779C90033DBCE /* BookNavigationHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -3407,6 +3412,7 @@
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,
 				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,
 				76EF95D617363BF50033DBCE /* CKTextEditViewController.m in Sources */,
+				76EF95D9173779CA0033DBCE /* BookNavigationHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

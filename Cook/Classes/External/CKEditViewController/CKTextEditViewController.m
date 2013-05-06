@@ -55,7 +55,7 @@
         _limitLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _limitLabel.backgroundColor = [UIColor clearColor];
         _limitLabel.alpha = 0.5;
-        _limitLabel.text = [NSString stringWithFormat:@"%d", self.characterLimit - [[self updatedTextValue] length]];
+        _limitLabel.text = [NSString stringWithFormat:@"%d", self.characterLimit - [[self updatedValue] length]];
         _limitLabel.font = self.titleLabel.font;
         _limitLabel.textColor = self.titleLabel.textColor;
         [_limitLabel sizeToFit];

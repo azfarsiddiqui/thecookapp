@@ -9,6 +9,7 @@
 #import "BookNavigationLayout.h"
 #import "BookLeftPageDividerView.h"
 #import "BookRightPageDividerView.h"
+#import "MRCEnumerable.h"
 
 @interface BookNavigationLayout ()
 
@@ -94,10 +95,27 @@
     return self.pageOffsetsForSections;
 }
 
+- (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
+    CGFloat pageOffsetForSection = [self pageOffsetForSection:indexPath.section];
+    NSArray *sectionPages = [self.contentPages objectAtIndex:indexPath.section];
+    NSInteger pageIndex = [sectionPages findIndexWithBlock:^BOOL(NSArray *pages) {
+        return [pages detect:^BOOL(NSIndexPath *currentIndexPath) {
+            return [currentIndexPath isEqual:indexPath];
+        }];
+    }];
+    
+    if (pageIndex > 0) {
+        pageOffsetForSection += (self.collectionView.bounds.size.width * pageIndex);
+    }
+    
+    return pageOffsetForSection
+    ;
+}
+
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
-    DLog(@"Number of sections [%d]", [self.contentPages count]);
+//    DLog(@"Number of sections [%d]", [self.contentPages count]);
     CGFloat width = 0;
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     
@@ -205,7 +223,7 @@
     // Content start section.
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     NSInteger numContentSections = [self.collectionView numberOfSections] - contentStartSection;
-    DLog(@"Number of content sections [%d]", numContentSections);
+//    DLog(@"Number of content sections [%d]", numContentSections);
     
     // Page and items params.
     NSInteger numColumns = [self.dataSource bookNavigationLayoutNumColumns];
@@ -261,7 +279,7 @@
         
         // Loop through each item in the section and attempt to add them to the page.
         NSInteger numItems = [self.collectionView numberOfItemsInSection:section];
-        DLog(@"Number of items in section [%d]: %d", section, numItems);
+//        DLog(@"Number of items in section [%d]: %d", section, numItems);
         for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
             
             // Get the current page items array.
