@@ -15,8 +15,6 @@
 @interface CKListEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     CKListCollectionViewCellDelegate>
 
-@property (nonatomic, strong) NSMutableArray *listItems;
-@property (nonatomic, strong) NSNumber *selectedIndexNumber;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *placeholderView;
 @property (nonatomic, strong) UIView *titleHeaderView;
@@ -229,7 +227,7 @@
     } else {
         
         // Normal items are not editable normally.
-        [cell configureText:[self textForItemAtIndex:indexPath.item] editable:NO];
+        [cell configureText:[[self textForItemAtIndex:indexPath.item] uppercaseString] editable:NO];
         
         // Is this selection mode.
         [cell allowSelection:self.allowSelection];

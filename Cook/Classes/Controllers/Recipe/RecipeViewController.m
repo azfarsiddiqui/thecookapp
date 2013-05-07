@@ -257,10 +257,14 @@ typedef enum {
         
     } else if (editingView == self.categoryLabel) {
         
-        // Get the current category from the book.
+        // Get the current category from the book, check from currentCategories first which is populated by the
+        // category list editor. Otherwise, default to current label.
         CKCategory *currentCategory = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
             return [self.categoryLabel.text CK_equalsIgnoreCase:category.name];
         }];
+        if (currentCategory == nil) {
+            currentCategory = self.recipe.category;
+        }
         
         CategoryListEditViewController *editViewController = [[CategoryListEditViewController alloc] initWithEditView:self.categoryLabel
                                                                                                                  book:self.book

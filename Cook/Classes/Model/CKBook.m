@@ -299,6 +299,28 @@
     }];
 }
 
+- (void)fetchCategoriesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *query = [PFQuery queryWithClassName:kCategoryModelName];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+    [query orderByAscending:kCategoryAttrOrder];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *parseCategories, NSError *error) {
+        if (!error) {
+            NSArray *categories = [parseCategories collect:^id(PFObject *parseCategory) {
+                return [CKCategory categoryForParseCategory:parseCategory];
+            }];
+            
+            // Update the books current categories.
+            self.currentCategories = categories;
+            
+            DLog(@"fetch returned %i categories", [categories count]);
+            success(categories);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 - (NSString *)userName {
     NSString *author = [self.parseObject objectForKey:kBookAttrAuthor];
     if ([author length] > 0) {

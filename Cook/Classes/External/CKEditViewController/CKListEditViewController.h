@@ -11,6 +11,8 @@
 
 @interface CKListEditViewController : CKEditViewController
 
+@property (nonatomic, strong) NSMutableArray *listItems;
+@property (nonatomic, strong) NSNumber *selectedIndexNumber;
 @property (nonatomic, assign) BOOL canAddItems;
 @property (nonatomic, assign) BOOL addItemsFromTop;
 @property (nonatomic, strong) NSString *canAddItemText;

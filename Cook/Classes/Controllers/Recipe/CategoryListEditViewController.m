@@ -14,6 +14,9 @@
 
 @interface CategoryListEditViewController ()
 
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKCategory *selectedCategory;
+
 @end
 
 @implementation CategoryListEditViewController
@@ -31,14 +34,10 @@
           delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper
              white:(BOOL)white {
     
-    NSNumber *selectedCategoryIndexNUmber = [CategoryListEditViewController selectedCategoryIndexForCategory:category book:book];
-    NSArray *categoryNames = [book.currentCategories collect:^id(CKCategory *category) {
-        return category.name;
-    }];
-    
-    if (self = [super initWithEditView:editView delegate:delegate items:categoryNames
-                         selectedIndex:selectedCategoryIndexNUmber editingHelper:editingHelper white:white
-                                 title:kCategoryTitle]) {
+    if (self = [super initWithEditView:editView delegate:delegate items:nil selectedIndex:nil
+                         editingHelper:editingHelper white:white title:kCategoryTitle]) {
+        self.book = book;
+        self.selectedCategory = category;
         self.allowSelection = YES;
         self.addItemsFromTop = YES;
         self.canAddItemText = @"ADD CATEGORY";
@@ -49,9 +48,30 @@
 
 #pragma mark - CKListEditViewController methods
 
-//- (void)loadData {
-//    
-//}
+- (void)loadData {
+    
+    [self.book fetchCategoriesSuccess:^(NSArray *categories) {
+        DLog(@"Fetched categories: %@", categories);
+        
+        self.listItems = [NSMutableArray array];
+        [self.listItems addObjectsFromArray:[categories collect:^id(CKCategory *category) {
+            return category.name;
+        }]];
+        
+        NSInteger selectedCategoryIndex = [categories findIndexWithBlock:^BOOL(CKCategory *category) {
+            return [category.objectId isEqualToString:self.selectedCategory.objectId];
+        }];
+        if (selectedCategoryIndex >= 0) {
+            self.selectedIndexNumber = [NSNumber numberWithInteger:selectedCategoryIndex];
+        }
+        
+        [self showItems];
+        
+    } failure:^(NSError *error) {
+        DLog(@"Error loading categories.");
+    }];
+    
+}
 
 #pragma mark - Private methods
 
