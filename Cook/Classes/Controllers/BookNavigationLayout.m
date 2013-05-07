@@ -81,6 +81,26 @@
     return pageOffset;
 }
 
+- (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
+    CGFloat pageOffsetForSection = [self pageOffsetForSection:indexPath.section];
+    NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
+    NSInteger contentSection = indexPath.section - contentStartSection;
+    DLog(@"CONTENT PAGES: %@", self.contentPages);
+    
+    NSArray *sectionPages = [self.contentPages objectAtIndex:contentSection];
+    NSInteger pageIndex = [sectionPages findIndexWithBlock:^BOOL(NSArray *pages) {
+        return [pages detect:^BOOL(NSIndexPath *currentIndexPath) {
+            return [currentIndexPath isEqual:indexPath];
+        }];
+    }];
+    
+    if (pageIndex >= 0) {
+        pageOffsetForSection += (self.collectionView.bounds.size.width * pageIndex);
+    }
+    
+    return pageOffsetForSection;
+}
+
 - (NSInteger)numberOfPages {
     NSInteger numSections = self.collectionView.numberOfSections - [self.dataSource bookNavigationContentStartSection];
     NSInteger numPages = 0;
@@ -93,23 +113,6 @@
 
 - (NSArray *)pageOffsetsForContentsSections {
     return self.pageOffsetsForSections;
-}
-
-- (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
-    CGFloat pageOffsetForSection = [self pageOffsetForSection:indexPath.section];
-    NSArray *sectionPages = [self.contentPages objectAtIndex:indexPath.section];
-    NSInteger pageIndex = [sectionPages findIndexWithBlock:^BOOL(NSArray *pages) {
-        return [pages detect:^BOOL(NSIndexPath *currentIndexPath) {
-            return [currentIndexPath isEqual:indexPath];
-        }];
-    }];
-    
-    if (pageIndex > 0) {
-        pageOffsetForSection += (self.collectionView.bounds.size.width * pageIndex);
-    }
-    
-    return pageOffsetForSection
-    ;
 }
 
 #pragma mark - UICollectionViewLayout methods

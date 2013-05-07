@@ -157,7 +157,9 @@
             
             // Get the index of the recipe within the category.
             NSArray *categoryRecipes = [self.categoryRecipes objectForKey:categoryName];
-            NSInteger recipeIndex = [categoryRecipes indexOfObject:self.actionedRecipe];
+            NSInteger recipeIndex = [categoryRecipes findIndexWithBlock:^BOOL(CKRecipe *recipe) {
+                return [recipe.objectId isEqualToString:self.actionedRecipe.objectId];
+            }];
             
             // Figure out the section to go to.
             NSInteger bookSection = [self bookNavigationContentStartSection];
@@ -165,13 +167,12 @@
                 bookSection += categoryIndex;
             }
             
+            NSIndexPath *actionedIndexPath = [NSIndexPath indexPathForItem:recipeIndex inSection:bookSection];
+            
             // Now deep link there.
             BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
-            NSIndexPath *actionedIndexPath = [NSIndexPath indexPathForItem:recipeIndex inSection:bookSection];
-            CGFloat categoryOffset = [layout pageOffsetForSection:bookSection];
-            // CGFloat pageOffset = [layout pageOffsetForIndexPath:actionedIndexPath];
-            [self.collectionView setContentOffset:CGPointMake(categoryOffset, 0.0)
-                                         animated:YES];
+            CGFloat pageOffset = [layout pageOffsetForIndexPath:actionedIndexPath];
+            [self.collectionView setContentOffset:CGPointMake(pageOffset, 0.0) animated:YES];
         }
         
         // Invoked from recipe edit/added block.
