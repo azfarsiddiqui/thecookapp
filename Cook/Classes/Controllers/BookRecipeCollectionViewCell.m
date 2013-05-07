@@ -151,6 +151,16 @@
     return self.imageView.frame.size;
 }
 
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    self.cellBackgroundImageView.image = [self backgroundImageForSelected:selected];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    self.cellBackgroundImageView.image = [self backgroundImageForSelected:highlighted];
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -293,11 +303,6 @@
     } else {
         return [UIColor clearColor];
     }
-}
-
-- (void)setSelected:(BOOL)selected {
-    [super setSelected:selected];
-    self.cellBackgroundImageView.image = [self backgroundImageForSelected:selected];
 }
 
 - (UIImage *)backgroundImageForSelected:(BOOL)selected {
