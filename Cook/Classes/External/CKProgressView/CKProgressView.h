@@ -11,6 +11,7 @@
 @interface CKProgressView : UIProgressView
 
 - (id)initWithWidth:(CGFloat)width;
+- (void)setProgress:(float)progress completion:(void (^)())completion;
 - (void)setProgress:(float)progress delay:(NSTimeInterval)delay completion:(void (^)())completion;
 
 @end

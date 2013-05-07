@@ -10,7 +10,8 @@
 
 @implementation CKProgressView
 
-#define kDefaultWidth   300.0
+#define kDefaultWidth           300.0
+#define kDefaultProgressDelay   0.4
 
 - (id)init {
     return [self initWithWidth:kDefaultWidth];
@@ -31,8 +32,12 @@
     return self;
 }
 
+- (void)setProgress:(float)progress completion:(void (^)())completion {
+    [self setProgress:progress delay:kDefaultProgressDelay completion:completion];
+}
+
 - (void)setProgress:(float)progress delay:(NSTimeInterval)delay completion:(void (^)())completion {
-    [self setProgress:progress];
+    [self setProgress:progress animated:YES];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         if (completion != nil) {
             completion();
