@@ -14,4 +14,6 @@
 + (NSString *)CK_safeString:(NSString *)string defaultString:(NSString *)defaultString;
 + (NSString *)CK_stringForBoolean:(BOOL)boolean;
 
+- (BOOL)CK_equalsIgnoreCase:(NSString *)string;
+
 @end

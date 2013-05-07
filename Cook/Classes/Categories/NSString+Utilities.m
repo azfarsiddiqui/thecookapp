@@ -22,4 +22,8 @@
     return boolean ? @"YES" : @"NO";
 }
 
+- (BOOL)CK_equalsIgnoreCase:(NSString *)string {
+    return ([self localizedCaseInsensitiveCompare:string] == NSOrderedSame);
+}
+
 @end

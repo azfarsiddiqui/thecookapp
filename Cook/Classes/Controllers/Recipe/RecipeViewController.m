@@ -31,6 +31,7 @@
 #import "CKLabelEditViewController.h"
 #import "CKListEditViewController.h"
 #import "BookNavigationHelper.h"
+#import "NSString+Utilities.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -261,7 +262,9 @@ typedef enum {
         
         // Find the index of the recipe category.
         NSNumber *currentCategoryIndexNumber = nil;
-        NSInteger currentCategoryIndex = [currentCategories findIndex:self.recipe.category.name];
+        NSInteger currentCategoryIndex = [currentCategories findIndexWithBlock:^BOOL(NSString *categoryName) {
+            return [self.categoryLabel.text CK_equalsIgnoreCase:categoryName];
+        }];
         if (currentCategoryIndex >= 0) {
             currentCategoryIndexNumber = [NSNumber numberWithInteger:currentCategoryIndex];
         }
@@ -1330,7 +1333,7 @@ typedef enum {
 }
 
 - (void)setCategory:(NSString *)category {
-    self.categoryLabel.text = category;
+    self.categoryLabel.text = [category uppercaseString];
     [self.categoryLabel sizeToFit];
     self.categoryLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.categoryLabel.frame.size.width) / 2.0),
                                           35.0,
@@ -1415,7 +1418,7 @@ typedef enum {
 - (void)saveCategoryValue:(id)value {
     NSString *categoryName = (NSString *)value;
     
-    if (![categoryName isEqualToString:self.categoryLabel.text]) {
+    if (![categoryName CK_equalsIgnoreCase:self.categoryLabel.text]) {
         
         // Update category.
         [self setCategory:categoryName];
@@ -1471,12 +1474,14 @@ typedef enum {
         // Save any changes off.
         if (self.saveRequired) {
             
-            // Set current values.
+            // Set current text values.
             self.recipe.name = self.titleLabel.text;
             self.recipe.description = self.methodLabel.text;
             self.recipe.story = self.storyLabel.text;
+            
+            // Set current category.
             CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
-                return [category.name isEqualToString:self.categoryLabel.text];
+                return [category.name CK_equalsIgnoreCase:self.categoryLabel.text];
             }];
             self.recipe.category = category;
             
@@ -1488,6 +1493,7 @@ typedef enum {
             self.saveInProgress = YES;
             
             // Hide buttons.
+            self.editButton.hidden = YES;
             self.closeButton.hidden = YES;
             self.shareButton.hidden = YES;
             self.socialView.hidden = YES;
@@ -1499,6 +1505,7 @@ typedef enum {
                 [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
                                                                            completion:^{
                     self.saveInProgress = NO;
+                    self.editButton.hidden = NO;
                     self.closeButton.hidden = NO;
                     self.shareButton.hidden = NO;
                     self.socialView.hidden = NO;
@@ -1507,6 +1514,7 @@ typedef enum {
                 
             } failure:^(NSError *error) {
                 self.saveInProgress = NO;
+                self.editButton.hidden = NO;
                 self.closeButton.hidden = NO;
                 self.shareButton.hidden = NO;
                 self.socialView.hidden = NO;
