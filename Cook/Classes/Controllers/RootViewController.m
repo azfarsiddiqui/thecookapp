@@ -128,6 +128,10 @@
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
     if (!open) {
+        
+        // Restore shelf that was hidden in didOpen
+        self.storeViewController.view.hidden = NO;
+        
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
     }
@@ -148,6 +152,9 @@
         
         // Inform the helper that coordinates book navigation and any updated recipes.
         [BookNavigationHelper sharedInstance].bookNavigationViewController = bookNavigationViewController;
+        
+        // Hide shelf to reduce visual complexity.
+        self.storeViewController.view.hidden = YES;
         
     } else {
         
@@ -626,8 +633,8 @@
                               withObject:[NSNumber numberWithBool:YES]];
     
     // Animate the book back, and slide up the modalVC.
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
-    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 40.0);
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.95, 0.95);
+    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 10.0);
 //    CGAffineTransform transform = scaleTransform;
     CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, translateTransform);
     
