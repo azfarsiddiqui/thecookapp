@@ -31,4 +31,13 @@
     return self;
 }
 
+- (void)setProgress:(float)progress delay:(NSTimeInterval)delay completion:(void (^)())completion {
+    [self setProgress:progress];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        if (completion != nil) {
+            completion();
+        }
+    });
+}
+
 @end

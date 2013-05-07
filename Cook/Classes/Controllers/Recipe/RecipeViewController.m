@@ -32,6 +32,7 @@
 #import "CKListEditViewController.h"
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
+#import "CKProgressView.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -82,7 +83,7 @@ typedef enum {
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
-@property (nonatomic, strong) UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) CKProgressView *progressView;
 
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
 
@@ -1498,21 +1499,58 @@ typedef enum {
             self.shareButton.hidden = YES;
             self.socialView.hidden = YES;
             
+            // Hide photo and nameLabel which will be taken by the progress view.
+            self.profilePhotoView.hidden = YES;
+            self.nameLabel.hidden = YES;
+            
+            // Show progress.
+            CKProgressView *progressView = [[CKProgressView alloc] initWithWidth:300.0];
+            progressView.frame = CGRectMake(floorf((self.headerView.bounds.size.width - progressView.frame.size.width) / 2.0),
+                                            self.nameLabel.frame.origin.y,
+                                            progressView.frame.size.width,
+                                            progressView.frame.size.height);
+            [self.headerView addSubview:progressView];
+            self.progressView = progressView;
+            
+            // Mark 10% progress to start off with.
+            [progressView setProgress:0.1];
+            
             // Save the recipe now.
             [self.recipe saveInBackground:^{
+                
+                // Half done.
+                [progressView setProgress:0.5];
                 
                 // Ask the opened book to relayout.
                 [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
                                                                            completion:^{
-                    self.saveInProgress = NO;
-                    self.editButton.hidden = NO;
-                    self.closeButton.hidden = NO;
-                    self.shareButton.hidden = NO;
-                    self.socialView.hidden = NO;
-                    
+                                                                               
+                                                                               [progressView setProgress:1.0 delay:0.3 completion:^{
+                                                                                   
+                                                                                   // Remove progress view.
+                                                                                   [self.progressView removeFromSuperview];
+                                                                                   self.progressView = nil;
+                                                                                   
+                                                                                   self.profilePhotoView.hidden = NO;
+                                                                                   self.nameLabel.hidden = NO;
+                                                                                   self.saveInProgress = NO;
+                                                                                   self.editButton.hidden = NO;
+                                                                                   self.closeButton.hidden = NO;
+                                                                                   self.shareButton.hidden = NO;
+                                                                                   self.socialView.hidden = NO;
+                                                                                   
+                                                                               }];
+                                                                               
                 }];
                 
             } failure:^(NSError *error) {
+                
+                // Remove progress view.
+                [self.progressView removeFromSuperview];
+                self.progressView = nil;
+                
+                self.profilePhotoView.hidden = NO;
+                self.nameLabel.hidden = NO;
                 self.saveInProgress = NO;
                 self.editButton.hidden = NO;
                 self.closeButton.hidden = NO;
