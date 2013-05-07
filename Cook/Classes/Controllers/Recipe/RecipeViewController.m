@@ -33,6 +33,7 @@
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
+#import "CategoryListEditViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -256,30 +257,17 @@ typedef enum {
         
     } else if (editingView == self.categoryLabel) {
         
-        // Get the current categories from the book.
-        NSArray *currentCategories = [self.book.currentCategories collect:^id(CKCategory *category) {
-            return category.name;
+        // Get the current category from the book.
+        CKCategory *currentCategory = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
+            return [self.categoryLabel.text CK_equalsIgnoreCase:category.name];
         }];
         
-        // Find the index of the recipe category.
-        NSNumber *currentCategoryIndexNumber = nil;
-        NSInteger currentCategoryIndex = [currentCategories findIndexWithBlock:^BOOL(NSString *categoryName) {
-            return [self.categoryLabel.text CK_equalsIgnoreCase:categoryName];
-        }];
-        if (currentCategoryIndex >= 0) {
-            currentCategoryIndexNumber = [NSNumber numberWithInteger:currentCategoryIndex];
-        }
-        
-        CKListEditViewController *editViewController = [[CKListEditViewController alloc] initWithEditView:self.categoryLabel
-                                                                                                 delegate:self
-                                                                                                    items:currentCategories
-                                                                                            selectedIndex:currentCategoryIndexNumber
-                                                                                            editingHelper:self.editingHelper
-                                                                                                    white:YES
-                                                                                                    title:@"Categories"];
-        editViewController.allowSelection = YES;
-        editViewController.addItemsFromTop = YES;
-        editViewController.canAddItemText = @"ADD CATEGORY";
+        CategoryListEditViewController *editViewController = [[CategoryListEditViewController alloc] initWithEditView:self.categoryLabel
+                                                                                                                 book:self.book
+                                                                                                     selectedCategory:currentCategory
+                                                                                                             delegate:self
+                                                                                                        editingHelper:self.editingHelper
+                                                                                                                white:YES];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
