@@ -9,11 +9,20 @@
 #import "CKCategory.h"
 #import "NSArray+Enumerable.h"
 #import "NSString+Utilities.h"
+#import "CKBook.h"
 
 @implementation CKCategory
 
++ (CKCategory *)categoryForName:(NSString *)name order:(NSInteger)order book:(CKBook *)book {
+    PFObject *parseObject = [PFObject objectWithClassName:kCategoryModelName];
+    CKCategory *category = [self categoryForParseCategory:parseObject];
+    category.order = [NSNumber numberWithInteger:order];
+    category.name = name;
+    category.book = book;
+    return category;
+}
 
-+(CKCategory *)categoryForParseCategory:(PFObject *)parseCategory {
++ (CKCategory *)categoryForParseCategory:(PFObject *)parseCategory {
     CKCategory *category = [[CKCategory alloc] initWithParseObject:parseCategory];
     return category;
 }
@@ -45,10 +54,11 @@
     return [CKCategory bookImageForCategory:self.name];
 }
 
--(BOOL)isDataAvailable
-{
+- (BOOL)isDataAvailable {
     return [self.parseObject isDataAvailable];
 }
+
+#pragma mark - Properties
 
 - (void)setOrder:(NSNumber *)order {
     [self.parseObject setObject:order forKey:kCategoryAttrOrder];
@@ -56,6 +66,14 @@
 
 - (NSNumber *)order {
     return [self.parseObject objectForKey:kCategoryAttrOrder];
+}
+
+- (void)setBook:(CKBook *)book {
+    [self.parseObject setObject:book.parseObject forKey:kBookModelForeignKeyName];
+}
+
+- (CKBook *)book {
+    return [self.parseObject objectForKey:kBookModelForeignKeyName];
 }
 
 #pragma mark - CKModel

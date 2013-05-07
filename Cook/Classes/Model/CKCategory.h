@@ -8,14 +8,19 @@
 
 #import "CKModel.h"
 
+@class CKBook;
+
 @interface CKCategory : CKModel
 
 @property (nonatomic, strong) NSNumber *order;
+@property (nonatomic, strong) CKBook *book;
 
++ (CKCategory *)categoryForName:(NSString *)name order:(NSInteger)order book:(CKBook *)book;
 + (CKCategory *)categoryForParseCategory:(PFObject *)parseCategory;
 + (void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (UIImage *)bookImageForCategory:(NSString *)category;
 
 - (UIImage *)bookImage;
--(BOOL)isDataAvailable;
+- (BOOL)isDataAvailable;
+
 @end
