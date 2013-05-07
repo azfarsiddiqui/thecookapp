@@ -1491,17 +1491,7 @@ typedef enum {
             [self enableEditMode:NO];
             
             // Saving...
-            self.saveInProgress = YES;
-            
-            // Hide buttons.
-            self.editButton.hidden = YES;
-            self.closeButton.hidden = YES;
-            self.shareButton.hidden = YES;
-            self.socialView.hidden = YES;
-            
-            // Hide photo and nameLabel which will be taken by the progress view.
-            self.profilePhotoView.hidden = YES;
-            self.nameLabel.hidden = YES;
+            [self enableSaveMode:YES];
             
             // Show progress.
             CKProgressView *progressView = [[CKProgressView alloc] initWithWidth:300.0];
@@ -1519,43 +1509,24 @@ typedef enum {
             [self.recipe saveInBackground:^{
                 
                 // Half done.
-                [progressView setProgress:0.5];
+                __weak CKProgressView *weakProgressView = progressView;
+                [progressView setProgress:0.5 completion:^{
+                    
+                    // Ask the opened book to relayout.
+                    [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                               completion:^{
+                                                                                   
+                                                                                   // Set 100% progress completion.
+                                                                                   [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                       [self enableSaveMode:NO];
+                                                                                   }];
+                }];
                 
-                // Ask the opened book to relayout.
-                [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
-                                                                           completion:^{
-                                                                               
-                                                                               [progressView setProgress:1.0 delay:0.3 completion:^{
-                                                                                   
-                                                                                   // Remove progress view.
-                                                                                   [self.progressView removeFromSuperview];
-                                                                                   self.progressView = nil;
-                                                                                   
-                                                                                   self.profilePhotoView.hidden = NO;
-                                                                                   self.nameLabel.hidden = NO;
-                                                                                   self.saveInProgress = NO;
-                                                                                   self.editButton.hidden = NO;
-                                                                                   self.closeButton.hidden = NO;
-                                                                                   self.shareButton.hidden = NO;
-                                                                                   self.socialView.hidden = NO;
-                                                                                   
-                                                                               }];
-                                                                               
+                
                 }];
                 
             } failure:^(NSError *error) {
-                
-                // Remove progress view.
-                [self.progressView removeFromSuperview];
-                self.progressView = nil;
-                
-                self.profilePhotoView.hidden = NO;
-                self.nameLabel.hidden = NO;
-                self.saveInProgress = NO;
-                self.editButton.hidden = NO;
-                self.closeButton.hidden = NO;
-                self.shareButton.hidden = NO;
-                self.socialView.hidden = NO;
+                [self enableSaveMode:NO];
             }];
             
         } else {
@@ -1579,6 +1550,21 @@ typedef enum {
         [self enableEditMode:NO];
     }
     
+}
+
+- (void)enableSaveMode:(BOOL)saveMode {
+    self.profilePhotoView.hidden = saveMode;
+    self.nameLabel.hidden = saveMode;
+    self.saveInProgress = saveMode;
+    self.editButton.hidden = saveMode;
+    self.closeButton.hidden = saveMode;
+    self.shareButton.hidden = saveMode;
+    self.socialView.hidden = saveMode;
+    if (!saveMode) {
+        [self.progressView removeFromSuperview];
+        self.progressView = nil;
+    }
+    self.saveInProgress = saveMode;
 }
 
 @end
