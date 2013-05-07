@@ -13,7 +13,6 @@
 
 @interface GridRecipeStatsView ()
 
-@property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) NSMutableArray *iconViews;
 
 @end
@@ -27,16 +26,6 @@
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.iconViews = [NSMutableArray array];
-    }
-    return self;
-}
-
-- (id)init {
-    if (self = [self initWithFrame:CGRectZero]) {
-        UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_iconbar.png"]];
-        self.frame = backgroundView.frame;
-        [self addSubview:backgroundView];
-        self.backgroundView = backgroundView;
     }
     return self;
 }

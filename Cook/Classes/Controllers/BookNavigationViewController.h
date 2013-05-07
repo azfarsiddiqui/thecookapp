@@ -23,5 +23,6 @@
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate;
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
+- (void)setActive:(BOOL)active;
 
 @end

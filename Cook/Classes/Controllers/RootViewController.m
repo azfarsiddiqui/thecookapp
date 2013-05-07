@@ -631,6 +631,9 @@
 //    CGAffineTransform transform = scaleTransform;
     CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, translateTransform);
     
+    // Inform book navigation it is about to become inactive.
+    [self.bookNavigationViewController setActive:NO];
+    
     [UIView animateWithDuration:0.4
                       delay:0.0
                     options:UIViewAnimationCurveEaseIn
@@ -676,6 +679,10 @@
                          self.overlayView = nil;
                          [modalViewController.view removeFromSuperview];
                          self.bookModalViewController = nil;
+                         
+                         // Book navigation becomes active.
+                         // Inform book navigation it is about to become inactive.
+                         [self.bookNavigationViewController setActive:YES];
                          
                          // Re-enable panning.
                          self.panEnabled = YES;

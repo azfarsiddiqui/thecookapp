@@ -17,6 +17,7 @@
 
 @interface BookRecipeCollectionViewCell ()
 
+@property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
@@ -30,20 +31,22 @@
 @implementation BookRecipeCollectionViewCell
 
 #define kViewDebug              0
-#define kImageHeight            140.0
+#define kImageSize              CGSizeMake(250.0, 250.0)
 #define kTitleOffsetNoImage     70.0
 #define kTitleTopGap            20.0
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
-#define kTextSideOffset         10.0
+#define kContentInsets          UIEdgeInsetsMake(30.0, 30.0, 30.0, 30.0)
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
+        [self initBackground];
+        
         // Top thumbnail.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
         imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
-        imageView.frame = CGRectMake(0.0, 0.0, self.contentView.bounds.size.width, kImageHeight);
+        imageView.frame = CGRectMake(kContentInsets.left, kContentInsets.top, kImageSize.width, kImageSize.height);
         [self.contentView addSubview:imageView];
         self.imageView = imageView;
         
@@ -82,7 +85,7 @@
         CGSize size = [ellipsis sizeWithFont:[Theme recipeGridIngredientsFont]
                            constrainedToSize:self.contentView.bounds.size
                                lineBreakMode:NSLineBreakByClipping];
-        UILabel *ingredientsEllipsisLabel = [[UILabel alloc] initWithFrame:CGRectMake(kTextSideOffset,
+        UILabel *ingredientsEllipsisLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentInsets.left,
                                                                                       self.ingredientsLabel.frame.size.height,
                                                                                       size.width,
                                                                                       size.height)];
@@ -106,11 +109,11 @@
         self.storyLabel = storyLabel;
         
         // Bottom stats view.
-        GridRecipeStatsView *statsView = [[GridRecipeStatsView alloc] init];
-        statsView.frame = CGRectMake((self.contentView.bounds.size.width - statsView.frame.size.width) / 2.0,
-                                     self.contentView.bounds.size.height - statsView.frame.size.height,
-                                     statsView.frame.size.width,
-                                     statsView.frame.size.height);
+        CGSize statsSize = CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right, 40.0);
+        GridRecipeStatsView *statsView = [[GridRecipeStatsView alloc] initWithFrame:CGRectMake((self.contentView.bounds.size.width - statsSize.width) / 2.0,
+                                                                                               self.contentView.bounds.size.height - statsSize.height - kContentInsets.bottom,
+                                                                                               statsSize.width,
+                                                                                               statsSize.height)];
         [self.contentView addSubview:statsView];
         self.statsView = statsView;
         
@@ -150,21 +153,34 @@
 
 #pragma mark - Private methods
 
+- (void)initBackground {
+    UIEdgeInsets backgroundInsets = UIEdgeInsetsMake(4.0, 8.0, 12.0, 8.0);
+    UIImageView *cellBackgroundImageView = [[UIImageView alloc] initWithImage:nil];
+    cellBackgroundImageView.autoresizingMask = UIViewAutoresizingNone;
+    cellBackgroundImageView.frame = CGRectMake(-backgroundInsets.left,
+                                               -backgroundInsets.top,
+                                               self.bounds.size.width + backgroundInsets.left + backgroundInsets.right,
+                                               self.bounds.size.height + backgroundInsets.top + backgroundInsets.bottom);
+    [self.contentView addSubview:cellBackgroundImageView];
+    self.cellBackgroundImageView = cellBackgroundImageView;
+    [self setSelected:NO];
+}
+
 - (void)updateTitle {
     NSString *title = [self.recipe.name uppercaseString];
     CGRect frame = self.titleLabel.frame;
     CGSize size = [title sizeWithFont:self.titleLabel.font
-                    constrainedToSize:CGSizeMake(self.contentView.bounds.size.width - (kTextSideOffset * 2), self.contentView.bounds.size.height)
+                    constrainedToSize:[self availableSize]
                         lineBreakMode:NSLineBreakByWordWrapping];
     if ([self.recipe hasPhotos]) {
         
         // Always a fixed-offset from bottom of image.
-        frame.origin = CGPointMake(kTextSideOffset, self.imageView.frame.origin.y + self.imageView.frame.size.height + kTitleTopGap);
+        frame.origin = CGPointMake(kContentInsets.left, self.imageView.frame.origin.y + self.imageView.frame.size.height + kTitleTopGap);
         
     } else {
         
         // Always a fixed-offset from top for recipes with no image.
-        frame.origin = CGPointMake(kTextSideOffset, kTitleOffsetNoImage);
+        frame.origin = CGPointMake(kContentInsets.left, kTitleOffsetNoImage);
     }
     frame.size = CGSizeMake(size.width, size.height);
     self.titleLabel.frame = frame;
@@ -174,9 +190,9 @@
 - (void)updateStory {
     NSString *story = [NSString stringWithFormat:@"‟ %@ ”", self.recipe.story];
     CGSize size = [story sizeWithFont:self.storyLabel.font
-                    constrainedToSize:CGSizeMake(self.contentView.bounds.size.width - (kTextSideOffset * 2), self.contentView.bounds.size.height)
+                    constrainedToSize:[self availableSize]
                         lineBreakMode:NSLineBreakByWordWrapping];
-    self.storyLabel.frame = CGRectMake(kTextSideOffset, self.statsView.frame.origin.y - kStatsViewTopOffset - size.height, size.width, size.height);
+    self.storyLabel.frame = CGRectMake(kContentInsets.left, self.statsView.frame.origin.y - kStatsViewTopOffset - size.height, size.width, size.height);
     self.storyLabel.text = story;
 }
 
@@ -196,8 +212,8 @@
         
         // Now figure out positioning based on story.
         CGFloat titleBottomOffset = [self titleBottomOffset];
-        CGSize availableSize = CGSizeMake(self.contentView.bounds.size.width - (kTextSideOffset * 2),
-                                          self.storyLabel.frame.origin.y - kStoryTopOffset - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height - titleBottomOffset);
+        CGSize availableSize = CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                                          self.storyLabel.frame.origin.y - kStoryTopOffset - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height - kContentInsets.bottom);
         CGSize size = [ingredientsDisplay sizeWithFont:self.ingredientsLabel.font
                                      constrainedToSize:CGSizeMake(availableSize.width, availableSize.height + 100.0)    // Makes sure we have more than enough to know we have more text.
                                   lineBreakMode:NSLineBreakByWordWrapping];
@@ -216,7 +232,7 @@
         }
         
         // Update frame.
-        self.ingredientsLabel.frame = CGRectMake(kTextSideOffset,
+        self.ingredientsLabel.frame = CGRectMake(kContentInsets.left,
                                                  self.titleLabel.frame.origin.y + 60.0,
                                                  size.width,
                                                  size.height);
@@ -277,6 +293,26 @@
     } else {
         return [UIColor clearColor];
     }
+}
+
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    self.cellBackgroundImageView.image = [self backgroundImageForSelected:selected];
+}
+
+- (UIImage *)backgroundImageForSelected:(BOOL)selected {
+    if (selected) {
+        return [[UIImage imageNamed:@"cook_book_recipe_cell_on.png"]
+                resizableImageWithCapInsets:UIEdgeInsetsMake(10.0, 19.0, 20.0, 19.0)];
+    } else {
+        return [[UIImage imageNamed:@"cook_book_recipe_cell_off.png"]
+                resizableImageWithCapInsets:UIEdgeInsetsMake(10.0, 19.0, 20.0, 19.0)];
+    }
+}
+
+- (CGSize)availableSize {
+    return CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                      self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
 }
 
 @end

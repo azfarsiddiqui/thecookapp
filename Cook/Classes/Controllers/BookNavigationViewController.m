@@ -128,6 +128,22 @@
     [self loadRecipes];
 }
 
+- (void)setActive:(BOOL)active {
+    if (active) {
+        
+        // Unselect cells.
+        NSArray *selectedIndexPaths = [self.collectionView indexPathsForSelectedItems];
+        if ([selectedIndexPaths count] > 0) {
+            NSIndexPath *selectedIndexPath = [selectedIndexPaths objectAtIndex:0];
+            UICollectionViewCell *selectedCell = [self.collectionView cellForItemAtIndexPath:selectedIndexPath];
+            [selectedCell setSelected:NO];
+        }
+        
+    } else {
+        
+    }
+}
+
 #pragma mark - BookNavigationDataSource methods
 
 - (NSUInteger)bookNavigationContentStartSection {

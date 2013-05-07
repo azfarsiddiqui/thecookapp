@@ -32,11 +32,11 @@
 #define kPageDividerRightKind   @"PageDividerRightKind"
 
 + (CGSize)unitSize {
-    return CGSizeMake(240.0, 596.0);
+    return CGSizeMake(312.0, 642.0);
 }
 
 + (UIEdgeInsets)contentPageInsets {
-    return UIEdgeInsetsMake(80.0, 80.0, 72.0, 80.0);
+    return UIEdgeInsetsMake(80.0, 30.0, 26.0, 30.0);
 }
 
 + (UIEdgeInsets)otherPageInsets {
@@ -44,7 +44,7 @@
 }
 
 + (CGFloat)columnSeparatorWidth {
-    return 72.0;
+    return 14.0;
 }
 
 - (id)initWithDataSource:(id<BookNavigationDataSource>)dataSource delegate:(id<BookNavigationLayoutDelegate>)delegate {
@@ -85,7 +85,6 @@
     CGFloat pageOffsetForSection = [self pageOffsetForSection:indexPath.section];
     NSInteger contentStartSection = [self.dataSource bookNavigationContentStartSection];
     NSInteger contentSection = indexPath.section - contentStartSection;
-    DLog(@"CONTENT PAGES: %@", self.contentPages);
     
     NSArray *sectionPages = [self.contentPages objectAtIndex:contentSection];
     NSInteger pageIndex = [sectionPages findIndexWithBlock:^BOOL(NSArray *pages) {
