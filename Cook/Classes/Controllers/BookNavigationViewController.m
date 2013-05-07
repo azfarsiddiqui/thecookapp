@@ -568,7 +568,7 @@
         [self.bookPagingView setNumPages:numPages];
     }
     self.bookPagingView.frame = CGRectMake(floor((self.view.bounds.size.width - self.bookPagingView.frame.size.width) / 2.0),
-                                           self.view.bounds.size.height - self.bookPagingView.frame.size.height - 28.0,
+                                           self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 20.0,
                                            self.bookPagingView.frame.size.width,
                                            self.bookPagingView.frame.size.height);
 }
