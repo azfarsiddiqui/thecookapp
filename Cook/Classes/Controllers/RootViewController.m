@@ -181,6 +181,10 @@
     [self viewRecipe:recipe];
 }
 
+- (void)bookNavigationControllerAddRecipeRequested {
+    [self addRecipeForBook:self.selectedBook];
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -595,8 +599,12 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
-    
     RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe];
+    [self showModalViewController:recipeViewController];
+}
+
+- (void)addRecipeForBook:(CKBook *)book {
+    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithBook:self.selectedBook];
     [self showModalViewController:recipeViewController];
 }
 

@@ -15,5 +15,7 @@
 + (NSString *)CK_stringForBoolean:(BOOL)boolean;
 
 - (BOOL)CK_equalsIgnoreCase:(NSString *)string;
+- (NSString *)CK_whitespaceTrimmed;
+- (BOOL)CK_blank;
 
 @end

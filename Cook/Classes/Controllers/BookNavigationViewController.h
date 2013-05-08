@@ -16,6 +16,7 @@
 
 - (void)bookNavigationControllerCloseRequested;
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe;
+- (void)bookNavigationControllerAddRecipeRequested;
 
 @end
 

@@ -74,6 +74,7 @@ typedef enum {
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, assign) PhotoWindowHeight photoWindowHeight;
 @property (nonatomic, assign) PhotoWindowHeight previousPhotoWindowHeight;
+@property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) BOOL saveInProgress;
@@ -116,9 +117,9 @@ typedef enum {
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 
 
-- (id)initWithBook:(CKBook *)book category:(NSString *)category {
+- (id)initWithBook:(CKBook *)book {
     if (self = [self initWithRecipe:nil book:book]) {
-        self.recipe = [CKRecipe recipeForUser:book.user book:book category:nil];
+        self.recipe = [CKRecipe recipeForBook:book];
     }
     return self;
 }
@@ -129,6 +130,7 @@ typedef enum {
 
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
+        self.addMode = (recipe == nil);
         self.recipe = recipe;
         self.book = book;
         self.parsePhotoStore = [[ParsePhotoStore alloc]init];
@@ -154,6 +156,7 @@ typedef enum {
     [self initScrollView];
     [self initBackgroundImageView];
     [self initStartState];
+    
 }
 
 #pragma mark - BookModalViewController methods
@@ -192,6 +195,12 @@ typedef enum {
             [self updateButtons];
             [self loadPhoto];
             [self loadData];
+            
+            // Add mode?
+            if (self.addMode) {
+                [self performSelector:@selector(enableEditMode) withObject:nil afterDelay:0.0];
+            }
+
         }];
         
         
@@ -1163,7 +1172,11 @@ typedef enum {
 }
 
 - (void)cancelTapped:(id)sender {
-    [self exitEditModeThenSave:NO];
+    if (self.addMode) {
+        [self closeTapped:nil];
+    } else {
+        [self exitEditModeThenSave:NO];
+    }
 }
 
 - (void)saveTapped:(id)sender {
@@ -1262,12 +1275,14 @@ typedef enum {
 
 - (PhotoWindowHeight)startWindowHeight {
     PhotoWindowHeight windowHeight = PhotoWindowHeightMid;
-    if (!self.recipe) {
-        windowHeight = PhotoWindowHeightMid;
-    } else if (![self.recipe hasPhotos]) {
+    if (!self.addMode && ![self.recipe hasPhotos]) {
         windowHeight = PhotoWindowHeightMin;
     }
     return windowHeight;
+}
+
+- (void)enableEditMode {
+    [self enableEditMode:YES];
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -1318,6 +1333,9 @@ typedef enum {
 }
 
 - (void)setTitle:(NSString *)title {
+    if (self.addMode && ((title == nil) || [title CK_blank])) {
+        title = @"MY RECIPE NAME";
+    }
     self.titleLabel.text = title;
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
@@ -1327,6 +1345,9 @@ typedef enum {
 }
 
 - (void)setCategory:(NSString *)category {
+    if (self.addMode && ((category == nil) || [category CK_blank])) {
+        category = @"SELECT CATEGORY";
+    }
     self.categoryLabel.text = [category uppercaseString];
     [self.categoryLabel sizeToFit];
     self.categoryLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.categoryLabel.frame.size.width) / 2.0),
@@ -1336,6 +1357,9 @@ typedef enum {
 }
 
 - (void)setStory:(NSString *)story {
+    if (self.addMode && ((story == nil) || [story CK_blank])) {
+        story = @"A story about this recipe.";
+    }
     CGFloat titleStoryGap = 0.0;
     CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, self.headerView.bounds.size.height - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height);
     CGSize size = [story sizeWithFont:[Theme storyFont] constrainedToSize:storyAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
@@ -1347,6 +1371,9 @@ typedef enum {
 }
 
 - (void)setMethod:(NSString *)method {
+    if (self.addMode && ((method == nil) || [method CK_blank])) {
+        method = @"The steps to cook this recipe.";
+    }
     CGRect rightFrame = kContentRightFrame;
     UIEdgeInsets contentInsets = kContentInsets;
     CGSize methodAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
@@ -1477,7 +1504,9 @@ typedef enum {
             CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
                 return [category.name CK_equalsIgnoreCase:self.categoryLabel.text];
             }];
-            self.recipe.category = category;
+            if (category) {
+                self.recipe.category = category;
+            }
             
             // Reset edit flags.
             self.saveRequired = NO;

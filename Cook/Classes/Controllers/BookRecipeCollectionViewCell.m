@@ -218,7 +218,6 @@
         NSString *ingredientsDisplay = [ingredients componentsJoinedByString:@"\n"];
         
         // Now figure out positioning based on story.
-        CGFloat titleBottomOffset = [self titleBottomOffset];
         CGSize availableSize = CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                                           self.storyLabel.frame.origin.y - kStoryTopOffset - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height - kContentInsets.bottom);
         CGSize size = [ingredientsDisplay sizeWithFont:self.ingredientsLabel.font

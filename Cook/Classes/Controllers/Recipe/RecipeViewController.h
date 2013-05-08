@@ -15,11 +15,10 @@
 @interface RecipeViewController : UIViewController <BookModalViewController>
 
 // Create new recipe in the given book and category.
-- (id)initWithBook:(CKBook *)book category:(NSString *)category;
+- (id)initWithBook:(CKBook *)book;
 
 // Create with the given recipe and book.
-- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;
-
 - (id)initWithRecipe:(CKRecipe *)recipe;
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 
 @end

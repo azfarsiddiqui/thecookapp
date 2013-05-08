@@ -26,4 +26,13 @@
     return ([self localizedCaseInsensitiveCompare:string] == NSOrderedSame);
 }
 
+- (NSString *)CK_whitespaceTrimmed {
+    return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
+- (BOOL)CK_blank {
+    NSString *trimmed = [self CK_whitespaceTrimmed];
+    return ([[self CK_whitespaceTrimmed] length] == 0);
+}
+
 @end

@@ -24,6 +24,13 @@
 
 #pragma mark - creation
 
++ (CKRecipe *)recipeForBook:(CKBook *)book {
+    PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
+    CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
+    recipe.book = book;
+    return recipe;
+}
+
 +(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     

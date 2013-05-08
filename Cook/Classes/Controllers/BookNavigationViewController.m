@@ -228,7 +228,7 @@
 }
 
 - (void)bookIndexAddRecipeRequested {
-    [self.delegate bookNavigationControllerRecipeRequested:nil];
+    [self.delegate bookNavigationControllerAddRecipeRequested];
 }
 
 - (NSArray *)bookIndexRecipesForCategory:(NSString *)category {
@@ -824,7 +824,7 @@
 }
 
 - (void)addRecipeTapped {
-    [self.delegate bookNavigationControllerRecipeRequested:nil];
+    [self.delegate bookNavigationControllerAddRecipeRequested];
 }
 
 - (void)editModeReceived:(NSNotification *)notification {

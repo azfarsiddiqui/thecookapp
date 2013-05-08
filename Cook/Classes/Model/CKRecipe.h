@@ -30,6 +30,7 @@
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 
 //creation
++ (CKRecipe *)recipeForBook:(CKBook *)book;
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
 + (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book;
