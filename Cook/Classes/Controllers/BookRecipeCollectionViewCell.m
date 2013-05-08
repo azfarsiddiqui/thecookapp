@@ -179,20 +179,17 @@
 - (void)updateTitle {
     NSString *title = [self.recipe.name uppercaseString];
     CGRect frame = self.titleLabel.frame;
+    CGSize availableSize = [self availableSize];
     CGSize size = [title sizeWithFont:self.titleLabel.font
-                    constrainedToSize:[self availableSize]
+                    constrainedToSize:availableSize
                         lineBreakMode:NSLineBreakByWordWrapping];
-    if ([self.recipe hasPhotos]) {
-        
-        // Always a fixed-offset from bottom of image.
-        frame.origin = CGPointMake(kContentInsets.left, self.imageView.frame.origin.y + self.imageView.frame.size.height + kTitleTopGap);
-        
-    } else {
-        
-        // Always a fixed-offset from top for recipes with no image.
-        frame.origin = CGPointMake(kContentInsets.left, kTitleOffsetNoImage);
+    frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+                       self.imageView.frame.origin.y + self.imageView.frame.size.height + kTitleTopGap,
+                       size.width,
+                       size.height);
+    if (![self.recipe hasPhotos]) {
+        frame.origin.y = kTitleOffsetNoImage;
     }
-    frame.size = CGSizeMake(size.width, size.height);
     self.titleLabel.frame = frame;
     self.titleLabel.text = title;
 }
