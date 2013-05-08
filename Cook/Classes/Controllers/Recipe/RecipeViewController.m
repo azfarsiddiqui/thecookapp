@@ -34,6 +34,7 @@
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
 #import "CategoryListEditViewController.h"
+#import "IngredientListEditViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -309,11 +310,11 @@ typedef enum {
         
     } else if (editingView == self.ingredientsLabel) {
         
-        CKLabelEditViewController *editViewController = [[CKLabelEditViewController alloc] initWithEditView:editingView
-                                                                                                   delegate:self
-                                                                                              editingHelper:self.editingHelper
-                                                                                                      white:YES
-                                                                                                      title:@"Coming Soon"];
+        IngredientListEditViewController *editViewController = [[IngredientListEditViewController alloc] initWithEditView:self.ingredientsLabel
+                                                                                                                   recipe:self.recipe
+                                                                                                                 delegate:self
+                                                                                                            editingHelper:self.editingHelper
+                                                                                                                    white:YES];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
     }
