@@ -49,7 +49,28 @@
 }
 
 - (void)selectOptionAtIndex:(NSInteger)optionIndex animated:(BOOL)animated {
+    NSInteger maxIndex = [self maxOptionIndex];
+    if (optionIndex > maxIndex) {
+        return;
+    }
+    
     self.selectedOptionIndex = optionIndex;
+    CGFloat requiredRadians = optionIndex * [self unitRadians];
+    CGAffineTransform transform = CGAffineTransformMakeRotation(requiredRadians);
+    
+    if (animated) {
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^{
+                             self.dialerView.transform = transform;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+        
+    } else {
+        self.dialerView.transform = transform;
+    }
 }
 
 #pragma mark - UIControl methods
@@ -126,7 +147,7 @@
 }
 
 - (NSInteger)maxOptionIndex {
-    return 360.0 / self.unitDegrees;
+    return (360.0 / self.unitDegrees) -1;
 }
 
 @end

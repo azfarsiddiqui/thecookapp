@@ -10,7 +10,7 @@
 
 @protocol CKDialerControlDelegate <NSObject>
 
-- (void)dialerViewSelectedIndex:(NSInteger)selectedIndex;
+- (void)dialerControlSelectedIndex:(NSInteger)selectedIndex;
 
 @end
 
