@@ -408,6 +408,11 @@
 		76C3BB00173B30A2004F6444 /* cook_edit_serves_notches_right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BAF7173B30A2004F6444 /* cook_edit_serves_notches_right@2x.png */; };
 		76C3BB01173B30A2004F6444 /* cook_edit_serves_slider.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BAF8173B30A2004F6444 /* cook_edit_serves_slider.png */; };
 		76C3BB02173B30A2004F6444 /* cook_edit_serves_slider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BAF9173B30A2004F6444 /* cook_edit_serves_slider@2x.png */; };
+		76C3BB90173B73F0004F6444 /* CKDialerControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C3BB8A173B73F0004F6444 /* CKDialerControl.m */; };
+		76C3BB91173B73F0004F6444 /* cook_edit_timedial_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8C173B73F0004F6444 /* cook_edit_timedial_bg.png */; };
+		76C3BB92173B73F0004F6444 /* cook_edit_timedial_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8D173B73F0004F6444 /* cook_edit_timedial_bg@2x.png */; };
+		76C3BB93173B73F0004F6444 /* cook_edit_timedial_dial.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8E173B73F0004F6444 /* cook_edit_timedial_dial.png */; };
+		76C3BB94173B73F0004F6444 /* cook_edit_timedial_dial@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */; };
 		76C6CDCB164B3EC3006001BD /* cook_customise_textbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */; };
 		76C6CDCC164B3EC3006001BD /* cook_customise_textbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */; };
 		76C6CDCD164B3EC3006001BD /* cook_dash_icons_customise.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */; };
@@ -1142,6 +1147,12 @@
 		76C3BAF7173B30A2004F6444 /* cook_edit_serves_notches_right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_serves_notches_right@2x.png"; sourceTree = "<group>"; };
 		76C3BAF8173B30A2004F6444 /* cook_edit_serves_slider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_edit_serves_slider.png; sourceTree = "<group>"; };
 		76C3BAF9173B30A2004F6444 /* cook_edit_serves_slider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_serves_slider@2x.png"; sourceTree = "<group>"; };
+		76C3BB89173B73F0004F6444 /* CKDialerControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKDialerControl.h; sourceTree = "<group>"; };
+		76C3BB8A173B73F0004F6444 /* CKDialerControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKDialerControl.m; sourceTree = "<group>"; };
+		76C3BB8C173B73F0004F6444 /* cook_edit_timedial_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_edit_timedial_bg.png; sourceTree = "<group>"; };
+		76C3BB8D173B73F0004F6444 /* cook_edit_timedial_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_timedial_bg@2x.png"; sourceTree = "<group>"; };
+		76C3BB8E173B73F0004F6444 /* cook_edit_timedial_dial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_edit_timedial_dial.png; sourceTree = "<group>"; };
+		76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_timedial_dial@2x.png"; sourceTree = "<group>"; };
 		76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_textbox.png; sourceTree = "<group>"; };
 		76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox@2x.png"; sourceTree = "<group>"; };
 		76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise.png; sourceTree = "<group>"; };
@@ -2155,6 +2166,27 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		76C3BB88173B73F0004F6444 /* CKDialerControl */ = {
+			isa = PBXGroup;
+			children = (
+				76C3BB89173B73F0004F6444 /* CKDialerControl.h */,
+				76C3BB8A173B73F0004F6444 /* CKDialerControl.m */,
+				76C3BB8B173B73F0004F6444 /* Resources */,
+			);
+			path = CKDialerControl;
+			sourceTree = "<group>";
+		};
+		76C3BB8B173B73F0004F6444 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				76C3BB8C173B73F0004F6444 /* cook_edit_timedial_bg.png */,
+				76C3BB8D173B73F0004F6444 /* cook_edit_timedial_bg@2x.png */,
+				76C3BB8E173B73F0004F6444 /* cook_edit_timedial_dial.png */,
+				76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		76C6CDCF164B5495006001BD /* APBookmarkNavigationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2719,6 +2751,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76C3BB88173B73F0004F6444 /* CKDialerControl */,
 				76C3BAEE173B30A2004F6444 /* CKNotchSliderView */,
 				76C07FC117389134005915D5 /* CKProgressView */,
 				76BE37281717A8E9000C0755 /* CKEditViewController */,
@@ -3356,6 +3389,10 @@
 				76C3BB00173B30A2004F6444 /* cook_edit_serves_notches_right@2x.png in Resources */,
 				76C3BB01173B30A2004F6444 /* cook_edit_serves_slider.png in Resources */,
 				76C3BB02173B30A2004F6444 /* cook_edit_serves_slider@2x.png in Resources */,
+				76C3BB91173B73F0004F6444 /* cook_edit_timedial_bg.png in Resources */,
+				76C3BB92173B73F0004F6444 /* cook_edit_timedial_bg@2x.png in Resources */,
+				76C3BB93173B73F0004F6444 /* cook_edit_timedial_dial.png in Resources */,
+				76C3BB94173B73F0004F6444 /* cook_edit_timedial_dial@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3533,6 +3570,7 @@
 				76C07FD01738BA55005915D5 /* CategoryListEditViewController.m in Sources */,
 				76C07FDB1739D13C005915D5 /* IngredientListEditViewController.m in Sources */,
 				76C3BAFA173B30A2004F6444 /* CKNotchSliderView.m in Sources */,
+				76C3BB90173B73F0004F6444 /* CKDialerControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
