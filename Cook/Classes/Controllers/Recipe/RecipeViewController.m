@@ -35,6 +35,7 @@
 #import "CKProgressView.h"
 #import "CategoryListEditViewController.h"
 #import "IngredientListEditViewController.h"
+#import "ServesAndTimeEditViewController.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -309,11 +310,10 @@ typedef enum {
     
     } else if (editingView == self.servesCookView) {
         
-        CKImageEditViewController *editViewController = [[CKImageEditViewController alloc] initWithEditView:editingView
-                                                                                                   delegate:self
-                                                                                              editingHelper:self.editingHelper
-                                                                                                      white:YES
-                                                                                                      image:[UIImage imageNamed:@"cook_editrecipe_details.png"]];
+        ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
+                                                                                                               delegate:self
+                                                                                                          editingHelper:self.editingHelper
+                                                                                                                  white:YES];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         

@@ -413,6 +413,7 @@
 		76C3BB92173B73F0004F6444 /* cook_edit_timedial_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8D173B73F0004F6444 /* cook_edit_timedial_bg@2x.png */; };
 		76C3BB93173B73F0004F6444 /* cook_edit_timedial_dial.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8E173B73F0004F6444 /* cook_edit_timedial_dial.png */; };
 		76C3BB94173B73F0004F6444 /* cook_edit_timedial_dial@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */; };
+		76C3BB97173B795D004F6444 /* ServesAndTimeEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */; };
 		76C6CDCB164B3EC3006001BD /* cook_customise_textbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */; };
 		76C6CDCC164B3EC3006001BD /* cook_customise_textbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */; };
 		76C6CDCD164B3EC3006001BD /* cook_dash_icons_customise.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */; };
@@ -1153,6 +1154,8 @@
 		76C3BB8D173B73F0004F6444 /* cook_edit_timedial_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_timedial_bg@2x.png"; sourceTree = "<group>"; };
 		76C3BB8E173B73F0004F6444 /* cook_edit_timedial_dial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_edit_timedial_dial.png; sourceTree = "<group>"; };
 		76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_timedial_dial@2x.png"; sourceTree = "<group>"; };
+		76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServesAndTimeEditViewController.h; sourceTree = "<group>"; };
+		76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServesAndTimeEditViewController.m; sourceTree = "<group>"; };
 		76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_textbox.png; sourceTree = "<group>"; };
 		76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox@2x.png"; sourceTree = "<group>"; };
 		76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise.png; sourceTree = "<group>"; };
@@ -1889,6 +1892,8 @@
 				76C07FCF1738BA55005915D5 /* CategoryListEditViewController.m */,
 				76C07FD91739D13B005915D5 /* IngredientListEditViewController.h */,
 				76C07FDA1739D13C005915D5 /* IngredientListEditViewController.m */,
+				76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */,
+				76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -3571,6 +3576,7 @@
 				76C07FDB1739D13C005915D5 /* IngredientListEditViewController.m in Sources */,
 				76C3BAFA173B30A2004F6444 /* CKNotchSliderView.m in Sources */,
 				76C3BB90173B73F0004F6444 /* CKDialerControl.m in Sources */,
+				76C3BB97173B795D004F6444 /* ServesAndTimeEditViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
