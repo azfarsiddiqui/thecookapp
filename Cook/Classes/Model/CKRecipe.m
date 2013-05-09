@@ -276,4 +276,19 @@
     [self.parseObject setObject:category.parseObject forKey:kCategoryModelForeignKeyName];
 }
 
+- (void)setNumServes:(NSInteger)numServes {
+    _numServes = numServes;
+    [self.parseObject setObject:[NSNumber numberWithInt:numServes] forKey:kRecipeAttrNumServes];
+}
+
+- (void)setCookingTimeInMinutes:(NSInteger)cookingTimeInMinutes {
+    _cookingTimeInMinutes = cookingTimeInMinutes;
+    [self.parseObject setObject:[NSNumber numberWithInt:cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
+}
+
+- (void)setPrepTimeInMinutes:(NSInteger)prepTimeInMinutes {
+    _prepTimeInMinutes = prepTimeInMinutes;
+    [self.parseObject setObject:[NSNumber numberWithInt:prepTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
+}
+
 @end
