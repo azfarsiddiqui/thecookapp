@@ -36,6 +36,7 @@
 #import "CategoryListEditViewController.h"
 #import "IngredientListEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
+#import "RecipeClipboard.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -49,6 +50,7 @@ typedef enum {
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) RecipeClipboard *clipboard;
 @property (nonatomic, strong) CKBook *book;
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
 @property (nonatomic, strong) CKPopoverViewController *popoverViewController;
@@ -117,6 +119,8 @@ typedef enum {
 #define kContentRightFrame      CGRectMake(265.0, 0.0, 395.0, 0.0)
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 
+#define kServesTag              122
+#define kPrepCookTag            123
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [self initWithRecipe:nil book:book]) {
@@ -311,7 +315,7 @@ typedef enum {
     } else if (editingView == self.servesCookView) {
         
         ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
-                                                                                                                 recipe:self.recipe
+                                                                                                        recipeClipboard:self.clipboard
                                                                                                                delegate:self
                                                                                                           editingHelper:self.editingHelper
                                                                                                                   white:YES];
@@ -376,6 +380,10 @@ typedef enum {
         
         [self saveStoryValue:value];
         
+    } else if (editingView == self.servesCookView) {
+        
+        [self saveServesPrepCookValue:value];
+    
     } else if (editingView == self.methodLabel) {
         
         [self saveMethodValue:value];
@@ -486,10 +494,13 @@ typedef enum {
         
         CGFloat iconOffset = -2.0;
         UIView *servesView = [self iconTextViewForIcon:[UIImage imageNamed:@"cook_book_icon_serves.png"]
-                                                  text:[NSString stringWithFormat:@"Serves %d", self.recipe.numServes]];
+                                                  text:[self servesDisplayFor:self.recipe.numServes]
+                                                   tag:kServesTag];
+        
         UIView *prepCookView = [self iconTextViewForIcon:[UIImage imageNamed:@"cook_book_icon_time.png"]
-                                                  text:[NSString stringWithFormat:@"Prep %dm | Cook %dm",
-                                                        self.recipe.prepTimeInMinutes, self.recipe.cookingTimeInMinutes]];
+                                                  text:[self prepCookDisplayForPrepMinutes:self.recipe.prepTimeInMinutes
+                                                                               cookMinutes:self.recipe.cookingTimeInMinutes]
+                                                     tag:kPrepCookTag];
         CGRect prepCookFrame = prepCookView.frame;
         prepCookFrame.origin.y = servesView.frame.origin.y + servesView.frame.size.height + iconOffset;
         prepCookView.frame = prepCookFrame;
@@ -530,7 +541,7 @@ typedef enum {
     return [ingredientsDisplay componentsJoinedByString:@""];
 }
 
-- (UIView *)iconTextViewForIcon:(UIImage *)icon text:(NSString *)text {
+- (UIView *)iconTextViewForIcon:(UIImage *)icon text:(NSString *)text tag:(NSInteger)tag {
     UIView *iconTextView = [[UIView alloc] initWithFrame:CGRectZero];;
     CGFloat iconTextGap = 8.0;
     UIEdgeInsets edgeInsets = UIEdgeInsetsMake(2.0, 2.0, 2.0, 2.0);
@@ -546,6 +557,7 @@ typedef enum {
     servesLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     servesLabel.shadowColor = [UIColor whiteColor];
     servesLabel.text = text;
+    servesLabel.tag = tag;
     [servesLabel sizeToFit];
     
     // Position them
@@ -927,7 +939,7 @@ typedef enum {
     // Left Frame: Serves
     self.servesCookView.frame = CGRectMake(contentInsets.left,
                                            contentInsets.top,
-                                           self.servesCookView.frame.size.width,
+                                           leftFrame.size.width - kContentInsets.left - kContentInsets.right,
                                            self.servesCookView.frame.size.height);
     [contentView addSubview:self.servesCookView];
     requiredLeftHeight += contentInsets.top + self.servesCookView.frame.size.height;
@@ -1289,6 +1301,9 @@ typedef enum {
 - (void)enableEditMode:(BOOL)enable {
     self.editMode = enable;
     
+    // Prepare or discard recipe clipboard.
+    [self prepareClipboard:enable];
+    
     // Snap to mid height then toggle buttons.
     if (enable && self.photoWindowHeight != PhotoWindowHeightMid) {
         [self snapContentToPhotoWindowHeight:kWindowMidHeight completion:^{
@@ -1387,6 +1402,18 @@ typedef enum {
                                         size.height);
 }
 
+- (void)setServes:(NSInteger)serves {
+    UILabel *servesLabel = (UILabel *)[self.servesCookView viewWithTag:kServesTag];
+    servesLabel.text = [self servesDisplayFor:serves];
+    [servesLabel sizeToFit];
+}
+
+- (void)setPrepMinutes:(NSInteger)prepMinutes cookMinutes:(NSInteger)cookMinutes {
+    UILabel *prepCookLabel = (UILabel *)[self.servesCookView viewWithTag:kPrepCookTag];
+    prepCookLabel.text = [self prepCookDisplayForPrepMinutes:prepMinutes cookMinutes:cookMinutes];
+    [prepCookLabel sizeToFit];
+}
+
 - (void)showPhotoPicker:(BOOL)show {
     [self showPhotoPicker:show completion:^{}];
 }
@@ -1471,6 +1498,26 @@ typedef enum {
 
 }
 
+- (void)saveServesPrepCookValue:(id)value {
+    
+    NSInteger serves = self.clipboard.serves;
+    NSInteger prepMinutes = self.clipboard.prepMinutes;
+    NSInteger cookMinutes = self.clipboard.cookMinutes;
+    
+    if (self.recipe.numServes != serves || self.recipe.prepTimeInMinutes != prepMinutes
+        || self.recipe.cookingTimeInMinutes != cookMinutes) {
+        
+        [self setServes:self.clipboard.serves];
+        [self setPrepMinutes:self.clipboard.prepMinutes cookMinutes:self.clipboard.cookMinutes];
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+        
+        // Update the editing wrapper.
+        [self.editingHelper updateEditingView:self.servesCookView animated:NO];
+    }
+}
+
 - (void)saveMethodValue:(id)value {
     
     // Get updated value and update label.
@@ -1508,6 +1555,11 @@ typedef enum {
             if (category) {
                 self.recipe.category = category;
             }
+            
+            // Save serves/prep.
+            self.recipe.numServes = self.clipboard.serves;
+            self.recipe.prepTimeInMinutes = self.clipboard.prepMinutes;
+            self.recipe.cookingTimeInMinutes = self.clipboard.cookMinutes;
             
             // Reset edit flags.
             self.saveRequired = NO;
@@ -1567,6 +1619,8 @@ typedef enum {
         [self setCategory:self.recipe.category.name];
         [self setStory:self.recipe.story];
         [self setMethod:self.recipe.description];
+        [self setServes:self.recipe.numServes];
+        [self setPrepMinutes:self.recipe.prepTimeInMinutes cookMinutes:self.recipe.cookingTimeInMinutes];
         
         // Reset edit flags.
         self.saveRequired = NO;
@@ -1588,6 +1642,25 @@ typedef enum {
         self.progressView = nil;
     }
     self.saveInProgress = saveMode;
+}
+
+- (void)prepareClipboard:(BOOL)prepare {
+    if (prepare) {
+        self.clipboard = [[RecipeClipboard alloc] init];
+        self.clipboard.serves = self.recipe.numServes;
+        self.clipboard.prepMinutes = self.recipe.prepTimeInMinutes;
+        self.clipboard.cookMinutes = self.recipe.cookingTimeInMinutes;
+    } else {
+        self.clipboard = nil;
+    }
+}
+
+- (NSString *)servesDisplayFor:(NSInteger)serves {
+    return [NSString stringWithFormat:@"Serves %d", serves];
+}
+
+- (NSString *)prepCookDisplayForPrepMinutes:(NSInteger)prepMinutes cookMinutes:(NSInteger)cookMinutes {
+    return [NSString stringWithFormat:@"Prep %dm | Cook %dm", prepMinutes, cookMinutes];
 }
 
 @end
