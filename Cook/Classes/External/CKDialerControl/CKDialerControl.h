@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKDialerControl;
+
 @protocol CKDialerControlDelegate <NSObject>
 
-- (void)dialerControlSelectedIndex:(NSInteger)selectedIndex;
+- (void)dialerControl:(CKDialerControl *)dialerControl selectedIndex:(NSInteger)selectedIndex;
 
 @end
 

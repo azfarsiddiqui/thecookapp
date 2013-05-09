@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKNotchSliderView;
+
 @protocol CKNotchSliderViewDelegate <NSObject>
 
-- (void)notchSliderViewSelectedIndex:(NSInteger)notchIndex;
+- (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex;
 
 @end
 

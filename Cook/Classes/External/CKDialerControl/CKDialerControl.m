@@ -123,7 +123,7 @@
         self.selectedOptionIndex = remainder;
         
         // Inform delegate.
-        [self.delegate dialerControlSelectedIndex:self.selectedOptionIndex];
+        [self.delegate dialerControl:self selectedIndex:self.selectedOptionIndex];
     }
     
     return YES;

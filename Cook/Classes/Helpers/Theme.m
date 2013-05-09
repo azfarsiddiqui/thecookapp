@@ -406,6 +406,54 @@
    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0f];
 }
 
++ (UIFont *)editServesTitleFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:40.0];
+}
+
++ (UIColor *)editServesTitleColour {
+    return [UIColor darkGrayColor];
+}
+
++ (UIFont *)editServesFont {
+    return [self editServesTitleFont];
+}
+
++ (UIColor *)editServesColour {
+    return [UIColor lightGrayColor];
+}
+
++ (UIFont *)editPrepTitleFont {
+    return [self editServesTitleFont];
+}
+
++ (UIColor *)editPrepTitleColour {
+    return [self editServesTitleColour];
+}
+
++ (UIFont *)editPrepFont {
+    return [self editServesTitleFont];
+}
+
++ (UIColor *)editPrepColour {
+    return [self editServesColour];
+}
+
++ (UIFont *)editCookTitleFont {
+    return [self editServesTitleFont];
+}
+
++ (UIColor *)editCookTitleColour {
+    return [self editServesTitleColour];
+}
+
++ (UIFont *)editCookFont {
+    return [self editServesTitleFont];
+}
+
++ (UIColor *)editCookColour {
+    return [self editServesColour];
+}
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor
 {

@@ -162,7 +162,7 @@
 }
 
 - (void)informDelegateSelectedNotchIndex:(NSInteger)selectedNotchIndex {
-    [self.delegate notchSliderViewSelectedIndex:selectedNotchIndex];
+    [self.delegate notchSliderView: self selectedIndex:selectedNotchIndex];
 }
 
 @end

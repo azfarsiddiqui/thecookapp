@@ -116,6 +116,20 @@
 + (UIColor *) categoryListSelectedColor;
 + (UIFont *) typeItUpFont;
 + (UIFont *) orJustAddFont;
+
++ (UIFont *)editServesTitleFont;
++ (UIColor *)editServesTitleColour;
++ (UIFont *)editServesFont;
++ (UIColor *)editServesColour;
++ (UIFont *)editPrepTitleFont;
++ (UIColor *)editPrepTitleColour;
++ (UIFont *)editPrepFont;
++ (UIColor *)editPrepColour;
++ (UIFont *)editCookTitleFont;
++ (UIColor *)editCookTitleColour;
++ (UIFont *)editCookFont;
++ (UIColor *)editCookColour;
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
 
