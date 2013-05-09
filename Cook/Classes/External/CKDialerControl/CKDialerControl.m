@@ -49,6 +49,10 @@
 }
 
 - (void)selectOptionAtIndex:(NSInteger)optionIndex animated:(BOOL)animated {
+    [self selectOptionAtIndex:optionIndex animated:animated informDelegate:YES];
+}
+
+- (void)selectOptionAtIndex:(NSInteger)optionIndex animated:(BOOL)animated informDelegate:(BOOL)informDelegate {
     NSInteger maxIndex = [self maxOptionIndex];
     if (optionIndex > maxIndex) {
         return;
@@ -66,12 +70,16 @@
                              self.dialerView.transform = transform;
                          }
                          completion:^(BOOL finished) {
-                             [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
+                             if (informDelegate) {
+                                 [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
+                             }
                          }];
         
     } else {
         self.dialerView.transform = transform;
-        [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
+        if (informDelegate) {
+            [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
+        }
     }
 }
 

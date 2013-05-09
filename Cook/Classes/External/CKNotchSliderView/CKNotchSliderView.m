@@ -26,7 +26,7 @@
         self.delegate = delegate;
         self.numNotches = numNotches;
         [self initTrack];
-        [self selectNotch:0 animated:NO];
+        [self selectNotch:0 animated:NO informDelegate:NO];
     }
     return self;
 }
@@ -36,6 +36,10 @@
 }
 
 - (void)selectNotch:(NSInteger)notch animated:(BOOL)animated {
+    [self selectNotch:notch animated:animated informDelegate:YES];
+}
+
+- (void)selectNotch:(NSInteger)notch animated:(BOOL)animated informDelegate:(BOOL)informDelegate {
     self.currentNotchIndex = notch;
     UIImageView *trackNotch = [self.trackNotches objectAtIndex:notch];
     if (animated) {
@@ -47,11 +51,15 @@
                              self.currentNotchView.center = trackNotch.center;
                          }
                          completion:^(BOOL finished) {
-                             [self informDelegateSelectedNotchIndex:notch];
+                             if (informDelegate) {
+                                 [self informDelegateSelectedNotchIndex:notch];
+                             }
                          }];
     } else {
         self.currentNotchView.center = trackNotch.center;
-        [self informDelegateSelectedNotchIndex:notch];
+        if (informDelegate) {
+            [self informDelegateSelectedNotchIndex:notch];
+        }
     }
 }
 
@@ -120,7 +128,6 @@
     NSInteger trackIndex = [self.trackNotches indexOfObject:trackView];
     if (trackIndex != self.currentNotchIndex) {
         [self selectNotch:trackIndex];
-        [self informDelegateSelectedNotchIndex:trackIndex];
     }
 }
 
@@ -163,7 +170,7 @@
 }
 
 - (void)informDelegateSelectedNotchIndex:(NSInteger)selectedNotchIndex {
-    [self.delegate notchSliderView: self selectedIndex:selectedNotchIndex];
+    [self.delegate notchSliderView:self selectedIndex:selectedNotchIndex];
 }
 
 @end
