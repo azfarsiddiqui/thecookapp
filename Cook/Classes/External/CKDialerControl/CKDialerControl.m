@@ -66,10 +66,12 @@
                              self.dialerView.transform = transform;
                          }
                          completion:^(BOOL finished) {
+                             [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
                          }];
         
     } else {
         self.dialerView.transform = transform;
+        [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
     }
 }
 
@@ -123,7 +125,7 @@
         self.selectedOptionIndex = remainder;
         
         // Inform delegate.
-        [self.delegate dialerControl:self selectedIndex:self.selectedOptionIndex];
+        [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
     }
     
     return YES;
@@ -148,6 +150,10 @@
 
 - (NSInteger)maxOptionIndex {
     return (360.0 / self.unitDegrees) -1;
+}
+
+- (void)informDelegateOfSelectedOptionIndex:(NSInteger)selectedOptionIndex {
+    [self.delegate dialerControl:self selectedIndex:self.selectedOptionIndex];
 }
 
 @end

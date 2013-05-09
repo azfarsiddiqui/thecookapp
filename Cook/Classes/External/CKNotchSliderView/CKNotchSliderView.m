@@ -47,9 +47,11 @@
                              self.currentNotchView.center = trackNotch.center;
                          }
                          completion:^(BOOL finished) {
+                             [self informDelegateSelectedNotchIndex:notch];
                          }];
     } else {
         self.currentNotchView.center = trackNotch.center;
+        [self informDelegateSelectedNotchIndex:notch];
     }
 }
 
@@ -155,7 +157,6 @@
         }
         
         [self selectNotch:selectedTrackIndex];
-        [self informDelegateSelectedNotchIndex:selectedTrackIndex];
     }
     
     [panGesture setTranslation:CGPointZero inView:self];

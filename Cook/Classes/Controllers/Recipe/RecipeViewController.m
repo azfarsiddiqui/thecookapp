@@ -311,6 +311,7 @@ typedef enum {
     } else if (editingView == self.servesCookView) {
         
         ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
+                                                                                                                 recipe:self.recipe
                                                                                                                delegate:self
                                                                                                           editingHelper:self.editingHelper
                                                                                                                   white:YES];

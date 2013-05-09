@@ -10,19 +10,18 @@
 #import "CKDialerControl.h"
 #import "CKNotchSliderView.h"
 #import "Theme.h"
+#import "CKRecipe.h"
 
 @interface ServesAndTimeEditViewController () <CKDialerControlDelegate, CKNotchSliderViewDelegate>
 
+@property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) UIView *containerView;
-
 @property (nonatomic, strong) UILabel *servesTitleLabel;
 @property (nonatomic, strong) UILabel *servesLabel;
 @property (nonatomic, strong) CKNotchSliderView *servesSlider;
-
 @property (nonatomic, strong) UILabel *prepTitleLabel;
 @property (nonatomic, strong) UILabel *prepLabel;
 @property (nonatomic, strong) CKDialerControl *prepDialer;
-
 @property (nonatomic, strong) UILabel *cookTitleLabel;
 @property (nonatomic, strong) UILabel *cookLabel;
 @property (nonatomic, strong) CKDialerControl *cookDialer;
@@ -39,10 +38,30 @@
 #define kUnitServes     2
 #define kUnitMinutes    10
 
+- (id)initWithEditView:(UIView *)editView recipe:(CKRecipe *)recipe delegate:(id<CKEditViewControllerDelegate>)delegate
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white {
+    if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white]) {
+        self.recipe = recipe;
+    }
+    return self;
+}
+
 - (UIView *)createTargetEditView {
     [self initServes];
     [self initDialers];
     return self.containerView;
+}
+
+#pragma mark - Lifecycle events
+
+- (void)targetTextEditingViewDidAppear:(BOOL)appear {
+    [super targetTextEditingViewDidAppear:appear];
+    
+    if (appear) {
+        [self.servesSlider selectNotch:[self servesIndex] animated:YES];
+        [self.prepDialer selectOptionAtIndex:[self prepIndex] animated:YES];
+        [self.cookDialer selectOptionAtIndex:[self cookIndex] animated:YES];
+    }
 }
 
 #pragma mark - Lazy getters
@@ -239,6 +258,36 @@
 - (CGSize)availableSize {
     return CGSizeMake(self.containerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                       self.containerView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
+}
+
+- (NSInteger)servesIndex {
+    NSInteger numServes = self.recipe.numServes;
+    if (numServes == 0) {
+        numServes = 2;
+    } else if (numServes % kUnitServes != 0) {
+        numServes += 1;
+    }
+    return (numServes / kUnitServes) - 1;
+}
+
+- (NSInteger)prepIndex {
+    return [self dialerIndexForMinutes:self.recipe.prepTimeInMinutes];
+}
+
+- (NSInteger)cookIndex {
+    return [self dialerIndexForMinutes:self.recipe.cookingTimeInMinutes];
+}
+
+- (NSInteger)dialerIndexForMinutes:(NSInteger)minutes {
+    NSInteger dialerIndex = 0;
+    if (minutes % kUnitMinutes != 0) {
+        minutes += (minutes % kUnitMinutes);
+    }
+    
+    if (minutes > 0) {
+        dialerIndex = (minutes / kUnitMinutes);
+    }
+    return dialerIndex;
 }
 
 @end

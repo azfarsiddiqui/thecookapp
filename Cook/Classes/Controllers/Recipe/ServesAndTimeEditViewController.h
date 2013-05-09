@@ -8,6 +8,11 @@
 
 #import "CKEditViewController.h"
 
+@class CKRecipe;
+
 @interface ServesAndTimeEditViewController : CKEditViewController
+
+- (id)initWithEditView:(UIView *)editView recipe:(CKRecipe *)recipe delegate:(id<CKEditViewControllerDelegate>)delegate
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
 
 @end
