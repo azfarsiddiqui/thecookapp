@@ -8,10 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol CKNotchSliderViewDelegate <NSObject>
+
+- (void)notchSliderViewSelectedIndex:(NSInteger)notchIndex;
+
+@end
+
 @interface CKNotchSliderView : UIView
 
 @property (nonatomic, assign) NSInteger currentNotchIndex;
 
-- (id)initWithNumNotches:(NSInteger)numNotches unit:(NSInteger)unit;
+- (id)initWithNumNotches:(NSInteger)numNotches delegate:(id<CKNotchSliderViewDelegate>)delegate;
+- (void)selectNotch:(NSInteger)notch;
+- (void)selectNotch:(NSInteger)notch animated:(BOOL)animated;
 
 @end

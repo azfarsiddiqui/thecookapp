@@ -10,8 +10,8 @@
 
 @interface CKNotchSliderView ()
 
+@property (nonatomic, assign) id<CKNotchSliderViewDelegate> delegate;
 @property (nonatomic, assign) NSInteger numNotches;
-@property (nonatomic, assign) CGFloat unit;
 @property (nonatomic, strong) NSMutableArray *trackNotches;
 @property (nonatomic, strong) UIImageView *currentNotchView;
 
@@ -21,14 +21,36 @@
 
 #define kHeight 58.0
 
-- (id)initWithNumNotches:(NSInteger)numNotches unit:(NSInteger)unit {
+- (id)initWithNumNotches:(NSInteger)numNotches delegate:(id<CKNotchSliderViewDelegate>)delegate {
     if ([self initWithFrame:CGRectZero]) {
+        self.delegate = delegate;
         self.numNotches = numNotches;
-        self.unit = unit;
         [self initTrack];
         [self selectNotch:0 animated:NO];
     }
     return self;
+}
+
+- (void)selectNotch:(NSInteger)notch {
+    [self selectNotch:notch animated:YES];
+}
+
+- (void)selectNotch:(NSInteger)notch animated:(BOOL)animated {
+    self.currentNotchIndex = notch;
+    UIImageView *trackNotch = [self.trackNotches objectAtIndex:notch];
+    if (animated) {
+        
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^{
+                             self.currentNotchView.center = trackNotch.center;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    } else {
+        self.currentNotchView.center = trackNotch.center;
+    }
 }
 
 #pragma mark - Lazy getters
@@ -81,28 +103,6 @@
     self.frame = frame;
 }
 
-- (void)selectNotch:(NSInteger)notch {
-    [self selectNotch:notch animated:YES];
-}
-
-- (void)selectNotch:(NSInteger)notch animated:(BOOL)animated {
-    self.currentNotchIndex = notch;
-    UIImageView *trackNotch = [self.trackNotches objectAtIndex:notch];
-    if (animated) {
-        
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseOut
-                         animations:^{
-                             self.currentNotchView.center = trackNotch.center;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-    } else {
-        self.currentNotchView.center = trackNotch.center;
-    }
-}
-
 - (UIImage *)trackImageForIndex:(NSInteger)trackIndex {
     if (trackIndex == 0) {
         return [UIImage imageNamed:@"cook_edit_serves_notches_left.png"];
@@ -118,6 +118,7 @@
     NSInteger trackIndex = [self.trackNotches indexOfObject:trackView];
     if (trackIndex != self.currentNotchIndex) {
         [self selectNotch:trackIndex];
+        [self informDelegateSelectedNotchIndex:trackIndex];
     }
 }
 
@@ -154,9 +155,14 @@
         }
         
         [self selectNotch:selectedTrackIndex];
+        [self informDelegateSelectedNotchIndex:selectedTrackIndex];
     }
     
     [panGesture setTranslation:CGPointZero inView:self];
+}
+
+- (void)informDelegateSelectedNotchIndex:(NSInteger)selectedNotchIndex {
+    [self.delegate notchSliderViewSelectedIndex:selectedNotchIndex];
 }
 
 @end
