@@ -271,6 +271,12 @@
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
     [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+    
+    // Only fetch public recipes if it's not your own book.
+    if (![self isUserBookAuthor:[CKUser currentUser]]) {
+        [query whereKey:kRecipeAttrPrivacy equalTo:[NSNumber numberWithBool:NO]];
+    }
+    
     [query includeKey:kCategoryModelForeignKeyName];
     [query includeKey:kRecipeAttrRecipePhotos];
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipes, NSError *error) {
