@@ -1475,7 +1475,9 @@ typedef enum {
     
     // Get updated value and update label.
     NSString *text = (NSString *)value;
-    if (![text isEqualToString:self.titleLabel.text]) {
+    self.clipboard.name = text;
+    
+    if (![text isEqualToString:self.recipe.name]) {
         
         // Update title.
         [self setTitle:text];
@@ -1508,7 +1510,9 @@ typedef enum {
     
     // Get updated value and update label.
     NSString *text = (NSString *)value;
-    if (![text isEqualToString:self.storyLabel.text]) {
+    self.clipboard.story = text;
+    
+    if (![text isEqualToString:self.recipe.story]) {
         
         // Update title.
         [self setStory:text];
@@ -1546,7 +1550,9 @@ typedef enum {
     
     // Get updated value and update label.
     NSString *text = (NSString *)value;
-    if (![text isEqualToString:self.methodLabel.text]) {
+    self.clipboard.method = text;
+    
+    if (![text isEqualToString:self.recipe.description]) {
         
         // Update title.
         [self setMethod:text];
@@ -1571,9 +1577,9 @@ typedef enum {
             self.recipe.privacy = self.clipboard.privacyMode;
             
             // Set current text values.
-            self.recipe.name = self.titleLabel.text;
-            self.recipe.description = self.methodLabel.text;
-            self.recipe.story = self.storyLabel.text;
+            self.recipe.name = self.clipboard.name;
+            self.recipe.story = self.clipboard.story;
+            self.recipe.description = self.clipboard.method;
             
             // Set current category.
             CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
@@ -1675,6 +1681,11 @@ typedef enum {
     if (prepare) {
         self.clipboard = [[RecipeClipboard alloc] init];
         self.clipboard.privacyMode = self.recipe.privacy;
+        
+        self.clipboard.name = self.recipe.name;
+        self.clipboard.story = self.recipe.story;
+        self.clipboard.method = self.recipe.description;
+        
         self.clipboard.serves = self.recipe.numServes;
         self.clipboard.prepMinutes = self.recipe.prepTimeInMinutes;
         self.clipboard.cookMinutes = self.recipe.cookingTimeInMinutes;

@@ -7,8 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CKCategory.h"
 
 @interface RecipeClipboard : NSObject
+
+@property (nonatomic, strong) CKCategory *category;
+
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *story;
+@property (nonatomic, copy) NSString *method;
 
 @property (nonatomic, assign) NSInteger serves;
 @property (nonatomic, assign) NSInteger prepMinutes;
