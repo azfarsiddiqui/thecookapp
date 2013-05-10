@@ -26,8 +26,7 @@
                                                                 forKey:NSLocalizedDescriptionKey]];
 }
 
-+ (PFObject *)objectWithDefaultSecurityWithClassName:(NSString *)parseClassName
-{
++ (PFObject *)objectWithDefaultSecurityWithClassName:(NSString *)parseClassName {
     PFObject *pfObject = [PFObject objectWithClassName:parseClassName];
     PFACL *objectACL = [PFACL ACLWithUser:[PFUser currentUser]];
     [objectACL setPublicReadAccess:YES];
@@ -40,18 +39,6 @@
         self.parseObject = parseObject;
     }
     return self;
-}
-
-- (void)setName:(NSString *)name {
-    [self.parseObject setObject:[NSString CK_safeString:name] forKey:kModelAttrName];
-}
-
-- (NSString *)name {
-    return [self.parseObject objectForKey:kModelAttrName];
-}
-
-- (NSString *)objectId {
-    return self.parseObject.objectId;
 }
 
 - (void)saveEventually {
@@ -95,6 +82,20 @@
 
 - (NSDate *)updatedDateTime {
     return self.parseObject.updatedAt;
+}
+
+#pragma mark - Wrapper getters/setters
+
+- (void)setName:(NSString *)name {
+    [self.parseObject setObject:[NSString CK_safeString:name] forKey:kModelAttrName];
+}
+
+- (NSString *)name {
+    return [self.parseObject objectForKey:kModelAttrName];
+}
+
+- (NSString *)objectId {
+    return self.parseObject.objectId;
 }
 
 #pragma mark - NSObject

@@ -27,8 +27,7 @@
     return category;
 }
 
-+(void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
-{
++ (void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kCategoryModelName];
     [query setCachePolicy:kPFCachePolicyCacheElseNetwork];
     [query orderByAscending:kModelAttrName];

@@ -21,6 +21,8 @@
 
 @implementation CKRecipe
 
+@synthesize book = _book;
+@synthesize user = _user;
 @synthesize category = _category;
 @synthesize privacy = _privacy;
 
@@ -30,10 +32,11 @@
     PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     recipe.book = book;
+    recipe.user = book.user;
     return recipe;
 }
 
-+(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
++ (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     
     NSArray *ingredients = [parseRecipe objectForKey:kRecipeAttrIngredients];
@@ -83,30 +86,29 @@
     return recipe;
 }
 
-+(CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book
-{
++ (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book {
     CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
     recipe.book = book;
     return recipe;
 }
 
-+(CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book
-{
++ (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book {
     PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
     CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
     recipe.book = book;
     return recipe;
 }
 
-+(CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category
-{
++ (CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category {
     CKRecipe *recipe = [CKRecipe recipeForUser:user book:book];
     recipe.category = category;
     return recipe;
 }
+
 #pragma mark - save
--(void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress
-{
+
+- (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
+                  imageUploadProgress:(ProgressBlock)imageUploadProgress {
     
     PFObject *parseRecipe = self.parseObject;
     [self prepareParseRecipeObjectForSave:parseRecipe];
@@ -165,16 +167,16 @@
 }
 
 #pragma mark - fetch
--(void) fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess
-{
+
+- (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess {
     [self.category.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         getObjectSuccess(_category.name);
     }];
 }
 
 #pragma mark - other public
--(PFFile*) imageFile
-{
+
+- (PFFile *)imageFile {
     return [self.recipeImage imageFile];
 }
 
@@ -182,58 +184,57 @@
     return ([self imageFile] != nil);
 }
 
--(void)setImage:(UIImage *)image
-{
+- (void)setImage:(UIImage *)image {
     if (image) {
         self.recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipeImage.png"];
     }
 }
 
--(BOOL)isUserRecipeAuthor:(CKUser *)user
-{
+- (BOOL)isUserRecipeAuthor:(CKUser *)user {
     return  [self.user isEqual:user];
 }
 
-#pragma mark - Private Methods
+#pragma mark - CKModel methods
 
--(void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject
-{
-    [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
-    [parseRecipeObject setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
-    if (self.category && self.category.parseObject) {
-        [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
-    }
-    [parseRecipeObject setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
-    if (self.numServes > 0) {
-        [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
-    }
-    
-    if (self.cookingTimeInMinutes > 0) {
-        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
-    }
-
-    if (self.prepTimeInMinutes > 0) {
-        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
-    }
-
-    if (self.ingredients && [self.ingredients count] > 0) {
-        NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
-            if (!ingredient.measurement) {
-                return ingredient.name;
-            } else {
-                return [NSString stringWithFormat:@"%@::%@", ingredient.measurement,ingredient.name];
-            }
-        }];
-        
-        [parseRecipeObject setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
-    }
-    
-    // Now add the category to book.
-    // Why is this here?
-    [self.book.parseObject addUniqueObject:self.category.parseObject forKey:kBookAttrCategories];
+- (NSDictionary *)descriptionProperties {
+    NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%@", [NSString CK_stringForBoolean:self.privacy]] forKey:kRecipeAttrPrivacy];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.story length]] forKey:kRecipeAttrStory];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.method length]] forKey:kRecipeAttrDescription];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", self.numServes] forKey:kRecipeAttrNumServes];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", self.prepTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", self.cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
+    [descriptionProperties setValue:[self.category description] forKey:kCategoryModelForeignKeyName];
+    [descriptionProperties setValue:[self.book description] forKey:kBookModelForeignKeyName];
+    [descriptionProperties setValue:[self.user description] forKey:kUserModelForeignKeyName];
+    return descriptionProperties;
 }
 
-#pragma mark - Overridden methods
+#pragma mark - Wrapper getter/setter methods
+
+- (CKBook *)book {
+    if (!_book) {
+        _book = [[CKBook alloc] initWithParseObject:[self.parseObject objectForKey:kBookModelForeignKeyName]];
+    }
+    return _book;
+}
+
+- (void)setBook:(CKBook *)book {
+    _book = book;
+    [self.parseObject setObject:book.parseObject forKey:kBookModelForeignKeyName];
+}
+
+- (CKUser *)user {
+    if (!_user) {
+        _user = [CKUser userWithParseUser:[self.parseObject objectForKey:kUserModelForeignKeyName]];
+    }
+    return _user;
+}
+
+- (void)setUser:(CKUser *)user {
+    _user = user;
+    [self.parseObject setObject:user.parseUser forKey:kUserModelForeignKeyName];
+}
 
 - (NSString *)method {
     return [self.parseObject objectForKey:kRecipeAttrDescription];
@@ -247,17 +248,15 @@
     return [self.parseObject objectForKey:kRecipeAttrStory];
 }
 
--(void)setStory:(NSString *)story {
+- (void)setStory:(NSString *)story {
     [self.parseObject setObject:[NSString CK_safeString:story] forKey:kRecipeAttrStory];
 }
 
--(NSInteger)categoryIndex
-{
+- (NSInteger)categoryIndex {
     return [[self.parseObject objectForKey:kRecipeAttrCategoryIndex] intValue];
 }
 
--(void)setCategoryIndex:(NSInteger)categoryIndex
-{
+- (void)setCategoryIndex:(NSInteger)categoryIndex {
     [self.parseObject setObject:[NSNumber numberWithInt:categoryIndex]forKey:kRecipeAttrCategoryIndex];
 }
 
@@ -299,6 +298,44 @@
 
 - (BOOL)privacy {
     return [[self.parseObject objectForKey:kRecipeAttrPrivacy] boolValue];
+}
+
+#pragma mark - Private Methods
+
+- (void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject {
+    [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
+    [parseRecipeObject setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
+    if (self.category && self.category.parseObject) {
+        [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
+    }
+    [parseRecipeObject setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
+    if (self.numServes > 0) {
+        [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
+    }
+    
+    if (self.cookingTimeInMinutes > 0) {
+        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
+    }
+    
+    if (self.prepTimeInMinutes > 0) {
+        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
+    }
+    
+    if (self.ingredients && [self.ingredients count] > 0) {
+        NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
+            if (!ingredient.measurement) {
+                return ingredient.name;
+            } else {
+                return [NSString stringWithFormat:@"%@::%@", ingredient.measurement,ingredient.name];
+            }
+        }];
+        
+        [parseRecipeObject setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
+    }
+    
+    // Now add the category to book.
+    // Why is this here?
+    [self.book.parseObject addUniqueObject:self.category.parseObject forKey:kBookAttrCategories];
 }
 
 @end

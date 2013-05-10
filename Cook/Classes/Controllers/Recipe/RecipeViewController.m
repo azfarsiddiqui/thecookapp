@@ -148,9 +148,9 @@ typedef enum {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    DLog(@"%@", self.recipe);
     self.view.backgroundColor = [UIColor clearColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -162,7 +162,6 @@ typedef enum {
     [self initScrollView];
     [self initBackgroundImageView];
     [self initStartState];
-    
 }
 
 #pragma mark - BookModalViewController methods
@@ -1569,6 +1568,9 @@ typedef enum {
 - (void)exitEditModeThenSave:(BOOL)save {
     
     if (save) {
+        
+        DLog(@"save[%@] saveRequired[%@]", [NSString CK_stringForBoolean:save], [NSString CK_stringForBoolean:self.saveRequired]);
+        DLog(@"%@", self.recipe);
         
         // Save any changes off.
         if (self.saveRequired) {

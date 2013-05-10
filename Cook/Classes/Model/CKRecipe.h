@@ -15,20 +15,22 @@
 
 @interface CKRecipe : CKModel
 
+@property(nonatomic, strong) CKBook *book;
+@property(nonatomic, strong) CKUser *user;
+
+@property (nonatomic, assign) BOOL privacy;
+@property(nonatomic, strong) CKCategory *category;
 @property (nonatomic, strong) NSString *story;
 @property (nonatomic, strong) NSString *method;
+
+@property (nonatomic, assign) NSInteger numServes;
+@property (nonatomic, assign) NSInteger prepTimeInMinutes;
+@property (nonatomic, assign) NSInteger cookingTimeInMinutes;
 
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSMutableArray *ingredients;
-@property (nonatomic, assign) NSInteger cookingTimeInMinutes;
-@property (nonatomic, assign) NSInteger prepTimeInMinutes;
-@property (nonatomic, assign) NSInteger numServes;
-@property (nonatomic, assign) BOOL privacy;
 
-@property(nonatomic, strong) CKBook *book;
-@property(nonatomic, strong) CKUser *user;
-@property(nonatomic, strong) CKCategory *category;
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 
 //creation
