@@ -16,7 +16,8 @@
 @interface CKRecipe : CKModel
 
 @property (nonatomic, strong) NSString *story;
-@property (nonatomic, strong) NSString *description;
+@property (nonatomic, strong) NSString *method;
+
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSMutableArray *ingredients;

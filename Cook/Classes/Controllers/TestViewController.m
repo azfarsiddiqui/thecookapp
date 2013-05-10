@@ -283,7 +283,7 @@
     }
     
     [self setRecipeNameValue:self.recipe.name];
-    [self setMethodValue:self.recipe.description];
+    [self setMethodValue:self.recipe.method];
     [self setCategoryValue:self.recipe.category];
     [self setIngredientsValue:self.recipe.ingredients];
     [self setServesCookPrepWithNumServes:self.recipe.numServes
@@ -666,8 +666,8 @@
         label.text = kPlaceholderTextRecipeDescription;
     } else {
         label.text = methodValue;
-        if (![self.recipe.description isEqualToString:methodValue]) {
-            self.recipe.description = methodValue;
+        if (![self.recipe.method isEqualToString:methodValue]) {
+            self.recipe.method = methodValue;
         }
     }
     

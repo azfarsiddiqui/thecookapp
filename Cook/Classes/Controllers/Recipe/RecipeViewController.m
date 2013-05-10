@@ -994,7 +994,7 @@ typedef enum {
     
     // Right Frame.
     CGSize methodAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
-    NSAttributedString *storyDisplay = [self attributedTextForText:self.recipe.description font:[Theme methodFont] colour:[Theme methodColor]];
+    NSAttributedString *storyDisplay = [self attributedTextForText:self.recipe.method font:[Theme methodFont] colour:[Theme methodColor]];
     UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     methodLabel.numberOfLines = 0;
     methodLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -1552,7 +1552,7 @@ typedef enum {
     NSString *text = (NSString *)value;
     self.clipboard.method = text;
     
-    if (![text isEqualToString:self.recipe.description]) {
+    if (![text isEqualToString:self.recipe.method]) {
         
         // Update title.
         [self setMethod:text];
@@ -1579,7 +1579,7 @@ typedef enum {
             // Set current text values.
             self.recipe.name = self.clipboard.name;
             self.recipe.story = self.clipboard.story;
-            self.recipe.description = self.clipboard.method;
+            self.recipe.method = self.clipboard.method;
             
             // Set current category.
             CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
@@ -1651,7 +1651,7 @@ typedef enum {
         [self setTitle:self.recipe.name];
         [self setCategory:self.recipe.category.name];
         [self setStory:self.recipe.story];
-        [self setMethod:self.recipe.description];
+        [self setMethod:self.recipe.method];
         [self setServes:self.recipe.numServes];
         [self setPrepMinutes:self.recipe.prepTimeInMinutes cookMinutes:self.recipe.cookingTimeInMinutes];
         
@@ -1684,7 +1684,7 @@ typedef enum {
         
         self.clipboard.name = self.recipe.name;
         self.clipboard.story = self.recipe.story;
-        self.clipboard.method = self.recipe.description;
+        self.clipboard.method = self.recipe.method;
         
         self.clipboard.serves = self.recipe.numServes;
         self.clipboard.prepMinutes = self.recipe.prepTimeInMinutes;

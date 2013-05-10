@@ -234,14 +234,12 @@
 
 #pragma mark - Overridden methods
 
--(NSString *)description
-{
+- (NSString *)method {
     return [self.parseObject objectForKey:kRecipeAttrDescription];
 }
 
--(void)setDescription:(NSString *)description
-{
-    [self.parseObject setObject:description forKey:kRecipeAttrDescription];
+- (void)setMethod:(NSString *)method {
+    [self.parseObject setObject:method forKey:kRecipeAttrDescription];
 }
 
 - (NSString *)story {

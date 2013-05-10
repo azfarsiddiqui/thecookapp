@@ -31,7 +31,6 @@
 }
 
 - (BOOL)CK_blank {
-    NSString *trimmed = [self CK_whitespaceTrimmed];
     return ([[self CK_whitespaceTrimmed] length] == 0);
 }
 
