@@ -14,6 +14,7 @@
 #import "NSArray+Enumerable.h"
 #import "CKActivity.h"
 #import "NSString+Utilities.h"
+#import "CKRecipeImage.h"
 
 @interface CKRecipe ()
 
@@ -25,6 +26,12 @@
 @synthesize user = _user;
 @synthesize category = _category;
 @synthesize privacy = _privacy;
+@synthesize method = _method;
+@synthesize story = _story;
+@synthesize numServes = _numServes;
+@synthesize prepTimeInMinutes = _prepTimeInMinutes;
+@synthesize cookingTimeInMinutes = _cookingTimeInMinutes;
+@synthesize recipeImage = _recipeImage;
 
 #pragma mark - creation
 
@@ -110,26 +117,39 @@
 - (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure {
     
+    CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
+    [self setRecipeImage:recipeImage];
+    
     // Save the photo first to get its objectId.
-    PFFile *recipePhotoFile = [PFFile fileWithName:@"recipe.jpg" data:UIImageJPEGRepresentation(image, 1.0)];
+    PFFile *recipePhotoFile = [recipeImage imageFile];
     [recipePhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
         if (!error) {
             
-            // Replace the list with a single-element list, future expandable for more photos.
-            [self.parseObject setObject:@[recipePhotoFile] forKey:kRecipeAttrRecipePhotos];
-            
-            // Now go ahead and save the recipe.
-            [self saveInBackground:^{
-                success();
+            // Save CKRecipeImage now that PFFile has been persisted.
+            [recipeImage saveInBackground:^{
+                
+                // Associate with recipe.
+                [self setRecipeImage:recipeImage];
+                
+                // Now go ahead and save the recipe.
+                [self saveInBackground:^{
+                    success();
+                } failure:^(NSError *error) {
+                    failure(error);
+                }];
+                
             } failure:^(NSError *error) {
                 failure(error);
             }];
-                
+            
         } else {
             failure(error);
         }
     } progressBlock:^(int percentDone) {
+        
         progress(percentDone);
+        
     }];
     
 }
@@ -247,7 +267,6 @@
 }
 
 - (void)setBook:(CKBook *)book {
-    _book = book;
     [self.parseObject setObject:book.parseObject forKey:kBookModelForeignKeyName];
 }
 
@@ -259,12 +278,14 @@
 }
 
 - (void)setUser:(CKUser *)user {
-    _user = user;
     [self.parseObject setObject:user.parseUser forKey:kUserModelForeignKeyName];
 }
 
 - (NSString *)method {
-    return [self.parseObject objectForKey:kRecipeAttrDescription];
+    if (!_method) {
+        _method = [self.parseObject objectForKey:kRecipeAttrDescription];
+    }
+    return _method;
 }
 
 - (void)setMethod:(NSString *)method {
@@ -272,7 +293,10 @@
 }
 
 - (NSString *)story {
-    return [self.parseObject objectForKey:kRecipeAttrStory];
+    if (!_story) {
+        _story = [self.parseObject objectForKey:kRecipeAttrStory];
+    }
+    return _story;
 }
 
 - (void)setStory:(NSString *)story {
@@ -299,32 +323,65 @@
 }
 
 - (void)setCategory:(CKCategory *)category {
-    _category = category;
     [self.parseObject setObject:category.parseObject forKey:kCategoryModelForeignKeyName];
 }
 
+- (NSInteger)numServes {
+    if (!_numServes) {
+        _numServes = [[self.parseObject objectForKey:kRecipeAttrNumServes] integerValue];
+    }
+    return _numServes;
+}
+
 - (void)setNumServes:(NSInteger)numServes {
-    _numServes = numServes;
     [self.parseObject setObject:[NSNumber numberWithInt:numServes] forKey:kRecipeAttrNumServes];
 }
 
 - (void)setCookingTimeInMinutes:(NSInteger)cookingTimeInMinutes {
-    _cookingTimeInMinutes = cookingTimeInMinutes;
     [self.parseObject setObject:[NSNumber numberWithInt:cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
 }
 
+- (NSInteger)cookingTimeInMinutes {
+    if (!_cookingTimeInMinutes) {
+        _cookingTimeInMinutes = [[self.parseObject objectForKey:kRecipeAttrCookingTimeInMinutes] integerValue];
+    }
+    return _cookingTimeInMinutes;
+}
+
 - (void)setPrepTimeInMinutes:(NSInteger)prepTimeInMinutes {
-    _prepTimeInMinutes = prepTimeInMinutes;
     [self.parseObject setObject:[NSNumber numberWithInt:prepTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
 }
 
+- (NSInteger)prepTimeInMinutes {
+    if (!_prepTimeInMinutes) {
+        _prepTimeInMinutes = [[self.parseObject objectForKey:kRecipeAttrPrepTimeInMinutes] integerValue];
+    }
+    return _prepTimeInMinutes;
+}
+
 - (void)setPrivacy:(BOOL)privacy {
-    _privacy = privacy;
     [self.parseObject setObject:[NSNumber numberWithBool:privacy] forKey:kRecipeAttrPrivacy];
 }
 
 - (BOOL)privacy {
     return [[self.parseObject objectForKey:kRecipeAttrPrivacy] boolValue];
+}
+
+- (void)setRecipeImage:(CKRecipeImage *)recipeImage {
+    
+    // Replace the list with a single-element list, future expandable for more photos.
+    [self.parseObject setObject:@[recipeImage.parseObject] forKey:kRecipeAttrRecipePhotos];
+    
+}
+
+- (CKRecipeImage *)recipeImage {
+    if (!_recipeImage) {
+        NSArray *photos = [self.parseObject objectForKey:kRecipeAttrRecipePhotos];
+        if ([photos count] > 0) {
+            _recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[photos objectAtIndex:0]];
+        }
+    }
+    return _recipeImage;
 }
 
 #pragma mark - Private Methods

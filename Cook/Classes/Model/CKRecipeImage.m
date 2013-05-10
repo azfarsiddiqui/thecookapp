@@ -12,7 +12,7 @@
 
 + (CKRecipeImage*)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName
 {
-    NSData *imageData = UIImagePNGRepresentation(image);
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
     PFFile *imageFile = [PFFile fileWithName:imageName data:imageData];
     PFObject *parseRecipeImage = [self objectWithDefaultSecurityWithClassName:kRecipeImageModelName];
     [parseRecipeImage setObject:imageName forKey:kRecipeImageAttrImageName];
