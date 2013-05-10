@@ -11,6 +11,7 @@
 #import "CKNotchSliderView.h"
 #import "Theme.h"
 #import "RecipeClipboard.h"
+#import "UIColor+Expanded.h"
 
 @interface ServesAndTimeEditViewController () <CKDialerControlDelegate, CKNotchSliderViewDelegate>
 
@@ -30,13 +31,16 @@
 
 @implementation ServesAndTimeEditViewController
 
-#define kSize           CGSizeMake(850.0, 580.0)
-#define kContentInsets  UIEdgeInsetsMake(40.0, 50.0, 50.0, 50.0)
-#define kDialerGap      100.0
-#define kTitleLabelGap  10.0
-#define kTitleDialerGap 5.0
-#define kUnitServes     2
-#define kUnitMinutes    10
+#define kSize               CGSizeMake(850.0, 600.0)
+#define kContentInsets      UIEdgeInsetsMake(46.0, 60.0, 35.0, 60.0)
+#define kServesSliderGap    8.0
+#define kServesHRGap        31.0
+#define kServesIconGap      25.0
+#define kDialerGap          100.0
+#define kTitleLabelGap      15.0
+#define kTitleDialerGap     5.0
+#define kUnitServes         2
+#define kUnitMinutes        10
 
 - (id)initWithEditView:(UIView *)editView recipeClipboard:(RecipeClipboard *)recipeClipboard
               delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper
@@ -211,16 +215,38 @@
                                              self.servesTitleLabel.frame.size.width,
                                              self.servesTitleLabel.frame.size.height);
     self.servesLabel.frame = CGRectMake(self.servesTitleLabel.frame.origin.x + self.servesTitleLabel.frame.size.width + kTitleLabelGap,
-                                        self.servesTitleLabel.frame.origin.y,
+                                        self.servesTitleLabel.frame.origin.y + self.servesTitleLabel.frame.size.height - self.servesLabel.frame.size.height + 4.0,
                                         self.servesLabel.frame.size.width,
                                         self.servesLabel.frame.size.height);
     self.servesSlider.frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - self.servesSlider.frame.size.width) / 2.0),
-                                         self.servesTitleLabel.frame.origin.y + self.servesTitleLabel.frame.size.height + 10.0,
+                                         self.servesTitleLabel.frame.origin.y + self.servesTitleLabel.frame.size.height + kServesSliderGap,
                                          self.servesSlider.frame.size.width,
                                          self.servesSlider.frame.size.height);
     [self.containerView addSubview:self.servesTitleLabel];
     [self.containerView addSubview:self.servesLabel];
     [self.containerView addSubview:self.servesSlider];
+    
+    // Left/right serving icons.
+    UIImageView *smallServesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_serves_sm.png"]];
+    smallServesImageView.frame = CGRectMake(self.servesSlider.frame.origin.x - kServesIconGap - smallServesImageView.frame.size.width,
+                                            self.servesSlider.frame.origin.y + floorf((self.servesSlider.frame.size.height - smallServesImageView.frame.size.height) / 2.0),
+                                            smallServesImageView.frame.size.width,
+                                            smallServesImageView.frame.size.height);
+    UIImageView *largeServesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_details_icons_serves_lg.png"]];
+    largeServesImageView.frame = CGRectMake(self.servesSlider.frame.origin.x + self.servesSlider.frame.size.width + kServesIconGap,
+                                            self.servesSlider.frame.origin.y + floorf((self.servesSlider.frame.size.height - largeServesImageView.frame.size.height) / 2.0),
+                                            largeServesImageView.frame.size.width,
+                                            largeServesImageView.frame.size.height);
+    [self.containerView addSubview:smallServesImageView];
+    [self.containerView addSubview:largeServesImageView];
+    
+    // HR
+    UIView *hrLine = [[UIView alloc] initWithFrame:CGRectMake(kContentInsets.left,
+                                                              self.servesSlider.frame.origin.y + self.servesSlider.frame.size.height + kServesHRGap,
+                                                              self.containerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                                                              1.0)];
+    hrLine.backgroundColor = [UIColor colorWithHexString:@"EAEAEA"];
+    [self.containerView addSubview:hrLine];
 }
 
 - (void)initDialers {
@@ -237,7 +263,7 @@
                                            self.prepTitleLabel.frame.size.width,
                                            self.prepTitleLabel.frame.size.height);
     self.prepLabel.frame = CGRectMake(self.prepTitleLabel.frame.origin.x + self.prepTitleLabel.frame.size.width + kTitleLabelGap,
-                                      self.prepTitleLabel.frame.origin.y,
+                                      self.prepTitleLabel.frame.origin.y + self.prepTitleLabel.frame.size.height - self.prepLabel.frame.size.height + 4.0,
                                       self.prepLabel.frame.size.width,
                                       self.prepLabel.frame.size.height);
     
@@ -252,7 +278,7 @@
                                            self.cookTitleLabel.frame.size.width,
                                            self.cookTitleLabel.frame.size.height);
     self.cookLabel.frame = CGRectMake(self.cookTitleLabel.frame.origin.x + self.cookTitleLabel.frame.size.width + kTitleLabelGap,
-                                      self.cookTitleLabel.frame.origin.y,
+                                      self.cookTitleLabel.frame.origin.y + self.cookTitleLabel.frame.size.height - self.cookLabel.frame.size.height + 4.0,
                                       self.cookLabel.frame.size.width,
                                       self.cookLabel.frame.size.height);
     

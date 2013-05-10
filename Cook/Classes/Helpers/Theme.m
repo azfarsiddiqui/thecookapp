@@ -407,7 +407,7 @@
 }
 
 + (UIFont *)editServesTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:40.0];
+    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:42.0];
 }
 
 + (UIColor *)editServesTitleColour {
@@ -415,7 +415,7 @@
 }
 
 + (UIFont *)editServesFont {
-    return [self editServesTitleFont];
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:54.0];
 }
 
 + (UIColor *)editServesColour {
@@ -431,7 +431,7 @@
 }
 
 + (UIFont *)editPrepFont {
-    return [self editServesTitleFont];
+    return [self editServesFont];
 }
 
 + (UIColor *)editPrepColour {
@@ -447,7 +447,7 @@
 }
 
 + (UIFont *)editCookFont {
-    return [self editServesTitleFont];
+    return [self editServesFont];
 }
 
 + (UIColor *)editCookColour {
