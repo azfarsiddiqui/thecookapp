@@ -715,8 +715,14 @@ typedef enum {
 - (void)snapContentToPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight bounce:(BOOL)bounce
                             completion:(void (^)())completion {
     
+    // Disable bounce when going to full PhotoWindowHeight
+    if (photoWindowHeight == PhotoWindowHeightFullScreen) {
+        bounce = NO;
+    }
+    
     CGFloat snapDuration = 0.15;
     CGFloat bounceDuration = 0.2;
+    CGFloat noBounceDuration = 0.2;
     
     // Remember previous/current state.
     self.previousPhotoWindowHeight = self.photoWindowHeight;
@@ -774,7 +780,7 @@ typedef enum {
     } else {
         
         // Animate to the contentFrame without a bounce.
-        [UIView animateWithDuration:snapDuration
+        [UIView animateWithDuration:noBounceDuration
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
