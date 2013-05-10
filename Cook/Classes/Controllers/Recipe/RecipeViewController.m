@@ -1420,7 +1420,7 @@ typedef enum {
 
 - (void)setTitle:(NSString *)title {
     if (self.addMode && ((title == nil) || [title CK_blank])) {
-        title = @"MY RECIPE NAME";
+        title = @"RECIPE NAME";
     }
     self.titleLabel.text = title;
     [self.titleLabel sizeToFit];
@@ -1432,7 +1432,7 @@ typedef enum {
 
 - (void)setCategory:(NSString *)category {
     if (self.addMode && ((category == nil) || [category CK_blank])) {
-        category = @"SELECT CATEGORY";
+        category = @"CATEGORY";
     }
     self.categoryLabel.text = [category uppercaseString];
     [self.categoryLabel sizeToFit];
@@ -1444,7 +1444,7 @@ typedef enum {
 
 - (void)setStory:(NSString *)story {
     if (self.addMode && ((story == nil) || [story CK_blank])) {
-        story = @"A story about this recipe.";
+        story = @"ABOUT THIS RECIPE";
     }
     CGFloat titleStoryGap = 0.0;
     CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, self.headerView.bounds.size.height - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height);
@@ -1458,7 +1458,7 @@ typedef enum {
 
 - (void)setMethod:(NSString *)method {
     if (self.addMode && ((method == nil) || [method CK_blank])) {
-        method = @"The steps to cook this recipe.";
+        method = @"METHOD";
     }
     CGRect rightFrame = kContentRightFrame;
     UIEdgeInsets contentInsets = kContentInsets;
