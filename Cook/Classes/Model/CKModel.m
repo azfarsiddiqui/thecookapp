@@ -43,7 +43,7 @@
 }
 
 - (void)setName:(NSString *)name {
-    [self.parseObject setObject:name forKey:kModelAttrName];
+    [self.parseObject setObject:[NSString CK_safeString:name] forKey:kModelAttrName];
 }
 
 - (NSString *)name {

@@ -13,6 +13,7 @@
 #import "CKConstants.h"
 #import "NSArray+Enumerable.h"
 #import "CKActivity.h"
+#import "NSString+Utilities.h"
 
 @interface CKRecipe ()
 
@@ -239,7 +240,7 @@
 }
 
 - (void)setMethod:(NSString *)method {
-    [self.parseObject setObject:method forKey:kRecipeAttrDescription];
+    [self.parseObject setObject:[NSString CK_safeString:method] forKey:kRecipeAttrDescription];
 }
 
 - (NSString *)story {
@@ -247,7 +248,7 @@
 }
 
 -(void)setStory:(NSString *)story {
-    [self.parseObject setObject:story forKey:kRecipeAttrStory];
+    [self.parseObject setObject:[NSString CK_safeString:story] forKey:kRecipeAttrStory];
 }
 
 -(NSInteger)categoryIndex
