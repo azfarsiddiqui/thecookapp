@@ -14,4 +14,6 @@
 @property (nonatomic, assign) NSInteger prepMinutes;
 @property (nonatomic, assign) NSInteger cookMinutes;
 
+@property (nonatomic, assign) BOOL privacyMode;
+
 @end

@@ -21,6 +21,7 @@
 @implementation CKRecipe
 
 @synthesize category = _category;
+@synthesize privacy = _privacy;
 
 #pragma mark - creation
 
@@ -232,6 +233,7 @@
 }
 
 #pragma mark - Overridden methods
+
 -(NSString *)description
 {
     return [self.parseObject objectForKey:kRecipeAttrDescription];
@@ -289,6 +291,15 @@
 - (void)setPrepTimeInMinutes:(NSInteger)prepTimeInMinutes {
     _prepTimeInMinutes = prepTimeInMinutes;
     [self.parseObject setObject:[NSNumber numberWithInt:prepTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
+}
+
+- (void)setPrivacy:(BOOL)privacy {
+    _privacy = privacy;
+    [self.parseObject setObject:[NSNumber numberWithBool:privacy] forKey:kRecipeAttrPrivacy];
+}
+
+- (BOOL)privacy {
+    return [[self.parseObject objectForKey:kRecipeAttrPrivacy] boolValue];
 }
 
 @end

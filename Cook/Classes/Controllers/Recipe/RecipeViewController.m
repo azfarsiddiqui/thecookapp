@@ -37,6 +37,7 @@
 #import "IngredientListEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
+#import "CKPrivacyView.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -47,7 +48,7 @@ typedef enum {
 
 @interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, CKPopoverViewControllerDelegate, CKEditViewControllerDelegate,
-    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate>
+    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacyViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeClipboard *clipboard;
@@ -90,7 +91,7 @@ typedef enum {
 @property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 @property (nonatomic, strong) CKProgressView *progressView;
-
+@property (nonatomic, strong) CKPrivacyView *privacyView;
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
 
 @property (nonatomic, strong) CKEditViewController *editViewController;
@@ -417,6 +418,13 @@ typedef enum {
     }];
 }
 
+#pragma mark - CKPrivacyViewDelegate methods
+
+- (void)privacyViewSelectedPrivateMode:(BOOL)privateMode {
+    self.clipboard.privacyMode = privateMode;
+    self.saveRequired = (self.clipboard.privacyMode != self.recipe.privacy);
+}
+
 #pragma mark - Lazy getters.
 
 - (UIButton *)closeButton {
@@ -528,6 +536,17 @@ typedef enum {
                                          _photoLabel.frame.size.height)];
     }
     return _photoLabel;
+}
+
+- (CKPrivacyView *)privacyView {
+    if (!_privacyView) {
+        _privacyView = [[CKPrivacyView alloc] initWithPrivateMode:self.recipe.privacy delegate:self];
+        _privacyView.frame = CGRectMake(floorf((self.view.bounds.size.width - _privacyView.frame.size.width) / 2.0),
+                                        kButtonInsets.top,
+                                        _privacyView.frame.size.width,
+                                        _privacyView.frame.size.height);
+    }
+    return _privacyView;
 }
 
 #pragma mark - Private methods
@@ -1079,8 +1098,10 @@ typedef enum {
     if (self.editMode) {
         self.cancelButton.alpha = 0.0;
         self.saveButton.alpha = 0.0;
+        self.privacyView.alpha = 0.0;
         [self.navContainerView addSubview:self.cancelButton];
         [self.navContainerView addSubview:self.saveButton];
+        [self.navContainerView addSubview:self.privacyView];
         
         // Photo label and its wrapping.
         self.photoLabel.alpha = 0.0;
@@ -1117,6 +1138,7 @@ typedef enum {
                          self.shareButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          
                          self.cancelButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
+                         self.privacyView.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          self.saveButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          self.photoLabel.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          photoBoxView.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
@@ -1145,6 +1167,7 @@ typedef enum {
                          } else {
                              [self.cancelButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
+                             [self.privacyView removeFromSuperview];
                              
                              // Unwrap editing wrapper.
                              [self.editingHelper unwrapEditingView:self.photoLabel];
@@ -1543,6 +1566,9 @@ typedef enum {
         // Save any changes off.
         if (self.saveRequired) {
             
+            // Privacy.
+            self.recipe.privacy = self.clipboard.privacyMode;
+            
             // Set current text values.
             self.recipe.name = self.titleLabel.text;
             self.recipe.description = self.methodLabel.text;
@@ -1647,6 +1673,7 @@ typedef enum {
 - (void)prepareClipboard:(BOOL)prepare {
     if (prepare) {
         self.clipboard = [[RecipeClipboard alloc] init];
+        self.clipboard.privacyMode = self.recipe.privacy;
         self.clipboard.serves = self.recipe.numServes;
         self.clipboard.prepMinutes = self.recipe.prepTimeInMinutes;
         self.clipboard.cookMinutes = self.recipe.cookingTimeInMinutes;

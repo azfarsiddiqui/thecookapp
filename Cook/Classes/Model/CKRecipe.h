@@ -23,6 +23,7 @@
 @property (nonatomic, assign) NSInteger cookingTimeInMinutes;
 @property (nonatomic, assign) NSInteger prepTimeInMinutes;
 @property (nonatomic, assign) NSInteger numServes;
+@property (nonatomic, assign) BOOL privacy;
 
 @property(nonatomic, strong) CKBook *book;
 @property(nonatomic, strong) CKUser *user;
