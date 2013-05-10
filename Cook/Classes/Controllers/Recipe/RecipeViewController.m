@@ -255,7 +255,7 @@ typedef enum {
     DLog();
     if (editingView == self.photoLabel) {
         
-        [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen completion:^{
+        [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen bounce:NO completion:^{
             [self showPhotoPicker:YES];
         }];
         
@@ -403,6 +403,10 @@ typedef enum {
     self.recipeImageToUpload = image;
     self.saveRequired = YES;
     
+    // Update edit photo label.
+    self.photoLabel.text = @"EDIT PHOTO";
+    [self.photoLabel sizeToFit];
+
     // Close and revert to mid height.
     [self showPhotoPicker:NO completion:^{
         [self snapContentToPhotoWindowHeight:PhotoWindowHeightMid];
@@ -705,6 +709,12 @@ typedef enum {
 }
 
 - (void)snapContentToPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight completion:(void (^)())completion {
+    [self snapContentToPhotoWindowHeight:photoWindowHeight bounce:YES completion:completion];
+}
+
+- (void)snapContentToPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight bounce:(BOOL)bounce
+                            completion:(void (^)())completion {
+    
     CGFloat snapDuration = 0.15;
     CGFloat bounceDuration = 0.2;
     
@@ -724,39 +734,68 @@ typedef enum {
     CGRect imageBounceFrame = imageFrame;
     imageBounceFrame.origin.y += bounceOffset;
     
-    // Animate to the contentFrame via a bounce.
-    [UIView animateWithDuration:snapDuration
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.contentContainerView.frame = bounceFrame;
-                         self.backgroundImageView.frame = imageBounceFrame;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         // Rest on the target contentFrame.
-                         [UIView animateWithDuration:bounceDuration
-                                               delay:0.0
-                                             options:UIViewAnimationOptionCurveEaseIn
-                                          animations:^{
-                                              self.contentContainerView.frame = contentFrame;
-                                              self.backgroundImageView.frame = imageFrame;
-                                          }
-                                          completion:^(BOOL finished) {
-                                              
-                                              // Update buttons when toggling between fullscreen modes.
-                                              if (self.previousPhotoWindowHeight == PhotoWindowHeightFullScreen
-                                                  || self.photoWindowHeight == PhotoWindowHeightFullScreen) {
-                                                  [self updateButtons];
+    // Bounce?
+    if (bounce) {
+        
+        // Animate to the contentFrame via a bounce.
+        [UIView animateWithDuration:snapDuration
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.contentContainerView.frame = bounceFrame;
+                             self.backgroundImageView.frame = imageBounceFrame;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             // Rest on the target contentFrame.
+                             [UIView animateWithDuration:bounceDuration
+                                                   delay:0.0
+                                                 options:UIViewAnimationOptionCurveEaseIn
+                                              animations:^{
+                                                  self.contentContainerView.frame = contentFrame;
+                                                  self.backgroundImageView.frame = imageFrame;
                                               }
-                                              
-                                              // Run completion block.
-                                              if (completion != NULL) {
-                                                  completion();
-                                              }
+                                              completion:^(BOOL finished) {
+                                                  
+                                                  // Update buttons when toggling between fullscreen modes.
+                                                  if (self.previousPhotoWindowHeight == PhotoWindowHeightFullScreen
+                                                      || self.photoWindowHeight == PhotoWindowHeightFullScreen) {
+                                                      [self updateButtons];
+                                                  }
+                                                  
+                                                  // Run completion block.
+                                                  if (completion != NULL) {
+                                                      completion();
+                                                  }
+                                                  
+                                              }];
+                         }];
+        
+    } else {
+        
+        // Animate to the contentFrame without a bounce.
+        [UIView animateWithDuration:snapDuration
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.contentContainerView.frame = contentFrame;
+                             self.backgroundImageView.frame = imageFrame;
+                         }
+                         completion:^(BOOL finished) {
                           
-                                          }];
-                     }];
+                              // Update buttons when toggling between fullscreen modes.
+                              if (self.previousPhotoWindowHeight == PhotoWindowHeightFullScreen
+                                  || self.photoWindowHeight == PhotoWindowHeightFullScreen) {
+                                  [self updateButtons];
+                              }
+                              
+                              // Run completion block.
+                              if (completion != NULL) {
+                                  completion();
+                              }
+                         }];
+    }
+    
 }
 
 - (CGRect)contentFrameForPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight {
