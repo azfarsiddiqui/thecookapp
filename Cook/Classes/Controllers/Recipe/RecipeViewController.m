@@ -1262,27 +1262,28 @@ typedef enum {
 
 - (void)loadData {
     
-    // TODO Load data.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0 delegate:self];
-        socialView.frame = CGRectMake(floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
-                                      kButtonInsets.top,
-                                      socialView.frame.size.width,
-                                      socialView.frame.size.height);
-        socialView.alpha = 0.0;
-        [self.view addSubview:socialView];
-        self.socialView = socialView;
-        
-        // Fade it in.
-        [UIView animateWithDuration:0.4
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.socialView.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished)  {
-                         }];
-    });
+    if (!self.addMode) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0 delegate:self];
+            socialView.frame = CGRectMake(floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
+                                          kButtonInsets.top,
+                                          socialView.frame.size.width,
+                                          socialView.frame.size.height);
+            socialView.alpha = 0.0;
+            [self.view addSubview:socialView];
+            self.socialView = socialView;
+            
+            // Fade it in.
+            [UIView animateWithDuration:0.4
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.socialView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished)  {
+                             }];
+        });
+    }
 }
 
 - (BOOL)canEditRecipe {
