@@ -33,18 +33,20 @@
 
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 
-//creation
+// Creation
 + (CKRecipe *)recipeForBook:(CKBook *)book;
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
 + (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book;
 + (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category;
 
-//save
+// Save
+- (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
+              failure:(ObjectFailureBlock)failure;
 - (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
 - (void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
-//fetch
+// Fetch
 - (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
 
 - (void)setImage:(UIImage *)image;

@@ -394,12 +394,14 @@ typedef enum {
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
 
 - (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
+    
     // Present the image.
     UIImage *croppedImage = [image imageCroppedToFitSize:self.backgroundImageView.bounds.size];
     self.backgroundImageView.image = croppedImage;
     
     // Save photo to be uploaded.
     self.recipeImageToUpload = image;
+    self.saveRequired = YES;
     
     // Close and revert to mid height.
     [self showPhotoPicker:NO completion:^{
@@ -1569,19 +1571,17 @@ typedef enum {
     
     if (save) {
         
-        DLog(@"save[%@] saveRequired[%@]", [NSString CK_stringForBoolean:save], [NSString CK_stringForBoolean:self.saveRequired]);
-        DLog(@"%@", self.recipe);
-        
         // Save any changes off.
         if (self.saveRequired) {
             
-            // Privacy.
+            // Save form data to recipe.
             self.recipe.privacy = self.clipboard.privacyMode;
-            
-            // Set current text values.
             self.recipe.name = self.clipboard.name;
             self.recipe.story = self.clipboard.story;
             self.recipe.method = self.clipboard.method;
+            self.recipe.numServes = self.clipboard.serves;
+            self.recipe.prepTimeInMinutes = self.clipboard.prepMinutes;
+            self.recipe.cookingTimeInMinutes = self.clipboard.cookMinutes;
             
             // Set current category.
             CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
@@ -1590,11 +1590,6 @@ typedef enum {
             if (category) {
                 self.recipe.category = category;
             }
-            
-            // Save serves/prep.
-            self.recipe.numServes = self.clipboard.serves;
-            self.recipe.prepTimeInMinutes = self.clipboard.prepMinutes;
-            self.recipe.cookingTimeInMinutes = self.clipboard.cookMinutes;
             
             // Reset edit flags.
             self.saveRequired = NO;
@@ -1615,29 +1610,59 @@ typedef enum {
             // Mark 10% progress to start off with.
             [progressView setProgress:0.1];
             
-            // Save the recipe now.
-            [self.recipe saveInBackground:^{
+            // Keep a weak reference of the progressView for tracking of updates.
+            __weak CKProgressView *weakProgressView = progressView;
+            
+            // Do we have a new image to save?
+            if (self.recipeImageToUpload) {
                 
-                // Half done.
-                __weak CKProgressView *weakProgressView = progressView;
-                [progressView setProgress:0.5 completion:^{
+                [self.recipe saveWithImage:self.recipeImageToUpload
+                            uploadProgress:^(int percentDone) {
+                                
+                                // Upload progress range between 10% and 90%.
+                                if (percentDone > 10 && percentDone < 90) {
+                                    [weakProgressView setProgress:(percentDone / 100.0) animated:YES];
+                                }
+                                
+                            } completion:^{
+                                
+                                // Ask the opened book to relayout.
+                                [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                           completion:^{
+                                                                                               
+                                                                                               // Set 100% progress completion.
+                                                                                               [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                                   [self enableSaveMode:NO];
+                                                                                               }];
+                                                                                           }];
+                                
+                            } failure:^(NSError *error) {
+                                [self enableSaveMode:NO];
+                            }];
+                
+            } else {
+                
+                // Save the recipe now.
+                [self.recipe saveInBackground:^{
                     
-                    // Ask the opened book to relayout.
-                    [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
-                                                                               completion:^{
-                                                                                   
-                                                                                   // Set 100% progress completion.
-                                                                                   [weakProgressView setProgress:1.0 delay:0.5 completion:^{
-                                                                                       [self enableSaveMode:NO];
+                    [weakProgressView setProgress:0.5 completion:^{
+                        
+                        // Ask the opened book to relayout.
+                        [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                   completion:^{
+                                                                                       
+                                                                                       // Set 100% progress completion.
+                                                                                       [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                           [self enableSaveMode:NO];
+                                                                                       }];
                                                                                    }];
+                    }];
+                    
+                } failure:^(NSError *error) {
+                    [self enableSaveMode:NO];
                 }];
                 
-                
-                }];
-                
-            } failure:^(NSError *error) {
-                [self enableSaveMode:NO];
-            }];
+            }
             
         } else {
             

@@ -105,7 +105,34 @@
     return recipe;
 }
 
-#pragma mark - save
+#pragma mark - Save
+
+- (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
+              failure:(ObjectFailureBlock)failure {
+    
+    // Save the photo first to get its objectId.
+    PFFile *recipePhotoFile = [PFFile fileWithName:@"recipe.jpg" data:UIImageJPEGRepresentation(image, 1.0)];
+    [recipePhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            
+            // Replace the list with a single-element list, future expandable for more photos.
+            [self.parseObject setObject:@[recipePhotoFile] forKey:kRecipeAttrRecipePhotos];
+            
+            // Now go ahead and save the recipe.
+            [self saveInBackground:^{
+                success();
+            } failure:^(NSError *error) {
+                failure(error);
+            }];
+                
+        } else {
+            failure(error);
+        }
+    } progressBlock:^(int percentDone) {
+        progress(percentDone);
+    }];
+    
+}
 
 - (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
                   imageUploadProgress:(ProgressBlock)imageUploadProgress {
