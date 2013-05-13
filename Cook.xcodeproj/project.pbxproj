@@ -1273,8 +1273,6 @@
 		76ED276C1612DCC60012E479 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		76ED276D1612DCC60012E479 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		76ED276E1612DCC60012E479 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		76ED277F1612DE140012E479 /* OldRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldRootViewController.h; sourceTree = "<group>"; };
-		76ED27801612DE140012E479 /* OldRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldRootViewController.m; sourceTree = "<group>"; };
 		76ED27831612DEB80012E479 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		76ED27841612DEB80012E479 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		76ED278A1612E45B0012E479 /* CKServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKServerManager.h; sourceTree = "<group>"; };
@@ -2462,8 +2460,6 @@
 				76CB7EEA165CF466007BECA0 /* Store */,
 				76381C9416683DE200404FB1 /* RootViewController.h */,
 				76381C9316683DE200404FB1 /* RootViewController.m */,
-				76ED277F1612DE140012E479 /* OldRootViewController.h */,
-				76ED27801612DE140012E479 /* OldRootViewController.m */,
 				7666B3F8161418E5001D1BA1 /* CKIntroViewController.h */,
 				7666B3F9161418E5001D1BA1 /* CKIntroViewController.m */,
 				76E16E4A163903070044EB9B /* MenuViewController.h */,
