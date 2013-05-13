@@ -89,6 +89,15 @@
     return self.canAddItemText ? self.canAddItemText : @"";
 }
 
+- (id)valueAtIndex:(NSInteger)index {
+    return [[self textForItemAtIndex:index] uppercaseString];
+}
+
+- (NSString *)textForItemAtIndex:(NSInteger)itemIndex {
+    itemIndex = self.addItemsFromTop ? itemIndex - 1 : itemIndex;
+    return [self.listItems objectAtIndex:itemIndex];
+}
+
 - (void)selectedItemAtIndex:(NSInteger)index {
     NSLog(@"selectedItemAtIndex %d", index);
 }
@@ -132,6 +141,8 @@
     if (self.canAddItems) {
         numItems += 1;
     }
+    NSLog(@"showItems[%@] numItems[%d]", show ? @"YES" : @"NO", numItems);
+    
     NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems - 1];
     for (NSInteger itemIndex = 1; itemIndex < numItems; itemIndex++) {
         [itemsToAnimate addObject:[NSIndexPath indexPathForItem:itemIndex inSection:0]];
@@ -229,7 +240,7 @@
     } else {
         
         // Normal items are not editable normally.
-        [cell configureText:[[self textForItemAtIndex:indexPath.item] uppercaseString] editable:NO];
+        [cell configureValue:[self valueAtIndex:indexPath.item] editable:NO];
         
         // Is this selection mode.
         [cell allowSelection:self.allowSelection];
@@ -532,11 +543,6 @@
 
 - (NSInteger)numListItems {
     return [self.listItems count];
-}
-
-- (NSString *)textForItemAtIndex:(NSInteger)itemIndex {
-    itemIndex = self.addItemsFromTop ? itemIndex - 1 : itemIndex;
-    return [self.listItems objectAtIndex:itemIndex];
 }
 
 - (BOOL)selectedForIndexPath:(NSIndexPath *)indexPath {

@@ -1912,10 +1912,10 @@
 				763AE0671716DD0500E0922D /* RecipeSocialViewController.m */,
 				76C07FCE1738BA55005915D5 /* CategoryListEditViewController.h */,
 				76C07FCF1738BA55005915D5 /* CategoryListEditViewController.m */,
-				76C07FD91739D13B005915D5 /* IngredientListEditViewController.h */,
-				76C07FDA1739D13C005915D5 /* IngredientListEditViewController.m */,
 				76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */,
 				76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */,
+				76C07FD91739D13B005915D5 /* IngredientListEditViewController.h */,
+				76C07FDA1739D13C005915D5 /* IngredientListEditViewController.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";

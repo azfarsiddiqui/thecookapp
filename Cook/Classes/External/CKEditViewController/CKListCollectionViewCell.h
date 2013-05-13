@@ -23,14 +23,15 @@
 @interface CKListCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, assign) id<CKListCollectionViewCellDelegate> delegate;
+@property (nonatomic, strong) NSString *placeholder;
 
-- (void)configureText:(NSString *)text;
-- (void)configureText:(NSString *)text editable:(BOOL)editable;
-- (void)configureText:(NSString *)text font:(UIFont *)font;
-- (void)configureText:(NSString *)text font:(UIFont *)font editable:(BOOL)editable;
-- (void)configureText:(NSString *)text editable:(BOOL)editable selected:(BOOL)selected;
-- (void)configureText:(NSString *)text placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable;
-- (void)configureText:(NSString *)text placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable
+- (void)configureValue:(id)value;
+- (void)configureValue:(id)value editable:(BOOL)editable;
+- (void)configureValue:(id)value font:(UIFont *)font;
+- (void)configureValue:(id)value font:(UIFont *)font editable:(BOOL)editable;
+- (void)configureValue:(id)value editable:(BOOL)editable selected:(BOOL)selected;
+- (void)configureValue:(id)value placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable;
+- (void)configureValue:(id)valuet placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable
              selected:(BOOL)selected;
 - (void)configurePlaceholder:(NSString *)placeholder;
 - (void)configurePlaceholder:(NSString *)placeholder font:(UIFont *)font;
@@ -39,5 +40,6 @@
 - (void)focus:(BOOL)focus;
 - (void)allowSelection:(BOOL)selection;
 - (id)currentValue;
+- (NSString *)textValueForValue:(id)value;
 
 @end

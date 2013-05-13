@@ -15,7 +15,6 @@
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL allowSelection;
-@property (nonatomic, strong) NSString *placeholder;
 
 @property (nonatomic, assign) BOOL focused;
 
@@ -60,31 +59,31 @@
 
 #pragma mark - CKListCollectionViewCell methods
 
-- (void)configureText:(NSString *)text {
-    [self configureText:text editable:YES];
+- (void)configureValue:(NSString *)text {
+    [self configureValue:text editable:YES];
 }
 
-- (void)configureText:(NSString *)text editable:(BOOL)editable {
-    [self configureText:text font:kDefaultFont editable:editable];
+- (void)configureValue:(id)value editable:(BOOL)editable {
+    [self configureValue:value font:kDefaultFont editable:editable];
 }
 
-- (void)configureText:(NSString *)text font:(UIFont *)font {
-    [self configureText:text font:font editable:YES];
+- (void)configureValue:(id)value font:(UIFont *)font {
+    [self configureValue:value font:font editable:YES];
 }
 
-- (void)configureText:(NSString *)text font:(UIFont *)font editable:(BOOL)editable {
-    [self configureText:text placeholder:nil font:font editable:editable selected:NO];
+- (void)configureValue:(id)value font:(UIFont *)font editable:(BOOL)editable {
+    [self configureValue:value placeholder:nil font:font editable:editable selected:NO];
 }
 
-- (void)configureText:(NSString *)text editable:(BOOL)editable selected:(BOOL)selected {
-    [self configureText:text placeholder:nil font:kDefaultFont editable:editable selected:selected];
+- (void)configureValue:(id)value editable:(BOOL)editable selected:(BOOL)selected {
+    [self configureValue:value placeholder:nil font:kDefaultFont editable:editable selected:selected];
 }
 
-- (void)configureText:(NSString *)text placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable {
-    [self configureText:text placeholder:placeholder font:font editable:editable selected:NO];
+- (void)configureValue:(id)value placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable {
+    [self configureValue:value placeholder:placeholder font:font editable:editable selected:NO];
 }
 
-- (void)configureText:(NSString *)text placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable
+- (void)configureValue:(id)value placeholder:(NSString *)placeholder font:(UIFont *)font editable:(BOOL)editable
              selected:(BOOL)selected {
     
     self.textField.font = font;
@@ -96,7 +95,7 @@
         self.textField.text = placeholder;
         [self applyPlaceholderStyle:YES];
     } else {
-        self.textField.text = text;
+        self.textField.text = [self textValueForValue:value];
         [self applyPlaceholderStyle:NO];
     }
     
@@ -116,15 +115,15 @@
 }
 
 - (void)configurePlaceholder:(NSString *)placeholder {
-    [self configureText:nil placeholder:placeholder font:kDefaultFont editable:YES];
+    [self configureValue:nil placeholder:placeholder font:kDefaultFont editable:YES];
 }
 
 - (void)configurePlaceholder:(NSString *)placeholder font:(UIFont *)font {
-    [self configureText:nil placeholder:placeholder font:font editable:YES];
+    [self configureValue:nil placeholder:placeholder font:font editable:YES];
 }
 
 - (void)configurePlaceholder:(NSString *)placeholder editable:(BOOL)editable {
-    [self configureText:nil placeholder:placeholder font:kDefaultFont editable:editable];
+    [self configureValue:nil placeholder:placeholder font:kDefaultFont editable:editable];
 }
 
 - (UIEdgeInsets)listItemInsets {
@@ -152,6 +151,10 @@
 
 - (id)currentValue {
     return [self.textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
+- (NSString *)textValueForValue:(id)value {
+    return [value uppercaseString];
 }
 
 #pragma mark - UITextFieldDelegate methods

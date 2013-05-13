@@ -28,6 +28,8 @@
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title;
 
 - (NSString *)addItemText;
+- (id)valueAtIndex:(NSInteger)index;
+- (NSString *)textForItemAtIndex:(NSInteger)itemIndex;
 - (void)selectedItemAtIndex:(NSInteger)index;
 - (void)loadData;
 - (void)showItems;
