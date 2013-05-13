@@ -15,6 +15,7 @@
 #import "CKMaskedLabel.h"
 #import "ViewHelper.h"
 #import "ImageHelper.h"
+#import "UIColor+Expanded.h"
 
 @interface BookCategoryView ()
 
@@ -35,7 +36,7 @@
         
         // Pre-create the background image view.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
-        imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
+        imageView.backgroundColor = [UIColor colorWithHexString:@"EFEFEF"];
         imageView.frame = self.bounds;
         [self addSubview:imageView];
         self.imageView = imageView;
