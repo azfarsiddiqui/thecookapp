@@ -274,7 +274,7 @@
     
     // Only fetch public recipes if it's not your own book.
     if (![self isUserBookAuthor:[CKUser currentUser]]) {
-        [query whereKey:kRecipeAttrPrivacy equalTo:[NSNumber numberWithBool:NO]];
+        [query whereKey:kRecipeAttrPrivacy notEqualTo:[NSNumber numberWithBool:YES]];
     }
     
     [query includeKey:kCategoryModelForeignKeyName];
@@ -305,26 +305,42 @@
     }];
 }
 
-- (void)fetchCategoriesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *query = [PFQuery queryWithClassName:kCategoryModelName];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
-    [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
-    [query orderByAscending:kCategoryAttrOrder];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *parseCategories, NSError *error) {
-        if (!error) {
-            NSArray *categories = [parseCategories collect:^id(PFObject *parseCategory) {
-                return [CKCategory categoryForParseCategory:parseCategory];
-            }];
-            
-            // Update the books current categories.
-            self.currentCategories = categories;
-            
-            DLog(@"fetch returned %i categories", [categories count]);
-            success(categories);
-        } else {
-            failure(error);
-        }
+- (void)prefetchCategoriesInBackground {
+    [self fetchCategoriesSuccess:^(NSArray *categories) {
+        self.currentCategories = categories;
+        DLog(@"Prefetched categories count[%d]", [categories count]);
+    } failure:^(NSError *error) {
+        DLog(@"Error prefetching categories: %@", [error localizedDescription]);
     }];
+}
+
+- (void)fetchCategoriesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    // Fetch from network if it wasn't preloaded already.
+    if ([self.currentCategories count] == 0) {
+        
+        PFQuery *query = [PFQuery queryWithClassName:kCategoryModelName];
+        [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+        [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+        [query orderByAscending:kCategoryAttrOrder];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *parseCategories, NSError *error) {
+            if (!error) {
+                NSArray *categories = [parseCategories collect:^id(PFObject *parseCategory) {
+                    return [CKCategory categoryForParseCategory:parseCategory];
+                }];
+                
+                // Update the books current categories.
+                self.currentCategories = categories;
+                
+                success(categories);
+            } else {
+                failure(error);
+            }
+        }];
+        
+    } else {
+        success(self.currentCategories);
+    }
 }
 
 - (NSString *)userName {

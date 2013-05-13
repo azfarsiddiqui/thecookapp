@@ -20,10 +20,9 @@
 @property (nonatomic, strong) UIView *titleHeaderView;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
-@property (nonatomic, assign) BOOL loadItems;
 @property (nonatomic, strong) UILabel *headerLabel;
 @property (nonatomic, strong) CKListCollectionViewCell *focusedCell;
-
+@property (nonatomic, assign) BOOL loadItems;
 @property (nonatomic, assign) CGPoint currentContentOffset;
 
 @end
@@ -52,6 +51,7 @@
         self.selectedIndexNumber = selectedIndexNumber;
         self.canAddItems = YES;
         self.editable = YES;
+        self.loadItems = NO;
     }
     return self;
 }
@@ -111,11 +111,13 @@
 }
 
 - (void)loadData {
-    [self performSelector:@selector(showItems) withObject:nil afterDelay:0.1];
+    [self showItems];
 }
 
 - (void)showItems {
-    [self showItems:YES];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self showItems:YES];
+    });
 }
 
 - (void)showItems:(BOOL)show {

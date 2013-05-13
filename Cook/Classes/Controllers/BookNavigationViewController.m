@@ -581,6 +581,11 @@
         self.recipes = [NSMutableArray arrayWithArray:recipes];
         [self loadRecipes];
         
+        // Preload categories for edit/creation if it's my own book.
+        if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
+            [self.book prefetchCategoriesInBackground];
+        }
+        
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
     }];
@@ -876,8 +881,10 @@
         return category.name;
     }]];
     
-    // Update the categories for the book.
-    self.book.currentCategories = self.categories;
+    // Update the categories for the book if we don't have network loaded categories.
+    if ([self.book.currentCategories count] == 0) {
+        self.book.currentCategories = self.categories;
+    }
     
     // Update the VC's.
     [self.indexViewController configureCategories:self.categoryNames];

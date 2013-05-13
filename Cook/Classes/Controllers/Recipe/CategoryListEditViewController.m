@@ -51,7 +51,6 @@
 - (void)loadData {
     
     [self.book fetchCategoriesSuccess:^(NSArray *categories) {
-        DLog(@"Fetched categories: %@", categories);
         
         self.listItems = [NSMutableArray array];
         [self.listItems addObjectsFromArray:[categories collect:^id(CKCategory *category) {
@@ -64,9 +63,9 @@
         if (selectedCategoryIndex >= 0) {
             self.selectedIndexNumber = [NSNumber numberWithInteger:selectedCategoryIndex];
         }
-        
+     
         [self showItems];
-        
+     
     } failure:^(NSError *error) {
         DLog(@"Error loading categories.");
     }];
