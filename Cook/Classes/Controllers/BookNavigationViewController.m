@@ -30,7 +30,6 @@
 @property (nonatomic, strong) UIButton *contentsButton;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *addButton;
-@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) CKBookPagingView *bookPagingView;
@@ -244,7 +243,7 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self updateNavTitle];
+    // [self updateNavTitle];
     [self updateBookPagingViewAndDots:NO];
 }
 
@@ -408,17 +407,6 @@
 
 #pragma mark - Lazy getters
 
-- (UILabel *)titleLabel {
-    if (!_titleLabel) {
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, kNavTitleOffset.y, 0.0, 0.0)];
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.font = [Theme bookNavigationTitleFont];
-        _titleLabel.textColor = [Theme bookNavigationTitleColour];
-        //        _titleLabel.hidden = YES;
-    }
-    return _titleLabel;
-}
-
 - (UIButton *)closeButton {
     if (!_closeButton) {
         _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
@@ -505,9 +493,7 @@
     } else {
         self.closeButton.alpha = 0.0;
         self.contentsButton.alpha = 0.0;
-        self.titleLabel.alpha = 0.0;
         self.addButton.alpha = 0.0;
-        [self.view addSubview:self.titleLabel];
         [self.view addSubview:self.closeButton];
         [self.view addSubview:self.contentsButton];
         [self.view addSubview:self.addButton];
@@ -519,7 +505,6 @@
                      animations:^{
                          self.closeButton.alpha = self.editMode ? 0.0 : 1.0;
                          self.contentsButton.alpha = self.editMode ? 0.0 : 1.0;
-                         self.titleLabel.alpha = self.editMode ? 0.0 : 1.0;
                          self.addButton.alpha = self.editMode ? 0.0 : 1.0;
                          self.cancelButton.alpha = self.editMode ? 1.0 : 0.0;
                          self.saveButton.alpha = self.editMode ? 1.0 : 0.0;
@@ -528,7 +513,6 @@
                          if (self.editMode) {
                              [self.closeButton removeFromSuperview];
                              [self.contentsButton removeFromSuperview];
-                             [self.titleLabel removeFromSuperview];
                              [self.addButton removeFromSuperview];
                          } else {
                              [self.cancelButton removeFromSuperview];
@@ -568,7 +552,7 @@
         [self.bookPagingView setNumPages:numPages];
     }
     self.bookPagingView.frame = CGRectMake(floor((self.view.bounds.size.width - self.bookPagingView.frame.size.width) / 2.0),
-                                           self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 20.0,
+                                           kNavTitleOffset.y,
                                            self.bookPagingView.frame.size.width,
                                            self.bookPagingView.frame.size.height);
 }
@@ -748,29 +732,6 @@
 
 - (NSInteger)recipeSection {
     return 3;
-}
-
-- (void)updateNavTitle {
-    CGFloat contentsPageOffset = [self recipeSection] * self.collectionView.bounds.size.width;
-    if (self.collectionView.contentOffset.x >= contentsPageOffset) {
-        self.titleLabel.hidden = NO;
-        
-        NSString *categoryName = [self currentCategoryNameFromOffset];
-        if (![self.currentCategoryName isEqualToString:categoryName]) {
-            NSString *navTitle = [self navigationTitle];
-            self.titleLabel.text = navTitle;
-            [self.titleLabel sizeToFit];
-            self.titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-                                               self.titleLabel.frame.origin.y,
-                                               self.titleLabel.frame.size.width,
-                                               self.titleLabel.frame.size.height);
-            self.currentCategoryName = navTitle;
-        }
-        
-    } else {
-        self.currentCategoryName = nil;
-        self.titleLabel.hidden = YES;
-    }
 }
 
 - (NSString *)navigationTitle {
