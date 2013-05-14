@@ -54,7 +54,10 @@
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
     requiredHeight += kHeaderHeight;
     requiredHeight += (numItems * self.itemSize.height) + ((numItems - 1) * kRowSpacing);
-    requiredHeight += (self.collectionView.bounds.size.height - kHeaderHeight - self.itemSize.height);
+
+    requiredHeight += kHeaderHeight;
+    
+//    requiredHeight += (self.collectionView.bounds.size.height - kHeaderHeight - self.itemSize.height);
     
     CGSize contentSize = CGSizeMake(self.collectionView.bounds.size.width, requiredHeight);
     return contentSize;
