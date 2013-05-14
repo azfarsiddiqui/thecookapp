@@ -1753,11 +1753,10 @@ typedef enum {
     if (prepare) {
         self.clipboard = [[RecipeClipboard alloc] init];
         self.clipboard.privacyMode = self.recipe.privacy;
-        
+        self.clipboard.category = self.recipe.category;
         self.clipboard.name = self.recipe.name;
         self.clipboard.story = self.recipe.story;
         self.clipboard.method = self.recipe.method;
-        
         self.clipboard.serves = self.recipe.numServes;
         self.clipboard.prepMinutes = self.recipe.prepTimeInMinutes;
         self.clipboard.cookMinutes = self.recipe.cookingTimeInMinutes;
