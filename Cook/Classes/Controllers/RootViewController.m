@@ -599,7 +599,7 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
-    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe];
+    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
     [self showModalViewController:recipeViewController];
 }
 

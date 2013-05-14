@@ -6,20 +6,20 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CategoryListEditViewController.h"
+#import "CategoryItemstEditViewController.h"
 #import "CKBook.h"
 #import "CKCategory.h"
 #import "MRCEnumerable.h"
 #import "NSString+Utilities.h"
 
-@interface CategoryListEditViewController ()
+@interface CategoryItemstEditViewController ()
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKCategory *selectedCategory;
 
 @end
 
-@implementation CategoryListEditViewController
+@implementation CategoryItemstEditViewController
 
 #define kCategoryTitle  @"Categories"
 
@@ -38,9 +38,7 @@
                          editingHelper:editingHelper white:white title:kCategoryTitle]) {
         self.book = book;
         self.selectedCategory = category;
-        self.allowSelection = YES;
         self.addItemsFromTop = YES;
-        self.canAddItemText = @"ADD CATEGORY";
     }
     
     return self;
@@ -52,8 +50,8 @@
     
     [self.book fetchCategoriesSuccess:^(NSArray *categories) {
         
-        self.listItems = [NSMutableArray array];
-        [self.listItems addObjectsFromArray:[categories collect:^id(CKCategory *category) {
+        self.items = [NSMutableArray array];
+        [self.items addObjectsFromArray:[categories collect:^id(CKCategory *category) {
             return category.name;
         }]];
         

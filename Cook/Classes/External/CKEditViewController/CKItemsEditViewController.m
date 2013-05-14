@@ -17,7 +17,6 @@
 @property (nonatomic, strong) UILabel *headerLabel;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
-@property (nonatomic, strong) NSNumber *selectedIndexNumber;
 @property (nonatomic, assign) NSNumber *currentSelectedIndexNumber;
 @property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL scrollEnabled;
@@ -98,10 +97,9 @@
             if (self.addItemsFromTop) {
                 selectedIndex += 1;
             }
-            
             [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]
-                                              animated:YES
-                                        scrollPosition:UICollectionViewScrollPositionNone];
+                                              animated:YES scrollPosition:UICollectionViewScrollPositionNone];
+
         }
         
         completion();
@@ -125,14 +123,32 @@
     }
 }
 
-- (void)selectCell:(CKItemCollectionViewCell *)itemCell indexPath:(NSIndexPath *)indexPath {
+- (void)selectCellAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"selectCellAtIndexPath: %@ selectedIndexNumber [%d]", indexPath, [self.selectedIndexNumber integerValue]);
+    CKItemCollectionViewCell *itemCell = (CKItemCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    
+    // The current item selected index, placeholder-adjusted.
+    NSInteger selectedIndex = indexPath.item;
+    if (self.addItemsFromTop) {
+        selectedIndex -= 1;
+    }
+    
+    // The existing item selected index if any, placeholder-adjusted.
+    NSInteger currentCollectionIndex = NSNotFound;
+    if (self.selectedIndexNumber) {
+        currentCollectionIndex = [self.selectedIndexNumber integerValue];
+        if (self.addItemsFromTop) {
+            currentCollectionIndex += 1;
+        }
+    }
+    
     NSInteger placeholderIndex = [self indexForPlaceholder];
     if (indexPath.item == placeholderIndex) {
         
         // Placeholder selection always triggers editing.
         [self focusCell:itemCell focus:YES];
         
-    } else if (indexPath.item == [self.currentSelectedIndexNumber integerValue]) {
+    } else if (indexPath.item == currentCollectionIndex) {
         
         // Second selection of the same selected cell triggers edit.
         [self focusCell:itemCell focus:YES];
@@ -140,12 +156,15 @@
     } else {
         
         // Unfocus existing cell if any.
-        if (self.currentSelectedIndexNumber) {
+        if (self.selectedIndexNumber) {
             NSIndexPath *existingIndexPath = [NSIndexPath indexPathForItem:[self.currentSelectedIndexNumber integerValue] inSection:0];
             CKItemCollectionViewCell *existingFocusCell = (CKItemCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:existingIndexPath];
             [self focusCell:existingFocusCell focus:NO];
         }
         
+        self.selectedIndexNumber = [NSNumber numberWithInteger:selectedIndex];
+        [self.collectionView selectItemAtIndexPath:indexPath
+                                          animated:YES scrollPosition:UICollectionViewScrollPositionNone];
     }
 }
 
@@ -181,6 +200,17 @@
         itemIndex -= 1;
     }
     return itemIndex;
+}
+
+- (id)updatedValue {
+    NSString *value = nil;
+    
+    NSLog(@"self.selectedIndexNumber: %@", self.selectedIndexNumber);
+    if (self.selectedIndexNumber) {
+        value = [self.items objectAtIndex:[self.selectedIndexNumber integerValue]];
+    }
+    
+    return value;
 }
 
 #pragma mark - CKEditViewController methods
@@ -318,9 +348,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    CKItemCollectionViewCell *cell = (CKItemCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    [self selectCell:cell indexPath:indexPath];
-    self.currentSelectedIndexNumber = [NSNumber numberWithInteger:indexPath.item];
+    [self selectCellAtIndexPath:indexPath];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -362,10 +390,16 @@
             [self focusCell:itemCell focus:NO];
             [self insertItemForCell:itemCell];
             
+            // Select current cell again.
+            [self restoreCellSelection];
+            
         } else {
             
             // Reset the placeholder cell.
             [self resetPlaceholderCell:itemCell];
+            
+            // Select current cell again.
+            [self restoreCellSelection];
         }
         
     } else {
@@ -720,6 +754,16 @@
     
     // Updates value in model.
     [self.items replaceObjectAtIndex:changedIndex withObject:currentValue];
+}
+
+- (void)restoreCellSelection {
+    if (self.selectedIndexNumber) {
+        NSInteger selectedIndex = [self.selectedIndexNumber integerValue];
+        if (self.addItemsFromTop) {
+            selectedIndex += 1;
+        }
+        [self selectCellAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]];
+    }
 }
 
 @end

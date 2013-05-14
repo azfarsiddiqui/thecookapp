@@ -6,13 +6,13 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKListEditViewController.h"
+#import "CKTextItemsEditViewController.h"
 
 @class CKBook;
 @class CKCategory;
 @class CKEditingViewHelper;
 
-@interface CategoryListEditViewController : CKListEditViewController
+@interface CategoryItemstEditViewController : CKTextItemsEditViewController
 
 - (id)initWithEditView:(UIView *)editView book:(CKBook *)book delegate:(id<CKEditViewControllerDelegate>)delegate
      editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;

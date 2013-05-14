@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, assign) BOOL allowSelectionState;
 @property (nonatomic, assign) BOOL addItemsFromTop;
+@property (nonatomic, strong) NSNumber *selectedIndexNumber;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
                  items:(NSArray *)items editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white
@@ -41,7 +42,7 @@
 // Customisation options.
 - (Class)classForCell;
 - (void)configureCell:(CKItemCollectionViewCell *)itemCell indexPath:(NSIndexPath *)indexPath;
-- (void)selectCell:(CKItemCollectionViewCell *)itemCell indexPath:(NSIndexPath *)indexPath;
+- (void)selectCellAtIndexPath:(NSIndexPath *)indexPath;
 - (BOOL)validateCell:(CKItemCollectionViewCell *)itemCell;
 - (BOOL)readyForInsertionForPlaceholderCell:(CKItemCollectionViewCell *)placeholderCell;
 - (void)resetPlaceholderCell:(CKItemCollectionViewCell *)placeholderCell;

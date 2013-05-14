@@ -33,7 +33,7 @@
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
-#import "CategoryListEditViewController.h"
+#import "CategoryItemstEditViewController.h"
 #import "IngredientListEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
@@ -281,7 +281,7 @@ typedef enum {
             currentCategory = self.recipe.category;
         }
         
-        CategoryListEditViewController *editViewController = [[CategoryListEditViewController alloc] initWithEditView:self.categoryLabel
+        CategoryItemstEditViewController *editViewController = [[CategoryItemstEditViewController alloc] initWithEditView:self.categoryLabel
                                                                                                                  book:self.book
                                                                                                      selectedCategory:currentCategory
                                                                                                              delegate:self
