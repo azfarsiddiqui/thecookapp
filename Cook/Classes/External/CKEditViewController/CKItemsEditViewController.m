@@ -659,7 +659,7 @@
 }
 
 - (NSInteger)indexForPlaceholder {
-    return 0;
+    return self.addItemsFromTop ? 0 : [self.items count];
 }
 
 - (void)registerCellsForCollectionView:(UICollectionView *)collectionView {
