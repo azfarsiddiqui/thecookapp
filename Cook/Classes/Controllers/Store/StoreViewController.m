@@ -29,7 +29,6 @@
 @implementation StoreViewController
 
 #define kInsets                 UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
-#define kStoreShadowOffset      31.0
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
@@ -96,7 +95,7 @@
     
     FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self];
     featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                   self.view.bounds.size.height - rowHeight + 45.0,
+                                                   self.view.bounds.size.height - rowHeight + 33.0,
                                                    self.view.bounds.size.width,
                                                    rowHeight);
     featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
@@ -125,7 +124,7 @@
 - (void)initTabs {
     StoreTabView *storeTabView = [[StoreTabView alloc] initWithDelegate:self];
     storeTabView.frame = CGRectMake(floorf((self.view.bounds.size.width - storeTabView.frame.size.width) / 2.0),
-                                    floorf((self.view.bounds.size.height - storeTabView.frame.size.height) / 2.0) - 18.0,
+                                    floorf((self.view.bounds.size.height - storeTabView.frame.size.height) / 2.0) - 25.0,
                                     storeTabView.frame.size.width,
                                     storeTabView.frame.size.height);
     [self.view addSubview:storeTabView];

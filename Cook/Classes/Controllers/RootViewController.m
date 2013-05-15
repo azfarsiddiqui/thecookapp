@@ -51,9 +51,9 @@
 #define kDragRatio                      0.2
 #define kSnapHeight                     30.0
 #define kBounceOffset                   30.0
-#define kStoreHideTuckOffset            57.0
-#define kStoreShadowOffset              31.0
-#define kStoreShowAdjustment            354.0
+#define kStoreHideTuckOffset            69.0
+#define kStoreShadowOffset              43.0
+#define kStoreShowAdjustment            340.0
 #define kSettingsOffsetBelowBenchtop    35.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
