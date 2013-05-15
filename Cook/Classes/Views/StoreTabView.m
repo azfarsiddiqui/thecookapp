@@ -71,8 +71,8 @@
     self.shadows = [NSMutableArray arrayWithCapacity:[self.titles count]];
     
     // Button tabs and shadow.
-    UIImage *tabImage = [[UIImage imageNamed:@"cook_dash_library_tab.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:28];
-    UIImage *shadowImage = [[UIImage imageNamed:@"cook_dash_library_tab_shadow.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:28];
+    UIImage *tabImage = [[UIImage imageNamed:@"cook_dash_library_tab.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(14.0, 0.0, 42.0, 0.0)];
+    UIImage *shadowImage = [[UIImage imageNamed:@"cook_dash_library_tab_shadow.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(14.0, 0.0, 42.0, 0.0)];
     
     CGFloat offset = 0.0;
     CGFloat shadowOffset = 2.0;
