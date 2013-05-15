@@ -454,6 +454,10 @@
     return [self editServesColour];
 }
 
++ (UIColor *)dividerRuleColour {
+    return [UIColor colorWithHexString:@"EAEAEA"];
+}
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor
 {

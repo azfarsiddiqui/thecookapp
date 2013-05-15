@@ -11,8 +11,6 @@
 
 @interface CKItemCollectionViewCell ()
 
-@property (nonatomic, strong) UIImageView *boxImageView;
-
 @end
 
 @implementation CKItemCollectionViewCell

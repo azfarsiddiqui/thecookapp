@@ -245,7 +245,7 @@
                                                               self.servesSlider.frame.origin.y + self.servesSlider.frame.size.height + kServesHRGap,
                                                               self.containerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                                                               1.0)];
-    hrLine.backgroundColor = [UIColor colorWithHexString:@"EAEAEA"];
+    hrLine.backgroundColor = [Theme dividerRuleColour];
     [self.containerView addSubview:hrLine];
 }
 

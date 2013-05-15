@@ -248,6 +248,7 @@
 		76871BE317420DA40030BDE4 /* CKItemsEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BDC17420DA40030BDE4 /* CKItemsEditViewController.m */; };
 		76871BE417420DA40030BDE4 /* CKTextItemCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BDE17420DA40030BDE4 /* CKTextItemCollectionViewCell.m */; };
 		76871BE517420DA40030BDE4 /* CKTextItemsEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BE017420DA40030BDE4 /* CKTextItemsEditViewController.m */; };
+		76871BE8174321ED0030BDE4 /* IngredientItemCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BE7174321EC0030BDE4 /* IngredientItemCollectionViewCell.m */; };
 		768BBB88171B8EC700E8809F /* cook_temp_featuredrecipes.png in Resources */ = {isa = PBXBuildFile; fileRef = 768BBB86171B8EC700E8809F /* cook_temp_featuredrecipes.png */; };
 		768BBB89171B8EC700E8809F /* cook_temp_featuredrecipes@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 768BBB87171B8EC700E8809F /* cook_temp_featuredrecipes@2x.png */; };
 		768BBB93171B93FA00E8809F /* CKImageEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768BBB91171B93FA00E8809F /* CKImageEditViewController.m */; };
@@ -404,7 +405,7 @@
 		76C07FD61738CAE0005915D5 /* cook_book_recipe_cell_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C07FD21738CAE0005915D5 /* cook_book_recipe_cell_off@2x.png */; };
 		76C07FD71738CAE0005915D5 /* cook_book_recipe_cell_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C07FD31738CAE0005915D5 /* cook_book_recipe_cell_on.png */; };
 		76C07FD81738CAE0005915D5 /* cook_book_recipe_cell_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C07FD41738CAE0005915D5 /* cook_book_recipe_cell_on@2x.png */; };
-		76C07FDB1739D13C005915D5 /* IngredientListEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C07FDA1739D13C005915D5 /* IngredientListEditViewController.m */; };
+		76C07FDB1739D13C005915D5 /* IngredientItemsEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C07FDA1739D13C005915D5 /* IngredientItemsEditViewController.m */; };
 		76C3BAFA173B30A2004F6444 /* CKNotchSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C3BAF0173B30A2004F6444 /* CKNotchSliderView.m */; };
 		76C3BAFB173B30A2004F6444 /* cook_edit_serves_notches_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BAF2173B30A2004F6444 /* cook_edit_serves_notches_left.png */; };
 		76C3BAFC173B30A2004F6444 /* cook_edit_serves_notches_left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C3BAF3173B30A2004F6444 /* cook_edit_serves_notches_left@2x.png */; };
@@ -982,6 +983,8 @@
 		76871BDE17420DA40030BDE4 /* CKTextItemCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextItemCollectionViewCell.m; sourceTree = "<group>"; };
 		76871BDF17420DA40030BDE4 /* CKTextItemsEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTextItemsEditViewController.h; sourceTree = "<group>"; };
 		76871BE017420DA40030BDE4 /* CKTextItemsEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextItemsEditViewController.m; sourceTree = "<group>"; };
+		76871BE6174321EC0030BDE4 /* IngredientItemCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientItemCollectionViewCell.h; sourceTree = "<group>"; };
+		76871BE7174321EC0030BDE4 /* IngredientItemCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientItemCollectionViewCell.m; sourceTree = "<group>"; };
 		768BBB86171B8EC700E8809F /* cook_temp_featuredrecipes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_temp_featuredrecipes.png; sourceTree = "<group>"; };
 		768BBB87171B8EC700E8809F /* cook_temp_featuredrecipes@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_temp_featuredrecipes@2x.png"; sourceTree = "<group>"; };
 		768BBB91171B93FA00E8809F /* CKImageEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKImageEditViewController.m; sourceTree = "<group>"; };
@@ -1163,8 +1166,8 @@
 		76C07FD21738CAE0005915D5 /* cook_book_recipe_cell_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_recipe_cell_off@2x.png"; sourceTree = "<group>"; };
 		76C07FD31738CAE0005915D5 /* cook_book_recipe_cell_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_recipe_cell_on.png; sourceTree = "<group>"; };
 		76C07FD41738CAE0005915D5 /* cook_book_recipe_cell_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_recipe_cell_on@2x.png"; sourceTree = "<group>"; };
-		76C07FD91739D13B005915D5 /* IngredientListEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientListEditViewController.h; sourceTree = "<group>"; };
-		76C07FDA1739D13C005915D5 /* IngredientListEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientListEditViewController.m; sourceTree = "<group>"; };
+		76C07FD91739D13B005915D5 /* IngredientItemsEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientItemsEditViewController.h; sourceTree = "<group>"; };
+		76C07FDA1739D13C005915D5 /* IngredientItemsEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientItemsEditViewController.m; sourceTree = "<group>"; };
 		76C3BAEF173B30A2004F6444 /* CKNotchSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKNotchSliderView.h; sourceTree = "<group>"; };
 		76C3BAF0173B30A2004F6444 /* CKNotchSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKNotchSliderView.m; sourceTree = "<group>"; };
 		76C3BAF2173B30A2004F6444 /* cook_edit_serves_notches_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_edit_serves_notches_left.png; sourceTree = "<group>"; };
@@ -1929,8 +1932,10 @@
 				76C07FCF1738BA55005915D5 /* CategoryItemstEditViewController.m */,
 				76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */,
 				76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */,
-				76C07FD91739D13B005915D5 /* IngredientListEditViewController.h */,
-				76C07FDA1739D13C005915D5 /* IngredientListEditViewController.m */,
+				76C07FD91739D13B005915D5 /* IngredientItemsEditViewController.h */,
+				76C07FDA1739D13C005915D5 /* IngredientItemsEditViewController.m */,
+				76871BE6174321EC0030BDE4 /* IngredientItemCollectionViewCell.h */,
+				76871BE7174321EC0030BDE4 /* IngredientItemCollectionViewCell.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -3636,7 +3641,7 @@
 				76EF95D9173779CA0033DBCE /* BookNavigationHelper.m in Sources */,
 				76C07FC917389134005915D5 /* CKProgressView.m in Sources */,
 				76C07FD01738BA55005915D5 /* CategoryItemstEditViewController.m in Sources */,
-				76C07FDB1739D13C005915D5 /* IngredientListEditViewController.m in Sources */,
+				76C07FDB1739D13C005915D5 /* IngredientItemsEditViewController.m in Sources */,
 				76C3BAFA173B30A2004F6444 /* CKNotchSliderView.m in Sources */,
 				76C3BB90173B73F0004F6444 /* CKDialerControl.m in Sources */,
 				76C3BB97173B795D004F6444 /* ServesAndTimeEditViewController.m in Sources */,
@@ -3647,6 +3652,7 @@
 				76871BE317420DA40030BDE4 /* CKItemsEditViewController.m in Sources */,
 				76871BE417420DA40030BDE4 /* CKTextItemCollectionViewCell.m in Sources */,
 				76871BE517420DA40030BDE4 /* CKTextItemsEditViewController.m in Sources */,
+				76871BE8174321ED0030BDE4 /* IngredientItemCollectionViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

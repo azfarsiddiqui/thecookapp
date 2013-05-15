@@ -34,7 +34,7 @@
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
 #import "CategoryItemstEditViewController.h"
-#import "IngredientListEditViewController.h"
+#import "IngredientItemsEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
 #import "CKPrivacyView.h"
@@ -324,7 +324,7 @@ typedef enum {
         
     } else if (editingView == self.ingredientsLabel) {
         
-        IngredientListEditViewController *editViewController = [[IngredientListEditViewController alloc] initWithEditView:self.ingredientsLabel
+        IngredientItemsEditViewController *editViewController = [[IngredientItemsEditViewController alloc] initWithEditView:self.ingredientsLabel
                                                                                                                    recipe:self.recipe
                                                                                                                  delegate:self
                                                                                                             editingHelper:self.editingHelper

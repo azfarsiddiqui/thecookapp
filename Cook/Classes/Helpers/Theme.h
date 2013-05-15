@@ -130,6 +130,8 @@
 + (UIFont *)editCookFont;
 + (UIColor *)editCookColour;
 
++ (UIColor *)dividerRuleColour;
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
 
@@ -154,7 +156,6 @@
 #pragma mark - General reusable editable controls
 + (UIFont *)textEditableTextFont;
 + (UIFont *)textViewTitleFont;
-
 
 @end
 

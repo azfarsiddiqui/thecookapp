@@ -14,6 +14,7 @@
 @property (nonatomic, assign) id<CKItemCellDelegate> delegate;
 @property (nonatomic, assign) BOOL placeholder;
 @property (nonatomic, assign) BOOL allowSelectionState;
+@property (nonatomic, strong) UIImageView *boxImageView;
 
 - (void)focusForEditing:(BOOL)focus;
 - (BOOL)shouldBeSelectedForState:(BOOL)selected;

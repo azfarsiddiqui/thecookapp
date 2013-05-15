@@ -6,17 +6,18 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "IngredientListEditViewController.h"
+#import "IngredientItemsEditViewController.h"
+#import "IngredientItemCollectionViewCell.h"
 #import "CKRecipe.h"
 #import "Ingredient.h"
 
-@interface IngredientListEditViewController ()
+@interface IngredientItemsEditViewController ()
 
 @property (nonatomic, strong) CKRecipe *recipe;
 
 @end
 
-@implementation IngredientListEditViewController
+@implementation IngredientItemsEditViewController
 
 #define kIngredientsTitle  @"Ingredients"
 
@@ -26,18 +27,26 @@
     if (self = [super initWithEditView:editView delegate:delegate items:recipe.ingredients selectedIndex:nil
                          editingHelper:editingHelper white:white title:kIngredientsTitle]) {
         self.recipe = recipe;
-        self.canAddItemText = @"ADD INGREDIENT";
-        self.incrementalAdd = YES;
+        self.addItemsFromTop = NO;
+        self.allowSelectionState = NO;
     }
     return self;
 }
 
-#pragma mark - CKListEditViewController methods
+#pragma mark - CKItemsEditViewController methods
 
-- (id)valueAtIndex:(NSInteger)index {
-    Ingredient *ingredient = [self.listItems objectAtIndex:index];
-    DLog(@"Ingredient Name[%@] Measurement[%@]", ingredient.name, ingredient.measurement);
-    return ingredient.name;
+- (Class)classForCell {
+    return [IngredientItemCollectionViewCell class];
 }
+
+- (BOOL)validateCell:(UICollectionViewCell *)cell {
+    return YES;
+}
+
+- (BOOL)readyForInsertionForPlaceholderCell:(CKItemCollectionViewCell *)placeholderCell {
+    return YES;
+}
+
+
 
 @end

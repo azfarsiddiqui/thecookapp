@@ -6,11 +6,11 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKListEditViewController.h"
+#import "CKItemsEditViewController.h"
 
 @class CKRecipe;
 
-@interface IngredientListEditViewController : CKListEditViewController
+@interface IngredientItemsEditViewController : CKItemsEditViewController
 
 - (id)initWithEditView:(UIView *)editView recipe:(CKRecipe *)recipe delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
