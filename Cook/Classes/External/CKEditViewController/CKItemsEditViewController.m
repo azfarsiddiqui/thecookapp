@@ -143,12 +143,18 @@
     }
     
     NSInteger placeholderIndex = [self indexForPlaceholder];
-    if (indexPath.item == placeholderIndex) {
+    
+    if (!self.allowSelectionState) {
+        
+        // Always focus on cell when in non-selection state.
+        [self focusCell:itemCell focus:YES];
+        
+    } else if (indexPath.item == placeholderIndex) {
         
         // Placeholder selection always triggers editing.
         [self focusCell:itemCell focus:YES];
         
-    } else if (indexPath.item == currentCollectionIndex) {
+    } else if (self.allowSelectionState && indexPath.item == currentCollectionIndex) {
         
         // Second selection of the same selected cell triggers edit.
         [self focusCell:itemCell focus:YES];

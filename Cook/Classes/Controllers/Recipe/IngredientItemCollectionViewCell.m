@@ -24,9 +24,11 @@
 
 @implementation IngredientItemCollectionViewCell
 
-#define kDefaultFont        [UIFont systemFontOfSize:50]
-#define kUnitWidth          160.0
-#define kFieldDividerGap    20.0
+#define kDefaultFont            [UIFont systemFontOfSize:40]
+#define kUnitWidth              160.0
+#define kFieldDividerGap        20.0
+#define kMaxLengthMeasurement   8
+#define kMaxLengthDescription   25
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -48,7 +50,7 @@
                                                                                    kUnitWidth,
                                                                                    singleLineHeight)];
         unitTextField.backgroundColor = [UIColor clearColor];
-        unitTextField.textAlignment = NSTextAlignmentLeft;
+        unitTextField.textAlignment = NSTextAlignmentCenter;
         unitTextField.delegate = self;
         unitTextField.font = kDefaultFont;
         unitTextField.textColor = [UIColor blackColor];
@@ -69,7 +71,7 @@
         ingredientTextField.delegate = self;
         ingredientTextField.font = kDefaultFont;
         ingredientTextField.textColor = [UIColor blackColor];
-        ingredientTextField.returnKeyType = UIReturnKeyNext;
+        ingredientTextField.returnKeyType = UIReturnKeyDone;
         ingredientTextField.userInteractionEnabled = NO;
         [self.contentView addSubview:ingredientTextField];
         self.ingredientTextField = ingredientTextField;
@@ -137,6 +139,16 @@
 
 - (void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount {
     NSLog(@"didEnterMeasurementShortCut [%@] isAmount [%@]", name, [NSString CK_stringForBoolean:isAmount]);
+    
+    NSString *newValue = [NSString stringWithFormat:@"%@%@",self.unitTextField.text, [name lowercaseString]];
+    if (newValue.length < kMaxLengthMeasurement) {
+        self.unitTextField.text = newValue;
+    }
+    
+    if (!isAmount) {
+        [self.ingredientTextField becomeFirstResponder];
+    }
+    
 }
 
 #pragma mark - Properties

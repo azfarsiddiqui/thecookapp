@@ -237,7 +237,7 @@
         [self updateCharacterLimit:[newValue length]];
     }
     
-    if (isAmount) {
+    if (!isAmount) {
         EditableIngredientTableViewCell *firstCell = [[self.tableView visibleCells]objectAtIndex:0];
         [firstCell requestDescriptionTextFieldEdit];
     }

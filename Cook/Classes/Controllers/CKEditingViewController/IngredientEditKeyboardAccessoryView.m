@@ -76,7 +76,7 @@
 
 -(void)buttonTapped:(UIButton*)button
 {
-    BOOL isAmount = ![self.measureNames containsObject:button.titleLabel.text];
+    BOOL isAmount = [self.measureNames containsObject:button.titleLabel.text];
     [self.delegate didEnterMeasurementShortCut:button.titleLabel.text isAmount:isAmount];
 }
 @end
