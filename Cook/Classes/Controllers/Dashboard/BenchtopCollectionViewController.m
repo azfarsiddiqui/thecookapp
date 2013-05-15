@@ -343,7 +343,7 @@
 #pragma mark - Private methods
 
 - (void)initBackground {
-    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_whole.png"]];
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_woodbg.png"]];
     self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, backgroundView.frame.size.width, backgroundView.frame.size.height);
     self.view.clipsToBounds = NO;
     [self.view insertSubview:backgroundView belowSubview:self.collectionView];
