@@ -9,9 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @protocol IngredientEditKeyboardAccessoryViewDelegate
+
 -(void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount;
+
 @end
 
 @interface IngredientEditKeyboardAccessoryView : UIView
+
+- (id)initWithDelegate:(id<IngredientEditKeyboardAccessoryViewDelegate>)delegate;
 - (id)initWithFrame:(CGRect)frame delegate:(id<IngredientEditKeyboardAccessoryViewDelegate>)delegate;
+
 @end

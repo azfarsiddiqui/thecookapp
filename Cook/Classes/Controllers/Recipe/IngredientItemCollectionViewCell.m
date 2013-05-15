@@ -11,8 +11,9 @@
 #import "Theme.h"
 #import "Ingredient.h"
 #import "IngredientEditKeyboardAccessoryView.h"
+#import "NSString+Utilities.h"
 
-@interface IngredientItemCollectionViewCell () <UITextFieldDelegate>
+@interface IngredientItemCollectionViewCell () <UITextFieldDelegate, IngredientEditKeyboardAccessoryViewDelegate>
 
 @property (nonatomic, strong) Ingredient *ingredient;
 @property (nonatomic, strong) UITextField *unitTextField;
@@ -54,6 +55,7 @@
         unitTextField.keyboardType = UIKeyboardTypeNumberPad;
         unitTextField.returnKeyType = UIReturnKeyNext;
         unitTextField.userInteractionEnabled = NO;
+        unitTextField.inputAccessoryView = self.ingredientEditKeyboardAccessoryView;
         [self.contentView addSubview:unitTextField];
         self.unitTextField = unitTextField;
         
@@ -131,14 +133,20 @@
     return YES;
 }
 
+#pragma mark - IngredientEditKeyboardAccessoryViewDelegate methods
+
+- (void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount {
+    NSLog(@"didEnterMeasurementShortCut [%@] isAmount [%@]", name, [NSString CK_stringForBoolean:isAmount]);
+}
+
 #pragma mark - Properties
 
-//- (UIView *)ingredientEditKeyboardAccessoryView {
-//    if (!_ingredientEditKeyboardAccessoryView) {
-//        _ingredientEditKeyboardAccessoryView = [[IngredientEditKeyboardAccessoryView alloc] initWithFrame:<#(CGRect)#> delegate:<#(id<IngredientEditKeyboardAccessoryViewDelegate>)#>
-//    }
-//    return ingredientEditKeyboardAccessoryView;
-//}
+- (UIView *)ingredientEditKeyboardAccessoryView {
+    if (!_ingredientEditKeyboardAccessoryView) {
+        _ingredientEditKeyboardAccessoryView = [[IngredientEditKeyboardAccessoryView alloc] initWithDelegate:self];
+    }
+    return _ingredientEditKeyboardAccessoryView;
+}
 
 #pragma mark - Private methods
 

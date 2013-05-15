@@ -10,20 +10,24 @@
 #import "ViewHelper.h"
 #import "Theme.h"
 
-#define kButtonWidth 80.0f
+#define kButtonWidth    80.0f
 #define kButtonSpacer   9.0f
 
-@interface IngredientEditKeyboardAccessoryView()
+@interface IngredientEditKeyboardAccessoryView ()
+
 @property(nonatomic,strong) NSArray *shortNames;
 @property(nonatomic,strong) NSArray *measureNames;
 @property(nonatomic,assign) id<IngredientEditKeyboardAccessoryViewDelegate> delegate;
+
 @end
+
 @implementation IngredientEditKeyboardAccessoryView
 
+- (id)initWithDelegate:(id<IngredientEditKeyboardAccessoryViewDelegate>)delegate {
+    return [self initWithFrame:CGRectMake(0.0, 0.0, 1024.0, 56.0) delegate:delegate];
+}
 
-
-- (id)initWithFrame:(CGRect)frame delegate:(id<IngredientEditKeyboardAccessoryViewDelegate>)delegate;
-{
+- (id)initWithFrame:(CGRect)frame delegate:(id<IngredientEditKeyboardAccessoryViewDelegate>)delegate; {
     self = [super initWithFrame:frame];
     if (self) {
         self.shortNames = @[@"1/4",@"1/3",@"1/2",@"",@"ML",@"L",@"",@"MG",@"G",@"KG",@"",@"TSP",@"TBSP",@"CUP"];
