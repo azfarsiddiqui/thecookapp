@@ -107,7 +107,7 @@
 #pragma mark - Grid category headers
 
 + (UIColor *)categoryHeaderBackgroundColour {
-    return [self activityInfoViewColour];
+    return [UIColor clearColor];
 }
 
 #pragma mark - Grid recipe cells
