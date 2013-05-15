@@ -59,6 +59,7 @@
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
 #define kOverlayViewAlpha               0.3
+#define kBookScaleTransform             0.95
 
 - (void)dealloc {
     [EventHelper unregisterLogout:self];
@@ -128,12 +129,11 @@
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
     if (!open) {
-        
         // Restore shelf that was hidden in didOpen
         self.storeViewController.view.hidden = NO;
-        
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
+
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -156,6 +156,18 @@
         // Hide shelf to reduce visual complexity.
         self.storeViewController.view.hidden = YES;
         
+        // Scale it up the rest of the way to fullscreen.
+        bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+        [UIView animateWithDuration:0.4
+                              delay:0.1
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^{
+                             bookNavigationViewController.view.transform = CGAffineTransformIdentity;
+                         }
+                         completion:^(BOOL finished) {
+            
+                         }];
+        
     } else {
         
         // Remove the book cover.
@@ -174,7 +186,17 @@
 #pragma mark - BookNavigationViewControllerDelegate methods
 
 - (void)bookNavigationControllerCloseRequested {
-    [self.bookCoverViewController openBook:NO];
+    
+    // Scale it down then let the book cover close.
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                         self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+                     }
+                     completion:^(BOOL finished) {
+                         [self.bookCoverViewController openBook:NO];
+                     }];
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
@@ -641,32 +663,29 @@
                               withObject:[NSNumber numberWithBool:YES]];
     
     // Animate the book back, and slide up the modalVC.
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.95, 0.95);
-    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 10.0);
-//    CGAffineTransform transform = scaleTransform;
-    CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, translateTransform);
+    CGAffineTransform transform = [self bookScaleTransform];
     
     // Inform book navigation it is about to become inactive.
     [self.bookNavigationViewController setActive:NO];
     
     [UIView animateWithDuration:0.4
-                      delay:0.0
-                    options:UIViewAnimationCurveEaseIn
-                 animations:^{
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
                      
-                     // Fade in overlay.
-                     overlayView.alpha = kOverlayViewAlpha;
+                         // Fade in overlay.
+                         overlayView.alpha = kOverlayViewAlpha;
                      
-                     // Scale back.
-                     self.bookCoverViewController.view.transform = transform;
-                     self.bookNavigationViewController.view.transform = transform;
+                         // Scale back.
+                         self.bookCoverViewController.view.transform = transform;
+                         self.bookNavigationViewController.view.transform = transform;
                      
-                     // Slide up the modal.
-                     modalViewController.view.transform = CGAffineTransformIdentity;
+                         // Slide up the modal.
+                         modalViewController.view.transform = CGAffineTransformIdentity;
                  }
                  completion:^(BOOL finished)  {
-                     [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
-                                               withObject:[NSNumber numberWithBool:YES]];
+                        [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                                                  withObject:[NSNumber numberWithBool:YES]];
                  }];
 }
 
@@ -751,6 +770,12 @@
                          self.notificationView.hidden = show;
                      }];
     
+}
+
+- (CGAffineTransform)bookScaleTransform {
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 10.0);
+    return CGAffineTransformConcat(scaleTransform, translateTransform);
 }
 
 @end
