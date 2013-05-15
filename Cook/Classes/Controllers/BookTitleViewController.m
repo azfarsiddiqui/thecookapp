@@ -57,7 +57,7 @@
     [self initBackgroundImageView];
     [self initTitleView];
     [self initShadowViews];
-    [self initActivities];
+    //[self initActivities];
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
