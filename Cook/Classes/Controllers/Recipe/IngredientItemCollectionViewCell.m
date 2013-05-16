@@ -12,6 +12,7 @@
 #import "Ingredient.h"
 #import "IngredientEditKeyboardAccessoryView.h"
 #import "NSString+Utilities.h"
+#import "ViewHelper.h"
 
 @interface IngredientItemCollectionViewCell () <UITextFieldDelegate, IngredientEditKeyboardAccessoryViewDelegate>
 
@@ -27,8 +28,8 @@
 #define kDefaultFont            [UIFont systemFontOfSize:40]
 #define kUnitWidth              160.0
 #define kFieldDividerGap        20.0
-#define kMaxLengthMeasurement   8
-#define kMaxLengthDescription   25
+#define kMaxLengthMeasurement   10
+#define kMaxLengthDescription   30
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -81,13 +82,9 @@
 
 - (void)focusForEditing:(BOOL)focus {
     if (focus) {
-        self.unitTextField.userInteractionEnabled = YES;
-        [self.unitTextField becomeFirstResponder];
+        [self focusUnitField];
     } else {
-        [self.unitTextField resignFirstResponder];
-        [self.ingredientTextField resignFirstResponder];
-        self.unitTextField.userInteractionEnabled = NO;
-        self.ingredientTextField.userInteractionEnabled = NO;
+        [self unfocusFields];
     }
 }
 
@@ -98,12 +95,19 @@
     
     // Keep a reference of the ingredient.
     self.ingredient = (Ingredient *)value;
-    self.unitTextField.text = self.ingredient.measurement;
-    self.ingredientTextField.text = self.ingredient.name;
+    self.unitTextField.text = [self.ingredient.measurement CK_truncatedStringToLength:kMaxLengthMeasurement];
+    self.ingredientTextField.text = [self.ingredient.name CK_truncatedStringToLength:kMaxLengthDescription];
+}
+
+- (void)setPlaceholder:(BOOL)placeholder {
+    [super setPlaceholder:placeholder];
+    self.unitTextField.text = nil;
+    self.ingredientTextField.text = nil;
 }
 
 - (id)currentValue {
-    return self.ingredient;
+    return [Ingredient ingredientwithName:[self.ingredientTextField.text CK_whitespaceTrimmed]
+                              measurement:[self.unitTextField.text CK_whitespaceTrimmed]];
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -113,15 +117,15 @@
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    return YES;
+    
+    return [self.delegate processedValueForCell:self];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     BOOL shouldReturn = YES;
     if (textField == self.unitTextField) {
         
-        self.ingredientTextField.userInteractionEnabled = YES;
-        [self.ingredientTextField becomeFirstResponder];
+        [self focusIngredientField];
         
     } else if (textField == self.ingredientTextField) {
         
@@ -140,13 +144,14 @@
 - (void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount {
     NSLog(@"didEnterMeasurementShortCut [%@] isAmount [%@]", name, [NSString CK_stringForBoolean:isAmount]);
     
-    NSString *newValue = [NSString stringWithFormat:@"%@%@",self.unitTextField.text, [name lowercaseString]];
+    NSString *newValue = [NSString stringWithFormat:@"%@ %@",self.unitTextField.text, [name lowercaseString]];
     if (newValue.length < kMaxLengthMeasurement) {
         self.unitTextField.text = newValue;
     }
     
+    // If this was not the amount field, then jump to the ingredient field.
     if (!isAmount) {
-        [self.ingredientTextField becomeFirstResponder];
+        [self focusIngredientField];
     }
     
 }
@@ -162,6 +167,24 @@
 
 #pragma mark - Private methods
 
+- (void)focusUnitField {
+    self.unitTextField.userInteractionEnabled = YES;
+    self.ingredientTextField.userInteractionEnabled = NO;
+    [self.unitTextField becomeFirstResponder];
+}
 
+- (void)focusIngredientField {
+    self.unitTextField.userInteractionEnabled = NO;
+    self.ingredientTextField.userInteractionEnabled = YES;
+    [ViewHelper setCaretOnFrontForInput:self.ingredientTextField];
+    [self.ingredientTextField becomeFirstResponder];
+}
+
+- (void)unfocusFields {
+    [self.unitTextField resignFirstResponder];
+    [self.ingredientTextField resignFirstResponder];
+    self.unitTextField.userInteractionEnabled = NO;
+    self.ingredientTextField.userInteractionEnabled = NO;
+}
 
 @end

@@ -8,12 +8,12 @@
 
 #import "IngredientItemsEditViewController.h"
 #import "IngredientItemCollectionViewCell.h"
-#import "CKRecipe.h"
+#import "RecipeClipboard.h"
 #import "Ingredient.h"
 
 @interface IngredientItemsEditViewController ()
 
-@property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) RecipeClipboard *recipeClipboard;
 
 @end
 
@@ -21,16 +21,24 @@
 
 #define kIngredientsTitle  @"Ingredients"
 
-- (id)initWithEditView:(UIView *)editView recipe:(CKRecipe *)recipe delegate:(id<CKEditViewControllerDelegate>)delegate
-         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white {
+- (id)initWithEditView:(UIView *)editView recipeClipboard:(RecipeClipboard *)recipeClipboard
+              delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper
+                 white:(BOOL)white {
     
-    if (self = [super initWithEditView:editView delegate:delegate items:recipe.ingredients selectedIndex:nil
+    if (self = [super initWithEditView:editView delegate:delegate items:recipeClipboard.ingredients selectedIndex:nil
                          editingHelper:editingHelper white:white title:kIngredientsTitle]) {
-        self.recipe = recipe;
+        
+        self.recipeClipboard = recipeClipboard;
         self.addItemsFromTop = NO;
         self.allowSelectionState = NO;
     }
     return self;
+}
+
+#pragma mark - CKEditViewController methods
+
+- (id)updatedValue {
+    return self.recipeClipboard;
 }
 
 #pragma mark - CKItemsEditViewController methods
@@ -46,7 +54,5 @@
 - (BOOL)readyForInsertionForPlaceholderCell:(CKItemCollectionViewCell *)placeholderCell {
     return YES;
 }
-
-
 
 @end

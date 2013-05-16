@@ -7,7 +7,10 @@
 //
 
 @interface Ingredient : NSObject
-@property(nonatomic,strong) NSString *name;
-@property(nonatomic,strong) NSString *measurement;
-+(Ingredient *)ingredientwithName:(NSString *)name measurement:(NSString*)measurement;
+
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *measurement;
+
++ (Ingredient *)ingredientwithName:(NSString *)name measurement:(NSString*)measurement;
+
 @end

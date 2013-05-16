@@ -34,4 +34,19 @@
     return ([[self CK_whitespaceTrimmed] length] == 0);
 }
 
+- (NSString *)CK_truncatedStringToLength:(NSInteger)length {
+    NSString *truncatedString = [NSString stringWithString:self];
+    if ([self length]) {
+        
+        NSInteger indexToTruncate = 0;
+        if (length > [self length]) {
+            indexToTruncate = [self length];
+        } else {
+            indexToTruncate = length;
+        }
+        truncatedString = [truncatedString substringToIndex:indexToTruncate];
+    }
+    return truncatedString;
+}
+
 @end

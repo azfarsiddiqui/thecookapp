@@ -325,10 +325,10 @@ typedef enum {
     } else if (editingView == self.ingredientsLabel) {
         
         IngredientItemsEditViewController *editViewController = [[IngredientItemsEditViewController alloc] initWithEditView:self.ingredientsLabel
-                                                                                                                   recipe:self.recipe
-                                                                                                                 delegate:self
-                                                                                                            editingHelper:self.editingHelper
-                                                                                                                    white:YES];
+                                                                                                            recipeClipboard:self.clipboard
+                                                                                                                   delegate:self
+                                                                                                              editingHelper:self.editingHelper
+                                                                                                                      white:YES];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
     }
@@ -1760,6 +1760,7 @@ typedef enum {
         self.clipboard.serves = self.recipe.numServes;
         self.clipboard.prepMinutes = self.recipe.prepTimeInMinutes;
         self.clipboard.cookMinutes = self.recipe.cookingTimeInMinutes;
+        self.clipboard.ingredients = self.recipe.ingredients;
     } else {
         self.clipboard = nil;
     }

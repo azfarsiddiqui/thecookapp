@@ -7,7 +7,15 @@
 //
 
 #import "RecipeClipboard.h"
+#import "MRCEnumerable.h"
+#import "Ingredient.h"
 
 @implementation RecipeClipboard
+
+- (void)setIngredients:(NSMutableArray *)ingredients {
+    _ingredients = [NSMutableArray arrayWithArray:[ingredients collect:^id(Ingredient *ingredient) {
+        return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];
+    }]];
+}
 
 @end
