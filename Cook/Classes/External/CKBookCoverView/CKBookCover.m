@@ -131,17 +131,11 @@
 }
 
 + (BookCoverLayout)layoutForKey:(NSString *)key {
-    BookCoverLayout layout = BookCoverLayout1;
+    BookCoverLayout layout = BookCoverLayoutTop;
     if ([key isEqualToString:@"Layout1"]) {
-        layout = BookCoverLayout1;
+        layout = BookCoverLayoutTop;
     } else if ([key isEqualToString:@"Layout2"]) {
-        layout = BookCoverLayout2;
-    } else if ([key isEqualToString:@"Layout3"]) {
-        layout = BookCoverLayout3;
-    } else if ([key isEqualToString:@"Layout4"]) {
-        layout = BookCoverLayout4;
-    } else if ([key isEqualToString:@"Layout5"]) {
-        layout = BookCoverLayout5;
+        layout = BookCoverLayoutBottom;
     }
     return layout;
 }

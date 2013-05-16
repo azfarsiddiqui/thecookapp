@@ -89,9 +89,9 @@
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
     
     if (self.book.featured) {
-        [bookCoverView setTitle:self.book.name author:nil caption:self.book.caption editable:NO];
+        [bookCoverView setTitle:self.book.name author:nil editable:NO];
     } else {
-        [bookCoverView setTitle:self.book.name author:[self.book userName] caption:self.book.caption editable:[self.book editable]];
+        [bookCoverView setTitle:self.book.name author:[self.book userName] editable:[self.book editable]];
     }
     
     [self.view addSubview:bookCoverView];

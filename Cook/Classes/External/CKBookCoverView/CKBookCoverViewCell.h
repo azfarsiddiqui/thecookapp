@@ -25,7 +25,7 @@
 + (CGSize)cellSize;
 
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration author:(NSString *)author
-           title:(NSString *)title caption:(NSString *)caption editable:(BOOL)editable;
+           title:(NSString *)title editable:(BOOL)editable;
 - (void)enableEditMode:(BOOL)enable;
 
 @end

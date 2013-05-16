@@ -27,7 +27,7 @@
     [super loadBook:book];
     
     if (book.featured) {
-        [self.bookCoverView setTitle:book.name author:nil caption:book.caption editable:NO];
+        [self.bookCoverView setTitle:book.caption author:book.name editable:NO];
     }
     
     [self updateFollowedIcon:book.followed];

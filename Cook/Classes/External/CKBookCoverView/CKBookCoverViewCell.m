@@ -30,9 +30,9 @@
 }
 
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration author:(NSString *)author
-           title:(NSString *)title caption:(NSString *)caption editable:(BOOL)editable {
+           title:(NSString *)title editable:(BOOL)editable {
     [self.bookCoverView setCover:cover illustration:illustration];
-    [self.bookCoverView setTitle:title author:author caption:caption editable:editable];
+    [self.bookCoverView setTitle:title author:author editable:editable];
 }
 
 - (void)enableEditMode:(BOOL)enable {

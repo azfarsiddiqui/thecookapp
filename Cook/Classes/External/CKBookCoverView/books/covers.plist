@@ -13,15 +13,6 @@
 			<key>Thumb</key>
 			<string>cook_customise_colours_yellow.png</string>
 		</dict>
-		<key>Orange</key>
-		<dict>
-			<key>Index</key>
-			<integer>1</integer>
-			<key>Image</key>
-			<string>cook_book_orange.png</string>
-			<key>Thumb</key>
-			<string>cook_customise_colours_orange.png</string>
-		</dict>
 		<key>Burnt Orange</key>
 		<dict>
 			<key>Index</key>
@@ -49,15 +40,6 @@
 			<key>Thumb</key>
 			<string>cook_customise_colours_red.png</string>
 		</dict>
-		<key>Purple</key>
-		<dict>
-			<key>Index</key>
-			<integer>5</integer>
-			<key>Image</key>
-			<string>cook_book_purple.png</string>
-			<key>Thumb</key>
-			<string>cook_customise_colours_purple.png</string>
-		</dict>
 		<key>Blue</key>
 		<dict>
 			<key>Index</key>
@@ -66,15 +48,6 @@
 			<string>cook_book_blue.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_blue.png</string>
-		</dict>
-		<key>Light Blue</key>
-		<dict>
-			<key>Index</key>
-			<integer>7</integer>
-			<key>Image</key>
-			<string>cook_book_lightblue.png</string>
-			<key>Thumb</key>
-			<string>cook_customise_colours_lightblue.png</string>
 		</dict>
 		<key>Green</key>
 		<dict>
@@ -85,15 +58,6 @@
 			<key>Thumb</key>
 			<string>cook_customise_colours_green.png</string>
 		</dict>
-		<key>Light Green</key>
-		<dict>
-			<key>Index</key>
-			<integer>9</integer>
-			<key>Image</key>
-			<string>cook_book_lightgreen.png</string>
-			<key>Thumb</key>
-			<string>cook_customise_colours_lightgreen.png</string>
-		</dict>
 		<key>Brown</key>
 		<dict>
 			<key>Index</key>
@@ -102,15 +66,6 @@
 			<string>cook_book_brown.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_brown.png</string>
-		</dict>
-		<key>Light Gray</key>
-		<dict>
-			<key>Index</key>
-			<integer>11</integer>
-			<key>Image</key>
-			<string>cook_book_lightgray.png</string>
-			<key>Thumb</key>
-			<string>cook_customise_colours_lightgray.png</string>
 		</dict>
 		<key>Gray</key>
 		<dict>
@@ -131,40 +86,19 @@
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>
-		<key>Bicycle</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_bicycle.png</string>
-			<key>Layout</key>
-			<string>Layout1</string>
-		</dict>
 		<key>Bicycle Back</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_bicycleback.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout2</string>
 		</dict>
 		<key>Boots</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_boots.png</string>
 			<key>Layout</key>
-			<string>Layout3</string>
-		</dict>
-		<key>Bowls</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_bowls.png</string>
-			<key>Layout</key>
-			<string>Layout1</string>
-		</dict>
-		<key>Burger</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_burger.png</string>
-			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout2</string>
 		</dict>
 		<key>Clock</key>
 		<dict>
@@ -173,52 +107,17 @@
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>
-		<key>Cow</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_cow.png</string>
-			<key>Layout</key>
-			<string>Layout1</string>
-		</dict>
-		<key>Cupcake</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_cupcake.png</string>
-			<key>Layout</key>
-			<string>Layout3</string>
-		</dict>
-		<key>Cutlery</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_cutlery.png</string>
-			<key>Layout</key>
-			<string>Layout4</string>
-		</dict>
 		<key>Egg Beater</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_eggbeater.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
-		</dict>
-		<key>Egg Plant</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_eggplant.png</string>
-			<key>Layout</key>
 			<string>Layout2</string>
 		</dict>
-		<key>Fork Plate</key>
+		<key>Oranges</key>
 		<dict>
 			<key>Image</key>
-			<string>cook_book_graphic_forkplate.png</string>
-			<key>Layout</key>
-			<string>Layout3</string>
-		</dict>
-		<key>Orange</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_orange.png</string>
+			<string>cook_book_graphic_oranges.png</string>
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>
@@ -227,35 +126,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_pasta.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
-		</dict>
-		<key>Peas</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_peas.png</string>
-			<key>Layout</key>
 			<string>Layout2</string>
-		</dict>
-		<key>Plane</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_plane.png</string>
-			<key>Layout</key>
-			<string>Layout1</string>
-		</dict>
-		<key>Pot</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_pot.png</string>
-			<key>Layout</key>
-			<string>Layout1</string>
-		</dict>
-		<key>Prawn</key>
-		<dict>
-			<key>Image</key>
-			<string>cook_book_graphic_prawn.png</string>
-			<key>Layout</key>
-			<string>Layout1</string>
 		</dict>
 		<key>Rice</key>
 		<dict>
@@ -276,14 +147,14 @@
 			<key>Image</key>
 			<string>cook_book_graphic_spoon.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout2</string>
 		</dict>
 		<key>Tomato</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_tomato.png</string>
 			<key>Layout</key>
-			<string>Layout3</string>
+			<string>Layout2</string>
 		</dict>
 	</dict>
 </dict>

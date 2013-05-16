@@ -42,7 +42,7 @@
     
     // Update cover.
     [self.bookCoverView setCover:book.cover illustration:book.illustration];
-    [self.bookCoverView setTitle:book.name author:[book userName] caption:book.caption editable:[book editable]];
+    [self.bookCoverView setTitle:book.name author:[book userName] editable:[book editable]];
     
     // Reset delete mode.
     [self enableDeleteMode:NO];

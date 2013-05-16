@@ -93,7 +93,7 @@
     
     // Featured books is completely illustration-based only.
     if (!self.book.featured) {
-        [self.bookCoverView setTitle:book.name author:[book userName] caption:book.caption editable:mine];
+        [self.bookCoverView setTitle:book.name author:[book userName] editable:mine];
     }
     
 }

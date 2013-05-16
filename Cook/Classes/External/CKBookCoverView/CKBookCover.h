@@ -9,11 +9,8 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-	BookCoverLayout1,
-	BookCoverLayout2,
-	BookCoverLayout3,
-	BookCoverLayout4,
-	BookCoverLayout5,
+	BookCoverLayoutTop,
+	BookCoverLayoutBottom,
 } BookCoverLayout;
 
 @interface CKBookCover : NSObject
