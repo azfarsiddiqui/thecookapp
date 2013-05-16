@@ -21,7 +21,7 @@
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIImageView *overlayImageView;
 @property (nonatomic, strong) UIImageView *illustrationImageView;
-@property (nonatomic, strong) UILabel *layoutLabel;
+@property (nonatomic, strong) UIView *contentOverlay;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIButton *editButton;
@@ -36,22 +36,21 @@
 
 @implementation CKBookCoverView
 
-#define kContentInsets  UIEdgeInsetsMake(0.0, 25.0, 10.0, 15.0)
-#define kOverlayDebug   0
+#define kContentInsets  UIEdgeInsetsMake(0.0, 13.0, 28.0, 10.0)
+#define kOverlayDebug   1
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self initBackground];
-        if (kOverlayDebug) {
-            UIView *contentOverlay = [[UIView alloc] initWithFrame:CGRectMake(kContentInsets.left,
-                                                                              kContentInsets.top,
-                                                                              self.bounds.size.width - kContentInsets.left - kContentInsets.right,
-                                                                              self.bounds.size.height - kContentInsets.top - kContentInsets.bottom)];
-            contentOverlay.backgroundColor = [UIColor whiteColor];
-            contentOverlay.alpha = 0.3;
-            [self addSubview:contentOverlay];
-        }
+        
+        // Content overlay.
+        UIView *contentOverlay = [[UIView alloc] initWithFrame:CGRectZero];
+        contentOverlay.backgroundColor = kOverlayDebug ? [UIColor whiteColor] : [UIColor clearColor];;
+        contentOverlay.alpha = kOverlayDebug ? 0.3 : 1.0;
+        [self addSubview:contentOverlay];
+        self.contentOverlay = contentOverlay;
+        
     }
     return self;
 }
@@ -64,8 +63,8 @@
 }
 
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration {
-    self.illustrationImageView.image = [CKBookCover imageForIllustration:illustration];
     [self setLayout:[CKBookCover layoutForIllustration:illustration]];
+    self.illustrationImageView.image = [CKBookCover imageForIllustration:illustration];
     self.backgroundImageView.image = [CKBookCover imageForCover:cover];
 }
 
@@ -200,32 +199,7 @@
 
 - (void)setLayout:(BookCoverLayout)layout {
     self.bookCoverLayout = layout;
-    
-    if (kOverlayDebug) {
-        if (!self.layoutLabel) {
-            UILabel *layoutLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-            layoutLabel.autoresizingMask = UIViewAutoresizingNone;
-            layoutLabel.backgroundColor = [UIColor clearColor];
-            [self addSubview:layoutLabel];
-            self.layoutLabel = layoutLabel;
-        }
-        
-        NSString *layoutDisplay = [NSString stringWithFormat:@"%d", layout + 1];
-        NSLineBreakMode lineBreakMode = NSLineBreakByTruncatingTail;
-        UIFont *font = [UIFont boldSystemFontOfSize:12.0];
-        CGSize size = [layoutDisplay sizeWithFont:font
-                                constrainedToSize:self.bounds.size
-                                    lineBreakMode:lineBreakMode];
-        self.layoutLabel.frame = CGRectMake(self.bounds.size.width - kContentInsets.right - size.width,
-                                            kContentInsets.top,
-                                            size.width,
-                                            size.height);
-        self.layoutLabel.lineBreakMode = lineBreakMode;
-        self.layoutLabel.minimumScaleFactor = 0.7;
-        self.layoutLabel.font = font;
-        self.layoutLabel.textColor = [UIColor whiteColor];
-        self.layoutLabel.text = layoutDisplay;
-    }
+    self.contentOverlay.frame = [self contentFrameForLayout];
 }
 
 - (CGSize)lineSizeForFont:(UIFont *)font lines:(NSInteger)lines {
@@ -333,7 +307,7 @@
 
 - (void)setTitle:(NSString *)author {
     self.authorValue = author;
-    UIFont *font = [Theme bookCoverViewModeAuthorFont];
+    UIFont *font = [Theme bookCoverViewModeTitleFont];
     
     if (!self.titleLabel) {
         UILabel *authorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -358,21 +332,21 @@
     self.nameValue = name;
     
     if (!self.nameLabel) {
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        titleLabel.autoresizingMask = UIViewAutoresizingNone;
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.numberOfLines = 0;
+        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        nameLabel.autoresizingMask = UIViewAutoresizingNone;
+        nameLabel.backgroundColor = [UIColor clearColor];
+        nameLabel.numberOfLines = 0;
         if (kOverlayDebug) {
-            titleLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
+            nameLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
         }
         
-        [self addSubview:titleLabel];
-        self.nameLabel = titleLabel;
+        [self addSubview:nameLabel];
+        self.nameLabel = nameLabel;
     }
     
-    UIFont *minFont = [Theme bookCoverViewModeTitleMinFont];
-    UIFont *midFont = [Theme bookCoverViewModeTitleMidFont];
-    UIFont *maxFont = [Theme bookCoverViewModeTitleMaxFont];
+    UIFont *minFont = [Theme bookCoverViewModeNameMinFont];
+    UIFont *midFont = [Theme bookCoverViewModeNameMidFont];
+    UIFont *maxFont = [Theme bookCoverViewModeNameMaxFont];
     
     self.nameLabel.textAlignment = [self titleTextAlignment];
     
@@ -430,8 +404,8 @@
             UIImage *editImage = [UIImage imageNamed:@"cook_dash_icons_customise.png"];
             [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
             [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
-            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width - 7.0,
-                                          5.0,
+            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width + 8.0,
+                                          -20.0,
                                           editImage.size.width,
                                           editImage.size.height);
             [self addSubview:editButton];
@@ -464,6 +438,22 @@
 
 - (UIView *)rootView {
     return [UIApplication sharedApplication].keyWindow.rootViewController.view;
+}
+
+- (CGRect)contentFrameForLayout {
+    CGRect frame = CGRectZero;
+    DLog(@"Layout: %d", self.bookCoverLayout);
+    switch (self.bookCoverLayout) {
+        case BookCoverLayoutTop:
+            frame = CGRectMake(13.0, -3.0, 280.0, 210.0);
+            break;
+        case BookCoverLayoutBottom:
+            frame = CGRectMake(13.0, 242.0, 280.0, 170.0);
+            break;
+        default:
+            break;
+    }
+    return frame;
 }
 
 @end

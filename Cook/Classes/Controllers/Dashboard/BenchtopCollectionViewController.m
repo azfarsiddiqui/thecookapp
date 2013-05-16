@@ -279,7 +279,6 @@
     
     BenchtopBookCoverViewCell *cell = [self myBookCell];
     self.myBook.author = cell.bookCoverView.authorValue;
-    self.myBook.caption = cell.bookCoverView.captionValue;
     self.myBook.name = cell.bookCoverView.nameValue;
     [self.myBook saveInBackground];
     

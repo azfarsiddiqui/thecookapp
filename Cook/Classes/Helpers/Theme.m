@@ -494,24 +494,24 @@
     return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
 }
 
-+(UIFont *)bookCoverViewModeTitleMinFont
++(UIFont *)bookCoverViewModeNameMinFont
 {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:55];;
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:48];;
 }
 
-+(UIFont *)bookCoverViewModeTitleMidFont
++(UIFont *)bookCoverViewModeNameMidFont
 {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:70];
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:48];
 }
 
-+(UIFont *)bookCoverViewModeTitleMaxFont
++(UIFont *)bookCoverViewModeNameMaxFont
 {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:96];
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:56];
 }
 
-+(UIFont *)bookCoverViewModeAuthorFont
++(UIFont *)bookCoverViewModeTitleFont
 {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:20];
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14];
 }
 
 +(UIFont *)bookCoverViewModeCaptionFont

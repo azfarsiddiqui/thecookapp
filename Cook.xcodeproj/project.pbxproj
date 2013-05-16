@@ -25,6 +25,18 @@
 		761186BF16F04831004F631B /* StoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761186BE16F04830004F631B /* StoreBookViewController.m */; };
 		7614D5951744AD1200B16AC9 /* cook_book_graphic_oranges.png in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5931744AD1100B16AC9 /* cook_book_graphic_oranges.png */; };
 		7614D5961744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5941744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png */; };
+		7614D5A31744B7D400B16AC9 /* Brandon_bld_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5971744B7D400B16AC9 /* Brandon_bld_it.otf */; };
+		7614D5A41744B7D400B16AC9 /* Brandon_bld.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5981744B7D400B16AC9 /* Brandon_bld.otf */; };
+		7614D5A51744B7D400B16AC9 /* Brandon_blk_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5991744B7D400B16AC9 /* Brandon_blk_it.otf */; };
+		7614D5A61744B7D400B16AC9 /* Brandon_blk.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D59A1744B7D400B16AC9 /* Brandon_blk.otf */; };
+		7614D5A71744B7D400B16AC9 /* Brandon_light_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D59B1744B7D400B16AC9 /* Brandon_light_it.otf */; };
+		7614D5A81744B7D400B16AC9 /* Brandon_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D59C1744B7D400B16AC9 /* Brandon_light.otf */; };
+		7614D5A91744B7D400B16AC9 /* Brandon_med_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D59D1744B7D400B16AC9 /* Brandon_med_it.otf */; };
+		7614D5AA1744B7D400B16AC9 /* Brandon_med.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D59E1744B7D400B16AC9 /* Brandon_med.otf */; };
+		7614D5AB1744B7D400B16AC9 /* Brandon_reg_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D59F1744B7D400B16AC9 /* Brandon_reg_it.otf */; };
+		7614D5AC1744B7D400B16AC9 /* Brandon_reg.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5A01744B7D400B16AC9 /* Brandon_reg.otf */; };
+		7614D5AD1744B7D400B16AC9 /* Brandon_thin_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5A11744B7D400B16AC9 /* Brandon_thin_it.otf */; };
+		7614D5AE1744B7D400B16AC9 /* Brandon_thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5A21744B7D400B16AC9 /* Brandon_thin.otf */; };
 		76166F3716E83F580077DE09 /* cook_dash_library_tab_wrap.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3516E83F580077DE09 /* cook_dash_library_tab_wrap.png */; };
 		76166F3816E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */; };
 		76166F3B16E850950077DE09 /* SuggestedStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76166F3A16E850950077DE09 /* SuggestedStoreCollectionViewController.m */; };
@@ -646,6 +658,18 @@
 		761186BE16F04830004F631B /* StoreBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreBookViewController.m; sourceTree = "<group>"; };
 		7614D5931744AD1100B16AC9 /* cook_book_graphic_oranges.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_oranges.png; sourceTree = "<group>"; };
 		7614D5941744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_oranges@2x.png"; sourceTree = "<group>"; };
+		7614D5971744B7D400B16AC9 /* Brandon_bld_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_bld_it.otf; sourceTree = "<group>"; };
+		7614D5981744B7D400B16AC9 /* Brandon_bld.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_bld.otf; sourceTree = "<group>"; };
+		7614D5991744B7D400B16AC9 /* Brandon_blk_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_blk_it.otf; sourceTree = "<group>"; };
+		7614D59A1744B7D400B16AC9 /* Brandon_blk.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_blk.otf; sourceTree = "<group>"; };
+		7614D59B1744B7D400B16AC9 /* Brandon_light_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_light_it.otf; sourceTree = "<group>"; };
+		7614D59C1744B7D400B16AC9 /* Brandon_light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_light.otf; sourceTree = "<group>"; };
+		7614D59D1744B7D400B16AC9 /* Brandon_med_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_med_it.otf; sourceTree = "<group>"; };
+		7614D59E1744B7D400B16AC9 /* Brandon_med.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_med.otf; sourceTree = "<group>"; };
+		7614D59F1744B7D400B16AC9 /* Brandon_reg_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_reg_it.otf; sourceTree = "<group>"; };
+		7614D5A01744B7D400B16AC9 /* Brandon_reg.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_reg.otf; sourceTree = "<group>"; };
+		7614D5A11744B7D400B16AC9 /* Brandon_thin_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_thin_it.otf; sourceTree = "<group>"; };
+		7614D5A21744B7D400B16AC9 /* Brandon_thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_thin.otf; sourceTree = "<group>"; };
 		76166F3516E83F580077DE09 /* cook_dash_library_tab_wrap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_tab_wrap.png; sourceTree = "<group>"; };
 		76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_tab_wrap@2x.png"; sourceTree = "<group>"; };
 		76166F3916E850950077DE09 /* SuggestedStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestedStoreCollectionViewController.h; sourceTree = "<group>"; };
@@ -1810,6 +1834,18 @@
 				766B0DD61664495E00A934FD /* Neutra2Display-Medium.otf */,
 				766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */,
 				766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */,
+				7614D5971744B7D400B16AC9 /* Brandon_bld_it.otf */,
+				7614D5981744B7D400B16AC9 /* Brandon_bld.otf */,
+				7614D5991744B7D400B16AC9 /* Brandon_blk_it.otf */,
+				7614D59A1744B7D400B16AC9 /* Brandon_blk.otf */,
+				7614D59B1744B7D400B16AC9 /* Brandon_light_it.otf */,
+				7614D59C1744B7D400B16AC9 /* Brandon_light.otf */,
+				7614D59D1744B7D400B16AC9 /* Brandon_med_it.otf */,
+				7614D59E1744B7D400B16AC9 /* Brandon_med.otf */,
+				7614D59F1744B7D400B16AC9 /* Brandon_reg_it.otf */,
+				7614D5A01744B7D400B16AC9 /* Brandon_reg.otf */,
+				7614D5A11744B7D400B16AC9 /* Brandon_thin_it.otf */,
+				7614D5A21744B7D400B16AC9 /* Brandon_thin.otf */,
 			);
 			path = fonts;
 			sourceTree = "<group>";
@@ -3302,6 +3338,18 @@
 				76871BEC174365A00030BDE4 /* cook_dash_woodbg@2x.png in Resources */,
 				7614D5951744AD1200B16AC9 /* cook_book_graphic_oranges.png in Resources */,
 				7614D5961744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png in Resources */,
+				7614D5A31744B7D400B16AC9 /* Brandon_bld_it.otf in Resources */,
+				7614D5A41744B7D400B16AC9 /* Brandon_bld.otf in Resources */,
+				7614D5A51744B7D400B16AC9 /* Brandon_blk_it.otf in Resources */,
+				7614D5A61744B7D400B16AC9 /* Brandon_blk.otf in Resources */,
+				7614D5A71744B7D400B16AC9 /* Brandon_light_it.otf in Resources */,
+				7614D5A81744B7D400B16AC9 /* Brandon_light.otf in Resources */,
+				7614D5A91744B7D400B16AC9 /* Brandon_med_it.otf in Resources */,
+				7614D5AA1744B7D400B16AC9 /* Brandon_med.otf in Resources */,
+				7614D5AB1744B7D400B16AC9 /* Brandon_reg_it.otf in Resources */,
+				7614D5AC1744B7D400B16AC9 /* Brandon_reg.otf in Resources */,
+				7614D5AD1744B7D400B16AC9 /* Brandon_thin_it.otf in Resources */,
+				7614D5AE1744B7D400B16AC9 /* Brandon_thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
