@@ -26,4 +26,8 @@
 + (UIImage *)imageWithView:(UIView *)view;
 + (UIImage *)imageWithView:(UIView *)view opaque:(BOOL)opaque;
 
+// UITextField helpers.
++ (void)setCaretOnFrontForInput:(UITextField *)input;
++ (void)selectTextForInput:(UITextField *)input atRange:(NSRange)range;
+
 @end
