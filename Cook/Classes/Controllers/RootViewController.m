@@ -264,8 +264,6 @@
 #pragma mark - Private methods
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
-    self.notificationView.hidden = YES;
-    
     CGPoint translation = [panGesture translationInView:self.view];
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
@@ -367,14 +365,12 @@
                                                   self.settingsViewController.view.frame = [self settingsFrameForLevel:benchtopLevel];
                                               }
                                               completion:^(BOOL finished) {
-                                                  self.notificationView.hidden = (benchtopLevel != kBenchtopLevel);
                                                   self.benchtopLevel = benchtopLevel;
                                                   [self.storeViewController enable:benchtopLevel == kStoreLevel];
                                                   [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
                                                   completion();
                                               }];
                          } else {
-                             self.notificationView.hidden = (benchtopLevel != kBenchtopLevel);
                              self.benchtopLevel = benchtopLevel;
                          }
                          
@@ -593,7 +589,6 @@
                          self.storeViewController.view.frame = enable ? [self editFrameForStore] : [self storeFrameForShow:NO];
                      }
                      completion:^(BOOL finished) {
-                         self.notificationView.hidden = enable;
                      }];
 }
 
@@ -766,8 +761,6 @@
                              [self.loginViewController.view removeFromSuperview];
                              self.loginViewController = nil;
                          }
-                         
-                         self.notificationView.hidden = show;
                      }];
     
 }
