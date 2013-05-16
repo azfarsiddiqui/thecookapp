@@ -59,7 +59,7 @@
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
 #define kOverlayViewAlpha               0.3
-#define kBookScaleTransform             0.95
+#define kBookScaleTransform             0.9
 
 - (void)dealloc {
     [EventHelper unregisterLogout:self];

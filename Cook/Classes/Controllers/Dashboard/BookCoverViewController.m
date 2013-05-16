@@ -176,7 +176,7 @@
     CGPoint rootBookEndPoint = CGPointMake(0.0, 0.5);
     //    CGFloat requiredScale = (rootView.bounds.size.height - 19.0) / self.bounds.size.height; // 8top + 11bot gaps
     // CGFloat requiredScale = rootView.bounds.size.height / self.bookCoverView.bounds.size.height;
-    CGFloat requiredScale = (rootView.bounds.size.height * 0.95) / self.bookCoverView.bounds.size.height;
+    CGFloat requiredScale = (rootView.bounds.size.height * 0.9) / self.bookCoverView.bounds.size.height;
     DLog(@"requiredScale: %f", requiredScale);
     CATransform3D rootBookScaleUpTransform = CATransform3DMakeScale(requiredScale, requiredScale, requiredScale);
     CATransform3D rootBookScaleDownTransform = CATransform3DIdentity;
@@ -188,6 +188,9 @@
     // Grab media time for timing our animations.
     CFTimeInterval rootMediaTime = [self.rootBookLayer convertTime:CACurrentMediaTime() fromLayer:nil];
     CGFloat duration = 0.6;
+    if (!open) {
+        duration += 0.1;
+    }
     CGFloat shiftEndOffset = 0.05;
     CGFloat scaleUpStartOffset = 0.05;
     CGFloat flipStartOffset = 0.1;
