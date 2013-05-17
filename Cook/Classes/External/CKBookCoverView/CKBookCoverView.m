@@ -66,8 +66,8 @@
         case BookCoverLayoutTop:
         case BookCoverLayoutBottom:
         default:
-            [self setAuthor:[author uppercaseString]];
             [self setName:[name uppercaseString]];
+            [self setAuthor:[author uppercaseString]];
             break;
     }
     
@@ -217,14 +217,18 @@
 - (CGRect)authorFrame {
     CGSize size = [self.authorLabel sizeThatFits:self.contentOverlay.bounds.size];
     CGRect frame = self.authorLabel.frame;
+    frame.origin.x = floorf((self.authorLabel.superview.bounds.size.width - size.width) / 2.0);
+    frame.size = size;
+    CGRect nameFrame = self.nameLabel.frame;
     
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
+            frame.origin.y = nameFrame.origin.y + nameFrame.size.height + floorf(((self.authorLabel.superview.bounds.size.height - nameFrame.origin.y - nameFrame.size.height)  - size.height) / 2.0);
+            break;
         case BookCoverLayoutBottom:
+            frame.origin.y = floorf(((self.authorLabel.superview.bounds.size.height - (self.authorLabel.superview.bounds.size.height - nameFrame.origin.y)) - size.height) / 2.0);
+            break;
         default:
-            frame.origin.x = floorf((self.authorLabel.superview.bounds.size.width - size.width) / 2.0);
-            frame.origin.y = floorf((self.authorLabel.superview.bounds.size.height - size.height) / 2.0);
-            frame.size = size;
             break;
     }
     
@@ -314,9 +318,7 @@
         self.authorLabel = authorLabel;
     }
     
-    UIFont *minFont = [Theme bookCoverViewModeNameMinFont];
     UIFont *maxFont = [Theme bookCoverViewModeNameMaxFont];
-    
     self.authorLabel.textAlignment = [self titleTextAlignment];
     
     // Paragraph style.
@@ -339,7 +341,9 @@
     NSAttributedString *titleDisplay = [[NSAttributedString alloc] initWithString:name attributes:attributes];
     self.authorLabel.attributedText = titleDisplay;
     
-    [self adjustsFontSizeForLabel:self.authorLabel attributes:attributes toFitSize:self.contentOverlay.bounds.size decrementFontSize:5.0];
+//    [self adjustsFontSizeForLabel:self.authorLabel attributes:attributes toFitSize:self.contentOverlay.bounds.size decrementFontSize:5.0];
+    [self adjustsFontSizeForLabel:self.authorLabel text:name attributes:attributes
+                        toFitSize:self.contentOverlay.bounds.size fontSizes:@[@56, @48, @44, @40]];
     
     self.authorLabel.frame = [self authorFrame];
 }
@@ -392,10 +396,10 @@
     CGRect frame = CGRectZero;
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
-            frame = CGRectMake(13.0, -3.0, 280.0, 210.0);
+            frame = CGRectMake(15.0, -3.0, 278.0, 210.0);
             break;
         case BookCoverLayoutBottom:
-            frame = CGRectMake(13.0, 242.0, 280.0, 170.0);
+            frame = CGRectMake(15.0, 232.0, 278.0, 180.0);
             break;
         default:
             break;
@@ -403,11 +407,79 @@
     return frame;
 }
 
+- (void)adjustsFontSizeForLabel:(UILabel *)label text:(NSString *)text attributes:(NSDictionary *)attributes
+                      toFitSize:(CGSize)size fontSizes:(NSArray *)fontSizes {
+    
+    NSMutableDictionary *mutableAttributes = [NSMutableDictionary dictionaryWithDictionary:attributes];
+    UIFont *font = [attributes objectForKey:NSFontAttributeName];
+    
+    // Find a font that fits the height of the box.
+    NSNumber *selectedFontNumber = nil;
+    for (NSNumber *fontNumber in fontSizes) {
+        
+        // Try the current font in the attributed string.
+        CGFloat fontSize = [fontNumber floatValue];
+        font = [font fontWithSize:fontSize];
+        [mutableAttributes setObject:font forKey:NSFontAttributeName];
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:mutableAttributes];
+        label.attributedText = attributedText;
+        
+        // Check label height against available fitSize.
+        // if it fits within the height, break now we have a candidate fontSize.
+        CGSize labelSize = [label sizeThatFits:CGSizeMake(size.width, MAXFLOAT)];
+        if (labelSize.height <= size.height) {
+            selectedFontNumber = fontNumber;
+            break;
+        }
+        
+    }
+    
+    DLog(@"Current Font [%@] after height eval: %@", text, selectedFontNumber);
+    
+    // Get the remaining font sizes.
+    NSInteger selectedFontIndex = [fontSizes indexOfObject:selectedFontNumber];
+    
+    // Now find a font so that we don't have a single word that exceeds the width.
+    NSArray *words = [text componentsSeparatedByString:@" "];
+    for (NSString *word in words) {
+        
+        // Now look for a font that fits the word on a single line.
+        for (NSInteger fontIndex = selectedFontIndex; fontIndex < [fontSizes count]; fontIndex++) {
+            
+            NSNumber *fontNumber = [fontSizes objectAtIndex:fontIndex];
+            CGFloat fontSize = [fontNumber floatValue];
+            font = [font fontWithSize:fontSize];
+            
+            // Try the current font in the attributed string.
+            [mutableAttributes setObject:font forKey:NSFontAttributeName];
+            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:word attributes:mutableAttributes];
+            label.attributedText = attributedText;
+            
+            // Check label height against available fitSize.
+            // if it fits within the height, break now we have a candidate fontSize.
+            CGSize labelSize = [label sizeThatFits:CGSizeMake(MAXFLOAT, size.height)];
+            if (labelSize.width <= size.width) {
+                selectedFontNumber = fontNumber;
+                break;
+            }
+        }
+        
+        DLog(@"Current Font [%@]: %@", word, selectedFontNumber);
+    }
+    
+    DLog(@"Current Font [%@] after word eval: %@", text, selectedFontNumber);
+    
+    // Use the current font.
+    font = [font fontWithSize:[selectedFontNumber floatValue]];
+    [mutableAttributes setObject:font forKey:NSFontAttributeName];
+    NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:mutableAttributes];
+    label.attributedText = attributedText;
+}
+
 - (void)adjustsFontSizeForLabel:(UILabel *)label attributes:(NSDictionary *)attributes toFitSize:(CGSize)size
               decrementFontSize:(CGFloat)decrementFontSize {
     
     NSString *text = label.attributedText.string;
-    label.backgroundColor = [UIColor clearColor];
     
     UIFont *currentFont = [attributes objectForKey:NSFontAttributeName];
     CGFloat currentPoint = currentFont.pointSize;
