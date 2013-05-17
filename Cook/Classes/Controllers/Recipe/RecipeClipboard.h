@@ -16,7 +16,7 @@
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *story;
 @property (nonatomic, copy) NSString *method;
-@property (nonatomic, strong) NSMutableArray *ingredients;
+@property (nonatomic, strong) NSArray *ingredients;
 
 @property (nonatomic, assign) NSInteger serves;
 @property (nonatomic, assign) NSInteger prepMinutes;

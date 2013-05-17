@@ -32,6 +32,9 @@
 @synthesize prepTimeInMinutes = _prepTimeInMinutes;
 @synthesize cookingTimeInMinutes = _cookingTimeInMinutes;
 @synthesize recipeImage = _recipeImage;
+@synthesize ingredients = _ingredients;
+
+#define kIngredientDelimiter    @"::"
 
 #pragma mark - creation
 
@@ -45,44 +48,21 @@
 
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
-    
-    NSArray *ingredients = [parseRecipe objectForKey:kRecipeAttrIngredients];
-    if (ingredients && [ingredients count] > 0) {
-        NSMutableArray *mutableIngredientsArray = [NSMutableArray arrayWithCapacity:[ingredients count]];
-        [ingredients each:^(NSString *ingredientText) {
-            Ingredient *ing = nil;
-            if ([ingredientText rangeOfString:@"::"].location != NSNotFound) {
-                NSArray *ingredientComponents = [ingredientText componentsSeparatedByString:@"::"];
-                NSString *measurement = [ingredientComponents objectAtIndex:0];
-                NSString *ingredientName = [ingredientComponents objectAtIndex:1];
-                ing = [Ingredient ingredientwithName:ingredientName measurement:measurement];
-            } else {
-                ing = [Ingredient ingredientwithName:ingredientText measurement:nil];
-            }
-            [mutableIngredientsArray addObject:ing];
-        }];
-        recipe.ingredients = mutableIngredientsArray;
-        NSString *recipeViewContentOffset = [parseRecipe objectForKey:kRecipeAttrRecipeViewImageContentOffset];
-        if (recipeViewContentOffset) {
-            recipe.recipeViewImageContentOffset = CGPointFromString(recipeViewContentOffset);
-        }
         
-        NSNumber *cookingTime = [parseRecipe objectForKey:kRecipeAttrCookingTimeInMinutes];
-        if (cookingTime) {
-            recipe.cookingTimeInMinutes = [cookingTime integerValue];
-        }
-
-        NSNumber *prepTime = [parseRecipe objectForKey:kRecipeAttrPrepTimeInMinutes];
-        if (prepTime) {
-            recipe.prepTimeInMinutes = [prepTime integerValue];
-        }
-
-        NSNumber *numServes = [parseRecipe objectForKey:kRecipeAttrNumServes];
-        if (numServes) {
-            recipe.numServes = [numServes intValue];
-        }
+    NSNumber *cookingTime = [parseRecipe objectForKey:kRecipeAttrCookingTimeInMinutes];
+    if (cookingTime) {
+        recipe.cookingTimeInMinutes = [cookingTime integerValue];
     }
     
+    NSNumber *prepTime = [parseRecipe objectForKey:kRecipeAttrPrepTimeInMinutes];
+    if (prepTime) {
+        recipe.prepTimeInMinutes = [prepTime integerValue];
+    }
+    
+    NSNumber *numServes = [parseRecipe objectForKey:kRecipeAttrNumServes];
+    if (numServes) {
+        recipe.numServes = [numServes intValue];
+    }
     // At the moment, only support one image even though database supports multiple.
     NSArray *photos = [parseRecipe objectForKey:kRecipeAttrRecipePhotos];
     if ([photos count] > 0) {
@@ -385,7 +365,43 @@
     return _recipeImage;
 }
 
+- (void)setIngredients:(NSArray *)ingredients {
+    NSArray *delimitedIngredients = [ingredients collect:^id(Ingredient *ingredient) {
+        if (!ingredient.measurement) {
+            return ingredient.name;
+        } else {
+            return [NSString stringWithFormat:@"%@::%@", ingredient.measurement,ingredient.name];
+        }
+    }];
+    _ingredients = ingredients;
+    [self.parseObject setObject:delimitedIngredients forKey:kRecipeAttrIngredients];
+}
+
+- (NSArray *)ingredients {
+    if (!_ingredients) {
+        _ingredients = [self assembleIngredients];
+    }
+    return _ingredients;
+}
+
 #pragma mark - Private Methods
+
+- (NSArray *)assembleIngredients {
+    NSArray *delimitedIngredients = [self.parseObject objectForKey:kRecipeAttrIngredients];
+    NSArray *ingredients = [delimitedIngredients collect:^id(NSString *delimitedIngredient) {
+        NSString *unit = @"";
+        NSString *name = @"";
+        NSArray *components = [delimitedIngredient componentsSeparatedByString:kIngredientDelimiter];
+        if ([components count] == 2) {
+            unit = [components objectAtIndex:0];
+            name = [components objectAtIndex:1];
+        } else if ([components count] == 1) {
+            name = [components objectAtIndex:0];
+        }
+        return [Ingredient ingredientwithName:name measurement:unit];
+    }];
+    return ingredients;
+}
 
 - (void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject {
     [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];

@@ -38,7 +38,7 @@
 #pragma mark - CKEditViewController methods
 
 - (id)updatedValue {
-    return self.recipeClipboard;
+    return self.items;
 }
 
 #pragma mark - CKItemsEditViewController methods

@@ -29,7 +29,7 @@
 
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
-@property (nonatomic, strong) NSMutableArray *ingredients;
+@property (nonatomic, strong) NSArray *ingredients;
 
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 

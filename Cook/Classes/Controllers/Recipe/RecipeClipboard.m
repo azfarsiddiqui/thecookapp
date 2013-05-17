@@ -12,8 +12,8 @@
 
 @implementation RecipeClipboard
 
-- (void)setIngredients:(NSMutableArray *)ingredients {
-    _ingredients = [NSMutableArray arrayWithArray:[ingredients collect:^id(Ingredient *ingredient) {
+- (void)setIngredients:(NSArray *)ingredients {
+    _ingredients = [NSArray arrayWithArray:[ingredients collect:^id(Ingredient *ingredient) {
         return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];
     }]];
 }

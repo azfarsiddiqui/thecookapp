@@ -387,6 +387,10 @@ typedef enum {
     } else if (editingView == self.methodLabel) {
         
         [self saveMethodValue:value];
+        
+    } else if (editingView == self.ingredientsLabel) {
+        
+        [self saveIngredientsValue:value];
     }
     
 }
@@ -990,36 +994,39 @@ typedef enum {
 }
 
 - (void)initContentView {
-    UIEdgeInsets contentInsets = kContentInsets;
-    CGRect leftFrame = kContentLeftFrame;
-//    CGRect rightFrame = CGRectMake(240.0, 0.0, 420.0, 0.0);
-    CGRect rightFrame = kContentRightFrame;
-    UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
-    CGRect contentFrame = contentView.frame;
     
-    CGFloat requiredLeftHeight = 0.0;
-    CGFloat requiredRightHeight = 0.0;
+    // Content containerView.
+    UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
+    contentView.backgroundColor = [UIColor clearColor];
+    
+    CGFloat requiredHeight = 0.0;
     CGFloat dividerGap = 18.0;
     
-    // Left Frame: Serves
-    self.servesCookView.frame = CGRectMake(contentInsets.left,
-                                           contentInsets.top,
-                                           leftFrame.size.width - kContentInsets.left - kContentInsets.right,
-                                           self.servesCookView.frame.size.height);
-    [contentView addSubview:self.servesCookView];
-    requiredLeftHeight += contentInsets.top + self.servesCookView.frame.size.height;
+    // Left Container: Serves + Divider + Ingredients
+    UIView *leftContainerView = [[UIView alloc] initWithFrame:kContentLeftFrame];
+    leftContainerView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+    leftContainerView.backgroundColor = [UIColor clearColor];
+    [contentView addSubview:leftContainerView];
     
-    // Left Frame: Divider.
+    // Left Container: Serves & Cook
+    self.servesCookView.frame = CGRectMake(kContentInsets.left,
+                                           kContentInsets.top,
+                                           leftContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                                           self.servesCookView.frame.size.height);
+    [leftContainerView addSubview:self.servesCookView];
+    requiredHeight += kContentInsets.top + self.servesCookView.frame.size.height;
+    
+    // Left Container: Divider.
     UIImageView *dividerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_details_divider.png"]];
-    dividerImageView.frame = CGRectMake(floorf((leftFrame.size.width - dividerImageView.frame.size.width) / 2.0),
-                                        requiredLeftHeight + dividerGap,
+    dividerImageView.frame = CGRectMake(floorf((leftContainerView.bounds.size.width - dividerImageView.frame.size.width) / 2.0),
+                                        self.servesCookView.frame.origin.y + self.servesCookView.frame.size.height + dividerGap,
                                         dividerImageView.frame.size.width,
                                         dividerImageView.frame.size.height);
-    [contentView addSubview:dividerImageView];
-    requiredLeftHeight += dividerGap + dividerImageView.frame.size.height;
+    [leftContainerView addSubview:dividerImageView];
+    requiredHeight += dividerGap + dividerImageView.frame.size.height;
     
-    // Left Frame: Ingredients
-    CGSize ingredientsAvailableSize = CGSizeMake(leftFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
+    // Left Container: Ingredients.
+    CGSize ingredientsAvailableSize = CGSizeMake(leftContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
     NSAttributedString *ingredientsDisplay = [self attributedTextForText:[self ingredientsText] font:[Theme ingredientsListFont] colour:[Theme ingredientsListColor]];
     UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     ingredientsLabel.numberOfLines = 0;
@@ -1028,18 +1035,29 @@ typedef enum {
     ingredientsLabel.textAlignment = NSTextAlignmentLeft;
     ingredientsLabel.attributedText = ingredientsDisplay;
     CGSize size = [ingredientsLabel sizeThatFits:ingredientsAvailableSize];
-    ingredientsLabel.frame = CGRectMake(leftFrame.origin.x + contentInsets.left + floorf((ingredientsAvailableSize.width - size.width) / 2.0),
-                                        requiredLeftHeight + dividerGap,
-                                        size.width,
+    ingredientsLabel.frame = CGRectMake(kContentInsets.left,
+                                        dividerImageView.frame.origin.y + dividerImageView.frame.size.height + dividerGap,
+                                        ingredientsAvailableSize.width,
                                         size.height);
-    [contentView addSubview:ingredientsLabel];
+    [leftContainerView addSubview:ingredientsLabel];
     ingredientsLabel.userInteractionEnabled = NO;
     self.ingredientsLabel = ingredientsLabel;
-    requiredLeftHeight += dividerGap + ingredientsLabel.frame.size.height;
-    requiredLeftHeight += contentInsets.bottom;
+    requiredHeight += dividerGap + self.ingredientsLabel.frame.size.height + kContentInsets.bottom;
+    
+    // Update leftContainer frame.
+    leftContainerView.frame = CGRectMake(leftContainerView.frame.origin.x,
+                                         leftContainerView.frame.origin.y,
+                                         leftContainerView.frame.size.width,
+                                         requiredHeight);
+    
+    // Right Container: Method
+    UIView *rightContainerView = [[UIView alloc] initWithFrame:kContentRightFrame];
+    rightContainerView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+    rightContainerView.backgroundColor = [UIColor clearColor];
+    [contentView addSubview:rightContainerView];
     
     // Right Frame.
-    CGSize methodAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
+    CGSize methodAvailableSize = CGSizeMake(rightContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
     NSAttributedString *storyDisplay = [self attributedTextForText:self.recipe.method font:[Theme methodFont] colour:[Theme methodColor]];
     UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     methodLabel.numberOfLines = 0;
@@ -1049,20 +1067,19 @@ typedef enum {
     methodLabel.attributedText = storyDisplay;
     methodLabel.userInteractionEnabled = NO;
     size = [methodLabel sizeThatFits:methodAvailableSize];
-    methodLabel.frame = CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((methodAvailableSize.width - size.width) / 2.0),
-                                   rightFrame.origin.y + contentInsets.top,
-                                   size.width,
-                                   size.height);
-    [contentView addSubview:methodLabel];
+    methodLabel.frame = CGRectMake(kContentInsets.left, kContentInsets.top, methodAvailableSize.width, size.height);
+    [rightContainerView addSubview:methodLabel];
     self.methodLabel = methodLabel;
+    requiredHeight += kContentInsets.top + methodLabel.frame.size.height + kContentInsets.bottom;
     
-    requiredRightHeight += contentInsets.top + methodLabel.frame.size.height;
-    requiredRightHeight += contentInsets.bottom;
+    // Update rightContainerView frame.
+    rightContainerView.frame = CGRectMake(rightContainerView.frame.origin.x,
+                                          rightContainerView.frame.origin.y,
+                                          rightContainerView.frame.size.width,
+                                          requiredHeight);
     
     // Adjust contentView frame.
-    contentFrame.size.height = MAX(requiredLeftHeight, requiredRightHeight);
-    contentView.frame = contentFrame;
-    contentView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    contentView.frame = CGRectUnion(leftContainerView.frame, rightContainerView.frame);
     self.contentView = contentView;
 }
 
@@ -1460,16 +1477,35 @@ typedef enum {
     if (self.addMode && ((method == nil) || [method CK_blank])) {
         method = @"METHOD";
     }
-    CGRect rightFrame = kContentRightFrame;
-    UIEdgeInsets contentInsets = kContentInsets;
-    CGSize methodAvailableSize = CGSizeMake(rightFrame.size.width - contentInsets.left - contentInsets.right, MAXFLOAT);
+    CGRect containerFrame = self.methodLabel.superview.bounds;
+    CGRect methodFrame = self.methodLabel.frame;
+    CGSize methodAvailableSize = CGSizeMake(containerFrame.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
     self.methodLabel.attributedText = methodDisplay;
     CGSize size = [self.methodLabel sizeThatFits:methodAvailableSize];
-    self.methodLabel.frame = CGRectMake(rightFrame.origin.x + contentInsets.left + floorf((methodAvailableSize.width - size.width) / 2.0),
-                                        rightFrame.origin.y + contentInsets.top,
-                                        size.width,
-                                        size.height);
+    methodFrame.size.height = size.height;
+    self.methodLabel.frame = methodFrame;
+    
+    // Size the container view to fit.
+    [self sizeToFitForContainerView:self.methodLabel.superview];
+    [self sizeToFitForContainerView:self.contentView];
+}
+
+- (void)setIngredients:(NSString *)ingredients {
+    
+    CGRect containerFrame = self.ingredientsLabel.superview.bounds;
+    CGRect ingredientsFrame = self.ingredientsLabel.frame;
+    CGSize ingredientsAvailableSize = CGSizeMake(containerFrame.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
+    NSAttributedString *ingredientsDisplay = [self attributedTextForText:[self ingredientsText] font:[Theme ingredientsListFont] colour:[Theme ingredientsListColor]];
+    UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    ingredientsLabel.attributedText = ingredientsDisplay;
+    CGSize size = [ingredientsLabel sizeThatFits:ingredientsAvailableSize];
+    ingredientsFrame.size.height = size.height;
+    self.ingredientsLabel.frame = ingredientsFrame;
+    
+    // Size the container view to fit.
+    [self sizeToFitForContainerView:self.ingredientsLabel.superview];
+    [self sizeToFitForContainerView:self.contentView];
 }
 
 - (void)setServes:(NSInteger)serves {
@@ -1609,6 +1645,12 @@ typedef enum {
         // Update the editing wrapper.
         [self.editingHelper updateEditingView:self.titleLabel animated:NO];
     }
+    
+}
+
+- (void)saveIngredientsValue:(id)value {
+    NSArray *ingredients = (NSArray *)value;
+    self.clipboard.ingredients = ingredients;
     
 }
 
@@ -1772,6 +1814,19 @@ typedef enum {
 
 - (NSString *)prepCookDisplayForPrepMinutes:(NSInteger)prepMinutes cookMinutes:(NSInteger)cookMinutes {
     return [NSString stringWithFormat:@"Prep %dm | Cook %dm", prepMinutes, cookMinutes];
+}
+
+- (void)sizeToFitForContainerView:(UIView *)containerView {
+    CGRect containerFrame = containerView.frame;
+    CGRect frame = CGRectZero;
+    
+    for (UIView *subview in containerView.subviews) {
+        frame = CGRectUnion(frame, subview.frame);
+    }
+    
+    containerFrame.size.height = frame.size.height;
+    containerFrame.size.height += kContentInsets.bottom;
+    containerView.frame = containerFrame;
 }
 
 @end
