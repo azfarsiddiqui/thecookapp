@@ -38,6 +38,7 @@
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
 #import "CKPrivacyView.h"
+#import "IngredientsView.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -72,10 +73,12 @@ typedef enum {
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
+@property (nonatomic, strong) IngredientsView *ingredientsView;
 
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *servesCookView;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIView *servingIngredientsDividerView;
 @property (nonatomic, assign) PhotoWindowHeight photoWindowHeight;
 @property (nonatomic, assign) PhotoWindowHeight previousPhotoWindowHeight;
 @property (nonatomic, assign) BOOL addMode;
@@ -114,6 +117,7 @@ typedef enum {
 #define kHeaderHeight           210.0
 #define kContentMaxHeight       468.0
 #define kContentMaxWidth        660.0
+#define kLeftDividerGap         18.0
 
 #define kButtonInsets           UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
 #define kContentLeftFrame       CGRectMake(0.0, 0.0, 240.0, 0.0)
@@ -322,9 +326,9 @@ typedef enum {
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
-    } else if (editingView == self.ingredientsLabel) {
+    } else if (editingView == self.ingredientsView) {
         
-        IngredientItemsEditViewController *editViewController = [[IngredientItemsEditViewController alloc] initWithEditView:self.ingredientsLabel
+        IngredientItemsEditViewController *editViewController = [[IngredientItemsEditViewController alloc] initWithEditView:self.ingredientsView
                                                                                                             recipeClipboard:self.clipboard
                                                                                                                    delegate:self
                                                                                                               editingHelper:self.editingHelper
@@ -388,7 +392,7 @@ typedef enum {
         
         [self saveMethodValue:value];
         
-    } else if (editingView == self.ingredientsLabel) {
+    } else if (editingView == self.ingredientsView) {
         
         [self saveIngredientsValue:value];
     }
@@ -561,7 +565,11 @@ typedef enum {
 #pragma mark - Private methods
 
 - (NSString *)ingredientsText {
-    NSArray *ingredientsDisplay = [self.recipe.ingredients collect:^id(Ingredient *ingredient) {
+    return [self ingredientsTextForIngredients:self.recipe.ingredients];
+}
+
+- (NSString *)ingredientsTextForIngredients:(NSArray *)ingredients {
+    NSArray *ingredientsDisplay = [ingredients collect:^id(Ingredient *ingredient) {
         return [NSString stringWithFormat:@"%@ %@",
                 ingredient.measurement ? ingredient.measurement : @"",
                 ingredient.name ? ingredient.name : @""];
@@ -995,8 +1003,6 @@ typedef enum {
 
 - (void)initContentView {
     
-    CGFloat dividerGap = 18.0;
-    
     // Content containerView.
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
     contentView.backgroundColor = [UIColor clearColor];
@@ -1017,28 +1023,23 @@ typedef enum {
     // Left Container: Divider.
     UIImageView *dividerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_details_divider.png"]];
     dividerImageView.frame = CGRectMake(floorf((leftContainerView.bounds.size.width - dividerImageView.frame.size.width) / 2.0),
-                                        self.servesCookView.frame.origin.y + self.servesCookView.frame.size.height + dividerGap,
+                                        self.servesCookView.frame.origin.y + self.servesCookView.frame.size.height + kLeftDividerGap,
                                         dividerImageView.frame.size.width,
                                         dividerImageView.frame.size.height);
     [leftContainerView addSubview:dividerImageView];
+    self.servingIngredientsDividerView = dividerImageView;
     
     // Left Container: Ingredients.
-    CGSize ingredientsAvailableSize = CGSizeMake(leftContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
-    NSAttributedString *ingredientsDisplay = [self attributedTextForText:[self ingredientsText] font:[Theme ingredientsListFont] colour:[Theme ingredientsListColor]];
-    UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    ingredientsLabel.numberOfLines = 0;
-    ingredientsLabel.backgroundColor = [UIColor clearColor];
-    ingredientsLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    ingredientsLabel.textAlignment = NSTextAlignmentLeft;
-    ingredientsLabel.attributedText = ingredientsDisplay;
-    CGSize size = [ingredientsLabel sizeThatFits:ingredientsAvailableSize];
-    ingredientsLabel.frame = CGRectMake(kContentInsets.left,
-                                        dividerImageView.frame.origin.y + dividerImageView.frame.size.height + dividerGap,
-                                        ingredientsAvailableSize.width,
-                                        size.height);
-    [leftContainerView addSubview:ingredientsLabel];
-    ingredientsLabel.userInteractionEnabled = NO;
-    self.ingredientsLabel = ingredientsLabel;
+    CGSize availableSize = CGSizeMake(leftContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                                      200.0);
+    IngredientsView *ingredientsView = [[IngredientsView alloc] initWithIngredients:self.recipe.ingredients
+                                                                               size:availableSize];
+    ingredientsView.frame = CGRectMake(kContentInsets.left,
+                                       self.servingIngredientsDividerView.frame.origin.y + self.servingIngredientsDividerView.frame.size.height + kLeftDividerGap,
+                                       ingredientsView.frame.size.width,
+                                       ingredientsView.frame.size.height);
+    [leftContainerView addSubview:ingredientsView];
+    self.ingredientsView = ingredientsView;
     
     // Update leftContainer frame.
     [self sizeToFitForContainerView:leftContainerView];
@@ -1059,7 +1060,7 @@ typedef enum {
     methodLabel.backgroundColor = [UIColor clearColor];
     methodLabel.attributedText = storyDisplay;
     methodLabel.userInteractionEnabled = NO;
-    size = [methodLabel sizeThatFits:methodAvailableSize];
+    CGSize size = [methodLabel sizeThatFits:methodAvailableSize];
     methodLabel.frame = CGRectMake(kContentInsets.left, kContentInsets.top, methodAvailableSize.width, size.height);
     [rightContainerView addSubview:methodLabel];
     self.methodLabel = methodLabel;
@@ -1341,11 +1342,11 @@ typedef enum {
     return ([self.book.user isEqual:[CKUser currentUser]]);
 }
 
-- (NSDictionary *)paragraphAttributesForFont:(UIFont *)font colour:(UIColor *)colour {
+- (NSDictionary *)paragraphAttributesForFont:(UIFont *)font lineSpacing:(CGFloat)lineSpacing colour:(UIColor *)colour {
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
-    paragraphStyle.lineSpacing = 10.0;
+    paragraphStyle.lineSpacing = lineSpacing;
     paragraphStyle.alignment = NSTextAlignmentLeft;
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
@@ -1355,9 +1356,18 @@ typedef enum {
             nil];
 }
 
+- (NSMutableAttributedString *)attributedTextForIngredients:(NSString *)text  {
+    return [self attributedTextForText:text lineSpacing:5.0 font:[Theme ingredientsListFont] colour:[Theme ingredientsListColor]];
+}
+
 - (NSMutableAttributedString *)attributedTextForText:(NSString *)text font:(UIFont *)font colour:(UIColor *)colour {
+    return [self attributedTextForText:text lineSpacing:10.0 font:font colour:colour];
+}
+
+- (NSMutableAttributedString *)attributedTextForText:(NSString *)text lineSpacing:(CGFloat)lineSpacing
+                                                font:(UIFont *)font colour:(UIColor *)colour {
     text = [text length] > 0 ? text : @"";
-    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font colour:colour];
+    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font lineSpacing:lineSpacing colour:colour];
     return [[NSMutableAttributedString alloc] initWithString:text attributes:paragraphAttributes];
 }
 
@@ -1392,6 +1402,7 @@ typedef enum {
     self.profilePhotoView.hidden = enable;
     self.nameLabel.hidden = enable;
     self.categoryLabel.hidden = !enable;
+    self.servingIngredientsDividerView.hidden = enable;
     
     // Set fields to be editable/non
     if (enable) {
@@ -1407,7 +1418,7 @@ typedef enum {
         [self.editingHelper wrapEditingView:self.servesCookView
                               contentInsets:UIEdgeInsetsMake(20.0, 20.0, 0.0, 20.0)
                                    delegate:self white:YES];
-        [self.editingHelper wrapEditingView:self.ingredientsLabel
+        [self.editingHelper wrapEditingView:self.ingredientsView
                               contentInsets:UIEdgeInsetsMake(20.0, 20.0, 2.0, 20.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.methodLabel
@@ -1418,7 +1429,7 @@ typedef enum {
         [self.editingHelper unwrapEditingView:self.titleLabel];
         [self.editingHelper unwrapEditingView:self.storyLabel];
         [self.editingHelper unwrapEditingView:self.servesCookView];
-        [self.editingHelper unwrapEditingView:self.ingredientsLabel];
+        [self.editingHelper unwrapEditingView:self.ingredientsView];
         [self.editingHelper unwrapEditingView:self.methodLabel];
     }
 }
@@ -1479,17 +1490,8 @@ typedef enum {
     [self sizeToFitForContainerView:self.contentView];
 }
 
-- (void)setIngredients:(NSString *)ingredients {
-    
-    CGRect containerFrame = self.ingredientsLabel.superview.bounds;
-    CGRect ingredientsFrame = self.ingredientsLabel.frame;
-    CGSize ingredientsAvailableSize = CGSizeMake(containerFrame.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
-    NSAttributedString *ingredientsDisplay = [self attributedTextForText:[self ingredientsText] font:[Theme ingredientsListFont] colour:[Theme ingredientsListColor]];
-    UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    ingredientsLabel.attributedText = ingredientsDisplay;
-    CGSize size = [ingredientsLabel sizeThatFits:ingredientsAvailableSize];
-    ingredientsFrame.size.height = size.height;
-    self.ingredientsLabel.frame = ingredientsFrame;
+- (void)setIngredients:(NSArray *)ingredients {
+    [self.ingredientsView setIngredients:ingredients];
     
     // Size the container view to fit.
     [self sizeToFitForContainerView:self.ingredientsLabel.superview];
@@ -1640,6 +1642,14 @@ typedef enum {
     NSArray *ingredients = (NSArray *)value;
     self.clipboard.ingredients = ingredients;
     
+    // Update ingredients.
+    [self setIngredients:ingredients];
+    
+    // Mark as save required; figure out a way to not save without changes.
+    self.saveRequired = YES;
+    
+    // Update the editing wrapper.
+    [self.editingHelper updateEditingView:self.ingredientsLabel animated:NO];
 }
 
 - (void)exitEditModeThenSave:(BOOL)save {
@@ -1657,6 +1667,7 @@ typedef enum {
             self.recipe.numServes = self.clipboard.serves;
             self.recipe.prepTimeInMinutes = self.clipboard.prepMinutes;
             self.recipe.cookingTimeInMinutes = self.clipboard.cookMinutes;
+            self.recipe.ingredients = self.clipboard.ingredients;
             
             // Set current category.
             CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
@@ -1756,6 +1767,7 @@ typedef enum {
         [self setMethod:self.recipe.method];
         [self setServes:self.recipe.numServes];
         [self setPrepMinutes:self.recipe.prepTimeInMinutes cookMinutes:self.recipe.cookingTimeInMinutes];
+        [self setIngredients:self.recipe.ingredients];
         
         // Reset edit flags.
         self.saveRequired = NO;

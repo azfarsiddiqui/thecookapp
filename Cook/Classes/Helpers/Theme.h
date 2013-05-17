@@ -88,8 +88,10 @@
 + (UIColor *)bookIndexNumRecipesColour;
 
 #pragma mark - Recipe View
-+(UIColor*) ingredientsListColor;
-+(UIFont*) ingredientsListFont;
++ (UIColor *)ingredientsListColor;
++ (UIFont *)ingredientsListFont;
++ (UIFont *)ingredientsListMeasurementFont;
++ (UIColor *)ingredientsListMeasurementColor;
 +(UIColor*) storyColor;
 +(UIFont*) storyFont;
 +(UIFont*) recipeNameFont;

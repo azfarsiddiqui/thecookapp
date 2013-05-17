@@ -289,21 +289,24 @@
 
 #pragma mark - Recipe View
 
-+(UIColor *)ingredientsListColor
-{
++ (UIColor *)ingredientsListColor {
     return [UIColor colorWithHexString:@"3a3a3a"];
-    
 }
 
-+(UIFont *)ingredientsListFont
-{
++ (UIFont *)ingredientsListFont {
     return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
 }
 
-+(UIColor *)storyColor
-{
++ (UIFont *)ingredientsListMeasurementFont {
+    return [UIFont fontWithName:@"AvenirNext-Bold" size:16.0f];
+}
+
++ (UIColor *)ingredientsListMeasurementColor {
+    return [self ingredientsListColor];
+}
+
++ (UIColor *)storyColor {
     return [UIColor colorWithHexString:@"4e4e4e"];
-    
 }
 
 +(UIFont *)storyFont
