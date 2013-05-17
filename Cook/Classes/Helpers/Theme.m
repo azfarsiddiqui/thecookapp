@@ -45,9 +45,8 @@
     return [UIColor colorWithHexString:@"717171"];
 }
 
-+(UIFont*) userNameFont
-{
-   return [UIFont fontWithName:@"Neutraface2Display-Medium" size:18.0];
++ (UIFont *)userNameFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:18];
 }
 
 #pragma mark - Contents View
@@ -312,9 +311,8 @@
     return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
 }
 
-+(UIFont *)recipeNameFont
-{
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:50.0];
++ (UIFont *)recipeNameFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:50];
 }
 
 +(UIColor *)recipeNameColor

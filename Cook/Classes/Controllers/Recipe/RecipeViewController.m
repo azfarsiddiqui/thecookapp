@@ -995,12 +995,11 @@ typedef enum {
 
 - (void)initContentView {
     
+    CGFloat dividerGap = 18.0;
+    
     // Content containerView.
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, kContentMaxWidth, 0.0)];
     contentView.backgroundColor = [UIColor clearColor];
-    
-    CGFloat requiredHeight = 0.0;
-    CGFloat dividerGap = 18.0;
     
     // Left Container: Serves + Divider + Ingredients
     UIView *leftContainerView = [[UIView alloc] initWithFrame:kContentLeftFrame];
@@ -1014,7 +1013,6 @@ typedef enum {
                                            leftContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                                            self.servesCookView.frame.size.height);
     [leftContainerView addSubview:self.servesCookView];
-    requiredHeight += kContentInsets.top + self.servesCookView.frame.size.height;
     
     // Left Container: Divider.
     UIImageView *dividerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_details_divider.png"]];
@@ -1023,7 +1021,6 @@ typedef enum {
                                         dividerImageView.frame.size.width,
                                         dividerImageView.frame.size.height);
     [leftContainerView addSubview:dividerImageView];
-    requiredHeight += dividerGap + dividerImageView.frame.size.height;
     
     // Left Container: Ingredients.
     CGSize ingredientsAvailableSize = CGSizeMake(leftContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
@@ -1042,13 +1039,9 @@ typedef enum {
     [leftContainerView addSubview:ingredientsLabel];
     ingredientsLabel.userInteractionEnabled = NO;
     self.ingredientsLabel = ingredientsLabel;
-    requiredHeight += dividerGap + self.ingredientsLabel.frame.size.height + kContentInsets.bottom;
     
     // Update leftContainer frame.
-    leftContainerView.frame = CGRectMake(leftContainerView.frame.origin.x,
-                                         leftContainerView.frame.origin.y,
-                                         leftContainerView.frame.size.width,
-                                         requiredHeight);
+    [self sizeToFitForContainerView:leftContainerView];
     
     // Right Container: Method
     UIView *rightContainerView = [[UIView alloc] initWithFrame:kContentRightFrame];
@@ -1070,16 +1063,11 @@ typedef enum {
     methodLabel.frame = CGRectMake(kContentInsets.left, kContentInsets.top, methodAvailableSize.width, size.height);
     [rightContainerView addSubview:methodLabel];
     self.methodLabel = methodLabel;
-    requiredHeight += kContentInsets.top + methodLabel.frame.size.height + kContentInsets.bottom;
     
     // Update rightContainerView frame.
-    rightContainerView.frame = CGRectMake(rightContainerView.frame.origin.x,
-                                          rightContainerView.frame.origin.y,
-                                          rightContainerView.frame.size.width,
-                                          requiredHeight);
-    
-    // Adjust contentView frame.
-    contentView.frame = CGRectUnion(leftContainerView.frame, rightContainerView.frame);
+    [self sizeToFitForContainerView:rightContainerView];
+    [self sizeToFitForContainerView:contentView];
+
     self.contentView = contentView;
 }
 
@@ -1411,7 +1399,7 @@ typedef enum {
                               contentInsets:UIEdgeInsetsMake(20.0, 30.0, -5.0, 30.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.titleLabel
-                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, -17.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, -17.0, 20.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.storyLabel
                               contentInsets:UIEdgeInsetsMake(20.0, 20.0, 0.0, 20.0)
