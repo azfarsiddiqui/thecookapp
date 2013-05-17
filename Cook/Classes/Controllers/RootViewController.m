@@ -585,6 +585,7 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
+                         self.notificationView.alpha = enable ? 0.0 : 1.0;
                          self.storeViewController.view.alpha = enable ? 0.0 : 1.0;
                          self.storeViewController.view.frame = enable ? [self editFrameForStore] : [self storeFrameForShow:NO];
                      }

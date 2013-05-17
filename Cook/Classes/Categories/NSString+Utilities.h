@@ -18,5 +18,6 @@
 - (NSString *)CK_whitespaceTrimmed;
 - (BOOL)CK_blank;
 - (NSString *)CK_truncatedStringToLength:(NSInteger)length;
+- (NSInteger)wordCount;
 
 @end

@@ -49,4 +49,8 @@
     return truncatedString;
 }
 
+- (NSInteger)wordCount {
+    return [[self componentsSeparatedByString:@" "] count];
+}
+
 @end

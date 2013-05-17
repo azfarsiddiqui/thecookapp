@@ -509,6 +509,10 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:56];
 }
 
++ (UIFont *)bookCoverViewModeNameFontForSize:(CGFloat)fontSize {
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:fontSize];
+}
+
 +(UIFont *)bookCoverViewModeTitleFont
 {
     return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14];

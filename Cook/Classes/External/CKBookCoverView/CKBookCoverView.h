@@ -16,13 +16,13 @@
 
 @interface CKBookCoverView : UIView
 
-@property (nonatomic, copy) NSString *authorValue;
 @property (nonatomic, copy) NSString *nameValue;
+@property (nonatomic, copy) NSString *authorValue;
 @property (nonatomic, copy) NSString *captionValue;
 
 - (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration;
-- (void)setTitle:(NSString *)title author:(NSString *)author editable:(BOOL)editable;
+- (void)setName:(NSString *)name author:(NSString *)author editable:(BOOL)editable;
 - (void)enableEditMode:(BOOL)enable;
 
 @end

@@ -152,6 +152,7 @@
 + (UIFont *)bookCoverViewModeNameMinFont;
 + (UIFont *)bookCoverViewModeNameMidFont;
 + (UIFont *)bookCoverViewModeNameMaxFont;
++ (UIFont *)bookCoverViewModeNameFontForSize:(CGFloat)fontSize;
 
 #pragma mark - General reusable editable controls
 + (UIFont *)textEditableTextFont;

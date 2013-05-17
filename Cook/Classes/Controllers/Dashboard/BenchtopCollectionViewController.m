@@ -278,8 +278,8 @@
 - (void)coverPickerDoneRequested {
     
     BenchtopBookCoverViewCell *cell = [self myBookCell];
-    self.myBook.author = cell.bookCoverView.authorValue;
     self.myBook.name = cell.bookCoverView.nameValue;
+    self.myBook.author = cell.bookCoverView.authorValue;
     [self.myBook saveInBackground];
     
     [cell loadBook:self.myBook];
@@ -507,6 +507,9 @@
                          
                          // Inform delegate
                          [self.delegate editBookRequested:enable];
+                         
+                         // Hide the level view.
+                         self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
                          
                          // Fade the edit overlay.
                          self.overlayView.alpha = enable ? 1.0 : 0.0;
