@@ -357,7 +357,7 @@
             [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
             [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
             editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width + 8.0,
-                                          -20.0,
+                                          -22.0,
                                           editImage.size.width,
                                           editImage.size.height);
             [self addSubview:editButton];
