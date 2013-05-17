@@ -80,7 +80,7 @@
     
     // Select the given cover.
     NSUInteger selectedIndex = [self.availableCovers indexOfObject:self.cover];
-    [self selectCoverAtIndex:selectedIndex];
+    [self selectCoverAtIndex:selectedIndex informDelegate:NO];
 }
 
 - (void)coverTapped:(UITapGestureRecognizer *)gesture {
@@ -94,6 +94,10 @@
 }
 
 - (void)selectCoverAtIndex:(NSUInteger)coverIndex {
+    [self selectCoverAtIndex:coverIndex informDelegate:YES];
+}
+
+- (void)selectCoverAtIndex:(NSUInteger)coverIndex informDelegate:(BOOL)informDelegate {
     self.animating = YES;
     
     [UIView animateWithDuration:0.15
@@ -123,8 +127,11 @@
                      }
                      completion:^(BOOL finished) {
                          self.animating = NO;
-                         NSString *selectedCover = [self.availableCovers objectAtIndex:coverIndex];
-                         [self.delegate coverPickerSelected:selectedCover];
+                         
+                         if (informDelegate) {
+                             NSString *selectedCover = [self.availableCovers objectAtIndex:coverIndex];
+                             [self.delegate coverPickerSelected:selectedCover];
+                         }
                      }];
     
 }

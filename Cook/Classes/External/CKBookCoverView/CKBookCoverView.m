@@ -59,7 +59,9 @@
 }
 
 - (void)setName:(NSString *)name author:(NSString *)author editable:(BOOL)editable {
-    DLog(@"Book[%@] Author[%@] Layout[%d]", name, author, self.bookCoverLayout);
+    // DLog(@"Book[%@] Author[%@] Layout[%d]", name, author, self.bookCoverLayout);
+    DLog(@"Book[%@] Author[%@] EditMode[%@]", name, author, self.editMode ? @"YES" : @"NO");
+    
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
         case BookCoverLayoutBottom:
@@ -68,10 +70,16 @@
             [self setName:[name uppercaseString]];
             break;
     }
-    [self enableEditable:editable];
+    
+    // Make sure refreshes of the book retains its current edit state.
+    if (!self.editMode) {
+        [self enableEditable:editable];
+    }
+    
 }
 
 - (void)enableEditMode:(BOOL)enable {
+    DLog(@"enableEditMode: %@", enable ? @"YES" : @"NO");
     self.editMode = enable;
     self.editButton.hidden = enable;
     
@@ -429,7 +437,7 @@
             currentFont = [currentFont fontWithSize:points];
             [mutableAttributes setObject:currentFont forKey:NSFontAttributeName];
             
-            DLog(@"****** WORD [%@] FONT[%f]", word, currentPoint);
+//            DLog(@"****** WORD [%@] FONT[%f]", word, currentPoint);
             NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:word
                                                                                  attributes:mutableAttributes];
             label.attributedText = attributedText;
@@ -437,7 +445,7 @@
             // Check label height.
             CGSize labelSize = [label sizeThatFits:CGSizeMake(MAXFLOAT, size.height)];
             if (labelSize.width <= size.width) {
-                DLog(@"****** WORD [%@] FONT[%f] WIDTH [%f] SIZE [%f]", word, currentPoint, labelSize.width, size.width);
+//                DLog(@"****** WORD [%@] FONT[%f] WIDTH [%f] SIZE [%f]", word, currentPoint, labelSize.width, size.width);
                 break;
             }
             
