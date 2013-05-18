@@ -71,7 +71,7 @@ typedef enum {
 
 // Content view.
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *storyLabel;
+@property (nonatomic, strong) CKLabel *storyLabel;
 @property (nonatomic, strong) CKLabel *methodLabel;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
 @property (nonatomic, strong) IngredientsView *ingredientsView;
@@ -962,11 +962,14 @@ typedef enum {
     [self setTitle:[self.recipe.name uppercaseString]];
     
     // Recipe story.
-    UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    CKLabel *storyLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:@"ABOUT THIS RECIPE"
+                                                 minSize:CGSizeMake(kContentMaxWidth - 40.0, 0.0)];
     storyLabel.font = [Theme storyFont];
+    storyLabel.textColor = [Theme storyColor];
+    storyLabel.placeholderColour = storyLabel.textColor;
+    storyLabel.placeholderFont = storyLabel.font;
     storyLabel.numberOfLines = 2;
     storyLabel.textAlignment = NSTextAlignmentCenter;
-    storyLabel.textColor = [Theme storyColor];
     storyLabel.backgroundColor = [UIColor clearColor];
     storyLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     storyLabel.shadowColor = [UIColor whiteColor];
@@ -1460,14 +1463,11 @@ typedef enum {
 }
 
 - (void)setStory:(NSString *)story {
-    if (self.addMode && ((story == nil) || [story CK_blank])) {
-        story = @"ABOUT THIS RECIPE";
-    }
     CGFloat titleStoryGap = 0.0;
     CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, self.headerView.bounds.size.height - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height);
     CGSize size = [story sizeWithFont:[Theme storyFont] constrainedToSize:storyAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
     self.storyLabel.text = story;
-    self.storyLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - size.width) / 2.0),
+    self.storyLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.storyLabel.frame.size.width) / 2.0),
                                        self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + titleStoryGap,
                                        size.width,
                                        size.height);
@@ -1810,11 +1810,19 @@ typedef enum {
 }
 
 - (NSString *)servesDisplayFor:(NSInteger)serves {
-    return [NSString stringWithFormat:@"Serves %d", serves];
+    NSMutableString *servesDisplay = [NSMutableString stringWithString:@"SERVES"];
+    if (serves > 0) {
+        [servesDisplay appendFormat:@"%d", serves];
+    }
+    return servesDisplay;
 }
 
 - (NSString *)prepCookDisplayForPrepMinutes:(NSInteger)prepMinutes cookMinutes:(NSInteger)cookMinutes {
-    return [NSString stringWithFormat:@"Prep %dm | Cook %dm", prepMinutes, cookMinutes];
+    if (prepMinutes == 0 && cookMinutes == 0) {
+        return @"PREP";
+    } else {
+        return [NSString stringWithFormat:@"PREP %dm | COOK %dm", prepMinutes, cookMinutes];
+    }
 }
 
 - (void)sizeToFitForContainerView:(UIView *)containerView {

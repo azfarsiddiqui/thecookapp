@@ -20,8 +20,12 @@
 
 @implementation CKLabel
 
+- (id)initWithFrame:(CGRect)frame {
+    return [self initWithFrame:frame placeholder:nil minSize:CGSizeZero];
+}
+
 - (id)initWithFrame:(CGRect)frame placeholder:(NSString *)placeholderText minSize:(CGSize)minSize {
-    if (self = [super initWithFrame:frame]) {
+    if (self = [super initWithFrame:CGRectMake(0.0, 0.0, minSize.width, minSize.height)]) {
         self.placeholderText = placeholderText;
         self.minSize = minSize;
         self.placeholderFont = [Theme methodFont];
@@ -77,13 +81,20 @@
 - (void)applyPlaceholder {
     if ([self textIsEmpty]) {
         [self addSubview:self.placeholderLabel];
+        
+        CGSize minSize = self.minSize;
+        minSize.height = minSize.height < self.placeholderLabel.frame.size.height ? self.placeholderLabel.frame.size.height : minSize.height;
+        minSize.height = minSize.height < self.placeholderLabel.frame.size.height ? self.placeholderLabel.frame.size.height : minSize.height;
+        self.minSize = minSize;
+        
+        
     } else {
         [self.placeholderLabel removeFromSuperview];
     }
 }
 
 - (BOOL)textIsEmpty {
-    return ([self.text CK_blank] || [self.attributedText.string CK_blank]);
+    return (!self.text || !self.attributedText || [self.text CK_blank] || [self.attributedText.string CK_blank]);
 }
 
 @end
