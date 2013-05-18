@@ -39,6 +39,7 @@
 #import "RecipeClipboard.h"
 #import "CKPrivacyView.h"
 #import "IngredientsView.h"
+#import "CKLabel.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -71,7 +72,7 @@ typedef enum {
 // Content view.
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
-@property (nonatomic, strong) UILabel *methodLabel;
+@property (nonatomic, strong) CKLabel *methodLabel;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
 @property (nonatomic, strong) IngredientsView *ingredientsView;
 
@@ -1031,7 +1032,7 @@ typedef enum {
     
     // Left Container: Ingredients.
     CGSize availableSize = CGSizeMake(leftContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right,
-                                      200.0);
+                                      130.0);
     IngredientsView *ingredientsView = [[IngredientsView alloc] initWithIngredients:self.recipe.ingredients
                                                                                size:availableSize];
     ingredientsView.frame = CGRectMake(kContentInsets.left,
@@ -1053,7 +1054,7 @@ typedef enum {
     // Right Frame.
     CGSize methodAvailableSize = CGSizeMake(rightContainerView.bounds.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
     NSAttributedString *storyDisplay = [self attributedTextForText:self.recipe.method font:[Theme methodFont] colour:[Theme methodColor]];
-    UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    CKLabel *methodLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:@"METHOD" minSize:CGSizeMake(150.0, 220.0)];
     methodLabel.numberOfLines = 0;
     methodLabel.lineBreakMode = NSLineBreakByWordWrapping;
     methodLabel.textAlignment = NSTextAlignmentLeft;

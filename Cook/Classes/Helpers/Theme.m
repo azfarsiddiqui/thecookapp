@@ -298,11 +298,11 @@
 }
 
 + (UIFont *)ingredientsListMeasurementFont {
-    return [UIFont fontWithName:@"AvenirNext-Bold" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
 }
 
 + (UIColor *)ingredientsListMeasurementColor {
-    return [self ingredientsListColor];
+    return [UIColor grayColor];
 }
 
 + (UIColor *)storyColor {

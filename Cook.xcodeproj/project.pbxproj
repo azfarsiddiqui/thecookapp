@@ -40,6 +40,7 @@
 		76166F3716E83F580077DE09 /* cook_dash_library_tab_wrap.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3516E83F580077DE09 /* cook_dash_library_tab_wrap.png */; };
 		76166F3816E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */; };
 		76166F3B16E850950077DE09 /* SuggestedStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76166F3A16E850950077DE09 /* SuggestedStoreCollectionViewController.m */; };
+		76181A911747A1B200886B88 /* CKLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 76181A901747A1B200886B88 /* CKLabel.m */; };
 		761A966E164C967E008FA0C4 /* cook_dash_library.png in Resources */ = {isa = PBXBuildFile; fileRef = 761A966C164C967E008FA0C4 /* cook_dash_library.png */; };
 		761A966F164C967E008FA0C4 /* cook_dash_library@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */; };
 		761E87691671FB4100206792 /* cook_library_signin_banner_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 761E87611671FB4100206792 /* cook_library_signin_banner_left.png */; };
@@ -675,6 +676,8 @@
 		76166F3616E83F580077DE09 /* cook_dash_library_tab_wrap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_tab_wrap@2x.png"; sourceTree = "<group>"; };
 		76166F3916E850950077DE09 /* SuggestedStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestedStoreCollectionViewController.h; sourceTree = "<group>"; };
 		76166F3A16E850950077DE09 /* SuggestedStoreCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuggestedStoreCollectionViewController.m; sourceTree = "<group>"; };
+		76181A8F1747A1B200886B88 /* CKLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKLabel.h; sourceTree = "<group>"; };
+		76181A901747A1B200886B88 /* CKLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKLabel.m; sourceTree = "<group>"; };
 		761A966C164C967E008FA0C4 /* cook_dash_library.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library.png; sourceTree = "<group>"; };
 		761A966D164C967E008FA0C4 /* cook_dash_library@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library@2x.png"; sourceTree = "<group>"; };
 		761E87611671FB4100206792 /* cook_library_signin_banner_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_signin_banner_left.png; sourceTree = "<group>"; };
@@ -2516,6 +2519,8 @@
 				76DA35DB173C8E65009681CE /* CKPrivacyView.m */,
 				7623572317464DA100CE1EE4 /* IngredientsView.h */,
 				7623572417464DA100CE1EE4 /* IngredientsView.m */,
+				76181A8F1747A1B200886B88 /* CKLabel.h */,
+				76181A901747A1B200886B88 /* CKLabel.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3543,6 +3548,7 @@
 				76871BE517420DA40030BDE4 /* CKTextItemsEditViewController.m in Sources */,
 				76871BE8174321ED0030BDE4 /* IngredientItemCollectionViewCell.m in Sources */,
 				7623572517464DA100CE1EE4 /* IngredientsView.m in Sources */,
+				76181A911747A1B200886B88 /* CKLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
