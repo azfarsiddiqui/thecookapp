@@ -11,4 +11,8 @@
 
 @interface CKTextItemCollectionViewCell : CKItemCollectionViewCell
 
+@property (nonatomic, strong) UITextField *textField;
+
+- (NSString *)textForValue:(id)value;
+
 @end

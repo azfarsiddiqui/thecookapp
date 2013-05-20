@@ -12,7 +12,7 @@
 @class CKCategory;
 @class CKEditingViewHelper;
 
-@interface CategoryItemstEditViewController : CKTextItemsEditViewController
+@interface CategoryItemsEditViewController : CKTextItemsEditViewController
 
 - (id)initWithEditView:(UIView *)editView book:(CKBook *)book delegate:(id<CKEditViewControllerDelegate>)delegate
      editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;

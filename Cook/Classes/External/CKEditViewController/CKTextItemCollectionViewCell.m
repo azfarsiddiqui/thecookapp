@@ -12,8 +12,6 @@
 
 @interface CKTextItemCollectionViewCell () <UITextFieldDelegate>
 
-@property (nonatomic, strong) UITextField *textField;
-
 @end
 
 @implementation CKTextItemCollectionViewCell
@@ -57,11 +55,15 @@
 
 - (void)configureValue:(id)value {
     [super configureValue:value];
-    self.textField.text = value;
+    self.textField.text = [self textForValue:value];
 }
 
 - (id)currentValue {
     return self.textField.text;
+}
+
+- (NSString *)textForValue:(id)value {
+    return (NSString *)value;
 }
 
 #pragma mark - Setters

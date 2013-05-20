@@ -104,6 +104,13 @@
     
 }
 
+- (void)saveAndDismissItems:(BOOL)save {
+    self.saveRequired = save;
+    
+    // Hide items, which will trigger itemsDidShow.
+    [self showItems:NO];
+}
+
 - (Class)classForCell {
     return [CKItemCollectionViewCell class];
 }
@@ -546,11 +553,11 @@
 }
 
 - (void)cancelTapped:(id)sender {
-    [self dismissAndSave:NO];
+    [self saveAndDismissItems:NO];
 }
 
 - (void)saveEditView {
-    [self dismissAndSave:YES];
+    [self saveAndDismissItems:YES];
 }
 
 - (void)showButtons:(BOOL)show animated:(BOOL)animated {
@@ -777,13 +784,6 @@
         }
         [self selectCellAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]];
     }
-}
-
-- (void)dismissAndSave:(BOOL)save {
-    self.saveRequired = save;
-    
-    // Hide items, which will trigger itemsDidShow.
-    [self showItems:NO];
 }
 
 @end

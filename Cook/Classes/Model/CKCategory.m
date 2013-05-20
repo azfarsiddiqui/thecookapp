@@ -13,6 +13,10 @@
 
 @implementation CKCategory
 
++ (CKCategory *)categoryForName:(NSString *)name book:(CKBook *)book {
+    return [self categoryForName:name order:0 book:book];
+}
+
 + (CKCategory *)categoryForName:(NSString *)name order:(NSInteger)order book:(CKBook *)book {
     PFObject *parseObject = [PFObject objectWithClassName:kCategoryModelName];
     CKCategory *category = [self categoryForParseCategory:parseObject];

@@ -37,6 +37,7 @@
 - (void)loadData;
 - (void)showItems;
 - (void)showItems:(BOOL)show;
+- (void)saveAndDismissItems:(BOOL)save;
 
 // Customisation options.
 - (Class)classForCell;

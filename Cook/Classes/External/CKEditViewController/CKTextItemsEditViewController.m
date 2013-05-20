@@ -30,7 +30,7 @@
 - (BOOL)readyForInsertionForPlaceholderCell:(CKItemCollectionViewCell *)placeholderCell {
     CKTextItemCollectionViewCell *textCell = (CKTextItemCollectionViewCell *)placeholderCell;
     BOOL ready = NO;
-    NSString *text = [textCell currentValue];
+    NSString *text = [textCell textForValue:[textCell currentValue]];
     if (![self blankForText:text] && [self valueValidForCell:textCell]) {
         ready = YES;
     }

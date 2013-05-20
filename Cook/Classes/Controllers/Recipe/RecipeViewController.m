@@ -33,7 +33,7 @@
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
-#import "CategoryItemstEditViewController.h"
+#import "CategoryItemsEditViewController.h"
 #import "IngredientItemsEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
@@ -286,12 +286,12 @@ typedef enum {
             currentCategory = self.recipe.category;
         }
         
-        CategoryItemstEditViewController *editViewController = [[CategoryItemstEditViewController alloc] initWithEditView:self.categoryLabel
-                                                                                                                 book:self.book
-                                                                                                     selectedCategory:currentCategory
-                                                                                                             delegate:self
-                                                                                                        editingHelper:self.editingHelper
-                                                                                                                white:YES];
+        CategoryItemsEditViewController *editViewController = [[CategoryItemsEditViewController alloc] initWithEditView:self.categoryLabel
+                                                                                                                   book:self.book
+                                                                                                       selectedCategory:currentCategory
+                                                                                                               delegate:self
+                                                                                                          editingHelper:self.editingHelper
+                                                                                                                  white:YES];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
@@ -367,34 +367,19 @@ typedef enum {
     [self.editViewController performEditing:NO];
 }
 
-- (void)editViewControllerEditRequested {
-    // TODO REMOVE
-}
-
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     
     if (editingView == self.titleLabel) {
-        
         [self saveTitleValue:value];
-        
     } else if (editingView == self.categoryLabel) {
-        
         [self saveCategoryValue:value];
-    
     } else if (editingView == self.storyLabel) {
-        
         [self saveStoryValue:value];
-        
     } else if (editingView == self.servesCookView) {
-        
         [self saveServesPrepCookValue:value];
-    
     } else if (editingView == self.methodLabel) {
-        
         [self saveMethodValue:value];
-        
     } else if (editingView == self.ingredientsView) {
-        
         [self saveIngredientsValue:value];
     }
     
@@ -1559,19 +1544,27 @@ typedef enum {
 }
 
 - (void)saveCategoryValue:(id)value {
-    NSString *categoryName = (NSString *)value;
     
-    if (![categoryName CK_equalsIgnoreCase:self.categoryLabel.text]) {
-        
-        // Update category.
-        [self setCategory:categoryName];
-        
-        // Mark save is required.
-        self.saveRequired = YES;
-        
-        // Update the editing wrapper.
-        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
-    }
+    CKCategory *selectedCategory = (CKCategory *)value;
+    NSArray *categories = ((CategoryItemsEditViewController *)self.editViewController).items;
+    
+    // NSArray *categories = self.clipboard.categories;
+    DLog(@"CATEGORY VALUE %@", value);
+    DLog(@"CATEGORIES %@", categories);
+    
+//    NSString *categoryName = (NSString *)value;
+//    
+//    if (![categoryName CK_equalsIgnoreCase:self.categoryLabel.text]) {
+//        
+//        // Update category.
+//        [self setCategory:categoryName];
+//        
+//        // Mark save is required.
+//        self.saveRequired = YES;
+//        
+//        // Update the editing wrapper.
+//        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
+//    }
 }
 
 - (void)saveStoryValue:(id)value {

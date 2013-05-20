@@ -94,12 +94,6 @@
         }
     }
     
-    
-//    if (focus) {
-//        [self focusUnitField];
-//    } else {
-//        [self unfocusFields];
-//    }
 }
 
 - (void)configureValue:(id)value {

@@ -6,20 +6,21 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CategoryItemstEditViewController.h"
+#import "CategoryItemsEditViewController.h"
+#import "CategoryItemCollectionViewCell.h"
 #import "CKBook.h"
 #import "CKCategory.h"
 #import "MRCEnumerable.h"
 #import "NSString+Utilities.h"
 
-@interface CategoryItemstEditViewController ()
+@interface CategoryItemsEditViewController ()
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKCategory *selectedCategory;
 
 @end
 
-@implementation CategoryItemstEditViewController
+@implementation CategoryItemsEditViewController
 
 #define kCategoryTitle  @"Categories"
 
@@ -44,17 +45,15 @@
     return self;
 }
 
-#pragma mark - CKListEditViewController methods
+#pragma mark - CKItemsEditViewController methods
 
 - (void)loadData {
     
     [self.book fetchCategoriesSuccess:^(NSArray *categories) {
         
-        self.items = [NSMutableArray array];
-        [self.items addObjectsFromArray:[categories collect:^id(CKCategory *category) {
-            return category.name;
-        }]];
+        self.items = [NSMutableArray arrayWithArray:categories];
         
+        // Determine selected index if selectedCategory was given.
         NSInteger selectedCategoryIndex = [categories findIndexWithBlock:^BOOL(CKCategory *category) {
             return [category.objectId isEqualToString:self.selectedCategory.objectId];
         }];
@@ -70,17 +69,21 @@
     
 }
 
-#pragma mark - Private methods
-
-+ (NSNumber *)selectedCategoryIndexForCategory:(CKCategory *)category book:(CKBook *)book {
-    if (category == nil) {
-        return nil;
-    }
-    
-    NSInteger categoryIndex = [book.currentCategories findIndexWithBlock:^BOOL(CKCategory *existingCategory) {
-        return [category.name CK_equalsIgnoreCase:existingCategory.name];
-    }];
-    return (categoryIndex >= 0) ? [NSNumber numberWithInteger:categoryIndex] : nil;
+- (void)saveAndDismissItems:(BOOL)save {
+    [super saveAndDismissItems:save];
 }
+
+- (Class)classForCell {
+    return [CategoryItemCollectionViewCell class];
+}
+
+- (void)configureCell:(CKItemCollectionViewCell *)itemCell indexPath:(NSIndexPath *)indexPath {
+    [super configureCell:itemCell indexPath:indexPath];
+    
+    CategoryItemCollectionViewCell *categoryCell = (CategoryItemCollectionViewCell *)itemCell;
+    categoryCell.book = self.book;
+}
+
+#pragma mark - Private methods
 
 @end
