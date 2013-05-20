@@ -20,6 +20,7 @@
 @property (nonatomic, assign) NSNumber *currentSelectedIndexNumber;
 @property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL scrollEnabled;
+@property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) NSInteger currentDisplayIndex;
 @property (nonatomic, assign) CGPoint restoreContentOffset;
 
@@ -68,10 +69,6 @@
 }
 
 - (void)showItems:(BOOL)show {
-    [self showItems:show completion:^{}];
-}
-
-- (void)showItems:(BOOL)show completion:(void (^)())completion {
     self.itemsLoaded = show;
     NSInteger numItems = [self.items count] + 1;
     
@@ -99,10 +96,10 @@
             }
             [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]
                                               animated:YES scrollPosition:UICollectionViewScrollPositionNone];
-
         }
         
-        completion();
+        // Lifecycle events.
+        [self itemsDidShow:show];
     }];
     
 }
@@ -219,6 +216,28 @@
     return value;
 }
 
+- (void)itemsDidShow:(BOOL)show {
+    
+    // Subclasses to implement.
+    if (show) {
+        
+        
+        
+    } else {
+        
+        if (self.saveRequired) {
+            
+            // Calls save on the the textbox view, which in turn triggers update via delegate.
+            CKEditingTextBoxView *textBoxView = [self targetEditTextBoxView];
+            [textBoxView.delegate editingTextBoxViewSaveTappedForEditingView:self.targetEditView];
+            
+        }
+        
+        // Then dismiss.
+        [super dismissEditView];
+    }
+}
+
 #pragma mark - CKEditViewController methods
 
 - (UIView *)createTargetEditView {
@@ -240,10 +259,7 @@
     }
     
     // Hide all items then dismiss.
-    [self showItems:NO completion:^{
-        [super dismissEditView];
-    }];
-    
+    [self showItems:NO];    
 }
 
 - (void)keyboardWillAppear:(BOOL)appear {
@@ -530,20 +546,11 @@
 }
 
 - (void)cancelTapped:(id)sender {
-    [self dismissEditView];
+    [self dismissAndSave:NO];
 }
 
 - (void)saveEditView {
-    
-    // Hide all items then dismiss.
-    [self showItems:NO completion:^{
-        
-        // Calls save on the the textbox view, which in turn triggers update via delegate.
-        CKEditingTextBoxView *textBoxView = [self targetEditTextBoxView];
-        [textBoxView.delegate editingTextBoxViewSaveTappedForEditingView:self.targetEditView];
-        
-    }];
-    
+    [self dismissAndSave:YES];
 }
 
 - (void)showButtons:(BOOL)show animated:(BOOL)animated {
@@ -770,6 +777,13 @@
         }
         [self selectCellAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]];
     }
+}
+
+- (void)dismissAndSave:(BOOL)save {
+    self.saveRequired = save;
+    
+    // Hide items, which will trigger itemsDidShow.
+    [self showItems:NO];
 }
 
 @end

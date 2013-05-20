@@ -62,4 +62,19 @@
     return ([ingredient.name length] > 0);
 }
 
+- (void)itemsDidShow:(BOOL)show {
+    [super itemsDidShow:show];
+    
+    if (show) {
+        
+        // Automatically select first placeholder item if there are no items.
+        if ([self.items count] == 0) {
+            [self selectCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        }
+    }
+
+}
+
+
+
 @end

@@ -37,7 +37,6 @@
 - (void)loadData;
 - (void)showItems;
 - (void)showItems:(BOOL)show;
-- (void)showItems:(BOOL)show completion:(void (^)())completion;
 
 // Customisation options.
 - (Class)classForCell;
@@ -48,5 +47,8 @@
 - (void)resetPlaceholderCell:(CKItemCollectionViewCell *)placeholderCell;
 - (id)itemValueAtIndex:(NSInteger)index;
 - (NSInteger)itemIndexForCell:(CKItemCollectionViewCell *)itemCell;
+
+// Extended lifecycle events.
+- (void)itemsDidShow:(BOOL)show;
 
 @end
