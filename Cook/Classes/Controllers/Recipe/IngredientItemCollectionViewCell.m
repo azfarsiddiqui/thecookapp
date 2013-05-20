@@ -81,14 +81,29 @@
 }
 
 - (void)focusForEditing:(BOOL)focus {
+    DLog(@"focus: %@", [NSString CK_stringForBoolean:focus]);
+    [self enableFields:focus];
+    
     if (focus) {
-        [self focusUnitField];
-    } else {
-        [self unfocusFields];
+        if ([self.unitTextField isFirstResponder]) {
+            [self.ingredientTextField becomeFirstResponder];
+        } else if ([self.ingredientTextField isFirstResponder]) {
+            [self.unitTextField becomeFirstResponder];
+        } else {
+            [self.unitTextField becomeFirstResponder];
+        }
     }
+    
+    
+//    if (focus) {
+//        [self focusUnitField];
+//    } else {
+//        [self unfocusFields];
+//    }
 }
 
 - (void)configureValue:(id)value {
+    DLog(@"configureValue: %@", value);
     
     // Default implementation to set up.
     [super configureValue:value];
@@ -101,8 +116,10 @@
 
 - (void)setPlaceholder:(BOOL)placeholder {
     [super setPlaceholder:placeholder];
-    self.unitTextField.text = nil;
-    self.ingredientTextField.text = nil;
+    if (placeholder) {
+        self.unitTextField.text = nil;
+        self.ingredientTextField.text = nil;
+    }
 }
 
 - (id)currentValue {
@@ -117,8 +134,11 @@
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    
-    return [self.delegate processedValueForCell:self];
+    BOOL shouldEnd = YES;
+    if (textField == self.ingredientTextField) {
+        shouldEnd = [self.delegate processedValueForCell:self];
+    }
+    return shouldEnd;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -142,12 +162,14 @@
 #pragma mark - IngredientEditKeyboardAccessoryViewDelegate methods
 
 - (void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount {
-    NSLog(@"didEnterMeasurementShortCut [%@] isAmount [%@]", name, [NSString CK_stringForBoolean:isAmount]);
     
+    // Concat the values.
     NSString *newValue = [NSString stringWithFormat:@"%@ %@",self.unitTextField.text, [name lowercaseString]];
     if (newValue.length < kMaxLengthMeasurement) {
         self.unitTextField.text = newValue;
     }
+    
+    DLog(@"Unit Value: %@", newValue);
     
     // If this was not the amount field, then jump to the ingredient field.
     if (!isAmount) {
@@ -168,14 +190,12 @@
 #pragma mark - Private methods
 
 - (void)focusUnitField {
-    self.unitTextField.userInteractionEnabled = YES;
-    self.ingredientTextField.userInteractionEnabled = NO;
+    [self enableFields:YES];
     [self.unitTextField becomeFirstResponder];
 }
 
 - (void)focusIngredientField {
-    self.unitTextField.userInteractionEnabled = NO;
-    self.ingredientTextField.userInteractionEnabled = YES;
+    [self enableFields:YES];
     [ViewHelper setCaretOnFrontForInput:self.ingredientTextField];
     [self.ingredientTextField becomeFirstResponder];
 }
@@ -183,8 +203,12 @@
 - (void)unfocusFields {
     [self.unitTextField resignFirstResponder];
     [self.ingredientTextField resignFirstResponder];
-    self.unitTextField.userInteractionEnabled = NO;
-    self.ingredientTextField.userInteractionEnabled = NO;
+    [self enableFields:NO];
+}
+
+- (void)enableFields:(BOOL)enable {
+    self.unitTextField.userInteractionEnabled = enable;
+    self.ingredientTextField.userInteractionEnabled = enable;
 }
 
 @end

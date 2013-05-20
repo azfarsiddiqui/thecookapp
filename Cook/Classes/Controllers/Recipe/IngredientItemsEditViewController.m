@@ -48,11 +48,18 @@
 }
 
 - (BOOL)validateCell:(UICollectionViewCell *)cell {
-    return YES;
+    IngredientItemCollectionViewCell *ingredientCell = (IngredientItemCollectionViewCell *)cell;
+    return [self validIngredientAtCell:ingredientCell];
 }
 
 - (BOOL)readyForInsertionForPlaceholderCell:(CKItemCollectionViewCell *)placeholderCell {
-    return YES;
+    IngredientItemCollectionViewCell *ingredientCell = (IngredientItemCollectionViewCell *)placeholderCell;
+    return [self validIngredientAtCell:ingredientCell];
+}
+
+- (BOOL)validIngredientAtCell:(IngredientItemCollectionViewCell *)ingredientCell {
+    Ingredient *ingredient = ingredientCell.currentValue;
+    return ([ingredient.name length] > 0);
 }
 
 @end
