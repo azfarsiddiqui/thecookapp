@@ -67,10 +67,10 @@ typedef enum {
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *categoryLabel;
+@property (nonatomic, strong) CKLabel *categoryLabel;
 
 // Content view.
-@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) CKLabel *titleLabel;
 @property (nonatomic, strong) CKLabel *storyLabel;
 @property (nonatomic, strong) CKLabel *methodLabel;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
@@ -313,7 +313,7 @@ typedef enum {
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
-                                                                                                            title:@"Methods"];
+                                                                                                            title:@"Method"];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
     
@@ -938,9 +938,11 @@ typedef enum {
     [headerView addSubview:nameLabel];
     
     // Category label for edit mode.
-    UILabel *categoryLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    CKLabel *categoryLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:@"CATEGORY" minSize:CGSizeZero];
     categoryLabel.font = [Theme userNameFont];
     categoryLabel.textColor = [Theme userNameColor];
+    categoryLabel.placeholderFont = [Theme userNameFont];
+    categoryLabel.placeholderColour = [Theme userNameColor];
     categoryLabel.backgroundColor = [UIColor clearColor];
     categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     categoryLabel.shadowColor = [UIColor whiteColor];
@@ -950,9 +952,11 @@ typedef enum {
     [self setCategory:self.recipe.category.name];
     
     // Recipe title.
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    CKLabel *titleLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:nil defaultText:@"RECIPE NAME"
+                                                 minSize:CGSizeMake(kContentMaxWidth - 40.0, 0.0)];
     titleLabel.font = [Theme recipeNameFont];
     titleLabel.textColor = [Theme recipeNameColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     titleLabel.shadowColor = [UIColor whiteColor];
@@ -1439,9 +1443,6 @@ typedef enum {
 }
 
 - (void)setTitle:(NSString *)title {
-    if (self.addMode && ((title == nil) || [title CK_blank])) {
-        title = @"RECIPE NAME";
-    }
     self.titleLabel.text = title;
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
@@ -1451,9 +1452,6 @@ typedef enum {
 }
 
 - (void)setCategory:(NSString *)category {
-    if (self.addMode && ((category == nil) || [category CK_blank])) {
-        category = @"CATEGORY";
-    }
     self.categoryLabel.text = [category uppercaseString];
     [self.categoryLabel sizeToFit];
     self.categoryLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.categoryLabel.frame.size.width) / 2.0),
@@ -1464,19 +1462,15 @@ typedef enum {
 
 - (void)setStory:(NSString *)story {
     CGFloat titleStoryGap = 0.0;
-    CGSize storyAvailableSize = CGSizeMake(kContentMaxWidth, self.headerView.bounds.size.height - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height);
-    CGSize size = [story sizeWithFont:[Theme storyFont] constrainedToSize:storyAvailableSize lineBreakMode:NSLineBreakByWordWrapping];
     self.storyLabel.text = story;
+    [self.storyLabel sizeToFit];
     self.storyLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.storyLabel.frame.size.width) / 2.0),
                                        self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + titleStoryGap,
-                                       size.width,
-                                       size.height);
+                                       self.storyLabel.frame.size.width,
+                                       self.storyLabel.frame.size.height);
 }
 
 - (void)setMethod:(NSString *)method {
-    if (self.addMode && ((method == nil) || [method CK_blank])) {
-        method = @"METHOD";
-    }
     CGRect containerFrame = self.methodLabel.superview.bounds;
     CGRect methodFrame = self.methodLabel.frame;
     CGSize methodAvailableSize = CGSizeMake(containerFrame.size.width - kContentInsets.left - kContentInsets.right, MAXFLOAT);
@@ -1547,7 +1541,7 @@ typedef enum {
 - (void)saveTitleValue:(id)value {
     
     // Get updated value and update label.
-    NSString *text = (NSString *)value;
+    NSString *text = [(NSString *)value uppercaseString];
     self.clipboard.name = text;
     
     if (![text isEqualToString:self.recipe.name]) {
@@ -1812,7 +1806,7 @@ typedef enum {
 - (NSString *)servesDisplayFor:(NSInteger)serves {
     NSMutableString *servesDisplay = [NSMutableString stringWithString:@"SERVES"];
     if (serves > 0) {
-        [servesDisplay appendFormat:@"%d", serves];
+        [servesDisplay appendFormat:@" %d", serves];
     }
     return servesDisplay;
 }

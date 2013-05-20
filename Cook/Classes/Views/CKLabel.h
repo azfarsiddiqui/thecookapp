@@ -14,5 +14,7 @@
 @property (nonatomic, assign) UIColor *placeholderColour;
 
 - (id)initWithFrame:(CGRect)frame placeholder:(NSString *)placeholderText minSize:(CGSize)minSize;
+- (id)initWithFrame:(CGRect)frame placeholder:(NSString *)placeholderText defaultText:(NSString *)defaultText
+            minSize:(CGSize)minSize;
 
 @end

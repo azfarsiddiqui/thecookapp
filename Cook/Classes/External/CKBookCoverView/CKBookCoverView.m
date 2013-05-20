@@ -60,7 +60,7 @@
 
 - (void)setName:(NSString *)name author:(NSString *)author editable:(BOOL)editable {
     // DLog(@"Book[%@] Author[%@] Layout[%d]", name, author, self.bookCoverLayout);
-    DLog(@"Book[%@] Author[%@] EditMode[%@]", name, author, self.editMode ? @"YES" : @"NO");
+    // DLog(@"Book[%@] Author[%@] EditMode[%@]", name, author, self.editMode ? @"YES" : @"NO");
     
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
@@ -79,7 +79,8 @@
 }
 
 - (void)enableEditMode:(BOOL)enable {
-    DLog(@"enableEditMode: %@", enable ? @"YES" : @"NO");
+    // DLog(@"enableEditMode: %@", enable ? @"YES" : @"NO");
+    
     self.editMode = enable;
     self.editButton.hidden = enable;
     
@@ -122,11 +123,11 @@
 #pragma mark - CKEditViewControllerDelegate methods
 
 - (void)editViewControllerWillAppear:(BOOL)appear {
-    DLog(@"%@", appear ? @"YES" : @"NO");
+    // DLog(@"%@", appear ? @"YES" : @"NO");
 }
 
 - (void)editViewControllerDidAppear:(BOOL)appear {
-    DLog(@"%@", appear ? @"YES" : @"NO");
+    // DLog(@"%@", appear ? @"YES" : @"NO");
     if (!appear) {
         [self.editViewController.view removeFromSuperview];
         self.editViewController = nil;
@@ -434,7 +435,7 @@
         
     }
     
-    DLog(@"Current Font [%@] after height eval: %@", text, selectedFontNumber);
+    // DLog(@"Current Font [%@] after height eval: %@", text, selectedFontNumber);
     
     // Get the remaining font sizes.
     NSInteger selectedFontIndex = [fontSizes indexOfObject:selectedFontNumber];
@@ -464,10 +465,10 @@
             }
         }
         
-        DLog(@"Current Font [%@]: %@", word, selectedFontNumber);
+        // DLog(@"Current Font [%@]: %@", word, selectedFontNumber);
     }
     
-    DLog(@"Current Font [%@] after word eval: %@", text, selectedFontNumber);
+    // DLog(@"Current Font [%@] after word eval: %@", text, selectedFontNumber);
     
     // Use the current font.
     font = [font fontWithSize:[selectedFontNumber floatValue]];
