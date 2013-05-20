@@ -304,6 +304,7 @@
 }
 
 - (void)setCategory:(CKCategory *)category {
+    _category = category;
     [self.parseObject setObject:category.parseObject forKey:kCategoryModelForeignKeyName];
 }
 

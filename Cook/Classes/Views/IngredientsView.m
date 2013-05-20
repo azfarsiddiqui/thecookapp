@@ -76,6 +76,7 @@
 
 - (void)displayData {
     if ([self.ingredients count] > 0) {
+        [self.placeholderLabel removeFromSuperview];
         [self.ingredientsLabel removeFromSuperview];
         
         NSMutableAttributedString *attributedText = nil;

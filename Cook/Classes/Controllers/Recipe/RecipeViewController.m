@@ -943,6 +943,7 @@ typedef enum {
     categoryLabel.textColor = [Theme userNameColor];
     categoryLabel.placeholderFont = [Theme userNameFont];
     categoryLabel.placeholderColour = [Theme userNameColor];
+    categoryLabel.textAlignment = NSTextAlignmentCenter;
     categoryLabel.backgroundColor = [UIColor clearColor];
     categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     categoryLabel.shadowColor = [UIColor whiteColor];
