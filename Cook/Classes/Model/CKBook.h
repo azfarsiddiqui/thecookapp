@@ -35,6 +35,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)prefetchCategoriesInBackground;
 - (void)fetchCategoriesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)saveCategories:(NSArray *)categories success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 ////persistence operations
 + (void)createBookForUser:(CKUser *)user succeess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

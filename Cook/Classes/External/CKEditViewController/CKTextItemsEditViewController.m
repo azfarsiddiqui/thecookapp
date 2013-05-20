@@ -21,7 +21,7 @@
 
 - (BOOL)validateCell:(UICollectionViewCell *)cell {
     CKTextItemCollectionViewCell *textCell = (CKTextItemCollectionViewCell *)cell;
-    NSString *text = [textCell currentValue];
+    NSString *text = [textCell textForValue:[textCell currentValue]];
     
     // Not blank no existing value exists.
     return (![self blankForText:text] && [self valueValidForCell:textCell]);

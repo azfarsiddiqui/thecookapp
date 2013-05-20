@@ -841,6 +841,8 @@
     self.categoryNames = [NSMutableArray arrayWithArray:[self.categories collect:^id(CKCategory *category) {
         return category.name;
     }]];
+//    DLog(@"*** Categories: %@", self.categories);
+//    DLog(@"*** Category Names: %@", self.categoryNames);
     
     // Update the categories for the book if we don't have network loaded categories.
     if ([self.book.currentCategories count] == 0) {

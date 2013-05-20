@@ -343,6 +343,29 @@
     }
 }
 
+- (void)saveCategories:(NSArray *)categories success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    // Order the categories.
+    [categories eachWithIndex:^(CKCategory *category, NSUInteger categoryIndex) {
+        category.order = [NSNumber numberWithInteger:categoryIndex];
+        category.book = self;
+    }];
+    
+    // Now save them off as PFObjects.
+    NSArray *parseCategories = [categories collect:^id(CKCategory *category) {
+        return category.parseObject;
+    }];
+    
+    // Save the categories off.
+    [PFObject saveAllInBackground:parseCategories block:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            success();
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 - (NSString *)userName {
     NSString *author = [self.parseObject objectForKey:kBookAttrAuthor];
     if ([author length] > 0) {

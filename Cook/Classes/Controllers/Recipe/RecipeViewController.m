@@ -1548,23 +1548,33 @@ typedef enum {
     CKCategory *selectedCategory = (CKCategory *)value;
     NSArray *categories = ((CategoryItemsEditViewController *)self.editViewController).items;
     
-    // NSArray *categories = self.clipboard.categories;
-    DLog(@"CATEGORY VALUE %@", value);
-    DLog(@"CATEGORIES %@", categories);
+    // Check if category has changed.
+    if (![selectedCategory.name isEqualToString:self.categoryLabel.text]) {
+        
+        // Save it in the clipboard too.
+        self.clipboard.category = selectedCategory;
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+        
+        // Update category.
+        [self setCategory:selectedCategory.name];
+        
+        // Update the editing wrapper.
+        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
+        
+    }
     
-//    NSString *categoryName = (NSString *)value;
-//    
-//    if (![categoryName CK_equalsIgnoreCase:self.categoryLabel.text]) {
-//        
-//        // Update category.
-//        [self setCategory:categoryName];
-//        
-//        // Mark save is required.
-//        self.saveRequired = YES;
-//        
-//        // Update the editing wrapper.
-//        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
-//    }
+    // Check if all categories need to be saved.
+    if ([self categoriesNeedSaving:categories]) {
+        
+        // Save it in the clipboard first.
+        self.clipboard.categories = categories;
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+    }
+    
 }
 
 - (void)saveStoryValue:(id)value {
@@ -1657,14 +1667,7 @@ typedef enum {
             self.recipe.prepTimeInMinutes = self.clipboard.prepMinutes;
             self.recipe.cookingTimeInMinutes = self.clipboard.cookMinutes;
             self.recipe.ingredients = self.clipboard.ingredients;
-            
-            // Set current category.
-            CKCategory *category = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
-                return [category.name CK_equalsIgnoreCase:self.categoryLabel.text];
-            }];
-            if (category) {
-                self.recipe.category = category;
-            }
+            self.recipe.category = self.clipboard.category;
             
             // Reset edit flags.
             self.saveRequired = NO;
@@ -1691,52 +1694,130 @@ typedef enum {
             // Do we have a new image to save?
             if (self.recipeImageToUpload) {
                 
-                [self.recipe saveWithImage:self.recipeImageToUpload
-                            uploadProgress:^(int percentDone) {
-                                
-                                // Upload progress range between 10% and 90%.
-                                if (percentDone > 10 && percentDone < 90) {
-                                    [weakProgressView setProgress:(percentDone / 100.0) animated:YES];
-                                }
-                                
-                            } completion:^{
-                                
-                                // Ask the opened book to relayout.
-                                [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
-                                                                                           completion:^{
-                                                                                               
-                                                                                               // Set 100% progress completion.
-                                                                                               [weakProgressView setProgress:1.0 delay:0.5 completion:^{
-                                                                                                   [self enableSaveMode:NO];
+                // if there are categories to save, save them off first.
+                if ([self.clipboard.categories count] > 0) {
+                    
+                    [self.book saveCategories:self.clipboard.categories
+                                      success:^{
+                                          
+                                          // Set categories progress done.
+                                          [weakProgressView setProgress:0.2 animated:YES];
+                                          
+                                          [self.recipe saveWithImage:self.recipeImageToUpload
+                                                      uploadProgress:^(int percentDone) {
+                                                          
+                                                          // Upload progress range between 10% and 90%.
+                                                          if (percentDone > 20 && percentDone < 90) {
+                                                              [weakProgressView setProgress:(percentDone / 100.0) animated:YES];
+                                                          }
+                                                          
+                                                      } completion:^{
+                                                          
+                                                          // Ask the opened book to relayout.
+                                                          [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                                                     completion:^{
+                                                                                                                         
+                                                                                                                         // Set 100% progress completion.
+                                                                                                                         [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                                                             [self enableSaveMode:NO];
+                                                                                                                         }];
+                                                                                                                     }];
+                                                          
+                                                      } failure:^(NSError *error) {
+                                                          [self enableSaveMode:NO];
+                                                      }];
+                                          
+                                      }
+                                      failure:^(NSError *error) {
+                                          [self enableSaveMode:NO];
+                                      }];
+                    
+                } else {
+                    
+                    [self.recipe saveWithImage:self.recipeImageToUpload
+                                uploadProgress:^(int percentDone) {
+                                    
+                                    // Upload progress range between 10% and 90%.
+                                    if (percentDone > 10 && percentDone < 90) {
+                                        [weakProgressView setProgress:(percentDone / 100.0) animated:YES];
+                                    }
+                                    
+                                } completion:^{
+                                    
+                                    // Ask the opened book to relayout.
+                                    [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                               completion:^{
+                                                                                                   
+                                                                                                   // Set 100% progress completion.
+                                                                                                   [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                                       [self enableSaveMode:NO];
+                                                                                                   }];
                                                                                                }];
-                                                                                           }];
-                                
-                            } failure:^(NSError *error) {
-                                [self enableSaveMode:NO];
-                            }];
+                                    
+                                } failure:^(NSError *error) {
+                                    [self enableSaveMode:NO];
+                                }];
+                    
+                }
                 
             } else {
                 
-                // Save the recipe now.
-                [self.recipe saveInBackground:^{
+                // if there are categories to save, save them off first.
+                if ([self.clipboard.categories count] > 0) {
                     
-                    [weakProgressView setProgress:0.5 completion:^{
+                    [self.book saveCategories:self.clipboard.categories
+                                      success:^{
+                                          
+                                          // Set categories progress done.
+                                          [weakProgressView setProgress:0.2 animated:YES];
+                                          
+                                          // Save the recipe now.
+                                          [self.recipe saveInBackground:^{
+                                              
+                                              [weakProgressView setProgress:0.5 completion:^{
+                                                  
+                                                  // Ask the opened book to relayout.
+                                                  [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                                             completion:^{
+                                                                                                                 
+                                                                                                                 // Set 100% progress completion.
+                                                                                                                 [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                                                     [self enableSaveMode:NO];
+                                                                                                                 }];
+                                                                                                             }];
+                                              }];
+                                              
+                                          } failure:^(NSError *error) {
+                                              [self enableSaveMode:NO];
+                                          }];
+                                          
+                                      }
+                                      failure:^(NSError *error) {
+                                          [self enableSaveMode:NO];
+                                      }];
+                } else {
+                    
+                    // Save the recipe now.
+                    [self.recipe saveInBackground:^{
                         
-                        // Ask the opened book to relayout.
-                        [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
-                                                                                   completion:^{
-                                                                                       
-                                                                                       // Set 100% progress completion.
-                                                                                       [weakProgressView setProgress:1.0 delay:0.5 completion:^{
-                                                                                           [self enableSaveMode:NO];
+                        [weakProgressView setProgress:0.5 completion:^{
+                            
+                            // Ask the opened book to relayout.
+                            [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                       completion:^{
+                                                                                           
+                                                                                           // Set 100% progress completion.
+                                                                                           [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                               [self enableSaveMode:NO];
+                                                                                           }];
                                                                                        }];
-                                                                                   }];
+                        }];
+                        
+                    } failure:^(NSError *error) {
+                        [self enableSaveMode:NO];
                     }];
-                    
-                } failure:^(NSError *error) {
-                    [self enableSaveMode:NO];
-                }];
-                
+
+                }
             }
             
         } else {
@@ -1824,6 +1905,26 @@ typedef enum {
     containerFrame.size.height = frame.size.height;
     containerFrame.size.height += kContentInsets.bottom;
     containerView.frame = containerFrame;
+}
+
+- (BOOL)categoriesNeedSaving:(NSArray *)categories {
+    BOOL needSaving = NO;
+    for (CKCategory *category in categories) {
+        
+        // Find the matching category in the list of existing categories.
+        CKCategory *matchingCategory = [[self.book currentCategories] detect:^BOOL(CKCategory *existingCategory) {
+            return [existingCategory.objectId isEqualToString:category.objectId];
+        }];
+        
+        // If none was found, then we definitely need saving.
+        // Otherwise check also if it has been renamed.
+        if (matchingCategory == nil
+            || ![matchingCategory.name isEqualToString:category.name]) {
+            needSaving = YES;
+            break;
+        } 
+    }
+    return needSaving;
 }
 
 @end
