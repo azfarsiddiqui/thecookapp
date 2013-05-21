@@ -33,7 +33,7 @@
     
     CoverPickerView *coverPickerView = [[CoverPickerView alloc] initWithCover:self.cover delegate:self];
     coverPickerView.frame = CGRectMake(floorf((self.view.bounds.size.width - coverPickerView.frame.size.width) / 2.0),
-                                       0.0,
+                                       10.0,
                                        coverPickerView.frame.size.width,
                                        coverPickerView.frame.size.height);
     coverPickerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;

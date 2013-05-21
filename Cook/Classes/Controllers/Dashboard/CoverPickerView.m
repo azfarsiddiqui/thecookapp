@@ -132,7 +132,6 @@
 }
 
 - (void)selectCoverAtIndex:(NSUInteger)coverIndex informDelegate:(BOOL)informDelegate {
-    DLog(@"coverIndex [%d]", coverIndex);
     self.animating = YES;
     self.selectedCoverIndex = coverIndex;
     
@@ -142,11 +141,13 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseOut
                      animations:^{
-                         self.sliderContentView.image = [CKBookCover thumbSliderContentImageForCover:selectedCover];
                          self.sliderView.center = CGPointMake(coverImageView.center.x, kSliderOffset.y);
                      }
                      completion:^(BOOL finished) {
                          self.animating = NO;
+                         
+                         // Change content colour after arriving there.
+                         [self changeSliderContentAtIndex:coverIndex];
                          if (informDelegate) {
                              [self.delegate coverPickerSelected:selectedCover];
                          }
@@ -173,12 +174,28 @@
 - (void)panWithTranslation:(CGPoint)translation {
     CGRect sliderFrame = self.sliderView.frame;
     sliderFrame.origin.x += translation.x;
+    
+    if (sliderFrame.origin.x < 0) {
+        sliderFrame.origin.x = 0;
+    } else if (sliderFrame.origin.x + sliderFrame.size.width > self.bounds.size.width) {
+        sliderFrame.origin.x = self.bounds.size.width - sliderFrame.size.width;
+    }
+    
     self.sliderView.frame = sliderFrame;
+    [self changeSliderContentAtIndex:[self currentSelectedCoverIndex]];
 }
 
 - (void)panSnapIfRequired {
+    [self detectCoverSelection];
+}
+
+- (void)detectCoverSelection {
+    NSInteger selectedCoverIndex = [self currentSelectedCoverIndex];
+    [self selectCoverAtIndex:selectedCoverIndex];
+}
+
+- (NSInteger)currentSelectedCoverIndex {
     CGRect sliderFrame = self.sliderView.frame;
-    CGRect intersection = CGRectZero;
     NSInteger selectedCoverIndex = 0;
     for (NSInteger coverIndex = 0; coverIndex < [self.coverViews count]; coverIndex++) {
         UIView *coverView = [self.coverViews objectAtIndex:coverIndex];
@@ -191,13 +208,17 @@
         }
         
         CGRect coverIntersection = CGRectIntersection(sliderFrame, coverFrame);
-        if (coverIntersection.size.width > intersection.size.width) {
+        if (coverIntersection.size.width > (kUnitWidth / 2.0)) {
             selectedCoverIndex = coverIndex;
-            intersection = coverIntersection;
+            break;
         }
     }
-    
-    [self selectCoverAtIndex:selectedCoverIndex];
+    return selectedCoverIndex;
+}
+
+- (void)changeSliderContentAtIndex:(NSInteger)coverIndex {
+    NSString *selectedCover = [self.availableCovers objectAtIndex:coverIndex];
+    self.sliderContentView.image = [CKBookCover thumbSliderContentImageForCover:selectedCover];
 }
 
 @end
