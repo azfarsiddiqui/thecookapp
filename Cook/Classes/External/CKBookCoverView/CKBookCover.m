@@ -62,7 +62,15 @@
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
     if (!imageName) {
         imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
-                                                           [CKBookCover randomCover]]];
+                                                             [CKBookCover randomCover]]];
+    }
+    return [UIImage imageNamed:imageName];
+}
+
++ (UIImage *)outlineImageForCover:(NSString *)cover {
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Outline", cover]];
+    if (!imageName) {
+        imageName = [[CKBookCover settings] valueForKeyPath:@"Covers.Gray.Image"];
     }
     return [UIImage imageNamed:imageName];
 }

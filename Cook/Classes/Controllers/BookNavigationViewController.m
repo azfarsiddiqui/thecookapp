@@ -22,6 +22,7 @@
 #import "BookTitleViewController.h"
 #import "EventHelper.h"
 #import "CKBookPagingView.h"
+#import "CKBookCover.h"
 
 @interface BookNavigationViewController () <BookNavigationDataSource, BookNavigationLayoutDelegate,
     BookIndexViewControllerDelegate, BookTitleViewControllerDelegate>
@@ -478,10 +479,17 @@
 #pragma mark - Private methods
 
 - (void)initBookOutlineView {
-    UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge.png"]];
-    bookOutlineView.frame = CGRectMake(-46.0, -26.0, bookOutlineView.frame.size.width, bookOutlineView.frame.size.height);
+    UIImage *outlineImage = [CKBookCover outlineImageForCover:self.book.cover];
+    UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:outlineImage];
+    bookOutlineView.frame = CGRectMake(-62.0, -26.0, bookOutlineView.frame.size.width, bookOutlineView.frame.size.height);
     [self.view addSubview:bookOutlineView];
     [self.view sendSubviewToBack:bookOutlineView];
+    
+    // Decorations.
+    UIImageView *bookOutlineOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay"]];
+    [bookOutlineView addSubview:bookOutlineOverlayView];
+    UIImageView *bookBindOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
+    [bookOutlineView addSubview:bookBindOverlayView];
 }
 
 - (void)updateNavigationButtons {

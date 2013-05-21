@@ -12,6 +12,8 @@
 			<string>cook_book_yellow.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_yellow.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_yellow.png</string>
 		</dict>
 		<key>Burnt Orange</key>
 		<dict>
@@ -21,6 +23,8 @@
 			<string>cook_book_burntorange.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_burntorange.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_orange.png</string>
 		</dict>
 		<key>Pink</key>
 		<dict>
@@ -30,6 +34,8 @@
 			<string>cook_book_pink.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_pink.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_pink.png</string>
 		</dict>
 		<key>Red</key>
 		<dict>
@@ -39,6 +45,8 @@
 			<string>cook_book_red.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_red.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_red.png</string>
 		</dict>
 		<key>Blue</key>
 		<dict>
@@ -48,6 +56,8 @@
 			<string>cook_book_blue.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_blue.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_blue.png</string>
 		</dict>
 		<key>Green</key>
 		<dict>
@@ -57,6 +67,8 @@
 			<string>cook_book_green.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_green.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_green.png</string>
 		</dict>
 		<key>Brown</key>
 		<dict>
@@ -66,6 +78,8 @@
 			<string>cook_book_brown.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_brown.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_brown.png</string>
 		</dict>
 		<key>Gray</key>
 		<dict>
@@ -75,6 +89,8 @@
 			<string>cook_book_gray.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colours_gray.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_gray.png</string>
 		</dict>
 	</dict>
 	<key>Illustrations</key>
