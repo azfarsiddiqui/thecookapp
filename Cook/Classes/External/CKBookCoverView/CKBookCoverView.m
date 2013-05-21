@@ -301,6 +301,11 @@
     self.nameLabel.text = title;
     [self.nameLabel sizeToFit];
     self.nameLabel.frame = [self nameFrame];
+    
+    // Update editing wrapper if in edit mode.
+    if (self.editMode) {
+        [self.editingHelper updateEditingView:self.nameLabel];
+    }
 }
 
 - (void)setAuthor:(NSString *)name {
@@ -347,6 +352,12 @@
                         toFitSize:self.contentOverlay.bounds.size fontSizes:@[@56, @48, @44, @40]];
     
     self.authorLabel.frame = [self authorFrame];
+    
+    // Update editing wrapper if in edit mode.
+    if (self.editMode) {
+        [self.editingHelper updateEditingView:self.authorLabel];
+    }
+
 }
 
 - (void)enableEditable:(BOOL)editable {
