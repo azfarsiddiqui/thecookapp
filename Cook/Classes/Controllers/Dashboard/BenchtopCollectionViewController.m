@@ -559,7 +559,8 @@
                          // Inform delegate
                          [self.delegate editBookRequested:enable];
                          
-                         // Hide the level view.
+                         // Hide the icons.
+                         self.notificationView.alpha = enable ? 0.0 : 1.0;
                          self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
                          
                          // Fade the edit overlay.
