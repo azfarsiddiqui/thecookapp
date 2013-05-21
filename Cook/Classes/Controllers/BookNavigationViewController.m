@@ -481,14 +481,16 @@
 - (void)initBookOutlineView {
     UIImage *outlineImage = [CKBookCover outlineImageForCover:self.book.cover];
     UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:outlineImage];
-    bookOutlineView.frame = CGRectMake(-62.0, -26.0, bookOutlineView.frame.size.width, bookOutlineView.frame.size.height);
+    bookOutlineView.frame = CGRectMake(-26.0, -8.0, bookOutlineView.frame.size.width, bookOutlineView.frame.size.height);
     [self.view addSubview:bookOutlineView];
     [self.view sendSubviewToBack:bookOutlineView];
     
     // Decorations.
     UIImageView *bookOutlineOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay"]];
+    bookOutlineOverlayView.frame = CGRectMake(-36.0, -18.0, bookOutlineOverlayView.frame.size.width, bookOutlineOverlayView.frame.size.height);
     [bookOutlineView addSubview:bookOutlineOverlayView];
     UIImageView *bookBindOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
+    bookBindOverlayView.frame = CGRectMake(-26.0, -18.0, bookBindOverlayView.frame.size.width, bookBindOverlayView.frame.size.height);
     [bookOutlineView addSubview:bookBindOverlayView];
 }
 
