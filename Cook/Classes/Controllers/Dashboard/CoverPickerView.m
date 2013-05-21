@@ -10,12 +10,15 @@
 #import "CKBookCover.h"
 #import "ViewHelper.h"
 
-@interface CoverPickerView ()
+@interface CoverPickerView () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign) id<CoverPickerViewDelegate> delegate;
+@property (nonatomic, strong) UIImageView *overlayView;
+@property (nonatomic, strong) UIView *sliderView;
+@property (nonatomic, strong) UIImageView *sliderContentView;
 @property (nonatomic, strong) NSArray *availableCovers;
-@property (nonatomic, strong) NSMutableArray *buttons;
-@property (nonatomic, strong) NSMutableArray *shadows;
+@property (nonatomic, strong) NSMutableArray *coverViews;
+@property (nonatomic, assign) NSInteger *selectedCoverIndex;
 @property (nonatomic, assign) BOOL animating;
 
 @end
@@ -24,6 +27,9 @@
 
 #define kMinSize        CGSizeMake(67.0, 61.0)
 #define kMaxSize        CGSizeMake(67.0, 101.0)
+#define kUnitWidth      80.0
+#define kCoverOffset    CGPointMake(27.0, 17.0)
+#define kSliderOffset   CGPointMake(27.0, 43.0)
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -31,51 +37,79 @@
         self.cover = cover;
         self.availableCovers = [CKBookCover covers];
         self.backgroundColor = [UIColor clearColor];
-        self.frame = CGRectMake(0.0, 0.0, [self.availableCovers count] * kMinSize.width, kMaxSize.height);
+        
+        // Overlay image which determines the width of the control.
+        UIImage *overlayImage = [[UIImage imageNamed:@"cook_customise_colour_bar_overlay.png"] stretchableImageWithLeftCapWidth:45 topCapHeight:0];
+        UIImageView *overlayView = [[UIImageView alloc] initWithImage:overlayImage];
+        self.overlayView = overlayView;
+        self.frame = CGRectMake(0.0, 0.0, (kCoverOffset.x * 2.0) + kUnitWidth * [self.availableCovers count], overlayView.frame.size.height);
+        overlayView.frame = self.bounds;
+        [self addSubview:overlayView];
+
         [self initCovers];
     }
     return self;
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return NO;
+}
+
+#pragma mark - Properties
+
+- (UIView *)sliderView {
+    if (!_sliderView) {
+        
+        // Slider overlay.
+        UIImageView *sliderOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_colour_picker_overlay.png"]];
+        
+        // Slider container view.
+        _sliderView = [[UIView alloc] initWithFrame:sliderOverlayView.frame];
+        _sliderView.userInteractionEnabled = YES;
+        [self insertSubview:_sliderView aboveSubview:self.overlayView];
+        
+        // Add content then overlay.
+        [_sliderView addSubview:self.sliderContentView];
+        [_sliderView addSubview:sliderOverlayView];
+        
+        // Register drag on the slider.
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(sliderPanned:)];
+        [_sliderView addGestureRecognizer:panGesture];
+
+    }
+    return _sliderView;
+}
+
+- (UIImageView *)sliderContentView {
+    if (!_sliderContentView) {
+        _sliderContentView = [[UIImageView alloc] initWithImage:[CKBookCover thumbSliderContentImageForCover:self.cover]];
+        _sliderContentView.frame = CGRectMake(29.0, 19.0, _sliderContentView.frame.size.width, _sliderContentView.frame.size.height);
+    }
+    return _sliderContentView;
 }
 
 #pragma mark - Private methods
 
 - (void)initCovers {
     
-    self.buttons = [NSMutableArray arrayWithCapacity:[self.availableCovers count]];
-    self.shadows = [NSMutableArray arrayWithCapacity:[self.availableCovers count]];
-    CGFloat offset = 0.0;
-    
-    // Button shadow.
-    UIImage *shadowImage = [[UIImage imageNamed:@"cook_customise_colours_bg.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:48];
+    self.coverViews = [NSMutableArray arrayWithCapacity:[self.availableCovers count]];
+    CGFloat offset = kCoverOffset.x;
     
     for (NSString *cover in self.availableCovers) {
         
-        // Button
         UIImage *coverImage = [self imageForCover:cover];
-        UIImageView *coverButton = [[UIImageView alloc] initWithImage:coverImage];
-        coverButton.userInteractionEnabled = YES;
-        coverButton.frame = CGRectMake(offset, -2.0, kMinSize.width, kMinSize.height);
-        [self addSubview:coverButton];
-        [self.buttons addObject:coverButton];
+        UIImageView *coverImageView = [[UIImageView alloc] initWithImage:coverImage];
+        coverImageView.userInteractionEnabled = YES;
+        coverImageView.frame = CGRectMake(offset, kCoverOffset.y, kUnitWidth, coverImageView.frame.size.height);
+        [self insertSubview:coverImageView belowSubview:self.overlayView];
+        [self.coverViews addObject:coverImageView];
         
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(coverTapped:)];
-        [coverButton addGestureRecognizer:tapGesture];
+        [coverImageView addGestureRecognizer:tapGesture];
         
-        // Button shadow.
-        UIImageView *shadowView = [[UIImageView alloc] initWithImage:shadowImage];
-        shadowView.frame = CGRectMake(offset + floorf((coverButton.frame.size.width - shadowView.frame.size.width) / 2.0),
-                                      -19.0,
-                                      shadowView.frame.size.width,
-                                      shadowView.frame.size.height);
-        [self addSubview:shadowView];
-        [self.shadows addObject:shadowView];
-        
-        offset += coverButton.frame.size.width;
-    }
-    
-    // Send all shadows to the back.
-    for (UIView *shadowView in self.shadows) {
-        [self sendSubviewToBack:shadowView];
+        offset += coverImageView.frame.size.width;
     }
     
     // Select the given cover.
@@ -89,7 +123,7 @@
     }
     
     UIView *sender = gesture.view;
-    NSUInteger coverIndex = [self.buttons indexOfObject:sender];
+    NSUInteger coverIndex = [self.coverViews indexOfObject:sender];
     [self selectCoverAtIndex:coverIndex];
 }
 
@@ -98,46 +132,72 @@
 }
 
 - (void)selectCoverAtIndex:(NSUInteger)coverIndex informDelegate:(BOOL)informDelegate {
+    DLog(@"coverIndex [%d]", coverIndex);
     self.animating = YES;
+    self.selectedCoverIndex = coverIndex;
     
-    [UIView animateWithDuration:0.15
+    UIImageView *coverImageView = [self.coverViews objectAtIndex:coverIndex];
+    NSString *selectedCover = [self.availableCovers objectAtIndex:coverIndex];
+    [UIView animateWithDuration:0.2
                           delay:0.0
-                        options:UIViewAnimationCurveEaseIn
+                        options:UIViewAnimationOptionCurveEaseOut
                      animations:^{
-                         
-                         // Unselect all buttons except the current one.
-                         for (NSInteger buttonIndex = 0; buttonIndex < [self.buttons count]; buttonIndex++) {
-                             UIView *button = [self.buttons objectAtIndex:buttonIndex];
-//                             button.alpha = 0.5;
-                             UIView *shadowView = [self.shadows objectAtIndex:buttonIndex];
-                             CGRect buttonFrame = button.frame;
-                             CGRect shadowFrame = shadowView.frame;
-                             
-                             if (buttonIndex == coverIndex) {
-                                 buttonFrame.size.height = kMaxSize.height;
-                             } else {
-                                 buttonFrame.size.height = kMinSize.height;
-                             }
-                             
-                             shadowFrame.size.height = buttonFrame.size.height + 34.0;
-                             button.frame = buttonFrame;
-                             shadowView.frame = shadowFrame;
-                         }
-                         
+                         self.sliderContentView.image = [CKBookCover thumbSliderContentImageForCover:selectedCover];
+                         self.sliderView.center = CGPointMake(coverImageView.center.x, kSliderOffset.y);
                      }
                      completion:^(BOOL finished) {
                          self.animating = NO;
-                         
                          if (informDelegate) {
-                             NSString *selectedCover = [self.availableCovers objectAtIndex:coverIndex];
                              [self.delegate coverPickerSelected:selectedCover];
                          }
                      }];
-    
 }
 
 - (UIImage *)imageForCover:(NSString *)cover {
     return [[CKBookCover thumbImageForCover:cover] stretchableImageWithLeftCapWidth:0 topCapHeight:30];
+}
+
+- (void)sliderPanned:(UIPanGestureRecognizer *)panGesture {
+    CGPoint translation = [panGesture translationInView:self];
+    
+    if (panGesture.state == UIGestureRecognizerStateBegan) {
+    } else if (panGesture.state == UIGestureRecognizerStateChanged) {
+        [self panWithTranslation:translation];
+	} else if (panGesture.state == UIGestureRecognizerStateEnded) {
+        [self panSnapIfRequired];
+    }
+    
+    [panGesture setTranslation:CGPointZero inView:self];
+}
+
+- (void)panWithTranslation:(CGPoint)translation {
+    CGRect sliderFrame = self.sliderView.frame;
+    sliderFrame.origin.x += translation.x;
+    self.sliderView.frame = sliderFrame;
+}
+
+- (void)panSnapIfRequired {
+    CGRect sliderFrame = self.sliderView.frame;
+    CGRect intersection = CGRectZero;
+    NSInteger selectedCoverIndex = 0;
+    for (NSInteger coverIndex = 0; coverIndex < [self.coverViews count]; coverIndex++) {
+        UIView *coverView = [self.coverViews objectAtIndex:coverIndex];
+        CGRect coverFrame = coverView.frame;
+        if (coverIndex == 0) {
+            coverFrame.origin.x = kCoverOffset.x;
+            coverFrame.size.width -= kCoverOffset.x;
+        } else if (coverIndex == [self.coverViews count] - 1) {
+            coverFrame.size.width -= kCoverOffset.x;
+        }
+        
+        CGRect coverIntersection = CGRectIntersection(sliderFrame, coverFrame);
+        if (coverIntersection.size.width > intersection.size.width) {
+            selectedCoverIndex = coverIndex;
+            intersection = coverIntersection;
+        }
+    }
+    
+    [self selectCoverAtIndex:selectedCoverIndex];
 }
 
 @end

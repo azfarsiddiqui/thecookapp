@@ -4,93 +4,109 @@
 <dict>
 	<key>Covers</key>
 	<dict>
-		<key>Yellow</key>
+		<key>Red</key>
 		<dict>
 			<key>Index</key>
 			<integer>0</integer>
 			<key>Image</key>
-			<string>cook_book_yellow.png</string>
+			<string>cook_book_red.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colours_yellow.png</string>
+			<string>cook_customise_colour_bar_red.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_red.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_yellow.png</string>
+			<string>cook_book_edge_red.png</string>
 		</dict>
 		<key>Burnt Orange</key>
 		<dict>
 			<key>Index</key>
-			<integer>2</integer>
+			<integer>1</integer>
 			<key>Image</key>
 			<string>cook_book_burntorange.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colours_burntorange.png</string>
+			<string>cook_customise_colour_bar_orange.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_orange.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_orange.png</string>
 		</dict>
-		<key>Pink</key>
+		<key>Yellow</key>
 		<dict>
 			<key>Index</key>
-			<integer>3</integer>
+			<integer>2</integer>
 			<key>Image</key>
-			<string>cook_book_pink.png</string>
+			<string>cook_book_yellow.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colours_pink.png</string>
+			<string>cook_customise_colour_bar_yellow.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_yellow.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_pink.png</string>
-		</dict>
-		<key>Red</key>
-		<dict>
-			<key>Index</key>
-			<integer>4</integer>
-			<key>Image</key>
-			<string>cook_book_red.png</string>
-			<key>Thumb</key>
-			<string>cook_customise_colours_red.png</string>
-			<key>Outline</key>
-			<string>cook_book_edge_red.png</string>
-		</dict>
-		<key>Blue</key>
-		<dict>
-			<key>Index</key>
-			<integer>6</integer>
-			<key>Image</key>
-			<string>cook_book_blue.png</string>
-			<key>Thumb</key>
-			<string>cook_customise_colours_blue.png</string>
-			<key>Outline</key>
-			<string>cook_book_edge_blue.png</string>
+			<string>cook_book_edge_yellow.png</string>
 		</dict>
 		<key>Green</key>
 		<dict>
 			<key>Index</key>
-			<integer>8</integer>
+			<integer>3</integer>
 			<key>Image</key>
 			<string>cook_book_green.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colours_green.png</string>
+			<string>cook_customise_colour_bar_green.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_green.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_green.png</string>
 		</dict>
-		<key>Brown</key>
+		<key>Blue</key>
 		<dict>
 			<key>Index</key>
-			<integer>10</integer>
+			<integer>4</integer>
 			<key>Image</key>
-			<string>cook_book_brown.png</string>
+			<string>cook_book_blue.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colours_brown.png</string>
+			<string>cook_customise_colour_bar_blue.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_blue.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_brown.png</string>
+			<string>cook_book_edge_blue.png</string>
+		</dict>
+		<key>Pink</key>
+		<dict>
+			<key>Index</key>
+			<integer>5</integer>
+			<key>Image</key>
+			<string>cook_book_pink.png</string>
+			<key>Thumb</key>
+			<string>cook_customise_colour_bar_pink.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_pink.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_pink.png</string>
 		</dict>
 		<key>Gray</key>
 		<dict>
 			<key>Index</key>
-			<integer>12</integer>
+			<integer>6</integer>
 			<key>Image</key>
 			<string>cook_book_gray.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colours_gray.png</string>
+			<string>cook_customise_colour_bar_gray.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_gray.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_gray.png</string>
+		</dict>
+		<key>Brown</key>
+		<dict>
+			<key>Index</key>
+			<integer>7</integer>
+			<key>Image</key>
+			<string>cook_book_brown.png</string>
+			<key>Thumb</key>
+			<string>cook_customise_colour_bar_brown.png</string>
+			<key>Slider</key>
+			<string>cook_customise_colour_picker_brown.png</string>
+			<key>Outline</key>
+			<string>cook_book_edge_brown.png</string>
 		</dict>
 	</dict>
 	<key>Illustrations</key>

@@ -80,6 +80,11 @@
     return [UIImage imageNamed:imageName];
 }
 
++ (UIImage *)thumbSliderContentImageForCover:(NSString *)cover {
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Slider", cover]];
+    return [UIImage imageNamed:imageName];
+}
+
 + (UIImage *)imageForIllustration:(NSString *)illustration {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
     if (!imageName) {
