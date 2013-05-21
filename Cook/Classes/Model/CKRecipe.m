@@ -97,41 +97,121 @@
 - (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure {
     
-    CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
-    [self setRecipeImage:recipeImage];
-    
-    // Save the photo first to get its objectId.
-    PFFile *recipePhotoFile = [recipeImage imageFile];
-    [recipePhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    if (image) {
         
-        if (!error) {
+        CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
+        [self setRecipeImage:recipeImage];
+        
+        // Save the photo first to get its objectId.
+        PFFile *recipePhotoFile = [recipeImage imageFile];
+        [recipePhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
-            // Save CKRecipeImage now that PFFile has been persisted.
-            [recipeImage saveInBackground:^{
+            if (!error) {
                 
-                // Associate with recipe.
-                [self setRecipeImage:recipeImage];
-                
-                // Now go ahead and save the recipe.
-                [self saveInBackground:^{
-                    success();
+                // Save CKRecipeImage now that PFFile has been persisted.
+                [recipeImage saveInBackground:^{
+                    
+                    // Associate with recipe.
+                    [self setRecipeImage:recipeImage];
+                    
+                    // Now go ahead and save the recipe.
+                    [self saveInBackground:^{
+                        success();
+                    } failure:^(NSError *error) {
+                        failure(error);
+                    }];
+                    
                 } failure:^(NSError *error) {
                     failure(error);
                 }];
                 
-            } failure:^(NSError *error) {
+            } else {
                 failure(error);
-            }];
+            }
             
-        } else {
+        } progressBlock:^(int percentDone) {
+            
+            progress(percentDone);
+            
+        }];
+        
+    } else {
+        
+        // Now go ahead and save the recipe.
+        [self saveInBackground:^{
+            success();
+        } failure:^(NSError *error) {
             failure(error);
-        }
-    } progressBlock:^(int percentDone) {
+        }];
         
-        progress(percentDone);
-        
-    }];
+    }
+}
+
+- (void)saveWithImage:(UIImage *)image startProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
+             progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
+              failure:(ObjectFailureBlock)failure {
     
+    CGFloat recipeSaveProgress = 0.1;
+    
+    if (image) {
+        
+        CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
+        [self setRecipeImage:recipeImage];
+        
+        // Save the photo first to get its objectId.
+        PFFile *recipePhotoFile = [recipeImage imageFile];
+        [recipePhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            if (!error) {
+                
+                // Save CKRecipeImage now that PFFile has been persisted.
+                [recipeImage saveInBackground:^{
+                    
+                    // Associate with recipe.
+                    [self setRecipeImage:recipeImage];
+                    
+                    // Now go ahead and save the recipe.
+                    [self saveInBackground:^{
+                        
+                        progress(recipeSaveProgress * 100);
+                        success();
+                        
+                    } failure:^(NSError *error) {
+                        failure(error);
+                    }];
+                    
+                } failure:^(NSError *error) {
+                    failure(error);
+                }];
+                
+            } else {
+                failure(error);
+            }
+            
+        } progressBlock:^(int percentDone) {
+            
+            int overallProgress = percentDone;
+            if (overallProgress > startProgress) {
+                overallProgress = percentDone * (((endProgress - recipeSaveProgress) * 100) / 100);
+            }
+            
+            progress(overallProgress);
+            
+        }];
+        
+    } else {
+        
+        // Now go ahead and save the recipe.
+        [self saveInBackground:^{
+            
+            progress(endProgress * 100);
+            success();
+            
+        } failure:^(NSError *error) {
+            failure(error);
+        }];
+        
+    }
 }
 
 - (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
