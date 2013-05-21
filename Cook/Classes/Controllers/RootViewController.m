@@ -18,15 +18,11 @@
 #import "BookModalViewController.h"
 #import "LoginViewController.h"
 #import "EventHelper.h"
-#import "CKNotificationView.h"
-#import "CKPopoverViewController.h"
-#import "NotificationsViewController.h"
 #import "RecipeViewController.h"
 #import "BookNavigationHelper.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate,
-    CKNotificationViewDelegate, CKPopoverViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -34,7 +30,6 @@
 @property (nonatomic, strong) LoginViewController *loginViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
-@property (nonatomic, strong) CKPopoverViewController *popoverViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
@@ -42,7 +37,6 @@
 @property (nonatomic, assign) BOOL panEnabled;
 @property (nonatomic, assign) NSUInteger benchtopLevel;
 @property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, strong) CKNotificationView *notificationView;
 
 @end
 
@@ -223,42 +217,6 @@
 
 - (void)loginViewControllerSuccessful:(BOOL)success {
     [self showLoginView:!success];
-}
-
-#pragma mark - CKNotificationViewDelegate methods
-
-- (void)notificationViewTapped:(CKNotificationView *)notifyView {
-    DLog();
-    [notifyView clear];
-    
-    NotificationsViewController *notificationsViewController = [[NotificationsViewController alloc] init];
-    CKPopoverViewController *popoverViewController = [[CKPopoverViewController alloc] initWithContentViewController:notificationsViewController delegate:self];
-    [popoverViewController showInView:self.view direction:CKPopoverViewControllerLeft atPoint:CGPointMake(notifyView.frame.origin.x + notifyView.frame.size.width,
-                                                                                                          notifyView.frame.origin.y + floorf(notifyView.frame.size.height / 2.0))];
-    self.popoverViewController = popoverViewController;
-}
-
-- (UIView *)notificationItemViewForIndex:(NSInteger)itemIndex {
-    return nil;
-}
-
-- (void)notificationView:(CKNotificationView *)notifyView tappedForItemIndex:(NSInteger)itemIndex {
-    [notifyView clear];
-}
-
-#pragma mark - CKPopoverViewControllerDelegate methods
-
-- (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
-    if (appear) {
-        [self enable:NO];
-    }
-}
-
-- (void)popoverViewController:(CKPopoverViewController *)popoverViewController didAppear:(BOOL)appear {
-    if (!appear) {
-        self.popoverViewController = nil;
-        [self enable:YES];
-    }
 }
 
 #pragma mark - Private methods
@@ -544,7 +502,6 @@
 - (void)initViewControllers {
     BOOL isLoggedIn = [self isLoggedIn];
     [self initBenchtop];
-    [self initNotificationView];
     [self showLoginView:!isLoggedIn];
     [self enable:isLoggedIn];
 }
@@ -567,14 +524,6 @@
     [self.view addSubview:self.settingsViewController.view];
 }
 
-- (void)initNotificationView {
-    CKNotificationView *notificationView = [[CKNotificationView alloc] initWithDelegate:self];
-    notificationView.frame = CGRectMake(13.0, 50.0, notificationView.frame.size.width, notificationView.frame.size.height);
-    [self.view addSubview:notificationView];
-    [notificationView setNotificationItems:nil];
-    self.notificationView = notificationView;
-}
-
 - (void)enableEditMode:(BOOL)enable {
     
     // Disable panning in edit mode.
@@ -585,7 +534,6 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.notificationView.alpha = enable ? 0.0 : 1.0;
                          self.storeViewController.view.alpha = enable ? 0.0 : 1.0;
                          self.storeViewController.view.frame = enable ? [self editFrameForStore] : [self storeFrameForShow:NO];
                      }

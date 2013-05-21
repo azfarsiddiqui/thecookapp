@@ -17,9 +17,13 @@
 #import "ViewHelper.h"
 #import "MRCEnumerable.h"
 #import "CKBenchtopLevelView.h"
+#import "CKNotificationView.h"
+#import "CKPopoverViewController.h"
+#import "NotificationsViewController.h"
 
 @interface BenchtopCollectionViewController () <UIActionSheetDelegate, BenchtopBookCoverViewCellDelegate,
-    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, UIGestureRecognizerDelegate>
+    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, CKNotificationViewDelegate,
+    CKPopoverViewControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) CKBook *myBook;
@@ -27,12 +31,14 @@
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
+@property (nonatomic, strong) CKPopoverViewController *popoverViewController;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) CKBenchtopLevelView *benchtopLevelView;
+@property (nonatomic, strong) CKNotificationView *notificationView;
 
 @end
 
@@ -63,6 +69,7 @@
     
     [self initBackground];
     [self initBenchtopLevelView];
+    [self initNotificationView];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     self.collectionView.backgroundColor = [UIColor clearColor];
@@ -319,6 +326,42 @@
     return NO;
 }
 
+#pragma mark - CKNotificationViewDelegate methods
+
+- (void)notificationViewTapped:(CKNotificationView *)notifyView {
+    DLog();
+    [notifyView clear];
+    
+    NotificationsViewController *notificationsViewController = [[NotificationsViewController alloc] init];
+    CKPopoverViewController *popoverViewController = [[CKPopoverViewController alloc] initWithContentViewController:notificationsViewController delegate:self];
+    [popoverViewController showInView:self.view direction:CKPopoverViewControllerLeft atPoint:CGPointMake(notifyView.frame.origin.x + notifyView.frame.size.width,
+                                                                                                          notifyView.frame.origin.y + floorf(notifyView.frame.size.height / 2.0))];
+    self.popoverViewController = popoverViewController;
+}
+
+- (UIView *)notificationItemViewForIndex:(NSInteger)itemIndex {
+    return nil;
+}
+
+- (void)notificationView:(CKNotificationView *)notifyView tappedForItemIndex:(NSInteger)itemIndex {
+    [notifyView clear];
+}
+
+#pragma mark - CKPopoverViewControllerDelegate methods
+
+- (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
+    if (appear) {
+        [self enable:NO];
+    }
+}
+
+- (void)popoverViewController:(CKPopoverViewController *)popoverViewController didAppear:(BOOL)appear {
+    if (!appear) {
+        self.popoverViewController = nil;
+        [self enable:YES];
+    }
+}
+
 #pragma mark - KVO methods
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
@@ -358,6 +401,14 @@
                                          benchtopLevelView.frame.size.height);
     [self.view addSubview:benchtopLevelView];
     self.benchtopLevelView = benchtopLevelView;
+}
+
+- (void)initNotificationView {
+    CKNotificationView *notificationView = [[CKNotificationView alloc] initWithDelegate:self];
+    notificationView.frame = CGRectMake(13.0, 50.0, notificationView.frame.size.width, notificationView.frame.size.height);
+    [self.view addSubview:notificationView];
+    [notificationView setNotificationItems:nil];
+    self.notificationView = notificationView;
 }
 
 - (void)loadMyBook {
