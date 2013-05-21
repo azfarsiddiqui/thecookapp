@@ -52,12 +52,13 @@
     flowLayout.itemSize = itemSize;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     flowLayout.sectionInset = insets;
-    flowLayout.minimumLineSpacing = 15.0;
+    flowLayout.minimumLineSpacing = 25.0;
     
     self.collectionView.frame = self.view.bounds;
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.showsVerticalScrollIndicator = NO;
+    self.collectionView.pagingEnabled = YES;
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kIllustrationCellId];
