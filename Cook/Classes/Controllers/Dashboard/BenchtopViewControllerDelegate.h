@@ -16,5 +16,6 @@
 - (void)panEnabledRequested:(BOOL)enable;
 - (void)panToBenchtopForSelf:(UIViewController *)viewController;
 - (NSInteger)currentBenchtopLevel;
+- (void)deleteModeToggled:(BOOL)deleteMode;
 
 @end

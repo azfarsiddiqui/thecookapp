@@ -628,7 +628,7 @@
                 [self.collectionView scrollToItemAtIndexPath:indexPath
                                             atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                                     animated:YES];
-                [self setDeleteMode:YES indexPath:indexPath];
+                [self enableDeleteMode:YES indexPath:indexPath];
             }
         }
     }
@@ -641,7 +641,7 @@
                                             self.collectionView.center.y)));
 }
 
-- (void)setDeleteMode:(BOOL)enable indexPath:(NSIndexPath *)indexPath {
+- (void)enableDeleteMode:(BOOL)enable indexPath:(NSIndexPath *)indexPath {
     
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
     [cell enableDeleteMode:enable];
@@ -672,8 +672,8 @@
         UIButton *deleteButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
                                                       target:self
                                                     selector:@selector(deleteTapped:)];
-        deleteButton.frame = CGRectMake(frame.origin.x - floorf(deleteButton.frame.size.width / 2.0) + 5.0,
-                                        frame.origin.y - floorf(deleteButton.frame.size.height / 2.0) + 5.0,
+        deleteButton.frame = CGRectMake(frame.origin.x - floorf(deleteButton.frame.size.width / 2.0) + 3.0,
+                                        frame.origin.y - floorf(deleteButton.frame.size.height / 2.0),
                                         deleteButton.frame.size.width,
                                         deleteButton.frame.size.height);
         [overlayView addSubview:deleteButton];
@@ -694,11 +694,17 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          
+                         [self.delegate deleteModeToggled:enable];
+                         
                          // Fade the edit overlay.
                          self.overlayView.alpha = enable ? 1.0 : 0.0;
                          
                          // Fade the delete button.
                          self.deleteButton.alpha = enable ? 1.0 : 0.0;
+                         
+                         // Fade the icons away.
+                         self.notificationView.alpha = enable ? 0.0 : 1.0;
+                         self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
                          
                      }
                      completion:^(BOOL finished) {
@@ -722,18 +728,18 @@
 }
 
 - (void)deleteDismissedByTap:(UITapGestureRecognizer *)tapGesture {
-    [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+    [self enableDeleteMode:NO indexPath:self.selectedIndexPath];
 }
 
 - (void)deleteDismissedByPan:(UIPanGestureRecognizer *)panGesture {
     if (panGesture.state == UIGestureRecognizerStateBegan) {
-        [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+        [self enableDeleteMode:NO indexPath:self.selectedIndexPath];
     }
 }
 
 - (void)deleteTapped:(id)sender {
     [self unfollowBookAtIndexPath:self.selectedIndexPath];
-    [self setDeleteMode:NO indexPath:self.selectedIndexPath];
+    [self enableDeleteMode:NO indexPath:self.selectedIndexPath];
 }
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {

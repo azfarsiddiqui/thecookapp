@@ -49,7 +49,9 @@
 }
 
 - (void)enableDeleteMode:(BOOL)enable {
-    [self enableWiggle:enable];
+    
+    // Disabled wiggle for now.
+    // [self enableWiggle:enable];
 }
 
 - (void)enableEditMode:(BOOL)enable {

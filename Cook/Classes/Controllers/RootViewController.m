@@ -118,6 +118,10 @@
     return self.benchtopLevel;
 }
 
+- (void)deleteModeToggled:(BOOL)deleteMode {
+    [self showStoreShelf:!deleteMode animated:NO];
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
@@ -488,15 +492,20 @@
     
 }
 
-- (void)showStoreShelf:(BOOL)show {
-    [UIView animateWithDuration:0.3
-                          delay:show ? 0.1 : 0.2
-                        options:show ? UIViewAnimationOptionCurveEaseOut : UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.storeViewController.view.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -kStoreHideTuckOffset);
-                     }
-                     completion:^(BOOL finished) {
-                     }];
+- (void)showStoreShelf:(BOOL)show animated:(BOOL)animated {
+    CGAffineTransform transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -kStoreHideTuckOffset);
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                              delay:show ? 0.1 : 0.2
+                            options:show ? UIViewAnimationOptionCurveEaseOut : UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.storeViewController.view.transform = transform;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    } else {
+        self.storeViewController.view.transform = transform;
+    }
 }
 
 - (void)initViewControllers {
