@@ -98,7 +98,7 @@
     CALayer *rootBookLayer = [CALayer layer];
     rootBookLayer.anchorPoint = CGPointMake(0.5, 0.5);
     rootBookLayer.frame = self.bookCoverView.bounds;
-    rootBookLayer.position = CGPointMake(floorf(self.view.bounds.size.width / 2), floorf(self.view.bounds.size.height / 2));
+    rootBookLayer.position = CGPointMake(floorf(self.view.bounds.size.width / 2), floorf(self.view.bounds.size.height / 2) + 10.0); // TODO 10 is to line up with book!
     rootBookLayer.backgroundColor = [UIColor clearColor].CGColor;
     [self.view.layer addSublayer:rootBookLayer];
     self.rootBookLayer = rootBookLayer;
