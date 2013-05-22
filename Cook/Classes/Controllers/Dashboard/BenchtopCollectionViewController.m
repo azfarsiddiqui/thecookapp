@@ -48,6 +48,8 @@
 #define kMySection      0
 #define kFollowSection  1
 #define kLevelXOffset   30.0
+#define kDefaultInsets  UIEdgeInsetsMake(175.0, 362.0, 155.0, 0.0)
+#define kFollowInsets   UIEdgeInsetsMake(155.0, 300.0, 155.0, 362.0)
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
@@ -176,19 +178,31 @@
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    
+    
+    UIEdgeInsets sectionInsets = kDefaultInsets;
+    
     if (section == kMySection) {
         
+        sectionInsets = kDefaultInsets;
+        
         // Shift my book up when in edit mode.
-        return self.editMode ? UIEdgeInsetsMake(155.0, 362.0, 230.0, 0.0) : UIEdgeInsetsMake(155.0, 362.0, 155.0, 0.0);
+        if (self.editMode) {
+            sectionInsets.bottom += 105.0;
+        }
         
     } else if (section == kFollowSection) {
         
-        // Part the follow books away if in edit mode.
-        return self.editMode ? UIEdgeInsetsMake(155.0, 362.0, 155.0, 362.0) : UIEdgeInsetsMake(155.0, 300.0, 155.0, 362.0);
+        sectionInsets = kFollowInsets;
         
-    } else {
-        return UIEdgeInsetsZero;
+        // Part the follow books away if in edit mode.
+        if (self.editMode) {
+            sectionInsets.left += 62.0;
+        }
+        
     }
+    
+    return sectionInsets;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
