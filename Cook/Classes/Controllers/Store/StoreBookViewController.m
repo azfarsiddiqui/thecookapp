@@ -19,6 +19,7 @@
 #import "CKBookSummaryView.h"
 #import "EventHelper.h"
 #import "ParsePhotoStore.h"
+#import "NSString+Utilities.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface StoreBookViewController () <CKBookCoverViewDelegate>
@@ -89,7 +90,7 @@
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
     
     if (self.book.featured) {
-        [bookCoverView setName:self.book.name author:nil editable:NO];
+        [bookCoverView setName:self.book.name author:[NSString CK_safeString:self.book.author defaultString:@""] editable:NO];
     } else {
         [bookCoverView setName:self.book.name author:[self.book userName] editable:[self.book editable]];
     }
