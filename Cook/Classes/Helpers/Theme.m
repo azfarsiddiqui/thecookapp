@@ -64,7 +64,7 @@
 #pragma mark - Store
 
 + (UIFont *)storeTabFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:16.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16.0];
 }
 
 + (UIColor *)storeTabTextColour {

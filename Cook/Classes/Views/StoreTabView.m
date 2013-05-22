@@ -106,7 +106,7 @@
         label.text = [self.titles objectAtIndex:tabIndex];
         [label sizeToFit];
         label.frame = CGRectMake(floorf((tabImageView.bounds.size.width - label.frame.size.width) / 2.0),
-                                 20.0,
+                                 16.0,
                                  label.frame.size.width,
                                  label.frame.size.height);
         [tabImageView addSubview:label];
