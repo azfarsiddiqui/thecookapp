@@ -533,12 +533,6 @@
     
     if (enable) {
         
-        // Edit overlay
-        UIImageView *editOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
-        editOverlayView.alpha = 0.0;
-        [self.view addSubview:editOverlayView];
-        self.overlayView = editOverlayView;
-        
         // Cover
         CoverPickerViewController *coverViewController = [[CoverPickerViewController alloc] initWithCover:self.myBook.cover delegate:self];
         coverViewController.view.frame = CGRectMake(0.0,
@@ -577,9 +571,6 @@
                          self.notificationView.alpha = enable ? 0.0 : 1.0;
                          self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
                          
-                         // Fade the edit overlay.
-                         self.overlayView.alpha = enable ? 1.0 : 0.0;
-
                          // Slide down the cover picker.
                          self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height) : CGAffineTransformIdentity;
                          
@@ -608,10 +599,8 @@
                          } else {
                              
                              self.animating = NO;
-                             [self.overlayView removeFromSuperview];
                              [self.coverViewController.view removeFromSuperview];
                              [self.illustrationViewController.view removeFromSuperview];
-                             self.overlayView = nil;
                              self.coverViewController = nil;
                              self.illustrationViewController = nil;
                          }
