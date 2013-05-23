@@ -10,11 +10,14 @@
 
 @interface ViewHelper : NSObject
 
++ (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector;
++ (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector;
++ (UIButton *)deleteButtonWithTarget:(id)target selector:(SEL)selector;
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
 + (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target selector:(SEL)selector;
-//assumes an image exists with prefixes which end in '_on', and '_off' for normal and selected states
 + (UIButton *)buttonWithImagePrefix:(NSString*)imagePrefix target:(id)target selector:(SEL)selector;
 + (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image target:(id)target selector:(SEL)selector;
+
 + (CGSize)bookSize;
 + (CGFloat)singleLineHeightForFont:(UIFont *)font;
 + (CGSize)screenSize;

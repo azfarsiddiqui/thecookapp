@@ -13,6 +13,24 @@
 
 @implementation ViewHelper
 
++ (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_okay.png"]
+                   selectedImage:[UIImage imageNamed:@"cook_btns_okay_onpress.png"]
+                          target:target selector:selector];
+}
+
++ (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_cancel.png"]
+                   selectedImage:[UIImage imageNamed:@"cook_btns_cancel_onpress.png"]
+                          target:target selector:selector];
+}
+
++ (UIButton *)deleteButtonWithTarget:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_delete.png"]
+                   selectedImage:[UIImage imageNamed:@"cook_btns_delete_onpress.png"]
+                          target:target selector:selector];
+}
+
 + (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image target:(id)target selector:(SEL)selector {
     UIButton *button = [self buttonWithImage:image target:target selector:selector];
     [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
