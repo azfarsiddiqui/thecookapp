@@ -50,7 +50,6 @@
 - (UIEdgeInsets)contentInsets;
 - (CKEditingTextBoxView *)sourceEditTextBoxView;
 - (CKEditingTextBoxView *)targetEditTextBoxView;
-- (CKEditingTextBoxView *)mockedEditTextBoxView;
 - (CGRect)currentKeyboardFrame;
 - (CGRect)defaultKeyboardFrame;
 - (void)updateInfoLabels;

@@ -12,9 +12,8 @@
 
 @property (nonatomic, strong) UIView *editingView;
 @property (nonatomic, strong) UIView *textEditBoxImageView;
-@property (nonatomic, strong) UIView *textEditingPencilView;
 @property (nonatomic, strong) UIButton *textEditingSaveButton;
-@property (nonatomic, assign) CGPoint pencilOffsets;
+@property (nonatomic, assign) CGPoint iconOffset;
 
 @end
 
@@ -29,15 +28,25 @@
 }
 
 + (UIImage *)textEditingBoxWhite:(BOOL)white {
-    UIImage *textEditingImage = nil;
-    if (white) {
-        textEditingImage = [[UIImage imageNamed:@"cook_customise_textbox_white.png"]
-                            resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 5.0, 6.0, 5.0)];
+    return [self textEditingBoxWhite:white editMode:NO];
+}
+
++ (UIImage *)textEditingBoxWhite:(BOOL)white editMode:(BOOL)editMode {
+
+    // Construct the required image name.
+    NSMutableString *textBoxName = [NSMutableString stringWithString:@"cook_customise_textbox"];
+    [textBoxName appendString:white ? @"_white" : @"_black"];
+    [textBoxName appendString:editMode ? @"_edit" : @""];
+    [textBoxName appendString:@".png"];
+    
+    UIImage *textBoxImage = [UIImage imageNamed:textBoxName];
+    if (editMode) {
+        textBoxImage = [textBoxImage resizableImageWithCapInsets:UIEdgeInsetsMake(48.0, 41.0, 6.0, 41.0)];
     } else {
-        textEditingImage = [[UIImage imageNamed:@"cook_customise_textbox_black.png"]
-                            resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 5.0, 6.0, 5.0)];
+        textBoxImage = [textBoxImage resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 6.0, 6.0, 6.0)];
     }
-    return textEditingImage;
+    
+    return textBoxImage;
 }
 
 + (UIImage *)textEditingSelectionBoxWhite:(BOOL)white {
@@ -55,20 +64,13 @@
         self.delegate = delegate;
         self.contentInsets = contentInsets;
         self.userInteractionEnabled = YES;
-        CGPoint pencilOffsets = CGPointMake(-32.0, -11.0);
-        self.pencilOffsets = pencilOffsets;
+        self.iconOffset = CGPointMake(-32.0, -11.0);
         
         // Text box.
-        UIImageView *textEditImageView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:white]];
+        UIImageView *textEditImageView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:YES]];
         textEditImageView.userInteractionEnabled = YES;
         textEditImageView.autoresizingMask = [self textBoxResizingMask];
         self.textEditBoxImageView = textEditImageView;
-        
-        // Corner pencil icon.
-        UIImageView *textEditingPencilView = [[UIImageView alloc] initWithImage:[self textEditingPencilWhite:white]];
-        textEditingPencilView.userInteractionEnabled = YES;
-        textEditingPencilView.autoresizingMask = [self editIconResizingMask];
-        self.textEditingPencilView = textEditingPencilView;
         
         // Update positioning of the editing view.
         [self updateEditingView:editingView];
@@ -78,8 +80,8 @@
                                                                          target:self
                                                                        selector:@selector(saveTapped:)];
         textEditingSaveButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin;
-        textEditingSaveButton.frame = CGRectMake(self.bounds.size.width - textEditingSaveButton.frame.size.width,
-                                                 0.0,
+        textEditingSaveButton.frame = CGRectMake(self.bounds.size.width - textEditingSaveButton.frame.size.width + 4.0,
+                                                 -2.0,
                                                  textEditingSaveButton.frame.size.width,
                                                  textEditingSaveButton.frame.size.height);
         textEditingSaveButton.hidden = YES;
@@ -87,7 +89,6 @@
         
         // Add them all.
         [self addSubview:textEditImageView];
-        [self addSubview:textEditingPencilView];
         [self addSubview:textEditingSaveButton];
         
         // Register tap on self.
@@ -102,64 +103,30 @@
 - (void)updateEditingView:(UIView *)editingView {
     
     // First set them to no auto-resize as we're gonna position/size them ourselves.
-    self.textEditingPencilView.autoresizingMask = UIViewAutoresizingNone;
     self.textEditBoxImageView.autoresizingMask = UIViewAutoresizingNone;
     self.editViewFrame = editingView.frame;
     
-    // Get the updatedFrame given the new editViewFrame.
-    CGRect updatedFrame = [self updatedFrameForProposedEditingViewFrame:self.editViewFrame];
-    self.frame = updatedFrame;
+    // Derive the current frame from the given editing frame including the contentInsets for the textbox imageview.
+    self.frame = [self updatedFrameForProposedEditingViewFrame:self.editViewFrame];
     
     // Reset all the subviews.
-    self.textEditingPencilView.frame = CGRectMake(self.contentInsets.left + self.editViewFrame.size.width + self.contentInsets.right + self.pencilOffsets.x,
-                                                  0.0,
-                                                  self.textEditingPencilView.frame.size.width,
-                                                  self.textEditingPencilView.frame.size.height);
     self.textEditBoxImageView.frame = CGRectMake(0.0,
-                                              self.textEditingPencilView.frame.origin.y - self.pencilOffsets.y,
-                                              self.contentInsets.left + self.editViewFrame.size.width + self.contentInsets.right,
-                                              self.contentInsets.top + self.editViewFrame.size.height + self.contentInsets.bottom);
+                                                 0.0,
+                                                 self.contentInsets.left + self.editViewFrame.size.width + self.contentInsets.right,
+                                                 self.contentInsets.top + self.editViewFrame.size.height + self.contentInsets.bottom);
     
     // Restore intended resizing mask so that scaling works in transit.
-    self.textEditingPencilView.autoresizingMask = [self editIconResizingMask];
     self.textEditBoxImageView.autoresizingMask = [self textBoxResizingMask];
 }
 
 - (CGRect)updatedFrameForProposedEditingViewFrame:(CGRect)editViewFrame {
-    CGRect pencilViewFrame = CGRectMake(self.contentInsets.left + editViewFrame.size.width + self.contentInsets.right + self.pencilOffsets.x,
-                                        0.0,
-                                        self.textEditingPencilView.frame.size.width,
-                                        self.textEditingPencilView.frame.size.height);
-    CGRect textBoxImageFrame = CGRectMake(0.0,
-                                          pencilViewFrame.origin.y - self.pencilOffsets.y,
-                                          self.contentInsets.left + editViewFrame.size.width + self.contentInsets.right,
-                                          self.contentInsets.top + editViewFrame.size.height + self.contentInsets.bottom);
     
     // Overall frame.
-    CGRect frame = CGRectUnion(pencilViewFrame, textBoxImageFrame);
-    frame.origin.x = editViewFrame.origin.x - self.contentInsets.left;
-    frame.origin.y = editViewFrame.origin.y - self.contentInsets.top;
+    CGRect frame = CGRectMake(editViewFrame.origin.x - self.contentInsets.left,
+                              editViewFrame.origin.y - self.contentInsets.top,
+                              self.contentInsets.left + editViewFrame.size.width + self.contentInsets.right,
+                              self.contentInsets.top + editViewFrame.size.height + self.contentInsets.bottom);;
     return frame;
-}
-
-- (void)showEditingIcon:(BOOL)show animated:(BOOL)animated {
-    if (show) {
-        self.textEditingPencilView.hidden = NO;
-        self.textEditingPencilView.alpha = 0.0;
-    }
-    if (animated) {
-        [UIView animateWithDuration:0.3
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.textEditingPencilView.alpha = show ? 1.0 : 0.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-    } else {
-        self.textEditingPencilView.hidden = show ? NO : YES;
-        self.textEditingPencilView.alpha = show ? 1.0 : 0.0;
-    }
 }
 
 - (void)showSaveIcon:(BOOL)show animated:(BOOL)animated {
@@ -199,16 +166,6 @@
 }
 
 #pragma mark - Private methods
-
-- (UIImage *)textEditingPencilWhite:(BOOL)white {
-    UIImage *textEditingPencilImage = nil;
-    if (white) {
-        textEditingPencilImage = [UIImage imageNamed:@"cook_customise_btns_textedit_white.png"];
-    } else {
-        textEditingPencilImage = [UIImage imageNamed:@"cook_customise_btns_textedit_black.png"];
-    }
-    return textEditingPencilImage;
-}
 
 - (void)textBoxTapped:(UITapGestureRecognizer *)tapGesture {
     if (self.delegate != nil && [self.delegate respondsToSelector:@selector(editingTextBoxViewTappedForEditingView:)]) {

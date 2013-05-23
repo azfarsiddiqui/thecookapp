@@ -214,20 +214,20 @@
     CGFloat panOffset = translation.y * dragRatio;
     
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
+    CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
     CGRect titleFrame = self.titleLabel.frame;
     CGRect textBoxFrame = targetTextBoxView.frame;
-    CGRect mockedTextBoxFrame = mockedTextBoxView.frame;
+    CGRect sourceTextBoxFrame = sourceTextBoxView.frame;
     CGRect contentFrame = self.textView.frame;
     
     // Move everything together: title + textbox + textview + mocked textbox view (to be transitioned back).
     titleFrame.origin.y += panOffset;
     textBoxFrame.origin.y += panOffset;
-    mockedTextBoxFrame.origin.y += panOffset;
+    sourceTextBoxFrame.origin.y += panOffset;
     contentFrame.origin.y += panOffset;
     self.titleLabel.frame = titleFrame;
     targetTextBoxView.frame = textBoxFrame;
-    mockedTextBoxView.frame = mockedTextBoxFrame;
+    sourceTextBoxView.frame = sourceTextBoxFrame;
     self.textView.frame = contentFrame;
 }
 
@@ -239,7 +239,7 @@
     noGoFrame.size.height += contentInsets.bottom;
     
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
+    CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
     if (targetTextBoxView.frame.origin.y + targetTextBoxView.frame.size.height < noGoFrame.origin.y) {
         
         CGRect proposedTargetTextBoxFrame = CGRectMake(targetTextBoxView.frame.origin.x,
@@ -254,7 +254,7 @@
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              targetTextBoxView.frame = proposedTargetTextBoxFrame;
-                             mockedTextBoxView.frame = proposedTargetTextBoxFrame;
+                             sourceTextBoxView.frame = proposedTargetTextBoxFrame;
                              self.textView.frame = textViewFrame;
                              [self updateInfoLabels];
                          }
@@ -272,7 +272,7 @@
     }
     
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    CKEditingTextBoxView *mockedTextBoxView = [self mockedEditTextBoxView];
+    CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
     
     // Various frames to update.
     CGRect textViewFrame = self.textView.frame;
@@ -288,7 +288,6 @@
     UIEdgeInsets contentInsets = [self contentInsets];
     CGRect keyboardFrame = [self currentKeyboardFrame];
     CGRect noGoFrame = keyboardFrame;
-    
     noGoFrame.origin.y -= contentInsets.bottom;
     noGoFrame.size.height += contentInsets.bottom;
     
@@ -309,7 +308,7 @@
                          
                          self.textView.frame = textViewFrame;
                          targetTextBoxView.frame = proposedTargetTextBoxFrame;
-                         mockedTextBoxView.frame = proposedTargetTextBoxFrame;
+                         sourceTextBoxView.frame = proposedTargetTextBoxFrame;
 
                          [self updateInfoLabels];
                          

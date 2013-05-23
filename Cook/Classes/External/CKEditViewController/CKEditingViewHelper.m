@@ -16,7 +16,7 @@
 
 @implementation CKEditingViewHelper
 
-#define kContentInsets  UIEdgeInsetsMake(30.0, 34.0, 10.0, 34.0)
+#define kContentInsets  UIEdgeInsetsMake(25.0, 35.0, 15.0, 35.0)
 #define kTextBoxScale   0.98
 
 + (CGFloat)singleLineHeightForFont:(UIFont *)font size:(CGSize)size {
