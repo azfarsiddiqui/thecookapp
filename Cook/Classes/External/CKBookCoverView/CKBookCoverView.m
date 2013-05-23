@@ -86,10 +86,10 @@
     
     if (enable) {
         [self.editingHelper wrapEditingView:self.nameLabel
-                              contentInsets:UIEdgeInsetsMake(18.0, 9.0, -7.0, 11.0)
+                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 38.0)
                                    delegate:self white:NO];
         [self.editingHelper wrapEditingView:self.authorLabel
-                              contentInsets:UIEdgeInsetsMake(5.0, 9.0, -15.0, 11.0)
+                              contentInsets:UIEdgeInsetsMake(5.0, 30.0, -10.0, 28.0)
                                    delegate:self white:NO];
     } else {
         [self.editingHelper unwrapEditingView:self.nameLabel];

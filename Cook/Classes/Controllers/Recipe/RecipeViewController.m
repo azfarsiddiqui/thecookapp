@@ -1153,7 +1153,7 @@ typedef enum {
         self.photoLabel.alpha = 0.0;
         [self.view addSubview:self.photoLabel];
         [self.editingHelper wrapEditingView:self.photoLabel
-                              contentInsets:UIEdgeInsetsMake(30.0, 20.0, 3.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(25.0, 35.0, 10.0, 35.0)
                                    delegate:self white:YES];
         
     } else {
@@ -1401,22 +1401,22 @@ typedef enum {
     // Set fields to be editable/non
     if (enable) {
         [self.editingHelper wrapEditingView:self.categoryLabel
-                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, -5.0, 30.0)
+                              contentInsets:UIEdgeInsetsMake(18.0, 30.0, 8.0, 30.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.titleLabel
-                              contentInsets:UIEdgeInsetsMake(10.0, 20.0, -17.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(5.0, 20.0, -5.0, 20.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.storyLabel
-                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, 0.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(18.0, 20.0, 8.0, 20.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.servesCookView
-                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, 0.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 30.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.ingredientsView
-                              contentInsets:UIEdgeInsetsMake(20.0, 20.0, 2.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 30.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.methodLabel
-                              contentInsets:UIEdgeInsetsMake(25.0, 20.0, 2.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(25.0, 30.0, 2.0, 20.0)
                                    delegate:self white:YES];
     } else {
         [self.editingHelper unwrapEditingView:self.categoryLabel];
