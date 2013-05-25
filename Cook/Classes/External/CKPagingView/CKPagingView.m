@@ -1,73 +1,87 @@
 //
-//  CKBenchtopLevelView.m
-//  CKBenchtopLevelView
+//  CKPagingView.m
+//  CKPagingView
 //
 //  Created by Jeff Tan-Ang on 27/03/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKBenchtopLevelView.h"
+#import "CKPagingView.h"
 
-@interface CKBenchtopLevelView ()
+@interface CKPagingView ()
 
-@property (nonatomic, assign) NSInteger numLevels;
 @property (nonatomic, strong) NSMutableArray *dotViews;
 
 @end
 
-@implementation CKBenchtopLevelView
+@implementation CKPagingView
 
 #define kDotInsets  UIEdgeInsetsMake(3.0, 3.0, 3.0, 3.0)
 
-- (id)initWithLevels:(NSInteger)numLevels {
-    if ([super initWithFrame:CGRectZero]) {
+- (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type {
+    return [self initWithNumPages:numPages type:type contentInsets:kDotInsets];
+}
+
+- (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type contentInsets:(UIEdgeInsets)contentInsets {
+    if (self = [super initWithFrame:CGRectZero]) {
         self.backgroundColor = [UIColor clearColor];
-        self.numLevels = numLevels;
+        self.numPages = numPages;
+        self.pagingType = type;
+        
         [self setUpDots];
     }
     return self;
 }
 
-- (void)setLevel:(NSInteger)level {
-    if (level > self.numLevels - 1) {
+- (void)setPage:(NSInteger)page {
+    
+    if (page > self.numPages - 1) {
         return;
     }
     
-    self.currentLevel = level;
-    for (NSInteger levelIndex = 0; levelIndex < self.numLevels; levelIndex++) {
-        UIImageView *dotView = [self.dotViews objectAtIndex:levelIndex];
-        dotView.image = [self dotImageForOn:(levelIndex == level)];
+    NSLog(@"setPage [%d]", page);
+    
+    self.currentPage = page;
+    for (NSInteger pageIndex = 0; pageIndex < self.numPages; pageIndex++) {
+        UIImageView *dotView = [self.dotViews objectAtIndex:pageIndex];
+        dotView.image = [self dotImageForOn:(pageIndex == page)];
     }
 }
 
 #pragma mark - Private methods
 
 - (void)setUpDots {
-    CGFloat yOffset = 0.0;
-    self.dotViews = [NSMutableArray arrayWithCapacity:self.numLevels];
-    for (NSInteger level = 0; level < self.numLevels; level++) {
+    CGPoint dotOffset = CGPointZero;
+    
+    self.dotViews = [NSMutableArray arrayWithCapacity:self.numPages];
+    for (NSInteger level = 0; level < self.numPages; level++) {
         
         UIImageView *dotView = [[UIImageView alloc] initWithImage:[self dotImageForOn:NO]];
         dotView.frame = CGRectMake(kDotInsets.left, kDotInsets.top, dotView.frame.size.width, dotView.frame.size.height);
         [self.dotViews addObject:dotView];
         
         // Container view to house the dot.
-        UIView *dotContainerView = [[UIView alloc] initWithFrame:CGRectMake(0.0,
-                                                                            yOffset,
+        UIView *dotContainerView = [[UIView alloc] initWithFrame:CGRectMake(dotOffset.x,
+                                                                            dotOffset.y,
                                                                             kDotInsets.left + dotView.frame.size.width + kDotInsets.right,
                                                                             kDotInsets.top + dotView.frame.size.height + kDotInsets.bottom)];
         dotContainerView.backgroundColor = [UIColor clearColor];
         [dotContainerView addSubview:dotView];
         [self addSubview:dotContainerView];
         
-        yOffset += dotContainerView.frame.size.height;
+        // Increment offset.
+        if (self.pagingType == CKPagingViewTypeHorizontal) {
+            dotOffset.x += dotContainerView.frame.size.width;
+        } else {
+            dotOffset.y += dotContainerView.frame.size.height;
+        }
         
         // Updates self frame as we go.
         self.frame = CGRectUnion(self.frame, dotContainerView.frame);
     }
     
     // Start at 0
-    [self setLevel:0];
+    [self setPage:0];
 }
 
 - (UIImage *)dotImageForOn:(BOOL)on {

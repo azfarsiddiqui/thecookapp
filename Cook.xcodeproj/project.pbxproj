@@ -20,6 +20,12 @@
 		7602543C17102C6700950571 /* cook_btns_takephoto_done@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7602543217102C6700950571 /* cook_btns_takephoto_done@2x.png */; };
 		76025440171191A100950571 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7602543F171191A100950571 /* AssetsLibrary.framework */; };
 		7605B4BD170A54B800216DF1 /* CKUserProfilePhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7605B4BC170A54B800216DF1 /* CKUserProfilePhotoView.m */; };
+		76091F45175069C400018E6E /* CKPagingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76091F3F175069C400018E6E /* CKPagingView.m */; };
+		76091F46175069C400018E6E /* cook_dash_dot_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 76091F41175069C400018E6E /* cook_dash_dot_off.png */; };
+		76091F47175069C400018E6E /* cook_dash_dot_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76091F42175069C400018E6E /* cook_dash_dot_off@2x.png */; };
+		76091F48175069C400018E6E /* cook_dash_dot_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 76091F43175069C400018E6E /* cook_dash_dot_on.png */; };
+		76091F49175069C400018E6E /* cook_dash_dot_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76091F44175069C400018E6E /* cook_dash_dot_on@2x.png */; };
+		76091F4B17506A9600018E6E /* CKEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76091F4A17506A9600018E6E /* CKEditViewController.m */; };
 		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		761186BC16EFFE16004F631B /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */; };
 		761186BF16F04831004F631B /* StoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761186BE16F04830004F631B /* StoreBookViewController.m */; };
@@ -138,11 +144,6 @@
 		7643B8CE16D7037B001A2452 /* TTTUnitOfInformationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C616D7037B001A2452 /* TTTUnitOfInformationFormatter.m */; };
 		7643B8CF16D7037B001A2452 /* TTTURLRequestFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */; };
 		7643B8D216D72E68001A2452 /* ActivityRecipeStatsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */; };
-		7646E90C170291B100F26844 /* CKBenchtopLevelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7646E906170291B100F26844 /* CKBenchtopLevelView.m */; };
-		7646E90D170291B100F26844 /* cook_dash_dot_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E908170291B100F26844 /* cook_dash_dot_off.png */; };
-		7646E90E170291B100F26844 /* cook_dash_dot_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E909170291B100F26844 /* cook_dash_dot_off@2x.png */; };
-		7646E90F170291B100F26844 /* cook_dash_dot_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E90A170291B100F26844 /* cook_dash_dot_on.png */; };
-		7646E910170291B100F26844 /* cook_dash_dot_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7646E90B170291B100F26844 /* cook_dash_dot_on@2x.png */; };
 		76492D3C166DB9860042CF92 /* cook_dash_library_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 76492D3A166DB9860042CF92 /* cook_dash_library_add.png */; };
 		76492D3D166DB9860042CF92 /* cook_dash_library_add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76492D3B166DB9860042CF92 /* cook_dash_library_add@2x.png */; };
 		76492D45166DC6470042CF92 /* cook_book_brown.png in Resources */ = {isa = PBXBuildFile; fileRef = 76492D43166DC6470042CF92 /* cook_book_brown.png */; };
@@ -698,6 +699,13 @@
 		7602543F171191A100950571 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		7605B4BB170A54B800216DF1 /* CKUserProfilePhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUserProfilePhotoView.h; sourceTree = "<group>"; };
 		7605B4BC170A54B800216DF1 /* CKUserProfilePhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUserProfilePhotoView.m; sourceTree = "<group>"; };
+		76091F3E175069C400018E6E /* CKPagingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPagingView.h; sourceTree = "<group>"; };
+		76091F3F175069C400018E6E /* CKPagingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPagingView.m; sourceTree = "<group>"; };
+		76091F41175069C400018E6E /* cook_dash_dot_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_dot_off.png; sourceTree = "<group>"; };
+		76091F42175069C400018E6E /* cook_dash_dot_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_dot_off@2x.png"; sourceTree = "<group>"; };
+		76091F43175069C400018E6E /* cook_dash_dot_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_dot_on.png; sourceTree = "<group>"; };
+		76091F44175069C400018E6E /* cook_dash_dot_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_dot_on@2x.png"; sourceTree = "<group>"; };
+		76091F4A17506A9600018E6E /* CKEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKEditViewController.m; sourceTree = "<group>"; };
 		761186B916EFFDF2004F631B /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		761186BD16F04830004F631B /* StoreBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBookViewController.h; sourceTree = "<group>"; };
@@ -854,12 +862,6 @@
 		7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityRecipeStatsView.m; sourceTree = "<group>"; };
 		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
 		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
-		7646E905170291B100F26844 /* CKBenchtopLevelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBenchtopLevelView.h; sourceTree = "<group>"; };
-		7646E906170291B100F26844 /* CKBenchtopLevelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBenchtopLevelView.m; sourceTree = "<group>"; };
-		7646E908170291B100F26844 /* cook_dash_dot_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_dot_off.png; sourceTree = "<group>"; };
-		7646E909170291B100F26844 /* cook_dash_dot_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_dot_off@2x.png"; sourceTree = "<group>"; };
-		7646E90A170291B100F26844 /* cook_dash_dot_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_dot_on.png; sourceTree = "<group>"; };
-		7646E90B170291B100F26844 /* cook_dash_dot_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_dot_on@2x.png"; sourceTree = "<group>"; };
 		76492D3A166DB9860042CF92 /* cook_dash_library_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cook_dash_library_add.png; path = ../dashboard/cook_dash_library_add.png; sourceTree = "<group>"; };
 		76492D3B166DB9860042CF92 /* cook_dash_library_add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "cook_dash_library_add@2x.png"; path = "../dashboard/cook_dash_library_add@2x.png"; sourceTree = "<group>"; };
 		76492D43166DC6470042CF92 /* cook_book_brown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_brown.png; sourceTree = "<group>"; };
@@ -1616,6 +1618,27 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		76091F3D175069C400018E6E /* CKPagingView */ = {
+			isa = PBXGroup;
+			children = (
+				76091F3E175069C400018E6E /* CKPagingView.h */,
+				76091F3F175069C400018E6E /* CKPagingView.m */,
+				76091F40175069C400018E6E /* Resources */,
+			);
+			path = CKPagingView;
+			sourceTree = "<group>";
+		};
+		76091F40175069C400018E6E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				76091F41175069C400018E6E /* cook_dash_dot_off.png */,
+				76091F42175069C400018E6E /* cook_dash_dot_off@2x.png */,
+				76091F43175069C400018E6E /* cook_dash_dot_on.png */,
+				76091F44175069C400018E6E /* cook_dash_dot_on@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		762C0E4D161A7FC400EBA344 /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -1795,27 +1818,6 @@
 				7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */,
 			);
 			path = FormatterKit;
-			sourceTree = "<group>";
-		};
-		7646E904170291B100F26844 /* CKBenchtopLevelView */ = {
-			isa = PBXGroup;
-			children = (
-				7646E905170291B100F26844 /* CKBenchtopLevelView.h */,
-				7646E906170291B100F26844 /* CKBenchtopLevelView.m */,
-				7646E907170291B100F26844 /* Resources */,
-			);
-			path = CKBenchtopLevelView;
-			sourceTree = "<group>";
-		};
-		7646E907170291B100F26844 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				7646E908170291B100F26844 /* cook_dash_dot_off.png */,
-				7646E909170291B100F26844 /* cook_dash_dot_off@2x.png */,
-				7646E90A170291B100F26844 /* cook_dash_dot_on.png */,
-				7646E90B170291B100F26844 /* cook_dash_dot_on@2x.png */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		76520459161A80CB00EE253C /* Dashboard */ = {
@@ -2112,6 +2114,7 @@
 				767E75DA17182D14003CCCD2 /* CKEditingTextBoxView.m */,
 				767E75DB17182D14003CCCD2 /* CKEditingTextBoxView.h */,
 				76BE372B1717A8E9000C0755 /* CKEditViewController.h */,
+				76091F4A17506A9600018E6E /* CKEditViewController.m */,
 				76EF95CE17363BF50033DBCE /* CKTextEditViewController.h */,
 				76EF95CF17363BF50033DBCE /* CKTextEditViewController.m */,
 				76BE373E1717EDFA000C0755 /* CKTextFieldEditViewController.m */,
@@ -2865,6 +2868,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76091F3D175069C400018E6E /* CKPagingView */,
 				76C3BB88173B73F0004F6444 /* CKDialerControl */,
 				76C3BAEE173B30A2004F6444 /* CKNotchSliderView */,
 				76C07FC117389134005915D5 /* CKProgressView */,
@@ -2873,7 +2877,6 @@
 				7602540F170EFDAD00950571 /* CKPhotoPickerViewController */,
 				76EE2CBC170AE7A30043D128 /* SDWebImage */,
 				76E7B4571703EDAF00263DBA /* CKPopoverViewController */,
-				7646E904170291B100F26844 /* CKBenchtopLevelView */,
 				76A3713E170178070067BDB1 /* CKNotificationView */,
 				7643B8BA16D7037A001A2452 /* FormatterKit */,
 				76D84CA916CDF3B400FB5FB0 /* RSMaskedLabel */,
@@ -3338,10 +3341,6 @@
 				76A3714F170178070067BDB1 /* cook_dash_notitifcations_bg@2x.png in Resources */,
 				76A37150170178070067BDB1 /* cook_dash_notitifcations_bubble.png in Resources */,
 				76A37151170178070067BDB1 /* cook_dash_notitifcations_bubble@2x.png in Resources */,
-				7646E90D170291B100F26844 /* cook_dash_dot_off.png in Resources */,
-				7646E90E170291B100F26844 /* cook_dash_dot_off@2x.png in Resources */,
-				7646E90F170291B100F26844 /* cook_dash_dot_on.png in Resources */,
-				7646E910170291B100F26844 /* cook_dash_dot_on@2x.png in Resources */,
 				76375A801702AC3A008D8B63 /* cook_book_btn_addrecipe_onpress.png in Resources */,
 				76375A811702AC3A008D8B63 /* cook_book_btn_addrecipe_onpress@2x.png in Resources */,
 				76375A821702AC3A008D8B63 /* cook_book_btn_addrecipe.png in Resources */,
@@ -3538,6 +3537,10 @@
 				7628151817505B55002D4E19 /* cook_dash_library_tab_middle@2x.png in Resources */,
 				7628151917505B55002D4E19 /* cook_dash_library_tab_right.png in Resources */,
 				7628151A17505B55002D4E19 /* cook_dash_library_tab_right@2x.png in Resources */,
+				76091F46175069C400018E6E /* cook_dash_dot_off.png in Resources */,
+				76091F47175069C400018E6E /* cook_dash_dot_off@2x.png in Resources */,
+				76091F48175069C400018E6E /* cook_dash_dot_on.png in Resources */,
+				76091F49175069C400018E6E /* cook_dash_dot_on@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3674,7 +3677,6 @@
 				762F62D517012BF1006769E5 /* CKMaskedLabel.m in Sources */,
 				76A3714A170178070067BDB1 /* CKNotificationItem.m in Sources */,
 				76A3714B170178070067BDB1 /* CKNotificationView.m in Sources */,
-				7646E90C170291B100F26844 /* CKBenchtopLevelView.m in Sources */,
 				76375A861702B3A5008D8B63 /* NotificationsViewController.m in Sources */,
 				76E7B45D1703EDAF00263DBA /* CKPopoverViewController.m in Sources */,
 				76E7B462170401D500263DBA /* NotificationTableViewCell.m in Sources */,
@@ -3727,6 +3729,8 @@
 				7623572517464DA100CE1EE4 /* IngredientsView.m in Sources */,
 				76181A911747A1B200886B88 /* CKLabel.m in Sources */,
 				767B61311749EB9600EA4328 /* CategoryItemCollectionViewCell.m in Sources */,
+				76091F45175069C400018E6E /* CKPagingView.m in Sources */,
+				76091F4B17506A9600018E6E /* CKEditViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

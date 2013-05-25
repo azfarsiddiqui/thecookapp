@@ -16,7 +16,7 @@
 #import "IllustrationPickerViewController.h"
 #import "ViewHelper.h"
 #import "MRCEnumerable.h"
-#import "CKBenchtopLevelView.h"
+#import "CKPagingView.h"
 #import "CKNotificationView.h"
 #import "CKPopoverViewController.h"
 #import "NotificationsViewController.h"
@@ -37,7 +37,7 @@
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIButton *deleteButton;
-@property (nonatomic, strong) CKBenchtopLevelView *benchtopLevelView;
+@property (nonatomic, strong) CKPagingView *benchtopLevelView;
 @property (nonatomic, strong) CKNotificationView *notificationView;
 
 @end
@@ -407,7 +407,7 @@
 }
 
 - (void)initBenchtopLevelView {
-    CKBenchtopLevelView *benchtopLevelView = [[CKBenchtopLevelView alloc] initWithLevels:3];
+    CKPagingView *benchtopLevelView = [[CKPagingView alloc] initWithNumPages:3 type:CKPagingViewTypeVertical];
     benchtopLevelView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     benchtopLevelView.frame = CGRectMake(kLevelXOffset,
                                          floorf((self.view.bounds.size.height - benchtopLevelView.frame.size.height) / 2.0),
@@ -765,13 +765,13 @@
     NSInteger level = [self.delegate currentBenchtopLevel];
     switch (level) {
         case 2:
-            [self.benchtopLevelView setLevel:0];
+            [self.benchtopLevelView setPage:0];
             break;
         case 1:
-            [self.benchtopLevelView setLevel:1];
+            [self.benchtopLevelView setPage:1];
             break;
         case 0:
-            [self.benchtopLevelView setLevel:2];
+            [self.benchtopLevelView setPage:2];
             break;
         default:
             break;
