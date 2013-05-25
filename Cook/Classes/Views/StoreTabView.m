@@ -17,7 +17,6 @@
 @property (nonatomic, strong) NSArray *icons;
 @property (nonatomic, strong) NSMutableArray *iconViews;
 @property (nonatomic, strong) NSMutableArray *tabs;
-@property (nonatomic, strong) NSMutableArray *shadows;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) NSInteger selectedTabIndex;
 
@@ -25,10 +24,8 @@
 
 @implementation StoreTabView
 
-#define kMinSize        CGSizeMake(140.0, 57.0)
-#define kMaxSize        CGSizeMake(140.0, 77.0)
-#define kMinTabHeight   57.0
-#define kMaxTabHeight   77.0
+#define kMinTabHeight   83.0
+#define kMaxTabHeight   103.0
 #define kFeaturedTab    0
 #define kFriendsTab     1
 #define kSuggestedTab   2
@@ -68,30 +65,28 @@
     self.icons = [NSArray arrayWithObjects:@"cook_dash_library_icon_featured.png", @"cook_dash_library_icon_friends.png", @"cook_dash_library_icon_suggested.png", nil];
     self.iconViews = [NSMutableArray arrayWithCapacity:[self.titles count]];
     self.tabs = [NSMutableArray arrayWithCapacity:[self.titles count]];
-    self.shadows = [NSMutableArray arrayWithCapacity:[self.titles count]];
     
-    // Button tabs and shadow.
-    UIImage *tabImage = [[UIImage imageNamed:@"cook_dash_library_tab.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(14.0, 0.0, 42.0, 0.0)];
-    UIImage *shadowImage = [[UIImage imageNamed:@"cook_dash_library_tab_shadow.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(14.0, 0.0, 42.0, 0.0)];
-    
-    CGFloat offset = 0.0;
-    CGFloat shadowOffset = 2.0;
+    CGFloat offset = -3.0;
     
     for (NSInteger tabIndex = 0; tabIndex < [self.titles count]; tabIndex++) {
         
-        // Button shadow.
-        UIImageView *shadowView = [[UIImageView alloc] initWithImage:shadowImage];
-        shadowView.frame = CGRectMake(offset,
-                                      self.topImageView.frame.origin.y + self.topImageView.frame.size.height - 2.0,
-                                      shadowView.frame.size.width,
-                                      shadowView.frame.size.height);
-        [self addSubview:shadowView];
-        [self.shadows addObject:shadowView];
+        UIImage *tabImage = nil;
+        if (tabIndex == 0) {
+            tabImage = [UIImage imageNamed:@"cook_dash_library_tab_left.png"];
+        } else if (tabIndex == [self.titles count] - 1) {
+            tabImage = [UIImage imageNamed:@"cook_dash_library_tab_right.png"];
+        } else {
+            tabImage = [UIImage imageNamed:@"cook_dash_library_tab_middle.png"];
+        }
+        tabImage = [tabImage resizableImageWithCapInsets:UIEdgeInsetsMake(1.0, 0.0, 81.0, 0.0)];
         
         // Button
         UIImageView *tabImageView = [[UIImageView alloc] initWithImage:tabImage];
         tabImageView.userInteractionEnabled = YES;
-        tabImageView.frame = CGRectMake(shadowView.center.x - (tabImageView.frame.size.width / 2.0), shadowView.frame.origin.y + 2.0, tabImageView.frame.size.width, kMinSize.height);
+        tabImageView.frame = CGRectMake(offset,
+                                        self.topImageView.frame.origin.y + self.topImageView.frame.size.height,
+                                        tabImageView.frame.size.width,
+                                        kMinTabHeight);
         [self addSubview:tabImageView];
         [self.tabs addObject:tabImageView];
         
@@ -127,14 +122,12 @@
         [tabImageView addGestureRecognizer:tapGesture];
         
         // Next tab offset
-        offset += shadowView.frame.size.width - 7.0;
-        shadowOffset = -2.0;
+        offset += tabImageView.frame.size.width - 19.0;
     }
     
-    // Send all shadows to the back.
-    for (UIView *shadowView in self.shadows) {
-        [self sendSubviewToBack:shadowView];
-    }
+    // Bring the middle tab to front.
+    UIView *middleTabView = [self.tabs objectAtIndex:1];
+    [self bringSubviewToFront:middleTabView];
     
     // Select the first tab.
     [self selectFeatured];
@@ -188,18 +181,14 @@
                          // Unselect all buttons except the current one.
                          for (NSInteger buttonIndex = 0; buttonIndex < [self.tabs count]; buttonIndex++) {
                              UIView *button = [self.tabs objectAtIndex:buttonIndex];
-                             UIView *shadowView = [self.shadows objectAtIndex:buttonIndex];
                              CGRect buttonFrame = button.frame;
-                             CGRect shadowFrame = shadowView.frame;
                              if (buttonIndex == tabIndex) {
-                                 buttonFrame.size.height = kMaxSize.height;
+                                 buttonFrame.size.height = kMaxTabHeight;
                              } else {
-                                 buttonFrame.size.height = kMinSize.height;
+                                 buttonFrame.size.height = kMinTabHeight;
                              }
                              
-                             shadowFrame.size.height = buttonFrame.size.height + 7.0;
                              button.frame = buttonFrame;
-                             shadowView.frame = shadowFrame;
                          }
                          
                          // Fade out existing iconView.
