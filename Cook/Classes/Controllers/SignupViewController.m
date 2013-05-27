@@ -66,6 +66,107 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
+- (void)enableSignUpMode:(BOOL)signUp {
+    [self enableSignUpMode:signUp animated:YES];
+}
+
+- (void)enableSignUpMode:(BOOL)signUp animated:(BOOL)animated {
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
+    self.signUpMode = signUp;
+    
+    if (signUp) {
+        self.emailNameView.alpha = 0.0;
+        self.emailNameView.hidden = NO;
+        self.signupSubtitleLabel.alpha = 0.0;
+        self.signupSubtitleLabel.hidden = NO;
+        self.emailSignUpLabel.alpha = 0.0;
+        self.emailSignUpLabel.hidden = NO;
+        self.facebookSignUpLabel.alpha = 0.0;
+        self.facebookSignUpLabel.hidden = NO;
+    } else {
+        self.signinTitleLabel.alpha = 0.0;
+        self.signinTitleLabel.hidden = NO;
+        self.emailSignInLabel.alpha = 0.0;
+        self.emailSignInLabel.hidden = NO;
+        self.facebookSignInLabel.alpha = 0.0;
+        self.facebookSignInLabel.hidden = NO;
+    }
+    
+    if (animated) {
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
+                             self.signupTitleLabel.frame = [self signUpTitleFrameForSignUp:signUp];
+                             self.signinTitleLabel.frame = [self signInTitleFrameForSignUp:signUp];
+                             self.signupSubtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
+                             self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
+                             
+                             self.signupTitleLabel.alpha = signUp ? 1.0 : 0.0;
+                             self.signinTitleLabel.alpha = signUp ? 0.0 : 1.0;
+                             self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
+                             self.emailNameView.alpha = signUp ? 1.0 : 0.0;
+                             self.emailSignUpLabel.alpha = signUp ? 1.0 : 0.0;
+                             self.emailSignInLabel.alpha = signUp ? 0.0 : 1.0;
+                             self.facebookSignUpLabel.alpha = signUp ? 1.0 : 0.0;
+                             self.facebookSignInLabel.alpha = signUp ? 0.0 : 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             [self updateFooterButtonForSignUp:signUp];
+                             
+                             if (signUp) {
+                                 self.signinTitleLabel.hidden = YES;
+                                 self.emailSignInLabel.hidden = YES;
+                                 self.facebookSignInLabel.hidden = YES;
+                             } else {
+                                 self.emailNameView.hidden = YES;
+                                 self.emailSignUpLabel.hidden = YES;
+                                 self.facebookSignUpLabel.hidden = YES;
+                                 self.signupSubtitleLabel.hidden = NO;
+                             }
+                             
+                             self.animating = NO;
+                             
+                         }];
+    } else {
+         self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
+         self.signupTitleLabel.frame = [self signUpTitleFrameForSignUp:signUp];
+         self.signinTitleLabel.frame = [self signInTitleFrameForSignUp:signUp];
+         self.signupSubtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
+         self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
+         
+         self.signupTitleLabel.alpha = signUp ? 1.0 : 0.0;
+         self.signinTitleLabel.alpha = signUp ? 0.0 : 1.0;
+         self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
+         self.emailNameView.alpha = signUp ? 1.0 : 0.0;
+         self.emailSignUpLabel.alpha = signUp ? 1.0 : 0.0;
+         self.emailSignInLabel.alpha = signUp ? 0.0 : 1.0;
+         self.facebookSignUpLabel.alpha = signUp ? 1.0 : 0.0;
+         self.facebookSignInLabel.alpha = signUp ? 0.0 : 1.0;
+        
+         [self updateFooterButtonForSignUp:signUp];
+        
+         if (signUp) {
+             self.signinTitleLabel.hidden = YES;
+             self.emailSignInLabel.hidden = YES;
+             self.facebookSignInLabel.hidden = YES;
+         } else {
+             self.emailNameView.hidden = YES;
+             self.emailSignUpLabel.hidden = YES;
+             self.facebookSignUpLabel.hidden = YES;
+             self.signupSubtitleLabel.hidden = NO;
+         }
+         
+         self.animating = NO;
+    }
+}
+
 #pragma mark - CKTextFieldViewDelegate methods
 
 - (void)textFieldViewDidSubmit:(CKTextFieldView *)textFieldView {
@@ -399,72 +500,6 @@
 
 - (NSString *)facebookButtonTextForSignUp:(BOOL)signUp {
     return signUp ? @"SIGNUP WITH FACEBOOK" : @"SIGNIN WITH FACEBOOK";
-}
-
-- (void)enableSignUpMode:(BOOL)signUp {
-    if (self.animating) {
-        return;
-    }
-    self.animating = YES;
-    
-    self.signUpMode = signUp;
-    
-    if (signUp) {
-        self.emailNameView.alpha = 0.0;
-        self.emailNameView.hidden = NO;
-        self.signupSubtitleLabel.alpha = 0.0;
-        self.signupSubtitleLabel.hidden = NO;
-        self.emailSignUpLabel.alpha = 0.0;
-        self.emailSignUpLabel.hidden = NO;
-        self.facebookSignUpLabel.alpha = 0.0;
-        self.facebookSignUpLabel.hidden = NO;
-    } else {
-        self.signinTitleLabel.alpha = 0.0;
-        self.signinTitleLabel.hidden = NO;
-        self.emailSignInLabel.alpha = 0.0;
-        self.emailSignInLabel.hidden = NO;
-        self.facebookSignInLabel.alpha = 0.0;
-        self.facebookSignInLabel.hidden = NO;
-    }
-    
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
-                         
-                         self.signupTitleLabel.frame = [self signUpTitleFrameForSignUp:signUp];
-                         self.signinTitleLabel.frame = [self signInTitleFrameForSignUp:signUp];
-                         self.signupSubtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
-                         self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
-                         
-                         self.signupTitleLabel.alpha = signUp ? 1.0 : 0.0;
-                         self.signinTitleLabel.alpha = signUp ? 0.0 : 1.0;
-                         self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
-                         self.emailNameView.alpha = signUp ? 1.0 : 0.0;
-                         self.emailSignUpLabel.alpha = signUp ? 1.0 : 0.0;
-                         self.emailSignInLabel.alpha = signUp ? 0.0 : 1.0;
-                         self.facebookSignUpLabel.alpha = signUp ? 1.0 : 0.0;
-                         self.facebookSignInLabel.alpha = signUp ? 0.0 : 1.0;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         [self updateFooterButtonForSignUp:signUp];
-                         
-                         if (signUp) {
-                             self.signinTitleLabel.hidden = YES;
-                             self.emailSignInLabel.hidden = YES;
-                             self.facebookSignInLabel.hidden = YES;
-                         } else {
-                             self.emailNameView.hidden = YES;
-                             self.emailSignUpLabel.hidden = YES;
-                             self.facebookSignUpLabel.hidden = YES;
-                             self.signupSubtitleLabel.hidden = NO;
-                         }
-                         
-                         self.animating = NO;
-                         
-                     }];
 }
 
 - (CGRect)emailContainerFrameForSignUp:(BOOL)signUp {

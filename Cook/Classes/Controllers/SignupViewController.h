@@ -17,5 +17,7 @@
 @interface SignupViewController : UIViewController
 
 - (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate;
+- (void)enableSignUpMode:(BOOL)signUp;
+- (void)enableSignUpMode:(BOOL)signUp animated:(BOOL)animated;
 
 @end
