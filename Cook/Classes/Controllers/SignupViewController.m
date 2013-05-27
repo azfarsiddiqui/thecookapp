@@ -21,6 +21,8 @@
 @property (nonatomic, strong) CKTextFieldView *emailNameView;
 @property (nonatomic, strong) CKTextFieldView *emailAddressView;
 @property (nonatomic, strong) CKTextFieldView *emailPasswordView;
+@property (nonatomic, strong) UIView *emailNameDivider;
+@property (nonatomic, strong) UIView *emailAddressDivider;
 @property (nonatomic, strong) UIButton *emailButton;
 @property (nonatomic, strong) UILabel *emailSignUpLabel;
 @property (nonatomic, strong) UILabel *emailSignInLabel;
@@ -38,9 +40,7 @@
 #define kEmailSignupSize    CGSizeMake(345.0, 257.0)
 #define kEmailSignInSize    CGSizeMake(345.0, 207.0)
 #define kTextFieldSize      CGSizeMake(300.0, 50.0)
-#define kButtonTextFont     [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16]
-#define kButtonTextColour   [UIColor whiteColor]
-#define kFooterTextFont     [UIFont fontWithName:@"BrandonGrotesque-Bold" size:14]
+#define kDividerInsets      UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0)
 
 - (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -87,6 +87,8 @@
         self.emailSignUpLabel.hidden = NO;
         self.facebookSignUpLabel.alpha = 0.0;
         self.facebookSignUpLabel.hidden = NO;
+        self.emailNameDivider.alpha = 0.0;
+        self.emailNameDivider.hidden = NO;
     } else {
         self.signinTitleLabel.alpha = 0.0;
         self.signinTitleLabel.hidden = NO;
@@ -111,6 +113,7 @@
                              self.signinTitleLabel.alpha = signUp ? 0.0 : 1.0;
                              self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
                              self.emailNameView.alpha = signUp ? 1.0 : 0.0;
+                             self.emailNameDivider.alpha = signUp ? 1.0 : 0.0;
                              self.emailSignUpLabel.alpha = signUp ? 1.0 : 0.0;
                              self.emailSignInLabel.alpha = signUp ? 0.0 : 1.0;
                              self.facebookSignUpLabel.alpha = signUp ? 1.0 : 0.0;
@@ -127,6 +130,7 @@
                              } else {
                                  self.emailNameView.hidden = YES;
                                  self.emailSignUpLabel.hidden = YES;
+                                 self.emailNameDivider.hidden = YES;
                                  self.facebookSignUpLabel.hidden = YES;
                                  self.signupSubtitleLabel.hidden = NO;
                              }
@@ -326,7 +330,7 @@
 - (UIButton *)signUpToggleButton {
     if (!_signUpToggleButton) {
         _signUpToggleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _signUpToggleButton.titleLabel.font = kFooterTextFont;
+        _signUpToggleButton.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:14];
         _signUpToggleButton.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         _signUpToggleButton.userInteractionEnabled = YES;
         [_signUpToggleButton setTitleShadowColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5] forState:UIControlStateNormal];
@@ -337,6 +341,29 @@
     return _signUpToggleButton;
 }
 
+- (UIView *)emailNameDivider {
+    if (!_emailNameDivider) {
+        _emailNameDivider = [[UIView alloc] initWithFrame:CGRectMake(self.emailContainerView.bounds.origin.x + kDividerInsets.left,
+                                                                     kDividerInsets.top + self.emailNameView.frame.origin.y + self.emailNameView.frame.size.height,
+                                                                     self.emailContainerView.bounds.size.width - kDividerInsets.left - kDividerInsets.right,
+                                                                     1.0)];
+        _emailNameDivider.backgroundColor = [UIColor lightGrayColor];
+        _emailNameDivider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    }
+    return _emailNameDivider;
+}
+
+- (UIView *)emailAddressDivider {
+    if (!_emailAddressDivider) {
+        _emailAddressDivider = [[UIView alloc] initWithFrame:CGRectMake(self.emailContainerView.bounds.origin.x + kDividerInsets.left,
+                                                                        kDividerInsets.top + self.emailAddressView.frame.origin.y + self.emailAddressView.frame.size.height,
+                                                                        self.emailContainerView.bounds.size.width - kDividerInsets.left - kDividerInsets.right,
+                                                                        1.0)];
+        _emailAddressDivider.backgroundColor = [UIColor lightGrayColor];
+        _emailAddressDivider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    }
+    return _emailAddressDivider;
+}
 
 #pragma mark - Keyboard events
 
@@ -379,6 +406,7 @@
     emailNameView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     [emailContainerView addSubview:emailNameView];
     self.emailNameView = emailNameView;
+    [emailContainerView addSubview:self.emailNameDivider];
     
     // Email field anchor to the bottom.
     CKTextFieldView *emailAddressView = [[CKTextFieldView alloc] initWithFrame:CGRectMake(emailInsets.left,
@@ -389,6 +417,7 @@
     emailAddressView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     [emailContainerView addSubview:emailAddressView];
     self.emailAddressView = emailAddressView;
+    [emailContainerView addSubview:self.emailAddressDivider];
 
     // Password field anchor to the bottom.
     CKTextFieldView *emailPasswordView = [[CKTextFieldView alloc] initWithFrame:CGRectMake(emailInsets.left,
