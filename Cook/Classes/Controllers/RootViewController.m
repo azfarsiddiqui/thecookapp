@@ -682,6 +682,9 @@
 
 - (void)enable:(BOOL)enable {
     self.panEnabled = enable;
+    
+    // Show store shelf only in enabled mode.
+    [self showStoreShelf:enable animated:enable];
 }
 
 - (void)loggedOut:(NSNotification *)notification {

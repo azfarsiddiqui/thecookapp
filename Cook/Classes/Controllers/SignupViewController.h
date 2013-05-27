@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol SignupViewControllerDelegate <NSObject>
+
+- (void)signupViewControllerFocused:(BOOL)focused;
+
+@end
+
 @interface SignupViewController : UIViewController
+
+- (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate;
 
 @end

@@ -13,6 +13,7 @@
 
 @interface SignupViewController () <CKTextFieldViewDelegate>
 
+@property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
 @property (nonatomic, strong) UILabel *signupTitleLabel;
 @property (nonatomic, strong) UILabel *signinTitleLabel;
 @property (nonatomic, strong) UILabel *signupSubtitleLabel;
@@ -41,6 +42,13 @@
 #define kButtonTextColour   [UIColor whiteColor]
 #define kFooterTextFont     [UIFont fontWithName:@"BrandonGrotesque-Bold" size:14]
 
+- (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate {
+    if (self = [super init]) {
+        self.delegate = delegate;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -52,6 +60,10 @@
     [self initHeaderView];
     [self initButtons];
     [self initFooterView];
+    
+    // Register for keyboard events.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 #pragma mark - CKTextFieldViewDelegate methods
@@ -222,6 +234,19 @@
         [_signUpToggleButton addTarget:self action:@selector(footerButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _signUpToggleButton;
+}
+
+
+#pragma mark - Keyboard events
+
+- (void)keyboardDidShow:(NSNotification *)notification {
+    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self handleKeyboardShow:YES keyboardFrame:keyboardFrame];
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+    CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self handleKeyboardShow:NO keyboardFrame:keyboardFrame];
 }
 
 #pragma mark - Private methods
@@ -402,9 +427,9 @@
         self.facebookSignInLabel.hidden = NO;
     }
     
-    [UIView animateWithDuration:0.15
+    [UIView animateWithDuration:0.2
                           delay:0.0
-                        options:UIViewAnimationOptionCurveEaseOut
+                        options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
                          
@@ -476,6 +501,27 @@
                       self.signupTitleLabel.frame.origin.y + self.signupTitleLabel.frame.size.height - 20.0,
                       self.signupSubtitleLabel.frame.size.width,
                       self.signupSubtitleLabel.frame.size.height);
+}
+
+- (void)handleKeyboardShow:(BOOL)show keyboardFrame:(CGRect)keyboardFrame {
+    
+    // Inform delegate that focus is obtained/lost.
+    [self.delegate signupViewControllerFocused:show];
+    
+    // Convert keyboard frame to currentView to handle rotated interface.
+    keyboardFrame = [self.view convertRect:keyboardFrame fromView:nil];
+    
+    CGFloat yOffset = self.signUpMode ? 70.0 : 55.0;
+    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, -floorf(keyboardFrame.origin.y / 2.0) + yOffset);
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.facebookButton.alpha = show ? 0.0 : 1.0;
+                         self.view.transform = show ? translateTransform : CGAffineTransformIdentity;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 @end

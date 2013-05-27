@@ -11,7 +11,7 @@
 #import "CKPagingView.h"
 #import "SignupViewController.h"
 
-@interface WelcomeViewController ()
+@interface WelcomeViewController () <SignupViewControllerDelegate>
 
 @property (nonatomic, assign) id<WelcomeViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *overlayView;
@@ -54,7 +54,7 @@
 
 - (SignupViewController *)signupViewController {
     if (!_signupViewController) {
-        _signupViewController = [[SignupViewController alloc] init];
+        _signupViewController = [[SignupViewController alloc] initWithDelegate:self];
     }
     return _signupViewController;
 }
@@ -120,6 +120,12 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updatePagingView];
+}
+
+#pragma mark - SignupViewControllerDelegate methods
+
+- (void)signupViewControllerFocused:(BOOL)focused {
+    self.collectionView.scrollEnabled = !focused;
 }
 
 #pragma mark - Private methods
