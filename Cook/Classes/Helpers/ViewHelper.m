@@ -32,7 +32,13 @@
 }
 
 + (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image target:(id)target selector:(SEL)selector {
+    return [self buttonWithTitle:title backgroundImage:image size:image.size target:target selector:selector];
+}
+
++ (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image size:(CGSize)size target:(id)target
+                     selector:(SEL)selector {
     UIButton *button = [self buttonWithImage:image target:target selector:selector];
+    button.frame = CGRectMake(0.0, 0.0, size.width, size.height);
     [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [button setTitle:title forState:UIControlStateNormal];
     return button;

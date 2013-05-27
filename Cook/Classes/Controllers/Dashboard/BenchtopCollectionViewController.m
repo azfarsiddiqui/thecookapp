@@ -102,6 +102,10 @@
 
 - (void)enable:(BOOL)enable {
     self.collectionView.userInteractionEnabled = enable;
+    
+    self.benchtopLevelView.hidden = !enable;
+    self.notificationView.hidden = !enable;
+    
     [self updateBenchtopLevelView];
 }
 

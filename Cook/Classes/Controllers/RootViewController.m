@@ -16,18 +16,18 @@
 #import "SettingsViewController.h"
 #import "TestViewController.h"
 #import "BookModalViewController.h"
-#import "LoginViewController.h"
+#import "WelcomeViewController.h"
 #import "EventHelper.h"
 #import "RecipeViewController.h"
 #import "BookNavigationHelper.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, LoginViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, WelcomeViewControllerDelegate>
 
 @property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
-@property (nonatomic, strong) LoginViewController *loginViewController;
+@property (nonatomic, strong) WelcomeViewController *welcomeViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
@@ -217,10 +217,10 @@
     [self hideModalViewController:viewController];
 }
 
-#pragma mark - LoginViewControllerDelegate methods
+#pragma mark - WelcomeViewControllerDelegate methods
 
-- (void)loginViewControllerSuccessful:(BOOL)success {
-    [self showLoginView:!success];
+- (void)welcomeViewControllerLoggedIn {
+    [self showLoginView:NO];
 }
 
 #pragma mark - Private methods
@@ -694,30 +694,30 @@
     
     if (show) {
         // Remove any existing one.
-        [self.loginViewController.view removeFromSuperview];
-        self.loginViewController = nil;
+        [self.welcomeViewController.view removeFromSuperview];
+        self.welcomeViewController = nil;
         
         // Recreate the login.
-        LoginViewController *loginViewController = [[LoginViewController alloc] initWithDelegate:self];
-        loginViewController.view.frame = self.view.bounds;
-        loginViewController.view.alpha = 0.0;
-        [self.view addSubview:loginViewController.view];
-        self.loginViewController = loginViewController;
+        WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] initWithDelegate:self];
+        welcomeViewController.view.frame = self.view.bounds;
+        welcomeViewController.view.alpha = 0.0;
+        [self.view addSubview:welcomeViewController.view];
+        self.welcomeViewController = welcomeViewController;
     }
     
     [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.loginViewController.view.alpha = show ? 1.0 : 0.0;
+                         self.welcomeViewController.view.alpha = show ? 1.0 : 0.0;
                      }
                      completion:^(BOOL finished) {
                          [self enable:!show];
                          [self.benchtopViewController enable:!show];
                          
                          if (!show) {
-                             [self.loginViewController.view removeFromSuperview];
-                             self.loginViewController = nil;
+                             [self.welcomeViewController.view removeFromSuperview];
+                             self.welcomeViewController = nil;
                          }
                      }];
     
