@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
+@property (nonatomic, assign) BOOL layoutGenerated;
 
 @end
 
@@ -29,6 +30,7 @@
 - (id)initWithDataSource:(id<WelcomeCollectionViewLayoutDataSource>)dataSource {
     if (self = [super init]) {
         self.dataSource = dataSource;
+        self.layoutGenerated = NO;
     }
     return self;
 }
@@ -42,12 +44,21 @@
 }
 
 - (void)prepareLayout {
+    
+    // Don't rebuild everytime.
+    if (self.layoutGenerated) {
+        return;
+    }
+    
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.supplementaryLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
     
     [self buildPages];
+    
+    // Mark as layout generated.
+    self.layoutGenerated = YES;
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
@@ -59,17 +70,20 @@
     
     // Section cells.
     for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
-        if (CGRectIntersectsRect(rect, attributes.frame)) {
+//        if (CGRectIntersectsRect(rect, attributes.frame)) {
             [layoutAttributes addObject:attributes];
-        }
+//        }
     }
     
     // Item cells.
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
-        if (CGRectIntersectsRect(rect, attributes.frame)) {
+//        if (CGRectIntersectsRect(rect, attributes.frame)) {
             [layoutAttributes addObject:attributes];
-        }
+//        }
     }
+    
+    // Apply transform for paging.
+    [self applyPagingEffects:layoutAttributes];
     
     return layoutAttributes;
 }
@@ -233,6 +247,55 @@
 - (CGFloat)pageOffsetForPage:(NSInteger)page {
     CGSize size = self.collectionView.bounds.size;
     return size.width * page;
+}
+
+- (void)applyPagingEffects:(NSArray *)layoutAttributes {
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        
+        NSIndexPath *indexPath = attributes.indexPath;
+        switch (indexPath.section) {
+            case kWelcomeSection:
+                [self applyPagingEffectsForWelcomeWithAttributes:attributes];
+                break;
+            case kCreateSection:
+                [self applyPagingEffectsForCreateWithAttributes:attributes];
+                break;
+            case kCollectSection:
+                [self applyPagingEffectsForCollectWithAttributes:attributes];
+                break;
+            case kSignUpSection:
+                [self applyPagingEffectsForSignUpWithAttributes:attributes];
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+- (void)applyPagingEffectsForWelcomeWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    NSIndexPath *indexPath = attributes.indexPath;
+    CGFloat pageOffset = [self pageOffsetForPage:indexPath.section];
+    
+    if (self.collectionView.contentOffset.x > pageOffset) {
+        // CGFloat distanceCap = self.collectionView.bounds.size.width;
+        CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+        // CGFloat distanceRatio = distance / distanceCap;
+        CATransform3D translate = CATransform3DMakeTranslation(-distance, 0.0, 0.0);
+        attributes.transform3D = translate;
+    } else {
+        attributes.transform3D = CATransform3DIdentity;
+        attributes.alpha = 1.0;
+    }
+}
+
+- (void)applyPagingEffectsForCreateWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
+}
+
+- (void)applyPagingEffectsForCollectWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
+}
+
+
+- (void)applyPagingEffectsForSignUpWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
 }
 
 @end
