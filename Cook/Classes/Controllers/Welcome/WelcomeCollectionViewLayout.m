@@ -97,6 +97,28 @@
     return [self.indexPathSupplementaryAttributes objectForKey:indexPath];
 }
 
+//- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+//    UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:itemIndexPath];
+//    
+//    // Nil if it was a normal cell.
+//    if (itemIndexPath.section == kWelcomeSection && attributes.representedElementKind == nil) {
+//        
+//        switch (itemIndexPath.item) {
+//            case 0:
+//                attributes.transform3D = CATransform3DMakeTranslation(-100.0, 0.0, 0.0);
+//                break;
+//            case 1:
+//                attributes.transform3D = CATransform3DMakeTranslation(100.0, 0.0, 0.0);
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//    
+//    return attributes;
+//    
+//}
+
 #pragma mark - Private methods
 
 - (void)buildPages {
@@ -274,14 +296,24 @@
 
 - (void)applyPagingEffectsForWelcomeWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
     NSIndexPath *indexPath = attributes.indexPath;
-    CGFloat pageOffset = [self pageOffsetForPage:indexPath.section];
+    CGFloat pageOffset = [self pageOffsetForPage:kWelcomeSection];
     
-    if (self.collectionView.contentOffset.x > pageOffset) {
+    if (self.collectionView.contentOffset.x >= pageOffset) {
+        
+        CGFloat translateRatio = 0.0;
+        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            translateRatio = 0.4;
+        } else if (indexPath.item == 1) {
+            translateRatio = 0.5;
+        } else if (indexPath.item == 0) {
+            translateRatio = 0.1;
+        }
+        
         // CGFloat distanceCap = self.collectionView.bounds.size.width;
         CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
-        // CGFloat distanceRatio = distance / distanceCap;
-        CATransform3D translate = CATransform3DMakeTranslation(-distance, 0.0, 0.0);
+        CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
         attributes.transform3D = translate;
+        
     } else {
         attributes.transform3D = CATransform3DIdentity;
         attributes.alpha = 1.0;
@@ -289,11 +321,56 @@
 }
 
 - (void)applyPagingEffectsForCreateWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    NSIndexPath *indexPath = attributes.indexPath;
+    CGFloat startOffset = [self pageOffsetForPage:kWelcomeSection];
+    CGFloat pageOffset = [self pageOffsetForPage:kCreateSection];
+    
+    if (self.collectionView.contentOffset.x >= startOffset) {
+        
+        CGFloat translateRatio = 0.0;
+        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            translateRatio = 0.2;
+        } else if (indexPath.item == 0) {
+            translateRatio = 0.6;
+        }
+        
+        // CGFloat distanceCap = self.collectionView.bounds.size.width;
+        CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+        CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
+        attributes.transform3D = translate;
+        
+    } else {
+        attributes.transform3D = CATransform3DIdentity;
+        attributes.alpha = 1.0;
+    }
 }
 
 - (void)applyPagingEffectsForCollectWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    NSIndexPath *indexPath = attributes.indexPath;
+    CGFloat startOffset = [self pageOffsetForPage:kCreateSection];
+    CGFloat pageOffset = [self pageOffsetForPage:kCollectSection];
+    
+    if (self.collectionView.contentOffset.x >= startOffset - floorf(self.collectionView.bounds.size.width / 2.0)) {
+        
+        CGFloat translateRatio = 0.0;
+        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            translateRatio = 0.4;
+        } else if (indexPath.item == 1) {
+            translateRatio = 0.5;
+        } else if (indexPath.item == 0) {
+            translateRatio = 0.4;
+        }
+        
+        // CGFloat distanceCap = self.collectionView.bounds.size.width;
+        CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+        CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
+        attributes.transform3D = translate;
+        
+    } else {
+        attributes.transform3D = CATransform3DIdentity;
+        attributes.alpha = 1.0;
+    }
 }
-
 
 - (void)applyPagingEffectsForSignUpWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
 }
