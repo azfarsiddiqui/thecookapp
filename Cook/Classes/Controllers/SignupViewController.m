@@ -10,6 +10,7 @@
 #import "AppHelper.h"
 #import "CKTextFieldView.h"
 #import "ViewHelper.h"
+#import "Theme.h"
 
 @interface SignupViewController () <CKTextFieldViewDelegate>
 
@@ -347,7 +348,7 @@
                                                                      kDividerInsets.top + self.emailNameView.frame.origin.y + self.emailNameView.frame.size.height,
                                                                      self.emailContainerView.bounds.size.width - kDividerInsets.left - kDividerInsets.right,
                                                                      1.0)];
-        _emailNameDivider.backgroundColor = [UIColor lightGrayColor];
+        _emailNameDivider.backgroundColor = [Theme dividerRuleColour];
         _emailNameDivider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     }
     return _emailNameDivider;
@@ -359,7 +360,7 @@
                                                                         kDividerInsets.top + self.emailAddressView.frame.origin.y + self.emailAddressView.frame.size.height,
                                                                         self.emailContainerView.bounds.size.width - kDividerInsets.left - kDividerInsets.right,
                                                                         1.0)];
-        _emailAddressDivider.backgroundColor = [UIColor lightGrayColor];
+        _emailAddressDivider.backgroundColor = [Theme dividerRuleColour];
         _emailAddressDivider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     }
     return _emailAddressDivider;

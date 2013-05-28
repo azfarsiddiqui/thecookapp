@@ -270,9 +270,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         return;
     }
     [self.signupViewController enableSignUpMode:YES animated:YES];
-    [self.collectionView setContentOffset:CGPointMake(self.collectionView.bounds.size.width * 3.0,
-                                                      self.collectionView.contentOffset.y)
-                                 animated:YES];
+    [self scrollToPage:3];
 }
 
 - (void)signInButtonTapped:(id)sender {
@@ -280,9 +278,14 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         return;
     }
     [self.signupViewController enableSignUpMode:NO animated:YES];
-    [self.collectionView setContentOffset:CGPointMake(self.collectionView.bounds.size.width * 3.0,
+    [self scrollToPage:3];
+}
+
+- (void)scrollToPage:(NSInteger)page {
+    [self.collectionView setContentOffset:CGPointMake(self.collectionView.bounds.size.width * page,
                                                       self.collectionView.contentOffset.y)
                                  animated:YES];
+    [self.pagingView setPage:page];
 }
 
 @end
