@@ -11,8 +11,10 @@
 #import "ViewHelper.h"
 #import "CKPagingView.h"
 #import "SignupViewController.h"
+#import "WelcomeCollectionViewLayout.h"
+#import "PageHeaderView.h"
 
-@interface WelcomeViewController () <SignupViewControllerDelegate>
+@interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource>
 
 @property (nonatomic, assign) id<WelcomeViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *overlayView;
@@ -24,18 +26,32 @@
 @property (nonatomic, strong) UILabel *signInLabel;
 @property (nonatomic, assign) BOOL animating;
 
+@property (nonatomic, strong) UIView *welcomePageView;
+@property (nonatomic, strong) UIView *createPageView;
+@property (nonatomic, strong) UIView *collectPageView;
+@property (nonatomic, strong) UIView *welcomeImageView;
+@property (nonatomic, strong) UIView *welcomeImageView2;
+@property (nonatomic, strong) UIView *createImageView;
+@property (nonatomic, strong) UIView *collectImageView;
+@property (nonatomic, strong) UIView *collectImageView2;
+
 @end
 
 @implementation WelcomeViewController
 
-#define kWelcomeCellId  @"WelcomeCellId"
-#define kSignupCellId   @"SignupCellId"
-#define kNumPages       4
-#define kButtonWidth    150.0
-#define kButtonGap      10.0
+#define kAdornmentCellId    @"AdornmentCellId"
+#define kPageHeaderId       @"PageHeaderId"
+#define kNumPages           4
+#define kButtonWidth        150.0
+#define kButtonGap          10.0
+#define kWelcomeSection     0
+#define kCreateSection      1
+#define kCollectSection     2
+#define kSignUpSection      3
+#define kAdornmentTag       470
 
 - (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+    if (self = [super initWithCollectionViewLayout:[[WelcomeCollectionViewLayout alloc] initWithDataSource:self]]) {
         self.delegate = delegate;
     }
     return self;
@@ -141,7 +157,137 @@
     return _signInLabel;
 }
 
-#pragma mark - UIScrollViewDelegate {
+- (UIView *)welcomeImageView {
+    if (!_welcomeImageView) {
+        _welcomeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_recipes_left.png"]];
+    }
+    return _welcomeImageView;
+}
+
+- (UIView *)welcomeImageView2 {
+    if (!_welcomeImageView2) {
+        _welcomeImageView2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_recipes_right.png"]];
+    }
+    return _welcomeImageView2;
+}
+
+- (UIView *)createImageView {
+    if (!_createImageView) {
+        _createImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_mybook.png"]];
+    }
+    return _createImageView;
+}
+
+- (UIView *)collectImageView {
+    if (!_collectImageView) {
+        _collectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_friendsbooks_left.png"]];
+    }
+    return _collectImageView;
+}
+
+- (UIView *)collectImageView2 {
+    if (!_collectImageView2) {
+        _collectImageView2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_friendsbooks_right.png"]];
+    }
+    return _collectImageView2;
+}
+
+- (UIView *)welcomePageView {
+    if (!_welcomePageView) {
+        _welcomePageView = [[UIView alloc] initWithFrame:CGRectZero];
+        _welcomePageView.backgroundColor = [UIColor redColor];
+    }
+    return _welcomePageView;
+}
+
+- (UIView *)createPageView {
+    if (!_createPageView) {
+        _createPageView = [[UIView alloc] initWithFrame:CGRectZero];
+        _createPageView.backgroundColor = [UIColor greenColor];
+    }
+    return _createPageView;
+}
+
+- (UIView *)collectPageView {
+    if (!_collectPageView) {
+        _collectPageView = [[UIView alloc] initWithFrame:CGRectZero];
+        _collectPageView.backgroundColor = [UIColor blueColor];
+    }
+    return _collectPageView;
+}
+
+#pragma mark - WelcomeCollectionViewLayoutDataSource methods
+
+- (NSInteger)numberOfPagesForWelcomeLayout {
+    return kNumPages;
+}
+
+- (NSInteger)numberOfAdornmentsForPage:(NSInteger)page {
+    NSInteger numAdornments = 0;
+    switch (page) {
+        case kWelcomeSection:
+            numAdornments = 2;
+            break;
+        case kCreateSection:
+            numAdornments = 1;
+            break;
+        case kCollectSection:
+            numAdornments = 2;
+            break;
+        case kSignUpSection:
+            break;
+        default:
+            break;
+    }
+    return numAdornments;
+}
+
+- (CGSize)sizeOfAdornmentForIndexPath:(NSIndexPath *)indexPath {
+    CGSize size = CGSizeZero;
+    switch (indexPath.section) {
+        case kWelcomeSection:
+            switch (indexPath.item) {
+                case 0:
+                    size = self.welcomeImageView.frame.size;
+                    break;
+                case 1:
+                    size = self.welcomeImageView2.frame.size;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case kCreateSection:
+            switch (indexPath.item) {
+                case 0:
+                    size = self.createImageView.frame.size;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case kCollectSection:
+            switch (indexPath.item) {
+                case 0:
+                    size = self.collectImageView.frame.size;
+                    break;
+                case 1:
+                    size = self.collectImageView2.frame.size;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case kSignUpSection:
+            break;
+        default:
+            break;
+    }
+    
+    return size;
+}
+
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     self.animating = YES;
@@ -161,20 +307,88 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return [self numberOfPagesForWelcomeLayout];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return kNumPages;
+    return [self numberOfAdornmentsForPage:section];
+}
+
+- (UICollectionReusableView *)collectionView: (UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionReusableView *reusableView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                withReuseIdentifier:kPageHeaderId
+                                                                                       forIndexPath:indexPath];
+    PageHeaderView *pageHeaderView = (PageHeaderView *)reusableView;
+    pageHeaderView.backgroundColor = [UIColor greenColor];
+    UIView *contentView = nil;
+    
+    switch (indexPath.section) {
+        case kWelcomeSection:
+            contentView = self.welcomePageView;
+            break;
+        case kCreateSection:
+            contentView = self.createPageView;
+            break;
+        case kCollectSection:
+            contentView = self.collectPageView;
+            break;
+        case kSignUpSection:
+            contentView = self.signupViewController.view;
+            break;
+        default:
+            break;
+    }
+    
+    [pageHeaderView setContentView:contentView];
+    return pageHeaderView;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = nil;
-    if (indexPath.item == 3) {
-        cell = [self signupCellAtIndexPath:indexPath];
-    } else {
-        cell = [self welcomeCellAtIndexPath:indexPath];
+    UIView *contentView = nil;
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kAdornmentCellId forIndexPath:indexPath];
+    [[cell.contentView viewWithTag:kAdornmentTag] removeFromSuperview];
+    
+    switch (indexPath.section) {
+        case kWelcomeSection:
+            switch (indexPath.item) {
+                case 0:
+                    contentView = self.welcomeImageView;
+                    break;
+                case 1:
+                    contentView = self.welcomeImageView2;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case kCreateSection:
+            contentView = self.createImageView;
+            break;
+        case kCollectSection:
+            switch (indexPath.item) {
+                case 0:
+                    contentView = self.collectImageView;
+                    break;
+                case 1:
+                    contentView = self.collectImageView2;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case kSignUpSection:
+            break;
+        default:
+            break;
     }
+    
+    if (contentView)  {
+        contentView.tag = kAdornmentTag;
+        [cell.contentView addSubview:contentView];
+    }
+    
     return cell;
 }
 
@@ -182,34 +396,6 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
-}
-
-#pragma mark - UICollectionViewDelegateFlowLayout methods
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return self.view.bounds.size;
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-        insetForSectionAtIndex:(NSInteger)section {
-    
-    return UIEdgeInsetsZero;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    
-    // Between rows
-    return 0.0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    
-    // Between columns
-    return 0.0;
 }
 
 #pragma mark - SignupViewControllerDelegate methods
@@ -221,15 +407,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark - Private methods
 
 - (void)initCollectionView {
-    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
-    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.pagingEnabled = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kWelcomeCellId];
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kSignupCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kAdornmentCellId];
+    [self.collectionView registerClass:[PageHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:kPageHeaderId];
 }
 
 - (void)initPagingView {
@@ -247,22 +431,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     CGFloat pageSpan = self.collectionView.contentOffset.x;
     NSInteger page = (pageSpan / self.collectionView.bounds.size.width);
     [self.pagingView setPage:page];
-}
-
-- (UICollectionViewCell *)signupCellAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *signupCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kSignupCellId
-                                                                                      forIndexPath:indexPath];;
-    if (!self.signupViewController.view.superview) {
-        self.signupViewController.view.frame = signupCell.contentView.bounds;
-        [signupCell.contentView addSubview:self.signupViewController.view];
-    }
-    return signupCell;
-}
-
-- (UICollectionViewCell *)welcomeCellAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *welcomeCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kWelcomeCellId
-                                                                                       forIndexPath:indexPath];;
-    return welcomeCell;
 }
 
 - (void)signUpButtonTapped:(id)sender {

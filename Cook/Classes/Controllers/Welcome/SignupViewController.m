@@ -56,6 +56,7 @@
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     self.view.backgroundColor = [UIColor clearColor];
     self.signUpMode = YES;
+    self.view.autoresizingMask = UIViewAutoresizingNone;
     
     [self initEmailContainerView];
     [self initHeaderView];

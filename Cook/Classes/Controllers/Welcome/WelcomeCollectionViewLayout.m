@@ -108,10 +108,28 @@
     UICollectionViewLayoutAttributes *sectionAttributes = [UICollectionViewLayoutAttributes
                                                            layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                            withIndexPath:sectionIndexPath];
-    sectionAttributes.frame = CGRectMake(pageOffset + floorf((size.width - kSectionSize.width) / 2.0),
-                                         floorf((size.height - kSectionSize.height) / 2.0),
-                                         kSectionSize.width,
-                                         kSectionSize.height);
+    CGRect frame = CGRectMake(pageOffset, 0.0, kSectionSize.width, kSectionSize.height);
+    switch (page) {
+        case kWelcomeSection:
+            frame.origin.x = pageOffset + floorf((size.width - kSectionSize.width) / 2.0);
+            frame.origin.y = floorf((size.height - kSectionSize.height) / 2.0);
+            break;
+        case kCreateSection:
+            frame.origin.y = floorf((size.height - kSectionSize.height) / 2.0);
+            break;
+        case kCollectSection:
+            frame.origin.x = pageOffset + floorf((size.width - kSectionSize.width) / 2.0);
+            frame.origin.y = floorf((size.height - kSectionSize.height) / 2.0);
+            break;
+        case kSignUpSection:
+            frame.size.width = size.width;
+            frame.size.height = size.height;
+            break;
+        default:
+            break;
+    }
+
+    sectionAttributes.frame = frame;
     [self.supplementaryLayoutAttributes addObject:sectionAttributes];
     [self.indexPathSupplementaryAttributes setObject:sectionAttributes forKey:sectionIndexPath];
 }
@@ -171,7 +189,7 @@
     NSIndexPath *rightIndexPath = [NSIndexPath indexPathForItem:0 inSection:kCreateSection];
     CGSize rightSize = [self.dataSource sizeOfAdornmentForIndexPath:rightIndexPath];
     UICollectionViewLayoutAttributes *rightLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:rightIndexPath];
-    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width - kAdornmentOffset,
+    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width,
                                              floorf((size.height - rightSize.height) / 2.0),
                                              rightSize.width,
                                              rightSize.height);

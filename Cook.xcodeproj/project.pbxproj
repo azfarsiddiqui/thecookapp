@@ -442,6 +442,7 @@
 		76BF202617544140000F0798 /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BF202217544140000F0798 /* WelcomeViewController.m */; };
 		76BF202717544140000F0798 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BF202317544140000F0798 /* SignupViewController.m */; };
 		76BF202A17544248000F0798 /* WelcomeCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BF202917544248000F0798 /* WelcomeCollectionViewLayout.m */; };
+		76BF202D17546D31000F0798 /* PageHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BF202C17546D31000F0798 /* PageHeaderView.m */; };
 		76C07FC917389134005915D5 /* CKProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C07FC317389134005915D5 /* CKProgressView.m */; };
 		76C07FCA17389134005915D5 /* cook_recipe_progressbar_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C07FC517389134005915D5 /* cook_recipe_progressbar_bg.png */; };
 		76C07FCB17389134005915D5 /* cook_recipe_progressbar_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C07FC617389134005915D5 /* cook_recipe_progressbar_bg@2x.png */; };
@@ -1246,6 +1247,8 @@
 		76BF202517544140000F0798 /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
 		76BF202817544248000F0798 /* WelcomeCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeCollectionViewLayout.h; sourceTree = "<group>"; };
 		76BF202917544248000F0798 /* WelcomeCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeCollectionViewLayout.m; sourceTree = "<group>"; };
+		76BF202B17546D31000F0798 /* PageHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageHeaderView.h; sourceTree = "<group>"; };
+		76BF202C17546D31000F0798 /* PageHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageHeaderView.m; sourceTree = "<group>"; };
 		76C07FC217389134005915D5 /* CKProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKProgressView.h; sourceTree = "<group>"; };
 		76C07FC317389134005915D5 /* CKProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKProgressView.m; sourceTree = "<group>"; };
 		76C07FC517389134005915D5 /* cook_recipe_progressbar_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_recipe_progressbar_bg.png; sourceTree = "<group>"; };
@@ -2310,12 +2313,14 @@
 		76BF202117544124000F0798 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
-				76BF202217544140000F0798 /* WelcomeViewController.m */,
-				76BF202317544140000F0798 /* SignupViewController.m */,
-				76BF202417544140000F0798 /* SignupViewController.h */,
 				76BF202517544140000F0798 /* WelcomeViewController.h */,
+				76BF202217544140000F0798 /* WelcomeViewController.m */,
+				76BF202417544140000F0798 /* SignupViewController.h */,
+				76BF202317544140000F0798 /* SignupViewController.m */,
 				76BF202817544248000F0798 /* WelcomeCollectionViewLayout.h */,
 				76BF202917544248000F0798 /* WelcomeCollectionViewLayout.m */,
+				76BF202B17546D31000F0798 /* PageHeaderView.h */,
+				76BF202C17546D31000F0798 /* PageHeaderView.m */,
 			);
 			path = Welcome;
 			sourceTree = "<group>";
@@ -3835,6 +3840,7 @@
 				76BF202617544140000F0798 /* WelcomeViewController.m in Sources */,
 				76BF202717544140000F0798 /* SignupViewController.m in Sources */,
 				76BF202A17544248000F0798 /* WelcomeCollectionViewLayout.m in Sources */,
+				76BF202D17546D31000F0798 /* PageHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
