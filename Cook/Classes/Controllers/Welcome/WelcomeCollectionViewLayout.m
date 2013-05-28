@@ -20,7 +20,6 @@
 
 @implementation WelcomeCollectionViewLayout
 
-#define kSectionSize        CGSizeMake(500.0, 500.0)
 #define kAdornmentOffset    128.0
 #define kWelcomeSection     0
 #define kCreateSection      1
@@ -108,18 +107,20 @@
     UICollectionViewLayoutAttributes *sectionAttributes = [UICollectionViewLayoutAttributes
                                                            layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                            withIndexPath:sectionIndexPath];
-    CGRect frame = CGRectMake(pageOffset, 0.0, kSectionSize.width, kSectionSize.height);
+    CGSize pageHeaderSize = [self.dataSource sizeOfPageHeaderForPage:page];
+    CGRect frame = CGRectMake(pageOffset, 0.0, pageHeaderSize.width, pageHeaderSize.height);
     switch (page) {
         case kWelcomeSection:
-            frame.origin.x = pageOffset + floorf((size.width - kSectionSize.width) / 2.0);
-            frame.origin.y = floorf((size.height - kSectionSize.height) / 2.0);
+            frame.origin.x = pageOffset + floorf((size.width - pageHeaderSize.width) / 2.0);
+            frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
             break;
         case kCreateSection:
-            frame.origin.y = floorf((size.height - kSectionSize.height) / 2.0);
+            frame.origin.x = pageOffset + 80.0;
+            frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
             break;
         case kCollectSection:
-            frame.origin.x = pageOffset + floorf((size.width - kSectionSize.width) / 2.0);
-            frame.origin.y = floorf((size.height - kSectionSize.height) / 2.0);
+            frame.origin.x = pageOffset + floorf((size.width - pageHeaderSize.width) / 2.0);
+            frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
             break;
         case kSignUpSection:
             frame.size.width = size.width;

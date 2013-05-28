@@ -49,6 +49,10 @@
 #define kCollectSection     2
 #define kSignUpSection      3
 #define kAdornmentTag       470
+#define kLabelTitleFont     [UIFont fontWithName:@"BrandonGrotesque-Bold" size:52.0]
+#define kLabelSubtitleFont  [UIFont fontWithName:@"BrandonGrotesque-Medium" size:26.0]
+#define kPageHeaderSize     CGSizeMake(500.0, 500.0)
+#define kLabelGap           10.0
 
 - (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[WelcomeCollectionViewLayout alloc] initWithDataSource:self]]) {
@@ -194,24 +198,94 @@
 
 - (UIView *)welcomePageView {
     if (!_welcomePageView) {
-        _welcomePageView = [[UIView alloc] initWithFrame:CGRectZero];
-        _welcomePageView.backgroundColor = [UIColor redColor];
+        CGSize size = [self sizeOfPageHeaderForPage:kWelcomeSection];
+        _welcomePageView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
+        _welcomePageView.backgroundColor = [UIColor clearColor];
+        _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
+        
+        // Title
+        UILabel *titleLabel = [self createTitleLabelWithText:@"WELCOME" textAlignment:NSTextAlignmentCenter availableSize:size];
+        titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
+                                      0.0,
+                                      titleLabel.frame.size.width,
+                                      titleLabel.frame.size.height);
+        [_welcomePageView addSubview:titleLabel];
+        
+        // Subtitle
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Cook helps you create your very own\u2028Cookbook for iPad"
+                                                     textAlignment:NSTextAlignmentCenter availableSize:size];
+        subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap,
+                                         subtitleLabel.frame.size.width,
+                                         subtitleLabel.frame.size.height);
+        [_welcomePageView addSubview:subtitleLabel];
+        
+        // SubSubtitle
+        UILabel *subSubtitleLabel = [self createSubtitleLabelWithText:@"Gather all those scattered recipes\u2028you love and bring them\u2028together in one place..."
+                                                    textAlignment:NSTextAlignmentCenter availableSize:size];
+        subSubtitleLabel.frame = CGRectMake(floorf((size.width - subSubtitleLabel.frame.size.width) / 2.0),
+                                            subtitleLabel.frame.origin.y + subtitleLabel.frame.size.height + kLabelGap,
+                                            subSubtitleLabel.frame.size.width,
+                                            subSubtitleLabel.frame.size.height);
+        [_welcomePageView addSubview:subSubtitleLabel];
+        
     }
     return _welcomePageView;
 }
 
 - (UIView *)createPageView {
     if (!_createPageView) {
+        CGSize size = [self sizeOfPageHeaderForPage:kCreateSection];
         _createPageView = [[UIView alloc] initWithFrame:CGRectZero];
-        _createPageView.backgroundColor = [UIColor greenColor];
+        _createPageView.backgroundColor = [UIColor clearColor];
+        _createPageView.autoresizingMask = UIViewAutoresizingNone;
+
+        // Title
+        UILabel *titleLabel = [self createTitleLabelWithText:@"CREATE YOUR\u2028COOKBOOK"
+                                               textAlignment:NSTextAlignmentLeft availableSize:size];
+        titleLabel.frame = CGRectMake(0.0,
+                                      0.0,
+                                      titleLabel.frame.size.width,
+                                      titleLabel.frame.size.height);
+        [_createPageView addSubview:titleLabel];
+        
+        // Subtitle
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Forget Jame or Delia, add all your\u2028favourite recipes, then customise the\u2028cover of your book and it's ready to share\nwith your friends"
+                                                     textAlignment:NSTextAlignmentLeft availableSize:size];
+        subtitleLabel.frame = CGRectMake(0.0,
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap,
+                                         subtitleLabel.frame.size.width,
+                                         subtitleLabel.frame.size.height);
+        [_createPageView addSubview:subtitleLabel];
     }
     return _createPageView;
 }
 
 - (UIView *)collectPageView {
     if (!_collectPageView) {
+        CGSize size = [self sizeOfPageHeaderForPage:kCollectSection];
         _collectPageView = [[UIView alloc] initWithFrame:CGRectZero];
-        _collectPageView.backgroundColor = [UIColor blueColor];
+        _collectPageView.backgroundColor = [UIColor clearColor];
+        _collectPageView.autoresizingMask = UIViewAutoresizingNone;
+        
+        // Title
+        UILabel *titleLabel = [self createTitleLabelWithText:@"COLLECT YOUR\u2028FRIENDS' BOOKS"
+                                               textAlignment:NSTextAlignmentCenter availableSize:size];
+        titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
+                                      0.0,
+                                      titleLabel.frame.size.width,
+                                      titleLabel.frame.size.height);
+        [_collectPageView addSubview:titleLabel];
+        
+        // Subtitle
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Check out your friends' books, see their cooking tips and make their best dishes or\u2028browse the library and discover new\u2028friends from around the world."
+                                                     textAlignment:NSTextAlignmentCenter availableSize:size];
+        subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap,
+                                         subtitleLabel.frame.size.width,
+                                         subtitleLabel.frame.size.height);
+        [_collectPageView addSubview:subtitleLabel];
+        
     }
     return _collectPageView;
 }
@@ -240,6 +314,24 @@
             break;
     }
     return numAdornments;
+}
+
+- (CGSize)sizeOfPageHeaderForPage:(NSInteger)page {
+    CGSize size = kPageHeaderSize;
+    switch (page) {
+        case kWelcomeSection:
+            break;
+        case kCreateSection:
+            break;
+        case kCollectSection:
+            break;
+        case kSignUpSection:
+            size = self.signupViewController.view.frame.size;
+            break;
+        default:
+            break;
+    }
+    return size;
 }
 
 - (CGSize)sizeOfAdornmentForIndexPath:(NSIndexPath *)indexPath {
@@ -321,7 +413,7 @@
                                                                                 withReuseIdentifier:kPageHeaderId
                                                                                        forIndexPath:indexPath];
     PageHeaderView *pageHeaderView = (PageHeaderView *)reusableView;
-    pageHeaderView.backgroundColor = [UIColor greenColor];
+    pageHeaderView.backgroundColor = [UIColor clearColor];
     UIView *contentView = nil;
     
     switch (indexPath.section) {
@@ -438,7 +530,7 @@
         return;
     }
     [self.signupViewController enableSignUpMode:YES animated:YES];
-    [self scrollToPage:3];
+    [self scrollToPage:kSignUpSection];
 }
 
 - (void)signInButtonTapped:(id)sender {
@@ -446,7 +538,7 @@
         return;
     }
     [self.signupViewController enableSignUpMode:NO animated:YES];
-    [self scrollToPage:3];
+    [self scrollToPage:kSignUpSection];
 }
 
 - (void)scrollToPage:(NSInteger)page {
@@ -455,5 +547,59 @@
                                  animated:YES];
     [self.pagingView setPage:page];
 }
+
+- (UILabel *)createTitleLabelWithText:(NSString *)text textAlignment:(NSTextAlignment)textAlignment
+                        availableSize:(CGSize)availableSize {
+    
+    return [self createLabelWithFont:kLabelTitleFont text:text textAlignment:textAlignment availableSize:availableSize
+                         lineSpacing:-20.0];
+}
+
+- (UILabel *)createSubtitleLabelWithText:(NSString *)text textAlignment:(NSTextAlignment)textAlignment
+                        availableSize:(CGSize)availableSize {
+    
+    return [self createLabelWithFont:kLabelSubtitleFont text:text textAlignment:textAlignment availableSize:availableSize
+                         lineSpacing:-8.0];
+}
+
+- (UILabel *)createLabelWithFont:(UIFont *)font text:(NSString *)text textAlignment:(NSTextAlignment)textAlignment
+                   availableSize:(CGSize)availableSize lineSpacing:(CGFloat)lineSpacing {
+    
+    // Paragraph attributes.
+    NSDictionary *textAttributes = [self textAttributesForFont:font lineSpacing:lineSpacing textAlignment:textAlignment];
+    NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:text attributes:textAttributes];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.backgroundColor = [UIColor clearColor];
+    label.attributedText = textDisplay;
+    label.numberOfLines = 0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    CGSize size = [label sizeThatFits:availableSize];
+    label.frame = CGRectMake(0.0, 0.0, size.width, size.height);
+    
+    return label;
+}
+
+- (NSDictionary *)textAttributesForFont:(UIFont *)font lineSpacing:(CGFloat)lineSpacing
+                               textAlignment:(NSTextAlignment)textAlignment {
+    
+    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = lineBreakMode;
+    paragraphStyle.lineSpacing = lineSpacing;
+    paragraphStyle.alignment = textAlignment;
+    
+    NSShadow *shadow = [NSShadow new];
+    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+    shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            font, NSFontAttributeName,
+            [UIColor whiteColor], NSForegroundColorAttributeName,
+            paragraphStyle, NSParagraphStyleAttributeName,
+            shadow, NSShadowAttributeName,
+            nil];
+}
+
 
 @end
