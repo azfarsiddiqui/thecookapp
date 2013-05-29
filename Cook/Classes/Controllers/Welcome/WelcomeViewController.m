@@ -58,6 +58,7 @@
 - (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[WelcomeCollectionViewLayout alloc] initWithDataSource:self]]) {
         self.delegate = delegate;
+        self.enabled = YES;
     }
     return self;
 }
@@ -88,8 +89,11 @@
 }
 
 - (void)enable:(BOOL)enable {
-    self.enabled = enable;
+    if (self.enabled == enable) {
+        return;
+    }
     
+    self.enabled = enable;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kWelcomeSection],
          [NSIndexPath indexPathForItem:1 inSection:kWelcomeSection]]];
