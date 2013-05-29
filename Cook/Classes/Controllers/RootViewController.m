@@ -721,6 +721,8 @@
                          if (!show) {
                              [self.welcomeViewController.view removeFromSuperview];
                              self.welcomeViewController = nil;
+                         } else {
+                             [self.welcomeViewController enable:YES];
                          }
                      }];
     

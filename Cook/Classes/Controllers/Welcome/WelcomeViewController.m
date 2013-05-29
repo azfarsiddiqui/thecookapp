@@ -25,6 +25,7 @@
 @property (nonatomic, strong) UILabel *signUpLabel;
 @property (nonatomic, strong) UILabel *signInLabel;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL enabled;
 
 @property (nonatomic, strong) UIView *welcomePageView;
 @property (nonatomic, strong) UIView *createPageView;
@@ -84,9 +85,18 @@
     
     // Buttons.
     [self.signUpButton addSubview:self.signUpLabel];
-    [self.view addSubview:self.signUpButton];
+//    [self.view addSubview:self.signUpButton];
     [self.signInButton addSubview:self.signInLabel];
-    [self.view addSubview:self.signInButton];
+//    [self.view addSubview:self.signInButton];
+}
+
+- (void)enable:(BOOL)enable {
+    self.enabled = enable;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kWelcomeSection],
+         [NSIndexPath indexPathForItem:1 inSection:kWelcomeSection]]];
+    });
 }
 
 #pragma mark - Properties
@@ -104,10 +114,7 @@
         UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
                                 resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
         _signUpButton = [ViewHelper buttonWithImage:buttonImage target:self selector:@selector(signUpButtonTapped:)];
-        _signUpButton.frame = CGRectMake(floorf((self.view.bounds.size.width - (kButtonWidth * 2.0) - kButtonGap) / 2.0),
-                                         self.view.bounds.size.height - buttonImage.size.height - 100.0,
-                                         kButtonWidth,
-                                         buttonImage.size.height);
+        _signUpButton.frame = CGRectMake(0.0, 0.0, kButtonWidth, buttonImage.size.height);
     }
     return _signUpButton;
 }
@@ -117,10 +124,7 @@
         UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
                                 resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
         _signInButton = [ViewHelper buttonWithImage:buttonImage target:self selector:@selector(signInButtonTapped:)];
-        _signInButton.frame = CGRectMake(self.signUpButton.frame.origin.x + self.signUpButton.frame.size.width + kButtonGap,
-                                         self.signUpButton.frame.origin.y,
-                                         kButtonWidth,
-                                         buttonImage.size.height);
+        _signInButton.frame = CGRectMake(0.0, 0.0, kButtonWidth, buttonImage.size.height);
     }
     return _signInButton;
 }
@@ -198,7 +202,8 @@
 
 - (UIView *)welcomePageView {
     if (!_welcomePageView) {
-        CGSize size = [self sizeOfPageHeaderForPage:kWelcomeSection];
+        CGSize size = [self sizeOfPageHeaderForPage:kWelcomeSection
+                                          indexPath:[NSIndexPath indexPathForItem:0 inSection:kWelcomeSection]];
         _welcomePageView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
         _welcomePageView.backgroundColor = [UIColor clearColor];
         _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
@@ -235,7 +240,8 @@
 
 - (UIView *)createPageView {
     if (!_createPageView) {
-        CGSize size = [self sizeOfPageHeaderForPage:kCreateSection];
+        CGSize size = [self sizeOfPageHeaderForPage:kCreateSection
+                                          indexPath:[NSIndexPath indexPathForItem:0 inSection:kCreateSection]];
         _createPageView = [[UIView alloc] initWithFrame:CGRectZero];
         _createPageView.backgroundColor = [UIColor clearColor];
         _createPageView.autoresizingMask = UIViewAutoresizingNone;
@@ -263,7 +269,8 @@
 
 - (UIView *)collectPageView {
     if (!_collectPageView) {
-        CGSize size = [self sizeOfPageHeaderForPage:kCollectSection];
+        CGSize size = [self sizeOfPageHeaderForPage:kCollectSection
+                                          indexPath:[NSIndexPath indexPathForItem:0 inSection:kCollectSection]];
         _collectPageView = [[UIView alloc] initWithFrame:CGRectZero];
         _collectPageView.backgroundColor = [UIColor clearColor];
         _collectPageView.autoresizingMask = UIViewAutoresizingNone;
@@ -300,7 +307,7 @@
     NSInteger numAdornments = 0;
     switch (page) {
         case kWelcomeSection:
-            numAdornments = 2;
+            numAdornments = self.enabled ? 2 : 0;
             break;
         case kCreateSection:
             numAdornments = 1;
@@ -316,10 +323,24 @@
     return numAdornments;
 }
 
-- (CGSize)sizeOfPageHeaderForPage:(NSInteger)page {
+- (CGSize)sizeOfPageHeaderForPage:(NSInteger)page indexPath:(NSIndexPath *)indexPath {
     CGSize size = kPageHeaderSize;
     switch (page) {
         case kWelcomeSection:
+            
+            switch (indexPath.item) {
+                case 0:
+                    break;
+                case 1:
+                    size = self.signUpButton.frame.size;
+                    break;
+                case 2:
+                    size = self.signInButton.frame.size;
+                    break;
+                default:
+                    break;
+            }
+            
             break;
         case kCreateSection:
             break;
@@ -418,7 +439,20 @@
     
     switch (indexPath.section) {
         case kWelcomeSection:
-            contentView = self.welcomePageView;
+            
+            switch (indexPath.item) {
+                case 0:
+                    contentView = self.welcomePageView;
+                    break;
+                case 1:
+                    contentView = self.signUpButton;
+                    break;
+                case 2:
+                    contentView = self.signInButton;
+                    break;
+                default:
+                    break;
+            }
             break;
         case kCreateSection:
             contentView = self.createPageView;

@@ -12,7 +12,7 @@
 
 - (NSInteger)numberOfPagesForWelcomeLayout;
 - (NSInteger)numberOfAdornmentsForPage:(NSInteger)page;
-- (CGSize)sizeOfPageHeaderForPage:(NSInteger)page;
+- (CGSize)sizeOfPageHeaderForPage:(NSInteger)page indexPath:(NSIndexPath *)indexPath;
 - (CGSize)sizeOfAdornmentForIndexPath:(NSIndexPath *)indexPath;
 
 @end

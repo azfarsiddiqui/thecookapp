@@ -17,5 +17,6 @@
 @interface WelcomeViewController : UICollectionViewController
 
 - (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate;
+- (void)enable:(BOOL)enable;
 
 @end

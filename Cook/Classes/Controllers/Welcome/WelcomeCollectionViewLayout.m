@@ -70,16 +70,12 @@
     
     // Section cells.
     for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
-//        if (CGRectIntersectsRect(rect, attributes.frame)) {
-            [layoutAttributes addObject:attributes];
-//        }
+        [layoutAttributes addObject:attributes];
     }
     
     // Item cells.
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
-//        if (CGRectIntersectsRect(rect, attributes.frame)) {
-            [layoutAttributes addObject:attributes];
-//        }
+        [layoutAttributes addObject:attributes];
     }
     
     // Apply transform for paging.
@@ -97,27 +93,43 @@
     return [self.indexPathSupplementaryAttributes objectForKey:indexPath];
 }
 
-//- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-//    UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:itemIndexPath];
-//    
-//    // Nil if it was a normal cell.
-//    if (itemIndexPath.section == kWelcomeSection && attributes.representedElementKind == nil) {
-//        
-//        switch (itemIndexPath.item) {
-//            case 0:
-//                attributes.transform3D = CATransform3DMakeTranslation(-100.0, 0.0, 0.0);
-//                break;
-//            case 1:
-//                attributes.transform3D = CATransform3DMakeTranslation(100.0, 0.0, 0.0);
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-//    
-//    return attributes;
-//    
-//}
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+    
+    // Nil if it was a normal cell.
+    if (itemIndexPath.section == kWelcomeSection && attributes.representedElementKind == nil) {
+        
+        CGFloat offset = 100.0;
+        CGFloat initialAlpha = 0.7;
+        switch (itemIndexPath.item) {
+            case 0:
+                attributes.transform3D = CATransform3DMakeTranslation(-offset, 0.0, 0.0);
+                attributes.alpha = initialAlpha;
+                break;
+            case 1:
+                attributes.transform3D = CATransform3DMakeTranslation(offset, 0.0, 0.0);
+                attributes.alpha = initialAlpha;
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    return attributes;
+}
+
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingSupplementaryElementOfKind:(NSString *)elementKind
+                                                                                        atIndexPath:(NSIndexPath *)elementIndexPath {
+    
+    UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForSupplementaryElementOfKind:elementKind
+                                                                                           atIndexPath:elementIndexPath];
+    if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]
+        && elementIndexPath.section == kWelcomeSection) {
+        attributes.alpha = 1.0;
+    }
+    return attributes;
+}
 
 #pragma mark - Private methods
 
@@ -127,7 +139,7 @@
     for (NSInteger page = 0; page < numPages; page++) {
         
         // Section
-        [self buildSectionLabelForPage:page];
+        [self buildSectionsForPage:page];
 
         // Cells
         [self buildAdornmentsForPage:page];
@@ -135,7 +147,7 @@
     
 }
 
-- (void)buildSectionLabelForPage:(NSInteger)page {
+- (void)buildSectionsForPage:(NSInteger)page {
     CGSize size = self.collectionView.bounds.size;
     CGFloat pageOffset = [self pageOffsetForPage:page];
     
@@ -143,7 +155,7 @@
     UICollectionViewLayoutAttributes *sectionAttributes = [UICollectionViewLayoutAttributes
                                                            layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                            withIndexPath:sectionIndexPath];
-    CGSize pageHeaderSize = [self.dataSource sizeOfPageHeaderForPage:page];
+    CGSize pageHeaderSize = [self.dataSource sizeOfPageHeaderForPage:page indexPath:sectionIndexPath];
     CGRect frame = CGRectMake(pageOffset, 0.0, pageHeaderSize.width, pageHeaderSize.height);
     switch (page) {
         case kWelcomeSection:
@@ -169,6 +181,41 @@
     sectionAttributes.frame = frame;
     [self.supplementaryLayoutAttributes addObject:sectionAttributes];
     [self.indexPathSupplementaryAttributes setObject:sectionAttributes forKey:sectionIndexPath];
+    
+    // Welcome section has additional views, which are the sticky buttons. It's crash if this was implemented as
+    // decoration views instead.
+    if (page == kWelcomeSection) {
+        [self buildWelcomeSectionControls];
+    }
+}
+
+- (void)buildWelcomeSectionControls {
+    CGFloat pageOffset = [self pageOffsetForPage:kWelcomeSection];
+    CGFloat bottomGap = 70.0;
+    CGFloat buttonGap = 5.0;
+    
+    // Signup button.
+    NSIndexPath *signUpIndexPath = [NSIndexPath indexPathForItem:1 inSection:kWelcomeSection];
+    CGSize signUpSize = [self.dataSource sizeOfPageHeaderForPage:kWelcomeSection indexPath:signUpIndexPath];
+    CGPoint signUpStartPoint = [self startOffsetForSignUpButtonsAtIndexPath:signUpIndexPath];
+    UICollectionViewLayoutAttributes *signUpAttributes = [UICollectionViewLayoutAttributes
+                                                          layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                          withIndexPath:signUpIndexPath];
+    signUpAttributes.frame = CGRectMake(signUpStartPoint.x, signUpStartPoint.y, signUpSize.width, signUpSize.height);
+    [self.supplementaryLayoutAttributes addObject:signUpAttributes];
+    [self.indexPathSupplementaryAttributes setObject:signUpAttributes forKey:signUpIndexPath];
+    
+    // Signin button.
+    NSIndexPath *signInIndexPath = [NSIndexPath indexPathForItem:2 inSection:kWelcomeSection];
+    CGSize signInSize = [self.dataSource sizeOfPageHeaderForPage:kWelcomeSection indexPath:signInIndexPath];
+    CGPoint signInStartPoint = [self startOffsetForSignUpButtonsAtIndexPath:signInIndexPath];
+    UICollectionViewLayoutAttributes *signInAttributes = [UICollectionViewLayoutAttributes
+                                                          layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                          withIndexPath:signInIndexPath];
+    signInAttributes.frame = CGRectMake(signInStartPoint.x, signInStartPoint.y, signInSize.width, signInSize.height);
+    [self.supplementaryLayoutAttributes addObject:signInAttributes];
+    [self.indexPathSupplementaryAttributes setObject:signInAttributes forKey:signInIndexPath];
+    
 }
 
 - (void)buildAdornmentsForPage:(NSInteger)page {
@@ -298,26 +345,54 @@
     NSIndexPath *indexPath = attributes.indexPath;
     CGFloat pageOffset = [self pageOffsetForPage:kWelcomeSection];
     
-    if (self.collectionView.contentOffset.x >= pageOffset) {
+    if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]
+        && indexPath.item > 0) {
         
-        CGFloat translateRatio = 0.0;
-        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-            translateRatio = 0.4;
-        } else if (indexPath.item == 1) {
-            translateRatio = 0.5;
-        } else if (indexPath.item == 0) {
-            translateRatio = 0.1;
+        // Welcome controls.
+        CGPoint startOffsetForButton = [self startOffsetForSignUpButtonsAtIndexPath:indexPath];
+        CGRect frame = attributes.frame;
+        frame.origin.x = startOffsetForButton.x + self.collectionView.contentOffset.x;
+        
+        CGFloat shiftStartOffset = [self pageOffsetForPage:kCollectSection];
+        if (self.collectionView.contentOffset.x > shiftStartOffset) {
+            
+            CGFloat fadeDistance = 200.0;
+            CGFloat currentDistance = frame.origin.x - (shiftStartOffset + startOffsetForButton.x);
+            CGFloat distanceRatio = currentDistance / fadeDistance;
+            
+            attributes.alpha = 1.0 - distanceRatio;
+            
+        } else {
+            attributes.alpha = 1.0;
         }
         
-        // CGFloat distanceCap = self.collectionView.bounds.size.width;
-        CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
-        CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
-        attributes.transform3D = translate;
+        attributes.frame = frame;
         
     } else {
-        attributes.transform3D = CATransform3DIdentity;
-        attributes.alpha = 1.0;
+        
+        if (self.collectionView.contentOffset.x >= pageOffset) {
+            
+            CGFloat translateRatio = 0.0;
+            if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+                translateRatio = 0.4;
+            } else if (indexPath.item == 1) {
+                translateRatio = 0.5;
+            } else if (indexPath.item == 0) {
+                translateRatio = 0.1;
+            }
+            
+            // CGFloat distanceCap = self.collectionView.bounds.size.width;
+            CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
+            CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
+            attributes.transform3D = translate;
+            
+        } else {
+            attributes.transform3D = CATransform3DIdentity;
+            attributes.alpha = 1.0;
+        }
+        
     }
+    
 }
 
 - (void)applyPagingEffectsForCreateWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
@@ -373,6 +448,20 @@
 }
 
 - (void)applyPagingEffectsForSignUpWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
+}
+
+- (CGPoint)startOffsetForSignUpButtonsAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat bottomGap = 70.0;
+    CGFloat buttonGap = 5.0;
+    CGFloat pageOffset = [self pageOffsetForPage:kWelcomeSection];
+    CGSize size = [self.dataSource sizeOfPageHeaderForPage:kWelcomeSection indexPath:indexPath];
+    
+    CGPoint startPoint = CGPointMake(pageOffset + floorf((self.collectionView.bounds.size.width - ((size.width * 2.0) + buttonGap)) / 2.0),
+                                     self.collectionView.bounds.size.height - size.height - bottomGap);
+    if (indexPath.item == 2) {
+        startPoint.x += size.width + buttonGap;
+    }
+    return startPoint;
 }
 
 @end
