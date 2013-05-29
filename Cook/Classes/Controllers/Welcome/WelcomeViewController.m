@@ -13,17 +13,17 @@
 #import "SignupViewController.h"
 #import "WelcomeCollectionViewLayout.h"
 #import "PageHeaderView.h"
+#import "CKSignInButtonView.h"
 
-@interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource>
+@interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource,
+    CKSignInButtonViewDelegate>
 
 @property (nonatomic, assign) id<WelcomeViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKPagingView *pagingView;
 @property (nonatomic, strong) SignupViewController *signupViewController;
-@property (nonatomic, strong) UIButton *signUpButton;
-@property (nonatomic, strong) UIButton *signInButton;
-@property (nonatomic, strong) UILabel *signUpLabel;
-@property (nonatomic, strong) UILabel *signInLabel;
+@property (nonatomic, strong) CKSignInButtonView *signUpButton;
+@property (nonatomic, strong) CKSignInButtonView *signInButton;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL enabled;
 
@@ -82,10 +82,6 @@
     [self.view insertSubview:coffeeCupView belowSubview:overlayView];
     
     [self initCollectionView];
-    
-    // Buttons.
-    [self.signUpButton addSubview:self.signUpLabel];
-    [self.signInButton addSubview:self.signInLabel];
 }
 
 - (void)enable:(BOOL)enable {
@@ -118,60 +114,22 @@
     return _pagingView;
 }
 
-- (UIButton *)signUpButton {
+- (CKSignInButtonView *)signUpButton {
     if (!_signUpButton) {
         UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
                                 resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
-        _signUpButton = [ViewHelper buttonWithImage:buttonImage target:self selector:@selector(signUpButtonTapped:)];
-        _signUpButton.frame = CGRectMake(0.0, 0.0, kButtonWidth, buttonImage.size.height);
+        _signUpButton = [[CKSignInButtonView alloc] initWithWidth:kButtonWidth image:buttonImage text:@"SIGN UP" activity:NO delegate:self];
     }
     return _signUpButton;
 }
 
-- (UIButton *)signInButton {
+- (CKSignInButtonView *)signInButton {
     if (!_signInButton) {
         UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
                                 resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
-        _signInButton = [ViewHelper buttonWithImage:buttonImage target:self selector:@selector(signInButtonTapped:)];
-        _signInButton.frame = CGRectMake(0.0, 0.0, kButtonWidth, buttonImage.size.height);
+        _signInButton = [[CKSignInButtonView alloc] initWithWidth:kButtonWidth image:buttonImage text:@"SIGN IN" activity:NO delegate:self];
     }
     return _signInButton;
-}
-
-- (UILabel *)signUpLabel {
-    if (!_signUpLabel) {
-        _signUpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _signUpLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16];
-        _signUpLabel.textColor = [UIColor whiteColor];
-        _signUpLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _signUpLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _signUpLabel.backgroundColor = [UIColor clearColor];
-        _signUpLabel.text = @"SIGN UP";
-        [_signUpLabel sizeToFit];
-        _signUpLabel.frame = CGRectMake(floorf((self.signUpButton.bounds.size.width - _signUpLabel.frame.size.width) / 2.0),
-                                        floorf((self.signUpButton.bounds.size.height - _signUpLabel.frame.size.height) / 2.0) - 2.0,
-                                        _signUpLabel.frame.size.width,
-                                        _signUpLabel.frame.size.height);
-    }
-    return _signUpLabel;
-}
-
-- (UILabel *)signInLabel {
-    if (!_signInLabel) {
-        _signInLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _signInLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16];
-        _signInLabel.textColor = [UIColor whiteColor];
-        _signInLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _signInLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _signInLabel.backgroundColor = [UIColor clearColor];
-        _signInLabel.text = @"SIGN IN";
-        [_signInLabel sizeToFit];
-        _signInLabel.frame = CGRectMake(floorf((self.signInButton.bounds.size.width - _signInLabel.frame.size.width) / 2.0),
-                                        floorf((self.signInButton.bounds.size.height - _signInLabel.frame.size.height) / 2.0) - 2.0,
-                                        _signInLabel.frame.size.width,
-                                        _signInLabel.frame.size.height);
-    }
-    return _signInLabel;
 }
 
 - (UIView *)welcomeImageView {
@@ -545,6 +503,17 @@
     self.collectionView.scrollEnabled = !focused;
 }
 
+#pragma mark - CKSignInButtonViewDelegate methods
+
+- (void)signInTappedForButtonView:(CKSignInButtonView *)buttonView {
+    if (self.animating) {
+        return;
+    }
+    
+    [self.signupViewController enableSignUpMode:(self.signUpButton == buttonView) animated:YES];
+    [self scrollToPage:kSignUpSection];
+}
+
 #pragma mark - Private methods
 
 - (void)initCollectionView {
@@ -561,22 +530,6 @@
     CGFloat pageSpan = self.collectionView.contentOffset.x;
     NSInteger page = (pageSpan / self.collectionView.bounds.size.width);
     [self.pagingView setPage:page];
-}
-
-- (void)signUpButtonTapped:(id)sender {
-    if (self.animating) {
-        return;
-    }
-    [self.signupViewController enableSignUpMode:YES animated:YES];
-    [self scrollToPage:kSignUpSection];
-}
-
-- (void)signInButtonTapped:(id)sender {
-    if (self.animating) {
-        return;
-    }
-    [self.signupViewController enableSignUpMode:NO animated:YES];
-    [self scrollToPage:kSignUpSection];
 }
 
 - (void)scrollToPage:(NSInteger)page {
