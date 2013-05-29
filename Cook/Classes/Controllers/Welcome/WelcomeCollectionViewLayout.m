@@ -22,6 +22,8 @@
 @implementation WelcomeCollectionViewLayout
 
 #define kAdornmentOffset    128.0
+#define kPagingUpOffset     150.0
+#define kPagingDownOffset   120.0
 #define kWelcomeSection     0
 #define kCreateSection      1
 #define kCollectSection     2
@@ -190,10 +192,7 @@
 }
 
 - (void)buildWelcomeSectionControls {
-    CGFloat pageOffset = [self pageOffsetForPage:kWelcomeSection];
-    CGFloat bottomGap = 70.0;
-    CGFloat buttonGap = 5.0;
-    
+
     // Signup button.
     NSIndexPath *signUpIndexPath = [NSIndexPath indexPathForItem:1 inSection:kWelcomeSection];
     CGSize signUpSize = [self.dataSource sizeOfPageHeaderForPage:kWelcomeSection indexPath:signUpIndexPath];
@@ -215,6 +214,17 @@
     signInAttributes.frame = CGRectMake(signInStartPoint.x, signInStartPoint.y, signInSize.width, signInSize.height);
     [self.supplementaryLayoutAttributes addObject:signInAttributes];
     [self.indexPathSupplementaryAttributes setObject:signInAttributes forKey:signInIndexPath];
+    
+    // Paging view.
+    NSIndexPath *pagingIndexPath = [NSIndexPath indexPathForItem:3 inSection:kWelcomeSection];
+    CGSize pagingSize = [self.dataSource sizeOfPageHeaderForPage:kWelcomeSection indexPath:pagingIndexPath];
+    CGPoint pagingStartPoint = [self startOffsetForPagingView];
+    UICollectionViewLayoutAttributes *pagingAttributes = [UICollectionViewLayoutAttributes
+                                                          layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                          withIndexPath:pagingIndexPath];
+    pagingAttributes.frame = CGRectMake(pagingStartPoint.x, pagingStartPoint.y, pagingSize.width, pagingSize.height);
+    [self.supplementaryLayoutAttributes addObject:pagingAttributes];
+    [self.indexPathSupplementaryAttributes setObject:pagingAttributes forKey:pagingIndexPath];
     
 }
 
@@ -348,25 +358,48 @@
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]
         && indexPath.item > 0) {
         
-        // Welcome controls.
-        CGPoint startOffsetForButton = [self startOffsetForSignUpButtonsAtIndexPath:indexPath];
-        CGRect frame = attributes.frame;
-        frame.origin.x = startOffsetForButton.x + self.collectionView.contentOffset.x;
-        
         CGFloat shiftStartOffset = [self pageOffsetForPage:kCollectSection];
-        if (self.collectionView.contentOffset.x > shiftStartOffset) {
-            
-            CGFloat fadeDistance = 200.0;
-            CGFloat currentDistance = frame.origin.x - (shiftStartOffset + startOffsetForButton.x);
-            CGFloat distanceRatio = currentDistance / fadeDistance;
-            
-            attributes.alpha = 1.0 - distanceRatio;
-            
-        } else {
-            attributes.alpha = 1.0;
-        }
+        CGFloat totalOffset = kPagingUpOffset - kPagingDownOffset;
+        CGFloat effectDistance = floorf(self.collectionView.bounds.size.width / 2.0);
         
-        attributes.frame = frame;
+        if (indexPath.item == 1 || indexPath.item == 2) {
+            
+            // Signup/signin controls.
+            CGPoint startOffsetForButton = [self startOffsetForSignUpButtonsAtIndexPath:indexPath];
+            CGRect frame = attributes.frame;
+            frame.origin.x = startOffsetForButton.x + self.collectionView.contentOffset.x;
+            
+            if (self.collectionView.contentOffset.x > shiftStartOffset) {
+                
+                CGFloat currentDistance = frame.origin.x - (shiftStartOffset + startOffsetForButton.x);
+                CGFloat distanceRatio = currentDistance / effectDistance;
+                
+                attributes.alpha = 1.0 - distanceRatio;
+                frame.origin.y = startOffsetForButton.y + floorf(totalOffset * distanceRatio);
+                
+            } else {
+                attributes.alpha = 1.0;
+            }
+            attributes.frame = frame;
+            
+        } else if (indexPath.item == 3) {
+            
+            // Pagingview.
+            CGPoint startOffsetForPagingView = [self startOffsetForPagingView];
+            CGRect frame = attributes.frame;
+            frame.origin.x = startOffsetForPagingView.x + self.collectionView.contentOffset.x;
+
+            if (self.collectionView.contentOffset.x > shiftStartOffset) {
+                
+                CGFloat currentDistance = frame.origin.x - (shiftStartOffset + startOffsetForPagingView.x);
+                CGFloat distanceRatio = currentDistance / effectDistance;
+                
+                frame.origin.y = startOffsetForPagingView.y + floorf(totalOffset * distanceRatio);
+            }
+            
+            attributes.frame = frame;
+            
+        }
         
     } else {
         
@@ -461,6 +494,16 @@
     if (indexPath.item == 2) {
         startPoint.x += size.width + buttonGap;
     }
+    return startPoint;
+}
+
+- (CGPoint)startOffsetForPagingView {
+    CGFloat bottomGap = kPagingUpOffset;
+    CGFloat pageOffset = [self pageOffsetForPage:kWelcomeSection];
+    CGSize size = [self.dataSource sizeOfPageHeaderForPage:kWelcomeSection indexPath:[NSIndexPath indexPathForItem:3 inSection:kWelcomeSection]];
+    
+    CGPoint startPoint = CGPointMake(pageOffset + floorf((self.collectionView.bounds.size.width - size.width)) / 2.0,
+                                     self.collectionView.bounds.size.height - size.height - bottomGap);
     return startPoint;
 }
 

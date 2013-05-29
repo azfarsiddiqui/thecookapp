@@ -81,13 +81,10 @@
     [self.view insertSubview:coffeeCupView belowSubview:overlayView];
     
     [self initCollectionView];
-    [self initPagingView];
     
     // Buttons.
     [self.signUpButton addSubview:self.signUpLabel];
-//    [self.view addSubview:self.signUpButton];
     [self.signInButton addSubview:self.signInLabel];
-//    [self.view addSubview:self.signInButton];
 }
 
 - (void)enable:(BOOL)enable {
@@ -107,6 +104,14 @@
         _signupViewController.view.hidden = NO;
     }
     return _signupViewController;
+}
+
+- (CKPagingView *)pagingView {
+    if (!_pagingView) {
+        _pagingView = [[CKPagingView alloc] initWithNumPages:kNumPages type:CKPagingViewTypeHorizontal];
+        _pagingView.frame = CGRectMake(0.0, 0.0, _pagingView.frame.size.width, _pagingView.frame.size.height);
+    }
+    return _pagingView;
 }
 
 - (UIButton *)signUpButton {
@@ -337,6 +342,9 @@
                 case 2:
                     size = self.signInButton.frame.size;
                     break;
+                case 3:
+                    size = self.pagingView.frame.size;
+                    break;
                 default:
                     break;
             }
@@ -450,6 +458,9 @@
                 case 2:
                     contentView = self.signInButton;
                     break;
+                case 3:
+                    contentView = self.pagingView;
+                    break;
                 default:
                     break;
             }
@@ -540,17 +551,6 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kAdornmentCellId];
     [self.collectionView registerClass:[PageHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:kPageHeaderId];
-}
-
-- (void)initPagingView {
-    CKPagingView *pagingView = [[CKPagingView alloc] initWithNumPages:kNumPages type:CKPagingViewTypeHorizontal];
-    pagingView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-    pagingView.frame = CGRectMake(floorf((self.view.bounds.size.width - pagingView.frame.size.width) / 2.0),
-                                  self.view.bounds.size.height - 100.0,
-                                  pagingView.frame.size.width,
-                                  pagingView.frame.size.height);
-    [self.view addSubview:pagingView];
-    self.pagingView = pagingView;
 }
 
 - (void)updatePagingView {
