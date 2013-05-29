@@ -101,6 +101,7 @@
 		762B375916D33C1B00343F88 /* ActivityCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 762B375816D33C1B00343F88 /* ActivityCollectionViewCell.m */; };
 		762C78E2171E825C009CCAA8 /* cook_editrecipe_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C78E0171E825C009CCAA8 /* cook_editrecipe_bg.png */; };
 		762C78E3171E825C009CCAA8 /* cook_editrecipe_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 762C78E1171E825C009CCAA8 /* cook_editrecipe_bg@2x.png */; };
+		762F3BAD1756394E00863DDF /* CKSignInButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 762F3BAC1756394E00863DDF /* CKSignInButtonView.m */; };
 		762F62D517012BF1006769E5 /* CKMaskedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 762F62D417012BF1006769E5 /* CKMaskedLabel.m */; };
 		76324F0D165343DE007D1EBF /* MGImageUtilities - Source Code License.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 76324F08165343DE007D1EBF /* MGImageUtilities - Source Code License.rtf */; };
 		76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0A165343DE007D1EBF /* UIImage+ProportionalFill.m */; };
@@ -814,6 +815,8 @@
 		762B375816D33C1B00343F88 /* ActivityCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityCollectionViewCell.m; sourceTree = "<group>"; };
 		762C78E0171E825C009CCAA8 /* cook_editrecipe_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_bg.png; sourceTree = "<group>"; };
 		762C78E1171E825C009CCAA8 /* cook_editrecipe_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_bg@2x.png"; sourceTree = "<group>"; };
+		762F3BAB1756394E00863DDF /* CKSignInButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKSignInButtonView.h; sourceTree = "<group>"; };
+		762F3BAC1756394E00863DDF /* CKSignInButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKSignInButtonView.m; sourceTree = "<group>"; };
 		762F62D317012BF1006769E5 /* CKMaskedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKMaskedLabel.h; sourceTree = "<group>"; };
 		762F62D417012BF1006769E5 /* CKMaskedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKMaskedLabel.m; sourceTree = "<group>"; };
 		76324F08165343DE007D1EBF /* MGImageUtilities - Source Code License.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = "MGImageUtilities - Source Code License.rtf"; sourceTree = "<group>"; };
@@ -1825,6 +1828,15 @@
 				76BF20141753A2CF000F0798 /* cook_login_coffeecup@2x.png */,
 			);
 			path = dashboard;
+			sourceTree = "<group>";
+		};
+		762F3BAA1756394E00863DDF /* CKSignInButtonView */ = {
+			isa = PBXGroup;
+			children = (
+				762F3BAB1756394E00863DDF /* CKSignInButtonView.h */,
+				762F3BAC1756394E00863DDF /* CKSignInButtonView.m */,
+			);
+			path = CKSignInButtonView;
 			sourceTree = "<group>";
 		};
 		76324F07165343DE007D1EBF /* MGImageUtilities */ = {
@@ -2956,6 +2968,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				762F3BAA1756394E00863DDF /* CKSignInButtonView */,
 				76BF1FF91753263A000F0798 /* CKTextFieldView */,
 				76091F3D175069C400018E6E /* CKPagingView */,
 				76C3BB88173B73F0004F6444 /* CKDialerControl */,
@@ -3841,6 +3854,7 @@
 				76BF202717544140000F0798 /* SignupViewController.m in Sources */,
 				76BF202A17544248000F0798 /* WelcomeCollectionViewLayout.m in Sources */,
 				76BF202D17546D31000F0798 /* PageHeaderView.m in Sources */,
+				762F3BAD1756394E00863DDF /* CKSignInButtonView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
