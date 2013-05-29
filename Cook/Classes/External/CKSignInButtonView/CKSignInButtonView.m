@@ -57,11 +57,25 @@
 }
 
 - (void)setText:(NSString *)text activity:(BOOL)activity {
+    [self setText:text activity:activity animated:YES];
+}
+
+- (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated {
+    [self setText:text activity:activity animated:animated enabled:YES];
+}
+
+- (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled {
     if (self.animating) {
         return;
     }
     self.animating = YES;
     self.button.userInteractionEnabled = NO;
+    
+    // Prep new label to be faded in.
+    UILabel *label = [self labelWithText:text activity:activity];
+    label.alpha = 0.0;
+    label.hidden = NO;
+    [self.button addSubview:label];
     
     // Prep activity to be faded in.
     if (!self.activity && activity) {
@@ -71,45 +85,61 @@
         [self.button addSubview:self.activityView];
     }
     
-    // Prep new label to be faded in.
-    UILabel *label = [self labelWithText:text activity:activity];
-    label.alpha = 0.0;
-    label.hidden = NO;
-    [self.button addSubview:label];
-    
-    [UIView animateWithDuration:0.1
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.textLabel.alpha = 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         [UIView animateWithDuration:0.15
-                                               delay:0.0
-                                             options:UIViewAnimationOptionCurveEaseIn
-                                          animations:^{
-                                              self.activityView.alpha = activity ? 1.0 : 0.0;
-                                              label.alpha = 1.0;
-                                          }
-                                          completion:^(BOOL finished) {
-                                              
-                                              // Swap the labels.
-                                              [self.textLabel removeFromSuperview];
-                                              self.textLabel = label;
-                                              
-                                              if (!activity) {
-                                                  [self.activityView stopAnimating];
-                                                  [self.activityView removeFromSuperview];
+    if (animated) {
+        
+        [UIView animateWithDuration:0.1
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.textLabel.alpha = 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             [UIView animateWithDuration:0.15
+                                                   delay:0.0
+                                                 options:UIViewAnimationOptionCurveEaseIn
+                                              animations:^{
+                                                  self.activityView.alpha = activity ? 1.0 : 0.0;
+                                                  label.alpha = 1.0;
                                               }
-                                              
-                                              self.text = text;
-                                              self.activity = activity;
-                                              self.animating = NO;
-                                              self.button.userInteractionEnabled = YES;
-                                          }];
-                         
-                     }];
+                                              completion:^(BOOL finished) {
+                                                  
+                                                  // Swap the labels.
+                                                  [self.textLabel removeFromSuperview];
+                                                  self.textLabel = label;
+                                                  
+                                                  if (!activity) {
+                                                      [self.activityView stopAnimating];
+                                                      [self.activityView removeFromSuperview];
+                                                  }
+                                                  
+                                                  self.text = text;
+                                                  self.activity = activity;
+                                                  self.animating = NO;
+                                                  self.button.userInteractionEnabled = enabled;
+                                              }];
+                             
+                         }];
+        
+    } else {
+        self.textLabel.alpha = 0.0;
+        self.activityView.alpha = activity ? 1.0 : 0.0;
+        label.alpha = 1.0;
+        
+        // Swap the labels.
+        [self.textLabel removeFromSuperview];
+        self.textLabel = label;
+        
+        if (!activity) {
+            [self.activityView stopAnimating];
+            [self.activityView removeFromSuperview];
+        }
+        
+        self.text = text;
+        self.activity = activity;
+        self.animating = NO;
+        self.button.userInteractionEnabled = enabled;
+    }
     
 }
 

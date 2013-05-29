@@ -11,8 +11,11 @@
 #import "CKTextFieldView.h"
 #import "ViewHelper.h"
 #import "Theme.h"
+#import "CKSignInButtonView.h"
+#import "CKUser.h"
+#import "EventHelper.h"
 
-@interface SignupViewController () <CKTextFieldViewDelegate>
+@interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate>
 
 @property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
 @property (nonatomic, strong) UILabel *signupTitleLabel;
@@ -24,12 +27,8 @@
 @property (nonatomic, strong) CKTextFieldView *emailPasswordView;
 @property (nonatomic, strong) UIView *emailNameDivider;
 @property (nonatomic, strong) UIView *emailAddressDivider;
-@property (nonatomic, strong) UIButton *emailButton;
-@property (nonatomic, strong) UILabel *emailSignUpLabel;
-@property (nonatomic, strong) UILabel *emailSignInLabel;
-@property (nonatomic, strong) UIButton *facebookButton;
-@property (nonatomic, strong) UILabel *facebookSignUpLabel;
-@property (nonatomic, strong) UILabel *facebookSignInLabel;
+@property (nonatomic, strong) CKSignInButtonView *emailButton;
+@property (nonatomic, strong) CKSignInButtonView *facebookButton;
 @property (nonatomic, strong) UIButton *signUpToggleButton;
 @property (nonatomic, assign) BOOL signUpMode;
 @property (nonatomic, assign) BOOL animating;
@@ -78,6 +77,7 @@
     }
     self.animating = YES;
     
+    // Mark as sign up mode.
     self.signUpMode = signUp;
     
     if (signUp) {
@@ -85,19 +85,11 @@
         self.emailNameView.hidden = NO;
         self.signupSubtitleLabel.alpha = 0.0;
         self.signupSubtitleLabel.hidden = NO;
-        self.emailSignUpLabel.alpha = 0.0;
-        self.emailSignUpLabel.hidden = NO;
-        self.facebookSignUpLabel.alpha = 0.0;
-        self.facebookSignUpLabel.hidden = NO;
         self.emailNameDivider.alpha = 0.0;
         self.emailNameDivider.hidden = NO;
     } else {
         self.signinTitleLabel.alpha = 0.0;
         self.signinTitleLabel.hidden = NO;
-        self.emailSignInLabel.alpha = 0.0;
-        self.emailSignInLabel.hidden = NO;
-        self.facebookSignInLabel.alpha = 0.0;
-        self.facebookSignInLabel.hidden = NO;
     }
     
     if (animated) {
@@ -116,24 +108,22 @@
                              self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
                              self.emailNameView.alpha = signUp ? 1.0 : 0.0;
                              self.emailNameDivider.alpha = signUp ? 1.0 : 0.0;
-                             self.emailSignUpLabel.alpha = signUp ? 1.0 : 0.0;
-                             self.emailSignInLabel.alpha = signUp ? 0.0 : 1.0;
-                             self.facebookSignUpLabel.alpha = signUp ? 1.0 : 0.0;
-                             self.facebookSignInLabel.alpha = signUp ? 0.0 : 1.0;
+                             
                          }
                          completion:^(BOOL finished) {
                              
+                             // Update signup/signin buttons.
+                             [self.emailButton setText:[self emailButtonTextForSignUp:signUp] activity:NO animated:NO];
+                             [self.facebookButton setText:[self facebookButtonTextForSignUp:signUp] activity:NO animated:NO];
+                             
+                             // Update footer text.
                              [self updateFooterButtonForSignUp:signUp];
                              
                              if (signUp) {
                                  self.signinTitleLabel.hidden = YES;
-                                 self.emailSignInLabel.hidden = YES;
-                                 self.facebookSignInLabel.hidden = YES;
                              } else {
                                  self.emailNameView.hidden = YES;
-                                 self.emailSignUpLabel.hidden = YES;
                                  self.emailNameDivider.hidden = YES;
-                                 self.facebookSignUpLabel.hidden = YES;
                                  self.signupSubtitleLabel.hidden = NO;
                              }
                              
@@ -151,21 +141,13 @@
          self.signinTitleLabel.alpha = signUp ? 0.0 : 1.0;
          self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
          self.emailNameView.alpha = signUp ? 1.0 : 0.0;
-         self.emailSignUpLabel.alpha = signUp ? 1.0 : 0.0;
-         self.emailSignInLabel.alpha = signUp ? 0.0 : 1.0;
-         self.facebookSignUpLabel.alpha = signUp ? 1.0 : 0.0;
-         self.facebookSignInLabel.alpha = signUp ? 0.0 : 1.0;
         
          [self updateFooterButtonForSignUp:signUp];
         
          if (signUp) {
              self.signinTitleLabel.hidden = YES;
-             self.emailSignInLabel.hidden = YES;
-             self.facebookSignInLabel.hidden = YES;
          } else {
              self.emailNameView.hidden = YES;
-             self.emailSignUpLabel.hidden = YES;
-             self.facebookSignUpLabel.hidden = YES;
              self.signupSubtitleLabel.hidden = NO;
          }
          
@@ -221,97 +203,26 @@
     return _signupSubtitleLabel;
 }
 
-- (UIButton *)emailButton {
+- (CKSignInButtonView *)emailButton {
     if (!_emailButton) {
         UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 20.0, 18.0, 20.0);
         CGSize availableSize = CGSizeMake(self.emailContainerView.bounds.size.width - insets.left - insets.right,
                                           self.emailContainerView.bounds.size.height - insets.top - insets.bottom);
         
-        UIImage *emailButtonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
-                                     resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
-        _emailButton = [ViewHelper buttonWithImage:emailButtonImage target:self selector:@selector(emailButtonTapped:)];
+        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
+                                resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
+        _emailButton = [[CKSignInButtonView alloc] initWithWidth:availableSize.width image:buttonImage
+                                                            text:[self emailButtonTextForSignUp:YES] activity:NO delegate:self];
         _emailButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        _emailButton.frame = CGRectMake(floorf((self.emailContainerView.bounds.size.width - availableSize.width) / 2.0),
-                                        self.emailContainerView.bounds.size.height - emailButtonImage.size.height - insets.bottom,
-                                        availableSize.width,
-                                        emailButtonImage.size.height);
+        _emailButton.frame = CGRectMake(floorf((self.emailContainerView.bounds.size.width - _emailButton.frame.size.width) / 2.0),
+                                        self.emailContainerView.bounds.size.height - _emailButton.frame.size.height - insets.bottom,
+                                        _emailButton.frame.size.width,
+                                        _emailButton.frame.size.height);
     }
     return _emailButton;
 }
 
-- (UILabel *)emailSignUpLabel {
-    if (!_emailSignUpLabel) {
-        _emailSignUpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _emailSignUpLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16];
-        _emailSignUpLabel.textColor = [UIColor whiteColor];
-        _emailSignUpLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _emailSignUpLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _emailSignUpLabel.backgroundColor = [UIColor clearColor];
-        _emailSignUpLabel.text = [self emailButtonTextForSignUp:YES];
-        [_emailSignUpLabel sizeToFit];
-        _emailSignUpLabel.frame = CGRectMake(floorf((self.emailButton.bounds.size.width - _emailSignUpLabel.frame.size.width) / 2.0),
-                                             floorf((self.emailButton.bounds.size.height - _emailSignUpLabel.frame.size.height) / 2.0) - 2.0,
-                                             _emailSignUpLabel.frame.size.width,
-                                             _emailSignUpLabel.frame.size.height);
-    }
-    return _emailSignUpLabel;
-}
-
-- (UILabel *)emailSignInLabel {
-    if (!_emailSignInLabel) {
-        _emailSignInLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _emailSignInLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16];
-        _emailSignInLabel.textColor = [UIColor whiteColor];
-        _emailSignInLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _emailSignInLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _emailSignInLabel.backgroundColor = [UIColor clearColor];
-        _emailSignInLabel.text = [self emailButtonTextForSignUp:NO];
-        [_emailSignInLabel sizeToFit];
-        _emailSignInLabel.frame = CGRectMake(floorf((self.emailButton.bounds.size.width - _emailSignInLabel.frame.size.width) / 2.0),
-                                             floorf((self.emailButton.bounds.size.height - _emailSignInLabel.frame.size.height) / 2.0) - 2.0,
-                                             _emailSignInLabel.frame.size.width,
-                                             _emailSignInLabel.frame.size.height);
-    }
-    return _emailSignInLabel;
-}
-
-- (UILabel *)facebookSignUpLabel {
-    if (!_facebookSignUpLabel) {
-        _facebookSignUpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _facebookSignUpLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16];
-        _facebookSignUpLabel.textColor = [UIColor whiteColor];
-        _facebookSignUpLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _facebookSignUpLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _facebookSignUpLabel.backgroundColor = [UIColor clearColor];
-        _facebookSignUpLabel.text = [self facebookButtonTextForSignUp:YES];
-        [_facebookSignUpLabel sizeToFit];
-        _facebookSignUpLabel.frame = CGRectMake(floorf((self.facebookButton.bounds.size.width - _facebookSignUpLabel.frame.size.width) / 2.0),
-                                                floorf((self.facebookButton.bounds.size.height - _facebookSignUpLabel.frame.size.height) / 2.0) - 2.0,
-                                                _facebookSignUpLabel.frame.size.width,
-                                                _facebookSignUpLabel.frame.size.height);
-    }
-    return _facebookSignUpLabel;
-}
-
-- (UILabel *)facebookSignInLabel {
-    if (!_facebookSignInLabel) {
-        _facebookSignInLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _facebookSignInLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16];
-        _facebookSignInLabel.textColor = [UIColor whiteColor];
-        _facebookSignInLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _facebookSignInLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _facebookSignInLabel.backgroundColor = [UIColor clearColor];
-        _facebookSignInLabel.text = [self facebookButtonTextForSignUp:NO];
-        [_facebookSignInLabel sizeToFit];
-        _facebookSignInLabel.frame = CGRectMake(floorf((self.facebookButton.bounds.size.width - _facebookSignInLabel.frame.size.width) / 2.0),
-                                                floorf((self.facebookButton.bounds.size.height - _facebookSignInLabel.frame.size.height) / 2.0) - 2.0,
-                                                _facebookSignInLabel.frame.size.width,
-                                                _facebookSignInLabel.frame.size.height);
-    }
-    return _facebookSignInLabel;
-}
-
-- (UIButton *)facebookButton {
+- (CKSignInButtonView *)facebookButton {
     if (!_facebookButton) {
         UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 20.0, 18.0, 20.0);
         CGSize availableSize = CGSizeMake(self.emailContainerView.bounds.size.width - insets.left - insets.right,
@@ -319,12 +230,13 @@
         
         UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_facebook.png"]
                                      resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
-        _facebookButton = [ViewHelper buttonWithImage:buttonImage target:self selector:@selector(facebookButtonTapped:)];
+        _facebookButton = [[CKSignInButtonView alloc] initWithWidth:availableSize.width image:buttonImage
+                                                               text:[self facebookButtonTextForSignUp:YES] activity:NO delegate:self];
         _facebookButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        _facebookButton.frame = CGRectMake(floorf((self.view.bounds.size.width - availableSize.width) / 2.0),
+        _facebookButton.frame = CGRectMake(floorf((self.view.bounds.size.width - _facebookButton.frame.size.width) / 2.0),
                                            self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 20.0,
-                                           availableSize.width,
-                                           buttonImage.size.height);
+                                           _facebookButton.frame.size.width,
+                                           _facebookButton.frame.size.height);
     }
     return _facebookButton;
 }
@@ -377,6 +289,18 @@
 - (void)keyboardDidHide:(NSNotification *)notification {
     CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     [self handleKeyboardShow:NO keyboardFrame:keyboardFrame];
+}
+
+#pragma mark - CKSignInButtonViewDelegate methods
+
+- (void)signInTappedForButtonView:(CKSignInButtonView *)buttonView {
+    DLog();
+    
+    if (buttonView == self.facebookButton) {
+        [self facebookButtonTapped];
+    } else if (buttonView == self.emailButton) {
+        [self emailButtonTapped];
+    }
 }
 
 #pragma mark - Private methods
@@ -432,14 +356,6 @@
     self.emailPasswordView = emailPasswordView;
 }
 
-- (void)emailButtonTapped:(id)sender {
-    DLog();
-}
-
-- (void)facebookButtonTapped:(id)sender {
-    DLog();
-}
-
 - (void)initHeaderView {
     
     // Signup Title
@@ -475,26 +391,12 @@
 }
 
 - (void)initButtons {
-    
-    // Email button.
     [self.emailContainerView addSubview:self.emailButton];
-    self.emailSignInLabel.hidden = YES;
-    [self.emailButton addSubview:self.emailSignInLabel];
-    [self.emailButton addSubview:self.emailSignUpLabel];
-    
-    // Facebook button.
     [self.view addSubview:self.facebookButton];
-    self.facebookSignInLabel.hidden = YES;
-    [self.facebookButton addSubview:self.facebookSignInLabel];
-    [self.facebookButton addSubview:self.facebookSignUpLabel];
 }
 
 - (void)initFooterView {
     [self updateFooterButtonForSignUp:YES];
-}
-
-- (void)updateButtonsForSignUp:(BOOL)signUp {
-    
 }
 
 - (void)updateFooterButtonForSignUp:(BOOL)signUp {
@@ -587,6 +489,79 @@
                          self.view.transform = show ? translateTransform : CGAffineTransformIdentity;
                      }
                      completion:^(BOOL finished) {
+                     }];
+}
+- (void)facebookButtonTapped {
+    [self loginToFacebook];
+}
+
+- (void)emailButtonTapped {
+    DLog();
+}
+
+- (void)loginToFacebook {
+    // Inform for modal.
+    [self.delegate signUpViewControllerModalRequested:YES];
+    
+    [self.facebookButton setText:@"CHATTING TO FACEBOOK" activity:YES animated:NO enabled:NO];
+
+    [self enableFacebookLogin:YES completion:^{
+        
+        // Wait before informing login successful.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self performFacebookLogin];
+        });
+    }];
+}
+
+- (void)performFacebookLogin {
+    
+    // Now tries and log the user in.
+    [CKUser loginWithFacebookCompletion:^{
+        
+        [self.facebookButton setText:@"CONNECTED TO FACEBOOK" activity:NO animated:NO enabled:NO];
+        
+        // Wait before informing login successful.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self informFacebookLoginSuccessful:YES];
+        });
+        
+    } failure:^(NSError *error) {
+        DLog(@"Error logging in: %@", [error localizedDescription]);
+        
+        [self enableFacebookLogin:NO completion:^{
+            [self.facebookButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
+            [self informFacebookLoginSuccessful:NO];
+        }];
+        
+    }];
+}
+
+- (void)informFacebookLoginSuccessful:(BOOL)success {
+    
+    // Inform to release modal.
+    [self.delegate signUpViewControllerModalRequested:NO];
+    
+    // Inform login result.
+    [EventHelper postLoginSuccessful:success];
+}
+
+- (void)enableFacebookLogin:(BOOL)enable completion:(void (^)())completion {
+    CGRect frame = [self facebookFrameForSignUp:self.signUpMode];
+    if (enable) {
+        frame.origin.y = floorf((self.view.bounds.size.height - self.facebookButton.frame.size.height) / 2.0);
+    }
+    
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.facebookButton.frame = frame;
+                         self.emailContainerView.alpha = enable ? 0.0 : 1.0;
+                         self.signUpToggleButton.alpha = enable ? 0.0 : 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                         completion();
                      }];
 }
 

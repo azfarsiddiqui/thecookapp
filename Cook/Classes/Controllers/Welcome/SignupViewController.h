@@ -11,6 +11,7 @@
 @protocol SignupViewControllerDelegate <NSObject>
 
 - (void)signupViewControllerFocused:(BOOL)focused;
+- (void)signUpViewControllerModalRequested:(BOOL)modal;
 
 @end
 

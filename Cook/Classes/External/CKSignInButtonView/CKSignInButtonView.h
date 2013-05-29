@@ -12,7 +12,7 @@
 
 @protocol CKSignInButtonViewDelegate <NSObject>
 
-- (void)signInTappedForButtonView:(CKSignInButtonView *)signInButton;
+- (void)signInTappedForButtonView:(CKSignInButtonView *)buttonView;
 
 @end
 
@@ -26,5 +26,7 @@
           delegate:(id<CKSignInButtonViewDelegate>)delegate;
 
 - (void)setText:(NSString *)text activity:(BOOL)activity;
+- (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated;
+- (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled;
 
 @end

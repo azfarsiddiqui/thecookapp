@@ -14,6 +14,7 @@
 #import "WelcomeCollectionViewLayout.h"
 #import "PageHeaderView.h"
 #import "CKSignInButtonView.h"
+#import "EventHelper.h"
 
 @interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource,
     CKSignInButtonViewDelegate>
@@ -82,6 +83,9 @@
     [self.view insertSubview:coffeeCupView belowSubview:overlayView];
     
     [self initCollectionView];
+    
+    // Register login successful.
+    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
 }
 
 - (void)enable:(BOOL)enable {
@@ -500,7 +504,12 @@
 #pragma mark - SignupViewControllerDelegate methods
 
 - (void)signupViewControllerFocused:(BOOL)focused {
-    self.collectionView.scrollEnabled = !focused;
+    [self signUpViewControllerModalRequested:focused];
+}
+
+- (void)signUpViewControllerModalRequested:(BOOL)modal {
+    self.collectionView.scrollEnabled = !modal;
+    self.pagingView.alpha = modal ? 0.0 : 1.0;
 }
 
 #pragma mark - CKSignInButtonViewDelegate methods
@@ -592,5 +601,11 @@
             nil];
 }
 
+- (void)loggedIn:(NSNotification *)notification {
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        [self.delegate welcomeViewControllerLoggedIn];
+    }
+}
 
 @end
