@@ -129,13 +129,15 @@
 }
 
 - (void)focusTextFieldView:(BOOL)focus {
+    
+    // Perform responder stuff on the main queue in next runloop to ensure it gets it.
     if (focus) {
         if (![self.textField isFirstResponder]) {
-            [self.textField becomeFirstResponder];
+            [self.textField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
         }
     } else {
         if ([self.textField isFirstResponder]) {
-            [self.textField resignFirstResponder];
+            [self.textField performSelector:@selector(resignFirstResponder) withObject:nil afterDelay:0.0];
         }
     }
 }
@@ -168,10 +170,6 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    
-    // Reset any validation.
-    [self clearValidation];
-    
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
     // Allow spaces?
