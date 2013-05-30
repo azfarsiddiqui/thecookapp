@@ -133,11 +133,11 @@
     // Perform responder stuff on the main queue in next runloop to ensure it gets it.
     if (focus) {
         if (![self.textField isFirstResponder]) {
-            [self.textField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
+            [self.textField becomeFirstResponder];
         }
     } else {
         if ([self.textField isFirstResponder]) {
-            [self.textField performSelector:@selector(resignFirstResponder) withObject:nil afterDelay:0.0];
+            [self.textField resignFirstResponder];
         }
     }
 }
@@ -145,7 +145,6 @@
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    [self clearValidation];
     [self focus:YES];
     
     return YES;
@@ -170,6 +169,10 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    // Reset any validation.
+    [self clearValidation];
+    
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
     // Allow spaces?
@@ -200,7 +203,7 @@
         textField.backgroundColor = [UIColor clearColor];
         textField.textAlignment = NSTextAlignmentCenter;
         textField.delegate = self;
-        textField.returnKeyType = UIReturnKeyGo;
+        textField.returnKeyType = UIReturnKeyDone;
         textField.text = @"";
         textField.keyboardType = UIKeyboardTypeEmailAddress;
         textField.autocapitalizationType = UITextAutocapitalizationTypeNone;

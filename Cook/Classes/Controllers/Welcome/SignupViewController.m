@@ -184,8 +184,6 @@
             [self.emailNameView setValidated:YES message:@"THANKS"];
         }
 
-        [self.emailAddressView focusTextFieldView:YES];
-
     } else if (textFieldView == self.emailAddressView) {
         
         BOOL validated = [CKTextFieldViewHelper isValidEmailForString:text];
@@ -194,8 +192,6 @@
         } else {
             [self.emailAddressView setValidated:NO message:@"INVALID EMAIL"];
         }
-        
-        [self.emailPasswordView focusTextFieldView:YES];
         
     } else if (textFieldView == self.emailPasswordView) {
         
@@ -206,7 +202,6 @@
             [self.emailPasswordView setValidated:NO message:@"INVALID PASSWORD"];
         }
         
-        [self.emailPasswordView focusTextFieldView:NO];
     }
     
 }
@@ -296,7 +291,7 @@
         [_signUpToggleButton setTitleShadowColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5] forState:UIControlStateNormal];
         [_signUpToggleButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_signUpToggleButton setTitleColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5] forState:UIControlStateHighlighted];
-        [_signUpToggleButton addTarget:self action:@selector(footerButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [_signUpToggleButton addTarget:self action:@selector(toggleButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _signUpToggleButton;
 }
