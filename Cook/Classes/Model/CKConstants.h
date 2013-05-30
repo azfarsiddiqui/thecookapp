@@ -28,6 +28,8 @@ extern NSString *const kUserAttrFirstName;
 extern NSString *const kUserAttrLastName;
 extern NSString *const kUserAttrProfilePhoto;
 extern NSString *const kUserAttrCoverPhoto;
+extern NSString *const kUserAttrEmail;
+extern NSString *const kUserAttrPassword;
 
 #pragma mark - UserFriend class
 

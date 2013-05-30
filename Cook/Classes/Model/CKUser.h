@@ -22,11 +22,17 @@ typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, B
 @property (nonatomic, readonly) BOOL admin;
 @property (nonatomic, strong) NSString *firstName;
 @property (nonatomic, strong) NSString *lastName;
+@property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSString *password;
 
 + (CKUser *)currentUser;
 + (BOOL)isLoggedIn;
 + (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)registerWithEmail:(NSString *)email name:(NSString *)name password:(NSString *)password
+               completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)loginWithEmail:(NSString *)email password:(NSString *)password completion:(ObjectSuccessBlock)success
+               failure:(ObjectFailureBlock)failure;
 + (CKUser *)userWithParseUser:(PFUser *)parseUser;
 + (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend requestor:(PFUser *)parseRequestor;
 

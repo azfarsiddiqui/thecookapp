@@ -82,9 +82,45 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
+
 + (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     [PFUser logOut];
     success();
+}
+
++ (void)registerWithEmail:(NSString *)email name:(NSString *)name password:(NSString *)password
+             completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    DLog(@"Register with Email[%@] Name[%@]", email, name);
+    
+    // New user with email/password.
+    PFUser *parseUser = [PFUser user];
+    parseUser.username = email; // Email as username.
+    parseUser.email = email;
+    parseUser.password = password;
+    [parseUser setObject:name forKey:kModelAttrName];
+    
+    // Register.
+    [parseUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            success();
+        } else {
+            failure(error);
+        }
+    }];
+}
+
++ (void)loginWithEmail:(NSString *)email password:(NSString *)password completion:(ObjectSuccessBlock)success
+                failure:(ObjectFailureBlock)failure {
+    
+    DLog(@"Login with Email[%@]", email);
+    [PFUser logInWithUsernameInBackground:email password:password block:^(PFUser *user, NSError *error) {
+        if (!error) {
+            success();
+        } else {
+            failure(error);
+        }
+    }];
+    
 }
 
 + (CKUser *)userWithParseUser:(PFUser *)parseUser {
@@ -345,6 +381,24 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (BOOL)hasCoverPhoto {
     return ([self parseCoverPhotoFile] != nil);
+}
+
+#pragma mark - Properties
+
+- (void)setPassword:(NSString *)password {
+    [self.parseObject setObject:password forKey:kUserAttrPassword];
+}
+
+- (NSString *)password {
+    return [self.parseObject objectForKey:kUserAttrPassword];
+}
+
+- (void)setEmail:(NSString *)email {
+    [self.parseObject setObject:email forKey:kUserAttrEmail];
+}
+
+- (NSString *)email {
+    return [self.parseObject objectForKey:kUserAttrEmail];
 }
 
 #pragma mark - CKModel
