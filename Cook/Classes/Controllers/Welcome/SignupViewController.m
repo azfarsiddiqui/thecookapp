@@ -343,7 +343,7 @@
     DLog();
     
     if (buttonView == self.facebookButton) {
-        [self facebookButtonTapped];
+        [self loginToFacebook];
     } else if (buttonView == self.emailButton) {
         [self emailButtonTapped];
     }
@@ -547,15 +547,13 @@
                      completion:^(BOOL finished) {
                      }];
 }
-- (void)facebookButtonTapped {
-    [self loginToFacebook];
-}
 
 - (void)emailButtonTapped {
     DLog();
 }
 
 - (void)loginToFacebook {
+    
     // Inform for modal.
     [self.delegate signUpViewControllerModalRequested:YES];
     
@@ -588,6 +586,12 @@
         [self enableFacebookLogin:NO completion:^{
             [self.facebookButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
             [self informFacebookLoginSuccessful:NO];
+            
+            // Re-enable the facebook button.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.facebookButton setText:[self facebookButtonTextForSignUp:self.signUpMode] activity:NO animated:NO
+                                     enabled:YES];
+            });
         }];
         
     }];
@@ -603,16 +607,16 @@
 }
 
 - (void)enableFacebookLogin:(BOOL)enable completion:(void (^)())completion {
-    CGRect frame = [self facebookFrameForSignUp:self.signUpMode];
+    CGRect facebookButtonFrame = [self facebookFrameForSignUp:self.signUpMode];
     if (enable) {
-        frame.origin.y = floorf((self.view.bounds.size.height - self.facebookButton.frame.size.height) / 2.0);
+        facebookButtonFrame.origin.y = floorf((self.view.bounds.size.height - self.facebookButton.frame.size.height) / 2.0);
     }
     
     [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.facebookButton.frame = frame;
+                         self.facebookButton.frame = facebookButtonFrame;
                          self.emailContainerView.alpha = enable ? 0.0 : 1.0;
                          self.signUpToggleButton.alpha = enable ? 0.0 : 1.0;
                      }

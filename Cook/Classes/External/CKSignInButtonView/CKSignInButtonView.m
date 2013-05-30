@@ -57,7 +57,7 @@
 }
 
 - (void)setText:(NSString *)text activity:(BOOL)activity {
-    [self setText:text activity:activity animated:YES];
+    [self setText:text activity:activity animated:NO];
 }
 
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated {
@@ -117,6 +117,8 @@
                                                   self.activity = activity;
                                                   self.animating = NO;
                                                   self.button.userInteractionEnabled = enabled;
+                                                  
+                                                  [self holdLabel:!enabled];
                                               }];
                              
                          }];
@@ -139,6 +141,7 @@
         self.activity = activity;
         self.animating = NO;
         self.button.userInteractionEnabled = enabled;
+        [self holdLabel:!enabled];
     }
     
 }

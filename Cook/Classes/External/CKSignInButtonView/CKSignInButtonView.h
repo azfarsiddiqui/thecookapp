@@ -24,7 +24,6 @@
            delegate:(id<CKSignInButtonViewDelegate>)delegate;
 - (id)initWithSize:(CGSize)size image:(UIImage *)image text:(NSString *)text activity:(BOOL)activity
           delegate:(id<CKSignInButtonViewDelegate>)delegate;
-
 - (void)setText:(NSString *)text activity:(BOOL)activity;
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated;
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled;

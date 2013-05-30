@@ -168,6 +168,10 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    // Reset any validation.
+    [self clearValidation];
+    
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
     // Allow spaces?
