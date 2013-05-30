@@ -467,7 +467,7 @@
                                         self.signUpToggleButton.frame.size.height);
 }
 
-- (void)footerButtonTapped:(id)sender {
+- (void)toggleButtonTapped:(id)sender {
     [self enableSignUpMode:!self.signUpMode];
 }
 
@@ -506,6 +506,13 @@
                       self.signupTitleLabel.frame.size.height);
 }
 
+- (CGRect)signupSubtitleFrameForSignUp:(BOOL)signUp {
+    return CGRectMake(floorf((self.view.bounds.size.width - self.signupSubtitleLabel.frame.size.width) / 2.0),
+                      self.signupTitleLabel.frame.origin.y + self.signupTitleLabel.frame.size.height - 20.0,
+                      self.signupSubtitleLabel.frame.size.width,
+                      self.signupSubtitleLabel.frame.size.height);
+}
+
 - (CGRect)signInTitleFrameForSignUp:(BOOL)signUp {
     return CGRectMake(floorf((self.view.bounds.size.width - self.signinTitleLabel.frame.size.width) / 2.0),
                       self.emailContainerView.frame.origin.y - self.signinTitleLabel.frame.size.height + 5.0,
@@ -518,13 +525,6 @@
                       self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 20.0,
                       self.facebookButton.frame.size.width,
                       self.facebookButton.frame.size.height);
-}
-
-- (CGRect)signupSubtitleFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.signupSubtitleLabel.frame.size.width) / 2.0),
-                      self.signupTitleLabel.frame.origin.y + self.signupTitleLabel.frame.size.height - 20.0,
-                      self.signupSubtitleLabel.frame.size.width,
-                      self.signupSubtitleLabel.frame.size.height);
 }
 
 - (void)handleKeyboardShow:(BOOL)show keyboardFrame:(CGRect)keyboardFrame {
@@ -607,18 +607,43 @@
 }
 
 - (void)enableFacebookLogin:(BOOL)enable completion:(void (^)())completion {
-    CGRect facebookButtonFrame = [self facebookFrameForSignUp:self.signUpMode];
-    if (enable) {
-        facebookButtonFrame.origin.y = floorf((self.view.bounds.size.height - self.facebookButton.frame.size.height) / 2.0);
-    }
-    
-    [UIView animateWithDuration:0.2
+    [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         
+                         // Shift Facebook Button.
+                         CGRect facebookButtonFrame = [self facebookFrameForSignUp:self.signUpMode];
+                         if (enable) {
+                             facebookButtonFrame.origin.y = floorf((self.view.bounds.size.height - self.facebookButton.frame.size.height) / 2.0);
+                         }
                          self.facebookButton.frame = facebookButtonFrame;
+                         
+                         // Shift SignUp Title.
+                         CGRect signUpTitleFrame = [self signUpTitleFrameForSignUp:self.signUpMode];
+                         if (enable) {
+                             signUpTitleFrame.origin.y = facebookButtonFrame.origin.y - 120.0;
+                         }
+                         self.signupTitleLabel.frame = signUpTitleFrame;
+                         
+                         // Shift SignUp Subtitle.
+                         CGRect signUpSubtitleFrame = [self signupSubtitleFrameForSignUp:self.signUpMode];
+                         if (enable) {
+                             signUpSubtitleFrame.origin.y = signUpTitleFrame.origin.y + signUpTitleFrame.size.height - 20.0;
+                         }
+                         self.signupSubtitleLabel.frame = signUpSubtitleFrame;
+                         
+                         // Shift SignIn Title
+                         CGRect signInTitleFrame = [self signInTitleFrameForSignUp:self.signUpMode];
+                         if (enable) {
+                             signInTitleFrame.origin.y = facebookButtonFrame.origin.y - signInTitleFrame.size.height;
+                         }
+                         self.signinTitleLabel.frame = signInTitleFrame;
+                         
+                         // Fade out the emil container.
                          self.emailContainerView.alpha = enable ? 0.0 : 1.0;
                          self.signUpToggleButton.alpha = enable ? 0.0 : 1.0;
+                         
                      }
                      completion:^(BOOL finished) {
                          completion();
