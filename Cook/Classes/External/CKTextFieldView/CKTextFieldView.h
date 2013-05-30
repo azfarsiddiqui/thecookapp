@@ -12,13 +12,14 @@
 
 @protocol CKTextFieldViewDelegate <NSObject>
 
-- (void)textFieldViewDidSubmit:(CKTextFieldView *)textFieldView;
-- (BOOL)textFieldViewShouldSubmit:(CKTextFieldView *)textFieldView;
+- (NSString *)progressTextForTextFieldView:(CKTextFieldView *)textFieldView currentText:(NSString *)text;
+- (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView;
 
 @end
 
 @interface CKTextFieldView : UIView
 
+@property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, assign) UIEdgeInsets contentInsets;
 @property (nonatomic, assign) BOOL password;
 @property (nonatomic, strong) UIFont *textFont;
@@ -27,11 +28,19 @@
 @property (nonatomic, strong) UIColor *placeholderColour;
 @property (nonatomic, strong) NSString *placeholder;
 
-- (id)initWithFrame:(CGRect)frame delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder;
-- (id)initWithFrame:(CGRect)frame delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+@property (nonatomic, assign) BOOL allowSpaces;
+@property (nonatomic, assign) NSInteger maxLength;
+@property (nonatomic, assign) BOOL dataValidated;
+
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder;
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
            password:(BOOL)password;
-- (id)initWithFrame:(CGRect)frame delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
            password:(BOOL)password contentInsets:(UIEdgeInsets)contentInsets;
+
 - (NSString *)inputText;
+- (void)setValidated:(BOOL)validated;
+- (void)setValidated:(BOOL)validated message:(NSString *)message;
+- (void)focusTextFieldView:(BOOL)focus;
 
 @end

@@ -29,6 +29,11 @@
 		761186BA16EFFDF2004F631B /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 761186B916EFFDF2004F631B /* FacebookSDK.framework */; };
 		761186BC16EFFE16004F631B /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */; };
 		761186BF16F04831004F631B /* StoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761186BE16F04830004F631B /* StoreBookViewController.m */; };
+		7612E8B317570E800010780D /* cook_signin_icon_error.png in Resources */ = {isa = PBXBuildFile; fileRef = 7612E8AF17570E800010780D /* cook_signin_icon_error.png */; };
+		7612E8B417570E800010780D /* cook_signin_icon_error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7612E8B017570E800010780D /* cook_signin_icon_error@2x.png */; };
+		7612E8B517570E800010780D /* cook_signin_icon_okay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7612E8B117570E800010780D /* cook_signin_icon_okay.png */; };
+		7612E8B617570E800010780D /* cook_signin_icon_okay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7612E8B217570E800010780D /* cook_signin_icon_okay@2x.png */; };
+		7612E8BB17570EAA0010780D /* CKTextFieldViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7612E8B917570EAA0010780D /* CKTextFieldViewHelper.m */; };
 		7614D5951744AD1200B16AC9 /* cook_book_graphic_oranges.png in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5931744AD1100B16AC9 /* cook_book_graphic_oranges.png */; };
 		7614D5961744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5941744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png */; };
 		7614D5A31744B7D400B16AC9 /* Brandon_bld_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5971744B7D400B16AC9 /* Brandon_bld_it.otf */; };
@@ -732,6 +737,12 @@
 		761186BB16EFFE16004F631B /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		761186BD16F04830004F631B /* StoreBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreBookViewController.h; sourceTree = "<group>"; };
 		761186BE16F04830004F631B /* StoreBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreBookViewController.m; sourceTree = "<group>"; };
+		7612E8AF17570E800010780D /* cook_signin_icon_error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_signin_icon_error.png; sourceTree = "<group>"; };
+		7612E8B017570E800010780D /* cook_signin_icon_error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_signin_icon_error@2x.png"; sourceTree = "<group>"; };
+		7612E8B117570E800010780D /* cook_signin_icon_okay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_signin_icon_okay.png; sourceTree = "<group>"; };
+		7612E8B217570E800010780D /* cook_signin_icon_okay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_signin_icon_okay@2x.png"; sourceTree = "<group>"; };
+		7612E8B917570EAA0010780D /* CKTextFieldViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextFieldViewHelper.m; sourceTree = "<group>"; };
+		7612E8BA17570EAA0010780D /* CKTextFieldViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTextFieldViewHelper.h; sourceTree = "<group>"; };
 		7614D5931744AD1100B16AC9 /* cook_book_graphic_oranges.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_oranges.png; sourceTree = "<group>"; };
 		7614D5941744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_oranges@2x.png"; sourceTree = "<group>"; };
 		7614D5971744B7D400B16AC9 /* Brandon_bld_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_bld_it.otf; sourceTree = "<group>"; };
@@ -1689,6 +1700,17 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		7612E8AE17570E800010780D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7612E8AF17570E800010780D /* cook_signin_icon_error.png */,
+				7612E8B017570E800010780D /* cook_signin_icon_error@2x.png */,
+				7612E8B117570E800010780D /* cook_signin_icon_okay.png */,
+				7612E8B217570E800010780D /* cook_signin_icon_okay@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		762C0E4D161A7FC400EBA344 /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -2318,6 +2340,9 @@
 			children = (
 				76BF1FFA1753263A000F0798 /* CKTextFieldView.h */,
 				76BF1FFB1753263A000F0798 /* CKTextFieldView.m */,
+				7612E8B917570EAA0010780D /* CKTextFieldViewHelper.m */,
+				7612E8BA17570EAA0010780D /* CKTextFieldViewHelper.h */,
+				7612E8AE17570E800010780D /* Resources */,
 			);
 			path = CKTextFieldView;
 			sourceTree = "<group>";
@@ -3659,6 +3684,10 @@
 				76BF201E1753A2CF000F0798 /* cook_login_recipes_right@2x.png in Resources */,
 				76BF201F1753A2CF000F0798 /* cook_login_coffeecup.png in Resources */,
 				76BF20201753A2CF000F0798 /* cook_login_coffeecup@2x.png in Resources */,
+				7612E8B317570E800010780D /* cook_signin_icon_error.png in Resources */,
+				7612E8B417570E800010780D /* cook_signin_icon_error@2x.png in Resources */,
+				7612E8B517570E800010780D /* cook_signin_icon_okay.png in Resources */,
+				7612E8B617570E800010780D /* cook_signin_icon_okay@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3855,6 +3884,7 @@
 				76BF202A17544248000F0798 /* WelcomeCollectionViewLayout.m in Sources */,
 				76BF202D17546D31000F0798 /* PageHeaderView.m in Sources */,
 				762F3BAD1756394E00863DDF /* CKSignInButtonView.m in Sources */,
+				7612E8BB17570EAA0010780D /* CKTextFieldViewHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

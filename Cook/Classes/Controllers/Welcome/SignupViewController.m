@@ -9,6 +9,7 @@
 #import "SignupViewController.h"
 #import "AppHelper.h"
 #import "CKTextFieldView.h"
+#import "CKTextFieldViewHelper.h"
 #import "ViewHelper.h"
 #import "Theme.h"
 #import "CKSignInButtonView.h"
@@ -37,10 +38,12 @@
 
 @implementation SignupViewController
 
-#define kEmailSignupSize    CGSizeMake(345.0, 257.0)
-#define kEmailSignInSize    CGSizeMake(345.0, 207.0)
+#define kEmailSignupSize    CGSizeMake(345.0, 270.0)
+#define kEmailSignInSize    CGSizeMake(345.0, 220.0)
 #define kTextFieldSize      CGSizeMake(300.0, 50.0)
 #define kDividerInsets      UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0)
+#define kPasswordMinLength  6
+#define kPasswordMaxLength  32
 
 - (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -157,12 +160,55 @@
 
 #pragma mark - CKTextFieldViewDelegate methods
 
-- (void)textFieldViewDidSubmit:(CKTextFieldView *)textFieldView {
-    
+- (NSString *)progressTextForTextFieldView:(CKTextFieldView *)textFieldView currentText:(NSString *)text {
+    NSString *progressText = nil;
+    if (textFieldView == self.emailNameView) {
+        progressText = [CKTextFieldViewHelper progressTextForNameWithString:text];
+    } else if (textFieldView == self.emailAddressView) {
+        progressText = [CKTextFieldViewHelper progressTextForEmailWithString:text];
+    } else if (textFieldView == self.emailPasswordView) {
+        progressText = [CKTextFieldViewHelper progressPasswordForNameWithString:text min:kPasswordMinLength max:kPasswordMaxLength];
+    }
+    return progressText;
 }
 
-- (BOOL)textFieldViewShouldSubmit:(CKTextFieldView *)textFieldView {
-    return YES;
+- (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView {
+    NSLog(@"textFieldViewDidReturn:");
+    
+    NSString *text = [textFieldView inputText];
+    
+    if (textFieldView == self.emailNameView) {
+        
+        BOOL validated = [text length] > 0;
+        if (validated) {
+            [self.emailNameView setValidated:YES message:@"THANKS"];
+        }
+
+        [self.emailAddressView focusTextFieldView:YES];
+
+    } else if (textFieldView == self.emailAddressView) {
+        
+        BOOL validated = [CKTextFieldViewHelper isValidEmailForString:text];
+        if (validated) {
+            [self.emailAddressView setValidated:YES message:@"THANKS"];
+        } else {
+            [self.emailAddressView setValidated:NO message:@"INVALID EMAIL"];
+        }
+        
+        [self.emailPasswordView focusTextFieldView:YES];
+        
+    } else if (textFieldView == self.emailPasswordView) {
+        
+        BOOL validated = [CKTextFieldViewHelper isValidLengthForString:text min:kPasswordMinLength max:kPasswordMaxLength];
+        if (validated) {
+            [self.emailPasswordView setValidated:YES message:@"THANKS"];
+        } else {
+            [self.emailPasswordView setValidated:NO message:@"INVALID PASSWORD"];
+        }
+        
+        [self.emailPasswordView focusTextFieldView:NO];
+    }
+    
 }
 
 #pragma mark - Properties
@@ -324,33 +370,43 @@
                                       emailContainerView.bounds.size.height - emailInsets.top - emailInsets.bottom);
     
     // Name field anchor to the top.
-    CKTextFieldView *emailNameView = [[CKTextFieldView alloc] initWithFrame:CGRectMake(emailInsets.left,
-                                                                                       emailInsets.top,
-                                                                                       availableSize.width,
-                                                                                       kTextFieldSize.height)
-                                                                   delegate:self placeholder:@"YOUR NAME"];
+    CKTextFieldView *emailNameView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"YOUR NAME"];
+    emailNameView.frame = (CGRect){
+        emailInsets.left,
+        emailInsets.top,
+        emailNameView.frame.size.width,
+        emailNameView.frame.size.height
+    };
     emailNameView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     [emailContainerView addSubview:emailNameView];
     self.emailNameView = emailNameView;
     [emailContainerView addSubview:self.emailNameDivider];
     
     // Email field anchor to the bottom.
-    CKTextFieldView *emailAddressView = [[CKTextFieldView alloc] initWithFrame:CGRectMake(emailInsets.left,
-                                                                                          emailNameView.frame.origin.y + emailNameView.frame.size.height,
-                                                                                          availableSize.width,
-                                                                                          kTextFieldSize.height)
-                                                                   delegate:self placeholder:@"EMAIL ADDRESS"];
+    CKTextFieldView *emailAddressView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"EMAIL ADDRESS"];
+    emailAddressView.allowSpaces = NO;
+    emailAddressView.maxLength = 256;
+    emailAddressView.frame = (CGRect){
+        emailInsets.left,
+        emailNameView.frame.origin.y + emailNameView.frame.size.height,
+        emailAddressView.frame.size.width,
+        emailAddressView.frame.size.height
+    };
     emailAddressView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     [emailContainerView addSubview:emailAddressView];
     self.emailAddressView = emailAddressView;
     [emailContainerView addSubview:self.emailAddressDivider];
 
     // Password field anchor to the bottom.
-    CKTextFieldView *emailPasswordView = [[CKTextFieldView alloc] initWithFrame:CGRectMake(emailInsets.left,
-                                                                                           emailAddressView.frame.origin.y + emailAddressView.frame.size.height,
-                                                                                           availableSize.width,
-                                                                                           kTextFieldSize.height)
-                                                                      delegate:self placeholder:@"PASSWORD" password:YES];
+    CKTextFieldView *emailPasswordView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"PASSWORD" password:YES];
+    emailPasswordView.allowSpaces = NO;
+    emailPasswordView.maxLength = kPasswordMaxLength;
+    emailPasswordView.frame = (CGRect){
+        emailInsets.left,
+        emailAddressView.frame.origin.y + emailAddressView.frame.size.height,
+        emailPasswordView.frame.size.width,
+        emailPasswordView.frame.size.height
+    };
     emailPasswordView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     [emailContainerView addSubview:emailPasswordView];
     self.emailPasswordView = emailPasswordView;
