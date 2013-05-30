@@ -150,7 +150,7 @@
         _button = [UIButton buttonWithType:UIButtonTypeCustom];
         [_button setBackgroundImage:self.image forState:UIControlStateNormal];
         [_button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown|UIControlEventTouchDragEnter|UIControlEventTouchDragInside];
-        [_button addTarget:self action:@selector(buttonTouchUpOutside:) forControlEvents:UIControlEventTouchDragExit|UIControlEventTouchDragOutside|UIControlEventTouchUpOutside];
+        [_button addTarget:self action:@selector(buttonTouchUpOutside:) forControlEvents:UIControlEventTouchDragExit|UIControlEventTouchDragOutside|UIControlEventTouchUpOutside|UIControlEventTouchCancel];
         [_button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_button setFrame:self.bounds];
         _button.autoresizingMask = UIViewAutoresizingNone;
