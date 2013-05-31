@@ -103,7 +103,15 @@
 - (void)enable:(BOOL)enable {
     self.collectionView.userInteractionEnabled = enable;
     
-    [self updateBenchtopLevelView];
+    if ([CKUser isLoggedIn]) {
+        self.benchtopLevelView.hidden = NO;
+        self.notificationView.hidden = NO;
+        [self updateBenchtopLevelView];
+    } else {
+        self.benchtopLevelView.hidden = YES;
+        self.notificationView.hidden = YES;
+    }
+    
 }
 
 - (void)bookWillOpen:(BOOL)open {
@@ -763,6 +771,7 @@
 }
 
 - (void)updateBenchtopLevelView {
+    self.benchtopLevelView.hidden = NO;
     NSInteger level = [self.delegate currentBenchtopLevel];
     switch (level) {
         case 2:
