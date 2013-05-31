@@ -38,8 +38,8 @@
 
 @implementation SignupViewController
 
-#define kEmailSignupSize    CGSizeMake(345.0, 270.0)
-#define kEmailSignInSize    CGSizeMake(345.0, 220.0)
+#define kEmailSignupSize    CGSizeMake(345.0, 300.0)
+#define kEmailSignInSize    CGSizeMake(345.0, 230.0)
 #define kTextFieldSize      CGSizeMake(300.0, 50.0)
 #define kDividerInsets      UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0)
 #define kPasswordMinLength  6

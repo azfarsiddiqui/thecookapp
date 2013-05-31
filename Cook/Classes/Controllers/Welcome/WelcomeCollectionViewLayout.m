@@ -165,7 +165,7 @@
             frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
             break;
         case kCreateSection:
-            frame.origin.x = pageOffset + 80.0;
+            frame.origin.x = pageOffset + 95.0;
             frame.origin.y = floorf((size.height - pageHeaderSize.height) / 2.0);
             break;
         case kCollectSection:
@@ -283,7 +283,7 @@
     NSIndexPath *rightIndexPath = [NSIndexPath indexPathForItem:0 inSection:kCreateSection];
     CGSize rightSize = [self.dataSource sizeOfAdornmentForIndexPath:rightIndexPath];
     UICollectionViewLayoutAttributes *rightLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:rightIndexPath];
-    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width,
+    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width - 30.0,
                                              floorf((size.height - rightSize.height) / 2.0),
                                              rightSize.width,
                                              rightSize.height);
@@ -414,7 +414,6 @@
                 translateRatio = 0.1;
             }
             
-            // CGFloat distanceCap = self.collectionView.bounds.size.width;
             CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
             CATransform3D translate = CATransform3DMakeTranslation(-distance * translateRatio, 0.0, 0.0);
             attributes.transform3D = translate;

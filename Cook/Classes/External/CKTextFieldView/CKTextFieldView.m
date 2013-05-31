@@ -22,11 +22,11 @@
 
 @implementation CKTextFieldView
 
-#define kDefaultContentInsets   UIEdgeInsetsMake(5.0, 20.0, 5.0, 20.0)
-#define kTextFieldFont          [UIFont fontWithName:@"BrandonGrotesque-Regular" size:16]
-#define kTextFieldColour        [UIColor colorWithHexString:@"333333"]
-#define kPlaceholderFont        [UIFont fontWithName:@"BrandonGrotesque-Regular" size:16]
-#define kPlaceholderColour      [UIColor colorWithHexString:@"333333"]
+#define kDefaultContentInsets   UIEdgeInsetsMake(8.0, 20.0, 8.0, 20.0)
+#define kTextFieldFont          [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20]
+#define kTextFieldColour        [UIColor colorWithHexString:@"555555"]
+#define kPlaceholderFont        [UIFont fontWithName:@"BrandonGrotesque-Medium" size:16]
+#define kPlaceholderColour      [UIColor colorWithHexString:@"555555"]
 #define kMessageFont            [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14]
 #define kMessageColour          [UIColor colorWithHexString:@"55A33A"]
 #define kMessageErrorColour     [UIColor colorWithHexString:@"F2583F"]

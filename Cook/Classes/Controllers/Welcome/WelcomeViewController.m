@@ -51,8 +51,8 @@
 #define kCollectSection     2
 #define kSignUpSection      3
 #define kAdornmentTag       470
-#define kLabelTitleFont     [UIFont fontWithName:@"BrandonGrotesque-Bold" size:52.0]
-#define kLabelSubtitleFont  [UIFont fontWithName:@"BrandonGrotesque-Medium" size:26.0]
+#define kLabelTitleFont     [UIFont fontWithName:@"BrandonGrotesque-Medium" size:67.0]
+#define kLabelSubtitleFont  [UIFont fontWithName:@"BrandonGrotesque-Medium" size:28.0]
 #define kPageHeaderSize     CGSizeMake(500.0, 500.0)
 #define kLabelGap           10.0
 
@@ -73,7 +73,7 @@
     // Underlay.
     UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
     overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+    overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.38];
     [self.view insertSubview:overlayView belowSubview:self.collectionView];
     self.overlayView = overlayView;
     
@@ -180,7 +180,9 @@
         _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createTitleLabelWithText:@"WELCOME" textAlignment:NSTextAlignmentCenter availableSize:size];
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Bold" size:67.0]
+                                                   text:@"WELCOME" textAlignment:NSTextAlignmentCenter
+                                          availableSize:size lineSpacing:-20.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
                                       0.0,
                                       titleLabel.frame.size.width,
@@ -188,16 +190,16 @@
         [_welcomePageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Cook helps you create your very own\u2028Cookbook for iPad"
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"It's time to create your very\u2028own Cookbook for iPad."
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
-                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap,
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
                                          subtitleLabel.frame.size.width,
                                          subtitleLabel.frame.size.height);
         [_welcomePageView addSubview:subtitleLabel];
         
         // SubSubtitle
-        UILabel *subSubtitleLabel = [self createSubtitleLabelWithText:@"Gather all those scattered recipes\u2028you love and bring them\u2028together in one place..."
+        UILabel *subSubtitleLabel = [self createSubtitleLabelWithText:@"Gather all those scattered\u2028recipes love and bring\u2028them together in one place..."
                                                     textAlignment:NSTextAlignmentCenter availableSize:size];
         subSubtitleLabel.frame = CGRectMake(floorf((size.width - subSubtitleLabel.frame.size.width) / 2.0),
                                             subtitleLabel.frame.origin.y + subtitleLabel.frame.size.height + kLabelGap,
@@ -218,16 +220,17 @@
         _createPageView.autoresizingMask = UIViewAutoresizingNone;
 
         // Title
-        UILabel *titleLabel = [self createTitleLabelWithText:@"CREATE YOUR\u2028COOKBOOK"
-                                               textAlignment:NSTextAlignmentLeft availableSize:size];
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Bold" size:56.0]
+                                                   text:@"CREATE YOUR\u2028COOKBOOK" textAlignment:NSTextAlignmentLeft
+                                          availableSize:size lineSpacing:-15.0];
         titleLabel.frame = CGRectMake(0.0,
-                                      0.0,
+                                      50.0,
                                       titleLabel.frame.size.width,
                                       titleLabel.frame.size.height);
         [_createPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Forget Jame or Delia, add all your\u2028favourite recipes, then customise the\u2028cover of your book and it's ready to share\nwith your friends"
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Forget Jamie or Delia, add all your\u2028favourite recipes, then customise \u2028the cover of your book and it's\u2028ready to share with your friends..."
                                                      textAlignment:NSTextAlignmentLeft availableSize:size];
         subtitleLabel.frame = CGRectMake(0.0,
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap,
@@ -247,19 +250,20 @@
         _collectPageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createTitleLabelWithText:@"COLLECT YOUR\u2028FRIENDS' BOOKS"
-                                               textAlignment:NSTextAlignmentCenter availableSize:size];
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Bold" size:52.0]
+                                                   text:@"COLLECT YOUR\u2028FRIENDS' BOOKS" textAlignment:NSTextAlignmentCenter
+                                          availableSize:size lineSpacing:-15.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
-                                      0.0,
+                                      10.0,
                                       titleLabel.frame.size.width,
                                       titleLabel.frame.size.height);
         [_collectPageView addSubview:titleLabel];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Check out your friends' books, see their cooking tips and make their best dishes or\u2028browse the library and discover new\u2028friends from around the world."
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Check out your friends'\u2028books, see their cooking tips\u2028and make their best dishes.\u2028\u2028Or browse the library and\u2028discover new friends from\u2028around the world."
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
-                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap,
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap + 5.0,
                                          subtitleLabel.frame.size.width,
                                          subtitleLabel.frame.size.height);
         [_collectPageView addSubview:subtitleLabel];
@@ -591,7 +595,8 @@
     
     NSShadow *shadow = [NSShadow new];
     shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-    shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+    shadow.shadowOffset = CGSizeMake(0.0, 2.0);
+    shadow.shadowBlurRadius = 4.0;
 
     return [NSDictionary dictionaryWithObjectsAndKeys:
             font, NSFontAttributeName,
