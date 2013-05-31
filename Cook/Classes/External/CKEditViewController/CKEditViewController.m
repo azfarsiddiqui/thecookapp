@@ -152,9 +152,9 @@
                                                                        // Fade in target editing view.
                                                                        targetEditView.alpha = 1.0;
                                                                        
-//                                                                       if (!self.white) {
-//                                                                           [targetTextBoxView setTextBoxViewWithEdit:NO];
-//                                                                       }
+                                                                       if (!self.white) {
+                                                                           [targetTextBoxView setTextBoxViewWithEdit:NO];
+                                                                       }
                                                                        
                                                                        // Show the save icon.
                                                                        if ([self showSaveIcon]) {

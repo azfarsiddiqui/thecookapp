@@ -11,9 +11,10 @@
 @interface CKEditingTextBoxView () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *editingView;
-@property (nonatomic, strong) UIView *textEditBoxImageView;
+@property (nonatomic, strong) UIImageView *textEditBoxImageView;
 @property (nonatomic, strong) UIButton *textEditingSaveButton;
 @property (nonatomic, assign) CGPoint iconOffset;
+@property (nonatomic, assign) BOOL white;
 
 @end
 
@@ -39,13 +40,8 @@
     [textBoxName appendString:editMode ? @"_edit" : @""];
     [textBoxName appendString:@".png"];
     
-    UIImage *textBoxImage = [UIImage imageNamed:textBoxName];
-    if (editMode) {
-        textBoxImage = [textBoxImage resizableImageWithCapInsets:UIEdgeInsetsMake(48.0, 41.0, 6.0, 41.0)];
-    } else {
-        textBoxImage = [textBoxImage resizableImageWithCapInsets:UIEdgeInsetsMake(6.0, 6.0, 6.0, 6.0)];
-    }
-    
+    UIImage *textBoxImage = [[UIImage imageNamed:textBoxName]
+                             resizableImageWithCapInsets:UIEdgeInsetsMake(48.0, 41.0, 6.0, 41.0)];
     return textBoxImage;
 }
 
@@ -64,6 +60,7 @@
         self.delegate = delegate;
         self.contentInsets = contentInsets;
         self.userInteractionEnabled = YES;
+        self.white = white;
         self.iconOffset = CGPointMake(-32.0, -11.0);
         
         // Text box.
@@ -157,6 +154,10 @@
 
 - (CGRect)textBoxFrame {
     return self.textEditBoxImageView.frame;
+}
+
+- (void)setTextBoxViewWithEdit:(BOOL)editMode {
+    self.textEditBoxImageView.image = [CKEditingTextBoxView textEditingBoxWhite:self.white editMode:editMode];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
