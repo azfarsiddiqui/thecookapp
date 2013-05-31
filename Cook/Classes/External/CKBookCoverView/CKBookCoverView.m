@@ -106,7 +106,8 @@
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:NO
                                                                                                               title:@"Title"
-                                                                                                     characterLimit:20];
+                                                                                                     characterLimit:32];
+        editViewController.fontSize = 40.0;
         self.editViewController = editViewController;
     } else if (editingView == self.authorLabel) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
