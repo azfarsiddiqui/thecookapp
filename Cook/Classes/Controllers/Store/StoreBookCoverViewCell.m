@@ -46,8 +46,8 @@
     if (followed) {
         if (!self.followedIconView) {
             UIImageView *followedIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_icon_added.png"]];
-            followedIconView.frame = CGRectMake(-30.0,
-                                                -30.0,
+            followedIconView.frame = CGRectMake(-40.0,
+                                                -40.0,
                                                 followedIconView.frame.size.width,
                                                 followedIconView.frame.size.height);
             self.followedIconView = followedIconView;
