@@ -406,8 +406,13 @@
         if (self.collectionView.contentOffset.x >= pageOffset) {
             
             CGFloat translateRatio = 0.0;
+            
             if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
                 translateRatio = 0.4;
+                attributes.alpha = [self alphaForTitleLabelForPage:kWelcomeSection origin:attributes.center.x
+                                                        leftOffset:400.0
+                                                       rightOffset:floorf((attributes.frame.size.width) / 2.0)];
+                
             } else if (indexPath.item == 1) {
                 translateRatio = 0.5;
             } else if (indexPath.item == 0) {
@@ -432,14 +437,22 @@
     CGFloat startOffset = [self pageOffsetForPage:kWelcomeSection];
     CGFloat pageOffset = [self pageOffsetForPage:kCreateSection];
     
-    if (self.collectionView.contentOffset.x >= startOffset) {
+    if (self.collectionView.contentOffset.x >= startOffset &&
+        self.collectionView.contentOffset.x <= pageOffset + self.collectionView.bounds.size.width) {
         
         CGFloat translateRatio = 0.0;
         if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
             translateRatio = 0.2;
+            
+            // Apply alpha.
+            attributes.alpha = [self alphaForTitleLabelForPage:kCreateSection origin:attributes.center.x
+                                                    leftOffset:floorf(attributes.frame.size.width / 2.0)
+                                                   rightOffset:700.0];
+            
         } else if (indexPath.item == 0) {
             translateRatio = 0.6;
         }
+        
         
         // CGFloat distanceCap = self.collectionView.bounds.size.width;
         CGFloat distance = self.collectionView.contentOffset.x - pageOffset;
@@ -447,9 +460,11 @@
         attributes.transform3D = translate;
         
     } else {
-        attributes.transform3D = CATransform3DIdentity;
         attributes.alpha = 1.0;
+        attributes.transform3D = CATransform3DIdentity;
     }
+    
+
 }
 
 - (void)applyPagingEffectsForCollectWithAttributes:(UICollectionViewLayoutAttributes *)attributes {
@@ -462,6 +477,9 @@
         CGFloat translateRatio = 0.0;
         if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
             translateRatio = 0.4;
+            attributes.alpha = [self alphaForTitleLabelForPage:kCollectSection origin:attributes.center.x
+                                                    leftOffset:400.0
+                                                   rightOffset:400.0];
         } else if (indexPath.item == 1) {
             translateRatio = 0.5;
         } else if (indexPath.item == 0) {
@@ -504,6 +522,22 @@
     CGPoint startPoint = CGPointMake(pageOffset + floorf((self.collectionView.bounds.size.width - size.width)) / 2.0,
                                      self.collectionView.bounds.size.height - size.height - bottomGap);
     return startPoint;
+}
+
+- (CGFloat)alphaForTitleLabelForPage:(NSInteger)page origin:(CGFloat)originOffset leftOffset:(CGFloat)leftOffset
+                         rightOffset:(CGFloat)rightOffset {
+    CGFloat alpha = 0.0;
+    CGFloat pageOffset = [self pageOffsetForPage:page];
+    CGFloat adjustment = originOffset - pageOffset;
+    CGFloat distance = originOffset - self.collectionView.contentOffset.x - adjustment;
+//    DLog(@"PAGE[%d] ORIGIN[%f] ADJUSTMENT[%f] DISTANCE[%f]", page, originOffset, adjustment, distance);
+    if (distance >= 0 && distance <= rightOffset) {
+        alpha = 1.0 - ABS(distance / rightOffset);
+    } else if (distance <= 0 &&  ABS(distance <= leftOffset)) {
+        alpha = 1.0 - ABS(distance / leftOffset);
+    }
+    
+    return alpha;
 }
 
 @end
