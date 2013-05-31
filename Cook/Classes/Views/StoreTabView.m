@@ -122,12 +122,8 @@
         [tabImageView addGestureRecognizer:tapGesture];
         
         // Next tab offset
-        offset += tabImageView.frame.size.width - 19.0;
+        offset += tabImageView.frame.size.width - 18.0;
     }
-    
-    // Bring the middle tab to front.
-    UIView *middleTabView = [self.tabs objectAtIndex:1];
-    [self bringSubviewToFront:middleTabView];
     
     // Select the first tab.
     [self selectFeatured];
@@ -172,6 +168,10 @@
     
     self.selectedTabIndex = tabIndex;
     self.animating = YES;
+    
+    // Bring the selected tab upfront.
+    UIView *selectedTabView = [self.tabs objectAtIndex:tabIndex];
+    [self bringSubviewToFront:selectedTabView];
     
     [UIView animateWithDuration:0.15
                           delay:0.0
