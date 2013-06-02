@@ -19,9 +19,9 @@
 @interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate>
 
 @property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
-@property (nonatomic, strong) UILabel *signupTitleLabel;
-@property (nonatomic, strong) UILabel *signinTitleLabel;
-@property (nonatomic, strong) UILabel *signupSubtitleLabel;
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *subtitleLabel;
+@property (nonatomic, strong) UILabel *orLabel;
 @property (nonatomic, strong) UIView *emailContainerView;
 @property (nonatomic, strong) CKTextFieldView *emailNameView;
 @property (nonatomic, strong) CKTextFieldView *emailAddressView;
@@ -30,7 +30,7 @@
 @property (nonatomic, strong) UIView *emailAddressDivider;
 @property (nonatomic, strong) CKSignInButtonView *emailButton;
 @property (nonatomic, strong) CKSignInButtonView *facebookButton;
-@property (nonatomic, strong) UIButton *signUpToggleButton;
+@property (nonatomic, strong) UIButton *footerToggleButton;
 @property (nonatomic, assign) BOOL signUpMode;
 @property (nonatomic, assign) BOOL animating;
 
@@ -44,6 +44,7 @@
 #define kDividerInsets      UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0)
 #define kPasswordMinLength  6
 #define kPasswordMaxLength  32
+#define kFooterTextInsets   UIEdgeInsetsMake(5.0, 20.0, 25.0, 20.0)
 
 - (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -86,34 +87,33 @@
     if (signUp) {
         self.emailNameView.alpha = 0.0;
         self.emailNameView.hidden = NO;
-        self.signupSubtitleLabel.alpha = 0.0;
-        self.signupSubtitleLabel.hidden = NO;
+        self.subtitleLabel.alpha = 0.0;
+        self.subtitleLabel.hidden = NO;
         self.emailNameDivider.alpha = 0.0;
         self.emailNameDivider.hidden = NO;
-    } else {
-        self.signinTitleLabel.alpha = 0.0;
-        self.signinTitleLabel.hidden = NO;
     }
     
     if (animated) {
+        
         [UIView animateWithDuration:0.2
                               delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
+                            options:UIViewAnimationOptionCurveLinear
                          animations:^{
                              self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
-                             self.signupTitleLabel.frame = [self signUpTitleFrameForSignUp:signUp];
-                             self.signinTitleLabel.frame = [self signInTitleFrameForSignUp:signUp];
-                             self.signupSubtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
+                             self.titleLabel.frame = [self titleFrameForSignUp:signUp];
+                             self.subtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
                              self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
+                             self.orLabel.frame = [self orLabelFrameForSignUp:signUp];
                              
-                             self.signupTitleLabel.alpha = signUp ? 1.0 : 0.0;
-                             self.signinTitleLabel.alpha = signUp ? 0.0 : 1.0;
-                             self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
+                             self.subtitleLabel.alpha = signUp ? 1.0 : 0.0;
                              self.emailNameView.alpha = signUp ? 1.0 : 0.0;
                              self.emailNameDivider.alpha = signUp ? 1.0 : 0.0;
                              
                          }
                          completion:^(BOOL finished) {
+                             
+                             // Update header text.
+                             [self updateHeaderTextForSignUp:signUp];
                              
                              // Update signup/signin buttons.
                              [self.emailButton setText:[self emailButtonTextForSignUp:signUp] activity:NO animated:NO];
@@ -122,38 +122,42 @@
                              // Update footer text.
                              [self updateFooterButtonForSignUp:signUp];
                              
-                             if (signUp) {
-                                 self.signinTitleLabel.hidden = YES;
-                             } else {
+                             if (!signUp) {
                                  self.emailNameView.hidden = YES;
                                  self.emailNameDivider.hidden = YES;
-                                 self.signupSubtitleLabel.hidden = NO;
+                                 self.subtitleLabel.hidden = NO;
                              }
                              
                              self.animating = NO;
                              
                          }];
     } else {
-         self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
-         self.signupTitleLabel.frame = [self signUpTitleFrameForSignUp:signUp];
-         self.signinTitleLabel.frame = [self signInTitleFrameForSignUp:signUp];
-         self.signupSubtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
-         self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
-         
-         self.signupTitleLabel.alpha = signUp ? 1.0 : 0.0;
-         self.signinTitleLabel.alpha = signUp ? 0.0 : 1.0;
-         self.signupSubtitleLabel.alpha = signUp ? 1.0 : 0.0;
-         self.emailNameView.alpha = signUp ? 1.0 : 0.0;
+        self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
+        self.titleLabel.frame = [self titleFrameForSignUp:signUp];
+        self.subtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
+        self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
+        self.orLabel.frame = [self orLabelFrameForSignUp:signUp];
         
-         [self updateFooterButtonForSignUp:signUp];
+        self.subtitleLabel.alpha = signUp ? 1.0 : 0.0;
+        self.emailNameView.alpha = signUp ? 1.0 : 0.0;
+        self.emailNameDivider.alpha = signUp ? 1.0 : 0.0;
         
-         if (signUp) {
-             self.signinTitleLabel.hidden = YES;
-         } else {
+        // Update header text.
+        [self updateHeaderTextForSignUp:signUp];
+        
+        // Update signup/signin buttons.
+        [self.emailButton setText:[self emailButtonTextForSignUp:signUp] activity:NO animated:NO];
+        [self.facebookButton setText:[self facebookButtonTextForSignUp:signUp] activity:NO animated:NO];
+        
+        // Update footer text.
+        [self updateFooterButtonForSignUp:signUp];
+        
+         if (!signUp) {
              self.emailNameView.hidden = YES;
-             self.signupSubtitleLabel.hidden = NO;
+             self.emailNameDivider.hidden = YES;
+             self.subtitleLabel.hidden = NO;
          }
-         
+        
          self.animating = NO;
     }
 }
@@ -208,40 +212,42 @@
 
 #pragma mark - Properties
 
-- (UILabel *)signupTitleLabel {
-    if (!_signupTitleLabel) {
-        _signupTitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _signupTitleLabel.backgroundColor = [UIColor clearColor];
-        _signupTitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:62];
-        _signupTitleLabel.textColor = [UIColor whiteColor];
-        _signupTitleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _signupTitleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+- (UILabel *)titleLabel {
+    if (!_titleLabel) {
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:62];
+        _titleLabel.textColor = [UIColor whiteColor];
+        _titleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+        _titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     }
-    return _signupTitleLabel;
+    return _titleLabel;
 }
 
-- (UILabel *)signinTitleLabel {
-    if (!_signinTitleLabel) {
-        _signinTitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _signinTitleLabel.backgroundColor = [UIColor clearColor];
-        _signinTitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:62];
-        _signinTitleLabel.textColor = [UIColor whiteColor];
-        _signinTitleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _signinTitleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+- (UILabel *)subtitleLabel {
+    if (!_subtitleLabel) {
+        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _subtitleLabel.backgroundColor = [UIColor clearColor];
+        _subtitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:26];
+        _subtitleLabel.textColor = [UIColor whiteColor];
+        _subtitleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+        _subtitleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     }
-    return _signinTitleLabel;
+    return _subtitleLabel;
 }
 
-- (UILabel *)signupSubtitleLabel {
-    if (!_signupSubtitleLabel) {
-        _signupSubtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _signupSubtitleLabel.backgroundColor = [UIColor clearColor];
-        _signupSubtitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:26];
-        _signupSubtitleLabel.textColor = [UIColor whiteColor];
-        _signupSubtitleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-        _signupSubtitleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+- (UILabel *)orLabel {
+    if (!_orLabel) {
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _orLabel.backgroundColor = [UIColor clearColor];
+        _orLabel.text = @"or";
+        _orLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:26];
+        _orLabel.textColor = [UIColor whiteColor];
+        _orLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+        _orLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        [_orLabel sizeToFit];
     }
-    return _signupSubtitleLabel;
+    return _orLabel;
 }
 
 - (CKSignInButtonView *)emailButton {
@@ -282,18 +288,18 @@
     return _facebookButton;
 }
 
-- (UIButton *)signUpToggleButton {
-    if (!_signUpToggleButton) {
-        _signUpToggleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _signUpToggleButton.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:14];
-        _signUpToggleButton.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _signUpToggleButton.userInteractionEnabled = YES;
-        [_signUpToggleButton setTitleShadowColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5] forState:UIControlStateNormal];
-        [_signUpToggleButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_signUpToggleButton setTitleColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5] forState:UIControlStateHighlighted];
-        [_signUpToggleButton addTarget:self action:@selector(toggleButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)footerToggleButton {
+    if (!_footerToggleButton) {
+        _footerToggleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _footerToggleButton.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:14];
+        _footerToggleButton.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        _footerToggleButton.userInteractionEnabled = YES;
+        [_footerToggleButton setTitleShadowColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5] forState:UIControlStateNormal];
+        [_footerToggleButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_footerToggleButton setTitleColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5] forState:UIControlStateHighlighted];
+        [_footerToggleButton addTarget:self action:@selector(toggleButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _signUpToggleButton;
+    return _footerToggleButton;
 }
 
 - (UIView *)emailNameDivider {
@@ -410,67 +416,67 @@
 - (void)initHeaderView {
     
     // Signup Title
-    if (!self.signupTitleLabel.superview) {
-        [self.view addSubview:self.signupTitleLabel];
+    if (!self.titleLabel.superview) {
+        [self.view addSubview:self.titleLabel];
     }
-    self.signupTitleLabel.text = [self headerTitleForSignUp:self.signUpMode];
-    [self.signupTitleLabel sizeToFit];
-    self.signupTitleLabel.frame = [self signUpTitleFrameForSignUp:self.signUpMode];
+    self.titleLabel.text = [self titleForSignUp:self.signUpMode];
+    [self.titleLabel sizeToFit];
+    self.titleLabel.frame = [self titleFrameForSignUp:self.signUpMode];
     
     // Signup Subtitle
-    if (!self.signupSubtitleLabel.superview) {
-        [self.view addSubview:self.signupSubtitleLabel];
+    if (!self.subtitleLabel.superview) {
+        [self.view addSubview:self.subtitleLabel];
     }
-    self.signupSubtitleLabel.text = [self headerSubtitleForSignUp:self.signUpMode];
-    [self.signupSubtitleLabel sizeToFit];
-    self.signupSubtitleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.signupSubtitleLabel.frame.size.width) / 2.0),
-                                                self.signupTitleLabel.frame.origin.y + self.signupTitleLabel.frame.size.height - 20.0,
-                                                self.signupSubtitleLabel.frame.size.width,
-                                                self.signupSubtitleLabel.frame.size.height);
+    self.subtitleLabel.text = [self subtitleForSignUp:self.signUpMode];
+    [self.subtitleLabel sizeToFit];
+    self.subtitleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.subtitleLabel.frame.size.width) / 2.0),
+                                                self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height - 20.0,
+                                                self.subtitleLabel.frame.size.width,
+                                                self.subtitleLabel.frame.size.height);
     
-    // Signin Title
-    if (!self.signinTitleLabel.superview) {
-        [self.view addSubview:self.signinTitleLabel];
-    }
-    self.signinTitleLabel.text = [self headerTitleForSignUp:!self.signUpMode];
-    [self.signinTitleLabel sizeToFit];
-    self.signinTitleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.signinTitleLabel.frame.size.width) / 2.0),
-                                             self.emailContainerView.frame.origin.y - self.signinTitleLabel.frame.size.height - 30.0,
-                                             self.signinTitleLabel.frame.size.width,
-                                             self.signinTitleLabel.frame.size.height);
-    self.signinTitleLabel.hidden = YES;
 }
 
 - (void)initButtons {
     [self.emailContainerView addSubview:self.emailButton];
     [self.view addSubview:self.facebookButton];
+    self.orLabel.frame = [self orLabelFrameForSignUp:self.signUpMode];
+    [self.view addSubview:self.orLabel];
 }
 
 - (void)initFooterView {
     [self updateFooterButtonForSignUp:YES];
 }
 
+- (void)updateHeaderTextForSignUp:(BOOL)signUp {
+    self.titleLabel.text = [self titleForSignUp:signUp];
+    [self.titleLabel sizeToFit];
+    self.titleLabel.frame = [self titleFrameForSignUp:signUp];
+}
+
 - (void)updateFooterButtonForSignUp:(BOOL)signUp {
-    if (!self.signUpToggleButton.superview) {
-        [self.view addSubview:self.signUpToggleButton];
+    if (!self.footerToggleButton.superview) {
+        [self.view addSubview:self.footerToggleButton];
     }
-    [self.signUpToggleButton setTitle:[self footerTextForSignUp:signUp] forState:UIControlStateNormal];
-    [self.signUpToggleButton sizeToFit];
-    self.signUpToggleButton.frame = CGRectMake(floorf((self.view.bounds.size.width - self.signUpToggleButton.frame.size.width) / 2.0),
-                                        self.view.bounds.size.height - self.signUpToggleButton.frame.size.height - 20.0,
-                                        self.signUpToggleButton.frame.size.width,
-                                        self.signUpToggleButton.frame.size.height);
+    [self.footerToggleButton setTitle:[self footerTextForSignUp:signUp] forState:UIControlStateNormal];
+    [self.footerToggleButton sizeToFit];
+    self.footerToggleButton.backgroundColor = [UIColor clearColor];
+    self.footerToggleButton.frame = (CGRect){
+        floorf((self.view.bounds.size.width - self.footerToggleButton.frame.size.width - kFooterTextInsets.left - kFooterTextInsets.right) / 2.0),
+        self.view.bounds.size.height - self.footerToggleButton.frame.size.height - kFooterTextInsets.top - kFooterTextInsets.bottom,
+        kFooterTextInsets.left + self.footerToggleButton.frame.size.width+ kFooterTextInsets.right,
+        kFooterTextInsets.top + self.footerToggleButton.frame.size.height + kFooterTextInsets.bottom
+    };
 }
 
 - (void)toggleButtonTapped:(id)sender {
     [self enableSignUpMode:!self.signUpMode];
 }
 
-- (NSString *)headerTitleForSignUp:(BOOL)signUp {
+- (NSString *)titleForSignUp:(BOOL)signUp {
     return signUp ? @"GET STARTED" : @"SIGN IN";
 }
 
-- (NSString *)headerSubtitleForSignUp:(BOOL)signUp {
+- (NSString *)subtitleForSignUp:(BOOL)signUp {
     return signUp ? @"Just choose a way to signup below..." : @"";
 }
 
@@ -494,25 +500,22 @@
                       size.height);
 }
 
-- (CGRect)signUpTitleFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.signupTitleLabel.frame.size.width) / 2.0),
-                      self.emailContainerView.frame.origin.y - self.signupTitleLabel.frame.size.height - 20.0,
-                      self.signupTitleLabel.frame.size.width,
-                      self.signupTitleLabel.frame.size.height);
+- (CGRect)titleFrameForSignUp:(BOOL)signUp {
+    CGRect frame = self.titleLabel.frame;
+    frame.origin.x = floorf((self.view.bounds.size.width - frame.size.width) / 2.0);
+    if (signUp) {
+        frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height - 20.0;
+    } else {
+        frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height + 5.0;
+    }
+    return frame;
 }
 
 - (CGRect)signupSubtitleFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.signupSubtitleLabel.frame.size.width) / 2.0),
-                      self.signupTitleLabel.frame.origin.y + self.signupTitleLabel.frame.size.height - 20.0,
-                      self.signupSubtitleLabel.frame.size.width,
-                      self.signupSubtitleLabel.frame.size.height);
-}
-
-- (CGRect)signInTitleFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.signinTitleLabel.frame.size.width) / 2.0),
-                      self.emailContainerView.frame.origin.y - self.signinTitleLabel.frame.size.height + 5.0,
-                      self.signinTitleLabel.frame.size.width,
-                      self.signinTitleLabel.frame.size.height);
+    return CGRectMake(floorf((self.view.bounds.size.width - self.subtitleLabel.frame.size.width) / 2.0),
+                      self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height - 20.0,
+                      self.subtitleLabel.frame.size.width,
+                      self.subtitleLabel.frame.size.height);
 }
 
 - (CGRect)facebookFrameForSignUp:(BOOL)signUp {
@@ -520,6 +523,13 @@
                       self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 20.0,
                       self.facebookButton.frame.size.width,
                       self.facebookButton.frame.size.height);
+}
+
+- (CGRect)orLabelFrameForSignUp:(BOOL)signUp {
+    return CGRectMake(floorf((self.view.bounds.size.width - self.orLabel.frame.size.width) / 2.0),
+                      self.facebookButton.frame.origin.y - self.orLabel.frame.size.height + 2.0,
+                      self.orLabel.frame.size.width,
+                      self.orLabel.frame.size.height);
 }
 
 - (void)handleKeyboardShow:(BOOL)show keyboardFrame:(CGRect)keyboardFrame {
@@ -614,30 +624,29 @@
                          }
                          self.facebookButton.frame = facebookButtonFrame;
                          
-                         // Shift SignUp Title.
-                         CGRect signUpTitleFrame = [self signUpTitleFrameForSignUp:self.signUpMode];
+                         // Shift Title.
+                         CGRect signUpTitleFrame = [self titleFrameForSignUp:self.signUpMode];
                          if (enable) {
                              signUpTitleFrame.origin.y = facebookButtonFrame.origin.y - 120.0;
                          }
-                         self.signupTitleLabel.frame = signUpTitleFrame;
+                         self.titleLabel.frame = signUpTitleFrame;
                          
                          // Shift SignUp Subtitle.
                          CGRect signUpSubtitleFrame = [self signupSubtitleFrameForSignUp:self.signUpMode];
                          if (enable) {
                              signUpSubtitleFrame.origin.y = signUpTitleFrame.origin.y + signUpTitleFrame.size.height - 20.0;
                          }
-                         self.signupSubtitleLabel.frame = signUpSubtitleFrame;
+                         self.subtitleLabel.frame = signUpSubtitleFrame;
                          
                          // Shift SignIn Title
-                         CGRect signInTitleFrame = [self signInTitleFrameForSignUp:self.signUpMode];
-                         if (enable) {
-                             signInTitleFrame.origin.y = facebookButtonFrame.origin.y - signInTitleFrame.size.height;
-                         }
-                         self.signinTitleLabel.frame = signInTitleFrame;
+                         
+                         // Shift or label up.
+                         self.orLabel.frame = [self orLabelFrameForSignUp:self.signUpMode];
                          
                          // Fade out the emil container.
                          self.emailContainerView.alpha = enable ? 0.0 : 1.0;
-                         self.signUpToggleButton.alpha = enable ? 0.0 : 1.0;
+                         self.footerToggleButton.alpha = enable ? 0.0 : 1.0;
+                         self.orLabel.alpha = enable ? 0.0 : 1.0;
                          
                      }
                      completion:^(BOOL finished) {
