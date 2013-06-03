@@ -21,8 +21,9 @@ typedef enum {
 
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type;
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type contentInsets:(UIEdgeInsets)contentInsets;
-- (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type animated:(BOOL)animated
+- (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type slideAnimated:(BOOL)slideAnimated
          contentInsets:(UIEdgeInsets)contentInsets;
 - (void)setPage:(NSInteger)page;
+- (void)setPage:(NSInteger)page animated:(BOOL)animated;
 
 @end

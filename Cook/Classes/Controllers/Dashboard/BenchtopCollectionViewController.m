@@ -756,6 +756,8 @@
 }
 
 - (void)loadBenchtop:(BOOL)load {
+    
+    [self.benchtopLevelView setPage:1 animated:NO];
     [self enable:load];
     
     if (load) {

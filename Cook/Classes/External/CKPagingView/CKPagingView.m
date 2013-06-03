@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) NSMutableArray *dotViews;
 @property (nonatomic, strong) UIView *selectedDotView;
-@property (nonatomic, assign) BOOL animated;
+@property (nonatomic, assign) BOOL slideAnimated;
 @property (nonatomic, assign) BOOL animating;
 
 @end
@@ -26,17 +26,17 @@
 }
 
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type contentInsets:(UIEdgeInsets)contentInsets {
-    return [self initWithNumPages:numPages type:type animated:YES contentInsets:contentInsets];
+    return [self initWithNumPages:numPages type:type slideAnimated:YES contentInsets:contentInsets];
 }
 
-- (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type animated:(BOOL)animated
+- (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type slideAnimated:(BOOL)slideAnimated
          contentInsets:(UIEdgeInsets)contentInsets {
     
     if (self = [super initWithFrame:CGRectZero]) {
         self.backgroundColor = [UIColor clearColor];
         self.numPages = numPages;
         self.pagingType = type;
-        self.animated = animated;
+        self.slideAnimated = slideAnimated;
         
         [self setUpDots];
     }
@@ -44,6 +44,10 @@
 }
 
 - (void)setPage:(NSInteger)page {
+    [self setPage:page animated:YES];
+}
+
+- (void)setPage:(NSInteger)page animated:(BOOL)animated {
     if (page > self.numPages - 1) {
         return;
     }
@@ -59,7 +63,7 @@
     UIImageView *previousDotView = [self.dotViews objectAtIndex:previousPage];
     UIImageView *nextDotView = [self.dotViews objectAtIndex:page];
     
-    if (self.animated) {
+    if (self.slideAnimated) {
         
         if (!self.selectedDotView.superview) {
             self.selectedDotView.frame = nextDotView.superview.frame;
@@ -67,17 +71,23 @@
         }
         
         previousDotView.hidden = NO;
-        [UIView animateWithDuration:0.15
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.selectedDotView.frame = nextDotView.superview.frame;
-                         }
-                         completion:^(BOOL finished) {
-                             self.animating = NO;
-                             nextDotView.hidden = YES;
-                         }];
-        
+        if (animated) {
+            [UIView animateWithDuration:0.15
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.selectedDotView.frame = nextDotView.superview.frame;
+                             }
+                             completion:^(BOOL finished) {
+                                 self.animating = NO;
+                                 nextDotView.hidden = YES;
+                             }];
+        } else {
+            self.selectedDotView.frame = nextDotView.superview.frame;
+            self.animating = NO;
+            nextDotView.hidden = YES;
+        }
+    
     } else {
         
         UIImageView *previousDotView = [self.dotViews objectAtIndex:previousPage];
