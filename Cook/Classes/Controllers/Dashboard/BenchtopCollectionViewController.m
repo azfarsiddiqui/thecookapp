@@ -416,7 +416,7 @@
 }
 
 - (void)initBenchtopLevelView {
-    CKPagingView *benchtopLevelView = [[CKPagingView alloc] initWithNumPages:3 type:CKPagingViewTypeVertical];
+    CKPagingView *benchtopLevelView = [[CKPagingView alloc] initWithNumPages:3 startPage:1 type:CKPagingViewTypeVertical];
     benchtopLevelView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     benchtopLevelView.frame = CGRectMake(kLevelXOffset,
                                          floorf((self.view.bounds.size.height - benchtopLevelView.frame.size.height) / 2.0),
@@ -756,8 +756,6 @@
 }
 
 - (void)loadBenchtop:(BOOL)load {
-    
-    [self.benchtopLevelView setPage:1 animated:NO];
     [self enable:load];
     
     if (load) {

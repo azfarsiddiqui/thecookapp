@@ -20,9 +20,12 @@ typedef enum {
 @property (nonatomic, assign) NSInteger currentPage;
 
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type;
+- (id)initWithNumPages:(NSInteger)numPages startPage:(NSInteger)startPage type:(CKPagingViewType)type;
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type contentInsets:(UIEdgeInsets)contentInsets;
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type slideAnimated:(BOOL)slideAnimated
          contentInsets:(UIEdgeInsets)contentInsets;
+- (id)initWithNumPages:(NSInteger)numPages startPage:(NSInteger)startPage type:(CKPagingViewType)type
+         slideAnimated:(BOOL)slideAnimated contentInsets:(UIEdgeInsets)contentInsets;
 - (void)setPage:(NSInteger)page;
 - (void)setPage:(NSInteger)page animated:(BOOL)animated;
 

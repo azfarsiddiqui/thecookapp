@@ -14,6 +14,7 @@
 @property (nonatomic, strong) UIView *selectedDotView;
 @property (nonatomic, assign) BOOL slideAnimated;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) NSInteger startPage;
 
 @end
 
@@ -22,21 +23,36 @@
 #define kDotInsets  UIEdgeInsetsMake(3.0, 3.0, 3.0, 3.0)
 
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type {
+    
     return [self initWithNumPages:numPages type:type contentInsets:kDotInsets];
 }
 
+- (id)initWithNumPages:(NSInteger)numPages startPage:(NSInteger)startPage type:(CKPagingViewType)type {
+    
+    return [self initWithNumPages:numPages startPage:startPage type:type slideAnimated:YES contentInsets:kDotInsets];
+}
+
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type contentInsets:(UIEdgeInsets)contentInsets {
+    
     return [self initWithNumPages:numPages type:type slideAnimated:YES contentInsets:contentInsets];
 }
 
 - (id)initWithNumPages:(NSInteger)numPages type:(CKPagingViewType)type slideAnimated:(BOOL)slideAnimated
          contentInsets:(UIEdgeInsets)contentInsets {
     
+    return [self initWithNumPages:numPages startPage:0 type:type slideAnimated:slideAnimated
+                    contentInsets:contentInsets];
+}
+
+- (id)initWithNumPages:(NSInteger)numPages startPage:(NSInteger)startPage type:(CKPagingViewType)type
+         slideAnimated:(BOOL)slideAnimated contentInsets:(UIEdgeInsets)contentInsets {
+    
     if (self = [super initWithFrame:CGRectZero]) {
         self.backgroundColor = [UIColor clearColor];
         self.numPages = numPages;
         self.pagingType = type;
         self.slideAnimated = slideAnimated;
+        self.startPage = startPage;
         
         [self setUpDots];
     }
@@ -145,8 +161,7 @@
         self.frame = CGRectUnion(self.frame, dotContainerView.frame);
     }
     
-    // Start at 0
-    [self setPage:0];
+    [self setPage:self.startPage animated:NO];
 }
 
 - (UIImage *)dotImageForOn:(BOOL)on {
