@@ -49,8 +49,7 @@
     
     // Top profile photo.
     UIImage *placeholderImage = self.book.featured ? [UIImage imageNamed:@"cook_featured_profileimage.png"] : nil;
-    CKUser *user = self.book.featured ? nil : self.book.user;
-    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:user
+    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
                                                                                 placeholder:placeholderImage
                                                                                 profileSize:ProfileViewSizeLarge];
     profilePhotoView.frame = CGRectMake(floorf((self.bounds.size.width - profilePhotoView.frame.size.width) / 2.0),
@@ -60,7 +59,7 @@
     [self addSubview:profilePhotoView];
     
     // User name
-    NSString *name = self.book.featured ? [self.book.name uppercaseString] : [self.book.user.name uppercaseString];
+    NSString *name = [self.book.user.name uppercaseString];
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     nameLabel.font = [Theme storeBookSummaryNameFont];
     nameLabel.backgroundColor = [UIColor clearColor];

@@ -112,7 +112,11 @@
 
 - (void)loadProfilePhotoForUser:(CKUser *)user {
     self.user = user;
-    [self.profileImageView setImageWithURL:[user profilePhotoUrl]];
+    
+    // Load profile photo if available.
+    if ([user profilePhotoUrl]) {
+        [self.profileImageView setImageWithURL:[user profilePhotoUrl]];
+    }
 }
 
 #pragma mark - Private methods

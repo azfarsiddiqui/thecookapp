@@ -24,15 +24,10 @@
 }
 
 - (void)loadBook:(CKBook *)book {
-    [super loadBook:book];
-    
-    if (book.featured) {
-        [self.bookCoverView setName:book.caption author:book.name editable:NO];
-    }
-    
-    [self updateFollowedIcon:book.followed];
+    [self.bookCoverView setCover:book.cover illustration:book.illustration];
+    [self.bookCoverView setName:book.name author:[book userName] editable:NO];
+    [self enableDeleteMode:NO];
 }
-
 
 #pragma mark - Private methods
 
