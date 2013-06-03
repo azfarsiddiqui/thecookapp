@@ -685,6 +685,9 @@
     
     // Show store shelf only in enabled mode.
     [self showStoreShelf:enable animated:enable];
+    
+    // Enable/disable benchtop
+    [self.benchtopViewController enable:enable];
 }
 
 - (void)loggedOut:(NSNotification *)notification {
@@ -716,7 +719,6 @@
                      }
                      completion:^(BOOL finished) {
                          [self enable:!show];
-                         [self.benchtopViewController enable:!show];
                          
                          if (!show) {
                              [self.welcomeViewController.view removeFromSuperview];
