@@ -264,7 +264,7 @@
 }
 
 + (UIFont *)bookIndexFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:52.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:38];
 }
 
 + (UIColor *)bookIndexColour {
@@ -272,7 +272,7 @@
 }
 
 + (UIFont *)bookIndexSubtitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14];
 }
 
 + (UIColor *)bookIndexSubtitleColour {
@@ -280,7 +280,7 @@
 }
 
 + (UIFont *)bookIndexNumRecipesFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:64.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:38];
 }
 
 + (UIColor *)bookIndexNumRecipesColour {

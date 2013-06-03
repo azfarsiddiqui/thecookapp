@@ -16,6 +16,8 @@
 			<string>cook_customise_colour_picker_red.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_red.png</string>
+			<key>Hex</key>
+			<string>DB2F36</string>
 		</dict>
 		<key>Burnt Orange</key>
 		<dict>
@@ -29,6 +31,8 @@
 			<string>cook_customise_colour_picker_orange.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_orange.png</string>
+			<key>Hex</key>
+			<string>DF5329</string>
 		</dict>
 		<key>Yellow</key>
 		<dict>
@@ -42,6 +46,8 @@
 			<string>cook_customise_colour_picker_yellow.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_yellow.png</string>
+			<key>Hex</key>
+			<string>FBB437</string>
 		</dict>
 		<key>Green</key>
 		<dict>
@@ -55,6 +61,8 @@
 			<string>cook_customise_colour_picker_green.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_green.png</string>
+			<key>Hex</key>
+			<string>3E9D3E</string>
 		</dict>
 		<key>Blue</key>
 		<dict>
@@ -68,6 +76,8 @@
 			<string>cook_customise_colour_picker_blue.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_blue.png</string>
+			<key>Hex</key>
+			<string>3885C4</string>
 		</dict>
 		<key>Pink</key>
 		<dict>
@@ -81,6 +91,8 @@
 			<string>cook_customise_colour_picker_pink.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_pink.png</string>
+			<key>Hex</key>
+			<string>F88886</string>
 		</dict>
 		<key>Gray</key>
 		<dict>
@@ -94,6 +106,8 @@
 			<string>cook_customise_colour_picker_gray.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_gray.png</string>
+			<key>Hex</key>
+			<string>6B7073</string>
 		</dict>
 		<key>Brown</key>
 		<dict>
@@ -107,6 +121,8 @@
 			<string>cook_customise_colour_picker_brown.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_brown.png</string>
+			<key>Hex</key>
+			<string>896E54</string>
 		</dict>
 	</dict>
 	<key>Illustrations</key>

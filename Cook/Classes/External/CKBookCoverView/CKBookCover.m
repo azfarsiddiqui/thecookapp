@@ -8,6 +8,7 @@
 
 #import "CKBookCover.h"
 #import "MRCEnumerable.h"
+#import "UIColor+Expanded.h"
 
 @interface CKBookCover ()
 
@@ -78,6 +79,11 @@
 + (UIImage *)thumbImageForCover:(NSString *)cover {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Thumb", cover]];
     return [UIImage imageNamed:imageName];
+}
+
++ (UIColor *)colourForCover:(NSString *)cover {
+    NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Hex", cover]];
+    return [UIColor colorWithHexString:hexValue];
 }
 
 + (UIImage *)thumbSliderContentImageForCover:(NSString *)cover {

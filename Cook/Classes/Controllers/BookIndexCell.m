@@ -26,12 +26,12 @@
 #define kTitleSubtitleGap   -10.0
 
 + (CGSize)cellSize {
-    return CGSizeMake(440.0, 80.0);
+    return CGSizeMake(440.0, 70.0);
 }
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.contentView.backgroundColor = [Theme activityInfoViewColour];
+        self.contentView.backgroundColor = [UIColor clearColor];
         
         // Title.
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -75,7 +75,7 @@
     NSString *numRecipesDisplay = [NSString stringWithFormat:@"%d", [recipes count]];
     size = [numRecipesDisplay sizeWithFont:self.numRecipesLabel.font constrainedToSize:availableSize lineBreakMode:NSLineBreakByClipping];
     self.numRecipesLabel.frame = CGRectMake(self.contentView.bounds.size.width - kContentInsets.right - size.width,
-                                            kContentInsets.top - 10.0,
+                                            kContentInsets.top,
                                             size.width,
                                             size.height);
     self.numRecipesLabel.text = numRecipesDisplay;

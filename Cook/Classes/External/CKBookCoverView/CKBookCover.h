@@ -24,6 +24,7 @@ typedef enum {
 + (UIImage *)imageForCover:(NSString *)cover;
 + (UIImage *)outlineImageForCover:(NSString *)cover;
 + (UIImage *)thumbImageForCover:(NSString *)cover;
++ (UIColor *)colourForCover:(NSString *)cover;
 + (UIImage *)thumbSliderContentImageForCover:(NSString *)cover;
 + (UIImage *)imageForIllustration:(NSString *)illustration;
 + (NSArray *)covers;

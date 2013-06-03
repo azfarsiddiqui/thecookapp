@@ -305,6 +305,8 @@
 		76A7D43916E447AC00118749 /* cook_book_icon_home_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D43516E447AC00118749 /* cook_book_icon_home_gray@2x.png */; };
 		76A7D43A16E447AC00118749 /* cook_book_icon_home_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D43616E447AC00118749 /* cook_book_icon_home_white.png */; };
 		76A7D43B16E447AC00118749 /* cook_book_icon_home_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D43716E447AC00118749 /* cook_book_icon_home_white@2x.png */; };
+		76A82A0A175C5479004468F3 /* BookIndexListLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A82A09175C5478004468F3 /* BookIndexListLayout.m */; };
+		76A82A0D175C5A0B004468F3 /* BookIndexListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A82A0C175C5A0A004468F3 /* BookIndexListViewController.m */; };
 		76A8CB9C1715998400A6B14B /* CKRecipeSocialView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A8CB9A1715998400A6B14B /* CKRecipeSocialView.m */; };
 		76AA97A4173BC941008549EB /* RecipeClipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 76AA97A3173BC941008549EB /* RecipeClipboard.m */; };
 		76B015B3161C0DBB00AF3C2C /* cook_dash_bg_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B015B1161C0DBB00AF3C2C /* cook_dash_bg_overlay.png */; };
@@ -1103,6 +1105,10 @@
 		76A7D43516E447AC00118749 /* cook_book_icon_home_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_home_gray@2x.png"; sourceTree = "<group>"; };
 		76A7D43616E447AC00118749 /* cook_book_icon_home_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_home_white.png; sourceTree = "<group>"; };
 		76A7D43716E447AC00118749 /* cook_book_icon_home_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_home_white@2x.png"; sourceTree = "<group>"; };
+		76A82A08175C5478004468F3 /* BookIndexListLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookIndexListLayout.h; sourceTree = "<group>"; };
+		76A82A09175C5478004468F3 /* BookIndexListLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookIndexListLayout.m; sourceTree = "<group>"; };
+		76A82A0B175C5A0A004468F3 /* BookIndexListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookIndexListViewController.h; sourceTree = "<group>"; };
+		76A82A0C175C5A0A004468F3 /* BookIndexListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookIndexListViewController.m; sourceTree = "<group>"; };
 		76A8CB9A1715998400A6B14B /* CKRecipeSocialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeSocialView.m; sourceTree = "<group>"; };
 		76A8CB9B1715998400A6B14B /* CKRecipeSocialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeSocialView.h; sourceTree = "<group>"; };
 		76AA97A2173BC941008549EB /* RecipeClipboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeClipboard.h; sourceTree = "<group>"; };
@@ -2862,8 +2868,12 @@
 				89B85B9416AF8A5900A0533E /* TestViewController.m */,
 				766F430E16DD851900785ABD /* BookIndexViewController.h */,
 				766F430F16DD851A00785ABD /* BookIndexViewController.m */,
+				76A82A0B175C5A0A004468F3 /* BookIndexListViewController.h */,
+				76A82A0C175C5A0A004468F3 /* BookIndexListViewController.m */,
 				76B3E5B016FBE52F002B5080 /* BookIndexLayout.h */,
 				76B3E5B116FBE52F002B5080 /* BookIndexLayout.m */,
+				76A82A08175C5478004468F3 /* BookIndexListLayout.h */,
+				76A82A09175C5478004468F3 /* BookIndexListLayout.m */,
 				76B3E5B316FBE861002B5080 /* BookIndexCell.h */,
 				76B3E5B416FBE861002B5080 /* BookIndexCell.m */,
 				766F42F016DC7A5500785ABD /* BookProfileViewController.h */,
@@ -3885,6 +3895,8 @@
 				76BF202D17546D31000F0798 /* PageHeaderView.m in Sources */,
 				762F3BAD1756394E00863DDF /* CKSignInButtonView.m in Sources */,
 				7612E8BB17570EAA0010780D /* CKTextFieldViewHelper.m in Sources */,
+				76A82A0A175C5479004468F3 /* BookIndexListLayout.m in Sources */,
+				76A82A0D175C5A0B004468F3 /* BookIndexListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
