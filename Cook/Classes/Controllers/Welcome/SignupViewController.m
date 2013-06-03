@@ -178,36 +178,7 @@
 
 - (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView {
     NSLog(@"textFieldViewDidReturn:");
-    
-    NSString *text = [textFieldView inputText];
-    
-    if (textFieldView == self.emailNameView) {
-        
-        BOOL validated = [text length] > 0;
-        if (validated) {
-            [self.emailNameView setValidated:YES message:@"THANKS"];
-        }
-
-    } else if (textFieldView == self.emailAddressView) {
-        
-        BOOL validated = [CKTextFieldViewHelper isValidEmailForString:text];
-        if (validated) {
-            [self.emailAddressView setValidated:YES message:@"THANKS"];
-        } else {
-            [self.emailAddressView setValidated:NO message:@"INVALID EMAIL"];
-        }
-        
-    } else if (textFieldView == self.emailPasswordView) {
-        
-        BOOL validated = [CKTextFieldViewHelper isValidLengthForString:text min:kPasswordMinLength max:kPasswordMaxLength];
-        if (validated) {
-            [self.emailPasswordView setValidated:YES message:@"THANKS"];
-        } else {
-            [self.emailPasswordView setValidated:NO message:@"INVALID PASSWORD"];
-        }
-        
-    }
-    
+    [self validateFields:@[textFieldView]];
 }
 
 #pragma mark - Properties
@@ -344,7 +315,7 @@
     DLog();
     
     if (buttonView == self.facebookButton) {
-        [self loginToFacebook];
+        [self facebookButtonTapped];
     } else if (buttonView == self.emailButton) {
         [self emailButtonTapped];
     }
@@ -554,16 +525,111 @@
 }
 
 - (void)emailButtonTapped {
-    DLog();
-}
-
-- (void)loginToFacebook {
+    
+    // Assemble the fields to validate.
+    NSMutableArray *fields = [NSMutableArray arrayWithArray:@[self.emailAddressView, self.emailPasswordView]];
+    if (self.signUpMode) {
+        [fields insertObject:self.emailNameView atIndex:0];
+    }
+    
+    // Make sure all fields are validated before proceeding.
+    BOOL validated = [self validateFields:fields];
+    if (!validated) {
+        return;
+    }
     
     // Inform for modal.
     [self.delegate signUpViewControllerModalRequested:YES];
     
-    [self.facebookButton setText:@"CHATTING TO FACEBOOK" activity:YES animated:NO enabled:NO];
+    if (self.signUpMode) {
+        
+        [self.emailButton setText:@"REGISTERING" activity:YES animated:NO enabled:NO];
+        [self enableEmailLogin:YES completion:^{
+            [self registerViaEmail];
+        }];
+        
+    } else {
+        
+        [self.emailButton setText:@"SIGNING IN" activity:YES animated:NO enabled:NO];
+        [self enableEmailLogin:YES completion:^{
+            [self loginViaEmail];
+        }];
+    }
+    
+}
 
+- (void)registerViaEmail {
+    
+    NSString *name = [self.emailNameView inputText];
+    NSString *email = [self.emailAddressView inputText];
+    NSString *password = [self.emailPasswordView inputText];
+    
+    [CKUser registerWithEmail:email
+                         name:name
+                     password:password
+                   completion:^{
+                       
+                       // Wait before informing login successful.
+                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                           [self informLoginSuccessful:YES];
+                       });
+                       
+                   } failure:^(NSError *error) {
+                       
+                       [self enableFacebookLogin:NO completion:^{
+                           [self.emailButton setText:@"UNABLE TO REGISTER" activity:NO animated:NO enabled:NO];
+                           [self informLoginSuccessful:NO];
+                           
+                           // Re-enable the email button.
+                           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                               [self.facebookButton setText:[self emailButtonTextForSignUp:self.signUpMode] activity:NO
+                                                   animated:NO enabled:YES];
+                           });
+                       }];
+                   }];
+}
+
+
+- (void)loginViaEmail {
+    
+    NSString *email = [self.emailAddressView inputText];
+    NSString *password = [self.emailPasswordView inputText];
+    
+    [CKUser loginWithEmail:email
+                  password:password
+                completion:^{
+                    
+                    // Wait before informing login successful.
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                        [self informLoginSuccessful:YES];
+                    });
+                    
+                } failure:^(NSError *error) {
+                    
+                    [self enableFacebookLogin:NO completion:^{
+                        [self.emailButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
+                        [self informLoginSuccessful:NO];
+                        
+                        // Re-enable the email button.
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                            [self.facebookButton setText:[self emailButtonTextForSignUp:self.signUpMode] activity:NO
+                                                animated:NO enabled:YES];
+                        });
+                    }];
+                    
+                }];
+}
+
+- (void)facebookButtonTapped {
+    
+    // Inform for modal.
+    [self.delegate signUpViewControllerModalRequested:YES];
+    [self.facebookButton setText:@"CHATTING TO FACEBOOK" activity:YES animated:NO enabled:NO];
+    [self loginViaFacebook];
+}
+
+- (void)loginViaFacebook {
+    
     [self enableFacebookLogin:YES completion:^{
         
         // Wait before informing login successful.
@@ -572,6 +638,7 @@
         });
     }];
 }
+
 
 - (void)performFacebookLogin {
     
@@ -582,7 +649,7 @@
         
         // Wait before informing login successful.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [self informFacebookLoginSuccessful:YES];
+            [self informLoginSuccessful:YES];
         });
         
     } failure:^(NSError *error) {
@@ -590,7 +657,7 @@
         
         [self enableFacebookLogin:NO completion:^{
             [self.facebookButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
-            [self informFacebookLoginSuccessful:NO];
+            [self informLoginSuccessful:NO];
             
             // Re-enable the facebook button.
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -602,7 +669,7 @@
     }];
 }
 
-- (void)informFacebookLoginSuccessful:(BOOL)success {
+- (void)informLoginSuccessful:(BOOL)success {
     
     // Inform to release modal.
     [self.delegate signUpViewControllerModalRequested:NO];
@@ -652,6 +719,57 @@
                      completion:^(BOOL finished) {
                          completion();
                      }];
+}
+
+- (void)enableEmailLogin:(BOOL)enable completion:(void (^)())completion {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         self.orLabel.alpha = enable ? 0.0 : 1.0;
+                         self.facebookButton.alpha = enable ? 0.0 : 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                         completion();
+                     }];
+}
+
+- (BOOL)validateFields:(NSArray *)fields {
+    BOOL validated = YES;
+    for (CKTextFieldView *textFieldView in fields) {
+        
+        NSString *text = [textFieldView inputText];
+        
+        if (textFieldView == self.emailNameView) {
+            
+            if ([text length] > 0) {
+                [self.emailNameView setValidated:YES message:@"THANKS"];
+            } else {
+                validated = NO;
+            }
+            
+        } else if (textFieldView == self.emailAddressView) {
+            
+            if ([CKTextFieldViewHelper isValidEmailForString:text]) {
+                [self.emailAddressView setValidated:YES message:@"THANKS"];
+            } else {
+                [self.emailAddressView setValidated:NO message:@"INVALID EMAIL"];
+                validated = NO;
+            }
+            
+        } else if (textFieldView == self.emailPasswordView) {
+            
+            if ([CKTextFieldViewHelper isValidLengthForString:text min:kPasswordMinLength max:kPasswordMaxLength]) {
+                [self.emailPasswordView setValidated:YES message:@"THANKS"];
+            } else {
+                [self.emailPasswordView setValidated:NO message:@"INVALID PASSWORD"];
+                validated = NO;
+            }
+            
+        }
+    }
+    return validated;
 }
 
 @end

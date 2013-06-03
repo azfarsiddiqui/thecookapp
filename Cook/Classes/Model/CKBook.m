@@ -19,20 +19,42 @@
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
     [query includeKey:kUserModelForeignKeyName];
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
+    [query findObjectsInBackgroundWithBlock:^(NSArray *parseResults, NSError *error) {
+        
         if (!error) {
-            success([CKBook createBookIfRequiredForParseBook:parseBook user:user]);
+            
+            // Do we have a matching book, assume one book to start off with.
+            PFObject *parseBook = nil;
+            if ([parseResults count] > 0) {
+                parseBook = [parseResults objectAtIndex:0];
+            }
+            
+            if (!parseBook) {
+                
+                // Create new book.
+                [CKBook createBookForUser:user
+                                 succeess:^(CKBook *book) {
+                                     success(book);
+                                 } failure:^(NSError *error) {
+                                 }];
+            } else {
+                success([[CKBook alloc] initWithParseBook:parseBook user:user]);
+            }
+            
         } else {
             failure(error);
         }
+        
+        
     }];
+
 }
 
-+ (void)createBookForUser:(CKUser *)user succeess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)createBookForUser:(CKUser *)user succeess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFObject *book = [self createParseBookForParseUser:user.parseUser];
     [book saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
-            success();
+            success([[CKBook alloc] initWithParseBook:book user:user]);
         } else {
             DLog(@"Error loading user friends: %@", [error localizedDescription]);
             failure(error);

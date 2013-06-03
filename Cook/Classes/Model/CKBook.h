@@ -38,7 +38,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 - (void)saveCategories:(NSArray *)categories success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 ////persistence operations
-+ (void)createBookForUser:(CKUser *)user succeess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)createBookForUser:(CKUser *)user succeess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)followBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)suggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;

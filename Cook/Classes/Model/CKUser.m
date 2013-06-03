@@ -425,29 +425,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }
 }
 
-+ (CKUser *)initialiseUserWithParseUser:(PFUser *)parseUser {
-    if (parseUser.objectId == nil) {
-        
-        DLog(@"initialiseUserWithParseUser:creating book");
-        
-        // Initial default name.
-        [parseUser setObject:kUserAttrDefaultNameValue forKey:kModelAttrName];
-        
-        // Create a book for the new user and save it in the background.
-        PFObject *parseBook = [CKBook createParseBookForParseUser:parseUser];
-        [parseBook saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                DLog(@"initialiseUserWithParseUser:created book");
-            } else {
-                DLog(@"initialiseUserWithParseUser:Error initialising user: %@",
-                     [error localizedDescription]);
-            }
-        }];
-        
-    }
-    return [[CKUser alloc] initWithParseUser:parseUser];
-}
-
 + (void)handleAdminLoginFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
     DLog(@"Logged in as admin");
     
