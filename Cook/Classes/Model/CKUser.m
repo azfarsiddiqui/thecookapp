@@ -147,6 +147,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return userFriend;
 }
 
++ (BOOL)usernameExistsForSignUpError:(NSError *)error {
+    return ([error code] == kPFErrorUsernameTaken);
+}
+
 #pragma mark - CKModel 
 
 - (NSString *)objectId {
@@ -156,7 +160,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 #pragma mark - CKUser
 
 - (BOOL)isSignedIn {
-    return [PFFacebookUtils isLinkedWithUser:self.parseUser];
+    return [self.parseUser isAuthenticated];
 }
 
 - (id)initWithParseUser:(PFUser *)parseUser {

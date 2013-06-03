@@ -35,6 +35,7 @@ typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, B
                failure:(ObjectFailureBlock)failure;
 + (CKUser *)userWithParseUser:(PFUser *)parseUser;
 + (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend requestor:(PFUser *)parseRequestor;
++ (BOOL)usernameExistsForSignUpError:(NSError *)error;
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
