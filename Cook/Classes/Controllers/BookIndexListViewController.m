@@ -15,6 +15,7 @@
 #import "CKRecipe.h"
 #import "ImageHelper.h"
 #import "CKBookCover.h"
+#import "CKBookTitleIndexView.h"
 
 @interface BookIndexListViewController () <BookIndexListLayoutDataSource, UICollectionViewDataSource,
     UICollectionViewDelegate>
@@ -25,15 +26,19 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) NSArray *categories;
 
+@property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) CKBookTitleIndexView *titleIndexView;
 
 @end
 
 @implementation BookIndexListViewController
 
-#define kCellId         @"kBookIndexListCell"
-#define kIndexWidth     485.0
+#define kCellId                 @"kBookIndexListCell"
+#define kIndexWidth             485.0
+#define kImageIndexGap          10.0
+#define kTitleIndexTopOffset    40.0
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookIndexListViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -53,7 +58,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self initBackgroundImageView];
+    [self initBackgroundView];
     [self initTitleView];
     [self initCollectionView];
     [self initShadowViews];
@@ -65,7 +70,7 @@
     [self.collectionView performBatchUpdates:^{
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
     } completion:^(BOOL finished) {
-        [self showIndex:YES animated:YES];
+        [self showIndexAnimated:YES];
     }];
 }
 
@@ -117,17 +122,32 @@
 
 #pragma mark - Private methods
 
-- (void)initBackgroundImageView {
+- (void)initBackgroundView {
+    
+    UIView *backgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
+    backgroundView.backgroundColor = [UIColor clearColor];
+    backgroundView.clipsToBounds = YES;
+    [self.view addSubview:backgroundView];
+    self.backgroundView = backgroundView;
+    
     UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
     imageView.frame = self.view.bounds;
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
-    [self.view addSubview:imageView];
+    [backgroundView addSubview:imageView];
     self.imageView = imageView;
 }
 
 - (void)initTitleView {
-    
+    CKBookTitleIndexView *titleIndexView = [[CKBookTitleIndexView alloc] initWithName:self.book.user.name title:self.book.name];
+    titleIndexView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - titleIndexView.frame.size.width) / 2.0),
+        floorf((self.view.bounds.size.height - titleIndexView.frame.size.height) / 2.0),
+        titleIndexView.frame.size.width,
+        titleIndexView.frame.size.height
+    };
+    [self.view addSubview:titleIndexView];
+    self.titleIndexView = titleIndexView;
 }
 
 - (void)initCollectionView {
@@ -147,8 +167,9 @@
     self.collectionView = collectionView;
     [collectionView registerClass:[BookIndexCell class] forCellWithReuseIdentifier:kCellId];
     
-    // Hide it in the side.
-    [self showIndex:NO animated:NO];
+    // Prep collection view to be transitioned in later.
+    self.collectionView.alpha = 0.0;
+    self.collectionView.transform = CGAffineTransformMakeTranslation(collectionView.frame.size.width, 0.0);
 }
 
 - (void)initShadowViews {
@@ -172,31 +193,53 @@
     [self.view addSubview:footerShadowImageView];
 }
 
-- (void)showIndex:(BOOL)show animated:(BOOL)animated {
-    CGAffineTransform transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(self.collectionView.bounds.size.width, 0.0);
+- (void)showIndexAnimated:(BOOL)animated {
     
-    if (show) {
-        self.collectionView.hidden = NO;
-        self.collectionView.alpha = 0.0;
-    }
+    CGRect backgroundFrame = (CGRect){
+        self.view.bounds.origin.x,
+        self.view.bounds.origin.y,
+        self.view.bounds.size.width - self.collectionView.frame.size.width - kImageIndexGap,
+        self.view.bounds.size.height
+    };
+    
+    CGRect titleViewFrame = (CGRect) {
+        floorf((backgroundFrame.size.width - self.titleIndexView.frame.size.width) / 2.0),
+        kTitleIndexTopOffset,
+        self.titleIndexView.frame.size.width,
+        self.titleIndexView.frame.size.height
+    };
     
     if (animated) {
-        [UIView animateWithDuration:0.3
+        [UIView animateWithDuration:0.4
                               delay:0.0
                             options:UIViewAnimationCurveEaseIn
                          animations:^{
-                             self.collectionView.transform = transform;
-                             self.collectionView.alpha = show ? 1.0 : 0.0;
+                             self.titleIndexView.frame = titleViewFrame;
+                             self.titleIndexView.transform = CGAffineTransformMakeScale(0.7, 0.7);
+                             self.backgroundView.frame = backgroundFrame;
+                             self.collectionView.transform = CGAffineTransformIdentity;
+                             self.collectionView.alpha = 1.0;
                          } completion:^(BOOL finished) {
-                             if (!show) {
-                                 self.collectionView.hidden = YES;
-                             }
                          }];
     } else {
-        self.collectionView.transform = transform;
-        if (!show) {
-            self.collectionView.hidden = YES;
-        }
+        self.titleIndexView.frame = titleViewFrame;
+        self.titleIndexView.transform = CGAffineTransformMakeScale(0.7, 0.7);
+        self.backgroundView.frame = backgroundFrame;
+        self.collectionView.transform = CGAffineTransformIdentity;
+        self.collectionView.alpha = 1.0;
+    }
+}
+
+- (CGRect)backgroundFrameForShow:(BOOL)show {
+    if (show) {
+        return self.view.bounds;
+    } else {
+        return (CGRect){
+            self.view.bounds.origin.x,
+            self.view.bounds.origin.y,
+            self.view.bounds.size.width - self.collectionView.frame.origin.x - kImageIndexGap,
+            self.view.bounds.size.height
+        };
     }
 }
 
