@@ -21,12 +21,14 @@
 
 @implementation BookIndexCell
 
-#define kContentInsets      UIEdgeInsetsMake(5.0, 5.0, 5.0, 20.0)
+#define kContentInsets      UIEdgeInsetsMake(-8.0, 5.0, 0.0, 5.0)
 #define kTitleNumGap        20.0
 #define kTitleSubtitleGap   -10.0
 
 + (CGSize)cellSize {
-    return CGSizeMake(440.0, 70.0);
+    return (CGSize){
+        400.0, [self requiredHeight]
+    };
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -35,7 +37,7 @@
         
         // Title.
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.font = [Theme bookIndexFont];
         titleLabel.textColor = [Theme bookIndexColour];
@@ -45,7 +47,7 @@
 
         // Subtitle.
         UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         subtitleLabel.backgroundColor = [UIColor clearColor];
         subtitleLabel.font = [Theme bookIndexSubtitleFont];
         subtitleLabel.textColor = [Theme bookIndexSubtitleColour];
@@ -55,7 +57,7 @@
         
         // Right num recipes.
         UILabel *numRecipesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        numRecipesLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        numRecipesLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         numRecipesLabel.backgroundColor = [UIColor clearColor];
         numRecipesLabel.font = [Theme bookIndexNumRecipesFont];
         numRecipesLabel.textColor = [Theme bookIndexNumRecipesColour];
@@ -83,7 +85,7 @@
     // Title.
     NSString *title = [category uppercaseString];
     size = [title sizeWithFont:self.titleLabel.font
-             constrainedToSize:CGSizeMake(availableSize.width,
+             constrainedToSize:CGSizeMake(availableSize.width - self.numRecipesLabel.frame.size.width - kTitleNumGap,
                                           availableSize.height)
                  lineBreakMode:NSLineBreakByTruncatingTail];
     self.titleLabel.frame = CGRectMake(kContentInsets.left, kContentInsets.top, size.width, size.height);
@@ -94,7 +96,7 @@
         return recipe.name;
     }] componentsJoinedByString:@", "] uppercaseString];
     size = [subtitle sizeWithFont:self.subtitleLabel.font
-                constrainedToSize:CGSizeMake(availableSize.width,
+                constrainedToSize:CGSizeMake(availableSize.width - self.numRecipesLabel.frame.size.width,
                                              availableSize.height)
                     lineBreakMode:NSLineBreakByTruncatingTail];
     self.subtitleLabel.frame = CGRectMake(kContentInsets.left,
@@ -102,6 +104,7 @@
                                           size.width,
                                           size.height);
     self.subtitleLabel.text = subtitle;
+    self.subtitleLabel.backgroundColor = [UIColor greenColor];
     
     // Workaround to get rid of extra spacing that gets introduced when it truncates.
     [self.subtitleLabel sizeToFit];
@@ -116,6 +119,15 @@
 - (CGSize)availableSize {
     return CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
                       self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
+}
+
++ (CGFloat)requiredHeight {
+    CGFloat height = kContentInsets.top;
+    CGSize titleSize = [@"A" sizeWithFont:[Theme bookIndexFont] constrainedToSize:(CGSize){MAXFLOAT, MAXFLOAT} lineBreakMode:NSLineBreakByClipping];
+    CGSize subtitleSize = [@"A" sizeWithFont:[Theme bookIndexSubtitleFont] constrainedToSize:(CGSize){MAXFLOAT, MAXFLOAT} lineBreakMode:NSLineBreakByClipping];
+    height += titleSize.height + kTitleSubtitleGap + subtitleSize.height;
+    height += kContentInsets.bottom;
+    return height;
 }
 
 @end

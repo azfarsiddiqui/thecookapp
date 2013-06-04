@@ -204,7 +204,8 @@
     
     CGRect titleViewFrame = (CGRect) {
         floorf((backgroundFrame.size.width - self.titleIndexView.frame.size.width) / 2.0),
-        kTitleIndexTopOffset,
+//        kTitleIndexTopOffset,
+        floorf((backgroundFrame.size.height - self.titleIndexView.frame.size.height) / 2.0),
         self.titleIndexView.frame.size.width,
         self.titleIndexView.frame.size.height
     };
