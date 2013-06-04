@@ -104,7 +104,6 @@
                                           size.width,
                                           size.height);
     self.subtitleLabel.text = subtitle;
-    self.subtitleLabel.backgroundColor = [UIColor greenColor];
     
     // Workaround to get rid of extra spacing that gets introduced when it truncates.
     [self.subtitleLabel sizeToFit];
