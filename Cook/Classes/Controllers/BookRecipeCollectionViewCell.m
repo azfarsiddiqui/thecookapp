@@ -24,6 +24,8 @@
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIImageView *dividerImageView;
+@property (nonatomic, strong) UIImageView *dividerQuoteImageView;
 @property (nonatomic, strong) UILabel *ingredientsLabel;
 @property (nonatomic, strong) UILabel *ingredientsEllipsisLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
@@ -38,6 +40,9 @@
 #define kImageSize              CGSizeMake(250.0, 250.0)
 #define kTitleOffsetNoImage     70.0
 #define kTitleTopGap            20.0
+#define kTitleDividerGap        10.0
+#define kDividerStoryGap        20.0
+#define kDividerIngredientsGap  20.0
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
 #define kContentInsets          UIEdgeInsetsMake(30.0, 30.0, 20.0, 30.0)
@@ -132,6 +137,7 @@
     self.book = book;
     
     [self updateTitle];
+    [self updateDivider];
     [self updateStory];
     [self updateIngredients];
     [self updateStats];
@@ -166,6 +172,22 @@
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
     self.cellBackgroundImageView.image = [self backgroundImageForSelected:highlighted];
+}
+
+#pragma mark - Properties
+
+- (UIImageView *)dividerImageView {
+    if (!_dividerImageView) {
+        _dividerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_titledivider_solid.png"]];
+    }
+    return _dividerImageView;
+}
+
+- (UIImageView *)dividerQuoteImageView {
+    if (!_dividerQuoteImageView) {
+        _dividerQuoteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_titledivider_quote.png"]];
+    }
+    return _dividerQuoteImageView;
 }
 
 #pragma mark - Private methods
@@ -203,17 +225,54 @@
     self.titleLabel.text = title;
 }
 
+- (void)updateDivider {
+    [self.dividerImageView removeFromSuperview];
+    [self.dividerQuoteImageView removeFromSuperview];
+    
+    if ([self.recipe hasPhotos]) {
+        self.dividerQuoteImageView.frame = (CGRect){
+            floorf((self.contentView.bounds.size.width - self.dividerQuoteImageView.frame.size.width) / 2.0),
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleDividerGap,
+            self.dividerQuoteImageView.frame.size.width,
+            self.dividerQuoteImageView.frame.size.height
+        };
+        [self.contentView addSubview:self.dividerQuoteImageView];
+        
+    } else if (![self.recipe hasPhotos]) {
+        self.dividerImageView.frame = (CGRect){
+            floorf((self.contentView.bounds.size.width - self.dividerImageView.frame.size.width) / 2.0),
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleDividerGap - 5.0,
+            self.dividerImageView.frame.size.width,
+            self.dividerImageView.frame.size.height
+        };
+        [self.contentView addSubview:self.dividerImageView];
+    }
+}
+
 - (void)updateStory {
-    NSString *story = [NSString stringWithFormat:@"‟ %@ ”", self.recipe.story];
-    CGSize size = [story sizeWithFont:self.storyLabel.font
-                    constrainedToSize:[self availableSize]
-                        lineBreakMode:NSLineBreakByWordWrapping];
-    self.storyLabel.frame = CGRectMake(kContentInsets.left, self.statsView.frame.origin.y - kStatsViewTopOffset - size.height, size.width, size.height);
-    self.storyLabel.text = story;
+    if ([self.recipe hasPhotos] && [self.recipe.story length] > 0) {
+        self.storyLabel.hidden = NO;
+        NSString *story = [NSString stringWithFormat:@"‟ %@ ”", self.recipe.story];
+        CGSize size = [story sizeWithFont:self.storyLabel.font
+                        constrainedToSize:(CGSize) {
+                            self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+                            self.statsView.frame.origin.y - self.dividerQuoteImageView.frame.origin.y - self.dividerQuoteImageView.frame.size.height - kDividerStoryGap,
+                        }
+                            lineBreakMode:NSLineBreakByWordWrapping];
+        self.storyLabel.frame = (CGRect){
+            kContentInsets.left,
+            self.dividerQuoteImageView.frame.origin.y + self.dividerQuoteImageView.frame.size.height + kDividerStoryGap,
+            size.width,
+            size.height};
+        self.storyLabel.text = story;
+    } else {
+        self.storyLabel.hidden = YES;
+    }
 }
 
 - (void)updateIngredients {
-    if ([[self.recipe ingredients] count] > 0) {
+
+    if (![self.recipe hasPhotos]) {
         self.ingredientsLabel.hidden = NO;
         
         // Extract ingredients into line wrapped text.
@@ -228,7 +287,7 @@
         
         // Now figure out positioning based on story.
         CGSize availableSize = CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
-                                          self.storyLabel.frame.origin.y - kStoryTopOffset - self.titleLabel.frame.origin.y - self.titleLabel.frame.size.height - kContentInsets.bottom);
+                                          self.statsView.frame.origin.y - self.dividerImageView.frame.origin.y - self.dividerImageView.frame.size.height - kDividerIngredientsGap);
         CGSize size = [ingredientsDisplay sizeWithFont:self.ingredientsLabel.font
                                      constrainedToSize:CGSizeMake(availableSize.width, availableSize.height + 100.0)    // Makes sure we have more than enough to know we have more text.
                                   lineBreakMode:NSLineBreakByWordWrapping];
@@ -248,28 +307,23 @@
         
         // Update frame.
         self.ingredientsLabel.frame = CGRectMake(kContentInsets.left,
-                                                 self.titleLabel.frame.origin.y + 60.0,
+                                                 self.dividerImageView.frame.origin.y + self.dividerImageView.frame.size.height + kDividerIngredientsGap,
                                                  size.width,
                                                  size.height);
         self.ingredientsLabel.text = ingredientsDisplay;
         
-        // Prepare to update story frame.
-        CGRect storyFrame = self.storyLabel.frame;
-        storyFrame.origin.y = self.ingredientsLabel.frame.origin.y + self.ingredientsLabel.frame.size.height + kStoryTopOffset;
-        
-        // Do we need an ellipsis?
+        // Update ellipsis.
         if (!self.ingredientsEllipsisLabel.hidden) {
-            self.ingredientsEllipsisLabel.frame = CGRectMake(self.ingredientsEllipsisLabel.frame.origin.x,
-                                                             self.ingredientsLabel.frame.origin.y + self.ingredientsLabel.frame.size.height,
-                                                             self.ingredientsEllipsisLabel.frame.size.width,
-                                                             self.ingredientsEllipsisLabel.frame.size.height);
-            storyFrame.origin.y = self.ingredientsEllipsisLabel.frame.origin.y + self.ingredientsEllipsisLabel.frame.size.height + kStoryTopOffset;
+            self.ingredientsEllipsisLabel.frame = (CGRect){
+                self.ingredientsEllipsisLabel.frame.origin.x,
+                self.ingredientsLabel.frame.origin.y + self.ingredientsLabel.frame.size.height,
+                self.ingredientsEllipsisLabel.frame.size.width,
+                self.ingredientsEllipsisLabel.frame.size.height
+            };
         }
         
-        // Now adjust the story up so that it fits below ingredients with a gap.
-        self.storyLabel.frame = storyFrame;
-        
     } else {
+        self.ingredientsEllipsisLabel.hidden = YES;
         self.ingredientsLabel.hidden = YES;
     }
     

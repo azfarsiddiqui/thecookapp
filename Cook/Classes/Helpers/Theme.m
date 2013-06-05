@@ -116,7 +116,7 @@
 }
 
 + (UIFont *)recipeGridTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
 }
 
 + (UIColor *)recipeGridTitleColour {
@@ -124,7 +124,7 @@
 }
 
 + (UIFont *)recipeGridIngredientsFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
+    return [UIFont fontWithName:@"AvenirNext-Italic" size:15.0];
 }
 
 + (UIColor *)recipeGridIngredientsColour {
