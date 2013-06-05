@@ -335,6 +335,10 @@
 - (void)keyboardWillAppear:(BOOL)appear {
 }
 
+- (UIFont *)textFontWithSize:(CGFloat)size {
+    return [self.font fontWithSize:size];
+}
+
 #pragma mark - Lifecycle events
 
 - (void)targetTextEditingViewDidCreated {
@@ -416,7 +420,7 @@
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.text = [self.editTitle uppercaseString];
-        _titleLabel.font = [UIFont boldSystemFontOfSize:30.0];
+        _titleLabel.font = [self textFontWithSize:30.0];
         _titleLabel.textColor = [self titleColour];
         [_titleLabel sizeToFit];
         _titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - _titleLabel.frame.size.width) / 2.0),

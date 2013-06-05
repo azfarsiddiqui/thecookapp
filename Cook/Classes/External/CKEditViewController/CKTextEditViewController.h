@@ -10,7 +10,6 @@
 
 @interface CKTextEditViewController : CKEditViewController
 
-@property (nonatomic, assign) CGFloat fontSize;
 @property (nonatomic, assign) NSUInteger characterLimit;
 @property (nonatomic, strong) UILabel *limitLabel;
 @property (nonatomic, assign) BOOL textLimited;

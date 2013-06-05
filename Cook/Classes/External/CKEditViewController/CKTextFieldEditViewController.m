@@ -28,7 +28,7 @@
                                                                            160.0,
                                                                            size.width,
                                                                            singleLineHeight)];
-    textField.font = [UIFont boldSystemFontOfSize:self.fontSize];
+    textField.font = self.font;
     textField.textColor = [self editingTextColour];
     textField.backgroundColor = [UIColor clearColor];
     textField.textAlignment = NSTextAlignmentCenter;
@@ -121,7 +121,7 @@
 #pragma mark - Private methods
 
 - (CGFloat)singleLineHeight {
-    return [CKEditingViewHelper singleLineHeightForFont:[UIFont boldSystemFontOfSize:self.fontSize]
+    return [CKEditingViewHelper singleLineHeightForFont:self.font
                                                    size:self.view.bounds.size];
 }
 

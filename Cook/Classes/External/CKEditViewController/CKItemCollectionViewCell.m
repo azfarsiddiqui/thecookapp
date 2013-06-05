@@ -15,7 +15,6 @@
 
 @implementation CKItemCollectionViewCell
 
-#define kDefaultFont        [UIFont systemFontOfSize:50]
 #define kPlaceholderAlpha   0.7
 
 - (id)initWithFrame:(CGRect)frame {

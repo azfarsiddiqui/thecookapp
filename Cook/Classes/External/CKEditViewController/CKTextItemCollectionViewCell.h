@@ -14,5 +14,6 @@
 @property (nonatomic, strong) UITextField *textField;
 
 - (NSString *)textForValue:(id)value;
+- (UIFont *)fontForTextField;
 
 @end

@@ -33,6 +33,7 @@
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, assign) BOOL dismissableOverlay;
 @property (nonatomic, assign) BOOL white;
+@property (nonatomic, strong) UIFont *font;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
@@ -58,6 +59,7 @@
 - (BOOL)showSaveIcon;
 - (void)dismissEditView;
 - (void)keyboardWillAppear:(BOOL)appear;
+- (UIFont *)textFontWithSize:(CGFloat)size;
 
 // Lifecycle events.
 - (void)targetTextEditingViewDidCreated;

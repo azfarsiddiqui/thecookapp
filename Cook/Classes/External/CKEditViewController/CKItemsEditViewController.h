@@ -10,13 +10,6 @@
 
 @class CKItemCollectionViewCell;
 
-@protocol CKItemCellDelegate <NSObject>
-
-- (BOOL)processedValueForCell:(CKItemCollectionViewCell *)cell;
-- (void)returnRequestedForCell:(CKItemCollectionViewCell *)cell;
-
-@end
-
 @interface CKItemsEditViewController : CKEditViewController
 
 @property (nonatomic, strong) UICollectionView *collectionView;

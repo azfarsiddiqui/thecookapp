@@ -16,14 +16,14 @@
 
 @implementation CKTextItemCollectionViewCell
 
-#define kDefaultFont        [UIFont systemFontOfSize:50]
 #define kPlaceholderAlpha   0.7
+#define kDefaultFont        [UIFont boldSystemFontOfSize:50.0]
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
         // Internal text view.
-        CGFloat singleLineHeight = [CKEditingViewHelper singleLineHeightForFont:kDefaultFont size:self.contentView.bounds.size];
+        CGFloat singleLineHeight = [CKEditingViewHelper singleLineHeightForFont:[self fontForTextField] size:self.contentView.bounds.size];
         UIEdgeInsets itemInsets = UIEdgeInsetsMake(floorf((self.contentView.bounds.size.height - singleLineHeight) / 2.0), 20.0, 0.0, 20.0);
         UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(itemInsets.left,
                                                                                itemInsets.top,
@@ -33,7 +33,7 @@
         textField.backgroundColor = [UIColor clearColor];
         textField.textAlignment = NSTextAlignmentCenter;
         textField.delegate = self;
-        textField.font = kDefaultFont;
+        textField.font = [self fontForTextField];
         textField.textColor = [UIColor blackColor];
         textField.returnKeyType = UIReturnKeyDone;
         textField.userInteractionEnabled = NO;
@@ -66,7 +66,11 @@
     return (NSString *)value;
 }
 
-#pragma mark - Setters
+- (UIFont *)fontForTextField {
+    return kDefaultFont;
+}
+
+#pragma mark - Properties
 
 - (void)setPlaceholder:(BOOL)placeholder {
     [super setPlaceholder:placeholder];

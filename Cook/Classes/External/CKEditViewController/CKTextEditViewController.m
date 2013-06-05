@@ -30,7 +30,7 @@
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title]) {
         self.characterLimit = characterLimit;
         self.textLimited = (characterLimit < NSUIntegerMax);
-        self.fontSize = 70.0;
+        self.font = [UIFont boldSystemFontOfSize:70.0];
     }
     return self;
 }

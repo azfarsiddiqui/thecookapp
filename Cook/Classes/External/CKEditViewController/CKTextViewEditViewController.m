@@ -37,7 +37,6 @@
     
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title
                         characterLimit:characterLimit]) {
-        self.fontSize = 30.0;
         self.numLines = 6;
     }
     return self;
@@ -317,10 +316,6 @@
                      }];
 }
 
-- (UIFont *)textViewFont {
-    return [UIFont systemFontOfSize:self.fontSize];
-}
-
 - (CGFloat)minimumTextViewHeight {
     
     NSMutableString *testString = [NSMutableString stringWithString:@"A"];
@@ -333,7 +328,7 @@
 
 - (UITextView *)createTextView {
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
-    textView.font = [self textViewFont];
+    textView.font = self.textViewFont;
     textView.textColor = [self editingTextColour];
     textView.backgroundColor = [UIColor clearColor];
     textView.textAlignment = NSTextAlignmentLeft;

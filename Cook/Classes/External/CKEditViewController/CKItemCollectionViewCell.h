@@ -9,6 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "CKItemsEditViewController.h"
 
+@class CKItemCollectionViewCell;
+
+@protocol CKItemCellDelegate <NSObject>
+
+- (BOOL)processedValueForCell:(CKItemCollectionViewCell *)cell;
+- (void)returnRequestedForCell:(CKItemCollectionViewCell *)cell;
+
+@end
+
 @interface CKItemCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, assign) id<CKItemCellDelegate> delegate;

@@ -11,6 +11,7 @@
 @interface CKTextViewEditViewController : CKTextEditViewController
 
 @property (nonatomic, assign) NSInteger numLines;
+@property (nonatomic, strong) UIFont *textViewFont;
 
 - (BOOL)contentScrollable;
 
