@@ -8,14 +8,18 @@
 
 #import "BookRecipeCollectionViewCell.h"
 #import "CKRecipe.h"
+#import "CKBook.h"
 #import "Theme.h"
 #import "UIImage+ProportionalFill.h"
 #import "MRCEnumerable.h"
 #import "Ingredient.h"
 #import "GridRecipeStatsView.h"
 #import "ImageHelper.h"
+#import "CKBookCover.h"
 
 @interface BookRecipeCollectionViewCell ()
+
+@property (nonatomic, strong) CKBook *book;
 
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
@@ -36,7 +40,7 @@
 #define kTitleTopGap            20.0
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
-#define kContentInsets          UIEdgeInsetsMake(30.0, 30.0, 30.0, 30.0)
+#define kContentInsets          UIEdgeInsetsMake(30.0, 30.0, 20.0, 30.0)
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -64,7 +68,6 @@
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         titleLabel.backgroundColor = [self backgroundColorOrDebug];
         titleLabel.font = [Theme recipeGridTitleFont];
-        titleLabel.textColor = [Theme recipeGridTitleColour];
         titleLabel.numberOfLines = 2;
         titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self.contentView addSubview:titleLabel];
@@ -109,11 +112,14 @@
         self.storyLabel = storyLabel;
         
         // Bottom stats view.
-        CGSize statsSize = CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right, 40.0);
-        GridRecipeStatsView *statsView = [[GridRecipeStatsView alloc] initWithFrame:CGRectMake((self.contentView.bounds.size.width - statsSize.width) / 2.0,
-                                                                                               self.contentView.bounds.size.height - statsSize.height - kContentInsets.bottom,
-                                                                                               statsSize.width,
-                                                                                               statsSize.height)];
+        CGFloat availableWidth = self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right;
+        GridRecipeStatsView *statsView = [[GridRecipeStatsView alloc] initWithWidth:availableWidth];
+        statsView.frame = (CGRect) {
+            kContentInsets.left + floorf((self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right - statsView.frame.size.width) / 2.0),
+            self.contentView.bounds.size.height - statsView.frame.size.height - kContentInsets.bottom,
+            statsView.frame.size.width,
+            statsView.frame.size.height
+        };
         [self.contentView addSubview:statsView];
         self.statsView = statsView;
         
@@ -121,8 +127,9 @@
     return self;
 }
 
-- (void)configureRecipe:(CKRecipe *)recipe {
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     self.recipe = recipe;
+    self.book = book;
     
     [self updateTitle];
     [self updateStory];
@@ -177,6 +184,8 @@
 }
 
 - (void)updateTitle {
+    self.titleLabel.textColor = [CKBookCover textColourForCover:self.book.cover];
+    
     NSString *title = [self.recipe.name uppercaseString];
     CGRect frame = self.titleLabel.frame;
     CGSize availableSize = [self availableSize];

@@ -34,6 +34,8 @@
 + (UIColor *)recipeGridIngredientsColour;
 + (UIFont *)recipeGridStoryFont;
 + (UIColor *)recipeGridStoryColour;
++ (UIFont *)recipeGridStatFont;
++ (UIColor *)recipeGridStatColour;
 
 #pragma mark - Store
 + (UIFont *)storeTabFont;

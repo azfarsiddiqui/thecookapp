@@ -12,11 +12,7 @@
 
 @interface GridRecipeStatsView : UIView
 
-- (void)reset;
+- (id)initWithWidth:(CGFloat)width;
 - (void)configureRecipe:(CKRecipe *)recipe;
-- (void)configureIcon:(NSString *)iconName value:(NSString *)value;
-- (UIColor *)textColour;
-- (UIColor *)shadowColour;
-- (CGSize)shadowOffset;
 
 @end

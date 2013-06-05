@@ -412,10 +412,10 @@
 
 - (UIButton *)contentsButton {
     if (!_contentsButton) {
-        _contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_contents_gray.png"]
+        _contentsButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_home_gray.png"]
                                                target:self
                                              selector:@selector(contentsTapped:)];
-        _contentsButton.frame = CGRectMake(self.closeButton.frame.origin.x + self.closeButton.frame.size.width,
+        _contentsButton.frame = CGRectMake(self.closeButton.frame.origin.x + self.closeButton.frame.size.width + 10.0,
                                            kNavTopLeftOffset.y,
                                            _contentsButton.frame.size.width,
                                            _contentsButton.frame.size.height);
@@ -634,7 +634,7 @@
     
     // Populate recipe.
     CKRecipe *recipe = [categoryRecipes objectAtIndex:indexPath.item];
-    [recipeCell configureRecipe:recipe];
+    [recipeCell configureRecipe:recipe book:self.book];
     
     // Configure image.
     [self configureImageForRecipeCell:recipeCell recipe:recipe indexPath:indexPath];

@@ -139,6 +139,14 @@
     return [UIColor colorWithHexString:@"4E4E4E"];
 }
 
++ (UIFont *)recipeGridStatFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:13.0];
+}
+
++ (UIColor *)recipeGridStatColour {
+    return [UIColor darkGrayColor];
+}
+
 #pragma mark - Notifications
 
 + (UIFont *)notificationsHeaderFont {

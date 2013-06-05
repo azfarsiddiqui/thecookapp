@@ -86,6 +86,11 @@
     return [UIColor colorWithHexString:hexValue];
 }
 
++ (UIColor *)textColourForCover:(NSString *)cover {
+    NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.TextHex", cover]];
+    return [UIColor colorWithHexString:hexValue];
+}
+
 + (UIImage *)thumbSliderContentImageForCover:(NSString *)cover {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Slider", cover]];
     return [UIImage imageNamed:imageName];

@@ -271,7 +271,7 @@ typedef enum {
                                                                                                               white:YES
                                                                                                               title:@"Name"
                                                                                                      characterLimit:30];
-        editViewController.fontSize = 48.0;
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:48.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         

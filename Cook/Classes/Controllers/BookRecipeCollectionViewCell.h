@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @class CKRecipe;
+@class CKBook;
 
 @interface BookRecipeCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) CKRecipe *recipe;
 
 - (CGSize)imageSize;
-- (void)configureRecipe:(CKRecipe *)recipe;
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)configureImage:(UIImage *)image;
 
 @end
