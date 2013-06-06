@@ -40,6 +40,10 @@
     }
 }
 
+- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    return [super layoutAttributesForElementsInRect:rect];
+}
+
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *attributes = nil;
     

@@ -14,7 +14,6 @@
 @interface CKItemsEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     CKItemCellDelegate>
 
-@property (nonatomic, strong) UILabel *headerLabel;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, assign) NSNumber *currentSelectedIndexNumber;
@@ -23,6 +22,7 @@
 @property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) NSInteger currentDisplayIndex;
 @property (nonatomic, assign) CGPoint restoreContentOffset;
+@property (nonatomic, assign) BOOL insertTopEngaged;
 
 @property (nonatomic, strong) CKItemCollectionViewCell *focusedCell;
 
@@ -248,10 +248,9 @@
 #pragma mark - CKEditViewController methods
 
 - (UIView *)createTargetEditView {
-    UIEdgeInsets contentInsets = [self contentInsets];
     CGSize size = kPlaceholderSize;
     UIView *placeholderView = [[UIView alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
-                                                                       contentInsets.top,
+                                                                       40.0,    // 25 contentInsets.top + 15.spacing from top
                                                                        size.width,
                                                                        size.height)];
     placeholderView.backgroundColor = [UIColor whiteColor];
@@ -332,6 +331,29 @@
     }
 }
 
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    UICollectionViewCell *topCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    self.insertTopEngaged = CGRectContainsRect(
+                                      (CGRect){
+                                          self.collectionView.contentOffset.x,
+                                          self.collectionView.contentOffset.y,
+                                          self.collectionView.bounds.size.width,
+                                          self.collectionView.bounds.size.height
+                                      },
+                                      topCell.frame
+                                      );
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    
+    if (self.insertTopEngaged) {
+        NSLog(@"INSERT!");
+    }
+    
+}
+
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -347,23 +369,9 @@
     return numItems;
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
-           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderId forIndexPath:indexPath];
-    headerView.backgroundColor = [UIColor clearColor];
-    
-    if (!self.headerLabel.superview) {
-        self.headerLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - self.headerLabel.frame.size.width) / 2.0),
-                                            headerView.bounds.size.height - self.headerLabel.frame.size.height - 15.0,
-                                            self.headerLabel.frame.size.width,
-                                            self.headerLabel.frame.size.height);
-        [headerView addSubview:self.headerLabel];
-    }
-    return headerView;
-}
-
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CKItemCollectionViewCell *cell = (CKItemCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
+    NSLog(@"collectionViewCell [%@]: %@", indexPath, NSStringFromCGRect(cell.frame));
     [self configureCell:cell indexPath:indexPath];
     return cell;
 }
@@ -382,10 +390,17 @@
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-    referenceSizeForHeaderInSection:(NSInteger)section {
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+        insetForSectionAtIndex:(NSInteger)section {
     
-    return CGSizeMake(self.collectionView.bounds.size.width, kHeaderHeight);
+    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+    NSLog(@"targetTextBoxView: %@", NSStringFromCGRect(targetTextBoxView.frame));
+    NSLog(@"targetTextBoxView.frame: %@", NSStringFromCGRect(targetTextBoxView.textBoxFrame));
+    NSLog(@"targetTextBoxView.editViewFrame: %@", NSStringFromCGRect(targetTextBoxView.editViewFrame));
+    
+    return (UIEdgeInsets) { targetTextBoxView.frame.origin.y, 20.0, 15.0, 20.0 };
+//    return (UIEdgeInsets) { -targetTextBoxView.frame.size.height, 20.0, 15.0, 20.0 };
+
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -399,7 +414,9 @@
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    return targetTextBoxView.textBoxFrame.size;
+    CGSize size = targetTextBoxView.frame.size;
+    NSLog(@"collectionViewCell size: %@", NSStringFromCGSize(size));
+    return size;
 }
 
 #pragma mark - CKItemCellDelegate methods
@@ -467,9 +484,9 @@
         
         CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
         CGSize itemSize = targetTextBoxView.textBoxFrame.size;
-        CKListCollectionViewLayout *layout = [[CKListCollectionViewLayout alloc] initWithItemSize:itemSize];
+//        CKListCollectionViewLayout *layout = [[CKListCollectionViewLayout alloc] initWithItemSize:itemSize];
         
-//        CKItemsCollectionViewFlowLayout *layout = [[CKItemsCollectionViewFlowLayout alloc] init];
+        CKItemsCollectionViewFlowLayout *layout = [[CKItemsCollectionViewFlowLayout alloc] init];
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
                                              collectionViewLayout:layout];
         _collectionView.backgroundColor = [UIColor clearColor];
@@ -497,19 +514,6 @@
         }
     }
     return _collectionView;
-}
-
-- (UILabel *)headerLabel {
-    if (!_headerLabel) {
-        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        headerLabel.backgroundColor = [UIColor clearColor];
-        headerLabel.text = [self.editTitle uppercaseString];
-        headerLabel.font = [UIFont boldSystemFontOfSize:30.0];
-        headerLabel.textColor = [self titleColour];
-        [headerLabel sizeToFit];
-        _headerLabel = headerLabel;
-    }
-    return _headerLabel;
 }
 
 - (UIButton *)saveButton {

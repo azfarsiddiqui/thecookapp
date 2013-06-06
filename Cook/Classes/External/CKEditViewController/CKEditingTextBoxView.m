@@ -41,18 +41,13 @@
     [textBoxName appendString:editMode ? @"_edit" : @""];
     [textBoxName appendString:@".png"];
     
-    // Different insets for normal white.
-    if (white && !editMode) {
-        capInsets = (UIEdgeInsets){ 6.0, 6.0, 6.0, 6.0 };
-    }
-    
     UIImage *textBoxImage = [[UIImage imageNamed:textBoxName] resizableImageWithCapInsets:capInsets];
     return textBoxImage;
 }
 
 + (UIImage *)textEditingSelectionBoxWhite:(BOOL)white {
     return [[UIImage imageNamed:@"cook_customise_textbox_blue.png"]
-            resizableImageWithCapInsets:(UIEdgeInsets){ 6.0, 6.0, 6.0, 6.0 }];
+            resizableImageWithCapInsets:(UIEdgeInsets){ 48.0, 41.0, 6.0, 41.0 }];
 }
 
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white

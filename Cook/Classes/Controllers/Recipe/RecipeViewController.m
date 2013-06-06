@@ -304,6 +304,7 @@ typedef enum {
                                                                                                             title:@"Story"
                                                                                                    characterLimit:120];
         ((CKTextViewEditViewController *)editViewController).numLines = 2;
+        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
@@ -314,6 +315,7 @@ typedef enum {
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
                                                                                                             title:@"Method"];
+        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
     

@@ -52,12 +52,9 @@
     CGFloat requiredHeight = 0.0;
     
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
-    requiredHeight += kHeaderHeight;
+    requiredHeight += kRowSpacing;
     requiredHeight += (numItems * self.itemSize.height) + ((numItems - 1) * kRowSpacing);
-
-    requiredHeight += kHeaderHeight;
-    
-//    requiredHeight += (self.collectionView.bounds.size.height - kHeaderHeight - self.itemSize.height);
+    requiredHeight += kRowSpacing;
     
     CGSize contentSize = CGSizeMake(self.collectionView.bounds.size.width, requiredHeight);
     return contentSize;
@@ -123,7 +120,7 @@
 #pragma mark - Private methods
 
 - (void)buildItemLayout {
-    [self buildHeaderLayout];
+    // [self buildHeaderLayout];
     [self buildListLayout];
 }
 
@@ -145,7 +142,7 @@
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
-    CGFloat itemOffset = kHeaderHeight;
+    CGFloat itemOffset = kRowSpacing;
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
         
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:itemIndex inSection:0];
