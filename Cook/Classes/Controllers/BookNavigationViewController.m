@@ -49,6 +49,7 @@
 @property (nonatomic, strong) NSString *currentCategoryName;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL deepLinkMode;
 
 @property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
 
@@ -216,12 +217,28 @@
 
 - (void)bookIndexSelectedCategory:(NSString *)category {
     
-    // Selected a category, run-relayout
-    self.selectedCategoryName = category;
+    if (self.deepLinkMode) {
+        
+        // Selected a category, run-relayout
+        self.selectedCategoryName = category;
+        
+        // Invalidate the current layout for deep-linking.
+        [self.collectionView.collectionViewLayout invalidateLayout];
+        [self.collectionView reloadData];
+        
+    } else {
+        
+        // Zoom there like a bookmark.
+        BookNavigationLayout *layout = (BookNavigationLayout *)self.collectionView.collectionViewLayout;
+        NSUInteger categoryIndex = [self.categoryNames indexOfObject:category];
+        NSUInteger resolvedCategoryIndex = categoryIndex + [self bookNavigationContentStartSection];
+        [self.collectionView setContentOffset:(CGPoint){
+            [layout pageOffsetForSection:resolvedCategoryIndex],
+            self.collectionView.contentOffset.y
+        } animated:YES];
+        
+    }
     
-    // Invalidate the current layout for deep-linking.
-    [self.collectionView.collectionViewLayout invalidateLayout];
-    [self.collectionView reloadData];
 }
 
 - (void)bookIndexAddRecipeRequested {
