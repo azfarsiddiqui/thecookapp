@@ -32,6 +32,7 @@ typedef enum {
 + (NSArray *)illustrations;
 + (NSString *)grayCoverName;
 + (UIImage *)overlayImage;
++ (UIImage *)storeOverlayImage;
 + (UIImage *)placeholderCoverImage;
 
 + (BookCoverLayout)layoutForIllustration:(NSString *)illustration;

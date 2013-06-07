@@ -21,6 +21,7 @@
 @property (nonatomic, copy) NSString *captionValue;
 
 - (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate;
+- (id)initWithFrame:(CGRect)frame storeMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration;
 - (void)setName:(NSString *)name author:(NSString *)author editable:(BOOL)editable;
 - (void)enableEditMode:(BOOL)enable;

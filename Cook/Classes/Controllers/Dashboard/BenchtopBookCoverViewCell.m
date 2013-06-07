@@ -29,13 +29,17 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        CKBookCoverView *bookView = [[CKBookCoverView alloc] initWithFrame:frame delegate:self];
-        bookView.center = self.contentView.center;
-        bookView.frame = CGRectIntegral(bookView.frame);
-        [self.contentView addSubview:bookView];
-        self.bookCoverView = bookView;
+        CKBookCoverView *bookCoverView = [self createBookCoverViewWithDelegate:self];
+        bookCoverView.center = self.contentView.center;
+        bookCoverView.frame = CGRectIntegral(bookCoverView.frame);
+        [self.contentView addSubview:bookCoverView];
+        self.bookCoverView = bookCoverView;
     }
     return self;
+}
+
+- (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
+    return [[CKBookCoverView alloc] initWithFrame:self.contentView.bounds delegate:delegate];
 }
 
 - (void)loadBook:(CKBook *)book {

@@ -23,6 +23,10 @@
     return [BenchtopBookCoverViewCell cellSize];
 }
 
+- (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
+    return [[CKBookCoverView alloc] initWithFrame:self.contentView.bounds delegate:delegate];
+}
+
 - (void)loadBook:(CKBook *)book {
     [self.bookCoverView setCover:book.cover illustration:book.illustration];
     [self.bookCoverView setName:book.name author:[book userName] editable:NO];

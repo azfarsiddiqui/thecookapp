@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL storeMode;
 
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
@@ -39,15 +40,18 @@
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
 - (id)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
-        [self initBackground];
-    }
-    return self;
+    return [self initWithFrame:frame storeMode:NO delegate:nil];
 }
 
 - (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate {
-    if (self = [self initWithFrame:frame]) {
+    return [self initWithFrame:frame storeMode:NO delegate:delegate];
+}
+
+- (id)initWithFrame:(CGRect)frame storeMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate {
+    if (self = [super initWithFrame:frame]) {
         self.delegate = delegate;
+        self.storeMode = storeMode;
+        [self initBackground];
     }
     return self;
 }
@@ -197,7 +201,8 @@
     self.backgroundImageView = backgroundImageView;
     
     // Overlay
-    UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:[CKBookCover overlayImage]];
+    UIImage *overlayImage = self.storeMode ? [CKBookCover storeOverlayImage] : [CKBookCover overlayImage];
+    UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:overlayImage];
     overlayImageView.frame = backgroundImageView.frame;
     [self insertSubview:overlayImageView aboveSubview:backgroundImageView];
     self.overlayImageView = overlayImageView;

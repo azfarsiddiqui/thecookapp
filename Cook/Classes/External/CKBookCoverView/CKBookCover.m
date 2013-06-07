@@ -138,6 +138,10 @@
     return [UIImage imageNamed:@"cook_book_overlay.png"];
 }
 
++ (UIImage *)storeOverlayImage {
+    return [UIImage imageNamed:@"cook_book_overlay.png"];
+}
+
 + (UIImage *)placeholderCoverImage {
     return [UIImage imageNamed:[[CKBookCover settings] valueForKeyPath:@"Covers.Gray.Image"]];
 }

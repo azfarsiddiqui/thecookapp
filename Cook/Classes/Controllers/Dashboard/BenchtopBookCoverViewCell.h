@@ -26,6 +26,7 @@
 + (CGSize)cellSize;
 + (CGFloat)storeScale;
 
+- (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)loadBook:(CKBook *)book;
 - (void)enableDeleteMode:(BOOL)enable;
 - (void)enableEditMode:(BOOL)enable;
