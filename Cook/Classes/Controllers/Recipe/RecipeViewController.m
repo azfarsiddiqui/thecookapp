@@ -117,12 +117,12 @@ typedef enum {
 
 #define kHeaderHeight           210.0
 #define kContentMaxHeight       468.0
-#define kContentMaxWidth        660.0
+#define kContentMaxWidth        685.0
 #define kLeftDividerGap         18.0
 
 #define kButtonInsets           UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
-#define kContentLeftFrame       CGRectMake(0.0, 0.0, 240.0, 0.0)
-#define kContentRightFrame      CGRectMake(265.0, 0.0, 395.0, 0.0)
+#define kContentLeftFrame       CGRectMake(0.0, 0.0, 255.0, 0.0)
+#define kContentRightFrame      CGRectMake(265.0, 0.0, 420.0, 0.0)
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
 
 #define kServesTag              122
@@ -591,7 +591,7 @@ typedef enum {
                                       servesIconView.frame.size.width,
                                       servesIconView.frame.size.height);
     servesLabel.frame = CGRectMake(servesIconView.frame.origin.x + servesIconView.frame.size.width + iconTextGap,
-                                   floorf((maxHeight - servesLabel.frame.size.height) / 2.0),
+                                   floorf((maxHeight - servesLabel.frame.size.height) / 2.0) + 1.0,
                                    servesLabel.frame.size.width,
                                    servesLabel.frame.size.height);
     CGRect combinedFrame = CGRectUnion(servesIconView.frame, servesLabel.frame);
@@ -881,6 +881,8 @@ typedef enum {
 }
 
 - (void)initHeaderView {
+    CGFloat xOffset = 50.0;
+    
     UIImage *headerImage = [[UIImage imageNamed:@"cook_recipe_background_tile.png"] stretchableImageWithLeftCapWidth:0.0 topCapHeight:52.0];
     UIImageView *headerView = [[UIImageView alloc] initWithImage:headerImage];
     headerView.frame = CGRectMake(self.contentContainerView.bounds.origin.x,
@@ -914,7 +916,7 @@ typedef enum {
     CGFloat photoNameOffset = 10.0;
     CGFloat combinedWidth = profilePhotoView.frame.size.width + 5.0 + nameLabel.frame.size.width;
     nameLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - combinedWidth) / 2.0) + profilePhotoView.frame.size.width + photoNameOffset,
-                                 40.0,
+                                 xOffset,
                                  nameLabel.frame.size.width,
                                  nameLabel.frame.size.height);
     profilePhotoView.frame = CGRectMake(floorf((headerView.bounds.size.width - combinedWidth) / 2.0),
@@ -941,7 +943,7 @@ typedef enum {
     
     // Recipe title.
     CKLabel *titleLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:nil defaultText:@"RECIPE NAME"
-                                                 minSize:CGSizeMake(kContentMaxWidth - 40.0, 0.0)];
+                                                 minSize:CGSizeMake(kContentMaxWidth - xOffset, 0.0)];
     titleLabel.font = [Theme recipeNameFont];
     titleLabel.textColor = [Theme recipeNameColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -955,7 +957,7 @@ typedef enum {
     
     // Recipe story.
     CKLabel *storyLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:@"ABOUT THIS RECIPE"
-                                                 minSize:CGSizeMake(kContentMaxWidth - 40.0, 0.0)];
+                                                 minSize:CGSizeMake(kContentMaxWidth - xOffset, 0.0)];
     storyLabel.font = [Theme storyFont];
     storyLabel.textColor = [Theme storyColor];
     storyLabel.placeholderColour = storyLabel.textColor;
@@ -1434,7 +1436,7 @@ typedef enum {
     self.titleLabel.text = title;
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-                                       self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + 10.0,
+                                       self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height,
                                        self.titleLabel.frame.size.width,
                                        self.titleLabel.frame.size.height);
 }
@@ -1772,7 +1774,7 @@ typedef enum {
 }
 
 - (NSString *)servesDisplayFor:(NSInteger)serves {
-    NSMutableString *servesDisplay = [NSMutableString stringWithString:@"SERVES"];
+    NSMutableString *servesDisplay = [NSMutableString stringWithString:@"Serves"];
     if (serves > 0) {
         [servesDisplay appendFormat:@" %d", serves];
     }
@@ -1781,9 +1783,9 @@ typedef enum {
 
 - (NSString *)prepCookDisplayForPrepMinutes:(NSInteger)prepMinutes cookMinutes:(NSInteger)cookMinutes {
     if (prepMinutes == 0 && cookMinutes == 0) {
-        return @"PREP";
+        return @"Prep";
     } else {
-        return [NSString stringWithFormat:@"PREP %dm | COOK %dm", prepMinutes, cookMinutes];
+        return [NSString stringWithFormat:@"Prep %dm | Cook %dm", prepMinutes, cookMinutes];
     }
 }
 

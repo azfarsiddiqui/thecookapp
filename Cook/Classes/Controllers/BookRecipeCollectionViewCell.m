@@ -252,7 +252,7 @@
 - (void)updateStory {
     if ([self.recipe hasPhotos] && [self.recipe.story length] > 0) {
         self.storyLabel.hidden = NO;
-        NSString *story = [NSString stringWithFormat:@"‟ %@ ”", self.recipe.story];
+        NSString *story = self.recipe.story;
         CGSize size = [story sizeWithFont:self.storyLabel.font
                         constrainedToSize:(CGSize) {
                             self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,

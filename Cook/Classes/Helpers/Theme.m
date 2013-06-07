@@ -124,7 +124,7 @@
 }
 
 + (UIFont *)recipeGridIngredientsFont {
-    return [UIFont fontWithName:@"AvenirNext-Italic" size:15.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
 }
 
 + (UIColor *)recipeGridIngredientsColour {
@@ -144,7 +144,7 @@
 }
 
 + (UIColor *)recipeGridStatColour {
-    return [UIColor darkGrayColor];
+    return [UIColor colorWithHexString:@"888888"];
 }
 
 #pragma mark - Notifications
@@ -358,7 +358,7 @@
 
 +(UIColor*) servesColor
 {
-    return [UIColor colorWithHexString:@"3a3a3a"];
+    return [UIColor colorWithHexString:@"4e4e4e"];
 }
 
 +(UIFont*) categoryFont
