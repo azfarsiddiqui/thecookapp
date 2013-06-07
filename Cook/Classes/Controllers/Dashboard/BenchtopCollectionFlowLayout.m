@@ -84,9 +84,6 @@
             [self.deletedIndexPaths addObject:updateItem.indexPathBeforeUpdate];
         }
     }
-
-    DLog(@"INSERTED %@", self.insertedIndexPaths);
-    DLog(@"DELETED  %@", self.deletedIndexPaths);
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {

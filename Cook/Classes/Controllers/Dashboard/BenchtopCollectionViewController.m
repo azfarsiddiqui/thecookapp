@@ -49,7 +49,7 @@
 #define kFollowSection  1
 #define kLevelXOffset   30.0
 #define kDefaultInsets  UIEdgeInsetsMake(175.0, 362.0, 155.0, 0.0)
-#define kFollowInsets   UIEdgeInsetsMake(155.0, 300.0, 155.0, 362.0)
+#define kFollowInsets   UIEdgeInsetsMake(175.0, 300.0, 155.0, 362.0)
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
