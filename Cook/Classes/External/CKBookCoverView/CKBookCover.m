@@ -139,7 +139,7 @@
 }
 
 + (UIImage *)storeOverlayImage {
-    return [UIImage imageNamed:@"cook_book_overlay.png"];
+    return [UIImage imageNamed:@"cook_book_overlay_small.png"];
 }
 
 + (UIImage *)placeholderCoverImage {
