@@ -95,7 +95,7 @@
     
     FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self];
     featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                   self.view.bounds.size.height - rowHeight + 33.0,
+                                                   self.view.bounds.size.height - rowHeight + 38.0,
                                                    self.view.bounds.size.width,
                                                    rowHeight);
     featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;

@@ -24,7 +24,7 @@
 }
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
-    return [[CKBookCoverView alloc] initWithFrame:self.contentView.bounds delegate:delegate];
+    return [[CKBookCoverView alloc] initWithFrame:self.contentView.bounds storeMode:YES delegate:delegate];
 }
 
 - (void)loadBook:(CKBook *)book {
