@@ -44,9 +44,9 @@
 
 @implementation StoreBookViewController
 
-#define kBookViewContentInsets  UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0)
+#define kBookViewContentInsets  UIEdgeInsetsMake(50.0, 55.0, 50.0, 50.0)
 #define kBookViewSize           CGSizeMake(740.0, 540.0)
-#define kBookShadowAdjustment   10.0
+#define kBookShadowAdjustment   20.0
 #define kOverlayAlpha           0.5
 #define kBookViewAlpha          0.7
 #define kProfileNameGap         20.0
@@ -186,8 +186,8 @@
     [bookContainerView addSubview:overlayView];
     
     // Close button.
-    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"btn_close.png"] target:self selector:@selector(closeTapped)];
-    closeButton.frame = CGRectMake(15.0, 10.0, closeButton.frame.size.width, closeButton.frame.size.height);
+    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"] target:self selector:@selector(closeTapped)];
+    closeButton.frame = CGRectMake(10.0, 8.0, closeButton.frame.size.width, closeButton.frame.size.height);
     [bookContainerView addSubview:closeButton];
 }
 

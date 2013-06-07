@@ -101,7 +101,7 @@
         label.text = [self.titles objectAtIndex:tabIndex];
         [label sizeToFit];
         label.frame = CGRectMake(floorf((tabImageView.bounds.size.width - label.frame.size.width) / 2.0),
-                                 16.0,
+                                 18.0,
                                  label.frame.size.width,
                                  label.frame.size.height);
         [tabImageView addSubview:label];
@@ -110,7 +110,7 @@
         UIImageView *iconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self.icons objectAtIndex:tabIndex]]];
         iconView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
         iconView.frame = CGRectMake(floorf((tabImageView.bounds.size.width - iconView.frame.size.width) / 2.0),
-                                    10.0,
+                                    12.0,
                                     iconView.frame.size.width,
                                     iconView.frame.size.height);
         iconView.alpha = 0.0;
