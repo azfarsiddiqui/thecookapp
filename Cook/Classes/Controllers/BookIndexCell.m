@@ -13,22 +13,29 @@
 
 @interface BookIndexCell ()
 
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *subtitleLabel;
-@property (nonatomic, strong) UILabel *numRecipesLabel;
-
 @end
 
 @implementation BookIndexCell
 
-#define kContentInsets      UIEdgeInsetsMake(-8.0, 5.0, 0.0, 5.0)
 #define kTitleNumGap        20.0
-#define kTitleSubtitleGap   -10.0
 
 + (CGSize)cellSize {
     return (CGSize){
         400.0, [self requiredHeight]
     };
+}
+
++ (CGFloat)requiredHeight {
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGFloat height = contentInsets.top;
+    CGSize titleSize = [@"A" sizeWithFont:[Theme bookIndexFont] constrainedToSize:(CGSize){MAXFLOAT, MAXFLOAT} lineBreakMode:NSLineBreakByClipping];
+    height += titleSize.height;
+    height += contentInsets.bottom;
+    return height;
+}
+
++ (UIEdgeInsets)contentInsets {
+    return UIEdgeInsetsMake(-8.0, 5.0, 0.0, 5.0);
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -45,16 +52,6 @@
         [self.contentView addSubview:titleLabel];
         self.titleLabel = titleLabel;
 
-        // Subtitle.
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-        subtitleLabel.backgroundColor = [UIColor clearColor];
-        subtitleLabel.font = [Theme bookIndexSubtitleFont];
-        subtitleLabel.textColor = [Theme bookIndexSubtitleColour];
-        subtitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        [self.contentView addSubview:subtitleLabel];
-        self.subtitleLabel = subtitleLabel;
-        
         // Right num recipes.
         UILabel *numRecipesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         numRecipesLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
@@ -71,13 +68,14 @@
 
 - (void)configureCategory:(NSString *)category recipes:(NSArray *)recipes {
     CGSize availableSize = [self availableSize];
+    UIEdgeInsets contentInsets = [BookIndexCell contentInsets];
     CGSize size;
     
     // Number of recipes.
     NSString *numRecipesDisplay = [NSString stringWithFormat:@"%d", [recipes count]];
     size = [numRecipesDisplay sizeWithFont:self.numRecipesLabel.font constrainedToSize:availableSize lineBreakMode:NSLineBreakByClipping];
-    self.numRecipesLabel.frame = CGRectMake(self.contentView.bounds.size.width - kContentInsets.right - size.width,
-                                            kContentInsets.top,
+    self.numRecipesLabel.frame = CGRectMake(self.contentView.bounds.size.width - contentInsets.right - size.width,
+                                            contentInsets.top,
                                             size.width,
                                             size.height);
     self.numRecipesLabel.text = numRecipesDisplay;
@@ -88,45 +86,17 @@
              constrainedToSize:CGSizeMake(availableSize.width - self.numRecipesLabel.frame.size.width - kTitleNumGap,
                                           availableSize.height)
                  lineBreakMode:NSLineBreakByTruncatingTail];
-    self.titleLabel.frame = CGRectMake(kContentInsets.left, kContentInsets.top, size.width, size.height);
+    self.titleLabel.frame = CGRectMake(contentInsets.left, contentInsets.top, size.width, size.height);
     self.titleLabel.text = title;
     
-    // Subtitle.
-    NSString *subtitle = [[[recipes collect:^id(CKRecipe *recipe) {
-        return recipe.name;
-    }] componentsJoinedByString:@", "] uppercaseString];
-    size = [subtitle sizeWithFont:self.subtitleLabel.font
-                constrainedToSize:CGSizeMake(availableSize.width - self.numRecipesLabel.frame.size.width,
-                                             availableSize.height)
-                    lineBreakMode:NSLineBreakByTruncatingTail];
-    self.subtitleLabel.frame = CGRectMake(kContentInsets.left,
-                                          self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleSubtitleGap,
-                                          size.width,
-                                          size.height);
-    self.subtitleLabel.text = subtitle;
-    
-    // Workaround to get rid of extra spacing that gets introduced when it truncates.
-    [self.subtitleLabel sizeToFit];
-    self.subtitleLabel.frame = CGRectMake(self.subtitleLabel.frame.origin.x,
-                                          self.subtitleLabel.frame.origin.y,
-                                          size.width,
-                                          self.subtitleLabel.frame.size.height);
+}
+
+- (CGSize)availableSize {
+    UIEdgeInsets contentInsets = [BookIndexCell contentInsets];
+    return CGSizeMake(self.contentView.bounds.size.width - contentInsets.left - contentInsets.right,
+                      self.contentView.bounds.size.height - contentInsets.top - contentInsets.bottom);
 }
 
 #pragma mark - Private methods
-
-- (CGSize)availableSize {
-    return CGSizeMake(self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
-                      self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom);
-}
-
-+ (CGFloat)requiredHeight {
-    CGFloat height = kContentInsets.top;
-    CGSize titleSize = [@"A" sizeWithFont:[Theme bookIndexFont] constrainedToSize:(CGSize){MAXFLOAT, MAXFLOAT} lineBreakMode:NSLineBreakByClipping];
-    CGSize subtitleSize = [@"A" sizeWithFont:[Theme bookIndexSubtitleFont] constrainedToSize:(CGSize){MAXFLOAT, MAXFLOAT} lineBreakMode:NSLineBreakByClipping];
-    height += titleSize.height + kTitleSubtitleGap + subtitleSize.height;
-    height += kContentInsets.bottom;
-    return height;
-}
 
 @end

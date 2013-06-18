@@ -11,6 +11,7 @@
 #import "ParsePhotoStore.h"
 #import "BookIndexListLayout.h"
 #import "BookIndexCell.h"
+#import "BookIndexSubtitledCell.h"
 #import "Theme.h"
 #import "CKRecipe.h"
 #import "ImageHelper.h"
@@ -28,6 +29,7 @@
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKBookTitleIndexView *titleIndexView;
 
@@ -36,7 +38,7 @@
 @implementation BookIndexListViewController
 
 #define kCellId                 @"kBookIndexListCell"
-#define kIndexWidth             485.0
+#define kIndexWidth             240.0
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
 
@@ -61,6 +63,7 @@
     [self initBackgroundView];
     [self initTitleView];
     [self initCollectionView];
+    [self initProfileView];
     [self initShadowViews];
 }
 
@@ -172,6 +175,33 @@
     self.collectionView.transform = CGAffineTransformMakeTranslation(collectionView.frame.size.width, 0.0);
 }
 
+- (void)initProfileView {
+    UIImageView *profileImageView = [[UIImageView alloc] initWithImage:nil];
+    profileImageView.frame = (CGRect){
+        self.view.bounds.origin.x,
+        self.view.bounds.origin.y,
+        kIndexWidth,
+        self.view.bounds.size.height
+    };
+    profileImageView.backgroundColor = [CKBookCover colourForCover:self.book.cover];
+    [self.view addSubview:profileImageView];
+    self.profileImageView = profileImageView;
+    
+    // Prep image view to be transitioned in later.
+    self.profileImageView.alpha = 0.0;
+    self.profileImageView.transform = CGAffineTransformMakeTranslation(-self.profileImageView.frame.size.width, 0.0);
+    
+    // Load the photo.
+    if ([self.book.user hasCoverPhoto]) {
+        [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
+                                      size:self.profileImageView.bounds.size
+                                completion:^(UIImage *image) {
+                                    self.profileImageView.image = image;
+                                }];
+    }
+
+}
+
 - (void)initShadowViews {
     
     // Top shadow view.
@@ -196,16 +226,15 @@
 - (void)showIndexAnimated:(BOOL)animated {
     
     CGRect backgroundFrame = (CGRect){
-        self.view.bounds.origin.x,
+        self.view.bounds.origin.x + kIndexWidth + kImageIndexGap,
         self.view.bounds.origin.y,
-        self.view.bounds.size.width - self.collectionView.frame.size.width - kImageIndexGap,
+        self.view.bounds.size.width - self.profileImageView.frame.size.width - self.collectionView.frame.size.width - (kImageIndexGap * 2.0),
         self.view.bounds.size.height
     };
     
     CGRect titleViewFrame = (CGRect) {
-        floorf((backgroundFrame.size.width - self.titleIndexView.frame.size.width) / 2.0),
-//        kTitleIndexTopOffset,
-        floorf((backgroundFrame.size.height - self.titleIndexView.frame.size.height) / 2.0),
+        floorf((self.view.bounds.size.width - self.titleIndexView.frame.size.width) / 2.0),
+        kTitleIndexTopOffset,
         self.titleIndexView.frame.size.width,
         self.titleIndexView.frame.size.height
     };
@@ -220,6 +249,8 @@
                              self.backgroundView.frame = backgroundFrame;
                              self.collectionView.transform = CGAffineTransformIdentity;
                              self.collectionView.alpha = 1.0;
+                             self.profileImageView.transform = CGAffineTransformIdentity;
+                             self.profileImageView.alpha = 1.0;
                          } completion:^(BOOL finished) {
                          }];
     } else {
@@ -228,6 +259,8 @@
         self.backgroundView.frame = backgroundFrame;
         self.collectionView.transform = CGAffineTransformIdentity;
         self.collectionView.alpha = 1.0;
+        self.profileImageView.transform = CGAffineTransformIdentity;
+        self.profileImageView.alpha = 1.0;
     }
 }
 

@@ -19,7 +19,7 @@
 
 @implementation BookIndexListLayout
 
-#define kContentInsets      UIEdgeInsetsMake(70.0, 100.0, 70.0, 100.0)
+#define kContentInsets      UIEdgeInsetsMake(70.0, 30.0, 70.0, 30.0)
 #define kMaxYOffset         180.0
 #define kRowGap             15.0
 
