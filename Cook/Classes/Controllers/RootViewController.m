@@ -7,7 +7,7 @@
 //
 
 #import "RootViewController.h"
-#import "BenchtopCollectionViewController.h"
+#import "PagingBenchtopViewController.h"
 #import "StoreViewController.h"
 #import "BenchtopViewControllerDelegate.h"
 #import "BookCoverViewController.h"
@@ -24,7 +24,7 @@
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, WelcomeViewControllerDelegate>
 
-@property (nonatomic, strong) BenchtopCollectionViewController *benchtopViewController;
+@property (nonatomic, strong) PagingBenchtopViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
 @property (nonatomic, strong) WelcomeViewController *welcomeViewController;
@@ -558,9 +558,9 @@
     return _storeViewController;
 }
 
-- (BenchtopCollectionViewController *)benchtopViewController {
+- (PagingBenchtopViewController *)benchtopViewController {
     if (_benchtopViewController == nil) {
-        _benchtopViewController = [[BenchtopCollectionViewController alloc] init];
+        _benchtopViewController = [[PagingBenchtopViewController alloc] init];
         _benchtopViewController.delegate = self;
     }
     return _benchtopViewController;
