@@ -19,6 +19,7 @@
 #import "MRCEnumerable.h"
 #import "CoverPickerViewController.h"
 #import "IllustrationPickerViewController.h"
+#import "PagingScrollView.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKPopoverViewControllerDelegate,
@@ -116,7 +117,10 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView == self.scrollView) { //ignore collection view scrolling callbacks
+    
+    // Ignore collection view scrolling callbacks
+    if (scrollView == self.scrollView) {
+        
         CGPoint contentOffset = scrollView.contentOffset;
         contentOffset.x = contentOffset.x - self.collectionView.contentInset.left;
         self.collectionView.contentOffset = contentOffset;
@@ -178,11 +182,8 @@
     } else {
         
         // Scroll to the books.
-        if (indexPath.section == kMyBookSection) {
-            [self.scrollView setContentOffset:CGPointZero animated:YES];
-        } else {
-            [self scrollToFollowedBookWithIndex:indexPath.item];
-        }
+        [self scrollToBookAtIndexPath:indexPath];
+        
     }
     
 }
@@ -246,7 +247,12 @@
 #pragma mark - BenchtopBookCoverViewCellDelegate methods
 
 - (void)benchtopBookEditTappedForCell:(UICollectionViewCell *)cell {
-    [self enableEditMode:YES];
+    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+    if ([self isCenterBookAtIndexPath:indexPath]) {
+        [self enableEditMode:YES];
+    } else {
+        [self scrollToBookAtIndexPath:indexPath];
+    }
 }
 
 #pragma mark - CoverPickerViewControllerDelegate methods
@@ -323,7 +329,8 @@
     self.collectionView = collectionView;
     
     // Creating a paging scrollview just to make use of its paging gesture recognizer.
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(kSideMargin, 0.0, kCellSize.width, self.collectionView.bounds.size.height)];
+    UIScrollView *scrollView = [[PagingScrollView alloc] initWithFrame:(CGRect){
+        kSideMargin, 0.0, kCellSize.width * 2.0, self.collectionView.bounds.size.height } pageWidth:kCellSize.width];
     scrollView.delegate = self;
     scrollView.pagingEnabled = YES;
     scrollView.contentSize = [pagingLayout collectionViewContentSize];
@@ -363,13 +370,6 @@
     [self.view addSubview:notificationView];
     [notificationView setNotificationItems:nil];
     self.notificationView = notificationView;
-}
-
-- (void)scrollToFollowedBookWithIndex:(NSInteger)bookIndex {
-    CGSize bookSize = [PagingCollectionViewLayout bookSize];
-    CGFloat contentOffset = bookSize.width + bookSize.width;    // My book and empty book gap.
-    contentOffset += (bookSize.width * bookIndex);
-    [self.scrollView setContentOffset:CGPointMake(contentOffset, self.scrollView.contentOffset.y) animated:YES];
 }
 
 - (PagingCollectionViewLayout *)pagingLayout {
@@ -572,9 +572,7 @@
     [CKBook followBooksForUser:currentUser
                        success:^(NSArray *books) {
                            self.followBooks = [NSMutableArray arrayWithArray:books];
-                           NSArray *indexPathsToInsert = [self.followBooks collectWithIndex:^id(CKBook *book, NSUInteger bookIndex) {
-                               return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
-                           }];
+                           NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
                            
                            if (reload) {
                                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
@@ -586,6 +584,12 @@
                        failure:^(NSError *error) {
                            DLog(@"Error: %@", [error localizedDescription]);
                        }];
+}
+
+- (NSArray *)indexPathsForFollowBooks {
+    return [self.followBooks collectWithIndex:^id(CKBook *book, NSUInteger bookIndex) {
+        return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+    }];
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -603,6 +607,7 @@
     self.animating = YES;
     self.editMode = enable;
     self.collectionView.scrollEnabled = !enable;
+    self.scrollView.scrollEnabled = !enable;
     
     if (enable) {
         
@@ -623,6 +628,7 @@
                                                            illustrationViewController.view.frame.size.height);
         [self.view addSubview:illustrationViewController.view];
         self.illustrationViewController = illustrationViewController;
+        
     }
     
     BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
@@ -632,6 +638,14 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
+                         
+                         // Tell the layout to go into edit mode.
+                         [[self pagingLayout] enableEditMode:enable];
+                         // [self.collectionView reloadItemsAtIndexPaths:[self indexPathsForFollowBooks]];
+                         [[self pagingLayout] invalidateLayout];
+                         
+                         // Slide up collectionView.
+                         self.collectionView.transform = enable ? CGAffineTransformMakeTranslation(0.0, -50.0) : CGAffineTransformIdentity;
                          
                          // Inform delegate
                          [self.delegate editBookRequested:enable];
@@ -706,6 +720,21 @@
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = (indexPath.section == kMyBookSection) ? self.myBook : [self.followBooks objectAtIndex:indexPath.item];
     [self.delegate openBookRequestedForBook:book];
+}
+
+- (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == kMyBookSection) {
+        [self.scrollView setContentOffset:CGPointZero animated:YES];
+    } else {
+        [self scrollToFollowedBookWithIndex:indexPath.item];
+    }
+}
+
+- (void)scrollToFollowedBookWithIndex:(NSInteger)bookIndex {
+    CGSize bookSize = [PagingCollectionViewLayout bookSize];
+    CGFloat contentOffset = bookSize.width + bookSize.width;    // My book and empty book gap.
+    contentOffset += (bookSize.width * bookIndex);
+    [self.scrollView setContentOffset:CGPointMake(contentOffset, self.scrollView.contentOffset.y) animated:YES];
 }
 
 @end

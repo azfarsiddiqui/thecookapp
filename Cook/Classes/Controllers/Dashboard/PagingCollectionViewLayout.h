@@ -20,5 +20,6 @@
 
 - (id)initWithDelegate:(id<PagingCollectionViewLayoutDelegate>)delegate;
 - (void)markLayoutDirty;
+- (void)enableEditMode:(BOOL)editMode;
 
 @end

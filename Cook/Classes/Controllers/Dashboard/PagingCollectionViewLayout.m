@@ -12,11 +12,11 @@
 
 @property (nonatomic, weak) id<PagingCollectionViewLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
+@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
-@property (nonatomic, strong) NSMutableDictionary *deletedIndexPathItemAttributes;
 
 @end
 
@@ -42,6 +42,11 @@
 
 - (void)markLayoutDirty {
     self.layoutCompleted = NO;
+}
+
+- (void)enableEditMode:(BOOL)editMode {
+    self.editMode = editMode;
+    [self markLayoutDirty];
 }
 
 #pragma mark - UICollectionViewLayout methods
@@ -73,7 +78,6 @@
     
     self.insertedIndexPaths = [NSMutableArray array];
     self.deletedIndexPaths = [NSMutableArray array];
-    self.deletedIndexPathItemAttributes = [NSMutableDictionary dictionary];
     
     for (UICollectionViewUpdateItem *updateItem in updateItems) {
         if (updateItem.updateAction == UICollectionUpdateActionInsert) {
@@ -155,13 +159,23 @@
             
             // Deleted follow book fades away.
             finalAttributes = [self layoutAttributesForFollowBookAtIndex:itemIndexPath.item];
-            finalAttributes.alpha = 0.0;
-            finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, kBookDeleteScaleFactor, kBookDeleteScaleFactor, 0.0);
-            finalAttributes.transform3D = CATransform3DTranslate(finalAttributes.transform3D, 0.0, finalAttributes.frame.size.height, 0.0);
+            
+            if (self.editMode) {
+                
+                // Parting books to the side.
+                finalAttributes.alpha = 0.0;
+                finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, 1.0, 1.0, 0.0);
+                finalAttributes.transform3D = CATransform3DTranslate(CATransform3DIdentity, 62.0, 0.0, 0.0);;
+                
+            } else {
+                finalAttributes.alpha = 0.0;
+                finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, kBookDeleteScaleFactor, kBookDeleteScaleFactor, 0.0);
+                finalAttributes.transform3D = CATransform3DTranslate(finalAttributes.transform3D, 0.0, finalAttributes.frame.size.height, 0.0);
+            }
             
         }
     }
-    
+
     return finalAttributes;
 }
 
@@ -240,6 +254,18 @@
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
         attributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0);
+        
+        if (self.editMode) {
+            NSIndexPath *indexPath = attributes.indexPath;
+            if (indexPath.section == kMyBookSection) {
+                attributes.alpha = 1.0;
+                // attributes.transform3D = CATransform3DTranslate(attributes.transform3D, 0.0, -50.0, 0.0);
+            } else if (indexPath.section == kFollowSection) {
+                attributes.alpha = 0.0;
+            }
+        } else {
+            attributes.alpha = 1.0;
+        }
     }
 }
 

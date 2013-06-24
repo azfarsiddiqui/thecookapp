@@ -282,6 +282,7 @@
 		769226051647863A00752128 /* IllustrationBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* IllustrationBookCell.m */; };
 		7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */; };
 		7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */; };
+		7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C74F17782A3B00A5CA5C /* PagingScrollView.m */; };
 		7693D1F916C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7693D1F816C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m */; };
 		769B5E0A1715063B0046934D /* RecipeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769B5E091715063B0046934D /* RecipeViewController.m */; };
 		769B5E0D171521900046934D /* cook_book_icon_share_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 769B5E0B171521900046934D /* cook_book_icon_share_white.png */; };
@@ -1093,6 +1094,8 @@
 		7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingBenchtopViewController.m; sourceTree = "<group>"; };
 		7692C747177807A200A5CA5C /* PagingCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingCollectionViewLayout.h; sourceTree = "<group>"; };
 		7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingCollectionViewLayout.m; sourceTree = "<group>"; };
+		7692C74E17782A3B00A5CA5C /* PagingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingScrollView.h; sourceTree = "<group>"; };
+		7692C74F17782A3B00A5CA5C /* PagingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingScrollView.m; sourceTree = "<group>"; };
 		7693D1F716C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationFlowLayoutAttributes.h; sourceTree = "<group>"; };
 		7693D1F816C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationFlowLayoutAttributes.m; sourceTree = "<group>"; };
 		769B5E081715063B0046934D /* RecipeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeViewController.h; sourceTree = "<group>"; };
@@ -1964,6 +1967,8 @@
 				7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */,
 				7692C747177807A200A5CA5C /* PagingCollectionViewLayout.h */,
 				7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */,
+				7692C74E17782A3B00A5CA5C /* PagingScrollView.h */,
+				7692C74F17782A3B00A5CA5C /* PagingScrollView.m */,
 				76381C8D16683BB300404FB1 /* BenchtopCollectionViewController.h */,
 				76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */,
 				76381C8F16683C5E00404FB1 /* BenchtopCollectionFlowLayout.h */,
@@ -3977,6 +3982,7 @@
 				7638286117701C6A00387C8E /* BookIndexSubtitledCell.m in Sources */,
 				7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */,
 				7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */,
+				7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
