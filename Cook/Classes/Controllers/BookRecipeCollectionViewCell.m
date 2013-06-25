@@ -38,7 +38,7 @@
 
 #define kViewDebug              0
 #define kImageSize              CGSizeMake(250.0, 250.0)
-#define kTitleOffsetNoImage     70.0
+#define kTitleOffsetNoImage     52.0
 #define kTitleTopGap            20.0
 #define kTitleDividerGap        10.0
 #define kDividerStoryGap        20.0
