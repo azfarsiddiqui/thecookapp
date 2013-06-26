@@ -79,7 +79,7 @@
 #pragma mark - Private methods
 
 - (void)initBackground {
-    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_shelves.png"]];
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_shelves.png"]];
     self.view.frame = CGRectMake(self.view.frame.origin.x,
                                  self.view.frame.origin.y,
                                  backgroundView.frame.size.width,
