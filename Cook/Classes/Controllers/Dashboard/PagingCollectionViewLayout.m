@@ -268,6 +268,9 @@
         CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
         attributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0);
         
+//        CGFloat translateOffset = [self translateOffsetForCenter:attributes.center];
+//        attributes.transform3D = CATransform3DTranslate(attributes.transform3D, translateOffset, 0.0, 0.0);
+        
         if (self.editMode) {
             NSIndexPath *indexPath = attributes.indexPath;
             if (indexPath.section == kMyBookSection) {
@@ -303,6 +306,26 @@
     }
     
     return scaleFactor;
+}
+
+- (CGFloat)translateOffsetForCenter:(CGPoint)center {
+    CGRect visibleRect = [self visibleFrame];
+    CGFloat maxTranslate = 20.0;
+    CGFloat distance = CGRectGetMidX(visibleRect) - center.x;
+    CGFloat normalizedDistance = distance / kBookSize.width;
+    CGFloat offset = 0.0;
+    
+    if (ABS(distance) <= kBookSize.width) {
+        
+        //offset = 1.0 - (ABS(normalizedDistance) * (1.0 - minScaleFactor));
+        // offset = (1.0 - ABS(normalizedDistance)) * maxTranslate;
+        offset = normalizedDistance * maxTranslate * -1.0;
+        
+    } else {
+        offset = 0.0;
+    }
+    
+    return offset;
 }
 
 @end
