@@ -15,6 +15,7 @@
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
+
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
 
@@ -22,12 +23,13 @@
 
 @implementation PagingCollectionViewLayout
 
-#define kContentInsets          UIEdgeInsetsMake(165.0, 0.0, 155.0, 0.0)
-#define kBookSize               (CGSize){ 300.0, 438.0 }
-#define kMyBookSection          0
-#define kFollowSection          1
-#define kBookScaleFactor        1.1
-#define kBookDeleteScaleFactor  0.9
+#define kContentInsets                  UIEdgeInsetsMake(165.0, 0.0, 155.0, 0.0)
+#define kBookSize                       (CGSize){ 300.0, 438.0 }
+#define kMyBookSection                  0
+#define kFollowSection                  1
+#define kBookScaleFactor                1.1
+#define kBookDeleteScaleFactor          0.9
+
 
 + (CGSize)bookSize {
     return kBookSize;
@@ -49,6 +51,37 @@
     [self markLayoutDirty];
 }
 
+- (UICollectionViewLayoutAttributes *)layoutAttributesForMyBook {
+    NSIndexPath *myBookIndexPath = [NSIndexPath indexPathForItem:0 inSection:kMyBookSection];
+    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:myBookIndexPath];
+    attributes.frame = (CGRect) {
+        kContentInsets.left,
+        kContentInsets.top,
+        kBookSize.width,
+        kBookSize.height
+    };
+    return attributes;
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForFollowBookAtIndex:(NSInteger)bookIndex {
+    
+    // Compulsory gap: my book + empty book
+    CGPoint cellOffset = (CGPoint) {
+        kContentInsets.left + kBookSize.width + kBookSize.width,
+        kContentInsets.top
+    };
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+    attributes.frame = (CGRect) {
+        cellOffset.x + (bookIndex * kBookSize.width),
+        kContentInsets.top,
+        kBookSize.width,
+        kBookSize.height
+    };
+    return attributes;
+}
+
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
@@ -57,6 +90,7 @@
     CGFloat emptyBookGap = kBookSize.width;
     
     CGSize requiredSize = (CGSize){
+        // Left and Right insets are defined at the contentInset of the collectionView.
         kBookSize.width + emptyBookGap + (numFollowBooks * kBookSize.width),
         self.collectionView.bounds.size.height
     };
@@ -222,36 +256,15 @@
     [self.delegate pagingLayoutDidUpdate];
 }
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForMyBook {
-    NSIndexPath *myBookIndexPath = [NSIndexPath indexPathForItem:0 inSection:kMyBookSection];
-    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:myBookIndexPath];
-    attributes.frame = (CGRect) {
-        kContentInsets.left,
-        kContentInsets.top,
-        kBookSize.width,
-        kBookSize.height
-    };
-    return attributes;
-}
-
-- (UICollectionViewLayoutAttributes *)layoutAttributesForFollowBookAtIndex:(NSInteger)bookIndex {
-    
-    // Compulsory gap: my book + empty book
-    CGPoint cellOffset = (CGPoint) { kBookSize.width + kBookSize.width, kContentInsets.top };
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
-    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-    attributes.frame = (CGRect) {
-        cellOffset.x + (bookIndex * kBookSize.width),
-        kContentInsets.top,
-        kBookSize.width,
-        kBookSize.height
-    };
-    return attributes;
-}
-
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
+    
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        
+        // Bypass processing if not a normal cell (Normal cells returns nil)
+        if (attributes.representedElementKind != nil) {
+            continue;
+        }
+        
         CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
         attributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0);
         

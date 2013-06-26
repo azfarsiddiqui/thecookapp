@@ -20,6 +20,8 @@
 #import "CoverPickerViewController.h"
 #import "IllustrationPickerViewController.h"
 #import "PagingScrollView.h"
+#import "PagingBenchtopBackgroundView.h"
+#import "CKBookCover.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKPopoverViewControllerDelegate,
@@ -27,6 +29,7 @@
     IllustrationPickerViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundView;
+@property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) CKPagingView *benchtopLevelView;
@@ -54,6 +57,7 @@
 #define kSideMargin     362.0
 #define kMyBookSection  0
 #define kFollowSection  1
+#define kIOS7Look       YES
 
 - (id)init {
     if (self = [super init]) {
@@ -192,11 +196,15 @@
     
 }
 
-
 #pragma mark - CKPagingCollectionViewLayoutDelegate methods
 
 - (void)pagingLayoutDidUpdate {
     self.scrollView.contentSize = [[self pagingLayout] collectionViewContentSize];
+    
+    if (kIOS7Look) {
+        [self updatePagingBenchtopView];
+    }
+
 }
 
 #pragma mark - CKNotificationViewDelegate methods
@@ -310,11 +318,14 @@
 #pragma mark - Private methods
 
 - (void)initBackground {
-    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_woodbg.png"]];
-    self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, backgroundView.frame.size.width, backgroundView.frame.size.height);
-    self.view.clipsToBounds = NO;
-    [self.view addSubview:backgroundView];
-    self.backgroundView = backgroundView;
+    
+    if (!kIOS7Look) {
+        UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_woodbg.png"]];
+        self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, backgroundView.frame.size.width, backgroundView.frame.size.height);
+        self.view.clipsToBounds = NO;
+        [self.view addSubview:backgroundView];
+        self.backgroundView = backgroundView;
+    }
 }
 
 - (void)initPagingViews {
@@ -757,6 +768,59 @@
 
 - (void)loggedOut:(NSNotification *)notification {
     [self loadBenchtop:NO];
+}
+
+- (void)updatePagingBenchtopView {
+    
+    PagingCollectionViewLayout *layout = [self pagingLayout];
+    CGSize contentSize = [layout collectionViewContentSize];
+    
+    CGFloat sidePadding = kSideMargin + kCellSize.width;
+    
+    // Recreate the benchtop background view.
+    [self.pagingBenchtopView removeFromSuperview];
+    self.pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
+        -sidePadding,
+        self.collectionView.bounds.origin.y,
+        contentSize.width + (sidePadding * 2.0),
+        contentSize.height
+    }];
+    
+    // Add white at the bookend start.
+    [self.pagingBenchtopView addColour:[UIColor whiteColor] offset:self.pagingBenchtopView.bounds.origin.x];
+    
+    // Loop through and add colours.
+    NSInteger numSections = [self.collectionView numberOfSections];
+    for (NSInteger section = 0; section < numSections; section++) {
+        
+        if (section == kMyBookSection) {
+            
+            if (self.myBook) {
+                UICollectionViewLayoutAttributes *attributes = [layout layoutAttributesForMyBook];
+                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:self.myBook.cover] offset:attributes.center.x + sidePadding];
+            }
+            
+        } else if (section == kFollowSection) {
+            
+            NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
+            for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
+                
+                UICollectionViewLayoutAttributes *attributes = [layout layoutAttributesForFollowBookAtIndex:followIndex];
+                CKBook *book = [self.followBooks objectAtIndex:followIndex];
+                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:book.cover] offset:attributes.center.x + sidePadding];
+                
+            }
+            
+        }
+    }
+    
+    // Add white at the bookend start.
+    [self.pagingBenchtopView addColour:[UIColor whiteColor] offset:self.pagingBenchtopView.bounds.size.width];
+    
+    // Blend them.
+    [self.pagingBenchtopView blend];
+    [self.collectionView addSubview:self.pagingBenchtopView];
+    [self.collectionView sendSubviewToBack:self.pagingBenchtopView];
 }
 
 @end
