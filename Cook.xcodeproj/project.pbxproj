@@ -299,6 +299,8 @@
 		76A269DC175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D8175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png */; };
 		76A269DD175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D9175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png */; };
 		76A269DE175F0A0C00D7ACA3 /* cook_book_titledivider_solid@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269DA175F0A0C00D7ACA3 /* cook_book_titledivider_solid@2x.png */; };
+		76A28E95177A808E00C98F8B /* PagingBenchtopBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A28E94177A808E00C98F8B /* PagingBenchtopBackgroundView.m */; };
+		76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A28E98177A8C7400C98F8B /* UIImage+ImageEffects.m */; };
 		76A3714A170178070067BDB1 /* CKNotificationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A37140170178070067BDB1 /* CKNotificationItem.m */; };
 		76A3714B170178070067BDB1 /* CKNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A37142170178070067BDB1 /* CKNotificationView.m */; };
 		76A3714C170178070067BDB1 /* cook_dash_icons_notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A37144170178070067BDB1 /* cook_dash_icons_notifications.png */; };
@@ -1114,6 +1116,10 @@
 		76A269D8175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_titledivider_quote@2x.png"; sourceTree = "<group>"; };
 		76A269D9175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_titledivider_solid.png; sourceTree = "<group>"; };
 		76A269DA175F0A0C00D7ACA3 /* cook_book_titledivider_solid@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_titledivider_solid@2x.png"; sourceTree = "<group>"; };
+		76A28E93177A808E00C98F8B /* PagingBenchtopBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingBenchtopBackgroundView.h; sourceTree = "<group>"; };
+		76A28E94177A808E00C98F8B /* PagingBenchtopBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingBenchtopBackgroundView.m; sourceTree = "<group>"; };
+		76A28E97177A8C7400C98F8B /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		76A28E98177A8C7400C98F8B /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		76A3713F170178070067BDB1 /* CKNotificationItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKNotificationItem.h; sourceTree = "<group>"; };
 		76A37140170178070067BDB1 /* CKNotificationItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKNotificationItem.m; sourceTree = "<group>"; };
 		76A37141170178070067BDB1 /* CKNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKNotificationView.h; sourceTree = "<group>"; };
@@ -1969,6 +1975,8 @@
 				7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */,
 				7692C74E17782A3B00A5CA5C /* PagingScrollView.h */,
 				7692C74F17782A3B00A5CA5C /* PagingScrollView.m */,
+				76A28E93177A808E00C98F8B /* PagingBenchtopBackgroundView.h */,
+				76A28E94177A808E00C98F8B /* PagingBenchtopBackgroundView.m */,
 				76381C8D16683BB300404FB1 /* BenchtopCollectionViewController.h */,
 				76381C8C16683BB300404FB1 /* BenchtopCollectionViewController.m */,
 				76381C8F16683C5E00404FB1 /* BenchtopCollectionFlowLayout.h */,
@@ -2173,6 +2181,15 @@
 				76871BE7174321EC0030BDE4 /* IngredientItemCollectionViewCell.m */,
 			);
 			path = Recipe;
+			sourceTree = "<group>";
+		};
+		76A28E96177A8C7400C98F8B /* ImageEffects */ = {
+			isa = PBXGroup;
+			children = (
+				76A28E97177A8C7400C98F8B /* UIImage+ImageEffects.h */,
+				76A28E98177A8C7400C98F8B /* UIImage+ImageEffects.m */,
+			);
+			path = ImageEffects;
 			sourceTree = "<group>";
 		};
 		76A3713E170178070067BDB1 /* CKNotificationView */ = {
@@ -3073,6 +3090,7 @@
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				76A28E96177A8C7400C98F8B /* ImageEffects */,
 				76C07E3A175D76DB0037292A /* CKBookTitleIndexView */,
 				762F3BAA1756394E00863DDF /* CKSignInButtonView */,
 				76BF1FF91753263A000F0798 /* CKTextFieldView */,
@@ -3815,6 +3833,7 @@
 				7620270716252B1E005A8B66 /* BenchtopLayout.m in Sources */,
 				7620270816252B1E005A8B66 /* BenchtopBookCell.m in Sources */,
 				7620271016253D19005A8B66 /* LoginBookCell.m in Sources */,
+				76A28E95177A808E00C98F8B /* PagingBenchtopBackgroundView.m in Sources */,
 				89232B921625431500152940 /* BookViewController.m in Sources */,
 				76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */,
 				76FA9A4016267687006EAFBB /* EventHelper.m in Sources */,
@@ -3860,6 +3879,7 @@
 				893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */,
 				893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */,
 				89B85B9516AF8A5900A0533E /* TestViewController.m in Sources */,
+				76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */,
 				764E46EC16C8642500DD168F /* BookNavigationViewController.m in Sources */,
 				764E46EF16C865C900DD168F /* BookRecipeCollectionViewCell.m in Sources */,
 				764E46F516C871EB00DD168F /* BookCategoryView.m in Sources */,
@@ -4067,6 +4087,7 @@
 		76ED27621612DC180012E479 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -4075,6 +4096,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Cook/Classes/External/AviarySDK\"",
@@ -4086,6 +4108,7 @@
 		76ED27631612DC180012E479 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -4094,6 +4117,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Cook/Classes/External/AviarySDK\"",
