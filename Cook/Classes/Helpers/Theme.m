@@ -8,7 +8,15 @@
 
 #import "Theme.h"
 #import "UIColor+Expanded.h"
+
+
 @implementation Theme
+
+#pragma mark - General
+
++ (BOOL)IOS7Look {
+    return YES;
+}
 
 #pragma mark - Common Fonts
 

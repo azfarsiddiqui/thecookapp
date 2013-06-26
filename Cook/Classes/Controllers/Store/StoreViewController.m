@@ -13,6 +13,7 @@
 #import "StoreBookCoverViewCell.h"
 #import "EventHelper.h"
 #import "StoreTabView.h"
+#import "Theme.h"
 
 @interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate>
 
@@ -79,7 +80,12 @@
 #pragma mark - Private methods
 
 - (void)initBackground {
-    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_shelves.png"]];
+    NSString *shelfName = @"cook_dash_bg_shelves.png";
+    if ([Theme IOS7Look]) {
+        shelfName = @"cook_dash_shelves.png";
+    }
+    
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:shelfName]];
     self.view.frame = CGRectMake(self.view.frame.origin.x,
                                  self.view.frame.origin.y,
                                  backgroundView.frame.size.width,

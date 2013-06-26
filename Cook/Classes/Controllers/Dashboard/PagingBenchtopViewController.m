@@ -22,6 +22,7 @@
 #import "PagingScrollView.h"
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
+#import "Theme.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKPopoverViewControllerDelegate,
@@ -57,7 +58,6 @@
 #define kSideMargin     362.0
 #define kMyBookSection  0
 #define kFollowSection  1
-#define kIOS7Look       YES
 
 - (id)init {
     if (self = [super init]) {
@@ -134,7 +134,7 @@
         self.collectionView.contentOffset = contentOffset;
         
         // Offsets the texture too.
-        if (kIOS7Look) {
+        if ([Theme IOS7Look]) {
             CGRect backgroundFrame = self.backgroundView.frame;
             backgroundFrame.origin.x = kSideMargin + contentOffset.x + kCellSize.width;
             self.backgroundView.frame = backgroundFrame;
@@ -208,7 +208,7 @@
 - (void)pagingLayoutDidUpdate {
     self.scrollView.contentSize = [[self pagingLayout] collectionViewContentSize];
     
-    if (kIOS7Look) {
+    if ([Theme IOS7Look]) {
         [self updatePagingBenchtopView];
     }
 
@@ -326,15 +326,14 @@
 
 - (void)initBackground {
     
-    if (!kIOS7Look) {
+    if ([Theme IOS7Look]) {
+        self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
+    } else {
         UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_woodbg.png"]];
         self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, backgroundView.frame.size.width, backgroundView.frame.size.height);
         self.view.clipsToBounds = NO;
         [self.view addSubview:backgroundView];
         self.backgroundView = backgroundView;
-        
-    } else {
-        self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
     }
 }
 

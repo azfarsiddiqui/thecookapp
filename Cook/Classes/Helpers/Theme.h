@@ -10,6 +10,10 @@
 
 @interface Theme : NSObject
 
+#pragma mark - General
+
++ (BOOL)IOS7Look;
+
 #pragma mark - Common Fonts
 +(UIFont*) defaultFontWithSize:(CGFloat)size;
 +(UIFont*) defaultLabelFont;
