@@ -132,6 +132,13 @@
         CGPoint contentOffset = scrollView.contentOffset;
         contentOffset.x = contentOffset.x - self.collectionView.contentInset.left;
         self.collectionView.contentOffset = contentOffset;
+        
+        // Offsets the texture too.
+        if (kIOS7Look) {
+            CGRect backgroundFrame = self.backgroundView.frame;
+            backgroundFrame.origin.x = kSideMargin + contentOffset.x + kCellSize.width;
+            self.backgroundView.frame = backgroundFrame;
+        }
     }
 }
 
@@ -325,6 +332,9 @@
         self.view.clipsToBounds = NO;
         [self.view addSubview:backgroundView];
         self.backgroundView = backgroundView;
+        
+    } else {
+        self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
     }
 }
 
@@ -778,6 +788,7 @@
     CGFloat sidePadding = kSideMargin + kCellSize.width;
     
     // Recreate the benchtop background view.
+    [self.backgroundView removeFromSuperview];
     [self.pagingBenchtopView removeFromSuperview];
     self.pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
         -sidePadding,
@@ -819,6 +830,15 @@
     
     // Blend them.
     [self.pagingBenchtopView blend];
+    
+    // Overlay texture.
+    self.backgroundView.frame = (CGRect){
+        kCellSize.width, self.pagingBenchtopView.bounds.origin.y,
+        self.backgroundView.frame.size.width, self.backgroundView.frame.size.height
+    };
+    [self.pagingBenchtopView addSubview:self.backgroundView];
+    
+    // Add to the bottom of the collectionView.
     [self.collectionView addSubview:self.pagingBenchtopView];
     [self.collectionView sendSubviewToBack:self.pagingBenchtopView];
 }
