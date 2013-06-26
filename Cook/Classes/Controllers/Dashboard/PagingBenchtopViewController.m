@@ -69,6 +69,10 @@
     [self initPagingViews];
     [self initBenchtopLevelView];
     [self initNotificationView];
+    
+    [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
+    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -735,6 +739,24 @@
     CGFloat contentOffset = bookSize.width + bookSize.width;    // My book and empty book gap.
     contentOffset += (bookSize.width * bookIndex);
     [self.scrollView setContentOffset:CGPointMake(contentOffset, self.scrollView.contentOffset.y) animated:YES];
+}
+
+- (void)followUpdated:(NSNotification *)notification {
+    BOOL follow = [EventHelper followForNotification:notification];
+    if (follow) {
+        [self loadFollowBooksReload:YES];
+    }
+}
+
+- (void)loggedIn:(NSNotification *)notification {
+    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
+    if (success) {
+        [self loadBenchtop:YES];
+    }
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    [self loadBenchtop:NO];
 }
 
 @end

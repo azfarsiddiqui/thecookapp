@@ -82,7 +82,7 @@
     return YES;
 }
 
-- (BOOL)supportedInterfaceOrientations {
+- (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscape;
 }
 
