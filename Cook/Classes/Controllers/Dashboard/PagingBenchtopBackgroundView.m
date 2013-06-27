@@ -88,7 +88,11 @@
 }
 
 - (UIImage *)blurWithImage:(UIImage *)image {
-    return [image applyExtraLightEffect];
+    
+    UIColor *tintColor = [UIColor colorWithWhite:1.0 alpha:0.7];
+    return [image applyBlurWithRadius:50 tintColor:tintColor saturationDeltaFactor:1.8 maskImage:nil];
+    
+    // return [image applyExtraLightEffect];
 }
 
 - (UIImage *)coreImageBlurWithImage:(UIImage *)image {

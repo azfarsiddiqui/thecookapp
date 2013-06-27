@@ -14,5 +14,8 @@
 @property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
 
 - (void)enable:(BOOL)enable;
+- (CGFloat)visibleHeight;
+- (CGFloat)bottomShelfTrayHeight;
+- (CGFloat)bottomShadowHeight;
 
 @end

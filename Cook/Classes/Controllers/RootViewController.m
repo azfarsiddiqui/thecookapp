@@ -411,12 +411,12 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.storeViewController.view.frame.size.height - kStoreShowAdjustment,
+                           self.view.bounds.size.height - self.storeViewController.view.frame.size.height - [self.storeViewController visibleHeight],
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     } else if (level == kBenchtopLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           -self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
+                           -self.storeViewController.view.frame.size.height + [self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     } else if (level == kSettingsLevel) {
@@ -426,6 +426,7 @@
                            self.storeViewController.view.frame.size.height);
     }
     
+    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
     return frame;
 }
 
@@ -434,18 +435,19 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - kStoreShowAdjustment - kStoreShadowOffset,
+                           self.storeViewController.view.frame.origin.y + self.storeViewController.view.frame.size.height - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     } else if (level == kBenchtopLevel) {
         frame = self.view.bounds;
     } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.view.bounds.size.height - kSettingsOffsetBelowBenchtop,
+                           self.view.bounds.origin.y - self.settingsViewController.view.frame.size.height,
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     }
     
+    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
     return frame;
 }
 
@@ -454,12 +456,12 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - kStoreShowAdjustment - kStoreShadowOffset + self.view.bounds.size.height - kSettingsOffsetBelowBenchtop,
+                           self.benchtopViewController.view.frame.origin.y + self.benchtopViewController.view.frame.size.height,
                            self.view.bounds.size.width,
                            self.settingsViewController.view.frame.size.height);
     } else if (level == kBenchtopLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height + kSettingsOffsetBelowBenchtop,
+                           self.view.bounds.size.height,
                            self.view.bounds.size.width,
                            self.settingsViewController.view.frame.size.height);
     } else if (level == kSettingsLevel) {
@@ -469,6 +471,7 @@
                            self.settingsViewController.view.frame.size.height);
     }
     
+    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
     return frame;
 }
 

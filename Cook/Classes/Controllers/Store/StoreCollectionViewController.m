@@ -47,10 +47,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.collectionView.backgroundColor = [UIColor clearColor];
-    
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    
+    self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
