@@ -7,29 +7,33 @@
 //
 
 #import "PagingCollectionViewLayout.h"
+#import "MRCEnumerable.h"
 
 @interface PagingCollectionViewLayout ()
 
 @property (nonatomic, weak) id<PagingCollectionViewLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) NSMutableArray *anchorPoints;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
 
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
 
+@property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
+
 @end
 
 @implementation PagingCollectionViewLayout
 
-#define kContentInsets                  UIEdgeInsetsMake(165.0, 0.0, 155.0, 0.0)
+#define kContentInsets                  UIEdgeInsetsMake(165.0, 362.0, 155.0, 362.0)
 #define kBookSize                       (CGSize){ 300.0, 438.0 }
+#define kSideMargin                     62.0
 #define kMyBookSection                  0
 #define kFollowSection                  1
 #define kBookScaleFactor                1.1
 #define kBookDeleteScaleFactor          0.9
-
 
 + (CGSize)bookSize {
     return kBookSize;
@@ -49,6 +53,15 @@
 - (void)enableEditMode:(BOOL)editMode {
     self.editMode = editMode;
     [self markLayoutDirty];
+}
+
+- (CGRect)frameForGap {
+    return (CGRect){
+        (kSideMargin + kBookSize.width) + kBookSize.width,
+        kContentInsets.top,
+        kBookSize.width,
+        kBookSize.height
+    };
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForMyBook {
@@ -90,8 +103,7 @@
     CGFloat emptyBookGap = kBookSize.width;
     
     CGSize requiredSize = (CGSize){
-        // Left and Right insets are defined at the contentInset of the collectionView.
-        kBookSize.width + emptyBookGap + (numFollowBooks * kBookSize.width),
+        kContentInsets.left + kBookSize.width + emptyBookGap + (numFollowBooks * kBookSize.width) + kContentInsets.right,
         self.collectionView.bounds.size.height
     };
     
@@ -102,8 +114,33 @@
     [self buildLayout:NO];
 }
 
-- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
-    return YES;
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
+    
+    CGFloat scrollDelta = newBounds.origin.x - self.collectionView.bounds.origin.x;
+    CGPoint touchLocation = [self.collectionView.panGestureRecognizer locationInView:self.collectionView];
+    
+    // Loop through each attachment behaviour and amend the center so that spring takes over to restore.
+    for (UIAttachmentBehavior *attachment in [self currentAttachmentBehaviours]) {
+        
+        CGPoint anchorPoint = attachment.anchorPoint;
+        CGFloat distanceFromTouch = fabsf(touchLocation.x - anchorPoint.x);
+        CGFloat scrollResistance = distanceFromTouch / 1000.0;
+        
+        UICollectionViewLayoutAttributes *attributes = [attachment.items firstObject];
+        CGPoint center = attributes.center;
+        
+        // Determine the veer offset.
+        CGFloat veerOffset = floorf(scrollDelta * scrollResistance);
+        // DLog(@"Veer Offset [%f]", veerOffset);
+        
+        // Amend the center of the attribute to veer.
+        center.x += veerOffset;
+        attributes.center = center;
+        
+        [self.dynamicAnimator updateItemFromCurrentState:attributes];
+    }
+    
+    return NO;
 }
 
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
@@ -134,12 +171,7 @@
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSMutableArray* layoutAttributes = [NSMutableArray array];
-    
-    // Item cells.
-    for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
-        [layoutAttributes addObject:attributes];
-    }
+    NSArray *layoutAttributes = [self.dynamicAnimator itemsInRect:rect];
     
     // Apply transform for paging.
     [self applyPagingEffects:layoutAttributes];
@@ -148,7 +180,8 @@
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.indexPathItemAttributes objectForKey:indexPath];
+    
+    return [self.dynamicAnimator layoutAttributesForCellAtIndexPath:indexPath];
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
@@ -174,6 +207,24 @@
     
     return initialAttributes;
 }
+
+- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
+                                 withScrollingVelocity:(CGPoint)velocity {
+    CGFloat offsetAdjustment = MAXFLOAT;
+    CGFloat horizontalCenter = proposedContentOffset.x + (CGRectGetWidth(self.collectionView.bounds) / 2.0);
+    
+    for (NSValue *anchorValue in self.anchorPoints) {
+        CGPoint anchorPoint = [anchorValue CGPointValue];
+        CGFloat itemHorizontalCenter = anchorPoint.x;
+        if (ABS(itemHorizontalCenter - horizontalCenter) < ABS(offsetAdjustment)) {
+            offsetAdjustment = itemHorizontalCenter - horizontalCenter;
+        }
+    }
+    
+    CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
+    return targetContentOffset;
+}
+
 
 - (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *finalAttributes = nil;
@@ -213,6 +264,15 @@
     return finalAttributes;
 }
 
+#pragma mark - Properties
+
+- (UIDynamicAnimator *)dynamicAnimator {
+    if (!_dynamicAnimator) {
+        _dynamicAnimator = [[UIDynamicAnimator alloc] initWithCollectionViewLayout:self];
+    }
+    return _dynamicAnimator;
+}
+
 #pragma mark - Private methods
 
 - (void)buildLayout:(BOOL)force {
@@ -223,30 +283,37 @@
     }
     
     DLog(@"Building layout");
+    self.anchorPoints = [NSMutableArray array];
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     
-    CGPoint cellOffset = (CGPoint) { kContentInsets.left, kContentInsets.top };
+    // Reset all behaviours.
+    [self.dynamicAnimator removeAllBehaviors];
     
     // Do we have my book?
     if ([self.collectionView numberOfItemsInSection:kMyBookSection] != 0) {
         UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForMyBook];
+        
+        [self applyAttachmentBehaviourToAttributes:attributes];
+        [self.anchorPoints addObject:[NSValue valueWithCGPoint:attributes.center]];
         [self.itemsLayoutAttributes addObject:attributes];
         [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
     }
     
-    // Compulsory gap: my book + empty book
-    cellOffset = (CGPoint) { kBookSize.width + kBookSize.width, cellOffset.y };
+    // Middle gap/anchor.
+    UICollectionViewLayoutAttributes *myBookAttributes = [self.itemsLayoutAttributes firstObject];
+    CGPoint gapAnchor = (CGPoint){ myBookAttributes.center.x + kBookSize.width, myBookAttributes.center.y };
+    [self.anchorPoints addObject:[NSValue valueWithCGPoint:gapAnchor]];
     
     // Do we have followed books?
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
     for (NSInteger bookIndex = 0; bookIndex < numFollowBooks; bookIndex++) {
         
         UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForFollowBookAtIndex:bookIndex];
+        [self applyAttachmentBehaviourToAttributes:attributes];
+        [self.anchorPoints addObject:[NSValue valueWithCGPoint:attributes.center]];
         [self.itemsLayoutAttributes addObject:attributes];
         [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
-
-        cellOffset.x += kBookSize.width;
     }
     
     // Mark layout as completed.
@@ -268,14 +335,10 @@
         CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
         attributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0);
         
-//        CGFloat translateOffset = [self translateOffsetForCenter:attributes.center];
-//        attributes.transform3D = CATransform3DTranslate(attributes.transform3D, translateOffset, 0.0, 0.0);
-        
         if (self.editMode) {
             NSIndexPath *indexPath = attributes.indexPath;
             if (indexPath.section == kMyBookSection) {
                 attributes.alpha = 1.0;
-                // attributes.transform3D = CATransform3DTranslate(attributes.transform3D, 0.0, -50.0, 0.0);
             } else if (indexPath.section == kFollowSection) {
                 attributes.alpha = 0.0;
             }
@@ -305,27 +368,23 @@
         scaleFactor = minScaleFactor;
     }
     
+    // DLog(@"scaleFactor [%f]", scaleFactor);
     return scaleFactor;
 }
 
-- (CGFloat)translateOffsetForCenter:(CGPoint)center {
-    CGRect visibleRect = [self visibleFrame];
-    CGFloat maxTranslate = 20.0;
-    CGFloat distance = CGRectGetMidX(visibleRect) - center.x;
-    CGFloat normalizedDistance = distance / kBookSize.width;
-    CGFloat offset = 0.0;
-    
-    if (ABS(distance) <= kBookSize.width) {
-        
-        //offset = 1.0 - (ABS(normalizedDistance) * (1.0 - minScaleFactor));
-        // offset = (1.0 - ABS(normalizedDistance)) * maxTranslate;
-        offset = normalizedDistance * maxTranslate * -1.0;
-        
-    } else {
-        offset = 0.0;
-    }
-    
-    return offset;
+- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:attributes
+                                                             attachedToAnchor:attributes.center];
+    spring.length = 0;
+    spring.damping = 1.0;
+    spring.frequency = 1.0;
+    [self.dynamicAnimator addBehavior:spring];
+}
+
+- (NSArray *)currentAttachmentBehaviours {
+    return [self.dynamicAnimator.behaviors select:^BOOL(UIDynamicBehavior *dynamicBehaviour) {
+        return [dynamicBehaviour isKindOfClass:[UIAttachmentBehavior class]];
+    }];
 }
 
 @end

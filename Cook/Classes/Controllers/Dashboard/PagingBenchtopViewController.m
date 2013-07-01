@@ -22,7 +22,6 @@
 #import "PagingScrollView.h"
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
-#import "Theme.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKPopoverViewControllerDelegate,
@@ -49,6 +48,9 @@
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
 
+@property (nonatomic, assign) CGPoint previousScrollPosition;
+@property (nonatomic, assign) BOOL forwardDirection;
+
 @end
 
 @implementation PagingBenchtopViewController
@@ -58,6 +60,7 @@
 #define kSideMargin     362.0
 #define kMyBookSection  0
 #define kFollowSection  1
+#define kPagingRate     2.0
 
 - (id)init {
     if (self = [super init]) {
@@ -69,8 +72,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.view.backgroundColor = [UIColor whiteColor];
     [self initBackground];
-    [self initPagingViews];
+    [self initCollectionView];
     [self initBenchtopLevelView];
     [self initNotificationView];
     
@@ -124,22 +128,23 @@
 
 #pragma mark - UIScrollViewDelegate methods
 
+#pragma mark - UIScrollViewDelegate methods
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    // Ignore collection view scrolling callbacks
-    if (scrollView == self.scrollView) {
-        
-        CGPoint contentOffset = scrollView.contentOffset;
-        contentOffset.x = contentOffset.x - self.collectionView.contentInset.left;
-        self.collectionView.contentOffset = contentOffset;
-        
-        // Offsets the texture too.
-        if ([Theme IOS7Look]) {
-            CGRect backgroundFrame = self.backgroundView.frame;
-            backgroundFrame.origin.x = kSideMargin + contentOffset.x + kCellSize.width;
-            self.backgroundView.frame = backgroundFrame;
-        }
+    // Keep track of direction of scroll.
+    self.forwardDirection = scrollView.contentOffset.x > self.previousScrollPosition.x;
+    self.previousScrollPosition = scrollView.contentOffset;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        [self snapToNearestBook];
     }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self snapToNearestBook];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -207,11 +212,7 @@
 
 - (void)pagingLayoutDidUpdate {
     self.scrollView.contentSize = [[self pagingLayout] collectionViewContentSize];
-    
-    if ([Theme IOS7Look]) {
-        [self updatePagingBenchtopView];
-    }
-
+    [self updatePagingBenchtopView];
 }
 
 #pragma mark - CKNotificationViewDelegate methods
@@ -326,46 +327,29 @@
 
 - (void)initBackground {
     
-    if ([Theme IOS7Look]) {
-        self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
-    } else {
-        UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_woodbg.png"]];
-        self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, backgroundView.frame.size.width, backgroundView.frame.size.height);
-        self.view.clipsToBounds = NO;
-        [self.view addSubview:backgroundView];
-        self.backgroundView = backgroundView;
-    }
+    self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
+    
+//    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_woodbg.png"]];
+//    self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, backgroundView.frame.size.width, backgroundView.frame.size.height);
+//    self.view.clipsToBounds = NO;
+//    [self.view addSubview:backgroundView];
+//    self.backgroundView = backgroundView;
 }
 
-- (void)initPagingViews {
-    
-    // http://khanlou.com/2013/04/paging-a-overflowing-collection-view/
-    
+- (void)initCollectionView {
     PagingCollectionViewLayout *pagingLayout = [[PagingCollectionViewLayout alloc] initWithDelegate:self];
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:pagingLayout];
     collectionView.dataSource = self;
     collectionView.delegate = self;
-    collectionView.contentInset = UIEdgeInsetsMake(0.0, kSideMargin, 0.0, kSideMargin);
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     collectionView.backgroundColor = [UIColor clearColor];
+    
+    // TODO CAUSES JERKY MOVEMENTS
+    collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
+    
     [collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     [self.view addSubview:collectionView];
     self.collectionView = collectionView;
-    
-    // Creating a paging scrollview just to make use of its paging gesture recognizer.
-    UIScrollView *scrollView = [[PagingScrollView alloc] initWithFrame:(CGRect){
-        kSideMargin, 0.0, kCellSize.width * 2.0, self.collectionView.bounds.size.height } pageWidth:kCellSize.width];
-    scrollView.delegate = self;
-    scrollView.pagingEnabled = YES;
-    scrollView.contentSize = [pagingLayout collectionViewContentSize];
-    scrollView.hidden = YES;
-    scrollView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:scrollView];
-    self.scrollView = scrollView;
-    
-    // Use the paging gesture on the collection view.
-    [collectionView addGestureRecognizer:scrollView.panGestureRecognizer];
-    collectionView.panGestureRecognizer.enabled = NO;
     
     // Register a long press
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressed:)];
@@ -784,17 +768,30 @@
     PagingCollectionViewLayout *layout = [self pagingLayout];
     CGSize contentSize = [layout collectionViewContentSize];
     
-    CGFloat sidePadding = kSideMargin + kCellSize.width;
+    CGFloat sidePadding = kSideMargin;
+    CGFloat standardWidth = self.collectionView.contentInset.left + contentSize.width + self.collectionView.contentInset.right;
+    CGFloat pagingWidth = standardWidth * kPagingRate;
+    CGFloat offset = -((pagingWidth - standardWidth) / 2.0);
+    NSLog(@"OFFFFFFSET %f", offset);
+    NSLog(@"sidePadding %f", sidePadding);
+    offset -= sidePadding;
+    NSLog(@"OFFFFFFSET 2 %f", offset);
     
     // Recreate the benchtop background view.
     [self.backgroundView removeFromSuperview];
     [self.pagingBenchtopView removeFromSuperview];
     self.pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
-        -sidePadding,
+//        ((self.view.bounds.size.width / 2.0) * kPagingRate) - (self.view.bounds.size.width / 2.0),
+        0.0,
+//        - (sidePadding * kPagingRate),
+//        -sidePadding,
+//        -((pagingWidth - standardWidth) / 2.0) - sidePadding,
+//        -sidePadding,
         self.collectionView.bounds.origin.y,
-        contentSize.width + (sidePadding * 2.0),
+        pagingWidth,
         contentSize.height
     }];
+    NSLog(@"STANDARD %f PAGING %@", standardWidth, NSStringFromCGRect(self.pagingBenchtopView.frame));
     
     // Add white at the bookend start.
     [self.pagingBenchtopView addColour:[UIColor whiteColor] offset:self.pagingBenchtopView.bounds.origin.x];
@@ -807,7 +804,7 @@
             
             if (self.myBook) {
                 UICollectionViewLayoutAttributes *attributes = [layout layoutAttributesForMyBook];
-                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:self.myBook.cover] offset:attributes.center.x + sidePadding];
+                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:self.myBook.cover] offset:(attributes.center.x + sidePadding) * kPagingRate];
             }
             
         } else if (section == kFollowSection) {
@@ -817,7 +814,7 @@
                 
                 UICollectionViewLayoutAttributes *attributes = [layout layoutAttributesForFollowBookAtIndex:followIndex];
                 CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:book.cover] offset:attributes.center.x + sidePadding];
+                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:book.cover] offset:(attributes.center.x + sidePadding) * kPagingRate];
                 
             }
             
@@ -835,11 +832,34 @@
         kCellSize.width, self.pagingBenchtopView.bounds.origin.y,
         self.backgroundView.frame.size.width, self.backgroundView.frame.size.height
     };
-    [self.pagingBenchtopView addSubview:self.backgroundView];
+    // [self.pagingBenchtopView addSubview:self.backgroundView];
     
     // Add to the bottom of the collectionView.
-    [self.collectionView addSubview:self.pagingBenchtopView];
-    [self.collectionView sendSubviewToBack:self.pagingBenchtopView];
+//    [self.collectionView addSubview:self.pagingBenchtopView];
+//    [self.collectionView sendSubviewToBack:self.pagingBenchtopView];
+    [self.view insertSubview:self.pagingBenchtopView belowSubview:self.collectionView];
+}
+
+- (void)snapToNearestBook {
+    PagingCollectionViewLayout *layout = [self pagingLayout];
+    CGRect gap = [layout frameForGap];
+    CGPoint visibleCenter = (CGPoint){
+        self.collectionView.contentOffset.x + (self.collectionView.bounds.size.width / 2.0),
+        self.collectionView.center.y
+    };
+    
+    // Are we resting on the empty gap, then snap to nearest book given direction of scroll.
+    if (CGRectContainsPoint(gap, visibleCenter)) {
+        
+        if (self.forwardDirection && [self.collectionView numberOfItemsInSection:kFollowSection] > 0) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kFollowSection]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+        } else if (!self.forwardDirection && [self.collectionView numberOfItemsInSection:kMyBookSection] > 0) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+        }
+        
+    }
 }
 
 @end

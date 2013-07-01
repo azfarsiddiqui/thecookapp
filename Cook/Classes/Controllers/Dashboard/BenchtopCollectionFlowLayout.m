@@ -17,7 +17,9 @@
 
 @end
 
-@implementation BenchtopCollectionFlowLayout
+@implementation BenchtopCollectionFlowLayout {    
+    UIDynamicAnimator *_dynamicAnimator;
+}
 
 #define kBookScaleFactor            1.1
 #define kBookRotationDegrees        5.0
@@ -31,44 +33,102 @@
     return self;
 }
 
-- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
-    return YES;
+- (void)prepareLayout {
+    [super prepareLayout];
+    DLog();
+    
+    if (!_dynamicAnimator) {
+        _dynamicAnimator = [[UIDynamicAnimator alloc] initWithCollectionViewLayout:self];
+    }
+    
+    if (_dynamicAnimator.running) {
+        return;
+    }
+    [_dynamicAnimator removeAllBehaviors];
+    
+    CGSize contentSize = [self collectionViewContentSize];
+//    CGSize contentSize = (CGSize){6000.0, self.collectionView.bounds.size.height};
+    NSArray *items = [super layoutAttributesForElementsInRect:(CGRect){ 0, 0, contentSize.width, contentSize.height }];
+    for (UICollectionViewLayoutAttributes *attributes in items) {
+        [self applyAttachmentBehaviourToAttributes:attributes];
+    }
+    
+}
+
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
+    CGFloat scrollDelta = newBounds.origin.x - self.collectionView.bounds.origin.x;
+    CGPoint touchLocation = [self.collectionView.panGestureRecognizer locationInView:self.collectionView];
+    
+    // Loop through each attachment behaviour and amend the spring.
+    for (UIAttachmentBehavior *attachment in _dynamicAnimator.behaviors) {
+        
+        CGPoint anchorPoint = attachment.anchorPoint;
+        CGFloat distanceFromTouch = fabsf(touchLocation.x - anchorPoint.x);
+        CGFloat scrollResistance = distanceFromTouch / 500.0;
+        
+        UICollectionViewLayoutAttributes *attributes = [attachment.items firstObject];
+        
+//        if (CGRectContainsPoint(attributes.frame,
+//                                (CGPoint){ newBounds.origin.x + (newBounds.size.width / 2.0), newBounds.size.height / 2.0 })) {
+//            
+//        } else {
+        
+            CGPoint center = attributes.center;
+//            center.x += scrollDelta * scrollResistance;
+            DLog(@"Offset from: %f to %f", center.x, center.x + scrollDelta);
+            center.x += scrollDelta;
+            attributes.center = center;
+            
+//            [_dynamicAnimator updateItemFromCurrentState:attributes];
+//        }
+        
+    }
+    
+    return NO;
+    
+//    return YES;
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        
-        if ([self scalingRequiredForAttributes:attributes]) {
-            CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
-            attributes.transform3D = CATransform3DScale(attributes.transform3D, scaleFactor, scaleFactor, 1.0);
-            
-        }
-    }
+    
+    NSArray *layoutAttributes = [_dynamicAnimator itemsInRect:rect];
+//    NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
+//    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+//        
+//        if ([self scalingRequiredForAttributes:attributes]) {
+//            CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
+//            attributes.transform3D = CATransform3DScale(attributes.transform3D, scaleFactor, scaleFactor, 1.0);
+//            
+//        }
+//    }
     return layoutAttributes;
 }
 
-- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
-                                 withScrollingVelocity:(CGPoint)velocity {
-    CGFloat offsetAdjustment = MAXFLOAT;
-    CGFloat horizontalCenter = proposedContentOffset.x + (CGRectGetWidth(self.collectionView.bounds) / 2.0);
-    
-    CGRect targetRect = CGRectMake(proposedContentOffset.x,
-                                   0.0,
-                                   self.collectionView.bounds.size.width,
-                                   self.collectionView.bounds.size.height);
-    
-    NSArray* array = [self layoutAttributesForElementsInRect:targetRect];
-    for (UICollectionViewLayoutAttributes* layoutAttributes in array) {
-        CGFloat itemHorizontalCenter = layoutAttributes.center.x;
-        if (ABS(itemHorizontalCenter - horizontalCenter) < ABS(offsetAdjustment)) {
-            offsetAdjustment = itemHorizontalCenter - horizontalCenter;
-        }
-    }
-    
-    CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
-    return targetContentOffset;
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [_dynamicAnimator layoutAttributesForCellAtIndexPath:indexPath];
 }
+
+//- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
+//                                 withScrollingVelocity:(CGPoint)velocity {
+//    CGFloat offsetAdjustment = MAXFLOAT;
+//    CGFloat horizontalCenter = proposedContentOffset.x + (CGRectGetWidth(self.collectionView.bounds) / 2.0);
+//    
+//    CGRect targetRect = CGRectMake(proposedContentOffset.x,
+//                                   0.0,
+//                                   self.collectionView.bounds.size.width,
+//                                   self.collectionView.bounds.size.height);
+//    
+//    NSArray* array = [self layoutAttributesForElementsInRect:targetRect];
+//    for (UICollectionViewLayoutAttributes* layoutAttributes in array) {
+//        CGFloat itemHorizontalCenter = layoutAttributes.center.x;
+//        if (ABS(itemHorizontalCenter - horizontalCenter) < ABS(offsetAdjustment)) {
+//            offsetAdjustment = itemHorizontalCenter - horizontalCenter;
+//        }
+//    }
+//    
+//    CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
+//    return targetContentOffset;
+//}
 
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
     [super prepareForCollectionViewUpdates:updateItems];
@@ -141,6 +201,15 @@
     self.deletedIndexPaths = nil;
 }
 
+//#pragma mark - Properties
+//
+//- (UIDynamicAnimator *)dynamicAnimator {
+//    if (!_dynamicAnimator) {
+//        _dynamicAnimator = [[UIDynamicAnimator alloc] initWithCollectionViewLayout:self];
+//    }
+//    return _dynamicAnimator;
+//}
+
 #pragma mark - Private methods
 
 - (CGRect)visibleFrame {
@@ -176,6 +245,16 @@
         return (layoutAttribute.indexPath.section == indexPath.section && layoutAttribute.indexPath.item == indexPath.item);
     }];
     return attributes;
+}
+
+- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:attributes attachedToAnchor:attributes.center];
+    spring.length = 0;
+    spring.damping = 0.5;
+    spring.frequency = 0.8;
+    
+//    NSLog(@"Added behaviour %@ to %@", spring, attributes);
+    [_dynamicAnimator addBehavior:spring];
 }
 
 @end
