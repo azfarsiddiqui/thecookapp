@@ -31,7 +31,6 @@
 @property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) CKPagingView *benchtopLevelView;
 @property (nonatomic, strong) CKNotificationView *notificationView;
 @property (nonatomic, strong) UIImageView *overlayView;
@@ -92,7 +91,7 @@
 #pragma mark - PagingBenchtopViewController methods
 
 - (void)enable:(BOOL)enable {
-    self.scrollView.userInteractionEnabled = enable;
+    self.collectionView.userInteractionEnabled = enable;
     
     if ([CKUser isLoggedIn]) {
         self.benchtopLevelView.hidden = NO;
@@ -125,8 +124,6 @@
     // Enable panning based on book opened or not.
     [self.delegate panEnabledRequested:!open];
 }
-
-#pragma mark - UIScrollViewDelegate methods
 
 #pragma mark - UIScrollViewDelegate methods
 
@@ -211,8 +208,7 @@
 #pragma mark - CKPagingCollectionViewLayoutDelegate methods
 
 - (void)pagingLayoutDidUpdate {
-    self.scrollView.contentSize = [[self pagingLayout] collectionViewContentSize];
-    [self updatePagingBenchtopView];
+    // [self updatePagingBenchtopView];
 }
 
 #pragma mark - CKNotificationViewDelegate methods
@@ -258,7 +254,7 @@
     
     // Recognise taps only when collectionView is disabled.
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-        return (!self.scrollView.userInteractionEnabled);
+        return (!self.collectionView.userInteractionEnabled);
     }
     
     return YES;
@@ -615,7 +611,6 @@
     self.animating = YES;
     self.editMode = enable;
     self.collectionView.scrollEnabled = !enable;
-    self.scrollView.scrollEnabled = !enable;
     
     if (enable) {
         
@@ -731,18 +726,20 @@
 }
 
 - (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kMyBookSection) {
-        [self.scrollView setContentOffset:CGPointZero animated:YES];
-    } else {
-        [self scrollToFollowedBookWithIndex:indexPath.item];
-    }
+    DLog();
+//    if (indexPath.section == kMyBookSection) {
+//        [self.scrollView setContentOffset:CGPointZero animated:YES];
+//    } else {
+//        [self scrollToFollowedBookWithIndex:indexPath.item];
+//    }
 }
 
 - (void)scrollToFollowedBookWithIndex:(NSInteger)bookIndex {
-    CGSize bookSize = [PagingCollectionViewLayout bookSize];
-    CGFloat contentOffset = bookSize.width + bookSize.width;    // My book and empty book gap.
-    contentOffset += (bookSize.width * bookIndex);
-    [self.scrollView setContentOffset:CGPointMake(contentOffset, self.scrollView.contentOffset.y) animated:YES];
+    DLog();
+//    CGSize bookSize = [PagingCollectionViewLayout bookSize];
+//    CGFloat contentOffset = bookSize.width + bookSize.width;    // My book and empty book gap.
+//    contentOffset += (bookSize.width * bookIndex);
+//    [self.scrollView setContentOffset:CGPointMake(contentOffset, self.scrollView.contentOffset.y) animated:YES];
 }
 
 - (void)followUpdated:(NSNotification *)notification {
@@ -858,7 +855,7 @@
             [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]
                                         atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
         }
-        
+
     }
 }
 

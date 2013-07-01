@@ -14,6 +14,8 @@
 @property (nonatomic, weak) id<PagingCollectionViewLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL physicsEnabled;
+
 @property (nonatomic, strong) NSMutableArray *anchorPoints;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
@@ -116,6 +118,10 @@
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
     
+    if (!self.physicsEnabled) {
+        return YES;
+    }
+    
     CGFloat scrollDelta = newBounds.origin.x - self.collectionView.bounds.origin.x;
     CGPoint touchLocation = [self.collectionView.panGestureRecognizer locationInView:self.collectionView];
     
@@ -131,11 +137,11 @@
         
         // Determine the veer offset.
         CGFloat veerOffset = floorf(scrollDelta * scrollResistance);
+        veerOffset = MAX(10.0, veerOffset);
         // DLog(@"Veer Offset [%f]", veerOffset);
         
         // Amend the center of the attribute to veer.
-        center.x += veerOffset;
-        attributes.center = center;
+        attributes.center = (CGPoint){ center.x + veerOffset, anchorPoint.y };
         
         [self.dynamicAnimator updateItemFromCurrentState:attributes];
     }
@@ -171,17 +177,30 @@
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSArray *layoutAttributes = [self.dynamicAnimator itemsInRect:rect];
+    NSMutableArray *layoutAttributes = [NSMutableArray array];
     
-    // Apply transform for paging.
-    [self applyPagingEffects:layoutAttributes];
+    if (self.physicsEnabled) {
+        [layoutAttributes addObjectsFromArray:[self.dynamicAnimator itemsInRect:rect]];
+    } else {
+        [layoutAttributes addObjectsFromArray:self.itemsLayoutAttributes];
+    }
+    
+    // Cell returns kind of nil.
+    NSArray *cellLayoutAttributes = [layoutAttributes select:^BOOL(UICollectionViewLayoutAttributes *attributes) {
+        return (attributes.representedElementKind == nil);
+    }];
+    
+    [self applyPagingEffects:cellLayoutAttributes];
     
     return layoutAttributes;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return [self.dynamicAnimator layoutAttributesForCellAtIndexPath:indexPath];
+    if (self.physicsEnabled) {
+        return [self.dynamicAnimator layoutAttributesForCellAtIndexPath:indexPath];
+    } else {
+        return [self.indexPathItemAttributes objectForKey:indexPath];
+    }
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
@@ -316,6 +335,9 @@
         [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
     }
     
+    // Apply collision.
+    [self applyCollisionBehaviour:self.itemsLayoutAttributes];
+    
     // Mark layout as completed.
     self.layoutCompleted = YES;
     
@@ -324,17 +346,57 @@
 }
 
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
+    [self applyScaling:layoutAttributes];
+    [self applyPartingEffects:layoutAttributes];
+    [self applyEditModeEffects:layoutAttributes];
+}
+
+- (void)applyScaling:(NSArray *)layoutAttributes {
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
+        attributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0);
+    }
+}
+
+- (void)applyPartingEffects:(NSArray *)layoutAttributes {
+    
+    CGFloat partDistance = 20.0;
     
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         
-        // Bypass processing if not a normal cell (Normal cells returns nil)
-        if (attributes.representedElementKind != nil) {
-            continue;
+        CGPoint center = attributes.center;
+        CGRect visibleRect = [self visibleFrame];
+        CGFloat distance = CGRectGetMidX(visibleRect) - center.x;
+        
+        if (ABS(distance) >= kBookSize.width && ABS(distance) < kBookSize.width * 2.0) {
+            
+            // If distance is less than two books away, then start the parting towards the edge.
+            CGFloat normalizedDistance = (ABS(distance) - kBookSize.width) / kBookSize.width;
+            CGFloat translateOffset = (1.0 - ABS(normalizedDistance)) * partDistance;
+            if (distance > 0) {
+                translateOffset *= -1;
+            }
+            
+            attributes.transform3D = CATransform3DTranslate(attributes.transform3D, translateOffset, 0.0, 0.0);
+            
+        } else if (ABS(distance) < kBookSize.width) {
+            
+            // If distance is less than a book away, then revert the parting towards the center.
+            CGFloat normalizedDistance = distance / kBookSize.width;
+            CGFloat translateOffset = ABS(normalizedDistance) * partDistance;
+            if (distance > 0) {
+                translateOffset *= -1;
+            }
+            
+            attributes.transform3D = CATransform3DTranslate(attributes.transform3D, translateOffset, 0.0, 0.0);
+            
         }
         
-        CGFloat scaleFactor = [self scaleFactorForCenter:attributes.center];
-        attributes.transform3D = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0);
-        
+    }
+}
+
+- (void)applyEditModeEffects:(NSArray *)layoutAttributes {
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         if (self.editMode) {
             NSIndexPath *indexPath = attributes.indexPath;
             if (indexPath.section == kMyBookSection) {
@@ -346,13 +408,6 @@
             attributes.alpha = 1.0;
         }
     }
-}
-
-- (CGRect)visibleFrame {
-    return CGRectMake(self.collectionView.contentOffset.x,
-                      self.collectionView.contentOffset.y,
-                      self.collectionView.bounds.size.width,
-                      self.collectionView.bounds.size.height);
 }
 
 - (CGFloat)scaleFactorForCenter:(CGPoint)center {
@@ -372,7 +427,17 @@
     return scaleFactor;
 }
 
+- (CGRect)visibleFrame {
+    return CGRectMake(self.collectionView.contentOffset.x,
+                      self.collectionView.contentOffset.y,
+                      self.collectionView.bounds.size.width,
+                      self.collectionView.bounds.size.height);
+}
+
 - (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    if (!self.physicsEnabled) {
+        return;
+    }
     UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:attributes
                                                              attachedToAnchor:attributes.center];
     spring.length = 0;
@@ -385,6 +450,16 @@
     return [self.dynamicAnimator.behaviors select:^BOOL(UIDynamicBehavior *dynamicBehaviour) {
         return [dynamicBehaviour isKindOfClass:[UIAttachmentBehavior class]];
     }];
+}
+
+- (void)applyCollisionBehaviour:(NSArray *)items {
+    if (!self.physicsEnabled) {
+        return;
+    }
+
+    UICollisionBehavior *collision = [[UICollisionBehavior alloc] initWithItems:items];
+    collision.collisionMode = UICollisionBehaviorModeItems;
+    [self.dynamicAnimator addBehavior:collision];
 }
 
 @end

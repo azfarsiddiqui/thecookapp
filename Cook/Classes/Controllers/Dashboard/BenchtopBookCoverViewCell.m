@@ -32,6 +32,8 @@
         CKBookCoverView *bookCoverView = [self createBookCoverViewWithDelegate:self];
         bookCoverView.center = self.contentView.center;
         bookCoverView.frame = CGRectIntegral(bookCoverView.frame);
+        
+        self.contentView.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:bookCoverView];
         self.bookCoverView = bookCoverView;
     }
