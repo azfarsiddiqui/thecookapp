@@ -10,7 +10,8 @@
 
 @interface PagingBenchtopBackgroundView : UICollectionReusableView
 
-- (void)addColour:(UIColor *)colour offset:(CGFloat)offset;
+- (id)initWithFrame:(CGRect)frame;
+- (void)addColour:(UIColor *)colour;
 - (void)blend;
 
 @end

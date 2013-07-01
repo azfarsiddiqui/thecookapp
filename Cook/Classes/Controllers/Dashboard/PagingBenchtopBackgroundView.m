@@ -30,9 +30,8 @@
     return self;
 }
 
-- (void)addColour:(UIColor *)colour offset:(CGFloat)offset {
+- (void)addColour:(UIColor *)colour {
     [self.colours addObject:colour];
-    [self.offsets addObject:@(offset)];
 }
 
 - (void)blend {
@@ -40,6 +39,10 @@
     // Remove previous gradient and associated blur view.
     [self.gradientLayer removeFromSuperlayer];
     [self.blurredImageView removeFromSuperview];
+    
+    // Bookend with white colour.
+    [self.colours insertObject:[UIColor whiteColor] atIndex:0];
+    [self.colours insertObject:[UIColor whiteColor] atIndex:[self.colours count]];
     
     // Create the gradient with the given colours.
     self.gradientLayer = [CAGradientLayer layer];
@@ -52,12 +55,28 @@
     self.gradientLayer.startPoint = (CGPoint) { 0.0, 0.5 };
     self.gradientLayer.endPoint = (CGPoint) { 1.0, 0.5 };
     
-    // Loop through and create the gradient points.
     NSMutableArray *colourLocations = [NSMutableArray arrayWithCapacity:[self.colours count]];
+    
+    // Loop through and create the gradient points.
     for (NSInteger colourIndex = 0; colourIndex < [self.colours count]; colourIndex++) {
-        CGFloat offset = [[self.offsets objectAtIndex:colourIndex] floatValue];
-        CGFloat offsetRatio = offset / self.bounds.size.width;
-        [colourLocations addObject:@(offsetRatio)];
+        
+        if (colourIndex == 0) {
+            
+            // Starts with white.
+            [colourLocations addObject:@0.0];
+            
+        } else if (colourIndex == [self.colours count] - 1) {
+            
+            // Ends with white.
+            [colourLocations addObject:@1.0];
+            
+        } else {
+            
+            CGFloat offset = ((colourIndex - 1) * 1024.0) + 512.0;
+            CGFloat offsetRatio = offset / self.bounds.size.width;
+            [colourLocations addObject:@(offsetRatio)];
+        }
+        
     }
     
     DLog(@"Blending colours: %@", self.colours);
