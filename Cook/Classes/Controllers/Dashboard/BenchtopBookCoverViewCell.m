@@ -34,9 +34,6 @@
         bookCoverView.frame = CGRectIntegral(bookCoverView.frame);
         [self.contentView addSubview:bookCoverView];
         self.bookCoverView = bookCoverView;
-        
-        [self applyMotionEffects];
-        
     }
     return self;
 }
