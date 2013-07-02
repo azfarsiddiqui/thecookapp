@@ -428,7 +428,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           [self.storeViewController visibleHeight] + [self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight],
+                           [self.storeViewController visibleHeight] - [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     } else if (level == kBenchtopLevel) {
