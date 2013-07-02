@@ -86,6 +86,11 @@
     return [UIColor colorWithHexString:hexValue];
 }
 
++ (UIColor *)backdropColourForCover:(NSString *)cover {
+    NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.BackdropHex", cover]];
+    return [UIColor colorWithHexString:hexValue];
+}
+
 + (UIColor *)textColourForCover:(NSString *)cover {
     NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.TextHex", cover]];
     return [UIColor colorWithHexString:hexValue];

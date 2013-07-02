@@ -513,17 +513,17 @@
 
 +(UIFont *)bookCoverViewModeNameMinFont
 {
-    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:48];;
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:48];;
 }
 
 +(UIFont *)bookCoverViewModeNameMidFont
 {
-    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:48];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:48];
 }
 
 +(UIFont *)bookCoverViewModeNameMaxFont
 {
-    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:56];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:56];
 }
 
 + (UIFont *)bookCoverViewModeNameFontForSize:(CGFloat)fontSize {

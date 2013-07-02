@@ -18,6 +18,8 @@
 			<string>cook_book_edge_red.png</string>
 			<key>Hex</key>
 			<string>DB2F36</string>
+			<key>BackdropHex</key>
+			<string>FF0022</string>
 			<key>TextHex</key>
 			<string>e23a41</string>
 		</dict>
@@ -35,6 +37,8 @@
 			<string>cook_book_edge_orange.png</string>
 			<key>Hex</key>
 			<string>DF5329</string>
+			<key>BackdropHex</key>
+			<string>FC7300</string>
 			<key>TextHex</key>
 			<string>eb592e</string>
 		</dict>
@@ -52,6 +56,8 @@
 			<string>cook_book_edge_yellow.png</string>
 			<key>Hex</key>
 			<string>FBB437</string>
+			<key>BackdropHex</key>
+			<string>FFB505</string>
 			<key>TextHex</key>
 			<string>ee9c0e</string>
 		</dict>
@@ -69,6 +75,8 @@
 			<string>cook_book_edge_green.png</string>
 			<key>Hex</key>
 			<string>3E9D3E</string>
+			<key>BackdropHex</key>
+			<string>7ADA00</string>
 			<key>TextHex</key>
 			<string>379937</string>
 		</dict>
@@ -86,6 +94,8 @@
 			<string>cook_book_edge_blue.png</string>
 			<key>Hex</key>
 			<string>3885C4</string>
+			<key>BackdropHex</key>
+			<string>0094FF</string>
 			<key>TextHex</key>
 			<string>235a97</string>
 		</dict>
@@ -103,6 +113,8 @@
 			<string>cook_book_edge_pink.png</string>
 			<key>Hex</key>
 			<string>F88886</string>
+			<key>BackdropHex</key>
+			<string>AC260A</string>
 			<key>TextHex</key>
 			<string>eb6d6b</string>
 		</dict>
@@ -120,6 +132,8 @@
 			<string>cook_book_edge_gray.png</string>
 			<key>Hex</key>
 			<string>6B7073</string>
+			<key>BackdropHex</key>
+			<string>4670B9</string>
 			<key>TextHex</key>
 			<string>6b7073</string>
 		</dict>
@@ -137,6 +151,8 @@
 			<string>cook_book_edge_brown.png</string>
 			<key>Hex</key>
 			<string>896E54</string>
+			<key>BackdropHex</key>
+			<string>000F83</string>
 			<key>TextHex</key>
 			<string>86684b</string>
 		</dict>
