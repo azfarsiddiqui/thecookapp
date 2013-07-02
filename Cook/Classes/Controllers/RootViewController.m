@@ -228,8 +228,7 @@
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
     CGPoint translation = [panGesture translationInView:self.view];
     
-    if (panGesture.state == UIGestureRecognizerStateBegan) {
-    } else if (panGesture.state == UIGestureRecognizerStateChanged) {
+    if (panGesture.state == UIGestureRecognizerStateBegan || panGesture.state == UIGestureRecognizerStateChanged) {
         [self panWithTranslation:translation];
 	} else if (panGesture.state == UIGestureRecognizerStateEnded) {
         [self snapIfRequired];
@@ -250,27 +249,26 @@
     
     if (self.benchtopLevel == kStoreLevel
         && CGRectIntersection(self.view.bounds,
-                              self.benchtopViewController.view.frame).size.height > kStoreHideTuckOffset + kStoreShowAdjustment + kSnapHeight) {
+                              self.benchtopViewController.view.frame).size.height > self.view.bounds.size.height - [self.storeViewController visibleHeight] - kSnapHeight) {
         
         toggleLevel = kBenchtopLevel;
         
     } else if (self.benchtopLevel == kBenchtopLevel
                && CGRectIntersection(self.view.bounds,
-                                     self.storeViewController.view.frame).size.height > (kStoreHideTuckOffset + kStoreShadowOffset + kSnapHeight)) {
+                                     self.storeViewController.view.frame).size.height > ([self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight] + kSnapHeight)) {
         
         toggleLevel = kStoreLevel;
         
     } else if (self.benchtopLevel == kBenchtopLevel
                && CGRectIntersection(self.view.bounds,
-                                     self.settingsViewController.view.frame).size.height > 0) {
+                                     self.settingsViewController.view.frame).size.height > kSnapHeight) {
         
         toggleLevel = kSettingsLevel;
         
     } else if (self.benchtopLevel == kSettingsLevel
                && CGRectIntersection(self.view.bounds,
-                                     self.settingsViewController.view.frame).size.height < (self.settingsViewController.view.frame.size.height * 0.75)) {
+                                     self.settingsViewController.view.frame).size.height < self.settingsViewController.view.frame.size.height - kSnapHeight) {
         
-        // Toggle to level 1 if moved more than 1/3.
         toggleLevel = kBenchtopLevel;
     }
     
@@ -435,7 +433,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.storeViewController.view.frame.origin.y + self.storeViewController.view.frame.size.height - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight],
+                           [self.storeViewController visibleHeight],
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     } else if (level == kBenchtopLevel) {
