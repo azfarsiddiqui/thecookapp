@@ -368,22 +368,22 @@
     [self.view addSubview:backdropScrollView];
     self.backdropScrollView = backdropScrollView;
     
-    // Add the texture with motion effects.
+    // Add the texture
     self.backgroundTextureView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
     [self.backdropScrollView addSubview:self.backgroundTextureView];
 
+    // Add motion effects on the scrollview.
     UIInterpolatingMotionEffect *xAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
                                                                                          type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
     xAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
     xAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
-    [self.backgroundTextureView addMotionEffect:xAxis];
+    [backdropScrollView addMotionEffect:xAxis];
     
     UIInterpolatingMotionEffect *yAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
                                                                                          type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
     yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
     yAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
-    [self.backgroundTextureView addMotionEffect:yAxis];
-
+    [backdropScrollView addMotionEffect:yAxis];
 }
 
 - (void)initCollectionView {
