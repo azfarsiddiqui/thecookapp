@@ -23,12 +23,12 @@
 			<key>TextHex</key>
 			<string>e23a41</string>
 		</dict>
-		<key>Burnt Orange</key>
+		<key>Orange</key>
 		<dict>
 			<key>Index</key>
 			<integer>1</integer>
 			<key>Image</key>
-			<string>cook_book_burntorange.png</string>
+			<string>cook_book_orange.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colour_bar_orange.png</string>
 			<key>Slider</key>
@@ -99,12 +99,12 @@
 			<key>TextHex</key>
 			<string>235a97</string>
 		</dict>
-		<key>Pink</key>
+		<key>Purple</key>
 		<dict>
 			<key>Index</key>
 			<integer>5</integer>
 			<key>Image</key>
-			<string>cook_book_pink.png</string>
+			<string>cook_book_purple.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colour_bar_pink.png</string>
 			<key>Slider</key>
@@ -137,12 +137,12 @@
 			<key>TextHex</key>
 			<string>6b7073</string>
 		</dict>
-		<key>Brown</key>
+		<key>Neutral</key>
 		<dict>
 			<key>Index</key>
 			<integer>7</integer>
 			<key>Image</key>
-			<string>cook_book_brown.png</string>
+			<string>cook_book_neutral.png</string>
 			<key>Thumb</key>
 			<string>cook_customise_colour_bar_brown.png</string>
 			<key>Slider</key>
