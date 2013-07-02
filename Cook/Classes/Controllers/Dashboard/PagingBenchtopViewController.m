@@ -152,7 +152,7 @@
                 self.collectionView.contentOffset.x * (self.collectionView.bounds.size.width / 300.0),
                 self.backdropScrollView.contentOffset.y
             };
-            DLog(@"COLL[%@] BACKDROP [%@]", NSStringFromCGPoint(self.collectionView.contentOffset), NSStringFromCGPoint(self.backdropScrollView.contentOffset));
+
         }
         
     } else if (scrollView == self.backdropScrollView) {
@@ -840,7 +840,7 @@
         if (section == kMyBookSection) {
             
             if (self.myBook) {
-                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:self.myBook.cover]];
+                [self.pagingBenchtopView addColour:[CKBookCover backdropColourForCover:self.myBook.cover]];
             }
             
         } else if (section == kFollowSection) {
@@ -852,7 +852,7 @@
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                 
                 CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                [self.pagingBenchtopView addColour:[CKBookCover colourForCover:book.cover]];
+                [self.pagingBenchtopView addColour:[CKBookCover backdropColourForCover:book.cover]];
             }
             
         }
@@ -863,10 +863,6 @@
     
     // Move it below the backgroundview.
     [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundTextureView];
-    
-//    self.pagingBenchtopView.transform = CGAffineTransformMakeScale(0.2, 0.2);
-//    self.pagingBenchtopView.transform = CGAffineTransformTranslate(self.pagingBenchtopView.transform, 0.0, 100);
-    
 }
 
 - (void)snapToNearestBook {

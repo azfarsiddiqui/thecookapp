@@ -43,7 +43,7 @@
     self.gradientLayer.frame = self.bounds;
     
     CGFloat pageWidth = 1024.0;
-    CGFloat colourWidth = 500.0;
+    CGFloat colourWidth = 100.0;
     NSMutableArray *gradientColours = [NSMutableArray array];
     
     // Set direction from left to right.
@@ -110,7 +110,7 @@
 - (UIImage *)blurWithImage:(UIImage *)image {
     
     return [image applyBlurWithRadius:30
-                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.75]
+                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.7]
                 saturationDeltaFactor:1.8
                             maskImage:nil];
     
