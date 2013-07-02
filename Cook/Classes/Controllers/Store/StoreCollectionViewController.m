@@ -148,7 +148,7 @@
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(0.0, -30.0, 0.0, 0.0);
+    return UIEdgeInsetsMake(15.0, 60.0, 0.0, 0.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
@@ -158,7 +158,7 @@
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
                    layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return -110.0;
+    return 25.0;
 }
 
 #pragma mark - UICollectionViewDataSource methods

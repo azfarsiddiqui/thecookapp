@@ -29,6 +29,7 @@
 // Convers view to images.
 + (UIImage *)imageWithView:(UIView *)view;
 + (UIImage *)imageWithView:(UIView *)view opaque:(BOOL)opaque;
++ (UIImage *)imageWithView:(UIView *)view size:(CGSize)size opaque:(BOOL)opaque;
 
 // UITextField helpers.
 + (void)setCaretOnFrontForInput:(UITextField *)input;

@@ -31,15 +31,6 @@
     return YES;
 }
 
-- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
-    CGFloat scale = [BenchtopBookCell storeScale];
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        attributes.transform3D = CATransform3DScale(attributes.transform3D, scale, scale, 1.0);
-    }
-    return layoutAttributes;
-}
-
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
     [super prepareForCollectionViewUpdates:updateItems];
     
@@ -75,7 +66,8 @@
             
             CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, translateOffset, 0.0, 0.0);
             CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kStoreBookInsertScale, kStoreBookInsertScale, 0.0);
-            initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
+            // initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
+            initialAttributes.transform3D = translateTransform;
             initialAttributes.alpha = 1.0;
         }
         

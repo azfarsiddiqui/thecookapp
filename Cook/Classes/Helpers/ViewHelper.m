@@ -121,7 +121,11 @@
 }
 
 + (UIImage *)imageWithView:(UIView *)view opaque:(BOOL)opaque {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, opaque, 0.0);
+    return [self imageWithView:view size:view.bounds.size opaque:opaque];
+}
+
++ (UIImage *)imageWithView:(UIView *)view size:(CGSize)size opaque:(BOOL)opaque {
+    UIGraphicsBeginImageContextWithOptions(size, opaque, 0.0);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

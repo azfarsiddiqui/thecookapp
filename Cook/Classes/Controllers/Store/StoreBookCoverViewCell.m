@@ -10,27 +10,56 @@
 #import "CKBookCoverView.h"
 #import "CKBook.h"
 #import "ViewHelper.h"
+#import "UIImage+ProportionalFill.h"
 
 @interface StoreBookCoverViewCell ()
 
 @property (nonatomic, strong) UIView *followedIconView;
+@property (nonatomic, strong) UIImageView *snapshotView;
 
 @end
 
 @implementation StoreBookCoverViewCell
 
 + (CGSize)cellSize {
-    return [BenchtopBookCoverViewCell cellSize];
-    // return CGSizeMake(128.0, 180.0);
+//    return [BenchtopBookCoverViewCell cellSize];
+    return CGSizeMake(128.0, 180.0);
 }
 
+- (id)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        [self.bookCoverView removeFromSuperview];
+        
+        UIImageView *snapshotView = [[UIImageView alloc] initWithImage:nil];
+        snapshotView.frame = self.contentView.bounds;
+        [self.contentView addSubview:snapshotView];
+        self.snapshotView = snapshotView;
+    }
+    return self;
+}
+
+
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
-    return [[CKBookCoverView alloc] initWithFrame:self.contentView.bounds storeMode:YES delegate:delegate];
+    CGSize fullSize = [BenchtopBookCoverViewCell cellSize];
+    return [[CKBookCoverView alloc] initWithFrame:(CGRect){ 0.0, 0.0, fullSize.width, fullSize.height } storeMode:YES delegate:delegate];
 }
 
 - (void)loadBook:(CKBook *)book {
     [self.bookCoverView setCover:book.cover illustration:book.illustration];
     [self.bookCoverView setName:nil author:[book userName] editable:NO];
+    
+    UIImage *snapshotImage = [ViewHelper imageWithView:self.bookCoverView opaque:NO];
+
+//    UIGraphicsBeginImageContextWithOptions(self.bookCoverView.bounds.size, NO, 0);
+//    BOOL snapshotCompleted = [self.bookCoverView drawViewHierarchyInRect:self.bookCoverView.bounds];
+//    UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+
+//    self.snapshotView = [[UIImageView alloc] initWithImage:snapshotImage];
+//    self.snapshotView.frame = self.contentView.bounds;
+//    [self.contentView addSubview:self.snapshotView];
+    
+    self.snapshotView.image = snapshotImage;
     [self enableDeleteMode:NO];
 }
 
