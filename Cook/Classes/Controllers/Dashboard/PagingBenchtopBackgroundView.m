@@ -13,7 +13,6 @@
 @interface PagingBenchtopBackgroundView ()
 
 @property (nonatomic, strong) NSMutableArray *colours;
-@property (nonatomic, strong) NSMutableArray *offsets;
 
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
 @property (nonatomic, strong) UIImageView *blurredImageView;
@@ -25,7 +24,6 @@
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.colours = [NSMutableArray array];
-        self.offsets = [NSMutableArray array];
     }
     return self;
 }
@@ -40,49 +38,52 @@
     [self.gradientLayer removeFromSuperlayer];
     [self.blurredImageView removeFromSuperview];
     
-    // Bookend with white colour.
-    [self.colours insertObject:[UIColor whiteColor] atIndex:0];
-    [self.colours insertObject:[UIColor whiteColor] atIndex:[self.colours count]];
-    
     // Create the gradient with the given colours.
     self.gradientLayer = [CAGradientLayer layer];
     self.gradientLayer.frame = self.bounds;
-    self.gradientLayer.colors = [self.colours collect:^id(UIColor *colour) {
-        return (id)colour.CGColor;
-    }];
+    
+    CGFloat pageWidth = 1024.0;
+    CGFloat colourWidth = 500.0;
+    NSMutableArray *gradientColours = [NSMutableArray array];
     
     // Set direction from left to right.
     self.gradientLayer.startPoint = (CGPoint) { 0.0, 0.5 };
     self.gradientLayer.endPoint = (CGPoint) { 1.0, 0.5 };
     
+    // Create the gradient colours and stops, and start with white.
     NSMutableArray *colourLocations = [NSMutableArray arrayWithCapacity:[self.colours count]];
+    [gradientColours addObject:[UIColor whiteColor]];
+    [colourLocations addObject:@0.0];
     
     // Loop through and create the gradient points.
     for (NSInteger colourIndex = 0; colourIndex < [self.colours count]; colourIndex++) {
         
-        if (colourIndex == 0) {
-            
-            // Starts with white.
-            [colourLocations addObject:@0.0];
-            
-        } else if (colourIndex == [self.colours count] - 1) {
-            
-            // Ends with white.
-            [colourLocations addObject:@1.0];
-            
-        } else {
-            
-            CGFloat offset = ((colourIndex - 1) * 1024.0) + 512.0;
-            CGFloat offsetRatio = offset / self.bounds.size.width;
-            [colourLocations addObject:@(offsetRatio)];
-        }
+        UIColor *colour = [self.colours objectAtIndex:colourIndex];
+        
+        // Start of colour.
+        CGFloat offset = (colourIndex * pageWidth) + floorf((pageWidth - colourWidth) / 2.0);
+        CGFloat offsetRatio = offset / self.bounds.size.width;
+        [gradientColours addObject:colour];
+        [colourLocations addObject:@(offsetRatio)];
+        // DLog(@"Start Colour [%d] at [%f]", colourIndex, offsetRatio);
+        
+        // End of colour
+        offset += colourWidth;
+        offsetRatio = offset / self.bounds.size.width;
+        [gradientColours addObject:colour];
+        [colourLocations addObject:@(offsetRatio)];
+        // DLog(@"  End Colour [%d] at [%f]", colourIndex, offsetRatio);
         
     }
     
-    DLog(@"Blending colours: %@", self.colours);
-    DLog(@"      at offsets: %@", colourLocations);
+    // Ends with white.
+    [gradientColours addObject:[UIColor whiteColor]];
+    [colourLocations addObject:@1.0];
     
-    // Set the points for the gradients.
+    // Set the gradients onto the layer.
+    self.gradientLayer.colors = [gradientColours collect:^id(UIColor *colour) {
+        return (id)colour.CGColor;
+    }];
     self.gradientLayer.locations = colourLocations;
     
     // Add the gradient to the view
@@ -108,8 +109,10 @@
 
 - (UIImage *)blurWithImage:(UIImage *)image {
     
-    UIColor *tintColor = [UIColor colorWithWhite:1.0 alpha:0.7];
-    return [image applyBlurWithRadius:50 tintColor:tintColor saturationDeltaFactor:1.8 maskImage:nil];
+    return [image applyBlurWithRadius:30
+                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.75]
+                saturationDeltaFactor:1.8
+                            maskImage:nil];
     
     // return [image applyExtraLightEffect];
 }

@@ -28,7 +28,7 @@
     CKNotificationViewDelegate, BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate,
     IllustrationPickerViewControllerDelegate>
 
-@property (nonatomic, strong) UIImageView *backgroundView;
+@property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIScrollView *backdropScrollView;
@@ -137,16 +137,30 @@
         self.forwardDirection = scrollView.contentOffset.x > self.previousScrollPosition.x;
         self.previousScrollPosition = scrollView.contentOffset;
         
-        self.backdropScrollView.contentOffset = (CGPoint) {
-            self.collectionView.contentOffset.x * (1024/300),
-            self.backdropScrollView.contentOffset.y };
+        if (scrollView.contentOffset.x < 0) {
+            
+            self.backdropScrollView.contentOffset = scrollView.contentOffset;
+            
+//        } else if (scrollView.contentOffset.x < 212.0) {
+//        
+//            self.backdropScrollView.contentOffset = (CGPoint) {
+//                self.collectionView.contentOffset.x * (1024/812),
+//                self.backdropScrollView.contentOffset.y };
+        } else  {
+            
+            self.backdropScrollView.contentOffset = (CGPoint) {
+                self.collectionView.contentOffset.x * (self.collectionView.bounds.size.width / 300.0),
+                self.backdropScrollView.contentOffset.y
+            };
+            DLog(@"COLL[%@] BACKDROP [%@]", NSStringFromCGPoint(self.collectionView.contentOffset), NSStringFromCGPoint(self.backdropScrollView.contentOffset));
+        }
         
     } else if (scrollView == self.backdropScrollView) {
         
         CGPoint contentOffset = self.backdropScrollView.contentOffset;
-        CGRect backgroundViewFrame = self.backgroundView.frame;
+        CGRect backgroundViewFrame = self.backgroundTextureView.frame;
         backgroundViewFrame.origin = contentOffset;
-        self.backgroundView.frame = backgroundViewFrame;
+        self.backgroundTextureView.frame = backgroundViewFrame;
         
     }
 }
@@ -349,13 +363,27 @@
     backdropScrollView.delegate = self;
     backdropScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     backdropScrollView.backgroundColor = [UIColor whiteColor];
-    backdropScrollView.scrollEnabled = NO;
+    backdropScrollView.scrollEnabled = YES;
     backdropScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:backdropScrollView];
     self.backdropScrollView = backdropScrollView;
     
-    self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
-    [self.backdropScrollView addSubview:self.backgroundView];
+    // Add the texture with motion effects.
+    self.backgroundTextureView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
+    [self.backdropScrollView addSubview:self.backgroundTextureView];
+
+    UIInterpolatingMotionEffect *xAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
+                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+    xAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
+    xAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
+    [self.backgroundTextureView addMotionEffect:xAxis];
+    
+    UIInterpolatingMotionEffect *yAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
+                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+    yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
+    yAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
+    [self.backgroundTextureView addMotionEffect:yAxis];
+
 }
 
 - (void)initCollectionView {
@@ -372,6 +400,7 @@
     
     [collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     [self.view addSubview:collectionView];
+//    collectionView.hidden = YES;
     self.collectionView = collectionView;
     
     // Register a long press
@@ -789,9 +818,6 @@
 
 - (void)updatePagingBenchtopView {
     
-    PagingCollectionViewLayout *layout = [self pagingLayout];
-    CGSize contentSize = [layout collectionViewContentSize];
-    
     NSInteger numMyBook = [self.collectionView numberOfItemsInSection:kMyBookSection];
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
     
@@ -800,8 +826,8 @@
     self.pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
         0.0,
         0.0,
-        self.collectionView.bounds.size.width * (numMyBook + numFollowBooks),
-        contentSize.height
+        self.collectionView.bounds.size.width * (numMyBook + 1 + numFollowBooks),
+        self.collectionView.bounds.size.height
     }];
     
     // Updates contentSize of backdrop scrollView.
@@ -819,6 +845,9 @@
             
         } else if (section == kFollowSection) {
             
+            // Add white for gap.
+            [self.pagingBenchtopView addColour:[UIColor whiteColor]];
+            
             NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                 
@@ -833,7 +862,11 @@
     [self.pagingBenchtopView blend];
     
     // Move it below the backgroundview.
-    [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundView];
+    [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundTextureView];
+    
+//    self.pagingBenchtopView.transform = CGAffineTransformMakeScale(0.2, 0.2);
+//    self.pagingBenchtopView.transform = CGAffineTransformTranslate(self.pagingBenchtopView.transform, 0.0, 100);
+    
 }
 
 - (void)snapToNearestBook {
