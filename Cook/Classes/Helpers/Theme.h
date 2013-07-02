@@ -45,6 +45,8 @@
 + (UIFont *)storeTabFont;
 + (UIColor *)storeTabTextColour;
 + (UIColor *)storeTabTextShadowColour;
++ (UIFont *)storeTabSelectedFont;
++ (UIColor *)storeTabSelectedTextColour;
 + (UIFont *)storeBookActionButtonFont;
 + (UIColor *)storeBookActionButtonColour;
 + (UIColor *)storeBookActionButtonShadowColour;

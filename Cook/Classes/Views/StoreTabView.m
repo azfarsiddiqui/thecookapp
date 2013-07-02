@@ -8,10 +8,16 @@
 
 #import "StoreTabView.h"
 #import "Theme.h"
+#import "StoreUnitTabView.h"
 
 @interface StoreTabView ()
 
 @property (nonatomic, assign) id<StoreTabViewDelegate> delegate;
+@property (nonatomic, strong) StoreUnitTabView *suggestedTabView;
+@property (nonatomic, strong) StoreUnitTabView *featuredTabView;
+@property (nonatomic, strong) StoreUnitTabView *friendsTabView;
+
+@property (nonatomic, strong) UIImage *selectedTabImage;
 @property (nonatomic, strong) UIImageView *topImageView;
 @property (nonatomic, strong) NSArray *titles;
 @property (nonatomic, strong) NSArray *icons;
@@ -20,27 +26,22 @@
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) NSInteger selectedTabIndex;
 
+
 @end
 
 @implementation StoreTabView
 
+#define kHeight         105
 #define kMinTabHeight   83.0
 #define kMaxTabHeight   103.0
-#define kFeaturedTab    0
-#define kFriendsTab     1
-#define kSuggestedTab   2
+#define kSuggestedTab   0
+#define kFeaturedTab    1
+#define kFriendsTab     2
 
 - (id)initWithDelegate:(id<StoreTabViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
         self.backgroundColor = [UIColor clearColor];
-        self.selectedTabIndex = -1;
-        
-        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_tab_wrap.png"]];
-        self.frame = CGRectMake(0.0, 0.0, topImageView.frame.size.width, topImageView.frame.size.height + kMaxTabHeight);
-        [self addSubview:topImageView];
-        self.topImageView = topImageView;
-        
         [self initTabs];
     }
     return self;
@@ -61,84 +62,64 @@
 #pragma mark - Private methods
 
 - (void)initTabs {
-    self.titles = [NSArray arrayWithObjects:@"FEATURED", @"FRIENDS", @"SUGGESTED", nil];
-    self.icons = [NSArray arrayWithObjects:@"cook_dash_library_icon_featured.png", @"cook_dash_library_icon_friends.png", @"cook_dash_library_icon_suggested.png", nil];
-    self.iconViews = [NSMutableArray arrayWithCapacity:[self.titles count]];
-    self.tabs = [NSMutableArray arrayWithCapacity:[self.titles count]];
     
-    CGFloat offset = -3.0;
+    CGPoint offset = CGPointZero;
     
-    for (NSInteger tabIndex = 0; tabIndex < [self.titles count]; tabIndex++) {
-        
-        UIImage *tabImage = nil;
-        if (tabIndex == 0) {
-            tabImage = [UIImage imageNamed:@"cook_dash_library_tab_left.png"];
-        } else if (tabIndex == [self.titles count] - 1) {
-            tabImage = [UIImage imageNamed:@"cook_dash_library_tab_right.png"];
-        } else {
-            tabImage = [UIImage imageNamed:@"cook_dash_library_tab_middle.png"];
-        }
-        tabImage = [tabImage resizableImageWithCapInsets:UIEdgeInsetsMake(1.0, 0.0, 81.0, 0.0)];
-        
-        // Button
-        UIImageView *tabImageView = [[UIImageView alloc] initWithImage:tabImage];
-        tabImageView.userInteractionEnabled = YES;
-        tabImageView.frame = CGRectMake(offset,
-                                        self.topImageView.frame.origin.y + self.topImageView.frame.size.height,
-                                        tabImageView.frame.size.width,
-                                        kMinTabHeight);
-        [self addSubview:tabImageView];
-        [self.tabs addObject:tabImageView];
-        
-        // Title
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-        label.backgroundColor = [UIColor clearColor];
-        label.font = [Theme storeTabFont];
-        label.textColor = [Theme storeTabTextColour];
-        label.shadowOffset = CGSizeMake(0.0, -1.0);
-        label.shadowColor = [Theme storeTabTextShadowColour];
-        label.text = [self.titles objectAtIndex:tabIndex];
-        [label sizeToFit];
-        label.frame = CGRectMake(floorf((tabImageView.bounds.size.width - label.frame.size.width) / 2.0),
-                                 18.0,
-                                 label.frame.size.width,
-                                 label.frame.size.height);
-        [tabImageView addSubview:label];
-        
-        // Icon.
-        UIImageView *iconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self.icons objectAtIndex:tabIndex]]];
-        iconView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-        iconView.frame = CGRectMake(floorf((tabImageView.bounds.size.width - iconView.frame.size.width) / 2.0),
-                                    12.0,
-                                    iconView.frame.size.width,
-                                    iconView.frame.size.height);
-        iconView.alpha = 0.0;
-        [tabImageView addSubview:iconView];
-        [self.iconViews addObject:iconView];
-        
-        // Register tap on tab image.
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tabTapped:)];
-        [tabImageView addGestureRecognizer:tapGesture];
-        
-        // Next tab offset
-        offset += tabImageView.frame.size.width - 18.0;
-    }
+    StoreUnitTabView *suggestedTabView = [[StoreUnitTabView alloc] initWithText:@"SUGGESTED"
+                                                                           icon:[UIImage imageNamed:@"cook_library_icons_suggested.png"]];
+    suggestedTabView.frame = (CGRect){
+        offset.x,
+        offset.y,
+        suggestedTabView.frame.size.width,
+        suggestedTabView.frame.size.height
+    };
+    [self addSubview:suggestedTabView];
+    self.suggestedTabView = suggestedTabView;
+    self.bounds = CGRectUnion(self.bounds, self.suggestedTabView.frame);
+    offset.x += self.suggestedTabView.frame.size.width;
     
-    // Select the first tab.
+    StoreUnitTabView *featuredTabView = [[StoreUnitTabView alloc] initWithText:@"FEATURED"
+                                                                          icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]];
+    featuredTabView.frame = (CGRect){
+        offset.x,
+        offset.y,
+        featuredTabView.frame.size.width,
+        featuredTabView.frame.size.height
+    };
+    [self addSubview:featuredTabView];
+    self.featuredTabView = featuredTabView;
+    self.bounds = CGRectUnion(self.bounds, self.featuredTabView.frame);
+    offset.x += self.featuredTabView.frame.size.width;
+    
+    StoreUnitTabView *friendsTabView = [[StoreUnitTabView alloc] initWithText:@"FRIENDS"
+                                                                         icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]];
+    friendsTabView.frame = (CGRect){
+        offset.x,
+        offset.y,
+        friendsTabView.frame.size.width,
+        friendsTabView.frame.size.height
+    };
+    [self addSubview:friendsTabView];
+    self.friendsTabView = friendsTabView;
+    self.bounds = CGRectUnion(self.bounds, self.friendsTabView.frame);
+    
+    // Register tap.
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    [self addGestureRecognizer:tapGesture];
+    
+    // Select the featured tab.
     [self selectFeatured];
 }
 
-#pragma mark - Private methods
-
-- (void)tabTapped:(UITapGestureRecognizer *)tapGesture {
-    if (self.animating) {
-        return;
+- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    CGPoint location = [tapGesture locationInView:self];
+    if (CGRectContainsPoint(self.suggestedTabView.frame, location)) {
+        [self selectSuggested];
+    } else if (CGRectContainsPoint(self.featuredTabView.frame, location)) {
+        [self selectFeatured];
+    } else if (CGRectContainsPoint(self.friendsTabView.frame, location)) {
+        [self selectFriends];
     }
-    
-    UIView *sender = tapGesture.view;
-    NSUInteger tabIndex = [self.tabs indexOfObject:sender];
-    [self selectTabAtIndex:tabIndex];
 }
 
 - (void)selectedTabAtIndex:(NSUInteger)tabIndex {
@@ -173,44 +154,16 @@
     UIView *selectedTabView = [self.tabs objectAtIndex:tabIndex];
     [self bringSubviewToFront:selectedTabView];
     
-    [UIView animateWithDuration:0.15
+    [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         
-                         // Unselect all buttons except the current one.
-                         for (NSInteger buttonIndex = 0; buttonIndex < [self.tabs count]; buttonIndex++) {
-                             UIView *button = [self.tabs objectAtIndex:buttonIndex];
-                             CGRect buttonFrame = button.frame;
-                             if (buttonIndex == tabIndex) {
-                                 buttonFrame.size.height = kMaxTabHeight;
-                             } else {
-                                 buttonFrame.size.height = kMinTabHeight;
-                             }
-                             
-                             button.frame = buttonFrame;
-                         }
-                         
-                         // Fade out existing iconView.
-                         for (UIImageView *iconView in self.iconViews) {
-                             iconView.alpha = 0.0;
-                         }
-                         
+                         [self.suggestedTabView select:(tabIndex == kSuggestedTab)];
+                         [self.featuredTabView select:(tabIndex == kFeaturedTab)];
+                         [self.friendsTabView select:(tabIndex == kFriendsTab)];
                      }
                      completion:^(BOOL finished) {
                          self.animating = NO;
-                         
-                         [UIView animateWithDuration:0.15
-                                               delay:0.0
-                                             options:UIViewAnimationOptionCurveEaseIn
-                                          animations:^{
-                                              UIImageView *iconView = [self.iconViews objectAtIndex:tabIndex];
-                                              iconView.alpha = 1.0;
-                                          }
-                                          completion:^(BOOL finished) {
-                                          }];
-
-                         
                          [self selectedTabAtIndex:tabIndex];
                      }];
     

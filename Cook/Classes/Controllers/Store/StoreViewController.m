@@ -159,7 +159,7 @@
 - (void)initTabs {
     StoreTabView *storeTabView = [[StoreTabView alloc] initWithDelegate:self];
     storeTabView.frame = CGRectMake(floorf((self.view.bounds.size.width - storeTabView.frame.size.width) / 2.0),
-                                    270.0,
+                                    kShelfTopOffset - storeTabView.frame.size.height,
                                     storeTabView.frame.size.width,
                                     storeTabView.frame.size.height);
     [self.view addSubview:storeTabView];

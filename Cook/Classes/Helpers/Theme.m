@@ -72,15 +72,23 @@
 #pragma mark - Store
 
 + (UIFont *)storeTabFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:20.0];
 }
 
 + (UIColor *)storeTabTextColour {
-    return [UIColor whiteColor];
+    return [UIColor grayColor];
 }
 
 + (UIColor *)storeTabTextShadowColour {
     return [UIColor colorWithHexString:@"0d60b1"];
+}
+
++ (UIFont *)storeTabSelectedFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:26.0];
+}
+
++ (UIColor *)storeTabSelectedTextColour {
+    return [UIColor grayColor];
 }
 
 + (UIFont *)storeBookActionButtonFont {
