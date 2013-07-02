@@ -141,11 +141,6 @@
             
             self.backdropScrollView.contentOffset = scrollView.contentOffset;
             
-//        } else if (scrollView.contentOffset.x < 212.0) {
-//        
-//            self.backdropScrollView.contentOffset = (CGPoint) {
-//                self.collectionView.contentOffset.x * (1024/812),
-//                self.backdropScrollView.contentOffset.y };
         } else  {
             
             self.backdropScrollView.contentOffset = (CGPoint) {
