@@ -22,6 +22,7 @@
 - (void)markLayoutDirty;
 - (void)enableEditMode:(BOOL)editMode;
 - (CGRect)frameForGap;;
+- (NSArray *)bookAnchorPoints;
 - (UICollectionViewLayoutAttributes *)layoutAttributesForMyBook;
 - (UICollectionViewLayoutAttributes *)layoutAttributesForFollowBookAtIndex:(NSInteger)bookIndex;
 

@@ -29,7 +29,7 @@
 
 @implementation PagingCollectionViewLayout
 
-#define kContentInsets                  UIEdgeInsetsMake(165.0, 362.0, 155.0, 362.0)
+#define kContentInsets                  UIEdgeInsetsMake(175.0, 362.0, 155.0, 362.0)
 #define kBookSize                       (CGSize){ 300.0, 438.0 }
 #define kSideMargin                     62.0
 #define kMyBookSection                  0
@@ -64,6 +64,12 @@
         kBookSize.width,
         kBookSize.height
     };
+}
+
+- (NSArray *)bookAnchorPoints {
+    NSMutableArray *bookAnchorPoints = [NSMutableArray arrayWithArray:self.anchorPoints];
+    [bookAnchorPoints removeObjectAtIndex:1];
+    return bookAnchorPoints;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForMyBook {
@@ -243,7 +249,6 @@
     CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
     return targetContentOffset;
 }
-
 
 - (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *finalAttributes = nil;
