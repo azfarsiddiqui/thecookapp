@@ -42,13 +42,9 @@
 
 @implementation RootViewController
 
-#define kDragRatio                      0.2
+#define kDragRatio                      0.25
 #define kSnapHeight                     30.0
 #define kBounceOffset                   30.0
-#define kStoreHideTuckOffset            69.0
-#define kStoreShadowOffset              43.0
-#define kStoreShowAdjustment            340.0
-#define kSettingsOffsetBelowBenchtop    35.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
@@ -353,9 +349,9 @@
 - (CGRect)storeFrameForShow:(BOOL)show bounce:(BOOL)bounce {
     if (show) {
         
-        // Show frame is just the top of the view bounds.
+        // Show frame is above the full height offset by the visible height.
         CGRect showFrame = CGRectMake(self.view.bounds.origin.x,
-                                      self.view.bounds.size.height - self.storeViewController.view.frame.size.height - kStoreShowAdjustment,
+                                      self.storeViewController.view.frame.size.height + [self.storeViewController visibleHeight],
                                       self.view.bounds.size.width,
                                       self.storeViewController.view.frame.size.height);
         if (bounce) {
@@ -367,7 +363,7 @@
         
         // Hidden frame is above view bounds but lowered to show the bottom shelf.
         CGRect hideFrame = CGRectMake(self.view.bounds.origin.x,
-                                      -self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
+                                      -self.storeViewController.view.frame.size.height + [self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight],
                                       self.view.bounds.size.width,
                                       self.storeViewController.view.frame.size.height);
         if (bounce) {
@@ -390,10 +386,9 @@
         
     } else {
         
-        // Hidden frame depends on the store frame.
-        CGRect storeFrame = [self storeFrameForShow:!show bounce:NO];
+        // Hidden frame is just below the store visible height.
         CGRect hideFrame = CGRectMake(self.view.bounds.origin.x,
-                                      storeFrame.origin.y + storeFrame.size.height - kStoreShadowOffset,
+                                      [self.storeViewController visibleHeight],
                                       self.view.bounds.size.width,
                                       self.view.bounds.size.height);
         if (bounce) {
@@ -419,7 +414,7 @@
                            self.storeViewController.view.frame.size.height);
     } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - self.view.bounds.size.height - kSettingsOffsetBelowBenchtop - self.storeViewController.view.frame.size.height + kStoreHideTuckOffset,
+                           self.view.bounds.origin.y - self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     }
@@ -433,7 +428,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           [self.storeViewController visibleHeight],
+                           [self.storeViewController visibleHeight] + [self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     } else if (level == kBenchtopLevel) {
@@ -475,7 +470,7 @@
 
 - (CGRect)editFrameForStore {
     CGRect storeFrame = [self storeFrameForShow:NO];
-    storeFrame.origin.y -= kStoreHideTuckOffset;
+    storeFrame.origin.y -= [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShelfTrayHeight];
     return storeFrame;
 }
 
@@ -494,7 +489,7 @@
 }
 
 - (void)showStoreShelf:(BOOL)show animated:(BOOL)animated {
-    CGAffineTransform transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -kStoreHideTuckOffset);
+    CGAffineTransform transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -[self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShelfTrayHeight]);
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:show ? 0.1 : 0.2
