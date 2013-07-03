@@ -34,7 +34,7 @@
 #define kShelfTopOffset             438.0
 #define kShelfTopOffsetFromBottom   239.0
 #define kShelfHeight                212.0
-#define kShellBottomShelfTrayHeight 20.0
+#define kShellBottomShelfTrayHeight 25.0
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
