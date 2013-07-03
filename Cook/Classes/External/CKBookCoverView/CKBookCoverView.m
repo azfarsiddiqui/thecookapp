@@ -21,8 +21,8 @@
 @property (nonatomic, strong) UIImageView *overlayImageView;
 @property (nonatomic, strong) UIImageView *illustrationImageView;
 @property (nonatomic, strong) UIView *contentOverlay;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *authorLabel;
+@property (nonatomic, strong) UITextView *nameTextView;
+@property (nonatomic, strong) UITextView *authorTextView;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
@@ -89,22 +89,22 @@
     self.editButton.hidden = enable;
     
     if (enable) {
-        [self.editingHelper wrapEditingView:self.nameLabel
+        [self.editingHelper wrapEditingView:self.nameTextView
                               contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 38.0)
                                    delegate:self white:NO];
-        [self.editingHelper wrapEditingView:self.authorLabel
+        [self.editingHelper wrapEditingView:self.authorTextView
                               contentInsets:UIEdgeInsetsMake(5.0, 30.0, -10.0, 28.0)
                                    delegate:self white:NO];
     } else {
-        [self.editingHelper unwrapEditingView:self.nameLabel];
-        [self.editingHelper unwrapEditingView:self.authorLabel];
+        [self.editingHelper unwrapEditingView:self.nameTextView];
+        [self.editingHelper unwrapEditingView:self.authorTextView];
     }
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    if (editingView == self.nameLabel) {
+    if (editingView == self.nameTextView) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
@@ -113,7 +113,7 @@
                                                                                                      characterLimit:32];
         editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:40.0];
         self.editViewController = editViewController;
-    } else if (editingView == self.authorLabel) {
+    } else if (editingView == self.authorTextView) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
@@ -149,26 +149,26 @@
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     
-    if (editingView == self.nameLabel) {
+    if (editingView == self.nameTextView) {
         
         // Get updated value and update label.
         NSString *text = (NSString *)value;
-        if (![text isEqualToString:self.nameLabel.text]) {
+        if (![text isEqualToString:self.nameTextView.text]) {
             [self setName:text];
             
             // Update the editing wrapper.
-            [self.editingHelper updateEditingView:self.nameLabel animated:NO];
+            [self.editingHelper updateEditingView:self.nameTextView animated:NO];
         }
         
-    } else if (editingView == self.authorLabel) {
+    } else if (editingView == self.authorTextView) {
         
         // Get updated value and update label.
         NSString *text = (NSString *)value;
-        if (![text isEqualToString:self.authorLabel.text]) {
+        if (![text isEqualToString:self.authorTextView.text]) {
             [self setAuthor:text];
             
             // Update the editing wrapper.
-            [self.editingHelper updateEditingView:self.authorLabel animated:NO];
+            [self.editingHelper updateEditingView:self.authorTextView animated:NO];
         }
         
     }
@@ -222,18 +222,18 @@
 #pragma mark - Frames
 
 - (CGRect)authorFrame {
-    CGSize size = [self.authorLabel sizeThatFits:self.contentOverlay.bounds.size];
-    CGRect frame = self.authorLabel.frame;
-    frame.origin.x = floorf((self.authorLabel.superview.bounds.size.width - size.width) / 2.0);
+    CGSize size = [self.authorTextView sizeThatFits:self.contentOverlay.bounds.size];
+    CGRect frame = self.authorTextView.frame;
+    frame.origin.x = floorf((self.authorTextView.superview.bounds.size.width - size.width) / 2.0);
     frame.size = size;
-    CGRect nameFrame = self.nameLabel.frame;
+    CGRect nameFrame = self.nameTextView.frame;
     
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
-            frame.origin.y = nameFrame.origin.y + nameFrame.size.height + floorf(((self.authorLabel.superview.bounds.size.height - nameFrame.origin.y - nameFrame.size.height)  - size.height) / 2.0);
+            frame.origin.y = nameFrame.origin.y + nameFrame.size.height + floorf(((self.authorTextView.superview.bounds.size.height - nameFrame.origin.y - nameFrame.size.height)  - size.height) / 2.0);
             break;
         case BookCoverLayoutBottom:
-            frame.origin.y = floorf(((self.authorLabel.superview.bounds.size.height - (self.authorLabel.superview.bounds.size.height - nameFrame.origin.y)) - size.height) / 2.0);
+            frame.origin.y = floorf(((self.authorTextView.superview.bounds.size.height - (self.authorTextView.superview.bounds.size.height - nameFrame.origin.y)) - size.height) / 2.0);
             break;
         default:
             break;
@@ -243,15 +243,15 @@
 }
 
 - (CGRect)nameFrame {
-    CGRect frame = self.nameLabel.frame;
-    frame.origin.x = floorf((self.nameLabel.superview.bounds.size.width - self.nameLabel.frame.size.width) / 2.0);
+    CGRect frame = self.nameTextView.frame;
+    frame.origin.x = floorf((self.nameTextView.superview.bounds.size.width - self.nameTextView.frame.size.width) / 2.0);
 
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
             frame.origin.y = 0.0;
             break;
         case BookCoverLayoutBottom:
-            frame.origin.y = self.nameLabel.superview.bounds.size.height - frame.size.height;
+            frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height;
             break;
         default:
             break;
@@ -290,48 +290,54 @@
 - (void)setName:(NSString *)title {
     self.nameValue = title;
     
-    if (!self.nameLabel) {
-        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        nameLabel.autoresizingMask = UIViewAutoresizingNone;
-        nameLabel.backgroundColor = [UIColor clearColor];
-        nameLabel.font = [Theme bookCoverViewModeTitleFont];
-        nameLabel.textColor = [UIColor whiteColor];
+    if (!self.nameTextView) {
+        UITextView *nameTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+        nameTextView.autoresizingMask = UIViewAutoresizingNone;
+        nameTextView.backgroundColor = [UIColor clearColor];
+        nameTextView.font = [Theme bookCoverViewModeTitleFont];
+        nameTextView.textColor = [UIColor whiteColor];
+        nameTextView.editable = NO;
+        nameTextView.scrollEnabled = NO;
+        nameTextView.userInteractionEnabled = NO;
+
         if (kOverlayDebug) {
-            nameLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
+            nameTextView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
         }
-        [self.contentOverlay addSubview:nameLabel];
-        self.nameLabel = nameLabel;
+        [self.contentOverlay addSubview:nameTextView];
+        self.nameTextView = nameTextView;
     }
     
-    self.nameLabel.textAlignment = [self authorTextAlignment];
-    self.nameLabel.text = title;
-    [self.nameLabel sizeToFit];
-    self.nameLabel.frame = [self nameFrame];
+    self.nameTextView.textAlignment = [self authorTextAlignment];
+    self.nameTextView.text = title;
+    [self.nameTextView sizeToFit];
+    self.nameTextView.frame = [self nameFrame];
     
     // Update editing wrapper if in edit mode.
     if (self.editMode) {
-        [self.editingHelper updateEditingView:self.nameLabel];
+        [self.editingHelper updateEditingView:self.nameTextView];
     }
 }
 
 - (void)setAuthor:(NSString *)name {
     self.authorValue = name;
     
-    if (!self.authorLabel) {
-        UILabel *authorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        authorLabel.autoresizingMask = UIViewAutoresizingNone;
-        authorLabel.backgroundColor = [UIColor clearColor];
-        authorLabel.numberOfLines = 0;
+    if (!self.authorTextView) {
+        UITextView *authorTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+        authorTextView.autoresizingMask = UIViewAutoresizingNone;
+        authorTextView.backgroundColor = [UIColor clearColor];
+        authorTextView.editable = NO;
+        authorTextView.scrollEnabled = NO;
+        authorTextView.userInteractionEnabled = NO;
         if (kOverlayDebug) {
-            authorLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
+            authorTextView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
         }
         
-        [self.contentOverlay addSubview:authorLabel];
-        self.authorLabel = authorLabel;
+        [self.contentOverlay addSubview:authorTextView];
+        self.authorTextView = authorTextView;
     }
     
     UIFont *maxFont = [Theme bookCoverViewModeNameMaxFont];
-    self.authorLabel.textAlignment = [self titleTextAlignment];
+    self.authorTextView.textAlignment = [self titleTextAlignment];
     
     // Paragraph style.
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
@@ -351,17 +357,17 @@
                                        paragraphStyle, NSParagraphStyleAttributeName,
                                        nil];
     NSAttributedString *titleDisplay = [[NSAttributedString alloc] initWithString:name attributes:attributes];
-    self.authorLabel.attributedText = titleDisplay;
+    self.authorTextView.attributedText = titleDisplay;
     
 //    [self adjustsFontSizeForLabel:self.authorLabel attributes:attributes toFitSize:self.contentOverlay.bounds.size decrementFontSize:5.0];
-    [self adjustsFontSizeForLabel:self.authorLabel text:name attributes:attributes
+    [self adjustsFontSizeForLabel:self.authorTextView text:name attributes:attributes
                         toFitSize:self.contentOverlay.bounds.size fontSizes:@[@56, @48, @44, @40]];
     
-    self.authorLabel.frame = [self authorFrame];
+    self.authorTextView.frame = [self authorFrame];
     
     // Update editing wrapper if in edit mode.
     if (self.editMode) {
-        [self.editingHelper updateEditingView:self.authorLabel];
+        [self.editingHelper updateEditingView:self.authorTextView];
     }
 
 }
@@ -425,7 +431,7 @@
     return frame;
 }
 
-- (void)adjustsFontSizeForLabel:(UILabel *)label text:(NSString *)text attributes:(NSDictionary *)attributes
+- (void)adjustsFontSizeForLabel:(UITextView *)label text:(NSString *)text attributes:(NSDictionary *)attributes
                       toFitSize:(CGSize)size fontSizes:(NSArray *)fontSizes {
     
     NSMutableDictionary *mutableAttributes = [NSMutableDictionary dictionaryWithDictionary:attributes];
