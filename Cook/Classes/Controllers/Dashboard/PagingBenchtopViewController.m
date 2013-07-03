@@ -71,22 +71,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.clipsToBounds = YES;
+}
 
+- (void)viewDidAppear:(BOOL)animated {
     self.view.backgroundColor = [UIColor whiteColor];
     [self initBackground];
     [self initCollectionView];
     [self initBenchtopLevelView];
     [self initNotificationView];
     
-    [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
-    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
-    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
     if ([CKUser isLoggedIn]) {
         [self loadBenchtop:YES];
     }
+    
+    [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
+    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 #pragma mark - PagingBenchtopViewController methods
@@ -139,7 +140,10 @@
         
         if (scrollView.contentOffset.x < 0) {
             
-            self.backdropScrollView.contentOffset = scrollView.contentOffset;
+            self.backdropScrollView.contentOffset = (CGPoint) {
+                self.collectionView.contentOffset.x,
+                self.backdropScrollView.contentOffset.y
+            };
             
         } else  {
             
@@ -153,9 +157,10 @@
     } else if (scrollView == self.backdropScrollView) {
         
         CGPoint contentOffset = self.backdropScrollView.contentOffset;
-        CGRect backgroundViewFrame = self.backgroundTextureView.frame;
-        backgroundViewFrame.origin = contentOffset;
-        self.backgroundTextureView.frame = backgroundViewFrame;
+        self.backgroundTextureView.center = (CGPoint) {
+            contentOffset.x + floorf(self.backdropScrollView.bounds.size.width / 2.0),
+            self.backgroundTextureView.center.y
+        };
         
     }
 }
@@ -354,19 +359,38 @@
 
 - (void)initBackground {
     
-    UIScrollView *backdropScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    // Background texture.
+    UIImage *backgroundTextureImage = [UIImage imageNamed:@"cook_dash_background.png"];
+    
+    UIScrollView *backdropScrollView = [[UIScrollView alloc] initWithFrame:(CGRect){
+        self.view.bounds.origin.x,
+        floorf((self.view.bounds.size.height - backgroundTextureImage.size.height) / 2.0),
+        self.view.bounds.size.width,
+        backgroundTextureImage.size.height
+    }];
+    
+    // Important to peek past bounds.
+    backdropScrollView.clipsToBounds = NO;
+    
     backdropScrollView.delegate = self;
-    backdropScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    backdropScrollView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     backdropScrollView.backgroundColor = [UIColor whiteColor];
     backdropScrollView.scrollEnabled = YES;
     backdropScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:backdropScrollView];
     self.backdropScrollView = backdropScrollView;
     
-    // Add the texture
-    self.backgroundTextureView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
+    // Add the texture.
+    self.backgroundTextureView = [[UIImageView alloc] initWithImage:backgroundTextureImage];
+    self.backgroundTextureView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    self.backgroundTextureView.frame = (CGRect) {
+        floorf((self.backdropScrollView.bounds.size.width - self.backgroundTextureView.frame.size.width) / 2.0),
+        floorf((self.backdropScrollView.bounds.size.height - self.backgroundTextureView.frame.size.height) / 2.0),
+        self.backgroundTextureView.frame.size.width,
+        self.backgroundTextureView.frame.size.height
+    };
     [self.backdropScrollView addSubview:self.backgroundTextureView];
-
+    
     // Add motion effects on the scrollview.
     UIInterpolatingMotionEffect *xAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
                                                                                          type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
@@ -378,7 +402,7 @@
                                                                                          type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
     yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
     yAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
-    [backdropScrollView addMotionEffect:yAxis];
+    [self.backdropScrollView addMotionEffect:yAxis];
 }
 
 - (void)initCollectionView {
@@ -395,7 +419,6 @@
     
     [collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     [self.view addSubview:collectionView];
-//    collectionView.hidden = YES;
     self.collectionView = collectionView;
     
     // Register a long press
@@ -819,10 +842,10 @@
     // Recreate the benchtop background view.
     [self.pagingBenchtopView removeFromSuperview];
     self.pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
-        0.0,
-        0.0,
+        self.backdropScrollView.bounds.origin.x,
+        self.backdropScrollView.bounds.origin.y,
         self.collectionView.bounds.size.width * (numMyBook + 1 + numFollowBooks),
-        self.collectionView.bounds.size.height
+        self.backgroundTextureView.frame.size.height
     }];
     
     // Updates contentSize of backdrop scrollView.
