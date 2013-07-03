@@ -37,19 +37,21 @@
 @property (nonatomic, assign) BOOL panEnabled;
 @property (nonatomic, assign) NSUInteger benchtopLevel;
 @property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) UIView *benchtopOverlayView;  // Darker overlay to dim the benchtop between levels.
 
 @end
 
 @implementation RootViewController
 
 #define kDragRatio                      0.25
-#define kSnapHeight                     30.0
+#define kSnapHeight                     50.0
 #define kBounceOffset                   30.0
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
 #define kOverlayViewAlpha               0.3
 #define kBookScaleTransform             0.9
+#define kMaxBenchtopOverlayAlpha        1.0
 
 - (void)dealloc {
     [EventHelper unregisterLogout:self];
@@ -238,6 +240,22 @@
     self.storeViewController.view.frame = [self frame:self.storeViewController.view.frame translatedOffset:panOffset];
     self.benchtopViewController.view.frame = [self frame:self.benchtopViewController.view.frame translatedOffset:panOffset];
     self.settingsViewController.view.frame = [self frame:self.settingsViewController.view.frame translatedOffset:panOffset];
+    
+    // Analog fade.
+    CGRect storeIntersection = CGRectIntersection(self.view.bounds, self.storeViewController.view.frame);
+    CGFloat storeOffset = storeIntersection.size.height - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight];
+    CGRect settingsIntersection = CGRectIntersection(self.view.bounds, self.settingsViewController.view.frame);
+    CGFloat settingsOffset = settingsIntersection.size.height;
+    if (storeOffset > 0) {
+        DLog(@"storeOffset %f", storeOffset);
+        self.benchtopOverlayView.alpha = MIN((storeOffset / [self.storeViewController visibleHeight]) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
+    } else if (settingsOffset > 0) {
+        DLog(@"settingsOffset %f", settingsOffset);
+        self.benchtopOverlayView.alpha = MIN((settingsOffset / self.settingsViewController.view.frame.size.height) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
+    } else {
+        self.benchtopOverlayView.alpha = 0.0;
+    }
+    
 }
 
 - (void)snapIfRequired {
@@ -308,6 +326,7 @@
                          self.storeViewController.view.frame = storeFrame;
                          self.benchtopViewController.view.frame = benchtopFrame;
                          self.settingsViewController.view.frame = settingsFrame;
+                         self.benchtopOverlayView.alpha = (benchtopLevel == kBenchtopLevel) ? 0.0: kMaxBenchtopOverlayAlpha;
                      }
                      completion:^(BOOL finished) {
                          
@@ -524,9 +543,15 @@
     self.benchtopViewController.view.frame = [self benchtopFrameForLevel:self.benchtopLevel];
     [self.view insertSubview:self.benchtopViewController.view belowSubview:self.storeViewController.view];
     
+    // Benchtop overlay to be hidden to start off with.
+    self.benchtopOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_overlay.png"]];
+    self.benchtopOverlayView.alpha = 0.0;
+    [self.view insertSubview:self.benchtopOverlayView aboveSubview:self.benchtopViewController.view];
+    
     // Settings on Level 0
     self.settingsViewController.view.frame = [self settingsFrameForLevel:self.benchtopLevel];
     [self.view addSubview:self.settingsViewController.view];
+    
 }
 
 - (void)enableEditMode:(BOOL)enable {
