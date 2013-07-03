@@ -106,9 +106,9 @@
 			<key>Image</key>
 			<string>cook_book_purple.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colour_bar_pink.png</string>
+			<string>cook_customise_colour_bar_purple.png</string>
 			<key>Slider</key>
-			<string>cook_customise_colour_picker_pink.png</string>
+			<string>cook_customise_colour_picker_purple.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_pink.png</string>
 			<key>Hex</key>
@@ -144,9 +144,9 @@
 			<key>Image</key>
 			<string>cook_book_neutral.png</string>
 			<key>Thumb</key>
-			<string>cook_customise_colour_bar_brown.png</string>
+			<string>cook_customise_colour_bar_neutral.png</string>
 			<key>Slider</key>
-			<string>cook_customise_colour_picker_brown.png</string>
+			<string>cook_customise_colour_picker_neutral.png</string>
 			<key>Outline</key>
 			<string>cook_book_edge_brown.png</string>
 			<key>Hex</key>
