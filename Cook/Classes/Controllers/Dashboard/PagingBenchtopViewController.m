@@ -464,7 +464,7 @@
             if (indexPath.section == kFollowSection) {
                 
                 // Scroll to center, then enable delete mode.
-                [self scrollToFollowedBookWithIndex:indexPath.item];
+                [self scrollToBookAtIndexPath:indexPath];
                 [self enableDeleteMode:YES indexPath:indexPath];
             }
         }
@@ -800,20 +800,9 @@
 }
 
 - (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
-//    if (indexPath.section == kMyBookSection) {
-//        [self.scrollView setContentOffset:CGPointZero animated:YES];
-//    } else {
-//        [self scrollToFollowedBookWithIndex:indexPath.item];
-//    }
-}
-
-- (void)scrollToFollowedBookWithIndex:(NSInteger)bookIndex {
-    DLog();
-//    CGSize bookSize = [PagingCollectionViewLayout bookSize];
-//    CGFloat contentOffset = bookSize.width + bookSize.width;    // My book and empty book gap.
-//    contentOffset += (bookSize.width * bookIndex);
-//    [self.scrollView setContentOffset:CGPointMake(contentOffset, self.scrollView.contentOffset.y) animated:YES];
+    [self.collectionView scrollToItemAtIndexPath:indexPath
+                                atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                        animated:YES];
 }
 
 - (void)followUpdated:(NSNotification *)notification {
