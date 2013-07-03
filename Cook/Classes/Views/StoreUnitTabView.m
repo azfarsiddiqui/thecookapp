@@ -48,7 +48,7 @@
     self.selectedLabel.alpha = select ? 1.0 : 0.0;
     
     // Transforms.
-    //self.normalLabel.transform = select ? CGAffineTransformMakeTranslation(0.0, 20.0) : CGAffineTransformIdentity;
+    self.normalLabel.transform = select ? CGAffineTransformMakeTranslation(0.0, 20.0) : CGAffineTransformIdentity;
     self.iconImageView.transform = select ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -20.0);
     self.selectedLabel.transform = select ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -20.0);
 }
