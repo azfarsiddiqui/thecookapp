@@ -7,6 +7,7 @@
 //
 
 #import "PagingCollectionViewLayout.h"
+#import "BenchtopBookCoverViewCell.h"
 #import "MRCEnumerable.h"
 
 @interface PagingCollectionViewLayout ()
@@ -30,7 +31,6 @@
 @implementation PagingCollectionViewLayout
 
 #define kContentInsets                  UIEdgeInsetsMake(175.0, 362.0, 155.0, 362.0)
-#define kBookSize                       (CGSize){ 300.0, 438.0 }
 #define kSideMargin                     62.0
 #define kMyBookSection                  0
 #define kFollowSection                  1
@@ -38,7 +38,7 @@
 #define kBookDeleteScaleFactor          0.9
 
 + (CGSize)bookSize {
-    return kBookSize;
+    return [BenchtopBookCoverViewCell cellSize];
 }
 
 - (id)initWithDelegate:(id<PagingCollectionViewLayoutDelegate>)delegate {
@@ -58,11 +58,12 @@
 }
 
 - (CGRect)frameForGap {
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
     return (CGRect){
-        (kSideMargin + kBookSize.width) + kBookSize.width,
+        (kSideMargin + bookSize.width) + bookSize.width,
         kContentInsets.top,
-        kBookSize.width,
-        kBookSize.height
+        bookSize.width,
+        bookSize.height
     };
 }
 
@@ -73,32 +74,35 @@
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForMyBook {
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
     NSIndexPath *myBookIndexPath = [NSIndexPath indexPathForItem:0 inSection:kMyBookSection];
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:myBookIndexPath];
     attributes.frame = (CGRect) {
         kContentInsets.left,
         kContentInsets.top,
-        kBookSize.width,
-        kBookSize.height
+        bookSize.width,
+        bookSize.height
     };
     return attributes;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForFollowBookAtIndex:(NSInteger)bookIndex {
     
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
+    
     // Compulsory gap: my book + empty book
     CGPoint cellOffset = (CGPoint) {
-        kContentInsets.left + kBookSize.width + kBookSize.width,
+        kContentInsets.left + bookSize.width + bookSize.width,
         kContentInsets.top
     };
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     attributes.frame = (CGRect) {
-        cellOffset.x + (bookIndex * kBookSize.width),
+        cellOffset.x + (bookIndex * bookSize.width),
         kContentInsets.top,
-        kBookSize.width,
-        kBookSize.height
+        bookSize.width,
+        bookSize.height
     };
     return attributes;
 }
@@ -106,12 +110,14 @@
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
+    
     CGSize minSize = self.collectionView.bounds.size;
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
-    CGFloat emptyBookGap = kBookSize.width;
+    CGFloat emptyBookGap = bookSize.width;
     
     CGSize requiredSize = (CGSize){
-        kContentInsets.left + kBookSize.width + emptyBookGap + (numFollowBooks * kBookSize.width) + kContentInsets.right,
+        kContentInsets.left + bookSize.width + emptyBookGap + (numFollowBooks * bookSize.width) + kContentInsets.right,
         self.collectionView.bounds.size.height
     };
     
@@ -307,6 +313,7 @@
     }
     
     DLog(@"Building layout");
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
     self.anchorPoints = [NSMutableArray array];
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
@@ -326,7 +333,7 @@
     
     // Middle gap/anchor.
     UICollectionViewLayoutAttributes *myBookAttributes = [self.itemsLayoutAttributes firstObject];
-    CGPoint gapAnchor = (CGPoint){ myBookAttributes.center.x + kBookSize.width, myBookAttributes.center.y };
+    CGPoint gapAnchor = (CGPoint){ myBookAttributes.center.x + bookSize.width, myBookAttributes.center.y };
     [self.anchorPoints addObject:[NSValue valueWithCGPoint:gapAnchor]];
     
     // Do we have followed books?
@@ -366,6 +373,7 @@
 - (void)applyPartingEffects:(NSArray *)layoutAttributes {
     
     CGFloat partDistance = 20.0;
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
     
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         
@@ -373,10 +381,10 @@
         CGRect visibleRect = [self visibleFrame];
         CGFloat distance = CGRectGetMidX(visibleRect) - center.x;
         
-        if (ABS(distance) >= kBookSize.width && ABS(distance) < kBookSize.width * 2.0) {
+        if (ABS(distance) >= bookSize.width && ABS(distance) < bookSize.width * 2.0) {
             
             // If distance is less than two books away, then start the parting towards the edge.
-            CGFloat normalizedDistance = (ABS(distance) - kBookSize.width) / kBookSize.width;
+            CGFloat normalizedDistance = (ABS(distance) - bookSize.width) / bookSize.width;
             CGFloat translateOffset = (1.0 - ABS(normalizedDistance)) * partDistance;
             if (distance > 0) {
                 translateOffset *= -1;
@@ -384,10 +392,10 @@
             
             attributes.transform3D = CATransform3DTranslate(attributes.transform3D, translateOffset, 0.0, 0.0);
             
-        } else if (ABS(distance) < kBookSize.width) {
+        } else if (ABS(distance) < bookSize.width) {
             
             // If distance is less than a book away, then revert the parting towards the center.
-            CGFloat normalizedDistance = distance / kBookSize.width;
+            CGFloat normalizedDistance = distance / bookSize.width;
             CGFloat translateOffset = ABS(normalizedDistance) * partDistance;
             if (distance > 0) {
                 translateOffset *= -1;
@@ -416,13 +424,14 @@
 }
 
 - (CGFloat)scaleFactorForCenter:(CGPoint)center {
+    CGSize bookSize = [BenchtopBookCoverViewCell cellSize];
     CGRect visibleRect = [self visibleFrame];
     CGFloat minScaleFactor = 0.78;
     CGFloat distance = CGRectGetMidX(visibleRect) - center.x;
-    CGFloat normalizedDistance = distance / kBookSize.width;
+    CGFloat normalizedDistance = distance / bookSize.width;
     CGFloat scaleFactor = 0.0;
     
-    if (ABS(distance) <= kBookSize.width) {
+    if (ABS(distance) <= bookSize.width) {
         scaleFactor = 1.0 - (ABS(normalizedDistance) * (1.0 - minScaleFactor));
     } else {
         scaleFactor = minScaleFactor;

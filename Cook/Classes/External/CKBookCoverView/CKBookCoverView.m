@@ -35,7 +35,7 @@
 
 @implementation CKBookCoverView
 
-#define kContentInsets  UIEdgeInsetsMake(0.0, 13.0, 28.0, 10.0)
+#define kCoverInsets    (UIEdgeInsets){ 22.0, 36.0, 54.0, 36.0 }
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
@@ -193,8 +193,8 @@
     
     // Starts with the gray cover.
     UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:[CKBookCover placeholderCoverImage]];
-    backgroundImageView.frame = CGRectMake(floorf((self.frame.size.width - backgroundImageView.frame.size.width) / 2.0),
-                                           floorf((self.frame.size.height - backgroundImageView.frame.size.height) / 2.0),
+    backgroundImageView.frame = CGRectMake(floorf((self.bounds.size.width - backgroundImageView.frame.size.width) / 2.0),
+                                           -kCoverInsets.top,
                                            backgroundImageView.frame.size.width,
                                            backgroundImageView.frame.size.height);
     [self addSubview:backgroundImageView];
@@ -248,7 +248,7 @@
 
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
-            frame.origin.y = 0.0;
+            frame.origin.y = 10.0;
             break;
         case BookCoverLayoutBottom:
             frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height;
@@ -380,8 +380,8 @@
             UIImage *editImage = [UIImage imageNamed:@"cook_dash_icons_customise.png"];
             [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
             [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
-            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width + 8.0,
-                                          -22.0,
+            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width + 9.0,
+                                          self.bounds.origin.y - 7.0,
                                           editImage.size.width,
                                           editImage.size.height);
             [self addSubview:editButton];
