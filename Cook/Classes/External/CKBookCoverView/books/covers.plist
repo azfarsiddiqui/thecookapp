@@ -180,6 +180,13 @@
 			<key>Layout</key>
 			<string>Layout2</string>
 		</dict>
+		<key>Carrots</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_carrots.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
+		</dict>
 		<key>Clock</key>
 		<dict>
 			<key>Image</key>
@@ -187,10 +194,24 @@
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>
+		<key>Cream</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_cream.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
+		</dict>
 		<key>Egg Beater</key>
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_eggbeater.png</string>
+			<key>Layout</key>
+			<string>Layout2</string>
+		</dict>
+		<key>Olives</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_olives.png</string>
 			<key>Layout</key>
 			<string>Layout2</string>
 		</dict>
@@ -215,6 +236,13 @@
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>
+		<key>Sausages</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_sausages.png</string>
+			<key>Layout</key>
+			<string>Layout2</string>
+		</dict>
 		<key>Scooter</key>
 		<dict>
 			<key>Image</key>
@@ -228,6 +256,13 @@
 			<string>cook_book_graphic_spoon.png</string>
 			<key>Layout</key>
 			<string>Layout2</string>
+		</dict>
+		<key>Sushi</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_sushi.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
 		</dict>
 		<key>Tomato</key>
 		<dict>
