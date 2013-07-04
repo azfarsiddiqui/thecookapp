@@ -42,7 +42,7 @@
 }
 
 - (void)viewDidLoad {
-    UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 20.0, 30.0, 20.0);
+    UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 20.0, 15.0, 20.0);
     CGSize itemSize = [IllustrationBookCell cellSize];
     
     self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, insets.top + itemSize.height + insets.bottom);
@@ -63,10 +63,10 @@
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kIllustrationCellId];
     
-    UIImageView *shelfView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_customise_shelves.png"]];
-    shelfView.frame = CGRectMake(0.0, self.view.bounds.size.height - shelfView.frame.size.height + 33.0, shelfView.frame.size.width, shelfView.frame.size.height);
-    shelfView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-    [self.view insertSubview:shelfView belowSubview:self.collectionView];
+    UIImageView *dockView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"cook_customise_book_dock.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 46.0, 1.0, 46.0, 1.0 }]];
+    dockView.frame = self.collectionView.frame;
+    dockView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;;
+    [self.view insertSubview:dockView belowSubview:self.collectionView];
 }
 
 - (void)changeCover:(NSString *)cover {

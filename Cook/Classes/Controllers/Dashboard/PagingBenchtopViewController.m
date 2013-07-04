@@ -512,7 +512,8 @@
         [self.delegate panEnabledRequested:NO];
         
         // Dim overlay view.
-        UIImageView *overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_overlay.png"]];
+        UIImageView *overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background_whiteout.png"]];
+        overlayView.center = self.view.center;
         overlayView.alpha = 0.0;
         overlayView.userInteractionEnabled = YES;
         [self.view addSubview:overlayView];
@@ -529,11 +530,11 @@
         
         // Position the delete button.
         CGRect frame = [self.collectionView convertRect:cell.frame toView:overlayView];
-        UIButton *deleteButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
+        UIButton *deleteButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_btns_remove.png"]
                                                       target:self
                                                     selector:@selector(deleteTapped:)];
         deleteButton.frame = CGRectMake(frame.origin.x - floorf(deleteButton.frame.size.width / 2.0) + 3.0,
-                                        frame.origin.y - floorf(deleteButton.frame.size.height / 2.0),
+                                        frame.origin.y - floorf(deleteButton.frame.size.height / 2.0) + 15.0,
                                         deleteButton.frame.size.width,
                                         deleteButton.frame.size.height);
         [overlayView addSubview:deleteButton];
