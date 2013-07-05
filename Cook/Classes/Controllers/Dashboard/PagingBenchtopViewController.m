@@ -429,6 +429,12 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     tapGesture.delegate = self;
     [self.view addGestureRecognizer:tapGesture];
+    
+    // Vignette overlay to go over the collectionView.
+    UIImageView *vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background_vignette.png"]];
+    vignetteView.center = self.view.center;
+    vignetteView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    [self.view insertSubview:vignetteView aboveSubview:self.collectionView];
 }
 
 - (void)initBenchtopLevelView {

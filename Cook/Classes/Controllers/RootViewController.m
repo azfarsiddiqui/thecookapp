@@ -548,12 +548,6 @@
     self.benchtopOverlayView.alpha = 0.0;
     [self.view insertSubview:self.benchtopOverlayView aboveSubview:self.benchtopViewController.view];
     
-    // Vignette overlay to be hidden to start off with.
-    UIImageView *vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background_vignette.png"]];
-    vignetteView.center = self.benchtopViewController.view.center;
-    vignetteView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    [self.view insertSubview:vignetteView aboveSubview:self.benchtopViewController.view];
-    
     // Settings on Level 0
     self.settingsViewController.view.frame = [self settingsFrameForLevel:self.benchtopLevel];
     [self.view addSubview:self.settingsViewController.view];

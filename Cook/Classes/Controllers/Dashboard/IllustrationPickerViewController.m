@@ -42,17 +42,21 @@
 }
 
 - (void)viewDidLoad {
-    UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 20.0, 15.0, 20.0);
+    UIEdgeInsets insets = UIEdgeInsetsMake(30.0, 40.0, 0.0, 20.0);
     CGSize itemSize = [IllustrationBookCell cellSize];
     
-    self.view.frame = CGRectMake(0.0, 0.0, itemSize.width, insets.top + itemSize.height + insets.bottom);
+    UIImageView *dockView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_book_dock.png"]];
+    dockView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [self.view insertSubview:dockView belowSubview:self.collectionView];
+    
+    self.view.frame = CGRectMake(0.0, 0.0, 0.0, dockView.frame.size.height);
     self.view.backgroundColor = [UIColor clearColor];
     
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.itemSize = itemSize;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     flowLayout.sectionInset = insets;
-    flowLayout.minimumLineSpacing = 25.0;
+    flowLayout.minimumLineSpacing = 28.0;
     
     self.collectionView.frame = self.view.bounds;
     self.collectionView.alwaysBounceHorizontal = YES;
@@ -63,10 +67,6 @@
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kIllustrationCellId];
     
-    UIImageView *dockView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"cook_customise_book_dock.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 46.0, 1.0, 46.0, 1.0 }]];
-    dockView.frame = self.collectionView.frame;
-    dockView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;;
-    [self.view insertSubview:dockView belowSubview:self.collectionView];
 }
 
 - (void)changeCover:(NSString *)cover {
