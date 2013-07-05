@@ -85,7 +85,7 @@
 - (UIImageView *)sliderContentView {
     if (!_sliderContentView) {
         _sliderContentView = [[UIImageView alloc] initWithImage:[CKBookCover thumbSliderContentImageForCover:self.cover]];
-        _sliderContentView.frame = CGRectMake(29.0, 19.0, _sliderContentView.frame.size.width, _sliderContentView.frame.size.height);
+        _sliderContentView.frame = CGRectMake(26.0, 16.0, _sliderContentView.frame.size.width, _sliderContentView.frame.size.height);
     }
     return _sliderContentView;
 }

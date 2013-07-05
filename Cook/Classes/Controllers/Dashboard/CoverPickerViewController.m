@@ -19,8 +19,9 @@
 
 @implementation CoverPickerViewController
 
-#define kSideGap        20.0
+#define kSideGap        10.0
 #define kHeight         93.0
+#define kButtonOffset   15.0
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -38,7 +39,7 @@
     
     CoverPickerView *coverPickerView = [[CoverPickerView alloc] initWithCover:self.cover delegate:self];
     coverPickerView.frame = CGRectMake(floorf((self.view.bounds.size.width - coverPickerView.frame.size.width) / 2.0),
-                                       floorf((self.view.bounds.size.height - coverPickerView.frame.size.height) / 2.0) + 10.0,
+                                       floorf((self.view.bounds.size.height - coverPickerView.frame.size.height) / 2.0) + kButtonOffset,
                                        coverPickerView.frame.size.width,
                                        coverPickerView.frame.size.height);
     coverPickerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -48,7 +49,7 @@
     // Cancel button.
     UIButton *cancelButton = [ViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
     cancelButton.frame = CGRectMake(kSideGap,
-                                    floorf((self.view.bounds.size.height - cancelButton.frame.size.height) / 2.0) + 10.0,
+                                    floorf((self.view.bounds.size.height - cancelButton.frame.size.height) / 2.0) + kButtonOffset,
                                     cancelButton.frame.size.width,
                                     cancelButton.frame.size.height);
     cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;

@@ -90,10 +90,10 @@
     
     if (enable) {
         [self.editingHelper wrapEditingView:self.nameTextView
-                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 38.0)
+                              contentInsets:UIEdgeInsetsMake(12.0, 20.0, 12.0, 38.0)
                                    delegate:self white:NO];
         [self.editingHelper wrapEditingView:self.authorTextView
-                              contentInsets:UIEdgeInsetsMake(5.0, 30.0, -10.0, 28.0)
+                              contentInsets:UIEdgeInsetsMake(5.0, 20.0, 5.0, 28.0)
                                    delegate:self white:NO];
     } else {
         [self.editingHelper unwrapEditingView:self.nameTextView];
