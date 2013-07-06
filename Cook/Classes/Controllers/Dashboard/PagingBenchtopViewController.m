@@ -403,6 +403,12 @@
     yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
     yAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
     [self.backdropScrollView addMotionEffect:yAxis];
+    
+    // Toolbar blurring.
+//    UIToolbar *toolbarOverlay = [[UIToolbar alloc] initWithFrame:self.view.bounds];
+//    toolbarOverlay.userInteractionEnabled = YES;
+//    toolbarOverlay.translucent = YES;
+//    [self.view addSubview:toolbarOverlay];
 }
 
 - (void)initCollectionView {
