@@ -7,6 +7,7 @@
 //
 
 #import "ImageHelper.h"
+#import "UIImage+ProportionalFill.h"
 
 @implementation ImageHelper
 
@@ -39,4 +40,9 @@
     }
     
 }
+
++ (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {
+    return [image imageScaledToFitSize:size];
+}
+
 @end

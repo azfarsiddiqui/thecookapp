@@ -392,17 +392,7 @@
     [self.backdropScrollView addSubview:self.backgroundTextureView];
     
     // Add motion effects on the scrollview.
-    UIInterpolatingMotionEffect *xAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
-                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
-    xAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
-    xAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
-    [backdropScrollView addMotionEffect:xAxis];
-    
-    UIInterpolatingMotionEffect *yAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
-                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
-    yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
-    yAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
-    [self.backdropScrollView addMotionEffect:yAxis];
+    [ViewHelper applyMotionEffectsWithOffsetToView:self.backdropScrollView];
     
     // Toolbar blurring.
 //    UIToolbar *toolbarOverlay = [[UIToolbar alloc] initWithFrame:self.view.bounds];

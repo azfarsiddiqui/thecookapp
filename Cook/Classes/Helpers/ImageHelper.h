@@ -11,5 +11,6 @@
 @interface ImageHelper : NSObject
 
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image;
++ (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size;
 
 @end

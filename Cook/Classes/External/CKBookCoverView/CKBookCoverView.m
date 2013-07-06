@@ -12,6 +12,8 @@
 #import "CKTextFieldEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "NSString+Utilities.h"
+#import "ViewHelper.h"
+#import "ImageHelper.h"
 
 @interface CKBookCoverView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
@@ -38,6 +40,22 @@
 #define kCoverInsets    (UIEdgeInsets){ 22.0, 36.0, 54.0, 36.0 }
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+
++ (CGSize)coverImageSize {
+    return (CGSize) { 312.0, 438.0 };
+}
+
++ (CGSize)coverShadowSize {
+    return (CGSize) { 381.0, 512.0 };
+}
+
++ (CGSize)smallCoverImageSize {
+    return (CGSize) { 104.0, 146.0 };
+}
+
++ (CGSize)smallCoverShadowSize {
+    return (CGSize) { 127.0, 171.0 };
+}
 
 - (id)initWithFrame:(CGRect)frame {
     return [self initWithFrame:frame storeMode:NO delegate:nil];
@@ -191,26 +209,35 @@
 
 - (void)initBackground {
     
-    // Starts with the gray cover.
-    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:[CKBookCover placeholderCoverImage]];
-    backgroundImageView.frame = CGRectMake(floorf((self.bounds.size.width - backgroundImageView.frame.size.width) / 2.0),
-                                           -kCoverInsets.top,
-                                           backgroundImageView.frame.size.width,
-                                           backgroundImageView.frame.size.height);
-    [self addSubview:backgroundImageView];
-    self.backgroundImageView = backgroundImageView;
-    
-    // Overlay
+    // Shadow back overlay.
     UIImage *overlayImage = self.storeMode ? [CKBookCover storeOverlayImage] : [CKBookCover overlayImage];
     UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:overlayImage];
-    overlayImageView.frame = backgroundImageView.frame;
-    [self insertSubview:overlayImageView aboveSubview:backgroundImageView];
+    CGPoint center = overlayImageView.center;
+    center = self.center;
+    center.y += 15;
+    overlayImageView.center = center;
+    [self addSubview:overlayImageView];
     self.overlayImageView = overlayImageView;
+    
+    // Add motion effects on shadow.
+    [ViewHelper applyMotionEffectsWithOffsetToView:self.overlayImageView];
+    
+    // Cover
+    CGSize coverSize = [CKBookCoverView coverImageSize];
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:nil];
+    backgroundImageView.frame = (CGRect) {
+        floorf((self.bounds.size.width - coverSize.width) / 2.0),
+        self.bounds.origin.y,
+        coverSize.width,
+        coverSize.height
+    };
+    [self addSubview:backgroundImageView];
+    self.backgroundImageView = backgroundImageView;
     
     // Illustration.
     UIImageView *illustrationImageView = [[UIImageView alloc] initWithImage:nil];
     illustrationImageView.frame = backgroundImageView.frame;
-    [self insertSubview:illustrationImageView aboveSubview:backgroundImageView];
+    [self addSubview:illustrationImageView];
     self.illustrationImageView = illustrationImageView;
 }
 

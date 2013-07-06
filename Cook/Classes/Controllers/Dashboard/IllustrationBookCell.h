@@ -11,6 +11,7 @@
 @interface IllustrationBookCell : UICollectionViewCell
 
 + (CGSize)cellSize;
+
 - (void)setCover:(NSString *)cover;
 - (void)setIllustration:(NSString *)illustration;
 

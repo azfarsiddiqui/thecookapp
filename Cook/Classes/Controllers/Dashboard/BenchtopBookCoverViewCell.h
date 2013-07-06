@@ -24,6 +24,8 @@
 @property (nonatomic, assign) id<BenchtopBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;
++ (CGSize)illustrationPickerCellSize;
++ (CGSize)storeCellSize;
 + (CGFloat)storeScale;
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate;

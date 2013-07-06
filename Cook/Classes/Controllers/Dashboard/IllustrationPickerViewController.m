@@ -42,7 +42,7 @@
 }
 
 - (void)viewDidLoad {
-    UIEdgeInsets insets = UIEdgeInsetsMake(30.0, 40.0, 0.0, 20.0);
+    UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 40.0, 0.0, 20.0);
     CGSize itemSize = [IllustrationBookCell cellSize];
     
     UIImageView *dockView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_book_dock.png"]];

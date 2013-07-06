@@ -23,8 +23,16 @@
     return CGSizeMake(300.0, 438.0);
 }
 
++ (CGSize)illustrationPickerCellSize {
+    return CGSizeMake(104.0, 146.0);
+}
+
++ (CGSize)storeCellSize {
+    return CGSizeMake(104.0, 146.0);
+}
+
 + (CGFloat)storeScale {
-    return 0.5;
+    return 3.0;
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -98,21 +106,5 @@
 }
 
 #pragma mark - Private methods
-
-- (void)applyMotionEffects {
-    
-    // Add some motion effects
-    UIInterpolatingMotionEffect *xAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
-                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
-    xAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
-    xAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
-    [self.contentView addMotionEffect:xAxis];
-    
-    UIInterpolatingMotionEffect *yAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
-                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
-    yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-50.0];
-    yAxis.maximumRelativeValue = [NSNumber numberWithFloat:50.0];
-    [self.contentView addMotionEffect:yAxis];
-}
 
 @end

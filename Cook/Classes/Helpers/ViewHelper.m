@@ -149,4 +149,29 @@
     UITextPosition *end = [input positionFromPosition:start offset:range.length];
     [input setSelectedTextRange:[input textRangeFromPosition:start toPosition:end]];
 }
+
+#pragma mark - Motion effects.
+
++ (void)applyMotionEffectsWithOffsetToView:(UIView *)view {
+    [self applyMotionEffectsWithOffset:50.0 view:view];
+}
+
++ (void)applyMotionEffectsWithOffset:(CGFloat)offset view:(UIView *)view {
+    
+    // Add some motion effects
+    UIInterpolatingMotionEffect *xAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
+                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+    xAxis.minimumRelativeValue = [NSNumber numberWithFloat:-offset];
+    xAxis.maximumRelativeValue = [NSNumber numberWithFloat:offset];
+    [view addMotionEffect:xAxis];
+    
+    UIInterpolatingMotionEffect *yAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
+                                                                                         type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+    yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-offset];
+    yAxis.maximumRelativeValue = [NSNumber numberWithFloat:offset];
+    [view addMotionEffect:yAxis];
+    
+}
+
+
 @end

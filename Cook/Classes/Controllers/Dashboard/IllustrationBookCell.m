@@ -8,7 +8,8 @@
 
 #import "IllustrationBookCell.h"
 #import "CKBookCover.h"
-#import "BenchtopBookCell.h"
+#import "BenchtopBookCoverViewCell.h"
+#import "ImageHelper.h"
 
 @interface IllustrationBookCell ()
 
@@ -19,11 +20,8 @@
 
 @implementation IllustrationBookCell
 
-#define kDivideScaleFactor  3.0
-
 + (CGSize)cellSize {
-    CGSize fullSize = [BenchtopBookCell cellSize];
-    return CGSizeMake(fullSize.width / kDivideScaleFactor, fullSize.height / kDivideScaleFactor);
+    return [BenchtopBookCoverViewCell illustrationPickerCellSize];
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -40,37 +38,43 @@
 }
 
 - (void)setCover:(NSString *)cover {
-    self.colourImageView.image = [CKBookCover imageForCover:cover];
+    self.colourImageView.image = [ImageHelper scaledImage:[CKBookCover imageForCover:cover]
+                                                     size:[CKBookCoverView smallCoverImageSize]];
 }
 
 - (void)setIllustration:(NSString *)illustration {
-    self.illustrationImageView.image = [CKBookCover imageForIllustration:illustration];
+    self.illustrationImageView.image = [ImageHelper scaledImage:[CKBookCover imageForIllustration:illustration]
+                                                           size:[CKBookCoverView smallCoverImageSize]];
 }
 
 #pragma mark - Private methods
 
++ (UIImage *)bookShadowUnderlayImage {
+    return [ImageHelper scaledImage:[CKBookCover storeOverlayImage] size:[CKBookCoverView smallCoverShadowSize]];
+}
+
 - (void)initBackground {
     
-    // Overlay
-    UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_overlay.png"]];
-    CGSize scaledSize = CGSizeMake(floorf(overlayImageView.frame.size.width / kDivideScaleFactor),
-                                   floorf(overlayImageView.frame.size.height / kDivideScaleFactor));
-    overlayImageView.frame = CGRectMake(floorf((self.frame.size.width - scaledSize.width) / 2.0),
-                                        floorf((self.frame.size.height - scaledSize.height) / 2.0),
-                                        scaledSize.width,
-                                        scaledSize.height);
-    [self.contentView addSubview:overlayImageView];
+    // Underlay.
+    UIImageView *underlayImageView = [[UIImageView alloc] initWithImage:[IllustrationBookCell bookShadowUnderlayImage]];
+    underlayImageView.frame = (CGRect) {
+        floorf((self.contentView.bounds.size.width - underlayImageView.frame.size.width) / 2.0),
+        floorf((self.contentView.bounds.size.height - underlayImageView.frame.size.height) / 2.0) + 5.0,
+        underlayImageView.frame.size.width,
+        underlayImageView.frame.size.height
+    };
+    [self.contentView addSubview:underlayImageView];
     
     // Cover
     UIImageView *colourImageView = [[UIImageView alloc] initWithImage:nil];
-    colourImageView.frame = overlayImageView.frame;
-    [self.contentView insertSubview:colourImageView belowSubview:overlayImageView];
+    colourImageView.frame = self.contentView.bounds;
+    [self.contentView addSubview:colourImageView];
     self.colourImageView = colourImageView;
     
     // Illustration.
     UIImageView *illustrationImageView = [[UIImageView alloc] initWithImage:nil];
-    illustrationImageView.frame = overlayImageView.frame;
-    [self.contentView insertSubview:illustrationImageView aboveSubview:overlayImageView];
+    illustrationImageView.frame = colourImageView.frame;
+    [self.contentView addSubview:illustrationImageView];
     self.illustrationImageView = illustrationImageView;
 }
 

@@ -173,6 +173,13 @@
 			<key>Layout</key>
 			<string>Layout2</string>
 		</dict>
+		<key>Berries</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_berries.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
+		</dict>
 		<key>Boots</key>
 		<dict>
 			<key>Image</key>
@@ -180,10 +187,17 @@
 			<key>Layout</key>
 			<string>Layout2</string>
 		</dict>
-		<key>Carrots</key>
+		<key>Carrot</key>
 		<dict>
 			<key>Image</key>
-			<string>cook_book_graphic_carrots.png</string>
+			<string>cook_book_graphic_carrot.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
+		</dict>
+		<key>Cheese</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_cheese.png</string>
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>
@@ -193,6 +207,13 @@
 			<string>cook_book_graphic_clock.png</string>
 			<key>Layout</key>
 			<string>Layout1</string>
+		</dict>
+		<key>Coffee</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_coffee.png</string>
+			<key>Layout</key>
+			<string>Layout2</string>
 		</dict>
 		<key>Cream</key>
 		<dict>
@@ -205,6 +226,34 @@
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_eggbeater.png</string>
+			<key>Layout</key>
+			<string>Layout2</string>
+		</dict>
+		<key>Fish</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_fish.png</string>
+			<key>Layout</key>
+			<string>Layout2</string>
+		</dict>
+		<key>Garlic</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_garlic.png</string>
+			<key>Layout</key>
+			<string>Layout2</string>
+		</dict>
+		<key>Lemons</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_lemons.png</string>
+			<key>Layout</key>
+			<string>Layout2</string>
+		</dict>
+		<key>Mushrooms</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_mushrooms.png</string>
 			<key>Layout</key>
 			<string>Layout2</string>
 		</dict>
