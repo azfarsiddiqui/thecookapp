@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ViewHelper.h"
 #import "AppHelper.h"
+#import "UIImage+ProportionalFill.h"
 
 @implementation ViewHelper
 
@@ -125,11 +126,16 @@
 }
 
 + (UIImage *)imageWithView:(UIView *)view size:(CGSize)size opaque:(BOOL)opaque {
-    UIGraphicsBeginImageContextWithOptions(size, opaque, 0.0);
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, opaque, 0.0);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return img;
+    
+    if (!CGSizeEqualToSize(image.size, size)) {
+        image = [image imageScaledToFitSize:size];
+    }
+    
+    return image;
 }
 
 #pragma mark - UITextField methods
