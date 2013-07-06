@@ -23,7 +23,8 @@
 
 + (CGSize)cellSize {
 //    return [BenchtopBookCoverViewCell cellSize];
-    return CGSizeMake(128.0, 180.0);
+//    return CGSizeMake(100.0, 146.0);
+    return CGSizeMake(104.0, 146.0);
 }
 
 - (id)initWithFrame:(CGRect)frame {
