@@ -9,6 +9,7 @@
 #import "CKBookCover.h"
 #import "MRCEnumerable.h"
 #import "UIColor+Expanded.h"
+#import "ImageHelper.h"
 
 @interface CKBookCover ()
 
@@ -139,12 +140,31 @@
     return @"Gray";
 }
 
+#pragma mark - CKBookCoverView construction sizes
+
++ (CGSize)coverImageSize {
+    return (CGSize) { 312.0, 438.0 };
+}
+
++ (CGSize)coverShadowSize {
+    return (CGSize) { 381.0, 512.0 };
+}
+
++ (CGSize)smallCoverImageSize {
+    return (CGSize) { 104.0, 146.0 };
+}
+
++ (CGSize)smallCoverShadowSize {
+    return (CGSize) { 127.0, 171.0 };
+}
+
 + (UIImage *)overlayImage {
     return [UIImage imageNamed:@"cook_book_overlay.png"];
 }
 
 + (UIImage *)storeOverlayImage {
-    return [UIImage imageNamed:@"cook_book_overlay_small.png"];
+    return [ImageHelper scaledImage:[UIImage imageNamed:@"cook_book_overlay_small.png"]
+                               size:[self smallCoverShadowSize]];
 }
 
 + (UIImage *)placeholderCoverImage {

@@ -11,6 +11,8 @@
 #import "CKBook.h"
 #import "ViewHelper.h"
 #import "UIImage+ProportionalFill.h"
+#import "BenchtopBookCoverViewCell.h"
+#import "CKBookCover.h"
 
 @interface StoreBookCoverViewCell ()
 
@@ -22,17 +24,22 @@
 @implementation StoreBookCoverViewCell
 
 + (CGSize)cellSize {
-//    return [BenchtopBookCoverViewCell cellSize];
-//    return CGSizeMake(100.0, 146.0);
-    return CGSizeMake(104.0, 146.0);
+    return [BenchtopBookCoverViewCell storeCellSize];
 }
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self.bookCoverView removeFromSuperview];
         
+        // Snapshot view.
         UIImageView *snapshotView = [[UIImageView alloc] initWithImage:nil];
-        snapshotView.frame = self.contentView.bounds;
+        CGSize size = [CKBookCover smallCoverImageSize];
+        snapshotView.frame = (CGRect) {
+            self.contentView.bounds.origin.x,
+            self.contentView.bounds.origin.y,
+            size.width,
+            size.height
+        };
         [self.contentView addSubview:snapshotView];
         self.snapshotView = snapshotView;
     }
@@ -41,26 +48,26 @@
 
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
-    CGSize fullSize = [BenchtopBookCoverViewCell cellSize];
-    return [[CKBookCoverView alloc] initWithFrame:(CGRect){ 0.0, 0.0, fullSize.width, fullSize.height } storeMode:YES delegate:delegate];
+    return [[CKBookCoverView alloc] initWithStoreMode:YES delegate:delegate];
+}
+
+- (UIImage *)shadowImage {
+    return [CKBookCover storeOverlayImage];
+}
+
+- (UIOffset)shadowOffset {
+    return (UIOffset) { 0.0, 5.0 };
 }
 
 - (void)loadBook:(CKBook *)book {
     [self.bookCoverView setCover:book.cover illustration:book.illustration];
     [self.bookCoverView setName:nil author:[book userName] editable:NO];
     
-    UIImage *snapshotImage = [ViewHelper imageWithView:self.bookCoverView opaque:NO];
-
-//    UIGraphicsBeginImageContextWithOptions(self.bookCoverView.bounds.size, NO, 0);
-//    BOOL snapshotCompleted = [self.bookCoverView drawViewHierarchyInRect:self.bookCoverView.bounds];
-//    UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-
-//    self.snapshotView = [[UIImageView alloc] initWithImage:snapshotImage];
-//    self.snapshotView.frame = self.contentView.bounds;
-//    [self.contentView addSubview:self.snapshotView];
-    
+    UIImage *snapshotImage = [ViewHelper imageWithView:self.bookCoverView
+                                                  size:[CKBookCover smallCoverImageSize]
+                                                opaque:NO];
     self.snapshotView.image = snapshotImage;
+    
     [self enableDeleteMode:NO];
 }
 

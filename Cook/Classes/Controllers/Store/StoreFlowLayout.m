@@ -7,7 +7,6 @@
 //
 
 #import "StoreFlowLayout.h"
-#import "BenchtopBookCell.h"
 
 @interface StoreFlowLayout ()
 

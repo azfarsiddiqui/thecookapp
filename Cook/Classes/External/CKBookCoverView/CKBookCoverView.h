@@ -20,13 +20,8 @@
 @property (nonatomic, copy) NSString *authorValue;
 @property (nonatomic, copy) NSString *captionValue;
 
-+ (CGSize)coverImageSize;
-+ (CGSize)coverShadowSize;
-+ (CGSize)smallCoverImageSize;
-+ (CGSize)smallCoverShadowSize;
-
-- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate;
-- (id)initWithFrame:(CGRect)frame storeMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate;
+- (id)initWithDelegate:(id<CKBookCoverViewDelegate>)delegate;
+- (id)initWithStoreMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration;
 - (void)setName:(NSString *)name author:(NSString *)author editable:(BOOL)editable;
 - (void)enableEditMode:(BOOL)enable;

@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BookCoverViewController.h"
 #import "CKBookCoverView.h"
-#import "BenchtopBookCell.h"
+#import "BenchtopBookCoverViewCell.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
 
@@ -50,8 +50,7 @@
     self.view.backgroundColor = [UIColor clearColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
-    CGSize bookSize = [BenchtopBookCell cellSize];
-    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:CGRectMake(0.0, 0.0, bookSize.width, bookSize.height)];
+    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
     [bookCoverView setName:self.book.name author:[self.book userName] editable:NO];
     self.bookCoverView = bookCoverView;

@@ -20,7 +20,6 @@
 @property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
-@property (nonatomic, strong) UIImageView *overlayImageView;
 @property (nonatomic, strong) UIImageView *illustrationImageView;
 @property (nonatomic, strong) UIView *contentOverlay;
 @property (nonatomic, strong) UITextView *nameTextView;
@@ -41,35 +40,34 @@
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
-+ (CGSize)coverImageSize {
-    return (CGSize) { 312.0, 438.0 };
+- (id)init {
+    return [self initWithDelegate:nil];
 }
 
-+ (CGSize)coverShadowSize {
-    return (CGSize) { 381.0, 512.0 };
+- (id)initWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
+    return [self initWithStoreMode:NO delegate:delegate];
 }
 
-+ (CGSize)smallCoverImageSize {
-    return (CGSize) { 104.0, 146.0 };
-}
-
-+ (CGSize)smallCoverShadowSize {
-    return (CGSize) { 127.0, 171.0 };
-}
-
-- (id)initWithFrame:(CGRect)frame {
-    return [self initWithFrame:frame storeMode:NO delegate:nil];
-}
-
-- (id)initWithFrame:(CGRect)frame delegate:(id<CKBookCoverViewDelegate>)delegate {
-    return [self initWithFrame:frame storeMode:NO delegate:delegate];
-}
-
-- (id)initWithFrame:(CGRect)frame storeMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate {
-    if (self = [super initWithFrame:frame]) {
+- (id)initWithStoreMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate {
+    if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
         self.storeMode = storeMode;
-        [self initBackground];
+
+        CGSize coverSize = [CKBookCover coverImageSize];
+        self.frame = (CGRect){ 0.0, 0.0, coverSize.width, coverSize.height };
+        
+        // Cover
+        UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:nil];
+        backgroundImageView.frame = self.bounds;
+        [self addSubview:backgroundImageView];
+        self.backgroundImageView = backgroundImageView;
+        
+        // Illustration.
+        UIImageView *illustrationImageView = [[UIImageView alloc] initWithImage:nil];
+        illustrationImageView.frame = self.bounds;
+        [self addSubview:illustrationImageView];
+        self.illustrationImageView = illustrationImageView;
+        
     }
     return self;
 }
@@ -206,40 +204,6 @@
 }
 
 #pragma mark - Private methods
-
-- (void)initBackground {
-    
-    // Shadow back overlay.
-    UIImage *overlayImage = self.storeMode ? [CKBookCover storeOverlayImage] : [CKBookCover overlayImage];
-    UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:overlayImage];
-    CGPoint center = overlayImageView.center;
-    center = self.center;
-    center.y += 15;
-    overlayImageView.center = center;
-    [self addSubview:overlayImageView];
-    self.overlayImageView = overlayImageView;
-    
-    // Add motion effects on shadow.
-    [ViewHelper applyMotionEffectsWithOffset:20 view:self.overlayImageView];
-    
-    // Cover
-    CGSize coverSize = [CKBookCoverView coverImageSize];
-    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:nil];
-    backgroundImageView.frame = (CGRect) {
-        floorf((self.bounds.size.width - coverSize.width) / 2.0),
-        self.bounds.origin.y,
-        coverSize.width,
-        coverSize.height
-    };
-    [self addSubview:backgroundImageView];
-    self.backgroundImageView = backgroundImageView;
-    
-    // Illustration.
-    UIImageView *illustrationImageView = [[UIImageView alloc] initWithImage:nil];
-    illustrationImageView.frame = backgroundImageView.frame;
-    [self addSubview:illustrationImageView];
-    self.illustrationImageView = illustrationImageView;
-}
 
 - (void)setLayout:(BookCoverLayout)layout {
     self.bookCoverLayout = layout;

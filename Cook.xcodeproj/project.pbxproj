@@ -69,8 +69,6 @@
 		7620270516252B1E005A8B66 /* BenchtopStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FA16252B1E005A8B66 /* BenchtopStackLayout.m */; };
 		7620270616252B1E005A8B66 /* BenchtopFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FB16252B1E005A8B66 /* BenchtopFlowLayout.m */; };
 		7620270716252B1E005A8B66 /* BenchtopLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 762026FD16252B1E005A8B66 /* BenchtopLayout.m */; };
-		7620270816252B1E005A8B66 /* BenchtopBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7620270216252B1E005A8B66 /* BenchtopBookCell.m */; };
-		7620271016253D19005A8B66 /* LoginBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7620270F16253D18005A8B66 /* LoginBookCell.m */; };
 		7620272716254128005A8B66 /* cook_signin_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 7620271B16254128005A8B66 /* cook_signin_btn.png */; };
 		7620272816254128005A8B66 /* cook_signin_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7620271C16254128005A8B66 /* cook_signin_btn@2x.png */; };
 		7623572517464DA100CE1EE4 /* IngredientsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7623572417464DA100CE1EE4 /* IngredientsView.m */; };
@@ -837,10 +835,6 @@
 		762026FE16252B1E005A8B66 /* BenchtopLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopLayout.h; sourceTree = "<group>"; };
 		762026FF16252B1E005A8B66 /* BenchtopStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopStackLayout.h; sourceTree = "<group>"; };
 		7620270016252B1E005A8B66 /* BenchtopDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopDelegate.h; sourceTree = "<group>"; };
-		7620270216252B1E005A8B66 /* BenchtopBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopBookCell.m; sourceTree = "<group>"; };
-		7620270316252B1E005A8B66 /* BenchtopBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopBookCell.h; sourceTree = "<group>"; };
-		7620270E16253D18005A8B66 /* LoginBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginBookCell.h; sourceTree = "<group>"; };
-		7620270F16253D18005A8B66 /* LoginBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginBookCell.m; sourceTree = "<group>"; };
 		7620271B16254128005A8B66 /* cook_signin_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_signin_btn.png; sourceTree = "<group>"; };
 		7620271C16254128005A8B66 /* cook_signin_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_signin_btn@2x.png"; sourceTree = "<group>"; };
 		7623572317464DA100CE1EE4 /* IngredientsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientsView.h; sourceTree = "<group>"; };
@@ -964,8 +958,6 @@
 		7643B8C816D7037B001A2452 /* TTTURLRequestFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTURLRequestFormatter.m; sourceTree = "<group>"; };
 		7643B8D016D72E67001A2452 /* ActivityRecipeStatsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityRecipeStatsView.h; sourceTree = "<group>"; };
 		7643B8D116D72E67001A2452 /* ActivityRecipeStatsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityRecipeStatsView.m; sourceTree = "<group>"; };
-		7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKBookCoverViewCell.h; sourceTree = "<group>"; };
-		7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKBookCoverViewCell.m; sourceTree = "<group>"; };
 		76462D281782FB9C002EA7D0 /* cook_library_icons_featured.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_icons_featured.png; sourceTree = "<group>"; };
 		76462D291782FB9C002EA7D0 /* cook_library_icons_featured@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_icons_featured@2x.png"; sourceTree = "<group>"; };
 		76462D2A1782FB9C002EA7D0 /* cook_library_icons_friends.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_icons_friends.png; sourceTree = "<group>"; };
@@ -2054,10 +2046,6 @@
 				76381C9016683C5E00404FB1 /* BenchtopCollectionFlowLayout.m */,
 				76381C961668418C00404FB1 /* BenchtopBookCoverViewCell.h */,
 				76381C971668418C00404FB1 /* BenchtopBookCoverViewCell.m */,
-				7620270316252B1E005A8B66 /* BenchtopBookCell.h */,
-				7620270216252B1E005A8B66 /* BenchtopBookCell.m */,
-				7620270E16253D18005A8B66 /* LoginBookCell.h */,
-				7620270F16253D18005A8B66 /* LoginBookCell.m */,
 				7620270016252B1E005A8B66 /* BenchtopDelegate.h */,
 				762026FE16252B1E005A8B66 /* BenchtopLayout.h */,
 				762026FD16252B1E005A8B66 /* BenchtopLayout.m */,
@@ -2420,8 +2408,6 @@
 				76BEE731165DEE600065B97B /* CKBookCover.m */,
 				76BEE732165DEE600065B97B /* CKBookCoverView.h */,
 				76BEE733165DEE600065B97B /* CKBookCoverView.m */,
-				7643C23E166479E600C664E5 /* CKBookCoverViewCell.h */,
-				7643C23F166479E600C664E5 /* CKBookCoverViewCell.m */,
 			);
 			path = CKBookCoverView;
 			sourceTree = "<group>";
@@ -3968,8 +3954,6 @@
 				7620270516252B1E005A8B66 /* BenchtopStackLayout.m in Sources */,
 				7620270616252B1E005A8B66 /* BenchtopFlowLayout.m in Sources */,
 				7620270716252B1E005A8B66 /* BenchtopLayout.m in Sources */,
-				7620270816252B1E005A8B66 /* BenchtopBookCell.m in Sources */,
-				7620271016253D19005A8B66 /* LoginBookCell.m in Sources */,
 				76A28E95177A808E00C98F8B /* PagingBenchtopBackgroundView.m in Sources */,
 				89232B921625431500152940 /* BookViewController.m in Sources */,
 				76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */,

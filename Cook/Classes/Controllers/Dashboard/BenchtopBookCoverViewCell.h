@@ -29,6 +29,8 @@
 + (CGFloat)storeScale;
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate;
+- (UIImage *)shadowImage;
+- (UIOffset)shadowOffset;
 - (void)loadBook:(CKBook *)book;
 - (void)enableDeleteMode:(BOOL)enable;
 - (void)enableEditMode:(BOOL)enable;

@@ -126,10 +126,16 @@
 }
 
 + (UIImage *)imageWithView:(UIView *)view size:(CGSize)size opaque:(BOOL)opaque {
+    
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, opaque, 0.0);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    
+//    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0);
+//    [view drawViewHierarchyInRect:view.bounds];
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
     
     if (!CGSizeEqualToSize(image.size, size)) {
         image = [image imageScaledToFitSize:size];

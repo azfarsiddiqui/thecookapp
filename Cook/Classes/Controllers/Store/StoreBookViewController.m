@@ -85,7 +85,7 @@
     
     // Book cover.
     CGRect bookFrame = CGRectMake(point.x - (size.width * 0.5), point.y - (size.height * 0.5), size.width, size.height);
-    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithFrame:bookFrame];
+    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
     bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
     

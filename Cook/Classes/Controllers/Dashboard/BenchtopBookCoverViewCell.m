@@ -7,11 +7,13 @@
 //
 
 #import "BenchtopBookCoverViewCell.h"
+#import "CKBookCover.h"
 #import "ViewHelper.h"
 
 @interface BenchtopBookCoverViewCell () <CKBookCoverViewDelegate>
 
 @property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) UIView *shadowView;
 
 @end
 
@@ -38,19 +40,41 @@
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
+        self.contentView.backgroundColor = [UIColor clearColor];
+        
+        // Shadow underlay.
+        UIImage *shadowImage = [self shadowImage];
+        UIOffset shadowOffset = [self shadowOffset];
+        UIImageView *shadowView = [[UIImageView alloc] initWithImage:shadowImage];
+        shadowView.center = (CGPoint) { self.contentView.center.x + shadowOffset.horizontal, self.contentView.center.y + shadowOffset.vertical };
+        [self.contentView addSubview:shadowView];
+        self.shadowView = shadowView;
+        
+        // Add motion effects on shadow.
+        [ViewHelper applyMotionEffectsWithOffset:20 view:self.shadowView];
+        
+        // Book cover.
         CKBookCoverView *bookCoverView = [self createBookCoverViewWithDelegate:self];
         bookCoverView.center = self.contentView.center;
         bookCoverView.autoresizingMask = UIViewAutoresizingNone;
         
-        self.contentView.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:bookCoverView];
         self.bookCoverView = bookCoverView;
+        
     }
     return self;
 }
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
-    return [[CKBookCoverView alloc] initWithFrame:self.contentView.bounds delegate:delegate];
+    return [[CKBookCoverView alloc] initWithDelegate:delegate];
+}
+
+- (UIImage *)shadowImage {
+    return [CKBookCover overlayImage];
+}
+
+- (UIOffset)shadowOffset {
+    return (UIOffset) { 0.0, 15.0 };
 }
 
 - (void)loadBook:(CKBook *)book {
