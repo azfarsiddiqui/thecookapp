@@ -152,7 +152,7 @@
 
 #pragma mark - Motion effects.
 
-+ (void)applyMotionEffectsWithOffsetToView:(UIView *)view {
++ (void)applyMotionEffectsToView:(UIView *)view {
     [self applyMotionEffectsWithOffset:50.0 view:view];
 }
 

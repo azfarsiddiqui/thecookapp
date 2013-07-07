@@ -392,7 +392,7 @@
     [self.backdropScrollView addSubview:self.backgroundTextureView];
     
     // Add motion effects on the scrollview.
-    [ViewHelper applyMotionEffectsWithOffsetToView:self.backdropScrollView];
+    [ViewHelper applyMotionEffectsToView:self.backdropScrollView];
     
     // Toolbar blurring.
 //    UIToolbar *toolbarOverlay = [[UIToolbar alloc] initWithFrame:self.view.bounds];

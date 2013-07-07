@@ -220,7 +220,7 @@
     self.overlayImageView = overlayImageView;
     
     // Add motion effects on shadow.
-    [ViewHelper applyMotionEffectsWithOffsetToView:self.overlayImageView];
+    [ViewHelper applyMotionEffectsWithOffset:20 view:self.overlayImageView];
     
     // Cover
     CGSize coverSize = [CKBookCoverView coverImageSize];

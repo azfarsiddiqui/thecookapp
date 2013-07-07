@@ -36,7 +36,7 @@
 + (void)selectTextForInput:(UITextField *)input atRange:(NSRange)range;
 
 // Motion effects.
-+ (void)applyMotionEffectsWithOffsetToView:(UIView *)view;
++ (void)applyMotionEffectsToView:(UIView *)view;
 + (void)applyMotionEffectsWithOffset:(CGFloat)offset view:(UIView *)view;
 
 @end
