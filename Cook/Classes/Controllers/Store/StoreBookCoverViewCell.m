@@ -33,13 +33,7 @@
         
         // Snapshot view.
         UIImageView *snapshotView = [[UIImageView alloc] initWithImage:nil];
-        CGSize size = [CKBookCover smallCoverImageSize];
-        snapshotView.frame = (CGRect) {
-            self.contentView.bounds.origin.x,
-            self.contentView.bounds.origin.y,
-            size.width,
-            size.height
-        };
+        snapshotView.frame = self.contentView.bounds;
         [self.contentView addSubview:snapshotView];
         self.snapshotView = snapshotView;
     }
@@ -64,7 +58,7 @@
     [self.bookCoverView setName:nil author:[book userName] editable:NO];
     
     UIImage *snapshotImage = [ViewHelper imageWithView:self.bookCoverView
-                                                  size:[CKBookCover smallCoverImageSize]
+                                                  size:self.contentView.bounds.size
                                                 opaque:NO];
     self.snapshotView.image = snapshotImage;
     

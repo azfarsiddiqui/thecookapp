@@ -100,7 +100,6 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    // UIImage *blurImage = [self coreImageBlurWithImage:image];
     UIImage *blurImage = [self blurWithImage:image];
     
     self.blurredImageView = [[UIImageView alloc] initWithImage:blurImage];
@@ -113,8 +112,6 @@
                             tintColor:[UIColor colorWithWhite:1.0 alpha:0.7]
                 saturationDeltaFactor:1.8
                             maskImage:nil];
-    
-    // return [image applyExtraLightEffect];
 }
 
 - (UIImage *)coreImageBlurWithImage:(UIImage *)image {

@@ -35,6 +35,7 @@
 @property (nonatomic, strong) CKPagingView *benchtopLevelView;
 @property (nonatomic, strong) CKNotificationView *notificationView;
 @property (nonatomic, strong) UIImageView *overlayView;
+@property (nonatomic, strong) UIImageView *vignetteView;
 @property (nonatomic, strong) UIButton *deleteButton;
 
 @property (nonatomic, strong) CKPopoverViewController *popoverViewController;
@@ -153,7 +154,7 @@
             };
 
         }
-        
+                
     } else if (scrollView == self.backdropScrollView) {
         
         CGPoint contentOffset = self.backdropScrollView.contentOffset;
@@ -396,7 +397,7 @@
     
     // Toolbar blurring.
 //    UIToolbar *toolbarOverlay = [[UIToolbar alloc] initWithFrame:self.view.bounds];
-//    toolbarOverlay.userInteractionEnabled = YES;
+//    toolbarOverlay.userInteractionEnabled = NO;
 //    toolbarOverlay.translucent = YES;
 //    [self.view addSubview:toolbarOverlay];
 }
@@ -431,6 +432,7 @@
     vignetteView.center = self.view.center;
     vignetteView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self.view insertSubview:vignetteView aboveSubview:self.collectionView];
+    self.vignetteView = vignetteView;
 }
 
 - (void)initBenchtopLevelView {

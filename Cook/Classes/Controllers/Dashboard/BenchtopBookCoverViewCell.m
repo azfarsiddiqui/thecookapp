@@ -22,15 +22,21 @@
 #define RADIANS(degrees) ((degrees * M_PI) / 180.0)
 
 + (CGSize)cellSize {
+    
+    // Benchtop cells snaps to grid of 300 rows.
     return CGSizeMake(300.0, 438.0);
 }
 
 + (CGSize)illustrationPickerCellSize {
-    return CGSizeMake(104.0, 146.0);
+    
+    // Illustration cell is exactly the small cover size.
+    return [CKBookCover smallCoverImageSize];
 }
 
 + (CGSize)storeCellSize {
-    return CGSizeMake(104.0, 146.0);
+    
+    // Illustration cell is exactly the medium cover size.
+    return [CKBookCover mediumImageSize];
 }
 
 + (CGFloat)storeScale {

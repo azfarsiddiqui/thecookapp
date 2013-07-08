@@ -147,7 +147,15 @@
 }
 
 + (CGSize)coverShadowSize {
-    return (CGSize) { 381.0, 512.0 };
+    return (CGSize) { 408.0, 534.0 };
+}
+
++ (CGSize)mediumImageSize {
+    return (CGSize) { 128.0, 180.0 };
+}
+
++ (CGSize)mediumShadowSize {
+    return (CGSize) { 167.0, 219.0 };
 }
 
 + (CGSize)smallCoverImageSize {
@@ -155,7 +163,7 @@
 }
 
 + (CGSize)smallCoverShadowSize {
-    return (CGSize) { 127.0, 171.0 };
+    return (CGSize) { 136.0, 178.0 };
 }
 
 + (UIImage *)overlayImage {
@@ -163,6 +171,11 @@
 }
 
 + (UIImage *)storeOverlayImage {
+    return [ImageHelper scaledImage:[UIImage imageNamed:@"cook_book_overlay_small.png"]
+                               size:[self mediumShadowSize]];
+}
+
++ (UIImage *)illustrationPickerOverlayImage {
     return [ImageHelper scaledImage:[UIImage imageNamed:@"cook_book_overlay_small.png"]
                                size:[self smallCoverShadowSize]];
 }

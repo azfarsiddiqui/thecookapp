@@ -39,18 +39,19 @@
 
 - (void)setCover:(NSString *)cover {
     self.colourImageView.image = [ImageHelper scaledImage:[CKBookCover imageForCover:cover]
-                                                     size:[CKBookCover smallCoverImageSize]];
+                                                     size:self.contentView.bounds.size];
 }
 
 - (void)setIllustration:(NSString *)illustration {
     self.illustrationImageView.image = [ImageHelper scaledImage:[CKBookCover imageForIllustration:illustration]
-                                                           size:[CKBookCover smallCoverImageSize]];
+                                                           size:self.contentView.bounds.size];
 }
 
 #pragma mark - Private methods
 
 + (UIImage *)bookShadowUnderlayImage {
-    return [ImageHelper scaledImage:[CKBookCover storeOverlayImage] size:[CKBookCover smallCoverShadowSize]];
+    return [ImageHelper scaledImage:[CKBookCover illustrationPickerOverlayImage]
+                               size:[IllustrationBookCell cellSize]];
 }
 
 - (void)initBackground {
