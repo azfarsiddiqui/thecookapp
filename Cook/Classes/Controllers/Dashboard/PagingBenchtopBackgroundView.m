@@ -7,8 +7,8 @@
 //
 
 #import "PagingBenchtopBackgroundView.h"
-#import "UIImage+ImageEffects.h"
 #import "MRCEnumerable.h"
+#import "ImageHelper.h"
 
 @interface PagingBenchtopBackgroundView ()
 
@@ -95,41 +95,21 @@
 #pragma mark - Private methods
 
 - (void)applyBlurEffect {
+    
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
     [self drawViewHierarchyInRect:self.bounds];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    UIImage *blurImage = [self blurWithImage:image];
+//    [ImageHelper blurredImage:image completion:^(UIImage *blurredImage) {
+//        self.blurredImageView = [[UIImageView alloc] initWithImage:blurredImage];
+//        [self addSubview:self.blurredImageView];
+//    }];
     
+    UIImage *blurImage = [ImageHelper blurredImage:image];
     self.blurredImageView = [[UIImageView alloc] initWithImage:blurImage];
     [self addSubview:self.blurredImageView];
-}
-
-- (UIImage *)blurWithImage:(UIImage *)image {
     
-    return [image applyBlurWithRadius:30
-                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.7]
-                saturationDeltaFactor:1.8
-                            maskImage:nil];
-}
-
-- (UIImage *)coreImageBlurWithImage:(UIImage *)image {
-    
-    //create our blurred image
-    CIContext *context = [CIContext contextWithOptions:nil];
-    CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
-    
-    //setting up Gaussian Blur (we could use one of many filters offered by Core Image)
-    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
-    [filter setValue:inputImage forKey:kCIInputImageKey];
-    [filter setValue:[NSNumber numberWithFloat:15.0f] forKey:@"inputRadius"];
-    CIImage *result = [filter valueForKey:kCIOutputImageKey];
-    //CIGaussianBlur has a tendency to shrink the image a little, this ensures it matches up exactly to the bounds of our original image
-    CGImageRef cgImage = [context createCGImage:result fromRect:[inputImage extent]];
-    
-    //add our blurred image to the scrollview
-    return [UIImage imageWithCGImage:cgImage];
 }
 
 @end
