@@ -371,7 +371,7 @@
             UIImage *editImage = [UIImage imageNamed:@"cook_dash_icons_customise.png"];
             [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
             [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
-            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width + 9.0,
+            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width + 5.0,
                                           self.bounds.origin.y - 7.0,
                                           editImage.size.width,
                                           editImage.size.height);
