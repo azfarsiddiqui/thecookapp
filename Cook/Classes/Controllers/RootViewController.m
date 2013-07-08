@@ -76,6 +76,10 @@
     [self initViewControllers];
 }
 
+- (void)didReceiveMemoryWarning {
+    DLog();
+}
+
 - (BOOL)shouldAutorotate {
     return YES;
 }
