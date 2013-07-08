@@ -247,10 +247,8 @@
     CGRect settingsIntersection = CGRectIntersection(self.view.bounds, self.settingsViewController.view.frame);
     CGFloat settingsOffset = settingsIntersection.size.height;
     if (storeOffset > 0) {
-        DLog(@"storeOffset %f", storeOffset);
         self.benchtopOverlayView.alpha = MIN((storeOffset / [self.storeViewController visibleHeight]) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
     } else if (settingsOffset > 0) {
-        DLog(@"settingsOffset %f", settingsOffset);
         self.benchtopOverlayView.alpha = MIN((settingsOffset / self.settingsViewController.view.frame.size.height) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
     } else {
         self.benchtopOverlayView.alpha = 0.0;
@@ -263,7 +261,7 @@
     
     if (self.benchtopLevel == kStoreLevel
         && CGRectIntersection(self.view.bounds,
-                              self.benchtopViewController.view.frame).size.height > self.view.bounds.size.height - [self.storeViewController visibleHeight] - kSnapHeight) {
+                              self.benchtopViewController.view.frame).size.height > self.view.bounds.size.height - [self.storeViewController visibleHeight] - [self.storeViewController bottomShadowHeight] - kSnapHeight) {
         
         toggleLevel = kBenchtopLevel;
         
@@ -423,7 +421,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.size.height - self.storeViewController.view.frame.size.height - [self.storeViewController visibleHeight],
+                           self.view.bounds.origin.y - self.storeViewController.view.frame.size.height + [self.storeViewController visibleHeight],
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     } else if (level == kBenchtopLevel) {
@@ -447,7 +445,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           [self.storeViewController visibleHeight] - [self.storeViewController bottomShadowHeight],
+                           [self.storeViewController visibleHeight] - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     } else if (level == kBenchtopLevel) {

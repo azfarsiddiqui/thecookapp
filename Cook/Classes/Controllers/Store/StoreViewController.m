@@ -30,11 +30,12 @@
 @implementation StoreViewController
 
 #define kInsets                     UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
-#define kVisibleHeight              375.0
-#define kShelfTopOffset             438.0
-#define kShelfTopOffsetFromBottom   239.0
-#define kShelfHeight                212.0
+#define kVisibleHeight              425.0   // Varies by taste
+#define kShelfTopOffset             439.0
+#define kShelfTopOffsetFromBottom   275.0
+#define kShelfHeight                249.0
 #define kShellBottomShelfTrayHeight 25.0
+#define kShellBottomShadowHeight    24.0
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
@@ -72,7 +73,7 @@
 }
 
 - (CGFloat)bottomShadowHeight {
-    return self.bottomShadowView.frame.size.height;
+    return kShellBottomShadowHeight;
 }
 
 #pragma mark - StoreTabView methods

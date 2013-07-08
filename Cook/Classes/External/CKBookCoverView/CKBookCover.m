@@ -151,11 +151,11 @@
 }
 
 + (CGSize)mediumImageSize {
-    return (CGSize) { 128.0, 180.0 };
+    return (CGSize) { 156.0, 219.0 };
 }
 
 + (CGSize)mediumShadowSize {
-    return (CGSize) { 167.0, 219.0 };
+    return (CGSize) { 204.0, 267.0 };
 }
 
 + (CGSize)smallCoverImageSize {
