@@ -245,7 +245,12 @@
 #pragma mark - CKPagingCollectionViewLayoutDelegate methods
 
 - (void)pagingLayoutDidUpdate {
-    [self updatePagingBenchtopView];
+    
+    // Update blurring backdrop only in non-edit mode.
+    if (!self.editMode) {
+        [self updatePagingBenchtopView];
+        
+    }
 }
 
 #pragma mark - CKNotificationViewDelegate methods
