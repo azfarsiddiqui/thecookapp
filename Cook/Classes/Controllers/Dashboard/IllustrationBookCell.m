@@ -51,7 +51,7 @@
 
 + (UIImage *)bookShadowUnderlayImage {
     return [ImageHelper scaledImage:[CKBookCover illustrationPickerOverlayImage]
-                               size:[IllustrationBookCell cellSize]];
+                               size:[CKBookCover smallCoverShadowSize]];
 }
 
 - (void)initBackground {
