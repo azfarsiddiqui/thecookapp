@@ -106,7 +106,7 @@
     
     if (enable) {
         [self.editingHelper wrapEditingView:self.nameTextView
-                              contentInsets:UIEdgeInsetsMake(12.0, 20.0, 12.0, 38.0)
+                              contentInsets:UIEdgeInsetsMake(15.0, 20.0, 12.0, 40.0)
                                    delegate:self white:NO];
         [self.editingHelper wrapEditingView:self.authorTextView
                               contentInsets:UIEdgeInsetsMake(5.0, 20.0, 5.0, 28.0)
@@ -235,15 +235,17 @@
 }
 
 - (CGRect)nameFrame {
+    CGSize size = [self.nameTextView sizeThatFits:self.contentOverlay.bounds.size];
     CGRect frame = self.nameTextView.frame;
-    frame.origin.x = floorf((self.nameTextView.superview.bounds.size.width - self.nameTextView.frame.size.width) / 2.0);
+    frame.origin.x = floorf((self.nameTextView.superview.bounds.size.width - size.width) / 2.0);
+    frame.size = size;
 
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
-            frame.origin.y = 10.0;
+            frame.origin.y = 0.0;
             break;
         case BookCoverLayoutBottom:
-            frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height;
+            frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height + 5.0;
             break;
         default:
             break;
@@ -301,7 +303,6 @@
     
     self.nameTextView.textAlignment = [self authorTextAlignment];
     self.nameTextView.text = title;
-    [self.nameTextView sizeToFit];
     self.nameTextView.frame = [self nameFrame];
     
     // Update editing wrapper if in edit mode.
