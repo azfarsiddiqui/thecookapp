@@ -170,7 +170,6 @@
     
     if (appear) {
 
-        
     } else {
         [self.textView resignFirstResponder];
         
@@ -212,6 +211,9 @@
                          }
                          completion:^(BOOL finished) {
                          }];
+        
+        // Move this somewhere else?
+        [self updateContentSize];
         
     }
 }
