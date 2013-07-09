@@ -22,7 +22,7 @@
 
 @interface CKListCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, assign) id<CKListCollectionViewCellDelegate> delegate;
+@property (nonatomic, weak) id<CKListCollectionViewCellDelegate> delegate;
 @property (nonatomic, strong) NSString *placeholder;
 
 - (void)configureValue:(id)value;

@@ -18,7 +18,7 @@
 
 @interface CKTableViewCell : UITableViewCell
 
-@property (nonatomic, assign) id<CKListTableViewCellDelegate> delegate;
+@property (nonatomic, weak) id<CKListTableViewCellDelegate> delegate;
 
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier borderHeight:(CGFloat)borderHeight font:(UIFont *)font
                 contentInsets:(UIEdgeInsets)contentInsets;

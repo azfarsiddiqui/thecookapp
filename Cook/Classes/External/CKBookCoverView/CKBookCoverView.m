@@ -125,9 +125,9 @@
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:NO
-                                                                                                              title:@"Title"
+                                                                                                              title:@"Author"
                                                                                                      characterLimit:32];
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:40.0];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:60.0];
         self.editViewController = editViewController;
     } else if (editingView == self.authorTextView) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
@@ -136,6 +136,7 @@
                                                                                                               white:NO
                                                                                                               title:@"Name"
                                                                                                      characterLimit:20];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:60.0];
         self.editViewController = editViewController;
     }
     [self.editViewController performEditing:YES];

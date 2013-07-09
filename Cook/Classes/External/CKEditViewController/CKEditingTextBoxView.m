@@ -46,8 +46,8 @@
 }
 
 + (UIImage *)textEditingSelectionBoxWhite:(BOOL)white {
-    UIEdgeInsets capInsets = (UIEdgeInsets){ 50.0, 37.0, 15.0, 45.0 };
-    return [[UIImage imageNamed:@"cook_customise_textbox_blue.png"] resizableImageWithCapInsets:capInsets];
+    return [[UIImage imageNamed:@"cook_customise_textbox_blue.png"]
+            resizableImageWithCapInsets:(UIEdgeInsets){ 50.0, 37.0, 15.0, 45.0 }];
 }
 
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white

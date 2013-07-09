@@ -13,8 +13,8 @@
 @interface CKTextViewEditViewController () <UITextViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UITextView *textView;
-@property (nonatomic, strong) UITextView *sandboxTestView;
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UITextView *sandboxTextView;
+@property (nonatomic, assign) CGFloat minHeight;
 
 @end
 
@@ -23,6 +23,7 @@
 #define kTextViewMinHeight      232.0
 #define kTextViewWidth          800.0
 #define kKeyboardDefaultFrame   CGRectMake(0.0, 396.0, 1024.0, 352.0)
+#define kTextViewAdjustments    UIEdgeInsetsMake(0.0, 0.0, 20.0, 0.0)
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title {
@@ -46,37 +47,29 @@
     UIEdgeInsets contentInsets = [self contentInsets];
     CGFloat width = kTextViewWidth;
     
-    // Create a corresponding sandbox version to provide exact measurements.
-    self.sandboxTestView = [self createTextView];
-    self.sandboxTestView.hidden = YES;
-    if (!self.sandboxTestView.superview) {
-        [self.view addSubview:self.sandboxTestView];
-    }
+    // TextView adjustments.
+    UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
+    
+    // Initial TextView height taking into account containing text.
+    NSString *currentText = [self currentTextValue];
+    self.textView.text = currentText;
+    CGFloat requiredTextViewHeight = [self requiredTextViewHeight];
+//    requiredTextViewHeight = [self heightForText:currentText];
+    CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
+    
+    NSLog(@"*** requiredTextViewHeight %f", requiredTextViewHeight);
+    NSLog(@"*** minHeight              %f", minHeight);
     
     // TextView positioning.
-    CGFloat textViewHeight = [self minimumTextViewHeight];
-    UITextView *textView = [self createTextView];
-    textView.text = [self currentTextValue];
-    textView.frame = CGRectMake(floorf((self.view.bounds.size.width - width) / 2.0),
-                                self.textLimited ? floorf((kKeyboardDefaultFrame.origin.y - textViewHeight) / 2.0) : contentInsets.top,
-                                width,
-                                textViewHeight);
-    self.textView = textView;
+    self.textView.frame = (CGRect){
+        textViewAdjustments.left + floorf((self.view.bounds.size.width - width) / 2.0),
+        contentInsets.top,
+        textViewAdjustments.left + width + textViewAdjustments.right,
+        ceilf(MAX(requiredTextViewHeight, minHeight)),
+    };
     
     // Set contentSize to be same as bounds.
-    textView.contentSize = textView.bounds.size;
-    
-    // Set the textview frame as large as its contentSize height.
-    CGRect textViewFrame = self.textView.frame;
-    textViewFrame.size.height = self.textView.contentSize.height;
-    self.textView.frame = textViewFrame;
-    
-    // Register pan on the textView.
-    if ([self contentScrollable]) {
-        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
-        panGesture.delegate = self;
-        [self.textView addGestureRecognizer:panGesture];
-    }
+    self.textView.contentSize = self.textView.bounds.size;
     
     return self.textView;
 }
@@ -86,7 +79,7 @@
 }
 
 - (UIEdgeInsets)contentInsets {
-    return UIEdgeInsetsMake(93.0, 20.0, 50.0, 20.0);
+    return (UIEdgeInsets) { 93.0, 20.0, 50.0, 20.0 };
 }
 
 - (BOOL)contentScrollable {
@@ -136,6 +129,36 @@
     [self updateContentSize];
 }
 
+#pragma mark - Properties
+
+- (UITextView *)textView {
+    if (!_textView) {
+        _textView = [self createTextView];
+    }
+    return _textView;
+}
+
+- (UITextView *)sandboxTextView {
+    if (!_sandboxTextView) {
+        _sandboxTextView = [self createTextView];
+        _sandboxTextView.hidden = YES;
+        [_sandboxTextView sizeToFit];
+    }
+    return _sandboxTextView;
+}
+
+- (CGFloat)minHeight {
+    if (_minHeight == 0) {
+        
+        // Set the sandbox textView for measurement purposes.
+        self.sandboxTextView.text = @"A";
+        CGRect sandboxUsedRect = [self.sandboxTextView.layoutManager usedRectForTextContainer:self.sandboxTextView.textContainer];
+        _minHeight = ceilf(sandboxUsedRect.size.height * self.numLines);
+        NSLog(@"minHeight [%f]", _minHeight);
+    }
+    return _minHeight;
+}
+
 #pragma mark - Lifecycle events
 
 - (void)targetTextEditingViewDidCreated {
@@ -176,8 +199,8 @@
         // Add title/limit labels.
         self.titleLabel.alpha = 0.0;
         self.limitLabel.alpha = 0.0;
-        [self.view addSubview:self.titleLabel];
-        [self.view addSubview:self.limitLabel];
+        [self.scrollView addSubview:self.titleLabel];
+        [self.scrollView addSubview:self.limitLabel];
         
         // Fade the labels in.
         [UIView animateWithDuration:0.1
@@ -190,78 +213,19 @@
                          completion:^(BOOL finished) {
                          }];
         
-        [self updateContentSize];
-        
     }
 }
 
-- (void)panned:(UIPanGestureRecognizer *)panGesture {
-    CGPoint translation = [panGesture translationInView:self.view];
-    
-    if (panGesture.state == UIGestureRecognizerStateBegan) {
-    } else if (panGesture.state == UIGestureRecognizerStateChanged) {
-        [self panWithTranslation:translation];
-	} else if (panGesture.state == UIGestureRecognizerStateEnded) {
-        [self panSnapIfRequired];
-    }
-    
-    [panGesture setTranslation:CGPointZero inView:self.view];
-}
-
-- (void)panWithTranslation:(CGPoint)translation {
-    CGFloat dragRatio = 0.5;
-    CGFloat panOffset = translation.y * dragRatio;
-    
-    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
-    CGRect titleFrame = self.titleLabel.frame;
-    CGRect textBoxFrame = targetTextBoxView.frame;
-    CGRect sourceTextBoxFrame = sourceTextBoxView.frame;
-    CGRect contentFrame = self.textView.frame;
-    
-    // Move everything together: title + textbox + textview + mocked textbox view (to be transitioned back).
-    titleFrame.origin.y += panOffset;
-    textBoxFrame.origin.y += panOffset;
-    sourceTextBoxFrame.origin.y += panOffset;
-    contentFrame.origin.y += panOffset;
-    self.titleLabel.frame = titleFrame;
-    targetTextBoxView.frame = textBoxFrame;
-    sourceTextBoxView.frame = sourceTextBoxFrame;
-    self.textView.frame = contentFrame;
-}
-
-- (void)panSnapIfRequired {
-    UIEdgeInsets contentInsets = [self contentInsets];
+- (void)keyboardWillAppear:(BOOL)appear {
     CGRect keyboardFrame = [self currentKeyboardFrame];
-    CGRect noGoFrame = keyboardFrame;
-    noGoFrame.origin.y -= contentInsets.bottom;
-    noGoFrame.size.height += contentInsets.bottom;
     
-    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
-    if (targetTextBoxView.frame.origin.y + targetTextBoxView.frame.size.height < noGoFrame.origin.y) {
-        
-        CGRect proposedTargetTextBoxFrame = CGRectMake(targetTextBoxView.frame.origin.x,
-                                                       noGoFrame.origin.y - targetTextBoxView.frame.size.height,
-                                                       targetTextBoxView.frame.size.width,
-                                                       targetTextBoxView.frame.size.height);
-        CGRect textViewFrame = self.textView.frame;
-        textViewFrame.origin.y = proposedTargetTextBoxFrame.origin.y + targetTextBoxView.contentInsets.top;
-        
-        [UIView animateWithDuration:0.15
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             targetTextBoxView.frame = proposedTargetTextBoxFrame;
-                             sourceTextBoxView.frame = proposedTargetTextBoxFrame;
-                             self.textView.frame = textViewFrame;
-                             [self updateInfoLabels];
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-
-    }
+    // Update the scrollView to be above the keyboard area.
+    self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, keyboardFrame.size.height, 0.0 };
+    NSLog(@"contentInset %@", NSStringFromUIEdgeInsets(self.scrollView.contentInset));
+    
 }
+
+#pragma mark - Private methods
 
 - (void)updateContentSize {
     
@@ -270,71 +234,105 @@
         return;
     }
     
+    NSLog(@"updateContentSize");
+    
+    // TextView adjustments.
+    UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
+
+    // Figure out the requiredHeight vs minimum height.
+    CGFloat requiredHeight = [self requiredTextViewHeight];
+    CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
+
+    // Updates the textView frame.
+    CGRect textViewFrame = self.textView.frame;
+    textViewFrame.size.height = MAX(requiredHeight, minHeight);
+    self.textView.frame = textViewFrame;
+
+    // Updates the surrounding textboxes.
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
-    
-    // Various frames to update.
-    CGRect textViewFrame = self.textView.frame;
-    
-    // The minimum height of the textView.
-    CGFloat textViewHeight = [self minimumTextViewHeight];
-    
-    // Set the textview frame as large as its contentSize height.
-    textViewFrame.size.height =  self.textView.contentSize.height;
-    textViewFrame.size.height = (textViewFrame.size.height < textViewHeight) ? textViewHeight : textViewFrame.size.height;
-    
-    // Work out the no-go area for the textbox.
-    UIEdgeInsets contentInsets = [self contentInsets];
-    CGRect keyboardFrame = [self currentKeyboardFrame];
-    CGRect noGoFrame = keyboardFrame;
-    noGoFrame.origin.y -= contentInsets.bottom;
-    noGoFrame.size.height += contentInsets.bottom;
-    
-    // Adjust positioning.
     CGRect proposedTargetTextBoxFrame = [targetTextBoxView updatedFrameForProposedEditingViewFrame:textViewFrame];
+    targetTextBoxView.frame = proposedTargetTextBoxFrame;
+    sourceTextBoxView.frame = proposedTargetTextBoxFrame;
     
-    // Flush to the bottom of the visible area.
-    if (keyboardFrame.origin.y > 0) {
-        proposedTargetTextBoxFrame.origin.y = noGoFrame.origin.y - proposedTargetTextBoxFrame.size.height;
-        textViewFrame.origin.y = proposedTargetTextBoxFrame.origin.y + targetTextBoxView.contentInsets.top;
-    }
-
-    // Animate frame around to fit content.
-    [UIView animateWithDuration:0.1
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         
-                         self.textView.frame = textViewFrame;
-                         targetTextBoxView.frame = proposedTargetTextBoxFrame;
-                         sourceTextBoxView.frame = proposedTargetTextBoxFrame;
-
-                         [self updateInfoLabels];
-                         
-                     }
-                     completion:^(BOOL finished) {
-                     }];
+    // Figure out the required contentSize of main scrollView. The contentInsets is relative to the targetEditView, so
+    // we have to take into account the textBox's contentInsets.
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGFloat requiredContentHeight = (contentInsets.top - targetTextBoxView.contentInsets.top) + proposedTargetTextBoxFrame.size.height + (contentInsets.bottom - targetTextBoxView.contentInsets.bottom);
+    NSLog(@"requiredContentHeight [%f]", requiredContentHeight);
+    NSLog(@"self.scrollView.contentSize.height [%f]", self.scrollView.contentSize.height);
+    NSLog(@"self.scrollView.bounds.size.height [%f]", self.scrollView.bounds.size.height);
+    self.scrollView.contentSize = (CGSize) {
+        self.scrollView.contentSize.width,
+        ceilf(MAX(self.scrollView.bounds.size.height, requiredContentHeight))
+    };
+    NSLog(@"self.scrollView.contentSize.height2 [%f]", self.scrollView.contentSize.height);
+    
+    // See if the caret is out of view?
+    [self scrollToCursorIfRequired];
 }
 
-- (CGFloat)minimumTextViewHeight {
-    
-    NSMutableString *testString = [NSMutableString stringWithString:@"A"];
-    for (NSInteger line = 1; line < self.numLines; line++) {
-        [testString appendString:@"\nA"];
+- (void)scrollToCursorIfRequired {
+    if (self.textView.selectedTextRange.empty) {
+        
+        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+        UIEdgeInsets contentInsets = [self contentInsets];
+        UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
+
+        // Work out the no-go area for the textbox.
+        CGRect keyboardFrame = [self currentKeyboardFrame];
+        CGRect noGoFrame = keyboardFrame;
+        noGoFrame.origin.y -= contentInsets.bottom;
+        noGoFrame.size.height += contentInsets.bottom;
+        
+        CGRect cursorFrame = [self.textView caretRectForPosition:self.textView.selectedTextRange.start];
+        CGRect cursorFrameToScrollView = [self.scrollView convertRect:cursorFrame fromView:self.textView];
+        if (CGRectIntersectsRect(cursorFrameToScrollView, noGoFrame)) {
+            
+            CGRect visibleFrame = [self currentVisibleFrame];
+            CGPoint scrollToPoint = (CGPoint){
+                self.scrollView.contentOffset.x,
+                cursorFrameToScrollView.origin.y - visibleFrame.size.height + cursorFrameToScrollView.size.height + textViewAdjustments.bottom + contentInsets.bottom - targetTextBoxView.contentInsets.bottom
+            };
+            
+            NSLog(@"Scroll to reveal %@", NSStringFromCGPoint(scrollToPoint));
+            [self.scrollView setContentOffset:scrollToPoint
+                                     animated:YES];
+        }
+        
+        //        NSLog(@"cursorFrame %@", NSStringFromCGRect(cursorFrame));
+        //        NSLog(@"cursorFrameToScrollView %@", NSStringFromCGRect(cursorFrameToScrollView));
     }
-    self.sandboxTestView.text = testString;
-    return self.sandboxTestView.contentSize.height;
 }
 
 - (UITextView *)createTextView {
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
+    textView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
     textView.font = self.textViewFont;
     textView.textColor = [self editingTextColour];
-    textView.backgroundColor = [UIColor clearColor];
     textView.textAlignment = NSTextAlignmentLeft;
     textView.delegate = self;
+    textView.showsHorizontalScrollIndicator = NO;
+    textView.showsVerticalScrollIndicator = NO;
+    textView.backgroundColor = [UIColor clearColor];
+    
+    // iOS7-b2 scrollEnabled causes characters to be left over after deleting from line below.
     textView.scrollEnabled = NO;
+    textView.panGestureRecognizer.enabled = NO;
     return textView;
+}
+
+- (CGFloat)requiredTextViewHeight {
+    CGFloat requiredHeight = [self.textView.layoutManager usedRectForTextContainer:self.textView.textContainer].size.height;
+    requiredHeight += (kTextViewAdjustments.top + kTextViewAdjustments.bottom);
+    return requiredHeight;
+}
+
+- (CGFloat)heightForText:(NSString *)text {
+    self.sandboxTextView.text = text;
+    [self.sandboxTextView sizeToFit];
+    CGRect sandboxUsedRect = [self.sandboxTextView.layoutManager usedRectForTextContainer:self.sandboxTextView.textContainer];
+    return sandboxUsedRect.size.height;
 }
 
 @end

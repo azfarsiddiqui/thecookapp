@@ -12,7 +12,7 @@
 
 @interface CKTableEditViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, assign) id<CKTableEditViewControllerDataSource> dataSource;
+@property (nonatomic, weak) id<CKTableEditViewControllerDataSource> dataSource;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *placeholderView;
 @property (nonatomic, strong) UIView *titleHeaderView;

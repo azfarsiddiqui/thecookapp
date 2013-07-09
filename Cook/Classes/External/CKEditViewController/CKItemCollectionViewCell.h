@@ -20,7 +20,7 @@
 
 @interface CKItemCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, assign) id<CKItemCellDelegate> delegate;
+@property (nonatomic, weak) id<CKItemCellDelegate> delegate;
 @property (nonatomic, assign) BOOL placeholder;
 @property (nonatomic, assign) BOOL allowSelectionState;
 @property (nonatomic, strong) UIImageView *boxImageView;

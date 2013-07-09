@@ -75,8 +75,8 @@
         // Add title/limit labels.
         self.titleLabel.alpha = 0.0;
         self.limitLabel.alpha = 0.0;
-        [self.view addSubview:self.titleLabel];
-        [self.view addSubview:self.limitLabel];
+        [self.scrollView addSubview:self.titleLabel];
+        [self.scrollView addSubview:self.limitLabel];
         
         // Fade the labels in.
         [UIView animateWithDuration:0.1

@@ -25,7 +25,8 @@
 
 @interface CKEditViewController : UIViewController
 
-@property (nonatomic, assign) id<CKEditViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<CKEditViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSString *editTitle;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIView *sourceEditView;
@@ -51,6 +52,7 @@
 - (UIEdgeInsets)contentInsets;
 - (CKEditingTextBoxView *)sourceEditTextBoxView;
 - (CKEditingTextBoxView *)targetEditTextBoxView;
+- (CGRect)currentVisibleFrame;
 - (CGRect)currentKeyboardFrame;
 - (CGRect)defaultKeyboardFrame;
 - (void)updateInfoLabels;
@@ -58,12 +60,12 @@
 - (BOOL)showTitleLabel;
 - (BOOL)showSaveIcon;
 - (void)dismissEditView;
-- (void)keyboardWillAppear:(BOOL)appear;
 - (UIFont *)textFontWithSize:(CGFloat)size;
 
 // Lifecycle events.
 - (void)targetTextEditingViewDidCreated;
 - (void)targetTextEditingViewWillAppear:(BOOL)appear;
 - (void)targetTextEditingViewDidAppear:(BOOL)appear;
+- (void)keyboardWillAppear:(BOOL)appear;
 
 @end

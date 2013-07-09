@@ -11,7 +11,7 @@
 #import "UIColor+Expanded.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface CKEditViewController () <UIGestureRecognizerDelegate, CKEditingTextBoxViewDelegate>
+@interface CKEditViewController () <UIGestureRecognizerDelegate, UIScrollViewDelegate, CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) CGRect startTextBoxSourceFrame;
@@ -56,7 +56,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor clearColor];
+    
+    // Attach a scrollView for edit content to be scrollable.
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    scrollView.backgroundColor = [UIColor clearColor];
+    scrollView.alwaysBounceVertical = YES;
+    scrollView.alwaysBounceHorizontal = NO;
+    scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+    scrollView.delegate = self;
+    [self.view addSubview:scrollView];
+    self.scrollView = scrollView;
 }
 
 - (void)performEditing:(BOOL)editing {
@@ -106,14 +120,14 @@
                              // Lift the originalTextBox from its superview and place it on the editing fullscreen view.
                              [originalTextBoxView removeFromSuperview];
                              originalTextBoxView.frame = sourceOnFullScreenFrame;
-                             [self.view addSubview:originalTextBoxView];
+                             [self.scrollView addSubview:originalTextBoxView];
                              
                              // Hide the source view.
                              self.sourceEditView.hidden = YES;
                              
                              // Prepare the target view on fullscreen mode.
                              targetEditView.alpha = 0.0;
-                             [self.view addSubview:targetEditView];
+                             [self.scrollView addSubview:targetEditView];
                              self.targetEditView = targetEditView;
                              
                              // Lifecycle event to inform of creation/adding of target editing view.
@@ -261,6 +275,8 @@
     NSString *textValue = nil;
     if ([self.sourceEditView isKindOfClass:[UILabel class]]) {
         textValue = ((UILabel *)self.sourceEditView).text;
+    } else if ([self.sourceEditView isKindOfClass:[UITextView class]]) {
+        textValue = ((UITextView *)self.sourceEditView).text;
     }
     return textValue;
 }
@@ -300,6 +316,15 @@
     return [self.editingHelper textBoxViewForEditingView:self.targetEditView];
 }
 
+- (CGRect)currentVisibleFrame {
+    return (CGRect) {
+        self.view.bounds.origin.x,
+        self.view.bounds.origin.y,
+        self.view.bounds.size.width,
+        self.view.bounds.size.height - [self currentKeyboardFrame].size.height
+    };
+}
+
 - (CGRect)currentKeyboardFrame {
     return self.keyboardFrame;
 }
@@ -332,9 +357,6 @@
     [self.delegate editViewControllerDismissRequested];
 }
 
-- (void)keyboardWillAppear:(BOOL)appear {
-}
-
 - (UIFont *)textFontWithSize:(CGFloat)size {
     return [self.font fontWithSize:size];
 }
@@ -355,6 +377,9 @@
     [self.delegate editViewControllerDidAppear:appear];
 }
 
+- (void)keyboardWillAppear:(BOOL)appear {
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -362,6 +387,22 @@
         return YES;
     } else {
         return NO;
+    }
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView == self.scrollView) {
+        
+        // Track the black overlay.
+        self.overlayView.frame = (CGRect){
+            self.scrollView.contentOffset.x,
+            self.scrollView.contentOffset.y - floorf(self.scrollView.bounds.size.width / 2.0),
+            self.overlayView.frame.size.width,
+            self.overlayView.frame.size.height
+        };
+        
     }
 }
 
@@ -392,6 +433,9 @@
     
     // Tell original editingView to update with new value.
     [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedValue]];
+    
+    // Update the start textbox frame.
+    self.startTextBoxSourceFrame = originalTextBoxView.frame;
     
     // Get the originalTextBoxView's frame relative to the fullscreen view.
     CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
@@ -436,10 +480,16 @@
 - (void)initOverlay {
     
     // Black overlay.
-    UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    UIView *overlayView = [[UIView alloc] initWithFrame:(CGRect){
+        self.scrollView.bounds.origin.x,
+        self.scrollView.bounds.origin.y - floorf(self.scrollView.bounds.size.width / 2.0),
+        self.scrollView.bounds.size.width,
+        self.scrollView.bounds.size.height * 2.0
+    }];
+    overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     overlayView.backgroundColor = [self editingOverlayColour];
     overlayView.alpha = 0.0;
-    [self.view addSubview:overlayView];
+    [self.scrollView addSubview:overlayView];
     self.overlayView = overlayView;
     
     // Register tap on overlay.
