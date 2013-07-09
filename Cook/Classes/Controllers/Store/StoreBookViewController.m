@@ -8,6 +8,7 @@
 
 #import "StoreBookViewController.h"
 #import "CKBook.h"
+#import "CKBookCover.h"
 #import "CKUser.h"
 #import "CKBookCoverView.h"
 #import "AppHelper.h"
@@ -80,12 +81,18 @@
     self.originPoint = point;
     self.bookContainerView.alpha = 0.0;
     
-    CGFloat scale = [BenchtopBookCoverViewCell storeScale];
-    CGSize size = [BenchtopBookCoverViewCell cellSize];
+    CGSize size = [CKBookCover coverImageSize];
+    CGFloat scale = [self storeScale];
     
     // Book cover.
-    CGRect bookFrame = CGRectMake(point.x - (size.width * 0.5), point.y - (size.height * 0.5), size.width, size.height);
+    CGRect bookFrame = (CGRect){
+        point.x - (size.width * 0.5),
+        point.y - (size.height * 0.5),
+        size.width,
+        size.height
+    };
     CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
+    bookCoverView.frame = bookFrame;
     bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
     [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
     
@@ -212,7 +219,7 @@
 - (void)closeTapped {
     
     self.animating = YES;
-    CGFloat scale = [BenchtopBookCoverViewCell storeScale];
+    CGFloat scale = [self storeScale];
     
     // Transition book back to shelf.
     [UIView animateWithDuration:0.2
@@ -373,6 +380,13 @@
                                                  }];
                                 
                             }];
+}
+
+- (CGFloat)storeScale {
+    CGSize storeSize = [CKBookCover mediumImageSize];
+    CGSize size = [CKBookCover coverImageSize];
+    CGFloat scale = storeSize.width / size.width;
+    return scale;
 }
 
 @end
