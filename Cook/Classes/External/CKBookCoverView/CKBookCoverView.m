@@ -412,10 +412,20 @@
     CGRect frame = CGRectZero;
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
-            frame = CGRectMake(15.0, -3.0, 278.0, 210.0);
+            frame = (CGRect){
+                20.0,
+                15.0,
+                278.0,
+                210.0
+            };
             break;
         case BookCoverLayoutBottom:
-            frame = CGRectMake(15.0, 232.0, 278.0, 180.0);
+            frame = (CGRect){
+                20.0,
+                232.0,
+                278.0,
+                190.0
+            };
             break;
         default:
             break;
