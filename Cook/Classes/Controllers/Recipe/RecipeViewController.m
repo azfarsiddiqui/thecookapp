@@ -243,6 +243,15 @@ typedef enum {
     self.popoverViewController = popoverViewController;
 }
 
+- (void)recipeSocialViewUpdated:(CKRecipeSocialView *)socialView {
+    socialView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
+        kButtonInsets.top,
+        socialView.frame.size.width,
+        socialView.frame.size.height
+    };
+}
+
 #pragma mark - CKPopoverViewControllerDelegate methods
 
 - (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
@@ -1314,14 +1323,10 @@ typedef enum {
     
     if (!self.addMode) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            CKRecipeSocialView *socialView = [[CKRecipeSocialView alloc] initWithNumComments:0 numLikes:0 delegate:self];
-            socialView.frame = CGRectMake(floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
-                                          kButtonInsets.top,
-                                          socialView.frame.size.width,
-                                          socialView.frame.size.height);
-            socialView.alpha = 0.0;
-            [self.view addSubview:socialView];
-            self.socialView = socialView;
+            
+            self.socialView = [[CKRecipeSocialView alloc] initWithRecipe:self.recipe delegate:self];
+            self.socialView.alpha = 0.0;
+            [self.view addSubview:self.socialView];
             
             // Fade it in.
             [UIView animateWithDuration:0.4

@@ -86,12 +86,14 @@
                 UIImage *imageToFit = [image imageCroppedToFitSize:size];
                 
                 // Update cache and remove from in-progress downloads.
-                [self.cache setObject:imageToFit forKey:cacheKey];
-                [self.downloadsInProgress removeObject:cacheKey];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(imageToFit);
-                });
+                if (imageToFit) {
+                    [self.cache setObject:imageToFit forKey:cacheKey];
+                    [self.downloadsInProgress removeObject:cacheKey];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(imageToFit);
+                    });
+                }
             });
             
         }

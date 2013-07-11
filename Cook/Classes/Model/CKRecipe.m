@@ -15,6 +15,7 @@
 #import "CKActivity.h"
 #import "NSString+Utilities.h"
 #import "CKRecipeImage.h"
+#import "CKRecipeLike.h"
 
 @interface CKRecipe ()
 
@@ -273,7 +274,82 @@
     }];
 }
 
-#pragma mark - fetch
+#pragma mark - Likes
+
+- (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFRelation *likesRelation = [self.parseObject relationforKey:kRecipeAttrLikes];
+    PFQuery *likesQuery = [likesRelation query];
+    [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [likesQuery findObjectsInBackgroundWithBlock:^(NSArray *likes, NSError *error) {
+        if (!error) {
+            
+            if ([likes count] == 0) {
+                
+                // Create recipe like then save it then adding it to the relation,.
+                CKRecipeLike *recipeLike = [CKRecipeLike recipeLikeForUser:user];
+                [recipeLike saveInBackground:^{
+                    
+                    [likesRelation addObject:recipeLike.parseObject];
+                    
+                    [self saveInBackground:^{
+                        success();
+                    } failure:^(NSError *error){
+                        failure(error);
+                    }];
+                } failure:^(NSError *error) {
+                    
+                }];
+                
+            } else {
+                
+                // Remove the relation.
+                for (PFObject *recipeLikeParseObject in likes) {
+                    [likesRelation removeObject:recipeLikeParseObject];
+                }
+                
+                // Save the removal of the relation.
+                [self saveInBackground:^{
+                    success();
+                } failure:^(NSError *error){
+                    failure(error);
+                }];
+
+            }
+            
+        } else {
+            failure(nil);
+        }
+        
+    }];
+    
+}
+
+- (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFRelation *likesRelation = [self.parseObject relationforKey:kRecipeAttrLikes];
+    PFQuery *likesQuery = [likesRelation query];
+    [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        if (!error) {
+            success(number > 0);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
+- (void)likesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFRelation *likesRelation = [self.parseObject relationforKey:kRecipeAttrLikes];
+    PFQuery *likesQuery = [likesRelation query];
+    [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        if (!error) {
+            success(number);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
+#pragma mark - Fetch
 
 - (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess {
     [self.category.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {

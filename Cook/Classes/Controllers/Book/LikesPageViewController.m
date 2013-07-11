@@ -7,7 +7,7 @@
 //
 
 #import "LikesPageViewController.h"
-#import "RecipeLike.h"
+#import "CKRecipeLike.h"
 
 @interface LikesPageViewController ()
 
@@ -19,7 +19,7 @@
 -(void)setSectionName:(NSString *)sectionName
 {
     [super setSectionName:sectionName];
-    [RecipeLike fetchLikedRecipesForUser:[CKUser currentUser] withSuccess:^(NSArray *results) {
+    [CKRecipeLike fetchLikedRecipesForUser:[CKUser currentUser] withSuccess:^(NSArray *results) {
         self.recipes = results;
         [self.delegate didLoadLikedUserRecipes:results];
         [self.tableView reloadData];

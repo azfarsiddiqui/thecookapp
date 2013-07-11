@@ -6,25 +6,31 @@
 //  Copyright (c) 2012 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "RecipeLike.h"
+#import "CKRecipeLike.h"
 #import "NSArray+Enumerable.h"
 NSString *const kRecipeLikeKeyLikesCount = @"likesCount";
 NSString *const kRecipeLikeKeyUserLike = @"userLike";
 
-@implementation RecipeLike
+@implementation CKRecipeLike
 
-+(RecipeLike *)recipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe
++ (CKRecipeLike *)recipeLikeForUser:(CKUser *)user {
+    PFObject *parseRecipeLike = [self objectWithDefaultSecurityWithClassName:kRecipeLikeModelName];
+    [parseRecipeLike setObject:user.parseObject forKey:kUserModelForeignKeyName];
+    return [[CKRecipeLike alloc] initWithParseObject:parseRecipeLike];;
+}
+
++(CKRecipeLike *)recipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe
 {
     PFObject *parseRecipeLike = [self objectWithDefaultSecurityWithClassName:kRecipeLikeModelName];
     [parseRecipeLike setObject:user.parseObject forKey:kUserModelForeignKeyName];
     [parseRecipeLike setObject:recipe.parseObject forKey:kRecipeModelForeignKeyName];
-    RecipeLike *recipeLike = [[RecipeLike alloc] initWithParseObject:parseRecipeLike];
+    CKRecipeLike *recipeLike = [[CKRecipeLike alloc] initWithParseObject:parseRecipeLike];
     return recipeLike;
 }
 
-+(RecipeLike*)recipeLikeForParseObject:(PFObject*)parseObject
++(CKRecipeLike*)recipeLikeForParseObject:(PFObject*)parseObject
 {
-    RecipeLike *parseRecipeLike = [[RecipeLike alloc]initWithParseObject:parseObject];
+    CKRecipeLike *parseRecipeLike = [[CKRecipeLike alloc]initWithParseObject:parseObject];
     parseRecipeLike.user = [[CKUser alloc] initWithParseUser:[parseObject objectForKey:kUserModelForeignKeyName]];
 
     PFObject *parseRecipeObject = [parseObject objectForKey:kRecipeModelForeignKeyName];
@@ -36,7 +42,7 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
 +(void) updateRecipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe liked:(BOOL)like withSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     //see if it exists first
-    [RecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(PFObject *parseRecipeObject) {
+    [CKRecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(PFObject *parseRecipeObject) {
         if (parseRecipeObject && !like) {
             //delete it - if it exists
             [parseRecipeObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -47,7 +53,7 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
             }];
         }
         else if (!parseRecipeObject && like) {
-            RecipeLike *recipeLike = [RecipeLike recipeLikeForUser:user recipe:recipe];
+            CKRecipeLike *recipeLike = [CKRecipeLike recipeLikeForUser:user recipe:recipe];
             [recipeLike saveInBackground:^{
                 success();
             } failure:^(NSError *error) {
@@ -84,7 +90,7 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
 +(void) fetchRecipeLikeInfoForUser:(CKUser*)user recipe:(CKRecipe *)recipe withSuccess:(DictionaryObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure
 {
     __block NSMutableDictionary *recipeInfo = [NSMutableDictionary dictionary];
-    [RecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(PFObject *parseObject) {
+    [CKRecipeLike fetchRecipeLikeForUser:user forRecipe:recipe withSuccess:^(PFObject *parseObject) {
         parseObject ?
         [recipeInfo setObject:[NSNumber numberWithBool:YES] forKey:kRecipeLikeKeyUserLike]:
         [recipeInfo setObject:[NSNumber numberWithBool:NO] forKey:kRecipeLikeKeyUserLike];
@@ -140,6 +146,15 @@ NSString *const kRecipeLikeKeyUserLike = @"userLike";
     }];
 
 }
+
+
++ (void)recipeLikeExistsForRecipe:(CKRecipe *)recipe user:(CKUser *)user success:(BoolObjectSuccessBlock)success
+                          failure:(ObjectFailureBlock)failure {
+
+    PFQuery *query = [PFQuery queryWithClassName:kRecipeLikeModelName];
+    
+}
+
 #pragma mark - Private Methods
 -(void) saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     

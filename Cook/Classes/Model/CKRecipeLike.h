@@ -13,12 +13,14 @@
 extern NSString *const kRecipeLikeKeyLikesCount;
 extern NSString *const kRecipeLikeKeyUserLike;
 
-@interface RecipeLike : CKModel
+@interface CKRecipeLike : CKModel
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKRecipe *recipe;
 
 //create
-+(RecipeLike*) recipeLikeForUser:(CKUser *)user recipe:(CKRecipe*)recipe;
++ (CKRecipeLike *)recipeLikeForUser:(CKUser *)user;
+
++(CKRecipeLike*) recipeLikeForUser:(CKUser *)user recipe:(CKRecipe*)recipe;
 
 //action
 //update recipe like. returns a numeric of the 
@@ -32,5 +34,8 @@ extern NSString *const kRecipeLikeKeyUserLike;
 
 //an array recipes for the all recipes a user likes
 +(void) fetchLikedRecipesForUser:(CKUser*)user withSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
++ (void)recipeLikeExistsForRecipe:(CKRecipe *)recipe user:(CKUser *)user success:(BoolObjectSuccessBlock)success
+                          failure:(ObjectFailureBlock)failure;
 
 @end

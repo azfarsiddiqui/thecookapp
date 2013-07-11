@@ -8,15 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKRecipe;
+@class CKRecipeSocialView;
+
 @protocol CKRecipeSocialViewDelegate
 
 - (void)recipeSocialViewTapped;
+- (void)recipeSocialViewUpdated:(CKRecipeSocialView *)socialView;
 
 @end
 
 @interface CKRecipeSocialView : UIView
 
-- (id)initWithNumComments:(NSInteger)numComments numLikes:(NSInteger)numLikes
-                 delegate:(id<CKRecipeSocialViewDelegate>)delegate;
+- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKRecipeSocialViewDelegate>)delegate;
 
 @end

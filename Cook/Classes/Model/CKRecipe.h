@@ -49,6 +49,11 @@
 - (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
 - (void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
+// Likes
+- (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)likesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 // Fetch
 - (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
 

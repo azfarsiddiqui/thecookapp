@@ -10,7 +10,7 @@
 #import "ViewHelper.h"
 #import "CKRecipe.h"
 #import "MRCEnumerable.h"
-#import "RecipeLike.h"
+#import "CKRecipeLike.h"
 #import "CategoryPageViewController.h"
 #import "LikesPageViewController.h"
 #import "MPFlipViewController.h"
@@ -448,7 +448,7 @@
         self.bookRecipes = recipes;
 
         //fetch likes for user
-        [RecipeLike fetchRecipeLikeCountForUser:[CKUser currentUser] withSuccess:^(int numObjects) {
+        [CKRecipeLike fetchRecipeLikeCountForUser:[CKUser currentUser] withSuccess:^(int numObjects) {
             self.userLikeCount = numObjects;
 //            no longer being used. needs cleanup
 //            [self.contentsViewController refreshData];
