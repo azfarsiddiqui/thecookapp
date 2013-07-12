@@ -72,6 +72,9 @@
         [self.prepDialer selectOptionAtIndex:[self prepIndex] animated:YES];
         [self.cookDialer selectOptionAtIndex:[self cookIndex] animated:YES];
     }
+    
+    // Disable scrolling on appear.
+    self.scrollView.scrollEnabled = !appear;
 }
 
 #pragma mark - Lazy getters
