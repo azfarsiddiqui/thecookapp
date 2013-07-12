@@ -551,6 +551,9 @@
 		76DEF059164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */; };
 		76DEF05A164A37BB00B7DB9C /* cook_customise_btns_done.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF056164A37BB00B7DB9C /* cook_customise_btns_done.png */; };
 		76DEF05B164A37BB00B7DB9C /* cook_customise_btns_done@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF057164A37BB00B7DB9C /* cook_customise_btns_done@2x.png */; };
+		76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */; };
+		76E0B95717903B8E00AD70E3 /* BookPagingStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */; };
+		76E0B95A179045FD00AD70E3 /* BookHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B959179045FD00AD70E3 /* BookHeaderView.m */; };
 		76E16E4C163903070044EB9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E16E4B163903070044EB9B /* MenuViewController.m */; };
 		76E17A0216756DAB00688D0D /* cook_dash_settings_btn_logout.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E17A0016756DAB00688D0D /* cook_dash_settings_btn_logout.png */; };
 		76E17A0316756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E17A0116756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png */; };
@@ -1442,6 +1445,12 @@
 		76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_btns_cancel@2x.png"; sourceTree = "<group>"; };
 		76DEF056164A37BB00B7DB9C /* cook_customise_btns_done.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_btns_done.png; sourceTree = "<group>"; };
 		76DEF057164A37BB00B7DB9C /* cook_customise_btns_done@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_btns_done@2x.png"; sourceTree = "<group>"; };
+		76E0B95217903B7600AD70E3 /* BookNavigationStackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationStackViewController.h; sourceTree = "<group>"; };
+		76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationStackViewController.m; sourceTree = "<group>"; };
+		76E0B95517903B8E00AD70E3 /* BookPagingStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookPagingStackLayout.h; sourceTree = "<group>"; };
+		76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookPagingStackLayout.m; sourceTree = "<group>"; };
+		76E0B958179045FD00AD70E3 /* BookHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookHeaderView.h; sourceTree = "<group>"; };
+		76E0B959179045FD00AD70E3 /* BookHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookHeaderView.m; sourceTree = "<group>"; };
 		76E16E4A163903070044EB9B /* MenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuViewController.h; sourceTree = "<group>"; };
 		76E16E4B163903070044EB9B /* MenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuViewController.m; sourceTree = "<group>"; };
 		76E17A0016756DAB00688D0D /* cook_dash_settings_btn_logout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_btn_logout.png; sourceTree = "<group>"; };
@@ -3027,6 +3036,12 @@
 		89232B931625431900152940 /* Book */ = {
 			isa = PBXGroup;
 			children = (
+				76E0B95217903B7600AD70E3 /* BookNavigationStackViewController.h */,
+				76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */,
+				76E0B95517903B8E00AD70E3 /* BookPagingStackLayout.h */,
+				76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */,
+				76E0B958179045FD00AD70E3 /* BookHeaderView.h */,
+				76E0B959179045FD00AD70E3 /* BookHeaderView.m */,
 				893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */,
 				893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */,
 				765E21A816F829CC00D06401 /* BookTitleActivityViewController.h */,
@@ -3966,6 +3981,7 @@
 				7692260216474D4600752128 /* IllustrationPickerViewController.m in Sources */,
 				769226051647863A00752128 /* IllustrationBookCell.m in Sources */,
 				76DEF0411649E78D00B7DB9C /* IllustrationFlowLayout.m in Sources */,
+				76E0B95A179045FD00AD70E3 /* BookHeaderView.m in Sources */,
 				76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */,
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
 				76C6CDD2164B5495006001BD /* APBookmarkNavigationView.m in Sources */,
@@ -3998,6 +4014,7 @@
 				892282B61671933D002FE936 /* CKRecipeLike.m in Sources */,
 				765E65C91672144400D5D54E /* LoginViewController.m in Sources */,
 				893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */,
+				76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */,
 				893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */,
 				89B85B9516AF8A5900A0533E /* TestViewController.m in Sources */,
 				76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */,
@@ -4070,6 +4087,7 @@
 				76EE2CDA170AE7A30043D128 /* UIButton+WebCache.m in Sources */,
 				76EE2CDB170AE7A30043D128 /* UIImageView+WebCache.m in Sources */,
 				76819813170BCC840091F91F /* CKBookSummaryView.m in Sources */,
+				76E0B95717903B8E00AD70E3 /* BookPagingStackLayout.m in Sources */,
 				768E735E170BD5440063CF49 /* CKStatView.m in Sources */,
 				76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */,
 				769B5E0A1715063B0046934D /* RecipeViewController.m in Sources */,

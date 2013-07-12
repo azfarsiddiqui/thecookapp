@@ -20,6 +20,7 @@
 #import "EventHelper.h"
 #import "RecipeViewController.h"
 #import "BookNavigationHelper.h"
+#import "BookNavigationStackViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, WelcomeViewControllerDelegate>
@@ -29,7 +30,8 @@
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
 @property (nonatomic, strong) WelcomeViewController *welcomeViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
-@property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
+//@property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
+@property (nonatomic, strong) BookNavigationStackViewController *bookNavigationViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
@@ -144,11 +146,15 @@
     if (open) {
         
         // Create book navigation.
-        BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
-                                                                                                               delegate:self];
+//        BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
+//                                                                                                               delegate:self];
+        
+        BookNavigationStackViewController *bookNavigationViewController = [[BookNavigationStackViewController alloc] initWithBook:self.selectedBook
+                                                                                                                         delegate:self];
         bookNavigationViewController.view.frame = self.view.bounds;
         [self.view addSubview:bookNavigationViewController.view];
         self.bookNavigationViewController = bookNavigationViewController;
+
         
         // Inform the helper that coordinates book navigation and any updated recipes.
         [BookNavigationHelper sharedInstance].bookNavigationViewController = bookNavigationViewController;
