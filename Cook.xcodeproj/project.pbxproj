@@ -554,6 +554,8 @@
 		76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */; };
 		76E0B95717903B8E00AD70E3 /* BookPagingStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */; };
 		76E0B95A179045FD00AD70E3 /* BookHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B959179045FD00AD70E3 /* BookHeaderView.m */; };
+		76E0B95D17911FE100AD70E3 /* BookCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95C17911FE100AD70E3 /* BookCategoryViewController.m */; };
+		76E0B9601791205D00AD70E3 /* BookCategoryLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */; };
 		76E16E4C163903070044EB9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E16E4B163903070044EB9B /* MenuViewController.m */; };
 		76E17A0216756DAB00688D0D /* cook_dash_settings_btn_logout.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E17A0016756DAB00688D0D /* cook_dash_settings_btn_logout.png */; };
 		76E17A0316756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E17A0116756DAB00688D0D /* cook_dash_settings_btn_logout@2x.png */; };
@@ -1451,6 +1453,10 @@
 		76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookPagingStackLayout.m; sourceTree = "<group>"; };
 		76E0B958179045FD00AD70E3 /* BookHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookHeaderView.h; sourceTree = "<group>"; };
 		76E0B959179045FD00AD70E3 /* BookHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookHeaderView.m; sourceTree = "<group>"; };
+		76E0B95B17911FE100AD70E3 /* BookCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCategoryViewController.h; sourceTree = "<group>"; };
+		76E0B95C17911FE100AD70E3 /* BookCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCategoryViewController.m; sourceTree = "<group>"; };
+		76E0B95E1791205D00AD70E3 /* BookCategoryLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCategoryLayout.h; sourceTree = "<group>"; };
+		76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCategoryLayout.m; sourceTree = "<group>"; };
 		76E16E4A163903070044EB9B /* MenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuViewController.h; sourceTree = "<group>"; };
 		76E16E4B163903070044EB9B /* MenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuViewController.m; sourceTree = "<group>"; };
 		76E17A0016756DAB00688D0D /* cook_dash_settings_btn_logout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_settings_btn_logout.png; sourceTree = "<group>"; };
@@ -3042,6 +3048,10 @@
 				76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */,
 				76E0B958179045FD00AD70E3 /* BookHeaderView.h */,
 				76E0B959179045FD00AD70E3 /* BookHeaderView.m */,
+				76E0B95B17911FE100AD70E3 /* BookCategoryViewController.h */,
+				76E0B95C17911FE100AD70E3 /* BookCategoryViewController.m */,
+				76E0B95E1791205D00AD70E3 /* BookCategoryLayout.h */,
+				76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */,
 				893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */,
 				893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */,
 				765E21A816F829CC00D06401 /* BookTitleActivityViewController.h */,
@@ -3975,6 +3985,7 @@
 				76FA9A4016267687006EAFBB /* EventHelper.m in Sources */,
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
 				76E16E4C163903070044EB9B /* MenuViewController.m in Sources */,
+				76E0B9601791205D00AD70E3 /* BookCategoryLayout.m in Sources */,
 				76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */,
 				769225FB16473F3D00752128 /* BenchtopEditLayout.m in Sources */,
 				769225FF16474A2100752128 /* BenchtopEditViewController.m in Sources */,
@@ -4070,6 +4081,7 @@
 				765E21AD16F82F9800D06401 /* BookTitleView.m in Sources */,
 				76B3E5B216FBE52F002B5080 /* BookIndexLayout.m in Sources */,
 				76B3E5B516FBE862002B5080 /* BookIndexCell.m in Sources */,
+				76E0B95D17911FE100AD70E3 /* BookCategoryViewController.m in Sources */,
 				762F62D517012BF1006769E5 /* CKMaskedLabel.m in Sources */,
 				76A3714A170178070067BDB1 /* CKNotificationItem.m in Sources */,
 				76A3714B170178070067BDB1 /* CKNotificationView.m in Sources */,

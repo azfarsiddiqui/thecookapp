@@ -11,6 +11,7 @@
 #import "CKUser.h"
 
 @class CKBook;
+@class CKCategory;
 
 typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 
@@ -32,6 +33,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 //fetch
 + (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)fetchRecipesForCategory:(CKCategory *)category success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)prefetchCategoriesInBackground;
 - (void)fetchCategoriesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;

@@ -17,13 +17,14 @@
 #import "BookHeaderView.h"
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
+#import "BookCategoryViewController.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *categories;
-@property (nonatomic, strong) NSMutableArray *categoryHeaderViews;
+@property (nonatomic, strong) NSMutableDictionary *categoryControllers;
 @property (nonatomic, assign) BOOL justOpened;
 
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
@@ -42,6 +43,7 @@
 #define kIndexCellId        @"IndexCellId"
 #define kCategoryCellId     @"CategoryCellId"
 #define kHeaderId           @"HeaderId"
+#define kCategoryViewTag    460
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
@@ -119,8 +121,8 @@
 }
 
 - (BookPagingStackLayoutType)stackPagingLayoutType {
-//    return BookPagingStackLayoutTypeSlideOneWay;
-    return BookPagingStackLayoutTypeSlideOneWayScale;
+    return BookPagingStackLayoutTypeSlideOneWay;
+//    return BookPagingStackLayoutTypeSlideOneWayScale;
 //    return BookPagingStackLayoutTypeSlideBothWays;
 }
 
@@ -132,8 +134,12 @@
 
 #pragma mark - UICollectionViewDelegate methods
 
+//- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    return NO;
+//}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
+    DLog();
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -171,6 +177,7 @@
                                                         withReuseIdentifier:kHeaderId
                                                                forIndexPath:indexPath];
         BookHeaderView *categoryHeaderView = (BookHeaderView *)headerView;
+        categoryHeaderView.userInteractionEnabled = NO;
         
         // Configure the category name.
         CKCategory *category = [self.categories objectAtIndex:indexPath.section - [self stackCategoryStartSection]];
@@ -203,8 +210,7 @@
     UIImage *outlineImage = [CKBookCover outlineImageForCover:self.book.cover];
     UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:outlineImage];
     bookOutlineView.frame = CGRectMake(-26.0, -8.0, bookOutlineView.frame.size.width, bookOutlineView.frame.size.height);
-    [self.view addSubview:bookOutlineView];
-    [self.view sendSubviewToBack:bookOutlineView];
+    [self.view insertSubview:bookOutlineView belowSubview:self.collectionView];
     
     // Decorations.
     UIImageView *bookOutlineOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay"]];
@@ -219,6 +225,8 @@
     
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.pagingEnabled = YES;
+    self.collectionView.alwaysBounceVertical = NO;
+    self.collectionView.alwaysBounceHorizontal = YES;
     
     // Headers
     [self.collectionView registerClass:[BookHeaderView class]
@@ -237,6 +245,8 @@
     // Fetch all categories for the book.
     [self.book fetchCategoriesSuccess:^(NSArray *categories) {
         self.categories = [NSMutableArray arrayWithArray:categories];
+        self.categoryControllers = [NSMutableDictionary dictionaryWithCapacity:[categories count]];
+
         [self.collectionView reloadData];
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
@@ -263,10 +273,36 @@
 }
 
 - (UICollectionViewCell *)categoryCellAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *categoryCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCategoryCellId forIndexPath:indexPath];
-    categoryCell.contentView.backgroundColor = [UIColor lightGrayColor];
+    UICollectionViewCell *categoryCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCategoryCellId
+                                                                                        forIndexPath:indexPath];
+    NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
+    CKCategory *category = [self.categories objectAtIndex:categoryIndex];
+    NSString *categoryKey = [self keyForCategory:category];
+    
+    // Load or create categoryController.
+    BookCategoryViewController *categoryController = [self.categoryControllers objectForKey:categoryKey];
+    if (!categoryController) {
+        DLog(@"Create category VC for [%@]", category.name);
+        categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category];
+        [self.categoryControllers setObject:categoryController forKey:categoryKey];
+    } else {
+        DLog(@"Reusing category VC for [%@]", category.name);
+    }
+    
+    // Unload existing category view.
+    UIView *categoryView = [categoryCell.contentView viewWithTag:kCategoryViewTag];
+    [categoryView removeFromSuperview];
+    
+    // Load the current category view.
+    categoryController.view.frame = categoryCell.contentView.bounds;
+    categoryController.view.tag = kCategoryViewTag;
+    [categoryCell.contentView addSubview:categoryController.view];
+    
     return categoryCell;
 }
 
+- (NSString *)keyForCategory:(CKCategory *)category {
+    return category.objectId;
+}
 
 @end

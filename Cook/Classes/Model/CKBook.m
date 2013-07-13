@@ -289,10 +289,21 @@
 }
 
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    [self fetchRecipesForCategory:nil success:success failure:failure];
+}
+
+- (void)fetchRecipesForCategory:(CKCategory *)category success:(ListObjectsSuccessBlock)success
+                        failure:(ObjectFailureBlock)failure {
+    
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
     [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
+    
+    // Add category constraints if given.
+    if (category != nil) {
+        [query whereKey:kCategoryModelForeignKeyName equalTo:category.parseObject];
+    }
     
     // Only fetch public recipes if it's not your own book.
     if (![self isUserBookAuthor:[CKUser currentUser]]) {

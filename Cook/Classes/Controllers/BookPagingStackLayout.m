@@ -148,6 +148,9 @@
         // Translate.
         CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
         CATransform3D translate = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
+        if (requiredTranslation == 0) {
+            translate = CATransform3DIdentity;
+        }
         attributes.transform3D = translate;
         
     }
@@ -160,12 +163,19 @@
         // Translate.
         CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
         CATransform3D translate = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
+        if (requiredTranslation == 0) {
+            translate = CATransform3DIdentity;
+        }
         attributes.transform3D = translate;
         
         // Scale
         CGFloat requiredScale = [self scaleForAttributes:attributes];
         CATransform3D scale = CATransform3DScale(translate, requiredScale, requiredScale, 0.0);
+        if (requiredScale == 1.0) {
+            scale = CATransform3DIdentity;
+        }
         attributes.transform3D = scale;
+        
         
     }
     
