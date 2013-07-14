@@ -18,6 +18,7 @@
     if (self = [super init]) {
         self.scrollDirection = UICollectionViewScrollDirectionVertical;
         self.itemSize = [BookCategoryLayout unitSize];
+        self.sectionInset = (UIEdgeInsets) { 400.0, 20.0, 20.0, 20.0 };
     }
     return self;
 }

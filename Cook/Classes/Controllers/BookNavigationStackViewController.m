@@ -19,11 +19,13 @@
 #import "CKBookCover.h"
 #import "BookCategoryViewController.h"
 
-@interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate>
+@interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate, BookCategoryViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *categories;
+@property (nonatomic, strong) NSMutableArray *recipes;
+@property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableDictionary *categoryControllers;
 @property (nonatomic, assign) BOOL justOpened;
 
@@ -95,6 +97,17 @@
     }
 }
 
+#pragma mark - BookCategoryViewControllerDelegate methods
+
+- (NSArray *)recipesForBookCategoryViewControllerForCategory:(CKCategory *)category {
+    NSString *categoryKey = [self keyForCategory:category];
+    return [self.categoryRecipes objectForKey:categoryKey];
+}
+
+- (CKRecipe *)featuredRecipeForBookCategoryViewControllerForCategory:(CKCategory *)category {
+    return [self featuredRecipeForCategory:category];
+}
+
 #pragma mark - BookIndexListViewControllerDelegate methods
 
 - (void)bookIndexSelectedCategory:(NSString *)category {
@@ -131,12 +144,19 @@
     return kIndexSection + 1;
 }
 
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        [self prefetchCategoryControllers];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self prefetchCategoryControllers];
+}
 
 #pragma mark - UICollectionViewDelegate methods
-
-//- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    return NO;
-//}
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     DLog();
@@ -227,6 +247,8 @@
     self.collectionView.pagingEnabled = YES;
     self.collectionView.alwaysBounceVertical = NO;
     self.collectionView.alwaysBounceHorizontal = YES;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
+    self.collectionView.showsVerticalScrollIndicator = NO;
     
     // Headers
     [self.collectionView registerClass:[BookHeaderView class]
@@ -242,16 +264,65 @@
 - (void)loadData {
     DLog();
     
-    // Fetch all categories for the book.
-    [self.book fetchCategoriesSuccess:^(NSArray *categories) {
-        self.categories = [NSMutableArray arrayWithArray:categories];
-        self.categoryControllers = [NSMutableDictionary dictionaryWithCapacity:[categories count]];
-
-        [self.collectionView reloadData];
+    // Fetch all recipes for the book, and categorise them.
+    [self.book fetchRecipesSuccess:^(NSArray *recipes){
+        self.recipes = [NSMutableArray arrayWithArray:recipes];
+        [self loadRecipes];
+        [self loadFeaturedRecipe];
+        
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
     }];
     
+}
+
+- (void)loadRecipes {
+    self.categoryRecipes = [NSMutableDictionary dictionary];
+    self.categories = [NSMutableArray array];
+    
+    for (CKRecipe *recipe in self.recipes) {
+        
+        CKCategory *category = recipe.category;
+        NSString *categoryKey = [self keyForCategory:category];
+        
+        if (![self.categories detect:^BOOL(CKCategory *existingCategory) {
+            NSString *currentCategoryKey = [self keyForCategory:existingCategory];
+            return [currentCategoryKey isEqualToString:categoryKey];
+            
+        }]) {
+            
+            NSMutableArray *recipes = [NSMutableArray arrayWithObject:recipe];
+            [self.categoryRecipes setObject:recipes forKey:categoryKey];
+            [self.categories addObject:category];
+            
+        } else {
+            
+            NSMutableArray *recipes = [self.categoryRecipes objectForKey:categoryKey];
+            [recipes addObject:recipe];
+        }
+        
+    }
+    
+    // Sort the categories and extract category name list.
+    NSSortDescriptor *categoryOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+    [self.categories sortUsingDescriptors:@[categoryOrder]];
+
+    // Update the categories for the book if we don't have network loaded categories.
+    if ([self.book.currentCategories count] == 0) {
+        self.book.currentCategories = self.categories;
+    }
+    
+    // Initialise the categoryControllers
+    self.categoryControllers = [NSMutableDictionary dictionaryWithCapacity:[self.categories count]];
+    
+    // Now reload the collection.
+    [self.collectionView reloadData];
+}
+
+- (void)loadFeaturedRecipe {
+    CKCategory *randomCategory = [self.categories objectAtIndex:arc4random_uniform([self.categories count])];
+    CKRecipe *featuredRecipe = [self featuredRecipeForCategory:randomCategory];
+    [self.indexViewController configureHeroRecipe:featuredRecipe];
 }
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -283,7 +354,7 @@
     BookCategoryViewController *categoryController = [self.categoryControllers objectForKey:categoryKey];
     if (!categoryController) {
         DLog(@"Create category VC for [%@]", category.name);
-        categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category];
+        categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category delegate:self];
         [self.categoryControllers setObject:categoryController forKey:categoryKey];
     } else {
         DLog(@"Reusing category VC for [%@]", category.name);
@@ -303,6 +374,59 @@
 
 - (NSString *)keyForCategory:(CKCategory *)category {
     return category.objectId;
+}
+
+- (void)prefetchCategoryControllers {
+    
+    CGRect visibleFrame = (CGRect) {
+        self.collectionView.contentOffset.x,
+        self.collectionView.contentOffset.y,
+        self.collectionView.bounds.size.width,
+        self.collectionView.bounds.size.height
+    };
+    
+    // Figure out the pageDistance for prefetching.
+    NSInteger categoryIndex = 0;
+    NSInteger pageDistance = (NSInteger)visibleFrame.origin.x / self.collectionView.bounds.size.width;
+    if (pageDistance >= [self stackCategoryStartSection]) {
+        categoryIndex = pageDistance - [self stackCategoryStartSection];
+    }
+    
+    NSInteger numPrefetch = 2;
+    for (NSInteger currentCatIndex = categoryIndex; currentCatIndex < (categoryIndex + numPrefetch); currentCatIndex++) {
+        
+        // Have we exceeded the number of categories.
+        if (currentCatIndex > [self.categories count] - 1) {
+            break;
+        }
+        
+        CKCategory *category = [self.categories objectAtIndex:currentCatIndex];
+        NSString *categoryKey = [self keyForCategory:category];
+        BookCategoryViewController *categoryController = [self.categoryControllers objectForKey:categoryKey];
+        if (!categoryController) {
+            DLog(@"Prefetch category VC for [%@]", category.name);
+            categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category delegate:self];
+            [categoryController loadData];
+            [self.categoryControllers setObject:categoryController forKey:categoryKey];
+        }
+    }
+    
+}
+
+- (NSArray *)recipesWithPhotos:(NSArray *)recipes {
+    return [recipes select:^BOOL(CKRecipe *recipe) {
+        return [recipe hasPhotos];
+    }];
+}
+
+- (CKRecipe *)featuredRecipeForCategory:(CKCategory *)category {
+    NSArray *recipes = [self.categoryRecipes objectForKey:[self keyForCategory:category]];
+    NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
+    if ([recipesWithPhotos count] > 0) {
+        return [recipes objectAtIndex:arc4random_uniform([recipes count])];
+    } else {
+        return nil;
+    }
 }
 
 @end

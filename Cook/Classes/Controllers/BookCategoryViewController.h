@@ -10,9 +10,18 @@
 
 @class CKBook;
 @class CKCategory;
+@class CKRecipe;
+
+@protocol BookCategoryViewControllerDelegate <NSObject>
+
+- (NSArray *)recipesForBookCategoryViewControllerForCategory:(CKCategory *)category;
+- (CKRecipe *)featuredRecipeForBookCategoryViewControllerForCategory:(CKCategory *)category;
+
+@end
 
 @interface BookCategoryViewController : UICollectionViewController
 
-- (id)initWithBook:(CKBook *)book category:(CKCategory *)category;
+- (id)initWithBook:(CKBook *)book category:(CKCategory *)category delegate:(id<BookCategoryViewControllerDelegate>)delegate;
+- (void)loadData;
 
 @end

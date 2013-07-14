@@ -17,6 +17,7 @@
 
 @interface BookCategoryViewController ()
 
+@property (nonatomic, weak) id<BookCategoryViewControllerDelegate> delegate;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKCategory *category;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
@@ -30,8 +31,10 @@
 
 #define kRecipeCellId   @"RecipeCellId"
 
-- (id)initWithBook:(CKBook *)book category:(CKCategory *)category {
+- (id)initWithBook:(CKBook *)book category:(CKCategory *)category delegate:(id<BookCategoryViewControllerDelegate>)delegate {
+    
     if (self = [super initWithCollectionViewLayout:[[BookCategoryLayout alloc] init]]) {
+        self.delegate = delegate;
         self.book = book;
         self.category = category;
         self.photoStore = [[ParsePhotoStore alloc] init];
@@ -47,14 +50,26 @@
     self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view insertSubview:self.imageView belowSubview:self.collectionView];
     
-//    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [button setTitle:@"HELLO" forState:UIControlStateNormal];
-//    [button sizeToFit];
-//    button.center = self.view.center;
-//    [self.view addSubview:button];
-    
     [self initCollectionView];
     [self loadData];
+}
+
+- (void)loadData {
+    self.recipes = [NSMutableArray arrayWithArray:[self.delegate
+                                                   recipesForBookCategoryViewControllerForCategory:self.category]];
+    [self.collectionView reloadData];
+    [self loadFeaturedRecipe];
+    
+//    [self.book fetchRecipesForCategory:self.category
+//                               success:^(NSArray *recipes) {
+//                                   DLog(@"Loaded [%d] recipes for [%@]", [recipes count], self.category.name);
+//                                   self.recipes = [NSMutableArray arrayWithArray:recipes];
+//                                   [self.collectionView reloadData];
+//                                   [self loadFeaturedRecipe];
+//                               }
+//                               failure:^(NSError *error) {
+//                                   DLog(@"%@", [error localizedDescription]);
+//                               }];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -96,41 +111,13 @@
     [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
 }
 
-- (void)loadData {
-    [self.book fetchRecipesForCategory:self.category
-                               success:^(NSArray *recipes) {
-                                   DLog(@"Loaded [%d] recipes for [%@]", [recipes count], self.category.name);
-                                   self.recipes = [NSMutableArray arrayWithArray:recipes];
-                                   [self.collectionView reloadData];
-                                   [self loadFeaturedRecipe];
-                               }
-                               failure:^(NSError *error) {
-                                   DLog(@"%@", [error localizedDescription]);
-                               }];
-}
-
 - (void)loadFeaturedRecipe {
-    CKRecipe *featuredRecipe = [self featuredRecipe];
+    CKRecipe *featuredRecipe = [self.delegate featuredRecipeForBookCategoryViewControllerForCategory:self.category];
     [self.photoStore imageForParseFile:[featuredRecipe imageFile]
                                   size:self.imageView.bounds.size
                             completion:^(UIImage *image) {
                                 self.imageView.image = image;
                             }];
-}
-
-- (CKRecipe *)featuredRecipe {
-    NSArray *recipes = [self recipesWithPhotos];
-    if ([recipes count] > 0) {
-        return [recipes objectAtIndex:arc4random_uniform([recipes count])];
-    } else {
-        return nil;
-    }
-}
-
-- (NSArray *)recipesWithPhotos {
-    return [self.recipes select:^BOOL(CKRecipe *recipe) {
-        return [recipe hasPhotos];
-    }];
 }
 
 - (void)configureImageForRecipeCell:(BookRecipeCollectionViewCell *)recipeCell recipe:(CKRecipe *)recipe
