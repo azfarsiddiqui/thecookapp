@@ -27,7 +27,6 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) NSArray *categories;
 
-@property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -55,16 +54,16 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
     [self initBackgroundView];
     [self initTitleView];
     [self initCollectionView];
     [self initProfileView];
     [self initShadowViews];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)configureCategories:(NSArray *)categories {
@@ -126,18 +125,11 @@
 #pragma mark - Private methods
 
 - (void)initBackgroundView {
-    
-    UIView *backgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
-    backgroundView.backgroundColor = [UIColor clearColor];
-    backgroundView.clipsToBounds = YES;
-    [self.view addSubview:backgroundView];
-    self.backgroundView = backgroundView;
-    
     UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
     imageView.frame = self.view.bounds;
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
-    [backgroundView addSubview:imageView];
+    [self.view addSubview:imageView];
     self.imageView = imageView;
 }
 
@@ -149,6 +141,7 @@
         titleIndexView.frame.size.width,
         titleIndexView.frame.size.height
     };
+    titleIndexView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     [self.view addSubview:titleIndexView];
     self.titleIndexView = titleIndexView;
 }
@@ -246,7 +239,7 @@
                          animations:^{
                              self.titleIndexView.frame = titleViewFrame;
                              self.titleIndexView.transform = CGAffineTransformMakeScale(0.7, 0.7);
-                             self.backgroundView.frame = backgroundFrame;
+                             self.imageView.frame = backgroundFrame;
                              self.collectionView.transform = CGAffineTransformIdentity;
                              self.collectionView.alpha = 1.0;
                              self.profileImageView.transform = CGAffineTransformIdentity;
@@ -256,7 +249,7 @@
     } else {
         self.titleIndexView.frame = titleViewFrame;
         self.titleIndexView.transform = CGAffineTransformMakeScale(0.7, 0.7);
-        self.backgroundView.frame = backgroundFrame;
+        self.imageView.frame = backgroundFrame;
         self.collectionView.transform = CGAffineTransformIdentity;
         self.collectionView.alpha = 1.0;
         self.profileImageView.transform = CGAffineTransformIdentity;

@@ -18,6 +18,7 @@
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
 #import "BookCategoryViewController.h"
+#import "ViewHelper.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate, BookCategoryViewControllerDelegate>
 
@@ -33,6 +34,7 @@
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
 @property (nonatomic, strong) BookIndexListViewController *indexViewController;
+@property (nonatomic, strong) UIButton *closeButton;
 
 @end
 
@@ -74,7 +76,10 @@
     
     [self initBookOutlineView];
     [self initCollectionView];
+    
     [self loadData];
+    
+    [self.view addSubview:self.closeButton];
 }
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
@@ -95,6 +100,21 @@
     } else {
         
     }
+}
+
+#pragma mark - Properties
+
+- (UIButton *)closeButton {
+    if (!_closeButton) {
+        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
+                                            target:self
+                                          selector:@selector(closeTapped:)];
+        _closeButton.frame = CGRectMake(20.0,
+                                        35.0,
+                                        _closeButton.frame.size.width,
+                                        _closeButton.frame.size.height);
+    }
+    return _closeButton;
 }
 
 #pragma mark - BookCategoryViewControllerDelegate methods
@@ -134,8 +154,8 @@
 }
 
 - (BookPagingStackLayoutType)stackPagingLayoutType {
-    return BookPagingStackLayoutTypeSlideOneWay;
-//    return BookPagingStackLayoutTypeSlideOneWayScale;
+//    return BookPagingStackLayoutTypeSlideOneWay;
+    return BookPagingStackLayoutTypeSlideOneWayScale;
 //    return BookPagingStackLayoutTypeSlideBothWays;
 }
 
@@ -427,6 +447,10 @@
     } else {
         return nil;
     }
+}
+
+- (void)closeTapped:(id)sender {
+    [self.delegate bookNavigationControllerCloseRequested];
 }
 
 @end
