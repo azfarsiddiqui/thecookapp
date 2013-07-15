@@ -11,14 +11,14 @@
 @implementation BookCategoryLayout
 
 + (CGSize)unitSize {
-    return CGSizeMake(312.0, 642.0);
+    return CGSizeMake(320.0, 642.0);
 }
 
 - (id)init {
     if (self = [super init]) {
         self.scrollDirection = UICollectionViewScrollDirectionVertical;
         self.itemSize = [BookCategoryLayout unitSize];
-        self.sectionInset = (UIEdgeInsets) { 400.0, 20.0, 20.0, 20.0 };
+        self.sectionInset = (UIEdgeInsets) { 510.0, 20.0, 20.0, 20.0 };
     }
     return self;
 }
