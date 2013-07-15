@@ -37,7 +37,7 @@
 @implementation BookRecipeCollectionViewCell
 
 #define kViewDebug              0
-#define kImageSize              CGSizeMake(250.0, 250.0)
+#define kImageSize              CGSizeMake(318.0, 258.0)
 #define kTitleOffsetNoImage     52.0
 #define kTitleTopGap            20.0
 #define kTitleDividerGap        10.0
@@ -46,6 +46,7 @@
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
 #define kContentInsets          UIEdgeInsetsMake(30.0, 30.0, 20.0, 30.0)
+#define kImageInsets            UIEdgeInsetsMake(1.0, 1.0, 1.0, 1.0)
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -55,7 +56,12 @@
         // Top thumbnail.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
         imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
-        imageView.frame = CGRectMake(kContentInsets.left, kContentInsets.top, kImageSize.width, kImageSize.height);
+        imageView.frame = (CGRect){
+            kImageInsets.left,
+            kImageInsets.top,
+            kImageSize.width,
+            kImageSize.height
+        };
         [self.contentView addSubview:imageView];
         self.imageView = imageView;
         
