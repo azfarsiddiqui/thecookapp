@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BookPageViewController.h"
 
 @class CKBook;
 @class CKRecipe;
@@ -19,7 +20,7 @@
 
 @end
 
-@interface BookIndexListViewController : UIViewController
+@interface BookIndexListViewController : BookPageViewController
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookIndexListViewControllerDelegate>)delegate;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;

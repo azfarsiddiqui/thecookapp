@@ -58,6 +58,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self initImageView];
     [self initIntroView];
     [self loadData];

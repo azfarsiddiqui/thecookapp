@@ -15,6 +15,8 @@
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
 @property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
+@property (nonatomic, strong) NSMutableArray *decorationLayoutAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathDecorationAttributes;
 
 @property (nonatomic, assign) BOOL forwardDirection;
 
@@ -23,10 +25,12 @@
 @implementation BookPagingStackLayout
 
 #define kShiftOffset                200.0
-#define kHeaderShiftOffset          500.0
+#define kHeaderShiftOffset          400.0
 #define kMaxScale                   0.9
 #define kMaxRotationDegrees         10.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
+#define kPageShadowLeftKind         @"PageShadowLeftKind"
+#define kPageShadowRightKind        @"PageShadowRightKind"
 
 - (id)initWithDelegate:(id<BookPagingStackLayoutDelegate>)delegate {
     if (self = [super init]) {
@@ -45,42 +49,13 @@
 - (void)prepareLayout {
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.supplementaryLayoutAttributes = [NSMutableArray array];
+    self.decorationLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
+    self.indexPathDecorationAttributes = [NSMutableDictionary dictionary];
     
-    // One page per section.
-    NSInteger numSections = [self.collectionView numberOfSections];
-    for (NSInteger sectionIndex = 0; sectionIndex < numSections; sectionIndex++) {
-        
-        // Category header only for, er, categories.
-        if (sectionIndex >= [self.delegate stackCategoryStartSection]) {
-            NSIndexPath *sectionIndexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
-            UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:sectionIndexPath];
-            headerAttributes.frame = self.collectionView.bounds;
-            headerAttributes.frame = (CGRect){
-                [self pageOffsetForIndexPath:sectionIndexPath],
-                self.collectionView.bounds.origin.y,
-                self.collectionView.bounds.size.width,
-                400.0
-            };
-            headerAttributes.zIndex = -sectionIndex;
-            [self.supplementaryLayoutAttributes addObject:headerAttributes];
-            [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
-        }
-        
-        // Pages.
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
-        UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-        attributes.frame = (CGRect){
-            [self pageOffsetForIndexPath:indexPath],
-            self.collectionView.bounds.origin.y,
-            self.collectionView.bounds.size.width,
-            self.collectionView.bounds.size.height
-        };
-        attributes.zIndex = -sectionIndex;
-        [self.itemsLayoutAttributes addObject:attributes];
-        [self.indexPathItemAttributes setObject:attributes forKey:indexPath];
-    }
+    [self buildPagesLayout];
+    [self buildCategoryHeadersLayout];
     
     // Inform end of layout prep.
     [self.delegate stackPagingLayoutDidFinish];
@@ -112,6 +87,13 @@
         }
     }
     
+    // Decoration cells.
+    for (UICollectionViewLayoutAttributes *attributes in self.decorationLayoutAttributes) {
+        if (CGRectIntersectsRect(rect, attributes.frame)) {
+            [layoutAttributes addObject:attributes];
+        }
+    }
+    
     // Apply transform for paging.
     [self applyPagingEffects:layoutAttributes];
     
@@ -122,7 +104,65 @@
     return [self.indexPathItemAttributes objectForKey:indexPath];
 }
 
+- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)decorationViewKind
+                                                                  atIndexPath:(NSIndexPath *)indexPath {
+    return [self.indexPathDecorationAttributes objectForKey:indexPath];
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind
+                                                                     atIndexPath:(NSIndexPath *)indexPath {
+    return [self.indexPathSupplementaryAttributes objectForKey:indexPath];
+}
+
 #pragma mark - Private methods
+
+- (void)buildPagesLayout {
+    
+    // One page per section.
+    NSInteger numSections = [self.collectionView numberOfSections];
+    for (NSInteger sectionIndex = 0; sectionIndex < numSections; sectionIndex++) {
+        
+        // Single page layout.
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
+        UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+        attributes.zIndex = -sectionIndex;
+        attributes.frame = (CGRect){
+            [self pageOffsetForIndexPath:indexPath],
+            self.collectionView.bounds.origin.y,
+            self.collectionView.bounds.size.width,
+            self.collectionView.bounds.size.height
+        };
+        [self.itemsLayoutAttributes addObject:attributes];
+        [self.indexPathItemAttributes setObject:attributes forKey:indexPath];
+        
+    }
+    
+}
+
+- (void)buildCategoryHeadersLayout {
+    
+    // One page per category, only there are more than 2 sections.
+    NSInteger numSections = [self.collectionView numberOfSections];
+    NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
+    for (NSInteger sectionIndex = categoryStartSection; sectionIndex < numSections; sectionIndex++) {
+            
+        // Category header.
+        NSIndexPath *sectionIndexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
+        UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                                            withIndexPath:sectionIndexPath];
+        headerAttributes.frame = (CGRect){
+            [self pageOffsetForIndexPath:sectionIndexPath],
+            self.collectionView.bounds.origin.y,
+            self.collectionView.bounds.size.width,
+            400.0
+        };
+        headerAttributes.zIndex = -sectionIndex;
+        [self.supplementaryLayoutAttributes addObject:headerAttributes];
+        [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
+        
+    }
+
+}
 
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
     

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BookPageViewController.h"
 
 @class CKBook;
 @class CKCategory;
@@ -19,7 +20,7 @@
 
 @end
 
-@interface BookCategoryViewController : UICollectionViewController
+@interface BookCategoryViewController : BookPageViewController
 
 - (id)initWithBook:(CKBook *)book category:(CKCategory *)category delegate:(id<BookCategoryViewControllerDelegate>)delegate;
 - (void)loadData;

@@ -15,12 +15,14 @@
 #import "BookProfileViewController.h"
 #import "BookIndexListViewController.h"
 #import "BookHeaderView.h"
+#import "BookProfileHeaderView.h"
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
 #import "BookCategoryViewController.h"
 #import "ViewHelper.h"
 
-@interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate, BookCategoryViewControllerDelegate>
+@interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate,
+    BookCategoryViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -46,7 +48,8 @@
 #define kProfileCellId      @"ProfileCellId"
 #define kIndexCellId        @"IndexCellId"
 #define kCategoryCellId     @"CategoryCellId"
-#define kHeaderId           @"HeaderId"
+#define kCategoryHeaderId   @"CategoryHeaderId"
+#define kProfileHeaderId    @"ProfileHeaderId"
 #define kCategoryViewTag    460
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
@@ -154,8 +157,8 @@
 }
 
 - (BookPagingStackLayoutType)stackPagingLayoutType {
-//    return BookPagingStackLayoutTypeSlideOneWay;
-    return BookPagingStackLayoutTypeSlideOneWayScale;
+    return BookPagingStackLayoutTypeSlideOneWay;
+//    return BookPagingStackLayoutTypeSlideOneWayScale;
 //    return BookPagingStackLayoutTypeSlideBothWays;
 }
 
@@ -213,15 +216,22 @@
     
     UICollectionReusableView *headerView = nil;
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                        withReuseIdentifier:kHeaderId
-                                                               forIndexPath:indexPath];
-        BookHeaderView *categoryHeaderView = (BookHeaderView *)headerView;
-        categoryHeaderView.userInteractionEnabled = NO;
         
-        // Configure the category name.
-        CKCategory *category = [self.categories objectAtIndex:indexPath.section - [self stackCategoryStartSection]];
-        [categoryHeaderView  configureTitle:category.name];
+        if (indexPath.section == kProfileSection) {
+            headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                            withReuseIdentifier:kProfileHeaderId
+                                                                   forIndexPath:indexPath];
+        } else if (indexPath.section >= [self stackCategoryStartSection]) {
+            headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                            withReuseIdentifier:kCategoryHeaderId
+                                                                   forIndexPath:indexPath];
+            BookHeaderView *categoryHeaderView = (BookHeaderView *)headerView;
+            categoryHeaderView.userInteractionEnabled = NO;
+            
+            // Configure the category name.
+            CKCategory *category = [self.categories objectAtIndex:indexPath.section - [self stackCategoryStartSection]];
+            [categoryHeaderView  configureTitle:category.name];
+        }
     }
     
     return headerView;
@@ -271,9 +281,8 @@
     self.collectionView.showsVerticalScrollIndicator = NO;
     
     // Headers
-    [self.collectionView registerClass:[BookHeaderView class]
-            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                   withReuseIdentifier:kHeaderId];
+    [self.collectionView registerClass:[BookProfileHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kProfileHeaderId];
+    [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
     
     // Profile, Index, Category.
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];

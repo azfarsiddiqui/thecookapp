@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BookPageViewController.h"
 
 @class CKBook;
 
-@interface BookProfileViewController : UIViewController
+@interface BookProfileViewController : BookPageViewController
 
 - (id)initWithBook:(CKBook *)book;
 

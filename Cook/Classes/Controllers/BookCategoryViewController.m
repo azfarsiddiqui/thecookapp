@@ -15,9 +15,10 @@
 #import "BookRecipeCollectionViewCell.h"
 #import "MRCEnumerable.h"
 
-@interface BookCategoryViewController ()
+@interface BookCategoryViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, weak) id<BookCategoryViewControllerDelegate> delegate;
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKCategory *category;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
@@ -33,7 +34,7 @@
 
 - (id)initWithBook:(CKBook *)book category:(CKCategory *)category delegate:(id<BookCategoryViewControllerDelegate>)delegate {
     
-    if (self = [super initWithCollectionViewLayout:[[BookCategoryLayout alloc] init]]) {
+    if (self = [super init]) {
         self.delegate = delegate;
         self.book = book;
         self.category = category;
@@ -46,10 +47,8 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    self.imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    [self.view insertSubview:self.imageView belowSubview:self.collectionView];
     
+    [self initImageView];
     [self initCollectionView];
     [self loadData];
 }
@@ -105,10 +104,23 @@
 
 #pragma mark - Private 
 
+- (void)initImageView {
+    self.imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.imageView];
+}
+
 - (void)initCollectionView {
-    self.collectionView.alwaysBounceVertical = YES;
-    self.collectionView.backgroundColor = [UIColor clearColor];
-    [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
+                                                          collectionViewLayout:[[BookCategoryLayout alloc] init]];
+    collectionView.delegate = self;
+    collectionView.dataSource = self;
+    collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    collectionView.alwaysBounceVertical = YES;
+    collectionView.backgroundColor = [UIColor clearColor];
+    [collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
+    [self.view addSubview:collectionView];
+    self.collectionView = collectionView;
 }
 
 - (void)loadFeaturedRecipe {
