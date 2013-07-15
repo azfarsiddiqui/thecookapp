@@ -40,6 +40,7 @@
 #define kIndexWidth             240.0
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
+#define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 0.0, 0.0 }
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookIndexListViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -131,6 +132,17 @@
     imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
     [self.view addSubview:imageView];
     self.imageView = imageView;
+    
+    UIImage *borderImage = [[UIImage imageNamed:@"cook_book_inner_title_border.png"] resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
+    UIImageView *borderImageView = [[UIImageView alloc] initWithImage:borderImage];
+    borderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
+    borderImageView.frame = (CGRect){
+        kBorderInsets.left,
+        kBorderInsets.top,
+        self.view.bounds.size.width - kBorderInsets.left - kBorderInsets.right,
+        self.view.bounds.size.height - kBorderInsets.top - kBorderInsets.bottom
+    };
+    [self.view addSubview:borderImageView];
 }
 
 - (void)initTitleView {
