@@ -16,16 +16,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initSideShadowViews];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self initSideShadowViews];
 }
 
 #pragma mark - Private methods
 
 - (void)initSideShadowViews {
+    DLog();
     
     // Left shadow.
     UIImageView *leftShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_pageshadow_left.png"]];

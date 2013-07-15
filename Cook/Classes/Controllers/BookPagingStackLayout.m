@@ -7,6 +7,7 @@
 //
 
 #import "BookPagingStackLayout.h"
+#import "BookNavigationView.h"
 
 @interface BookPagingStackLayout ()
 
@@ -29,12 +30,12 @@
 #define kMaxScale                   0.9
 #define kMaxRotationDegrees         10.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
-#define kPageShadowLeftKind         @"PageShadowLeftKind"
-#define kPageShadowRightKind        @"PageShadowRightKind"
+#define kPageNavigationtKind        @"PageNavigationtKind"
 
 - (id)initWithDelegate:(id<BookPagingStackLayoutDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
+        [self registerClass:[BookNavigationView class] forDecorationViewOfKind:kPageNavigationtKind];
     }
     return self;
 }
@@ -56,6 +57,7 @@
     
     [self buildPagesLayout];
     [self buildCategoryHeadersLayout];
+    [self buildNavigationLayout];
     
     // Inform end of layout prep.
     [self.delegate stackPagingLayoutDidFinish];
@@ -89,7 +91,8 @@
     
     // Decoration cells.
     for (UICollectionViewLayoutAttributes *attributes in self.decorationLayoutAttributes) {
-        if (CGRectIntersectsRect(rect, attributes.frame)) {
+        NSInteger numSections = [self.collectionView numberOfSections];
+        if (numSections > [self.delegate stackCategoryStartSection]) {
             [layoutAttributes addObject:attributes];
         }
     }
@@ -125,7 +128,7 @@
         // Single page layout.
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-        attributes.zIndex = -sectionIndex;
+        attributes.zIndex = -(sectionIndex * 2);
         attributes.frame = (CGRect){
             [self pageOffsetForIndexPath:indexPath],
             self.collectionView.bounds.origin.y,
@@ -156,12 +159,31 @@
             self.collectionView.bounds.size.width,
             400.0
         };
-        headerAttributes.zIndex = -sectionIndex;
+        headerAttributes.zIndex = -(sectionIndex * 2);
         [self.supplementaryLayoutAttributes addObject:headerAttributes];
         [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
         
     }
 
+}
+
+- (void)buildNavigationLayout {
+    NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
+    NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
+    
+    UICollectionViewLayoutAttributes *previousAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
+    
+    UICollectionViewLayoutAttributes *navigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kPageNavigationtKind
+                                                                                                                         withIndexPath:navigationIndexPath];
+    navigationAttributes.frame = (CGRect){
+        [self pageOffsetForIndexPath:navigationIndexPath],
+        self.collectionView.bounds.origin.y,
+        self.collectionView.bounds.size.width,
+        [BookNavigationView navigationHeight]
+    };
+    navigationAttributes.zIndex = previousAttributes.zIndex - 1;
+    [self.decorationLayoutAttributes addObject:navigationAttributes];
+    [self.indexPathDecorationAttributes setObject:navigationAttributes forKey:navigationIndexPath];
 }
 
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
@@ -186,13 +208,25 @@
     
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         
-        // Translate.
-        CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
-        CATransform3D translate = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
-        if (requiredTranslation == 0) {
-            translate = CATransform3DIdentity;
+        if ([attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
+            
+            [self applyStickyNavigationHeaderEffect:attributes];
+            
+        } else {
+            
+            // Translate.
+            CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
+//            CATransform3D translate = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
+//            if (requiredTranslation == 0) {
+//                translate = CATransform3DIdentity;
+//            }
+//            attributes.transform3D = translate;
+            
+            CGRect frame = attributes.frame;
+            frame.origin.x += requiredTranslation;
+            attributes.frame = frame;
+            
         }
-        attributes.transform3D = translate;
         
     }
     
@@ -233,6 +267,41 @@
         transform = CATransform3DTranslate(transform, requiredTranslation, 0.0, 0.0);
         
         attributes.transform3D = transform;
+    }
+    
+}
+
+- (void)applyStickyNavigationHeaderEffect:(UICollectionViewLayoutAttributes *)attributes {
+    if (![attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
+        return;
+    }
+    
+    CGFloat offset =  kShiftOffset;
+    CGRect visibleFrame = [self visibleFrame];
+    CGRect navigationFrame = attributes.frame;
+    NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
+    CGFloat startOffset = categoryStartSection * self.collectionView.bounds.size.width;
+    
+    if (visibleFrame.origin.x >= startOffset) {
+        
+        navigationFrame.origin.x = visibleFrame.origin.x;
+        attributes.frame = navigationFrame;
+        
+    } else if (navigationFrame.origin.x >= visibleFrame.origin.x) {
+        
+        // Figure out the pageDistance and the ratio.
+        CGFloat distance = navigationFrame.origin.x - visibleFrame.origin.x;
+        CGFloat normalisedDistance = distance / self.collectionView.bounds.size.width;
+        NSInteger pageDistance = (NSInteger)normalisedDistance;
+        
+        // Magic formula.
+        CGFloat effectiveDistance = (pageDistance * offset) + (self.collectionView.bounds.size.width - ((pageDistance + 1) * offset));
+        CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
+        CGFloat requiredTranslation = -effectiveDistance * distanceRatio;
+        
+        navigationFrame.origin.x += requiredTranslation;
+        attributes.frame = navigationFrame;
+        
     }
     
 }
