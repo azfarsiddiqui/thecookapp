@@ -24,6 +24,7 @@ typedef enum {
 
 @interface BookPagingStackLayout : UICollectionViewLayout
 
++ (NSString *)bookPagingNavigationElementKind;
 - (id)initWithDelegate:(id<BookPagingStackLayoutDelegate>)delegate;
 
 @end

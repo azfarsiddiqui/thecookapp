@@ -168,5 +168,8 @@
 + (UIFont *)textEditableTextFont;
 + (UIFont *)textViewTitleFont;
 
+#pragma mark - Book navigation view.
++ (UIFont *)navigationTitleFont;
+
 @end
 

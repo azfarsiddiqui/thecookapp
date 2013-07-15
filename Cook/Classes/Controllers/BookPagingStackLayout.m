@@ -32,10 +32,13 @@
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
 #define kPageNavigationtKind        @"PageNavigationtKind"
 
++ (NSString *)bookPagingNavigationElementKind {
+    return kPageNavigationtKind;
+}
+
 - (id)initWithDelegate:(id<BookPagingStackLayoutDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
-        [self registerClass:[BookNavigationView class] forDecorationViewOfKind:kPageNavigationtKind];
     }
     return self;
 }
@@ -77,9 +80,21 @@
     
     // Header cells.
     for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
-        if (CGRectIntersectsRect(rect, attributes.frame)) {
-            [layoutAttributes addObject:attributes];
+        
+        // Navigation header.
+        if ([attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
+            NSInteger numSections = [self.collectionView numberOfSections];
+            if (numSections > [self.delegate stackCategoryStartSection]) {
+                [layoutAttributes addObject:attributes];
+            }
+        } else {
+            
+            // Header cells.
+            if (CGRectIntersectsRect(rect, attributes.frame)) {
+                [layoutAttributes addObject:attributes];
+            }
         }
+        
     }
     
     // Item cells.
@@ -139,7 +154,6 @@
         [self.indexPathItemAttributes setObject:attributes forKey:indexPath];
         
     }
-    
 }
 
 - (void)buildCategoryHeadersLayout {
@@ -172,9 +186,8 @@
     NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
     
     UICollectionViewLayoutAttributes *previousAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
-    
-    UICollectionViewLayoutAttributes *navigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kPageNavigationtKind
-                                                                                                                         withIndexPath:navigationIndexPath];
+    UICollectionViewLayoutAttributes *navigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kPageNavigationtKind
+                                                                                                                            withIndexPath:navigationIndexPath];
     navigationAttributes.frame = (CGRect){
         [self pageOffsetForIndexPath:navigationIndexPath],
         self.collectionView.bounds.origin.y,
@@ -182,30 +195,11 @@
         [BookNavigationView navigationHeight]
     };
     navigationAttributes.zIndex = previousAttributes.zIndex - 1;
-    [self.decorationLayoutAttributes addObject:navigationAttributes];
-    [self.indexPathDecorationAttributes setObject:navigationAttributes forKey:navigationIndexPath];
+    [self.supplementaryLayoutAttributes addObject:navigationAttributes];
+    [self.indexPathSupplementaryAttributes setObject:navigationAttributes forKey:navigationIndexPath];
 }
 
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
-    
-    switch ([self.delegate stackPagingLayoutType]) {
-        case BookPagingStackLayoutTypeSlideOneWay:
-            [self applySlideOneWayEffects:layoutAttributes];
-            break;
-        case BookPagingStackLayoutTypeSlideOneWayScale:
-            [self applySlideOneWayScaleEffects:layoutAttributes];
-            break;
-        case BookPagingStackLayoutTypeSlideBothWays:
-            [self applySlideBothWaysEffects:layoutAttributes];
-            break;
-        default:
-            break;
-    }
-    
-}
-
-- (void)applySlideOneWayEffects:(NSArray *)layoutAttributes {
-    
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         
         if ([attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
@@ -216,59 +210,12 @@
             
             // Translate.
             CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
-//            CATransform3D translate = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
-//            if (requiredTranslation == 0) {
-//                translate = CATransform3DIdentity;
-//            }
-//            attributes.transform3D = translate;
-            
             CGRect frame = attributes.frame;
             frame.origin.x += requiredTranslation;
             attributes.frame = frame;
             
         }
-        
     }
-    
-}
-
-- (void)applySlideOneWayScaleEffects:(NSArray *)layoutAttributes {
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        
-        // Translate.
-        CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
-        CATransform3D translate = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
-        if (requiredTranslation == 0) {
-            translate = CATransform3DIdentity;
-        }
-        attributes.transform3D = translate;
-        
-        // Scale
-        CGFloat requiredScale = [self scaleForAttributes:attributes];
-        CATransform3D scale = CATransform3DScale(translate, requiredScale, requiredScale, 0.0);
-        if (requiredScale == 1.0) {
-            scale = CATransform3DIdentity;
-        }
-        attributes.transform3D = scale;
-        
-        
-    }
-    
-}
-
-- (void)applySlideBothWaysEffects:(NSArray *)layoutAttributes {
-    
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        
-        CATransform3D transform = attributes.transform3D;
-        
-        // Translate.
-        CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
-        transform = CATransform3DTranslate(transform, requiredTranslation, 0.0, 0.0);
-        
-        attributes.transform3D = transform;
-    }
-    
 }
 
 - (void)applyStickyNavigationHeaderEffect:(UICollectionViewLayoutAttributes *)attributes {
@@ -334,40 +281,6 @@
     }
     
     return requiredTranslation;
-}
-
-- (CGFloat)scaleForAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    CGRect visibleFrame = [self visibleFrame];
-    CGFloat requiredScale = 0.0;
-    
-    NSIndexPath *indexPath = attributes.indexPath;
-    CGFloat pageOffset = [self pageOffsetForIndexPath:indexPath];
-    CGRect cellFrame = attributes.frame;
-    
-    if (pageOffset >= visibleFrame.origin.x) {
-        CGFloat distance = cellFrame.origin.x - visibleFrame.origin.x;
-        requiredScale = 1.0 - distance / self.collectionView.bounds.size.width;
-    } else {
-        requiredScale = 1.0;
-    }
-    
-    return MAX(requiredScale, kMaxScale);
-}
-
-- (CGFloat)rotationForAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    CGRect visibleFrame = [self visibleFrame];
-    CGFloat requiredRotation = 0.0;
-    
-    NSIndexPath *indexPath = attributes.indexPath;
-    CGFloat pageOffset = [self pageOffsetForIndexPath:indexPath];
-    CGRect cellFrame = attributes.frame;
-    
-    if (pageOffset >= visibleFrame.origin.x) {
-        CGFloat distance = cellFrame.origin.x - visibleFrame.origin.x;
-        requiredRotation = (distance / self.collectionView.bounds.size.width) * kMaxRotationDegrees;
-    }
-    
-    return MIN(requiredRotation, kMaxRotationDegrees);
 }
 
 - (CGRect)visibleFrame {

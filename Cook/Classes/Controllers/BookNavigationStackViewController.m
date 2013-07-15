@@ -10,19 +10,21 @@
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "CKCategory.h"
+#import "CKUser.h"
 #import "BookPagingStackLayout.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
 #import "BookIndexListViewController.h"
 #import "BookHeaderView.h"
 #import "BookProfileHeaderView.h"
+#import "BookNavigationView.h"
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
 #import "BookCategoryViewController.h"
 #import "ViewHelper.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate,
-    BookCategoryViewControllerDelegate>
+    BookCategoryViewControllerDelegate, BookNavigationViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -36,7 +38,6 @@
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
 @property (nonatomic, strong) BookIndexListViewController *indexViewController;
-@property (nonatomic, strong) UIButton *closeButton;
 
 @end
 
@@ -50,6 +51,7 @@
 #define kCategoryCellId     @"CategoryCellId"
 #define kCategoryHeaderId   @"CategoryHeaderId"
 #define kProfileHeaderId    @"ProfileHeaderId"
+#define kNavigationHeaderId @"NavigationHeaderId"
 #define kCategoryViewTag    460
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
@@ -81,8 +83,6 @@
     [self initCollectionView];
     
     [self loadData];
-    
-    [self.view addSubview:self.closeButton];
 }
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
@@ -105,19 +105,23 @@
     }
 }
 
-#pragma mark - Properties
+#pragma mark - BookNavigationViewDelegate methods
 
-- (UIButton *)closeButton {
-    if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_gray.png"]
-                                            target:self
-                                          selector:@selector(closeTapped:)];
-        _closeButton.frame = CGRectMake(20.0,
-                                        35.0,
-                                        _closeButton.frame.size.width,
-                                        _closeButton.frame.size.height);
-    }
-    return _closeButton;
+- (void)bookNavigationViewCloseTapped {
+    [self.delegate bookNavigationControllerCloseRequested];
+}
+
+- (void)bookNavigationViewHomeTapped {
+    [self.collectionView setContentOffset:(CGPoint){
+        kIndexSection * self.collectionView.bounds.size.width, self.collectionView.contentOffset.y
+    } animated:YES];
+}
+
+- (void)bookNavigationViewAddTapped {
+}
+
+- (UIColor *)bookNavigationColour {
+    return [CKBookCover colourForCover:self.book.cover];
 }
 
 #pragma mark - BookCategoryViewControllerDelegate methods
@@ -232,6 +236,14 @@
             CKCategory *category = [self.categories objectAtIndex:indexPath.section - [self stackCategoryStartSection]];
             [categoryHeaderView  configureTitle:category.name];
         }
+    } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
+        
+        headerView = [collectionView dequeueReusableSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind]
+                                                        withReuseIdentifier:kNavigationHeaderId
+                                                               forIndexPath:indexPath];
+        BookNavigationView *navigationView = (BookNavigationView *)headerView;
+        navigationView.delegate = self;
+        [navigationView setTitle:self.book.user.name];
     }
     
     return headerView;
@@ -283,6 +295,8 @@
     // Headers
     [self.collectionView registerClass:[BookProfileHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kProfileHeaderId];
     [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
+    [self.collectionView registerClass:[BookNavigationView class] forSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind] withReuseIdentifier:kNavigationHeaderId];
+
     
     // Profile, Index, Category.
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
