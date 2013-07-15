@@ -10,4 +10,6 @@
 
 @interface BookCategoryLayout : UICollectionViewFlowLayout
 
++ (CGSize)unitSize;
+
 @end

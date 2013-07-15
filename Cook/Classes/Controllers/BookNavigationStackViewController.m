@@ -22,6 +22,7 @@
 #import "CKBookCover.h"
 #import "BookCategoryViewController.h"
 #import "ViewHelper.h"
+#import "BookCategoryImageView.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate,
     BookCategoryViewControllerDelegate, BookNavigationViewDelegate>
@@ -33,6 +34,7 @@
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableDictionary *categoryControllers;
 @property (nonatomic, assign) BOOL justOpened;
+@property (nonatomic, strong) UIView *bookOutlineView;
 
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
@@ -53,6 +55,7 @@
 #define kProfileHeaderId    @"ProfileHeaderId"
 #define kNavigationHeaderId @"NavigationHeaderId"
 #define kCategoryViewTag    460
+#define kBookOutlineOffset  (UIOffset){-27.0, -9.0}
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
@@ -81,7 +84,6 @@
     
     [self initBookOutlineView];
     [self initCollectionView];
-    
     [self loadData];
 }
 
@@ -105,6 +107,12 @@
     }
 }
 
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
 #pragma mark - BookNavigationViewDelegate methods
 
 - (void)bookNavigationViewCloseTapped {
@@ -112,9 +120,7 @@
 }
 
 - (void)bookNavigationViewHomeTapped {
-    [self.collectionView setContentOffset:(CGPoint){
-        kIndexSection * self.collectionView.bounds.size.width, self.collectionView.contentOffset.y
-    } animated:YES];
+    [self scrollToHome];
 }
 
 - (void)bookNavigationViewAddTapped {
@@ -229,12 +235,16 @@
             headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                             withReuseIdentifier:kCategoryHeaderId
                                                                    forIndexPath:indexPath];
-            BookHeaderView *categoryHeaderView = (BookHeaderView *)headerView;
-            categoryHeaderView.userInteractionEnabled = NO;
-            
-            // Configure the category name.
             CKCategory *category = [self.categories objectAtIndex:indexPath.section - [self stackCategoryStartSection]];
-            [categoryHeaderView  configureTitle:category.name];
+            
+//            BookHeaderView *categoryHeaderView = (BookHeaderView *)headerView;
+//            categoryHeaderView.userInteractionEnabled = NO;
+//            [categoryHeaderView  configureTitle:category.name];
+            
+            BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
+            CKRecipe *featuredRecipe = [self featuredRecipeForCategory:category];
+            [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
+            
         }
     } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
         
@@ -271,11 +281,17 @@
 - (void)initBookOutlineView {
     UIImage *outlineImage = [CKBookCover outlineImageForCover:self.book.cover];
     UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:outlineImage];
-    bookOutlineView.frame = CGRectMake(-26.0, -8.0, bookOutlineView.frame.size.width, bookOutlineView.frame.size.height);
+    bookOutlineView.frame = (CGRect){
+        kBookOutlineOffset.horizontal,
+        kBookOutlineOffset.vertical,
+        bookOutlineView.frame.size.width,
+        bookOutlineView.frame.size.height
+    };
     [self.view insertSubview:bookOutlineView belowSubview:self.collectionView];
+    self.bookOutlineView = bookOutlineView;
     
     // Decorations.
-    UIImageView *bookOutlineOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay"]];
+    UIImageView *bookOutlineOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay.png"]];
     bookOutlineOverlayView.frame = CGRectMake(-36.0, -18.0, bookOutlineOverlayView.frame.size.width, bookOutlineOverlayView.frame.size.height);
     [bookOutlineView addSubview:bookOutlineOverlayView];
     UIImageView *bookBindOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
@@ -284,7 +300,7 @@
 }
 
 - (void)initCollectionView {
-    
+//    self.collectionView.hidden = YES;
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.pagingEnabled = YES;
     self.collectionView.alwaysBounceVertical = NO;
@@ -294,7 +310,7 @@
     
     // Headers
     [self.collectionView registerClass:[BookProfileHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kProfileHeaderId];
-    [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
+    [self.collectionView registerClass:[BookCategoryImageView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
     [self.collectionView registerClass:[BookNavigationView class] forSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind] withReuseIdentifier:kNavigationHeaderId];
 
     
@@ -476,4 +492,27 @@
     [self.delegate bookNavigationControllerCloseRequested];
 }
 
+- (void)scrollToHome {
+    [self.collectionView setContentOffset:(CGPoint){
+        kIndexSection * self.collectionView.bounds.size.width, self.collectionView.contentOffset.y
+    } animated:YES];
+}
+
+- (void)configureImageForHeaderView:(BookCategoryImageView *)categoryHeaderView recipe:(CKRecipe *)recipe
+                          indexPath:(NSIndexPath *)indexPath {
+    
+    if ([recipe hasPhotos]) {
+        [self.photoStore imageForParseFile:[recipe imageFile]
+                                      size:categoryHeaderView.frame.size
+                                 indexPath:indexPath
+                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+                                    if ([indexPath isEqual:completedIndexPath]) {
+                                        [categoryHeaderView configureImage:image];
+                                    }
+                                }];
+        
+    } else {
+        [categoryHeaderView configureImage:nil];
+    }
+}
 @end

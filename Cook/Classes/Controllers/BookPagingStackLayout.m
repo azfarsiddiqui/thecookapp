@@ -25,8 +25,8 @@
 
 @implementation BookPagingStackLayout
 
-#define kShiftOffset                200.0
-#define kHeaderShiftOffset          400.0
+#define kShiftOffset                400.0
+#define kHeaderShiftOffset          200.0
 #define kMaxScale                   0.9
 #define kMaxRotationDegrees         10.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
@@ -167,13 +167,19 @@
         NSIndexPath *sectionIndexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
         UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                             withIndexPath:sectionIndexPath];
+//        headerAttributes.frame = (CGRect){
+//            [self pageOffsetForIndexPath:sectionIndexPath],
+//            self.collectionView.bounds.origin.y,
+//            self.collectionView.bounds.size.width,
+//            400.0
+//        };
         headerAttributes.frame = (CGRect){
             [self pageOffsetForIndexPath:sectionIndexPath],
             self.collectionView.bounds.origin.y,
             self.collectionView.bounds.size.width,
-            400.0
+            self.collectionView.bounds.size.height
         };
-        headerAttributes.zIndex = -(sectionIndex * 2);
+        headerAttributes.zIndex = -(sectionIndex * 2) - 1;
         [self.supplementaryLayoutAttributes addObject:headerAttributes];
         [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
         

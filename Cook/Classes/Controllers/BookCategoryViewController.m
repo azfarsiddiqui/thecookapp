@@ -14,6 +14,7 @@
 #import "ParsePhotoStore.h"
 #import "BookRecipeCollectionViewCell.h"
 #import "MRCEnumerable.h"
+#import "BookHeaderView.h"
 
 @interface BookCategoryViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -30,7 +31,8 @@
 
 @implementation BookCategoryViewController
 
-#define kRecipeCellId   @"RecipeCellId"
+#define kRecipeCellId       @"RecipeCellId"
+#define kCategoryHeaderId   @"CategoryHeaderId"
 
 - (id)initWithBook:(CKBook *)book category:(CKCategory *)category delegate:(id<BookCategoryViewControllerDelegate>)delegate {
     
@@ -45,9 +47,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor clearColor];
     
-    [self initImageView];
+//    [self initImageView];
     [self initCollectionView];
     [self loadData];
 }
@@ -56,18 +58,31 @@
     self.recipes = [NSMutableArray arrayWithArray:[self.delegate
                                                    recipesForBookCategoryViewControllerForCategory:self.category]];
     [self.collectionView reloadData];
-    [self loadFeaturedRecipe];
+//    [self loadFeaturedRecipe];
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout methods
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+        insetForSectionAtIndex:(NSInteger)section {
     
-//    [self.book fetchRecipesForCategory:self.category
-//                               success:^(NSArray *recipes) {
-//                                   DLog(@"Loaded [%d] recipes for [%@]", [recipes count], self.category.name);
-//                                   self.recipes = [NSMutableArray arrayWithArray:recipes];
-//                                   [self.collectionView reloadData];
-//                                   [self loadFeaturedRecipe];
-//                               }
-//                               failure:^(NSError *error) {
-//                                   DLog(@"%@", [error localizedDescription]);
-//                               }];
+    return (UIEdgeInsets) { 107.0, 20.0, 20.0, 20.0 };
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+    referenceSizeForHeaderInSection:(NSInteger)section {
+    
+    CGSize headerSize = (CGSize) {
+        self.collectionView.bounds.size.width,
+        400.0
+    };
+    return headerSize;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+  
+    return [BookCategoryLayout unitSize];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -101,6 +116,14 @@
     return recipeCell;
 }
 
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    BookHeaderView *bookHeaderView = (BookHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
+    [bookHeaderView configureTitle:self.category.name];
+    return bookHeaderView;
+}
+
 #pragma mark - Private 
 
 - (void)initImageView {
@@ -117,9 +140,11 @@
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     collectionView.alwaysBounceVertical = YES;
     collectionView.backgroundColor = [UIColor clearColor];
-    [collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
     [self.view addSubview:collectionView];
     self.collectionView = collectionView;
+    
+    [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
+    [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
 }
 
 - (void)loadFeaturedRecipe {

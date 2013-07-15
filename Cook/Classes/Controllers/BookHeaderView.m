@@ -71,10 +71,10 @@
         size.height += kCategoryInsets.top + kCategoryInsets.bottom;
     }
     
-    // Set the frame in motion.
+    // Anchor the frame at the bottom
     self.maskedLabel.frame = (CGRect){
         floor((self.bounds.size.width - size.width) / 2.0),
-        floor((self.bounds.size.height - size.height) / 2.0),
+        self.bounds.size.height - size.height,
         size.width,
         size.height
     };
