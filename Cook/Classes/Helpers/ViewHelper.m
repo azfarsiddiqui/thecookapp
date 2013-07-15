@@ -179,5 +179,18 @@
     
 }
 
+#pragma mark - Shadows
+
++ (void)addTopShadowView:(UIView *)view {
+    UIImageView *topShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_darkenphoto_strip.png"]];
+    topShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    topShadowImageView.frame = (CGRect){
+        view.bounds.origin.x,
+        view.bounds.origin.y,
+        view.bounds.size.width,
+        topShadowImageView.frame.size.height
+    };
+    [view addSubview:topShadowImageView];
+}
 
 @end

@@ -39,4 +39,7 @@
 + (void)applyMotionEffectsToView:(UIView *)view;
 + (void)applyMotionEffectsWithOffset:(CGFloat)offset view:(UIView *)view;
 
+// Shadows.
++ (void)addTopShadowView:(UIView *)view;
+
 @end

@@ -17,6 +17,7 @@
 #import "ImageHelper.h"
 #import "CKBookCover.h"
 #import "CKBookTitleIndexView.h"
+#import "ViewHelper.h"
 
 @interface BookIndexListViewController () <BookIndexListLayoutDataSource, UICollectionViewDataSource,
     UICollectionViewDelegate>
@@ -60,7 +61,6 @@
     [self initTitleView];
     [self initCollectionView];
     [self initProfileView];
-    [self initShadowViews];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -89,6 +89,7 @@
                                   size:self.imageView.bounds.size
                             completion:^(UIImage *image) {
                                 [ImageHelper configureImageView:self.imageView image:image];
+                                [ViewHelper addTopShadowView:self.imageView];
                             }];
 }
 
@@ -205,27 +206,6 @@
                                 }];
     }
 
-}
-
-- (void)initShadowViews {
-    
-    // Top shadow view.
-    UIImageView *headerShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_update_header_shadow.png"]];
-    headerShadowImageView.frame = CGRectMake(self.view.bounds.origin.x,
-                                             self.view.bounds.origin.y,
-                                             headerShadowImageView.frame.size.width,
-                                             headerShadowImageView.frame.size.height);
-    headerShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-    [self.view addSubview:headerShadowImageView];
-    
-    // Bottom shadow view.
-    UIImageView *footerShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_update_header_shadow_bottom.png"]];
-    footerShadowImageView.frame = CGRectMake(self.view.bounds.origin.x,
-                                             self.view.bounds.size.height - footerShadowImageView.frame.size.height,
-                                             footerShadowImageView.frame.size.width,
-                                             footerShadowImageView.frame.size.height);
-    footerShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    [self.view addSubview:footerShadowImageView];
 }
 
 - (void)showIndexAnimated:(BOOL)animated {
