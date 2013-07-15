@@ -3137,6 +3137,8 @@
 				76E0B95C17911FE100AD70E3 /* BookCategoryViewController.m */,
 				76E0B95E1791205D00AD70E3 /* BookCategoryLayout.h */,
 				76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */,
+				761951B01793B86A008AB495 /* BookNavigationView.h */,
+				761951B11793B86A008AB495 /* BookNavigationView.m */,
 				893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */,
 				893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */,
 				765E21A816F829CC00D06401 /* BookTitleActivityViewController.h */,
@@ -3192,8 +3194,6 @@
 				76A7D42F16E4327200118749 /* BookLeftPageDividerView.m */,
 				76A7D43116E432E600118749 /* BookRightPageDividerView.h */,
 				76A7D43216E432E600118749 /* BookRightPageDividerView.m */,
-				761951B01793B86A008AB495 /* BookNavigationView.h */,
-				761951B11793B86A008AB495 /* BookNavigationView.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
