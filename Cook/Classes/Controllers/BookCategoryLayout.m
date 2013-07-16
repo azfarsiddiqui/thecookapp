@@ -51,7 +51,7 @@
             
             if (visibleFrame.origin.y < 0.0) {
                 
-                headerFrame.origin.y = visibleFrame.origin.y;
+                headerFrame.origin.y = visibleFrame.origin.y * 0.7;
                 
             } else {
                 
