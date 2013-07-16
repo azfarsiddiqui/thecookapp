@@ -179,6 +179,17 @@
     
 }
 
+#pragma mark - Collection views
+
++ (CGRect)visibleFrameForCollectionView:(UICollectionView *)collectionView {
+    return (CGRect){
+        collectionView.contentOffset.x,
+        collectionView.contentOffset.y,
+        collectionView.bounds.size.width,
+        collectionView.bounds.size.height
+    };
+}
+
 #pragma mark - Shadows
 
 + (void)addTopShadowView:(UIView *)view {

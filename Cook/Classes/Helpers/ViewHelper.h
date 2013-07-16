@@ -39,6 +39,9 @@
 + (void)applyMotionEffectsToView:(UIView *)view;
 + (void)applyMotionEffectsWithOffset:(CGFloat)offset view:(UIView *)view;
 
+// Collection view.
++ (CGRect)visibleFrameForCollectionView:(UICollectionView *)collectionView;
+
 // Shadows.
 + (void)addTopShadowView:(UIView *)view;
 
