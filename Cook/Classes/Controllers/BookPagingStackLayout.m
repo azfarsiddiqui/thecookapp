@@ -8,6 +8,7 @@
 
 #import "BookPagingStackLayout.h"
 #import "BookNavigationView.h"
+#import "ViewHelper.h"
 
 @interface BookPagingStackLayout ()
 
@@ -69,7 +70,7 @@
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
     
     // Determine direction of travel.
-    CGRect visibleFrame = [self visibleFrame];
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     self.forwardDirection = newBounds.origin.x > visibleFrame.origin.x;
     
     return YES;
@@ -167,12 +168,6 @@
         NSIndexPath *sectionIndexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
         UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                             withIndexPath:sectionIndexPath];
-//        headerAttributes.frame = (CGRect){
-//            [self pageOffsetForIndexPath:sectionIndexPath],
-//            self.collectionView.bounds.origin.y,
-//            self.collectionView.bounds.size.width,
-//            400.0
-//        };
         headerAttributes.frame = (CGRect){
             [self pageOffsetForIndexPath:sectionIndexPath],
             self.collectionView.bounds.origin.y,
@@ -210,6 +205,7 @@
         
         if ([attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
             
+            // Sticky navigation bar for categories.
             [self applyStickyNavigationHeaderEffect:attributes];
             
         } else {
@@ -230,7 +226,7 @@
     }
     
     CGFloat offset =  kShiftOffset;
-    CGRect visibleFrame = [self visibleFrame];
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     CGRect navigationFrame = attributes.frame;
     NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
     CGFloat startOffset = categoryStartSection * self.collectionView.bounds.size.width;
@@ -260,7 +256,7 @@
 }
 
 - (CGFloat)shiftedTranslationForAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    CGRect visibleFrame = [self visibleFrame];
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     CGFloat requiredTranslation = 0.0;
     
     CGFloat offset =  kShiftOffset;
@@ -287,15 +283,6 @@
     }
     
     return requiredTranslation;
-}
-
-- (CGRect)visibleFrame {
-    return (CGRect){
-        self.collectionView.contentOffset.x,
-        self.collectionView.contentOffset.y,
-        self.collectionView.bounds.size.width,
-        self.collectionView.bounds.size.height
-    };
 }
 
 - (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
