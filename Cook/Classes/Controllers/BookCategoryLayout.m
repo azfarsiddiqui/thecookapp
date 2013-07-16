@@ -11,7 +11,7 @@
 
 @implementation BookCategoryLayout
 
-#define kHeaderTotalDistanceFade    190.0
+#define kHeaderTotalDistanceFade    300.0
 
 + (CGSize)unitSize {
     return CGSizeMake(320.0, 642.0);
