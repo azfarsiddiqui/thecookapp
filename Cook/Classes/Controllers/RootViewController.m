@@ -656,11 +656,11 @@
                      animations:^{
                      
                          // Fade in overlay.
-                         overlayView.alpha = kOverlayViewAlpha;
+//                         overlayView.alpha = kOverlayViewAlpha;
                      
-                         // Scale back.
-                         self.bookCoverViewController.view.transform = transform;
-                         self.bookNavigationViewController.view.transform = transform;
+//                         // Scale back.
+//                         self.bookCoverViewController.view.transform = transform;
+//                         self.bookNavigationViewController.view.transform = transform;
                      
                          // Slide up the modal.
                          modalViewController.view.transform = CGAffineTransformIdentity;

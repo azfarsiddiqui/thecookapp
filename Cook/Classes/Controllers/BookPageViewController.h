@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKRecipe;
+
+@protocol BookPageViewControllerDelegate <NSObject>
+
+- (void)bookPageViewControllerShowNavigationBar:(BOOL)show;
+- (void)bookPageViewControllerShowRecipe:(CKRecipe *)recipe;
+
+@end
+
 @interface BookPageViewController : UIViewController
+
+@property (nonatomic, weak) id<BookPageViewControllerDelegate> bookPageDelegate;
 
 @end

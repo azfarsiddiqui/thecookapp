@@ -25,7 +25,7 @@
 #import "BookCategoryImageView.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate,
-    BookCategoryViewControllerDelegate, BookNavigationViewDelegate>
+    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -33,8 +33,10 @@
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableDictionary *categoryControllers;
+@property (nonatomic, strong) NSMutableDictionary *categoryHeaderViews;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, strong) UIView *bookOutlineView;
+@property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
@@ -92,25 +94,39 @@
 }
 
 - (void)setActive:(BOOL)active {
-    if (active) {
-        
-        // Unselect cells.
-        NSArray *selectedIndexPaths = [self.collectionView indexPathsForSelectedItems];
-        if ([selectedIndexPaths count] > 0) {
-            NSIndexPath *selectedIndexPath = [selectedIndexPaths objectAtIndex:0];
-            UICollectionViewCell *selectedCell = [self.collectionView cellForItemAtIndexPath:selectedIndexPath];
-            [selectedCell setSelected:NO];
-        }
-        
-    } else {
-        
-    }
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         // Fade the book navigation view.
+                         self.bookNavigationView.alpha = active ? 1.0 : 0.0;
+                         
+                         // Fade the cells.
+                         NSArray *visibleCells = [self.collectionView visibleCells];
+                         for (UICollectionViewCell *cell in visibleCells) {
+                             cell.alpha = active ? 1.0 : 0.0;
+                         }
+                         
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
+}
+
+#pragma mark - BookPageViewControllerDelegate methods
+
+- (void)bookPageViewControllerShowNavigationBar:(BOOL)show {
+    [self showNavBar:NO completion:nil];
+}
+
+- (void)bookPageViewControllerShowRecipe:(CKRecipe *)recipe {
+    [self showRecipe:recipe];
 }
 
 #pragma mark - BookNavigationViewDelegate methods
@@ -181,12 +197,10 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
-        [self prefetchCategoryControllers];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self prefetchCategoryControllers];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -236,14 +250,12 @@
                                                             withReuseIdentifier:kCategoryHeaderId
                                                                    forIndexPath:indexPath];
             CKCategory *category = [self.categories objectAtIndex:indexPath.section - [self stackCategoryStartSection]];
-            
-//            BookHeaderView *categoryHeaderView = (BookHeaderView *)headerView;
-//            categoryHeaderView.userInteractionEnabled = NO;
-//            [categoryHeaderView  configureTitle:category.name];
-            
             BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
             CKRecipe *featuredRecipe = [self featuredRecipeForCategory:category];
             [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
+            
+            // Keep track of category views keyed on indexPath.
+            [self.categoryHeaderViews setObject:categoryHeaderView forKey:indexPath];
             
         }
     } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
@@ -254,6 +266,9 @@
         BookNavigationView *navigationView = (BookNavigationView *)headerView;
         navigationView.delegate = self;
         [navigationView setTitle:self.book.user.name];
+        
+        // Keep a reference of the navigation view.
+        self.bookNavigationView = navigationView;
     }
     
     return headerView;
@@ -274,6 +289,16 @@
     }
     
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
+      forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
+    
+    // Remove a reference to the category image view.
+    if ([elementKind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
+        [self.categoryHeaderViews removeObjectForKey:indexPath];
+    }
+    
 }
 
 #pragma mark - Private methods
@@ -338,6 +363,7 @@
 - (void)loadRecipes {
     self.categoryRecipes = [NSMutableDictionary dictionary];
     self.categories = [NSMutableArray array];
+    self.categoryHeaderViews = [NSMutableDictionary dictionary];
     
     for (CKRecipe *recipe in self.recipes) {
         
@@ -414,6 +440,7 @@
     if (!categoryController) {
         DLog(@"Create category VC for [%@]", category.name);
         categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category delegate:self];
+        categoryController.bookPageDelegate = self;
         [self.categoryControllers setObject:categoryController forKey:categoryKey];
     } else {
         DLog(@"Reusing category VC for [%@]", category.name);
@@ -465,6 +492,7 @@
         if (!categoryController) {
             DLog(@"Prefetch category VC for [%@]", category.name);
             categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category delegate:self];
+            categoryController.bookPageDelegate = self;
             [categoryController loadData];
             [self.categoryControllers setObject:categoryController forKey:categoryKey];
         }
@@ -515,4 +543,23 @@
         [categoryHeaderView configureImage:nil];
     }
 }
+
+- (void)showRecipe:(CKRecipe *)recipe {
+    [self.delegate bookNavigationControllerRecipeRequested:recipe];
+}
+
+- (void)showNavBar:(BOOL)show completion:(void (^)())completion {
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.bookNavigationView.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (completion != nil) {
+                             completion();
+                         }
+                     }];
+}
+
 @end

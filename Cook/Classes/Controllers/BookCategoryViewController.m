@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSMutableArray *recipes;
 
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) BookHeaderView *bookHeaderView;
 
 @end
 
@@ -88,7 +89,7 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    [self showRecipeAtIndexPath:indexPath];
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -121,6 +122,10 @@
     
     BookHeaderView *bookHeaderView = (BookHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
     [bookHeaderView configureTitle:self.category.name];
+    
+    // Keep a reference of it around so we can fade it out later.
+    self.bookHeaderView = bookHeaderView;
+    
     return bookHeaderView;
 }
 
@@ -173,6 +178,26 @@
                                     }
                                 }];
     }
+}
+
+- (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
+    CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+    [self.bookPageDelegate bookPageViewControllerShowRecipe:recipe];
+    
+//    [UIView animateWithDuration:0.2
+//                          delay:0.0
+//                        options:UIViewAnimationOptionCurveEaseIn
+//                     animations:^{
+//                         self.bookHeaderView.alpha = 0.0;
+//                         
+//                         for (UICollectionViewCell *cell in [self.collectionView visibleCells]) {
+//                             cell.alpha = 0.0;
+//                         }
+//                         
+//                     }
+//                     completion:^(BOOL finished) {
+//                         [self.bookPageDelegate bookPageViewControllerShowRecipe:recipe];
+//                     }];
 }
 
 @end
