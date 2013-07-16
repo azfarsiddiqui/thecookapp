@@ -35,7 +35,7 @@
         self.backgroundColor = [UIColor clearColor];
         
         self.likeButton = [ViewHelper buttonWithImage:[self buttonImageForOn:NO] target:self selector:@selector(tapped:)];
-        self.likeButton.enabled = NO;
+        self.likeButton.userInteractionEnabled = NO;
         self.frame = self.likeButton.frame;
         [self addSubview:self.likeButton];
         
@@ -52,10 +52,10 @@
     [self.recipe likedByUser:[CKUser currentUser]
                   completion:^(BOOL liked) {
                       self.liked = liked;
-                      self.likeButton.enabled = YES;
+                      self.likeButton.userInteractionEnabled = YES;
                       [self updateButtonWithLiked:liked];
                   } failure:^(NSError *error) {
-                      self.likeButton.enabled = NO;
+                      self.likeButton.userInteractionEnabled = NO;
                   }];
     
 }
@@ -69,7 +69,7 @@
     
     // Tentative liked state and disable interaction.
     [self updateButtonWithLiked:like];
-    self.likeButton.enabled = NO;
+    self.likeButton.userInteractionEnabled = NO;
     [self.delegate likeViewLiked:like];
     
     // Like via the server.
@@ -77,12 +77,12 @@
                  user:[CKUser currentUser]
            completion:^{
                self.liked = like;
-               self.likeButton.enabled = YES;
+               self.likeButton.userInteractionEnabled = YES;
            } failure:^(NSError *error) {
                
                // Revert the liked state.
                self.liked = !like;
-               self.likeButton.enabled = YES;
+               self.likeButton.userInteractionEnabled = YES;
                [self updateButtonWithLiked:self.liked];
                [self.delegate likeViewLiked:self.liked];
            }];
