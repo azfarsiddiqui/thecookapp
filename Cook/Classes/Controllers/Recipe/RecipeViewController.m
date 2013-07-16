@@ -439,7 +439,7 @@ typedef enum {
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"]
+        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_close_light.png"]
                                             target:self
                                           selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -453,7 +453,7 @@ typedef enum {
 
 - (UIButton *)editButton {
     if (!_editButton && [self canEditRecipe]) {
-        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"]
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
                                                     target:self
                                                   selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -467,7 +467,7 @@ typedef enum {
 
 - (UIButton *)shareButton {
     if (!_shareButton) {
-        _shareButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_share_white.png"]
+        _shareButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_share_light.png"]
                                            target:self
                                          selector:@selector(shareTapped:)];
         _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -1089,7 +1089,7 @@ typedef enum {
     self.backgroundImageView = backgroundImageView;
     
     // Top shadow.
-    UIImageView *topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_recipe_background_overlay.png"]];
+    UIImageView *topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_darkenphoto_strip.png"]];
     topShadowView.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, topShadowView.frame.size.height);
     topShadowView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth;
     [self.view insertSubview:topShadowView aboveSubview:self.backgroundImageView];
