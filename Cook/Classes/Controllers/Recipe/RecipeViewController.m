@@ -17,7 +17,6 @@
 #import "MRCEnumerable.h"
 #import "Ingredient.h"
 #import "RecipeSocialViewController.h"
-#import "CKPopoverViewController.h"
 #import "CKEditViewController.h"
 #import "CKEditingTextBoxView.h"
 #import "CKEditingViewHelper.h"
@@ -40,6 +39,8 @@
 #import "CKPrivacyView.h"
 #import "IngredientsView.h"
 #import "CKLabel.h"
+#import "BookSocialViewController.h"
+#import "CKLikeView.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -49,14 +50,14 @@ typedef enum {
 } PhotoWindowHeight;
 
 @interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
-    CKRecipeSocialViewDelegate, CKPopoverViewControllerDelegate, CKEditViewControllerDelegate,
-    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacyViewDelegate>
+    CKRecipeSocialViewDelegate, CKEditViewControllerDelegate,
+    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacyViewDelegate,
+    BookSocialViewControllerDelegate, CKLikeViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeClipboard *clipboard;
 @property (nonatomic, strong) CKBook *book;
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
-@property (nonatomic, strong) CKPopoverViewController *popoverViewController;
 
 @property (nonatomic, strong) UIView *topShadowView;
 @property (nonatomic, strong) UIView *contentContainerView;
@@ -90,6 +91,7 @@ typedef enum {
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIButton *shareButton;
+@property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UILabel *photoLabel;
@@ -103,6 +105,8 @@ typedef enum {
 
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UIImage *recipeImageToUpload;
+
+@property (nonatomic, strong) BookSocialViewController *bookSocialViewController;
 
 @end
 
@@ -231,16 +235,22 @@ typedef enum {
     return shouldReceive;
 }
 
+#pragma mark - BookSocialViewControllerDelegate methods
+
+- (void)bookSocialViewControllerCloseRequested {
+    [self showSocialOverlay:NO];
+}
+
+#pragma mark - CKLikeViewDelegate methods
+
+- (void)likeViewLiked:(BOOL)liked {
+    [self.socialView incrementLike:liked];
+}
+
 #pragma mark - CKRecipeSocialViewDelegate methods
 
 - (void)recipeSocialViewTapped {
-    RecipeSocialViewController *socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe];
-    CKPopoverViewController *popoverViewController = [[CKPopoverViewController alloc] initWithContentViewController:socialViewController
-                                                                                                           delegate:self];
-    [popoverViewController showInView:self.view direction:CKPopoverViewControllerTop
-                              atPoint:CGPointMake(self.socialView.center.x,
-                                                  self.socialView.frame.origin.y + self.socialView.frame.size.height + 10.0)];
-    self.popoverViewController = popoverViewController;
+    [self showSocialOverlay:YES];
 }
 
 - (void)recipeSocialViewUpdated:(CKRecipeSocialView *)socialView {
@@ -250,17 +260,6 @@ typedef enum {
         socialView.frame.size.width,
         socialView.frame.size.height
     };
-}
-
-#pragma mark - CKPopoverViewControllerDelegate methods
-
-- (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
-}
-
-- (void)popoverViewController:(CKPopoverViewController *)popoverViewController didAppear:(BOOL)appear {
-    if (!appear) {
-        self.popoverViewController = nil;
-    }
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -435,7 +434,7 @@ typedef enum {
     self.saveRequired = (self.clipboard.privacyMode != self.recipe.privacy);
 }
 
-#pragma mark - Lazy getters.
+#pragma mark - Properties
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
@@ -468,15 +467,27 @@ typedef enum {
 - (UIButton *)shareButton {
     if (!_shareButton) {
         _shareButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_share_light.png"]
-                                           target:self
-                                         selector:@selector(shareTapped:)];
+                                            target:self
+                                          selector:@selector(shareTapped:)];
         _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _shareButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _shareButton.frame.size.width,
-                                       kButtonInsets.top,
-                                       _shareButton.frame.size.width,
-                                       _shareButton.frame.size.height);
+        _shareButton.frame = CGRectMake(self.likeButton.frame.origin.x - 15.0 - _shareButton.frame.size.width,
+                                        kButtonInsets.top,
+                                        _shareButton.frame.size.width,
+                                        _shareButton.frame.size.height);
     }
     return _shareButton;
+}
+
+- (CKLikeView *)likeButton {
+    if (!_likeButton) {
+        _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe delegate:self];
+        _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
+                                       kButtonInsets.top,
+                                       _likeButton.frame.size.width,
+                                       _likeButton.frame.size.height);
+    }
+    return _likeButton;
 }
 
 - (UIButton *)cancelButton {
@@ -1174,10 +1185,12 @@ typedef enum {
         self.socialView.alpha = 0.0;
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
+        self.likeButton.alpha = 0.0;
         [self.navContainerView addSubview:self.closeButton];
         [self.navContainerView addSubview:self.socialView];
         [self.navContainerView addSubview:self.editButton];
         [self.navContainerView addSubview:self.shareButton];
+        [self.navContainerView addSubview:self.likeButton];
     }
     
     // Buttons are hidden on full screen mode only.
@@ -1195,6 +1208,7 @@ typedef enum {
                          self.socialView.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.editButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          self.shareButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
+                         self.likeButton.alpha = self.editMode ? 0.0 : buttonsVisibleAlpha;
                          
                          self.cancelButton.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          self.privacyView.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
@@ -1213,6 +1227,7 @@ typedef enum {
                              [self.socialView removeFromSuperview];
                              [self.editButton removeFromSuperview];
                              [self.shareButton removeFromSuperview];
+                             [self.likeButton removeFromSuperview];
                              
                              [UIView animateWithDuration:0.1
                                                    delay:0.0
@@ -1851,6 +1866,29 @@ typedef enum {
                        failure:^(NSError *error) {
                            [self enableSaveMode:NO];
                        }];
+}
+
+- (void)showSocialOverlay:(BOOL)show {
+    if (show) {
+        [self hideButtons];
+        self.bookSocialViewController = [[BookSocialViewController alloc] initWithDelegate:self];
+        self.bookSocialViewController.view.frame = self.view.bounds;
+        self.bookSocialViewController.view.alpha = 0.0;
+        [self.view addSubview:self.bookSocialViewController.view];
+    }
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.bookSocialViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.bookSocialViewController.view removeFromSuperview];
+                             self.bookSocialViewController = nil;
+                             [self updateButtons];
+                         }
+                     }];
 }
 
 @end

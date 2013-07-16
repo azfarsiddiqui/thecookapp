@@ -21,5 +21,6 @@
 @interface CKRecipeSocialView : UIView
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKRecipeSocialViewDelegate>)delegate;
+- (void)incrementLike:(BOOL)increment;
 
 @end

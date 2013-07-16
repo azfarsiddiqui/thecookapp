@@ -19,7 +19,7 @@
 @property (nonatomic, assign) NSInteger numLikes;
 @property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) UIImageView *messageIconView;
-@property (nonatomic, strong) UIButton *likeButton;
+@property (nonatomic, strong) UIImageView *likeIconView;
 @property (nonatomic, strong) UILabel *commentsLabel;
 @property (nonatomic, strong) UILabel *likeLabel;
 @property (nonatomic, assign) NSNumber *likedBoolNumber;
@@ -51,6 +51,11 @@
 
     }
     return self;
+}
+
+- (void)incrementLike:(BOOL)increment {
+    [self updateNumComments:self.numComments
+                   numLikes:(increment ? self.numLikes + 1 : self.numLikes - 1)];
 }
 
 #pragma mark - Properties
@@ -89,14 +94,12 @@
     return _commentsLabel;
 }
 
-- (UIButton *)likeButton {
-    if (!_likeButton) {
-        _likeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_notitifcations_like.png"]
-                                           target:self selector:@selector(likeTapped:)];
-        _likeButton.enabled = NO;   // Disabled by default.
-        [self.backgroundView addSubview:_likeButton];
+- (UIImageView *)likeIconView {
+    if (!_likeIconView) {
+        _likeIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_notitifcations_like.png"]];
+        [self.backgroundView addSubview:_likeIconView];
     }
-    return _likeButton;
+    return _likeIconView;
 }
 
 - (UILabel *)likeLabel {
@@ -145,20 +148,20 @@
     requiredWidth += kInterItemGap;
     
     // Update like icon.
-    self.likeButton.frame = (CGRect){
+    self.likeIconView.frame = (CGRect){
         self.commentsLabel.frame.origin.x + self.commentsLabel.frame.size.width + kInterItemGap,
-        floorf((self.backgroundView.frame.size.height - self.likeButton.frame.size.height) / 2.0) + 1.0,
-        self.likeButton.frame.size.width,
-        self.likeButton.frame.size.height
+        floorf((self.backgroundView.frame.size.height - self.likeIconView.frame.size.height) / 2.0) + 1.0,
+        self.likeIconView.frame.size.width,
+        self.likeIconView.frame.size.height
     };
-    requiredWidth += self.likeButton.frame.size.width;
+    requiredWidth += self.likeIconView.frame.size.width;
     requiredWidth += kIconStatGap;
     
     // Update likes label.
     self.likeLabel.text = [NSString stringWithFormat:@"%d", numLikes];
     [self.likeLabel sizeToFit];
     self.likeLabel.frame = (CGRect){
-        self.likeButton.frame.origin.x + self.likeButton.frame.size.width + kIconStatGap,
+        self.likeIconView.frame.origin.x + self.likeIconView.frame.size.width + kIconStatGap,
         floorf((self.backgroundView.frame.size.height - self.commentsLabel.frame.size.height) / 2.0) - 1.0,
         self.likeLabel.frame.size.width,
         self.likeLabel.frame.size.height
@@ -182,49 +185,10 @@
     } failure:^(NSError *error) {
     }];
     
-    // Load if the current user has liked it.
-    [self.recipe likedByUser:[CKUser currentUser]
-                  completion:^(BOOL liked) {
-                      
-                      self.likedBoolNumber = @(liked);
-                      self.likeButton.enabled = YES;
-                      self.likeButton.alpha = liked ? 0.7 : 1.0;
-                      
-                  }
-                     failure:^(NSError *error) {
-                         self.likeButton.enabled = NO;
-                     }];
-    
 }
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
     [self.delegate recipeSocialViewTapped];
-}
-
-- (void)likeTapped:(id)sender {
-    if (self.likedBoolNumber) {
-        
-        __block BOOL liked = ![self.likedBoolNumber boolValue];
-        __block NSInteger numLikes = liked ? self.numLikes + 1 : self.numLikes - 1;
-        
-        [self updateNumComments:self.numComments numLikes:numLikes];
-        self.likeButton.enabled = NO;
-        
-        [self.recipe like:liked
-                     user:[CKUser currentUser]
-               completion:^{
-                   self.likedBoolNumber = @(liked);
-                   self.likeButton.alpha = liked ? 0.7 : 1.0;
-                   self.likeButton.enabled = YES;
-               } failure:^(NSError *error) {
-                   liked = !liked;
-                   self.likedBoolNumber = @(liked);
-                   numLikes = liked ? self.numLikes + 1 : self.numLikes - 1;
-                   [self updateNumComments:self.numComments numLikes:numLikes];
-                   self.likeButton.alpha = liked ? 0.7 : 1.0;
-                   self.likeButton.enabled = YES;
-               }];
-    }
 }
 
 @end
