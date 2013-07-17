@@ -23,9 +23,11 @@
 #import "BookCategoryViewController.h"
 #import "ViewHelper.h"
 #import "BookCategoryImageView.h"
+#import "BookAddViewController.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate,
-    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate>
+    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
+    BookAddViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -42,6 +44,7 @@
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
 @property (nonatomic, strong) BookIndexListViewController *indexViewController;
+@property (nonatomic, strong) BookAddViewController *bookAddViewController;
 
 @end
 
@@ -119,6 +122,12 @@
     return YES;
 }
 
+#pragma mark - BookAddViewControllerDelegate methods
+
+- (void)bookAddViewControllerCloseRequested {
+    [self showAddView:NO];
+}
+
 #pragma mark - BookPageViewControllerDelegate methods
 
 - (void)bookPageViewControllerShowNavigationBar:(BOOL)show {
@@ -140,6 +149,7 @@
 }
 
 - (void)bookNavigationViewAddTapped {
+    [self showAddView:YES];
 }
 
 - (UIColor *)bookNavigationColour {
@@ -558,6 +568,29 @@
                      completion:^(BOOL finished) {
                          if (completion != nil) {
                              completion();
+                         }
+                     }];
+}
+
+- (void)showAddView:(BOOL)show {
+    if (show) {
+        self.bookAddViewController = [[BookAddViewController alloc] initWithDelegate:self];
+        self.bookAddViewController.view.frame = self.view.bounds;
+        self.bookAddViewController.view.alpha = 0.0;
+        [self.view addSubview:self.bookAddViewController.view];
+    }
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.bookAddViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (show) {
+                             [self.bookAddViewController enable:YES];
+                         } else {
+                             [self.bookAddViewController.view removeFromSuperview];
+                             self.bookAddViewController = nil;
                          }
                      }];
 }
