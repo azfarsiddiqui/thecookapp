@@ -24,7 +24,7 @@
 
 @implementation BookSocialLayout
 
-#define kContentInsets              (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kContentInsets              (UIEdgeInsets){ 15.0, 20.0, 15.0, 20.0 }
 #define kCommentHeaderHeight        100.0
 #define kCommentSideOffset          200.0
 #define kCommentHeaderGap           0.0
@@ -162,6 +162,8 @@
         // Fade the title header.
         if ([attributes.representedElementKind isEqualToString:[BookSocialHeaderView bookSocialHeaderKind]]) {
             [self applyScrollingEffects:attributes];
+        } else if ([attributes.representedElementKind isEqualToString:[BookSocialLikeView bookSocialLikeKind]]) {
+            [self applyStaticEffects:attributes];
         }
         
     }
@@ -188,6 +190,14 @@
         headerFrame.origin.y = visibleFrame.origin.y * 0.1;
     }
     
+    attributes.frame = headerFrame;
+}
+
+- (void)applyStaticEffects:(UICollectionViewLayoutAttributes *)attributes {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGRect headerFrame = attributes.frame;
+    CGFloat offset = kContentInsets.top;
+    headerFrame.origin.y = visibleFrame.origin.y + offset;
     attributes.frame = headerFrame;
 }
 

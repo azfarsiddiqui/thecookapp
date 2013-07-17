@@ -14,7 +14,7 @@
 #import "CKLikeView.h"
 #import "CKRecipe.h"
 
-@interface BookSocialViewController () <UICollectionViewDataSource, UICollectionViewDelegate, CKLikeViewDelegate>
+@interface BookSocialViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, weak) id<BookSocialViewControllerDelegate> delegate;
@@ -53,12 +53,6 @@
     [self loadData];
 }
 
-#pragma mark - CKLikeViewDelegate methods
-
-- (void)likeViewLiked:(BOOL)liked {
-    DLog();
-}
-
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -88,13 +82,15 @@
     
     UICollectionReusableView *headerView = nil;
     if (indexPath.section == [BookSocialLayout commentsSection]) {
+        
         BookSocialHeaderView *bookHeaderView = (BookSocialHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind] withReuseIdentifier:kCommentHeaderId forIndexPath:indexPath];
         [bookHeaderView configureTitle:@"COMMENTS"];
         headerView = bookHeaderView;
+        
     } else if (indexPath.section == [BookSocialLayout likesSection]) {
+        
         BookSocialLikeView *bookHeaderView = (BookSocialLikeView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSocialLikeView bookSocialLikeKind] withReuseIdentifier:kLikeHeaderId forIndexPath:indexPath];
-        if (!self.likeView) {
-            self.likeView = [[CKLikeView alloc] initWithRecipe:self.recipe darkMode:YES delegate:self];
+        if (!self.likeView.superview) {
             [bookHeaderView configureContentView:self.likeView];
         }
         headerView = bookHeaderView;
@@ -128,6 +124,13 @@
         _underlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kUnderlayMaxAlpha];
     }
     return _underlayView;
+}
+
+- (CKLikeView *)likeView {
+    if (!_likeView) {
+        _likeView = [[CKLikeView alloc] initWithRecipe:self.recipe darkMode:YES];
+    }
+    return _likeView;
 }
 
 #pragma mark - Private methods

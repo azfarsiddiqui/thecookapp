@@ -10,17 +10,11 @@
 
 @class CKRecipe;
 
-@protocol CKLikeViewDelegate <NSObject>
-
-- (void)likeViewLiked:(BOOL)liked;
-
-@end
-
 @interface CKLikeView : UIView
 
 + (CGSize)likeSize;
 
-- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKLikeViewDelegate>)delegate;
-- (id)initWithRecipe:(CKRecipe *)recipe darkMode:(BOOL)dark delegate:(id<CKLikeViewDelegate>)delegate;
+- (id)initWithRecipe:(CKRecipe *)recipe;
+- (id)initWithRecipe:(CKRecipe *)recipe darkMode:(BOOL)dark;
 
 @end

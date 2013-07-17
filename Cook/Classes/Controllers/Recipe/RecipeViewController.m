@@ -52,7 +52,7 @@ typedef enum {
 @interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, CKEditViewControllerDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacyViewDelegate,
-    BookSocialViewControllerDelegate, CKLikeViewDelegate>
+    BookSocialViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeClipboard *clipboard;
@@ -241,12 +241,6 @@ typedef enum {
 
 - (void)bookSocialViewControllerCloseRequested {
     [self showSocialOverlay:NO];
-}
-
-#pragma mark - CKLikeViewDelegate methods
-
-- (void)likeViewLiked:(BOOL)liked {
-    [self.socialView incrementLike:liked];
 }
 
 #pragma mark - CKRecipeSocialViewDelegate methods
@@ -482,7 +476,7 @@ typedef enum {
 
 - (CKLikeView *)likeButton {
     if (!_likeButton) {
-        _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe delegate:self];
+        _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
                                        kButtonInsets.top,

@@ -23,6 +23,8 @@
 #define kBoolFollow                 @"CKBoolFollow"
 #define kBoolFriendsFollow          @"CKBoolFriends"
 #define kEventLogout                @"CKEventLogout"
+#define kEventLike                  @"CKEventLike"
+#define kBoolLike                   @"CKBoolLike"
 
 #pragma mark - Login successful event
 
@@ -152,6 +154,25 @@
 + (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification {
     return [[[notification userInfo] valueForKey:kBoolFriendsFollow] boolValue];
 }
+
+#pragma mark - Likes
+
++ (void)registerLiked:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventLike];
+}
+
++ (void)postLiked:(BOOL)liked {
+    [EventHelper postEvent:kEventLike withUserInfo:@{ kBoolFollow : @(liked) }];
+}
+
++ (void)unregisterLiked:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventLike];
+}
+
++ (BOOL)likedForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] valueForKey:kBoolFollow] boolValue];
+}
+
 
 #pragma mark - Private
 

@@ -43,4 +43,9 @@
 + (BOOL)followForNotification:(NSNotification *)notification;
 + (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification;
 
++ (void)registerLiked:(id)observer selector:(SEL)selector;
++ (void)postLiked:(BOOL)liked;
++ (void)unregisterLiked:(id)observer;
++ (BOOL)likedForNotification:(NSNotification *)notification;
+
 @end

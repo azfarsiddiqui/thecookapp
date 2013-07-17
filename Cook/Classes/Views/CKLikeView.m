@@ -10,11 +10,11 @@
 #import "ViewHelper.h"
 #import "CKRecipe.h"
 #import "CKUser.h"
+#import "EventHelper.h"
 
 @interface CKLikeView ()
 
 @property (nonatomic, strong) CKRecipe *recipe;
-@property (nonatomic, weak) id<CKLikeViewDelegate> delegate;
 @property (nonatomic, assign) BOOL dark;
 @property (nonatomic, assign) BOOL liked;
 @property (nonatomic, strong) UIButton *likeButton;
@@ -27,14 +27,17 @@
     return [self buttonImageForOn:NO dark:NO].size;
 }
 
-- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKLikeViewDelegate>)delegate {
-    return [self initWithRecipe:recipe darkMode:NO delegate:delegate];
+- (void)dealloc {
+    [EventHelper unregisterLiked:self];
 }
 
-- (id)initWithRecipe:(CKRecipe *)recipe darkMode:(BOOL)dark delegate:(id<CKLikeViewDelegate>)delegate {
+- (id)initWithRecipe:(CKRecipe *)recipe {
+    return [self initWithRecipe:recipe darkMode:NO];
+}
+
+- (id)initWithRecipe:(CKRecipe *)recipe darkMode:(BOOL)dark {
     if (self = [super initWithFrame:CGRectZero]) {
         self.recipe = recipe;
-        self.delegate = delegate;
         self.dark = dark;
         self.backgroundColor = [UIColor clearColor];
         
@@ -42,6 +45,8 @@
         self.likeButton.userInteractionEnabled = NO;
         self.frame = self.likeButton.frame;
         [self addSubview:self.likeButton];
+        
+        [EventHelper registerLiked:self selector:@selector(likedNotification:)];
         
         [self loadData];
     }
@@ -74,7 +79,7 @@
     // Tentative liked state and disable interaction.
     [self updateButtonWithLiked:like];
     self.likeButton.userInteractionEnabled = NO;
-    [self.delegate likeViewLiked:like];
+    [EventHelper postLiked:like];
     
     // Like via the server.
     [self.recipe like:like
@@ -82,13 +87,14 @@
            completion:^{
                self.liked = like;
                self.likeButton.userInteractionEnabled = YES;
+               
            } failure:^(NSError *error) {
                
                // Revert the liked state.
                self.liked = !like;
                self.likeButton.userInteractionEnabled = YES;
                [self updateButtonWithLiked:self.liked];
-               [self.delegate likeViewLiked:self.liked];
+               [EventHelper postLiked:like];
            }];
 }
 
@@ -103,6 +109,14 @@
 
 - (void)updateButtonWithLiked:(BOOL)liked {
     [self.likeButton setBackgroundImage:[CKLikeView buttonImageForOn:liked dark:self.dark] forState:UIControlStateNormal];
+}
+
+- (void)likedNotification:(NSNotification *)notification {
+    if ([notification object] != self) {
+        BOOL liked = [EventHelper likedForNotification:notification];
+        self.liked = liked;
+        [self updateButtonWithLiked:self.liked];
+    }
 }
 
 @end

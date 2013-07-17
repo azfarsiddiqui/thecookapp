@@ -10,6 +10,7 @@
 #import "CKRecipe.h"
 #import "ViewHelper.h"
 #import "CKUser.h"
+#import "EventHelper.h"
 
 @interface CKRecipeSocialView ()
 
@@ -33,6 +34,10 @@
 #define kIconStatGap    0.0
 #define kFont           [UIFont boldSystemFontOfSize:15]
 
+- (void)dealloc {
+    [EventHelper unregisterLiked:self];
+}
+
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKRecipeSocialViewDelegate>)delegate {
     
     if (self = [super initWithFrame:CGRectZero]) {
@@ -46,6 +51,9 @@
         // Register tap.
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
         [self addGestureRecognizer:tapGesture];
+        
+        // Listen for like events.
+        [EventHelper registerLiked:self selector:@selector(likedNotification:)];
         
         // Load data.
         [self loadData];
@@ -187,6 +195,11 @@
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
     [self.delegate recipeSocialViewTapped];
+}
+
+- (void)likedNotification:(NSNotification *)notification {
+    BOOL liked = [EventHelper likedForNotification:notification];
+    [self incrementLike:liked];
 }
 
 @end
