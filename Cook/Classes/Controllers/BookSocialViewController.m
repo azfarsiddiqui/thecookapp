@@ -8,12 +8,21 @@
 
 #import "BookSocialViewController.h"
 #import "ViewHelper.h"
+#import "BookSocialLayout.h"
+#import "BookSocialHeaderView.h"
+#import "BookSocialLikeView.h"
+#import "CKLikeView.h"
+#import "CKRecipe.h"
 
-@interface BookSocialViewController ()
+@interface BookSocialViewController () <UICollectionViewDataSource, UICollectionViewDelegate, CKLikeViewDelegate>
 
+@property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, weak) id<BookSocialViewControllerDelegate> delegate;
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *underlayView;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) NSMutableArray *comments;
+@property (nonatomic, strong) CKLikeView *likeView;
 
 @end
 
@@ -21,9 +30,13 @@
 
 #define kUnderlayMaxAlpha   0.7
 #define kButtonInsets       UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
+#define kCommentCellId      @"CommentCellId"
+#define kCommentHeaderId    @"CommentHeaderId"
+#define kLikeHeaderId       @"LikeHeaderId"
 
-- (id)initWithDelegate:(id<BookSocialViewControllerDelegate>)delegate {
+- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<BookSocialViewControllerDelegate>)delegate {
     if (self = [super init]) {
+        self.recipe = recipe;
         self.delegate = delegate;
     }
     return self;
@@ -33,9 +46,62 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor clearColor];
+    
     [self.view addSubview:self.underlayView];
+    [self initCollectionView];
     [self.view addSubview:self.closeButton];
+    [self loadData];
 }
+
+#pragma mark - CKLikeViewDelegate methods
+
+- (void)likeViewLiked:(BOOL)liked {
+    DLog();
+}
+
+#pragma mark - UICollectionViewDelegate methods
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+}
+
+#pragma mark - UICollectionViewDataSource methods
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 2;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+    NSInteger numItems = 0;
+    numItems = [self.comments count];
+    return numItems;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId forIndexPath:indexPath];
+    return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionReusableView *headerView = nil;
+    if (indexPath.section == [BookSocialLayout commentsSection]) {
+        BookSocialHeaderView *bookHeaderView = (BookSocialHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind] withReuseIdentifier:kCommentHeaderId forIndexPath:indexPath];
+        [bookHeaderView configureTitle:@"COMMENTS"];
+        headerView = bookHeaderView;
+    } else if (indexPath.section == [BookSocialLayout likesSection]) {
+        BookSocialLikeView *bookHeaderView = (BookSocialLikeView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSocialLikeView bookSocialLikeKind] withReuseIdentifier:kLikeHeaderId forIndexPath:indexPath];
+        if (!self.likeView) {
+            self.likeView = [[CKLikeView alloc] initWithRecipe:self.recipe darkMode:YES delegate:self];
+            [bookHeaderView configureContentView:self.likeView];
+        }
+        headerView = bookHeaderView;
+    }
+    return headerView;
+}
+
 
 #pragma mark - Properties
 
@@ -66,8 +132,26 @@
 
 #pragma mark - Private methods
 
-- (void)loadData {
+- (void)initCollectionView {
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
+                                                          collectionViewLayout:[[BookSocialLayout alloc] init]];
+    collectionView.delegate = self;
+    collectionView.dataSource = self;
+    collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    collectionView.alwaysBounceVertical = YES;
+    collectionView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:collectionView];
+    self.collectionView = collectionView;
     
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kCommentCellId];
+    [self.collectionView registerClass:[BookSocialHeaderView class] forSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind]
+                   withReuseIdentifier:kCommentHeaderId];
+    [self.collectionView registerClass:[BookSocialLikeView class] forSupplementaryViewOfKind:[BookSocialLikeView bookSocialLikeKind]
+                   withReuseIdentifier:kLikeHeaderId];
+}
+
+- (void)loadData {
+    self.comments = [NSMutableArray array];
 }
 
 - (void)closeTapped:(id)sender {

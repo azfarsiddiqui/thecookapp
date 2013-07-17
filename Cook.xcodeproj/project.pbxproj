@@ -554,6 +554,9 @@
 		76C6CDD7164B62D1006001BD /* cook_book_bookmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76C6CDD5164B62D1006001BD /* cook_book_bookmark@2x.png */; };
 		76C7AE0716D5B55A00690A76 /* CKActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C7AE0616D5B55A00690A76 /* CKActivity.m */; };
 		76C8FAF31796636E00488A80 /* CKRecipeComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C8FAF21796636E00488A80 /* CKRecipeComment.m */; };
+		76C8FAF617966FDC00488A80 /* BookSocialLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C8FAF517966FDC00488A80 /* BookSocialLayout.m */; };
+		76C8FAF91796737700488A80 /* BookSocialHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C8FAF81796737700488A80 /* BookSocialHeaderView.m */; };
+		76C8FAFC17967C8D00488A80 /* BookSocialLikeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C8FAFB17967C8D00488A80 /* BookSocialLikeView.m */; };
 		76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C99D73163A12DD00788679 /* SettingsViewController.m */; };
 		76CB48811716772800E20E6E /* cook_recipe_details_divider.png in Resources */ = {isa = PBXBuildFile; fileRef = 76CB487F1716772800E20E6E /* cook_recipe_details_divider.png */; };
 		76CB48821716772800E20E6E /* cook_recipe_details_divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76CB48801716772800E20E6E /* cook_recipe_details_divider@2x.png */; };
@@ -1496,6 +1499,12 @@
 		76C7AE0616D5B55A00690A76 /* CKActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKActivity.m; sourceTree = "<group>"; };
 		76C8FAF11796636E00488A80 /* CKRecipeComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeComment.h; sourceTree = "<group>"; };
 		76C8FAF21796636E00488A80 /* CKRecipeComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeComment.m; sourceTree = "<group>"; };
+		76C8FAF417966FDC00488A80 /* BookSocialLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookSocialLayout.h; sourceTree = "<group>"; };
+		76C8FAF517966FDC00488A80 /* BookSocialLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookSocialLayout.m; sourceTree = "<group>"; };
+		76C8FAF71796737700488A80 /* BookSocialHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookSocialHeaderView.h; sourceTree = "<group>"; };
+		76C8FAF81796737700488A80 /* BookSocialHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookSocialHeaderView.m; sourceTree = "<group>"; };
+		76C8FAFA17967C8D00488A80 /* BookSocialLikeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookSocialLikeView.h; sourceTree = "<group>"; };
+		76C8FAFB17967C8D00488A80 /* BookSocialLikeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookSocialLikeView.m; sourceTree = "<group>"; };
 		76C99D72163A12DD00788679 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		76C99D73163A12DD00788679 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		76CB487F1716772800E20E6E /* cook_recipe_details_divider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_recipe_details_divider.png; sourceTree = "<group>"; };
@@ -3223,6 +3232,12 @@
 				761951B11793B86A008AB495 /* BookNavigationView.m */,
 				76EBE62C179522210099E2CB /* BookSocialViewController.h */,
 				76EBE62D179522210099E2CB /* BookSocialViewController.m */,
+				76C8FAF417966FDC00488A80 /* BookSocialLayout.h */,
+				76C8FAF517966FDC00488A80 /* BookSocialLayout.m */,
+				76C8FAF71796737700488A80 /* BookSocialHeaderView.h */,
+				76C8FAF81796737700488A80 /* BookSocialHeaderView.m */,
+				76C8FAFA17967C8D00488A80 /* BookSocialLikeView.h */,
+				76C8FAFB17967C8D00488A80 /* BookSocialLikeView.m */,
 				893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */,
 				893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */,
 				765E21A816F829CC00D06401 /* BookTitleActivityViewController.h */,
@@ -4223,6 +4238,7 @@
 				76582AAC165497310007FCE1 /* MPAnimation.m in Sources */,
 				76582AAD165497310007FCE1 /* MPFlipTransition.m in Sources */,
 				76582AAE165497310007FCE1 /* MPFlipViewController.m in Sources */,
+				76C8FAF617966FDC00488A80 /* BookSocialLayout.m in Sources */,
 				76582AAF165497310007FCE1 /* MPTransition.m in Sources */,
 				767C0AA11655201700141355 /* BenchtopPartingFlowLayout.m in Sources */,
 				76DC8DBB1659BF23005C472B /* BookCoverViewController.m in Sources */,
@@ -4286,6 +4302,7 @@
 				893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */,
 				893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */,
 				76A7D43016E4327200118749 /* BookLeftPageDividerView.m in Sources */,
+				76C8FAFC17967C8D00488A80 /* BookSocialLikeView.m in Sources */,
 				76A7D43316E432E600118749 /* BookRightPageDividerView.m in Sources */,
 				8904B2C916E6CCB3005CEF90 /* IngredientConstants.m in Sources */,
 				89655BEA16E81501006D9928 /* CategoryTableViewCell.m in Sources */,
@@ -4377,6 +4394,7 @@
 				76A82A0A175C5479004468F3 /* BookIndexListLayout.m in Sources */,
 				76A82A0D175C5A0B004468F3 /* BookIndexListViewController.m in Sources */,
 				76C07E40175D76DB0037292A /* CKBookTitleIndexView.m in Sources */,
+				76C8FAF91796737700488A80 /* BookSocialHeaderView.m in Sources */,
 				7638286117701C6A00387C8E /* BookIndexSubtitledCell.m in Sources */,
 				7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */,
 				7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */,

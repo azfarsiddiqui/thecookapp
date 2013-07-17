@@ -142,6 +142,11 @@
 
 + (UIColor *)dividerRuleColour;
 
+#pragma mark - Social view.
+
++ (UIFont *)bookSocialTitleFont;
++ (UIColor *)bookSocialTitleColour;
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;
 

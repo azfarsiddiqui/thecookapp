@@ -18,6 +18,8 @@
 
 @interface CKLikeView : UIView
 
++ (CGSize)likeSize;
+
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKLikeViewDelegate>)delegate;
 - (id)initWithRecipe:(CKRecipe *)recipe darkMode:(BOOL)dark delegate:(id<CKLikeViewDelegate>)delegate;
 

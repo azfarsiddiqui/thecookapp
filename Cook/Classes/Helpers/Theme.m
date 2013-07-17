@@ -483,6 +483,16 @@
     return [UIColor colorWithHexString:@"EAEAEA"];
 }
 
+#pragma mark - Social view.
+
++ (UIFont *)bookSocialTitleFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
+}
+
++ (UIColor *)bookSocialTitleColour {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor
 {

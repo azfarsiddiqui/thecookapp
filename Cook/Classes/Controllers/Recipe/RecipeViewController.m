@@ -181,6 +181,7 @@ typedef enum {
 
 - (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
     if ([appearNumber boolValue]) {
+
     } else {
         [self hideButtons];
     }
@@ -219,6 +220,7 @@ typedef enum {
         
         
     } else {
+        
     }
 }
 
@@ -1871,12 +1873,12 @@ typedef enum {
 - (void)showSocialOverlay:(BOOL)show {
     if (show) {
         [self hideButtons];
-        self.bookSocialViewController = [[BookSocialViewController alloc] initWithDelegate:self];
+        self.bookSocialViewController = [[BookSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
         self.bookSocialViewController.view.frame = self.view.bounds;
         self.bookSocialViewController.view.alpha = 0.0;
         [self.view addSubview:self.bookSocialViewController.view];
     }
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:show? 0.3 : 0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKRecipe;
+
 @protocol BookSocialViewControllerDelegate <NSObject>
 
 - (void)bookSocialViewControllerCloseRequested;
@@ -16,6 +18,6 @@
 
 @interface BookSocialViewController : UIViewController
 
-- (id)initWithDelegate:(id<BookSocialViewControllerDelegate>)delegate;
+- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<BookSocialViewControllerDelegate>)delegate;
 
 @end
