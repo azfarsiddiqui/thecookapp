@@ -85,7 +85,6 @@ NSString *const kRecipeAttrNumServes            = @"numServes";
 NSString *const kRecipeAttrCookingTimeInMinutes = @"cookingTimeMins";
 NSString *const kRecipeAttrPrepTimeInMinutes    = @"prepTimeMins";
 NSString *const kRecipeAttrPrivacy              = @"privacy";
-NSString *const kRecipeAttrLikes                = @"likes";
 
 #pragma mark - RecipeImage class
 NSString *const kRecipeImageModelName           = @"RecipeImage";

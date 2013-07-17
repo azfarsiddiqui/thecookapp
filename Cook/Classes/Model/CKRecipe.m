@@ -277,56 +277,67 @@
 #pragma mark - Likes
 
 - (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFRelation *likesRelation = [self.parseObject relationforKey:kRecipeAttrLikes];
-    PFQuery *likesQuery = [likesRelation query];
-    [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
-    [likesQuery findObjectsInBackgroundWithBlock:^(NSArray *likes, NSError *error) {
-        if (!error) {
+    DLog("like: %@", [NSString CK_stringForBoolean:like]);
+    
+    if (like) {
+        
+        // Check if already liked by user.
+        [self likedByUser:user completion:^(BOOL liked){
             
-            if ([likes count] == 0) {
-                
-                // Create recipe like then save it then adding it to the relation,.
-                CKRecipeLike *recipeLike = [CKRecipeLike recipeLikeForUser:user];
-                [recipeLike saveInBackground:^{
-                    
-                    [likesRelation addObject:recipeLike.parseObject];
-                    
-                    [self saveInBackground:^{
-                        success();
-                    } failure:^(NSError *error){
-                        failure(error);
-                    }];
-                } failure:^(NSError *error) {
-                    
-                }];
-                
+            // Already liked, do nothing and return.
+            if (liked) {
+                success();
             } else {
                 
-                // Remove the relation.
-                for (PFObject *recipeLikeParseObject in likes) {
-                    [likesRelation removeObject:recipeLikeParseObject];
-                }
-                
-                // Save the removal of the relation.
-                [self saveInBackground:^{
+                // Create like object for (user, recipe).
+                CKRecipeLike *recipeLike = [CKRecipeLike recipeLikeForUser:user recipe:self];
+                [recipeLike saveInBackground:^{
                     success();
-                } failure:^(NSError *error){
+                } failure:^(NSError *error) {
                     failure(error);
                 }];
 
             }
             
-        } else {
-            failure(nil);
-        }
+        } failure:^(NSError *error) {
+            failure(error);
+        }];
         
-    }];
+        
+    } else {
+        
+        // Get all likes for the recipe given the user.
+        PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
+        [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
+        [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+        [likesQuery findObjectsInBackgroundWithBlock:^(NSArray *likes, NSError *error) {
+            
+            if (!error) {
+                
+                // If there are likes, then remove them,
+                if ([likes count] > 0) {
+                    
+                    [PFObject deleteAllInBackground:likes block:^(BOOL succeeded, NSError *error) {
+                        if (!error) {
+                            success();
+                        } else {
+                            failure(error);
+                        }
+                    }];
+                }
+                
+            } else {
+                failure(error);
+            }
+        }];
+        
+    }
     
 }
 
 - (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFRelation *likesRelation = [self.parseObject relationforKey:kRecipeAttrLikes];
-    PFQuery *likesQuery = [likesRelation query];
+    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
+    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
     [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
     [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         if (!error) {
@@ -338,8 +349,8 @@
 }
 
 - (void)likesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFRelation *likesRelation = [self.parseObject relationforKey:kRecipeAttrLikes];
-    PFQuery *likesQuery = [likesRelation query];
+    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
+    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
     [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         if (!error) {
             success(number);

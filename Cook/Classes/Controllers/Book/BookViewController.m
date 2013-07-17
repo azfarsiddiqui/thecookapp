@@ -448,15 +448,15 @@
         self.bookRecipes = recipes;
 
         //fetch likes for user
-        [CKRecipeLike fetchRecipeLikeCountForUser:[CKUser currentUser] withSuccess:^(int numObjects) {
-            self.userLikeCount = numObjects;
-//            no longer being used. needs cleanup
-//            [self.contentsViewController refreshData];
-        } failure:^(NSError *error) {
-            DLog(@"error. could not likes count for user: %@", [error description]);
-            //            no longer being used. needs cleanup
-//            [self.contentsViewController refreshData];
-        }];
+//        [CKRecipeLike fetchRecipeLikeCountForUser:[CKUser currentUser] withSuccess:^(int numObjects) {
+//            self.userLikeCount = numObjects;
+////            no longer being used. needs cleanup
+////            [self.contentsViewController refreshData];
+//        } failure:^(NSError *error) {
+//            DLog(@"error. could not likes count for user: %@", [error description]);
+//            //            no longer being used. needs cleanup
+////            [self.contentsViewController refreshData];
+//        }];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);

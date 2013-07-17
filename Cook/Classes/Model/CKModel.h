@@ -36,6 +36,7 @@ typedef void(^ProgressBlock)(int percentDone);
 + (NSError *)errorWithCode:(NSInteger)code message:(NSString *)errorMessage;
 //default security - read/write by current user, read by public
 + (PFObject *)objectWithDefaultSecurityWithClassName:(NSString *)parseClassName;
++ (PFObject *)objectWithDefaultSecurityForUser:(PFUser *)parseUser className:(NSString *)parseClassName;
 
 - (id)initWithParseObject:(PFObject *)parseObject;
 - (void)saveEventually;

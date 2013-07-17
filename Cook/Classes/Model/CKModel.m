@@ -27,8 +27,12 @@
 }
 
 + (PFObject *)objectWithDefaultSecurityWithClassName:(NSString *)parseClassName {
+    return [self objectWithDefaultSecurityForUser:[PFUser currentUser] className:parseClassName];
+}
+
++ (PFObject *)objectWithDefaultSecurityForUser:(PFUser *)parseUser className:(NSString *)parseClassName {
     PFObject *pfObject = [PFObject objectWithClassName:parseClassName];
-    PFACL *objectACL = [PFACL ACLWithUser:[PFUser currentUser]];
+    PFACL *objectACL = [PFACL ACLWithUser:parseUser];
     [objectACL setPublicReadAccess:YES];
     pfObject.ACL = objectACL;
     return pfObject;

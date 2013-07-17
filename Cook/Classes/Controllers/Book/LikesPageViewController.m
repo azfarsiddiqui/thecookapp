@@ -18,14 +18,14 @@
 //overridden
 -(void)setSectionName:(NSString *)sectionName
 {
-    [super setSectionName:sectionName];
-    [CKRecipeLike fetchLikedRecipesForUser:[CKUser currentUser] withSuccess:^(NSArray *results) {
-        self.recipes = results;
-        [self.delegate didLoadLikedUserRecipes:results];
-        [self.tableView reloadData];
-    } failure:^(NSError *error) {
-        DLog(@"could not fetch user's liked recipes: %@", error);
-    }];
+//    [super setSectionName:sectionName];
+//    [CKRecipeLike fetchLikedRecipesForUser:[CKUser currentUser] withSuccess:^(NSArray *results) {
+//        self.recipes = results;
+//        [self.delegate didLoadLikedUserRecipes:results];
+//        [self.tableView reloadData];
+//    } failure:^(NSError *error) {
+//        DLog(@"could not fetch user's liked recipes: %@", error);
+//    }];
 }
 
 @end
