@@ -79,7 +79,7 @@
     // Tentative liked state and disable interaction.
     [self updateButtonWithLiked:like];
     self.likeButton.userInteractionEnabled = NO;
-    [EventHelper postLiked:like];
+    [EventHelper postLiked:like recipe:self.recipe];
     
     // Like via the server.
     [self.recipe like:like
@@ -94,7 +94,7 @@
                self.liked = !like;
                self.likeButton.userInteractionEnabled = YES;
                [self updateButtonWithLiked:self.liked];
-               [EventHelper postLiked:like];
+               [EventHelper postLiked:like recipe:self.recipe];
            }];
 }
 
@@ -113,9 +113,12 @@
 
 - (void)likedNotification:(NSNotification *)notification {
     if ([notification object] != self) {
-        BOOL liked = [EventHelper likedForNotification:notification];
-        self.liked = liked;
-        [self updateButtonWithLiked:self.liked];
+        CKRecipe *recipe = [EventHelper recipeForNotification:notification];
+        if ([recipe.objectId isEqualToString:self.recipe.objectId]) {
+            BOOL liked = [EventHelper likedForNotification:notification];
+            self.liked = liked;
+            [self updateButtonWithLiked:self.liked];
+        }
     }
 }
 

@@ -198,8 +198,11 @@
 }
 
 - (void)likedNotification:(NSNotification *)notification {
+    CKRecipe *recipe = [EventHelper recipeForNotification:notification];
     BOOL liked = [EventHelper likedForNotification:notification];
-    [self incrementLike:liked];
+    if ([recipe.objectId isEqualToString:self.recipe.objectId]) {
+        [self incrementLike:liked];
+    }
 }
 
 @end

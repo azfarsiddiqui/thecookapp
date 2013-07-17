@@ -44,8 +44,9 @@
 + (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification;
 
 + (void)registerLiked:(id)observer selector:(SEL)selector;
-+ (void)postLiked:(BOOL)liked;
++ (void)postLiked:(BOOL)liked recipe:(CKRecipe *)recipe;
 + (void)unregisterLiked:(id)observer;
 + (BOOL)likedForNotification:(NSNotification *)notification;
++ (CKRecipe *)recipeForNotification:(NSNotification *)notification;
 
 @end

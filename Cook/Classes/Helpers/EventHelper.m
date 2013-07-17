@@ -25,6 +25,7 @@
 #define kEventLogout                @"CKEventLogout"
 #define kEventLike                  @"CKEventLike"
 #define kBoolLike                   @"CKBoolLike"
+#define kRecipeLike                 @"CKRecipeLike"
 
 #pragma mark - Login successful event
 
@@ -161,8 +162,9 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventLike];
 }
 
-+ (void)postLiked:(BOOL)liked {
-    [EventHelper postEvent:kEventLike withUserInfo:@{ kBoolFollow : @(liked) }];
++ (void)postLiked:(BOOL)liked recipe:(CKRecipe *)recipe {
+    [EventHelper postEvent:kEventLike
+              withUserInfo:@{ kBoolLike : @(liked), kRecipeLike : recipe }];
 }
 
 + (void)unregisterLiked:(id)observer {
@@ -170,9 +172,12 @@
 }
 
 + (BOOL)likedForNotification:(NSNotification *)notification {
-    return [[[notification userInfo] valueForKey:kBoolFollow] boolValue];
+    return [[[notification userInfo] valueForKey:kBoolLike] boolValue];
 }
 
++ (CKRecipe *)recipeForNotification:(NSNotification *)notification {
+    return [[notification userInfo] valueForKey:kRecipeLike];
+}
 
 #pragma mark - Private
 
