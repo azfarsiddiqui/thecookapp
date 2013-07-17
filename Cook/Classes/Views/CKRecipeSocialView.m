@@ -17,7 +17,6 @@
 @property (nonatomic, assign) id<CKRecipeSocialViewDelegate> delegate;
 @property (nonatomic, assign) NSInteger numComments;
 @property (nonatomic, assign) NSInteger numLikes;
-@property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) UIImageView *messageIconView;
 @property (nonatomic, strong) UIImageView *likeIconView;
 @property (nonatomic, strong) UILabel *commentsLabel;
@@ -28,9 +27,10 @@
 
 @implementation CKRecipeSocialView
 
-#define kContentInsets  UIEdgeInsetsMake(12.0, 22.0, 12.0, 24.0)
-#define kInterItemGap   15.0
-#define kIconStatGap    5.0
+#define kContentInsets  UIEdgeInsetsMake(0.0, 0.0, 0.0, 15.0)
+#define kContentHeight  44.0
+#define kInterItemGap   5.0
+#define kIconStatGap    0.0
 #define kFont           [UIFont boldSystemFontOfSize:15]
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKRecipeSocialViewDelegate>)delegate {
@@ -39,6 +39,7 @@
         
         self.recipe = recipe;
         self.delegate = delegate;
+        self.backgroundColor = [UIColor clearColor];
         
         [self updateNumComments:0 numLikes:0];
         
@@ -65,23 +66,10 @@
 
 #pragma mark - Properties
 
-- (UIImageView *)backgroundView {
-    if (!_backgroundView) {
-        UIImage *backgroundImage = [[UIImage imageNamed:@"cook_dash_notitifcations_bg.png"]
-                                    resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 19.0, 0.0, 19.0)];
-        _backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
-        _backgroundView.userInteractionEnabled = YES;
-        _backgroundView.frame = CGRectMake(0.0, 0.0, backgroundImage.size.width, backgroundImage.size.height);
-        _backgroundView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-        [self addSubview:_backgroundView];
-    }
-    return _backgroundView;
-}
-
 - (UIImageView *)messageIconView {
     if (!_messageIconView) {
-        _messageIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_notitifcations_comment.png"]];
-        [self.backgroundView addSubview:_messageIconView];
+        _messageIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_icon_comment_light.png"]];
+        [self addSubview:_messageIconView];
     }
     return _messageIconView;
 }
@@ -94,15 +82,15 @@
         _commentsLabel.textColor = [UIColor whiteColor];
         _commentsLabel.shadowColor = [UIColor blackColor];
         _commentsLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        [self.backgroundView addSubview:_commentsLabel];
+        [self addSubview:_commentsLabel];
     }
     return _commentsLabel;
 }
 
 - (UIImageView *)likeIconView {
     if (!_likeIconView) {
-        _likeIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_notitifcations_like.png"]];
-        [self.backgroundView addSubview:_likeIconView];
+        _likeIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_icon_like_light.png"]];
+        [self addSubview:_likeIconView];
     }
     return _likeIconView;
 }
@@ -115,7 +103,7 @@
         _likeLabel.textColor = [UIColor whiteColor];
         _likeLabel.shadowColor = [UIColor blackColor];
         _likeLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        [self.backgroundView addSubview:_likeLabel];
+        [self addSubview:_likeLabel];
     }
     return _likeLabel;
 }
@@ -134,7 +122,7 @@
     // Comments icon.
     self.messageIconView.frame = (CGRect){
         kContentInsets.left,
-        floorf((self.backgroundView.frame.size.height - self.messageIconView.frame.size.height) / 2.0) + 1.0,
+        floorf((kContentHeight - self.messageIconView.frame.size.height) / 2.0),
         self.messageIconView.frame.size.width,
         self.messageIconView.frame.size.height
     };
@@ -145,7 +133,7 @@
     [self.commentsLabel sizeToFit];
     self.commentsLabel.frame = (CGRect){
         self.messageIconView.frame.origin.x + self.messageIconView.frame.size.width + kIconStatGap,
-        floorf((self.backgroundView.frame.size.height - self.commentsLabel.frame.size.height) / 2.0) - 1.0,
+        floorf((kContentHeight - self.commentsLabel.frame.size.height) / 2.0) - 1.0,
         self.commentsLabel.frame.size.width,
         self.commentsLabel.frame.size.height
     };
@@ -155,7 +143,7 @@
     // Update like icon.
     self.likeIconView.frame = (CGRect){
         self.commentsLabel.frame.origin.x + self.commentsLabel.frame.size.width + kInterItemGap,
-        floorf((self.backgroundView.frame.size.height - self.likeIconView.frame.size.height) / 2.0) + 1.0,
+        floorf((kContentHeight - self.likeIconView.frame.size.height) / 2.0),
         self.likeIconView.frame.size.width,
         self.likeIconView.frame.size.height
     };
@@ -167,7 +155,7 @@
     [self.likeLabel sizeToFit];
     self.likeLabel.frame = (CGRect){
         self.likeIconView.frame.origin.x + self.likeIconView.frame.size.width + kIconStatGap,
-        floorf((self.backgroundView.frame.size.height - self.commentsLabel.frame.size.height) / 2.0) - 1.0,
+        floorf((kContentHeight - self.commentsLabel.frame.size.height) / 2.0) - 1.0,
         self.likeLabel.frame.size.width,
         self.likeLabel.frame.size.height
     };
@@ -175,8 +163,7 @@
     requiredWidth += kContentInsets.right;
     
     // Update frame.
-    self.backgroundView.frame = CGRectMake(0.0, 0.0, requiredWidth, self.backgroundView.frame.size.height);
-    self.frame = self.backgroundView.frame;
+    self.frame = (CGRect){0.0, 0.0, requiredWidth, kContentHeight};
     
     [self.delegate recipeSocialViewUpdated:self];
 }
