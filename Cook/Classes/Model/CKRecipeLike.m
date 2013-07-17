@@ -7,25 +7,18 @@
 //
 
 #import "CKRecipeLike.h"
-#import "NSArray+Enumerable.h"
-NSString *const kRecipeLikeKeyLikesCount = @"likesCount";
-NSString *const kRecipeLikeKeyUserLike = @"userLike";
+#import "CKUser.h"
+#import "CKRecipe.h"
 
 @implementation CKRecipeLike
 
-+ (CKRecipeLike *)recipeLikeForUser:(CKUser *)user {
++ (CKRecipeLike *)recipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe {
     PFObject *parseRecipeLike = [self objectWithDefaultSecurityForUser:user.parseUser className:kRecipeLikeModelName];
     [parseRecipeLike setObject:user.parseObject forKey:kUserModelForeignKeyName];
+    [parseRecipeLike setObject:[PFObject objectWithoutDataWithClassName:kRecipeModelName objectId:recipe.parseObject.objectId]
+                        forKey:kRecipeModelForeignKeyName];
     return [[CKRecipeLike alloc] initWithParseObject:parseRecipeLike];;
 }
-
-+ (CKRecipeLike *)recipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe {
-    CKRecipeLike *recipeLike = [self recipeLikeForUser:user];
-    [recipeLike.parseObject setObject:[PFObject objectWithoutDataWithClassName:kRecipeModelName objectId:recipe.parseObject.objectId]
-                               forKey:kRecipeModelForeignKeyName];
-    return recipeLike;
-}
-
 
 @end
 

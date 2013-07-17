@@ -58,6 +58,11 @@
                    numLikes:(increment ? self.numLikes + 1 : self.numLikes - 1)];
 }
 
+- (void)incrementComments:(BOOL)increment {
+    [self updateNumComments:(increment ? self.numComments + 1 : self.numComments - 1)
+                   numLikes:self.numLikes];
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)backgroundView {
@@ -180,8 +185,14 @@
     DLog();
     
     // Load the number of likes.
-    [self.recipe likesWithCompletion:^(int numLikes) {
-        [self updateNumComments:0 numLikes:numLikes];
+    [self.recipe numLikesWithCompletion:^(int numLikes) {
+        [self updateNumComments:self.numComments numLikes:numLikes];
+    } failure:^(NSError *error) {
+    }];
+    
+    // Load the numner of comments.
+    [self.recipe numCommentsWithCompletion:^(int numComments) {
+        [self updateNumComments:numComments numLikes:self.numLikes];
     } failure:^(NSError *error) {
     }];
     

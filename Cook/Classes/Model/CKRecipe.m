@@ -16,6 +16,7 @@
 #import "NSString+Utilities.h"
 #import "CKRecipeImage.h"
 #import "CKRecipeLike.h"
+#import "CKRecipeComment.h"
 
 @interface CKRecipe ()
 
@@ -348,12 +349,53 @@
     }];
 }
 
-- (void)likesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+- (void)numLikesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
     [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
     [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         if (!error) {
             success(number);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
+#pragma mark - Comments
+
+- (void)comment:(NSString *)comment user:(CKUser *)user completion:(ObjectSuccessBlock)success
+        failure:(ObjectFailureBlock)failure {
+    
+    // Create comment object for (user, recipe).
+    CKRecipeComment *recipeComment = [CKRecipeComment recipeCommentForUser:user recipe:self];
+    [recipeComment saveInBackground:^{
+        success();
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
+
+}
+
+- (void)numCommentsWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeCommentModelName];
+    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
+    [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        if (!error) {
+            success(number);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
+- (void)commentsWithCompletion:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeCommentModelName];
+    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
+    [likesQuery findObjectsInBackgroundWithBlock:^(NSArray *parseComments, NSError *error) {
+        if (!error) {
+            success([parseComments collect:^id(PFObject *parseComment) {
+                return [[CKRecipeComment alloc] initWithParseObject:parseComment];
+            }]);
         } else {
             failure(error);
         }

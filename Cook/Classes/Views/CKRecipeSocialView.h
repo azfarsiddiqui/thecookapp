@@ -22,5 +22,6 @@
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKRecipeSocialViewDelegate>)delegate;
 - (void)incrementLike:(BOOL)increment;
+- (void)incrementComments:(BOOL)increment;
 
 @end

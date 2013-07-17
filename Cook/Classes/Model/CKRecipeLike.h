@@ -7,17 +7,12 @@
 //
 
 #import "CKModel.h"
-#import "CKUser.h"
-#import "CKRecipe.h"
 
-extern NSString *const kRecipeLikeKeyLikesCount;
-extern NSString *const kRecipeLikeKeyUserLike;
+@class CKRecipe;
+@class CKUser;
 
 @interface CKRecipeLike : CKModel
-@property (nonatomic, strong) CKUser *user;
-@property (nonatomic, strong) CKRecipe *recipe;
 
-+ (CKRecipeLike *)recipeLikeForUser:(CKUser *)user;
 + (CKRecipeLike *)recipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe;
 
 @end

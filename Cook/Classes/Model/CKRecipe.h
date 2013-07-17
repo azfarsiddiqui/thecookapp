@@ -52,7 +52,12 @@
 // Likes
 - (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-- (void)likesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)numLikesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
+// Comments
+- (void)comment:(NSString *)comment user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)numCommentsWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)commentsWithCompletion:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 // Fetch
 - (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;

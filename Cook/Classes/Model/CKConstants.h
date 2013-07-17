@@ -72,6 +72,7 @@ extern NSString *const kBookAttrDefaultCaptionValue;
 extern NSString *const kBookAttrStory;
 
 #pragma mark - Recipe class
+
 extern NSString *const kRecipeModelName;
 extern NSString *const kRecipeModelForeignKeyName;
 extern NSString *const kRecipeAttrStory;
@@ -86,19 +87,25 @@ extern NSString *const kRecipeAttrRecipeViewImageContentOffset;
 extern NSString *const kRecipeAttrPrivacy;
 
 #pragma mark - RecipeImage class
+
 extern NSString *const kRecipeImageModelName;
 extern NSString *const kRecipeImageModelForeignKeyName;
 extern NSString *const kRecipeImageAttrImageFile;
 extern NSString *const kRecipeImageAttrImageName;
 
 #pragma mark - Category class
+
 extern NSString *const kCategoryModelName;
 extern NSString *const kCategoryModelForeignKeyName;
 extern NSString *const kCategoryAttrOrder;
 
 #pragma mark - RecipeLike class
+
 extern NSString *const kRecipeLikeModelName;
-extern NSString *const kRecipeLikeModelForeignKeyName;
+
+#pragma mark - RecipeComment class
+
+extern NSString *const kRecipeCommentModelName;
 
 #pragma mark - Activity class
 

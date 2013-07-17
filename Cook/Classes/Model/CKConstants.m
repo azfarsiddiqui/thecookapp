@@ -73,6 +73,7 @@ NSString *const kBookAttrDefaultCaptionValue    = @"Tell us more about your book
 NSString *const kBookAttrStory                  = @"story";
 
 #pragma mark - Recipe class
+
 NSString *const kRecipeModelName                = @"Recipe";
 NSString *const kRecipeModelForeignKeyName      = @"recipe";
 NSString *const kRecipeAttrStory                = @"story";
@@ -87,19 +88,25 @@ NSString *const kRecipeAttrPrepTimeInMinutes    = @"prepTimeMins";
 NSString *const kRecipeAttrPrivacy              = @"privacy";
 
 #pragma mark - RecipeImage class
+
 NSString *const kRecipeImageModelName           = @"RecipeImage";
 NSString *const kRecipeImageModelForeignKeyName = @"recipeImage";
 NSString *const kRecipeImageAttrImageFile       = @"imageFile";
 NSString *const kRecipeImageAttrImageName       = @"imageName";
 
 #pragma mark - Category class
+
 NSString *const kCategoryModelName              = @"Category";
 NSString *const kCategoryModelForeignKeyName    = @"category";
 NSString *const kCategoryAttrOrder              = @"order";
 
 #pragma mark - RecipeLike class
+
 NSString *const kRecipeLikeModelName           = @"RecipeLike";
-NSString *const kRecipeLikeModelForeignKeyName = @"recipeLike";
+
+#pragma mark - RecipeComment class
+
+NSString *const kRecipeCommentModelName        = @"RecipeComment";
 
 #pragma mark - Activity class
 
