@@ -18,7 +18,7 @@
 @implementation BookSocialHeaderView
 
 + (NSString *)bookSocialHeaderKind {
-    return @"BooKSocialHeaderKind";
+    return @"BookSocialHeaderKind";
 }
 
 - (id)initWithFrame:(CGRect)frame {

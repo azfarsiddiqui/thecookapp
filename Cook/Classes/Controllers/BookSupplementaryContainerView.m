@@ -20,8 +20,13 @@
     return @"BookSocialLikeKind";
 }
 
++ (NSString *)bookSocialCommentBoxKind {
+    return @"BookSocialCommentBoxKind";
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }

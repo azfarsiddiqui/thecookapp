@@ -493,6 +493,14 @@
     return [UIColor colorWithHexString:@"ffffff"];
 }
 
++ (UIFont *)bookSocialCommentBoxFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
+}
+
++ (UIColor *)bookSocialCommentBoxColour {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor
 {

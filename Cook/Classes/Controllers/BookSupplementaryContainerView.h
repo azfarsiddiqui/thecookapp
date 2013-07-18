@@ -11,6 +11,7 @@
 @interface BookSupplementaryContainerView : UICollectionReusableView
 
 + (NSString *)bookSocialLikeKind;
++ (NSString *)bookSocialCommentBoxKind;
 
 - (void)configureContentView:(UIView *)contentView;
 

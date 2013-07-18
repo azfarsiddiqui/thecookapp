@@ -146,6 +146,8 @@
 
 + (UIFont *)bookSocialTitleFont;
 + (UIColor *)bookSocialTitleColour;
++ (UIFont *)bookSocialCommentBoxFont;
++ (UIColor *)bookSocialCommentBoxColour;
 
 #pragma mark - Category View
 +(UIColor*)categoryViewTextColor;

@@ -11,8 +11,10 @@
 #import "BookSocialLayout.h"
 #import "BookSocialHeaderView.h"
 #import "BookSupplementaryContainerView.h"
+#import "BookCommentView.h"
 #import "CKLikeView.h"
 #import "CKRecipe.h"
+#import "CKUser.h"
 
 @interface BookSocialViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -23,6 +25,7 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSMutableArray *comments;
 @property (nonatomic, strong) CKLikeView *likeView;
+@property (nonatomic, strong) BookCommentView *commentView;
 
 @end
 
@@ -32,6 +35,7 @@
 #define kButtonInsets       UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
 #define kCommentCellId      @"CommentCellId"
 #define kCommentHeaderId    @"CommentHeaderId"
+#define kCommentFooterId    @"CommentFooterId"
 #define kLikeHeaderId       @"LikeHeaderId"
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<BookSocialViewControllerDelegate>)delegate {
@@ -81,12 +85,18 @@
            viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionReusableView *headerView = nil;
-    if (indexPath.section == [BookSocialLayout commentsSection]) {
+    if (indexPath.section == [BookSocialLayout commentsSection] && indexPath.item == 0) {
         
         BookSocialHeaderView *bookHeaderView = (BookSocialHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind] withReuseIdentifier:kCommentHeaderId forIndexPath:indexPath];
         [bookHeaderView configureTitle:@"COMMENTS"];
         headerView = bookHeaderView;
         
+    } else if (indexPath.section == [BookSocialLayout commentsSection] && indexPath.item == 1) {
+        
+        BookSupplementaryContainerView *bookFooterView = (BookSupplementaryContainerView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialCommentBoxKind] withReuseIdentifier:kCommentFooterId forIndexPath:indexPath];
+        [bookFooterView configureContentView:self.commentView];
+        headerView = bookFooterView;
+    
     } else if (indexPath.section == [BookSocialLayout likesSection]) {
         
         BookSupplementaryContainerView *bookHeaderView = (BookSupplementaryContainerView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind] withReuseIdentifier:kLikeHeaderId forIndexPath:indexPath];
@@ -131,6 +141,13 @@
     return _likeView;
 }
 
+- (BookCommentView *)commentView {
+    if (!_commentView) {
+        _commentView = [[BookCommentView alloc] initWithUser:[CKUser currentUser]];
+    }
+    return _commentView;
+}
+
 #pragma mark - Private methods
 
 - (void)initCollectionView {
@@ -147,6 +164,8 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kCommentCellId];
     [self.collectionView registerClass:[BookSocialHeaderView class] forSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind]
                    withReuseIdentifier:kCommentHeaderId];
+    [self.collectionView registerClass:[BookSupplementaryContainerView class] forSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialCommentBoxKind]
+                   withReuseIdentifier:kCommentFooterId];
     [self.collectionView registerClass:[BookSupplementaryContainerView class] forSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind]
                    withReuseIdentifier:kLikeHeaderId];
 }

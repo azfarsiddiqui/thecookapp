@@ -26,6 +26,7 @@
 
 #define kContentInsets              (UIEdgeInsets){ 15.0, 20.0, 15.0, 20.0 }
 #define kCommentHeaderHeight        100.0
+#define kCommentFooterHeight        100.0
 #define kCommentSideOffset          200.0
 #define kCommentHeaderGap           0.0
 #define kCommentGap                 0.0
@@ -121,7 +122,7 @@
 
 - (void)buildCommentsLayout {
     
-    // Social title header.
+    // Comments title header.
     NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:[BookSocialLayout commentsSection]];
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind] withIndexPath:headerIndexPath];
     attributes.frame = (CGRect){
@@ -132,6 +133,18 @@
     };
     [self.supplementaryLayoutAttributes addObject:attributes];
     [self.indexPathSupplementaryAttributes setObject:attributes forKey:headerIndexPath];
+    
+    // Comments footer header.
+    NSIndexPath *footerIndexPath = [NSIndexPath indexPathForItem:1 inSection:[BookSocialLayout commentsSection]];
+    UICollectionViewLayoutAttributes *footerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialCommentBoxKind] withIndexPath:footerIndexPath];
+    footerAttributes.frame = (CGRect){
+        kCommentSideOffset,
+        self.collectionView.bounds.size.height - kContentInsets.bottom - kCommentFooterHeight,
+        self.collectionView.bounds.size.width - (kCommentSideOffset * 2),
+        kCommentFooterHeight
+    };
+    [self.supplementaryLayoutAttributes addObject:footerAttributes];
+    [self.indexPathSupplementaryAttributes setObject:footerAttributes forKey:headerIndexPath];
 }
 
 - (void)buildLikesLayout {
@@ -162,8 +175,10 @@
         // Fade the title header.
         if ([attributes.representedElementKind isEqualToString:[BookSocialHeaderView bookSocialHeaderKind]]) {
             [self applyScrollingEffects:attributes];
+        } else if ([attributes.representedElementKind isEqualToString:[BookSupplementaryContainerView bookSocialCommentBoxKind]]) {
+            [self applyStaticEffects:attributes offset:self.collectionView.bounds.size.height - kContentInsets.bottom - kCommentFooterHeight];
         } else if ([attributes.representedElementKind isEqualToString:[BookSupplementaryContainerView bookSocialLikeKind]]) {
-            [self applyStaticEffects:attributes];
+            [self applyStaticEffects:attributes offset:kContentInsets.top];
         }
         
     }
@@ -193,10 +208,9 @@
     attributes.frame = headerFrame;
 }
 
-- (void)applyStaticEffects:(UICollectionViewLayoutAttributes *)attributes {
+- (void)applyStaticEffects:(UICollectionViewLayoutAttributes *)attributes offset:(CGFloat)offset {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     CGRect headerFrame = attributes.frame;
-    CGFloat offset = kContentInsets.top;
     headerFrame.origin.y = visibleFrame.origin.y + offset;
     attributes.frame = headerFrame;
 }
