@@ -10,6 +10,7 @@
 #import "CKUser.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIImageView+WebCache.h"
+#import "ViewHelper.h"
 
 @interface CKUserProfilePhotoView ()
 
@@ -154,14 +155,11 @@
 }
 
 - (void)applyRoundProfileImageMask {
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.profileImageView.bounds
-                                                   byRoundingCorners:UIRectCornerAllCorners
-                                                         cornerRadii:CGSizeMake(floorf(self.profileImageView.bounds.size.width / 2.0),
-                                                                                floorf(self.profileImageView.bounds.size.height / 2.0))];
-    CAShapeLayer *maskLayer = [CAShapeLayer layer];
-    maskLayer.frame = self.profileImageView.bounds;
-    maskLayer.path = maskPath.CGPath;
-    self.profileImageView.layer.mask = maskLayer;
+    [ViewHelper applyRoundedCornersToView:self.profileImageView
+                                  corners:UIRectCornerAllCorners
+                                     size:(CGSize){
+                                         floorf(self.profileImageView.bounds.size.width / 2.0),
+                                         floorf(self.profileImageView.bounds.size.height / 2.0)}];
 }
 
 @end

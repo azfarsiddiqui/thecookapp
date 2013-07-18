@@ -17,6 +17,7 @@
 
 - (NSArray *)recipesForBookCategoryViewControllerForCategory:(CKCategory *)category;
 - (CKRecipe *)featuredRecipeForBookCategoryViewControllerForCategory:(CKCategory *)category;
+- (void)bookCategoryViewControllerDidScrollContentOffset:(CGPoint)contentOffset;
 
 @end
 

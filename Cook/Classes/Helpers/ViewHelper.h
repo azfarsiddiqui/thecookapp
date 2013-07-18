@@ -45,4 +45,7 @@
 // Shadows.
 + (void)addTopShadowView:(UIView *)view;
 
+// Rounded corners.
++ (void)applyRoundedCornersToView:(UIView *)view corners:(UIRectCorner)corners size:(CGSize)size;
+
 @end

@@ -67,7 +67,7 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return (UIEdgeInsets) { 107.0, 20.0, 20.0, 20.0 };
+    return (UIEdgeInsets) { 210.0, 20.0, 20.0, 20.0 };
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -75,7 +75,7 @@
     
     CGSize headerSize = (CGSize) {
         self.collectionView.bounds.size.width,
-        400.0
+        420.0
     };
     return headerSize;
 }

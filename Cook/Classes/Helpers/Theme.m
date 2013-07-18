@@ -132,7 +132,7 @@
 }
 
 + (UIFont *)recipeGridTitleFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
 }
 
 + (UIColor *)recipeGridTitleColour {

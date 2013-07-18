@@ -16,6 +16,7 @@
 #import "GridRecipeStatsView.h"
 #import "ImageHelper.h"
 #import "CKBookCover.h"
+#import "ViewHelper.h"
 
 @interface BookRecipeCollectionViewCell ()
 
@@ -37,16 +38,15 @@
 @implementation BookRecipeCollectionViewCell
 
 #define kViewDebug              0
-#define kImageSize              CGSizeMake(318.0, 258.0)
-#define kTitleOffsetNoImage     52.0
-#define kTitleTopGap            20.0
-#define kTitleDividerGap        10.0
-#define kDividerStoryGap        20.0
+#define kImageSize              CGSizeMake(320.0, 264.0)
+#define kTitleOffsetNoImage     45.0
+#define kTitleTopGap            45.0
+#define kTitleDividerGap        20.0
+#define kDividerStoryGap        25.0
 #define kDividerIngredientsGap  20.0
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
-#define kContentInsets          UIEdgeInsetsMake(30.0, 30.0, 20.0, 30.0)
-#define kImageInsets            UIEdgeInsetsMake(1.0, 1.0, 1.0, 1.0)
+#define kContentInsets          UIEdgeInsetsMake(30.0, 40.0, 20.0, 40.0)
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -57,11 +57,12 @@
         UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
         imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
         imageView.frame = (CGRect){
-            kImageInsets.left,
-            kImageInsets.top,
+            self.contentView.bounds.origin.x,
+            self.contentView.bounds.origin.y,
             kImageSize.width,
             kImageSize.height
         };
+        [ViewHelper applyRoundedCornersToView:imageView corners:UIRectCornerTopLeft|UIRectCornerTopRight size:(CGSize){ 4.0, 4.0 }];
         [self.contentView addSubview:imageView];
         self.imageView = imageView;
         
@@ -80,6 +81,7 @@
         titleLabel.backgroundColor = [self backgroundColorOrDebug];
         titleLabel.font = [Theme recipeGridTitleFont];
         titleLabel.numberOfLines = 2;
+        titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self.contentView addSubview:titleLabel];
         self.titleLabel = titleLabel;
@@ -96,13 +98,13 @@
         
         // Recipe ingredients ellipsis.
         NSString *ellipsis = @"...";
-        CGSize size = [ellipsis sizeWithFont:[Theme recipeGridIngredientsFont]
-                           constrainedToSize:self.contentView.bounds.size
-                               lineBreakMode:NSLineBreakByClipping];
+        CGRect ingredientsFrame = [ellipsis boundingRectWithSize:self.contentView.bounds.size
+                                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                                      attributes:nil context:nil];
         UILabel *ingredientsEllipsisLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentInsets.left,
                                                                                       self.ingredientsLabel.frame.size.height,
-                                                                                      size.width,
-                                                                                      size.height)];
+                                                                                      ingredientsFrame.size.width,
+                                                                                      ingredientsFrame.size.height)];
         ingredientsEllipsisLabel.backgroundColor = [self backgroundColorOrDebug];
         ingredientsEllipsisLabel.font = [Theme recipeGridIngredientsFont];
         ingredientsEllipsisLabel.textColor = [Theme recipeGridIngredientsColour];
@@ -119,6 +121,7 @@
         storyLabel.textColor = [Theme recipeGridIngredientsColour];
         storyLabel.numberOfLines = 0;
         storyLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        storyLabel.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:storyLabel];
         self.storyLabel = storyLabel;
         
@@ -199,7 +202,7 @@
 #pragma mark - Private methods
 
 - (void)initBackground {
-    UIEdgeInsets backgroundInsets = UIEdgeInsetsMake(4.0, 8.0, 12.0, 8.0);
+    UIEdgeInsets backgroundInsets = (UIEdgeInsets){ 5.0, 3.0, 5.0, 3.0 };
     UIImageView *cellBackgroundImageView = [[UIImageView alloc] initWithImage:nil];
     cellBackgroundImageView.autoresizingMask = UIViewAutoresizingNone;
     cellBackgroundImageView.frame = CGRectMake(-backgroundInsets.left,
@@ -217,18 +220,19 @@
     NSString *title = [self.recipe.name uppercaseString];
     CGRect frame = self.titleLabel.frame;
     CGSize availableSize = [self availableSize];
-    CGSize size = [title sizeWithFont:self.titleLabel.font
-                    constrainedToSize:availableSize
-                        lineBreakMode:NSLineBreakByWordWrapping];
-    frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-                       self.imageView.frame.origin.y + self.imageView.frame.size.height + kTitleTopGap,
-                       size.width,
-                       size.height);
+    NSMutableDictionary *attributes = [NSMutableDictionary new];
+    [attributes setObject:self.titleLabel.font forKey:NSFontAttributeName];
     if (![self.recipe hasPhotos]) {
         frame.origin.y = kTitleOffsetNoImage;
     }
-    self.titleLabel.frame = frame;
+    self.titleLabel.backgroundColor = [UIColor clearColor];
     self.titleLabel.text = title;
+    CGSize size = [self.titleLabel sizeThatFits:availableSize];
+    self.titleLabel.frame = (CGRect){
+        kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+        self.imageView.frame.origin.y + self.imageView.frame.size.height + kTitleTopGap,
+        size.width,
+        size.height};
 }
 
 - (void)updateDivider {
@@ -259,18 +263,17 @@
     if ([self.recipe hasPhotos] && [self.recipe.story length] > 0) {
         self.storyLabel.hidden = NO;
         NSString *story = self.recipe.story;
-        CGSize size = [story sizeWithFont:self.storyLabel.font
-                        constrainedToSize:(CGSize) {
-                            self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
-                            self.statsView.frame.origin.y - self.dividerQuoteImageView.frame.origin.y - self.dividerQuoteImageView.frame.size.height - kDividerStoryGap,
-                        }
-                            lineBreakMode:NSLineBreakByWordWrapping];
+        CGSize availableSize = (CGSize) {
+            self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+            self.statsView.frame.origin.y - self.dividerQuoteImageView.frame.origin.y - self.dividerQuoteImageView.frame.size.height - kDividerStoryGap,
+        };
+        self.storyLabel.text = story;
+        CGSize size = [self.storyLabel sizeThatFits:availableSize];
         self.storyLabel.frame = (CGRect){
             kContentInsets.left,
             self.dividerQuoteImageView.frame.origin.y + self.dividerQuoteImageView.frame.size.height + kDividerStoryGap,
             size.width,
             size.height};
-        self.storyLabel.text = story;
     } else {
         self.storyLabel.hidden = YES;
     }
@@ -371,13 +374,8 @@
 }
 
 - (UIImage *)backgroundImageForSelected:(BOOL)selected {
-    if (selected) {
-        return [[UIImage imageNamed:@"cook_book_recipe_cell_on.png"]
-                resizableImageWithCapInsets:UIEdgeInsetsMake(10.0, 19.0, 20.0, 19.0)];
-    } else {
-        return [[UIImage imageNamed:@"cook_book_recipe_cell_off.png"]
-                resizableImageWithCapInsets:UIEdgeInsetsMake(10.0, 19.0, 20.0, 19.0)];
-    }
+    return [[UIImage imageNamed:@"cook_book_inner_grid_cell.png"]
+            resizableImageWithCapInsets:(UIEdgeInsets){ 10.0, 8.0, 10.0, 8.0 }];
 }
 
 - (CGSize)availableSize {
