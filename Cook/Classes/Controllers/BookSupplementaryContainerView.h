@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BookSocialLikeView : UICollectionReusableView
+@interface BookSupplementaryContainerView : UICollectionReusableView
 
 + (NSString *)bookSocialLikeKind;
 

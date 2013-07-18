@@ -8,7 +8,7 @@
 
 #import "BookSocialLayout.h"
 #import "BookSocialHeaderView.h"
-#import "BookSocialLikeView.h"
+#import "BookSupplementaryContainerView.h"
 #import "CKLikeView.h"
 #import "ViewHelper.h"
 
@@ -139,7 +139,7 @@
     // Likes header.
     CGSize headerSize = [CKLikeView likeSize];
     NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:[BookSocialLayout likesSection]];
-    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[BookSocialLikeView bookSocialLikeKind] withIndexPath:headerIndexPath];
+    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind] withIndexPath:headerIndexPath];
     attributes.frame = (CGRect){
         self.collectionView.bounds.size.width - kContentInsets.right - headerSize.width,
         kContentInsets.top,
@@ -162,7 +162,7 @@
         // Fade the title header.
         if ([attributes.representedElementKind isEqualToString:[BookSocialHeaderView bookSocialHeaderKind]]) {
             [self applyScrollingEffects:attributes];
-        } else if ([attributes.representedElementKind isEqualToString:[BookSocialLikeView bookSocialLikeKind]]) {
+        } else if ([attributes.representedElementKind isEqualToString:[BookSupplementaryContainerView bookSocialLikeKind]]) {
             [self applyStaticEffects:attributes];
         }
         

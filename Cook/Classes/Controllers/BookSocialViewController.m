@@ -10,7 +10,7 @@
 #import "ViewHelper.h"
 #import "BookSocialLayout.h"
 #import "BookSocialHeaderView.h"
-#import "BookSocialLikeView.h"
+#import "BookSupplementaryContainerView.h"
 #import "CKLikeView.h"
 #import "CKRecipe.h"
 
@@ -89,10 +89,8 @@
         
     } else if (indexPath.section == [BookSocialLayout likesSection]) {
         
-        BookSocialLikeView *bookHeaderView = (BookSocialLikeView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSocialLikeView bookSocialLikeKind] withReuseIdentifier:kLikeHeaderId forIndexPath:indexPath];
-        if (!self.likeView.superview) {
-            [bookHeaderView configureContentView:self.likeView];
-        }
+        BookSupplementaryContainerView *bookHeaderView = (BookSupplementaryContainerView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind] withReuseIdentifier:kLikeHeaderId forIndexPath:indexPath];
+        [bookHeaderView configureContentView:self.likeView];
         headerView = bookHeaderView;
     }
     return headerView;
@@ -149,7 +147,7 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kCommentCellId];
     [self.collectionView registerClass:[BookSocialHeaderView class] forSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind]
                    withReuseIdentifier:kCommentHeaderId];
-    [self.collectionView registerClass:[BookSocialLikeView class] forSupplementaryViewOfKind:[BookSocialLikeView bookSocialLikeKind]
+    [self.collectionView registerClass:[BookSupplementaryContainerView class] forSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind]
                    withReuseIdentifier:kLikeHeaderId];
 }
 
