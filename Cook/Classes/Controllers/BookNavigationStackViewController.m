@@ -30,12 +30,14 @@
     BookAddViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKRecipe *featuredRecipe;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
 @property (nonatomic, strong) NSMutableDictionary *categoryControllers;
 @property (nonatomic, strong) NSMutableDictionary *categoryHeaderViews;
+@property (nonatomic, strong) NSMutableDictionary *categoryFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
@@ -385,6 +387,7 @@
     self.categoryRecipes = [NSMutableDictionary dictionary];
     self.categories = [NSMutableArray array];
     self.categoryHeaderViews = [NSMutableDictionary dictionary];
+    self.categoryFeaturedRecipes = [NSMutableDictionary dictionary];
     
     for (CKRecipe *recipe in self.recipes) {
         
@@ -427,8 +430,8 @@
 
 - (void)loadFeaturedRecipe {
     CKCategory *randomCategory = [self.categories objectAtIndex:arc4random_uniform([self.categories count])];
-    CKRecipe *featuredRecipe = [self featuredRecipeForCategory:randomCategory];
-    [self.indexViewController configureHeroRecipe:featuredRecipe];
+    self.featuredRecipe = [self featuredRecipeForCategory:randomCategory];
+    [self.indexViewController configureHeroRecipe:self.featuredRecipe];
 }
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -483,44 +486,6 @@
     return category.objectId;
 }
 
-- (void)prefetchCategoryControllers {
-    
-    CGRect visibleFrame = (CGRect) {
-        self.collectionView.contentOffset.x,
-        self.collectionView.contentOffset.y,
-        self.collectionView.bounds.size.width,
-        self.collectionView.bounds.size.height
-    };
-    
-    // Figure out the pageDistance for prefetching.
-    NSInteger categoryIndex = 0;
-    NSInteger pageDistance = (NSInteger)visibleFrame.origin.x / self.collectionView.bounds.size.width;
-    if (pageDistance >= [self stackCategoryStartSection]) {
-        categoryIndex = pageDistance - [self stackCategoryStartSection];
-    }
-    
-    NSInteger numPrefetch = 2;
-    for (NSInteger currentCatIndex = categoryIndex; currentCatIndex < (categoryIndex + numPrefetch); currentCatIndex++) {
-        
-        // Have we exceeded the number of categories.
-        if (currentCatIndex > [self.categories count] - 1) {
-            break;
-        }
-        
-        CKCategory *category = [self.categories objectAtIndex:currentCatIndex];
-        NSString *categoryKey = [self keyForCategory:category];
-        BookCategoryViewController *categoryController = [self.categoryControllers objectForKey:categoryKey];
-        if (!categoryController) {
-            DLog(@"Prefetch category VC for [%@]", category.name);
-            categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category delegate:self];
-            categoryController.bookPageDelegate = self;
-            [categoryController loadData];
-            [self.categoryControllers setObject:categoryController forKey:categoryKey];
-        }
-    }
-    
-}
-
 - (NSArray *)recipesWithPhotos:(NSArray *)recipes {
     return [recipes select:^BOOL(CKRecipe *recipe) {
         return [recipe hasPhotos];
@@ -528,13 +493,17 @@
 }
 
 - (CKRecipe *)featuredRecipeForCategory:(CKCategory *)category {
-    NSArray *recipes = [self.categoryRecipes objectForKey:[self keyForCategory:category]];
-    NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
-    if ([recipesWithPhotos count] > 0) {
-        return [recipes objectAtIndex:arc4random_uniform([recipes count])];
-    } else {
-        return nil;
+    NSString *categoryKey = [self keyForCategory:category];
+    CKRecipe *featuredRecipe = [self.categoryFeaturedRecipes objectForKey:categoryKey];
+    if (!featuredRecipe) {
+        NSArray *recipes = [self.categoryRecipes objectForKey:[self keyForCategory:category]];
+        NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
+        if ([recipesWithPhotos count] > 0) {
+            featuredRecipe = [recipes objectAtIndex:arc4random_uniform([recipes count])];
+            [self.categoryFeaturedRecipes setObject:featuredRecipe forKey:categoryKey];
+        }
     }
+    return featuredRecipe;
 }
 
 - (void)closeTapped:(id)sender {
