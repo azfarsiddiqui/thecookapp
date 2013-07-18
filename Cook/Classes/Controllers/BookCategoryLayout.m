@@ -47,7 +47,7 @@
                 alpha = 0.0;
             }
             
-            attributes.alpha = MIN(alpha, 1.0);
+            attributes.alpha = MIN(alpha, 0.9);
             
             if (visibleFrame.origin.y < 0.0) {
                 
