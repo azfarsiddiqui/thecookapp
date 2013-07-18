@@ -21,6 +21,7 @@
 @interface BenchtopBookCoverViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
+@property (nonatomic, strong) UIView *shadowView;
 @property (nonatomic, assign) id<BenchtopBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;

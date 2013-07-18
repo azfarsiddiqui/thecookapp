@@ -13,7 +13,6 @@
 @interface BenchtopBookCoverViewCell () <CKBookCoverViewDelegate>
 
 @property (nonatomic, strong) UIButton *deleteButton;
-@property (nonatomic, strong) UIView *shadowView;
 
 @end
 
