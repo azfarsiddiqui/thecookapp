@@ -70,7 +70,9 @@
         self.book = book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
+        self.profileViewController.bookPageDelegate = self;
         self.indexViewController = [[BookIndexListViewController alloc] initWithBook:book delegate:self];
+        self.indexViewController.bookPageDelegate = self;
     }
     return self;
 }
@@ -132,8 +134,8 @@
 
 #pragma mark - BookPageViewControllerDelegate methods
 
-- (void)bookPageViewControllerShowNavigationBar:(BOOL)show {
-    [self showNavBar:NO completion:nil];
+- (void)bookPageViewControllerCloseRequested {
+    [self.delegate bookNavigationControllerCloseRequested];
 }
 
 - (void)bookPageViewControllerShowRecipe:(CKRecipe *)recipe {
@@ -277,6 +279,7 @@
             [self.categoryHeaderViews setObject:categoryHeaderView forKey:[self keyForCategory:category]];
             
         }
+        
     } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
         
         headerView = [collectionView dequeueReusableSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind]
@@ -536,20 +539,6 @@
 
 - (void)showRecipe:(CKRecipe *)recipe {
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
-}
-
-- (void)showNavBar:(BOOL)show completion:(void (^)())completion {
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.bookNavigationView.alpha = show ? 1.0 : 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         if (completion != nil) {
-                             completion();
-                         }
-                     }];
 }
 
 - (void)showAddView:(BOOL)show {

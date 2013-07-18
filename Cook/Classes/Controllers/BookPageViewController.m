@@ -7,12 +7,17 @@
 //
 
 #import "BookPageViewController.h"
+#import "ViewHelper.h"
 
 @interface BookPageViewController ()
+
+@property (nonatomic, strong) UIButton *closeButton;
 
 @end
 
 @implementation BookPageViewController
+
+#define kContentInsets  (UIEdgeInsets){ 30.0, 20.0, 0.0, 0.0 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -21,6 +26,20 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+}
+
+- (void)addCloseButtonWhite:(BOOL)white {
+    [self.closeButton removeFromSuperview];
+    self.closeButton = [ViewHelper buttonWithImage:[self closeButtonImageForWhite:white]
+                                            target:self selector:@selector(closeTapped:)];
+    self.closeButton.frame = (CGRect){
+        kContentInsets.left,
+        kContentInsets.top,
+        self.closeButton.frame.size.width,
+        self.closeButton.frame.size.height
+    };
+    self.closeButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleRightMargin;
+    [self.view addSubview:self.closeButton];
 }
 
 #pragma mark - Private methods
@@ -49,6 +68,16 @@
         self.view.bounds.size.height
     };
     [self.view addSubview:rightShadowView];
+}
+
+- (void)closeTapped:(id)sender {
+    DLog();
+    [self.bookPageDelegate bookPageViewControllerCloseRequested];
+}
+
+- (UIImage *)closeButtonImageForWhite:(BOOL)white {
+    NSString *imageName = [NSString stringWithFormat:@"cook_book_inner_icon_close_%@.png", white ? @"light" : @"dark"];
+    return [UIImage imageNamed:imageName];
 }
 
 @end

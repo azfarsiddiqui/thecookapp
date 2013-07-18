@@ -41,7 +41,7 @@
 #define kIndexWidth             240.0
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
-#define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 0.0, 0.0 }
+#define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 5.0, 0.0 }
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookIndexListViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -61,6 +61,7 @@
     [self initTitleView];
     [self initCollectionView];
     [self initProfileView];
+    [self addCloseButtonWhite:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

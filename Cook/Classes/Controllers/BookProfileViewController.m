@@ -38,7 +38,7 @@
 
 @implementation BookProfileViewController
 
-#define kIntroOffset    CGPointMake(30.0, 30.0)
+#define kIntroOffset    CGPointMake(0.0, 0.0)
 #define kIntroWidth     400.0
 #define kProfileNameGap 20.0
 
@@ -61,6 +61,7 @@
     [super viewDidAppear:animated];
     [self initImageView];
     [self initIntroView];
+    [self addCloseButtonWhite:YES];
     [self loadData];
 }
 
@@ -96,7 +97,7 @@
         _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_editButton setFrame:CGRectMake(self.introView.bounds.size.width - _editButton.frame.size.width - 15.0,
-                                         15.0,
+                                         30.0,
                                          _editButton.frame.size.width,
                                          _editButton.frame.size.height)];
     }

@@ -12,7 +12,7 @@
 
 @protocol BookPageViewControllerDelegate <NSObject>
 
-- (void)bookPageViewControllerShowNavigationBar:(BOOL)show;
+- (void)bookPageViewControllerCloseRequested;
 - (void)bookPageViewControllerShowRecipe:(CKRecipe *)recipe;
 
 @end
@@ -20,5 +20,7 @@
 @interface BookPageViewController : UIViewController
 
 @property (nonatomic, weak) id<BookPageViewControllerDelegate> bookPageDelegate;
+
+- (void)addCloseButtonWhite:(BOOL)white;
 
 @end
