@@ -100,7 +100,7 @@
     self.label.frame = (CGRect){
         self.profilePhotoView.frame.origin.x + self.profilePhotoView.frame.size.width + kPhotoTextBoxGap,
         floorf((self.bounds.size.height - self.label.frame.size.height) / 2.0),
-        self.label.frame.size.width,
+        kTextBoxWidth,
         self.label.frame.size.height
     };
     [self addSubview:self.label];
