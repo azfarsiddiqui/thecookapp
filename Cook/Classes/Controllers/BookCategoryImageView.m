@@ -11,6 +11,7 @@
 @interface BookCategoryImageView ()
 
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIView *whiteOverlayView;
 
 @end
 
@@ -21,8 +22,22 @@
         self.backgroundColor = [UIColor whiteColor];
         self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         [self addSubview:self.imageView];
+        
+        self.whiteOverlayView = [[UIView alloc] initWithFrame:self.bounds];
+        self.whiteOverlayView.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.8];
+        self.whiteOverlayView.hidden = YES;
+        [self addSubview:self.whiteOverlayView];
     }
     return self;
+}
+
+- (void)applyAlpha:(CGFloat)alpha {
+    if (alpha > 0) {
+        self.whiteOverlayView.hidden = NO;
+        self.whiteOverlayView.alpha = alpha;
+    } else {
+        self.whiteOverlayView.hidden = YES;
+    }
 }
 
 - (void)configureImage:(UIImage *)image {

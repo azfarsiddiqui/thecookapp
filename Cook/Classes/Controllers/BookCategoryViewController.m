@@ -15,6 +15,7 @@
 #import "BookRecipeCollectionViewCell.h"
 #import "MRCEnumerable.h"
 #import "BookHeaderView.h"
+#import "ViewHelper.h"
 
 @interface BookCategoryViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -60,6 +61,12 @@
                                                    recipesForBookCategoryViewControllerForCategory:self.category]];
     [self.collectionView reloadData];
 //    [self loadFeaturedRecipe];
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self applyScrollingEffectsOnCategoryView];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -198,6 +205,21 @@
 //                     completion:^(BOOL finished) {
 //                         [self.bookPageDelegate bookPageViewControllerShowRecipe:recipe];
 //                     }];
+}
+
+- (void)applyScrollingEffectsOnCategoryView {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGFloat maxScroll = 500.0;
+    CGFloat alpha = 0.0;
+    if (visibleFrame.origin.y <= 0.0) {
+        alpha = 0.0;
+    } else {
+        
+        CGFloat ratio = visibleFrame.origin.y / maxScroll;
+        alpha = MIN(ratio, 1.0);
+    }
+    
+    [self.delegate bookCategoryViewControllerApplyAlpha:alpha category:self.category];
 }
 
 @end

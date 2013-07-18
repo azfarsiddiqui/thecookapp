@@ -167,6 +167,11 @@
     return [self featuredRecipeForCategory:category];
 }
 
+- (void)bookCategoryViewControllerApplyAlpha:(CGFloat)alpha category:(CKCategory *)category {
+    BookCategoryImageView *categoryHeaderView = [self.categoryHeaderViews objectForKey:[self keyForCategory:category]];
+    [categoryHeaderView applyAlpha:alpha];
+}
+
 #pragma mark - BookIndexListViewControllerDelegate methods
 
 - (void)bookIndexSelectedCategory:(NSString *)category {
@@ -259,13 +264,15 @@
             headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                             withReuseIdentifier:kCategoryHeaderId
                                                                    forIndexPath:indexPath];
-            CKCategory *category = [self.categories objectAtIndex:indexPath.section - [self stackCategoryStartSection]];
+            
+            NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
+            CKCategory *category = [self.categories objectAtIndex:categoryIndex];
             BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
             CKRecipe *featuredRecipe = [self featuredRecipeForCategory:category];
             [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
             
             // Keep track of category views keyed on indexPath.
-            [self.categoryHeaderViews setObject:categoryHeaderView forKey:indexPath];
+            [self.categoryHeaderViews setObject:categoryHeaderView forKey:[self keyForCategory:category]];
             
         }
     } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
@@ -305,8 +312,12 @@
       forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
     // Remove a reference to the category image view.
-    if ([elementKind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
-        [self.categoryHeaderViews removeObjectForKey:indexPath];
+    if (indexPath.section >= [self stackCategoryStartSection]
+        && [elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        
+        NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
+        CKCategory *category = [self.categories objectAtIndex:categoryIndex];
+        [self.categoryHeaderViews removeObjectForKey:[self keyForCategory:category]];
     }
     
 }

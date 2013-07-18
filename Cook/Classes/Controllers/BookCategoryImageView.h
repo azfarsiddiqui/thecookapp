@@ -11,5 +11,6 @@
 @interface BookCategoryImageView : UICollectionReusableView
 
 - (void)configureImage:(UIImage *)image;
+- (void)applyAlpha:(CGFloat)alpha;
 
 @end
