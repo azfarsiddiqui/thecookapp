@@ -209,17 +209,7 @@
 
 - (void)applyScrollingEffectsOnCategoryView {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    CGFloat maxScroll = 500.0;
-    CGFloat alpha = 0.0;
-    if (visibleFrame.origin.y <= 0.0) {
-        alpha = 0.0;
-    } else {
-        
-        CGFloat ratio = visibleFrame.origin.y / maxScroll;
-        alpha = MIN(ratio, 1.0);
-    }
-    
-    [self.delegate bookCategoryViewControllerApplyAlpha:alpha category:self.category];
+    [self.delegate bookCategoryViewControllerScrolledOffset:visibleFrame.origin.y category:self.category];
 }
 
 @end

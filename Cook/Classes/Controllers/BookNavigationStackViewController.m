@@ -167,9 +167,9 @@
     return [self featuredRecipeForCategory:category];
 }
 
-- (void)bookCategoryViewControllerApplyAlpha:(CGFloat)alpha category:(CKCategory *)category {
+- (void)bookCategoryViewControllerScrolledOffset:(CGFloat)offset category:(CKCategory *)category {
     BookCategoryImageView *categoryHeaderView = [self.categoryHeaderViews objectForKey:[self keyForCategory:category]];
-    [categoryHeaderView applyAlpha:alpha];
+    [categoryHeaderView applyOffset:offset];
 }
 
 #pragma mark - BookIndexListViewControllerDelegate methods
