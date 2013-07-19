@@ -40,7 +40,6 @@
 
 #define kIntroOffset    CGPointMake(0.0, 0.0)
 #define kIntroWidth     400.0
-#define kProfileNameGap 20.0
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
@@ -60,7 +59,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initImageView];
-    [self initIntroView];
+//    [self initIntroView];
     [self addCloseButtonWhite:YES];
     [self loadData];
 }

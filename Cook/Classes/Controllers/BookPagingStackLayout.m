@@ -8,6 +8,7 @@
 
 #import "BookPagingStackLayout.h"
 #import "BookNavigationView.h"
+#import "BookProfileHeaderView.h"
 #import "ViewHelper.h"
 
 @interface BookPagingStackLayout ()
@@ -28,6 +29,7 @@
 
 #define kShiftOffset                400.0
 #define kHeaderShiftOffset          200.0
+#define kProfileHeaderOffset        400.0
 #define kMaxScale                   0.9
 #define kMaxRotationDegrees         10.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
@@ -60,7 +62,7 @@
     self.indexPathDecorationAttributes = [NSMutableDictionary dictionary];
     
     [self buildPagesLayout];
-    [self buildCategoryHeadersLayout];
+    [self buildHeadersLayout];
     [self buildNavigationLayout];
     
     // Inform end of layout prep.
@@ -164,13 +166,18 @@
     }
 }
 
+- (void)buildHeadersLayout {
+    [self buildProfileHeaderLayout];
+    [self buildCategoryHeadersLayout];
+}
+
 - (void)buildCategoryHeadersLayout {
     
-    // One page per category, only there are more than 2 sections.
+    // One header per recipe category.
     NSInteger numSections = [self.collectionView numberOfSections];
     NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
     for (NSInteger sectionIndex = categoryStartSection; sectionIndex < numSections; sectionIndex++) {
-            
+        
         // Category header.
         NSIndexPath *sectionIndexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
         UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
@@ -193,7 +200,24 @@
         [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
         
     }
+}
 
+- (void)buildProfileHeaderLayout {
+    NSIndexPath *profileIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    UICollectionViewLayoutAttributes *profileHeaderAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                                               withIndexPath:profileIndexPath];
+    profileHeaderAttributes.frame = (CGRect){
+        [self pageOffsetForIndexPath:profileIndexPath],
+        self.collectionView.bounds.origin.y,
+        [BookProfileHeaderView profileHeaderWidth],
+        self.collectionView.bounds.size.height
+    };
+    
+    // Profile header is above the profile page.
+    profileHeaderAttributes.zIndex = -1;
+    
+    [self.supplementaryLayoutAttributes addObject:profileHeaderAttributes];
+    [self.indexPathSupplementaryAttributes setObject:profileHeaderAttributes forKey:profileIndexPath];
 }
 
 - (void)buildNavigationLayout {
@@ -217,30 +241,52 @@
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         
+        NSIndexPath *indexPath = attributes.indexPath;
+        
         if ([attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
             
-            // Sticky navigation bar for categories.
             [self applyStickyNavigationHeaderEffect:attributes];
             
-        } else {
+        } else if (indexPath.section == 0) {
             
-            NSIndexPath *indexPath = attributes.indexPath;
+            [self applyProfilePagingEffects:attributes];
             
-            // Parallaxing.
-            CGFloat requiredTranslation = 0.0;
-            if (indexPath.section == 0) {
-                requiredTranslation = [self shiftedTranslationForProfileAttributes:attributes];
-            } else if (indexPath.section > 1) {
-                requiredTranslation = [self shiftedTranslationForAttributes:attributes];
-            }
+        } else if (indexPath.section > 1) {
+            
+            [self applyCategoryPagingEffects:attributes];
         
-            // Apply the parallax effect.
-            CGRect frame = attributes.frame;
-            frame.origin.x += requiredTranslation;
-            attributes.frame = frame;
-            
         }
     }
+}
+
+- (void)applyCategoryPagingEffects:(UICollectionViewLayoutAttributes *)attributes {
+    
+    // Parallaxing on category pages.
+    CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
+    CGRect frame = attributes.frame;
+    frame.origin.x += requiredTranslation;
+    attributes.frame = frame;
+    
+}
+
+- (void)applyProfilePagingEffects:(UICollectionViewLayoutAttributes *)attributes {
+    
+    CGFloat requiredTranslation = 0.0;
+    CGRect frame = attributes.frame;
+    
+    if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        
+        // Profile header slides in later when in view.
+        requiredTranslation = [self shiftedTranslationForProfileHeaderAttributes:attributes];
+        
+    } else {
+        
+        // Profile page slides under the index page.
+        requiredTranslation = [self shiftedTranslationForProfileAttributes:attributes];
+    }
+    
+    frame.origin.x += requiredTranslation;
+    attributes.frame = frame;
 }
 
 - (void)applyStickyNavigationHeaderEffect:(UICollectionViewLayoutAttributes *)attributes {
@@ -322,9 +368,31 @@
         CGFloat distance = visibleFrame.origin.x - pageOffset;
         CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
         
-        // Full effective distance to trave.
+        // Full effective distance to travel.
         CGFloat effectiveDistance = self.collectionView.bounds.size.width - offset;
         
+        requiredTranslation = effectiveDistance * distanceRatio;
+    }
+    
+    return requiredTranslation;
+}
+
+- (CGFloat)shiftedTranslationForProfileHeaderAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGFloat requiredTranslation = 0.0;
+    
+    CGFloat offset = kProfileHeaderOffset;
+    NSIndexPath *indexPath = attributes.indexPath;
+    CGFloat pageOffset = [self pageOffsetForIndexPath:indexPath];
+    
+    if (visibleFrame.origin.x >= pageOffset) {
+        
+        // Figure out the percentage of distance.
+        CGFloat distance = visibleFrame.origin.x - pageOffset;
+        CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
+        
+        // Full effective distance to travel.
+        CGFloat effectiveDistance = -offset;
         requiredTranslation = effectiveDistance * distanceRatio;
     }
     

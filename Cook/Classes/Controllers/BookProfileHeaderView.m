@@ -18,6 +18,10 @@
 
 @implementation BookProfileHeaderView
 
++ (CGFloat)profileHeaderWidth {
+    return 400.0;
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
@@ -32,7 +36,7 @@
     self.summaryView = [[CKBookSummaryView alloc] initWithBook:book];
     self.summaryView.frame = (CGRect){
         floorf((self.bounds.size.width - self.summaryView.frame.size.width) / 2.0),
-        floorf((self.bounds.size.width - self.summaryView.frame.size.width) / 2.0),
+        floorf((self.bounds.size.height - self.summaryView.frame.size.height) / 2.0),
         self.summaryView.frame.size.width,
         self.summaryView.frame.size.height
     };

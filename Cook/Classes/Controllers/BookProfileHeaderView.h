@@ -12,6 +12,7 @@
 
 @interface BookProfileHeaderView : UICollectionReusableView
 
++ (CGFloat)profileHeaderWidth;
 - (void)configureWithBook:(CKBook *)book;
 
 @end

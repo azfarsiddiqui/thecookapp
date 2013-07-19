@@ -258,39 +258,17 @@
                                  atIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionReusableView *headerView = nil;
+    
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         
         if (indexPath.section == kProfileSection) {
-            headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                            withReuseIdentifier:kProfileHeaderId
-                                                                   forIndexPath:indexPath];
+            headerView = [self profileHeaderViewAtIndexPath:indexPath];
         } else if (indexPath.section >= [self stackCategoryStartSection]) {
-            headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                            withReuseIdentifier:kCategoryHeaderId
-                                                                   forIndexPath:indexPath];
-            
-            NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
-            CKCategory *category = [self.categories objectAtIndex:categoryIndex];
-            BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
-            CKRecipe *featuredRecipe = [self featuredRecipeForCategory:category];
-            [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
-            
-            // Keep track of category views keyed on indexPath.
-            [self.categoryHeaderViews setObject:categoryHeaderView forKey:[self keyForCategory:category]];
-            
+            headerView = [self categoryHeaderViewAtIndexPath:indexPath];
         }
         
     } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
-        
-        headerView = [collectionView dequeueReusableSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind]
-                                                        withReuseIdentifier:kNavigationHeaderId
-                                                               forIndexPath:indexPath];
-        BookNavigationView *navigationView = (BookNavigationView *)headerView;
-        navigationView.delegate = self;
-        [navigationView setTitle:self.book.user.name];
-        
-        // Keep a reference of the navigation view.
-        self.bookNavigationView = navigationView;
+        headerView = [self navigationHeaderViewAtIndexPath:indexPath];
     }
     
     return headerView;
@@ -363,7 +341,6 @@
     [self.collectionView registerClass:[BookProfileHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kProfileHeaderId];
     [self.collectionView registerClass:[BookCategoryImageView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
     [self.collectionView registerClass:[BookNavigationView class] forSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind] withReuseIdentifier:kNavigationHeaderId];
-
     
     // Profile, Index, Category.
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
@@ -562,6 +539,45 @@
                              self.bookAddViewController = nil;
                          }
                      }];
+}
+
+- (UICollectionReusableView *)profileHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                   withReuseIdentifier:kProfileHeaderId
+                                                                                          forIndexPath:indexPath];
+    BookProfileHeaderView *profileHeaderView = (BookProfileHeaderView *)headerView;
+    [profileHeaderView configureWithBook:self.book];
+    return headerView;
+}
+
+- (UICollectionReusableView *)categoryHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                   withReuseIdentifier:kCategoryHeaderId
+                                                                                          forIndexPath:indexPath];
+    NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
+    CKCategory *category = [self.categories objectAtIndex:categoryIndex];
+    BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
+    CKRecipe *featuredRecipe = [self featuredRecipeForCategory:category];
+    [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
+    
+    // Keep track of category views keyed on indexPath.
+    [self.categoryHeaderViews setObject:categoryHeaderView forKey:[self keyForCategory:category]];
+    
+    return headerView;
+}
+
+- (UICollectionReusableView *)navigationHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind]
+                                                                                   withReuseIdentifier:kNavigationHeaderId
+                                                                                          forIndexPath:indexPath];
+    BookNavigationView *navigationView = (BookNavigationView *)headerView;
+    navigationView.delegate = self;
+    [navigationView setTitle:self.book.user.name];
+    
+    // Keep a reference of the navigation view.
+    self.bookNavigationView = navigationView;
+    
+    return headerView;
 }
 
 @end
