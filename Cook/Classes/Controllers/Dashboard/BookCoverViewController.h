@@ -14,6 +14,7 @@
 
 - (void)bookCoverViewWillOpen:(BOOL)open;
 - (void)bookCoverViewDidOpen:(BOOL)open;
+- (CGPoint)bookCoverCenterPoint;
 
 @end
 
@@ -22,6 +23,7 @@
 - (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (id)initWithBook:(CKBook *)book mine:(BOOL)mine delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (void)openBook:(BOOL)open;
+- (void)openBook:(BOOL)open centerPoint:(CGPoint)centerPoint;
 - (void)cleanUpLayers;
 
 @end

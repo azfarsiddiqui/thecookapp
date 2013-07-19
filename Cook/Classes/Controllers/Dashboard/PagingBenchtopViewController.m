@@ -803,7 +803,9 @@
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = (indexPath.section == kMyBookSection) ? self.myBook : [self.followBooks objectAtIndex:indexPath.item];
-    [self.delegate openBookRequestedForBook:book];
+    BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
+    CGPoint centerPoint = cell.contentView.center;
+    [self.delegate openBookRequestedForBook:book centerPoint:centerPoint];
 }
 
 - (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {

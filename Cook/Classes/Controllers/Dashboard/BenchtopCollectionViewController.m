@@ -494,7 +494,8 @@
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = (indexPath.section == kMySection) ? self.myBook : [self.followBooks objectAtIndex:indexPath.item];
-    [self.delegate openBookRequestedForBook:book];
+    BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
+    [self.delegate openBookRequestedForBook:book centerPoint:cell.contentView.center];
 }
 
 - (void)unfollowBookAtIndexPath:(NSIndexPath *)indexPath {

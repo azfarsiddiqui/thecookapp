@@ -62,7 +62,7 @@
 #define kProfileHeaderId    @"ProfileHeaderId"
 #define kNavigationHeaderId @"NavigationHeaderId"
 #define kCategoryViewTag    460
-#define kBookOutlineOffset  (UIOffset){-27.0, -9.0}
+#define kBookOutlineOffset  (UIOffset){-64.0, -26.0}
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
@@ -308,6 +308,8 @@
 #pragma mark - Private methods
 
 - (void)initBookOutlineView {
+    
+    // Coloured cover outline.
     UIImage *outlineImage = [CKBookCover outlineImageForCover:self.book.cover];
     UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:outlineImage];
     bookOutlineView.frame = (CGRect){
@@ -319,13 +321,10 @@
     [self.view insertSubview:bookOutlineView belowSubview:self.collectionView];
     self.bookOutlineView = bookOutlineView;
     
-    // Decorations.
+    // Book overlay.
     UIImageView *bookOutlineOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay.png"]];
-    bookOutlineOverlayView.frame = CGRectMake(-36.0, -18.0, bookOutlineOverlayView.frame.size.width, bookOutlineOverlayView.frame.size.height);
+    bookOutlineOverlayView.frame = bookOutlineView.bounds;
     [bookOutlineView addSubview:bookOutlineOverlayView];
-    UIImageView *bookBindOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
-    bookBindOverlayView.frame = CGRectMake(-26.0, -18.0, bookBindOverlayView.frame.size.width, bookBindOverlayView.frame.size.height);
-    [bookOutlineView addSubview:bookBindOverlayView];
 }
 
 - (void)initCollectionView {

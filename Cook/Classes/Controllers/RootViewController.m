@@ -96,8 +96,8 @@
 
 #pragma mark - BenchtopViewControllerDelegate methods
 
-- (void)openBookRequestedForBook:(CKBook *)book {
-    [self openBook:book];
+- (void)openBookRequestedForBook:(CKBook *)book centerPoint:(CGPoint)centerPoint {
+    [self openBook:book centerPoint:centerPoint];
 }
 
 - (void)editBookRequested:(BOOL)editMode {
@@ -187,6 +187,10 @@
     
     // Pass on event to the benchtop to restore the book.
     [self.benchtopViewController bookDidOpen:open];
+}
+
+- (CGPoint)bookCoverCenterPoint {
+//    return self.
 }
 
 #pragma mark - BookNavigationViewControllerDelegate methods
@@ -501,16 +505,15 @@
     return storeFrame;
 }
 
-- (void)openBook:(CKBook *)book {
+- (void)openBook:(CKBook *)book centerPoint:(CGPoint)centerPoint {
     
     self.selectedBook = book;
     
     // Open book.
-    BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book
-                                                                                            delegate:self];
+    BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book delegate:self];
     bookCoverViewController.view.frame = self.view.bounds;
     [self.view addSubview:bookCoverViewController.view];
-    [bookCoverViewController openBook:YES];
+    [bookCoverViewController openBook:YES centerPoint:centerPoint];
     self.bookCoverViewController = bookCoverViewController;
     
 }

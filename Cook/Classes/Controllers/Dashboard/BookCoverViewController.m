@@ -18,6 +18,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) BOOL mine;
 @property (nonatomic, assign) id<BookCoverViewControllerDelegate> delegate;
+@property (nonatomic, assign) CGPoint centerPoint;
 @property (nonatomic, strong) UIView *bookCoverView;
 @property (nonatomic, strong) CALayer *rootBookLayer;
 @property (nonatomic, strong) CALayer *bookCoverLayer;
@@ -57,8 +58,12 @@
 }
 
 - (void)openBook:(BOOL)open {
-    DLog();
+    [self openBook:open centerPoint:CGPointZero];
+}
+
+- (void)openBook:(BOOL)open centerPoint:(CGPoint)centerPoint {
     if (open) {
+        self.centerPoint = centerPoint;
         [self initLayers];
     }
     [self.delegate bookCoverViewWillOpen:open];
@@ -97,7 +102,10 @@
     CALayer *rootBookLayer = [CALayer layer];
     rootBookLayer.anchorPoint = CGPointMake(0.5, 0.5);
     rootBookLayer.frame = self.bookCoverView.bounds;
-    rootBookLayer.position = CGPointMake(floorf(self.view.bounds.size.width / 2), floorf(self.view.bounds.size.height / 2) + 10.0); // TODO 10 is to line up with book!
+    rootBookLayer.position = (CGPoint) {
+        floorf((self.view.bounds.size.width) / 2.0),
+        floorf((self.view.bounds.size.height) / 2.0) + 10.0
+    };
     rootBookLayer.backgroundColor = [UIColor clearColor].CGColor;
     [self.view.layer addSublayer:rootBookLayer];
     self.rootBookLayer = rootBookLayer;
