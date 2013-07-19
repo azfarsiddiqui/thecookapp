@@ -908,6 +908,8 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         self.notificationView.alpha = show ? 1.0 : 0.0;
+                         self.benchtopLevelView.alpha = show ? 1.0 : 0.0;
                          cell.shadowView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.7, 0.7);
                      }
                      completion:^(BOOL finished) {

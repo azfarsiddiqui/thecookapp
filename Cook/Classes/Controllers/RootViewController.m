@@ -131,6 +131,7 @@
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
     if (!open) {
+        
         // Restore shelf that was hidden in didOpen
         self.storeViewController.view.hidden = NO;
         [self.bookNavigationViewController.view removeFromSuperview];
@@ -171,7 +172,7 @@
                              bookNavigationViewController.view.transform = CGAffineTransformIdentity;
                          }
                          completion:^(BOOL finished) {
-            
+                             
                          }];
         
     } else {
@@ -215,6 +216,11 @@
 
 - (void)bookNavigationControllerAddRecipeRequested {
     [self addRecipeForBook:self.selectedBook];
+}
+
+- (UIView *)bookNavigationSnapshotAtRect:(CGRect)rect {
+    UIView *snapshotView = [self.benchtopViewController.view resizableSnapshotViewFromRect:rect withCapInsets:UIEdgeInsetsZero];
+    return snapshotView;
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
