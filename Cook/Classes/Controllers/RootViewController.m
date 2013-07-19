@@ -164,7 +164,7 @@
         
         // Scale it up the rest of the way to fullscreen.
         bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
-        [UIView animateWithDuration:0.4
+        [UIView animateWithDuration:0.3
                               delay:0.1
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
