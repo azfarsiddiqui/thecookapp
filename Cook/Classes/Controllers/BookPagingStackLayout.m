@@ -29,7 +29,7 @@
 
 #define kShiftOffset                400.0
 #define kHeaderShiftOffset          200.0
-#define kProfileHeaderOffset        400.0
+#define kProfileHeaderOffset        50.0
 #define kMaxScale                   0.9
 #define kMaxRotationDegrees         10.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
@@ -271,22 +271,20 @@
 
 - (void)applyProfilePagingEffects:(UICollectionViewLayoutAttributes *)attributes {
     
-    CGFloat requiredTranslation = 0.0;
-    CGRect frame = attributes.frame;
-    
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         
         // Profile header slides in later when in view.
-        requiredTranslation = [self shiftedTranslationForProfileHeaderAttributes:attributes];
+        [self applyProfileHeaderPagingEffects:attributes];
         
     } else {
         
         // Profile page slides under the index page.
-        requiredTranslation = [self shiftedTranslationForProfileAttributes:attributes];
+        CGFloat requiredTranslation = [self shiftedTranslationForProfileAttributes:attributes];
+        CGRect frame = attributes.frame;
+        frame.origin.x += requiredTranslation;
+        attributes.frame = frame;
     }
     
-    frame.origin.x += requiredTranslation;
-    attributes.frame = frame;
 }
 
 - (void)applyStickyNavigationHeaderEffect:(UICollectionViewLayoutAttributes *)attributes {
@@ -377,9 +375,11 @@
     return requiredTranslation;
 }
 
-- (CGFloat)shiftedTranslationForProfileHeaderAttributes:(UICollectionViewLayoutAttributes *)attributes {
+- (void)applyProfileHeaderPagingEffects:(UICollectionViewLayoutAttributes *)attributes {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGRect frame = attributes.frame;
     CGFloat requiredTranslation = 0.0;
+    CGFloat requiredAlpha = 1.0;
     
     CGFloat offset = kProfileHeaderOffset;
     NSIndexPath *indexPath = attributes.indexPath;
@@ -392,13 +392,15 @@
         CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
         
         // Full effective distance to travel.
-        CGFloat effectiveDistance = -offset;
+        CGFloat effectiveDistance = offset;
         requiredTranslation = effectiveDistance * distanceRatio;
+        requiredAlpha = 1.0 - distanceRatio;
     }
     
-    return requiredTranslation;
+    frame.origin.x += requiredTranslation;
+    attributes.frame = frame;
+    attributes.alpha = requiredAlpha;
 }
-
 
 - (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
     return indexPath.section * self.collectionView.bounds.size.width;

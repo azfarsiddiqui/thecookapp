@@ -48,7 +48,6 @@
 }
 
 - (void)configureTitle:(NSString *)title {
-    DLog(@"Title: %@", title);
     self.title = [title uppercaseString];
     
     NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:kCategoryFont];
