@@ -108,12 +108,9 @@
 }
 
 - (void)bookWillOpen:(BOOL)open {
-    
-    // Hide the bookCover.
-    if (open) {
-        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
-        [self showBookCell:cell show:NO];
-    }
+    BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
+    cell.bookCoverView.hidden = YES;
+    [self showBookCell:cell show:!open];
 }
 
 - (void)bookDidOpen:(BOOL)open {
@@ -121,7 +118,7 @@
     // Restore the bookCover.
     if (!open) {
         BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
-        [self showBookCell:cell show:YES];
+        cell.bookCoverView.hidden = NO;
     }
     
     // Enable panning based on book opened or not.
@@ -905,12 +902,11 @@
 }
 
 - (void)showBookCell:(BenchtopBookCoverViewCell *)cell show:(BOOL)show {
-    cell.bookCoverView.hidden = !show;
-    [UIView animateWithDuration:0.2
+    [UIView animateWithDuration:0.5
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         cell.shadowView.alpha = show ? 1.0 : 0.0;
+                         cell.shadowView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.7, 0.7);
                      }
                      completion:^(BOOL finished) {
                      }];
