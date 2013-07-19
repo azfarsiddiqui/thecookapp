@@ -42,6 +42,9 @@
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
+@property (nonatomic, strong) UIView *leftOutlineView;
+@property (nonatomic, strong) UIView *rightOutlineView;
+
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
@@ -52,17 +55,18 @@
 
 @implementation BookNavigationStackViewController
 
-#define kCellId             @"CellId"
-#define kProfileSection     0
-#define kIndexSection       1
-#define kProfileCellId      @"ProfileCellId"
-#define kIndexCellId        @"IndexCellId"
-#define kCategoryCellId     @"CategoryCellId"
-#define kCategoryHeaderId   @"CategoryHeaderId"
-#define kProfileHeaderId    @"ProfileHeaderId"
-#define kNavigationHeaderId @"NavigationHeaderId"
-#define kCategoryViewTag    460
-#define kBookOutlineOffset  (UIOffset){-64.0, -26.0}
+#define kCellId                 @"CellId"
+#define kProfileSection         0
+#define kIndexSection           1
+#define kProfileCellId          @"ProfileCellId"
+#define kIndexCellId            @"IndexCellId"
+#define kCategoryCellId         @"CategoryCellId"
+#define kCategoryHeaderId       @"CategoryHeaderId"
+#define kProfileHeaderId        @"ProfileHeaderId"
+#define kNavigationHeaderId     @"NavigationHeaderId"
+#define kBookOutlineHeaderId    @"BookOutlineHeaderId"
+#define kCategoryViewTag        460
+#define kBookOutlineOffset      (UIOffset){-64.0, -26.0}
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
@@ -198,6 +202,17 @@
         [self.collectionView setContentOffset:(CGPoint){ kIndexSection * self.collectionView.bounds.size.width, 0.0 }
                                      animated:NO];
         self.justOpened = NO;
+        
+    } else {
+        
+    }
+    
+    // Left book edge always on the left.
+    [self applyLeftBookEdgeOutline];
+    
+    // Right book edge only after it has been opened.
+    if ([self numberOfSectionsInCollectionView:self.collectionView] >= [self stackCategoryStartSection]) {
+        [self applyRightBookEdgeOutline];
     }
 }
 
@@ -268,7 +283,9 @@
         }
         
     } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
+        
         headerView = [self navigationHeaderViewAtIndexPath:indexPath];
+        
     }
     
     return headerView;
@@ -303,6 +320,32 @@
         [self.categoryHeaderViews removeObjectForKey:[self keyForCategory:category]];
     }
     
+}
+
+#pragma mark - Properties
+
+- (UIView *)leftOutlineView {
+    if (!_leftOutlineView) {
+        _leftOutlineView = [self.view resizableSnapshotViewFromRect:(CGRect){
+            kBookOutlineOffset.horizontal,
+            self.view.bounds.origin.y,
+            -kBookOutlineOffset.horizontal,
+            self.view.bounds.size.height
+        } withCapInsets:UIEdgeInsetsZero];
+    }
+    return _leftOutlineView;
+}
+
+- (UIView *)rightOutlineView {
+    if (!_rightOutlineView) {
+        _rightOutlineView = [self.view resizableSnapshotViewFromRect:(CGRect){
+            self.view.bounds.size.width,
+            self.view.bounds.origin.y,
+            -kBookOutlineOffset.horizontal,
+            self.view.bounds.size.height
+        } withCapInsets:UIEdgeInsetsZero];
+    }
+    return _rightOutlineView;
 }
 
 #pragma mark - Private methods
@@ -577,6 +620,30 @@
     self.bookNavigationView = navigationView;
     
     return headerView;
+}
+
+- (void)applyLeftBookEdgeOutline {
+    self.leftOutlineView.frame = (CGRect){
+        kBookOutlineOffset.horizontal,
+        self.collectionView.bounds.origin.y,
+        -kBookOutlineOffset.horizontal,
+        self.collectionView.bounds.size.height
+    };
+    if (!self.leftOutlineView.superview) {
+        [self.collectionView addSubview:self.leftOutlineView];
+    }
+}
+
+- (void)applyRightBookEdgeOutline {
+    self.rightOutlineView.frame = (CGRect){
+        self.collectionView.contentSize.width,
+        self.collectionView.bounds.origin.y,
+        -kBookOutlineOffset.horizontal,
+        self.collectionView.bounds.size.height
+    };
+    if (!self.rightOutlineView.superview) {
+        [self.collectionView addSubview:self.rightOutlineView];
+    }
 }
 
 @end
