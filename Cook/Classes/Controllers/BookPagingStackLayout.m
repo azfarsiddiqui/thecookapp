@@ -144,7 +144,14 @@
         // Single page layout.
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:sectionIndex];
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-        attributes.zIndex = -(sectionIndex * 2);
+        
+        // First page is under the second page.
+        if (indexPath.section == 0) {
+            attributes.zIndex = -3;
+        } else {
+            attributes.zIndex = -(sectionIndex * 2);
+        }
+
         attributes.frame = (CGRect){
             [self pageOffsetForIndexPath:indexPath],
             self.collectionView.bounds.origin.y,
@@ -174,7 +181,14 @@
             self.collectionView.bounds.size.width,
             self.collectionView.bounds.size.height
         };
-        headerAttributes.zIndex = -(sectionIndex * 2) - 1;
+        
+        // First page is under the second page.
+        if (sectionIndexPath.section == 0) {
+            headerAttributes.zIndex = -1;
+        } else {
+            headerAttributes.zIndex = -(sectionIndex * 2) - 1;
+        }
+        
         [self.supplementaryLayoutAttributes addObject:headerAttributes];
         [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:sectionIndexPath];
         
@@ -210,8 +224,17 @@
             
         } else {
             
-            // Translate.
-            CGFloat requiredTranslation = [self shiftedTranslationForAttributes:attributes];
+            NSIndexPath *indexPath = attributes.indexPath;
+            
+            // Parallaxing.
+            CGFloat requiredTranslation = 0.0;
+            if (indexPath.section == 0) {
+                requiredTranslation = [self shiftedTranslationForProfileAttributes:attributes];
+            } else if (indexPath.section > 1) {
+                requiredTranslation = [self shiftedTranslationForAttributes:attributes];
+            }
+        
+            // Apply the parallax effect.
             CGRect frame = attributes.frame;
             frame.origin.x += requiredTranslation;
             attributes.frame = frame;
@@ -284,6 +307,30 @@
     
     return requiredTranslation;
 }
+
+- (CGFloat)shiftedTranslationForProfileAttributes:(UICollectionViewLayoutAttributes *)attributes {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGFloat requiredTranslation = 0.0;
+    
+    CGFloat offset = kShiftOffset;
+    NSIndexPath *indexPath = attributes.indexPath;
+    CGFloat pageOffset = [self pageOffsetForIndexPath:indexPath];
+    
+    if (visibleFrame.origin.x >= pageOffset) {
+        
+        // Figure out the percentage of distance.
+        CGFloat distance = visibleFrame.origin.x - pageOffset;
+        CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
+        
+        // Full effective distance to trave.
+        CGFloat effectiveDistance = self.collectionView.bounds.size.width - offset;
+        
+        requiredTranslation = effectiveDistance * distanceRatio;
+    }
+    
+    return requiredTranslation;
+}
+
 
 - (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
     return indexPath.section * self.collectionView.bounds.size.width;
