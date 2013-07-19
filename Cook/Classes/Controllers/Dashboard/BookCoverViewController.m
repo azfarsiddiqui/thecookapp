@@ -117,9 +117,9 @@
     rightOpenLayer.position = CGPointMake(floorf(self.rootBookLayer.bounds.size.width / 2),
                                           floorf(self.rootBookLayer.bounds.size.height / 2));
     rightOpenLayer.frame = CGRectMake(rootBookLayer.bounds.origin.x,
-                                      rootBookLayer.bounds.origin.y - 1.0,
-                                      rootBookLayer.bounds.size.width - 1.0,
-                                      rootBookLayer.bounds.size.height - 2.0);
+                                      rootBookLayer.bounds.origin.y,
+                                      rootBookLayer.bounds.size.width,
+                                      rootBookLayer.bounds.size.height);
     rightOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
     
     CGMutablePathRef path = CGPathCreateMutable();
@@ -180,12 +180,14 @@
     
     // Root book animation changes.
     CGPoint rootBookStartPoint = CGPointMake(0.5, 0.5);
-    CGPoint rootBookEndPoint = CGPointMake(0.0, 0.5);
-    //    CGFloat requiredScale = (rootView.bounds.size.height - 19.0) / self.bounds.size.height; // 8top + 11bot gaps
-    // CGFloat requiredScale = rootView.bounds.size.height / self.bookCoverView.bounds.size.height;
-    CGFloat requiredScale = (rootView.bounds.size.height * 0.9) / self.bookCoverView.bounds.size.height;
-    DLog(@"requiredScale: %f", requiredScale);
-    CATransform3D rootBookScaleUpTransform = CATransform3DMakeScale(requiredScale, requiredScale, requiredScale);
+    CGPoint rootBookEndPoint = CGPointMake(0.0, 0.515); // Some magic number to take into account the 10pt that was shifted down.
+    CGFloat rootScale = 0.9;
+    CGFloat requiredScaleY = (rootView.bounds.size.height * rootScale) / self.bookCoverView.bounds.size.height;
+    
+    // Some magic value to match it against the edge of the book.
+    CGFloat requiredScaleX = requiredScaleY - 0.05;
+    
+    CATransform3D rootBookScaleUpTransform = CATransform3DMakeScale(requiredScaleX, requiredScaleY, 1.0);
     CATransform3D rootBookScaleDownTransform = CATransform3DIdentity;
     CATransform3D openBookTransform = CATransform3DMakeRotation(RADIANS(180), 0.0f, -1.0f, 0.0f);
     CGFloat zDistance = 1000;
@@ -251,6 +253,5 @@
     [CATransaction commit];
     [CATransaction unlock];
 }
-
 
 @end
