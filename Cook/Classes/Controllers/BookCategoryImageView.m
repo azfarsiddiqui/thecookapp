@@ -7,6 +7,7 @@
 //
 
 #import "BookCategoryImageView.h"
+#import "UIColor+Expanded.h"
 
 @interface BookCategoryImageView ()
 
@@ -28,8 +29,8 @@
 }
 
 - (void)applyOffset:(CGFloat)offset {
-//    [self applyOffset:offset distance:500.0 view:self.whiteOverlayView];
-    [self applyOffset:offset distance:300.0 view:self.toolbarView];
+    [self applyOffset:offset distance:500.0 view:self.whiteOverlayView];
+//    [self applyOffset:offset distance:300.0 view:self.toolbarView];
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -41,7 +42,7 @@
 - (UIView *)whiteOverlayView {
     if (!_whiteOverlayView) {
         _whiteOverlayView = [[UIView alloc] initWithFrame:self.bounds];
-        _whiteOverlayView.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.8];
+        _whiteOverlayView.backgroundColor = [UIColor colorWithHexString:@"f2f2f2"];
         _whiteOverlayView.hidden = YES;
         [self addSubview:_whiteOverlayView];
     }
