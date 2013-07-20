@@ -297,10 +297,12 @@
     CGRect navigationFrame = attributes.frame;
     NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
     CGFloat startOffset = categoryStartSection * self.collectionView.bounds.size.width;
+    CGSize contentSize = [self collectionViewContentSize];
     
     if (visibleFrame.origin.x >= startOffset) {
         
-        navigationFrame.origin.x = visibleFrame.origin.x;
+        CGFloat offset = MIN(visibleFrame.origin.x, contentSize.width - self.collectionView.bounds.size.width);
+        navigationFrame.origin.x = offset;
         attributes.frame = navigationFrame;
         
     } else if (navigationFrame.origin.x >= visibleFrame.origin.x) {
