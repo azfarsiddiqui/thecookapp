@@ -99,6 +99,10 @@
     [self initBookOutlineView];
     [self initCollectionView];
     [self loadData];
+    
+    // Register pinch
+    UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)];
+    [self.view addGestureRecognizer:pinchGesture];
 }
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
@@ -672,6 +676,51 @@
     };
     if (!self.rightOutlineView.superview) {
         [self.collectionView addSubview:self.rightOutlineView];
+    }
+}
+
+- (void)pinched:(UIPinchGestureRecognizer *)pinchGesture {
+    
+    CGFloat minTrueScale = 0.5;
+    CGFloat maxMinScale = 0.9;
+    CGFloat maxTrueScale = 1.5;
+    CGFloat maxMaxScale = 1.1;
+    
+    if (pinchGesture.state == UIGestureRecognizerStateBegan
+        || pinchGesture.state == UIGestureRecognizerStateChanged) {
+    
+        CGFloat scale = pinchGesture.scale;
+        
+        if (scale >= maxTrueScale) {
+            scale = maxMaxScale;
+        } else if (scale >= 1.0) {
+            scale = maxMaxScale + ((maxMaxScale - 1.0) * ((scale - maxTrueScale) / maxTrueScale));
+        } else if (scale < minTrueScale) {
+            scale = maxMinScale;
+        } else  {
+            scale = maxMinScale + ((1.0 - maxMinScale) * ((scale - minTrueScale) / minTrueScale));
+        }
+        
+        self.view.transform = CGAffineTransformMakeScale(scale, scale);
+        
+	} else if (pinchGesture.state == UIGestureRecognizerStateEnded) {
+        [self pinchClose:((pinchGesture.scale <= minTrueScale) || (pinchGesture.scale >= maxTrueScale))];
+    }
+    
+}
+
+- (void)pinchClose:(BOOL)close {
+    if (close) {
+        [self.delegate bookNavigationControllerCloseRequested];
+    } else {
+        [UIView animateWithDuration:0.1
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.view.transform = CGAffineTransformIdentity;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
     }
 }
 
