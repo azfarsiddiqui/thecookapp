@@ -478,9 +478,11 @@
 }
 
 - (void)loadFeaturedRecipe {
-    CKCategory *randomCategory = [self.categories objectAtIndex:arc4random_uniform([self.categories count])];
-    self.featuredRecipe = [self featuredRecipeForCategory:randomCategory];
-    [self.indexViewController configureHeroRecipe:self.featuredRecipe];
+    if ([self.categories count] > 0) {
+        CKCategory *randomCategory = [self.categories objectAtIndex:arc4random_uniform([self.categories count])];
+        self.featuredRecipe = [self featuredRecipeForCategory:randomCategory];
+        [self.indexViewController configureHeroRecipe:self.featuredRecipe];
+    }
 }
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
