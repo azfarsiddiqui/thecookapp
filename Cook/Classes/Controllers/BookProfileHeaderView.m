@@ -31,7 +31,9 @@
 }
 
 - (void)configureWithBook:(CKBook *)book {
-    [self.summaryView removeFromSuperview];
+    if (self.summaryView.superview) {
+        return;
+    }
     
     self.summaryView = [[CKBookSummaryView alloc] initWithBook:book];
     self.summaryView.frame = (CGRect){
