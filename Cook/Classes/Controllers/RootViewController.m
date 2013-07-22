@@ -222,11 +222,6 @@
     return [self.benchtopViewController.view snapshotView];
 }
 
-- (UIView *)bookNavigationSnapshotAtRect:(CGRect)rect {
-    UIView *snapshotView = [self.benchtopViewController.view resizableSnapshotViewFromRect:rect withCapInsets:UIEdgeInsetsZero];
-    return snapshotView;
-}
-
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

@@ -341,9 +341,6 @@
     if (!_leftOutlineView) {
         
         // Dashboard.
-//        _leftOutlineView = [self.delegate bookNavigationSnapshotAtRect:(CGRect){
-//           0.0, 0.0, kBookOutlineSnapshotWidth, self.collectionView.bounds.size.height
-//        }];
         _leftOutlineView = [self.benchtopSnapshotView resizableSnapshotViewFromRect:(CGRect) {
             0.0,
             0.0,
@@ -372,9 +369,6 @@
     if (!_rightOutlineView) {
         
         // Dashboard.
-//        _rightOutlineView = [self.delegate bookNavigationSnapshotAtRect:(CGRect){
-//            self.collectionView.bounds.size.width, 0.0, kBookOutlineSnapshotWidth, self.collectionView.bounds.size.height
-//        }];
         _rightOutlineView = [self.benchtopSnapshotView resizableSnapshotViewFromRect:(CGRect) {
             self.benchtopSnapshotView.frame.size.width - kBookOutlineSnapshotWidth,
             0.0,
