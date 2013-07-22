@@ -694,7 +694,7 @@
         if (scale >= maxTrueScale) {
             scale = maxMaxScale;
         } else if (scale >= 1.0) {
-            scale = maxMaxScale + ((maxMaxScale - 1.0) * ((scale - maxTrueScale) / maxTrueScale));
+            scale = 1.0 + ((maxMaxScale - 1.0) * ((scale - 1.0) / 0.5));
         } else if (scale < minTrueScale) {
             scale = maxMinScale;
         } else  {
@@ -704,7 +704,10 @@
         self.view.transform = CGAffineTransformMakeScale(scale, scale);
         
 	} else if (pinchGesture.state == UIGestureRecognizerStateEnded) {
-        [self pinchClose:((pinchGesture.scale <= minTrueScale) || (pinchGesture.scale >= maxTrueScale))];
+        
+        // Pinch close when smaller than 0.5.
+        [self pinchClose:(pinchGesture.scale <= minTrueScale)];
+        
     }
     
 }
@@ -713,7 +716,7 @@
     if (close) {
         [self.delegate bookNavigationControllerCloseRequested];
     } else {
-        [UIView animateWithDuration:0.1
+        [UIView animateWithDuration:0.15
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
