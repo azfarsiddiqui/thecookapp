@@ -42,6 +42,7 @@
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
+@property (nonatomic, strong) UIView *benchtopSnapshotView;
 @property (nonatomic, strong) UIView *leftOutlineView;
 @property (nonatomic, strong) UIView *rightOutlineView;
 
@@ -329,13 +330,26 @@
 
 #pragma mark - Properties
 
+- (UIView *)benchtopSnapshotView {
+    if (!_benchtopSnapshotView) {
+        _benchtopSnapshotView = [self.delegate bookNavigationSnapshot];
+    }
+    return _benchtopSnapshotView;
+}
+
 - (UIView *)leftOutlineView {
     if (!_leftOutlineView) {
         
         // Dashboard.
-        _leftOutlineView = [self.delegate bookNavigationSnapshotAtRect:(CGRect){
-           0.0, 0.0, kBookOutlineSnapshotWidth, self.collectionView.bounds.size.height
-        }];
+//        _leftOutlineView = [self.delegate bookNavigationSnapshotAtRect:(CGRect){
+//           0.0, 0.0, kBookOutlineSnapshotWidth, self.collectionView.bounds.size.height
+//        }];
+        _leftOutlineView = [self.benchtopSnapshotView resizableSnapshotViewFromRect:(CGRect) {
+            0.0,
+            0.0,
+            kBookOutlineSnapshotWidth,
+            self.benchtopSnapshotView.frame.size.height
+        } withCapInsets:UIEdgeInsetsZero];
         
         // Book edge.
         UIView *leftBookEdgeView = [self.view resizableSnapshotViewFromRect:(CGRect){
@@ -358,9 +372,15 @@
     if (!_rightOutlineView) {
         
         // Dashboard.
-        _rightOutlineView = [self.delegate bookNavigationSnapshotAtRect:(CGRect){
-            self.collectionView.bounds.size.width, 0.0, kBookOutlineSnapshotWidth, self.collectionView.bounds.size.height
-        }];
+//        _rightOutlineView = [self.delegate bookNavigationSnapshotAtRect:(CGRect){
+//            self.collectionView.bounds.size.width, 0.0, kBookOutlineSnapshotWidth, self.collectionView.bounds.size.height
+//        }];
+        _rightOutlineView = [self.benchtopSnapshotView resizableSnapshotViewFromRect:(CGRect) {
+            self.benchtopSnapshotView.frame.size.width - kBookOutlineSnapshotWidth,
+            0.0,
+            kBookOutlineSnapshotWidth,
+            self.benchtopSnapshotView.frame.size.height
+        } withCapInsets:UIEdgeInsetsZero];
         
         // Book edge.
         UIView *rightBookEdgeView = [self.view resizableSnapshotViewFromRect:(CGRect){

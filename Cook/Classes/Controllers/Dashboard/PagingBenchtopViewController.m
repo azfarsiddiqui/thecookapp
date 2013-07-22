@@ -905,9 +905,8 @@
 
 - (void)showBookCell:(BenchtopBookCoverViewCell *)cell show:(BOOL)show {
     
-    // Get a reference to the side book cell.
-    NSIndexPath *sideBookIndexPath = [NSIndexPath indexPathForItem:0 inSection:kFollowSection];
-    UICollectionViewCell *sideBookCell = [self bookCellAtIndexPath:sideBookIndexPath];
+    // Get a reference to all the visible cells.
+    NSArray *visibleCells = [self.collectionView visibleCells];
     
     [UIView animateWithDuration:0.5
                           delay:0.0
@@ -916,7 +915,11 @@
                          self.notificationView.alpha = show ? 1.0 : 0.0;
                          self.benchtopLevelView.alpha = show ? 1.0 : 0.0;
                          cell.shadowView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.7, 0.7);
-                         sideBookCell.alpha = show ? 1.0 : 0.0;
+                         
+                         // Fade in/out cells.
+                         [visibleCells each:^(UICollectionViewCell *cell) {
+                             cell.alpha = show ? 1.0 : 0.0;
+                         }];
                      }
                      completion:^(BOOL finished) {
                      }];

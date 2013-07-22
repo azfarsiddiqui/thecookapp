@@ -218,6 +218,10 @@
     [self addRecipeForBook:self.selectedBook];
 }
 
+- (UIView *)bookNavigationSnapshot {
+    return [self.benchtopViewController.view snapshotView];
+}
+
 - (UIView *)bookNavigationSnapshotAtRect:(CGRect)rect {
     UIView *snapshotView = [self.benchtopViewController.view resizableSnapshotViewFromRect:rect withCapInsets:UIEdgeInsetsZero];
     return snapshotView;

@@ -18,6 +18,7 @@
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe;
 - (void)bookNavigationControllerAddRecipeRequested;
 - (UIView *)bookNavigationSnapshotAtRect:(CGRect)rect;
+- (UIView *)bookNavigationSnapshot;
 
 @end
 
