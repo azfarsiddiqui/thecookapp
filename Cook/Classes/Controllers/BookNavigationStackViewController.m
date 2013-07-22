@@ -14,7 +14,7 @@
 #import "BookPagingStackLayout.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
-#import "BookIndexListViewController.h"
+#import "BookTitleViewController.h"
 #import "BookHeaderView.h"
 #import "BookProfileHeaderView.h"
 #import "BookNavigationView.h"
@@ -25,7 +25,7 @@
 #import "BookCategoryImageView.h"
 #import "BookAddViewController.h"
 
-@interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookIndexListViewControllerDelegate,
+@interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
     BookAddViewControllerDelegate>
 
@@ -49,7 +49,7 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
-@property (nonatomic, strong) BookIndexListViewController *indexViewController;
+@property (nonatomic, strong) BookTitleViewController *titleViewController;
 @property (nonatomic, strong) BookAddViewController *bookAddViewController;
 
 @end
@@ -77,8 +77,8 @@
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.profileViewController.bookPageDelegate = self;
-        self.indexViewController = [[BookIndexListViewController alloc] initWithBook:book delegate:self];
-        self.indexViewController.bookPageDelegate = self;
+        self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
+        self.titleViewController.bookPageDelegate = self;
     }
     return self;
 }
@@ -186,16 +186,20 @@
     [categoryHeaderView applyOffset:offset];
 }
 
-#pragma mark - BookIndexListViewControllerDelegate methods
+#pragma mark - BookTitleViewControllerDelegate methods
 
-- (void)bookIndexSelectedCategory:(NSString *)category {
+- (CKRecipe *)bookTitleFeaturedRecipeForCategory:(CKCategory *)category {
+    return [self featuredRecipeForCategory:category];
 }
 
-- (void)bookIndexAddRecipeRequested {
-}
-
-- (NSArray *)bookIndexRecipesForCategory:(NSString *)category {
-    return nil;
+- (void)bookTitleSelectedCategory:(CKCategory *)category {
+    NSInteger categoryIndex = [self.categories indexOfObject:category];
+    categoryIndex += [self stackCategoryStartSection];
+    
+    [self.collectionView setContentOffset:(CGPoint){
+        categoryIndex * self.collectionView.bounds.size.width,
+        self.collectionView.contentOffset.y
+    } animated:YES];
 }
 
 #pragma mark - BookPagingStackLayoutDelegate methods
@@ -442,7 +446,7 @@
     [self.book fetchRecipesSuccess:^(NSArray *recipes){
         self.recipes = [NSMutableArray arrayWithArray:recipes];
         [self loadRecipes];
-        [self loadFeaturedRecipe];
+        [self loadTitlePage];
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
@@ -491,15 +495,23 @@
     // Initialise the categoryControllers
     self.categoryControllers = [NSMutableDictionary dictionaryWithCapacity:[self.categories count]];
     
-    // Now reload the collection.
-    [self.collectionView reloadData];
+    // Now reload the categories.
+    if ([self.categories count] > 0) {
+        [self.collectionView reloadData];
+    }
+    
 }
 
-- (void)loadFeaturedRecipe {
+- (void)loadTitlePage {
     if ([self.categories count] > 0) {
+        
+        // Load the categories.
+        [self.titleViewController configureCategories:self.categories];
+        
+        // Load the hero recipe.
         CKCategory *randomCategory = [self.categories objectAtIndex:arc4random_uniform([self.categories count])];
         self.featuredRecipe = [self featuredRecipeForCategory:randomCategory];
-        [self.indexViewController configureHeroRecipe:self.featuredRecipe];
+        [self.titleViewController configureHeroRecipe:self.featuredRecipe];
     }
 }
 
@@ -514,9 +526,9 @@
 
 - (UICollectionViewCell *)indexCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *indexCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kIndexCellId forIndexPath:indexPath];
-    if (!self.indexViewController.view.superview) {
-        self.indexViewController.view.frame = indexCell.contentView.bounds;
-        [indexCell.contentView addSubview:self.indexViewController.view];
+    if (!self.titleViewController.view.superview) {
+        self.titleViewController.view.frame = indexCell.contentView.bounds;
+        [indexCell.contentView addSubview:self.titleViewController.view];
     }
     return indexCell;
 }

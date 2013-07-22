@@ -9,32 +9,37 @@
 #import "BookTitleViewController.h"
 #import "CKBook.h"
 #import "Theme.h"
-#import "CKMaskedLabel.h"
-#import "CKUserProfilePhotoView.h"
+#import "CKBookTitleIndexView.h"
 #import "ParsePhotoStore.h"
 #import "CKRecipe.h"
 #import "CKUser.h"
 #import "ImageHelper.h"
+#import "BookTitleCell.h"
+#import "UIColor+Expanded.h"
 
-@interface BookTitleViewController ()
+@interface BookTitleViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, assign) id<BookTitleViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, strong) CKMaskedLabel *maskedLabel;
-@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) CKBookTitleIndexView *bookTitleView;
 
 @end
 
 @implementation BookTitleViewController
 
-#define kTitleInsets    UIEdgeInsetsMake(40.0, 40.0, 28.0, 40.0)
-#define kTitleNameGap   0.0
+#define kCellId                 @"BookTitleCellId"
+#define kHeaderId               @"BookTitleHeaderId"
+#define kIndexWidth             240.0
+#define kImageIndexGap          10.0
+#define kTitleIndexTopOffset    40.0
+#define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 5.0, 0.0 }
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -48,16 +53,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [UIColor colorWithHexString:@"f2f2f2"];
+    
+    [self initBackgroundView];
+    [self initCollectionView];
+    [self addCloseButtonWhite:YES];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    [self initBackgroundImageView];
-    [self initTitleView];
-    [self initShadowViews];
-    //[self initActivities];
+- (void)configureCategories:(NSArray *)categories {
+    self.categories = [NSMutableArray arrayWithArray:categories];
+    [self.collectionView reloadData];
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
@@ -75,161 +80,158 @@
                             }];
 }
 
+#pragma mark - UICollectionViewDelegateFlowLayout methods
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+        insetForSectionAtIndex:(NSInteger)section {
+    
+    return (UIEdgeInsets) { 100.0, 90.0, 90.0, 90.0 };
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+    minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    
+    return 20.0;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    
+    return 30.0;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+referenceSizeForHeaderInSection:(NSInteger)section {
+    
+    CGSize headerSize = (CGSize) {
+        self.collectionView.bounds.size.width,
+        420.0
+    };
+    return headerSize;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return [BookTitleCell cellSize];
+}
+
+#pragma mark - UICollectionViewDelegate methods
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self.delegate bookTitleSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+}
+
+#pragma mark - UICollectionViewDataSource methods
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+    return [self.categories count];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    BookTitleCell *cell = (BookTitleCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
+    CKCategory *category = [self.categories objectAtIndex:indexPath.item];
+    [cell configureCategory:category];
+    
+    // Load featured recipe for the category.
+    CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForCategory:category];
+    [self configureImageForTitleCell:cell recipe:featuredRecipe indexPath:indexPath];
+    
+    return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    UICollectionReusableView *supplementaryView = nil;
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        supplementaryView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                    withReuseIdentifier:kHeaderId forIndexPath:indexPath];
+        if (!self.bookTitleView.superview) {
+            self.bookTitleView.frame = (CGRect){
+                floorf((supplementaryView.bounds.size.width - self.bookTitleView.frame.size.width) / 2.0),
+                supplementaryView.bounds.size.height - self.bookTitleView.frame.size.height,
+                self.bookTitleView.frame.size.width,
+                self.bookTitleView.frame.size.height
+            };
+            [supplementaryView addSubview:self.bookTitleView];
+        }
+    }
+    
+    return supplementaryView;
+}
+
+#pragma mark - Properties
+
+- (CKBookTitleIndexView *)bookTitleView {
+    if (!_bookTitleView) {
+        _bookTitleView = [[CKBookTitleIndexView alloc] initWithName:self.book.user.name title:self.book.name];
+    }
+    return _bookTitleView;
+}
+
 #pragma mark - Private methods
 
-- (void)initBackgroundImageView {
+- (void)initBackgroundView {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
     imageView.frame = self.view.bounds;
     imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
     [self.view addSubview:imageView];
     self.imageView = imageView;
+    
+    UIImage *borderImage = [[UIImage imageNamed:@"cook_book_inner_title_border.png"] resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
+    UIImageView *borderImageView = [[UIImageView alloc] initWithImage:borderImage];
+    borderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
+    borderImageView.frame = (CGRect){
+        kBorderInsets.left,
+        kBorderInsets.top,
+        self.view.bounds.size.width - kBorderInsets.left - kBorderInsets.right,
+        self.view.bounds.size.height - kBorderInsets.top - kBorderInsets.bottom
+    };
+    [self.view addSubview:borderImageView];
 }
 
-- (void)initTitleView {
+- (void)initCollectionView {
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
+                                                          collectionViewLayout:flowLayout];
+    collectionView.backgroundColor = [UIColor clearColor];
+    collectionView.dataSource = self;
+    collectionView.delegate = self;
+    collectionView.alwaysBounceVertical = YES;
+    collectionView.alwaysBounceHorizontal = NO;
+    collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:collectionView];
+    self.collectionView = collectionView;
     
-    // Masked label.
-    NSString *bookAuthor = [self.book.user.name uppercaseString];
-    NSString *bookTitle = [NSString stringWithFormat:@"%@\u2028%@",[self.book.name uppercaseString], bookAuthor];
-    NSAttributedString *titleDisplay = [self attributedTextForTitle:bookTitle titleFont:[Theme bookContentsTitleFont]
-                                                             author:bookAuthor authorFont:[Theme bookContentsNameFont]];
+    [collectionView registerClass:[BookTitleCell class] forCellWithReuseIdentifier:kCellId];
+    [collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+              withReuseIdentifier:kHeaderId];
+}
 
-    CKMaskedLabel *maskedLabel = [[CKMaskedLabel alloc] initWithFrame:CGRectZero];
-    maskedLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
-    maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    maskedLabel.numberOfLines = 2;
-    maskedLabel.font = [Theme bookContentsTitleFont];
-    maskedLabel.insets = kTitleInsets;
-    maskedLabel.attributedText = titleDisplay;
-    [self.view addSubview:maskedLabel];
-    self.maskedLabel = maskedLabel;
+- (void)configureImageForTitleCell:(BookTitleCell *)titleCell recipe:(CKRecipe *)recipe
+                         indexPath:(NSIndexPath *)indexPath {
     
-    // Figure out the required size with padding.
-    CGSize availableSize = CGSizeMake(self.view.bounds.size.width - kTitleInsets.left - kTitleInsets.right,
-                                      self.view.bounds.size.height);
-    CGSize size = [self.maskedLabel sizeThatFits:availableSize];
-    size.width += kTitleInsets.left + kTitleInsets.right;
-    size.height += kTitleInsets.top + kTitleInsets.bottom;
-    
-    // Bump down font if exceeds maximum width.
-    if (size.width >= availableSize.width) {
-        titleDisplay = [self attributedTextForTitle:bookTitle titleFont:[Theme bookContentsTitleFont]
-                                             author:bookAuthor authorFont:[Theme bookContentsNameFont]];
-        maskedLabel.attributedText = titleDisplay;
-        size = [maskedLabel sizeThatFits:availableSize];
-        size.width += kTitleInsets.left + kTitleInsets.right;
-        size.height += kTitleInsets.top + kTitleInsets.bottom;
+    if ([recipe hasPhotos]) {
+        CGSize imageSize = [BookTitleCell cellSize];
+        [self.photoStore imageForParseFile:[recipe imageFile]
+                                      size:imageSize
+                                 indexPath:indexPath
+                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
+                                    
+                                    // Check that we have matching indexPaths as cells are re-used.
+                                    if ([indexPath isEqual:completedIndexPath]) {
+                                        [titleCell configureImage:image];
+                                    }
+                                }];
     }
-    
-    // Now position the frame.
-    maskedLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
-                                   floorf((self.view.bounds.size.height - size.height) / 2.0),
-                                   size.width,
-                                   size.height);
-    
-    // Black overlay under the label.
-    UIView *overlayView = [[UIView alloc] initWithFrame:maskedLabel.frame];
-    overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
-    overlayView.backgroundColor = [UIColor blackColor];
-    overlayView.alpha = 0.3;
-    [self.view insertSubview:overlayView belowSubview:maskedLabel];
-    self.overlayView = overlayView;
-    
-    // Profile photo view.
-    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
-                                                                                profileSize:ProfileViewSizeMedium
-                                                                                     border:YES];
-    profilePhotoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
-    profilePhotoView.frame = CGRectMake(maskedLabel.frame.origin.x + floorf((maskedLabel.frame.size.width - profilePhotoView.frame.size.width) / 2.0),
-                                        maskedLabel.frame.origin.y - floorf(profilePhotoView.frame.size.height / 2.0),
-                                        profilePhotoView.frame.size.width,
-                                        profilePhotoView.frame.size.height);
-    [self.view addSubview:profilePhotoView];
-    self.profilePhotoView = profilePhotoView;
-}
-
-- (NSDictionary *)paragraphAttributesForFont:(UIFont *)font {
-    NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineBreakMode = lineBreakMode;
-    paragraphStyle.lineSpacing = -10.0;
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-    
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            font, NSFontAttributeName,
-            [UIColor whiteColor], NSForegroundColorAttributeName,
-            paragraphStyle, NSParagraphStyleAttributeName,
-            nil];
-}
-
-- (NSMutableAttributedString *)attributedTextForTitle:(NSString *)bookTitle titleFont:(UIFont *)titleFont
-                                               author:(NSString *)author authorFont:(UIFont *)authorFont {
-    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:titleFont];
-    NSMutableAttributedString *titleDisplay = [[NSMutableAttributedString alloc] initWithString:bookTitle attributes:paragraphAttributes];
-    [titleDisplay addAttribute:NSFontAttributeName
-                         value:authorFont
-                         range:NSMakeRange([bookTitle length] - [author length],
-                                           [author length])];
-    return titleDisplay;
-}
-
-- (void)initShadowViews {
-    
-    // Top shadow view.
-    UIImageView *headerShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_update_header_shadow.png"]];
-    headerShadowImageView.frame = CGRectMake(self.view.bounds.origin.x,
-                                             self.view.bounds.origin.y,
-                                             headerShadowImageView.frame.size.width,
-                                             headerShadowImageView.frame.size.height);
-    headerShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-    [self.view addSubview:headerShadowImageView];
-    
-    // Bottom shadow view.
-    UIImageView *footerShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_update_header_shadow_bottom.png"]];
-    footerShadowImageView.frame = CGRectMake(self.view.bounds.origin.x,
-                                             self.view.bounds.size.height - footerShadowImageView.frame.size.height,
-                                             footerShadowImageView.frame.size.width,
-                                             footerShadowImageView.frame.size.height);
-    footerShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    [self.view addSubview:footerShadowImageView];
-}
-
-- (void)initActivities {
-    CGFloat yOffset = 8.0;
-    UIImage *tempImage = [UIImage imageNamed:@"cook_temp_featuredrecipes.png"];
-    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:tempImage];
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
-                                                                              self.view.bounds.size.height - tempImageView.frame.size.height - yOffset,
-                                                                              self.view.bounds.size.width,
-                                                                              tempImageView.frame.size.height)];
-    tempImageView.frame = CGRectMake(floorf((scrollView.bounds.size.width - tempImageView.frame.size.width) / 2.0),
-                                     scrollView.bounds.origin.y,
-                                     tempImageView.frame.size.width,
-                                     tempImageView.frame.size.height);
-    scrollView.backgroundColor = [UIColor clearColor];
-    [scrollView addSubview:tempImageView];
-    [self.view addSubview:scrollView];
-    
-    // Shift everything else up.
-    CGFloat shiftOffset = scrollView.frame.size.height + yOffset;
-    CGAffineTransform shiftTransform = CGAffineTransformMakeTranslation(0.0, -55.0);
-    scrollView.transform = CGAffineTransformMakeTranslation(0.0, shiftOffset);;
-    
-    [UIView animateWithDuration:0.4
-                          delay:0.1
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         
-                         scrollView.transform = CGAffineTransformIdentity;
-                         self.maskedLabel.transform = shiftTransform;
-                         self.overlayView.transform = shiftTransform;
-                         self.profilePhotoView.transform = shiftTransform;
-                         
-                     }
-                     completion:^(BOOL finished) {
-                         
-                     }];
-    
 }
 
 @end
