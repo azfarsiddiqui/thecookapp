@@ -24,6 +24,7 @@
 #import "ViewHelper.h"
 #import "BookCategoryImageView.h"
 #import "BookAddViewController.h"
+#import "NSString+Utilities.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -202,6 +203,12 @@
     } animated:YES];
 }
 
+- (void)bookTitleUpdatedOrderOfCategories:(NSArray *)categories {
+    BOOL orderChanged = [self orderChangedForCategories:categories];
+    DLog(@"Categories order changed: %@", [NSString CK_stringForBoolean:orderChanged]);
+    
+}
+
 #pragma mark - BookPagingStackLayoutDelegate methods
 
 - (void)stackPagingLayoutDidFinish {
@@ -212,8 +219,6 @@
         [self.collectionView setContentOffset:(CGPoint){ kIndexSection * self.collectionView.bounds.size.width, 0.0 }
                                      animated:NO];
         self.justOpened = NO;
-        
-    } else {
         
     }
     
@@ -445,6 +450,10 @@
     // Fetch all recipes for the book, and categorise them.
     [self.book fetchRecipesSuccess:^(NSArray *recipes){
         self.recipes = [NSMutableArray arrayWithArray:recipes];
+        
+        // Mark layout needs to be re-generated.
+        [[self currentLayout] setNeedsRelayout:YES];
+        
         [self loadRecipes];
         [self loadTitlePage];
         
@@ -694,8 +703,9 @@
 }
 
 - (void)applyRightBookEdgeOutline {
+    CGSize contentSize = [[self currentLayout] collectionViewContentSize];
     self.rightOutlineView.frame = (CGRect){
-        self.collectionView.contentSize.width,
+        contentSize.width,
         self.collectionView.bounds.origin.y,
         self.rightOutlineView.frame.size.width,
         self.collectionView.bounds.size.height
@@ -751,6 +761,32 @@
                          completion:^(BOOL finished) {
                          }];
     }
+}
+
+- (BOOL)orderChangedForCategories:(NSArray *)categories {
+    __block BOOL orderChanged = NO;
+    
+    [self.categories enumerateObjectsUsingBlock:^(CKCategory *category, NSUInteger categoryIndex, BOOL *stop) {
+        
+        // Abort if no matching index found in received categories.
+        if (categoryIndex < [categories count] - 1) {
+            stop = YES;
+        }
+        
+        // Check objectIds to determine if order is maintained.
+        CKCategory *updatedCategory = [categories objectAtIndex:categoryIndex];
+        if (![category.objectId isEqualToString:updatedCategory.objectId]) {
+            orderChanged = YES;
+            stop = YES;
+        }
+        
+    }];
+    
+    return orderChanged;
+}
+
+- (BookPagingStackLayout *)currentLayout {
+    return (BookPagingStackLayout *)self.collectionView.collectionViewLayout;
 }
 
 @end

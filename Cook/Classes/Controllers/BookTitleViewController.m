@@ -16,8 +16,10 @@
 #import "ImageHelper.h"
 #import "BookTitleCell.h"
 #import "UIColor+Expanded.h"
+#import "UICollectionView+Draggable.h"
+#import "DraggableCollectionViewFlowLayout.h"
 
-@interface BookTitleViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *categories;
@@ -167,6 +169,24 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return supplementaryView;
 }
 
+#pragma mark - UICollectionViewDataSource_Draggable methods
+
+- (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return YES;
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
+           toIndexPath:(NSIndexPath *)toIndexPath {
+    return YES;
+}
+
+- (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
+           toIndexPath:(NSIndexPath *)toIndexPath {
+    
+    [self.categories exchangeObjectAtIndex:toIndexPath.item withObjectAtIndex:fromIndexPath.item];
+}
+
 #pragma mark - Properties
 
 - (CKBookTitleIndexView *)bookTitleView {
@@ -199,9 +219,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)initCollectionView {
-    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    UICollectionViewFlowLayout *flowLayout = [[DraggableCollectionViewFlowLayout alloc] init];
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
                                                           collectionViewLayout:flowLayout];
+    collectionView.draggable = YES;
     collectionView.backgroundColor = [UIColor clearColor];
     collectionView.dataSource = self;
     collectionView.delegate = self;

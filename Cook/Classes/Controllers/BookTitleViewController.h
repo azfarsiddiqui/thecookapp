@@ -17,6 +17,7 @@
 
 - (CKRecipe *)bookTitleFeaturedRecipeForCategory:(CKCategory *)category;
 - (void)bookTitleSelectedCategory:(CKCategory *)category;
+- (void)bookTitleUpdatedOrderOfCategories:(NSArray *)categories;
 
 @end
 

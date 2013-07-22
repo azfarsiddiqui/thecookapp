@@ -26,5 +26,6 @@ typedef enum {
 
 + (NSString *)bookPagingNavigationElementKind;
 - (id)initWithDelegate:(id<BookPagingStackLayoutDelegate>)delegate;
+- (void)setNeedsRelayout:(BOOL)relayout;
 
 @end
