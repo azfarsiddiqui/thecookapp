@@ -206,6 +206,11 @@
 - (void)bookTitleUpdatedOrderOfCategories:(NSArray *)categories {
     BOOL orderChanged = [self orderChangedForCategories:categories];
     DLog(@"Categories order changed: %@", [NSString CK_stringForBoolean:orderChanged]);
+    if (orderChanged) {
+        self.categories = [NSMutableArray arrayWithArray:categories];
+        [[self currentLayout] setNeedsRelayout:YES];
+        [self.collectionView reloadData];
+    }
     
 }
 

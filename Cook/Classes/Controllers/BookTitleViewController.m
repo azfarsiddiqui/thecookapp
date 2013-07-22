@@ -185,6 +185,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
            toIndexPath:(NSIndexPath *)toIndexPath {
     
     [self.categories exchangeObjectAtIndex:toIndexPath.item withObjectAtIndex:fromIndexPath.item];
+    
+    // Inform book to relayout.
+    [self.delegate bookTitleUpdatedOrderOfCategories:self.categories];
 }
 
 #pragma mark - Properties
