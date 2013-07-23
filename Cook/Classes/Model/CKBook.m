@@ -469,6 +469,10 @@
     return [facebookFriendIds containsObject:userId];
 }
 
+- (BOOL)isOwner {
+    return [self isUserBookAuthor:[CKUser currentUser]];
+}
+
 - (BOOL)isUserBookAuthor:(CKUser *)user {
     return [self.user isEqual:user];
 }
