@@ -17,7 +17,8 @@
 #import "BookTitleCell.h"
 #import "UIColor+Expanded.h"
 #import "UICollectionView+Draggable.h"
-#import "DraggableCollectionViewFlowLayout.h"
+#import "BookTitleLayout.h"
+#import "MRCEnumerable.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable>
 
@@ -42,6 +43,8 @@
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
 #define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 5.0, 0.0 }
+#define kTitleAnimateOffset     50.0
+#define kTitleHeaderTag         460
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -64,7 +67,12 @@
 
 - (void)configureCategories:(NSArray *)categories {
     self.categories = [NSMutableArray arrayWithArray:categories];
-    [self.collectionView reloadData];
+    
+    NSArray *categoryIndexPaths = [self.categories collectWithIndex:^id(CKCategory *category, NSUInteger categoryIndex) {
+        return [NSIndexPath indexPathForItem:categoryIndex inSection:0];
+    }];
+    
+    [self.collectionView insertItemsAtIndexPaths:categoryIndexPaths];
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
@@ -155,13 +163,15 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         supplementaryView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                     withReuseIdentifier:kHeaderId forIndexPath:indexPath];
-        if (!self.bookTitleView.superview) {
+        
+        if (![supplementaryView viewWithTag:kTitleHeaderTag]) {
             self.bookTitleView.frame = (CGRect){
                 floorf((supplementaryView.bounds.size.width - self.bookTitleView.frame.size.width) / 2.0),
                 supplementaryView.bounds.size.height - self.bookTitleView.frame.size.height,
                 self.bookTitleView.frame.size.width,
                 self.bookTitleView.frame.size.height
             };
+            self.bookTitleView.tag = kTitleHeaderTag;
             [supplementaryView addSubview:self.bookTitleView];
         }
     }
@@ -223,7 +233,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)initCollectionView {
-    UICollectionViewFlowLayout *flowLayout = [[DraggableCollectionViewFlowLayout alloc] init];
+    UICollectionViewFlowLayout *flowLayout = [[BookTitleLayout alloc] init];
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
                                                           collectionViewLayout:flowLayout];
     collectionView.draggable = YES;
@@ -258,5 +268,20 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                 }];
     }
 }
+
+//- (void)showTitleAnimated:(BOOL)animated {
+//    if (animated) {
+//        self.collectionView.transform = CGAffineTransformIdentity;
+//    } else {
+//        [UIView animateWithDuration:0.3
+//                              delay:0.0
+//                            options:UIViewAnimationOptionCurveEaseIn
+//                         animations:^{
+//                             self.collectionView.transform = CGAffineTransformIdentity;
+//                         }
+//                         completion:^(BOOL finished) {
+//                         }];
+//    }
+//}
 
 @end
