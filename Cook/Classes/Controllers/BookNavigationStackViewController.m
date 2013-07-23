@@ -40,6 +40,7 @@
 @property (nonatomic, strong) NSMutableDictionary *categoryHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *categoryFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
+@property (nonatomic, assign) BOOL updateCategories;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -146,7 +147,7 @@
 #pragma mark - BookPageViewControllerDelegate methods
 
 - (void)bookPageViewControllerCloseRequested {
-    [self.delegate bookNavigationControllerCloseRequested];
+    [self closeBook];
 }
 
 - (void)bookPageViewControllerShowRecipe:(CKRecipe *)recipe {
@@ -156,7 +157,7 @@
 #pragma mark - BookNavigationViewDelegate methods
 
 - (void)bookNavigationViewCloseTapped {
-    [self.delegate bookNavigationControllerCloseRequested];
+    [self closeBook];
 }
 
 - (void)bookNavigationViewHomeTapped {
@@ -207,9 +208,17 @@
     BOOL orderChanged = [self orderChangedForCategories:categories];
     DLog(@"Categories order changed: %@", [NSString CK_stringForBoolean:orderChanged]);
     if (orderChanged) {
+        
+        // Mark to update categories on backend.
+        self.updateCategories = YES;
         self.categories = [NSMutableArray arrayWithArray:categories];
+        
+        // Now relayout the category pages.
         [[self currentLayout] setNeedsRelayout:YES];
-        [self.collectionView reloadData];
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
+            [self stackCategoryStartSection], [self.categories count]
+        }]];
+        
     }
     
 }
@@ -276,17 +285,10 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    NSInteger numItems = 0;
     
-    if (section == kProfileSection) {
-        numItems = 1;
-    } else if (section == kIndexSection) {
-        numItems = 1;
-    } else {
-        numItems = [self.categories count];
-    }
+    // One page per section.
+    return 1;
     
-    return numItems;
 }
 
 - (UICollectionReusableView *)collectionView: (UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
@@ -511,7 +513,11 @@
     
     // Now reload the categories.
     if ([self.categories count] > 0) {
+        
+        // Now relayout the category pages.
+        [[self currentLayout] setNeedsRelayout:YES];
         [self.collectionView reloadData];
+        
     }
     
 }
@@ -602,7 +608,7 @@
 }
 
 - (void)closeTapped:(id)sender {
-    [self.delegate bookNavigationControllerCloseRequested];
+    [self closeBook];
 }
 
 - (void)scrollToHome {
@@ -755,7 +761,7 @@
 
 - (void)pinchClose:(BOOL)close {
     if (close) {
-        [self.delegate bookNavigationControllerCloseRequested];
+        [self closeBook];
     } else {
         [UIView animateWithDuration:0.15
                               delay:0.0
@@ -771,7 +777,7 @@
 - (BOOL)orderChangedForCategories:(NSArray *)categories {
     __block BOOL orderChanged = NO;
     
-    [self.categories enumerateObjectsUsingBlock:^(CKCategory *category, NSUInteger categoryIndex, BOOL *stop) {
+    [self.book.currentCategories enumerateObjectsUsingBlock:^(CKCategory *category, NSUInteger categoryIndex, BOOL *stop) {
         
         // Abort if no matching index found in received categories.
         if (categoryIndex < [categories count] - 1) {
@@ -780,6 +786,7 @@
         
         // Check objectIds to determine if order is maintained.
         CKCategory *updatedCategory = [categories objectAtIndex:categoryIndex];
+        DLog(@"Comparing category[%@] with updated [%@]", category.objectId, updatedCategory.objectId);
         if (![category.objectId isEqualToString:updatedCategory.objectId]) {
             orderChanged = YES;
             stop = YES;
@@ -792,6 +799,22 @@
 
 - (BookPagingStackLayout *)currentLayout {
     return (BookPagingStackLayout *)self.collectionView.collectionViewLayout;
+}
+
+- (void)closeBook {
+    
+    // Update categories if required. This also updates the ordering of the category.
+    if (self.updateCategories) {
+        [self.book saveCategories:self.categories
+                          success:^{
+                              DLog(@"Saved categories.");
+                          }
+                          failure:^(NSError *error) {
+                              DLog(@"Unable to save categories: %@", [error localizedDescription]);
+                          }];
+    }
+    
+    [self.delegate bookNavigationControllerCloseRequested];
 }
 
 @end
