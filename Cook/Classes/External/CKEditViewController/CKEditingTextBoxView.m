@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UIButton *textEditingSaveButton;
 @property (nonatomic, assign) CGPoint iconOffset;
 @property (nonatomic, assign) BOOL white;
+@property (nonatomic, assign) BOOL editMode;
 
 @end
 
@@ -53,6 +54,12 @@
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
                  delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
     
+    return [self initWithEditingView:editingView contentInsets:contentInsets white:white editMode:YES delegate:delegate];
+}
+
+- (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
+                 editMode:(BOOL)editMode delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
+    
     if (self = [super initWithFrame:CGRectZero]) {
         
         self.editingView = editingView;
@@ -61,10 +68,11 @@
         self.contentInsets = contentInsets;
         self.userInteractionEnabled = YES;
         self.white = white;
+        self.editMode = editMode;
         self.iconOffset = CGPointMake(-32.0, -11.0);
         
         // Text box.
-        UIImageView *textEditImageView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:YES]];
+        UIImageView *textEditImageView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode]];
         textEditImageView.userInteractionEnabled = YES;
         textEditImageView.autoresizingMask = [self textBoxResizingMask];
         self.textEditBoxImageView = textEditImageView;

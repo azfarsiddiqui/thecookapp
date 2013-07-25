@@ -35,6 +35,7 @@
 @property (nonatomic, assign) BOOL dismissableOverlay;
 @property (nonatomic, assign) BOOL white;
 @property (nonatomic, strong) UIFont *font;
+@property (nonatomic, assign) CGRect keyboardFrame;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
@@ -57,6 +58,7 @@
 - (CGRect)defaultKeyboardFrame;
 - (void)updateInfoLabels;
 - (void)wrapTargetEditView:(UIView *)targetEditView delegate:(id<CKEditingTextBoxViewDelegate>)delegate;
+- (void)wrapTargetEditView:(UIView *)targetEditView editMode:(BOOL)editMode delegate:(id<CKEditingTextBoxViewDelegate>)delegate;
 - (BOOL)showTitleLabel;
 - (BOOL)showSaveIcon;
 - (void)dismissEditView;

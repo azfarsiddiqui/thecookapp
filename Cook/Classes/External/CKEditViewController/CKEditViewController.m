@@ -16,7 +16,6 @@
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) CGRect startTextBoxSourceFrame;
 @property (nonatomic, assign) CGRect startTextBoxFullScreenFrame;
-@property (nonatomic, assign) CGRect keyboardFrame;
 @property (nonatomic, assign) BOOL animating;
 
 @end
@@ -275,8 +274,6 @@
     NSString *textValue = nil;
     if ([self.sourceEditView isKindOfClass:[UILabel class]]) {
         textValue = ((UILabel *)self.sourceEditView).text;
-    } else if ([self.sourceEditView isKindOfClass:[UITextView class]]) {
-        textValue = ((UITextView *)self.sourceEditView).text;
     }
     return textValue;
 }
@@ -343,6 +340,10 @@
 
 - (void)wrapTargetEditView:(UIView *)targetEditView delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
     [self.editingHelper wrapEditingView:targetEditView delegate:delegate white:self.white animated:NO];
+}
+
+- (void)wrapTargetEditView:(UIView *)targetEditView editMode:(BOOL)editMode delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
+    [self.editingHelper wrapEditingView:targetEditView delegate:delegate white:self.white editMode:editMode animated:NO];
 }
 
 - (BOOL)showTitleLabel {

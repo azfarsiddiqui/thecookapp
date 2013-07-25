@@ -28,10 +28,15 @@
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
                animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
+               editMode:(BOOL)editMode animated:(BOOL)animated;
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
+               animated:(BOOL)animated;
 
 // Updates the editing box around an updated editingView.
 - (void)updateEditingView:(UIView *)editingView;

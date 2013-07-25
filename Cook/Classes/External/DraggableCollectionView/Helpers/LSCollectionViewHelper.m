@@ -258,14 +258,21 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
     [self.collectionView performBatchUpdates:^{
         layoutHelper.hiddenIndexPath = toIndexPath;
         layoutHelper.warpToIndexPath = toIndexPath;
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        
+        // Indicate dragging has finished.
+        self.dragging = NO;
+        
+    }];
 }
 
 - (void)handlePanGesture:(UIPanGestureRecognizer *)sender
 {
     if(sender.state == UIGestureRecognizerStateChanged) {
 
-        
+        // Mark as dragging in progress.
+        self.dragging = YES;
+
         // Move mock to match finger
         fingerTranslation = [sender translationInView:self.collectionView];
         mockCell.center = _CGPointAdd(mockCenter, fingerTranslation);

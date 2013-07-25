@@ -103,6 +103,13 @@
                  animated:animated];
 }
 
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
+               editMode:(BOOL)editMode animated:(BOOL)animated {
+    
+    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white
+                     editMode:editMode animated:animated];
+}
+
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white {
     
@@ -115,6 +122,14 @@
     
     [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
                      animated:animated];
+}
+
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
+               animated:(BOOL)animated {
+    
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
+                     editMode:editMode animated:animated];
 }
 
 - (void)updateEditingView:(UIView *)editingView {
@@ -135,6 +150,14 @@
 - (void)decorateEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
                    delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated {
     
+    [self decorateEditingView:editingView wrap:wrap contentInsets:contentInsets delegate:delegate white:white
+                     editMode:YES animated:animated];
+}
+
+- (void)decorateEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                   delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
+                   animated:(BOOL)animated {
+    
     UIView *parentView = editingView.superview;
     
     if (wrap) {
@@ -148,6 +171,7 @@
         CKEditingTextBoxView *textBoxView = [[CKEditingTextBoxView alloc] initWithEditingView:editingView
                                                                                 contentInsets:contentInsets
                                                                                         white:white
+                                                                                     editMode:editMode
                                                                                      delegate:delegate];
         [parentView insertSubview:textBoxView belowSubview:editingView];
         

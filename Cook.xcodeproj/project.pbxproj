@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7600972D17A0E8B7001DFC9F /* CKListLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7600972B17A0E8B7001DFC9F /* CKListLayout.m */; };
+		7600973017A0E8C2001DFC9F /* CKListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7600972E17A0E8C2001DFC9F /* CKListCell.m */; };
 		76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */; };
 		7602543317102C6700950571 /* cook_book_btn_selectphoto.png in Resources */ = {isa = PBXBuildFile; fileRef = 7602542917102C6700950571 /* cook_book_btn_selectphoto.png */; };
 		7602543417102C6700950571 /* cook_book_btn_selectphoto@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7602542A17102C6700950571 /* cook_book_btn_selectphoto@2x.png */; };
@@ -845,6 +847,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7600972B17A0E8B7001DFC9F /* CKListLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListLayout.m; sourceTree = "<group>"; };
+		7600972C17A0E8B7001DFC9F /* CKListLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListLayout.h; sourceTree = "<group>"; };
+		7600972E17A0E8C2001DFC9F /* CKListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListCell.m; sourceTree = "<group>"; };
+		7600972F17A0E8C2001DFC9F /* CKListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListCell.h; sourceTree = "<group>"; };
 		76025410170EFDAD00950571 /* CKPhotoPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPhotoPickerViewController.h; sourceTree = "<group>"; };
 		76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPhotoPickerViewController.m; sourceTree = "<group>"; };
 		7602542917102C6700950571 /* cook_book_btn_selectphoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_btn_selectphoto.png; sourceTree = "<group>"; };
@@ -2643,6 +2649,10 @@
 				76EF95C717363BF50033DBCE /* CKListCollectionViewLayout.m */,
 				76EF95C817363BF50033DBCE /* CKListEditViewController.h */,
 				76EF95C917363BF50033DBCE /* CKListEditViewController.m */,
+				7600972C17A0E8B7001DFC9F /* CKListLayout.h */,
+				7600972B17A0E8B7001DFC9F /* CKListLayout.m */,
+				7600972F17A0E8C2001DFC9F /* CKListCell.h */,
+				7600972E17A0E8C2001DFC9F /* CKListCell.m */,
 				76EF95CA17363BF50033DBCE /* CKTableEditViewController.h */,
 				76EF95CB17363BF50033DBCE /* CKTableEditViewController.m */,
 				76EF95CC17363BF50033DBCE /* CKTableViewCell.h */,
@@ -4318,6 +4328,7 @@
 				76ED27521612DC180012E479 /* AppDelegate.m in Sources */,
 				76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */,
 				7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */,
+				7600973017A0E8C2001DFC9F /* CKListCell.m in Sources */,
 				7666B3EC16140B16001D1BA1 /* CKUser.m in Sources */,
 				7666B3EF16140F6F001D1BA1 /* CKModel.m in Sources */,
 				7666B3FA161418E5001D1BA1 /* CKIntroViewController.m in Sources */,
@@ -4388,6 +4399,7 @@
 				765E65C91672144400D5D54E /* LoginViewController.m in Sources */,
 				893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */,
 				76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */,
+				7600972D17A0E8B7001DFC9F /* CKListLayout.m in Sources */,
 				893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */,
 				89B85B9516AF8A5900A0533E /* TestViewController.m in Sources */,
 				76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */,

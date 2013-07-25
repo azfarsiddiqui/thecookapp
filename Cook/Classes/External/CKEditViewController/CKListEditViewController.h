@@ -13,12 +13,11 @@
 
 @property (nonatomic, strong) NSMutableArray *listItems;
 @property (nonatomic, strong) NSNumber *selectedIndexNumber;
-@property (nonatomic, assign) BOOL canAddItems;
-@property (nonatomic, assign) BOOL addItemsFromTop;
-@property (nonatomic, strong) NSString *canAddItemText;
-@property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL allowSelection;
-@property (nonatomic, assign) BOOL incrementalAdd;
+
+@property (nonatomic, assign) BOOL canReorder;
+@property (nonatomic, assign) BOOL canAddItems;
+@property (nonatomic, assign) BOOL canDeleteItems;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
                  items:(NSArray *)items editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white
@@ -27,13 +26,12 @@
                  items:(NSArray *)items selectedIndex:(NSNumber *)selectedIndexNumber
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title;
 
-- (NSString *)addItemText;
-- (id)valueAtIndex:(NSInteger)index;
-- (NSString *)textForItemAtIndex:(NSInteger)itemIndex;
-- (void)selectedItemAtIndex:(NSInteger)index;
 - (void)loadData;
-- (void)showItems;
-- (void)showItems:(BOOL)show;
-- (void)showItems:(BOOL)show completion:(void (^)())completion;
+
+// The class type for cell.
+- (Class)classForListCell;
+
+// Extended lifecycle events.
+- (void)itemsDidShow:(BOOL)show;
 
 @end
