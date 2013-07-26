@@ -11,6 +11,7 @@
 typedef enum {
 	BookCoverLayoutTop,
 	BookCoverLayoutBottom,
+	BookCoverLayoutMid,
 } BookCoverLayout;
 
 @interface CKBookCover : NSObject

@@ -197,11 +197,13 @@
 }
 
 + (BookCoverLayout)layoutForKey:(NSString *)key {
-    BookCoverLayout layout = BookCoverLayoutTop;
+    BookCoverLayout layout = BookCoverLayoutMid;
     if ([key isEqualToString:@"Layout1"]) {
         layout = BookCoverLayoutTop;
     } else if ([key isEqualToString:@"Layout2"]) {
         layout = BookCoverLayoutBottom;
+    } else if ([key isEqualToString:@"Layout3"]) {
+        layout = BookCoverLayoutMid;
     }
     return layout;
 }

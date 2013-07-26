@@ -85,6 +85,7 @@
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
         case BookCoverLayoutBottom:
+        case BookCoverLayoutMid:
         default:
             [self setName:[name uppercaseString]];
             [self setAuthor:[author uppercaseString]];
@@ -227,6 +228,9 @@
         case BookCoverLayoutBottom:
             frame.origin.y = floorf(((self.authorTextView.superview.bounds.size.height - (self.authorTextView.superview.bounds.size.height - nameFrame.origin.y)) - size.height) / 2.0);
             break;
+        case BookCoverLayoutMid:
+            frame.origin.y = floorf(((self.authorTextView.superview.bounds.size.height - (self.authorTextView.superview.bounds.size.height - nameFrame.origin.y)) - size.height) / 2.0);
+            break;
         default:
             break;
     }
@@ -247,6 +251,9 @@
         case BookCoverLayoutBottom:
             frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height + 5.0;
             break;
+        case BookCoverLayoutMid:
+            frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height + 5.0;
+            break;
         default:
             break;
     }
@@ -260,6 +267,7 @@
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
         case BookCoverLayoutBottom:
+        case BookCoverLayoutMid:
         default:
             textAligntment = NSTextAlignmentCenter;
             break;
@@ -272,6 +280,7 @@
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
         case BookCoverLayoutBottom:
+        case BookCoverLayoutMid:
         default:
             textAligntment = NSTextAlignmentCenter;
             break;
@@ -424,6 +433,14 @@
             frame = (CGRect){
                 20.0,
                 232.0,
+                278.0,
+                190.0
+            };
+            break;
+        case BookCoverLayoutMid:
+            frame = (CGRect){
+                20.0,
+                150.0,
                 278.0,
                 190.0
             };
