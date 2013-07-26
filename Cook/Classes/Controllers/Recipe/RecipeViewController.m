@@ -49,10 +49,9 @@ typedef enum {
 	PhotoWindowHeightFullScreen,
 } PhotoWindowHeight;
 
-@interface RecipeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate,
-    CKRecipeSocialViewDelegate, CKEditViewControllerDelegate,
-    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacyViewDelegate,
-    BookSocialViewControllerDelegate>
+@interface RecipeViewController () <UIGestureRecognizerDelegate, CKRecipeSocialViewDelegate,
+    CKEditViewControllerDelegate, CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate,
+    CKPrivacyViewDelegate, BookSocialViewControllerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeClipboard *clipboard;
@@ -87,6 +86,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) BOOL saveInProgress;
+@property (nonatomic, assign) BOOL contentPullActivated;
 @property (nonatomic, strong) UIView *navContainerView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *editButton;
@@ -115,6 +115,7 @@ typedef enum {
 #define kWindowMinHeight        70.0
 #define kWindowMidHeight        260.0
 #define kWindowMinSnapOffset    175.0
+#define kWindowMidSnapOffset    285.0
 #define kWindowMaxSnapOffset    400.0
 #define kWindowBounceOffset     10.0
 #define kPhotoOffset            20.0
@@ -227,7 +228,27 @@ typedef enum {
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSLog(@"Content Offset: %@", NSStringFromCGPoint(scrollView.contentOffset));
+    
+    DLog(@"scrollView.contentOffset.y [%f]", scrollView.contentOffset.y);
+    if (scrollView.contentOffset.y < 0) {
+        self.contentPullActivated = YES;
+        [self panWithTranslation:(CGPoint){ 0.0, -scrollView.contentOffset.y }];
+    }
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate && self.contentPullActivated) {
+        [self panSnapIfRequiredBounce:NO];
+        
+        self.contentPullActivated = NO;
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if (self.contentPullActivated) {
+        [self panSnapIfRequiredBounce:NO];
+        self.contentPullActivated = NO;
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -697,6 +718,10 @@ typedef enum {
 }
 
 - (void)panSnapIfRequired {
+    [self panSnapIfRequiredBounce:YES];
+}
+
+- (void)panSnapIfRequiredBounce:(BOOL)bounce {
     CGRect contentFrame = self.contentContainerView.frame;
     PhotoWindowHeight photoWindowHeight = PhotoWindowHeightMid;
     
@@ -717,7 +742,7 @@ typedef enum {
     }
     
     // Snap animation.
-    [self snapContentToPhotoWindowHeight:photoWindowHeight];
+    [self snapContentToPhotoWindowHeight:photoWindowHeight bounce:bounce completion:NULL];
 }
 
 - (void)snapContentToPhotoWindowHeight:(PhotoWindowHeight)photoWindowHeight {
@@ -785,6 +810,9 @@ typedef enum {
                                                       [self updateButtons];
                                                   }
                                                   
+                                                  // Body scrollEnabled only in max content mode.
+                                                  self.scrollView.scrollEnabled = (self.photoWindowHeight == PhotoWindowHeightMin);
+                                                  
                                                   // Run completion block.
                                                   if (completion != NULL) {
                                                       completion();
@@ -811,6 +839,9 @@ typedef enum {
                                   [self updateButtons];
                               }
                               
+                             // Body scrollEnabled only in max content mode.
+                             self.scrollView.scrollEnabled = (self.photoWindowHeight == PhotoWindowHeightMin);
+                             
                               // Run completion block.
                               if (completion != NULL) {
                                   completion();
@@ -1002,6 +1033,7 @@ typedef enum {
                                                                               self.contentContainerView.bounds.size.height - self.headerView.frame.size.height)];
     scrollView.backgroundColor = [Theme recipeViewBackgroundColour];
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    scrollView.alwaysBounceVertical = YES;
     scrollView.delegate = self;
     scrollView.scrollEnabled = NO;
     [self.contentContainerView addSubview:scrollView];
