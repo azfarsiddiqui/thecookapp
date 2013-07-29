@@ -58,10 +58,11 @@ typedef enum {
 @property (nonatomic, strong) CKBook *book;
 @property(nonatomic, assign) id<BookModalViewControllerDelegate> modalDelegate;
 
-@property (nonatomic, strong) UIView *topShadowView;
+@property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIView *contentContainerView;
 @property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) UIView *windowView;
+
+@property (nonatomic, strong) UICollectionView *collectionView;
 
 // Header view.
 @property (nonatomic, strong) UIView *headerView;
@@ -453,6 +454,35 @@ typedef enum {
 
 #pragma mark - Properties
 
+- (UIView *)contentContainerView {
+    if (!_contentContainerView) {
+        _contentContainerView = [[UIView alloc] initWithFrame:(CGRect){
+            self.view.bounds.origin.x,
+            kWindowMidHeight,
+            self.view.bounds.size.width,
+            self.view.bounds.size.height - kWindowMidHeight}];
+        _contentContainerView.backgroundColor = [UIColor clearColor];
+        _contentContainerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    }
+    return _contentContainerView;
+}
+
+- (UIView *)headerView {
+    if (!_headerView) {
+        UIImage *headerImage = [[UIImage imageNamed:@"cook_recipe_background_tile.png"] stretchableImageWithLeftCapWidth:0.0 topCapHeight:52.0];
+        _headerView = [[UIImageView alloc] initWithImage:headerImage];
+        _headerView.frame = (CGRect){
+            self.contentContainerView.bounds.origin.x,
+            self.contentContainerView.bounds.origin.y,
+            self.contentContainerView.bounds.size.width,
+            kHeaderHeight};
+        _headerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+        _headerView.backgroundColor = [UIColor clearColor];
+        _headerView.userInteractionEnabled = YES;
+    }
+    return _headerView;
+}
+
 - (UIButton *)closeButton {
     if (!_closeButton) {
         _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_close_light.png"]
@@ -579,12 +609,33 @@ typedef enum {
 - (CKPrivacyView *)privacyView {
     if (!_privacyView) {
         _privacyView = [[CKPrivacyView alloc] initWithPrivateMode:self.recipe.privacy delegate:self];
-        _privacyView.frame = CGRectMake(floorf((self.view.bounds.size.width - _privacyView.frame.size.width) / 2.0),
-                                        kButtonInsets.top,
-                                        _privacyView.frame.size.width,
-                                        _privacyView.frame.size.height);
+        _privacyView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - _privacyView.frame.size.width) / 2.0),
+            kButtonInsets.top,
+            _privacyView.frame.size.width,
+            _privacyView.frame.size.height};
     }
     return _privacyView;
+}
+
+- (UIImageView *)backgroundImageView {
+    if (!_backgroundImageView) {
+        _backgroundImageView = [[UIImageView alloc] initWithImage:nil];
+        _backgroundImageView.userInteractionEnabled = YES;
+        _backgroundImageView.backgroundColor = [UIColor clearColor];
+        _backgroundImageView.frame = self.view.bounds;
+        _backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    }
+    return _backgroundImageView;
+}
+
+- (UIImageView *)topShadowView {
+    if (!_topShadowView) {
+        _topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_darkenphoto_strip.png"]];
+        _topShadowView.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, _topShadowView.frame.size.height);
+        _topShadowView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth;
+    }
+    return _topShadowView;
 }
 
 #pragma mark - Private methods
@@ -773,16 +824,18 @@ typedef enum {
     CGRect contentFrame = [self contentFrameForPhotoWindowHeight:photoWindowHeight];
     CGRect imageFrame = [self imageFrameForPhotoWindowHeight:photoWindowHeight];
     
-    // Figure out the required bounce in the same direction.
-    CGFloat bounceOffset = kWindowBounceOffset;
-    bounceOffset *= (self.photoWindowHeight > self.previousPhotoWindowHeight) ? 1.0 : -1.0;
-    CGRect bounceFrame = contentFrame;
-    bounceFrame.origin.y += bounceOffset;
-    CGRect imageBounceFrame = imageFrame;
-    imageBounceFrame.origin.y += bounceOffset;
-    
     // Bounce?
     if (bounce) {
+        
+        // Figure out the required bounce in the same direction.
+        CGFloat bounceOffset = kWindowBounceOffset;
+        bounceOffset *= (self.photoWindowHeight > self.previousPhotoWindowHeight) ? 1.0 : -1.0;
+        CGRect bounceFrame = contentFrame;
+        bounceFrame.origin.y += bounceOffset;
+        bounceFrame.size.height += kWindowBounceOffset; // Add the offset as height so we don't get a gap at bottom.
+        
+        CGRect imageBounceFrame = imageFrame;
+        imageBounceFrame.origin.y += bounceOffset;
         
         // Animate to the contentFrame via a bounce.
         [UIView animateWithDuration:snapDuration
@@ -791,6 +844,9 @@ typedef enum {
                          animations:^{
                              self.contentContainerView.frame = bounceFrame;
                              self.backgroundImageView.frame = imageBounceFrame;
+                             
+                             DLog(@"BOUNCE %@", NSStringFromCGRect(self.contentContainerView.frame));
+                             
                          }
                          completion:^(BOOL finished) {
                              
@@ -801,6 +857,8 @@ typedef enum {
                                               animations:^{
                                                   self.contentContainerView.frame = contentFrame;
                                                   self.backgroundImageView.frame = imageFrame;
+                                                  DLog(@"REST %@", NSStringFromCGRect(self.contentContainerView.frame));
+                                                  
                                               }
                                               completion:^(BOOL finished) {
                                                   
@@ -901,46 +959,29 @@ typedef enum {
 }
 
 - (void)initContentContainerView {
-    UIView *contentContainerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
-                                                                            kWindowMidHeight,
-                                                                            self.view.bounds.size.width,
-                                                                            self.view.bounds.size.height - kWindowMidHeight)];
-    contentContainerView.backgroundColor = [UIColor clearColor];
-    contentContainerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:contentContainerView];
-    self.contentContainerView = contentContainerView;
+    [self.view addSubview:self.contentContainerView];
     
     // Register pan on the content container.
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
-    [contentContainerView addGestureRecognizer:panGesture];
+    [self.contentContainerView addGestureRecognizer:panGesture];
     
     // Register swipes.
     UISwipeGestureRecognizer *upSwipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
     upSwipeGesture.delegate = self;
-    upSwipeGesture.direction = UISwipeGestureRecognizerDirectionDown;
-    [contentContainerView addGestureRecognizer:upSwipeGesture];
+    upSwipeGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.contentContainerView addGestureRecognizer:upSwipeGesture];
     
     UISwipeGestureRecognizer *downSwipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
     downSwipeGesture.delegate = self;
     downSwipeGesture.direction = UISwipeGestureRecognizerDirectionDown;
-    [contentContainerView addGestureRecognizer:downSwipeGesture];
+    [self.contentContainerView addGestureRecognizer:downSwipeGesture];
 }
 
 - (void)initHeaderView {
     CGFloat xOffset = 50.0;
     
-    UIImage *headerImage = [[UIImage imageNamed:@"cook_recipe_background_tile.png"] stretchableImageWithLeftCapWidth:0.0 topCapHeight:52.0];
-    UIImageView *headerView = [[UIImageView alloc] initWithImage:headerImage];
-    headerView.frame = CGRectMake(self.contentContainerView.bounds.origin.x,
-                                  self.contentContainerView.bounds.origin.y,
-                                  self.contentContainerView.bounds.size.width,
-                                  kHeaderHeight);
-    headerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    headerView.backgroundColor = [UIColor clearColor];
-    headerView.userInteractionEnabled = YES;
-    [self.contentContainerView addSubview:headerView];
-    self.headerView = headerView;
+    [self.contentContainerView addSubview:self.headerView];
     
     // Profile photo.
     CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
@@ -962,16 +1003,18 @@ typedef enum {
     // Lay them out side-by-side.
     CGFloat photoNameOffset = 10.0;
     CGFloat combinedWidth = profilePhotoView.frame.size.width + 5.0 + nameLabel.frame.size.width;
-    nameLabel.frame = CGRectMake(floorf((headerView.bounds.size.width - combinedWidth) / 2.0) + profilePhotoView.frame.size.width + photoNameOffset,
-                                 xOffset,
-                                 nameLabel.frame.size.width,
-                                 nameLabel.frame.size.height);
-    profilePhotoView.frame = CGRectMake(floorf((headerView.bounds.size.width - combinedWidth) / 2.0),
-                                        nameLabel.center.y - floorf(profilePhotoView.frame.size.height / 2.0) - 2.0,
-                                        profilePhotoView.frame.size.width,
-                                        profilePhotoView.frame.size.height);
-    [headerView addSubview:profilePhotoView];
-    [headerView addSubview:nameLabel];
+    nameLabel.frame = (CGRect){
+        floorf((self.headerView.bounds.size.width - combinedWidth) / 2.0) + profilePhotoView.frame.size.width + photoNameOffset,
+        xOffset,
+        nameLabel.frame.size.width,
+        nameLabel.frame.size.height};
+    profilePhotoView.frame = (CGRect){
+        floorf((self.headerView.bounds.size.width - combinedWidth) / 2.0),
+        nameLabel.center.y - floorf(profilePhotoView.frame.size.height / 2.0) - 2.0,
+        profilePhotoView.frame.size.width,
+        profilePhotoView.frame.size.height};
+    [self.headerView addSubview:profilePhotoView];
+    [self.headerView addSubview:nameLabel];
     
     // Category label for edit mode.
     CKLabel *categoryLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:@"CATEGORY" minSize:CGSizeZero];
@@ -984,7 +1027,7 @@ typedef enum {
     categoryLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     categoryLabel.shadowColor = [UIColor whiteColor];
     categoryLabel.hidden = YES;
-    [headerView addSubview:categoryLabel];
+    [self.headerView addSubview:categoryLabel];
     self.categoryLabel = categoryLabel;
     [self setCategory:self.recipe.category.name];
     
@@ -998,7 +1041,7 @@ typedef enum {
     titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     titleLabel.shadowColor = [UIColor whiteColor];
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
-    [headerView addSubview:titleLabel];
+    [self.headerView addSubview:titleLabel];
     self.titleLabel = titleLabel;
     [self setTitle:[self.recipe.name uppercaseString]];
     
@@ -1016,14 +1059,14 @@ typedef enum {
     storyLabel.shadowColor = [UIColor whiteColor];
     storyLabel.userInteractionEnabled = NO;
     storyLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-    [headerView addSubview:storyLabel];
+    [self.headerView addSubview:storyLabel];
     self.storyLabel = storyLabel;
     [self setStory:self.recipe.story];
 
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped:)];
     tapGesture.delegate = self;
-    [headerView addGestureRecognizer:tapGesture];
+    [self.headerView addGestureRecognizer:tapGesture];
 }
 
 - (void)initScrollView {
@@ -1044,6 +1087,7 @@ typedef enum {
                                         0.0,
                                         self.contentView.frame.size.width,
                                         self.contentView.frame.size.height);
+    scrollView.contentSize = self.contentView.bounds.size;
     [scrollView addSubview:self.contentView];
 }
 
@@ -1088,7 +1132,7 @@ typedef enum {
     self.ingredientsView = ingredientsView;
     
     // Update leftContainer frame.
-    [self sizeToFitForContainerView:leftContainerView];
+    [self sizeToFitForColumnView:leftContainerView];
     
     // Right Container: Method
     UIView *rightContainerView = [[UIView alloc] initWithFrame:kContentRightFrame];
@@ -1112,33 +1156,23 @@ typedef enum {
     self.methodLabel = methodLabel;
     
     // Update rightContainerView frame.
-    [self sizeToFitForContainerView:rightContainerView];
-    [self sizeToFitForContainerView:contentView];
+    [self sizeToFitForColumnView:rightContainerView];
+    [self sizeToFitForDetailView:contentView];
 
     self.contentView = contentView;
 }
 
 - (void)initBackgroundImageView {
-    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:nil];
-    backgroundImageView.userInteractionEnabled = YES;
-    backgroundImageView.backgroundColor = [UIColor clearColor];
-    backgroundImageView.frame = self.view.bounds;
-    backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    [self.view insertSubview:backgroundImageView belowSubview:self.contentContainerView];
-    self.backgroundImageView = backgroundImageView;
+    [self.view insertSubview:self.backgroundImageView belowSubview:self.contentContainerView];
     
     // Top shadow.
-    UIImageView *topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_darkenphoto_strip.png"]];
-    topShadowView.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, topShadowView.frame.size.height);
-    topShadowView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth;
-    [self.view insertSubview:topShadowView aboveSubview:self.backgroundImageView];
-    topShadowView.alpha = 0.0;
-    self.topShadowView = topShadowView;
+    [self.view insertSubview:self.topShadowView aboveSubview:self.backgroundImageView];
+    self.topShadowView.alpha = 0.0;
     
     // Register tap on headerView for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(windowTapped:)];
     tapGesture.delegate = self;
-    [backgroundImageView addGestureRecognizer:tapGesture];
+    [self.backgroundImageView addGestureRecognizer:tapGesture];
 }
 
 - (void)headerTapped:(UITapGestureRecognizer *)tapGesture {
@@ -1519,16 +1553,16 @@ typedef enum {
     self.methodLabel.frame = methodFrame;
     
     // Size the container view to fit.
-    [self sizeToFitForContainerView:self.methodLabel.superview];
-    [self sizeToFitForContainerView:self.contentView];
+    [self sizeToFitForColumnView:self.methodLabel.superview];
+    [self sizeToFitForDetailView:self.contentView];
 }
 
 - (void)setIngredients:(NSArray *)ingredients {
     [self.ingredientsView setIngredients:ingredients];
     
     // Size the container view to fit.
-    [self sizeToFitForContainerView:self.ingredientsLabel.superview];
-    [self sizeToFitForContainerView:self.contentView];
+    [self sizeToFitForColumnView:self.ingredientsLabel.superview];
+    [self sizeToFitForDetailView:self.contentView];
 }
 
 - (void)setServes:(NSInteger)serves {
@@ -1837,7 +1871,17 @@ typedef enum {
     }
 }
 
-- (void)sizeToFitForContainerView:(UIView *)containerView {
+- (void)sizeToFitForColumnView:(UIView *)containerView  {
+    [self sizeToFitForContainerView:containerView
+                             insets:(UIEdgeInsets){kContentInsets.top, 0.0, 0.0, kContentInsets.bottom}];
+}
+
+- (void)sizeToFitForDetailView:(UIView *)detailView  {
+    [self sizeToFitForContainerView:detailView insets:UIEdgeInsetsZero];
+    self.scrollView.contentSize = detailView.bounds.size;
+}
+
+- (void)sizeToFitForContainerView:(UIView *)containerView insets:(UIEdgeInsets)insets {
     CGRect containerFrame = containerView.frame;
     CGRect frame = CGRectZero;
     
@@ -1846,7 +1890,9 @@ typedef enum {
     }
     
     containerFrame.size.height = frame.size.height;
-    containerFrame.size.height += kContentInsets.bottom;
+    containerFrame.size.height += insets.top;
+    containerFrame.size.height += insets.bottom;
+    
     containerView.frame = containerFrame;
 }
 
