@@ -10,10 +10,8 @@
 
 @interface CKNotchSliderView ()
 
-@property (nonatomic, assign) id<CKNotchSliderViewDelegate> delegate;
 @property (nonatomic, assign) NSInteger numNotches;
-@property (nonatomic, strong) NSMutableArray *trackNotches;
-@property (nonatomic, strong) UIImageView *currentNotchView;
+@property (nonatomic, assign) BOOL animating;
 
 @end
 
@@ -40,34 +38,78 @@
 }
 
 - (void)selectNotch:(NSInteger)notch animated:(BOOL)animated informDelegate:(BOOL)informDelegate {
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
     self.currentNotchIndex = notch;
-    UIImageView *trackNotch = [self.trackNotches objectAtIndex:notch];
     if (animated) {
-        
         [UIView animateWithDuration:0.2
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
-                             self.currentNotchView.center = trackNotch.center;
+                             [self slideToNotchIndex:notch animated:animated];
                          }
                          completion:^(BOOL finished) {
                              if (informDelegate) {
-                                 [self informDelegateSelectedNotchIndex:notch];
+                                 [self selectedNotchIndex:notch];
+                             } else {
+                                 [self initNotchIndex:notch];
                              }
+                             self.animating = NO;
                          }];
     } else {
-        self.currentNotchView.center = trackNotch.center;
+        [self slideToNotchIndex:notch animated:animated];
         if (informDelegate) {
-            [self informDelegateSelectedNotchIndex:notch];
+            [self selectedNotchIndex:notch];
+        } else {
+            [self initNotchIndex:notch];
         }
+        self.animating = NO;
     }
+}
+
+- (UIImage *)imageForLeftTrack {
+    return [UIImage imageNamed:@"cook_edit_serves_notches_left.png"];
+}
+
+- (UIImage *)imageForMiddleTrack {
+    return [UIImage imageNamed:@"cook_edit_serves_notches_mid.png"];
+}
+
+- (UIImage *)imageForRightTrack {
+    return [UIImage imageNamed:@"cook_edit_serves_notches_right.png"];
+}
+
+- (UIImage *)imageForSlider {
+    return [UIImage imageNamed:@"cook_edit_serves_slider.png"];
+}
+         
+- (void)initNotchIndex:(NSInteger)selectedNotchIndex {
+    // Initialise anything at notch index, usually on startup.
+}
+
+- (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {
+    if ([self.delegate respondsToSelector:@selector(notchSliderView:selectedIndex:)]) {
+        [self.delegate notchSliderView:self selectedIndex:selectedNotchIndex];
+    }
+}
+
+- (void)updateNotchSliderWithFrame:(CGRect)sliderFrame {
+    self.currentNotchView.frame = sliderFrame;
+}
+
+- (void)slideToNotchIndex:(NSInteger)notchIndex animated:(BOOL)animated {
+    UIImageView *trackNotch = [self.trackNotches objectAtIndex:notchIndex];
+    self.currentNotchView.center = trackNotch.center;
 }
 
 #pragma mark - Lazy getters
 
 - (UIImageView *)currentNotchView {
     if (!_currentNotchView) {
-        _currentNotchView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_serves_slider.png"]];
+        _currentNotchView = [[UIImageView alloc] initWithImage:[self imageForSlider]];
         _currentNotchView.userInteractionEnabled = YES;
         
         // Register pan
@@ -115,11 +157,11 @@
 
 - (UIImage *)trackImageForIndex:(NSInteger)trackIndex {
     if (trackIndex == 0) {
-        return [UIImage imageNamed:@"cook_edit_serves_notches_left.png"];
+        return [self imageForLeftTrack];
     } else if (trackIndex == self.numNotches - 1) {
-        return [UIImage imageNamed:@"cook_edit_serves_notches_right.png"];
+        return [self imageForRightTrack];
     } else {
-        return [UIImage imageNamed:@"cook_edit_serves_notches_mid.png"];
+        return [self imageForMiddleTrack];
     }
 }
 
@@ -147,30 +189,29 @@
             frame.origin.x = (self.bounds.size.width - frame.size.width);
         }
         
-        self.currentNotchView.frame = frame;
+        [self updateNotchSliderWithFrame:frame];
         
 	} else if (panGesture.state == UIGestureRecognizerStateEnded) {
         
-        NSInteger selectedTrackIndex = 0;
-        CGRect intersection = CGRectZero;
-        for (NSInteger trackIndex = 0; trackIndex < [self.trackNotches count]; trackIndex++) {
-            UIImageView *trackImageView = [self.trackNotches objectAtIndex:trackIndex];
-            
-            CGRect trackIntersection = CGRectIntersection(trackImageView.frame, frame);
-            if (trackIntersection.size.width >= intersection.size.width) {
-                selectedTrackIndex = trackIndex;
-                intersection = trackIntersection;
-            }
-        }
-        
+        NSInteger selectedTrackIndex = [self currentNotchIndexForSliderFrame:frame];
         [self selectNotch:selectedTrackIndex];
     }
     
     [panGesture setTranslation:CGPointZero inView:self];
 }
 
-- (void)informDelegateSelectedNotchIndex:(NSInteger)selectedNotchIndex {
-    [self.delegate notchSliderView:self selectedIndex:selectedNotchIndex];
+- (NSInteger)currentNotchIndexForSliderFrame:(CGRect)sliderFrame {
+    NSInteger selectedTrackIndex = 0;
+    CGRect intersection = CGRectZero;
+    for (NSInteger trackIndex = 0; trackIndex < [self.trackNotches count]; trackIndex++) {
+        UIImageView *trackImageView = [self.trackNotches objectAtIndex:trackIndex];
+        CGRect trackIntersection = CGRectIntersection(trackImageView.frame, sliderFrame);
+        if (trackIntersection.size.width >= intersection.size.width) {
+            selectedTrackIndex = trackIndex;
+            intersection = trackIntersection;
+        }
+    }
+    return selectedTrackIndex;
 }
 
 @end
