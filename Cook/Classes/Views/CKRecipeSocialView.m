@@ -15,7 +15,7 @@
 @interface CKRecipeSocialView ()
 
 @property (nonatomic, strong) CKRecipe *recipe;
-@property (nonatomic, assign) id<CKRecipeSocialViewDelegate> delegate;
+@property (nonatomic, weak) id<CKRecipeSocialViewDelegate> delegate;
 @property (nonatomic, assign) NSInteger numComments;
 @property (nonatomic, assign) NSInteger numLikes;
 @property (nonatomic, strong) UIImageView *messageIconView;
