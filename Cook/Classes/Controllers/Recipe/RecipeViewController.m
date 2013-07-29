@@ -693,9 +693,9 @@ typedef enum {
 - (void)swiped:(UISwipeGestureRecognizer *)swipeGesture {
     UISwipeGestureRecognizerDirection direction = swipeGesture.direction;
     if (direction == UISwipeGestureRecognizerDirectionUp) {
-        [self snapContentToPhotoWindowHeight:[self nextDownPhotoWindowHeight]];
-    } else if (direction == UISwipeGestureRecognizerDirectionDown) {
         [self snapContentToPhotoWindowHeight:[self nextUpPhotoWindowHeight]];
+    } else if (direction == UISwipeGestureRecognizerDirectionDown) {
+        [self snapContentToPhotoWindowHeight:[self nextDownPhotoWindowHeight]];
     }
 }
 
