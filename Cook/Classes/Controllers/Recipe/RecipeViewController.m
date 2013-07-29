@@ -844,9 +844,6 @@ typedef enum {
                          animations:^{
                              self.contentContainerView.frame = bounceFrame;
                              self.backgroundImageView.frame = imageBounceFrame;
-                             
-                             DLog(@"BOUNCE %@", NSStringFromCGRect(self.contentContainerView.frame));
-                             
                          }
                          completion:^(BOOL finished) {
                              
@@ -857,8 +854,6 @@ typedef enum {
                                               animations:^{
                                                   self.contentContainerView.frame = contentFrame;
                                                   self.backgroundImageView.frame = imageFrame;
-                                                  DLog(@"REST %@", NSStringFromCGRect(self.contentContainerView.frame));
-                                                  
                                               }
                                               completion:^(BOOL finished) {
                                                   
