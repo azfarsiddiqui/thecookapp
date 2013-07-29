@@ -253,11 +253,11 @@
     }
     
     // If velocity is non-zero, don't resist, just go with the direction of the scroll.
-    if (velocity.x < 0.0) {
-        offsetAdjustment -= 300.0;
-    } else if (velocity.x > 0.0) {
-        offsetAdjustment += 300.0;
-    }
+//    if (velocity.x < 0.0) {
+//        offsetAdjustment -= 300.0;
+//    } else if (velocity.x > 0.0) {
+//        offsetAdjustment += 300.0;
+//    }
     
     CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
     return targetContentOffset;
