@@ -8,6 +8,7 @@
 
 #import "ParsePhotoStore.h"
 #import "UIImage+ProportionalFill.h"
+#import "ImageHelper.h"
 
 @interface ParsePhotoStore ()
 
@@ -16,8 +17,6 @@
 
 // A monitor of downloads in progress
 @property (nonatomic, strong) NSMutableArray *downloadsInProgress;
-
-- (NSString *)cacheKeyForParseFile:(PFFile *)parseFile size:(CGSize)size;
 
 @end
 
@@ -33,6 +32,17 @@
 
 - (void)storeImage:(UIImage *)image parseFile:(PFFile *)parseFile size:(CGSize)size {
     [self.cache setObject:image forKey:[self cacheKeyForParseFile:parseFile size:size]];
+}
+
+- (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size {
+    
+    NSString *cacheKey = [self cacheKeyForName:name size:size];
+    UIImage *scaledImage = [self cachedImageForName:name size:size];
+    if (!scaledImage) {
+        scaledImage = [ImageHelper scaledImage:image size:size];
+        [self.cache setObject:scaledImage forKey:cacheKey];
+    }
+    return scaledImage;
 }
 
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size completion:(void (^)(UIImage *image))completion {
@@ -104,11 +114,19 @@
 #pragma mark - Private methods
 
 - (UIImage *)cachedImageForParseFile:(PFFile *)parseFile size:(CGSize)size {
-    return [self.cache objectForKey:[self cacheKeyForParseFile:parseFile size:size]];
+    return [self cachedImageForName:parseFile.url size:size];
+}
+
+- (UIImage *)cachedImageForName:(NSString *)name size:(CGSize)size {
+    return [self.cache objectForKey:[self cacheKeyForName:name size:size]];
 }
 
 - (NSString *)cacheKeyForParseFile:(PFFile *)parseFile size:(CGSize)size {
-    return [NSString stringWithFormat:@"%@_%@", parseFile.url, NSStringFromCGSize(size)];
+    return [self cacheKeyForName:parseFile.url size:size];
+}
+
+- (NSString *)cacheKeyForName:(NSString *)name size:(CGSize)size {
+    return [NSString stringWithFormat:@"%@_%@", name, NSStringFromCGSize(size)];
 }
 
 @end

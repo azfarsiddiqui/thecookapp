@@ -12,13 +12,15 @@
 #import "IllustrationFlowLayout.h"
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
+#import "ParsePhotoStore.h"
 
-@interface IllustrationPickerViewController ()
+@interface IllustrationPickerViewController () <IllustrationBookCellDelegate>
 
 @property (nonatomic, strong) NSString *cover;
 @property (nonatomic, strong) NSMutableArray *availableIllustrations;
 @property (nonatomic, assign) id<IllustrationPickerViewControllerDelegate> delegate;
 @property (nonatomic, assign) NSInteger currentIndex;
+@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @end
 
@@ -37,6 +39,7 @@
         self.currentIndex = [self.availableIllustrations findIndexWithBlock:^(NSString *illustration) {
             return [self.illustration isEqualToString:illustration];
         }];
+        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -62,7 +65,7 @@
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.showsVerticalScrollIndicator = NO;
-    self.collectionView.pagingEnabled = YES;
+    self.collectionView.pagingEnabled = NO;
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.collectionView registerClass:[IllustrationBookCell class] forCellWithReuseIdentifier:kIllustrationCellId];
@@ -121,9 +124,24 @@
     NSString *currentIllustration = [self.availableIllustrations objectAtIndex:indexPath.item];
     IllustrationBookCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kIllustrationCellId
                                                                                 forIndexPath:indexPath];
+    cell.delegate = self;
     [cell setCover:self.cover];
     [cell setIllustration:currentIllustration];
     return cell;
+}
+
+#pragma mark - IllustrationBookCellDelegate methods
+
+- (UIImage *)imageForIllustration:(NSString *)illustration size:(CGSize)size {
+    return [self.photoStore scaledImageForImage:[CKBookCover imageForIllustration:illustration]
+                                    name:illustration
+                                    size:size];
+}
+
+- (UIImage *)imageForCover:(NSString *)cover size:(CGSize)size {
+    return [self.photoStore scaledImageForImage:[CKBookCover imageForCover:cover]
+                                           name:cover
+                                           size:size];
 }
 
 #pragma mark - Private

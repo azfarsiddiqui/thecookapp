@@ -38,13 +38,11 @@
 }
 
 - (void)setCover:(NSString *)cover {
-    self.colourImageView.image = [ImageHelper scaledImage:[CKBookCover imageForCover:cover]
-                                                     size:self.contentView.bounds.size];
+    self.colourImageView.image = [self.delegate imageForCover:cover size:self.contentView.bounds.size];
 }
 
 - (void)setIllustration:(NSString *)illustration {
-    self.illustrationImageView.image = [ImageHelper scaledImage:[CKBookCover imageForIllustration:illustration]
-                                                           size:self.contentView.bounds.size];
+    self.illustrationImageView.image = [self.delegate imageForIllustration:illustration size:self.contentView.bounds.size];
 }
 
 #pragma mark - Private methods

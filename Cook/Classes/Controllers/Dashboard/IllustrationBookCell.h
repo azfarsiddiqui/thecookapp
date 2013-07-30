@@ -8,7 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol IllustrationBookCellDelegate <NSObject>
+
+- (UIImage *)imageForIllustration:(NSString *)illustration size:(CGSize)size;
+- (UIImage *)imageForCover:(NSString *)cover size:(CGSize)size;
+
+@end
+
 @interface IllustrationBookCell : UICollectionViewCell
+
+@property (nonatomic, weak) id<IllustrationBookCellDelegate> delegate;
 
 + (CGSize)cellSize;
 
