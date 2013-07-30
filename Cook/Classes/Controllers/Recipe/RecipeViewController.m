@@ -200,16 +200,6 @@ typedef enum {
         // Snap to required width.
         [self snapContentToPhotoWindowHeight:startWindowHeight completion:^{
             
-            // Fade in the top shadow.
-            [UIView animateWithDuration:0.4
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 self.topShadowView.alpha = 1.0;
-                             }
-                             completion:^(BOOL finished) {
-                             }];
-            
             // Load stuff.
             [self updateButtons];
             [self loadPhoto];
@@ -1241,8 +1231,8 @@ typedef enum {
         self.photoLabel.alpha = 0.0;
         [self.view addSubview:self.photoLabel];
         [self.editingHelper wrapEditingView:self.photoLabel
-                              contentInsets:UIEdgeInsetsMake(25.0, 35.0, 10.0, 35.0)
-                                   delegate:self white:YES];
+                              contentInsets:UIEdgeInsetsMake(30.0, 30.0, 22.0, 40.0)
+                                   delegate:self white:YES editMode:NO];
         
     } else {
         self.closeButton.alpha = 0.0;
@@ -1497,13 +1487,13 @@ typedef enum {
     // Set fields to be editable/non
     if (enable) {
         [self.editingHelper wrapEditingView:self.categoryLabel
-                              contentInsets:UIEdgeInsetsMake(18.0, 30.0, 8.0, 30.0)
-                                   delegate:self white:YES];
+                              contentInsets:UIEdgeInsetsMake(25.0, 30.0, 17.0, 38.0)
+                                   delegate:self white:YES editMode:NO];
         [self.editingHelper wrapEditingView:self.titleLabel
-                              contentInsets:UIEdgeInsetsMake(5.0, 20.0, -5.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(8.0, 20.0, 2.0, 20.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.storyLabel
-                              contentInsets:UIEdgeInsetsMake(18.0, 20.0, 8.0, 20.0)
+                              contentInsets:UIEdgeInsetsMake(18.0, 20.0, 10.0, 20.0)
                                    delegate:self white:YES];
         [self.editingHelper wrapEditingView:self.servesCookView
                               contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 30.0)
