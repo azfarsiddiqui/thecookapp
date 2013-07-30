@@ -147,15 +147,11 @@
     if (open) {
         
         // Create book navigation.
-//        BookNavigationViewController *bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
-//                                                                                                               delegate:self];
-        
         BookNavigationStackViewController *bookNavigationViewController = [[BookNavigationStackViewController alloc] initWithBook:self.selectedBook
                                                                                                                          delegate:self];
         bookNavigationViewController.view.frame = self.view.bounds;
         [self.view addSubview:bookNavigationViewController.view];
         self.bookNavigationViewController = bookNavigationViewController;
-
         
         // Inform the helper that coordinates book navigation and any updated recipes.
         [BookNavigationHelper sharedInstance].bookNavigationViewController = bookNavigationViewController;
@@ -173,9 +169,15 @@
                          }
                          completion:^(BOOL finished) {
                              
+                             // Inform benchtop of didOpen.
+                             [self.benchtopViewController bookDidOpen:open];
+                             
                          }];
         
     } else {
+        
+        // Pass on event to the benchtop to restore the book.
+        [self.benchtopViewController bookDidOpen:open];
         
         // Remove the book cover.
         [self.bookCoverViewController cleanUpLayers];
@@ -186,8 +188,6 @@
         [BookNavigationHelper sharedInstance].bookNavigationViewController = nil;
     }
     
-    // Pass on event to the benchtop to restore the book.
-    [self.benchtopViewController bookDidOpen:open];
 }
 
 - (CGPoint)bookCoverCenterPoint {
