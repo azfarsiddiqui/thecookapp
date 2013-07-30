@@ -48,10 +48,6 @@
 
 }
 
-- (UIImage *)bookImage {
-    return [CKCategory bookImageForCategory:self.name];
-}
-
 - (BOOL)isDataAvailable {
     return [self.parseObject isDataAvailable];
 }

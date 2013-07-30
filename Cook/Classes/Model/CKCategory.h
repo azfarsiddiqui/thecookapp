@@ -20,7 +20,6 @@
 + (CKCategory *)categoryForParseCategory:(PFObject *)parseCategory;
 + (void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
-- (UIImage *)bookImage;
 - (BOOL)isDataAvailable;
 
 @end
