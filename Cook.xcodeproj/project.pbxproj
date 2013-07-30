@@ -288,10 +288,8 @@
 		76582AAD165497310007FCE1 /* MPFlipTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA6165497310007FCE1 /* MPFlipTransition.m */; };
 		76582AAE165497310007FCE1 /* MPFlipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA8165497310007FCE1 /* MPFlipViewController.m */; };
 		76582AAF165497310007FCE1 /* MPTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AAA165497310007FCE1 /* MPTransition.m */; };
-		765E21AA16F829CC00D06401 /* BookTitleActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765E21A916F829CC00D06401 /* BookTitleActivityViewController.m */; };
 		765E21AD16F82F9800D06401 /* BookTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 765E21AC16F82F9800D06401 /* BookTitleView.m */; };
 		765E65C91672144400D5D54E /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765E65C81672144400D5D54E /* LoginViewController.m */; };
-		76622D5C1650C6AB005F4459 /* CategoryPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */; };
 		766584EF1665CE9F0056AD25 /* cook_category_baking.png in Resources */ = {isa = PBXBuildFile; fileRef = 766584D71665CE9F0056AD25 /* cook_category_baking.png */; };
 		766584F01665CE9F0056AD25 /* cook_category_baking@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 766584D81665CE9F0056AD25 /* cook_category_baking@2x.png */; };
 		766584F11665CE9F0056AD25 /* cook_category_dessert.png in Resources */ = {isa = PBXBuildFile; fileRef = 766584D91665CE9F0056AD25 /* cook_category_dessert.png */; };
@@ -490,7 +488,6 @@
 		76B3AEBE174B2BAA001B4661 /* cook_customise_colour_picker_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B3AEAC174B2BAA001B4661 /* cook_customise_colour_picker_yellow@2x.png */; };
 		76B3E5B216FBE52F002B5080 /* BookIndexLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3E5B116FBE52F002B5080 /* BookIndexLayout.m */; };
 		76B3E5B516FBE862002B5080 /* BookIndexCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3E5B416FBE861002B5080 /* BookIndexCell.m */; };
-		76B9E020164C85D100345B8D /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B9E01B164C85D100345B8D /* PageViewController.m */; };
 		76BE36DE171788D6000C0755 /* BookTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BE36DD171788D6000C0755 /* BookTitleViewController.m */; };
 		76BE37321717A8E9000C0755 /* CKEditingViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BE372A1717A8E9000C0755 /* CKEditingViewHelper.m */; };
 		76BE37341717A8E9000C0755 /* cook_customise_btns_textedit_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BE372E1717A8E9000C0755 /* cook_customise_btns_textedit_white.png */; };
@@ -792,7 +789,6 @@
 		892282BB16719CC3002FE936 /* cook_book_icon_addbook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892282B916719CC3002FE936 /* cook_book_icon_addbook@2x.png */; };
 		892282C216719F2A002FE936 /* cook_dash_library_nofriends.png in Resources */ = {isa = PBXBuildFile; fileRef = 892282C016719F2A002FE936 /* cook_dash_library_nofriends.png */; };
 		892282C316719F2A002FE936 /* cook_dash_library_nofriends@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892282C116719F2A002FE936 /* cook_dash_library_nofriends@2x.png */; };
-		89232B921625431500152940 /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89232B911625431500152940 /* BookViewController.m */; };
 		8926728316E9A3040006A055 /* cook_editrecipe_typeup.png in Resources */ = {isa = PBXBuildFile; fileRef = 8926728116E9A3040006A055 /* cook_editrecipe_typeup.png */; };
 		8926728416E9A3040006A055 /* cook_editrecipe_typeup@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8926728216E9A3040006A055 /* cook_editrecipe_typeup@2x.png */; };
 		8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7E8161E78AE00E6EF1D /* CKRecipe.m */; };
@@ -812,9 +808,6 @@
 		8938AAB916DF153D001CBC90 /* ServesCookPrepEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */; };
 		8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */; };
 		893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */; };
-		893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */; };
-		893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC89F16782B3B00B221EC /* LikesPageViewController.m */; };
-		893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AC8A116782B3C00B221EC /* SectionPageViewController.m */; };
 		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
 		8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */; };
 		8944C1C116CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */; };
@@ -852,7 +845,6 @@
 		8969969F16A65D4D00BBED05 /* Utensils.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969968F16A65D4D00BBED05 /* Utensils.png */; };
 		896996A016A65D4D00BBED05 /* Utensils@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8969969016A65D4D00BBED05 /* Utensils@2x.png */; };
 		898990F816FA8FEF000AEAA3 /* EditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 898990F716FA8FEF000AEAA3 /* EditingViewController.m */; };
-		8996A3B3165C66740099583E /* ContentsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8996A3B2165C66740099583E /* ContentsTableViewCell.m */; };
 		89A50499162250F700E6CDF1 /* Ingredient.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A50498162250F700E6CDF1 /* Ingredient.m */; };
 		89A906F216644DD20056E4CF /* cook_book_icon_editpage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89A906F016644DD20056E4CF /* cook_book_icon_editpage.png */; };
 		89A906F316644DD20056E4CF /* cook_book_icon_editpage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89A906F116644DD20056E4CF /* cook_book_icon_editpage@2x.png */; };
@@ -1232,14 +1224,10 @@
 		76582AA9165497310007FCE1 /* MPTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTransition.h; sourceTree = "<group>"; };
 		76582AAA165497310007FCE1 /* MPTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTransition.m; sourceTree = "<group>"; };
 		76582AAB165497310007FCE1 /* MPTransitionEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTransitionEnumerations.h; sourceTree = "<group>"; };
-		765E21A816F829CC00D06401 /* BookTitleActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookTitleActivityViewController.h; sourceTree = "<group>"; };
-		765E21A916F829CC00D06401 /* BookTitleActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookTitleActivityViewController.m; sourceTree = "<group>"; };
 		765E21AB16F82F9800D06401 /* BookTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookTitleView.h; sourceTree = "<group>"; };
 		765E21AC16F82F9800D06401 /* BookTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookTitleView.m; sourceTree = "<group>"; };
 		765E65C71672144400D5D54E /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		765E65C81672144400D5D54E /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		76622D5A1650C6A7005F4459 /* CategoryPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CategoryPageViewController.h; path = Book/CategoryPageViewController.h; sourceTree = "<group>"; };
-		76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CategoryPageViewController.m; path = Book/CategoryPageViewController.m; sourceTree = "<group>"; };
 		766584D71665CE9F0056AD25 /* cook_category_baking.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_category_baking.png; sourceTree = "<group>"; };
 		766584D81665CE9F0056AD25 /* cook_category_baking@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_category_baking@2x.png"; sourceTree = "<group>"; };
 		766584D91665CE9F0056AD25 /* cook_category_dessert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_category_dessert.png; sourceTree = "<group>"; };
@@ -1480,8 +1468,6 @@
 		76B3E5B116FBE52F002B5080 /* BookIndexLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookIndexLayout.m; sourceTree = "<group>"; };
 		76B3E5B316FBE861002B5080 /* BookIndexCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookIndexCell.h; sourceTree = "<group>"; };
 		76B3E5B416FBE861002B5080 /* BookIndexCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookIndexCell.m; sourceTree = "<group>"; };
-		76B9E01B164C85D100345B8D /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PageViewController.m; path = Book/PageViewController.m; sourceTree = "<group>"; };
-		76B9E01C164C85D100345B8D /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PageViewController.h; path = Book/PageViewController.h; sourceTree = "<group>"; };
 		76BE36DC171788D6000C0755 /* BookTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookTitleViewController.h; sourceTree = "<group>"; };
 		76BE36DD171788D6000C0755 /* BookTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookTitleViewController.m; sourceTree = "<group>"; };
 		76BE37291717A8E9000C0755 /* CKEditingViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingViewHelper.h; sourceTree = "<group>"; };
@@ -1871,8 +1857,6 @@
 		892282B916719CC3002FE936 /* cook_book_icon_addbook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_icon_addbook@2x.png"; sourceTree = "<group>"; };
 		892282C016719F2A002FE936 /* cook_dash_library_nofriends.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_nofriends.png; sourceTree = "<group>"; };
 		892282C116719F2A002FE936 /* cook_dash_library_nofriends@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_library_nofriends@2x.png"; sourceTree = "<group>"; };
-		89232B901625431500152940 /* BookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BookViewController.h; path = Book/BookViewController.h; sourceTree = "<group>"; };
-		89232B911625431500152940 /* BookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BookViewController.m; path = Book/BookViewController.m; sourceTree = "<group>"; };
 		8926728116E9A3040006A055 /* cook_editrecipe_typeup.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_typeup.png; sourceTree = "<group>"; };
 		8926728216E9A3040006A055 /* cook_editrecipe_typeup@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_typeup@2x.png"; sourceTree = "<group>"; };
 		8936F7E7161E78AE00E6EF1D /* CKRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipe.h; sourceTree = "<group>"; };
@@ -1908,12 +1892,6 @@
 		8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewEditingViewController.m; sourceTree = "<group>"; };
 		893AB2E116DF18E6000E2AB3 /* CategoryEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryEditViewController.h; sourceTree = "<group>"; };
 		893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryEditViewController.m; sourceTree = "<group>"; };
-		893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookActivityViewController.h; sourceTree = "<group>"; };
-		893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookActivityViewController.m; sourceTree = "<group>"; };
-		893AC89E16782B3B00B221EC /* LikesPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LikesPageViewController.h; path = Book/LikesPageViewController.h; sourceTree = "<group>"; };
-		893AC89F16782B3B00B221EC /* LikesPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikesPageViewController.m; path = Book/LikesPageViewController.m; sourceTree = "<group>"; };
-		893AC8A016782B3B00B221EC /* SectionPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPageViewController.h; path = Book/SectionPageViewController.h; sourceTree = "<group>"; };
-		893AC8A116782B3C00B221EC /* SectionPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SectionPageViewController.m; path = Book/SectionPageViewController.m; sourceTree = "<group>"; };
 		8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_bg.png; sourceTree = "<group>"; };
 		8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_bg@2x.png"; sourceTree = "<group>"; };
 		8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_btn.png; sourceTree = "<group>"; };
@@ -1958,8 +1936,6 @@
 		8969969016A65D4D00BBED05 /* Utensils@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Utensils@2x.png"; sourceTree = "<group>"; };
 		898990F616FA8FEF000AEAA3 /* EditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditingViewController.h; sourceTree = "<group>"; };
 		898990F716FA8FEF000AEAA3 /* EditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditingViewController.m; sourceTree = "<group>"; };
-		8996A3B1165C66730099583E /* ContentsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContentsTableViewCell.h; path = Book/ContentsTableViewCell.h; sourceTree = "<group>"; };
-		8996A3B2165C66740099583E /* ContentsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContentsTableViewCell.m; path = Book/ContentsTableViewCell.m; sourceTree = "<group>"; };
 		89A50497162250F700E6CDF1 /* Ingredient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ingredient.h; sourceTree = "<group>"; };
 		89A50498162250F700E6CDF1 /* Ingredient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ingredient.m; sourceTree = "<group>"; };
 		89A906F016644DD20056E4CF /* cook_book_icon_editpage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_editpage.png; sourceTree = "<group>"; };
@@ -3459,17 +3435,8 @@
 				764F4D0C179E1AEC00821221 /* BookTitleLayout.m */,
 				764F4D08179CECF500821221 /* BookTitleCell.h */,
 				764F4D09179CECF500821221 /* BookTitleCell.m */,
-				893AB2E416DF228A000E2AB3 /* BookActivityViewController.h */,
-				893AB2E516DF228A000E2AB3 /* BookActivityViewController.m */,
-				765E21A816F829CC00D06401 /* BookTitleActivityViewController.h */,
-				765E21A916F829CC00D06401 /* BookTitleActivityViewController.m */,
 				765E21AB16F82F9800D06401 /* BookTitleView.h */,
 				765E21AC16F82F9800D06401 /* BookTitleView.m */,
-				89232B901625431500152940 /* BookViewController.h */,
-				89232B911625431500152940 /* BookViewController.m */,
-				76B9E01C164C85D100345B8D /* PageViewController.h */,
-				76B9E01B164C85D100345B8D /* PageViewController.m */,
-				89B83E8F1659AA130012E03B /* BookPages */,
 				766F430E16DD851900785ABD /* BookIndexViewController.h */,
 				766F430F16DD851A00785ABD /* BookIndexViewController.m */,
 				76A82A0B175C5A0A004468F3 /* BookIndexListViewController.h */,
@@ -3516,13 +3483,6 @@
 				76C8FB161796BED700488A80 /* BookAddViewController.m */,
 			);
 			name = Book;
-			sourceTree = "<group>";
-		};
-		8936F7F1161E7ABB00E6EF1D /* Recipe */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Recipe;
 			sourceTree = "<group>";
 		};
 		8938AA9916DF153C001CBC90 /* RecipeAddEdit */ = {
@@ -3739,28 +3699,6 @@
 			path = insideCover;
 			sourceTree = "<group>";
 		};
-		8996A3A9165C62A70099583E /* Contents */ = {
-			isa = PBXGroup;
-			children = (
-				8996A3B1165C66730099583E /* ContentsTableViewCell.h */,
-				8996A3B2165C66740099583E /* ContentsTableViewCell.m */,
-			);
-			name = Contents;
-			sourceTree = "<group>";
-		};
-		8996A3AA165C62B00099583E /* Section */ = {
-			isa = PBXGroup;
-			children = (
-				893AC89E16782B3B00B221EC /* LikesPageViewController.h */,
-				893AC89F16782B3B00B221EC /* LikesPageViewController.m */,
-				893AC8A016782B3B00B221EC /* SectionPageViewController.h */,
-				893AC8A116782B3C00B221EC /* SectionPageViewController.m */,
-				76622D5A1650C6A7005F4459 /* CategoryPageViewController.h */,
-				76622D5B1650C6A8005F4459 /* CategoryPageViewController.m */,
-			);
-			name = Section;
-			sourceTree = "<group>";
-		};
 		89B0916B16DDBEAC00D47725 /* servesSlider */ = {
 			isa = PBXGroup;
 			children = (
@@ -3774,16 +3712,6 @@
 				89B0917316DDBEAC00D47725 /* cook_edit_serveslider_icon_one@2x.png */,
 			);
 			path = servesSlider;
-			sourceTree = "<group>";
-		};
-		89B83E8F1659AA130012E03B /* BookPages */ = {
-			isa = PBXGroup;
-			children = (
-				8996A3AA165C62B00099583E /* Section */,
-				8996A3A9165C62A70099583E /* Contents */,
-				8936F7F1161E7ABB00E6EF1D /* Recipe */,
-			);
-			name = BookPages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4498,7 +4426,6 @@
 				7620270616252B1E005A8B66 /* BenchtopFlowLayout.m in Sources */,
 				7620270716252B1E005A8B66 /* BenchtopLayout.m in Sources */,
 				76A28E95177A808E00C98F8B /* PagingBenchtopBackgroundView.m in Sources */,
-				89232B921625431500152940 /* BookViewController.m in Sources */,
 				76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */,
 				76FA9A4016267687006EAFBB /* EventHelper.m in Sources */,
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
@@ -4515,8 +4442,6 @@
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
 				76C6CDD2164B5495006001BD /* APBookmarkNavigationView.m in Sources */,
 				764F4D04179CE85A00821221 /* LSCollectionViewHelper.m in Sources */,
-				76B9E020164C85D100345B8D /* PageViewController.m in Sources */,
-				76622D5C1650C6AB005F4459 /* CategoryPageViewController.m in Sources */,
 				76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */,
 				76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */,
 				8903B56916534D8900BB3E5B /* FacebookUserView.m in Sources */,
@@ -4527,7 +4452,6 @@
 				76582AAF165497310007FCE1 /* MPTransition.m in Sources */,
 				767C0AA11655201700141355 /* BenchtopPartingFlowLayout.m in Sources */,
 				76DC8DBB1659BF23005C472B /* BookCoverViewController.m in Sources */,
-				8996A3B3165C66740099583E /* ContentsTableViewCell.m in Sources */,
 				76CB7EEE165CF4C9007BECA0 /* StoreViewController.m in Sources */,
 				76BEE77F165DEE600065B97B /* CKBookCover.m in Sources */,
 				76BEE780165DEE600065B97B /* CKBookCoverView.m in Sources */,
@@ -4544,10 +4468,8 @@
 				76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */,
 				892282B61671933D002FE936 /* CKRecipeLike.m in Sources */,
 				765E65C91672144400D5D54E /* LoginViewController.m in Sources */,
-				893AC8A216782B3C00B221EC /* LikesPageViewController.m in Sources */,
 				76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */,
 				7600972D17A0E8B7001DFC9F /* CKListLayout.m in Sources */,
-				893AC8A316782B3C00B221EC /* SectionPageViewController.m in Sources */,
 				76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */,
 				764E46EC16C8642500DD168F /* BookNavigationViewController.m in Sources */,
 				764E46EF16C865C900DD168F /* BookRecipeCollectionViewCell.m in Sources */,
@@ -4586,7 +4508,6 @@
 				8938AAB916DF153D001CBC90 /* ServesCookPrepEditingViewController.m in Sources */,
 				8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */,
 				893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */,
-				893AB2E616DF228A000E2AB3 /* BookActivityViewController.m in Sources */,
 				76A7D43016E4327200118749 /* BookLeftPageDividerView.m in Sources */,
 				76C8FAFC17967C8D00488A80 /* BookSupplementaryContainerView.m in Sources */,
 				76A7D43316E432E600118749 /* BookRightPageDividerView.m in Sources */,
@@ -4601,7 +4522,6 @@
 				8963B5C416F2DAA300A3888C /* EditingOverlayView.m in Sources */,
 				898990F816FA8FEF000AEAA3 /* EditingViewController.m in Sources */,
 				764F4D06179CE85A00821221 /* DraggableCollectionViewFlowLayout.m in Sources */,
-				765E21AA16F829CC00D06401 /* BookTitleActivityViewController.m in Sources */,
 				765E21AD16F82F9800D06401 /* BookTitleView.m in Sources */,
 				76B3E5B216FBE52F002B5080 /* BookIndexLayout.m in Sources */,
 				76B3E5B516FBE862002B5080 /* BookIndexCell.m in Sources */,
