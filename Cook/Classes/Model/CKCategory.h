@@ -19,7 +19,6 @@
 + (CKCategory *)categoryForName:(NSString *)name order:(NSInteger)order book:(CKBook *)book;
 + (CKCategory *)categoryForParseCategory:(PFObject *)parseCategory;
 + (void)listCategories:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
-+ (UIImage *)bookImageForCategory:(NSString *)category;
 
 - (UIImage *)bookImage;
 - (BOOL)isDataAvailable;
