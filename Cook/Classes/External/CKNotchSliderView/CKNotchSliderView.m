@@ -136,11 +136,6 @@
         trackImageView.frame = CGRectMake(trackOffset, 0.0, trackImage.size.width, trackImage.size.height);
         [self addSubview:trackImageView];
         
-        // Register tap
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                     action:@selector(trackTapped:)];
-        [trackImageView addGestureRecognizer:tapGesture];
-        
         // Update the current frame.
         frame = CGRectUnion(frame, trackImageView.frame);
         
@@ -153,6 +148,10 @@
     
     // Update self frame.
     self.frame = frame;
+    
+    // Register tap
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(trackTapped:)];
+    [self addGestureRecognizer:tapGesture];
 }
 
 - (UIImage *)trackImageForIndex:(NSInteger)trackIndex {
@@ -166,10 +165,20 @@
 }
 
 - (void)trackTapped:(UITapGestureRecognizer *)tapGesture {
-    UIView *trackView = tapGesture.view;
-    NSInteger trackIndex = [self.trackNotches indexOfObject:trackView];
-    if (trackIndex != self.currentNotchIndex) {
-        [self selectNotch:trackIndex];
+    NSInteger selectedTrackIndex = 0;
+    
+    CGPoint tappedPoint = [tapGesture locationInView:self];
+
+    for (NSInteger trackIndex = 0; trackIndex < [self.trackNotches count]; trackIndex++) {
+        UIView *trackNotchView = [self.trackNotches objectAtIndex:trackIndex];
+        if (CGRectContainsPoint(trackNotchView.frame, tappedPoint)) {
+            selectedTrackIndex = trackIndex;
+            break;
+        }
+    }
+    
+    if (selectedTrackIndex != self.currentNotchIndex) {
+        [self selectNotch:selectedTrackIndex];
     }
 }
 
