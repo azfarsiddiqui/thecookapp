@@ -647,9 +647,17 @@
     UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                    withReuseIdentifier:kCategoryHeaderId
                                                                                           forIndexPath:indexPath];
+    BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
+    
     NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
     CKCategory *category = [self.categories objectAtIndex:categoryIndex];
-    BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
+    
+    // Get the corresponding categoryVC to retrieve current scroll offset.
+    NSString *categoryKey = [self keyForCategory:category];
+    BookCategoryViewController *categoryController = [self.categoryControllers objectForKey:categoryKey];
+    [categoryHeaderView applyOffset:[categoryController currentScrollOffset].y];
+    
+    // Load featured recipe image.
     CKRecipe *featuredRecipe = [self featuredRecipeForCategory:category];
     [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
     

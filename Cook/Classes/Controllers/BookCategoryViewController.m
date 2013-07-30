@@ -61,6 +61,11 @@
 //    [self loadFeaturedRecipe];
 }
 
+- (CGPoint)currentScrollOffset {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    return visibleFrame.origin;
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

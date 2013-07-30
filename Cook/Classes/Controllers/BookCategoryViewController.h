@@ -25,5 +25,6 @@
 
 - (id)initWithBook:(CKBook *)book category:(CKCategory *)category delegate:(id<BookCategoryViewControllerDelegate>)delegate;
 - (void)loadData;
+- (CGPoint)currentScrollOffset;
 
 @end
