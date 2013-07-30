@@ -247,7 +247,14 @@ typedef enum {
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
+    BOOL shouldReceiveTouch = YES;
+    
+    // Ignore taps on background image view when in edit mode.
+    if (self.editMode && gestureRecognizer.view == self.backgroundImageView) {
+        shouldReceiveTouch = NO;
+    }
+    
+    return shouldReceiveTouch;
 }
 
 #pragma mark - BookSocialViewControllerDelegate methods
@@ -1160,7 +1167,7 @@ typedef enum {
     [self.view insertSubview:self.topShadowView aboveSubview:self.backgroundImageView];
     self.topShadowView.alpha = 0.0;
     
-    // Register tap on headerView for tap expand.
+    // Register tap on background image for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(windowTapped:)];
     tapGesture.delegate = self;
     [self.backgroundImageView addGestureRecognizer:tapGesture];
