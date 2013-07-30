@@ -51,7 +51,7 @@
     UIImageView *leftShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_pageshadow_left.png"]];
     leftShadowView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight;
     leftShadowView.frame = (CGRect) {
-        self.view.bounds.origin.x - leftShadowView.frame.size.width,
+        self.view.bounds.origin.x - leftShadowView.frame.size.width + 1.0,  // Tuck 1pt in.
         self.view.bounds.origin.y,
         leftShadowView.frame.size.width,
         self.view.bounds.size.height
@@ -62,7 +62,7 @@
     UIImageView *rightShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_pageshadow_right.png"]];
     rightShadowView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleHeight;
     rightShadowView.frame = (CGRect) {
-        self.view.bounds.size.width,
+        self.view.bounds.size.width - 1.0,  // Tuck 1pt in.
         self.view.bounds.origin.y,
         rightShadowView.frame.size.width,
         self.view.bounds.size.height

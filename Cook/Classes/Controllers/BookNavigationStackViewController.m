@@ -23,12 +23,10 @@
 #import "BookCategoryViewController.h"
 #import "ViewHelper.h"
 #import "BookCategoryImageView.h"
-#import "BookAddViewController.h"
 #import "NSString+Utilities.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
-    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
-    BookAddViewControllerDelegate>
+    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
@@ -52,7 +50,6 @@
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
 @property (nonatomic, strong) BookTitleViewController *titleViewController;
-@property (nonatomic, strong) BookAddViewController *bookAddViewController;
 
 @end
 
@@ -136,12 +133,6 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
-}
-
-#pragma mark - BookAddViewControllerDelegate methods
-
-- (void)bookAddViewControllerCloseRequested {
-    [self showAddView:NO];
 }
 
 #pragma mark - BookPageViewControllerDelegate methods
@@ -640,26 +631,7 @@
 }
 
 - (void)showAddView:(BOOL)show {
-    if (show) {
-        self.bookAddViewController = [[BookAddViewController alloc] initWithDelegate:self];
-        self.bookAddViewController.view.frame = self.view.bounds;
-        self.bookAddViewController.view.alpha = 0.0;
-        [self.view addSubview:self.bookAddViewController.view];
-    }
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.bookAddViewController.view.alpha = show ? 1.0 : 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         if (show) {
-                             [self.bookAddViewController enable:YES];
-                         } else {
-                             [self.bookAddViewController.view removeFromSuperview];
-                             self.bookAddViewController = nil;
-                         }
-                     }];
+    [self.delegate bookNavigationControllerAddRecipeRequested];
 }
 
 - (UICollectionReusableView *)profileHeaderViewAtIndexPath:(NSIndexPath *)indexPath {

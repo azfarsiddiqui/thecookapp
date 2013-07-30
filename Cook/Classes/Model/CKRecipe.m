@@ -337,28 +337,36 @@
 }
 
 - (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
-    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
-    [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
-    [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        if (!error) {
-            success(number > 0);
-        } else {
-            failure(error);
-        }
-    }];
+    if ([self persisted]) {
+        PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
+        [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
+        [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+        [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+            if (!error) {
+                success(number > 0);
+            } else {
+                failure(error);
+            }
+        }];
+    } else {
+        failure(nil);
+    }
 }
 
 - (void)numLikesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
-    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
-    [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        if (!error) {
-            success(number);
-        } else {
-            failure(error);
-        }
-    }];
+    if ([self persisted]) {
+        PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
+        [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
+        [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+            if (!error) {
+                success(number);
+            } else {
+                failure(error);
+            }
+        }];
+    } else {
+        failure(nil);
+    }
 }
 
 #pragma mark - Comments
