@@ -247,8 +247,7 @@ typedef enum {
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    BOOL shouldReceive = !self.editMode;
-    return shouldReceive;
+    return YES;
 }
 
 #pragma mark - BookSocialViewControllerDelegate methods
@@ -595,8 +594,8 @@ typedef enum {
         _photoLabel.text = [self.recipe hasPhotos] ? @"EDIT PHOTO" : @"ADD PHOTO";
         [_photoLabel sizeToFit];
         _photoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_photoLabel setFrame:CGRectMake(floorf((self.view.bounds.size.width - _photoLabel.frame.size.width) / 2.0),
-                                         floorf((kWindowMidHeight - _photoLabel.frame.size.height) / 2.0) + 20.0,
+        [_photoLabel setFrame:CGRectMake(floorf((self.backgroundImageView.bounds.size.width - _photoLabel.frame.size.width) / 2.0),
+                                         floorf((self.backgroundImageView.bounds.size.height - _photoLabel.frame.size.height) / 2.0) + kPhotoOffset,
                                          _photoLabel.frame.size.width,
                                          _photoLabel.frame.size.height)];
     }
@@ -760,7 +759,7 @@ typedef enum {
     // Background image frame.
     CGRect imageFrame = self.backgroundImageView.frame;
     imageFrame.origin.y = floorf((contentFrame.origin.y - imageFrame.size.height) / 2.0) + kPhotoOffset;
-
+    
     self.contentContainerView.frame = contentFrame;
     self.backgroundImageView.frame = imageFrame;
 }
@@ -1229,7 +1228,7 @@ typedef enum {
         
         // Photo label and its wrapping.
         self.photoLabel.alpha = 0.0;
-        [self.view addSubview:self.photoLabel];
+        [self.backgroundImageView addSubview:self.photoLabel];
         [self.editingHelper wrapEditingView:self.photoLabel
                               contentInsets:UIEdgeInsetsMake(30.0, 30.0, 22.0, 40.0)
                                    delegate:self white:YES editMode:NO];
@@ -1270,10 +1269,6 @@ typedef enum {
                          self.photoLabel.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          photoBoxView.alpha = self.editMode ? buttonsVisibleAlpha : 0.0;
                          
-                         if (self.editMode) {
-                             self.cancelButton.transform = CGAffineTransformMakeScale(1.1, 1.1);
-                             self.saveButton.transform = CGAffineTransformMakeScale(1.1, 1.1);
-                         }
                      }
                      completion:^(BOOL finished)  {
                          if (self.editMode) {
@@ -1453,7 +1448,9 @@ typedef enum {
 
 - (PhotoWindowHeight)startWindowHeight {
     PhotoWindowHeight windowHeight = PhotoWindowHeightMid;
-    if (!self.addMode && ![self.recipe hasPhotos]) {
+    if (self.addMode) {
+        windowHeight = PhotoWindowHeightMax;
+    } else if (![self.recipe hasPhotos]) {
         windowHeight = PhotoWindowHeightMin;
     }
     return windowHeight;
@@ -1468,15 +1465,7 @@ typedef enum {
     
     // Prepare or discard recipe clipboard.
     [self prepareClipboard:enable];
-    
-    // Snap to mid height then toggle buttons.
-    if (enable && self.photoWindowHeight != PhotoWindowHeightMid) {
-        [self snapContentToPhotoWindowHeight:kWindowMidHeight completion:^{
-            [self updateButtons];
-        }];
-    } else {
-        [self updateButtons];
-    }
+    [self updateButtons];
     
     // Hide/show appropriate labels.
     self.profilePhotoView.hidden = enable;
