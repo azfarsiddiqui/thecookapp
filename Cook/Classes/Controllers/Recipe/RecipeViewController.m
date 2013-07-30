@@ -42,6 +42,7 @@
 #import "CKLabel.h"
 #import "BookSocialViewController.h"
 #import "CKLikeView.h"
+#import "CKPrivacySliderView.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -52,7 +53,7 @@ typedef enum {
 
 @interface RecipeViewController () <UIGestureRecognizerDelegate, CKRecipeSocialViewDelegate,
     CKEditViewControllerDelegate, CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate,
-    CKPrivacyViewDelegate, BookSocialViewControllerDelegate, UIScrollViewDelegate>
+    CKPrivacySliderViewDelegate, BookSocialViewControllerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeClipboard *clipboard;
@@ -99,7 +100,7 @@ typedef enum {
 @property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 @property (nonatomic, strong) CKProgressView *progressView;
-@property (nonatomic, strong) CKPrivacyView *privacyView;
+@property (nonatomic, strong) CKPrivacySliderView *privacyView;
 @property (nonatomic, strong) ParsePhotoStore *parsePhotoStore;
 
 @property (nonatomic, strong) CKEditViewController *editViewController;
@@ -420,7 +421,7 @@ typedef enum {
     
     // Present the image.
     UIImage *croppedImage = [image imageCroppedToFitSize:self.backgroundImageView.bounds.size];
-    self.backgroundImageView.image = croppedImage;
+    [self loadImageViewWithPhoto:croppedImage];
     
     // Save photo to be uploaded.
     self.recipeImageToUpload = image;
@@ -446,11 +447,20 @@ typedef enum {
     }];
 }
 
-#pragma mark - CKPrivacyViewDelegate methods
+#pragma mark - CKPrivacySliderViewDelegate methods
 
 - (void)privacyViewSelectedPrivateMode:(BOOL)privateMode {
     self.clipboard.privacyMode = privateMode;
     self.saveRequired = (self.clipboard.privacyMode != self.recipe.privacy);
+}
+
+- (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
+}
+
+- (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
+}
+
+- (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
 }
 
 #pragma mark - Properties
@@ -603,9 +613,9 @@ typedef enum {
     return _photoLabel;
 }
 
-- (CKPrivacyView *)privacyView {
+- (CKPrivacySliderView *)privacyView {
     if (!_privacyView) {
-        _privacyView = [[CKPrivacyView alloc] initWithPrivateMode:self.recipe.privacy delegate:self];
+        _privacyView = [[CKPrivacySliderView alloc] initWithDelegate:self];
         _privacyView.frame = (CGRect){
             floorf((self.view.bounds.size.width - _privacyView.frame.size.width) / 2.0),
             kButtonInsets.top,
@@ -1355,18 +1365,26 @@ typedef enum {
                                          [self loadImageViewWithPhoto:image];
         }];
     } else {
-        [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]];
+        
+        // Load placeholder editing background based on book cover.
+        [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
+                         placeholder:YES];
     }
     
 }
 
 - (void)loadImageViewWithPhoto:(UIImage *)image {
+    [self loadImageViewWithPhoto:image placeholder:NO];
+}
+
+- (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
     self.backgroundImageView.alpha = 0.0;
     self.backgroundImageView.image = image;
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         self.topShadowView.alpha = placeholder ? 0.0 : 1.0;
                          self.backgroundImageView.alpha = 1.0;
                      }
                      completion:^(BOOL finished)  {
