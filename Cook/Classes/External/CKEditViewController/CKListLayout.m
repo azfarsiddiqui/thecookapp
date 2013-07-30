@@ -35,34 +35,34 @@
     }
 }
 
-// TODO Draggable doesn't work with initial/final
-- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    
-    // If dragging, then default to LS behaviour.
-    if ([self.collectionView getHelper].dragging) {
-        return [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
-    }
-    
-    UICollectionViewLayoutAttributes *attributes = nil;
-    if ([self animationRequiredForIndexPath:itemIndexPath]) {
-        attributes = [self startEndAttributesForIndexPath:itemIndexPath];
-    } else {
-        attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-        attributes.alpha = 1.0;
-    }
-    
-    return attributes;
-}
-
-- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    
-    // If dragging, then default to LS behaviour.
-    if ([self.collectionView getHelper].dragging) {
-        return [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
-    }
-
-    return [self initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
-}
+//// TODO Draggable doesn't work with initial/final
+//- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+//    
+//    // If dragging, then default to LS behaviour.
+//    if ([self.collectionView getHelper].dragging) {
+//        return [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
+//    }
+//    
+//    UICollectionViewLayoutAttributes *attributes = nil;
+//    if ([self animationRequiredForIndexPath:itemIndexPath]) {
+//        attributes = [self startEndAttributesForIndexPath:itemIndexPath];
+//    } else {
+//        attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+//        attributes.alpha = 1.0;
+//    }
+//    
+//    return attributes;
+//}
+//
+//- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+//    
+//    // If dragging, then default to LS behaviour.
+//    if ([self.collectionView getHelper].dragging) {
+//        return [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
+//    }
+//
+//    return [self initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
+//}
 
 #pragma mark - Private methods
 

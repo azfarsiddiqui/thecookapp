@@ -97,6 +97,13 @@
 }
 
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
+               editMode:(BOOL)editMode {
+    
+    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white
+                     editMode:editMode animated:YES];
+}
+
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
                animated:(BOOL)animated {
     
     [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white
@@ -122,6 +129,13 @@
     
     [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
                      animated:animated];
+}
+
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode {
+    
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
+                     editMode:editMode animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets

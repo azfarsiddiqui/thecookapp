@@ -27,6 +27,8 @@
                   white:(BOOL)white animated:(BOOL)animated;
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
+               editMode:(BOOL)editMode;
+- (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
                animated:(BOOL)animated;
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
                editMode:(BOOL)editMode animated:(BOOL)animated;
@@ -34,6 +36,8 @@
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white;
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode;
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
                animated:(BOOL)animated;
