@@ -241,7 +241,7 @@
     flipAnimation.toValue = [NSValue valueWithCATransform3D:open ? openBookTransform : closeBookTransform];
     flipAnimation.fillMode = kCAFillModeBoth;
     flipAnimation.timingFunction = [CAMediaTimingFunction functionWithName:open ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut];
-    flipAnimation.removedOnCompletion = YES;    // Fixes the flicker when it the flip finishes.
+    flipAnimation.removedOnCompletion = open ? NO : YES;    // Fixes the flicker when it the flip finishes.
     flipAnimation.additive = YES;
     flipAnimation.delegate = self;
     
