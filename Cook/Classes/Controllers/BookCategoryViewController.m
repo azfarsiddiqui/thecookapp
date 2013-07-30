@@ -50,8 +50,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
-    
-//    [self initImageView];
     [self initCollectionView];
     [self loadData];
 }

@@ -52,16 +52,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor lightGrayColor];
+    [self initImageView];
+    [self addCloseButtonWhite:YES];
+    [self loadData];
     [EventHelper registerEditMode:self selector:@selector(editModeReceived:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self initImageView];
-//    [self initIntroView];
-    [self addCloseButtonWhite:YES];
-    [self loadData];
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods

@@ -12,6 +12,8 @@
 @interface BookPageViewController ()
 
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIImageView *leftShadowView;
+@property (nonatomic, strong) UIImageView *rightShadowView;
 
 @end
 
@@ -21,11 +23,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initSideShadowViews];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    // Apply shadows after everything has been loaded in viewDidLoad.
+    [self applyPageEdgeShadows];
 }
 
 - (void)addCloseButtonWhite:(BOOL)white {
@@ -42,33 +46,42 @@
     [self.view addSubview:self.closeButton];
 }
 
-#pragma mark - Private methods
-
-- (void)initSideShadowViews {
-    DLog();
-    
-    // Left shadow.
-    UIImageView *leftShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_pageshadow_left.png"]];
-    leftShadowView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight;
-    leftShadowView.frame = (CGRect) {
-        self.view.bounds.origin.x - leftShadowView.frame.size.width + 1.0,  // Tuck 1pt in.
-        self.view.bounds.origin.y,
-        leftShadowView.frame.size.width,
-        self.view.bounds.size.height
-    };
-    [self.view addSubview:leftShadowView];
-    
-    // Right shadow.
-    UIImageView *rightShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_pageshadow_right.png"]];
-    rightShadowView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleHeight;
-    rightShadowView.frame = (CGRect) {
-        self.view.bounds.size.width - 1.0,  // Tuck 1pt in.
-        self.view.bounds.origin.y,
-        rightShadowView.frame.size.width,
-        self.view.bounds.size.height
-    };
-    [self.view addSubview:rightShadowView];
+- (void)applyPageEdgeShadows {
+    [self.view addSubview:self.leftShadowView];
+    [self.view addSubview:self.rightShadowView];
 }
+
+#pragma mark - Properties
+
+- (UIImageView *)leftShadowView {
+    if (!_leftShadowView) {
+        _leftShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_pageshadow_left.png"]];
+        _leftShadowView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight;
+        _leftShadowView.frame = (CGRect) {
+            self.view.bounds.origin.x - _leftShadowView.frame.size.width + 1.0,  // Tuck 1pt in.
+            self.view.bounds.origin.y,
+            _leftShadowView.frame.size.width,
+            self.view.bounds.size.height
+        };
+    }
+    return _leftShadowView;
+}
+
+- (UIImageView *)rightShadowView {
+    if (!_rightShadowView) {
+        _rightShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_pageshadow_right.png"]];
+        _rightShadowView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleHeight;
+        _rightShadowView.frame = (CGRect) {
+            self.view.bounds.size.width - 1.0,  // Tuck 1pt in.
+            self.view.bounds.origin.y,
+            self.rightShadowView.frame.size.width,
+            self.view.bounds.size.height
+        };
+    }
+    return _rightShadowView;
+}
+
+#pragma mark - Private methods
 
 - (void)closeTapped:(id)sender {
     DLog();

@@ -59,7 +59,6 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor colorWithHexString:@"f2f2f2"];
-    
     [self initBackgroundView];
     [self initCollectionView];
     [self addCloseButtonWhite:YES];

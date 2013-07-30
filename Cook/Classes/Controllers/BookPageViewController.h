@@ -22,5 +22,6 @@
 @property (nonatomic, weak) id<BookPageViewControllerDelegate> bookPageDelegate;
 
 - (void)addCloseButtonWhite:(BOOL)white;
+- (void)applyPageEdgeShadows;
 
 @end
