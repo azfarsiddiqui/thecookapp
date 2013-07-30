@@ -162,7 +162,7 @@
     
     // Attach book cover view
     self.bookCoverView.layer.frame = bookCoverContentsLayer.bounds;
-    [bookCoverContentsLayer addSublayer:self.bookCoverView.layer];
+    [self.bookCoverContentsLayer addSublayer:self.bookCoverView.layer];
 
     [self.rootBookLayer addSublayer:rootBookCoverLayer];
     self.bookCoverLayer = rootBookCoverLayer;    
@@ -241,7 +241,7 @@
     flipAnimation.toValue = [NSValue valueWithCATransform3D:open ? openBookTransform : closeBookTransform];
     flipAnimation.fillMode = kCAFillModeBoth;
     flipAnimation.timingFunction = [CAMediaTimingFunction functionWithName:open ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut];
-    flipAnimation.removedOnCompletion = NO;
+    flipAnimation.removedOnCompletion = YES;    // Fixes the flicker when it the flip finishes.
     flipAnimation.additive = YES;
     flipAnimation.delegate = self;
     
