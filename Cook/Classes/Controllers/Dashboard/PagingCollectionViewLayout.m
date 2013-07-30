@@ -155,7 +155,7 @@
         // Amend the center of the attribute to veer.
         attributes.center = (CGPoint){ center.x + veerOffset, anchorPoint.y };
         
-        [self.dynamicAnimator updateItemFromCurrentState:attributes];
+        [self.dynamicAnimator updateItemUsingCurrentState:attributes];
     }
     
     return NO;

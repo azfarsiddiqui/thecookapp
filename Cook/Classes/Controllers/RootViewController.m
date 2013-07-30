@@ -219,7 +219,7 @@
 }
 
 - (UIView *)bookNavigationSnapshot {
-    return [self.benchtopViewController.view snapshotView];
+    return [self.benchtopViewController.view snapshotViewAfterScreenUpdates:YES];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods

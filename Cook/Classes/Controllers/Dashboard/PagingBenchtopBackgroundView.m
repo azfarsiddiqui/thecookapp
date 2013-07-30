@@ -97,7 +97,7 @@
 - (void)applyBlurEffect {
     
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
-    [self drawViewHierarchyInRect:self.bounds];
+    [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     

@@ -353,7 +353,7 @@
             0.0,
             kBookOutlineSnapshotWidth,
             self.benchtopSnapshotView.frame.size.height
-        } withCapInsets:UIEdgeInsetsZero];
+        }  afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
         
         // Book edge.
         UIView *leftBookEdgeView = [self.view resizableSnapshotViewFromRect:(CGRect){
@@ -361,7 +361,7 @@
             self.view.bounds.origin.y,
             -kBookOutlineOffset.horizontal,
             self.view.bounds.size.height
-        } withCapInsets:UIEdgeInsetsZero];
+        } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
         
         CGRect leftBookFrame = leftBookEdgeView.frame;
         leftBookFrame.origin.x = _leftOutlineView.bounds.size.width - leftBookFrame.size.width;
@@ -381,7 +381,7 @@
             0.0,
             kBookOutlineSnapshotWidth,
             self.benchtopSnapshotView.frame.size.height
-        } withCapInsets:UIEdgeInsetsZero];
+        } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
         
         // Book edge.
         UIView *rightBookEdgeView = [self.view resizableSnapshotViewFromRect:(CGRect){
@@ -389,7 +389,7 @@
             self.view.bounds.origin.y,
             -kBookOutlineOffset.horizontal,
             self.view.bounds.size.height
-        } withCapInsets:UIEdgeInsetsZero];
+        } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
         
         CGRect rightBookFrame = rightBookEdgeView.frame;
         rightBookFrame.origin.x = rightBookFrame.origin.x;
