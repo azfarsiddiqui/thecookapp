@@ -102,6 +102,11 @@
     return [UIImage imageNamed:imageName];
 }
 
++ (UIImage *)recipeEditBackgroundImageForCover:(NSString *)cover {
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.RecipeEdit", cover]];
+    return [UIImage imageNamed:imageName];
+}
+
 + (UIImage *)imageForIllustration:(NSString *)illustration {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
     if (!imageName) {

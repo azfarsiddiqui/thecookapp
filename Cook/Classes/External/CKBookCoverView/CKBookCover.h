@@ -29,6 +29,7 @@ typedef enum {
 + (UIColor *)backdropColourForCover:(NSString *)cover;
 + (UIColor *)textColourForCover:(NSString *)cover;
 + (UIImage *)thumbSliderContentImageForCover:(NSString *)cover;
++ (UIImage *)recipeEditBackgroundImageForCover:(NSString *)cover;
 + (UIImage *)imageForIllustration:(NSString *)illustration;
 + (NSArray *)covers;
 + (NSArray *)illustrations;
