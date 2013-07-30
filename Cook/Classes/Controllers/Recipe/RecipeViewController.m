@@ -9,6 +9,7 @@
 #import "RecipeViewController.h"
 #import "CKRecipe.h"
 #import "CKBook.h"
+#import "CKBookCover.h"
 #import "ViewHelper.h"
 #import "ParsePhotoStore.h"
 #import "CKUserProfilePhotoView.h"
@@ -126,7 +127,7 @@ typedef enum {
 #define kContentMaxWidth        685.0
 #define kLeftDividerGap         18.0
 
-#define kButtonInsets           UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
+#define kButtonInsets           UIEdgeInsetsMake(25.0, 10.0, 15.0, 10.0)
 #define kContentLeftFrame       CGRectMake(0.0, 0.0, 255.0, 0.0)
 #define kContentRightFrame      CGRectMake(265.0, 0.0, 420.0, 0.0)
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
@@ -539,9 +540,7 @@ typedef enum {
 
 - (UIButton *)cancelButton {
     if (!_cancelButton) {
-        _cancelButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_cancel.png"]
-                                             target:self
-                                           selector:@selector(cancelTapped:)];
+        _cancelButton = [ViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
         _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_cancelButton setFrame:CGRectMake(kButtonInsets.left,
                                            kButtonInsets.top,
@@ -553,9 +552,7 @@ typedef enum {
 
 - (UIButton *)saveButton {
     if (!_saveButton) {
-        _saveButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
-                                            target:self
-                                          selector:@selector(saveTapped:)];
+        _saveButton = [ViewHelper okButtonWithTarget:self selector:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kButtonInsets.right,
                                          kButtonInsets.top,
@@ -1358,7 +1355,7 @@ typedef enum {
                                          [self loadImageViewWithPhoto:image];
         }];
     } else {
-        [self loadImageViewWithPhoto:[UIImage imageNamed:@"cook_editrecipe_bg.png"]];
+        [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]];
     }
     
 }
