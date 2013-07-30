@@ -8,10 +8,12 @@
 
 #import "BookCategoryImageView.h"
 #import "UIColor+Expanded.h"
+#import "Theme.h"
 
 @interface BookCategoryImageView ()
 
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *vignetteOverlayView;
 @property (nonatomic, strong) UIView *whiteOverlayView;
 @property (nonatomic, strong) UIToolbar *toolbarView;
 
@@ -21,16 +23,16 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [UIColor whiteColor];
-        self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.backgroundColor = [Theme recipeGridImageBackgroundColour];
         [self addSubview:self.imageView];
+        [self addSubview:self.vignetteOverlayView];
+        [self addSubview:self.whiteOverlayView];
     }
     return self;
 }
 
 - (void)applyOffset:(CGFloat)offset {
     [self applyOffset:offset distance:500.0 view:self.whiteOverlayView];
-//    [self applyOffset:offset distance:300.0 view:self.toolbarView];
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -38,6 +40,21 @@
 }
 
 #pragma mark - Properties
+
+- (UIImageView *)imageView {
+    if (!_imageView) {
+        _imageView = [[UIImageView alloc] initWithImage:nil];
+        _imageView.frame = self.bounds;
+    }
+    return _imageView;
+}
+
+- (UIImageView *)vignetteOverlayView {
+    if (!_vignetteOverlayView) {
+        _vignetteOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_page_overlay.png"]];
+    }
+    return _vignetteOverlayView;
+}
 
 - (UIView *)whiteOverlayView {
     if (!_whiteOverlayView) {
