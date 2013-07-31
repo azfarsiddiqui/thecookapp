@@ -154,6 +154,7 @@
 
 #pragma mark - Settings
 + (UIFont *)settingsProfileFont;
++ (UIFont *)settingsThemeFont;
 
 #pragma mark - Ingredients
 + (UIFont *)ingredientAccessoryViewButtonTextFont;

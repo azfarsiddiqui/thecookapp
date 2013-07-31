@@ -49,4 +49,8 @@
 + (BOOL)likedForNotification:(NSNotification *)notification;
 + (CKRecipe *)recipeForNotification:(NSNotification *)notification;
 
++ (void)registerThemeChange:(id)observer selector:(SEL)selector;
++ (void)postThemeChange;
++ (void)unregisterThemeChange:(id)observer;
+
 @end

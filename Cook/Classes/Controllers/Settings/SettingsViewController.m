@@ -12,12 +12,15 @@
 #import "ViewHelper.h"
 #import "Theme.h"
 #import "CKUserProfilePhotoView.h"
+#import "ThemeTabView.h"
 
 @interface SettingsViewController ()
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *logoutButtonView;
 @property (nonatomic, strong) UISwitch *notificationsSwitch;
+@property (nonatomic, strong) UILabel *themeLabel;
+@property (nonatomic, strong) ThemeTabView *themeTabView;
 
 @end
 
@@ -109,6 +112,39 @@
     return _notificationsSwitch;
 }
 
+- (UILabel *)themeLabel {
+    if (!_themeLabel) {
+        _themeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _themeLabel.backgroundColor = [UIColor clearColor];
+        _themeLabel.font = [Theme settingsThemeFont];
+        _themeLabel.textColor = [UIColor whiteColor];
+        _themeLabel.shadowColor = [UIColor blackColor];
+        _themeLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+        _themeLabel.text = @"DASH THEME";
+        [_themeLabel sizeToFit];
+        _themeLabel.frame = (CGRect){
+            self.themeTabView.frame.origin.x + floorf((self.themeTabView.frame.size.width - _themeLabel.frame.size.width) / 2.0),
+            self.themeTabView.frame.origin.y - _themeLabel.frame.size.height - 15.0,
+            _themeLabel.frame.size.width,
+            _themeLabel.frame.size.height
+        };
+    }
+    return _themeLabel;
+}
+
+- (ThemeTabView *)themeTabView {
+    if (!_themeTabView) {
+        _themeTabView = [[ThemeTabView alloc] init];
+        _themeTabView.frame = (CGRect){
+            407.0,
+            82.0,
+            _themeTabView.frame.size.width,
+            _themeTabView.frame.size.height
+        };
+    }
+    return _themeTabView;
+}
+
 #pragma mark - Private methods
 
 - (void)initSettingsContent {
@@ -132,6 +168,10 @@
     
     // Notifications switch
     [self.scrollView addSubview:self.notificationsSwitch];
+    
+    // Theme
+    [self.scrollView addSubview:self.themeLabel];
+    [self.scrollView addSubview:self.themeTabView];
 }
 
 - (void)createLogoutButton {
@@ -142,6 +182,10 @@
 }
 
 - (void)logoutTapped:(id)sender {
+    
+    // TODO Uncomment for it to work.
+    return;
+    
     [CKUser logoutWithCompletion:^{
         // Post logout.
         [EventHelper postLogout];

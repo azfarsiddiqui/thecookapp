@@ -510,7 +510,11 @@
 #pragma mark - Settings
 
 + (UIFont *)settingsProfileFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12.0];;
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12.0];
+}
+
++ (UIFont *)settingsThemeFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0];
 }
 
 #pragma mark - Ingredients

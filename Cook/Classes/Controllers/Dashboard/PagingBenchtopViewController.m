@@ -63,6 +63,13 @@
 #define kFollowSection  1
 #define kPagingRate     2.0
 
+- (void)dealloc {
+    [EventHelper unregisterFollowUpdated:self];
+    [EventHelper unregisterLoginSucessful:self];
+    [EventHelper unregisterLogout:self];
+    [EventHelper unregisterThemeChange:self];
+}
+
 - (id)init {
     if (self = [super init]) {
         self.allowDelete = YES;
@@ -89,6 +96,7 @@
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
+    [EventHelper registerThemeChange:self selector:@selector(themeChanged:)];
 }
 
 #pragma mark - PagingBenchtopViewController methods
@@ -838,6 +846,10 @@
 
 - (void)loggedOut:(NSNotification *)notification {
     [self loadBenchtop:NO];
+}
+
+- (void)themeChanged:(NSNotification *)notification {
+    [self updatePagingBenchtopView];
 }
 
 - (void)updatePagingBenchtopView {

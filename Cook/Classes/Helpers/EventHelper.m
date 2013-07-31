@@ -26,6 +26,7 @@
 #define kEventLike                  @"CKEventLike"
 #define kBoolLike                   @"CKBoolLike"
 #define kRecipeLike                 @"CKRecipeLike"
+#define kEventThemeChange           @"CKThemeChange"
 
 #pragma mark - Login successful event
 
@@ -177,6 +178,20 @@
 
 + (CKRecipe *)recipeForNotification:(NSNotification *)notification {
     return [[notification userInfo] valueForKey:kRecipeLike];
+}
+
+#pragma mark - Theme change
+
++ (void)registerThemeChange:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventThemeChange];
+}
+
++ (void)postThemeChange {
+    [EventHelper postEvent:kEventThemeChange];
+}
+
++ (void)unregisterThemeChange:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventThemeChange];
 }
 
 #pragma mark - Private
