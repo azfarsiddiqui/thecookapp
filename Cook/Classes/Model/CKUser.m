@@ -387,10 +387,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return ([self parseCoverPhotoFile] != nil);
 }
 
-- (void)setThemePreferenceReflect:(BOOL)reflect vivid:(BOOL)vivid balance:(BOOL)balance {
-    
-}
-
 #pragma mark - Properties
 
 - (void)setPassword:(NSString *)password {
