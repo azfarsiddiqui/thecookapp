@@ -510,7 +510,7 @@
 #pragma mark - Settings
 
 + (UIFont *)settingsProfileFont {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:18];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12.0];;
 }
 
 #pragma mark - Ingredients

@@ -11,12 +11,13 @@
 #import "EventHelper.h"
 #import "ViewHelper.h"
 #import "Theme.h"
+#import "CKUserProfilePhotoView.h"
 
 @interface SettingsViewController ()
 
 @property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) UIButton *logoutButton;
-@property (nonatomic, strong) UILabel *profileLabel;
+@property (nonatomic, strong) UIView *logoutButtonView;
+@property (nonatomic, strong) UISwitch *notificationsSwitch;
 
 @end
 
@@ -24,6 +25,7 @@
 
 #define kSettingsHeight     160.0
 #define kNumPages           2
+#define kLogoutSize         (CGSize){ 100.0, 70.0 }
 
 - (void)dealloc {
     [EventHelper unregisterLoginSucessful:self];
@@ -39,10 +41,72 @@
     [self.view addSubview:backgroundView];
     
     [self initSettingsContent];
-    [self initLogoutButton];
+    [self createLogoutButton];
     
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
+}
+
+#pragma mark - Properties
+
+- (UIView *)logoutButtonView {
+    if (!_logoutButtonView) {
+        _logoutButtonView = [[UIView alloc] initWithFrame:(CGRect){
+            self.scrollView.bounds.size.width - kLogoutSize.width - 15.0,
+            floorf((self.scrollView.bounds.size.height - kLogoutSize.height) / 2.0),
+            kLogoutSize.width,
+            kLogoutSize.height
+        }];
+        _logoutButtonView.backgroundColor = [UIColor clearColor];
+        
+        CKUser *currentUser = [CKUser currentUser];
+        CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO profileSize:ProfileViewSizeSmall border:YES];
+        photoView.frame = (CGRect){
+            floorf((_logoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
+            _logoutButtonView.bounds.origin.y,
+            photoView.frame.size.width,
+            photoView.frame.size.height
+        };
+        [_logoutButtonView addSubview:photoView];
+        
+        UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        profileLabel.autoresizingMask = UIViewAutoresizingNone;
+        profileLabel.backgroundColor = [UIColor clearColor];
+        profileLabel.font = [Theme settingsProfileFont];
+        profileLabel.textColor = [UIColor whiteColor];
+        profileLabel.shadowColor = [UIColor blackColor];
+        profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+//        profileLabel.text = [currentUser.name uppercaseString];
+        profileLabel.text = @"LOGOUT";
+        [profileLabel sizeToFit];
+        profileLabel.frame = (CGRect){
+            floorf((_logoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
+            photoView.frame.origin.y + photoView.frame.size.height + 15.0,
+            profileLabel.frame.size.width,
+            profileLabel.frame.size.height
+        };
+        [_logoutButtonView addSubview:profileLabel];
+
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(logoutTapped:)];
+        [_logoutButtonView addGestureRecognizer:tapGesture];
+        
+    }
+    return _logoutButtonView;
+}
+
+- (UISwitch *)notificationsSwitch {
+    if (!_notificationsSwitch) {
+        _notificationsSwitch = [[UISwitch alloc] init];
+        _notificationsSwitch.tintColor = [UIColor greenColor];
+        _notificationsSwitch.on = YES;
+        _notificationsSwitch.frame = (CGRect){
+            280.0,
+            82.0,
+            _notificationsSwitch.frame.size.width,
+            _notificationsSwitch.frame.size.height
+        };
+    }
+    return _notificationsSwitch;
 }
 
 #pragma mark - Private methods
@@ -66,37 +130,14 @@
         offset += contentView.frame.size.width;
     }
     
+    // Notifications switch
+    [self.scrollView addSubview:self.notificationsSwitch];
 }
 
-- (void)initLogoutButton {
+- (void)createLogoutButton {
     CKUser *currentUser = [CKUser currentUser];
     if ([currentUser isSignedIn]) {
-        
-        // Logout button.
-        UIButton *logoutButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_settings_btn_logout.png"]
-                                                      target:self selector:@selector(logoutTapped:)];
-        logoutButton.frame = CGRectMake(638.0, 85.0, logoutButton.frame.size.width, logoutButton.frame.size.height);
-        [self.scrollView addSubview:logoutButton];
-        self.logoutButton = logoutButton;
-        
-        // Profile label.
-        UIFont *font = [Theme settingsProfileFont];
-        NSString *name = [currentUser.name uppercaseString];
-        CGFloat availableWidth = 177.0;
-        CGSize size = [name sizeWithFont:font forWidth:availableWidth lineBreakMode:NSLineBreakByTruncatingTail];
-        UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectMake(614.0 + floorf((availableWidth - size.width) / 2.0),
-                                                                          52.0,
-                                                                          size.width,
-                                                                          size.height)];
-        profileLabel.autoresizingMask = UIViewAutoresizingNone;
-        profileLabel.backgroundColor = [UIColor clearColor];
-        profileLabel.font = font;
-        profileLabel.textColor = [UIColor whiteColor];
-        profileLabel.shadowColor = [UIColor blackColor];
-        profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        profileLabel.text = name;
-        [self.scrollView addSubview:profileLabel];
-        self.profileLabel = profileLabel;
+        [self.scrollView addSubview:self.logoutButtonView];
     }
 }
 
@@ -111,15 +152,12 @@
 - (void)loggedIn:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-        [self initLogoutButton];
+        [self createLogoutButton];
     }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    [self.profileLabel removeFromSuperview];
-    [self.logoutButton removeFromSuperview];
-    self.profileLabel = nil;
-    self.logoutButton = nil;
+    [self.logoutButtonView removeFromSuperview];
 }
 
 @end
