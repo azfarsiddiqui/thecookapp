@@ -839,15 +839,13 @@
     
     // Recreate the benchtop background view.
     [self.pagingBenchtopView removeFromSuperview];
-    self.pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
+    
+    PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
         self.backdropScrollView.bounds.origin.x,
         self.backdropScrollView.bounds.origin.y,
         self.collectionView.bounds.size.width * (numMyBook + 1 + numFollowBooks),
         self.backgroundTextureView.frame.size.height
     }];
-    
-    // Updates contentSize of backdrop scrollView.
-    self.backdropScrollView.contentSize = self.pagingBenchtopView.frame.size;
     
     // Loop through and add colours.
     NSInteger numSections = [self.collectionView numberOfSections];
@@ -856,29 +854,53 @@
         if (section == kMyBookSection) {
             
             if (self.myBook) {
-                [self.pagingBenchtopView addColour:[CKBookCover backdropColourForCover:self.myBook.cover]];
+                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:self.myBook.cover]];
             }
             
         } else if (section == kFollowSection) {
             
             // Add white for gap.
-            [self.pagingBenchtopView addColour:[UIColor whiteColor]];
+            [pagingBenchtopView addColour:[UIColor whiteColor]];
             
             NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                 
                 CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                [self.pagingBenchtopView addColour:[CKBookCover backdropColourForCover:book.cover]];
+                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:book.cover]];
             }
             
         }
     }
     
     // Blend them.
-    [self.pagingBenchtopView blend];
+    [pagingBenchtopView blendWithCompletion:^{
+        
+        // Updates contentSize to new blended benchtop.
+        self.backdropScrollView.contentSize = pagingBenchtopView.frame.size;
+        
+        // Move it below the existing one.
+        if (self.pagingBenchtopView) {
+            [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.pagingBenchtopView.alpha = 0.0;
+                             }
+                             completion:^(BOOL finished) {
+                                 [self.pagingBenchtopView removeFromSuperview];
+                                 self.pagingBenchtopView = pagingBenchtopView;
+                             }];
+            
+        } else {
+            [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.backgroundTextureView];
+        }
+        
+//        [self.pagingBenchtopView removeFromSuperview];
+//        self.pagingBenchtopView = pagingBenchtopView;
+        
+    }];
     
-    // Move it below the backgroundview.
-    [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundTextureView];
 }
 
 - (void)snapToNearestBook {

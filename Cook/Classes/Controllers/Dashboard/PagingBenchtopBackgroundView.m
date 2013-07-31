@@ -33,6 +33,10 @@
 }
 
 - (void)blend {
+    [self blendWithCompletion:nil];
+}
+
+- (void)blendWithCompletion:(void (^)())completion {
     
     // Remove previous gradient and associated blur view.
     [self.gradientLayer removeFromSuperlayer];
@@ -86,29 +90,37 @@
     }];
     self.gradientLayer.locations = colourLocations;
     
-    // Add the gradient to the view
-    [self.layer insertSublayer:self.gradientLayer atIndex:0];
-    
-    [self applyBlurEffect];
+    // Apply blur effect.
+    [self applyBlurEffectCompletion:completion];
 }
 
 #pragma mark - Private methods
 
-- (void)applyBlurEffect {
+- (void)applyBlurEffectCompletion:(void (^)())completion {
     
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
     [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-//    [ImageHelper blurredImage:image completion:^(UIImage *blurredImage) {
-//        self.blurredImageView = [[UIImageView alloc] initWithImage:blurredImage];
-//        [self addSubview:self.blurredImageView];
-//    }];
+    // Blur the image in the background and update the layer.
+    [ImageHelper blurredImage:image completion:^(UIImage *blurredImage) {
+        
+        // Add the gradient to the view
+        [self.layer insertSublayer:self.gradientLayer atIndex:0];
+        
+        self.blurredImageView = [[UIImageView alloc] initWithImage:blurredImage];
+        [self addSubview:self.blurredImageView];
+        
+        // Calls overall completion block.
+        if (completion != nil) {
+            completion();
+        }
+    }];
     
-    UIImage *blurImage = [ImageHelper blurredImage:image];
-    self.blurredImageView = [[UIImageView alloc] initWithImage:blurImage];
-    [self addSubview:self.blurredImageView];
+//    UIImage *blurImage = [ImageHelper blurredImage:image];
+//    self.blurredImageView = [[UIImageView alloc] initWithImage:blurImage];
+//    [self addSubview:self.blurredImageView];
     
 }
 

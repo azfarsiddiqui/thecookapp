@@ -13,5 +13,6 @@
 - (id)initWithFrame:(CGRect)frame;
 - (void)addColour:(UIColor *)colour;
 - (void)blend;
+- (void)blendWithCompletion:(void (^)())completion;
 
 @end
