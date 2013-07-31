@@ -344,6 +344,7 @@
     
     [cell loadBook:self.myBook];
     [self enableEditMode:NO];
+    [self updatePagingBenchtopView];
 }
 
 - (void)coverPickerSelected:(NSString *)cover {
@@ -355,7 +356,6 @@
     
     // Reload the illustration covers.
     [self.illustrationViewController changeCover:cover];
-    [self updatePagingBenchtopView];
 }
 
 #pragma mark - IllustrationPickerViewControllerDelegate methods
@@ -769,6 +769,9 @@
                          
                          if (enable) {
                              
+                             // Clear the blended benchtop.
+                             [self clearPagingBenchtopView];
+                             
                              [UIView animateWithDuration:0.3
                                                    delay:0.0
                                                  options:UIViewAnimationCurveEaseIn
@@ -778,8 +781,6 @@
                                                   self.illustrationViewController.view.transform = CGAffineTransformTranslate(self.illustrationViewController.view.transform, 0.0, bounceOffset);
                                               } completion:^(BOOL finished) {
                                                   self.animating = NO;
-                                                  
-                                                  
                                               }];
                          } else {
                              
@@ -895,6 +896,19 @@
         
     }];
     
+}
+
+- (void)clearPagingBenchtopView {
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.pagingBenchtopView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.pagingBenchtopView removeFromSuperview];
+                         self.pagingBenchtopView = nil;
+                     }];
 }
 
 - (PagingBenchtopBackgroundView *)createPagingBenchtopBackgroundView {
