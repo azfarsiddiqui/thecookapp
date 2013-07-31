@@ -631,10 +631,18 @@
                          
                          if (self.myBook) {
                              
+                             // Update benchtop if book is of a different cover.
+                             BOOL changedCover = ![self.myBook.cover isEqualToString:book.cover];
+                             
                              // Reload the book.
                              self.myBook = book;
                              BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
                              [myBookCell loadBook:book];
+                             
+                             // Update after myBook has been set.
+                             if (changedCover) {
+                                 [self updatePagingBenchtopView];
+                             }
                              
                          } else {
                              self.myBook = book;
@@ -834,11 +842,40 @@
 
 - (void)updatePagingBenchtopView {
     
+    // Create a new blended benchtop with the current layout.
+    PagingBenchtopBackgroundView *pagingBenchtopView = [self createPagingBenchtopBackgroundView];
+    
+    // Blend it and update the benchtop.
+    [pagingBenchtopView blendWithCompletion:^{
+        
+        // Updates contentSize to new blended benchtop.
+        self.backdropScrollView.contentSize = pagingBenchtopView.frame.size;
+        
+        // Move it below the existing one.
+        if (self.pagingBenchtopView) {
+            [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.pagingBenchtopView.alpha = 0.0;
+                             }
+                             completion:^(BOOL finished) {
+                                 [self.pagingBenchtopView removeFromSuperview];
+                                 self.pagingBenchtopView = pagingBenchtopView;
+                             }];
+            
+        } else {
+            [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.backgroundTextureView];
+        }
+        
+    }];
+    
+}
+
+- (PagingBenchtopBackgroundView *)createPagingBenchtopBackgroundView {
     NSInteger numMyBook = [self.collectionView numberOfItemsInSection:kMyBookSection];
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
-    
-    // Recreate the benchtop background view.
-    [self.pagingBenchtopView removeFromSuperview];
     
     PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
         self.backdropScrollView.bounds.origin.x,
@@ -872,35 +909,7 @@
         }
     }
     
-    // Blend them.
-    [pagingBenchtopView blendWithCompletion:^{
-        
-        // Updates contentSize to new blended benchtop.
-        self.backdropScrollView.contentSize = pagingBenchtopView.frame.size;
-        
-        // Move it below the existing one.
-        if (self.pagingBenchtopView) {
-            [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
-            [UIView animateWithDuration:0.2
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 self.pagingBenchtopView.alpha = 0.0;
-                             }
-                             completion:^(BOOL finished) {
-                                 [self.pagingBenchtopView removeFromSuperview];
-                                 self.pagingBenchtopView = pagingBenchtopView;
-                             }];
-            
-        } else {
-            [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.backgroundTextureView];
-        }
-        
-//        [self.pagingBenchtopView removeFromSuperview];
-//        self.pagingBenchtopView = pagingBenchtopView;
-        
-    }];
-    
+    return pagingBenchtopView;
 }
 
 - (void)snapToNearestBook {
