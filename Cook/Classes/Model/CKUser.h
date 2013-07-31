@@ -15,6 +15,12 @@
 typedef void(^LoginSuccessBlock)(CKUser *user);
 typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance);
 
+typedef NS_ENUM(NSUInteger, DashTheme) {
+    DashThemeReflect,
+    DashThemeVivid,
+    DashThemeBalance
+};
+
 @interface CKUser : CKModel
 
 @property (nonatomic, strong) PFUser *parseUser;
@@ -24,6 +30,7 @@ typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, B
 @property (nonatomic, strong) NSString *lastName;
 @property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *password;
+@property (nonatomic, assign) DashTheme theme;
 
 + (CKUser *)currentUser;
 + (BOOL)isLoggedIn;

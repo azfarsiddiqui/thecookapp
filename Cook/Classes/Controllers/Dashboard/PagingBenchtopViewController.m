@@ -884,6 +884,8 @@
 }
 
 - (PagingBenchtopBackgroundView *)createPagingBenchtopBackgroundView {
+    CKUser *currentUser = [CKUser currentUser];
+    
     NSInteger numMyBook = [self.collectionView numberOfItemsInSection:kMyBookSection];
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
     
@@ -901,7 +903,7 @@
         if (section == kMyBookSection) {
             
             if (self.myBook) {
-                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:self.myBook.cover]];
+                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:self.myBook.cover user:currentUser]];
             }
             
         } else if (section == kFollowSection) {
@@ -913,7 +915,7 @@
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                 
                 CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:book.cover]];
+                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:book.cover user:currentUser]];
             }
             
         }

@@ -387,6 +387,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return ([self parseCoverPhotoFile] != nil);
 }
 
+- (void)setThemePreferenceReflect:(BOOL)reflect vivid:(BOOL)vivid balance:(BOOL)balance {
+    
+}
+
 #pragma mark - Properties
 
 - (void)setPassword:(NSString *)password {
@@ -403,6 +407,19 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (NSString *)email {
     return [self.parseObject objectForKey:kUserAttrEmail];
+}
+
+- (void)setTheme:(DashTheme)theme {
+    [self.parseObject setObject:@(theme) forKey:kUserAttrTheme];
+}
+
+- (DashTheme)theme {
+    NSNumber *themeNumber = [self.parseObject objectForKey:kUserAttrTheme];
+    if (themeNumber) {
+        return [themeNumber integerValue];
+    } else {
+        return DashThemeReflect;
+    }
 }
 
 #pragma mark - CKModel

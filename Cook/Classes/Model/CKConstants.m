@@ -31,6 +31,7 @@ NSString *const kUserAttrProfilePhoto           = @"profilePhoto";
 NSString *const kUserAttrCoverPhoto             = @"coverPhoto";
 NSString *const kUserAttrEmail                  = @"password";
 NSString *const kUserAttrPassword               = @"email";
+NSString *const kUserAttrTheme                  = @"theme";
 
 #pragma mark - UserFriend class
 

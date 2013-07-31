@@ -10,6 +10,7 @@
 #import "MRCEnumerable.h"
 #import "UIColor+Expanded.h"
 #import "ImageHelper.h"
+#import "CKUser.h"
 
 @interface CKBookCover ()
 
@@ -90,6 +91,32 @@
 + (UIColor *)backdropColourForCover:(NSString *)cover {
     NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.BackdropHex", cover]];
     return [UIColor colorWithHexString:hexValue];
+}
+
++ (UIColor *)backdropColourForCover:(NSString *)cover user:(CKUser *)user {
+    BOOL vivid = NO;
+    BOOL balance = NO;
+    switch (user.theme) {
+        case DashThemeVivid:
+            vivid = YES;
+            break;
+        case DashThemeBalance:
+            balance = YES;
+            break;
+        default:
+            break;
+    }
+    return [self backdropColourForCover:cover vivid:vivid balance:balance];
+}
+
++ (UIColor *)backdropColourForCover:(NSString *)cover vivid:(BOOL)vivid balance:(BOOL)balance {
+    if (vivid) {
+        return [self backdropColourForCover:[[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Vivid", cover]]];
+    } else if (balance) {
+        return [self backdropColourForCover:[[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Balance", cover]]];
+    } else {
+        return [self backdropColourForCover:cover];
+    }
 }
 
 + (UIColor *)textColourForCover:(NSString *)cover {

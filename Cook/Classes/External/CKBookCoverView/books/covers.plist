@@ -24,6 +24,10 @@
 			<string>FF0022</string>
 			<key>TextHex</key>
 			<string>e23a41</string>
+			<key>Vivid</key>
+			<string>Green</string>
+			<key>Balance</key>
+			<string>Orange</string>
 		</dict>
 		<key>Orange</key>
 		<dict>
@@ -45,6 +49,10 @@
 			<string>FC7300</string>
 			<key>TextHex</key>
 			<string>eb592e</string>
+			<key>Vivid</key>
+			<string>Blue</string>
+			<key>Balance</key>
+			<string>Red</string>
 		</dict>
 		<key>Yellow</key>
 		<dict>
@@ -66,6 +74,10 @@
 			<string>FFB505</string>
 			<key>TextHex</key>
 			<string>ee9c0e</string>
+			<key>Vivid</key>
+			<string>Purple</string>
+			<key>Balance</key>
+			<string>Green</string>
 		</dict>
 		<key>Green</key>
 		<dict>
@@ -87,6 +99,10 @@
 			<string>7ADA00</string>
 			<key>TextHex</key>
 			<string>379937</string>
+			<key>Vivid</key>
+			<string>Red</string>
+			<key>Balance</key>
+			<string>Yellow</string>
 		</dict>
 		<key>Blue</key>
 		<dict>
@@ -108,6 +124,10 @@
 			<string>0094FF</string>
 			<key>TextHex</key>
 			<string>235a97</string>
+			<key>Vivid</key>
+			<string>Orange</string>
+			<key>Balance</key>
+			<string>Purple</string>
 		</dict>
 		<key>Purple</key>
 		<dict>
@@ -129,6 +149,10 @@
 			<string>AC26DA</string>
 			<key>TextHex</key>
 			<string>eb6d6b</string>
+			<key>Vivid</key>
+			<string>Yellow</string>
+			<key>Balance</key>
+			<string>Blue</string>
 		</dict>
 		<key>Gray</key>
 		<dict>
@@ -150,6 +174,10 @@
 			<string>4670B9</string>
 			<key>TextHex</key>
 			<string>6b7073</string>
+			<key>Vivid</key>
+			<string>Gray</string>
+			<key>Balance</key>
+			<string>Gray</string>
 		</dict>
 		<key>Neutral</key>
 		<dict>
@@ -171,6 +199,10 @@
 			<string>000F83</string>
 			<key>TextHex</key>
 			<string>86684b</string>
+			<key>Vivid</key>
+			<string>Neutral</string>
+			<key>Balance</key>
+			<string>Neutral</string>
 		</dict>
 	</dict>
 	<key>Illustrations</key>

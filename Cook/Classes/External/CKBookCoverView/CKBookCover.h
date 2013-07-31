@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class CKUser;
+
 typedef enum {
 	BookCoverLayoutTop,
 	BookCoverLayoutBottom,
@@ -27,6 +29,8 @@ typedef enum {
 + (UIImage *)thumbImageForCover:(NSString *)cover;
 + (UIColor *)colourForCover:(NSString *)cover;
 + (UIColor *)backdropColourForCover:(NSString *)cover;
++ (UIColor *)backdropColourForCover:(NSString *)cover user:(CKUser *)user;
++ (UIColor *)backdropColourForCover:(NSString *)cover vivid:(BOOL)vivid balance:(BOOL)balance;
 + (UIColor *)textColourForCover:(NSString *)cover;
 + (UIImage *)thumbSliderContentImageForCover:(NSString *)cover;
 + (UIImage *)recipeEditBackgroundImageForCover:(NSString *)cover;
