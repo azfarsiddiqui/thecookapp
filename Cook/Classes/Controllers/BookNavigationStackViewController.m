@@ -30,6 +30,7 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
+@property (nonatomic, strong) CKRecipe *saveOrUpdatedRecipe;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableArray *recipes;
@@ -50,6 +51,8 @@
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
 @property (nonatomic, strong) BookTitleViewController *titleViewController;
+
+@property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
 
 @end
 
@@ -107,6 +110,24 @@
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.category);
+    
+    // Check if this was a new recipe, in which case add it to the recipes list
+    if (![self.recipes detect:^BOOL(CKRecipe *existingRecipe) {
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }]) {
+        
+        // Add to the list of recipes.
+        [self.recipes addObject:recipe];
+    }
+    
+    // Remember the recipe that was actioned.
+    self.saveOrUpdatedRecipe = recipe;
+    
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
+    
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
 }
 
 - (void)setActive:(BOOL)active {
@@ -186,13 +207,7 @@
 }
 
 - (void)bookTitleSelectedCategory:(CKCategory *)category {
-    NSInteger categoryIndex = [self.categories indexOfObject:category];
-    categoryIndex += [self stackCategoryStartSection];
-    
-    [self.collectionView setContentOffset:(CGPoint){
-        categoryIndex * self.collectionView.bounds.size.width,
-        self.collectionView.contentOffset.y
-    } animated:YES];
+    [self scrollToCategory:category animated:YES];
 }
 
 - (void)bookTitleUpdatedOrderOfCategories:(NSArray *)categories {
@@ -218,7 +233,22 @@
 
 - (void)stackPagingLayoutDidFinish {
     
-    if (self.justOpened) {
+    if (self.bookUpdatedBlock != nil) {
+        
+        // If we have an actioned recipe, then navigate there.
+        if (self.saveOrUpdatedRecipe) {
+            
+            // Get the index of the category within the book.
+            CKCategory *category = self.saveOrUpdatedRecipe.category;
+            [self scrollToCategory:category animated:NO];
+            
+        }
+        
+        // Invoked from recipe edit/added block.
+        self.bookUpdatedBlock();
+        self.bookUpdatedBlock = nil;
+        
+    } else if (self.justOpened) {
         
         // Start on page 1.
         [self.collectionView setContentOffset:(CGPoint){ kIndexSection * self.collectionView.bounds.size.width, 0.0 }
@@ -238,10 +268,7 @@
 
 - (BookPagingStackLayoutType)stackPagingLayoutType {
     return BookPagingStackLayoutTypeSlideOneWay;
-//    return BookPagingStackLayoutTypeSlideOneWayScale;
-//    return BookPagingStackLayoutTypeSlideBothWays;
 }
-
 
 - (NSInteger)stackCategoryStartSection {
     return kIndexSection + 1;
@@ -423,7 +450,6 @@
 }
 
 - (void)initCollectionView {
-//    self.collectionView.hidden = YES;
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.pagingEnabled = YES;
     self.collectionView.alwaysBounceVertical = NO;
@@ -454,6 +480,11 @@
         
         [self loadRecipes];
         [self loadTitlePage];
+        
+        // Preload categories for edit/creation if it's my own book.
+        if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
+            [self.book prefetchCategoriesInBackground];
+        }
         
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
@@ -795,6 +826,16 @@
     }
     
     [self.delegate bookNavigationControllerCloseRequested];
+}
+
+- (void)scrollToCategory:(CKCategory *)category animated:(BOOL)animated {
+    NSInteger categoryIndex = [self.categories indexOfObject:category];
+    categoryIndex += [self stackCategoryStartSection];
+    
+    [self.collectionView setContentOffset:(CGPoint){
+        categoryIndex * self.collectionView.bounds.size.width,
+        self.collectionView.contentOffset.y
+    } animated:animated];
 }
 
 @end

@@ -29,11 +29,10 @@
 #import "CKImageEditViewController.h"
 #import "CKTextViewEditViewController.h"
 #import "CKLabelEditViewController.h"
-#import "CKListEditViewController.h"
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
-#import "CategoryItemsEditViewController.h"
+#import "CategoryListEditViewController.h"
 #import "IngredientItemsEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
@@ -310,12 +309,15 @@ typedef enum {
             currentCategory = self.recipe.category;
         }
         
-        CategoryItemsEditViewController *editViewController = [[CategoryItemsEditViewController alloc] initWithEditView:self.categoryLabel
-                                                                                                                   book:self.book
-                                                                                                       selectedCategory:currentCategory
-                                                                                                               delegate:self
-                                                                                                          editingHelper:self.editingHelper
-                                                                                                                  white:YES];
+        CategoryListEditViewController *editViewController = [[CategoryListEditViewController alloc] initWithEditView:self.categoryLabel
+                                                                                                                 book:self.book
+                                                                                                     selectedCategory:currentCategory
+                                                                                                             delegate:self
+                                                                                                        editingHelper:self.editingHelper
+                                                                                                                white:YES];
+        editViewController.canAddItems = NO;
+        editViewController.canDeleteItems = NO;
+        editViewController.canReorderItems = NO;
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
@@ -1628,7 +1630,7 @@ typedef enum {
 - (void)saveCategoryValue:(id)value {
     
     CKCategory *selectedCategory = (CKCategory *)value;
-    NSArray *categories = ((CategoryItemsEditViewController *)self.editViewController).items;
+    NSArray *categories = ((CategoryListEditViewController *)self.editViewController).items;
     
     // Check if category has changed.
     if (![selectedCategory.name isEqualToString:self.categoryLabel.text]) {

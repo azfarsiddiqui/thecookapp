@@ -8,7 +8,7 @@
 
 #import "BookNavigationHelper.h"
 #import "CKRecipe.h"
-#import "BookNavigationViewController.h"
+#import "BookNavigationStackViewController.h"
 
 @implementation BookNavigationHelper
 
@@ -35,7 +35,7 @@
     }
     
     // Ask the opened book to update with the recipe.
-    // [self.bookNavigationViewController updateWithRecipe:recipe completion:completion];
+    [self.bookNavigationViewController updateWithRecipe:recipe completion:completion];
 }
 
 @end

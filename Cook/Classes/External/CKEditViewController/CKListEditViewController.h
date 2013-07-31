@@ -9,13 +9,15 @@
 #import "CKEditViewController.h"
 #import "CKEditingViewHelper.h"
 
+@class CKListCell;
+
 @interface CKListEditViewController : CKEditViewController
 
-@property (nonatomic, strong) NSMutableArray *listItems;
+@property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) NSNumber *selectedIndexNumber;
 @property (nonatomic, assign) BOOL allowSelection;
 
-@property (nonatomic, assign) BOOL canReorder;
+@property (nonatomic, assign) BOOL canReorderItems;
 @property (nonatomic, assign) BOOL canAddItems;
 @property (nonatomic, assign) BOOL canDeleteItems;
 
@@ -31,7 +33,11 @@
 // The class type for cell.
 - (Class)classForListCell;
 
+- (void)configureCell:(CKListCell *)cell indexPath:(NSIndexPath *)indexPath;
+
 // Extended lifecycle events.
 - (void)itemsDidShow:(BOOL)show;
+
+- (void)showItems;
 
 @end

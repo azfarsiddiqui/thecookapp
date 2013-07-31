@@ -13,7 +13,6 @@
 @interface CKListCell () <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIImageView *boxImageView;
-@property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, assign) BOOL cancelled;
 
 @end
@@ -89,7 +88,11 @@
 }
 
 - (NSString *)textValueForValue:(id)value {
-    return (NSString *)value;
+    NSString *textValue = nil;
+    if ([value isKindOfClass:[NSString class]]) {
+        textValue = (NSString *)value;
+    }
+    return textValue;
 }
 
 - (id)currentValue {

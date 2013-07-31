@@ -15,7 +15,6 @@
 @interface CKListEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UICollectionViewDataSource_Draggable, CKListCellDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
@@ -60,7 +59,7 @@
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title]) {
         self.items = [NSMutableArray arrayWithArray:items];
         self.selectedIndexNumber = selectedIndexNumber;
-        self.canReorder = YES;
+        self.canReorderItems = YES;
         self.canAddItems = YES;
     }
     return self;
@@ -73,6 +72,46 @@
 - (Class)classForListCell {
     return [CKListCell class];
 }
+
+- (void)configureCell:(CKListCell *)cell indexPath:(NSIndexPath *)indexPath {
+    if (self.itemsLoaded) {
+        cell.allowSelection = YES;
+        [cell configureValue:[self.items objectAtIndex:indexPath.item]
+                    selected:([self.selectedIndexNumber integerValue] == indexPath.item)];
+    } else {
+        cell.allowSelection = NO;
+        [cell configureValue:@"" selected:NO];
+    }
+}
+
+- (void)itemsDidShow:(BOOL)show {
+    
+    // Subclasses to implement.
+    if (show) {
+        
+        // Update pull labels.
+        [self updateAddState];
+        
+    } else {
+        
+        if (self.saveRequired) {
+            
+            // Calls save on the the textbox view, which in turn triggers update via delegate.
+            CKEditingTextBoxView *textBoxView = [self targetEditTextBoxView];
+            [textBoxView.delegate editingTextBoxViewSaveTappedForEditingView:self.targetEditView];
+
+        }
+        
+        // Then dismiss via the parent, be careful not to call self which has been overriden.
+        [super dismissEditView];
+    }
+}
+- (void)showItems {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self showItems:YES];
+    });
+}
+
 
 #pragma mark - Lifecycle events.
 
@@ -130,25 +169,6 @@
     
 }
 
-- (void)itemsDidShow:(BOOL)show {
-    
-    // Subclasses to implement.
-    if (show) {
-        
-        // Update pull labels.
-        [self updateAddState];
-        
-    } else {
-        
-        if (self.saveRequired) {
-            
-        }
-        
-        // Then dismiss via the parent, be careful not to call self which has been overriden.
-        [super dismissEditView];
-    }
-}
-
 #pragma mark - CKEditViewController methods
 
 - (UIView *)createTargetEditView {
@@ -185,17 +205,29 @@
     [self showItems:NO];
 }
 
+- (id)updatedValue {
+    NSString *value = nil;
+    
+    if (self.selectedIndexNumber) {
+        value = [self.items objectAtIndex:[self.selectedIndexNumber integerValue]];
+    }
+    
+    return value;
+}
+
+
+
 #pragma mark - UICollectionViewDataSource_Draggable methods
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
     [self currentLayout].dragging = YES;
-    return self.canReorder;
+    return self.canReorderItems;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
     [self currentLayout].dragging = YES;
-    return self.canReorder;
+    return self.canReorderItems;
 }
 
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
@@ -577,12 +609,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
 }
 
-- (void)showItems {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self showItems:YES];
-    });
-}
-
 - (void)showItems:(BOOL)show {
     
     // If hiding, make sure we hide it from the zero contentOffset to match up with the placeholder.
@@ -744,12 +770,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return [label.text integerValue];
 }
 
-- (void)configureCell:(CKListCell *)cell indexPath:(NSIndexPath *)indexPath {
-    cell.allowSelection = YES;
-    [cell configureValue:[self.items objectAtIndex:indexPath.item]
-                selected:([self.selectedIndexNumber integerValue] == indexPath.item)];
-}
-
 - (void)doubleTapped:(UITapGestureRecognizer *)doubleTap {
     CGPoint location = [doubleTap locationInView:self.collectionView];
     NSIndexPath *indexPath =  [self.collectionView indexPathForItemAtPoint:location];
@@ -837,7 +857,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     self.editMode = editing;
     self.canAddItems = !editing;
     self.canDeleteItems = !editing;
-    self.canReorder = !editing;
+    self.canReorderItems = !editing;
     [self updateAddState];
 }
 

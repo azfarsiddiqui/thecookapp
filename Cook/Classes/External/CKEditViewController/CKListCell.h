@@ -22,6 +22,7 @@
 @interface CKListCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<CKListCellDelegate> delegate;
+@property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, assign) BOOL allowSelection;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) UIFont *font;

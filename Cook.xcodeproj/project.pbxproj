@@ -314,6 +314,8 @@
 		767E75D817182CCC003CCCD2 /* cook_book_texture_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 767E75D617182CCC003CCCD2 /* cook_book_texture_bg.png */; };
 		767E75D917182CCC003CCCD2 /* cook_book_texture_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767E75D717182CCC003CCCD2 /* cook_book_texture_bg@2x.png */; };
 		767E75DC17182D14003CCCD2 /* CKEditingTextBoxView.m in Sources */ = {isa = PBXBuildFile; fileRef = 767E75DA17182D14003CCCD2 /* CKEditingTextBoxView.m */; };
+		76800FEC17A8C3A40065B2C6 /* CategoryListEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76800FEB17A8C3A40065B2C6 /* CategoryListEditViewController.m */; };
+		76800FEF17A8C7E70065B2C6 /* CategoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76800FEE17A8C7E70065B2C6 /* CategoryListCell.m */; };
 		76819813170BCC840091F91F /* CKBookSummaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76819812170BCC840091F91F /* CKBookSummaryView.m */; };
 		76871BE117420DA40030BDE4 /* CKItemCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BD817420DA40030BDE4 /* CKItemCollectionViewCell.m */; };
 		76871BE217420DA40030BDE4 /* CKItemsCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BDA17420DA40030BDE4 /* CKItemsCollectionViewFlowLayout.m */; };
@@ -1148,6 +1150,10 @@
 		767E75D717182CCC003CCCD2 /* cook_book_texture_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_texture_bg@2x.png"; sourceTree = "<group>"; };
 		767E75DA17182D14003CCCD2 /* CKEditingTextBoxView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKEditingTextBoxView.m; sourceTree = "<group>"; };
 		767E75DB17182D14003CCCD2 /* CKEditingTextBoxView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingTextBoxView.h; sourceTree = "<group>"; };
+		76800FEA17A8C3A40065B2C6 /* CategoryListEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListEditViewController.h; sourceTree = "<group>"; };
+		76800FEB17A8C3A40065B2C6 /* CategoryListEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListEditViewController.m; sourceTree = "<group>"; };
+		76800FED17A8C7E70065B2C6 /* CategoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListCell.h; sourceTree = "<group>"; };
+		76800FEE17A8C7E70065B2C6 /* CategoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListCell.m; sourceTree = "<group>"; };
 		76819811170BCC840091F91F /* CKBookSummaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBookSummaryView.h; sourceTree = "<group>"; };
 		76819812170BCC840091F91F /* CKBookSummaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBookSummaryView.m; sourceTree = "<group>"; };
 		76871BD717420DA40030BDE4 /* CKItemCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKItemCollectionViewCell.h; sourceTree = "<group>"; };
@@ -2283,6 +2289,10 @@
 				76EA65F017A628CE0093B9D9 /* RecipeViewLayout.m */,
 				76EA65F517A63BAF0093B9D9 /* RecipeShadowView.h */,
 				76EA65F617A63BAF0093B9D9 /* RecipeShadowView.m */,
+				76800FEA17A8C3A40065B2C6 /* CategoryListEditViewController.h */,
+				76800FEB17A8C3A40065B2C6 /* CategoryListEditViewController.m */,
+				76800FED17A8C7E70065B2C6 /* CategoryListCell.h */,
+				76800FEE17A8C7E70065B2C6 /* CategoryListCell.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -4047,6 +4057,7 @@
 				764F4D0A179CECF500821221 /* BookTitleCell.m in Sources */,
 				76E0B95717903B8E00AD70E3 /* BookPagingStackLayout.m in Sources */,
 				768E735E170BD5440063CF49 /* CKStatView.m in Sources */,
+				76800FEF17A8C7E70065B2C6 /* CategoryListCell.m in Sources */,
 				76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */,
 				761951B21793B86A008AB495 /* BookNavigationView.m in Sources */,
 				769B5E0A1715063B0046934D /* RecipeViewController.m in Sources */,
@@ -4066,6 +4077,7 @@
 				76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */,
 				76EA65F117A628CE0093B9D9 /* RecipeViewLayout.m in Sources */,
 				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
+				76800FEC17A8C3A40065B2C6 /* CategoryListEditViewController.m in Sources */,
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,
 				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,
 				76462D3A17830054002EA7D0 /* StoreUnitTabView.m in Sources */,
