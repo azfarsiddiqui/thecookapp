@@ -332,6 +332,7 @@
     [self.illustrationViewController changeCover:self.coverViewController.cover];
     
     [self enableEditMode:NO];
+    [self updatePagingBenchtopView];
 }
 
 - (void)coverPickerDoneRequested {
@@ -354,6 +355,7 @@
     
     // Reload the illustration covers.
     [self.illustrationViewController changeCover:cover];
+    [self updatePagingBenchtopView];
 }
 
 #pragma mark - IllustrationPickerViewControllerDelegate methods
