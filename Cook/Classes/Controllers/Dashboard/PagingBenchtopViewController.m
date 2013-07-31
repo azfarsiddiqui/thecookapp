@@ -854,7 +854,7 @@
         // Move it below the existing one.
         if (self.pagingBenchtopView) {
             [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
-            [UIView animateWithDuration:0.2
+            [UIView animateWithDuration:0.3
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
@@ -866,7 +866,17 @@
                              }];
             
         } else {
+            pagingBenchtopView.alpha = 0.0;
             [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.backgroundTextureView];
+            [UIView animateWithDuration:0.4
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 pagingBenchtopView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                                 self.pagingBenchtopView = pagingBenchtopView;
+                             }];
         }
         
     }];
