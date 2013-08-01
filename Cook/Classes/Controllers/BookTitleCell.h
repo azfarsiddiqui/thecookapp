@@ -14,7 +14,8 @@
 
 + (CGSize)cellSize;
 
-- (void)configureCategory:(CKCategory *)category;
+- (void)configureCategory:(CKCategory *)category numRecipes:(NSInteger)numRecipes;
 - (void)configureImage:(UIImage *)image;
+- (void)configureAsAddCell;
 
 @end

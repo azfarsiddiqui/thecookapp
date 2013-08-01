@@ -215,6 +215,11 @@
     return [self featuredRecipeForCategory:category];
 }
 
+- (NSInteger)bookTitleNumRecipesForCategory:(CKCategory *)category {
+    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:[self keyForCategory:category]];
+    return [categoryRecipes count];
+}
+
 - (void)bookTitleSelectedCategory:(CKCategory *)category {
     [self scrollToCategory:category animated:YES];
 }

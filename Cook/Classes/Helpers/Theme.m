@@ -288,11 +288,11 @@
 }
 
 + (UIFont *)bookIndexFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24];
 }
 
 + (UIColor *)bookIndexColour {
-    return [UIColor whiteColor];
+    return [UIColor blackColor];
 }
 
 + (UIFont *)bookIndexSubtitleFont {
@@ -300,7 +300,7 @@
 }
 
 + (UIColor *)bookIndexSubtitleColour {
-    return [UIColor whiteColor];
+    return [UIColor blackColor];
 }
 
 + (UIFont *)bookIndexNumRecipesFont {

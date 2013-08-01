@@ -42,7 +42,7 @@
 #define kIndexWidth             240.0
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
-#define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 5.0, 0.0 }
+#define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 2.0, 0.0 }
 #define kTitleAnimateOffset     50.0
 #define kTitleHeaderTag         460
 
@@ -67,9 +67,12 @@
 - (void)configureCategories:(NSArray *)categories {
     self.categories = [NSMutableArray arrayWithArray:categories];
     
-    NSArray *categoryIndexPaths = [self.categories collectWithIndex:^id(CKCategory *category, NSUInteger categoryIndex) {
+    NSMutableArray *categoryIndexPaths = [NSMutableArray arrayWithArray:[self.categories collectWithIndex:^id(CKCategory *category, NSUInteger categoryIndex) {
         return [NSIndexPath indexPathForItem:categoryIndex inSection:0];
-    }];
+    }]];
+    
+    // Add cell.
+    [categoryIndexPaths addObject:[NSIndexPath indexPathForItem:[self.categories count] inSection:0]];
     
     [self.collectionView insertItemsAtIndexPaths:categoryIndexPaths];
 }
@@ -100,13 +103,13 @@
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
     minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     
-    return 20.0;
+    return 34.0;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
-    return 30.0;
+    return 20.0;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -129,7 +132,11 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self.delegate bookTitleSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+    if (indexPath.item < [self.categories count]) {
+        [self.delegate bookTitleSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+    } else {
+        [self addCategory];
+    }
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -139,19 +146,32 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return [self.categories count];
+    NSInteger numItems = 0;
+    if (self.categories) {
+        numItems = [self.categories count] + 1; // Plus add cell.
+    }
+    return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     BookTitleCell *cell = (BookTitleCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-    CKCategory *category = [self.categories objectAtIndex:indexPath.item];
-    [cell configureCategory:category];
+    if (indexPath.item < [self.categories count]) {
+        
+        CKCategory *category = [self.categories objectAtIndex:indexPath.item];
+        [cell configureCategory:category numRecipes:[self.delegate bookTitleNumRecipesForCategory:category]];
+        
+        // Load featured recipe for the category.
+        CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForCategory:category];
+        [self configureImageForTitleCell:cell recipe:featuredRecipe indexPath:indexPath];
+        
+    } else {
+        
+        // Add cell.
+        [cell configureAsAddCell];
+    }
     
-    // Load featured recipe for the category.
-    CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForCategory:category];
-    [self configureImageForTitleCell:cell recipe:featuredRecipe indexPath:indexPath];
     
     return cell;
 }
@@ -265,22 +285,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                         [titleCell configureImage:image];
                                     }
                                 }];
+    } else {
+        [titleCell configureImage:nil];
     }
 }
 
-//- (void)showTitleAnimated:(BOOL)animated {
-//    if (animated) {
-//        self.collectionView.transform = CGAffineTransformIdentity;
-//    } else {
-//        [UIView animateWithDuration:0.3
-//                              delay:0.0
-//                            options:UIViewAnimationOptionCurveEaseIn
-//                         animations:^{
-//                             self.collectionView.transform = CGAffineTransformIdentity;
-//                         }
-//                         completion:^(BOOL finished) {
-//                         }];
-//    }
-//}
+- (void)addCategory {
+    DLog();
+}
 
 @end

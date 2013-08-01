@@ -16,6 +16,7 @@
 @protocol BookTitleViewControllerDelegate <NSObject>
 
 - (CKRecipe *)bookTitleFeaturedRecipeForCategory:(CKCategory *)category;
+- (NSInteger)bookTitleNumRecipesForCategory:(CKCategory *)category;
 - (void)bookTitleSelectedCategory:(CKCategory *)category;
 - (void)bookTitleUpdatedOrderOfCategories:(NSArray *)categories;
 
