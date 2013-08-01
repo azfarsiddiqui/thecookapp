@@ -106,6 +106,12 @@
     // Register pinch
     UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)];
     [self.view addGestureRecognizer:pinchGesture];
+    
+    // Register left screen edge for shortcut to home.
+    UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                          action:@selector(screenEdgePanned:)];
+    leftEdgeGesture.edges = UIRectEdgeLeft;
+    [self.view addGestureRecognizer:leftEdgeGesture];
 }
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
@@ -782,6 +788,15 @@
                          }
                          completion:^(BOOL finished) {
                          }];
+    }
+}
+
+- (void)screenEdgePanned:(UIScreenEdgePanGestureRecognizer *)edgeGesture {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    
+    // If we're past the category pages, then this shortcuts back to home.
+    if (visibleFrame.origin.x > ([self stackCategoryStartSection] * self.collectionView.bounds.size.width)) {
+        [self scrollToHome];
     }
 }
 
