@@ -26,7 +26,8 @@
 #import "NSString+Utilities.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
-    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate>
+    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
+    UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
@@ -112,7 +113,7 @@
                                                                                                           action:@selector(screenEdgePanned:)];
     leftEdgeGesture.delegate = self;
     leftEdgeGesture.edges = UIRectEdgeLeft;
-    [self.view addGestureRecognizer:leftEdgeGesture];
+    [self.collectionView addGestureRecognizer:leftEdgeGesture];
 }
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
