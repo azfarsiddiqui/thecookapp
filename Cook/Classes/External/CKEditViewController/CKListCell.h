@@ -19,7 +19,7 @@
 
 @end
 
-@interface CKListCell : UICollectionViewCell
+@interface CKListCell : UICollectionViewCell <UITextFieldDelegate>
 
 @property (nonatomic, weak) id<CKListCellDelegate> delegate;
 @property (nonatomic, strong) UITextField *textField;

@@ -10,7 +10,7 @@
 #import "CKEditingTextBoxView.h"
 #import "CKEditingViewHelper.h"
 
-@interface CKListCell () <UITextFieldDelegate>
+@interface CKListCell () 
 
 @property (nonatomic, strong) UIImageView *boxImageView;
 @property (nonatomic, assign) BOOL cancelled;
