@@ -72,6 +72,11 @@
 - (void)configureImage:(UIImage *)image {
     self.imageView.hidden = NO;
     self.imageOverlayView.hidden = NO;
+    if (!image) {
+        self.imageView.hidden = YES;
+        self.imageOverlayView.hidden = YES;
+        self.blankOverlayView.hidden = NO;
+    }
     [ImageHelper configureImageView:self.imageView image:image];
 }
 
