@@ -107,8 +107,6 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     [self addGestureRecognizer:tapGesture];
     
-    // Select the featured tab.
-    [self selectFeatured];
 }
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {

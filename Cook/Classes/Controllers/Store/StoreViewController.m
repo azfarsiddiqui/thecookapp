@@ -61,7 +61,9 @@
 }
 
 - (void)enable:(BOOL)enable {
-    DLog();
+    if (!self.currentStoreCollectionViewController) {
+        [self.storeTabView selectFeatured];
+    }
 }
 
 - (CGFloat)visibleHeight {
