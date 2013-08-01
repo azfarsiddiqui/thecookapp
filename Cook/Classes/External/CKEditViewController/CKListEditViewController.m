@@ -105,6 +105,10 @@
     }
 }
 
+- (id)createNewItem {
+    return @"";
+}
+
 - (void)itemsDidShow:(BOOL)show {
     
     // Subclasses to implement.
@@ -755,7 +759,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     self.topAddActivated = NO;
     
     // Insert an empty item at front.
-    [self.items insertObject:@"" atIndex:0];
+    [self.items insertObject:[self createNewItem] atIndex:0];
     
     // Index path of new item at top.
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
@@ -793,7 +797,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     self.botAddActivated = NO;
     
     // Add an empty item at end.
-    [self.items addObject:@""];
+    [self.items addObject:[self createNewItem]];
     
     // Index path of new item at end.
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:([self.items count] - 1) inSection:0];

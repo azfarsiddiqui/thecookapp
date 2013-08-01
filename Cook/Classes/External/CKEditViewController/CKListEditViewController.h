@@ -30,10 +30,12 @@
 
 - (void)loadData;
 
-// The class type for cell.
+// Cell configuration.
 - (Class)classForListCell;
-
 - (void)configureCell:(CKListCell *)cell indexPath:(NSIndexPath *)indexPath;
+
+// Create new item.
+- (id)createNewItem;
 
 // Extended lifecycle events.
 - (void)itemsDidShow:(BOOL)show;
