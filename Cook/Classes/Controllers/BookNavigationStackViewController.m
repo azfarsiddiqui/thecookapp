@@ -668,7 +668,10 @@
                                 }];
         
     } else {
-        [categoryHeaderView configureImage:nil];
+        
+        // Load default book cover image.
+        [categoryHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
+                               placeholder:YES];
     }
 }
 

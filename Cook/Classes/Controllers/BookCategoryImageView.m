@@ -36,7 +36,12 @@
 }
 
 - (void)configureImage:(UIImage *)image {
+    [self configureImage:image placeholder:NO];
+}
+
+- (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder {
     self.imageView.image = image;
+    self.vignetteOverlayView.hidden = placeholder;
 }
 
 #pragma mark - Properties
