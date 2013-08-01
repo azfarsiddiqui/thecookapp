@@ -37,7 +37,7 @@
 #define kButtonOffset                   CGPointMake(15.0, 15.0)
 #define kCellId                         @"ListItemCellId"
 #define kPlaceholderSize                CGSizeMake(750.0, 50.0)
-#define kPullActivatedOffset            200.0
+#define kPullActivatedOffset            150.0
 #define kLabelOffset                    10.0
 #define kLabelTag                       270
 #define kHiddenFieldScrollUpOffset      40.0
@@ -57,10 +57,16 @@
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title {
     
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title]) {
-        self.items = [NSMutableArray arrayWithArray:items];
+        if ([items count] > 0) {
+            self.items = [NSMutableArray arrayWithArray:items];
+        } else {
+            self.items = [NSMutableArray array];    // Empty array if no items were given.
+        }
         self.selectedIndexNumber = selectedIndexNumber;
         self.canReorderItems = YES;
         self.canAddItems = YES;
+        self.canDeleteItems = YES;
+        self.allowSelection = YES;
     }
     return self;
 }
@@ -75,12 +81,27 @@
 
 - (void)configureCell:(CKListCell *)cell indexPath:(NSIndexPath *)indexPath {
     if (self.itemsLoaded) {
-        cell.allowSelection = YES;
-        [cell configureValue:[self.items objectAtIndex:indexPath.item]
-                    selected:([self.selectedIndexNumber integerValue] == indexPath.item)];
+        
+        // Allow selection only if the governing EditVC allows it.
+        cell.allowSelection = self.allowSelection;
+        
+        if ([self.items count] > 0) {
+            
+            // Loading actual item cells.
+            [cell configureValue:[self.items objectAtIndex:indexPath.item]
+                        selected:([self.selectedIndexNumber integerValue] == indexPath.item)];
+            
+        } else {
+            
+            [self setEditing:YES cell:cell];
+        }
+        
     } else {
+        
+        // This is the placeholder cell just prior to animating actual cells.
         cell.allowSelection = NO;
-        [cell configureValue:@"" selected:NO];
+        [cell configureValue:nil selected:NO];
+        
     }
 }
 
@@ -112,6 +133,11 @@
     });
 }
 
+- (void)hideItems {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self showItems:NO];
+    });
+}
 
 #pragma mark - Lifecycle events.
 
@@ -275,17 +301,18 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 1;
     if (self.itemsLoaded) {
-        numItems = [self.items count];
+        numItems = MAX(1, [self.items count]);  // Always an item onscreen for editing.
     }
     return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CKListCell *cell = (CKListCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-    cell.allowSelection = YES;
+    cell.allowSelection = self.allowSelection;
     cell.delegate = self;
     
     [self configureCell:cell indexPath:indexPath];
+    
     return cell;
 }
 
@@ -419,38 +446,57 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark - CKListCellDelegate methods
 
 - (void)listItemChangedForCell:(CKListCell *)cell {
-    NSString *text = [cell currentValue];
+    DLog();
+    
+    id currentValue = [cell currentValue];
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-    [self.items replaceObjectAtIndex:indexPath.item withObject:text];
+    
+    // Add items if there was none.
+    if ([self.items count] > 0) {
+        [self.items replaceObjectAtIndex:indexPath.item withObject:currentValue];
+    } else {
+        [self.items addObject:currentValue];
+    }
+    
     [self setEditing:NO cell:cell];
 }
 
 - (BOOL)listItemCanCancelForCell:(CKListCell *)cell {
     NSString *text = [cell currentValue];
     
-    // Can cancel if adding mode and length is zero.
-    BOOL canCancel = (self.addingMode && [text length] == 0);
+    // Can cancel if no items (lone empty cell) OR in adding mode and length is zero.
+    BOOL canCancel = (([self.items count] == 0) || (self.addingMode && [text length] == 0));
     
+    DLog(@"canCancel %@", canCancel ? @"YES" : @"NO");
     return canCancel;
 }
 
 - (void)listItemProcessCancelForCell:(CKListCell *)cell {
+    DLog();
     
-    // Mark as adding mode cancelled.
-    self.addingMode = NO;
-    
-    [self setEditing:NO];
-    
-    // Delete the rows in questioni in next runloop to wait for keyboard to be resigned.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        NSIndexPath *cancelledIndexPath = [self.collectionView indexPathForCell:cell];
-        [self.items removeObjectAtIndex:cancelledIndexPath.item];
-        [self.collectionView deleteItemsAtIndexPaths:@[cancelledIndexPath]];
-        [self updateAddState];
-    });
+    // Delete cell with animation if this was adding mode. Otherwise do nothing as it could be a lone empty cell.
+    if (self.addingMode) {
+        
+        // Mark as adding mode cancelled.
+        self.addingMode = NO;
+        
+        [self setEditing:NO];
+        
+        // Delete the rows in question in next runloop to wait for keyboard to be resigned.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            NSIndexPath *cancelledIndexPath = [self.collectionView indexPathForCell:cell];
+            [self.items removeObjectAtIndex:cancelledIndexPath.item];
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView deleteItemsAtIndexPaths:@[cancelledIndexPath]];
+            } completion:^(BOOL finished) {
+                [self updateAddState];
+            }];
+        });
+    }
 }
 
 - (BOOL)listItemValidatedForCell:(CKListCell *)cell {
+    DLog();
     NSString *text = [cell currentValue];
     return ([text length] > 0);
 }
@@ -571,6 +617,18 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     [self saveAndDismissItems:NO];
 }
 
+- (void)saveAndDismissItems:(BOOL)save {
+    self.saveRequired = save;
+    
+    DLog(@"EDITING CELL %@", self.editingCell);
+    if (self.editingCell) {
+        [self.editingCell resignFirstResponder];
+    }
+    
+    // Hide items, which will trigger itemsDidShow.
+    [self hideItems];
+}
+
 - (void)showButtons:(BOOL)show animated:(BOOL)animated {
     
     if (animated) {
@@ -617,7 +675,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     }
     
     self.itemsLoaded = show;
-    NSInteger numItems = [self.items count];
+    NSInteger numItems = MAX(1, [self.items count]);
     
     // Items to animate is everything below the initial placeholder.
     NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems];
@@ -629,9 +687,13 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     [self.collectionView performBatchUpdates:^{
         if (show) {
             [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
-            [self.collectionView insertItemsAtIndexPaths:itemsToAnimate];
+            if ([itemsToAnimate count] > 0) {
+                [self.collectionView insertItemsAtIndexPaths:itemsToAnimate];
+            }
         } else {
-            [self.collectionView deleteItemsAtIndexPaths:itemsToAnimate];
+            if ([itemsToAnimate count] > 0) {
+                [self.collectionView deleteItemsAtIndexPaths:itemsToAnimate];
+            }
         }
     } completion:^(BOOL finished) {
         
@@ -646,13 +708,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         [self itemsDidShow:show];
     }];
     
-}
-
-- (void)saveAndDismissItems:(BOOL)save {
-    self.saveRequired = save;
-    
-    // Hide items, which will trigger itemsDidShow.
-    [self showItems:NO];
 }
 
 - (CKListLayout *)currentLayout {
@@ -870,6 +925,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         self.editingCell = nil;
         self.editingIndexPath = nil;
     }
+    
     [cell setEditing:editing];
 }
 

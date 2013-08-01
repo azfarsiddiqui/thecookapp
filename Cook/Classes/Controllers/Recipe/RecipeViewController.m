@@ -33,7 +33,7 @@
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
 #import "CategoryListEditViewController.h"
-#import "IngredientItemsEditViewController.h"
+#import "IngredientListEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
 #import "CKPrivacyView.h"
@@ -280,7 +280,6 @@ typedef enum {
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    DLog();
     if (editingView == self.photoLabel) {
         
         [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen bounce:NO completion:^{
@@ -357,11 +356,11 @@ typedef enum {
         
     } else if (editingView == self.ingredientsView) {
         
-        IngredientItemsEditViewController *editViewController = [[IngredientItemsEditViewController alloc] initWithEditView:self.ingredientsView
-                                                                                                            recipeClipboard:self.clipboard
-                                                                                                                   delegate:self
-                                                                                                              editingHelper:self.editingHelper
-                                                                                                                      white:YES];
+        IngredientListEditViewController *editViewController = [[IngredientListEditViewController alloc] initWithEditView:editingView delegate:self items:self.clipboard.ingredients editingHelper:self.editingHelper white:YES title:@"Ingredients"];
+        editViewController.canAddItems = YES;
+        editViewController.canDeleteItems = YES;
+        editViewController.canReorderItems = YES;
+        editViewController.allowSelection = NO;
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
     }
@@ -1630,7 +1629,7 @@ typedef enum {
 - (void)saveCategoryValue:(id)value {
     
     CKCategory *selectedCategory = (CKCategory *)value;
-    NSArray *categories = ((CategoryListEditViewController *)self.editViewController).items;
+    NSArray *categories = [self.editViewController updatedValue];
     
     // Check if category has changed.
     if (![selectedCategory.name isEqualToString:self.categoryLabel.text]) {

@@ -36,6 +36,13 @@
     return self;
 }
 
+#pragma mark - CKEditViewController methods
+
+// Returns all categories.
+- (id)updatedValue {
+    return self.items;
+}
+
 #pragma mark - CKItemsEditViewController methods
 
 - (void)loadData {

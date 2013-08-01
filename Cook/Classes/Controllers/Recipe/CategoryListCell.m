@@ -18,6 +18,8 @@
 
 @implementation CategoryListCell
 
+#pragma mark - CKListCell methods
+
 - (void)configureValue:(id)value {
     CKCategory *category = (CKCategory *)value;
     self.category = category;
@@ -47,6 +49,5 @@
     
     return category;
 }
-
 
 @end

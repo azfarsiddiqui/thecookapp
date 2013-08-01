@@ -38,6 +38,8 @@
 // Extended lifecycle events.
 - (void)itemsDidShow:(BOOL)show;
 
+// Show hide items.
 - (void)showItems;
+- (void)hideItems;
 
 @end
