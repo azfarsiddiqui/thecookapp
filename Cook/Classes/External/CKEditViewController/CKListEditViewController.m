@@ -241,8 +241,6 @@
     return value;
 }
 
-
-
 #pragma mark - UICollectionViewDataSource_Draggable methods
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
