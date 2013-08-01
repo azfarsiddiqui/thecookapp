@@ -110,6 +110,7 @@
     // Register left screen edge for shortcut to home.
     UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
                                                                                                           action:@selector(screenEdgePanned:)];
+    leftEdgeGesture.delegate = self;
     leftEdgeGesture.edges = UIRectEdgeLeft;
     [self.view addGestureRecognizer:leftEdgeGesture];
 }
@@ -159,6 +160,7 @@
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    
     return YES;
 }
 
@@ -641,7 +643,8 @@
 
 - (void)scrollToHome {
     [self.collectionView setContentOffset:(CGPoint){
-        kIndexSection * self.collectionView.bounds.size.width, self.collectionView.contentOffset.y
+        kIndexSection * self.collectionView.bounds.size.width,
+        self.collectionView.contentOffset.y
     } animated:YES];
 }
 
@@ -795,8 +798,13 @@
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     
     // If we're past the category pages, then this shortcuts back to home.
-    if (visibleFrame.origin.x > ([self stackCategoryStartSection] * self.collectionView.bounds.size.width)) {
-        [self scrollToHome];
+    if (edgeGesture.state == UIGestureRecognizerStateBegan) {
+        self.collectionView.panGestureRecognizer.enabled = NO;
+        if (visibleFrame.origin.x > ([self stackCategoryStartSection] * self.collectionView.bounds.size.width)) {
+            [self scrollToHome];
+        }
+    } else {
+        self.collectionView.panGestureRecognizer.enabled = YES;
     }
 }
 
