@@ -78,4 +78,8 @@
     categoryCell.book = self.book;
 }
 
+- (id)createNewItem {
+    return [CKCategory categoryForName:nil book:self.book];
+}
+
 @end

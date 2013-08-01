@@ -8,6 +8,7 @@
 
 #import "IngredientListEditViewController.h"
 #import "IngredientListCell.h"
+#import "Ingredient.h"
 
 @interface IngredientListEditViewController ()
 
@@ -31,5 +32,19 @@
     [super configureCell:itemCell indexPath:indexPath];
     itemCell.allowSelection = NO;
 }
+
+- (id)createNewItem {
+    return [Ingredient ingredientwithName:nil measurement:nil];
+}
+
+#pragma mark - CKListCellDelegate methods
+
+- (BOOL)listItemValidatedForCell:(CKListCell *)cell {
+    Ingredient *ingredient = (Ingredient *)[cell currentValue];
+    NSString *text = ingredient.name;
+    return ([text length] > 0);
+}
+
+
 
 @end

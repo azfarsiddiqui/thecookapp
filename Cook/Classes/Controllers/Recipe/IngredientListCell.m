@@ -12,12 +12,12 @@
 #import "CKEditingViewHelper.h"
 #import "IngredientEditKeyboardAccessoryView.h"
 #import "Theme.h"
+#import "ViewHelper.h"
 
 @interface IngredientListCell () <UITextFieldDelegate, IngredientEditKeyboardAccessoryViewDelegate>
 
 @property (nonatomic, strong) Ingredient *ingredient;
 @property (nonatomic, strong) UITextField *unitTextField;
-@property (nonatomic, strong) UITextField *ingredientTextField;
 @property (nonatomic, strong) IngredientEditKeyboardAccessoryView *ingredientEditKeyboardAccessoryView;
 
 @end
@@ -27,6 +27,7 @@
 #define kFieldDividerGap        10.0
 #define kUnitWidth              160.0
 #define kDividerInsets          (UIEdgeInsets){ 16.0, 0.0, 11.0, 0.0 }
+#define kMaxLengthMeasurement   10
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -97,7 +98,26 @@
 }
 
 - (id)currentValue {
+    NSString *unit = [self.unitTextField.text CK_whitespaceTrimmed];
+    NSString *name = [self.textField.text CK_whitespaceTrimmed];
+    self.ingredient = [Ingredient ingredientwithName:name measurement:unit];
     return self.ingredient;
+}
+
+- (void)setEditing:(BOOL)editMode {
+    self.editMode = editMode;
+    self.unitTextField.userInteractionEnabled = editMode;
+    self.textField.userInteractionEnabled = editMode;
+    
+    if (editMode) {
+        [self.unitTextField becomeFirstResponder];
+    } else {
+        if ([self.unitTextField isFirstResponder]) {
+            [self.unitTextField resignFirstResponder];
+        } else {
+            [self.textField resignFirstResponder];
+        }
+    }
 }
 
 #pragma mark - Properties
@@ -113,54 +133,45 @@
 
 - (void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount {
     
-//    // Concat the values.
-//    NSString *newValue = [NSString stringWithFormat:@"%@ %@",self.unitTextField.text, [name lowercaseString]];
-//    if (newValue.length < kMaxLengthMeasurement) {
-//        self.unitTextField.text = newValue;
-//    }
-//    
-//    DLog(@"Unit Value: %@", newValue);
-//    
-//    // If this was not the amount field, then jump to the ingredient field.
-//    if (!isAmount) {
-//        [self focusIngredientField];
-//    }
+    // Concat the values.
+    NSString *newValue = [NSString stringWithFormat:@"%@ %@", self.unitTextField.text, [name lowercaseString]];
+    if (newValue.length < kMaxLengthMeasurement) {
+        self.unitTextField.text = newValue;
+    }
+    
+    // If this was not the amount field, then jump to the ingredient field.
+    if (!isAmount) {
+        [self focusNameField];
+    }
     
 }
 
 #pragma mark - UITextFieldDelegate methods
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    return YES;
-}
-
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    BOOL shouldEnd = YES;
-//    if (textField == self.ingredientTextField) {
-//        shouldEnd = [self.delegate processedValueForCell:self];
-//    }
-    return shouldEnd;
+    if (textField == self.unitTextField) {
+        return YES;
+    } else {
+        return [super textFieldShouldEndEditing:textField];
+    }
+    
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     BOOL shouldReturn = YES;
-//    if (textField == self.unitTextField) {
-//        
-//        [self focusIngredientField];
-//        
-//    } else if (textField == self.ingredientTextField) {
-//        
-//        [self.delegate returnRequestedForCell:self];
-//        
-//    }
+    if (textField == self.unitTextField) {
+        [self focusNameField];
+    } else if (textField == self.textField) {
+        [self setEditing:NO];
+    }
     return shouldReturn;
-}
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    return YES;
 }
 
 #pragma mark - Private methods
 
+- (void)focusNameField {
+    [ViewHelper setCaretOnFrontForInput:self.textField];
+    [self.textField becomeFirstResponder];
+}
 
 @end
