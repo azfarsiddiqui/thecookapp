@@ -8,6 +8,7 @@
 
 #import "BookTitleViewController.h"
 #import "CKBook.h"
+#import "CKBookCover.h"
 #import "Theme.h"
 #import "CKBookTitleIndexView.h"
 #import "ParsePhotoStore.h"
@@ -85,11 +86,15 @@
     }
     
     self.heroRecipe = recipe;
-    [self.photoStore imageForParseFile:[recipe imageFile]
-                                  size:self.imageView.bounds.size
-                            completion:^(UIImage *image) {
-                                [ImageHelper configureImageView:self.imageView image:image];
-                            }];
+    if ([recipe hasPhotos]) {
+        [self.photoStore imageForParseFile:[recipe imageFile]
+                                      size:self.imageView.bounds.size
+                                completion:^(UIImage *image) {
+                                    [ImageHelper configureImageView:self.imageView image:image];
+                                }];
+    } else {
+        self.imageView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
+    }
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
