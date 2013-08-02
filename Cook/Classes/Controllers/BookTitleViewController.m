@@ -73,7 +73,9 @@
     }]];
     
     // Add cell.
-    [categoryIndexPaths addObject:[NSIndexPath indexPathForItem:[self.categories count] inSection:0]];
+    if ([self.book isOwner]) {
+        [categoryIndexPaths addObject:[NSIndexPath indexPathForItem:[self.categories count] inSection:0]];
+    }
     
     [self.collectionView insertItemsAtIndexPaths:categoryIndexPaths];
 }
@@ -153,7 +155,11 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     if (self.categories) {
-        numItems = [self.categories count] + 1; // Plus add cell.
+        numItems = [self.categories count];
+        
+        if ([self.book isOwner]) {
+             numItems += 1; // Plus add cell.
+        }
     }
     return numItems;
 }
@@ -206,14 +212,12 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - UICollectionViewDataSource_Draggable methods
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return [self.book isOwner];
+    return ([self.book isOwner] && indexPath.item < [self.categories count]);
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
-    
-    return [self.book isOwner];
+    return ([self.book isOwner] && toIndexPath.item < [self.categories count]);
 }
 
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
