@@ -183,9 +183,6 @@
 
 - (void)logoutTapped:(id)sender {
     
-    // TODO Uncomment for it to work.
-    return;
-    
     [CKUser logoutWithCompletion:^{
         // Post logout.
         [EventHelper postLogout];

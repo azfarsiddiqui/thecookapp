@@ -167,6 +167,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+    DLog(@"Books Count: %d", [self.books count]);
     return [self.books count];
 }
 

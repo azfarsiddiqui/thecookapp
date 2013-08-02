@@ -235,6 +235,7 @@
 #pragma mark - WelcomeViewControllerDelegate methods
 
 - (void)welcomeViewControllerLoggedIn {
+    DLog();
     [self showLoginView:NO];
 }
 
@@ -540,7 +541,9 @@
 - (void)initViewControllers {
     BOOL isLoggedIn = [self isLoggedIn];
     [self initBenchtop];
-    [self showLoginView:!isLoggedIn];
+    if (!isLoggedIn) {
+        [self showLoginView:YES];
+    }
     [self enable:isLoggedIn];
 }
 
@@ -717,6 +720,7 @@
 }
 
 - (void)enable:(BOOL)enable {
+    DLog(@"enable: %@", enable ? @"YES" : @"NO");
     self.panEnabled = enable;
     
     // Show store shelf only in enabled mode.
@@ -735,34 +739,39 @@
 - (void)showLoginView:(BOOL)show {
     
     if (show) {
-        // Remove any existing one.
-        [self.welcomeViewController.view removeFromSuperview];
-        self.welcomeViewController = nil;
         
         // Recreate the login.
         WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] initWithDelegate:self];
         welcomeViewController.view.frame = self.view.bounds;
-        welcomeViewController.view.alpha = 0.0;
         [self.view addSubview:welcomeViewController.view];
         self.welcomeViewController = welcomeViewController;
+        
+    } else {
+        
+        [self.welcomeViewController.view removeFromSuperview];
+        self.welcomeViewController = nil;
+        [self enable:YES];
+        
     }
     
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.welcomeViewController.view.alpha = show ? 1.0 : 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         [self enable:!show];
-                         
-                         if (!show) {
-                             [self.welcomeViewController.view removeFromSuperview];
-                             self.welcomeViewController = nil;
-                         } else {
-                             [self.welcomeViewController enable:YES];
-                         }
-                     }];
+//    [UIView animateWithDuration:0.2
+//                          delay:0.0
+//                        options:UIViewAnimationOptionCurveEaseIn
+//                     animations:^{
+//                         self.welcomeViewController.view.alpha = show ? 1.0 : 0.0;
+//                     }
+//                     completion:^(BOOL finished) {
+//                         
+//                         if (!show) {
+//                             [self.welcomeViewController.view removeFromSuperview];
+//                             self.welcomeViewController = nil;
+//                         } else {
+//                             [self.welcomeViewController enable:YES];
+//                         }
+//                         
+//                         [self enable:!show];
+//                         
+//                     }];
     
 }
 
