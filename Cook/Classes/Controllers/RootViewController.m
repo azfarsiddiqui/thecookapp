@@ -11,7 +11,7 @@
 #import "StoreViewController.h"
 #import "BenchtopViewControllerDelegate.h"
 #import "BookCoverViewController.h"
-#import "BookNavigationViewController.h"
+#import "BookNavigationViewControllerDelegate.h"
 #import "CKBook.h"
 #import "SettingsViewController.h"
 #import "BookModalViewController.h"
@@ -29,7 +29,6 @@
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
 @property (nonatomic, strong) WelcomeViewController *welcomeViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
-//@property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, strong) BookNavigationStackViewController *bookNavigationViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
@@ -213,8 +212,8 @@
     [self viewRecipe:recipe];
 }
 
-- (void)bookNavigationControllerAddRecipeRequested {
-    [self addRecipeForBook:self.selectedBook];
+- (void)bookNavigationControllerAddRecipeRequestedForCategory:(CKCategory *)category {
+    [self addRecipeForBook:self.selectedBook category:category];
 }
 
 - (UIView *)bookNavigationSnapshot {
@@ -614,8 +613,9 @@
     [self showModalViewController:recipeViewController];
 }
 
-- (void)addRecipeForBook:(CKBook *)book {
-    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithBook:self.selectedBook];
+- (void)addRecipeForBook:(CKBook *)book category:(CKCategory *)category {
+    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithBook:self.selectedBook
+                                                                                   category:category];
     [self showModalViewController:recipeViewController];
 }
 

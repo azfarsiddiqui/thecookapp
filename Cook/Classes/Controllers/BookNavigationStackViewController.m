@@ -619,6 +619,34 @@
     return categoryCell;
 }
 
+- (CKCategory *)currentCategory {
+    CKCategory *category = nil;
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    BookPagingStackLayout *layout = [self currentLayout];
+    
+    NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
+    if ([visibleIndexPaths count] > 0) {
+        
+        // This only returns cells not supplementary/decoration views.
+        for (NSIndexPath *indexPath in visibleIndexPaths) {
+            if (indexPath.section >= [self stackCategoryStartSection]) {
+                
+                NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
+                
+                // Look for an indexPath that equals the visibleFrame, i.e. current category page in view.
+                CGFloat pageOffset = [layout pageOffsetForIndexPath:indexPath];
+                if (pageOffset == visibleFrame.origin.x) {
+                    if (categoryIndex < [self.categories count]) {
+                        category = [self.categories objectAtIndex:categoryIndex];
+                    }
+                }
+            }
+        }
+        
+    }
+    return category;
+}
+
 - (NSString *)keyForCategory:(CKCategory *)category {
     return category.objectId;
 }
@@ -680,7 +708,8 @@
 }
 
 - (void)showAddView:(BOOL)show {
-    [self.delegate bookNavigationControllerAddRecipeRequested];
+    CKCategory *category = [self currentCategory];
+    [self.delegate bookNavigationControllerAddRecipeRequestedForCategory:category];
 }
 
 - (UICollectionReusableView *)profileHeaderViewAtIndexPath:(NSIndexPath *)indexPath {

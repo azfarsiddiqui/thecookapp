@@ -135,9 +135,9 @@ typedef enum {
 #define kServesTag              122
 #define kPrepCookTag            123
 
-- (id)initWithBook:(CKBook *)book {
+- (id)initWithBook:(CKBook *)book category:(CKCategory *)category {
     if (self = [self initWithRecipe:nil book:book]) {
-        self.recipe = [CKRecipe recipeForBook:book];
+        self.recipe = [CKRecipe recipeForBook:book category:category];
     }
     return self;
 }

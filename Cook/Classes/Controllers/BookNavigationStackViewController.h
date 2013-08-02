@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BookNavigationViewController.h"
+#import "BookNavigationViewControllerDelegate.h"
+#import "BookNavigationHelper.h"
 
 @class CKBook;
 @class CKRecipe;

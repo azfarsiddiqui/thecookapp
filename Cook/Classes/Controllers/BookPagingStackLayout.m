@@ -51,6 +51,10 @@
     self.layoutCompleted = !relayout;
 }
 
+- (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
+    return indexPath.section * self.collectionView.bounds.size.width;
+}
+
 #pragma mark - UICollectionViewLayout methods
 
 - (CGSize)collectionViewContentSize {
@@ -408,10 +412,6 @@
     
     attributes.transform3D = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
     attributes.alpha = requiredAlpha;
-}
-
-- (CGFloat)pageOffsetForIndexPath:(NSIndexPath *)indexPath {
-    return indexPath.section * self.collectionView.bounds.size.width;
 }
 
 - (CGRect)navigationFrame {

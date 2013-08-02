@@ -41,10 +41,15 @@
 #pragma mark - creation
 
 + (CKRecipe *)recipeForBook:(CKBook *)book {
+    return [self recipeForBook:book category:nil];
+}
+
++ (CKRecipe *)recipeForBook:(CKBook *)book category:(CKCategory *)category {
     PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     recipe.book = book;
     recipe.user = book.user;
+    recipe.category = category;
     return recipe;
 }
 
