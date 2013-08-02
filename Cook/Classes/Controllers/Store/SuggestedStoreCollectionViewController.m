@@ -34,10 +34,6 @@
                          }];
 }
 
-- (UIView *)noDataView {
-    return nil;
-}
-
 - (BOOL)addMode {
     return NO;
 }

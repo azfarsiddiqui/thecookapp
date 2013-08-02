@@ -204,6 +204,7 @@
         default:
             break;
     }
+    DLog(@"numItems [%d]", numItems);
     return numItems;
 }
 
@@ -620,15 +621,19 @@
 }
 
 - (void)loadBenchtop:(BOOL)load {
+    DLog(@"load [%@]", load ? @"YES" : @"NO");
     [self enable:load];
     
     if (load) {
         [self loadMyBook];
         [self loadFollowBooks];
     } else {
+        
         self.myBook = nil;
         [self.followBooks removeAllObjects];
         self.followBooks = nil;
+        
+        [[self pagingLayout] markLayoutDirty];
         [self.collectionView reloadData];
     }
     

@@ -32,7 +32,6 @@
 #define kStoreSection   0
 
 - (void)dealloc {
-    [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
     [EventHelper unregisterFollowUpdated:self];
 }
@@ -54,7 +53,6 @@
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[StoreBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     
-    [EventHelper registerLoginSucessful:self selector:@selector(loginSuccessful:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
 }
@@ -75,22 +73,19 @@
     DLog(@"Unloading Books [%d]", [self.books count]);
     if ([self.books count] > 0) {
         
-        NSArray *deletedIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
-            return [NSIndexPath indexPathForItem:index inSection:0];
-        }];
+//        NSArray *deletedIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
+//            return [NSIndexPath indexPathForItem:index inSection:0];
+//        }];
+//        [self.books removeAllObjects];
+//        [self.collectionView deleteItemsAtIndexPaths:deletedIndexPaths];
+        
         [self.books removeAllObjects];
-        [self.collectionView deleteItemsAtIndexPaths:deletedIndexPaths];
+        [self.collectionView reloadData];
     }
 }
 
 - (void)loadBooks:(NSArray *)books {
     DLog(@"Books [%d] Existing [%d]", [books count], [self.books count]);
-    
-    // Remove the no data view immediately if there were any books to be loaded.
-    if ([books count] > 0) {
-        [self.emptyBanner removeFromSuperview];
-        self.emptyBanner = nil;
-    }
     
     if ([self.books count] > 0) {
         
@@ -111,7 +106,6 @@
         
     }
     
-    [self updateNoDataView];
 }
 
 - (void)reloadBooks {
@@ -120,11 +114,6 @@
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
     return NO;
-}
-
-- (UIView *)noDataView {
-    // Subclasses to implement.
-    return nil;
 }
 
 - (BOOL)addMode {
@@ -202,13 +191,6 @@
 
 #pragma mark - Private methods
 
-- (void)loginSuccessful:(NSNotification *)notification {
-    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
-    if (success) {
-        [self loadData];
-    }
-}
-
 - (void)loggedOut:(NSNotification *)notification {
     [self unloadData];
 }
@@ -222,7 +204,6 @@
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
     } completion:^(BOOL finished) {
-        [self updateNoDataView];
     }];
     
     // Then follow in the background.
@@ -246,36 +227,6 @@
     BOOL friendsBook = [EventHelper friendsBookFollowUpdatedForNotification:notification];
     if (!follow && [self updateForFriendsBook:friendsBook]) {
         [self loadData];
-    }
-}
-
-- (void)updateNoDataView {
-    
-    // Empty banner if no books to load.
-    if ([self.books count] == 0) {
-        [self.emptyBanner removeFromSuperview];
-        
-        UIView *emptyBanner = [self noDataView];
-        if (emptyBanner) {
-            emptyBanner.frame = CGRectMake(floorf((self.view.bounds.size.width - emptyBanner.frame.size.width) / 2.0),
-                                           floorf((self.view.bounds.size.height - emptyBanner.frame.size.height) / 2.0) + 47.0,
-                                           emptyBanner.frame.size.width,
-                                           emptyBanner.frame.size.height);
-            [self.view addSubview:emptyBanner];
-            emptyBanner.alpha = 0.0;
-            self.emptyBanner = emptyBanner;
-        }
-        
-        // Fade it in.
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationCurveEaseIn
-                         animations:^{
-                             self.emptyBanner.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-        
     }
 }
 

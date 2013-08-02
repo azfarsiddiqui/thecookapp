@@ -22,7 +22,7 @@
 #import "BookNavigationStackViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, WelcomeViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
 
 @property (nonatomic, strong) PagingBenchtopViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -68,6 +68,7 @@
     [self.view addGestureRecognizer:panGesture];
     
     // Register login/logout events.
+    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
@@ -232,13 +233,6 @@
     [self hideModalViewController:viewController];
 }
 
-#pragma mark - WelcomeViewControllerDelegate methods
-
-- (void)welcomeViewControllerLoggedIn {
-    DLog();
-    [self showLoginView:NO];
-}
-
 #pragma mark - Private methods
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
@@ -357,8 +351,8 @@
                                               }
                                               completion:^(BOOL finished) {
                                                   self.benchtopLevel = benchtopLevel;
-                                                  [self.storeViewController enable:benchtopLevel == kStoreLevel];
-                                                  [self.benchtopViewController enable:benchtopLevel == kBenchtopLevel];
+                                                  [self.storeViewController enable:(benchtopLevel == kStoreLevel)];
+                                                  [self.benchtopViewController enable:(benchtopLevel == kBenchtopLevel)];
                                                   completion();
                                               }];
                          } else {
@@ -523,7 +517,7 @@
 }
 
 - (void)showStoreShelf:(BOOL)show animated:(BOOL)animated {
-    CGAffineTransform transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -[self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShelfTrayHeight]);
+    CGAffineTransform transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -[self.storeViewController bottomShelfTrayHeight]);
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:show ? 0.1 : 0.2
@@ -730,6 +724,11 @@
     [self.benchtopViewController enable:enable];
 }
 
+- (void)loggedIn:(NSNotification *)notification {
+    [self showLoginView:NO];
+    [self enable:YES];
+}
+
 - (void)loggedOut:(NSNotification *)notification {
     [self snapToLevel:kBenchtopLevel completion:^{
         [self showLoginView:YES];
@@ -741,7 +740,7 @@
     if (show) {
         
         // Recreate the login.
-        WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] initWithDelegate:self];
+        WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] init];
         welcomeViewController.view.frame = self.view.bounds;
         [self.view addSubview:welcomeViewController.view];
         self.welcomeViewController = welcomeViewController;
@@ -750,8 +749,6 @@
         
         [self.welcomeViewController.view removeFromSuperview];
         self.welcomeViewController = nil;
-        [self enable:YES];
-        
     }
     
 //    [UIView animateWithDuration:0.2

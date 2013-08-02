@@ -77,7 +77,6 @@
         
         // Update required size.
         size.width += button.frame.size.width;
-        DLog(@"SIZE %f", size.width);
     }
     
     // Update background and self frame.

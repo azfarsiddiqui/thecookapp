@@ -15,7 +15,6 @@
 @property (nonatomic, weak) id<PagingCollectionViewLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
 @property (nonatomic, assign) BOOL editMode;
-@property (nonatomic, assign) BOOL physicsEnabled;
 
 @property (nonatomic, strong) NSMutableArray *anchorPoints;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
@@ -23,8 +22,6 @@
 
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
-
-@property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
 
 @end
 
@@ -129,36 +126,7 @@
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-    
-    if (!self.physicsEnabled) {
-        return YES;
-    }
-    
-    CGFloat scrollDelta = newBounds.origin.x - self.collectionView.bounds.origin.x;
-    CGPoint touchLocation = [self.collectionView.panGestureRecognizer locationInView:self.collectionView];
-    
-    // Loop through each attachment behaviour and amend the center so that spring takes over to restore.
-    for (UIAttachmentBehavior *attachment in [self currentAttachmentBehaviours]) {
-        
-        CGPoint anchorPoint = attachment.anchorPoint;
-        CGFloat distanceFromTouch = fabsf(touchLocation.x - anchorPoint.x);
-        CGFloat scrollResistance = distanceFromTouch / 1000.0;
-        
-        UICollectionViewLayoutAttributes *attributes = [attachment.items firstObject];
-        CGPoint center = attributes.center;
-        
-        // Determine the veer offset.
-        CGFloat veerOffset = floorf(scrollDelta * scrollResistance);
-        veerOffset = MAX(10.0, veerOffset);
-        // DLog(@"Veer Offset [%f]", veerOffset);
-        
-        // Amend the center of the attribute to veer.
-        attributes.center = (CGPoint){ center.x + veerOffset, anchorPoint.y };
-        
-        [self.dynamicAnimator updateItemUsingCurrentState:attributes];
-    }
-    
-    return NO;
+    return YES;
 }
 
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
@@ -190,12 +158,7 @@
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *layoutAttributes = [NSMutableArray array];
-    
-    if (self.physicsEnabled) {
-        [layoutAttributes addObjectsFromArray:[self.dynamicAnimator itemsInRect:rect]];
-    } else {
-        [layoutAttributes addObjectsFromArray:self.itemsLayoutAttributes];
-    }
+    [layoutAttributes addObjectsFromArray:self.itemsLayoutAttributes];
     
     // Cell returns kind of nil.
     NSArray *cellLayoutAttributes = [layoutAttributes select:^BOOL(UICollectionViewLayoutAttributes *attributes) {
@@ -208,11 +171,7 @@
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.physicsEnabled) {
-        return [self.dynamicAnimator layoutAttributesForCellAtIndexPath:indexPath];
-    } else {
-        return [self.indexPathItemAttributes objectForKey:indexPath];
-    }
+    return [self.indexPathItemAttributes objectForKey:indexPath];
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
@@ -303,13 +262,6 @@
 
 #pragma mark - Properties
 
-- (UIDynamicAnimator *)dynamicAnimator {
-    if (!_dynamicAnimator) {
-        _dynamicAnimator = [[UIDynamicAnimator alloc] initWithCollectionViewLayout:self];
-    }
-    return _dynamicAnimator;
-}
-
 #pragma mark - Private methods
 
 - (void)buildLayout:(BOOL)force {
@@ -325,40 +277,36 @@
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     
-    // Reset all behaviours.
-    [self.dynamicAnimator removeAllBehaviors];
-    
     // Do we have my book?
     if ([self.collectionView numberOfItemsInSection:kMyBookSection] != 0) {
         UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForMyBook];
-        
-        [self applyAttachmentBehaviourToAttributes:attributes];
         [self.anchorPoints addObject:[NSValue valueWithCGPoint:attributes.center]];
         [self.itemsLayoutAttributes addObject:attributes];
         [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
     }
-    
-    // Middle gap/anchor.
-    UICollectionViewLayoutAttributes *myBookAttributes = [self.itemsLayoutAttributes firstObject];
-    CGPoint gapAnchor = (CGPoint){ myBookAttributes.center.x + bookSize.width, myBookAttributes.center.y };
-    [self.anchorPoints addObject:[NSValue valueWithCGPoint:gapAnchor]];
     
     // Do we have followed books?
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
-    for (NSInteger bookIndex = 0; bookIndex < numFollowBooks; bookIndex++) {
+    if (numFollowBooks > 0) {
         
-        UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForFollowBookAtIndex:bookIndex];
-        [self applyAttachmentBehaviourToAttributes:attributes];
-        [self.anchorPoints addObject:[NSValue valueWithCGPoint:attributes.center]];
-        [self.itemsLayoutAttributes addObject:attributes];
-        [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
+        // Middle gap/anchor.
+        UICollectionViewLayoutAttributes *myBookAttributes = [self.itemsLayoutAttributes firstObject];
+        CGPoint gapAnchor = (CGPoint){ myBookAttributes.center.x + bookSize.width, myBookAttributes.center.y };
+        [self.anchorPoints addObject:[NSValue valueWithCGPoint:gapAnchor]];
+        
+        // Build the other books.
+        for (NSInteger bookIndex = 0; bookIndex < numFollowBooks; bookIndex++) {
+            
+            UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForFollowBookAtIndex:bookIndex];
+            [self.anchorPoints addObject:[NSValue valueWithCGPoint:attributes.center]];
+            [self.itemsLayoutAttributes addObject:attributes];
+            [self.indexPathItemAttributes setObject:attributes forKey:attributes.indexPath];
+        }
     }
-    
-    // Apply collision.
-    [self applyCollisionBehaviour:self.itemsLayoutAttributes];
     
     // Mark layout as completed.
     self.layoutCompleted = YES;
+    DLog(@"Built layouts with num attributes [%d]", [self.itemsLayoutAttributes count]);
     
     // Inform delegate of updated layout.
     [self.delegate pagingLayoutDidUpdate];
@@ -453,34 +401,6 @@
                       self.collectionView.contentOffset.y,
                       self.collectionView.bounds.size.width,
                       self.collectionView.bounds.size.height);
-}
-
-- (void)applyAttachmentBehaviourToAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    if (!self.physicsEnabled) {
-        return;
-    }
-    UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:attributes
-                                                             attachedToAnchor:attributes.center];
-    spring.length = 0;
-    spring.damping = 1.0;
-    spring.frequency = 1.0;
-    [self.dynamicAnimator addBehavior:spring];
-}
-
-- (NSArray *)currentAttachmentBehaviours {
-    return [self.dynamicAnimator.behaviors select:^BOOL(UIDynamicBehavior *dynamicBehaviour) {
-        return [dynamicBehaviour isKindOfClass:[UIAttachmentBehavior class]];
-    }];
-}
-
-- (void)applyCollisionBehaviour:(NSArray *)items {
-    if (!self.physicsEnabled) {
-        return;
-    }
-
-    UICollisionBehavior *collision = [[UICollisionBehavior alloc] initWithItems:items];
-    collision.collisionMode = UICollisionBehaviorModeItems;
-    [self.dynamicAnimator addBehavior:collision];
 }
 
 @end

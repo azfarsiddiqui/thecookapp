@@ -38,8 +38,6 @@
 #define kShellBottomShadowHeight    24.0
 
 - (void)dealloc {
-    [EventHelper unregisterLoginSucessful:self];
-    [EventHelper unregisterLogout:self];
 }
 
 - (void)viewDidLoad {
@@ -48,9 +46,6 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
     
     [self initBackground];
-    
-    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
-    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -61,7 +56,7 @@
 }
 
 - (void)enable:(BOOL)enable {
-    if (!self.currentStoreCollectionViewController) {
+    if (enable && !self.currentStoreCollectionViewController) {
         [self.storeTabView selectFeatured];
     }
 }
@@ -131,6 +126,7 @@
     CGFloat rowHeight = kShelfHeight;
     self.storeCollectionViewControllers = [NSMutableArray arrayWithCapacity:3];
     
+    // Featured.
     FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self];
     featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
                                                    self.view.bounds.size.height - kShelfTopOffsetFromBottom - [self bottomShadowHeight],
@@ -142,6 +138,7 @@
     self.featuredViewController = featuredViewController;
     [self.storeCollectionViewControllers addObject:featuredViewController];
     
+    // Friends.
     FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] initWithDelegate:self];
     friendsViewController.view.frame = featuredViewController.view.frame;
     friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
@@ -150,6 +147,7 @@
     self.friendsViewController = friendsViewController;
     [self.storeCollectionViewControllers addObject:friendsViewController];
     
+    // Suggested.
     SuggestedStoreCollectionViewController *suggestedViewController = [[SuggestedStoreCollectionViewController alloc] initWithDelegate:self];
     suggestedViewController.view.frame = featuredViewController.view.frame;
     suggestedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
@@ -167,14 +165,6 @@
                                     storeTabView.frame.size.height);
     [self.view addSubview:storeTabView];
     self.storeTabView = storeTabView;
-}
-
-- (void)loggedIn:(NSNotification *)notification {
-    [self.storeTabView selectFeatured];
-}
-
-- (void)loggedOut:(NSNotification *)notification {
-    [self.currentStoreCollectionViewController unloadData];
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {

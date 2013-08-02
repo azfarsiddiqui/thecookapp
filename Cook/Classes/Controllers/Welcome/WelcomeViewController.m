@@ -14,12 +14,10 @@
 #import "WelcomeCollectionViewLayout.h"
 #import "PageHeaderView.h"
 #import "CKSignInButtonView.h"
-#import "EventHelper.h"
 
 @interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource,
     CKSignInButtonViewDelegate>
 
-@property (nonatomic, assign) id<WelcomeViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKPagingView *pagingView;
 @property (nonatomic, strong) SignupViewController *signupViewController;
@@ -56,9 +54,8 @@
 #define kPageHeaderSize     CGSizeMake(500.0, 500.0)
 #define kLabelGap           10.0
 
-- (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate {
+- (id)init {
     if (self = [super initWithCollectionViewLayout:[[WelcomeCollectionViewLayout alloc] initWithDataSource:self]]) {
-        self.delegate = delegate;
         self.enabled = YES;
     }
     return self;
@@ -83,9 +80,6 @@
     [self.view insertSubview:coffeeCupView belowSubview:overlayView];
     
     [self initCollectionView];
-    
-    // Register login successful.
-    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
 }
 
 - (void)enable:(BOOL)enable {
@@ -604,13 +598,6 @@
             paragraphStyle, NSParagraphStyleAttributeName,
             shadow, NSShadowAttributeName,
             nil];
-}
-
-- (void)loggedIn:(NSNotification *)notification {
-    BOOL success = [EventHelper loginSuccessfulForNotification:notification];
-    if (success) {
-        [self.delegate welcomeViewControllerLoggedIn];
-    }
 }
 
 @end

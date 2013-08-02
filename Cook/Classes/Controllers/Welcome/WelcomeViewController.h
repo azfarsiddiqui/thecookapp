@@ -8,15 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol WelcomeViewControllerDelegate <NSObject>
-
-- (void)welcomeViewControllerLoggedIn;
-
-@end
-
 @interface WelcomeViewController : UICollectionViewController
 
-- (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate;
 - (void)enable:(BOOL)enable;
 
 @end
