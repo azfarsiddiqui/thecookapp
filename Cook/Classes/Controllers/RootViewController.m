@@ -129,13 +129,19 @@
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                         self.storeViewController.view.alpha = open ? 0.0 : 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    
     if (!open) {
-        
-        // Restore shelf that was hidden in didOpen
         self.storeViewController.view.hidden = NO;
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
-
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -154,9 +160,6 @@
         
         // Inform the helper that coordinates book navigation and any updated recipes.
         [BookNavigationHelper sharedInstance].bookNavigationViewController = bookNavigationViewController;
-        
-        // Hide shelf to reduce visual complexity.
-        self.storeViewController.view.hidden = YES;
         
         // Scale it up the rest of the way to fullscreen.
         bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
@@ -530,6 +533,7 @@
     } else {
         self.storeViewController.view.transform = transform;
     }
+    DLog(@"show[%@] %@", show ? @"YES" : @"NO", NSStringFromCGRect(self.storeViewController.view.frame));
 }
 
 - (void)initViewControllers {
@@ -716,10 +720,7 @@
 - (void)enable:(BOOL)enable {
     DLog(@"enable: %@", enable ? @"YES" : @"NO");
     self.panEnabled = enable;
-    
-    // Show store shelf only in enabled mode.
-    [self showStoreShelf:enable animated:enable];
-    
+
     // Enable/disable benchtop
     [self.benchtopViewController enable:enable];
 }
