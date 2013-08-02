@@ -11,25 +11,20 @@
 #import "ViewHelper.h"
 #import "AppHelper.h"
 #import "UIImage+ProportionalFill.h"
+#import "CKEditingViewHelper.h"
 
 @implementation ViewHelper
 
 + (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector {
-    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_okay.png"]
-                   selectedImage:[UIImage imageNamed:@"cook_btns_okay_onpress.png"]
-                          target:target selector:selector];
+    return [CKEditingViewHelper okayButtonWithTarget:target selector:selector];
 }
 
 + (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector {
-    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_cancel.png"]
-                   selectedImage:[UIImage imageNamed:@"cook_btns_cancel_onpress.png"]
-                          target:target selector:selector];
+    return [CKEditingViewHelper cancelButtonWithTarget:target selector:selector];
 }
 
 + (UIButton *)deleteButtonWithTarget:(id)target selector:(SEL)selector {
-    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_delete.png"]
-                   selectedImage:[UIImage imageNamed:@"cook_btns_delete_onpress.png"]
-                          target:target selector:selector];
+    return [CKEditingViewHelper deleteButtonWithTarget:target selector:selector];
 }
 
 + (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image target:(id)target selector:(SEL)selector {
@@ -46,25 +41,11 @@
 }
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
-    button.userInteractionEnabled = (target != nil && selector != nil);
-    button.autoresizingMask = UIViewAutoresizingNone;
-    return button;
+    return [CKEditingViewHelper buttonWithImage:image target:target selector:selector];
 }
 
 + (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target selector:(SEL)selector {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
-    [button setBackgroundImage:selectedImage forState:UIControlStateHighlighted];
-    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
-    button.userInteractionEnabled = (target != nil && selector != nil);
-    button.autoresizingMask = UIViewAutoresizingNone;
-    return button;
+    return [CKEditingViewHelper buttonWithImage:image selectedImage:selectedImage target:target selector:selector];
 }
 
 +(UIButton *)buttonWithImagePrefix:(NSString *)imagePrefix target:(id)target selector:(SEL)selector
