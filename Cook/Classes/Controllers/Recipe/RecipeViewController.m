@@ -122,6 +122,7 @@ typedef enum {
 #define kWindowBounceOffset     10.0
 #define kPhotoOffset            20.0
 
+#define kNavContainerHeight     100.0
 #define kHeaderHeight           210.0
 #define kContentMaxHeight       468.0
 #define kContentMaxWidth        685.0
@@ -1219,7 +1220,7 @@ typedef enum {
         UIView *navContainerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x,
                                                                             self.view.bounds.origin.y,
                                                                             self.view.bounds.size.width,
-                                                                            kWindowMinHeight)];
+                                                                            kNavContainerHeight)];
         navContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
         [self.view addSubview:navContainerView];
         self.navContainerView = navContainerView;
