@@ -710,7 +710,6 @@
 		76FA9A3D162656AF006EAFBB /* CKLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76FA9A3B162656AF006EAFBB /* CKLoginView.m */; };
 		76FA9A4016267687006EAFBB /* EventHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76FA9A3F16267687006EAFBB /* EventHelper.m */; };
 		8903B56916534D8900BB3E5B /* FacebookUserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8903B56816534D8900BB3E5B /* FacebookUserView.m */; };
-		8904B2C916E6CCB3005CEF90 /* IngredientConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 8904B2C816E6CCB3005CEF90 /* IngredientConstants.m */; };
 		892041AD165099A400765F96 /* cook_book_recipe_imageshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041AB165099A400765F96 /* cook_book_recipe_imageshadow.png */; };
 		892041AE165099A400765F96 /* cook_book_recipe_imageshadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041AC165099A400765F96 /* cook_book_recipe_imageshadow@2x.png */; };
 		892041C916509A5000765F96 /* cook_book_icon_serves.png in Resources */ = {isa = PBXBuildFile; fileRef = 892041C316509A4F00765F96 /* cook_book_icon_serves.png */; };
@@ -728,14 +727,7 @@
 		8938AAB016DF153D001CBC90 /* CKEditableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AA9B16DF153D001CBC90 /* CKEditableView.m */; };
 		8938AAB116DF153D001CBC90 /* CKEditingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AA9D16DF153D001CBC90 /* CKEditingTextField.m */; };
 		8938AAB216DF153D001CBC90 /* CKEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AA9F16DF153D001CBC90 /* CKEditingViewController.m */; };
-		8938AAB316DF153D001CBC90 /* CKTextFieldEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAA116DF153D001CBC90 /* CKTextFieldEditingViewController.m */; };
-		8938AAB416DF153D001CBC90 /* EditableIngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAA316DF153D001CBC90 /* EditableIngredientTableViewCell.m */; };
 		8938AAB516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAA516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m */; };
-		8938AAB616DF153D001CBC90 /* IngredientEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAA716DF153D001CBC90 /* IngredientEditorViewController.m */; };
-		8938AAB716DF153D001CBC90 /* IngredientsEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAA916DF153D001CBC90 /* IngredientsEditingViewController.m */; };
-		8938AAB816DF153D001CBC90 /* IngredientTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAB16DF153D001CBC90 /* IngredientTableViewCell.m */; };
-		8938AAB916DF153D001CBC90 /* ServesCookPrepEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */; };
-		8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */; };
 		893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */; };
 		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
 		8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */; };
@@ -1680,8 +1672,6 @@
 		76FA9A3F16267687006EAFBB /* EventHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventHelper.m; sourceTree = "<group>"; };
 		8903B56716534D8900BB3E5B /* FacebookUserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookUserView.h; sourceTree = "<group>"; };
 		8903B56816534D8900BB3E5B /* FacebookUserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookUserView.m; sourceTree = "<group>"; };
-		8904B2C716E6CCB3005CEF90 /* IngredientConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientConstants.h; sourceTree = "<group>"; };
-		8904B2C816E6CCB3005CEF90 /* IngredientConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientConstants.m; sourceTree = "<group>"; };
 		892041AB165099A400765F96 /* cook_book_recipe_imageshadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_recipe_imageshadow.png; sourceTree = "<group>"; };
 		892041AC165099A400765F96 /* cook_book_recipe_imageshadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_recipe_imageshadow@2x.png"; sourceTree = "<group>"; };
 		892041C316509A4F00765F96 /* cook_book_icon_serves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_icon_serves.png; sourceTree = "<group>"; };
@@ -1709,22 +1699,8 @@
 		8938AA9D16DF153D001CBC90 /* CKEditingTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKEditingTextField.m; sourceTree = "<group>"; };
 		8938AA9E16DF153D001CBC90 /* CKEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingViewController.h; sourceTree = "<group>"; };
 		8938AA9F16DF153D001CBC90 /* CKEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKEditingViewController.m; sourceTree = "<group>"; };
-		8938AAA016DF153D001CBC90 /* CKTextFieldEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTextFieldEditingViewController.h; sourceTree = "<group>"; };
-		8938AAA116DF153D001CBC90 /* CKTextFieldEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextFieldEditingViewController.m; sourceTree = "<group>"; };
-		8938AAA216DF153D001CBC90 /* EditableIngredientTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableIngredientTableViewCell.h; sourceTree = "<group>"; };
-		8938AAA316DF153D001CBC90 /* EditableIngredientTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableIngredientTableViewCell.m; sourceTree = "<group>"; };
-		8938AAA416DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientEditKeyboardAccessoryView.h; sourceTree = "<group>"; };
-		8938AAA516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientEditKeyboardAccessoryView.m; sourceTree = "<group>"; };
-		8938AAA616DF153D001CBC90 /* IngredientEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientEditorViewController.h; sourceTree = "<group>"; };
-		8938AAA716DF153D001CBC90 /* IngredientEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientEditorViewController.m; sourceTree = "<group>"; };
-		8938AAA816DF153D001CBC90 /* IngredientsEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientsEditingViewController.h; sourceTree = "<group>"; };
-		8938AAA916DF153D001CBC90 /* IngredientsEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientsEditingViewController.m; sourceTree = "<group>"; };
-		8938AAAA16DF153D001CBC90 /* IngredientTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientTableViewCell.h; sourceTree = "<group>"; };
-		8938AAAB16DF153D001CBC90 /* IngredientTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientTableViewCell.m; sourceTree = "<group>"; };
-		8938AAAC16DF153D001CBC90 /* ServesCookPrepEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServesCookPrepEditingViewController.h; sourceTree = "<group>"; };
-		8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServesCookPrepEditingViewController.m; sourceTree = "<group>"; };
-		8938AAAE16DF153D001CBC90 /* TextViewEditingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewEditingViewController.h; sourceTree = "<group>"; };
-		8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewEditingViewController.m; sourceTree = "<group>"; };
+		8938AAA416DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IngredientEditKeyboardAccessoryView.h; path = ../CKEditingViewController/IngredientEditKeyboardAccessoryView.h; sourceTree = "<group>"; };
+		8938AAA516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IngredientEditKeyboardAccessoryView.m; path = ../CKEditingViewController/IngredientEditKeyboardAccessoryView.m; sourceTree = "<group>"; };
 		893AB2E116DF18E6000E2AB3 /* CategoryEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryEditViewController.h; sourceTree = "<group>"; };
 		893AB2E216DF18E6000E2AB3 /* CategoryEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryEditViewController.m; sourceTree = "<group>"; };
 		8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_bg.png; sourceTree = "<group>"; };
@@ -2328,6 +2304,8 @@
 				7635A2CD17A9F2A0002F30F2 /* IngredientListEditViewController.m */,
 				7635A2CF17A9F390002F30F2 /* IngredientListCell.h */,
 				7635A2D017A9F390002F30F2 /* IngredientListCell.m */,
+				8938AAA416DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.h */,
+				8938AAA516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -3206,51 +3184,9 @@
 				8938AA9F16DF153D001CBC90 /* CKEditingViewController.m */,
 				8963B5C216F2DAA300A3888C /* EditingOverlayView.h */,
 				8963B5C316F2DAA300A3888C /* EditingOverlayView.m */,
-				8938AABC16DF178B001CBC90 /* ingredientEdit */,
-				8938AABB16DF1742001CBC90 /* servesCookPrep */,
-				893AB2DF16DF1830000E2AB3 /* text */,
 			);
 			name = RecipeAddEdit;
 			path = CKEditingViewController;
-			sourceTree = "<group>";
-		};
-		8938AABB16DF1742001CBC90 /* servesCookPrep */ = {
-			isa = PBXGroup;
-			children = (
-				8938AAAC16DF153D001CBC90 /* ServesCookPrepEditingViewController.h */,
-				8938AAAD16DF153D001CBC90 /* ServesCookPrepEditingViewController.m */,
-			);
-			name = servesCookPrep;
-			sourceTree = "<group>";
-		};
-		8938AABC16DF178B001CBC90 /* ingredientEdit */ = {
-			isa = PBXGroup;
-			children = (
-				8938AAA216DF153D001CBC90 /* EditableIngredientTableViewCell.h */,
-				8938AAA316DF153D001CBC90 /* EditableIngredientTableViewCell.m */,
-				8938AAA416DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.h */,
-				8938AAA516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m */,
-				8938AAA616DF153D001CBC90 /* IngredientEditorViewController.h */,
-				8938AAA716DF153D001CBC90 /* IngredientEditorViewController.m */,
-				8938AAAA16DF153D001CBC90 /* IngredientTableViewCell.h */,
-				8938AAAB16DF153D001CBC90 /* IngredientTableViewCell.m */,
-				8938AAA816DF153D001CBC90 /* IngredientsEditingViewController.h */,
-				8938AAA916DF153D001CBC90 /* IngredientsEditingViewController.m */,
-				8904B2C716E6CCB3005CEF90 /* IngredientConstants.h */,
-				8904B2C816E6CCB3005CEF90 /* IngredientConstants.m */,
-			);
-			name = ingredientEdit;
-			sourceTree = "<group>";
-		};
-		893AB2DF16DF1830000E2AB3 /* text */ = {
-			isa = PBXGroup;
-			children = (
-				8938AAAE16DF153D001CBC90 /* TextViewEditingViewController.h */,
-				8938AAAF16DF153D001CBC90 /* TextViewEditingViewController.m */,
-				8938AAA016DF153D001CBC90 /* CKTextFieldEditingViewController.h */,
-				8938AAA116DF153D001CBC90 /* CKTextFieldEditingViewController.m */,
-			);
-			name = text;
 			sourceTree = "<group>";
 		};
 		893AB2E016DF18B2000E2AB3 /* categories */ = {
@@ -4076,19 +4012,11 @@
 				76C8FAF31796636E00488A80 /* CKRecipeComment.m in Sources */,
 				8938AAB116DF153D001CBC90 /* CKEditingTextField.m in Sources */,
 				8938AAB216DF153D001CBC90 /* CKEditingViewController.m in Sources */,
-				8938AAB316DF153D001CBC90 /* CKTextFieldEditingViewController.m in Sources */,
-				8938AAB416DF153D001CBC90 /* EditableIngredientTableViewCell.m in Sources */,
 				8938AAB516DF153D001CBC90 /* IngredientEditKeyboardAccessoryView.m in Sources */,
-				8938AAB616DF153D001CBC90 /* IngredientEditorViewController.m in Sources */,
-				8938AAB716DF153D001CBC90 /* IngredientsEditingViewController.m in Sources */,
-				8938AAB816DF153D001CBC90 /* IngredientTableViewCell.m in Sources */,
-				8938AAB916DF153D001CBC90 /* ServesCookPrepEditingViewController.m in Sources */,
-				8938AABA16DF153D001CBC90 /* TextViewEditingViewController.m in Sources */,
 				893AB2E316DF18E6000E2AB3 /* CategoryEditViewController.m in Sources */,
 				76A7D43016E4327200118749 /* BookLeftPageDividerView.m in Sources */,
 				76C8FAFC17967C8D00488A80 /* BookSupplementaryContainerView.m in Sources */,
 				76A7D43316E432E600118749 /* BookRightPageDividerView.m in Sources */,
-				8904B2C916E6CCB3005CEF90 /* IngredientConstants.m in Sources */,
 				89655BEA16E81501006D9928 /* CategoryTableViewCell.m in Sources */,
 				76D69AB216E705BB0028E036 /* StoreTabView.m in Sources */,
 				76166F3B16E850950077DE09 /* SuggestedStoreCollectionViewController.m in Sources */,
