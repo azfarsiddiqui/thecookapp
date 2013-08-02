@@ -49,4 +49,12 @@
 // Returns the textbox view for the given editingView.
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView;
 
+// Buttons.
++ (UIButton *)okayButtonWithTarget:(id)target selector:(SEL)selector;
++ (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector;
++ (UIButton *)deleteButtonWithTarget:(id)target selector:(SEL)selector;
++ (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
++ (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target
+                     selector:(SEL)selector;
+
 @end

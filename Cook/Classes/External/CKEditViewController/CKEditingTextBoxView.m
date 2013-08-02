@@ -7,6 +7,7 @@
 //
 
 #import "CKEditingTextBoxView.h"
+#import "CKEditingViewHelper.h"
 
 @interface CKEditingTextBoxView () <UIGestureRecognizerDelegate>
 
@@ -81,12 +82,10 @@
         [self updateEditingView:editingView];
         
         // Save icon to be hidden at first, and positioned in the top-right corner.
-        UIButton *textEditingSaveButton = [CKEditingTextBoxView buttonWithImage:[UIImage imageNamed:@"cook_customise_btns_done.png"]
-                                                                         target:self
-                                                                       selector:@selector(saveTapped:)];
+        UIButton *textEditingSaveButton = [CKEditingViewHelper okayButtonWithTarget:self selector:@selector(saveTapped:)];
         textEditingSaveButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin;
-        textEditingSaveButton.frame = CGRectMake(self.bounds.size.width - textEditingSaveButton.frame.size.width + 4.0,
-                                                 -2.0,
+        textEditingSaveButton.frame = CGRectMake(self.bounds.size.width - textEditingSaveButton.frame.size.width + 10.0,
+                                                 -10.0,
                                                  textEditingSaveButton.frame.size.width,
                                                  textEditingSaveButton.frame.size.height);
         textEditingSaveButton.hidden = YES;

@@ -159,6 +159,39 @@
     return [self.editingViewTextBoxViews objectForKey:[NSValue valueWithNonretainedObject:editingView]];
 }
 
+#pragma mark - Buttons
+
++ (UIButton *)okayButtonWithTarget:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_okay.png"] target:target selector:selector];
+}
+
++ (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_cancel.png"] target:target selector:selector];
+}
+
++ (UIButton *)deleteButtonWithTarget:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_delete.png"] target:target selector:selector];
+}
+
++ (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:image selectedImage:nil target:target selector:selector];
+}
+
++ (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target
+                     selector:(SEL)selector {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    if (selectedImage) {
+        [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
+        [button setBackgroundImage:selectedImage forState:UIControlStateHighlighted];
+    }
+    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
+    button.userInteractionEnabled = (target != nil && selector != nil);
+    button.autoresizingMask = UIViewAutoresizingNone;
+    return button;
+}
+
 #pragma mark - Private methods
 
 - (void)decorateEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets

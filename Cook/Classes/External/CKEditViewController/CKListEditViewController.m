@@ -557,8 +557,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (UIButton *)cancelButton {
     if (!_cancelButton) {
-        _cancelButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_cancel.png"] target:self
-                                       action:@selector(cancelTapped:)];
+        _cancelButton = [CKEditingViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
         _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         _cancelButton.frame = CGRectMake(kButtonOffset.x,
                                          kButtonOffset.y,
@@ -570,8 +569,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (UIButton *)saveButton {
     if (!_saveButton) {
-        _saveButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_okay.png"] target:self
-                                     action:@selector(saveTapped:)];
+        _saveButton = [CKEditingViewHelper okayButtonWithTarget:self selector:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         _saveButton.frame = CGRectMake(self.view.bounds.size.width - kButtonOffset.x - _saveButton.frame.size.width,
                                        kButtonOffset.y,
