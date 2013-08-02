@@ -65,7 +65,14 @@
     [super viewDidLoad];
     
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
-    self.view.backgroundColor = [UIColor clearColor];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    // Background texture.
+    UIImageView *backgroundTextureView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
+    backgroundTextureView.center = self.view.center;
+    backgroundTextureView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [self.view insertSubview:backgroundTextureView belowSubview:self.collectionView];
     
     // Underlay.
     UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
