@@ -557,14 +557,6 @@
         [overlayView addSubview:deleteButton];
         deleteButton.alpha = 0.0;
         self.deleteButton = deleteButton;
-        
-        // Watch the cell frame.
-        [self.collectionView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
-        
-    } else {
-        
-        // Remove observer.
-        [self.collectionView removeObserver:self forKeyPath:@"contentOffset"];
     }
     
     [UIView animateWithDuration:0.3
