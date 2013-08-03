@@ -154,13 +154,15 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
-    if (self.pages) {
-        numItems = [self.pages count];
-        
-        if ([self.book isOwner]) {
-             numItems += 1; // Plus add cell.
-        }
+    
+    // Number of pages.
+    numItems += [self.pages count];
+    
+    // Add cell if I'm the owner.
+    if ([self.book isOwner]) {
+        numItems += 1; // Plus add cell.
     }
+    
     return numItems;
 }
 
