@@ -32,7 +32,7 @@
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
-#import "CategoryListEditViewController.h"
+#import "PageListEditViewController.h"
 #import "IngredientListEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
@@ -300,26 +300,16 @@ typedef enum {
         
     } else if (editingView == self.categoryLabel) {
         
-        // Get the current category from the book, check from currentCategories first which is populated by the
-        // category list editor. Otherwise, default to current label.
-//        CKCategory *currentCategory = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
-//            return [self.categoryLabel.text CK_equalsIgnoreCase:category.name];
-//        }];
-//        if (currentCategory == nil) {
-//            currentCategory = self.recipe.category;
-//        }
-//        
-//        CategoryListEditViewController *editViewController = [[CategoryListEditViewController alloc] initWithEditView:self.categoryLabel
-//                                                                                                                 book:self.book
-//                                                                                                     selectedCategory:currentCategory
-//                                                                                                             delegate:self
-//                                                                                                        editingHelper:self.editingHelper
-//                                                                                                                white:YES];
-//        editViewController.canAddItems = NO;
-//        editViewController.canDeleteItems = NO;
-//        editViewController.canReorderItems = NO;
-//        [editViewController performEditing:YES];
-//        self.editViewController = editViewController;
+        PageListEditViewController *editViewController = [[PageListEditViewController alloc] initWithEditView:self.categoryLabel
+                                                                                                       recipe:self.recipe
+                                                                                                     delegate:self
+                                                                                                editingHelper:self.editingHelper
+                                                                                                        white:YES];
+        editViewController.canAddItems = NO;
+        editViewController.canDeleteItems = NO;
+        editViewController.canReorderItems = NO;
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
         
     } else if (editingView == self.storyLabel) {
         
@@ -400,7 +390,7 @@ typedef enum {
     if (editingView == self.titleLabel) {
         [self saveTitleValue:value];
     } else if (editingView == self.categoryLabel) {
-        [self saveCategoryValue:value];
+        [self savePageValue:value];
     } else if (editingView == self.storyLabel) {
         [self saveStoryValue:value];
     } else if (editingView == self.servesCookView) {
@@ -1627,37 +1617,25 @@ typedef enum {
     }
 }
 
-- (void)saveCategoryValue:(id)value {
+- (void)savePageValue:(id)value {
     
-//    CKCategory *selectedCategory = (CKCategory *)value;
-//    NSArray *categories = [self.editViewController updatedValue];
-//    
-//    // Check if category has changed.
-//    if (![selectedCategory.name isEqualToString:self.categoryLabel.text]) {
-//        
-//        // Save it in the clipboard too.
-//        self.clipboard.category = selectedCategory;
-//        
-//        // Mark save is required.
-//        self.saveRequired = YES;
-//        
-//        // Update category.
-//        [self setPage:selectedCategory.name];
-//        
-//        // Update the editing wrapper.
-//        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
-//        
-//    }
-//    
-//    // Check if all categories need to be saved.
-//    if ([self categoriesNeedSaving:categories]) {
-//        
-//        // Save it in the clipboard first.
-//        self.clipboard.categories = categories;
-//        
-//        // Mark save is required.
-//        self.saveRequired = YES;
-//    }
+    NSString *selectedPage = value;
+    
+    // CHeck if page has changed.
+    if (![self.categoryLabel.text isEqualToString:selectedPage]) {
+        
+        // Save it in the clipboard too.
+        self.clipboard.page = selectedPage;
+        
+        // Mark save is required.
+        self.saveRequired = YES;
+        
+        // Update page label.
+        [self setPage:selectedPage];
+        
+        // Update the editing wrapper.
+        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
+    }
     
 }
 

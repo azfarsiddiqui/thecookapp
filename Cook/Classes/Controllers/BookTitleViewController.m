@@ -156,7 +156,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
     // Number of pages.
-    if ([self.pages count] > 0) {
+    if (self.pages) {
         
         numItems += [self.pages count];
         

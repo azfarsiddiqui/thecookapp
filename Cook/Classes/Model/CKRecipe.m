@@ -28,7 +28,6 @@
 @synthesize user = _user;
 @synthesize privacy = _privacy;
 @synthesize method = _method;
-@synthesize page = _page;
 @synthesize story = _story;
 @synthesize numServes = _numServes;
 @synthesize prepTimeInMinutes = _prepTimeInMinutes;
@@ -423,10 +422,7 @@
 }
 
 - (NSString *)page {
-    if (!_page) {
-        _page = [self.parseObject objectForKey:kRecipeAttrPage];
-    }
-    return _page;
+    return [self.parseObject objectForKey:kRecipeAttrPage];
 }
 
 - (void)setPage:(NSString *)page {

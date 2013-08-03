@@ -45,7 +45,6 @@
 - (void)saveWithImage:(UIImage *)image startProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
              progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure;
-- (void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 // Likes
 - (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
