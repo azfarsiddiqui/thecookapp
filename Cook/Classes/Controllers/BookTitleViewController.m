@@ -74,7 +74,7 @@
     
     // Add cell.
     if ([self.book isOwner]) {
-        [pageIndexPaths addObject:[NSIndexPath indexPathForItem:[self.pages count] inSection:0]];
+        [pageIndexPaths addObject:[NSIndexPath indexPathForItem:[pageIndexPaths count] inSection:0]];
     }
     
     [self.collectionView insertItemsAtIndexPaths:pageIndexPaths];
@@ -156,11 +156,14 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
     // Number of pages.
-    numItems += [self.pages count];
-    
-    // Add cell if I'm the owner.
-    if ([self.book isOwner]) {
-        numItems += 1; // Plus add cell.
+    if ([self.pages count] > 0) {
+        
+        numItems += [self.pages count];
+        
+        // Add cell if I'm the owner.
+        if ([self.book isOwner]) {
+            numItems += 1; // Plus add cell.
+        }
     }
     
     return numItems;

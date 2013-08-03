@@ -534,16 +534,14 @@
 }
 
 - (void)loadTitlePage {
-    if ([self.pages count] > 0) {
-        
-        // Load the pages.
-        [self.titleViewController configurePages:self.pages];
-        
-        // Load the hero recipe.
-        NSString *page = [self.pages objectAtIndex:arc4random_uniform([self.pages count])];
-        self.featuredRecipe = [self featuredRecipeForPage:page];
-        [self.titleViewController configureHeroRecipe:self.featuredRecipe];
-    }
+    
+    // Load the pages.
+    [self.titleViewController configurePages:self.pages];
+    
+    // Load the hero recipe.
+    NSString *page = [self.pages objectAtIndex:arc4random_uniform([self.pages count])];
+    self.featuredRecipe = [self featuredRecipeForPage:page];
+    [self.titleViewController configureHeroRecipe:self.featuredRecipe];
 }
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
