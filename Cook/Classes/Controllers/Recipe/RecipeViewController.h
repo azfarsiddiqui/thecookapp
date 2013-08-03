@@ -11,12 +11,11 @@
 
 @class CKRecipe;
 @class CKBook;
-@class CKCategory;
 
 @interface RecipeViewController : UIViewController <BookModalViewController>
 
-// Create new recipe in the given book and category.
-- (id)initWithBook:(CKBook *)book category:(CKCategory *)category;
+// Create new recipe in the given book and page.
+- (id)initWithBook:(CKBook *)book page:(NSString *)page;
 
 // Create with the given recipe and book.
 - (id)initWithRecipe:(CKRecipe *)recipe;

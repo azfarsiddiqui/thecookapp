@@ -9,13 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @class CKRecipe;
-@class CKCategory;
 
 @protocol BookNavigationViewControllerDelegate
 
 - (void)bookNavigationControllerCloseRequested;
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe;
-- (void)bookNavigationControllerAddRecipeRequestedForCategory:(CKCategory *)category;
+- (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page;
 - (UIView *)bookNavigationSnapshot;
 
 @end

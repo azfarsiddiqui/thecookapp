@@ -9,7 +9,6 @@
 #import "CKModel.h"
 #import "CKUser.h"
 #import "CKBook.h"
-#import "CKCategory.h"
 
 @class CKRecipeImage;
 
@@ -19,7 +18,7 @@
 @property(nonatomic, strong) CKUser *user;
 
 @property (nonatomic, assign) BOOL privacy;
-@property(nonatomic, strong) CKCategory *category;
+@property (nonatomic, strong) NSString *page;
 @property (nonatomic, strong) NSString *story;
 @property (nonatomic, strong) NSString *method;
 
@@ -35,11 +34,10 @@
 
 // Creation
 + (CKRecipe *)recipeForBook:(CKBook *)book;
-+ (CKRecipe *)recipeForBook:(CKBook *)book category:(CKCategory *)category;
++ (CKRecipe *)recipeForBook:(CKBook *)book page:(NSString *)page;
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user;
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
 + (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book;
-+ (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category;
 
 // Save
 - (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
@@ -47,7 +45,6 @@
 - (void)saveWithImage:(UIImage *)image startProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
              progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure;
-- (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure imageUploadProgress:(ProgressBlock)imageUploadProgress;
 - (void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 // Likes
@@ -59,9 +56,6 @@
 - (void)comment:(NSString *)comment user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)numCommentsWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)commentsWithCompletion:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
-
-// Fetch
-- (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess;
 
 - (void)setImage:(UIImage *)image;
 - (PFFile *)imageFile;

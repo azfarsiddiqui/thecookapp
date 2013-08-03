@@ -6,9 +6,8 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookCategoryViewController.h"
+#import "BookContentViewController.h"
 #import "CKBook.h"
-#import "CKCategory.h"
 #import "CKRecipe.h"
 #import "BookCategoryLayout.h"
 #import "ParsePhotoStore.h"
@@ -17,12 +16,12 @@
 #import "BookHeaderView.h"
 #import "ViewHelper.h"
 
-@interface BookCategoryViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (nonatomic, weak) id<BookCategoryViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<BookContentViewControllerDelegate> delegate;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) CKCategory *category;
+@property (nonatomic, strong) NSString *page;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) NSMutableArray *recipes;
 
@@ -31,17 +30,17 @@
 
 @end
 
-@implementation BookCategoryViewController
+@implementation BookContentViewController
 
 #define kRecipeCellId       @"RecipeCellId"
-#define kCategoryHeaderId   @"CategoryHeaderId"
+#define kContentHeaderId    @"ContentHeaderId"
 
-- (id)initWithBook:(CKBook *)book category:(CKCategory *)category delegate:(id<BookCategoryViewControllerDelegate>)delegate {
+- (id)initWithBook:(CKBook *)book page:(NSString *)page delegate:(id<BookContentViewControllerDelegate>)delegate {
     
     if (self = [super init]) {
         self.delegate = delegate;
         self.book = book;
-        self.category = category;
+        self.page = page;
         self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
@@ -55,10 +54,8 @@
 }
 
 - (void)loadData {
-    self.recipes = [NSMutableArray arrayWithArray:[self.delegate
-                                                   recipesForBookCategoryViewControllerForCategory:self.category]];
+    self.recipes = [NSMutableArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
-//    [self loadFeaturedRecipe];
 }
 
 - (CGPoint)currentScrollOffset {
@@ -130,8 +127,8 @@
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
            viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
-    BookHeaderView *bookHeaderView = (BookHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId forIndexPath:indexPath];
-    [bookHeaderView configureTitle:self.category.name];
+    BookHeaderView *bookHeaderView = (BookHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId forIndexPath:indexPath];
+    [bookHeaderView configureTitle:self.page];
     
     // Keep a reference of it around so we can fade it out later.
     self.bookHeaderView = bookHeaderView;
@@ -159,11 +156,11 @@
     self.collectionView = collectionView;
     
     [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
-    [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
+    [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
 }
 
 - (void)loadFeaturedRecipe {
-    CKRecipe *featuredRecipe = [self.delegate featuredRecipeForBookCategoryViewControllerForCategory:self.category];
+    CKRecipe *featuredRecipe = [self.delegate featuredRecipeForBookContentViewControllerForPage:self.page];
     [self.photoStore imageForParseFile:[featuredRecipe imageFile]
                                   size:self.imageView.bounds.size
                             completion:^(UIImage *image) {
@@ -193,26 +190,11 @@
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
     CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
     [self.bookPageDelegate bookPageViewControllerShowRecipe:recipe];
-    
-//    [UIView animateWithDuration:0.2
-//                          delay:0.0
-//                        options:UIViewAnimationOptionCurveEaseIn
-//                     animations:^{
-//                         self.bookHeaderView.alpha = 0.0;
-//                         
-//                         for (UICollectionViewCell *cell in [self.collectionView visibleCells]) {
-//                             cell.alpha = 0.0;
-//                         }
-//                         
-//                     }
-//                     completion:^(BOOL finished) {
-//                         [self.bookPageDelegate bookPageViewControllerShowRecipe:recipe];
-//                     }];
 }
 
 - (void)applyScrollingEffectsOnCategoryView {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    [self.delegate bookCategoryViewControllerScrolledOffset:visibleFrame.origin.y category:self.category];
+    [self.delegate bookContentViewControllerScrolledOffset:visibleFrame.origin.y page:self.page];
 }
 
 @end

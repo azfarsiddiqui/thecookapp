@@ -65,6 +65,7 @@ NSString *const kBookAttrCover                  = @"cover";
 NSString *const kBookAttrIllustration           = @"illustration";
 NSString *const kBookAttrCaption                = @"caption";
 NSString *const kBookAttrNumRecipes             = @"numRecipes";
+NSString *const kBookAttrPages                  = @"pages";
 NSString *const kBookAttrCategories             = @"categories";
 NSString *const kBookAttrAuthor                 = @"author";
 NSString *const kBookAttrFeatured               = @"featured";
@@ -77,6 +78,7 @@ NSString *const kBookAttrStory                  = @"story";
 
 NSString *const kRecipeModelName                = @"Recipe";
 NSString *const kRecipeModelForeignKeyName      = @"recipe";
+NSString *const kRecipeAttrPage                 = @"page";
 NSString *const kRecipeAttrStory                = @"story";
 NSString *const kRecipeAttrDescription          = @"description";
 NSString *const kRecipeAttrCategoryIndex        = @"categoryIndex";

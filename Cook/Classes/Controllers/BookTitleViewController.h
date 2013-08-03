@@ -15,10 +15,10 @@
 
 @protocol BookTitleViewControllerDelegate <NSObject>
 
-- (CKRecipe *)bookTitleFeaturedRecipeForCategory:(CKCategory *)category;
-- (NSInteger)bookTitleNumRecipesForCategory:(CKCategory *)category;
-- (void)bookTitleSelectedCategory:(CKCategory *)category;
-- (void)bookTitleUpdatedOrderOfCategories:(NSArray *)categories;
+- (CKRecipe *)bookTitleFeaturedRecipeForPage:(NSString *)page;
+- (NSInteger)bookTitleNumRecipesForPage:(NSString *)page;
+- (void)bookTitleSelectedPage:(NSString *)page;
+- (void)bookTitleUpdatedOrderOfPages:(NSArray *)pages;
 
 @end
 
@@ -26,7 +26,7 @@
 @interface BookTitleViewController : BookPageViewController
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate;
-- (void)configureCategories:(NSArray *)categories;
+- (void)configurePages:(NSArray *)pages;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;
 
 @end

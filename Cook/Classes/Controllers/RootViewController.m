@@ -193,7 +193,7 @@
 }
 
 - (CGPoint)bookCoverCenterPoint {
-//    return self.
+    return self.view.center;
 }
 
 #pragma mark - BookNavigationViewControllerDelegate methods
@@ -216,8 +216,8 @@
     [self viewRecipe:recipe];
 }
 
-- (void)bookNavigationControllerAddRecipeRequestedForCategory:(CKCategory *)category {
-    [self addRecipeForBook:self.selectedBook category:category];
+- (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page {
+    [self addRecipeForBook:self.selectedBook page:page];
 }
 
 - (UIView *)bookNavigationSnapshot {
@@ -614,9 +614,9 @@
     [self showModalViewController:recipeViewController];
 }
 
-- (void)addRecipeForBook:(CKBook *)book category:(CKCategory *)category {
+- (void)addRecipeForBook:(CKBook *)book page:(NSString *)page {
     RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithBook:self.selectedBook
-                                                                                   category:category];
+                                                                                       page:page];
     [self showModalViewController:recipeViewController];
 }
 

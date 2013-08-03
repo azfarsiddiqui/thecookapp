@@ -9,7 +9,6 @@
 #import "BookNavigationStackViewController.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
-#import "CKCategory.h"
 #import "CKUser.h"
 #import "BookPagingStackLayout.h"
 #import "ParsePhotoStore.h"
@@ -20,27 +19,27 @@
 #import "BookNavigationView.h"
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
-#import "BookCategoryViewController.h"
+#import "BookContentViewController.h"
 #import "ViewHelper.h"
-#import "BookCategoryImageView.h"
+#import "BookContentImageView.h"
 #import "NSString+Utilities.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
-    BookCategoryViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
+    BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
     UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
 @property (nonatomic, strong) CKRecipe *saveOrUpdatedRecipe;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
-@property (nonatomic, strong) NSMutableArray *categories;
+@property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *recipes;
-@property (nonatomic, strong) NSMutableDictionary *categoryRecipes;
+@property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *categoryControllers;
-@property (nonatomic, strong) NSMutableDictionary *categoryHeaderViews;
-@property (nonatomic, strong) NSMutableDictionary *categoryFeaturedRecipes;
+@property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
+@property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
-@property (nonatomic, assign) BOOL updateCategories;
+@property (nonatomic, assign) BOOL updatePages;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -64,12 +63,12 @@
 #define kIndexSection               1
 #define kProfileCellId              @"ProfileCellId"
 #define kIndexCellId                @"IndexCellId"
-#define kCategoryCellId             @"CategoryCellId"
-#define kCategoryHeaderId           @"CategoryHeaderId"
+#define kContentCellId              @"ContentCellId"
+#define kContentHeaderId            @"ContentHeaderId"
 #define kProfileHeaderId            @"ProfileHeaderId"
 #define kNavigationHeaderId         @"NavigationHeaderId"
 #define kBookOutlineHeaderId        @"BookOutlineHeaderId"
-#define kCategoryViewTag            460
+#define kContentViewTag             460
 #define kBookOutlineOffset          (UIOffset){-64.0, -26.0}
 #define kBookOutlineSnapshotWidth   400.0
 
@@ -117,7 +116,7 @@
 }
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
-    DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.category);
+    DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
     // Check if this was a new recipe, in which case add it to the recipes list
     if (![self.recipes detect:^BOOL(CKRecipe *existingRecipe) {
@@ -193,55 +192,54 @@
     return [CKBookCover colourForCover:self.book.cover];
 }
 
-#pragma mark - BookCategoryViewControllerDelegate methods
+#pragma mark - BookContentViewControllerDelegate methods
 
-- (NSArray *)recipesForBookCategoryViewControllerForCategory:(CKCategory *)category {
-    NSString *categoryKey = [self keyForCategory:category];
-    return [self.categoryRecipes objectForKey:categoryKey];
+- (NSArray *)recipesForBookContentViewControllerForPage:(NSString *)page {
+    return [self.pageRecipes objectForKey:page];
 }
 
-- (CKRecipe *)featuredRecipeForBookCategoryViewControllerForCategory:(CKCategory *)category {
-    return [self featuredRecipeForCategory:category];
+- (CKRecipe *)featuredRecipeForBookContentViewControllerForPage:(NSString *)page {
+    return [self featuredRecipeForPage:page];
 }
 
-- (void)bookCategoryViewControllerScrolledOffset:(CGFloat)offset category:(CKCategory *)category {
-    BookCategoryImageView *categoryHeaderView = [self.categoryHeaderViews objectForKey:[self keyForCategory:category]];
-    [categoryHeaderView applyOffset:offset];
+- (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page {
+    BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
+    [contentHeaderView applyOffset:offset];
 }
 
 #pragma mark - BookTitleViewControllerDelegate methods
 
-- (CKRecipe *)bookTitleFeaturedRecipeForCategory:(CKCategory *)category {
-    return [self featuredRecipeForCategory:category];
+- (CKRecipe *)bookTitleFeaturedRecipeForPage:(NSString *)page {
+    return [self featuredRecipeForPage:page];
 }
 
-- (NSInteger)bookTitleNumRecipesForCategory:(CKCategory *)category {
-    NSArray *categoryRecipes = [self.categoryRecipes objectForKey:[self keyForCategory:category]];
-    return [categoryRecipes count];
+- (NSInteger)bookTitleNumRecipesForPage:(NSString *)page {
+    NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
+    return [pageRecipes count];
 }
 
-- (void)bookTitleSelectedCategory:(CKCategory *)category {
-    [self scrollToCategory:category animated:YES];
+- (void)bookTitleSelectedPage:(NSString *)page {
+    [self scrollToPage:page animated:YES];
 }
 
-- (void)bookTitleUpdatedOrderOfCategories:(NSArray *)categories {
-    BOOL orderChanged = [self orderChangedForCategories:categories];
-    DLog(@"Categories order changed: %@", [NSString CK_stringForBoolean:orderChanged]);
+- (void)bookTitleUpdatedOrderOfPages:(NSArray *)pages {
+    BOOL orderChanged = [self orderChangedForPages:pages];
+    DLog(@"Pages order changed: %@", [NSString CK_stringForBoolean:orderChanged]);
     if (orderChanged) {
         
         // Mark to update categories on backend.
-        self.updateCategories = YES;
-        self.categories = [NSMutableArray arrayWithArray:categories];
+        self.updatePages = YES;
+        self.pages = [NSMutableArray arrayWithArray:pages];
         
-        // Now relayout the category pages.
+        // Now relayout the content pages.
         [[self currentLayout] setNeedsRelayout:YES];
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
-            [self stackCategoryStartSection], [self.categories count]
+            [self stackContentStartSection], [self.pages count]
         }]];
         
     }
-    
 }
+
 
 #pragma mark - BookPagingStackLayoutDelegate methods
 
@@ -252,9 +250,9 @@
         // If we have an actioned recipe, then navigate there.
         if (self.saveOrUpdatedRecipe) {
             
-            // Get the index of the category within the book.
-            CKCategory *category = self.saveOrUpdatedRecipe.category;
-            [self scrollToCategory:category animated:NO];
+            // Get the index of the page within the book.
+            NSString *page = self.saveOrUpdatedRecipe.page;
+            [self scrollToPage:page animated:NO];
             
         }
         
@@ -275,7 +273,7 @@
     [self applyLeftBookEdgeOutline];
     
     // Right book edge only after it has been opened.
-    if ([self numberOfSectionsInCollectionView:self.collectionView] >= [self stackCategoryStartSection]) {
+    if ([self numberOfSectionsInCollectionView:self.collectionView] >= [self stackContentStartSection]) {
         [self applyRightBookEdgeOutline];
     }
 }
@@ -284,7 +282,7 @@
     return BookPagingStackLayoutTypeSlideOneWay;
 }
 
-- (NSInteger)stackCategoryStartSection {
+- (NSInteger)stackContentStartSection {
     return kIndexSection + 1;
 }
 
@@ -311,7 +309,7 @@
     
     numSections += 1;                       // Profile page.
     numSections += 1;                       // Index page.
-    numSections += [self.categories count]; // Category pages.
+    numSections += [self.pages count];      // Content pages.
     
     return numSections;
 }
@@ -332,8 +330,8 @@
         
         if (indexPath.section == kProfileSection) {
             headerView = [self profileHeaderViewAtIndexPath:indexPath];
-        } else if (indexPath.section >= [self stackCategoryStartSection]) {
-            headerView = [self categoryHeaderViewAtIndexPath:indexPath];
+        } else if (indexPath.section >= [self stackContentStartSection]) {
+            headerView = [self contentHeaderViewAtIndexPath:indexPath];
         }
         
     } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
@@ -356,7 +354,7 @@
     } else if (indexPath.section == kIndexSection) {
         cell = [self indexCellAtIndexPath:indexPath];
     } else {
-        cell = [self categoryCellAtIndexPath:indexPath];
+        cell = [self contentCellAtIndexPath:indexPath];
     }
     
     return cell;
@@ -365,13 +363,13 @@
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
       forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
-    // Remove a reference to the category image view.
-    if (indexPath.section >= [self stackCategoryStartSection]
+    // Remove a reference to the content image view.
+    if (indexPath.section >= [self stackContentStartSection]
         && [elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         
-        NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
-        CKCategory *category = [self.categories objectAtIndex:categoryIndex];
-        [self.categoryHeaderViews removeObjectForKey:[self keyForCategory:category]];
+        NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+        NSString *page = [self.pages objectAtIndex:pageIndex];
+        [self.pageHeaderViews removeObjectForKey:page];
     }
     
 }
@@ -473,13 +471,13 @@
     
     // Headers
     [self.collectionView registerClass:[BookProfileHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kProfileHeaderId];
-    [self.collectionView registerClass:[BookCategoryImageView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCategoryHeaderId];
+    [self.collectionView registerClass:[BookContentImageView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
     [self.collectionView registerClass:[BookNavigationView class] forSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind] withReuseIdentifier:kNavigationHeaderId];
     
     // Profile, Index, Category.
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kIndexCellId];
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kCategoryCellId];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kContentCellId];
 }
 
 - (void)loadData {
@@ -487,6 +485,7 @@
     
     // Fetch all recipes for the book, and categorise them.
     [self.book fetchRecipesSuccess:^(NSArray *recipes){
+        
         self.recipes = [NSMutableArray arrayWithArray:recipes];
         
         // Mark layout needs to be re-generated.
@@ -495,11 +494,6 @@
         [self loadRecipes];
         [self loadTitlePage];
         
-        // Preload categories for edit/creation if it's my own book.
-        if ([self.book isUserBookAuthor:[CKUser currentUser]]) {
-            [self.book prefetchCategoriesInBackground];
-        }
-        
     } failure:^(NSError *error) {
         DLog(@"Error %@", [error localizedDescription]);
     }];
@@ -507,66 +501,47 @@
 }
 
 - (void)loadRecipes {
-    self.categoryRecipes = [NSMutableDictionary dictionary];
-    self.categories = [NSMutableArray array];
-    self.categoryHeaderViews = [NSMutableDictionary dictionary];
-    self.categoryFeaturedRecipes = [NSMutableDictionary dictionary];
+    self.pageRecipes = [NSMutableDictionary dictionary];
+    self.pageHeaderViews = [NSMutableDictionary dictionary];
+    self.pageFeaturedRecipes = [NSMutableDictionary dictionary];
     
+    // Keep a reference of pages.
+    self.pages = [NSMutableArray arrayWithArray:self.book.pages];
+    
+    // Loop through and gather recipes for each page.
     for (CKRecipe *recipe in self.recipes) {
         
-        CKCategory *category = recipe.category;
-        NSString *categoryKey = [self keyForCategory:category];
-        
-        if (![self.categories detect:^BOOL(CKCategory *existingCategory) {
-            NSString *currentCategoryKey = [self keyForCategory:existingCategory];
-            return [currentCategoryKey isEqualToString:categoryKey];
-            
-        }]) {
-            
-            NSMutableArray *recipes = [NSMutableArray arrayWithObject:recipe];
-            [self.categoryRecipes setObject:recipes forKey:categoryKey];
-            [self.categories addObject:category];
-            
-        } else {
-            
-            NSMutableArray *recipes = [self.categoryRecipes objectForKey:categoryKey];
-            [recipes addObject:recipe];
+        NSString *page = recipe.page;
+        NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
+        if (!pageRecipes) {
+            pageRecipes = [NSMutableArray array];
+            [self.pageRecipes setObject:pageRecipes forKey:page];
         }
-        
-    }
-    
-    // Sort the categories and extract category name list.
-    NSSortDescriptor *categoryOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
-    [self.categories sortUsingDescriptors:@[categoryOrder]];
-
-    // Update the categories for the book if we don't have network loaded categories.
-    if ([self.book.currentCategories count] == 0) {
-        self.book.currentCategories = self.categories;
+        [pageRecipes addObject:recipe];
     }
     
     // Initialise the categoryControllers
-    self.categoryControllers = [NSMutableDictionary dictionaryWithCapacity:[self.categories count]];
+    self.categoryControllers = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
     
     // Now reload the categories.
-    if ([self.categories count] > 0) {
+    if ([self.pages count] > 0) {
         
         // Now relayout the category pages.
         [[self currentLayout] setNeedsRelayout:YES];
         [self.collectionView reloadData];
         
     }
-    
 }
 
 - (void)loadTitlePage {
-    if ([self.categories count] > 0) {
+    if ([self.pages count] > 0) {
         
-        // Load the categories.
-        [self.titleViewController configureCategories:self.categories];
+        // Load the pages.
+        [self.titleViewController configurePages:self.pages];
         
         // Load the hero recipe.
-        CKCategory *randomCategory = [self.categories objectAtIndex:arc4random_uniform([self.categories count])];
-        self.featuredRecipe = [self featuredRecipeForCategory:randomCategory];
+        NSString *page = [self.pages objectAtIndex:arc4random_uniform([self.pages count])];
+        self.featuredRecipe = [self featuredRecipeForPage:page];
         [self.titleViewController configureHeroRecipe:self.featuredRecipe];
     }
 }
@@ -589,38 +564,37 @@
     return indexCell;
 }
 
-- (UICollectionViewCell *)categoryCellAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *categoryCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kCategoryCellId
+- (UICollectionViewCell *)contentCellAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *categoryCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kContentCellId
                                                                                         forIndexPath:indexPath];
-    NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
-    CKCategory *category = [self.categories objectAtIndex:categoryIndex];
-    NSString *categoryKey = [self keyForCategory:category];
+    NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+    NSString *page = [self.pages objectAtIndex:pageIndex];
     
     // Load or create categoryController.
-    BookCategoryViewController *categoryController = [self.categoryControllers objectForKey:categoryKey];
+    BookContentViewController *categoryController = [self.categoryControllers objectForKey:page];
     if (!categoryController) {
-        DLog(@"Create category VC for [%@]", category.name);
-        categoryController = [[BookCategoryViewController alloc] initWithBook:self.book category:category delegate:self];
+        DLog(@"Create page VC for [%@]", page);
+        categoryController = [[BookContentViewController alloc] initWithBook:self.book page:page delegate:self];
         categoryController.bookPageDelegate = self;
-        [self.categoryControllers setObject:categoryController forKey:categoryKey];
+        [self.categoryControllers setObject:categoryController forKey:page];
     } else {
-        DLog(@"Reusing category VC for [%@]", category.name);
+        DLog(@"Reusing page VC for [%@]", page);
     }
     
-    // Unload existing category view.
-    UIView *categoryView = [categoryCell.contentView viewWithTag:kCategoryViewTag];
-    [categoryView removeFromSuperview];
+    // Unload existing page view.
+    UIView *contentView = [categoryCell.contentView viewWithTag:kContentViewTag];
+    [contentView removeFromSuperview];
     
     // Load the current category view.
     categoryController.view.frame = categoryCell.contentView.bounds;
-    categoryController.view.tag = kCategoryViewTag;
+    categoryController.view.tag = kContentViewTag;
     [categoryCell.contentView addSubview:categoryController.view];
     
     return categoryCell;
 }
 
-- (CKCategory *)currentCategory {
-    CKCategory *category = nil;
+- (NSString *)currentPage {
+    NSString *page = nil;
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     BookPagingStackLayout *layout = [self currentLayout];
     
@@ -629,26 +603,22 @@
         
         // This only returns cells not supplementary/decoration views.
         for (NSIndexPath *indexPath in visibleIndexPaths) {
-            if (indexPath.section >= [self stackCategoryStartSection]) {
+            if (indexPath.section >= [self stackContentStartSection]) {
                 
-                NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
+                NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
                 
                 // Look for an indexPath that equals the visibleFrame, i.e. current category page in view.
                 CGFloat pageOffset = [layout pageOffsetForIndexPath:indexPath];
                 if (pageOffset == visibleFrame.origin.x) {
-                    if (categoryIndex < [self.categories count]) {
-                        category = [self.categories objectAtIndex:categoryIndex];
+                    if (pageIndex < [self.pages count]) {
+                        page = [self.pages objectAtIndex:pageIndex];
                     }
                 }
             }
         }
         
     }
-    return category;
-}
-
-- (NSString *)keyForCategory:(CKCategory *)category {
-    return category.objectId;
+    return page;
 }
 
 - (NSArray *)recipesWithPhotos:(NSArray *)recipes {
@@ -657,15 +627,14 @@
     }];
 }
 
-- (CKRecipe *)featuredRecipeForCategory:(CKCategory *)category {
-    NSString *categoryKey = [self keyForCategory:category];
-    CKRecipe *featuredRecipe = [self.categoryFeaturedRecipes objectForKey:categoryKey];
+- (CKRecipe *)featuredRecipeForPage:(NSString *)page {
+    CKRecipe *featuredRecipe = [self.pageFeaturedRecipes objectForKey:page];
     if (!featuredRecipe) {
-        NSArray *recipes = [self.categoryRecipes objectForKey:[self keyForCategory:category]];
+        NSArray *recipes = [self.pageRecipes objectForKey:page];
         NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
         if ([recipesWithPhotos count] > 0) {
             featuredRecipe = [recipes objectAtIndex:arc4random_uniform([recipes count])];
-            [self.categoryFeaturedRecipes setObject:featuredRecipe forKey:categoryKey];
+            [self.pageFeaturedRecipes setObject:featuredRecipe forKey:page];
         }
     }
     return featuredRecipe;
@@ -682,24 +651,24 @@
     } animated:YES];
 }
 
-- (void)configureImageForHeaderView:(BookCategoryImageView *)categoryHeaderView recipe:(CKRecipe *)recipe
+- (void)configureImageForHeaderView:(BookContentImageView *)contentHeaderView recipe:(CKRecipe *)recipe
                           indexPath:(NSIndexPath *)indexPath {
     
     if ([recipe hasPhotos]) {
         [self.photoStore imageForParseFile:[recipe imageFile]
-                                      size:categoryHeaderView.frame.size
+                                      size:contentHeaderView.frame.size
                                  indexPath:indexPath
                                 completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
                                     if ([indexPath isEqual:completedIndexPath]) {
-                                        [categoryHeaderView configureImage:image];
+                                        [contentHeaderView configureImage:image];
                                     }
                                 }];
         
     } else {
         
         // Load default book cover image.
-        [categoryHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
-                               placeholder:YES];
+        [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
+                              placeholder:YES];
     }
 }
 
@@ -708,8 +677,7 @@
 }
 
 - (void)showAddView:(BOOL)show {
-    CKCategory *category = [self currentCategory];
-    [self.delegate bookNavigationControllerAddRecipeRequestedForCategory:category];
+    [self.delegate bookNavigationControllerAddRecipeRequestedForPage:[self currentPage]];
 }
 
 - (UICollectionReusableView *)profileHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
@@ -721,26 +689,25 @@
     return headerView;
 }
 
-- (UICollectionReusableView *)categoryHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionReusableView *)contentHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                   withReuseIdentifier:kCategoryHeaderId
+                                                                                   withReuseIdentifier:kContentHeaderId
                                                                                           forIndexPath:indexPath];
-    BookCategoryImageView *categoryHeaderView = (BookCategoryImageView *)headerView;
+    BookContentImageView *categoryHeaderView = (BookContentImageView *)headerView;
     
-    NSInteger categoryIndex = indexPath.section - [self stackCategoryStartSection];
-    CKCategory *category = [self.categories objectAtIndex:categoryIndex];
+    NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+    NSString *page = [self.pages objectAtIndex:pageIndex];
     
     // Get the corresponding categoryVC to retrieve current scroll offset.
-    NSString *categoryKey = [self keyForCategory:category];
-    BookCategoryViewController *categoryController = [self.categoryControllers objectForKey:categoryKey];
+    BookContentViewController *categoryController = [self.categoryControllers objectForKey:page];
     [categoryHeaderView applyOffset:[categoryController currentScrollOffset].y];
     
     // Load featured recipe image.
-    CKRecipe *featuredRecipe = [self featuredRecipeForCategory:category];
+    CKRecipe *featuredRecipe = [self featuredRecipeForPage:page];
     [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
     
     // Keep track of category views keyed on indexPath.
-    [self.categoryHeaderViews setObject:categoryHeaderView forKey:[self keyForCategory:category]];
+    [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
     
     return headerView;
 }
@@ -838,7 +805,7 @@
     // If we're past the category pages, then this shortcuts back to home.
     if (edgeGesture.state == UIGestureRecognizerStateBegan) {
         self.collectionView.panGestureRecognizer.enabled = NO;
-        if (visibleFrame.origin.x > ([self stackCategoryStartSection] * self.collectionView.bounds.size.width)) {
+        if (visibleFrame.origin.x > ([self stackContentStartSection] * self.collectionView.bounds.size.width)) {
             [self scrollToHome];
         }
     } else {
@@ -846,20 +813,20 @@
     }
 }
 
-- (BOOL)orderChangedForCategories:(NSArray *)categories {
+- (BOOL)orderChangedForPages:(NSArray *)pages {
     __block BOOL orderChanged = NO;
     
-    [self.book.currentCategories enumerateObjectsUsingBlock:^(CKCategory *category, NSUInteger categoryIndex, BOOL *stop) {
+    [self.book.pages enumerateObjectsUsingBlock:^(NSString *page, NSUInteger pageIndex, BOOL *stop) {
         
         // Abort if no matching index found in received categories.
-        if (categoryIndex < [categories count] - 1) {
+        if (pageIndex < [pages count] - 1) {
             stop = YES;
         }
         
         // Check objectIds to determine if order is maintained.
-        CKCategory *updatedCategory = [categories objectAtIndex:categoryIndex];
-        DLog(@"Comparing category[%@] with updated [%@]", category.objectId, updatedCategory.objectId);
-        if (![category.objectId isEqualToString:updatedCategory.objectId]) {
+        NSString *updatedPage = [pages objectAtIndex:pageIndex];
+        DLog(@"Comparing page[%@] with updated [%@]", page, updatedPage);
+        if (![page isEqualToString:updatedPage]) {
             orderChanged = YES;
             stop = YES;
         }
@@ -876,25 +843,19 @@
 - (void)closeBook {
     
     // Update categories if required. This also updates the ordering of the category.
-    if (self.updateCategories) {
-        [self.book saveCategories:self.categories
-                          success:^{
-                              DLog(@"Saved categories.");
-                          }
-                          failure:^(NSError *error) {
-                              DLog(@"Unable to save categories: %@", [error localizedDescription]);
-                          }];
+    if (self.updatePages) {
+        [self.book saveInBackground];
     }
     
     [self.delegate bookNavigationControllerCloseRequested];
 }
 
-- (void)scrollToCategory:(CKCategory *)category animated:(BOOL)animated {
-    NSInteger categoryIndex = [self.categories indexOfObject:category];
-    categoryIndex += [self stackCategoryStartSection];
+- (void)scrollToPage:(NSString *)page animated:(BOOL)animated {
+    NSInteger pageIndex = [self.pages indexOfObject:page];
+    pageIndex += [self stackContentStartSection];
     
     [self.collectionView setContentOffset:(CGPoint){
-        categoryIndex * self.collectionView.bounds.size.width,
+        pageIndex * self.collectionView.bounds.size.width,
         self.collectionView.contentOffset.y
     } animated:animated];
 }

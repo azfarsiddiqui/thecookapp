@@ -106,7 +106,7 @@
         // Navigation header.
         if ([attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
             NSInteger numSections = [self.collectionView numberOfSections];
-            if (numSections > [self.delegate stackCategoryStartSection]) {
+            if (numSections > [self.delegate stackContentStartSection]) {
                 [layoutAttributes addObject:attributes];
             }
         } else {
@@ -129,7 +129,7 @@
     // Decoration cells.
     for (UICollectionViewLayoutAttributes *attributes in self.decorationLayoutAttributes) {
         NSInteger numSections = [self.collectionView numberOfSections];
-        if (numSections > [self.delegate stackCategoryStartSection]) {
+        if (numSections > [self.delegate stackContentStartSection]) {
             [layoutAttributes addObject:attributes];
         }
     }
@@ -194,7 +194,7 @@
     
     // One header per recipe category.
     NSInteger numSections = [self.collectionView numberOfSections];
-    NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
+    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
     for (NSInteger sectionIndex = categoryStartSection; sectionIndex < numSections; sectionIndex++) {
         
         // Category header.
@@ -240,7 +240,7 @@
 }
 
 - (void)buildNavigationLayout {
-    NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
+    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
     NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
     
     UICollectionViewLayoutAttributes *previousAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
@@ -305,7 +305,7 @@
     CGFloat offset =  kShiftOffset;
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     CGRect navigationFrame = [self navigationFrame];
-    NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
+    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
     CGFloat startOffset = categoryStartSection * self.collectionView.bounds.size.width;
     CGSize contentSize = [self collectionViewContentSize];
     
@@ -415,7 +415,7 @@
 }
 
 - (CGRect)navigationFrame {
-    NSInteger categoryStartSection = [self.delegate stackCategoryStartSection];
+    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
     NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
     return (CGRect){
         [self pageOffsetForIndexPath:navigationIndexPath],

@@ -284,34 +284,36 @@
     return [[self.parseObject objectForKey:kBookAttrNumRecipes] integerValue];
 }
 
+- (void)setPages:(NSArray *)pages {
+    [self.parseObject setObject:pages forKey:kBookAttrPages];
+}
+
+- (NSArray *)pages {
+    return [self.parseObject objectForKey:kBookAttrPages];
+}
+
 - (BOOL)featured {
     return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
 }
 
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    [self fetchRecipesForCategory:nil success:success failure:failure];
-}
-
-- (void)fetchRecipesForCategory:(CKCategory *)category success:(ListObjectsSuccessBlock)success
-                        failure:(ObjectFailureBlock)failure {
     
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
     [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
     
-    // Add category constraints if given.
-    if (category != nil) {
-        [query whereKey:kCategoryModelForeignKeyName equalTo:category.parseObject];
-    }
-    
+    // Fetch recipes that are in the book's pages.
+    [query whereKey:kRecipeAttrPage containedIn:[self pages]];
+
     // Only fetch public recipes if it's not your own book.
     if (![self isUserBookAuthor:[CKUser currentUser]]) {
         [query whereKey:kRecipeAttrPrivacy notEqualTo:[NSNumber numberWithBool:YES]];
     }
     
-    [query includeKey:kCategoryModelForeignKeyName];
+    // Include photo references.
     [query includeKey:kRecipeAttrRecipePhotos];
+    
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipes, NSError *error) {
         if (!error) {
             NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
@@ -332,67 +334,6 @@
     [query countObjectsInBackgroundWithBlock:^(int num, NSError *error) {
         if (!error) {
             success(num);
-        } else {
-            failure(error);
-        }
-    }];
-}
-
-- (void)prefetchCategoriesInBackground {
-    [self fetchCategoriesSuccess:^(NSArray *categories) {
-        self.currentCategories = categories;
-        DLog(@"Prefetched categories count[%d]", [categories count]);
-    } failure:^(NSError *error) {
-        DLog(@"Error prefetching categories: %@", [error localizedDescription]);
-    }];
-}
-
-- (void)fetchCategoriesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    
-    // Fetch from network if it wasn't preloaded already.
-    if ([self.currentCategories count] == 0) {
-        
-        PFQuery *query = [PFQuery queryWithClassName:kCategoryModelName];
-        [query setCachePolicy:kPFCachePolicyNetworkElseCache];
-        [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
-        [query orderByAscending:kCategoryAttrOrder];
-        [query findObjectsInBackgroundWithBlock:^(NSArray *parseCategories, NSError *error) {
-            if (!error) {
-                NSArray *categories = [parseCategories collect:^id(PFObject *parseCategory) {
-                    return [CKCategory categoryForParseCategory:parseCategory];
-                }];
-                
-                // Update the books current categories.
-                self.currentCategories = categories;
-                
-                success(categories);
-            } else {
-                failure(error);
-            }
-        }];
-        
-    } else {
-        success(self.currentCategories);
-    }
-}
-
-- (void)saveCategories:(NSArray *)categories success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    
-    // Order the categories.
-    [categories eachWithIndex:^(CKCategory *category, NSUInteger categoryIndex) {
-        category.order = [NSNumber numberWithInteger:categoryIndex];
-        category.book = self;
-    }];
-    
-    // Now save them off as PFObjects.
-    NSArray *parseCategories = [categories collect:^id(CKCategory *category) {
-        return category.parseObject;
-    }];
-    
-    // Save the categories off.
-    [PFObject saveAllInBackground:parseCategories block:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            success();
         } else {
             failure(error);
         }

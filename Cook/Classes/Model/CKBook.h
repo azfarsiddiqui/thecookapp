@@ -25,6 +25,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @property (nonatomic, copy) NSString *author;
 @property (nonatomic, copy) NSString *story;
 @property (nonatomic, assign) NSInteger numRecipes;
+@property (nonatomic, strong) NSArray *pages;
 @property (nonatomic, strong) NSArray *currentCategories;
 @property (nonatomic, assign) BOOL featured;
 @property (nonatomic, assign) BOOL followed;
@@ -33,11 +34,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 //fetch
 + (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
-- (void)fetchRecipesForCategory:(CKCategory *)category success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-- (void)prefetchCategoriesInBackground;
-- (void)fetchCategoriesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
-- (void)saveCategories:(NSArray *)categories success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 ////persistence operations
 + (void)createBookForUser:(CKUser *)user succeess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

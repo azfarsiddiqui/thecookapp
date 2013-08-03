@@ -11,7 +11,7 @@
 
 @interface RecipeClipboard : NSObject
 
-@property (nonatomic, strong) CKCategory *category;
+@property (nonatomic, strong) NSString *page;
 @property (nonatomic, strong) NSArray *categories;
 
 @property (nonatomic, copy) NSString *name;

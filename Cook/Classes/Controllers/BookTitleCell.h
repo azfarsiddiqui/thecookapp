@@ -8,13 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class CKCategory;
-
 @interface BookTitleCell : UICollectionViewCell
 
 + (CGSize)cellSize;
 
-- (void)configureCategory:(CKCategory *)category numRecipes:(NSInteger)numRecipes;
+- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes;
 - (void)configureImage:(UIImage *)image;
 - (void)configureAsAddCell;
 

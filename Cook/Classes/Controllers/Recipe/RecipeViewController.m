@@ -136,9 +136,9 @@ typedef enum {
 #define kServesTag              122
 #define kPrepCookTag            123
 
-- (id)initWithBook:(CKBook *)book category:(CKCategory *)category {
+- (id)initWithBook:(CKBook *)book page:(NSString *)page {
     if (self = [self initWithRecipe:nil book:book]) {
-        self.recipe = [CKRecipe recipeForBook:book category:category];
+        self.recipe = [CKRecipe recipeForBook:book page:page];
     }
     return self;
 }
@@ -302,24 +302,24 @@ typedef enum {
         
         // Get the current category from the book, check from currentCategories first which is populated by the
         // category list editor. Otherwise, default to current label.
-        CKCategory *currentCategory = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
-            return [self.categoryLabel.text CK_equalsIgnoreCase:category.name];
-        }];
-        if (currentCategory == nil) {
-            currentCategory = self.recipe.category;
-        }
-        
-        CategoryListEditViewController *editViewController = [[CategoryListEditViewController alloc] initWithEditView:self.categoryLabel
-                                                                                                                 book:self.book
-                                                                                                     selectedCategory:currentCategory
-                                                                                                             delegate:self
-                                                                                                        editingHelper:self.editingHelper
-                                                                                                                white:YES];
-        editViewController.canAddItems = NO;
-        editViewController.canDeleteItems = NO;
-        editViewController.canReorderItems = NO;
-        [editViewController performEditing:YES];
-        self.editViewController = editViewController;
+//        CKCategory *currentCategory = [self.book.currentCategories detect:^BOOL(CKCategory *category) {
+//            return [self.categoryLabel.text CK_equalsIgnoreCase:category.name];
+//        }];
+//        if (currentCategory == nil) {
+//            currentCategory = self.recipe.category;
+//        }
+//        
+//        CategoryListEditViewController *editViewController = [[CategoryListEditViewController alloc] initWithEditView:self.categoryLabel
+//                                                                                                                 book:self.book
+//                                                                                                     selectedCategory:currentCategory
+//                                                                                                             delegate:self
+//                                                                                                        editingHelper:self.editingHelper
+//                                                                                                                white:YES];
+//        editViewController.canAddItems = NO;
+//        editViewController.canDeleteItems = NO;
+//        editViewController.canReorderItems = NO;
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
         
     } else if (editingView == self.storyLabel) {
         
@@ -1029,7 +1029,7 @@ typedef enum {
     categoryLabel.hidden = YES;
     [self.headerView addSubview:categoryLabel];
     self.categoryLabel = categoryLabel;
-    [self setCategory:self.recipe.category.name];
+    [self setPage:self.recipe.page];
     
     // Recipe title.
     CKLabel *titleLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:nil defaultText:@"RECIPE NAME"
@@ -1521,7 +1521,7 @@ typedef enum {
                                        self.titleLabel.frame.size.height);
 }
 
-- (void)setCategory:(NSString *)category {
+- (void)setPage:(NSString *)category {
     self.categoryLabel.text = [category uppercaseString];
     [self.categoryLabel sizeToFit];
     self.categoryLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.categoryLabel.frame.size.width) / 2.0),
@@ -1629,35 +1629,35 @@ typedef enum {
 
 - (void)saveCategoryValue:(id)value {
     
-    CKCategory *selectedCategory = (CKCategory *)value;
-    NSArray *categories = [self.editViewController updatedValue];
-    
-    // Check if category has changed.
-    if (![selectedCategory.name isEqualToString:self.categoryLabel.text]) {
-        
-        // Save it in the clipboard too.
-        self.clipboard.category = selectedCategory;
-        
-        // Mark save is required.
-        self.saveRequired = YES;
-        
-        // Update category.
-        [self setCategory:selectedCategory.name];
-        
-        // Update the editing wrapper.
-        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
-        
-    }
-    
-    // Check if all categories need to be saved.
-    if ([self categoriesNeedSaving:categories]) {
-        
-        // Save it in the clipboard first.
-        self.clipboard.categories = categories;
-        
-        // Mark save is required.
-        self.saveRequired = YES;
-    }
+//    CKCategory *selectedCategory = (CKCategory *)value;
+//    NSArray *categories = [self.editViewController updatedValue];
+//    
+//    // Check if category has changed.
+//    if (![selectedCategory.name isEqualToString:self.categoryLabel.text]) {
+//        
+//        // Save it in the clipboard too.
+//        self.clipboard.category = selectedCategory;
+//        
+//        // Mark save is required.
+//        self.saveRequired = YES;
+//        
+//        // Update category.
+//        [self setPage:selectedCategory.name];
+//        
+//        // Update the editing wrapper.
+//        [self.editingHelper updateEditingView:self.categoryLabel animated:NO];
+//        
+//    }
+//    
+//    // Check if all categories need to be saved.
+//    if ([self categoriesNeedSaving:categories]) {
+//        
+//        // Save it in the clipboard first.
+//        self.clipboard.categories = categories;
+//        
+//        // Mark save is required.
+//        self.saveRequired = YES;
+//    }
     
 }
 
@@ -1751,7 +1751,7 @@ typedef enum {
             self.recipe.prepTimeInMinutes = self.clipboard.prepMinutes;
             self.recipe.cookingTimeInMinutes = self.clipboard.cookMinutes;
             self.recipe.ingredients = self.clipboard.ingredients;
-            self.recipe.category = self.clipboard.category;
+            self.recipe.page = self.clipboard.page;
             
             // Reset edit flags.
             self.saveRequired = NO;
@@ -1772,28 +1772,8 @@ typedef enum {
             // Mark 10% progress to start off with.
             [progressView setProgress:0.1];
             
-            // Save categories first if we have changes.
-            if ([self.clipboard.categories count] > 0) {
-                
-                [self.book saveCategories:self.clipboard.categories
-                                  success:^{
-                                      
-                                      // Set categories progress done.
-                                      [self.progressView setProgress:0.2 animated:YES];
-                                      
-                                      // Save off the recipe.
-                                      [self saveRecipeWithImageStartProgress:0.2 endProgress:0.9];
-                                      
-                                  }
-                                  failure:^(NSError *error) {
-                                      [self enableSaveMode:NO];
-                                  }];
-                
-            } else {
-                
-                // Save off the recipe.
-                [self saveRecipeWithImageStartProgress:0.1 endProgress:0.9];
-            }
+            // Save off the recipe.
+            [self saveRecipeWithImageStartProgress:0.1 endProgress:0.9];
             
         } else {
             
@@ -1807,7 +1787,7 @@ typedef enum {
         
         // Restore value
         [self setTitle:self.recipe.name];
-        [self setCategory:self.recipe.category.name];
+        [self setPage:self.recipe.page];
         [self setStory:self.recipe.story];
         [self setMethod:self.recipe.method];
         [self setServes:self.recipe.numServes];
@@ -1840,7 +1820,7 @@ typedef enum {
     if (prepare) {
         self.clipboard = [[RecipeClipboard alloc] init];
         self.clipboard.privacyMode = self.recipe.privacy;
-        self.clipboard.category = self.recipe.category;
+        self.clipboard.page = self.recipe.page;
         self.clipboard.name = self.recipe.name;
         self.clipboard.story = self.recipe.story;
         self.clipboard.method = self.recipe.method;

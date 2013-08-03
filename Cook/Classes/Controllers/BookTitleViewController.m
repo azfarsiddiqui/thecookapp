@@ -24,7 +24,7 @@
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable>
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) NSMutableArray *categories;
+@property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, assign) id<BookTitleViewControllerDelegate> delegate;
 
@@ -65,19 +65,19 @@
     [self addCloseButtonWhite:YES];
 }
 
-- (void)configureCategories:(NSArray *)categories {
-    self.categories = [NSMutableArray arrayWithArray:categories];
+- (void)configurePages:(NSArray *)pages {
+    self.pages = [NSMutableArray arrayWithArray:pages];
     
-    NSMutableArray *categoryIndexPaths = [NSMutableArray arrayWithArray:[self.categories collectWithIndex:^id(CKCategory *category, NSUInteger categoryIndex) {
-        return [NSIndexPath indexPathForItem:categoryIndex inSection:0];
+    NSMutableArray *pageIndexPaths = [NSMutableArray arrayWithArray:[self.pages collectWithIndex:^id(NSString *page, NSUInteger pageIndex) {
+        return [NSIndexPath indexPathForItem:pageIndex inSection:0];
     }]];
     
     // Add cell.
     if ([self.book isOwner]) {
-        [categoryIndexPaths addObject:[NSIndexPath indexPathForItem:[self.categories count] inSection:0]];
+        [pageIndexPaths addObject:[NSIndexPath indexPathForItem:[self.pages count] inSection:0]];
     }
     
-    [self.collectionView insertItemsAtIndexPaths:categoryIndexPaths];
+    [self.collectionView insertItemsAtIndexPaths:pageIndexPaths];
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
@@ -139,10 +139,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.item < [self.categories count]) {
-        [self.delegate bookTitleSelectedCategory:[self.categories objectAtIndex:indexPath.item]];
+    if (indexPath.item < [self.pages count]) {
+        [self.delegate bookTitleSelectedPage:[self.pages objectAtIndex:indexPath.item]];
     } else {
-        [self addCategory];
+        [self addPage];
     }
 }
 
@@ -154,8 +154,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
-    if (self.categories) {
-        numItems = [self.categories count];
+    if (self.pages) {
+        numItems = [self.pages count];
         
         if ([self.book isOwner]) {
              numItems += 1; // Plus add cell.
@@ -168,13 +168,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     BookTitleCell *cell = (BookTitleCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-    if (indexPath.item < [self.categories count]) {
+    if (indexPath.item < [self.pages count]) {
         
-        CKCategory *category = [self.categories objectAtIndex:indexPath.item];
-        [cell configureCategory:category numRecipes:[self.delegate bookTitleNumRecipesForCategory:category]];
+        NSString *page = [self.pages objectAtIndex:indexPath.item];
+        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page]];
         
         // Load featured recipe for the category.
-        CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForCategory:category];
+        CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForPage:page];
         [self configureImageForTitleCell:cell recipe:featuredRecipe indexPath:indexPath];
         
     } else {
@@ -212,21 +212,21 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - UICollectionViewDataSource_Draggable methods
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
-    return ([self.book isOwner] && indexPath.item < [self.categories count]);
+    return ([self.book isOwner] && indexPath.item < [self.pages count]);
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
-    return ([self.book isOwner] && toIndexPath.item < [self.categories count]);
+    return ([self.book isOwner] && toIndexPath.item < [self.pages count]);
 }
 
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
     
-    [self.categories exchangeObjectAtIndex:toIndexPath.item withObjectAtIndex:fromIndexPath.item];
+    [self.pages exchangeObjectAtIndex:toIndexPath.item withObjectAtIndex:fromIndexPath.item];
     
     // Inform book to relayout.
-    [self.delegate bookTitleUpdatedOrderOfCategories:self.categories];
+    [self.delegate bookTitleUpdatedOrderOfPages:self.pages];
 }
 
 #pragma mark - Properties
@@ -299,7 +299,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     }
 }
 
-- (void)addCategory {
+- (void)addPage {
     DLog();
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import "BookTitleCell.h"
-#import "CKCategory.h"
 #import "ImageHelper.h"
 #import "Theme.h"
 
@@ -43,13 +42,13 @@
     return self;
 }
 
-- (void)configureCategory:(CKCategory *)category numRecipes:(NSInteger)numRecipes {
+- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes {
     self.titleLabel.hidden = NO;
     self.subtitleLabel.hidden = NO;
     self.blankOverlayView.hidden = YES;
     self.addView.hidden = YES;
 
-    self.titleLabel.text = [category.name uppercaseString];
+    self.titleLabel.text = [page uppercaseString];
     self.subtitleLabel.text = [NSString stringWithFormat:@"%d RECIPES", numRecipes];
     [self.titleLabel sizeToFit];
     [self.subtitleLabel sizeToFit];

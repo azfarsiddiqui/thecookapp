@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BookCategoryImageView : UICollectionReusableView
+@interface BookContentImageView : UICollectionReusableView
 
 - (void)configureImage:(UIImage *)image;
 - (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder;

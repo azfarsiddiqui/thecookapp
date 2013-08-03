@@ -6,11 +6,11 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookCategoryImageView.h"
+#import "BookContentImageView.h"
 #import "UIColor+Expanded.h"
 #import "Theme.h"
 
-@interface BookCategoryImageView ()
+@interface BookContentImageView ()
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
@@ -19,7 +19,7 @@
 
 @end
 
-@implementation BookCategoryImageView
+@implementation BookContentImageView
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {

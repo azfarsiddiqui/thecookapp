@@ -47,23 +47,23 @@
 
 - (void)loadData {
     
-    [self.book fetchCategoriesSuccess:^(NSArray *categories) {
-        
-        self.items = [NSMutableArray arrayWithArray:categories];
-        
-        // Determine selected index if selectedCategory was given.
-        NSInteger selectedCategoryIndex = [categories findIndexWithBlock:^BOOL(CKCategory *category) {
-            return [category.objectId isEqualToString:self.selectedCategory.objectId];
-        }];
-        if (selectedCategoryIndex >= 0) {
-            self.selectedIndexNumber = [NSNumber numberWithInteger:selectedCategoryIndex];
-        }
-        
-        [self showItems];
-        
-    } failure:^(NSError *error) {
-        DLog(@"Error loading categories.");
-    }];
+//    [self.book fetchCategoriesSuccess:^(NSArray *categories) {
+//        
+//        self.items = [NSMutableArray arrayWithArray:categories];
+//        
+//        // Determine selected index if selectedCategory was given.
+//        NSInteger selectedCategoryIndex = [categories findIndexWithBlock:^BOOL(CKCategory *category) {
+//            return [category.objectId isEqualToString:self.selectedCategory.objectId];
+//        }];
+//        if (selectedCategoryIndex >= 0) {
+//            self.selectedIndexNumber = [NSNumber numberWithInteger:selectedCategoryIndex];
+//        }
+//        
+//        [self showItems];
+//        
+//    } failure:^(NSError *error) {
+//        DLog(@"Error loading categories.");
+//    }];
     
 }
 

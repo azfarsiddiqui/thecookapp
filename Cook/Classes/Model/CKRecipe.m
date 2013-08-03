@@ -26,9 +26,9 @@
 
 @synthesize book = _book;
 @synthesize user = _user;
-@synthesize category = _category;
 @synthesize privacy = _privacy;
 @synthesize method = _method;
+@synthesize page = _page;
 @synthesize story = _story;
 @synthesize numServes = _numServes;
 @synthesize prepTimeInMinutes = _prepTimeInMinutes;
@@ -41,15 +41,15 @@
 #pragma mark - creation
 
 + (CKRecipe *)recipeForBook:(CKBook *)book {
-    return [self recipeForBook:book category:nil];
+    return [self recipeForBook:book page:nil];
 }
 
-+ (CKRecipe *)recipeForBook:(CKBook *)book category:(CKCategory *)category {
++ (CKRecipe *)recipeForBook:(CKBook *)book page:(NSString *)page {
     PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
     recipe.book = book;
     recipe.user = book.user;
-    recipe.category = category;
+    recipe.page = page;
     return recipe;
 }
 
@@ -90,12 +90,6 @@
     PFObject *parseRecipe = [self objectWithDefaultSecurityWithClassName:kRecipeModelName];
     CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
     recipe.book = book;
-    return recipe;
-}
-
-+ (CKRecipe*) recipeForUser:(CKUser *)user book:(CKBook *)book category:(CKCategory *)category {
-    CKRecipe *recipe = [CKRecipe recipeForUser:user book:book];
-    recipe.category = category;
     return recipe;
 }
 
@@ -219,65 +213,6 @@
         }];
         
     }
-}
-
-- (void)saveAndUploadImageWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
-                  imageUploadProgress:(ProgressBlock)imageUploadProgress {
-    
-    PFObject *parseRecipe = self.parseObject;
-    [self prepareParseRecipeObjectForSave:parseRecipe];
-    
-    if (self.recipeImage) {
-        PFFile *imageFile = [self.recipeImage imageFile];
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (error) {
-                failure(error);
-            } else {
-                
-                //must save image reference to get an object id
-                [self.recipeImage.parseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    if (error) {
-                        failure(error);
-                    } else {
-                        // Add as an array - replace entire photos collection
-                        [self.parseObject setObject:@[self.recipeImage.parseObject] forKey:kRecipeAttrRecipePhotos];
-                        
-                        // Save the image relation to recipe.
-                        [self saveInBackground:^{
-                            success();
-                        } failure:^(NSError *error) {
-                            failure(error);
-                        }];
-                        
-                    }
-                }];
-                
-            }
-            
-        } progressBlock:^(int percentDone) {
-            imageUploadProgress(percentDone);
-        }];
-    }
-}
-
-- (void)saveWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFObject *parseRecipe = self.parseObject;
-    BOOL newRecipe = ![self persisted];
-    [self prepareParseRecipeObjectForSave:parseRecipe];
-    
-    [self saveInBackground:^{
-        
-        // Save add/update activities.
-        if (newRecipe) {
-            [CKActivity saveAddRecipeActivityForRecipe:self];
-        } else {
-            [CKActivity saveUpdateRecipeActivityForRecipe:self];
-        }
-        
-        success();
-    } failure:^(NSError *error) {
-        failure(error);
-    }];
 }
 
 #pragma mark - Likes
@@ -415,14 +350,6 @@
     }];
 }
 
-#pragma mark - Fetch
-
-- (void)fetchCategoryNameWithSuccess:(GetObjectSuccessBlock)getObjectSuccess {
-    [self.category.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        getObjectSuccess(_category.name);
-    }];
-}
-
 #pragma mark - other public
 
 - (PFFile *)imageFile {
@@ -454,7 +381,7 @@
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", self.numServes] forKey:kRecipeAttrNumServes];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", self.prepTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", self.cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
-    [descriptionProperties setValue:[self.category description] forKey:kCategoryModelForeignKeyName];
+    [descriptionProperties setValue:self.page forKey:kRecipeAttrPage];
     [descriptionProperties setValue:[self.book description] forKey:kBookModelForeignKeyName];
     [descriptionProperties setValue:[self.user description] forKey:kUserModelForeignKeyName];
     return descriptionProperties;
@@ -495,6 +422,17 @@
     [self.parseObject setObject:[NSString CK_safeString:method] forKey:kRecipeAttrDescription];
 }
 
+- (NSString *)page {
+    if (!_page) {
+        _page = [self.parseObject objectForKey:kRecipeAttrPage];
+    }
+    return _page;
+}
+
+- (void)setPage:(NSString *)page {
+    [self.parseObject setObject:page forKey:kRecipeAttrPage];
+}
+
 - (NSString *)story {
     if (!_story) {
         _story = [self.parseObject objectForKey:kRecipeAttrStory];
@@ -512,22 +450,6 @@
 
 - (void)setCategoryIndex:(NSInteger)categoryIndex {
     [self.parseObject setObject:[NSNumber numberWithInt:categoryIndex]forKey:kRecipeAttrCategoryIndex];
-}
-
-- (CKCategory *)category {
-    if (!_category) {
-        PFObject *parseCategory = [self.parseObject objectForKey:kCategoryModelForeignKeyName];
-        if (parseCategory) {
-            _category = [CKCategory categoryForParseCategory:parseCategory];
-        }
-    }
-    
-    return _category;
-}
-
-- (void)setCategory:(CKCategory *)category {
-    _category = category;
-    [self.parseObject setObject:category.parseObject forKey:kCategoryModelForeignKeyName];
 }
 
 - (NSInteger)numServes {
@@ -624,42 +546,6 @@
         return [Ingredient ingredientwithName:name measurement:unit];
     }];
     return ingredients;
-}
-
-- (void)prepareParseRecipeObjectForSave:(PFObject*)parseRecipeObject {
-    [parseRecipeObject setObject:self.user.parseObject forKey:kUserModelForeignKeyName];
-    [parseRecipeObject setObject:self.book.parseObject forKey:kBookModelForeignKeyName];
-    if (self.category && self.category.parseObject) {
-        [parseRecipeObject setObject:self.category.parseObject forKey:kCategoryModelForeignKeyName];
-    }
-    [parseRecipeObject setObject:NSStringFromCGPoint(self.recipeViewImageContentOffset) forKey:kRecipeAttrRecipeViewImageContentOffset];
-    if (self.numServes > 0) {
-        [parseRecipeObject setObject:[NSNumber numberWithInt:self.numServes] forKey:kRecipeAttrNumServes];
-    }
-    
-    if (self.cookingTimeInMinutes > 0) {
-        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
-    }
-    
-    if (self.prepTimeInMinutes > 0) {
-        [parseRecipeObject setObject:[NSNumber numberWithInt:self.cookingTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
-    }
-    
-    if (self.ingredients && [self.ingredients count] > 0) {
-        NSArray *jsonCompatibleIngredients = [self.ingredients collect:^id(Ingredient *ingredient) {
-            if (!ingredient.measurement) {
-                return ingredient.name;
-            } else {
-                return [NSString stringWithFormat:@"%@::%@", ingredient.measurement,ingredient.name];
-            }
-        }];
-        
-        [parseRecipeObject setObject:jsonCompatibleIngredients forKey:kRecipeAttrIngredients];
-    }
-    
-    // Now add the category to book.
-    // Why is this here?
-    [self.book.parseObject addUniqueObject:self.category.parseObject forKey:kBookAttrCategories];
 }
 
 @end
