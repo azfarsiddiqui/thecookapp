@@ -842,6 +842,7 @@
     
     // Update categories if required. This also updates the ordering of the category.
     if (self.updatePages) {
+        self.book.pages = self.pages;
         [self.book saveInBackground];
     }
     
