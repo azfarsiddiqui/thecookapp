@@ -21,7 +21,8 @@
 #import "BookTitleLayout.h"
 #import "MRCEnumerable.h"
 
-@interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable>
+@interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
+    UIAlertViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
@@ -33,6 +34,8 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKBookTitleIndexView *bookTitleView;
+
+@property (nonatomic, strong) UIAlertView *alertView;
 
 @end
 
@@ -234,6 +237,77 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate bookTitleUpdatedOrderOfPages:self.pages];
 }
 
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)willPresentAlertView:(UIAlertView *)alertView {
+    UITextField *textField = [alertView textFieldAtIndex:0];
+    textField.returnKeyType = UIReturnKeyDone;
+    textField.delegate = self;
+}
+
+- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
+    
+    NSInteger minLimit = 2;
+    NSInteger maxLimit = 20;
+    UITextField *textField = [alertView textFieldAtIndex:0];
+    NSString *text = textField.text;
+    BOOL enableOKButton = YES;
+    NSString *message = nil;
+    
+    if ([text length] == 0 || ([text length] > 0 && [text length] < minLimit)) {
+        enableOKButton = NO;
+        message = @"Please enter a page name";
+    } else if ([text length] > maxLimit) {
+        enableOKButton = NO;
+        message = [NSString stringWithFormat:@"%d characters over", [text length] - maxLimit];
+    } else if ([self.pages detect:^BOOL(NSString *page) {
+        return [[page uppercaseString] isEqualToString:[text uppercaseString]];
+    }]) {
+        enableOKButton = NO;
+        message = [NSString stringWithFormat:@"Page with name already '%@' exists", text];
+    }
+    
+    if (enableOKButton) {
+        message = @"Looks good!";
+    }
+    
+    alertView.message = message;
+    
+    return enableOKButton;
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    // OK Button tapped.
+    if (buttonIndex == 1) {
+        
+        UITextField *textField = [alertView textFieldAtIndex:0];
+        NSString *text = textField.text;
+        [self.pages addObject:text];
+        
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
+        [self.delegate bookTitleAddedPage:text];
+    }
+    
+    // Re-enable paging.
+    [self enableAddMode:NO];
+    
+    // Resets the alertView.
+    self.alertView = nil;
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)alertTextField {
+    
+    BOOL validated = [self alertViewShouldEnableFirstOtherButton:self.alertView];
+    if (validated) {
+        [self.alertView dismissWithClickedButtonIndex:1 animated:YES];
+    }
+    
+    return NO;
+}
+
 #pragma mark - Properties
 
 - (CKBookTitleIndexView *)bookTitleView {
@@ -305,7 +379,18 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)addPage {
-    DLog();
+    [self enableAddMode:YES];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"New Page" message:nil delegate:self
+                                              cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alertView show];
+    self.alertView = alertView;
+}
+
+- (void)enableAddMode:(BOOL)addMode {
+    self.collectionView.scrollEnabled = !addMode;
+    [self.bookPageDelegate bookPageViewControllerPanEnable:!addMode];
 }
 
 @end

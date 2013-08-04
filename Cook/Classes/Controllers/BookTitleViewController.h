@@ -19,6 +19,7 @@
 - (NSInteger)bookTitleNumRecipesForPage:(NSString *)page;
 - (void)bookTitleSelectedPage:(NSString *)page;
 - (void)bookTitleUpdatedOrderOfPages:(NSArray *)pages;
+- (void)bookTitleAddedPage:(NSString *)page;
 
 @end
 

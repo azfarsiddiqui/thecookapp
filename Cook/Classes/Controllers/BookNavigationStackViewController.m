@@ -174,6 +174,10 @@
     [self showRecipe:recipe];
 }
 
+- (void)bookPageViewControllerPanEnable:(BOOL)enable {
+    self.collectionView.scrollEnabled = enable;
+}
+
 #pragma mark - BookNavigationViewDelegate methods
 
 - (void)bookNavigationViewCloseTapped {
@@ -240,6 +244,18 @@
     }
 }
 
+- (void)bookTitleAddedPage:(NSString *)page {
+    
+    [self.pages addObject:page];
+    [self.pageRecipes setObject:[NSMutableArray array] forKey:page];
+    
+    // Mark layout needs to be re-generated.
+    [[self currentLayout] setNeedsRelayout:YES];
+    [self.collectionView reloadData];
+    
+    // Mark as pages updated.
+    self.updatePages = YES;
+}
 
 #pragma mark - BookPagingStackLayoutDelegate methods
 

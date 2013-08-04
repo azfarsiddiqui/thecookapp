@@ -14,6 +14,7 @@
 
 - (void)bookPageViewControllerCloseRequested;
 - (void)bookPageViewControllerShowRecipe:(CKRecipe *)recipe;
+- (void)bookPageViewControllerPanEnable:(BOOL)enable;
 
 @end
 
