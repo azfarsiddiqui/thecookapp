@@ -389,7 +389,7 @@
     backdropScrollView.delegate = self;
     backdropScrollView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     backdropScrollView.backgroundColor = [UIColor whiteColor];
-    backdropScrollView.scrollEnabled = YES;
+    backdropScrollView.scrollEnabled = NO;
     backdropScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:backdropScrollView];
     self.backdropScrollView = backdropScrollView;
