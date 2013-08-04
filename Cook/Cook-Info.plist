@@ -22,7 +22,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.cookapp.cook</string>
+	<string>com.appsperhaps.thecookapp</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -45,7 +45,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.0.21</string>
+	<string>1.0.22</string>
 	<key>FacebookAppID</key>
 	<string>289425251158959</string>
 	<key>LSRequiresIPhoneOS</key>
