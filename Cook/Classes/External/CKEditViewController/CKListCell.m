@@ -23,7 +23,7 @@
     if (self = [super initWithFrame:frame]) {
         
         // Default font.
-        self.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:36.0];
+        self.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:36.0];
         
         // Not opaque.
         self.opaque = NO;
