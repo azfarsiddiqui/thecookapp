@@ -21,5 +21,6 @@
 @property (nonatomic, copy) NSString *cover;
 
 - (id)initWithCover:(NSString *)cover delegate:(id<CoverPickerViewControllerDelegate>)delegate;
+- (void)enable:(BOOL)enable;
 
 @end

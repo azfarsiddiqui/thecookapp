@@ -10,10 +10,12 @@
 #import "CKBook.h"
 #import "CKBookCoverView.h"
 
-@protocol BenchtopBookCoverViewCellDelegate
+@protocol BenchtopBookCoverViewCellDelegate <NSObject>
 
 @optional
 - (void)benchtopBookEditTappedForCell:(UICollectionViewCell *)cell;
+- (void)benchtopBookEditWillAppear:(BOOL)appear forCell:(UICollectionViewCell *)cell;
+- (void)benchtopBookEditDidAppear:(BOOL)appear forCell:(UICollectionViewCell *)cell;
 
 @end
 
@@ -22,7 +24,7 @@
 
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
 @property (nonatomic, strong) UIView *shadowView;
-@property (nonatomic, assign) id<BenchtopBookCoverViewCellDelegate> delegate;
+@property (nonatomic, weak) id<BenchtopBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;
 + (CGSize)illustrationPickerCellSize;

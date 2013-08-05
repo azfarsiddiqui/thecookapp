@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol CKBookCoverViewDelegate
+@protocol CKBookCoverViewDelegate <NSObject>
 
 - (void)bookCoverViewEditRequested;
+
+@optional
+- (void)bookCoverViewEditWillAppear:(BOOL)appear;
+- (void)bookCoverViewEditDidAppear:(BOOL)appear;
 
 @end
 

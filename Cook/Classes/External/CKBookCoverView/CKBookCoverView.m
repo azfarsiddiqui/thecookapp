@@ -148,11 +148,15 @@
 #pragma mark - CKEditViewControllerDelegate methods
 
 - (void)editViewControllerWillAppear:(BOOL)appear {
-    // DLog(@"%@", appear ? @"YES" : @"NO");
+    if ([self.delegate respondsToSelector:@selector(bookCoverViewEditWillAppear:)]) {
+        [self.delegate bookCoverViewEditWillAppear:appear];
+    }
 }
 
 - (void)editViewControllerDidAppear:(BOOL)appear {
-    // DLog(@"%@", appear ? @"YES" : @"NO");
+    if ([self.delegate respondsToSelector:@selector(bookCoverViewEditDidAppear:)]) {
+        [self.delegate bookCoverViewEditDidAppear:appear];
+    }
     if (!appear) {
         [self.editViewController.view removeFromSuperview];
         self.editViewController = nil;

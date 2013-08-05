@@ -319,6 +319,14 @@
     }
 }
 
+- (void)benchtopBookEditWillAppear:(BOOL)appear forCell:(UICollectionViewCell *)cell {
+    [self.coverViewController enable:!appear];
+}
+
+- (void)benchtopBookEditDidAppear:(BOOL)appear forCell:(UICollectionViewCell *)cell {
+    [self.coverViewController enable:!appear];
+}
+
 #pragma mark - CoverPickerViewControllerDelegate methods
 
 - (void)coverPickerCancelRequested {

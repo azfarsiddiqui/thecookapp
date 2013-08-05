@@ -14,6 +14,8 @@
 
 @property (nonatomic, assign) id<CoverPickerViewControllerDelegate> delegate;
 @property (nonatomic, strong) CoverPickerView *coverPickerView;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *doneButton;
 
 @end
 
@@ -54,6 +56,7 @@
                                     cancelButton.frame.size.height);
     cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:cancelButton];
+    self.cancelButton = cancelButton;
     
     // Done button.
     UIButton *doneButton = [ViewHelper okButtonWithTarget:self selector:@selector(doneTapped:)];
@@ -63,6 +66,19 @@
                                   doneButton.frame.size.height);
     doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:doneButton];
+    self.doneButton = doneButton;
+}
+
+- (void)enable:(BOOL)enable {
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.cancelButton.alpha = enable ? 1.0 : 0.0;
+                         self.doneButton.alpha = enable ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 #pragma mark - CoverPickerViewDelegate methods

@@ -105,10 +105,24 @@
 #pragma mark - CKBooKCoverViewDelegate methods
 
 - (void)bookCoverViewEditRequested {
-    if (self.delegate) {
+    if ([self.delegate respondsToSelector:@selector(benchtopBookEditTappedForCell:)]) {
         [self.delegate benchtopBookEditTappedForCell:self];
     }
 }
+
+- (void)bookCoverViewEditWillAppear:(BOOL)appear {
+    if ([self.delegate respondsToSelector:@selector(benchtopBookEditWillAppear:forCell:)]) {
+        [self.delegate benchtopBookEditWillAppear:appear forCell:self];
+    }
+}
+
+- (void)bookCoverViewEditDidAppear:(BOOL)appear {
+    if ([self.delegate respondsToSelector:@selector(benchtopBookEditDidAppear:forCell:)]) {
+        [self.delegate benchtopBookEditDidAppear:appear forCell:self];
+    }
+}
+
+#pragma mark - Private methods
 
 - (void)enableWiggle:(BOOL)enable {
     if (enable) {
@@ -121,7 +135,7 @@
                          }
                          completion:NULL
          ];
-
+        
     } else {
         [UIView animateWithDuration:0.15
                               delay:0.0
@@ -133,7 +147,5 @@
          ];
     }
 }
-
-#pragma mark - Private methods
 
 @end
