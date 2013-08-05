@@ -144,6 +144,11 @@
                                                  options:UIViewAnimationOptionCurveEaseOut
                                               animations:^{
                                                   
+                                                  // Fade in the save icon.
+                                                  if ([self showSaveIcon]) {
+                                                      [originalTextBoxView showSaveIcon:YES animated:NO];
+                                                  }
+                                                  
                                                   // Bring in the overlay.
                                                   self.overlayView.alpha = kOverlayAlpha;
                                                   
@@ -152,6 +157,11 @@
                                                   
                                               }
                                               completion:^(BOOL finished) {
+                                                  
+                                                  // Show the save icon.
+                                                  if ([self showSaveIcon]) {
+                                                      [targetTextBoxView showSaveIcon:YES animated:NO];
+                                                  }
                                                   
                                                   // Swap visibility of target with original.
                                                   originalTextBoxView.hidden = YES;
@@ -169,11 +179,6 @@
                                                                            [targetTextBoxView setTextBoxViewWithEdit:NO];
                                                                        }
                                                                        
-                                                                       // Show the save icon.
-                                                                       if ([self showSaveIcon]) {
-                                                                           [targetTextBoxView showSaveIcon:YES animated:NO];
-                                                                       }
-                                                   
                                                                    }
                                                                    completion:^(BOOL finished) {
                                                                        
@@ -223,6 +228,11 @@
                                                   
                                                   // Resize the original textbox back to its original frame.
                                                   originalTextBoxView.frame = self.startTextBoxFullScreenFrame;
+                                                  
+                                                  // Fade in the save icon.
+                                                  if ([self showSaveIcon]) {
+                                                      [originalTextBoxView showSaveIcon:NO animated:NO];
+                                                  }
                                                   
                                               }
                                               completion:^(BOOL finished) {

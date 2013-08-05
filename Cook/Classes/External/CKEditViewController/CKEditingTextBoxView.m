@@ -154,8 +154,7 @@
                          }];
     } else {
         self.textEditingSaveButton.enabled = enabled;
-        self.textEditingSaveButton.hidden = show ? NO : YES;
-        self.textEditingSaveButton.alpha = 1.0;
+        self.textEditingSaveButton.alpha = show ? 1.0 : 0.0;
     }
 }
 
