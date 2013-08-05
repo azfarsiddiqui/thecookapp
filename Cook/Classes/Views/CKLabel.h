@@ -12,9 +12,8 @@
 
 @property (nonatomic, strong) UIFont *placeholderFont;
 @property (nonatomic, assign) UIColor *placeholderColour;
+@property (nonatomic, strong) NSString *defaultText;
 
 - (id)initWithFrame:(CGRect)frame placeholder:(NSString *)placeholderText minSize:(CGSize)minSize;
-- (id)initWithFrame:(CGRect)frame placeholder:(NSString *)placeholderText defaultText:(NSString *)defaultText
-            minSize:(CGSize)minSize;
 
 @end

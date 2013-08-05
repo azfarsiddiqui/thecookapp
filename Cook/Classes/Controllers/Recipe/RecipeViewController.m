@@ -1020,10 +1020,12 @@ typedef enum {
     [self setPage:self.recipe.page];
     
     // Recipe title.
-    CKLabel *titleLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:nil defaultText:@"RECIPE NAME"
+    CKLabel *titleLabel = [[CKLabel alloc] initWithFrame:CGRectZero placeholder:@"RECIPE NAME"
                                                  minSize:CGSizeMake(kContentMaxWidth - xOffset, 0.0)];
     titleLabel.font = [Theme recipeNameFont];
     titleLabel.textColor = [Theme recipeNameColor];
+    titleLabel.placeholderColour = titleLabel.textColor;
+    titleLabel.placeholderFont = titleLabel.font;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);

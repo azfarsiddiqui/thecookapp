@@ -13,7 +13,6 @@
 @interface CKLabel ()
 
 @property (nonatomic, strong) NSString *placeholderText;
-@property (nonatomic, strong) NSString *defaultText;
 @property (nonatomic, assign) CGSize minSize;
 @property (nonatomic, strong) UILabel *placeholderLabel;
 
@@ -26,18 +25,11 @@
 }
 
 - (id)initWithFrame:(CGRect)frame placeholder:(NSString *)placeholderText minSize:(CGSize)minSize {
-    return [self initWithFrame:frame placeholder:placeholderText defaultText:nil minSize:minSize];
-}
-
-- (id)initWithFrame:(CGRect)frame placeholder:(NSString *)placeholderText defaultText:(NSString *)defaultText
-            minSize:(CGSize)minSize {
     if (self = [super initWithFrame:CGRectMake(0.0, 0.0, minSize.width, minSize.height)]) {
         self.placeholderText = placeholderText;
-        self.defaultText = defaultText;
         self.minSize = minSize;
         self.placeholderFont = [Theme methodFont];
         self.placeholderColour = [Theme methodColor];
-        self.text = defaultText;
     }
     return self;
 }
@@ -50,6 +42,10 @@
 }
 
 #pragma mark - Properties
+
+- (void)setDefaultText:(NSString *)defaultText {
+    self.text = defaultText;
+}
 
 - (void)setText:(NSString *)text {
     [super setText:text];
