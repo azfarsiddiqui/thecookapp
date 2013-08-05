@@ -501,20 +501,48 @@
 - (void)loadData {
     DLog();
     
-    // Fetch all recipes for the book, and categorise them.
-    [self.book fetchRecipesSuccess:^(NSArray *recipes){
+    CKUser *currentUser = [CKUser currentUser];
+    if ([self.book isOwner]) {
         
-        self.recipes = [NSMutableArray arrayWithArray:recipes];
+        // Fetch all recipes for the book, and categorise them.
+        [self.book fetchRecipesSuccess:^(NSArray *recipes){
+            
+            self.recipes = [NSMutableArray arrayWithArray:recipes];
+            
+            // Mark layout needs to be re-generated.
+            [[self currentLayout] setNeedsRelayout:YES];
+            
+            [self loadRecipes];
+            [self loadTitlePage];
+            
+        } failure:^(NSError *error) {
+            DLog(@"Error %@", [error localizedDescription]);
+        }];
         
-        // Mark layout needs to be re-generated.
-        [[self currentLayout] setNeedsRelayout:YES];
+    } else {
         
-        [self loadRecipes];
-        [self loadTitlePage];
-        
-    } failure:^(NSError *error) {
-        DLog(@"Error %@", [error localizedDescription]);
-    }];
+        // Are we friends with the book's owner?
+        [currentUser checkIsFriendsWithUser:self.book.user
+                                 completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
+                                     
+                                     // Fetch all recipes for the book, and categorise them.
+                                     [self.book fetchRecipesOwner:NO friends:alreadyConnected success:^(NSArray *recipes) {
+                                         
+                                         self.recipes = [NSMutableArray arrayWithArray:recipes];
+                                         
+                                         // Mark layout needs to be re-generated.
+                                         [[self currentLayout] setNeedsRelayout:YES];
+                                         
+                                         [self loadRecipes];
+                                         [self loadTitlePage];
+                                         
+                                     } failure:^(NSError *error) {
+                                         DLog(@"Error %@", [error localizedDescription]);
+                                     }];
+                                     
+                                 } failure:^(NSError *error) {
+                                 }];
+    }
     
 }
 

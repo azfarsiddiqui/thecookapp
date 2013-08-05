@@ -26,7 +26,6 @@
 
 @synthesize book = _book;
 @synthesize user = _user;
-@synthesize privacy = _privacy;
 @synthesize method = _method;
 @synthesize story = _story;
 @synthesize numServes = _numServes;
@@ -373,7 +372,7 @@
 
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%@", [NSString CK_stringForBoolean:self.privacy]] forKey:kRecipeAttrPrivacy];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", self.privacy] forKey:kRecipeAttrPrivacy];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.story length]] forKey:kRecipeAttrStory];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.method length]] forKey:kRecipeAttrDescription];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.ingredients count]] forKey:kRecipeAttrIngredients];
@@ -481,12 +480,17 @@
     return _prepTimeInMinutes;
 }
 
-- (void)setPrivacy:(BOOL)privacy {
-    [self.parseObject setObject:[NSNumber numberWithBool:privacy] forKey:kRecipeAttrPrivacy];
+- (void)setPrivacy:(CKPrivacy)privacy {
+    [self.parseObject setObject:@(privacy) forKey:kRecipeAttrPrivacy];
 }
 
-- (BOOL)privacy {
-    return [[self.parseObject objectForKey:kRecipeAttrPrivacy] boolValue];
+- (CKPrivacy)privacy {
+    CKPrivacy privacy = CKPrivacyPrivate;
+    id value = [self.parseObject objectForKey:kRecipeAttrPrivacy];
+    if (value) {
+        privacy = [value unsignedIntegerValue];
+    }
+    return privacy;
 }
 
 - (void)setRecipeImage:(CKRecipeImage *)recipeImage {

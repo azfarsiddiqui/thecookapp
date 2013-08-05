@@ -36,7 +36,6 @@
 #import "IngredientListEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "RecipeClipboard.h"
-#import "CKPrivacyView.h"
 #import "IngredientsView.h"
 #import "CKLabel.h"
 #import "BookSocialViewController.h"
@@ -438,18 +437,16 @@ typedef enum {
 
 #pragma mark - CKPrivacySliderViewDelegate methods
 
-- (void)privacyViewSelectedPrivateMode:(BOOL)privateMode {
-    self.clipboard.privacyMode = privateMode;
-    self.saveRequired = (self.clipboard.privacyMode != self.recipe.privacy);
-}
-
 - (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
+    [self selectedPrivacy:CKPrivacyPrivate];
 }
 
 - (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
+    [self selectedPrivacy:CKPrivacyFriends];
 }
 
 - (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
+    [self selectedPrivacy:CKPrivacyGlobal];
 }
 
 #pragma mark - Properties
@@ -1287,6 +1284,9 @@ typedef enum {
                                               }
                                               completion:^(BOOL finished)  {
                                               }];
+                             
+                             [self setPrivacy:self.recipe.privacy];
+                             
                          } else {
                              [self.cancelButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
@@ -1295,6 +1295,7 @@ typedef enum {
                              // Unwrap editing wrapper.
                              [self.editingHelper unwrapEditingView:self.photoLabel];
                              [self.photoLabel removeFromSuperview];
+                             
                              
                              // Nil it so we can update its label.
                              _photoLabel = nil;
@@ -1554,6 +1555,29 @@ typedef enum {
     [self sizeToFitForDetailView:self.contentView];
 }
 
+- (void)setPrivacy:(CKPrivacy)privacy {
+    NSUInteger privacyIndex = [self privacyIndexForPrivacy:privacy];
+    [self.privacyView slideToNotchIndex:privacyIndex animated:YES];
+}
+
+- (NSUInteger)privacyIndexForPrivacy:(CKPrivacy)privacy {
+    NSUInteger privacyIndex = CKPrivacyFriends;
+    switch (privacy) {
+        case CKPrivacyPrivate:
+            privacyIndex = CKPrivacyPrivate;
+            break;
+        case CKPrivacyFriends:
+            privacyIndex = CKPrivacyFriends;
+            break;
+        case CKPrivacyGlobal:
+            privacyIndex = CKPrivacyGlobal;
+            break;
+        default:
+            break;
+    }
+    return privacyIndex;
+}
+
 - (void)setServes:(NSInteger)serves {
     UILabel *servesLabel = (UILabel *)[self.servesCookView viewWithTag:kServesTag];
     servesLabel.text = [self servesDisplayFor:serves];
@@ -1722,7 +1746,7 @@ typedef enum {
         if (self.saveRequired) {
             
             // Save form data to recipe.
-            self.recipe.privacy = self.clipboard.privacyMode;
+            self.recipe.privacy = self.clipboard.privacy;
             self.recipe.name = self.clipboard.name;
             self.recipe.story = self.clipboard.story;
             self.recipe.method = self.clipboard.method;
@@ -1731,6 +1755,7 @@ typedef enum {
             self.recipe.cookingTimeInMinutes = self.clipboard.cookMinutes;
             self.recipe.ingredients = self.clipboard.ingredients;
             self.recipe.page = self.clipboard.page;
+            self.recipe.privacy = self.clipboard.privacy;
             
             // Reset edit flags.
             self.saveRequired = NO;
@@ -1772,6 +1797,7 @@ typedef enum {
         [self setServes:self.recipe.numServes];
         [self setPrepMinutes:self.recipe.prepTimeInMinutes cookMinutes:self.recipe.cookingTimeInMinutes];
         [self setIngredients:self.recipe.ingredients];
+        [self setPrivacy:self.recipe.privacy];
         
         // Reset edit flags.
         self.saveRequired = NO;
@@ -1798,7 +1824,7 @@ typedef enum {
 - (void)prepareClipboard:(BOOL)prepare {
     if (prepare) {
         self.clipboard = [[RecipeClipboard alloc] init];
-        self.clipboard.privacyMode = self.recipe.privacy;
+        self.clipboard.privacy = self.recipe.privacy;
         self.clipboard.page = self.recipe.page;
         self.clipboard.name = self.recipe.name;
         self.clipboard.story = self.recipe.story;
@@ -1920,6 +1946,11 @@ typedef enum {
                              [self updateButtons];
                          }
                      }];
+}
+
+- (void)selectedPrivacy:(CKPrivacy)privacy {
+    self.clipboard.privacy = privacy;
+    self.saveRequired = (self.clipboard.privacy != self.recipe.privacy);
 }
 
 @end

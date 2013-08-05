@@ -10,6 +10,12 @@
 #import "CKUser.h"
 #import "CKBook.h"
 
+typedef NS_ENUM(NSUInteger, CKPrivacy) {
+    CKPrivacyPrivate,
+    CKPrivacyFriends,
+    CKPrivacyGlobal
+};
+
 @class CKRecipeImage;
 
 @interface CKRecipe : CKModel
@@ -17,7 +23,6 @@
 @property(nonatomic, strong) CKBook *book;
 @property(nonatomic, strong) CKUser *user;
 
-@property (nonatomic, assign) BOOL privacy;
 @property (nonatomic, strong) NSString *page;
 @property (nonatomic, strong) NSString *story;
 @property (nonatomic, strong) NSString *method;
@@ -29,6 +34,8 @@
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSArray *ingredients;
+
+@property (nonatomic, assign) CKPrivacy privacy;
 
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 

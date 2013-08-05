@@ -220,7 +220,9 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseObject objectForKey:kUserAttrLastName];
 }
 
-- (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion failure:(ObjectFailureBlock)failure {
+- (void)checkIsFriendsWithUser:(CKUser *)friendUser completion:(UserFriendSuccessBlock)completion
+                       failure:(ObjectFailureBlock)failure {
+    
     PFQuery *requestorQuery = [PFQuery queryWithClassName:kUserFriendModelName];
     [requestorQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
     [requestorQuery whereKey:kUserFriendFriend equalTo:friendUser.parseUser];

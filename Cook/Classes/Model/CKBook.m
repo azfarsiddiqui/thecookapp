@@ -297,6 +297,11 @@
 }
 
 - (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    [self fetchRecipesOwner:YES friends:NO success:success failure:failure];
+}
+
+- (void)fetchRecipesOwner:(BOOL)owner friends:(BOOL)friends success:(ListObjectsSuccessBlock)success
+                  failure:(ObjectFailureBlock)failure {
     
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
     [query setCachePolicy:kPFCachePolicyNetworkElseCache];
@@ -305,10 +310,14 @@
     
     // Fetch recipes that are in the book's pages.
     [query whereKey:kRecipeAttrPage containedIn:[self pages]];
-
+    
     // Only fetch public recipes if it's not your own book.
-    if (![self isUserBookAuthor:[CKUser currentUser]]) {
-        [query whereKey:kRecipeAttrPrivacy notEqualTo:[NSNumber numberWithBool:YES]];
+    if (!owner) {
+        if (friends) {
+            [query whereKey:kRecipeAttrPrivacy containedIn:@[@(CKPrivacyFriends), @(CKPrivacyGlobal)]];
+        } else {
+            [query whereKey:kRecipeAttrPrivacy equalTo:@(CKPrivacyGlobal)];
+        }
     }
     
     // Include photo references.

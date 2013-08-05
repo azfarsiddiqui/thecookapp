@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CKCategory.h"
+#import "CKRecipe.h"
 
 @interface RecipeClipboard : NSObject
 
@@ -23,6 +24,6 @@
 @property (nonatomic, assign) NSInteger prepMinutes;
 @property (nonatomic, assign) NSInteger cookMinutes;
 
-@property (nonatomic, assign) BOOL privacyMode;
+@property (nonatomic, assign) CKPrivacy privacy;
 
 @end

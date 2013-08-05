@@ -316,7 +316,7 @@
 
 - (void)requestTapped:(id)sender {
     if (self.pendingAcceptance) {
-        [self updateRequestButtonText:@"AcceptingFriend Request" activity:YES enabled:NO];
+        [self updateRequestButtonText:@"Accepting Friend Request" activity:YES enabled:NO];
     } else {
         [self updateRequestButtonText:@"Sending Friend Request" activity:YES enabled:NO];
     }
