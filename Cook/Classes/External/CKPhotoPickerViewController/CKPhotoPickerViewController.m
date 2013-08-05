@@ -8,6 +8,7 @@
 
 #import "CKPhotoPickerViewController.h"
 #import "UIImage+ProportionalFill.h"
+#import "CKEditingViewHelper.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
@@ -35,6 +36,7 @@
 
 #define kToolbarHeight  44.0
 #define kContentInsets  UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
+#define kButtonInsets   UIEdgeInsetsMake(15.0, 3.0, 15.0, 3.0)
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
@@ -144,9 +146,9 @@
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_takephoto_close.png"] target:self action:@selector(closeTapped:)];
+        _closeButton = [CKEditingViewHelper cancelButtonWithTarget:self selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_closeButton setFrame:CGRectMake(kContentInsets.left,
+        [_closeButton setFrame:CGRectMake(kButtonInsets.left,
                                           kContentInsets.top,
                                           _closeButton.frame.size.width,
                                           _closeButton.frame.size.height)];
@@ -156,7 +158,7 @@
 
 - (UIButton *)retakeButton {
     if (!_retakeButton) {
-        _retakeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_takephoto_cancel.png"] target:self action:@selector(retakeTapped:)];
+        _retakeButton = [CKEditingViewHelper cancelButtonWithTarget:self selector:@selector(retakeTapped:)];
         _retakeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_retakeButton setFrame:CGRectMake(kContentInsets.left,
                                            kContentInsets.top,
@@ -169,9 +171,9 @@
 - (UIButton *)saveButton {
     if (!_saveButton) {
         CGRect parentBounds = [self parentBounds];
-        _saveButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_takephoto_done.png"] target:self action:@selector(saveTapped:)];
+        _saveButton = [CKEditingViewHelper okayButtonWithTarget:self selector:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_saveButton setFrame:CGRectMake(parentBounds.size.width - _saveButton.frame.size.width - kContentInsets.right,
+        [_saveButton setFrame:CGRectMake(parentBounds.size.width - _saveButton.frame.size.width - kButtonInsets.right,
                                          kContentInsets.top,
                                          _saveButton.frame.size.width,
                                          _saveButton.frame.size.height)];
