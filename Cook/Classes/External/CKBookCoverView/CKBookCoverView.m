@@ -126,18 +126,20 @@
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:NO
-                                                                                                              title:@"Author"
+                                                                                                              title:nil
                                                                                                      characterLimit:32];
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:60.0];
+        editViewController.forceUppercase = YES;
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:50.0];
         self.editViewController = editViewController;
     } else if (editingView == self.authorTextView) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:NO
-                                                                                                              title:@"Name"
+                                                                                                              title:nil
                                                                                                      characterLimit:20];
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:60.0];
+        editViewController.forceUppercase = YES;
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:60.0];
         self.editViewController = editViewController;
     }
     [self.editViewController performEditing:YES];

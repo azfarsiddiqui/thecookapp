@@ -100,6 +100,7 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     BOOL isBackspace = [newString length] < [textField.text length];
+    BOOL shouldChange = NO;
     
     if ([textField.text length] >= self.characterLimit && !isBackspace) {
         return NO;
@@ -108,14 +109,27 @@
     // Update character limit.
     NSUInteger currentLimit = self.characterLimit - [newString length];
     self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
-    
     [self updateInfoLabels];
 
     // No save if no characters
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     [targetTextBoxView showSaveIcon:YES enabled:([newString length] > 0) animated:NO];
     
-    return YES;
+    if (self.forceUppercase) {
+        
+        UITextPosition *beginning = textField.beginningOfDocument;
+        UITextPosition *start = [textField positionFromPosition:beginning offset:range.location];
+        UITextPosition *end = [textField positionFromPosition:start offset:range.length];
+        UITextRange *textRange = [textField textRangeFromPosition:start toPosition:end];
+        
+        // replace the text in the range with the upper case version of the replacement string
+        [textField replaceRange:textRange withText:[string uppercaseString]];
+        
+    } else {
+        shouldChange = YES;
+    }
+    
+    return shouldChange;
 }
 
 #pragma mark - Private methods

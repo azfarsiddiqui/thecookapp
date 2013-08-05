@@ -13,6 +13,7 @@
 @property (nonatomic, assign) NSUInteger characterLimit;
 @property (nonatomic, strong) UILabel *limitLabel;
 @property (nonatomic, assign) BOOL textLimited;
+@property (nonatomic, assign) BOOL forceUppercase;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title
