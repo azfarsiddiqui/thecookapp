@@ -50,7 +50,7 @@
 #pragma mark - Lazy getters
 
 - (UILabel *)limitLabel {
-    if (!_limitLabel && self.textLimited) {
+    if (!_limitLabel && self.textLimited && [self showTitleLabel]) {
         
         _limitLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _limitLabel.backgroundColor = [UIColor clearColor];
