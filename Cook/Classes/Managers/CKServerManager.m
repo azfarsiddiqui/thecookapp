@@ -8,6 +8,7 @@
 
 #import "CKServerManager.h"
 #import <Parse/Parse.h>
+#import <Crashlytics/Crashlytics.h>
 
 @interface CKServerManager ()
 
@@ -38,6 +39,9 @@
     
     // Set up Facebook
     [PFFacebookUtils initializeFacebook];
+    
+    // Crashlytics.
+    [Crashlytics startWithAPIKey:@"78b5ee31da5ef077dd802aa93ca267444ea27b07"];
     
     DLog(@"Started ServerManager");
 }

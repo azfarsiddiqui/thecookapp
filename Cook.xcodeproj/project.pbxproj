@@ -138,6 +138,7 @@
 		76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0C165343DE007D1EBF /* UIImage+Tint.m */; };
 		7632F24D17AF46D900E80952 /* cook_dash_icons_notifications_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 7632F24B17AF46D900E80952 /* cook_dash_icons_notifications_on.png */; };
 		7632F24E17AF46D900E80952 /* cook_dash_icons_notifications_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7632F24C17AF46D900E80952 /* cook_dash_icons_notifications_on@2x.png */; };
+		7632F25117AF4CFA00E80952 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7632F25017AF4CFA00E80952 /* Crashlytics.framework */; };
 		763546B017941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A217941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png */; };
 		763546B117941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A317941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png */; };
 		763546B217941988007A9DF6 /* cook_book_inner_icon_comment_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A417941988007A9DF6 /* cook_book_inner_icon_comment_dark.png */; };
@@ -905,6 +906,7 @@
 		76324F0C165343DE007D1EBF /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		7632F24B17AF46D900E80952 /* cook_dash_icons_notifications_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_notifications_on.png; sourceTree = "<group>"; };
 		7632F24C17AF46D900E80952 /* cook_dash_icons_notifications_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_icons_notifications_on@2x.png"; sourceTree = "<group>"; };
+		7632F25017AF4CFA00E80952 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		763546A217941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_darkenphoto_strip.png; sourceTree = "<group>"; };
 		763546A317941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_darkenphoto_strip@2x.png"; sourceTree = "<group>"; };
 		763546A417941988007A9DF6 /* cook_book_inner_icon_comment_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_comment_dark.png; sourceTree = "<group>"; };
@@ -1726,6 +1728,7 @@
 				76EE2CDF170AEADF0043D128 /* ImageIO.framework in Frameworks */,
 				76EE2CDD170AEAB80043D128 /* CoreImage.framework in Frameworks */,
 				76B258B917AB471100291878 /* Reveal.framework in Frameworks */,
+				7632F25117AF4CFA00E80952 /* Crashlytics.framework in Frameworks */,
 				76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */,
 				763D2777166C293800A43DF9 /* CoreLocation.framework in Frameworks */,
 				895A2B901655BC9E0061E687 /* Accelerate.framework in Frameworks */,
@@ -2829,6 +2832,7 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7632F25017AF4CFA00E80952 /* Crashlytics.framework */,
 				76B258B817AB471100291878 /* Reveal.framework */,
 				7602543F171191A100950571 /* AssetsLibrary.framework */,
 				76EE2CDE170AEADF0043D128 /* ImageIO.framework */,
@@ -3280,6 +3284,7 @@
 				76ED27391612DC180012E479 /* Sources */,
 				76ED273A1612DC180012E479 /* Frameworks */,
 				76ED273B1612DC180012E479 /* Resources */,
+				7632F24F17AF4CB100E80952 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -3849,6 +3854,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7632F24F17AF4CB100E80952 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run 78b5ee31da5ef077dd802aa93ca267444ea27b07";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		76ED27391612DC180012E479 /* Sources */ = {
