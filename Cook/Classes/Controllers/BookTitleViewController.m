@@ -231,7 +231,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
     
-    [self.pages exchangeObjectAtIndex:toIndexPath.item withObjectAtIndex:fromIndexPath.item];
+    id page = [self.pages objectAtIndex:fromIndexPath.item];
+    [self.pages removeObjectAtIndex:fromIndexPath.item];
+    [self.pages insertObject:page atIndex:toIndexPath.item];
     
     // Inform book to relayout.
     [self.delegate bookTitleUpdatedOrderOfPages:self.pages];

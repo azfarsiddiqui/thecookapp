@@ -261,9 +261,11 @@
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
     [self currentLayout].dragging = NO;
-    [self.items exchangeObjectAtIndex:fromIndexPath.item withObjectAtIndex:toIndexPath.item];
+    
+    id item = [self.items objectAtIndex:fromIndexPath.item];
+    [self.items removeObjectAtIndex:fromIndexPath.item];
+    [self.items insertObject:item atIndex:toIndexPath.item];
 }
-
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
 
