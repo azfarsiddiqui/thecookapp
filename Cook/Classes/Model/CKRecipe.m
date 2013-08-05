@@ -48,6 +48,7 @@
     recipe.book = book;
     recipe.user = book.user;
     recipe.page = page;
+    recipe.privacy = CKPrivacyFriends;
     return recipe;
 }
 
