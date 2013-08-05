@@ -236,7 +236,7 @@
 }
 
 - (UIImage *)iconImageEnabled:(BOOL)enabled {
-    return enabled ? [UIImage imageNamed:@"cook_dash_icons_notifications.png"] : [UIImage imageNamed:@"cook_dash_icons_notifications_off.png"];
+    return enabled ? [UIImage imageNamed:@"cook_dash_icons_notifications_on.png"] : [UIImage imageNamed:@"cook_dash_icons_notifications_off.png"];
 }
 
 @end
