@@ -195,7 +195,7 @@
 }
 
 - (UIColor *)bookNavigationColour {
-    return [CKBookCover colourForCover:self.book.cover];
+    return [CKBookCover textColourForCover:self.book.cover];
 }
 
 #pragma mark - BookContentViewControllerDelegate methods
