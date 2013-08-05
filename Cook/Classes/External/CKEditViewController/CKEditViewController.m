@@ -351,7 +351,7 @@
 }
 
 - (BOOL)showTitleLabel {
-    return YES;
+    return NO;
 }
 
 - (BOOL)showSaveIcon {
