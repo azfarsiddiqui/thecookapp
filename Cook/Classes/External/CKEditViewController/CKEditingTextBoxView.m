@@ -22,6 +22,8 @@
 
 @implementation CKEditingTextBoxView
 
+#define kSaveButtonScaling 0.78
+
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setBackgroundImage:image forState:UIControlStateNormal];
@@ -84,11 +86,12 @@
         // Save icon to be hidden at first, and positioned in the top-right corner.
         UIButton *textEditingSaveButton = [CKEditingViewHelper okayButtonWithTarget:self selector:@selector(saveTapped:)];
         textEditingSaveButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin;
-        textEditingSaveButton.frame = CGRectMake(self.bounds.size.width - textEditingSaveButton.frame.size.width + 10.0,
-                                                 -10.0,
-                                                 textEditingSaveButton.frame.size.width,
-                                                 textEditingSaveButton.frame.size.height);
-        textEditingSaveButton.hidden = YES;
+        textEditingSaveButton.frame = (CGRect){
+            self.bounds.size.width - textEditingSaveButton.frame.size.width + 16.0,
+            -11.0,
+            textEditingSaveButton.frame.size.width,
+            textEditingSaveButton.frame.size.height};
+        textEditingSaveButton.alpha = 0.0;
         self.textEditingSaveButton = textEditingSaveButton;
         
         // Add them all.
@@ -139,7 +142,6 @@
 
 - (void)showSaveIcon:(BOOL)show enabled:(BOOL)enabled animated:(BOOL)animated {
     if (show) {
-        self.textEditingSaveButton.hidden = NO;
         self.textEditingSaveButton.alpha = 0.0;
     }
     if (animated) {
@@ -148,6 +150,7 @@
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              self.textEditingSaveButton.alpha = show ? 1.0 : 0.0;
+                             self.textEditingSaveButton.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(kSaveButtonScaling, kSaveButtonScaling);
                          }
                          completion:^(BOOL finished) {
                              self.textEditingSaveButton.enabled = enabled;
@@ -155,6 +158,7 @@
     } else {
         self.textEditingSaveButton.enabled = enabled;
         self.textEditingSaveButton.alpha = show ? 1.0 : 0.0;
+        self.textEditingSaveButton.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(kSaveButtonScaling, kSaveButtonScaling);
     }
 }
 
