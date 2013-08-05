@@ -159,7 +159,9 @@
             };
 
         }
-                
+        
+        [self processPagingFade];
+        
     } else if (scrollView == self.backdropScrollView) {
         
         CGPoint contentOffset = self.backdropScrollView.contentOffset;
@@ -167,8 +169,8 @@
             contentOffset.x + floorf(self.backdropScrollView.bounds.size.width / 2.0),
             self.backgroundTextureView.center.y
         };
-        
     }
+    
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -999,6 +1001,25 @@
                      }
                      completion:^(BOOL finished) {
                      }];
+}
+
+- (void)processPagingFade {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGPoint visibleCenter = (CGPoint){ CGRectGetMidX(visibleFrame), CGRectGetMidY(visibleFrame) };
+    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:visibleCenter];
+    if (indexPath) {
+        UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+        if (cell) {
+            
+            CGFloat distance = ABS(cell.center.x - visibleCenter.x);
+            CGFloat effectiveDistance = 300.0 / 2.0;
+            CGFloat fadeAlpha = 1.0 - MIN(distance, effectiveDistance) / effectiveDistance;
+            fadeAlpha = MAX(0.3, fadeAlpha);
+//            DLog(@"FADE ALPHA %f", fadeAlpha);
+            self.pagingBenchtopView.alpha = fadeAlpha;
+            
+        }
+    }
 }
 
 @end
