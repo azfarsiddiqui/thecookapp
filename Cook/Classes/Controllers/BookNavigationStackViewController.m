@@ -823,7 +823,7 @@
     // If we're past the category pages, then this shortcuts back to home.
     if (edgeGesture.state == UIGestureRecognizerStateBegan) {
         self.collectionView.panGestureRecognizer.enabled = NO;
-        if (visibleFrame.origin.x > ([self stackContentStartSection] * self.collectionView.bounds.size.width)) {
+        if (visibleFrame.origin.x >= ([self stackContentStartSection] * self.collectionView.bounds.size.width)) {
             [self scrollToHome];
         }
     } else {
