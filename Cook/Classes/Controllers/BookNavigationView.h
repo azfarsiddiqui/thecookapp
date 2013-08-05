@@ -23,6 +23,6 @@
 
 + (CGFloat)navigationHeight;
 
-- (void)setTitle:(NSString *)title;
+- (void)setTitle:(NSString *)title editable:(BOOL)editable;
 
 @end

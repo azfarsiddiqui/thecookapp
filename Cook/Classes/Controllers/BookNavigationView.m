@@ -34,12 +34,11 @@
         [self addSubview:self.closeButton];
         [self addSubview:self.homeButton];
         [self addSubview:self.titleLabel];
-        [self addSubview:self.addButton];
     }
     return self;
 }
 
-- (void)setTitle:(NSString *)title {
+- (void)setTitle:(NSString *)title editable:(BOOL)editable {
     self.titleLabel.textColor = [self.delegate bookNavigationColour];
     self.titleLabel.text = [title uppercaseString];
     [self.titleLabel sizeToFit];
@@ -49,6 +48,10 @@
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
+    
+    if (editable) {
+        [self addSubview:self.addButton];
+    }
 }
 
 #pragma mark - Properties

@@ -189,7 +189,9 @@
 }
 
 - (void)bookNavigationViewAddTapped {
-    [self showAddView:YES];
+    if ([self.book isOwner]) {
+        [self showAddView:YES];
+    }
 }
 
 - (UIColor *)bookNavigationColour {
@@ -734,7 +736,7 @@
                                                                                           forIndexPath:indexPath];
     BookNavigationView *navigationView = (BookNavigationView *)headerView;
     navigationView.delegate = self;
-    [navigationView setTitle:self.book.user.name];
+    [navigationView setTitle:self.book.user.name editable:[self.book isOwner]];
     
     // Keep a reference of the navigation view.
     self.bookNavigationView = navigationView;
