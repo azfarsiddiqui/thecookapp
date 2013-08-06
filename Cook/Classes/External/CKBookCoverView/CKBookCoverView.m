@@ -228,13 +228,13 @@
     
     switch (self.bookCoverLayout) {
         case BookCoverLayoutTop:
-            frame.origin.y = nameFrame.origin.y + nameFrame.size.height + floorf(((self.authorTextView.superview.bounds.size.height - nameFrame.origin.y - nameFrame.size.height)  - size.height) / 2.0);
+            frame.origin.y = floorf((self.authorTextView.superview.bounds.size.height - size.height) / 2.0);
             break;
         case BookCoverLayoutBottom:
             frame.origin.y = floorf(((self.authorTextView.superview.bounds.size.height - (self.authorTextView.superview.bounds.size.height - nameFrame.origin.y)) - size.height) / 2.0);
             break;
         case BookCoverLayoutMid:
-            frame.origin.y = floorf(((self.authorTextView.superview.bounds.size.height - (self.authorTextView.superview.bounds.size.height - nameFrame.origin.y)) - size.height) / 2.0);
+            frame.origin.y = floorf((self.authorTextView.superview.bounds.size.height - size.height) / 2.0);
             break;
         default:
             break;
@@ -257,7 +257,7 @@
             frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height + 5.0;
             break;
         case BookCoverLayoutMid:
-            frame.origin.y = self.nameTextView.superview.bounds.size.height - frame.size.height + 5.0;
+            frame.origin.y = 0.0;
             break;
         default:
             break;
@@ -431,7 +431,7 @@
                 20.0,
                 5.0,
                 278.0,
-                210.0
+                240.0
             };
             break;
         case BookCoverLayoutBottom:
@@ -447,7 +447,7 @@
                 20.0,
                 15.0,
                 278.0,
-                415.0
+                390.0
             };
             break;
         default:
