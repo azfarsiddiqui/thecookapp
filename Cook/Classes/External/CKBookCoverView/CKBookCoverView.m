@@ -36,7 +36,6 @@
 
 @implementation CKBookCoverView
 
-#define kCoverInsets    (UIEdgeInsets){ 22.0, 36.0, 54.0, 36.0 }
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
@@ -446,9 +445,9 @@
         case BookCoverLayoutMid:
             frame = (CGRect){
                 20.0,
-                150.0,
+                15.0,
                 278.0,
-                190.0
+                408.0
             };
             break;
         default:
