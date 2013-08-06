@@ -1507,7 +1507,7 @@ typedef enum {
 }
 
 - (void)setTitle:(NSString *)title {
-    self.titleLabel.text = title;
+    self.titleLabel.text = [title uppercaseString];
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = CGRectMake(floorf((self.headerView.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
                                        self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height,
