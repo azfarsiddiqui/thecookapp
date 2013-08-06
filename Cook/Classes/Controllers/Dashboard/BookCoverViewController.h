@@ -10,11 +10,14 @@
 
 @class CKBook;
 
-@protocol BookCoverViewControllerDelegate
+@protocol BookCoverViewControllerDelegate <NSObject>
 
 - (void)bookCoverViewWillOpen:(BOOL)open;
 - (void)bookCoverViewDidOpen:(BOOL)open;
 - (CGPoint)bookCoverCenterPoint;
+
+@optional
+- (UIView *)bookCoverViewInsideSnapshotView;
 
 @end
 
@@ -25,5 +28,6 @@
 - (void)openBook:(BOOL)open;
 - (void)openBook:(BOOL)open centerPoint:(CGPoint)centerPoint;
 - (void)cleanUpLayers;
+- (void)loadSnapshotView:(UIView *)snapshotView;
 
 @end

@@ -20,6 +20,7 @@
 #import "RecipeViewController.h"
 #import "BookNavigationHelper.h"
 #import "BookNavigationStackViewController.h"
+#import "BookTitleViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
@@ -194,6 +195,12 @@
 
 - (CGPoint)bookCoverCenterPoint {
     return self.view.center;
+}
+
+- (UIView *)bookCoverViewInsideSnapshotView {
+    // Create BookTitleVC for snapshotting.
+    BookTitleViewController *bookTitleViewController = [[BookTitleViewController alloc] initWithBook:self.selectedBook delegate:nil];
+    return [bookTitleViewController.view snapshotViewAfterScreenUpdates:YES];
 }
 
 #pragma mark - BookNavigationViewControllerDelegate methods

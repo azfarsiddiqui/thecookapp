@@ -20,6 +20,7 @@
 #import "UICollectionView+Draggable.h"
 #import "BookTitleLayout.h"
 #import "MRCEnumerable.h"
+#import "AppHelper.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     UIAlertViewDelegate, UITextFieldDelegate>
@@ -27,7 +28,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
-@property (nonatomic, assign) id<BookTitleViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
@@ -63,6 +64,8 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor colorWithHexString:@"f2f2f2"];
+    self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
+    
     [self initBackgroundView];
     [self initCollectionView];
     [self addCloseButtonWhite:YES];
