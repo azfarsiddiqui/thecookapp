@@ -9,6 +9,7 @@
 #import "PagingCollectionViewLayout.h"
 #import "BenchtopBookCoverViewCell.h"
 #import "MRCEnumerable.h"
+#import "ViewHelper.h"
 
 @interface PagingCollectionViewLayout ()
 
@@ -219,6 +220,20 @@
 //    }
     
     CGPoint targetContentOffset = CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
+    
+//    if ([self.anchorPoints count] > 1) {
+//        CGPoint anchorPoint = [[self.anchorPoints objectAtIndex:1] CGPointValue];
+//        if (targetContentOffset.x == anchorPoint.x - (self.collectionView.bounds.size.width / 2.0)) {
+//            
+//            CGSize bookSize = [PagingCollectionViewLayout bookSize];
+//            targetContentOffset.x += bookSize.width;
+//            CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+//            if (targetContentOffset.x < visibleFrame.origin.x) {
+//                targetContentOffset.x *= -1;
+//            }
+//        }
+//    }
+    
     return targetContentOffset;
 }
 
