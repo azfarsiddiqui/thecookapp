@@ -396,6 +396,9 @@
 
 #pragma mark - Recipe Editing
 
++ (UIColor *)bookCoverInsideBackgroundColour {
+    return [UIColor colorWithHexString:@"E8E8E8"];
+}
 
 + (UIFont *)cookServesPrepEditTitleFont {
     return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:50.0];
@@ -510,11 +513,11 @@
 #pragma mark - Settings
 
 + (UIFont *)settingsProfileFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0];
 }
 
 + (UIFont *)settingsThemeFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0];
 }
 
 #pragma mark - Ingredients

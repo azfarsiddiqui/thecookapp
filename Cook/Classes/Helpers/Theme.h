@@ -66,6 +66,7 @@
 + (UIColor *)notificationsCellTimeColour;
 
 #pragma mark - Book contents/activities.
++ (UIColor *)bookCoverInsideBackgroundColour;
 + (UIFont *)bookNavigationTitleFont;
 + (UIColor *)bookNavigationTitleColour;
 + (UIFont *)bookProfileNameFont;
