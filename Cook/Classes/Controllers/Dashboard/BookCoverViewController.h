@@ -23,6 +23,8 @@
 
 @interface BookCoverViewController : UIViewController
 
+@property (nonatomic, assign) BOOL showInsideCover;
+
 - (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (id)initWithBook:(CKBook *)book mine:(BOOL)mine delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (void)openBook:(BOOL)open;

@@ -31,6 +31,7 @@
 @property (nonatomic, strong) WelcomeViewController *welcomeViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookNavigationStackViewController *bookNavigationViewController;
+@property (nonatomic, strong) BookTitleViewController *snapshotBookTitleViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *selectedBook;
@@ -189,6 +190,9 @@
         
         // Cleanup book navigation helper.
         [BookNavigationHelper sharedInstance].bookNavigationViewController = nil;
+        
+        // Nil out the bookTitleVC for snapshotting.
+        self.snapshotBookTitleViewController = nil;
     }
     
 }
@@ -198,25 +202,28 @@
 }
 
 - (UIView *)bookCoverViewInsideSnapshotView {
-    // Create BookTitleVC for snapshotting.
-    BookTitleViewController *bookTitleViewController = [[BookTitleViewController alloc] initWithBook:self.selectedBook delegate:nil];
-    return [bookTitleViewController.view snapshotViewAfterScreenUpdates:YES];
+    return [self.snapshotBookTitleViewController.view snapshotViewAfterScreenUpdates:YES];
 }
 
 #pragma mark - BookNavigationViewControllerDelegate methods
 
 - (void)bookNavigationControllerCloseRequested {
     
-    // Scale it down then let the book cover close.
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseOut
-                     animations:^{
-                         self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
-                     }
-                     completion:^(BOOL finished) {
-                         [self.bookCoverViewController openBook:NO];
-                     }];
+//    [self.bookCoverViewController loadSnapshotView:[self.bookNavigationViewController.view snapshotViewAfterScreenUpdates:YES]];
+    
+    // Let the bookCoverVC above to have a chance of loadinging the snapshot first.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        // Scale it down then let the book cover close.
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^{
+                             self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+                         }
+                         completion:^(BOOL finished) {
+                             [self.bookCoverViewController openBook:NO];
+                         }];
+    });
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
@@ -516,6 +523,10 @@
 - (void)openBook:(CKBook *)book centerPoint:(CGPoint)centerPoint {
     
     self.selectedBook = book;
+    self.snapshotBookTitleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:nil];
+    self.snapshotBookTitleViewController.view.hidden = NO;
+    [self.view addSubview:self.snapshotBookTitleViewController.view];
+    [self.view sendSubviewToBack:self.snapshotBookTitleViewController.view];
     
     // Open book.
     BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book delegate:self];

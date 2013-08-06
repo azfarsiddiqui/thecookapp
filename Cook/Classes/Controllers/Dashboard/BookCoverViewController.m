@@ -42,6 +42,7 @@
         self.book = book;
         self.mine = mine;
         self.delegate = delegate;
+        self.showInsideCover = NO;
     }
     return self;
 }
@@ -79,6 +80,9 @@
 }
 
 - (void)loadSnapshotView:(UIView *)snapshotView {
+    if (!self.showInsideCover) {
+        return;
+    }
     
     // Left opened page.
     UIView *leftSnapshotView = [snapshotView resizableSnapshotViewFromRect:(CGRect){
@@ -89,13 +93,15 @@
     } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
     leftSnapshotView.layer.frame = self.leftOpenLayer.bounds;
     leftSnapshotView.layer.anchorPoint = self.leftOpenLayer.anchorPoint;
+    DLog(@"leftSnapshotView %@", leftSnapshotView);
     
     // Left image.
     UIGraphicsBeginImageContextWithOptions(leftSnapshotView.bounds.size, NO, 0);
-    [leftSnapshotView drawViewHierarchyInRect:leftSnapshotView.bounds afterScreenUpdates:YES];
+    BOOL leftDone = [leftSnapshotView drawViewHierarchyInRect:leftSnapshotView.bounds afterScreenUpdates:YES];
     UIImage *leftImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     self.leftOpenLayer.contents = (id)leftImage.CGImage;
+    DLog(@"Drawn leftImage %@", leftDone ? @"YES" : @"NO");
     
     // Right opened page.
     UIView *rightSnapshotView = [snapshotView resizableSnapshotViewFromRect:(CGRect){
@@ -106,13 +112,17 @@
     } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
     rightSnapshotView.layer.anchorPoint = self.rightOpenLayer.anchorPoint;
     rightSnapshotView.layer.frame = self.rightOpenLayer.bounds;
+    DLog(@"rightSnapshotView %@", rightSnapshotView);
     
     // Left image.
     UIGraphicsBeginImageContextWithOptions(rightSnapshotView.bounds.size, NO, 0);
-    [rightSnapshotView drawViewHierarchyInRect:rightSnapshotView.bounds afterScreenUpdates:YES];
+    BOOL rightDone = [rightSnapshotView drawViewHierarchyInRect:rightSnapshotView.bounds afterScreenUpdates:YES];
     UIImage *rightImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     self.rightOpenLayer.contents = (id)rightImage.CGImage;
+    DLog(@"Drawn rightImage %@", rightDone ? @"YES" : @"NO");
+    
+    DLog(@"Loaded snapshotView");
 }
 
 #pragma mark - CAAnimation delegate methods
@@ -208,9 +218,7 @@
     self.bookCoverLayer = rootBookCoverLayer;
     
     // Inside snapshot.
-    if ([self.delegate respondsToSelector:@selector(bookCoverViewInsideSnapshotView)]) {
-        [self loadSnapshotView:[self.delegate bookCoverViewInsideSnapshotView]];
-    }
+    [self loadSnapshotView];
 }
 
 - (void)animateBookOpen:(BOOL)open {
@@ -297,6 +305,15 @@
     [self.bookCoverLayer addAnimation:flipAnimation forKey:@"transform"];
     [CATransaction commit];
     [CATransaction unlock];
+}
+
+- (void)loadSnapshotView {
+    if (!self.showInsideCover) {
+        return;
+    }
+    if ([self.delegate respondsToSelector:@selector(bookCoverViewInsideSnapshotView)]) {
+        [self loadSnapshotView:[self.delegate bookCoverViewInsideSnapshotView]];
+    }
 }
 
 @end
