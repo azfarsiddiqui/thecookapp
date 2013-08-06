@@ -40,6 +40,7 @@
 @property (nonatomic, assign) NSUInteger benchtopLevel;
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) UIView *benchtopOverlayView;  // Darker overlay to dim the benchtop between levels.
+@property (nonatomic, strong) UIImageView *defaultImageView;
 
 @end
 
@@ -62,6 +63,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.defaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_defaultimage.png"]];
+    self.defaultImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [self.view addSubview:self.defaultImageView];
+    
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
     // Drag to pull
@@ -81,6 +86,8 @@
 
 - (void)didReceiveMemoryWarning {
     DLog();
+    [self.defaultImageView removeFromSuperview];
+    self.defaultImageView = nil;
 }
 
 - (BOOL)shouldAutorotate {
