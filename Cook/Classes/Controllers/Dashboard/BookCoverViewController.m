@@ -12,6 +12,7 @@
 #import "BenchtopBookCoverViewCell.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
+#import "Theme.h"
 
 @interface BookCoverViewController ()
 
@@ -169,7 +170,7 @@
                                       rootBookLayer.bounds.origin.y,
                                       rootBookLayer.bounds.size.width,
                                       rootBookLayer.bounds.size.height);
-    rightOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
+    rightOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
     
     CGMutablePathRef path = CGPathCreateMutable();
     CGPathMoveToPoint(path, nil, CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMidY(rightOpenLayer.bounds));
@@ -196,7 +197,7 @@
     CALayer *leftOpenLayer = [CALayer layer];
     leftOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
     leftOpenLayer.frame = rootBookCoverLayer.bounds;
-    leftOpenLayer.backgroundColor = [UIColor whiteColor].CGColor;
+    leftOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
     leftOpenLayer.doubleSided = NO;
     leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
     [rootBookCoverLayer addSublayer:leftOpenLayer];
