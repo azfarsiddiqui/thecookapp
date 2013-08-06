@@ -1014,7 +1014,7 @@
             CGFloat distance = ABS(cell.center.x - visibleCenter.x);
             CGFloat effectiveDistance = 300.0 / 2.0;
             CGFloat fadeAlpha = 1.0 - MIN(distance, effectiveDistance) / effectiveDistance;
-            fadeAlpha = MAX(0.3, fadeAlpha);
+            fadeAlpha = MAX(0.5, fadeAlpha);
 //            DLog(@"FADE ALPHA %f", fadeAlpha);
             self.pagingBenchtopView.alpha = fadeAlpha;
             

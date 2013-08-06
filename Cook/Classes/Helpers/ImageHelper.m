@@ -50,7 +50,7 @@
     
     // Calls ImageEffects
     return [image applyBlurWithRadius:30
-                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.7]
+                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.58]
                 saturationDeltaFactor:1.8
                             maskImage:nil];
 }
