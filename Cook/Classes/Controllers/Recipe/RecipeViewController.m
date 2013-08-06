@@ -127,7 +127,7 @@ typedef enum {
 #define kContentMaxWidth        685.0
 #define kLeftDividerGap         18.0
 
-#define kButtonInsets           UIEdgeInsetsMake(25.0, 10.0, 15.0, 10.0)
+#define kButtonInsets           UIEdgeInsetsMake(25.0, 10.0, 15.0, 20.0)
 #define kContentLeftFrame       CGRectMake(0.0, 0.0, 255.0, 0.0)
 #define kContentRightFrame      CGRectMake(265.0, 0.0, 420.0, 0.0)
 #define kContentInsets          UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
@@ -514,16 +514,25 @@ typedef enum {
                                             target:self
                                           selector:@selector(shareTapped:)];
         _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _shareButton.frame = CGRectMake(self.likeButton.frame.origin.x - 15.0 - _shareButton.frame.size.width,
-                                        kButtonInsets.top,
-                                        _shareButton.frame.size.width,
-                                        _shareButton.frame.size.height);
+        
+        if (self.likeButton) {
+            _shareButton.frame = CGRectMake(self.likeButton.frame.origin.x - 15.0 - _shareButton.frame.size.width,
+                                            kButtonInsets.top,
+                                            _shareButton.frame.size.width,
+                                            _shareButton.frame.size.height);
+        } else {
+            _shareButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _shareButton.frame.size.width,
+                                            kButtonInsets.top,
+                                            _shareButton.frame.size.width,
+                                            _shareButton.frame.size.height);
+
+        }
     }
     return _shareButton;
 }
 
 - (CKLikeView *)likeButton {
-    if (!_likeButton) {
+    if (![self.book isOwner] && !_likeButton) {
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
