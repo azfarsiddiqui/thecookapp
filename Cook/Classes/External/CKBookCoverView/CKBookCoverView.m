@@ -429,7 +429,7 @@
         case BookCoverLayoutTop:
             frame = (CGRect){
                 20.0,
-                15.0,
+                5.0,
                 278.0,
                 210.0
             };
@@ -439,7 +439,7 @@
                 20.0,
                 232.0,
                 278.0,
-                190.0
+                197.0
             };
             break;
         case BookCoverLayoutMid:
@@ -447,7 +447,7 @@
                 20.0,
                 15.0,
                 278.0,
-                408.0
+                415.0
             };
             break;
         default:
