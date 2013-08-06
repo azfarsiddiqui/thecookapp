@@ -105,10 +105,20 @@
         
         // Navigation header.
         if ([attributes.representedElementKind isEqualToString:kPageNavigationtKind]) {
+            
+            NSIndexPath *indexPath = attributes.indexPath;
+            
+            // Dark nav.
+            if (indexPath.section == 1) {
+                [layoutAttributes addObject:attributes];
+            }
+            
+            // Light nav only in category sections.
             NSInteger numSections = [self.collectionView numberOfSections];
             if (numSections > [self.delegate stackContentStartSection]) {
                 [layoutAttributes addObject:attributes];
             }
+            
         } else {
             
             // Header cells.
@@ -223,8 +233,7 @@
 
 - (void)buildProfileHeaderLayout {
     NSIndexPath *profileIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-    UICollectionViewLayoutAttributes *profileHeaderAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                                                               withIndexPath:profileIndexPath];
+    UICollectionViewLayoutAttributes *profileHeaderAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:profileIndexPath];
     profileHeaderAttributes.frame = (CGRect){
         [self pageOffsetForIndexPath:profileIndexPath],
         self.collectionView.bounds.origin.y,
@@ -240,14 +249,24 @@
 }
 
 - (void)buildNavigationLayout {
+    
+    UICollectionViewLayoutAttributes *homeAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
+    
+    // Dark pre-content nav header.
+    NSIndexPath *darkNavigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:1];
+    UICollectionViewLayoutAttributes *darkNavigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kPageNavigationtKind withIndexPath:darkNavigationIndexPath];
+    darkNavigationAttributes.frame = [self navigationFrameForDark:YES];
+    darkNavigationAttributes.zIndex = homeAttributes.zIndex + 2;    // Goes over the homepage.
+    [self.supplementaryLayoutAttributes addObject:darkNavigationAttributes];
+    [self.indexPathSupplementaryAttributes setObject:darkNavigationAttributes forKey:darkNavigationIndexPath];
+
+    // White content nav header.
     NSInteger categoryStartSection = [self.delegate stackContentStartSection];
     NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
     
-    UICollectionViewLayoutAttributes *previousAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
-    UICollectionViewLayoutAttributes *navigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kPageNavigationtKind
-                                                                                                                            withIndexPath:navigationIndexPath];
-    navigationAttributes.frame = [self navigationFrame];
-    navigationAttributes.zIndex = previousAttributes.zIndex - 1;
+    UICollectionViewLayoutAttributes *navigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kPageNavigationtKind withIndexPath:navigationIndexPath];
+    navigationAttributes.frame = [self navigationFrameForDark:NO];
+    navigationAttributes.zIndex = homeAttributes.zIndex - 1;        // Goes under the homepage.
     [self.supplementaryLayoutAttributes addObject:navigationAttributes];
     [self.indexPathSupplementaryAttributes setObject:navigationAttributes forKey:navigationIndexPath];
 }
@@ -302,35 +321,53 @@
         return;
     }
     
-    CGFloat offset =  kShiftOffset;
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    CGRect navigationFrame = [self navigationFrame];
-    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
-    CGFloat startOffset = categoryStartSection * self.collectionView.bounds.size.width;
-    CGSize contentSize = [self collectionViewContentSize];
-    
-    if (visibleFrame.origin.x > startOffset) {
+    NSIndexPath *navigationIndexPath = attributes.indexPath;
+    if (navigationIndexPath.section < [self.delegate stackContentStartSection]) {
         
-        CGFloat offset = MIN(visibleFrame.origin.x, contentSize.width - self.collectionView.bounds.size.width);
-        CGFloat requiredTranslation = offset - navigationFrame.origin.x;
-        attributes.transform3D = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
+        CGFloat maxOffset = [self pageOffsetForIndexPath:navigationIndexPath];
+        if (visibleFrame.origin.x < maxOffset) {
+            
+            // Just stick between 0-1 pages.
+            CGRect frame = attributes.frame;
+            frame.origin.x = MAX(visibleFrame.origin.x, 0.0);
+            attributes.frame = frame;
+            
+        } else {
+            attributes.transform3D = CATransform3DIdentity;
+        }
         
-    } else if (visibleFrame.origin.x > self.collectionView.bounds.size.width
-               && navigationFrame.origin.x >= visibleFrame.origin.x) {
+    } else if (navigationIndexPath.section) {
         
-        // Figure out the pageDistance and the ratio.
-        CGFloat distance = navigationFrame.origin.x - visibleFrame.origin.x;
-        CGFloat normalisedDistance = distance / self.collectionView.bounds.size.width;
-        NSInteger pageDistance = (NSInteger)normalisedDistance;
+        CGFloat offset =  kShiftOffset;
+        CGRect navigationFrame = [self navigationFrameForDark:NO];
+        NSInteger categoryStartSection = [self.delegate stackContentStartSection];
+        CGFloat startOffset = categoryStartSection * self.collectionView.bounds.size.width;
+        CGSize contentSize = [self collectionViewContentSize];
         
-        // Magic formula.
-        CGFloat effectiveDistance = (pageDistance * offset) + (self.collectionView.bounds.size.width - ((pageDistance + 1) * offset));
-        CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
-        CGFloat requiredTranslation = -effectiveDistance * distanceRatio;
+        if (visibleFrame.origin.x > startOffset) {
+            
+            CGFloat offset = MIN(visibleFrame.origin.x, contentSize.width - self.collectionView.bounds.size.width);
+            CGFloat requiredTranslation = offset - navigationFrame.origin.x;
+            attributes.transform3D = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
+            
+        } else if (visibleFrame.origin.x > self.collectionView.bounds.size.width
+                   && navigationFrame.origin.x >= visibleFrame.origin.x) {
+            
+            // Figure out the pageDistance and the ratio.
+            CGFloat distance = navigationFrame.origin.x - visibleFrame.origin.x;
+            CGFloat normalisedDistance = distance / self.collectionView.bounds.size.width;
+            NSInteger pageDistance = (NSInteger)normalisedDistance;
+            
+            // Magic formula.
+            CGFloat effectiveDistance = (pageDistance * offset) + (self.collectionView.bounds.size.width - ((pageDistance + 1) * offset));
+            CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
+            CGFloat requiredTranslation = -effectiveDistance * distanceRatio;
+            
+            attributes.transform3D = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
+        }
         
-        attributes.transform3D = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
     }
-    
 }
 
 - (CGFloat)shiftedTranslationForAttributes:(UICollectionViewLayoutAttributes *)attributes {
@@ -414,15 +451,25 @@
     attributes.alpha = requiredAlpha;
 }
 
-- (CGRect)navigationFrame {
-    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
-    NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
-    return (CGRect){
-        [self pageOffsetForIndexPath:navigationIndexPath],
-        self.collectionView.bounds.origin.y,
-        self.collectionView.bounds.size.width,
-        [BookNavigationView navigationHeight]
-    };
+- (CGRect)navigationFrameForDark:(BOOL)dark {
+    if (dark) {
+        NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:1];
+        return (CGRect){
+            [self pageOffsetForIndexPath:navigationIndexPath],
+            self.collectionView.bounds.origin.y,
+            self.collectionView.bounds.size.width,
+            [BookNavigationView darkNavigationHeight]
+        };
+    } else {
+        NSInteger categoryStartSection = [self.delegate stackContentStartSection];
+        NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
+        return (CGRect){
+            [self pageOffsetForIndexPath:navigationIndexPath],
+            self.collectionView.bounds.origin.y,
+            self.collectionView.bounds.size.width,
+            [BookNavigationView navigationHeight]
+        };
+    }
 }
 
 @end

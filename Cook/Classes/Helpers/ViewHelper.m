@@ -48,6 +48,15 @@
     return [CKEditingViewHelper buttonWithImage:image selectedImage:selectedImage target:target selector:selector];
 }
 
++ (void)updateButton:(UIButton *)button withImage:(UIImage *)image {
+    [self updateButton:button withImage:image selectedImage:nil];
+}
+
++ (void)updateButton:(UIButton *)button withImage:(UIImage *)image selectedImage:(UIImage *)selectedImage {
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
+}
+
 +(UIButton *)buttonWithImagePrefix:(NSString *)imagePrefix target:(id)target selector:(SEL)selector
 {
     UIImage *offImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_off.png",imagePrefix]];

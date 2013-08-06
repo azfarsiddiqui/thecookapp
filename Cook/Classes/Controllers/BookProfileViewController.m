@@ -55,7 +55,6 @@
     
     self.view.backgroundColor = [UIColor lightGrayColor];
     [self initImageView];
-    [self addCloseButtonWhite:YES];
     [EventHelper registerEditMode:self selector:@selector(editModeReceived:)];
 }
 

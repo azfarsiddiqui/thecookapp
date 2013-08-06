@@ -61,7 +61,6 @@
     [self initTitleView];
     [self initCollectionView];
     [self initProfileView];
-    [self addCloseButtonWhite:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

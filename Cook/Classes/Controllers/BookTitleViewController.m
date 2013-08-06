@@ -68,7 +68,6 @@
     
     [self initBackgroundView];
     [self initCollectionView];
-    [self addCloseButtonWhite:YES];
 }
 
 - (void)configurePages:(NSArray *)pages {

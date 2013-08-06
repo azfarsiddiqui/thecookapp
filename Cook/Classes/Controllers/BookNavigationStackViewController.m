@@ -764,7 +764,14 @@
                                                                                           forIndexPath:indexPath];
     BookNavigationView *navigationView = (BookNavigationView *)headerView;
     navigationView.delegate = self;
-    [navigationView setTitle:self.book.user.name editable:[self.book isOwner]];
+    
+    if (indexPath.section == kIndexSection) {
+        [navigationView setTitle:nil editable:NO];
+        [navigationView setDark:YES];
+    } else {
+        [navigationView setTitle:self.book.user.name editable:[self.book isOwner]];
+        [navigationView setDark:NO];
+    }
     
     // Keep a reference of the navigation view.
     self.bookNavigationView = navigationView;

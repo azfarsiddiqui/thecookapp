@@ -22,10 +22,16 @@
 
 @implementation BookNavigationView
 
-#define kContentInsets  (UIEdgeInsets){ 20.0, 20.0, 0.0, 0.0 }
+#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 0.0, 0.0 }
+#define kDarkContentInsets  (UIEdgeInsets){ 30.0, 20.0, 0.0, 0.0 }
+#define kButtonInsets       (UIEdgeInsets){ 28.0, 0.0, 0.0, 0.0 }
 
 + (CGFloat)navigationHeight {
     return 74.0;
+}
+
++ (CGFloat)darkNavigationHeight {
+    return 100.0;
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -44,7 +50,7 @@
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = (CGRect){
         floorf((self.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-        floorf((self.bounds.size.height - self.titleLabel.frame.size.height) / 2.0) + 5.0,
+        kButtonInsets.top,
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
@@ -54,11 +60,25 @@
     }
 }
 
+- (void)setDark:(BOOL)dark {
+    self.backgroundImageView.image = [self backgroundImageForDark:dark];
+    [ViewHelper updateButton:self.homeButton withImage:[self homeImageForDark:dark]];
+    [ViewHelper updateButton:self.closeButton withImage:[self closeImageForDark:dark]];
+    
+    // Update button insets.
+    CGRect homeButtonFrame = self.homeButton.frame;
+    CGRect closeButtonFrame = self.closeButton.frame;
+    homeButtonFrame.origin.y = [self contentInsetsForDark:dark].top;
+    closeButtonFrame.origin.y = homeButtonFrame.origin.y;
+    self.homeButton.frame = homeButtonFrame;
+    self.closeButton.frame = closeButtonFrame;
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)backgroundImageView {
     if (!_backgroundImageView) {
-        _backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_titlebar.png"]];
+        _backgroundImageView = [[UIImageView alloc] initWithImage:[self backgroundImageForDark:NO]];
         _backgroundImageView.frame = self.bounds;
         _backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
@@ -76,11 +96,12 @@
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"]
+        UIEdgeInsets insets = [self contentInsetsForDark:NO];
+        _closeButton = [ViewHelper buttonWithImage:[self closeImageForDark:NO]
                                           target:self selector:@selector(closeTapped:)];
         _closeButton.frame = (CGRect){
-            kContentInsets.left,
-            kContentInsets.top,
+            insets.left,
+            insets.top,
             _closeButton.frame.size.width,
             _closeButton.frame.size.height
         };
@@ -91,7 +112,7 @@
 
 - (UIButton *)homeButton {
     if (!_homeButton) {
-        _homeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_home_dark.png"]
+        _homeButton = [ViewHelper buttonWithImage:[self homeImageForDark:NO]
                                           target:self selector:@selector(homeTapped:)];
         _homeButton.frame = (CGRect){
             self.closeButton.frame.origin.x + self.closeButton.frame.size.width + 5.0,
@@ -132,6 +153,38 @@
 
 - (void)addTapped:(id)sender {
     [self.delegate bookNavigationViewAddTapped];
+}
+
+- (UIImage *)backgroundImageForDark:(BOOL)dark {
+    if (dark) {
+        return [UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"];
+    } else {
+        return [UIImage imageNamed:@"cook_book_inner_titlebar.png"];
+    }
+}
+
+- (UIImage *)closeImageForDark:(BOOL)dark {
+    if (dark) {
+        return [UIImage imageNamed:@"cook_book_inner_icon_close_light.png"];
+    } else {
+        return [UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"];
+    }
+}
+
+- (UIImage *)homeImageForDark:(BOOL)dark {
+    if (dark) {
+        return [UIImage imageNamed:@"cook_book_inner_icon_home_light.png"];
+    } else {
+        return [UIImage imageNamed:@"cook_book_inner_icon_home_dark.png"];
+    }
+}
+
+- (UIEdgeInsets)contentInsetsForDark:(BOOL)dark {
+    if (dark) {
+        return kDarkContentInsets;
+    } else {
+        return kContentInsets;
+    }
 }
 
 @end

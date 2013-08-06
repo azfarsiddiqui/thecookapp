@@ -22,7 +22,9 @@
 @property (nonatomic, weak) id<BookNavigationViewDelegate> delegate;
 
 + (CGFloat)navigationHeight;
++ (CGFloat)darkNavigationHeight;
 
 - (void)setTitle:(NSString *)title editable:(BOOL)editable;
+- (void)setDark:(BOOL)dark;
 
 @end

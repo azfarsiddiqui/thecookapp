@@ -18,6 +18,8 @@
 + (UIButton *)buttonWithImagePrefix:(NSString*)imagePrefix target:(id)target selector:(SEL)selector;
 + (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image target:(id)target selector:(SEL)selector;
 + (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image size:(CGSize)size target:(id)target selector:(SEL)selector;
++ (void)updateButton:(UIButton *)button withImage:(UIImage *)image;
++ (void)updateButton:(UIButton *)button withImage:(UIImage *)image selectedImage:(UIImage *)selectedImage;
 
 + (CGSize)bookSize;
 + (CGFloat)singleLineHeightForFont:(UIFont *)font;
