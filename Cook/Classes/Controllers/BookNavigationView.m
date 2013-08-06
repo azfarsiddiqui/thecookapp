@@ -74,6 +74,10 @@
     self.closeButton.frame = closeButtonFrame;
 }
 
+- (void)setHomeAlpha:(CGFloat)homeAlpha {
+    self.homeButton.alpha = homeAlpha;
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)backgroundImageView {

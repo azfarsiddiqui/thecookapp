@@ -26,5 +26,6 @@
 
 - (void)setTitle:(NSString *)title editable:(BOOL)editable;
 - (void)setDark:(BOOL)dark;
+- (void)setHomeAlpha:(CGFloat)homeAlpha;
 
 @end

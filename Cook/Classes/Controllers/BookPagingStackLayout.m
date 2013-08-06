@@ -326,15 +326,13 @@
     if (navigationIndexPath.section < [self.delegate stackContentStartSection]) {
         
         CGFloat maxOffset = [self pageOffsetForIndexPath:navigationIndexPath];
-        if (visibleFrame.origin.x < maxOffset) {
+        if (visibleFrame.origin.x <= maxOffset) {
             
             // Just stick between 0-1 pages.
             CGRect frame = attributes.frame;
             frame.origin.x = MAX(visibleFrame.origin.x, 0.0);
             attributes.frame = frame;
             
-        } else {
-            attributes.transform3D = CATransform3DIdentity;
         }
         
     } else if (navigationIndexPath.section) {

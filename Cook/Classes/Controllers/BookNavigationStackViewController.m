@@ -41,6 +41,8 @@
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL updatePages;
 @property (nonatomic, strong) UIView *bookOutlineView;
+
+@property (nonatomic, strong) BookNavigationView *darkBookNavigationView;
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
 @property (nonatomic, strong) UIView *benchtopSnapshotView;
@@ -145,6 +147,7 @@
                          
                          // Fade the book navigation view.
                          self.bookNavigationView.alpha = active ? 1.0 : 0.0;
+                         self.darkBookNavigationView.alpha = active ? 1.0 : 0.0;
                          
                          // Fade the cells.
                          NSArray *visibleCells = [self.collectionView visibleCells];
@@ -305,6 +308,17 @@
 }
 
 #pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGFloat darkNavigationOffset = self.collectionView.bounds.size.width;
+    if (visibleFrame.origin.x <= darkNavigationOffset) {
+        CGFloat distance = darkNavigationOffset - visibleFrame.origin.x;
+        CGFloat homeAlpha = distance / self.collectionView.bounds.size.width;
+        [self.darkBookNavigationView setHomeAlpha:homeAlpha];
+    }
+}
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
@@ -768,13 +782,13 @@
     if (indexPath.section == kIndexSection) {
         [navigationView setTitle:nil editable:NO];
         [navigationView setDark:YES];
+        [navigationView setHomeAlpha:0.0];
+        self.darkBookNavigationView = navigationView;
     } else {
         [navigationView setTitle:self.book.user.name editable:[self.book isOwner]];
         [navigationView setDark:NO];
+        self.bookNavigationView = navigationView;
     }
-    
-    // Keep a reference of the navigation view.
-    self.bookNavigationView = navigationView;
     
     return headerView;
 }
