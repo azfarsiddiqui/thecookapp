@@ -40,6 +40,7 @@
 @property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL updatePages;
+@property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, strong) UIView *bookOutlineView;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
@@ -156,6 +157,23 @@
                      }
                      completion:^(BOOL finished) {
                      }];
+}
+
+- (void)updateStatusBar {
+    if ([self.delegate respondsToSelector:@selector(bookNavigationStatusBarAppearanceLight:)]) {
+        CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+        if (visibleFrame.origin.x < (self.collectionView.bounds.size.width * 2.0) - floorf(self.collectionView.bounds.size.width / 2.0)) {
+            if (!self.lightStatusBar) {
+                [self.delegate bookNavigationStatusBarAppearanceLight:YES];
+                self.lightStatusBar = YES;
+            }
+        } else {
+            if (self.lightStatusBar) {
+                [self.delegate bookNavigationStatusBarAppearanceLight:NO];
+                self.lightStatusBar = NO;
+            }
+        }
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -308,14 +326,17 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self updateStatusBar];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
+//        [self updateStatusBar];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+//    [self updateStatusBar];
 }
 
 #pragma mark - UICollectionViewDelegate methods

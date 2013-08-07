@@ -34,6 +34,7 @@
 @property (nonatomic, strong) BookTitleViewController *snapshotBookTitleViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
+@property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
 @property (nonatomic, assign) BOOL panEnabled;
@@ -102,6 +103,11 @@
     return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
+// Need this here so subsequent VC's use it.
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return self.lightStatusBar ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+}
+
 #pragma mark - BenchtopViewControllerDelegate methods
 
 - (void)openBookRequestedForBook:(CKBook *)book centerPoint:(CGPoint)centerPoint {
@@ -151,6 +157,10 @@
         self.storeViewController.view.hidden = NO;
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
+        
+        // Update status bar.
+        self.lightStatusBar = open;
+        [self setNeedsStatusBarAppearanceUpdate];
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -179,6 +189,10 @@
                              bookNavigationViewController.view.transform = CGAffineTransformIdentity;
                          }
                          completion:^(BOOL finished) {
+                             
+                             // Update status bar.
+                             self.lightStatusBar = open;
+                             [self setNeedsStatusBarAppearanceUpdate];
                              
                              // Inform benchtop of didOpen.
                              [self.benchtopViewController bookDidOpen:open];
@@ -243,6 +257,11 @@
 
 - (UIView *)bookNavigationSnapshot {
     return [self.benchtopViewController.view snapshotViewAfterScreenUpdates:YES];
+}
+
+- (void)bookNavigationStatusBarAppearanceLight:(BOOL)light {
+    self.lightStatusBar = light;
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
