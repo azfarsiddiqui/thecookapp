@@ -62,6 +62,9 @@
                                                 opaque:NO];
     self.snapshotView.image = snapshotImage;
     
+    // Followed indicator.
+    [self updateFollowedIcon:book.followed];
+    
     [self enableDeleteMode:NO];
 }
 
@@ -76,9 +79,9 @@
 - (void)updateFollowedIcon:(BOOL)followed {
     if (followed) {
         if (!self.followedIconView) {
-            UIImageView *followedIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_icon_added.png"]];
-            followedIconView.frame = CGRectMake(-40.0,
-                                                -40.0,
+            UIImageView *followedIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_btns_okay.png"]];
+            followedIconView.frame = CGRectMake(self.contentView.bounds.size.width - 50.0,
+                                                -20.0,
                                                 followedIconView.frame.size.width,
                                                 followedIconView.frame.size.height);
             self.followedIconView = followedIconView;
