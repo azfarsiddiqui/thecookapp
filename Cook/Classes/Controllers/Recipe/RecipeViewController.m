@@ -509,7 +509,7 @@ typedef enum {
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_close_light.png"]
+        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_back_light.png"]
                                             target:self
                                           selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
