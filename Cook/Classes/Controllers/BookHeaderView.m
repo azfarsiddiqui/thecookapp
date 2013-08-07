@@ -39,6 +39,9 @@
         maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
         maskedLabel.numberOfLines = 2;
         maskedLabel.font = kCategoryFont;
+//        maskedLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+//        maskedLabel.shadowColor = [UIColor greenColor];
+//        maskedLabel.shadowOffset = (CGSize){ 0.0, 10.0 };
         maskedLabel.insets = kCategoryInsets;
         [self addSubview:maskedLabel];
         self.maskedLabel = maskedLabel;
