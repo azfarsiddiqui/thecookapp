@@ -741,6 +741,7 @@
     }
     
     BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
+    [myBookCell enableEditMode:enable];
     
     CGFloat bounceOffset = 20.0;
     [UIView animateWithDuration:0.3
@@ -770,9 +771,6 @@
                          self.illustrationViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, -self.illustrationViewController.view.frame.size.height - bounceOffset) : CGAffineTransformIdentity;
                      }
                      completion:^(BOOL finished) {
-                         
-                         // Enable edit mode on book cell.
-                         [myBookCell enableEditMode:enable];
                          
                          if (enable) {
                              

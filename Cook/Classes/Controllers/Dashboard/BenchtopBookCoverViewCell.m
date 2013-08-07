@@ -99,7 +99,7 @@
 }
 
 - (void)enableEditMode:(BOOL)enable {
-    [self.bookCoverView enableEditMode:enable];
+    [self.bookCoverView enableEditMode:enable animated:YES];
 }
 
 #pragma mark - CKBooKCoverViewDelegate methods

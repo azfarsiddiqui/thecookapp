@@ -98,8 +98,7 @@
     
 }
 
-- (void)enableEditMode:(BOOL)enable {
-    // DLog(@"enableEditMode: %@", enable ? @"YES" : @"NO");
+- (void)enableEditMode:(BOOL)enable animated:(BOOL)animated {
     
     self.editMode = enable;
     self.editButton.hidden = enable;
@@ -107,10 +106,10 @@
     if (enable) {
         [self.editingHelper wrapEditingView:self.nameTextView
                               contentInsets:UIEdgeInsetsMake(15.0, 20.0, 12.0, 40.0)
-                                   delegate:self white:NO];
+                                   delegate:self white:NO animated:animated];
         [self.editingHelper wrapEditingView:self.authorTextView
                               contentInsets:UIEdgeInsetsMake(5.0, 20.0, 5.0, 28.0)
-                                   delegate:self white:NO];
+                                   delegate:self white:NO animated:animated];
     } else {
         [self.editingHelper unwrapEditingView:self.nameTextView];
         [self.editingHelper unwrapEditingView:self.authorTextView];
@@ -408,7 +407,7 @@
     }
     
     // Reset the editable mode of the fields to NO.
-    [self enableEditMode:NO];
+    [self enableEditMode:NO animated:NO];
 }
 
 - (void)editTapped:(id)sender {
