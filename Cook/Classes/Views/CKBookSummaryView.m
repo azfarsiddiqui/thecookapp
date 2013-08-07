@@ -25,7 +25,7 @@
 @implementation CKBookSummaryView
 
 #define kSummarySize        CGSizeMake(320.0, 460.0)
-#define kContentInsets      UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0)
+#define kContentInsets      UIEdgeInsetsMake(70.0, 20.0, 20.0, 20.0)
 #define kProfileNameGap     20.0
 #define kInterStatsGap      30.0
 #define kNameStatsGap       0.0
