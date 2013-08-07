@@ -19,7 +19,7 @@
 
 @implementation BookPageViewController
 
-#define kContentInsets  (UIEdgeInsets){ 30.0, 20.0, 0.0, 0.0 }
+#define kContentInsets  (UIEdgeInsets){ 35.0, 20.0, 0.0, 0.0 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -32,10 +32,9 @@
     [self applyPageEdgeShadows];
 }
 
-- (void)addCloseButtonWhite:(BOOL)white {
+- (void)addCloseButtonLight:(BOOL)white {
     [self.closeButton removeFromSuperview];
-    self.closeButton = [ViewHelper buttonWithImage:[self closeButtonImageForWhite:white]
-                                            target:self selector:@selector(closeTapped:)];
+    self.closeButton = [ViewHelper closeButtonLight:white target:self selector:@selector(closeTapped:)];
     self.closeButton.frame = (CGRect){
         kContentInsets.left,
         kContentInsets.top,
@@ -86,11 +85,6 @@
 - (void)closeTapped:(id)sender {
     DLog();
     [self.bookPageDelegate bookPageViewControllerCloseRequested];
-}
-
-- (UIImage *)closeButtonImageForWhite:(BOOL)white {
-    NSString *imageName = [NSString stringWithFormat:@"cook_book_inner_icon_close_%@.png", white ? @"light" : @"dark"];
-    return [UIImage imageNamed:imageName];
 }
 
 @end

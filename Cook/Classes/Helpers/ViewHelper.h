@@ -10,6 +10,7 @@
 
 @interface ViewHelper : NSObject
 
+// Buttons
 + (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector;
 + (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector;
 + (UIButton *)deleteButtonWithTarget:(id)target selector:(SEL)selector;
@@ -20,7 +21,9 @@
 + (UIButton *)buttonWithTitle:(NSString*)title backgroundImage:(UIImage *)image size:(CGSize)size target:(id)target selector:(SEL)selector;
 + (void)updateButton:(UIButton *)button withImage:(UIImage *)image;
 + (void)updateButton:(UIButton *)button withImage:(UIImage *)image selectedImage:(UIImage *)selectedImage;
++ (UIButton *)closeButtonLight:(BOOL)light target:(id)target selector:(SEL)selector;
 
+// Sizes.
 + (CGSize)bookSize;
 + (CGFloat)singleLineHeightForFont:(UIFont *)font;
 + (CGSize)screenSize;

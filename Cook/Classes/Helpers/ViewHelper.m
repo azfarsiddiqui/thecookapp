@@ -57,8 +57,7 @@
     [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
 }
 
-+(UIButton *)buttonWithImagePrefix:(NSString *)imagePrefix target:(id)target selector:(SEL)selector
-{
++ (UIButton *)buttonWithImagePrefix:(NSString *)imagePrefix target:(id)target selector:(SEL)selector {
     UIImage *offImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_off.png",imagePrefix]];
     UIImage *onImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_on.png",imagePrefix]];
     UIButton *button = [self buttonWithImage:offImage target:target selector:selector];
@@ -66,6 +65,13 @@
     [button setBackgroundImage:onImage forState:UIControlStateHighlighted];
     return button;
 }
+
++ (UIButton *)closeButtonLight:(BOOL)light target:(id)target selector:(SEL)selector {
+    UIImage *image = light ? [UIImage imageNamed:@"cook_book_inner_icon_close_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"];
+    return [self buttonWithImage:image target:target selector:selector];
+}
+
+#pragma mark - Sizes
 
 + (CGSize)bookSize {
     return CGSizeMake(300.0, 438.0);
@@ -183,7 +189,7 @@
 #pragma mark - Shadows
 
 + (void)addTopShadowView:(UIView *)view {
-    UIImageView *topShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_darkenphoto_strip.png"]];
+    UIImageView *topShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"]];
     topShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
     topShadowImageView.frame = (CGRect){
         view.bounds.origin.x,

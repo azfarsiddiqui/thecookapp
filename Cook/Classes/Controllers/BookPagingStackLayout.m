@@ -252,14 +252,6 @@
     
     UICollectionViewLayoutAttributes *homeAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
     
-    // Dark pre-content nav header.
-    NSIndexPath *darkNavigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:1];
-    UICollectionViewLayoutAttributes *darkNavigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kPageNavigationtKind withIndexPath:darkNavigationIndexPath];
-    darkNavigationAttributes.frame = [self navigationFrameForDark:YES];
-    darkNavigationAttributes.zIndex = homeAttributes.zIndex + 2;    // Goes over the homepage.
-    [self.supplementaryLayoutAttributes addObject:darkNavigationAttributes];
-    [self.indexPathSupplementaryAttributes setObject:darkNavigationAttributes forKey:darkNavigationIndexPath];
-
     // White content nav header.
     NSInteger categoryStartSection = [self.delegate stackContentStartSection];
     NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
@@ -323,19 +315,7 @@
     
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     NSIndexPath *navigationIndexPath = attributes.indexPath;
-    if (navigationIndexPath.section < [self.delegate stackContentStartSection]) {
-        
-        CGFloat maxOffset = [self pageOffsetForIndexPath:navigationIndexPath];
-        if (visibleFrame.origin.x <= maxOffset) {
-            
-            // Just stick between 0-1 pages.
-            CGRect frame = attributes.frame;
-            frame.origin.x = MAX(visibleFrame.origin.x, 0.0);
-            attributes.frame = frame;
-            
-        }
-        
-    } else if (navigationIndexPath.section) {
+    if (navigationIndexPath.section >= [self.delegate stackContentStartSection]) {
         
         CGFloat offset =  kShiftOffset;
         CGRect navigationFrame = [self navigationFrameForDark:NO];

@@ -21,6 +21,7 @@
 #import "BookTitleLayout.h"
 #import "MRCEnumerable.h"
 #import "AppHelper.h"
+#import "ViewHelper.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     UIAlertViewDelegate, UITextFieldDelegate>
@@ -68,6 +69,8 @@
     
     [self initBackgroundView];
     [self initCollectionView];
+    
+    [self addCloseButtonLight:YES];
 }
 
 - (void)configurePages:(NSArray *)pages {
@@ -98,6 +101,10 @@
                                       size:self.imageView.bounds.size
                                 completion:^(UIImage *image) {
                                     [ImageHelper configureImageView:self.imageView image:image];
+                                    
+                                    // Apply top shadow.
+                                    [ViewHelper addTopShadowView:self.imageView];
+                                    
                                 }];
     } else {
         self.imageView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
