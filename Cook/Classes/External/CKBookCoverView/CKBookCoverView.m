@@ -302,7 +302,7 @@
         UITextView *nameTextView = [[UITextView alloc] initWithFrame:CGRectZero];
         nameTextView.autoresizingMask = UIViewAutoresizingNone;
         nameTextView.backgroundColor = [UIColor clearColor];
-        nameTextView.font = [Theme bookCoverViewModeTitleFont];
+        nameTextView.font = [self captionFont];
         nameTextView.textColor = [UIColor whiteColor];
         nameTextView.editable = NO;
         nameTextView.scrollEnabled = NO;
@@ -343,7 +343,7 @@
         self.authorTextView = authorTextView;
     }
     
-    UIFont *maxFont = [Theme bookCoverViewModeNameMaxFont];
+    UIFont *maxFont = [self authorFont];
     self.authorTextView.textAlignment = [self titleTextAlignment];
     
     // Paragraph style.
@@ -431,15 +431,15 @@
                 20.0,
                 5.0,
                 278.0,
-                240.0
+                260.0
             };
             break;
         case BookCoverLayoutBottom:
             frame = (CGRect){
                 20.0,
-                232.0,
+                242.0,
                 278.0,
-                197.0
+                187.0
             };
             break;
         case BookCoverLayoutMid:
@@ -447,7 +447,7 @@
                 20.0,
                 15.0,
                 278.0,
-                390.0
+                400.0
             };
             break;
         default:
@@ -586,6 +586,18 @@
     NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
                                                                          attributes:mutableAttributes];
     label.attributedText = attributedText;
+}
+
+- (UIFont *)authorFont {
+    if (self.storeMode) {
+        return [Theme bookCoverViewStoreModeNameMaxFont];
+    } else {
+        return [Theme bookCoverViewModeNameMaxFont];
+    }
+}
+
+- (UIFont *)captionFont {
+    return [Theme bookCoverViewModeTitleFont];
 }
 
 @end
