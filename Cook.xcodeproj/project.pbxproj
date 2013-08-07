@@ -247,6 +247,8 @@
 		7647856C17A759BF00387A7B /* cook_book_inner_page_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7647856A17A759BF00387A7B /* cook_book_inner_page_overlay.png */; };
 		7647856D17A759BF00387A7B /* cook_book_inner_page_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7647856B17A759BF00387A7B /* cook_book_inner_page_overlay@2x.png */; };
 		76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76492D64166DCC5F0042CF92 /* CoverPickerView.m */; };
+		764BA0F517B2223400015456 /* fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 764BA0F317B2223400015456 /* fishhook.c */; };
+		764BA0F717B2225400015456 /* QuietAssertMacros.c in Sources */ = {isa = PBXBuildFile; fileRef = 764BA0F617B2225400015456 /* QuietAssertMacros.c */; };
 		764E46EF16C865C900DD168F /* BookRecipeCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 764E46EE16C865C900DD168F /* BookRecipeCollectionViewCell.m */; };
 		764E46F516C871EB00DD168F /* BookCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 764E46F416C871EB00DD168F /* BookCategoryView.m */; };
 		764F4D04179CE85A00821221 /* LSCollectionViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 764F4CFA179CE85A00821221 /* LSCollectionViewHelper.m */; };
@@ -1047,6 +1049,9 @@
 		7647856B17A759BF00387A7B /* cook_book_inner_page_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_page_overlay@2x.png"; sourceTree = "<group>"; };
 		76492D63166DCC5F0042CF92 /* CoverPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPickerView.h; sourceTree = "<group>"; };
 		76492D64166DCC5F0042CF92 /* CoverPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPickerView.m; sourceTree = "<group>"; };
+		764BA0F317B2223400015456 /* fishhook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fishhook.c; sourceTree = "<group>"; };
+		764BA0F417B2223400015456 /* fishhook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fishhook.h; sourceTree = "<group>"; };
+		764BA0F617B2225400015456 /* QuietAssertMacros.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = QuietAssertMacros.c; sourceTree = "<group>"; };
 		764E46ED16C865C900DD168F /* BookRecipeCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookRecipeCollectionViewCell.h; sourceTree = "<group>"; };
 		764E46EE16C865C900DD168F /* BookRecipeCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookRecipeCollectionViewCell.m; sourceTree = "<group>"; };
 		764E46F316C871EB00DD168F /* BookCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCategoryView.h; sourceTree = "<group>"; };
@@ -2873,6 +2878,9 @@
 		76ED27471612DC180012E479 /* Cook */ = {
 			isa = PBXGroup;
 			children = (
+				764BA0F417B2223400015456 /* fishhook.h */,
+				764BA0F317B2223400015456 /* fishhook.c */,
+				764BA0F617B2225400015456 /* QuietAssertMacros.c */,
 				8936F7EF161E7AA700E6EF1D /* Cook.storyboard */,
 				76ED27501612DC180012E479 /* AppDelegate.h */,
 				76ED27511612DC180012E479 /* AppDelegate.m */,
@@ -3911,6 +3919,7 @@
 				89622193161EA6610023EC30 /* NSArray+Enumerable.m in Sources */,
 				89622194161EA6610023EC30 /* NSArray+Utilities.m in Sources */,
 				89622195161EA6610023EC30 /* NSDictionary+Enumerable.m in Sources */,
+				764BA0F517B2223400015456 /* fishhook.c in Sources */,
 				89622196161EA6610023EC30 /* NSSet+Enumerable.m in Sources */,
 				7635A2D117A9F390002F30F2 /* IngredientListCell.m in Sources */,
 				89622197161EA6610023EC30 /* NSSet+Utilities.m in Sources */,
@@ -4060,6 +4069,7 @@
 				76C07FC917389134005915D5 /* CKProgressView.m in Sources */,
 				76C07FDB1739D13C005915D5 /* IngredientItemsEditViewController.m in Sources */,
 				76C3BAFA173B30A2004F6444 /* CKNotchSliderView.m in Sources */,
+				764BA0F717B2225400015456 /* QuietAssertMacros.c in Sources */,
 				76C3BB90173B73F0004F6444 /* CKDialerControl.m in Sources */,
 				76C3BB97173B795D004F6444 /* ServesAndTimeEditViewController.m in Sources */,
 				76AA97A4173BC941008549EB /* RecipeClipboard.m in Sources */,
