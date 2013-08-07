@@ -82,7 +82,7 @@
     
     CGSize headerSize = (CGSize) {
         self.collectionView.bounds.size.width,
-        420.0
+        470.0
     };
     return headerSize;
 }
