@@ -147,7 +147,7 @@
 }
 
 - (void)initTitleView {
-    CKBookTitleIndexView *titleIndexView = [[CKBookTitleIndexView alloc] initWithName:self.book.user.name title:self.book.name];
+    CKBookTitleIndexView *titleIndexView = [[CKBookTitleIndexView alloc] initWithBook:self.book];
     titleIndexView.frame = (CGRect){
         floorf((self.view.bounds.size.width - titleIndexView.frame.size.width) / 2.0),
         floorf((self.view.bounds.size.height - titleIndexView.frame.size.height) / 2.0),

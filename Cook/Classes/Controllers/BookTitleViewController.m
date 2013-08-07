@@ -106,8 +106,6 @@
                                     [ViewHelper addTopShadowView:self.imageView];
                                     
                                 }];
-    } else {
-        self.imageView.image = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
     }
 }
 
@@ -323,7 +321,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (CKBookTitleIndexView *)bookTitleView {
     if (!_bookTitleView) {
-        _bookTitleView = [[CKBookTitleIndexView alloc] initWithName:self.book.user.name title:self.book.name];
+        _bookTitleView = [[CKBookTitleIndexView alloc] initWithBook:self.book];
     }
     return _bookTitleView;
 }
@@ -331,7 +329,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - Private methods
 
 - (void)initBackgroundView {
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_bg_blank.png"]];
     imageView.frame = self.view.bounds;
     imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];

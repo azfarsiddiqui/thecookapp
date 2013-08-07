@@ -7,9 +7,14 @@
 //
 
 #import "CKBookTitleIndexView.h"
+#import "CKBook.h"
+#import "CKUser.h"
+#import "CKUserProfilePhotoView.h"
 
 @interface CKBookTitleIndexView ()
 
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UIImageView *boxImageView;
 @property (nonatomic, strong) UIView *labelContainerView;
 @property (nonatomic, strong) UILabel *nameLabel;
@@ -24,13 +29,35 @@
 #define kLabelInsets    UIEdgeInsetsMake(0.0, 20.0, 20.0, 20.0)
 #define kContentInsets  UIEdgeInsetsMake(18.0, 18.0, 19.0, 16.0)
 
-- (id)initWithName:(NSString *)name title:(NSString *)title {
+- (id)initWithBook:(CKBook *)book {
     if (self = [super initWithFrame:CGRectMake(0.0, 0.0, kMaxSize.width, kMaxSize.height)]) {
-        self.name = [name uppercaseString];
-        self.title = [title uppercaseString];
+        self.book = book;
+        self.name = [book.user.name uppercaseString];
+        self.title = [book.name uppercaseString];
         
         [self initLabels];
         [self insertSubview:self.boxImageView belowSubview:self.labelContainerView];
+        
+        // Profile photo view.
+        self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user profileSize:ProfileViewSizeLarge];
+        self.profilePhotoView.frame = (CGRect){
+            floorf((self.bounds.size.width - self.profilePhotoView.frame.size.width) / 2.0),
+            -40.0,
+            self.profilePhotoView.frame.size.width,
+            self.profilePhotoView.frame.size.height
+        };
+        [self addSubview:self.profilePhotoView];
+        
+        // Profile photo frame.
+        UIImageView *frameImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_title_profile_overlay.png"]];
+        frameImageView.frame = (CGRect){
+            floorf((self.profilePhotoView.bounds.size.width - frameImageView.frame.size.width) / 2.0),
+            -5.0,
+            frameImageView.frame.size.width,
+            frameImageView.frame.size.height
+        };
+        [self.profilePhotoView addSubview:frameImageView];
+        
     }
     return self;
 }
@@ -140,7 +167,7 @@
     // Container view.
     UIView *labelContainerView = [[UIView alloc] initWithFrame:combinedFrame];
     labelContainerView.backgroundColor = [UIColor clearColor];
-    labelContainerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+    labelContainerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
     labelContainerView.frame = (CGRect){
         floorf((self.bounds.size.width - labelContainerView.frame.size.width) / 2.0),
         floorf((self.bounds.size.height - labelContainerView.frame.size.height) / 2.0),
@@ -165,6 +192,7 @@
     [labelContainerView addSubview:nameLabel];
     [self addSubview:labelContainerView];
     self.labelContainerView = labelContainerView;
+    
 }
 
 @end
