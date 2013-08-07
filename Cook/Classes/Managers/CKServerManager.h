@@ -16,5 +16,7 @@
 - (void)stop;
 
 - (BOOL)handleFacebookCallback:(NSURL *)url;
+- (void)requestForCurrentLocation:(void(^)(double latitude, double longitude))completion
+                          failure:(void(^)(NSError *error))failure;
 
 @end

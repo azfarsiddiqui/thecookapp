@@ -369,6 +369,18 @@
     return  [self.user isEqual:user];
 }
 
+- (void)clearLocation {
+    [self.parseObject removeObjectForKey:kRecipeAttrLocation];
+}
+
+- (void)setLocation:(CLLocation *)location {
+    if (location) {
+        PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:location.coordinate.latitude
+                                                      longitude:location.coordinate.longitude];
+        [self.parseObject setObject:geoPoint forKey:kRecipeAttrLocation];
+    }
+}
+
 #pragma mark - CKModel methods
 
 - (NSDictionary *)descriptionProperties {

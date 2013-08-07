@@ -68,4 +68,8 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 - (BOOL)hasPhotos;
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
 
+// Geopoint
+- (void)clearLocation;
+- (void)setLocation:(CLLocation *)location;
+
 @end

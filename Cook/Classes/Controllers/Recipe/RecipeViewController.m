@@ -41,6 +41,7 @@
 #import "BookSocialViewController.h"
 #import "CKLikeView.h"
 #import "CKPrivacySliderView.h"
+#import "CKServerManager.h"
 
 typedef enum {
 	PhotoWindowHeightMin,
@@ -87,6 +88,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) BOOL saveInProgress;
+@property (nonatomic, assign) BOOL locatingInProgress;
 @property (nonatomic, assign) BOOL contentPullActivated;
 @property (nonatomic, strong) UIView *navContainerView;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -439,14 +441,39 @@ typedef enum {
 
 - (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
     [self selectedPrivacy:CKPrivacyPrivate];
+    [self.recipe clearLocation];
+    self.saveRequired = YES;
+    self.saveButton.enabled = YES;
 }
 
 - (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
     [self selectedPrivacy:CKPrivacyFriends];
+    [self.recipe clearLocation];
+    self.saveRequired = YES;
+    self.saveButton.enabled = YES;
 }
 
 - (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
     [self selectedPrivacy:CKPrivacyGlobal];
+    
+    // Locating is in progress.
+    if (self.locatingInProgress) {
+        return;
+    }
+    self.locatingInProgress = YES;
+    
+    // Disable save button until location is obtained.
+    self.saveButton.enabled = NO;
+    
+    [[CKServerManager sharedInstance] requestForCurrentLocation:^(double latitude, double longitude){
+        [self.recipe setLocation:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
+        self.saveButton.enabled = YES;
+        self.locatingInProgress = NO;
+        self.saveRequired = YES;
+    } failure:^(NSError *error) {
+        self.saveButton.enabled = YES;
+        self.locatingInProgress = NO;
+    }];
 }
 
 #pragma mark - Properties
