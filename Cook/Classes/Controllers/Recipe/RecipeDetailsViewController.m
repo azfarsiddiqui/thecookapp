@@ -14,6 +14,10 @@
 #import "CKBook.h"
 #import "ImageHelper.h"
 #import "EventHelper.h"
+#import "CKLikeView.h"
+#import "CKPrivacySliderView.h"
+#import "CKRecipeSocialView.h"
+#import "BookSocialViewController.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -21,9 +25,11 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportBelow
 };
 
-@interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+@interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
+    CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) CKBook *book;
 @property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
@@ -33,22 +39,38 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIView *blurredImageSnapshotView;
 @property (nonatomic, strong) UIView *blurredHeaderView;
 
+// Content and panning related.
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIImageView *contentImageView;
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
-
-@property (nonatomic, assign) BOOL draggingDown;
-@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) SnapViewport currentViewport;
 @property (nonatomic, assign) SnapViewport previousViewport;
+@property (nonatomic, assign) BOOL draggingDown;
+
+// Normal controls.
+@property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *editButton;
+@property (nonatomic, strong) UIButton *shareButton;
+@property (nonatomic, strong) CKLikeView *likeButton;
+@property (nonatomic, strong) CKRecipeSocialView *socialView;
+
+// Edit controls.
+@property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) CKPrivacySliderView *privacyView;
+
+// Social layer.
+@property (nonatomic, strong) BookSocialViewController *bookSocialViewController;
 
 @end
 
 @implementation RecipeDetailsViewController
 
+#define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
 #define kContentTopOffset   64.0
@@ -59,6 +81,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (id)initWithRecipe:(CKRecipe *)recipe {
     if (self = [super init]) {
         self.recipe = recipe;
+        self.book = recipe.book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.blur = NO;
     }
@@ -94,6 +117,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         [self snapToViewport:[self startViewPort] animated:YES completion:^{
             
             // Load stuff.
+            [self showButtons];
             [self loadData];
             
         }];
@@ -176,6 +200,27 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     NSLog(@"scrollViewWillEndDragging velocity[%@]", NSStringFromCGPoint(velocity));
 }
 
+#pragma mark - CKRecipeSocialViewDelegate methods
+
+- (void)recipeSocialViewTapped {
+    [self showSocialOverlay:YES];
+}
+
+- (void)recipeSocialViewUpdated:(CKRecipeSocialView *)socialView {
+    socialView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
+        kButtonInsets.top,
+        socialView.frame.size.width,
+        socialView.frame.size.height
+    };
+}
+
+#pragma mark - BookSocialViewControllerDelegate methods
+
+- (void)bookSocialViewControllerCloseRequested {
+    [self showSocialOverlay:NO];
+}
+
 #pragma mark - KVO methods
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
@@ -188,10 +233,101 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
 }
 
-
 #pragma mark - Properties
 
+- (UIButton *)closeButton {
+    if (!_closeButton) {
+        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_back_light.png"]
+                                            target:self
+                                          selector:@selector(closeTapped:)];
+        _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_closeButton setFrame:CGRectMake(kButtonInsets.left,
+                                          kButtonInsets.top,
+                                          _closeButton.frame.size.width,
+                                          _closeButton.frame.size.height)];
+    }
+    return _closeButton;
+}
 
+- (UIButton *)editButton {
+    if (!_editButton && [self canEditRecipe]) {
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
+                                           target:self
+                                         selector:@selector(editTapped:)];
+        _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _editButton.frame = CGRectMake(self.shareButton.frame.origin.x - 15.0 - _editButton.frame.size.width,
+                                       kButtonInsets.top,
+                                       _editButton.frame.size.width,
+                                       _editButton.frame.size.height);
+    }
+    return _editButton;
+}
+
+- (UIButton *)shareButton {
+    if (!_shareButton) {
+        _shareButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_share_light.png"]
+                                            target:self
+                                          selector:@selector(shareTapped:)];
+        _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        
+        if (self.likeButton) {
+            _shareButton.frame = CGRectMake(self.likeButton.frame.origin.x - 15.0 - _shareButton.frame.size.width,
+                                            kButtonInsets.top,
+                                            _shareButton.frame.size.width,
+                                            _shareButton.frame.size.height);
+        } else {
+            _shareButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _shareButton.frame.size.width,
+                                            kButtonInsets.top,
+                                            _shareButton.frame.size.width,
+                                            _shareButton.frame.size.height);
+            
+        }
+    }
+    return _shareButton;
+}
+
+- (CKLikeView *)likeButton {
+    if (![self.book isOwner] && !_likeButton) {
+        _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
+        _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
+                                       kButtonInsets.top,
+                                       _likeButton.frame.size.width,
+                                       _likeButton.frame.size.height);
+    }
+    return _likeButton;
+}
+
+- (UIButton *)cancelButton {
+    if (!_cancelButton) {
+        _cancelButton = [ViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
+        _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_cancelButton setFrame:CGRectMake(kButtonInsets.left,
+                                           kButtonInsets.top,
+                                           _cancelButton.frame.size.width,
+                                           _cancelButton.frame.size.height)];
+    }
+    return _cancelButton;
+}
+
+- (UIButton *)saveButton {
+    if (!_saveButton) {
+        _saveButton = [ViewHelper okButtonWithTarget:self selector:@selector(saveTapped:)];
+        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kButtonInsets.right,
+                                         kButtonInsets.top,
+                                         _saveButton.frame.size.width,
+                                         _saveButton.frame.size.height)];
+    }
+    return _saveButton;
+}
+
+- (CKRecipeSocialView *)socialView {
+    if (!_socialView) {
+        _socialView = [[CKRecipeSocialView alloc] initWithRecipe:self.recipe delegate:self];;
+    }
+    return _socialView;
+}
 
 #pragma mark - Private methods
 
@@ -396,6 +532,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Determine if a bounce is required.
     CGRect bounceFrame = [self bounceFrameFromViewport:currentViewport toViewport:viewport];
     BOOL bounceRequired = !CGRectIsEmpty(bounceFrame);
+    UIOffset buttonBounceOffset = [self buttonsBounceOffsetFromViewport:currentViewport toViewport:viewport];
     
     // Remmeber previous and current viewports.
     self.previousViewport = currentViewport;
@@ -411,6 +548,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                 options:[self animationCurveFromViewport:currentViewport toViewport:viewport]
                              animations:^{
                                  self.scrollView.frame = bounceFrame;
+                                 [self updateButtonsWithBounceOffset:buttonBounceOffset];
                              }
                              completion:^(BOOL finished) {
                                  
@@ -420,6 +558,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                      options:UIViewAnimationOptionCurveEaseIn
                                                   animations:^{
                                                       self.scrollView.frame = frame;
+                                                      [self updateButtonsWithBounceOffset:UIOffsetZero];
                                                   }
                                                   completion:^(BOOL finished) {
                                                       self.scrollView.scrollEnabled = scrollEnabled;
@@ -525,17 +664,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return bounceFrame;
 }
 
-- (BOOL)bounceRequiredForTargetViewport:(SnapViewport)viewport {
-    BOOL bounce = NO;
+- (UIOffset)buttonsBounceOffsetFromViewport:(SnapViewport)fromViewport toViewport:(SnapViewport)toViewport {
+    UIOffset offset = UIOffsetZero;
     
     // Bounce if going from bottom/below to top only.
-    if ((self.currentViewport == SnapViewportBottom || self.currentViewport == SnapViewportBelow)
-        && (viewport == SnapViewportTop)) {
+    if ((fromViewport == SnapViewportBottom || fromViewport == SnapViewportBelow)
+        && (toViewport == SnapViewportTop)) {
         
-        bounce = YES;
+        offset.vertical -= kBounceOffset;
     }
     
-    return bounce;
+    return offset;
 }
 
 - (CGFloat)offsetForViewport:(SnapViewport)viewport {
@@ -676,6 +815,148 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             break;
     }
     [self snapToViewport:viewport animated:YES];
+}
+
+- (BOOL)canEditRecipe {
+    return ([self.book isOwner]);
+}
+
+- (void)showButtons {
+    [self updateButtonsWithAlpha:1.0];
+}
+
+- (void)hideButtons {
+    [self updateButtonsWithAlpha:0.0];
+}
+
+- (void)updateButtonsWithAlpha:(CGFloat)alpha {
+    if (self.editMode) {
+        self.cancelButton.alpha = 0.0;
+        self.privacyView.alpha = 0.0;
+        self.saveButton.alpha = 0.0;
+        self.cancelButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+        self.saveButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+        [self.view addSubview:self.cancelButton];
+        [self.view addSubview:self.privacyView];
+        [self.view addSubview:self.saveButton];
+    } else {
+        self.closeButton.alpha = 0.0;
+        self.socialView.alpha = 0.0;
+        self.editButton.alpha = 0.0;
+        self.shareButton.alpha = 0.0;
+        self.likeButton.alpha = 0.0;
+        [self.view addSubview:self.closeButton];
+        [self.view addSubview:self.socialView];
+        [self.view addSubview:self.editButton];
+        [self.view addSubview:self.shareButton];
+        [self.view addSubview:self.likeButton];
+    }
+    
+    [UIView animateWithDuration:0.4
+                          delay:0.1
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.closeButton.alpha = self.editMode ? 0.0 : alpha;
+                         self.socialView.alpha = self.editMode ? 0.0 : alpha;
+                         self.editButton.alpha = self.editMode ? 0.0 : alpha;
+                         self.shareButton.alpha = self.editMode ? 0.0 : alpha;
+                         self.likeButton.alpha = self.editMode ? 0.0 : alpha;
+                         self.privacyView.alpha = self.editMode ? alpha : 0.0;
+                         
+                         self.cancelButton.alpha = self.editMode ? alpha : 0.0;
+                         self.saveButton.alpha = self.editMode ? alpha : 0.0;
+                         self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+                         self.saveButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+                     }
+                     completion:^(BOOL finished)  {
+                         if (self.editMode) {
+                             [self.closeButton removeFromSuperview];
+                             [self.socialView removeFromSuperview];
+                             [self.editButton removeFromSuperview];
+                             [self.shareButton removeFromSuperview];
+                             [self.likeButton removeFromSuperview];
+                         } else {
+                             [self.cancelButton removeFromSuperview];
+                             [self.saveButton removeFromSuperview];
+                             [self.privacyView removeFromSuperview];
+                         }
+                     }];
+}
+
+- (void)updateButtonsWithBounceOffset:(UIOffset)offset {
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    if (!UIOffsetEqualToOffset(offset, UIOffsetZero)) {
+        transform = CGAffineTransformMakeTranslation(offset.horizontal, offset.vertical);
+    }
+    self.closeButton.transform = transform;
+    self.socialView.transform = transform;
+    self.editButton.transform = transform;
+    self.shareButton.transform = transform;
+    self.likeButton.transform = transform;
+    self.privacyView.transform = transform;
+    self.cancelButton.transform = transform;
+    self.saveButton.transform = transform;
+}
+
+- (void)showSocialOverlay:(BOOL)show {
+    if (show) {
+        [self hideButtons];
+        self.bookSocialViewController = [[BookSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
+        self.bookSocialViewController.view.frame = self.view.bounds;
+        self.bookSocialViewController.view.alpha = 0.0;
+        [self.view addSubview:self.bookSocialViewController.view];
+    }
+    [UIView animateWithDuration:show? 0.3 : 0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.bookSocialViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.bookSocialViewController.view removeFromSuperview];
+                             self.bookSocialViewController = nil;
+                             [self showButtons];
+                         }
+                     }];
+}
+
+- (void)closeTapped:(id)sender {
+    [self closeRecipeView];
+}
+
+- (void)closeRecipeView {
+    [self hideButtons];
+    [self fadeOutBackgroundImageThenClose];
+}
+
+- (void)fadeOutBackgroundImageThenClose {
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.topShadowView.alpha = 0.0;
+                         self.imageView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished)  {
+                         [self.modalDelegate closeRequestedForBookModalViewController:self];
+                     }];
+}
+
+- (void)editTapped:(id)sender {
+    DLog();
+}
+
+- (void)shareTapped:(id)sender {
+    DLog();
+}
+
+- (void)cancelTapped:(id)sender {
+    DLog();
+}
+
+- (void)saveTapped:(id)sender {
+    DLog();
 }
 
 @end

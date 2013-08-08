@@ -101,6 +101,7 @@
     [query setCachePolicy:kPFCachePolicyCacheElseNetwork];
     [query includeKey:kRecipeAttrRecipePhotos];
     [query includeKey:kBookModelForeignKeyName];
+    [query includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];
     [query includeKey:kUserModelForeignKeyName];
     [query getObjectInBackgroundWithId:objectId block:^(PFObject *parseRecipe, NSError *error) {
         if (!error) {
