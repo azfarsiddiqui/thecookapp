@@ -84,11 +84,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-//    [self initViewControllers];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self loadSampleRecipe];
-    });
+    [self initViewControllers];
+//        [self loadSampleRecipe];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -187,11 +184,14 @@
         
         // Scale it up the rest of the way to fullscreen.
         bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+        [bookNavigationViewController updateBinderAlpha:1.0];
+        
         [UIView animateWithDuration:0.3
                               delay:0.1
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
                              bookNavigationViewController.view.transform = CGAffineTransformIdentity;
+                             [bookNavigationViewController updateBinderAlpha:0.0];
                          }
                          completion:^(BOOL finished) {
                              
@@ -238,12 +238,16 @@
     
     // Let the bookCoverVC above to have a chance of loadinging the snapshot first.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        
+        [self.bookNavigationViewController updateBinderAlpha:0.0];
+
         // Scale it down then let the book cover close.
         [UIView animateWithDuration:0.2
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
                              self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+                             [self.bookNavigationViewController updateBinderAlpha:1.0];
                          }
                          completion:^(BOOL finished) {
                              [self.bookCoverViewController openBook:NO];
@@ -653,10 +657,9 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
-//    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
-//    [self showModalViewController:recipeViewController];
+    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
+//    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
     
-    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
     [self showModalViewController:recipeViewController];
 }
 

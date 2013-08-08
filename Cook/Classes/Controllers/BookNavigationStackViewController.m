@@ -43,6 +43,7 @@
 @property (nonatomic, assign) BOOL updatePages;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, strong) UIView *bookOutlineView;
+@property (nonatomic, strong) UIView *bookBindingView;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -158,6 +159,15 @@
                      }
                      completion:^(BOOL finished) {
                      }];
+}
+
+- (void)updateBinderAlpha:(CGFloat)alpha {
+    if (!self.bookBindingView) {
+        self.bookBindingView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
+        self.bookBindingView.frame = self.bookOutlineView.frame;
+        [self.view addSubview:self.bookBindingView];
+    }
+    self.bookBindingView.alpha = alpha;
 }
 
 - (void)updateStatusBar {
@@ -822,35 +832,51 @@
 
 - (void)pinched:(UIPinchGestureRecognizer *)pinchGesture {
     
-    CGFloat minTrueScale = 0.5;
-    CGFloat maxMinScale = 0.9;
-    CGFloat maxTrueScale = 1.5;
-    CGFloat maxMaxScale = 1.1;
-    
     if (pinchGesture.state == UIGestureRecognizerStateBegan
         || pinchGesture.state == UIGestureRecognizerStateChanged) {
-    
-        CGFloat scale = pinchGesture.scale;
         
-        if (scale >= maxTrueScale) {
-            scale = maxMaxScale;
-        } else if (scale >= 1.0) {
-            scale = 1.0 + ((maxMaxScale - 1.0) * ((scale - 1.0) / 0.5));
-        } else if (scale < minTrueScale) {
-            scale = maxMinScale;
-        } else  {
-            scale = maxMinScale + ((1.0 - maxMinScale) * ((scale - minTrueScale) / minTrueScale));
-        }
-        
-        self.view.transform = CGAffineTransformMakeScale(scale, scale);
+        [self pinchScaleWithCurrentScale:pinchGesture.scale minTrueScale:0.5 maxMinScale:0.9 maxTrueScale:1.5 maxMaxScale:1.1];
+        [self pinchBinderWithCurrentScale:pinchGesture.scale minTrueScale:0.5 maxMinScale:0.0 maxTrueScale:1.0 maxMaxScale:1.0];
         
 	} else if (pinchGesture.state == UIGestureRecognizerStateEnded) {
         
         // Pinch close when smaller than 0.5.
-        [self pinchClose:(pinchGesture.scale <= minTrueScale)];
+        [self pinchClose:(pinchGesture.scale <= 0.5)];
         
     }
     
+}
+
+- (void)pinchScaleWithCurrentScale:(CGFloat)scale minTrueScale:(CGFloat)minTrueScale
+                  maxMinScale:(CGFloat)maxMinScale maxTrueScale:(CGFloat)maxTrueScale maxMaxScale:(CGFloat)maxMaxScale {
+    
+    CGFloat resolvedScale = [self resolvedScaleWithCurrentScale:scale minTrueScale:minTrueScale maxMinScale:maxMinScale
+                                                   maxTrueScale:maxTrueScale maxMaxScale:maxMaxScale];
+    self.view.transform = CGAffineTransformMakeScale(resolvedScale, resolvedScale);
+}
+
+- (void)pinchBinderWithCurrentScale:(CGFloat)scale minTrueScale:(CGFloat)minTrueScale
+                        maxMinScale:(CGFloat)maxMinScale maxTrueScale:(CGFloat)maxTrueScale
+                        maxMaxScale:(CGFloat)maxMaxScale {
+    
+    CGFloat resolvedScale = 1.0 - [self resolvedScaleWithCurrentScale:scale minTrueScale:minTrueScale maxMinScale:maxMinScale
+                                                         maxTrueScale:maxTrueScale maxMaxScale:maxMaxScale];
+    [self updateBinderAlpha:resolvedScale];
+}
+
+- (CGFloat)resolvedScaleWithCurrentScale:(CGFloat)scale minTrueScale:(CGFloat)minTrueScale
+                             maxMinScale:(CGFloat)maxMinScale maxTrueScale:(CGFloat)maxTrueScale
+                             maxMaxScale:(CGFloat)maxMaxScale {
+    if (scale >= maxTrueScale) {
+        scale = maxMaxScale;
+    } else if (scale >= 1.0) {
+        scale = 1.0 + ((maxMaxScale - 1.0) * ((scale - 1.0) / 0.5));
+    } else if (scale < minTrueScale) {
+        scale = maxMinScale;
+    } else  {
+        scale = maxMinScale + ((1.0 - maxMinScale) * ((scale - minTrueScale) / minTrueScale));
+    }
+    return scale;
 }
 
 - (void)pinchClose:(BOOL)close {
@@ -862,8 +888,11 @@
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              self.view.transform = CGAffineTransformIdentity;
+                             self.bookBindingView.alpha = 0.0;
                          }
                          completion:^(BOOL finished) {
+                             [self.bookBindingView removeFromSuperview];
+                             self.bookBindingView = nil;
                          }];
     }
 }
