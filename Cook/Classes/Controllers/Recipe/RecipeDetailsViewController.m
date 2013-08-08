@@ -27,6 +27,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
+@property (nonatomic, strong) UIImageView *contentImageView;
+@property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 
@@ -39,9 +41,12 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 @implementation RecipeDetailsViewController
 
-#define kSnapOffset     100.0
-#define kBounceOffset   10.0
-#define kDragRatio      0.9
+#define kSnapOffset         100.0
+#define kBounceOffset       10.0
+#define kContentTopOffset   64.0
+#define kHeaderHeight       230.0
+#define kDragRatio          0.9
+#define kContentImageOffset (UIOffset){ 0.0, -13.0 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
     if (self = [super init]) {
@@ -56,6 +61,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     self.view.backgroundColor = [UIColor clearColor];
     
     [self initImageView];
+    [self initContentView];
     [self initScrollView];
 }
 
@@ -165,7 +171,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                         context:(void *)context {
     
 	if (object == self.scrollView && [keyPath isEqualToString:@"frame"]) {
-        [self updateImageViewFrame];
+        [self updateDependentViews];
 	} else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -198,6 +204,19 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.imageView addGestureRecognizer:tapGesture];
 }
 
+- (void)initContentView {
+    
+    // Build the contentView.
+    UIView *contentView = [[UIView alloc] initWithFrame:(CGRect) {
+        self.view.bounds.origin.x,
+        self.view.bounds.origin.y,
+        self.view.bounds.size.width,
+        1200.0
+    }];
+    contentView.backgroundColor = [UIColor clearColor];
+    self.contentView = contentView;
+}
+
 - (void)initScrollView {
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:(CGRect){
         self.view.bounds.origin.x,
@@ -205,35 +224,34 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.view.bounds.size.width,
         self.view.bounds.size.height - [self offsetForViewport:SnapViewportTop]
     }];
-    scrollView.contentSize = (CGSize){ self.view.bounds.size.width, 1200.0 };
+    scrollView.contentSize = self.contentView.frame.size;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     scrollView.alwaysBounceVertical = YES;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.delegate = self;
     scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
-    scrollView.backgroundColor = [UIColor lightGrayColor];
+    scrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:scrollView];
     self.scrollView = scrollView;
     
-    UILabel *label = [self createLabelWithText:@"TOP"];
-    label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-    label.frame = (CGRect) {
-        floorf((scrollView.bounds.size.width - label.frame.size.width) / 2.0),
-        scrollView.bounds.origin.y,
-        label.frame.size.width,
-        label.frame.size.height
-    };
-    [scrollView addSubview:label];
+    // Build the same sized backgroundView to follow the scrollView along in the back.
+    UIImage *contentBackgroundImage = [[UIImage imageNamed:@"cook_book_recipe_background_tile.png"]
+                                       resizableImageWithCapInsets:(UIEdgeInsets){
+                                           228.0, 1.0, 1.0, 1.0
+                                       }];
+    UIImageView *contentImageView = [[UIImageView alloc] initWithFrame:(CGRect){
+        self.scrollView.frame.origin.x,
+        self.scrollView.frame.origin.y,
+        self.scrollView.frame.size.width,
+        self.scrollView.frame.size.height + kContentTopOffset   // Needs this offset to compensate for top.
+    }];
+    contentImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    contentImageView.image = contentBackgroundImage;
+    [self.view insertSubview:contentImageView belowSubview:self.scrollView];
+    self.contentImageView = contentImageView;
     
-    UILabel *botLabel = [self createLabelWithText:@"BOTTOM"];
-    botLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-    botLabel.frame = (CGRect) {
-        floorf((scrollView.bounds.size.width - botLabel.frame.size.width) / 2.0),
-        scrollView.contentSize.height- botLabel.frame.size.height,
-        botLabel.frame.size.width,
-        botLabel.frame.size.height
-    };
-    [scrollView addSubview:botLabel];
+    // Add the content view.
+    [scrollView addSubview:self.contentView];
     
     // Register a concurrent panGesture to drag panel up and down.
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -241,19 +259,25 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [scrollView addGestureRecognizer:panGestureRecognizer];
     self.panGesture = panGestureRecognizer;
     
-    // Start at bottom viewport.
-    [self snapToViewport:SnapViewportBelow animated:NO];
-    
-    
     // Start observing the frame of scrollView.
     [scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    
+    // Start at bottom viewport.
+    [self snapToViewport:SnapViewportBelow animated:NO];
 }
 
-- (void)updateImageViewFrame {
-    CGRect imageFrame = self.imageView.frame;
+- (void)updateDependentViews {
     CGRect contentFrame = self.scrollView.frame;
+    
+    // Update imageView.
+    CGRect imageFrame = self.imageView.frame;
     imageFrame.origin.y = (contentFrame.origin.y - imageFrame.size.height) / 2.0;
     self.imageView.frame = imageFrame;
+    
+    // Update backgroundImageView.
+    CGRect contentBackgroundFrame = self.contentImageView.frame;
+    contentBackgroundFrame.origin.y = contentFrame.origin.y + kContentImageOffset.vertical;
+    self.contentImageView.frame = contentBackgroundFrame;
 }
 
 - (void)loadData {
@@ -461,10 +485,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGFloat offset = 0.0;
     switch (viewport) {
         case SnapViewportTop:
-            offset = 70.0;
+            offset = kContentTopOffset;
             break;
         case SnapViewportBottom:
-            offset = 558.0;
+            offset = self.view.bounds.size.height - kHeaderHeight;
             break;
         case SnapViewportBelow:
             offset = self.view.bounds.size.height;
