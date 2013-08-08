@@ -670,8 +670,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Bounce if going from bottom/below to top only.
     if ((fromViewport == SnapViewportBottom || fromViewport == SnapViewportBelow)
         && (toViewport == SnapViewportTop)) {
-        
-        offset.vertical -= kBounceOffset;
+  
+// TODO Disabled button bouncing.
+//        offset.vertical -= kBounceOffset;
     }
     
     return offset;
