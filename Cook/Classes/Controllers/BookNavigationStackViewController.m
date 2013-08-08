@@ -881,7 +881,7 @@
 
 - (void)pinchClose:(BOOL)close {
     if (close) {
-        [self closeBook];
+        [self closeBookWithPinch:YES];
     } else {
         [UIView animateWithDuration:0.15
                               delay:0.0
@@ -939,6 +939,10 @@
 }
 
 - (void)closeBook {
+    [self closeBookWithPinch:NO];
+}
+
+- (void)closeBookWithPinch:(BOOL)pinch {
     
     // Update categories if required. This also updates the ordering of the category.
     if (self.updatePages) {
@@ -946,7 +950,11 @@
         [self.book saveInBackground];
     }
     
-    [self.delegate bookNavigationControllerCloseRequested];
+    if (pinch) {
+        [self.delegate bookNavigationControllerCloseRequested];
+    } else {
+        [self.delegate bookNavigationControllerCloseRequestedWithBinder];
+    }
 }
 
 - (void)scrollToPage:(NSString *)page animated:(BOOL)animated {

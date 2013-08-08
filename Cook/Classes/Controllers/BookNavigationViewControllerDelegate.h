@@ -13,6 +13,7 @@
 @protocol BookNavigationViewControllerDelegate <NSObject>
 
 - (void)bookNavigationControllerCloseRequested;
+- (void)bookNavigationControllerCloseRequestedWithBinder;
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe;
 - (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page;
 - (UIView *)bookNavigationSnapshot;

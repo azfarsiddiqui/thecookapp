@@ -233,26 +233,11 @@
 #pragma mark - BookNavigationViewControllerDelegate methods
 
 - (void)bookNavigationControllerCloseRequested {
-    
-//    [self.bookCoverViewController loadSnapshotView:[self.bookNavigationViewController.view snapshotViewAfterScreenUpdates:YES]];
-    
-    // Let the bookCoverVC above to have a chance of loadinging the snapshot first.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        
-        [self.bookNavigationViewController updateBinderAlpha:0.0];
+    [self performCloseBookAnimationWithBinder:NO];
+}
 
-        // Scale it down then let the book cover close.
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseOut
-                         animations:^{
-                             self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
-                             [self.bookNavigationViewController updateBinderAlpha:1.0];
-                         }
-                         completion:^(BOOL finished) {
-                             [self.bookCoverViewController openBook:NO];
-                         }];
-    });
+- (void)bookNavigationControllerCloseRequestedWithBinder {
+    [self performCloseBookAnimationWithBinder:YES];
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
@@ -280,6 +265,33 @@
 }
 
 #pragma mark - Private methods
+
+- (void)performCloseBookAnimationWithBinder:(BOOL)binder {
+    
+    //    [self.bookCoverViewController loadSnapshotView:[self.bookNavigationViewController.view snapshotViewAfterScreenUpdates:YES]];
+    
+    // Let the bookCoverVC above to have a chance of loadinging the snapshot first.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        
+        if (binder) {
+            [self.bookNavigationViewController updateBinderAlpha:0.0];
+        }
+        
+        // Scale it down then let the book cover close.
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^{
+                             self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+                             if (binder) {
+                                 [self.bookNavigationViewController updateBinderAlpha:1.0];
+                             }
+                         }
+                         completion:^(BOOL finished) {
+                             [self.bookCoverViewController openBook:NO];
+                         }];
+    });
+}
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
     CGPoint translation = [panGesture translationInView:self.view];
