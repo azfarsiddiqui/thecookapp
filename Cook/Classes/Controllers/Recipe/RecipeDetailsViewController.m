@@ -8,6 +8,7 @@
 
 #import "RecipeDetailsViewController.h"
 #import "CKRecipe.h"
+#import "RecipeDetailsView.h"
 #import "ParsePhotoStore.h"
 #import "ViewHelper.h"
 #import "CKBookCover.h"
@@ -358,15 +359,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)initContentView {
-    
-    // Build the contentView.
-    UIView *contentView = [[UIView alloc] initWithFrame:(CGRect) {
-        self.view.bounds.origin.x,
-        self.view.bounds.origin.y,
-        self.view.bounds.size.width,
-        1200.0
-    }];
-    contentView.backgroundColor = [UIColor clearColor];
+    UIView *contentView = [[RecipeDetailsView alloc] initWithRecipe:self.recipe];
     self.contentView = contentView;
 }
 
@@ -386,6 +379,16 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     scrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:scrollView];
     self.scrollView = scrollView;
+    
+    // Add the content view.
+    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    self.contentView.frame = (CGRect){
+        floorf((scrollView.bounds.size.width - self.contentView.frame.size.width) / 2.0),
+        self.scrollView.bounds.origin.y,
+        self.contentView.frame.size.width,
+        self.contentView.frame.size.height
+    };
+    [scrollView addSubview:self.contentView];
     
     // Build the same sized backgroundView to follow the scrollView along in the back.
     UIImage *contentBackgroundImage = [[UIImage imageNamed:@"cook_book_recipe_background_tile.png"]
@@ -415,9 +418,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self.view insertSubview:blurredHeaderView belowSubview:contentImageView];
         self.blurredHeaderView = blurredHeaderView;
     }
-    
-    // Add the content view.
-    [scrollView addSubview:self.contentView];
     
     // Register a concurrent panGesture to drag panel up and down.
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];

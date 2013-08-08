@@ -24,7 +24,8 @@
 
 @implementation CKUserProfilePhotoView
 
-#define kSmallSize  CGSizeMake(30.0, 30.0)
+#define kMiniSize   CGSizeMake(30.0, 30.0)
+#define kSmallSize  CGSizeMake(50.0, 50.0)
 #define kMediumSize CGSizeMake(60.0, 60.0)
 #define kLargeSize  CGSizeMake(90.0, 90.0)
 #define kBorder     1.0
@@ -36,6 +37,9 @@
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize border:(BOOL)border {
     CGSize size = CGSizeZero;
     switch (profileSize) {
+        case ProfileViewSizeMini:
+            size = kMiniSize;
+            break;
         case ProfileViewSizeSmall:
             size = kSmallSize;
             break;

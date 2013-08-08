@@ -339,7 +339,7 @@
 }
 
 + (UIFont *)recipeNameFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:50];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:50];
 }
 
 +(UIColor *)recipeNameColor

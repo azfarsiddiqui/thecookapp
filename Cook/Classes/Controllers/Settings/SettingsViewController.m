@@ -63,7 +63,8 @@
         _logoutButtonView.backgroundColor = [UIColor clearColor];
         
         CKUser *currentUser = [CKUser currentUser];
-        CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO profileSize:ProfileViewSizeSmall border:YES];
+        CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
+                                                                             profileSize:ProfileViewSizeMini border:YES];
         photoView.frame = (CGRect){
             floorf((_logoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
             _logoutButtonView.bounds.origin.y,
