@@ -17,7 +17,4 @@
 - (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page;
 - (UIView *)bookNavigationSnapshot;
 
-@optional
-- (void)bookNavigationStatusBarAppearanceLight:(BOOL)light;
-
 @end

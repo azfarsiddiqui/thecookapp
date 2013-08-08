@@ -13,6 +13,7 @@
 #import "CKBookCover.h"
 #import "CKBook.h"
 #import "ImageHelper.h"
+#import "EventHelper.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -81,10 +82,12 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
     DLog();
+    [EventHelper postStatusBarChangeForLight:[appearNumber boolValue]];
 }
 
 - (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
     DLog();
+    
     if ([appearNumber boolValue]) {
         
         // Snap to the start viewport.

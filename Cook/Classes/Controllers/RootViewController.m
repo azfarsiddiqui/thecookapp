@@ -79,6 +79,7 @@
     // Register login/logout events.
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
+    [EventHelper registerStatusBarChange:self selector:@selector(statusBarChanged:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -164,8 +165,7 @@
         self.bookNavigationViewController = nil;
         
         // Update status bar.
-        self.lightStatusBar = open;
-        [self setNeedsStatusBarAppearanceUpdate];
+        [self updateStatusBar:open];
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -196,8 +196,7 @@
                          completion:^(BOOL finished) {
                              
                              // Update status bar.
-                             self.lightStatusBar = open;
-                             [self setNeedsStatusBarAppearanceUpdate];
+                             [self updateStatusBar:open];
                              
                              // Inform benchtop of didOpen.
                              [self.benchtopViewController bookDidOpen:open];
@@ -262,11 +261,6 @@
 
 - (UIView *)bookNavigationSnapshot {
     return [self.benchtopViewController.view snapshotViewAfterScreenUpdates:YES];
-}
-
-- (void)bookNavigationStatusBarAppearanceLight:(BOOL)light {
-    self.lightStatusBar = light;
-    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -786,6 +780,15 @@
     [self snapToLevel:kBenchtopLevel completion:^{
         [self showLoginView:YES];
     }];
+}
+
+- (void)statusBarChanged:(NSNotification *)notification {
+    [self updateStatusBar:[EventHelper lightStatusBarChangeForNotification:notification]];
+}
+
+- (void)updateStatusBar:(BOOL)light {
+    self.lightStatusBar = light;
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)showLoginView:(BOOL)show {

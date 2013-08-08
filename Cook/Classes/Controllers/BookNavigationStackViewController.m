@@ -23,6 +23,7 @@
 #import "ViewHelper.h"
 #import "BookContentImageView.h"
 #import "NSString+Utilities.h"
+#import "EventHelper.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -160,18 +161,16 @@
 }
 
 - (void)updateStatusBar {
-    if ([self.delegate respondsToSelector:@selector(bookNavigationStatusBarAppearanceLight:)]) {
-        CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-        if (visibleFrame.origin.x < (self.collectionView.bounds.size.width * 2.0) - floorf(self.collectionView.bounds.size.width / 2.0)) {
-            if (!self.lightStatusBar) {
-                [self.delegate bookNavigationStatusBarAppearanceLight:YES];
-                self.lightStatusBar = YES;
-            }
-        } else {
-            if (self.lightStatusBar) {
-                [self.delegate bookNavigationStatusBarAppearanceLight:NO];
-                self.lightStatusBar = NO;
-            }
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    if (visibleFrame.origin.x < (self.collectionView.bounds.size.width * 2.0) - floorf(self.collectionView.bounds.size.width / 2.0)) {
+        if (!self.lightStatusBar) {
+            self.lightStatusBar = YES;
+            [EventHelper postStatusBarChangeForLight:self.lightStatusBar];
+        }
+    } else {
+        if (self.lightStatusBar) {
+            self.lightStatusBar = NO;
+            [EventHelper postStatusBarChangeForLight:self.lightStatusBar];
         }
     }
 }

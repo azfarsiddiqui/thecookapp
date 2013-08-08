@@ -27,6 +27,8 @@
 #define kBoolLike                   @"CKBoolLike"
 #define kRecipeLike                 @"CKRecipeLike"
 #define kEventThemeChange           @"CKThemeChange"
+#define kEventStatusBarChange       @"CKStatusBarChange"
+#define kBoolLightStatusBar         @"CKStatusBarLight"
 
 #pragma mark - Login successful event
 
@@ -192,6 +194,24 @@
 
 + (void)unregisterThemeChange:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventThemeChange];
+}
+
+#pragma mark - Status bar change.
+
++ (void)registerStatusBarChange:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventStatusBarChange];
+}
+
++ (void)postStatusBarChangeForLight:(BOOL)light {
+    [EventHelper postEvent:kEventStatusBarChange withUserInfo:@{kBoolLightStatusBar : @(light)}];
+}
+
++ (BOOL)lightStatusBarChangeForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kBoolLightStatusBar] boolValue];
+}
+
++ (void)unregisterStatusBarChange:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventStatusBarChange];
 }
 
 #pragma mark - Private
