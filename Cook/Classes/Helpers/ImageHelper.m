@@ -47,10 +47,14 @@
 }
 
 + (UIImage *)blurredImage:(UIImage *)image {
+    return [self blurredImage:image tintColour:[UIColor colorWithWhite:1.0 alpha:0.58]];
+}
+
++ (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour {
     
     // Calls ImageEffects
     return [image applyBlurWithRadius:30
-                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.58]
+                            tintColor:tintColour
                 saturationDeltaFactor:1.8
                             maskImage:nil];
 }

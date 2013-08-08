@@ -12,6 +12,7 @@
 #import "ViewHelper.h"
 #import "CKBookCover.h"
 #import "CKBook.h"
+#import "ImageHelper.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -24,6 +25,12 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
+
+// Blurring artifacts.
+@property (nonatomic, assign) BOOL blur;
+@property (nonatomic, strong) UIImageView *blurredImageView;    // As reference to sample from.
+@property (nonatomic, strong) UIView *blurredImageSnapshotView;
+@property (nonatomic, strong) UIView *blurredHeaderView;
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
@@ -52,6 +59,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     if (self = [super init]) {
         self.recipe = recipe;
         self.photoStore = [[ParsePhotoStore alloc] init];
+        self.blur = NO;
     }
     return self;
 }
@@ -192,6 +200,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.view addSubview:imageView];
     self.imageView = imageView;
     
+    if (self.blur) {
+        UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:imageView.frame];
+        blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        self.blurredImageView = blurredImageView;
+    }
+    
     // Top shadow.
     UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view];
     topShadowView.alpha = 0.0;
@@ -241,7 +255,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                        }];
     UIImageView *contentImageView = [[UIImageView alloc] initWithFrame:(CGRect){
         self.scrollView.frame.origin.x,
-        self.scrollView.frame.origin.y,
+        self.scrollView.frame.origin.y - kContentTopOffset,
         self.scrollView.frame.size.width,
         self.scrollView.frame.size.height + kContentTopOffset   // Needs this offset to compensate for top.
     }];
@@ -249,6 +263,19 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     contentImageView.image = contentBackgroundImage;
     [self.view insertSubview:contentImageView belowSubview:self.scrollView];
     self.contentImageView = contentImageView;
+    
+    if (self.blur) {
+        UIView *blurredHeaderView = [[UIImageView alloc] initWithFrame:(CGRect){
+            self.scrollView.frame.origin.x,
+            self.scrollView.frame.origin.y,
+            self.scrollView.frame.size.width,
+            kHeaderHeight
+        }];
+        blurredHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+        blurredHeaderView.backgroundColor = [UIColor greenColor];
+        [self.view insertSubview:blurredHeaderView belowSubview:contentImageView];
+        self.blurredHeaderView = blurredHeaderView;
+    }
     
     // Add the content view.
     [scrollView addSubview:self.contentView];
@@ -273,11 +300,33 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGRect imageFrame = self.imageView.frame;
     imageFrame.origin.y = (contentFrame.origin.y - imageFrame.size.height) / 2.0;
     self.imageView.frame = imageFrame;
+    if (self.blur) {
+        self.blurredImageView.frame = imageFrame;
+    }
     
     // Update backgroundImageView.
     CGRect contentBackgroundFrame = self.contentImageView.frame;
     contentBackgroundFrame.origin.y = contentFrame.origin.y + kContentImageOffset.vertical;
     self.contentImageView.frame = contentBackgroundFrame;
+    
+    // Dynamic blur.
+    if (self.blur) {
+        CGRect blurredFrame = self.blurredHeaderView.frame;
+        blurredFrame.origin.y = contentFrame.origin.y;
+        self.blurredHeaderView.frame = blurredFrame;
+        self.blurredImageView.frame = contentBackgroundFrame;
+        CGRect intersection = CGRectIntersection(self.blurredHeaderView.frame, self.scrollView.frame);
+        
+        UIView *blurredSnapshotView = [self.blurredImageSnapshotView resizableSnapshotViewFromRect:intersection
+                                                                                afterScreenUpdates:YES
+                                                                                     withCapInsets:UIEdgeInsetsZero];
+        blurredSnapshotView.frame = blurredFrame;
+        blurredSnapshotView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+        [self.view insertSubview:blurredSnapshotView belowSubview:self.contentImageView];
+        [self.blurredHeaderView removeFromSuperview];
+        self.blurredHeaderView = blurredSnapshotView;
+        DLog(@"Intersection %@", NSStringFromCGRect(intersection));
+    }
 }
 
 - (void)loadData {
@@ -302,6 +351,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
     self.imageView.image = image;
+    if (self.blur) {
+        self.blurredImageView.image = [ImageHelper blurredImage:image tintColour:nil];
+        self.blurredImageSnapshotView = [self.blurredImageView snapshotViewAfterScreenUpdates:YES];
+    }
+    
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
