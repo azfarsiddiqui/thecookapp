@@ -188,8 +188,12 @@
 
 #pragma mark - Shadows
 
++ (UIImageView *)topShadowView {
+    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"]];
+}
+
 + (void)addTopShadowView:(UIView *)view {
-    UIImageView *topShadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"]];
+    UIImageView *topShadowImageView = [self topShadowView];
     topShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
     topShadowImageView.frame = (CGRect){
         view.bounds.origin.x,

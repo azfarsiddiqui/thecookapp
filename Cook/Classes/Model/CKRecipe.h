@@ -46,6 +46,10 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book;
 + (CKRecipe *)recipeForUser:(CKUser *)user book:(CKBook *)book;
 
+// Query.
++ (void)recipeForObjectId:(NSString *)objectId success:(GetObjectSuccessBlock)success
+                  failure:(ObjectFailureBlock)failure;
+
 // Save
 - (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure;

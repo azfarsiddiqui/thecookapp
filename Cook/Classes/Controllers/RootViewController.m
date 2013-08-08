@@ -18,6 +18,7 @@
 #import "WelcomeViewController.h"
 #import "EventHelper.h"
 #import "RecipeViewController.h"
+#import "RecipeDetailsViewController.h"
 #import "BookNavigationHelper.h"
 #import "BookNavigationStackViewController.h"
 #import "BookTitleViewController.h"
@@ -82,7 +83,11 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self initViewControllers];
+//    [self initViewControllers];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self loadSampleRecipe];
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -654,7 +659,10 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
-    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
+//    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
+//    [self showModalViewController:recipeViewController];
+    
+    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
     [self showModalViewController:recipeViewController];
 }
 
@@ -821,6 +829,16 @@
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
     CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 10.0);
     return CGAffineTransformConcat(scaleTransform, translateTransform);
+}
+
+- (void)loadSampleRecipe {
+    [CKRecipe recipeForObjectId:@"cFmMoF95S2"
+                        success:^(CKRecipe *recipe){
+                            [self viewRecipe:recipe];
+                        }
+                        failure:^(NSError *error) {
+                            DLog(@"error %@", [error localizedDescription]);
+                        }];
 }
 
 @end

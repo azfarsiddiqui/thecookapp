@@ -92,6 +92,25 @@
     return recipe;
 }
 
+#pragma mark - Query
+
++ (void)recipeForObjectId:(NSString *)objectId success:(GetObjectSuccessBlock)success
+                  failure:(ObjectFailureBlock)failure {
+    
+    PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
+    [query setCachePolicy:kPFCachePolicyCacheElseNetwork];
+    [query includeKey:kRecipeAttrRecipePhotos];
+    [query includeKey:kBookModelForeignKeyName];
+    [query includeKey:kUserModelForeignKeyName];
+    [query getObjectInBackgroundWithId:objectId block:^(PFObject *parseRecipe, NSError *error) {
+        if (!error) {
+            success([[CKRecipe alloc] initWithParseObject:parseRecipe]);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 #pragma mark - Save
 
 - (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success

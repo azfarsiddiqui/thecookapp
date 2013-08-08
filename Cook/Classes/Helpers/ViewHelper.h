@@ -48,6 +48,7 @@
 + (CGRect)visibleFrameForCollectionView:(UICollectionView *)collectionView;
 
 // Shadows.
++ (UIImageView *)topShadowView;
 + (void)addTopShadowView:(UIView *)view;
 
 // Rounded corners.
