@@ -159,6 +159,19 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     NSLog(@"scrollViewWillEndDragging velocity[%@]", NSStringFromCGPoint(velocity));
 }
 
+#pragma mark - KVO methods
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
+                        context:(void *)context {
+    
+	if (object == self.scrollView && [keyPath isEqualToString:@"frame"]) {
+        [self updateImageViewFrame];
+	} else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+
 #pragma mark - Properties
 
 
@@ -174,7 +187,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.imageView = imageView;
     
     // Top shadow.
-    UIImageView *topShadowView = [ViewHelper topShadowView];
+    UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view];
     topShadowView.alpha = 0.0;
     [self.view insertSubview:topShadowView aboveSubview:self.imageView];
     self.topShadowView = topShadowView;
@@ -230,6 +243,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Start at bottom viewport.
     [self snapToViewport:SnapViewportBelow animated:NO];
+    
+    
+    // Start observing the frame of scrollView.
+    [scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)updateImageViewFrame {
+    CGRect imageFrame = self.imageView.frame;
+    CGRect contentFrame = self.scrollView.frame;
+    imageFrame.origin.y = (contentFrame.origin.y - imageFrame.size.height) / 2.0;
+    self.imageView.frame = imageFrame;
 }
 
 - (void)loadData {

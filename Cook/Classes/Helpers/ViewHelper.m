@@ -188,20 +188,20 @@
 
 #pragma mark - Shadows
 
-+ (UIImageView *)topShadowView {
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"]];
-}
-
-+ (void)addTopShadowView:(UIView *)view {
-    UIImageView *topShadowImageView = [self topShadowView];
-    topShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    topShadowImageView.frame = (CGRect){
++ (UIImageView *)topShadowViewForView:(UIView *)view {
+    UIImageView *topShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"]];
+    topShadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    topShadowView.frame = (CGRect){
         view.bounds.origin.x,
         view.bounds.origin.y,
         view.bounds.size.width,
-        topShadowImageView.frame.size.height
+        topShadowView.frame.size.height
     };
-    [view addSubview:topShadowImageView];
+    return topShadowView;
+}
+
++ (void)addTopShadowView:(UIView *)view {
+    [view addSubview:[self topShadowViewForView:view]];
 }
 
 #pragma mark - Rounded corners
