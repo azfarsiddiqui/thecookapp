@@ -89,11 +89,31 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)enableEditMode:(BOOL)editMode {
     
-    // Fade out the divider lines.
-    self.storyDividerView.alpha = editMode ? 0.0 : 1.0;
-    self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
-    self.ingredientsDividerView.alpha = editMode ? 0.0 : 1.0;
+    // Edit mode on fields.
+    [self enableFieldsForEditMode:editMode];
+    
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         // Fade the profile photo view.
+                         self.profilePhotoView.alpha = editMode ? 0.0 : 1.0;
+                         
+                         // Fade the divider lines.
+                         self.storyDividerView.alpha = editMode ? 0.0 : 1.0;
+                         self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
+                         self.ingredientsDividerView.alpha = editMode ? 0.0 : 1.0;
+                         
+                     }
+                     completion:^(BOOL finished)  {
+                         
+                    }];
+    
+}
 
+- (void)enableFieldsForEditMode:(BOOL)editMode {
+    
     // Get the default insets so we can adjust them as we please.
     UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
     UIEdgeInsets defaultEditInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
@@ -626,9 +646,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     if (editMode) {
         
         if (!UIEdgeInsetsEqualToEdgeInsets(minimumInsets, UIEdgeInsetsZero)) {
-            [self.editingHelper wrapEditingView:view contentInsets:minimumInsets delegate:self white:YES];
+            [self.editingHelper wrapEditingView:view contentInsets:minimumInsets delegate:self white:YES
+                                       editMode:editMode animated:YES];
         } else {
-            [self.editingHelper wrapEditingView:view delegate:self white:YES];
+            [self.editingHelper wrapEditingView:view delegate:self white:YES editMode:editMode animated:YES];
         }
         
         // Get the resulting textBoxView to stretch to the displayed size.
@@ -678,7 +699,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         }
         
     } else {
-        [self.editingHelper unwrapEditingView:view];
+        [self.editingHelper unwrapEditingView:view animated:YES];
     }
 }
 
