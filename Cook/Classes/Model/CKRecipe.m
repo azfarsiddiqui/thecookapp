@@ -472,6 +472,14 @@
     [self.parseObject setObject:[NSString CK_safeString:story] forKey:kRecipeAttrStory];
 }
 
+- (NSArray *)tags {
+    return [self.parseObject objectForKey:kRecipeAttrTags];
+}
+
+- (void)setTags:(NSArray *)tags {
+    [self.parseObject setObject:tags forKey:kRecipeAttrTags];
+}
+
 - (NSInteger)categoryIndex {
     return [[self.parseObject objectForKey:kRecipeAttrCategoryIndex] intValue];
 }

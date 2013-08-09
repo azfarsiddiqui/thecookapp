@@ -79,6 +79,7 @@ extern NSString *const kRecipeModelName;
 extern NSString *const kRecipeModelForeignKeyName;
 extern NSString *const kRecipeAttrPage;
 extern NSString *const kRecipeAttrStory;
+extern NSString *const kRecipeAttrTags;
 extern NSString *const kRecipeAttrDescription;
 extern NSString *const kRecipeAttrCategoryIndex;
 extern NSString *const kRecipeAttrRecipePhotos; // An array of objectIds.

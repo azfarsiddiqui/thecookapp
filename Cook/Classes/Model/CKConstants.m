@@ -80,6 +80,7 @@ NSString *const kRecipeModelName                = @"Recipe";
 NSString *const kRecipeModelForeignKeyName      = @"recipe";
 NSString *const kRecipeAttrPage                 = @"page";
 NSString *const kRecipeAttrStory                = @"story";
+NSString *const kRecipeAttrTags                 = @"tags";
 NSString *const kRecipeAttrDescription          = @"description";
 NSString *const kRecipeAttrCategoryIndex        = @"categoryIndex";
 NSString *const kRecipeAttrRecipePhotos         = @"photos";

@@ -24,6 +24,7 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 @property(nonatomic, strong) CKUser *user;
 
 @property (nonatomic, strong) NSString *page;
+@property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, strong) NSString *story;
 @property (nonatomic, strong) NSString *method;
 
