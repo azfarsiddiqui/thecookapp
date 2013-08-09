@@ -25,6 +25,7 @@
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UIView *contentDividerView;
 @property (nonatomic, strong) RecipeServesCookView *servesCookView;
+@property (nonatomic, strong) UIView *ingredientsDividerView;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
 @property (nonatomic, strong) UILabel *methodLabel;
 
@@ -36,13 +37,14 @@
 
 @implementation RecipeDetailsView
 
-#define kWidth              756.0
-#define kMaxTitleWidth      756.0
-#define kMaxStoryWidth      600.0
-#define kMaxLeftWidth       222.0
-#define kMaxRightWidth      465.0
-#define kDividerWidth       568.0
-#define kContentInsets      (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
+#define kWidth                  756.0
+#define kMaxTitleWidth          756.0
+#define kMaxStoryWidth          600.0
+#define kMaxLeftWidth           222.0
+#define kMaxRightWidth          465.0
+#define kDividerWidth           568.0
+#define kIngredientDividerWidth 170.0
+#define kContentInsets          (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -202,9 +204,9 @@
     CGFloat dividerGap = 30.0;
     
     self.contentDividerView.frame = (CGRect){
-        floorf((self.bounds.size.width - kDividerWidth) / 2.0),
+        floorf((self.bounds.size.width - kWidth) / 2.0),    // use kDividerWidth
         self.layoutOffset.y + dividerGap,
-        kDividerWidth,
+        kWidth,                                             // use kDividerWidth
         self.contentDividerView.frame.size.height
     };
     
@@ -239,18 +241,31 @@
 - (void)updateIngredients {
     if ([self.recipe.ingredients count] > 0) {
         if (!self.ingredientsView) {
+            
+            self.ingredientsDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
+            [self addSubview:self.ingredientsDividerView];
+            
             self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipe:self.recipe maxWidth:kMaxLeftWidth];
             [self addSubview:self.ingredientsView];
         }
         
-        CGFloat beforeGap = 0.0;
+        CGFloat dividerGap = 10.0;
+        self.ingredientsDividerView.frame = (CGRect){
+            kContentInsets.left,
+            self.layoutOffset.y + dividerGap,
+            kMaxLeftWidth,
+            self.ingredientsDividerView.frame.size.height
+        };
+        
+        CGFloat beforeIngredientsGap = 10.0;
         self.ingredientsView.frame = (CGRect){
             kContentInsets.left,
-            self.layoutOffset.y + beforeGap,
+            self.layoutOffset.y + dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap + beforeIngredientsGap,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
         
+        [self updateLayoutOffsetVertical:dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap + beforeIngredientsGap + self.ingredientsDividerView.frame.size.height];
     }
     
 }
