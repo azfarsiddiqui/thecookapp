@@ -24,12 +24,13 @@
 #define kValueTextGap           -5.0
 #define kStatViewOffset         -4.0
 #define kStatRowGap             -5.0
-#define kStatContainerInsets    (UIEdgeInsets){ 0.0, 0.0, 0.0, 0.0 }
+#define kContentInsets          (UIEdgeInsets){ 0.0, 0.0, -11.0, 12.0 }
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
     if (self = [super initWithFrame:CGRectZero]) {
         self.recipeDetails = recipeDetails;
         self.layoutOffset = 0.0;
+        self.backgroundColor = [UIColor clearColor];
         [self updateServes];
         [self updatePrepCook];
         [self updateFrame];
@@ -115,6 +116,8 @@
     for (UIView *subview in self.subviews) {
         frame = (CGRectUnion(frame, subview.frame));
     }
+    frame.size.width += kContentInsets.right;
+    frame.size.height += kContentInsets.bottom;
     self.frame = frame;
 }
 

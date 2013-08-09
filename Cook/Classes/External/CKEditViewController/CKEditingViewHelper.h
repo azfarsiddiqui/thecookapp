@@ -49,6 +49,10 @@
 // Returns the textbox view for the given editingView.
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView;
 
+// Default box insets for edit/non-edit mode.
++ (UIEdgeInsets)contentInsetsForEditMode:(BOOL)editMode;
++ (UIEdgeInsets)textBoxInsets;
+
 // Buttons.
 + (UIButton *)okayButtonWithTarget:(id)target selector:(SEL)selector;
 + (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector;

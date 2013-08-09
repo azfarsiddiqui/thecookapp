@@ -16,8 +16,10 @@
 
 @implementation CKEditingViewHelper
 
-#define kContentInsets  UIEdgeInsetsMake(25.0, 35.0, 15.0, 35.0)
-#define kTextBoxScale   0.98
+#define kContentEditInsets  (UIEdgeInsets){ 16.0, 32.0, 11.0, 42.0 }
+#define kContentInsets      (UIEdgeInsets){ 16.0, 28.0, 11.0, 38.0 }
+#define kTextBoxInsets      (UIEdgeInsets){ 15.0, 12.0, 12.0, 22.0 }
+#define kTextBoxScale       0.98
 
 + (CGFloat)singleLineHeightForFont:(UIFont *)font size:(CGSize)size {
     return [@"A" sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByClipping].height;
@@ -71,12 +73,14 @@
 
 - (void)wrapEditingView:(UIView *)editingView white:(BOOL)white {
     
-    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:nil white:white animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:[CKEditingViewHelper contentInsetsForEditMode:YES]
+                     delegate:nil white:white animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView white:(BOOL)white animated:(BOOL)animated {
     
-    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:nil white:white animated:animated];
+    [self decorateEditingView:editingView wrap:YES contentInsets:[CKEditingViewHelper contentInsetsForEditMode:YES]
+                     delegate:nil white:white animated:animated];
 }
 
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
@@ -93,28 +97,29 @@
 
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white {
     
-    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:[CKEditingViewHelper contentInsetsForEditMode:YES]
+                     delegate:delegate white:white animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
                editMode:(BOOL)editMode {
     
-    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white
-                     editMode:editMode animated:YES];
+    [self decorateEditingView:editingView wrap:YES contentInsets:[CKEditingViewHelper contentInsetsForEditMode:editMode]
+                     delegate:delegate white:white editMode:editMode animated:YES];
 }
 
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
                animated:(BOOL)animated {
     
-    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white
-                 animated:animated];
+    [self decorateEditingView:editingView wrap:YES contentInsets:[CKEditingViewHelper contentInsetsForEditMode:YES]
+                     delegate:delegate white:white animated:animated];
 }
 
 - (void)wrapEditingView:(UIView *)editingView delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white
                editMode:(BOOL)editMode animated:(BOOL)animated {
     
-    [self decorateEditingView:editingView wrap:YES contentInsets:kContentInsets delegate:delegate white:white
-                     editMode:editMode animated:animated];
+    [self decorateEditingView:editingView wrap:YES contentInsets:[CKEditingViewHelper contentInsetsForEditMode:editMode]
+                     delegate:delegate white:white editMode:editMode animated:animated];
 }
 
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
@@ -157,6 +162,18 @@
 
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView {
     return [self.editingViewTextBoxViews objectForKey:[NSValue valueWithNonretainedObject:editingView]];
+}
+
++ (UIEdgeInsets)contentInsetsForEditMode:(BOOL)editMode {
+    if (editMode) {
+        return kContentEditInsets;
+    } else {
+        return kContentInsets;
+    }
+}
+
++ (UIEdgeInsets)textBoxInsets {
+    return kTextBoxInsets;
 }
 
 #pragma mark - Buttons
