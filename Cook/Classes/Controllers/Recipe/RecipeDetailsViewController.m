@@ -8,6 +8,7 @@
 
 #import "RecipeDetailsViewController.h"
 #import "CKRecipe.h"
+#import "RecipeDetails.h"
 #import "RecipeDetailsView.h"
 #import "ParsePhotoStore.h"
 #import "ViewHelper.h"
@@ -30,6 +31,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
@@ -85,6 +87,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.book = recipe.book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.blur = NO;
+        [self updateRecipeDetails];
     }
     return self;
 }
@@ -359,7 +362,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)initContentView {
-    UIView *contentView = [[RecipeDetailsView alloc] initWithRecipe:self.recipe];
+    UIView *contentView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails];
     self.contentView = contentView;
 }
 
@@ -958,6 +961,21 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)saveTapped:(id)sender {
     DLog();
+}
+
+- (void)updateRecipeDetails {
+    if (!self.recipeDetails) {
+        self.recipeDetails = [[RecipeDetails alloc] init];
+    }
+    
+    self.recipeDetails.user = self.recipe.user;
+    self.recipeDetails.name = self.recipe.name;
+    self.recipeDetails.story = self.recipe.story;
+    self.recipeDetails.method = self.recipe.method;
+    self.recipeDetails.numServes = self.recipe.numServes;
+    self.recipeDetails.prepTimeInMinutes = self.recipe.prepTimeInMinutes;
+    self.recipeDetails.cookingTimeInMinutes = self.recipe.cookingTimeInMinutes;
+    self.recipeDetails.ingredients = self.recipe.ingredients;
 }
 
 @end

@@ -7,12 +7,12 @@
 //
 
 #import "RecipeServesCookView.h"
-#import "CKRecipe.h"
+#import "RecipeDetails.h"
 #import "Theme.h"
 
 @interface RecipeServesCookView ()
 
-@property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, assign) CGFloat layoutOffset;
 
 @end
@@ -26,9 +26,9 @@
 #define kStatRowGap             -5.0
 #define kStatContainerInsets    (UIEdgeInsets){ 0.0, 0.0, 0.0, 0.0 }
 
-- (id)initWithRecipe:(CKRecipe *)recipe {
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
     if (self = [super initWithFrame:CGRectZero]) {
-        self.recipe = recipe;
+        self.recipeDetails = recipeDetails;
         self.layoutOffset = 0.0;
         [self updateServes];
         [self updatePrepCook];
@@ -40,10 +40,10 @@
 #pragma mark - Private methods
 
 - (void)updateServes {
-    if (self.recipe.numServes >= 0) {
+    if (self.recipeDetails.numServes >= 0) {
         
         UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
-        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[NSString stringWithFormat:@"%d", self.recipe.numServes]];
+        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.numServes]];
         CGRect servesFrame = servesStatView.frame;
         CGRect imageFrame = servesImageView.frame;
         servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
@@ -66,19 +66,19 @@
 }
 
 - (void)updatePrepCook {
-    if (self.recipe.prepTimeInMinutes >= 0 || self.recipe.cookingTimeInMinutes >= 0) {
+    if (self.recipeDetails.prepTimeInMinutes >= 0 || self.recipeDetails.cookingTimeInMinutes >= 0) {
         
         CGFloat prepCookGap = 20.0;
         
         UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
         CGRect imageFrame = prepCookImageView.frame;
         
-        UIView *prepStatView = [self viewForStatText:@"Prep" statValue:[NSString stringWithFormat:@"%d", self.recipe.prepTimeInMinutes]];
+        UIView *prepStatView = [self viewForStatText:@"Prep" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.prepTimeInMinutes]];
         CGRect prepFrame = prepStatView.frame;
         prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
         prepStatView.frame = prepFrame;
         
-        UIView *cookStatView = [self viewForStatText:@"Cook" statValue:[NSString stringWithFormat:@"%d", self.recipe.cookingTimeInMinutes]];
+        UIView *cookStatView = [self viewForStatText:@"Cook" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.cookingTimeInMinutes]];
         CGRect cookFrame = cookStatView.frame;
         cookFrame.origin.x = prepFrame.origin.x + prepFrame.size.width + prepCookGap;
         cookStatView.frame = cookFrame;

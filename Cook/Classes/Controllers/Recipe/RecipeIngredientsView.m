@@ -7,13 +7,13 @@
 //
 
 #import "RecipeIngredientsView.h"
-#import "CKRecipe.h"
+#import "RecipeDetails.h"
 #import "Theme.h"
 #import "Ingredient.h"
 
 @interface RecipeIngredientsView ()
 
-@property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, assign) CGFloat maxWidth;
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
@@ -24,9 +24,9 @@
 
 #define kRowGap 3.0
 
-- (id)initWithRecipe:(CKRecipe *)recipe maxWidth:(CGFloat)maxWidth {
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails maxWidth:(CGFloat)maxWidth {
     if (self = [super initWithFrame:CGRectZero]) {
-        self.recipe = recipe;
+        self.recipeDetails = recipeDetails;
         self.maxWidth = maxWidth;
         self.layoutOffset = 0.0;
         [self updateIngredients];
@@ -54,12 +54,12 @@
 #pragma mark - Private methods
 
 - (void)updateIngredients {
-    if ([self.recipe.ingredients count] > 0) {
+    if ([self.recipeDetails.ingredients count] > 0) {
         
         // for (Ingredient *ingredient in self.recipe.ingredients) {
-        for (NSUInteger ingredientIndex = 0; ingredientIndex < [self.recipe.ingredients count]; ingredientIndex++) {
+        for (NSUInteger ingredientIndex = 0; ingredientIndex < [self.recipeDetails.ingredients count]; ingredientIndex++) {
             
-            Ingredient *ingredient = [self.recipe.ingredients objectAtIndex:ingredientIndex];
+            Ingredient *ingredient = [self.recipeDetails.ingredients objectAtIndex:ingredientIndex];
             NSAttributedString *ingredientAttributedText = [self attributedTextForIngredient:ingredient];
             
             UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -73,7 +73,7 @@
             [self addSubview:ingredientsLabel];
             
             self.layoutOffset += size.height;
-            if (ingredientIndex < [self.recipe.ingredients count] - 1) {
+            if (ingredientIndex < [self.recipeDetails.ingredients count] - 1) {
                 self.layoutOffset += kRowGap;
             }
         }

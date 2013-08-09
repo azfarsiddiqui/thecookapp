@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class CKRecipe;
+@class RecipeDetails;
 
 @interface RecipeIngredientsView : UIView
 
-- (id)initWithRecipe:(CKRecipe *)recipe maxWidth:(CGFloat)maxWidth;
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails maxWidth:(CGFloat)maxWidth;
 
 @end

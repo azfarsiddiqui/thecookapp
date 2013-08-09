@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class CKRecipe;
+@class RecipeDetails;
 
 @interface RecipeServesCookView : UIView
 
-- (id)initWithRecipe:(CKRecipe *)recipe;
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "RecipeDetailsView.h"
-#import "CKRecipe.h"
+#import "RecipeDetails.h"
 #import "CKUserProfilePhotoView.h"
 #import "NSString+Utilities.h"
 #import "Theme.h"
@@ -16,7 +16,7 @@
 
 @interface RecipeDetailsView ()
 
-@property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) RecipeDetails *recipeDetails;
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -46,9 +46,9 @@
 #define kIngredientDividerWidth 170.0
 #define kContentInsets          (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
 
-- (id)initWithRecipe:(CKRecipe *)recipe {
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
     if (self = [super initWithFrame:CGRectZero]) {
-        self.recipe = recipe;
+        self.recipeDetails = recipeDetails;
         self.backgroundColor = [UIColor clearColor];
         
         // Pre-layout updates.
@@ -83,7 +83,8 @@
 
 - (void)updateProfilePhoto {
     if (!self.profilePhotoView) {
-        CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.recipe.user profileSize:ProfileViewSizeSmall];
+        CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.recipeDetails.user
+                                                                                    profileSize:ProfileViewSizeSmall];
         profilePhotoView.frame = (CGRect){
             self.layoutOffset.x + floor(([self availableSize].width - profilePhotoView.frame.size.width) / 2.0),
             self.bounds.origin.y + self.layoutOffset.y,
@@ -113,9 +114,9 @@
     }
     
     // Do we have a title to display.
-    if (![self.recipe.name CK_blank]) {
+    if (![self.recipeDetails.name CK_blank]) {
         self.titleLabel.hidden = NO;
-        self.titleLabel.text = [[self.recipe.name CK_whitespaceTrimmed] uppercaseString];
+        self.titleLabel.text = [[self.recipeDetails.name CK_whitespaceTrimmed] uppercaseString];
         CGSize size = [self.titleLabel sizeThatFits:(CGSize){ kMaxTitleWidth, MAXFLOAT }];
         self.titleLabel.frame = (CGRect){
             floorf((self.bounds.size.width - size.width) / 2.0),
@@ -139,7 +140,7 @@
     }
     
     // Do we have any tags to display.
-    if ([self.recipe.tags count] > 0) {
+    if ([self.recipeDetails.tags count] > 0) {
         
         // TODO adjust frame
         
@@ -169,7 +170,7 @@
     }
     
     // Do we have a story to display.
-    if (![self.recipe.story CK_blank]) {
+    if (![self.recipeDetails.story CK_blank]) {
         self.storyDividerView.hidden = NO;
         self.storyLabel.hidden = NO;
         
@@ -182,7 +183,7 @@
             self.storyDividerView.frame.size.height
         };
         
-        self.storyLabel.text = self.recipe.story;
+        self.storyLabel.text = self.recipeDetails.story;
         CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
         self.storyLabel.frame = (CGRect){
             floorf((self.bounds.size.width - size.width) / 2.0),
@@ -218,14 +219,14 @@
 
 - (void)updateServesCook {
     if (!self.servesCookView) {
-        self.servesCookView = [[RecipeServesCookView alloc] initWithRecipe:self.recipe];
+        self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails];
         self.servesCookView.hidden = YES;
         [self addSubview:self.servesCookView];
     }
     
     CGFloat beforeGap = 0.0;
     
-    if (self.recipe.numServes >= 0 || self.recipe.prepTimeInMinutes >= 0 || self.recipe.cookingTimeInMinutes >= 0) {
+    if (self.recipeDetails.numServes >= 0 || self.recipeDetails.prepTimeInMinutes >= 0 || self.recipeDetails.cookingTimeInMinutes >= 0) {
         self.servesCookView.hidden = NO;
         self.servesCookView.frame = (CGRect){
             kContentInsets.left,
@@ -239,13 +240,13 @@
 }
 
 - (void)updateIngredients {
-    if ([self.recipe.ingredients count] > 0) {
+    if ([self.recipeDetails.ingredients count] > 0) {
         if (!self.ingredientsView) {
             
             self.ingredientsDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
             [self addSubview:self.ingredientsDividerView];
             
-            self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipe:self.recipe maxWidth:kMaxLeftWidth];
+            self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipeDetails:self.recipeDetails maxWidth:kMaxLeftWidth];
             [self addSubview:self.ingredientsView];
         }
         
@@ -283,9 +284,9 @@
     }
     
     // Do we have a story to display.
-    if (![self.recipe.method CK_blank]) {
+    if (![self.recipeDetails.method CK_blank]) {
         self.methodLabel.hidden = NO;
-        NSAttributedString *method = [self attributedTextForText:self.recipe.method font:[Theme methodFont] colour:[Theme methodColor]];
+        NSAttributedString *method = [self attributedTextForText:self.recipeDetails.method font:[Theme methodFont] colour:[Theme methodColor]];
         self.methodLabel.attributedText = method;
         CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
         self.methodLabel.frame = (CGRect){

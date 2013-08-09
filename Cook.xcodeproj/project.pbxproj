@@ -380,6 +380,7 @@
 		769BFDF4177B170E00332B5D /* cook_dash_shelves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 769BFDF2177B170E00332B5D /* cook_dash_shelves@2x.png */; };
 		769D22E017B49AC50048C572 /* RecipeServesCookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769D22DF17B49AC50048C572 /* RecipeServesCookView.m */; };
 		769D22E317B4AC980048C572 /* RecipeIngredientsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769D22E217B4AC980048C572 /* RecipeIngredientsView.m */; };
+		76A0E48217B4B82F0027F927 /* RecipeDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A0E48117B4B82F0027F927 /* RecipeDetails.m */; };
 		76A269DB175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D7175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png */; };
 		76A269DC175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D8175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png */; };
 		76A269DD175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D9175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png */; };
@@ -1257,6 +1258,8 @@
 		769D22DF17B49AC50048C572 /* RecipeServesCookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeServesCookView.m; sourceTree = "<group>"; };
 		769D22E117B4AC980048C572 /* RecipeIngredientsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeIngredientsView.h; sourceTree = "<group>"; };
 		769D22E217B4AC980048C572 /* RecipeIngredientsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeIngredientsView.m; sourceTree = "<group>"; };
+		76A0E48017B4B82F0027F927 /* RecipeDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeDetails.h; sourceTree = "<group>"; };
+		76A0E48117B4B82F0027F927 /* RecipeDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeDetails.m; sourceTree = "<group>"; };
 		76A269D7175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_titledivider_quote.png; sourceTree = "<group>"; };
 		76A269D8175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_titledivider_quote@2x.png"; sourceTree = "<group>"; };
 		76A269D9175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_titledivider_solid.png; sourceTree = "<group>"; };
@@ -2286,6 +2289,8 @@
 			children = (
 				7612B46117B34FB30093B4FD /* RecipeDetailsViewController.h */,
 				7612B46217B34FB30093B4FD /* RecipeDetailsViewController.m */,
+				76A0E48017B4B82F0027F927 /* RecipeDetails.h */,
+				76A0E48117B4B82F0027F927 /* RecipeDetails.m */,
 				7676057117B3E1F300CA441B /* RecipeDetailsView.h */,
 				7676057217B3E1F300CA441B /* RecipeDetailsView.m */,
 				769D22DE17B49AC50048C572 /* RecipeServesCookView.h */,
@@ -4012,6 +4017,7 @@
 				7612B46317B34FB30093B4FD /* RecipeDetailsViewController.m in Sources */,
 				76DEF0411649E78D00B7DB9C /* IllustrationFlowLayout.m in Sources */,
 				76E0B95A179045FD00AD70E3 /* BookHeaderView.m in Sources */,
+				76A0E48217B4B82F0027F927 /* RecipeDetails.m in Sources */,
 				76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */,
 				764F4D07179CE85A00821221 /* UICollectionView+Draggable.m in Sources */,
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
