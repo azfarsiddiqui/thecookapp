@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIImageView *contentImageView;
-@property (nonatomic, strong) UIView *contentView;
+@property (nonatomic, strong) RecipeDetailsView *recipeDetailsView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, assign) SnapViewport currentViewport;
@@ -60,7 +60,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
-// Edit controls.
+// Editing.
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
@@ -97,7 +97,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     self.view.backgroundColor = [UIColor clearColor];
     
     [self initImageView];
-    [self initContentView];
+    [self initRecipeDetailsView];
     [self initScrollView];
 }
 
@@ -121,7 +121,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         [self snapToViewport:[self startViewPort] animated:YES completion:^{
             
             // Load stuff.
-            [self showButtons];
+            [self updateButtons];
             [self loadData];
             
         }];
@@ -361,9 +361,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.imageView addGestureRecognizer:tapGesture];
 }
 
-- (void)initContentView {
-    UIView *contentView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails];
-    self.contentView = contentView;
+- (void)initRecipeDetailsView {
+    RecipeDetailsView *recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails];
+    self.recipeDetailsView = recipeDetailsView;
 }
 
 - (void)initScrollView {
@@ -373,7 +373,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.view.bounds.size.width,
         self.view.bounds.size.height - [self offsetForViewport:SnapViewportTop]
     }];
-    scrollView.contentSize = self.contentView.frame.size;
+    scrollView.contentSize = self.recipeDetailsView.frame.size;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     scrollView.alwaysBounceVertical = YES;
     scrollView.showsVerticalScrollIndicator = NO;
@@ -384,14 +384,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.scrollView = scrollView;
     
     // Add the content view.
-    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-    self.contentView.frame = (CGRect){
-        floorf((scrollView.bounds.size.width - self.contentView.frame.size.width) / 2.0),
+    self.recipeDetailsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    self.recipeDetailsView.frame = (CGRect){
+        floorf((scrollView.bounds.size.width - self.recipeDetailsView.frame.size.width) / 2.0),
         self.scrollView.bounds.origin.y,
-        self.contentView.frame.size.width,
-        self.contentView.frame.size.height
+        self.recipeDetailsView.frame.size.width,
+        self.recipeDetailsView.frame.size.height
     };
-    [scrollView addSubview:self.contentView];
+    [scrollView addSubview:self.recipeDetailsView];
     
     // Build the same sized backgroundView to follow the scrollView along in the back.
     UIImage *contentBackgroundImage = [[UIImage imageNamed:@"cook_book_recipe_background_tile.png"]
@@ -522,6 +522,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)snapToViewport:(SnapViewport)viewport animated:(BOOL)animated completion:(void (^)())completion {
+    DLog(@"snapToViewport [%d] fromViewport[%d]", viewport, self.currentViewport);
     
     // Set the required offset for the given viewport.
     CGRect frame = self.scrollView.frame;
@@ -629,10 +630,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Fast to top.
         duration = 0.25;
         
-        CGFloat distance = ABS(self.scrollView.frame.origin.y - offset);
-        CGFloat totalDistance = [self offsetForViewport:SnapViewportBottom] - offset;
-        CGFloat durationRatio = distance / totalDistance;
-        duration = MAX(duration * durationRatio, 0.15);
+        if (fromViewport != SnapViewportBelow) {
+            
+            CGFloat distance = ABS(self.scrollView.frame.origin.y - offset);
+            CGFloat totalDistance = [self offsetForViewport:SnapViewportBottom] - offset;
+            CGFloat durationRatio = distance / totalDistance;
+            duration = MAX(duration * durationRatio, 0.15);
+        }
         
         
     } else if (toViewport == SnapViewportBottom) {
@@ -806,6 +810,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (self.recipe && ![self.recipe hasPhotos]) {
         startViewPort = SnapViewportTop;
     }
+    
+    // TODO comment this out after dev.
+    startViewPort = SnapViewportTop;
+    
     return startViewPort;
 }
 
@@ -825,7 +833,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return ([self.book isOwner]);
 }
 
-- (void)showButtons {
+- (void)updateButtons {
     [self updateButtonsWithAlpha:1.0];
 }
 
@@ -920,7 +928,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          if (!show) {
                              [self.bookSocialViewController.view removeFromSuperview];
                              self.bookSocialViewController = nil;
-                             [self showButtons];
+                             [self updateButtons];
                          }
                      }];
 }
@@ -948,7 +956,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)editTapped:(id)sender {
-    DLog();
+    [self enableEditMode:YES];
 }
 
 - (void)shareTapped:(id)sender {
@@ -957,6 +965,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)cancelTapped:(id)sender {
     DLog();
+    [self enableEditMode:NO];
 }
 
 - (void)saveTapped:(id)sender {
@@ -976,6 +985,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.recipeDetails.prepTimeInMinutes = self.recipe.prepTimeInMinutes;
     self.recipeDetails.cookingTimeInMinutes = self.recipe.cookingTimeInMinutes;
     self.recipeDetails.ingredients = self.recipe.ingredients;
+}
+
+- (void)enableEditMode:(BOOL)enable {
+    self.editMode = enable;
+    
+    // Prepare or discard recipe clipboard.
+    [self updateButtons];
+    [self.recipeDetailsView enableEditMode:enable];
 }
 
 @end

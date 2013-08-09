@@ -13,5 +13,6 @@
 @interface RecipeDetailsView : UIView
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails;
+- (void)enableEditMode:(BOOL)editMode;
 
 @end

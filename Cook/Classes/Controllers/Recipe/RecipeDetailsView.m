@@ -13,8 +13,9 @@
 #import "Theme.h"
 #import "RecipeServesCookView.h"
 #import "RecipeIngredientsView.h"
+#import "CKEditingViewHelper.h"
 
-@interface RecipeDetailsView ()
+@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 
@@ -33,6 +34,10 @@
 @property (nonatomic, assign) CGPoint layoutOffset;
 @property (nonatomic, assign) CGPoint contentOffset;
 
+// Editing.
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+
+
 @end
 
 @implementation RecipeDetailsView
@@ -48,7 +53,10 @@
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
     if (self = [super initWithFrame:CGRectZero]) {
+        
         self.recipeDetails = recipeDetails;
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
+        
         self.backgroundColor = [UIColor clearColor];
         
         // Pre-layout updates.
@@ -62,7 +70,120 @@
     return self;
 }
 
-#pragma mark - Properties
+- (void)enableEditMode:(BOOL)editMode {
+    
+    // Fade out the divider lines.
+    self.storyDividerView.alpha = editMode ? 0.0 : 1.0;
+    self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
+    self.ingredientsDividerView.alpha = editMode ? 0.0 : 1.0;
+    
+    [self enableEditModeOnView:self.titleLabel editMode:editMode
+                 minimumInsets:(UIEdgeInsets){ 8.0, 20.0, 2.0, 20.0 }
+               toDisplayAsSize:(CGSize){ kMaxTitleWidth, 0.0 }];
+    [self enableEditModeOnView:self.storyLabel editMode:editMode
+                 minimumInsets:(UIEdgeInsets){ 30.0, 20.0, 30.0, 20.0 }
+               toDisplayAsSize:(CGSize){ kWidth, 0.0 }];
+    [self enableEditModeOnView:self.servesCookView editMode:editMode
+                 minimumInsets:(UIEdgeInsets){ 30.0, 10.0, 15.0, 30.0 }
+               toDisplayAsSize:(CGSize){ 0.0, 0.0 }];
+    
+    // Set fields to be editable/non
+    if (editMode) {
+        [self.editingHelper wrapEditingView:self.servesCookView
+                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 30.0)
+                                   delegate:self white:YES];
+        [self.editingHelper wrapEditingView:self.ingredientsView
+                              contentInsets:UIEdgeInsetsMake(20.0, 30.0, 10.0, 30.0)
+                                   delegate:self white:YES];
+        [self.editingHelper wrapEditingView:self.methodLabel
+                              contentInsets:UIEdgeInsetsMake(25.0, 30.0, 2.0, 20.0)
+                                   delegate:self white:YES];
+    } else {
+        [self.editingHelper unwrapEditingView:self.servesCookView];
+        [self.editingHelper unwrapEditingView:self.ingredientsView];
+        [self.editingHelper unwrapEditingView:self.methodLabel];
+    }
+}
+
+#pragma mark - CKEditingTextBoxViewDelegate methods
+
+- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+//    if (editingView == self.photoLabel) {
+//        
+//        [self snapContentToPhotoWindowHeight:PhotoWindowHeightFullScreen bounce:NO completion:^{
+//            [self showPhotoPicker:YES];
+//        }];
+//        
+//    } else if (editingView == self.titleLabel) {
+//        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+//                                                                                                           delegate:self
+//                                                                                                      editingHelper:self.editingHelper
+//                                                                                                              white:YES
+//                                                                                                              title:@"Name"
+//                                                                                                     characterLimit:30];
+//        editViewController.forceUppercase = YES;
+//        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
+//        
+//    } else if (editingView == self.categoryLabel) {
+//        
+//        PageListEditViewController *editViewController = [[PageListEditViewController alloc] initWithEditView:self.categoryLabel
+//                                                                                                       recipe:self.recipe
+//                                                                                                     delegate:self
+//                                                                                                editingHelper:self.editingHelper
+//                                                                                                        white:YES];
+//        editViewController.canAddItems = NO;
+//        editViewController.canDeleteItems = NO;
+//        editViewController.canReorderItems = NO;
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
+//        
+//    } else if (editingView == self.storyLabel) {
+//        
+//        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+//                                                                                                         delegate:self
+//                                                                                                    editingHelper:self.editingHelper
+//                                                                                                            white:YES
+//                                                                                                            title:@"Story"
+//                                                                                                   characterLimit:120];
+//        ((CKTextViewEditViewController *)editViewController).numLines = 2;
+//        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
+//        
+//    } else if (editingView == self.methodLabel) {
+//        
+//        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.methodLabel
+//                                                                                                         delegate:self
+//                                                                                                    editingHelper:self.editingHelper
+//                                                                                                            white:YES
+//                                                                                                            title:@"Method"];
+//        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
+//        
+//    } else if (editingView == self.servesCookView) {
+//        
+//        ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
+//                                                                                                        recipeClipboard:self.clipboard
+//                                                                                                               delegate:self
+//                                                                                                          editingHelper:self.editingHelper
+//                                                                                                                  white:YES];
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
+//        
+//    } else if (editingView == self.ingredientsView) {
+//        
+//        IngredientListEditViewController *editViewController = [[IngredientListEditViewController alloc] initWithEditView:editingView delegate:self items:self.clipboard.ingredients editingHelper:self.editingHelper white:YES title:@"Ingredients"];
+//        editViewController.canAddItems = YES;
+//        editViewController.canDeleteItems = YES;
+//        editViewController.canReorderItems = YES;
+//        editViewController.allowSelection = NO;
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
+//    }
+}
 
 #pragma mark - Private methods
 
@@ -402,6 +523,61 @@
             colour, NSForegroundColorAttributeName,
             paragraphStyle, NSParagraphStyleAttributeName,
             nil];
+}
+
+- (void)enableEditModeOnView:(UIView *)view editMode:(BOOL)editMode minimumInsets:(UIEdgeInsets)minimumInsets {
+    [self enableEditModeOnView:view editMode:editMode minimumInsets:minimumInsets toDisplayAsSize:CGSizeZero];
+}
+
+- (void)enableEditModeOnView:(UIView *)view editMode:(BOOL)editMode minimumInsets:(UIEdgeInsets)minimumInsets
+             toDisplayAsSize:(CGSize)size {
+    
+    if (editMode) {
+        [self.editingHelper wrapEditingView:view contentInsets:minimumInsets delegate:self white:YES];
+        
+        // Get the resulting textBoxView to stretch to the displayed size.
+        CKEditingTextBoxView *textBoxView = [self.editingHelper textBoxViewForEditingView:view];
+        CGRect frame = textBoxView.frame;
+        
+        // Do we need to display to a minimum size.
+        if (!CGSizeEqualToSize(size, CGSizeZero)) {
+            
+            // Check horizontal padding.
+            if (size.width > 0.0) {
+                
+                // Figure out the appropriate proportions to pad on left/right.
+                CGFloat totalInsets = textBoxView.contentInsets.left + textBoxView.contentInsets.right;
+                CGFloat leftInsetsRatio = textBoxView.contentInsets.left / totalInsets;
+                
+                // Effective width of the required width + the textbox insets around it.
+                CGFloat effectiveWidth = size.width + totalInsets;
+                frame.size.width = effectiveWidth;
+                
+                // Extra width to pad horizontally.
+                CGFloat extraWidth = effectiveWidth - view.frame.size.width;
+                frame.origin.x -= floorf(extraWidth * leftInsetsRatio);
+                
+            }
+            
+            // Check vertical padding.
+            if (size.height > 0.0) {
+                
+                frame.size.height = size.height;
+            }
+            textBoxView.frame = frame;
+        }
+        
+    } else {
+        [self.editingHelper unwrapEditingView:view];
+    }
+}
+
+- (UIEdgeInsets)editInsetsForEditingView:(UIView *)editingView minimumInsets:(UIEdgeInsets)minimumInsets
+                         toDisplayAsSize:(CGSize)size {
+    
+    UIEdgeInsets editInsets = UIEdgeInsetsZero;
+    
+    return editInsets;
 }
 
 @end
