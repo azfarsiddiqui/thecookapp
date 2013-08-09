@@ -15,6 +15,9 @@
 #import "RecipeIngredientsView.h"
 #import "CKEditingViewHelper.h"
 #import "CKTextFieldEditViewController.h"
+#import "CKTextViewEditViewController.h"
+#import "ServesAndTimeEditViewController.h"
+#import "IngredientListEditViewController.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -25,8 +28,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionTopBottom
 };
 
-@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate>
+@interface RecipeDetailsView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
+@property (nonatomic, weak) id<RecipeDetailsViewDelegate> delegate;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
@@ -46,7 +50,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 // Editing.
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
-
+@property (nonatomic, strong) CKEditViewController *editViewController;
 
 @end
 
@@ -62,10 +66,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #define kIngredientDividerWidth 170.0
 #define kContentInsets          (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
 
-- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate {
+    
     if (self = [super initWithFrame:CGRectZero]) {
         
         self.recipeDetails = recipeDetails;
+        self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         
         self.backgroundColor = [UIColor clearColor];
@@ -143,18 +149,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-//    if (editingView == self.titleLabel) {
-//        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
-//                                                                                                           delegate:self
-//                                                                                                      editingHelper:self.editingHelper
-//                                                                                                              white:YES
-//                                                                                                              title:@"Name"
-//                                                                                                     characterLimit:30];
-//        editViewController.forceUppercase = YES;
-//        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
-//        [editViewController performEditing:YES];
-//        self.editViewController = editViewController;
-//        
+    if (editingView == self.titleLabel) {
+        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+                                                                                                           delegate:self
+                                                                                                      editingHelper:self.editingHelper
+                                                                                                              white:YES
+                                                                                                              title:@"Name"
+                                                                                                     characterLimit:30];
+        editViewController.forceUppercase = YES;
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
 //    } else if (editingView == self.categoryLabel) {
 //        
 //        PageListEditViewController *editViewController = [[PageListEditViewController alloc] initWithEditView:self.categoryLabel
@@ -168,50 +174,89 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 //        [editViewController performEditing:YES];
 //        self.editViewController = editViewController;
 //        
+    } else if (editingView == self.storyLabel) {
+        
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+                                                                                                         delegate:self
+                                                                                                    editingHelper:self.editingHelper
+                                                                                                            white:YES
+                                                                                                            title:@"Story"
+                                                                                                   characterLimit:120];
+        ((CKTextViewEditViewController *)editViewController).numLines = 2;
+        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
+    } else if (editingView == self.methodLabel) {
+        
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.methodLabel
+                                                                                                         delegate:self
+                                                                                                    editingHelper:self.editingHelper
+                                                                                                            white:YES
+                                                                                                            title:@"Method"];
+        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
+    } else if (editingView == self.servesCookView) {
+        
+        ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
+                                                                                                          recipeDetails:self.recipeDetails
+                                                                                                               delegate:self
+                                                                                                          editingHelper:self.editingHelper
+                                                                                                                  white:YES];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
+    } else if (editingView == self.ingredientsView) {
+        
+        IngredientListEditViewController *editViewController = [[IngredientListEditViewController alloc] initWithEditView:editingView
+                                                                                                                 delegate:self
+                                                                                                                    items:self.recipeDetails.ingredients
+                                                                                                            editingHelper:self.editingHelper white:YES
+                                                                                                                    title:@"Ingredients"];
+        editViewController.canAddItems = YES;
+        editViewController.canDeleteItems = YES;
+        editViewController.canReorderItems = YES;
+        editViewController.allowSelection = NO;
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+    }
+}
+
+#pragma mark - CKEditViewControllerDelegate methods
+
+- (void)editViewControllerWillAppear:(BOOL)appear {
+    [self.delegate recipeDetailsViewEditing:appear];
+}
+
+- (void)editViewControllerDidAppear:(BOOL)appear {
+    if (!appear) {
+        [self.editViewController.view removeFromSuperview];
+        self.editViewController = nil;
+    }
+}
+
+- (void)editViewControllerDismissRequested {
+    [self.editViewController performEditing:NO];
+}
+
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+    
+//    if (editingView == self.titleLabel) {
+//        [self saveTitleValue:value];
+//    } else if (editingView == self.categoryLabel) {
+//        [self savePageValue:value];
 //    } else if (editingView == self.storyLabel) {
-//        
-//        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
-//                                                                                                         delegate:self
-//                                                                                                    editingHelper:self.editingHelper
-//                                                                                                            white:YES
-//                                                                                                            title:@"Story"
-//                                                                                                   characterLimit:120];
-//        ((CKTextViewEditViewController *)editViewController).numLines = 2;
-//        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
-//        [editViewController performEditing:YES];
-//        self.editViewController = editViewController;
-//        
-//    } else if (editingView == self.methodLabel) {
-//        
-//        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:self.methodLabel
-//                                                                                                         delegate:self
-//                                                                                                    editingHelper:self.editingHelper
-//                                                                                                            white:YES
-//                                                                                                            title:@"Method"];
-//        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
-//        [editViewController performEditing:YES];
-//        self.editViewController = editViewController;
-//        
+//        [self saveStoryValue:value];
 //    } else if (editingView == self.servesCookView) {
-//        
-//        ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
-//                                                                                                        recipeClipboard:self.clipboard
-//                                                                                                               delegate:self
-//                                                                                                          editingHelper:self.editingHelper
-//                                                                                                                  white:YES];
-//        [editViewController performEditing:YES];
-//        self.editViewController = editViewController;
-//        
+//        [self saveServesPrepCookValue:value];
+//    } else if (editingView == self.methodLabel) {
+//        [self saveMethodValue:value];
 //    } else if (editingView == self.ingredientsView) {
-//        
-//        IngredientListEditViewController *editViewController = [[IngredientListEditViewController alloc] initWithEditView:editingView delegate:self items:self.clipboard.ingredients editingHelper:self.editingHelper white:YES title:@"Ingredients"];
-//        editViewController.canAddItems = YES;
-//        editViewController.canDeleteItems = YES;
-//        editViewController.canReorderItems = YES;
-//        editViewController.allowSelection = NO;
-//        [editViewController performEditing:YES];
-//        self.editViewController = editViewController;
+//        [self saveIngredientsValue:value];
 //    }
+    
 }
 
 #pragma mark - Private methods
@@ -371,6 +416,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     if (!self.servesCookView) {
         self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails];
         self.servesCookView.hidden = YES;
+        self.servesCookView.userInteractionEnabled = NO;
         [self addSubview:self.servesCookView];
     }
     
@@ -397,6 +443,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             [self addSubview:self.ingredientsDividerView];
             
             self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipeDetails:self.recipeDetails maxWidth:kMaxLeftWidth];
+            self.ingredientsView.userInteractionEnabled = NO;
             [self addSubview:self.ingredientsView];
         }
         

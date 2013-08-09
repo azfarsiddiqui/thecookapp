@@ -339,13 +339,13 @@ typedef enum {
     
     } else if (editingView == self.servesCookView) {
         
-        ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
-                                                                                                        recipeClipboard:self.clipboard
-                                                                                                               delegate:self
-                                                                                                          editingHelper:self.editingHelper
-                                                                                                                  white:YES];
-        [editViewController performEditing:YES];
-        self.editViewController = editViewController;
+//        ServesAndTimeEditViewController *editViewController = [[ServesAndTimeEditViewController alloc] initWithEditView:editingView
+//                                                                                                        recipeClipboard:self.clipboard
+//                                                                                                               delegate:self
+//                                                                                                          editingHelper:self.editingHelper
+//                                                                                                                  white:YES];
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
         
     } else if (editingView == self.ingredientsView) {
         

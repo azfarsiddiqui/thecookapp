@@ -28,7 +28,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 };
 
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
-    CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate>
+    CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate, RecipeDetailsViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -129,6 +129,22 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     } else {
         
     }
+}
+
+#pragma mark - RecipeDetailsViewDelegate methods
+
+- (void)recipeDetailsViewEditing:(BOOL)editing {
+    
+    // Fade cancel/save buttons.
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.cancelButton.alpha = editing ? 0.0 : 1.0;
+                         self.saveButton.alpha = editing ? 0.0 : 1.0;
+                     }
+                     completion:^(BOOL finished)  {
+                     }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -362,7 +378,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)initRecipeDetailsView {
-    RecipeDetailsView *recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails];
+    RecipeDetailsView *recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails
+                                                                                   delegate:self];
     self.recipeDetailsView = recipeDetailsView;
 }
 

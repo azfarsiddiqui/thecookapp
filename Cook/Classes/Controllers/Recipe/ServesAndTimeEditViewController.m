@@ -10,12 +10,12 @@
 #import "CKDialerControl.h"
 #import "CKNotchSliderView.h"
 #import "Theme.h"
-#import "RecipeClipboard.h"
+#import "RecipeDetails.h"
 #import "UIColor+Expanded.h"
 
 @interface ServesAndTimeEditViewController () <CKDialerControlDelegate, CKNotchSliderViewDelegate>
 
-@property (nonatomic, strong) RecipeClipboard *recipeClipboard;
+@property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UILabel *servesTitleLabel;
 @property (nonatomic, strong) UILabel *servesLabel;
@@ -42,12 +42,12 @@
 #define kUnitServes         2
 #define kUnitMinutes        10
 
-- (id)initWithEditView:(UIView *)editView recipeClipboard:(RecipeClipboard *)recipeClipboard
+- (id)initWithEditView:(UIView *)editView recipeDetails:(RecipeDetails *)recipeDetails
               delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper
                  white:(BOOL)white {
     
     if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white]) {
-        self.recipeClipboard = recipeClipboard;
+        self.recipeDetails = recipeDetails;
     }
     return self;
 }
@@ -59,7 +59,7 @@
 }
 
 - (id)updatedValue {
-    return self.recipeClipboard;
+    return self.recipeDetails;
 }
 
 #pragma mark - Lifecycle events
@@ -187,7 +187,7 @@
 
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex {
     NSInteger serves = (notchIndex + 1) * kUnitServes;
-    self.recipeClipboard.serves = serves;
+    self.recipeDetails.numServes = serves;
     self.servesLabel.text = [NSString stringWithFormat:@"%d", serves];
     [self.servesLabel sizeToFit];
 }
@@ -198,11 +198,11 @@
     NSInteger minutes = selectedIndex * kUnitMinutes;
     NSString *minutesDisplay = [NSString stringWithFormat:@"%dm", minutes];
     if (dialerControl == self.prepDialer) {
-        self.recipeClipboard.prepMinutes = minutes;
+        self.recipeDetails.prepTimeInMinutes = minutes;
         self.prepLabel.text = minutesDisplay;
         [self.prepLabel sizeToFit];
     } else if (dialerControl == self.cookDialer) {
-        self.recipeClipboard.cookMinutes = minutes;
+        self.recipeDetails.cookingTimeInMinutes = minutes;
         self.cookLabel.text = minutesDisplay;
         [self.cookLabel sizeToFit];
     }
@@ -299,7 +299,7 @@
 }
 
 - (NSInteger)servesIndex {
-    NSInteger numServes = self.recipeClipboard.serves;
+    NSInteger numServes = self.recipeDetails.numServes;
     if (numServes == 0) {
         numServes = 2;
     } else if (numServes % kUnitServes != 0) {
@@ -309,11 +309,11 @@
 }
 
 - (NSInteger)prepIndex {
-    return [self dialerIndexForMinutes:self.recipeClipboard.prepMinutes];
+    return [self dialerIndexForMinutes:self.recipeDetails.prepTimeInMinutes];
 }
 
 - (NSInteger)cookIndex {
-    return [self dialerIndexForMinutes:self.recipeClipboard.cookMinutes];
+    return [self dialerIndexForMinutes:self.recipeDetails.cookingTimeInMinutes];
 }
 
 - (NSInteger)dialerIndexForMinutes:(NSInteger)minutes {

@@ -10,9 +10,15 @@
 
 @class RecipeDetails;
 
+@protocol RecipeDetailsViewDelegate <NSObject>
+
+- (void)recipeDetailsViewEditing:(BOOL)editing;
+
+@end
+
 @interface RecipeDetailsView : UIView
 
-- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails;
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate;
 - (void)enableEditMode:(BOOL)editMode;
 
 @end
