@@ -107,6 +107,10 @@
 +(UIColor*) recipeNameColor;
 +(UIFont*) methodFont;
 +(UIColor*) methodColor;
++ (UIFont *)recipeStatTextFont;
++ (UIColor *)recipeStatTextColour;
++ (UIFont *)recipeStatValueFont;
++ (UIColor *)recipeStatValueColour;
 +(UIFont*) cookingTimeFont;
 +(UIColor*) cookingTimeColor;
 +(UIFont*) servesFont;

@@ -314,28 +314,28 @@
 #pragma mark - Recipe View
 
 + (UIColor *)ingredientsListColor {
-    return [UIColor colorWithHexString:@"3a3a3a"];
+    return [UIColor colorWithHexString:@"505050"];
 }
 
 + (UIFont *)ingredientsListFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
 }
 
 + (UIFont *)ingredientsListMeasurementFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
 }
 
 + (UIColor *)ingredientsListMeasurementColor {
-    return [UIColor grayColor];
+    return [UIColor colorWithHexString:@"505050"];
 }
 
 + (UIColor *)storyColor {
-    return [UIColor colorWithHexString:@"4e4e4e"];
+    return [UIColor colorWithHexString:@"505050"];
 }
 
 +(UIFont *)storyFont
 {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
 }
 
 + (UIFont *)recipeNameFont {
@@ -350,12 +350,28 @@
 
 +(UIFont *)methodFont
 {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
 }
 
 +(UIColor*) methodColor
 {
-    return [UIColor colorWithHexString:@"4e4e4e"];
+    return [UIColor colorWithHexString:@"333333"];
+}
+
++ (UIFont *)recipeStatTextFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:12.0];
+}
+
++ (UIColor *)recipeStatTextColour {
+    return [UIColor colorWithHexString:@"505050"];
+}
+
++ (UIFont *)recipeStatValueFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:22.0];
+}
+
++ (UIColor *)recipeStatValueColour {
+    return [UIColor colorWithHexString:@"505050"];
 }
 
 +(UIFont*) cookingTimeFont

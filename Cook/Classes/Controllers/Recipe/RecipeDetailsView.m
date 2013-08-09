@@ -11,6 +11,8 @@
 #import "CKUserProfilePhotoView.h"
 #import "NSString+Utilities.h"
 #import "Theme.h"
+#import "RecipeServesCookView.h"
+#import "IngredientsView.h"
 
 @interface RecipeDetailsView ()
 
@@ -22,10 +24,13 @@
 @property (nonatomic, strong) UIView *storyDividerView;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UIView *contentDividerView;
+@property (nonatomic, strong) RecipeServesCookView *servesCookView;
+@property (nonatomic, strong) IngredientsView *ingredientsView;
 @property (nonatomic, strong) UILabel *methodLabel;
 
 // Layout
 @property (nonatomic, assign) CGPoint layoutOffset;
+@property (nonatomic, assign) CGPoint contentOffset;
 
 @end
 
@@ -34,7 +39,8 @@
 #define kWidth              756.0
 #define kMaxTitleWidth      756.0
 #define kMaxStoryWidth      600.0
-#define kMaxMethodWidth     475.0
+#define kMaxLeftWidth       222.0
+#define kMaxRightWidth      465.0
 #define kDividerWidth       568.0
 #define kContentInsets      (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
 
@@ -68,6 +74,8 @@
     [self updateTags];
     [self updateStory];
     [self updateContentDivider];
+    [self updateServesCook];
+    [self updateIngredients];
     [self updateMethod];
 }
 
@@ -201,6 +209,52 @@
     };
     
     [self updateLayoutOffsetVertical:dividerGap + self.contentDividerView.frame.size.height + dividerGap];
+    
+    // Mark this as the offset for content start, so that left/right columns can reference.
+    self.contentOffset = self.layoutOffset;
+}
+
+- (void)updateServesCook {
+    if (!self.servesCookView) {
+        self.servesCookView = [[RecipeServesCookView alloc] initWithRecipe:self.recipe];
+        self.servesCookView.hidden = YES;
+        [self addSubview:self.servesCookView];
+    }
+    
+    CGFloat beforeGap = 0.0;
+    
+    if (self.recipe.numServes >= 0 || self.recipe.prepTimeInMinutes >= 0 || self.recipe.cookingTimeInMinutes >= 0) {
+        self.servesCookView.hidden = NO;
+        self.servesCookView.frame = (CGRect){
+            kContentInsets.left,
+            self.contentOffset.y + beforeGap,
+            self.servesCookView.frame.size.width,
+            self.servesCookView.frame.size.height
+        };
+        [self updateLayoutOffsetVertical:beforeGap + self.servesCookView.frame.size.height];
+    }
+    
+}
+
+- (void)updateIngredients {
+    if ([self.recipe.ingredients count] > 0) {
+        if (!self.ingredientsView) {
+            self.ingredientsView = [[IngredientsView alloc] initWithIngredients:self.recipe.ingredients size:(CGSize){
+                kMaxLeftWidth, MAXFLOAT
+            }];
+            [self addSubview:self.ingredientsView];
+        }
+        
+        CGFloat beforeGap = 0.0;
+        self.ingredientsView.frame = (CGRect){
+            kContentInsets.left,
+            self.layoutOffset.y + beforeGap,
+            self.ingredientsView.frame.size.width,
+            self.ingredientsView.frame.size.height
+        };
+        
+    }
+    
 }
 
 - (void)updateMethod {
@@ -220,10 +274,10 @@
         self.methodLabel.hidden = NO;
         NSAttributedString *method = [self attributedTextForText:self.recipe.method font:[Theme methodFont] colour:[Theme methodColor]];
         self.methodLabel.attributedText = method;
-        CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxMethodWidth, MAXFLOAT }];
+        CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
         self.methodLabel.frame = (CGRect){
-            self.bounds.size.width - kMaxMethodWidth,
-            self.layoutOffset.y,    // TODO use serving.
+            self.bounds.size.width - kMaxRightWidth,
+            self.contentOffset.y,
             size.width,
             size.height
         };
