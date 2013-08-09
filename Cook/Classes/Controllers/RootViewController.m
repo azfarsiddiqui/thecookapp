@@ -84,8 +84,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self initViewControllers];
-//        [self loadSampleRecipe];
+//    [self initViewControllers];
+        [self loadSampleRecipe];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -669,8 +669,8 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
-    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
-//    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
+//    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
+    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
     
     [self showModalViewController:recipeViewController];
 }
