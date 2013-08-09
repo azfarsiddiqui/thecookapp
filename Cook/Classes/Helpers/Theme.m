@@ -322,7 +322,7 @@
 }
 
 + (UIFont *)ingredientsListMeasurementFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
+    return [UIFont fontWithName:@"AvenirNext-Bold" size:17.0];
 }
 
 + (UIColor *)ingredientsListMeasurementColor {

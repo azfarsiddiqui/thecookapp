@@ -12,7 +12,7 @@
 #import "NSString+Utilities.h"
 #import "Theme.h"
 #import "RecipeServesCookView.h"
-#import "IngredientsView.h"
+#import "RecipeIngredientsView.h"
 
 @interface RecipeDetailsView ()
 
@@ -25,7 +25,7 @@
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UIView *contentDividerView;
 @property (nonatomic, strong) RecipeServesCookView *servesCookView;
-@property (nonatomic, strong) IngredientsView *ingredientsView;
+@property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
 @property (nonatomic, strong) UILabel *methodLabel;
 
 // Layout
@@ -239,9 +239,7 @@
 - (void)updateIngredients {
     if ([self.recipe.ingredients count] > 0) {
         if (!self.ingredientsView) {
-            self.ingredientsView = [[IngredientsView alloc] initWithIngredients:self.recipe.ingredients size:(CGSize){
-                kMaxLeftWidth, MAXFLOAT
-            }];
+            self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipe:self.recipe maxWidth:kMaxLeftWidth];
             [self addSubview:self.ingredientsView];
         }
         
@@ -289,6 +287,7 @@
     CGRect frame = (CGRect){ 0.0, 0.0, kWidth, 0.0 };;
     for (UIView *subview in self.subviews) {
         frame = (CGRectUnion(frame, subview.frame));
+        frame.size.height += kContentInsets.bottom;
     }
     self.frame = frame;
 }

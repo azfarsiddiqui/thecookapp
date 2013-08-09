@@ -23,7 +23,7 @@
 #define kIconStatGap            15.0
 #define kValueTextGap           -5.0
 #define kStatViewOffset         -4.0
-#define kStatRowGap             5.0
+#define kStatRowGap             -5.0
 #define kStatContainerInsets    (UIEdgeInsets){ 0.0, 0.0, 0.0, 0.0 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
@@ -117,7 +117,6 @@
     }
     self.frame = frame;
 }
-
 
 - (UIView *)viewForStatText:(NSString *)statText statValue:(NSString *)statValue {
     CGFloat textValueGap = kValueTextGap;
