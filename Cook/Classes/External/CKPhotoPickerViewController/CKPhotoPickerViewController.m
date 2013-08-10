@@ -77,6 +77,7 @@
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self.popoverViewController dismissPopoverAnimated:NO];
     [self.delegate photoPickerViewControllerCloseRequested];
 }
 
