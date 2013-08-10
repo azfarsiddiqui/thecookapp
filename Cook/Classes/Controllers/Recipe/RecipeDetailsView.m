@@ -52,6 +52,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, assign) CGPoint contentOffset;
 
 // Editing.
+@property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, strong) NSMutableArray *pageComponents;
@@ -92,6 +94,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)enableEditMode:(BOOL)editMode {
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
+    self.editMode = editMode;
     
     // Edit mode on fields.
     [self enableFieldsForEditMode:editMode];
@@ -127,6 +135,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                              self.pageLabel.hidden = YES;
                              pageTextBoxView.hidden = YES;
                          }
+                         
+                         self.animating = NO;
                     }];
     
 }
@@ -249,17 +259,29 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Update wrapping
     if (editingView == self.titleLabel) {
-        [self.editingHelper updateEditingView:self.titleLabel];
+        [self updateEditModeOnView:self.titleLabel
+                   toDisplayAsSize:(CGSize){ [self availableSize].width, 0.0 }];
+        
     } else if (editingView == self.pageLabel) {
-        [self.editingHelper updateEditingView:self.pageLabel];
+        [self updateEditModeOnView:self.pageLabel];
+        
     } else if (editingView == self.storyLabel) {
-        [self.editingHelper updateEditingView:self.storyLabel];
+        [self updateEditModeOnView:self.storyLabel
+                   toDisplayAsSize:(CGSize){ kWidth, 0.0 }];
+        
     } else if (editingView == self.servesCookView) {
-        [self.editingHelper updateEditingView:self.servesCookView];
-    } else if (editingView == self.methodLabel) {
-        [self.editingHelper updateEditingView:self.methodLabel];
+        [self updateEditModeOnView:self.servesCookView
+                   toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
+                      padDirection:EditPadDirectionRight];
+        
     } else if (editingView == self.ingredientsView) {
         [self.editingHelper updateEditingView:self.ingredientsView];
+        
+    } else if (editingView == self.methodLabel) {
+        
+        [self updateEditModeOnView:self.methodLabel
+                   toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
+                      padDirection:EditPadDirectionBottom];
     }
 }
 
@@ -328,7 +350,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     self.pageLabel.frame = CGRectIntegral(self.pageLabel.frame);
     [self.editingHelper updateEditingView:self.pageLabel];
     CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
-    pageTextBoxView.hidden = YES;
+    pageTextBoxView.hidden = !self.editMode;
     
     // Update layout offset.
     [self updateLayoutOffsetVertical:self.profilePhotoView.frame.size.height];
@@ -664,8 +686,13 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Get the default insets so we can adjust them as we please.
     UIEdgeInsets defaultEditInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
     
+    // Title.
     [self enableEditModeOnView:self.titleLabel editMode:editMode
-               toDisplayAsSize:(CGSize){ [self availableSize].width, 0.0 }];
+               toDisplayAsSize:(CGSize){
+                   [self availableSize].width, 0.0
+               }];
+    
+    // Story.
     [self enableEditModeOnView:self.storyLabel editMode:editMode
                  minimumInsets:(UIEdgeInsets){
                      defaultEditInsets.top + 10.0,
@@ -674,6 +701,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      defaultEditInsets.right
                  }
                toDisplayAsSize:(CGSize){ kWidth, 0.0 }];
+    
+    // Serves.
     [self enableEditModeOnView:self.servesCookView editMode:editMode
                  minimumInsets:(UIEdgeInsets){
                      defaultEditInsets.top + 2.0,
@@ -683,6 +712,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                  }
                toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
                   padDirection:EditPadDirectionRight];
+    
+    // Ingredients.
     [self enableEditModeOnView:self.ingredientsView editMode:editMode
                  minimumInsets:(UIEdgeInsets){
                      defaultEditInsets.top + 10.0,
@@ -692,15 +723,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                  }
                toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
                   padDirection:EditPadDirectionRight];
-    [self enableEditModeOnView:self.ingredientsView editMode:editMode
-                 minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 10.0,
-                     defaultEditInsets.left - 4.0,
-                     defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right + 10.0
-                 }
-               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
-                  padDirection:EditPadDirectionRight];
+    
+    // Method.
     [self enableEditModeOnView:self.methodLabel editMode:editMode
                  minimumInsets:(UIEdgeInsets){
                      defaultEditInsets.top + 8.0,
@@ -743,55 +767,75 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             [self.editingHelper wrapEditingView:view delegate:self white:YES editMode:editMode animated:YES];
         }
         
-        // Get the resulting textBoxView to stretch to the displayed size.
-        CKEditingTextBoxView *textBoxView = [self.editingHelper textBoxViewForEditingView:view];
-        textBoxView.backgroundColor = [UIColor clearColor];
-        CGRect textBoxFrame = textBoxView.frame;
-        
-        // Do we need to display to a minimum size.
-        if (!CGSizeEqualToSize(size, CGSizeZero)) {
-            
-            // Check horizontal padding.
-            if (size.width > 0.0 && size.width > textBoxFrame.size.width) {
-                
-                // Insets of the box image.
-                UIEdgeInsets textBoxInsets = [CKEditingViewHelper textBoxInsets];
-                
-                // Effective width of the required width + the textbox insets around it.
-                CGFloat effectiveWidth = size.width + textBoxInsets.left + textBoxInsets.right;
-                
-                // Extra width to pad horizontally.
-                CGFloat extraWidth = effectiveWidth - textBoxFrame.size.width;
-                
-                // Update textboxFrame and adjust insets so it is centered.
-                textBoxFrame.size.width = effectiveWidth;
-                
-                // Padding directions.
-                if (padDirection == EditPadDirectionLeftRight) {
-                    
-                    // Padding both ways equally.
-                    textBoxFrame.origin.x = textBoxFrame.origin.x - floorf(extraWidth / 2.0);
-                    
-                } else if (padDirection == EditPadDirectionLeft) {
-                    
-                    // Padding towards the left.
-                    textBoxFrame.origin.x = textBoxFrame.origin.x - extraWidth;
-                    
-                }
-                
-            }
-            
-            // Check vertical padding.
-            if (size.height > 0.0 && size.height > textBoxFrame.size.height) {
-                textBoxFrame.size.height = size.height;
-            }
-            
-            textBoxView.frame = textBoxFrame;
-        }
+        // Pad it to the given minimum size.
+        [self padEditView:view minimumSize:size padDirection:padDirection];
         
     } else {
         [self.editingHelper unwrapEditingView:view animated:YES];
     }
+}
+
+- (void)updateEditModeOnView:(UIView *)view  {
+    [self updateEditModeOnView:view toDisplayAsSize:CGSizeZero];
+}
+
+- (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size {
+    [self updateEditModeOnView:view toDisplayAsSize:size padDirection:EditPadDirectionLeftRight];
+}
+
+- (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size padDirection:(EditPadDirection)padDirection {
+    [self.editingHelper updateEditingView:view animated:YES];
+    [self padEditView:view minimumSize:size padDirection:padDirection];
+}
+
+- (void)padEditView:(UIView *)view minimumSize:(CGSize)size padDirection:(EditPadDirection)padDirection {
+    
+    // Get the resulting textBoxView to stretch to the displayed size.
+    CKEditingTextBoxView *textBoxView = [self.editingHelper textBoxViewForEditingView:view];
+    textBoxView.backgroundColor = [UIColor clearColor];
+    CGRect textBoxFrame = textBoxView.frame;
+    
+    // Do we need to display to a minimum size.
+    if (!CGSizeEqualToSize(size, CGSizeZero)) {
+        
+        // Check horizontal padding.
+        if (size.width > 0.0 && size.width > textBoxFrame.size.width) {
+            
+            // Insets of the box image.
+            UIEdgeInsets textBoxInsets = [CKEditingViewHelper textBoxInsets];
+            
+            // Effective width of the required width + the textbox insets around it.
+            CGFloat effectiveWidth = size.width + textBoxInsets.left + textBoxInsets.right;
+            
+            // Extra width to pad horizontally.
+            CGFloat extraWidth = effectiveWidth - textBoxFrame.size.width;
+            
+            // Update textboxFrame and adjust insets so it is centered.
+            textBoxFrame.size.width = effectiveWidth;
+            
+            // Padding directions.
+            if (padDirection == EditPadDirectionLeftRight) {
+                
+                // Padding both ways equally.
+                textBoxFrame.origin.x = textBoxFrame.origin.x - floorf(extraWidth / 2.0);
+                
+            } else if (padDirection == EditPadDirectionLeft) {
+                
+                // Padding towards the left.
+                textBoxFrame.origin.x = textBoxFrame.origin.x - extraWidth;
+                
+            }
+            
+        }
+        
+        // Check vertical padding.
+        if (size.height > 0.0 && size.height > textBoxFrame.size.height) {
+            textBoxFrame.size.height = size.height;
+        }
+        
+        textBoxView.frame = textBoxFrame;
+    }
+    
 }
 
 - (UIEdgeInsets)editInsetsForEditingView:(UIView *)editingView minimumInsets:(UIEdgeInsets)minimumInsets
