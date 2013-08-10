@@ -52,6 +52,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) SnapViewport currentViewport;
 @property (nonatomic, assign) SnapViewport previousViewport;
 @property (nonatomic, assign) BOOL draggingDown;
+@property (nonatomic, assign) BOOL animating;
 
 // Normal controls.
 @property (nonatomic, strong) UIButton *closeButton;
@@ -384,6 +385,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Register tap on background image for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTapped:)];
     tapGesture.delegate = self;
+    self.imageView.userInteractionEnabled = YES;
     [self.imageView addGestureRecognizer:tapGesture];
 }
 
@@ -560,9 +562,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     BOOL bounceRequired = !CGRectIsEmpty(bounceFrame);
     UIOffset buttonBounceOffset = [self buttonsBounceOffsetFromViewport:currentViewport toViewport:viewport];
     
-    // Remmeber previous and current viewports.
-    self.previousViewport = currentViewport;
+    // Remember previous and current viewports.
     self.currentViewport = viewport;
+    self.previousViewport = currentViewport;
     
     if (animated) {
         
@@ -848,15 +850,32 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)imageTapped:(UITapGestureRecognizer *)tapGesture {
-    SnapViewport viewport = SnapViewportBelow;
-    switch (self.currentViewport) {
-        case SnapViewportBelow:
-            viewport = self.previousViewport;
-            break;
-        default:
-            break;
+    if (self.animating) {
+        return;
     }
-    [self snapToViewport:viewport animated:YES];
+    self.animating = YES;
+    
+    // Figure out fullscreen or previous viewport
+    SnapViewport toggleViewport = (self.currentViewport == SnapViewportBelow) ? self.previousViewport : SnapViewportBelow;
+    BOOL fullscreen = (toggleViewport == SnapViewportBelow);
+    
+    [self snapToViewport:toggleViewport animated:YES completion:^{
+        
+        // Fade in/out the buttons based on fullscreen mode or not.
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.closeButton.alpha = fullscreen ? 0.0 : 1.0;
+                             self.socialView.alpha = fullscreen ? 0.0 : 1.0;
+                             self.editButton.alpha = fullscreen ? 0.0 : 1.0;
+                             self.shareButton.alpha = fullscreen ? 0.0 : 1.0;
+                             self.likeButton.alpha = fullscreen ? 0.0 : 1.0;
+                         }
+                         completion:^(BOOL finished)  {
+                             self.animating = NO;
+                         }];
+    }];
 }
 
 - (BOOL)canEditRecipe {
