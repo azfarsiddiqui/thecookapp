@@ -411,11 +411,11 @@
 }
 
 + (UIFont *)editPhotoFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:18.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
 }
 
 + (UIColor *)editPhotoColour {
-    return [UIColor colorWithHexString:@"4e4e4e"];
+    return [UIColor colorWithHexString:@"4E4E4E"];
 }
 
 #pragma mark - Recipe Editing

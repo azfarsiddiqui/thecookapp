@@ -19,7 +19,9 @@
 #import "CKLikeView.h"
 #import "CKPrivacySliderView.h"
 #import "CKRecipeSocialView.h"
+#import "CKEditingViewHelper.h"
 #import "BookSocialViewController.h"
+#import "Theme.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -66,6 +68,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) CKPrivacySliderView *privacyView;
+@property (nonatomic, strong) UIView *photoButtonView;
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 
 // Social layer.
 @property (nonatomic, strong) BookSocialViewController *bookSocialViewController;
@@ -87,6 +91,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.recipe = recipe;
         self.book = recipe.book;
         self.photoStore = [[ParsePhotoStore alloc] init];
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.blur = NO;
         [self initRecipeDetails];
     }
@@ -360,6 +365,54 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return _socialView;
 }
 
+- (UIView *)photoButtonView {
+    if (!_photoButtonView) {
+        
+        UIImageView *cameraImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_icon_photo.png"]];
+        CGRect cameraImageFrame = cameraImageView.frame;
+        
+        UILabel *photoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        photoLabel.font = [Theme editPhotoFont];
+        photoLabel.textColor = [Theme editPhotoColour];
+        photoLabel.textAlignment = NSTextAlignmentCenter;
+        photoLabel.backgroundColor = [UIColor clearColor];
+        photoLabel.text = @"PHOTO";
+        [photoLabel sizeToFit];
+        CGRect photoLabelFrame = photoLabel.frame;
+        photoLabelFrame = (CGRect){
+            cameraImageView.frame.origin.x + cameraImageView.frame.size.width - 18.0,
+            floorf((cameraImageView.frame.size.height - photoLabel.frame.size.height) / 2.0),
+            photoLabel.frame.size.width,
+            photoLabel.frame.size.height
+        };
+        photoLabel.frame = photoLabelFrame;
+        
+        UIEdgeInsets contentInsets = (UIEdgeInsets){
+            -8.0, -18.0, -9.0, 6.0
+        };
+        CGRect frame = CGRectUnion(cameraImageView.frame, photoLabel.frame);
+        _photoButtonView = [[UIView alloc] initWithFrame:frame];
+        _photoButtonView.backgroundColor = [UIColor clearColor];
+        [_photoButtonView addSubview:cameraImageView];
+        [_photoButtonView addSubview:photoLabel];
+        cameraImageFrame.origin.x += contentInsets.left;
+        cameraImageFrame.origin.y += contentInsets.top;
+        photoLabelFrame.origin.x += contentInsets.left;
+        photoLabelFrame.origin.y += contentInsets.top;
+        frame.size.height += contentInsets.top + contentInsets.bottom;
+        frame.size.width += contentInsets.left + contentInsets.right;
+        cameraImageView.frame = cameraImageFrame;
+        photoLabel.frame = photoLabelFrame;
+        _photoButtonView.frame = frame;
+        
+        // Register tap onpress.
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonTapped:)];
+        [_photoButtonView addGestureRecognizer:tapGesture];
+        
+    }
+    return _photoButtonView;
+}
+
 #pragma mark - Private methods
 
 - (void)initImageView {
@@ -381,6 +434,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     topShadowView.alpha = 0.0;
     [self.view insertSubview:topShadowView aboveSubview:self.imageView];
     self.topShadowView = topShadowView;
+    
+    // Photo button to be hidden for editMode.
+    CGRect photoButtonFrame = self.photoButtonView.frame;
+    photoButtonFrame.origin = (CGPoint){
+        floorf((imageView.bounds.size.width - photoButtonFrame.size.width) / 2.0),
+        floorf((imageView.bounds.size.height - photoButtonFrame.size.height) / 2.0)
+    };
+    self.photoButtonView.frame = photoButtonFrame;
+    self.photoButtonView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+    [self.imageView addSubview:self.photoButtonView];
+    self.photoButtonView.hidden = YES;
     
     // Register tap on background image for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTapped:)];
@@ -467,6 +531,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.blurredImageView.frame = imageFrame;
     }
     
+    // Fade in/out photo button if in edit mode.
+    if (self.editMode) {
+        CGFloat requiredAlpha = [self currentAlphaForPhotoButtonView];
+        self.photoButtonView.alpha = requiredAlpha;
+        CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+        photoBoxView.alpha = requiredAlpha;
+    }
+    
     // Update backgroundImageView.
     CGRect contentBackgroundFrame = self.contentImageView.frame;
     contentBackgroundFrame.origin.y = contentFrame.origin.y + kContentImageOffset.vertical;
@@ -490,6 +562,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.blurredHeaderView = blurredSnapshotView;
         DLog(@"Intersection %@", NSStringFromCGRect(intersection));
     }
+    
 }
 
 - (void)loadData {
@@ -892,6 +965,15 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)updateButtonsWithAlpha:(CGFloat)alpha {
     if (self.editMode) {
+        
+        // Prep photo edit button to be transitioned in.
+        UIEdgeInsets contentInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
+        [self.editingHelper wrapEditingView:self.photoButtonView delegate:nil white:YES editMode:NO animated:NO];
+        CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+        self.photoButtonView.hidden = NO;
+        self.photoButtonView.alpha = 0.0;
+        photoBoxView.alpha = 0.0;
+        
         self.cancelButton.alpha = 0.0;
         self.privacyView.alpha = 0.0;
         self.saveButton.alpha = 0.0;
@@ -924,6 +1006,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.likeButton.alpha = self.editMode ? 0.0 : alpha;
                          self.privacyView.alpha = self.editMode ? alpha : 0.0;
                          
+                         // Photo icon and textBox fade in/out
+                         self.photoButtonView.alpha = self.editMode ? [self currentAlphaForPhotoButtonView] : 0.0;
+                         CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+                         photoBoxView.alpha = self.editMode ? [self currentAlphaForPhotoButtonView] : 0.0;
+                         
                          self.cancelButton.alpha = self.editMode ? alpha : 0.0;
                          self.saveButton.alpha = self.editMode ? alpha : 0.0;
                          self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
@@ -937,6 +1024,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self.shareButton removeFromSuperview];
                              [self.likeButton removeFromSuperview];
                          } else {
+                             self.photoButtonView.hidden = YES;
+                             [self.editingHelper unwrapEditingView:self.photoButtonView];
+
                              [self.cancelButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
                              [self.privacyView removeFromSuperview];
@@ -1048,6 +1138,19 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (!self.recipeDetailsView.superview) {
         [self.scrollView addSubview:self.recipeDetailsView];
     }
+}
+
+- (void)photoButtonTapped:(UITapGestureRecognizer *)tapGesture {
+    DLog();
+}
+
+- (CGFloat)currentAlphaForPhotoButtonView {
+    CGFloat topOffset = [self offsetForViewport:SnapViewportTop];
+    CGFloat bottomOffset = [self offsetForViewport:SnapViewportBottom];
+    CGFloat distance = bottomOffset - self.scrollView.frame.origin.y;
+    CGFloat effectiveDistance = bottomOffset - topOffset;
+    CGFloat requiredAlpha = 1.0 - (distance / effectiveDistance);
+    return requiredAlpha;
 }
 
 @end
