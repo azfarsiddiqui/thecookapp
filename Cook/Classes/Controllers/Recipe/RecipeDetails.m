@@ -114,6 +114,11 @@
     }
 }
 
+- (void)setImage:(UIImage *)image {
+    _image = image;
+    self.saveRequired = (image != nil);
+}
+
 #pragma mark - Private methods
 
 @end

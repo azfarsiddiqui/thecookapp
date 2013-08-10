@@ -24,6 +24,7 @@
 @property (nonatomic, assign) NSInteger prepTimeInMinutes;
 @property (nonatomic, assign) NSInteger cookingTimeInMinutes;
 @property (nonatomic, strong) NSArray *ingredients;
+@property (nonatomic, strong) UIImage *image;
 
 @property (nonatomic, assign) BOOL saveRequired;
 

@@ -22,6 +22,9 @@
 #import "CKEditingViewHelper.h"
 #import "BookSocialViewController.h"
 #import "Theme.h"
+#import "CKPhotoPickerViewController.h"
+#import "AppHelper.h"
+#import "UIImage+ProportionalFill.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -30,7 +33,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 };
 
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
-    CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate, RecipeDetailsViewDelegate>
+    CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate, RecipeDetailsViewDelegate,
+    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -70,6 +74,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKPrivacySliderView *privacyView;
 @property (nonatomic, strong) UIView *photoButtonView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+@property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 
 // Social layer.
 @property (nonatomic, strong) BookSocialViewController *bookSocialViewController;
@@ -157,6 +162,68 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self updateRecipeDetailsView];
 }
 
+#pragma mark - CKEditingTextBoxViewDelegate methods
+
+- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    
+    // Photo picker
+    if (editingView == self.photoButtonView) {
+        [self snapToViewport:SnapViewportBelow animated:YES completion:^{
+            [self showPhotoPicker:YES];
+        }];
+    }
+}
+
+- (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
+}
+
+#pragma mark - CKPhotoPickerViewControllerDelegate methods
+
+- (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
+    
+    // Present the image.
+    UIImage *croppedImage = [image imageCroppedToFitSize:self.imageView.bounds.size];
+    [self loadImageViewWithPhoto:croppedImage];
+    
+    // Save photo to be uploaded.
+    self.recipeDetails.image = image;
+    
+    // Close and revert to mid height.
+    [self showPhotoPicker:NO completion:^{
+        [self snapToViewport:SnapViewportBottom animated:YES];
+    }];
+}
+
+- (void)photoPickerViewControllerCloseRequested {
+    
+    // Close and revert to mid height.
+    [self showPhotoPicker:NO completion:^{
+        [self snapToViewport:SnapViewportBottom animated:YES];
+        
+    }];
+}
+
+#pragma mark - BookSocialViewControllerDelegate methods
+
+- (void)bookSocialViewControllerCloseRequested {
+    [self showSocialOverlay:NO];
+}
+
+#pragma mark - CKRecipeSocialViewDelegate methods
+
+- (void)recipeSocialViewTapped {
+    [self showSocialOverlay:YES];
+}
+
+- (void)recipeSocialViewUpdated:(CKRecipeSocialView *)socialView {
+    socialView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
+        kButtonInsets.top,
+        socialView.frame.size.width,
+        socialView.frame.size.height
+    };
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -234,27 +301,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     NSLog(@"scrollViewWillEndDragging velocity[%@]", NSStringFromCGPoint(velocity));
-}
-
-#pragma mark - CKRecipeSocialViewDelegate methods
-
-- (void)recipeSocialViewTapped {
-    [self showSocialOverlay:YES];
-}
-
-- (void)recipeSocialViewUpdated:(CKRecipeSocialView *)socialView {
-    socialView.frame = (CGRect){
-        floorf((self.view.bounds.size.width - socialView.frame.size.width) / 2.0),
-        kButtonInsets.top,
-        socialView.frame.size.width,
-        socialView.frame.size.height
-    };
-}
-
-#pragma mark - BookSocialViewControllerDelegate methods
-
-- (void)bookSocialViewControllerCloseRequested {
-    [self showSocialOverlay:NO];
 }
 
 #pragma mark - KVO methods
@@ -405,10 +451,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         photoLabel.frame = photoLabelFrame;
         _photoButtonView.frame = frame;
         
-        // Register tap onpress.
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonTapped:)];
-        [_photoButtonView addGestureRecognizer:tapGesture];
-        
+        // Disable interaction for CKEditing to take over.
+        _photoButtonView.userInteractionEnabled = NO;
     }
     return _photoButtonView;
 }
@@ -583,6 +627,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          placeholder:YES];
     }
     
+}
+
+- (void)loadImageViewWithPhoto:(UIImage *)image {
+    [self loadImageViewWithPhoto:image placeholder:NO];
 }
 
 - (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
@@ -967,8 +1015,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (self.editMode) {
         
         // Prep photo edit button to be transitioned in.
-        UIEdgeInsets contentInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
-        [self.editingHelper wrapEditingView:self.photoButtonView delegate:nil white:YES editMode:NO animated:NO];
+        [self.editingHelper wrapEditingView:self.photoButtonView delegate:self white:YES editMode:NO animated:NO];
         CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
         self.photoButtonView.hidden = NO;
         self.photoButtonView.alpha = 0.0;
@@ -1140,10 +1187,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
 }
 
-- (void)photoButtonTapped:(UITapGestureRecognizer *)tapGesture {
-    DLog();
-}
-
 - (CGFloat)currentAlphaForPhotoButtonView {
     CGFloat topOffset = [self offsetForViewport:SnapViewportTop];
     CGFloat bottomOffset = [self offsetForViewport:SnapViewportBottom];
@@ -1152,5 +1195,36 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGFloat requiredAlpha = 1.0 - (distance / effectiveDistance);
     return requiredAlpha;
 }
+
+- (void)showPhotoPicker:(BOOL)show {
+    [self showPhotoPicker:show completion:^{}];
+}
+
+- (void)showPhotoPicker:(BOOL)show completion:(void (^)())completion {
+    
+    if (show) {
+        // Present photo picker fullscreen.
+        UIView *rootView = [[AppHelper sharedInstance] rootView];
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self];
+        self.photoPickerViewController = photoPickerViewController;
+        self.photoPickerViewController.view.alpha = 0.0;
+        [rootView addSubview:self.photoPickerViewController.view];
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.photoPickerViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.photoPickerViewController.view removeFromSuperview];
+                             self.photoPickerViewController = nil;
+                         }
+                         completion();
+                     }];
+}
+
 
 @end
