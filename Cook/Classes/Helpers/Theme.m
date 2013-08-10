@@ -330,7 +330,7 @@
 }
 
 + (UIColor *)storyColor {
-    return [UIColor colorWithHexString:@"505050"];
+    return [UIColor colorWithHexString:@"333333"];
 }
 
 +(UIFont *)storyFont
@@ -344,8 +344,16 @@
 
 +(UIColor *)recipeNameColor
 {
-    return [UIColor colorWithHexString:@"4e4e4e"];
+    return [UIColor colorWithHexString:@"333333"];
     
+}
+
++ (UIFont *)pageNameFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
+}
+
++ (UIColor *)pageNameColour {
+    return [UIColor colorWithHexString:@"333333"];
 }
 
 +(UIFont *)methodFont

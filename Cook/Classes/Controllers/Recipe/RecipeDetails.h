@@ -14,8 +14,11 @@
 
 @property (nonatomic, strong) CKUser *user;
 
-@property (nonatomic, strong) NSArray *tags;
+@property (nonatomic, copy) NSString *page;
+@property (nonatomic, strong) NSArray *availablePages;
+
 @property (nonatomic, copy) NSString *name;
+@property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, copy) NSString *story;
 @property (nonatomic, copy) NSString *method;
 

@@ -302,16 +302,16 @@ typedef enum {
         
     } else if (editingView == self.categoryLabel) {
         
-        PageListEditViewController *editViewController = [[PageListEditViewController alloc] initWithEditView:self.categoryLabel
-                                                                                                       recipe:self.recipe
-                                                                                                     delegate:self
-                                                                                                editingHelper:self.editingHelper
-                                                                                                        white:YES];
-        editViewController.canAddItems = NO;
-        editViewController.canDeleteItems = NO;
-        editViewController.canReorderItems = NO;
-        [editViewController performEditing:YES];
-        self.editViewController = editViewController;
+//        PageListEditViewController *editViewController = [[PageListEditViewController alloc] initWithEditView:self.categoryLabel
+//                                                                                                       recipe:self.recipe
+//                                                                                                     delegate:self
+//                                                                                                editingHelper:self.editingHelper
+//                                                                                                        white:YES];
+//        editViewController.canAddItems = NO;
+//        editViewController.canDeleteItems = NO;
+//        editViewController.canReorderItems = NO;
+//        [editViewController performEditing:YES];
+//        self.editViewController = editViewController;
         
     } else if (editingView == self.storyLabel) {
         

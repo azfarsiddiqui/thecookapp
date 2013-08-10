@@ -105,6 +105,8 @@
 +(UIFont*) storyFont;
 +(UIFont*) recipeNameFont;
 +(UIColor*) recipeNameColor;
++ (UIFont *)pageNameFont;
++ (UIColor *)pageNameColour;
 +(UIFont*) methodFont;
 +(UIColor*) methodColor;
 + (UIFont *)recipeStatTextFont;

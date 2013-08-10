@@ -8,11 +8,12 @@
 
 #import "CKListEditViewController.h"
 
-@class CKRecipe;
+@class RecipeDetails;
 
 @interface PageListEditViewController : CKListEditViewController
 
-- (id)initWithEditView:(UIView *)editView recipe:(CKRecipe *)recipe delegate:(id<CKEditViewControllerDelegate>)delegate
-         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white;
+- (id)initWithEditView:(UIView *)editView recipeDetails:(RecipeDetails *)recipeDetails
+              delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper
+                 white:(BOOL)white;
 
 @end

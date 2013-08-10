@@ -18,6 +18,7 @@
 #import "CKTextViewEditViewController.h"
 #import "ServesAndTimeEditViewController.h"
 #import "IngredientListEditViewController.h"
+#import "PageListEditViewController.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -34,6 +35,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
+@property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIView *tagsView;
 @property (nonatomic, strong) UIView *storyDividerView;
@@ -92,13 +94,24 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Edit mode on fields.
     [self enableFieldsForEditMode:editMode];
     
+    // Hide the pageLabel/textBox.
+    CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
+    if (editMode) {
+        self.pageLabel.hidden = NO;
+        self.pageLabel.alpha = 0.0;
+        pageTextBoxView.hidden = NO;
+        pageTextBoxView.alpha = 0.0;
+    }
+    
     [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          
-                         // Fade the profile photo view.
+                         // Toggle between the profile photo and page label.
                          self.profilePhotoView.alpha = editMode ? 0.0 : 1.0;
+                         self.pageLabel.alpha = editMode ? 1.0 : 0.0;
+                         pageTextBoxView.alpha = editMode ? 1.0 : 0.0;
                          
                          // Fade the divider lines.
                          self.storyDividerView.alpha = editMode ? 0.0 : 1.0;
@@ -108,62 +121,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      }
                      completion:^(BOOL finished)  {
                          
+                         if (!editMode) {
+                             self.pageLabel.hidden = YES;
+                             pageTextBoxView.hidden = YES;
+                         }
                     }];
     
-}
-
-- (void)enableFieldsForEditMode:(BOOL)editMode {
-    
-    // Get the default insets so we can adjust them as we please.
-    UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
-    UIEdgeInsets defaultEditInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
-    
-    [self enableEditModeOnView:self.titleLabel editMode:editMode
-               toDisplayAsSize:(CGSize){ [self availableSize].width, 0.0 }];
-    [self enableEditModeOnView:self.storyLabel editMode:editMode
-                 minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 10.0,
-                     defaultEditInsets.left,
-                     defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right
-                 }
-               toDisplayAsSize:(CGSize){ kWidth, 0.0 }];
-    [self enableEditModeOnView:self.servesCookView editMode:editMode
-                 minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 2.0,
-                     defaultEditInsets.left - 19.0,
-                     defaultEditInsets.bottom + 3.0,
-                     defaultEditInsets.right
-                 }
-               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
-                  padDirection:EditPadDirectionRight];
-    [self enableEditModeOnView:self.ingredientsView editMode:editMode
-                 minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 10.0,
-                     defaultEditInsets.left - 4.0,
-                     defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right + 10.0
-                 }
-               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
-                  padDirection:EditPadDirectionRight];
-    [self enableEditModeOnView:self.ingredientsView editMode:editMode
-                 minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 10.0,
-                     defaultEditInsets.left - 4.0,
-                     defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right + 10.0
-                 }
-               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
-                  padDirection:EditPadDirectionRight];
-    [self enableEditModeOnView:self.methodLabel editMode:editMode
-                 minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 8.0,
-                     defaultEditInsets.left - 5.0,
-                     defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right - 20.0,
-                 }
-               toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
-                  padDirection:EditPadDirectionBottom];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -181,19 +144,19 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
-//    } else if (editingView == self.categoryLabel) {
-//        
-//        PageListEditViewController *editViewController = [[PageListEditViewController alloc] initWithEditView:self.categoryLabel
-//                                                                                                       recipe:self.recipe
-//                                                                                                     delegate:self
-//                                                                                                editingHelper:self.editingHelper
-//                                                                                                        white:YES];
-//        editViewController.canAddItems = NO;
-//        editViewController.canDeleteItems = NO;
-//        editViewController.canReorderItems = NO;
-//        [editViewController performEditing:YES];
-//        self.editViewController = editViewController;
-//        
+    } else if (editingView == self.pageLabel) {
+        
+        PageListEditViewController *editViewController = [[PageListEditViewController alloc] initWithEditView:self.pageLabel
+                                                                                                recipeDetails:self.recipeDetails
+                                                                                                     delegate:self
+                                                                                                editingHelper:self.editingHelper
+                                                                                                        white:YES];
+        editViewController.canAddItems = NO;
+        editViewController.canDeleteItems = NO;
+        editViewController.canReorderItems = NO;
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
     } else if (editingView == self.storyLabel) {
         
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
@@ -308,7 +271,39 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         };
         [self addSubview:profilePhotoView];
         self.profilePhotoView = profilePhotoView;
+        
+        // Page label to be toggle visible when profile photo hides.
+        UILabel *pageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        pageLabel.font = [Theme pageNameFont];
+        pageLabel.textColor = [Theme pageNameColour];
+        pageLabel.textAlignment = NSTextAlignmentCenter;
+        pageLabel.backgroundColor = [UIColor clearColor];
+        pageLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        pageLabel.shadowColor = [UIColor whiteColor];
+        pageLabel.hidden = YES;
+        [self addSubview:pageLabel];
+        self.pageLabel  = pageLabel;
+        
+        // Wrap it immediately as it's only visible in edit mode.
+        UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
+        [self.editingHelper wrapEditingView:self.pageLabel contentInsets:(UIEdgeInsets){
+            defaultInsets.top + 3.0,
+            defaultInsets.left,
+            defaultInsets.bottom,
+            defaultInsets.right - 2.0
+        } delegate:self white:YES editMode:NO];
+        CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:pageLabel];
+        pageTextBoxView.hidden = YES;
     }
+    
+    // Update pate.
+    self.pageLabel.text = [self.recipeDetails.page uppercaseString];
+    [self.pageLabel sizeToFit];
+    self.pageLabel.center = self.profilePhotoView.center;
+    self.pageLabel.frame = CGRectIntegral(self.pageLabel.frame);
+    [self.editingHelper updateEditingView:self.pageLabel];
+    CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
+    pageTextBoxView.hidden = YES;
     
     // Update layout offset.
     [self updateLayoutOffsetVertical:self.profilePhotoView.frame.size.height];
@@ -343,7 +338,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         // Update layout offset.
         [self updateLayoutOffsetVertical:size.height];
     }
-    
 }
 
 - (void)updateTags {
@@ -619,6 +613,60 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             colour, NSForegroundColorAttributeName,
             paragraphStyle, NSParagraphStyleAttributeName,
             nil];
+}
+
+- (void)enableFieldsForEditMode:(BOOL)editMode {
+    
+    // Get the default insets so we can adjust them as we please.
+    UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
+    UIEdgeInsets defaultEditInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
+    
+    [self enableEditModeOnView:self.titleLabel editMode:editMode
+               toDisplayAsSize:(CGSize){ [self availableSize].width, 0.0 }];
+    [self enableEditModeOnView:self.storyLabel editMode:editMode
+                 minimumInsets:(UIEdgeInsets){
+                     defaultEditInsets.top + 10.0,
+                     defaultEditInsets.left,
+                     defaultEditInsets.bottom + 10.0,
+                     defaultEditInsets.right
+                 }
+               toDisplayAsSize:(CGSize){ kWidth, 0.0 }];
+    [self enableEditModeOnView:self.servesCookView editMode:editMode
+                 minimumInsets:(UIEdgeInsets){
+                     defaultEditInsets.top + 2.0,
+                     defaultEditInsets.left - 19.0,
+                     defaultEditInsets.bottom + 3.0,
+                     defaultEditInsets.right
+                 }
+               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
+                  padDirection:EditPadDirectionRight];
+    [self enableEditModeOnView:self.ingredientsView editMode:editMode
+                 minimumInsets:(UIEdgeInsets){
+                     defaultEditInsets.top + 10.0,
+                     defaultEditInsets.left - 4.0,
+                     defaultEditInsets.bottom + 10.0,
+                     defaultEditInsets.right + 10.0
+                 }
+               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
+                  padDirection:EditPadDirectionRight];
+    [self enableEditModeOnView:self.ingredientsView editMode:editMode
+                 minimumInsets:(UIEdgeInsets){
+                     defaultEditInsets.top + 10.0,
+                     defaultEditInsets.left - 4.0,
+                     defaultEditInsets.bottom + 10.0,
+                     defaultEditInsets.right + 10.0
+                 }
+               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
+                  padDirection:EditPadDirectionRight];
+    [self enableEditModeOnView:self.methodLabel editMode:editMode
+                 minimumInsets:(UIEdgeInsets){
+                     defaultEditInsets.top + 8.0,
+                     defaultEditInsets.left - 5.0,
+                     defaultEditInsets.bottom + 10.0,
+                     defaultEditInsets.right - 20.0,
+                 }
+               toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
+                  padDirection:EditPadDirectionBottom];
 }
 
 - (void)enableEditModeOnView:(UIView *)view editMode:(BOOL)editMode  {

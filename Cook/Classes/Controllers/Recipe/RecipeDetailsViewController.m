@@ -994,6 +994,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.recipeDetails = [[RecipeDetails alloc] init];
     }
     
+    self.recipeDetails.page = self.recipe.page;
+    self.recipeDetails.availablePages = self.book.pages;
     self.recipeDetails.user = self.recipe.user;
     self.recipeDetails.name = self.recipe.name;
     self.recipeDetails.story = self.recipe.story;

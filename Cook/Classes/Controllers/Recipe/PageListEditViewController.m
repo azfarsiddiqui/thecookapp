@@ -7,8 +7,7 @@
 //
 
 #import "PageListEditViewController.h"
-#import "CKRecipe.h"
-#import "CKBook.h"
+#import "RecipeDetails.h"
 #import "MRCEnumerable.h"
 #import "PageListCell.h"
 
@@ -18,13 +17,15 @@
 
 @implementation PageListEditViewController
 
-- (id)initWithEditView:(UIView *)editView recipe:(CKRecipe *)recipe delegate:(id<CKEditViewControllerDelegate>)delegate
-         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white {
-    if (self = [super initWithEditView:editView delegate:delegate items:recipe.book.pages editingHelper:editingHelper
+- (id)initWithEditView:(UIView *)editView recipeDetails:(RecipeDetails *)recipeDetails
+              delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper
+                 white:(BOOL)white {
+    
+    if (self = [super initWithEditView:editView delegate:delegate items:recipeDetails.availablePages editingHelper:editingHelper
                                  white:white title:nil]) {
         
-        self.selectedIndexNumber = @([recipe.book.pages findIndexWithBlock:^BOOL(NSString *page) {
-            return [[page uppercaseString] isEqualToString:[recipe.page uppercaseString]];
+        self.selectedIndexNumber = @([recipeDetails.availablePages findIndexWithBlock:^BOOL(NSString *page) {
+            return [[page uppercaseString] isEqualToString:[recipeDetails.page uppercaseString]];
         }]);
         
     }
