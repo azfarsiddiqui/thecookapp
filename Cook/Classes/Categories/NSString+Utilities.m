@@ -23,11 +23,11 @@
 }
 
 - (BOOL)CK_equalsIgnoreCase:(NSString *)string {
-    return ([self localizedCaseInsensitiveCompare:[string CK_whitespaceTrimmed]] == NSOrderedSame);
+    return ([self localizedCaseInsensitiveCompare:string] == NSOrderedSame);
 }
 
 - (BOOL)CK_equals:(NSString *)string {
-    return [self isEqualToString:[string CK_whitespaceTrimmed]];
+    return [self isEqualToString:string];
 }
 
 - (NSString *)CK_whitespaceTrimmed {

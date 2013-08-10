@@ -53,6 +53,34 @@
     recipe.ingredients = self.ingredients;
 }
 
+- (BOOL)pageUpdated {
+    return ![self.originalRecipe.page CK_equalsIgnoreCase:self.page];
+}
+
+- (BOOL)nameUpdated {
+    return ![self.originalRecipe.name CK_equals:self.name];
+}
+
+- (BOOL)storyUpdated {
+    return ![self.originalRecipe.story CK_equals:self.story];
+}
+
+- (BOOL)methodUpdated {
+    return ![self.originalRecipe.method CK_equals:self.method];
+}
+
+- (BOOL)servesPrepUpdated {
+    return ((self.originalRecipe.numServes != self.numServes)
+            || (self.originalRecipe.prepTimeInMinutes != self.prepTimeInMinutes)
+            || (self.originalRecipe.cookingTimeInMinutes != self.cookingTimeInMinutes));
+}
+
+- (BOOL)ingredientsUpdated {
+    return [self ingredientsChangedForIngredients:self.ingredients];
+}
+
+#pragma mark - Properties.
+
 - (void)setPage:(NSString *)page {
     if (![self.originalRecipe.page CK_equalsIgnoreCase:page]) {
         _page = page;
@@ -103,22 +131,7 @@
 }
 
 - (void)setIngredients:(NSArray *)ingredients {
-    
-    BOOL ingredientsChanged = NO;
-    
-    // Examine each ingredient.
-    for (NSUInteger ingredientIndex = 0; ingredientIndex < [ingredients count]; ingredientIndex++) {
-        Ingredient *originalIngredient = [self.originalRecipe.ingredients objectAtIndex:ingredientIndex];
-        Ingredient *currentIngredient = [ingredients objectAtIndex:ingredientIndex];
-        
-        // If the ingredient pairs are different, then save worthy, and break from loop.
-        if (![originalIngredient.measurement CK_equals:currentIngredient.measurement]
-            || ![originalIngredient.name CK_equals:currentIngredient.name]) {
-            ingredientsChanged = YES;
-            break;
-        }
-    }
-    
+    BOOL ingredientsChanged = [self ingredientsChangedForIngredients:ingredients];
     if (ingredientsChanged) {
         _ingredients = ingredients;
         self.saveRequired = YES;
@@ -131,5 +144,30 @@
 }
 
 #pragma mark - Private methods
+
+- (BOOL)ingredientsChangedForIngredients:(NSArray *)ingredients {
+    BOOL ingredientsChanged = NO;
+    
+    if ([self.originalRecipe.ingredients count] != [ingredients count]) {
+        ingredientsChanged = YES;
+        
+    } else {
+        
+        // Examine each ingredient.
+        for (NSUInteger ingredientIndex = 0; ingredientIndex < [ingredients count]; ingredientIndex++) {
+            Ingredient *originalIngredient = [self.originalRecipe.ingredients objectAtIndex:ingredientIndex];
+            Ingredient *currentIngredient = [ingredients objectAtIndex:ingredientIndex];
+            
+            // If the ingredient pairs are different, then save worthy, and break from loop.
+            if (![originalIngredient.measurement CK_equals:currentIngredient.measurement]
+                || ![originalIngredient.name CK_equals:currentIngredient.name]) {
+                ingredientsChanged = YES;
+                break;
+            }
+        }
+    }
+    
+    return ingredientsChanged;
+}
 
 @end

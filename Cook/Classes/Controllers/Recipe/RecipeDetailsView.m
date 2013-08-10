@@ -101,10 +101,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     self.animating = YES;
     
-    // If already in the required editMode, then ignore.
-    if (self.editMode == editMode) {
-        return;
-    }
     self.editMode = editMode;
     
     // Edit mode on fields.
@@ -264,31 +260,26 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self updateFrame];
     
     // Update wrapping
-    if (editingView == self.titleLabel) {
-        [self updateEditModeOnView:self.titleLabel
-                   toDisplayAsSize:(CGSize){ [self availableSize].width, 0.0 }];
-        
-    } else if (editingView == self.pageLabel) {
-        [self updateEditModeOnView:self.pageLabel];
-        
-    } else if (editingView == self.storyLabel) {
-        [self updateEditModeOnView:self.storyLabel
-                   toDisplayAsSize:(CGSize){ kWidth, 0.0 }];
-        
-    } else if (editingView == self.servesCookView) {
-        [self updateEditModeOnView:self.servesCookView
-                   toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
-                      padDirection:EditPadDirectionRight];
-        
-    } else if (editingView == self.ingredientsView) {
-        [self.editingHelper updateEditingView:self.ingredientsView];
-        
-    } else if (editingView == self.methodLabel) {
-        
-        [self updateEditModeOnView:self.methodLabel
-                   toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
-                      padDirection:EditPadDirectionBottom];
-    }
+    [self updateEditModeOnView:self.titleLabel
+               toDisplayAsSize:(CGSize){ [self availableSize].width, 0.0 }
+                       updated:[self.recipeDetails nameUpdated]];
+    [self updateEditModeOnView:self.pageLabel
+                       updated:[self.recipeDetails pageUpdated]];
+    [self updateEditModeOnView:self.storyLabel
+               toDisplayAsSize:(CGSize){ kWidth, 0.0 }
+                       updated:[self.recipeDetails storyUpdated]];
+    [self updateEditModeOnView:self.servesCookView
+               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
+                  padDirection:EditPadDirectionRight
+                       updated:[self.recipeDetails servesPrepUpdated]];
+    [self updateEditModeOnView:self.ingredientsView
+               toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
+                  padDirection:EditPadDirectionRight
+                       updated:[self.recipeDetails ingredientsUpdated]];
+    [self updateEditModeOnView:self.methodLabel
+               toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
+                  padDirection:EditPadDirectionBottom
+                       updated:[self.recipeDetails methodUpdated]];
 }
 
 #pragma mark - Private methods
@@ -785,12 +776,26 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self updateEditModeOnView:view toDisplayAsSize:CGSizeZero];
 }
 
+- (void)updateEditModeOnView:(UIView *)view updated:(BOOL)updated {
+    [self updateEditModeOnView:view toDisplayAsSize:CGSizeZero updated:updated];
+}
+
 - (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size {
     [self updateEditModeOnView:view toDisplayAsSize:size padDirection:EditPadDirectionLeftRight];
 }
 
+- (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size updated:(BOOL)updated {
+    [self updateEditModeOnView:view toDisplayAsSize:size padDirection:EditPadDirectionLeftRight updated:updated];
+}
+
 - (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size padDirection:(EditPadDirection)padDirection {
-    [self.editingHelper updateEditingView:view animated:YES];
+    [self updateEditModeOnView:view toDisplayAsSize:size padDirection:padDirection updated:NO];
+}
+
+- (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size padDirection:(EditPadDirection)padDirection
+                     updated:(BOOL)updated {
+    
+    [self.editingHelper updateEditingView:view updated:updated animated:YES];
     [self padEditView:view minimumSize:size padDirection:padDirection];
 }
 

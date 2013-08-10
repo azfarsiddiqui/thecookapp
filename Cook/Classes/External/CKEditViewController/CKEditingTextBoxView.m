@@ -108,6 +108,15 @@
 }
 
 - (void)updateEditingView:(UIView *)editingView {
+    [self updateEditingView:editingView updated:NO];
+}
+
+- (void)updateEditingView:(UIView *)editingView updated:(BOOL)updated {
+    if (updated) {
+        self.textEditBoxImageView.image = [CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode];
+    } else {
+        self.textEditBoxImageView.image = [CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode];
+    }
     
     // First set them to no auto-resize as we're gonna position/size them ourselves.
     self.textEditBoxImageView.autoresizingMask = UIViewAutoresizingNone;

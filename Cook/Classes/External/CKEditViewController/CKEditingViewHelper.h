@@ -45,6 +45,7 @@
 // Updates the editing box around an updated editingView.
 - (void)updateEditingView:(UIView *)editingView;
 - (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated;
+- (void)updateEditingView:(UIView *)editingView updated:(BOOL)updated animated:(BOOL)animated;
 
 // Returns the textbox view for the given editingView.
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView;

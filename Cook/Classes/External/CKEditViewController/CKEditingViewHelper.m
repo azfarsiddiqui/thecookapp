@@ -156,8 +156,12 @@
 }
 
 - (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated {
+    [self updateEditingView:editingView updated:NO animated:animated];
+}
+
+- (void)updateEditingView:(UIView *)editingView updated:(BOOL)updated animated:(BOOL)animated {
     CKEditingTextBoxView *textBoxView = [self textBoxViewForEditingView:editingView];
-    [textBoxView updateEditingView:editingView];
+    [textBoxView updateEditingView:editingView updated:updated];
 }
 
 - (CKEditingTextBoxView *)textBoxViewForEditingView:(UIView *)editingView {

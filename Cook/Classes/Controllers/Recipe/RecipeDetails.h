@@ -31,4 +31,11 @@
 - (id)initWithRecipe:(CKRecipe *)recipe;
 - (void)updateToRecipe:(CKRecipe *)recipe;
 
+- (BOOL)pageUpdated;
+- (BOOL)nameUpdated;
+- (BOOL)storyUpdated;
+- (BOOL)methodUpdated;
+- (BOOL)servesPrepUpdated;
+- (BOOL)ingredientsUpdated;
+
 @end
