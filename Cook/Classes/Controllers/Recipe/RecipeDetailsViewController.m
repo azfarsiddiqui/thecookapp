@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.book = recipe.book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.blur = NO;
-        [self updateRecipeDetails];
+        [self initRecipeDetails];
     }
     return self;
 }
@@ -147,6 +147,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                      }];
 }
 
+- (void)recipeDetailsViewUpdated {
+    [self updateRecipeDetailsView];
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -171,7 +175,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    //    NSLog(@"contentOffset %f", scrollView.contentOffset.y);
+    NSLog(@"contentOffset %f", scrollView.contentOffset.y);
     
     CGRect contentFrame = self.scrollView.frame;
     CGPoint contentOffset = scrollView.contentOffset;
@@ -199,6 +203,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             self.scrollView.frame = contentFrame;
         }
     }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    NSLog(@"scrollViewWillBeginDragging");
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -390,7 +398,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.view.bounds.size.width,
         self.view.bounds.size.height - [self offsetForViewport:SnapViewportTop]
     }];
-    scrollView.contentSize = self.recipeDetailsView.frame.size;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     scrollView.alwaysBounceVertical = YES;
     scrollView.showsVerticalScrollIndicator = NO;
@@ -400,15 +407,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.view addSubview:scrollView];
     self.scrollView = scrollView;
     
-    // Add the content view.
-    self.recipeDetailsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-    self.recipeDetailsView.frame = (CGRect){
-        floorf((scrollView.bounds.size.width - self.recipeDetailsView.frame.size.width) / 2.0),
-        self.scrollView.bounds.origin.y,
-        self.recipeDetailsView.frame.size.width,
-        self.recipeDetailsView.frame.size.height
-    };
-    [scrollView addSubview:self.recipeDetailsView];
+    // Add/or update the content view.
+    [self updateRecipeDetailsView];
     
     // Build the same sized backgroundView to follow the scrollView along in the back.
     UIImage *contentBackgroundImage = [[UIImage imageNamed:@"cook_book_recipe_background_tile.png"]
@@ -539,7 +539,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)snapToViewport:(SnapViewport)viewport animated:(BOOL)animated completion:(void (^)())completion {
-    DLog(@"snapToViewport [%d] fromViewport[%d]", viewport, self.currentViewport);
+    NSLog(@"snapToViewport [%d] fromViewport[%d]", viewport, self.currentViewport);
     
     // Set the required offset for the given viewport.
     CGRect frame = self.scrollView.frame;
@@ -982,6 +982,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)cancelTapped:(id)sender {
     DLog();
+    [self initRecipeDetails];
     [self enableEditMode:NO];
 }
 
@@ -989,21 +990,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     DLog();
 }
 
-- (void)updateRecipeDetails {
-    if (!self.recipeDetails) {
-        self.recipeDetails = [[RecipeDetails alloc] init];
-    }
-    
-    self.recipeDetails.page = self.recipe.page;
-    self.recipeDetails.availablePages = self.book.pages;
-    self.recipeDetails.user = self.recipe.user;
-    self.recipeDetails.name = self.recipe.name;
-    self.recipeDetails.story = self.recipe.story;
-    self.recipeDetails.method = self.recipe.method;
-    self.recipeDetails.numServes = self.recipe.numServes;
-    self.recipeDetails.prepTimeInMinutes = self.recipe.prepTimeInMinutes;
-    self.recipeDetails.cookingTimeInMinutes = self.recipe.cookingTimeInMinutes;
-    self.recipeDetails.ingredients = self.recipe.ingredients;
+- (void)initRecipeDetails {
+    self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe];
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -1012,6 +1000,22 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Prepare or discard recipe clipboard.
     [self updateButtons];
     [self.recipeDetailsView enableEditMode:enable];
+}
+
+- (void)updateRecipeDetailsView {
+    self.scrollView.contentSize = self.recipeDetailsView.frame.size;
+    self.recipeDetailsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    self.recipeDetailsView.frame = (CGRect){
+        floorf((self.scrollView.bounds.size.width - self.recipeDetailsView.frame.size.width) / 2.0),
+        self.scrollView.bounds.origin.y,
+        self.recipeDetailsView.frame.size.width,
+        self.recipeDetailsView.frame.size.height
+    };
+    NSLog(@"RecipeDetailsView %@", NSStringFromCGRect(self.recipeDetailsView.frame));
+    
+    if (!self.recipeDetailsView.superview) {
+        [self.scrollView addSubview:self.recipeDetailsView];
+    }
 }
 
 @end

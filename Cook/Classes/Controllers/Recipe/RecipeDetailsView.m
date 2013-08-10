@@ -19,6 +19,7 @@
 #import "ServesAndTimeEditViewController.h"
 #import "IngredientListEditViewController.h"
 #import "PageListEditViewController.h"
+#import "CKEditingTextBoxView.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -53,6 +54,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 // Editing.
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
+@property (nonatomic, strong) NSMutableArray *pageComponents;
 
 @end
 
@@ -226,20 +228,38 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     
-//    if (editingView == self.titleLabel) {
-//        [self saveTitleValue:value];
-//    } else if (editingView == self.categoryLabel) {
-//        [self savePageValue:value];
-//    } else if (editingView == self.storyLabel) {
-//        [self saveStoryValue:value];
-//    } else if (editingView == self.servesCookView) {
-//        [self saveServesPrepCookValue:value];
-//    } else if (editingView == self.methodLabel) {
-//        [self saveMethodValue:value];
-//    } else if (editingView == self.ingredientsView) {
-//        [self saveIngredientsValue:value];
-//    }
+    // Transfer updated values to the recipe details transfer object.
+    if (editingView == self.titleLabel) {
+    } else if (editingView == self.pageLabel) {
+        self.recipeDetails.page = value;
+    } else if (editingView == self.storyLabel) {
+        self.recipeDetails.story = value;
+    } else if (editingView == self.servesCookView) {
+        // The Serves Cook View handles updating of it.
+    } else if (editingView == self.methodLabel) {
+        self.recipeDetails.method = value;
+    } else if (editingView == self.ingredientsView) {
+        self.recipeDetails.ingredients = value;
+    }
     
+    // Update onscreen layout.
+    [self updateComponents];
+    [self updateFrame];
+    
+    // Update wrapping
+    if (editingView == self.titleLabel) {
+        [self.editingHelper updateEditingView:self.titleLabel];
+    } else if (editingView == self.pageLabel) {
+        [self.editingHelper updateEditingView:self.pageLabel];
+    } else if (editingView == self.storyLabel) {
+        [self.editingHelper updateEditingView:self.storyLabel];
+    } else if (editingView == self.servesCookView) {
+        [self.editingHelper updateEditingView:self.servesCookView];
+    } else if (editingView == self.methodLabel) {
+        [self.editingHelper updateEditingView:self.methodLabel];
+    } else if (editingView == self.ingredientsView) {
+        [self.editingHelper updateEditingView:self.ingredientsView];
+    }
 }
 
 #pragma mark - Private methods
@@ -263,14 +283,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     if (!self.profilePhotoView) {
         CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.recipeDetails.user
                                                                                     profileSize:ProfileViewSizeSmall];
-        profilePhotoView.frame = (CGRect){
-            self.layoutOffset.x + floor(([self availableSize].width - profilePhotoView.frame.size.width) / 2.0),
-            self.bounds.origin.y + self.layoutOffset.y,
-            profilePhotoView.frame.size.width,
-            profilePhotoView.frame.size.height
-        };
         [self addSubview:profilePhotoView];
         self.profilePhotoView = profilePhotoView;
+        [self.pageComponents addObject:profilePhotoView];
         
         // Page label to be toggle visible when profile photo hides.
         UILabel *pageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -283,6 +298,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         pageLabel.hidden = YES;
         [self addSubview:pageLabel];
         self.pageLabel  = pageLabel;
+        [self.pageComponents addObject:pageLabel];
         
         // Wrap it immediately as it's only visible in edit mode.
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
@@ -296,7 +312,15 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         pageTextBoxView.hidden = YES;
     }
     
-    // Update pate.
+    // Update photo.
+    self.profilePhotoView.frame = (CGRect){
+        self.layoutOffset.x + floor(([self availableSize].width - self.profilePhotoView.frame.size.width) / 2.0),
+        self.bounds.origin.y + self.layoutOffset.y,
+        self.profilePhotoView.frame.size.width,
+        self.profilePhotoView.frame.size.height
+    };
+    
+    // Update page.
     self.pageLabel.text = [self.recipeDetails.page uppercaseString];
     [self.pageLabel sizeToFit];
     self.pageLabel.center = self.profilePhotoView.center;
@@ -321,6 +345,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         titleLabel.hidden = YES;
         [self addSubview:titleLabel];
         self.titleLabel = titleLabel;
+        [self.pageComponents addObject:titleLabel];
     }
     
     // Do we have a title to display.
@@ -346,6 +371,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         tagsView.hidden = YES;
         [self addSubview:tagsView];
         self.tagsView = tagsView;
+        [self.pageComponents addObject:tagsView];
     }
     
     // Do we have any tags to display.
@@ -364,6 +390,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyDividerView = [self createQuoteDividerView];
         self.storyDividerView.hidden = YES;
         [self addSubview:self.storyDividerView];
+        [self.pageComponents addObject:self.storyDividerView];
         
         self.storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.storyLabel.font = [Theme storyFont];
@@ -376,6 +403,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyLabel.userInteractionEnabled = NO;
         self.storyLabel.hidden = YES;
         [self addSubview:self.storyLabel];
+        [self.pageComponents addObject:self.storyLabel];
     }
     
     // Do we have a story to display.
@@ -409,6 +437,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     if (!self.contentDividerView) {
         self.contentDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
         [self addSubview:self.contentDividerView];
+        [self.pageComponents addObject:self.contentDividerView];
     }
     
     CGFloat dividerGap = 30.0;
@@ -427,16 +456,22 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateServesCook {
+    
+    // Add the serves cook view once.
     if (!self.servesCookView) {
         self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails];
         self.servesCookView.hidden = YES;
         self.servesCookView.userInteractionEnabled = NO;
         [self addSubview:self.servesCookView];
+        [self.pageComponents addObject:self.servesCookView];
+    } else {
+        [self.servesCookView update];
     }
     
     CGFloat beforeGap = 0.0;
     
-    if (self.recipeDetails.numServes >= 0 || self.recipeDetails.prepTimeInMinutes >= 0 || self.recipeDetails.cookingTimeInMinutes >= 0) {
+    if (self.recipeDetails.numServes >= 0 || self.recipeDetails.prepTimeInMinutes >= 0
+        || self.recipeDetails.cookingTimeInMinutes >= 0) {
         self.servesCookView.hidden = NO;
         self.servesCookView.frame = (CGRect){
             kContentInsets.left,
@@ -450,35 +485,42 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateIngredients {
-    if ([self.recipeDetails.ingredients count] > 0) {
-        if (!self.ingredientsView) {
-            
-            self.ingredientsDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
-            [self addSubview:self.ingredientsDividerView];
-            
-            self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipeDetails:self.recipeDetails maxWidth:kMaxLeftWidth];
-            self.ingredientsView.userInteractionEnabled = NO;
-            [self addSubview:self.ingredientsView];
-        }
-        
-        CGFloat dividerGap = 10.0;
-        self.ingredientsDividerView.frame = (CGRect){
-            kContentInsets.left,
-            self.layoutOffset.y + dividerGap,
-            kMaxLeftWidth,
-            self.ingredientsDividerView.frame.size.height
-        };
-        
-        CGFloat beforeIngredientsGap = 10.0;
-        self.ingredientsView.frame = (CGRect){
-            kContentInsets.left + 15.0,
-            self.layoutOffset.y + dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap + beforeIngredientsGap,
-            self.ingredientsView.frame.size.width,
-            self.ingredientsView.frame.size.height
-        };
-        
-        [self updateLayoutOffsetVertical:dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap + beforeIngredientsGap + self.ingredientsDividerView.frame.size.height];
+    
+    // Add divider once.
+    if (!self.ingredientsDividerView) {
+        self.ingredientsDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
+        [self addSubview:self.ingredientsDividerView];
     }
+    
+    // Update divider.
+    CGFloat dividerGap = 10.0;
+    self.ingredientsDividerView.frame = (CGRect){
+        kContentInsets.left,
+        self.layoutOffset.y + dividerGap,
+        kMaxLeftWidth,
+        self.ingredientsDividerView.frame.size.height
+    };
+    [self updateLayoutOffsetVertical:dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap];
+    
+    // Add ingredients view once, then update thereafter.
+    if (!self.ingredientsView) {
+        self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipeDetails:self.recipeDetails maxWidth:kMaxLeftWidth];
+        self.ingredientsView.userInteractionEnabled = NO;
+        [self addSubview:self.ingredientsView];
+        [self.pageComponents addObject:self.ingredientsView];
+    } else {
+        [self.ingredientsView updateIngredients];
+    }
+    
+    CGFloat beforeIngredientsGap = 10.0;
+    self.ingredientsView.frame = (CGRect){
+        kContentInsets.left + 15.0,
+        self.layoutOffset.y + dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap + beforeIngredientsGap,
+        self.ingredientsView.frame.size.width,
+        self.ingredientsView.frame.size.height
+    };
+    
+    [self updateLayoutOffsetVertical:beforeIngredientsGap + self.ingredientsDividerView.frame.size.height];
     
 }
 
@@ -492,6 +534,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.methodLabel.userInteractionEnabled = NO;
         self.methodLabel.hidden = YES;
         [self addSubview:self.methodLabel];
+        [self.pageComponents addObject:self.methodLabel];
     }
     
     // Do we have a story to display.
@@ -511,20 +554,20 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateFrame {
-    CGRect frame = (CGRect){ 0.0, 0.0, kWidth, 0.0 };;
+    CGRect frame = (CGRect){ 0.0, 0.0, kWidth, 0.0 };
     for (UIView *subview in self.subviews) {
+        
+        // Bypass editing boxes as they could jut out from the parent view.
+        if ([subview isKindOfClass:[CKEditingTextBoxView class]]) {
+            continue;
+        }
+        
         frame = (CGRectUnion(frame, subview.frame));
         frame.size.height += kContentInsets.bottom;
     }
     self.frame = frame;
-}
-
-- (CGRect)unionFrameForView:(UIView *)view {
-    CGRect frame = CGRectZero;
-    for (UIView *subview in self.subviews) {
-        frame = (CGRectUnion(frame, subview.frame));
-    }
-    return frame;
+    
+    [self.delegate recipeDetailsViewUpdated];
 }
 
 - (CGSize)availableSize {
@@ -618,7 +661,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)enableFieldsForEditMode:(BOOL)editMode {
     
     // Get the default insets so we can adjust them as we please.
-    UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
     UIEdgeInsets defaultEditInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
     
     [self enableEditModeOnView:self.titleLabel editMode:editMode

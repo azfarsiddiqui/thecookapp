@@ -13,5 +13,6 @@
 @interface RecipeIngredientsView : UIView
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails maxWidth:(CGFloat)maxWidth;
+- (void)updateIngredients;
 
 @end

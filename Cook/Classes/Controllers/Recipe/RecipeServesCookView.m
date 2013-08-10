@@ -29,13 +29,19 @@
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
     if (self = [super initWithFrame:CGRectZero]) {
         self.recipeDetails = recipeDetails;
-        self.layoutOffset = 0.0;
         self.backgroundColor = [UIColor clearColor];
-        [self updateServes];
-        [self updatePrepCook];
-        [self updateFrame];
+        [self update];
     }
     return self;
+}
+
+- (void)update {
+    self.layoutOffset = 0.0;
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    [self updateServes];
+    [self updatePrepCook];
+    [self updateFrame];
 }
 
 #pragma mark - Private methods

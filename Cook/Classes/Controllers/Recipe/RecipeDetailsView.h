@@ -13,6 +13,7 @@
 @protocol RecipeDetailsViewDelegate <NSObject>
 
 - (void)recipeDetailsViewEditing:(BOOL)editing;
+- (void)recipeDetailsViewUpdated;
 
 @end
 

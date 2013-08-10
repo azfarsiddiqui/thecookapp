@@ -28,9 +28,7 @@
     if (self = [super initWithFrame:CGRectZero]) {
         self.recipeDetails = recipeDetails;
         self.maxWidth = maxWidth;
-        self.layoutOffset = 0.0;
         [self updateIngredients];
-        [self updateFrame];
     }
     return self;
 }
@@ -54,6 +52,9 @@
 #pragma mark - Private methods
 
 - (void)updateIngredients {
+    self.layoutOffset = 0.0;
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
     if ([self.recipeDetails.ingredients count] > 0) {
         
         // for (Ingredient *ingredient in self.recipe.ingredients) {
@@ -79,6 +80,8 @@
         }
         
     }
+    
+    [self updateFrame];
 }
 
 - (void)updateFrame {
