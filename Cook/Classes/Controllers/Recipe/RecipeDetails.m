@@ -42,6 +42,17 @@
     return self;
 }
 
+- (void)updateToRecipe:(CKRecipe *)recipe {
+    recipe.page = self.page;
+    recipe.name = self.name;
+    recipe.story = self.story;
+    recipe.method = self.method;
+    recipe.numServes = self.numServes;
+    recipe.prepTimeInMinutes = self.prepTimeInMinutes;
+    recipe.cookingTimeInMinutes = self.cookingTimeInMinutes;
+    recipe.ingredients = self.ingredients;
+}
+
 - (void)setPage:(NSString *)page {
     if (![self.originalRecipe.page CK_equalsIgnoreCase:page]) {
         _page = page;

@@ -25,6 +25,8 @@
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
 #import "UIImage+ProportionalFill.h"
+#import "NSString+Utilities.h"
+#import "CKProgressView.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -1140,14 +1142,23 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)cancelTapped:(id)sender {
-    DLog();
-    
     [self initRecipeDetails];
     [self enableEditMode:NO];
 }
 
 - (void)saveTapped:(id)sender {
-    DLog();
+    DLog(@"saveRequired: %@", [NSString CK_stringForBoolean:self.recipeDetails.saveRequired]);
+    if (self.recipeDetails.saveRequired) {
+        
+        // Transfer updated values to the current recipe.
+        [self.recipeDetails updateToRecipe:self.recipe];
+        
+        // Enable save mode.
+        [self enableSaveMode:YES];
+        
+        // TODO.
+
+    }
 }
 
 - (void)initRecipeDetails {
@@ -1170,6 +1181,22 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Prepare or discard recipe clipboard.
     [self updateButtons];
     [self.recipeDetailsView enableEditMode:enable];
+}
+
+- (void)enableSaveMode:(BOOL)saveEnabled {
+    self.editMode = NO;
+    [self.recipeDetailsView enableEditMode:NO];
+    
+    // Hide all buttons.
+    if (saveEnabled) {
+        [self hideButtons];
+    } else {
+        [self updateButtons];
+    }
+    
+    
+    
+    
 }
 
 - (void)updateRecipeDetailsView {

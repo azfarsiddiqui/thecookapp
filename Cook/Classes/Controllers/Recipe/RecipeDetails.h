@@ -29,5 +29,6 @@
 @property (nonatomic, assign) BOOL saveRequired;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
+- (void)updateToRecipe:(CKRecipe *)recipe;
 
 @end

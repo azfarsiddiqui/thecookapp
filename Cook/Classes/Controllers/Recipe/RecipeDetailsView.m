@@ -94,11 +94,17 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)enableEditMode:(BOOL)editMode {
+    
+    // If already animating something, then ignore.
     if (self.animating) {
         return;
     }
     self.animating = YES;
     
+    // If already in the required editMode, then ignore.
+    if (self.editMode == editMode) {
+        return;
+    }
     self.editMode = editMode;
     
     // Edit mode on fields.
