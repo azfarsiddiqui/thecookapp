@@ -207,6 +207,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     NSLog(@"scrollViewWillBeginDragging");
+    NSLog(@"scrollEnabled: %@", scrollView.scrollEnabled ? @"YES" : @"NO");
+    NSLog(@"panGesture   : %@", self.panGesture.enabled ? @"YES" : @"NO");
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -548,6 +550,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Scroll enabled at the given viewport?
     BOOL scrollEnabled = [self scrollEnabledAtViewport:viewport];
     
+    // Pan gesture enabled at the given viewport?
+    BOOL panEnabld = [self panEnabledAtViewport:viewport];
+    
     SnapViewport currentViewport = self.currentViewport;
     
     // Determine if a bounce is required.
@@ -583,6 +588,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                   }
                                                   completion:^(BOOL finished) {
                                                       self.scrollView.scrollEnabled = scrollEnabled;
+                                                      self.panGesture.enabled = panEnabld;
                                                       self.draggingDown = NO;
                                                       
                                                       if (completion != nil) {
@@ -600,6 +606,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              }
                              completion:^(BOOL finished) {
                                  self.scrollView.scrollEnabled = scrollEnabled;
+                                 self.panGesture.enabled = panEnabld;
                                  self.draggingDown = NO;
                                  if (completion != nil) {
                                      completion();
@@ -610,6 +617,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     } else {
         self.scrollView.frame = frame;
         self.scrollView.scrollEnabled = scrollEnabled;
+        self.panGesture.enabled = panEnabld;
         self.draggingDown = NO;
         if (completion != nil) {
             completion();
@@ -726,6 +734,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return (viewport == SnapViewportTop);
 }
 
+- (BOOL)panEnabledAtViewport:(SnapViewport)viewport {
+    
+    // Pan enabled at bottom of viewport only.
+    return (viewport == SnapViewportBottom);
+}
+
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
     CGPoint translation = [panGesture translationInView:self.scrollView];
     
@@ -770,7 +784,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             
             // Snap to the bottom viewport.
             [self snapToViewport:SnapViewportBottom animated:YES];
-            self.panGesture.enabled = YES;
             
         } else {
             
