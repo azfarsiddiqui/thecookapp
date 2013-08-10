@@ -230,6 +230,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Transfer updated values to the recipe details transfer object.
     if (editingView == self.titleLabel) {
+        self.recipeDetails.name = value;
     } else if (editingView == self.pageLabel) {
         self.recipeDetails.page = value;
     } else if (editingView == self.storyLabel) {
