@@ -98,7 +98,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.blur = NO;
-        [self initRecipeDetails];
     }
     return self;
 }
@@ -108,8 +107,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     self.view.backgroundColor = [UIColor clearColor];
     
     [self initImageView];
-    [self initRecipeDetailsView];
     [self initScrollView];
+    [self initRecipeDetails];
 }
 
 #pragma mark - BookModalViewController methods
@@ -497,12 +496,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.imageView addGestureRecognizer:tapGesture];
 }
 
-- (void)initRecipeDetailsView {
-    RecipeDetailsView *recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails
-                                                                                   delegate:self];
-    self.recipeDetailsView = recipeDetailsView;
-}
-
 - (void)initScrollView {
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:(CGRect){
         self.view.bounds.origin.x,
@@ -518,9 +511,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     scrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:scrollView];
     self.scrollView = scrollView;
-    
-    // Add/or update the content view.
-    [self updateRecipeDetailsView];
     
     // Build the same sized backgroundView to follow the scrollView along in the back.
     UIImage *contentBackgroundImage = [[UIImage imageNamed:@"cook_book_recipe_background_tile.png"]
@@ -1151,6 +1141,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)cancelTapped:(id)sender {
     DLog();
+    
     [self initRecipeDetails];
     [self enableEditMode:NO];
 }
@@ -1160,7 +1151,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)initRecipeDetails {
+    
+    // Create transfer object to display/edit.
     self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe];
+    
+    // Remove any existing.
+    [self.recipeDetailsView removeFromSuperview];
+    self.recipeDetailsView = nil;   // Need to nil this out, why??? Otherwise get dupes on scrollView.
+    self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];;
+    
+    // Update the scrollView with the recipe details view.
+    [self updateRecipeDetailsView];
 }
 
 - (void)enableEditMode:(BOOL)enable {
