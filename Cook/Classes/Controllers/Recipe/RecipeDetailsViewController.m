@@ -37,7 +37,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate, RecipeDetailsViewDelegate,
-    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate>
+    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -243,6 +243,45 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         socialView.frame.size.width,
         socialView.frame.size.height
     };
+}
+
+#pragma mark - CKPrivacySliderViewDelegate methods
+
+- (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
+//    [self selectedPrivacy:CKPrivacyPrivate];
+//    [self.recipe clearLocation];
+//    self.saveRequired = YES;
+//    self.saveButton.enabled = YES;
+}
+
+- (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
+//    [self selectedPrivacy:CKPrivacyFriends];
+//    [self.recipe clearLocation];
+//    self.saveRequired = YES;
+//    self.saveButton.enabled = YES;
+}
+
+- (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
+//    [self selectedPrivacy:CKPrivacyGlobal];
+//    
+//    // Locating is in progress.
+//    if (self.locatingInProgress) {
+//        return;
+//    }
+//    self.locatingInProgress = YES;
+//    
+//    // Disable save button until location is obtained.
+//    self.saveButton.enabled = NO;
+//    
+//    [[CKServerManager sharedInstance] requestForCurrentLocation:^(double latitude, double longitude){
+//        [self.recipe setLocation:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
+//        self.saveButton.enabled = YES;
+//        self.locatingInProgress = NO;
+//        self.saveRequired = YES;
+//    } failure:^(NSError *error) {
+//        self.saveButton.enabled = YES;
+//        self.locatingInProgress = NO;
+//    }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -476,6 +515,18 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         _photoButtonView.userInteractionEnabled = NO;
     }
     return _photoButtonView;
+}
+
+- (CKPrivacySliderView *)privacyView {
+    if (!_privacyView) {
+        _privacyView = [[CKPrivacySliderView alloc] initWithDelegate:self];
+        _privacyView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - _privacyView.frame.size.width) / 2.0),
+            kButtonInsets.top,
+            _privacyView.frame.size.width,
+            _privacyView.frame.size.height};
+    }
+    return _privacyView;
 }
 
 #pragma mark - Private methods
