@@ -1165,7 +1165,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // TODO testing missing data.
 //    self.recipe.story = nil;
-    self.recipe.name = nil;
+//    self.recipe.name = nil;
+//    self.recipe.method = nil;
     
     // Create transfer object to display/edit.
     self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe];

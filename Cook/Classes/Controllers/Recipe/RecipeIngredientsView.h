@@ -8,11 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class RecipeDetails;
-
 @interface RecipeIngredientsView : UIView
 
-- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails maxWidth:(CGFloat)maxWidth;
-- (void)updateIngredients;
+- (id)initWithIngredients:(NSArray *)ingredients maxWidth:(CGFloat)maxWidth;
+- (void)updateIngredients:(NSArray *)ingredients;
 
 @end

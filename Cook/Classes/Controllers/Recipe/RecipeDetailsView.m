@@ -554,11 +554,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Add ingredients view once, then update thereafter.
     if (!self.ingredientsView) {
-        self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipeDetails:self.recipeDetails maxWidth:kMaxLeftWidth];
+        self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
+                                                                         maxWidth:kMaxLeftWidth];
         self.ingredientsView.userInteractionEnabled = NO;
         [self addSubview:self.ingredientsView];
     } else {
-        [self.ingredientsView updateIngredients];
+        [self.ingredientsView updateIngredients:self.recipeDetails.ingredients];
     }
     
     CGFloat beforeIngredientsGap = 10.0;
