@@ -97,6 +97,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kDragRatio          0.9
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
 
+- (void)dealloc {
+    [self.scrollView removeObserver:self forKeyPath:@"frame"];
+}
+
 - (id)initWithRecipe:(CKRecipe *)recipe {
     if (self = [super init]) {
         self.recipe = recipe;
@@ -1275,9 +1279,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                     completion:^{
                         
                         // Ask the opened book to relayout.
-                        if ([self.recipeDetails pageUpdated]) {
-                            [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
-                                                                                       completion:^{
+                        [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                   completion:^{
+                                                                                       
+                                                                                       // Set 100% progress completion.
+                                                                                       [weakProgressView setProgress:1.0 delay:0.5 completion:^{
                                                                                            
                                                                                            // Run completion.
                                                                                            if (completion != nil) {
@@ -1285,28 +1291,20 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                                                            }
                                                                                            
                                                                                        }];
-                        } else {
-                            
-                            // Set 100% progress completion.
-                            [weakProgressView setProgress:1.0 delay:0.5 completion:^{
-                                
-                                // Run completion.
-                                if (completion != nil) {
-                                    completion();
-                                }
-                                
-                            }];
-                            
-                        }
-                    }
-                       failure:^(NSError *error) {
+                                                                                       // Run completion.
+                                                                                       if (completion != nil) {
+                                                                                           completion();
+                                                                                       }
+                                                                                       
+                                                                                   }];
+                    } failure:^(NSError *error) {
                            
                            // Run failure.
                            if (failure != nil) {
                                failure(error);
                            }
                            
-                       }];
+                    }];
 }
 
 
