@@ -20,6 +20,7 @@
 #import "IngredientListEditViewController.h"
 #import "PageListEditViewController.h"
 #import "CKEditingTextBoxView.h"
+#import "Ingredient.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -569,6 +570,33 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self addSubview:self.ingredientsDividerView];
     }
     
+    // Add ingredients view once, then update thereafter.
+    if (!self.ingredientsView) {
+        self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
+                                                                         maxWidth:kMaxLeftWidth];
+        self.ingredientsView.userInteractionEnabled = NO;
+        self.ingredientsView.alpha = 1.0;
+        [self addSubview:self.ingredientsView];
+        [self updateIngredientsFrame];
+    }
+    
+    // Display if not-blank or in editMode.
+    if ([self.recipeDetails.ingredients count] > 0 || self.editMode) {
+        self.ingredientsView.alpha = 1.0;
+        [self updateIngredientsFrame];
+    } else {
+        self.ingredientsView.alpha = 0.0;
+        [self updateIngredientsFrame];
+    }
+}
+
+- (void)updateIngredientsFrame {
+    NSArray *ingredients = self.recipeDetails.ingredients;
+    
+    if ([ingredients count] == 0) {
+        ingredients = @[[Ingredient ingredientwithName:@"INGREDIENT" measurement:nil]];
+    }
+    
     // Update divider.
     CGFloat dividerGap = 10.0;
     self.ingredientsDividerView.frame = (CGRect){
@@ -579,16 +607,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     };
     [self updateLayoutOffsetVertical:dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap];
     
-    // Add ingredients view once, then update thereafter.
-    if (!self.ingredientsView) {
-        self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
-                                                                         maxWidth:kMaxLeftWidth];
-        self.ingredientsView.userInteractionEnabled = NO;
-        [self addSubview:self.ingredientsView];
-    } else {
-        [self.ingredientsView updateIngredients:self.recipeDetails.ingredients];
-    }
-    
+    // Update ingredients.
+    [self.ingredientsView updateIngredients:ingredients];
     CGFloat beforeIngredientsGap = 10.0;
     self.ingredientsView.frame = (CGRect){
         kContentInsets.left + 15.0,
@@ -596,9 +616,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.ingredientsView.frame.size.width,
         self.ingredientsView.frame.size.height
     };
-    
-    [self updateLayoutOffsetVertical:beforeIngredientsGap + self.ingredientsDividerView.frame.size.height];
-    
 }
 
 - (void)updateMethod {
