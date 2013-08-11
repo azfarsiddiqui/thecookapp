@@ -514,27 +514,24 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Add the serves cook view once.
     if (!self.servesCookView) {
         self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails];
-        self.servesCookView.hidden = YES;
         self.servesCookView.userInteractionEnabled = NO;
         [self addSubview:self.servesCookView];
     } else {
         [self.servesCookView update];
     }
     
+    [self updateServesCookFrame];
+}
+
+- (void)updateServesCookFrame {
     CGFloat beforeGap = 0.0;
-    
-    if (self.recipeDetails.numServes >= 0 || self.recipeDetails.prepTimeInMinutes >= 0
-        || self.recipeDetails.cookingTimeInMinutes >= 0) {
-        self.servesCookView.hidden = NO;
-        self.servesCookView.frame = (CGRect){
-            kContentInsets.left,
-            self.contentOffset.y + beforeGap,
-            self.servesCookView.frame.size.width,
-            self.servesCookView.frame.size.height
-        };
-        [self updateLayoutOffsetVertical:beforeGap + self.servesCookView.frame.size.height];
-    }
-    
+    self.servesCookView.frame = (CGRect){
+        kContentInsets.left,
+        self.contentOffset.y + beforeGap,
+        self.servesCookView.frame.size.width,
+        self.servesCookView.frame.size.height
+    };
+    [self updateLayoutOffsetVertical:beforeGap + self.servesCookView.frame.size.height];
 }
 
 - (void)updateIngredients {

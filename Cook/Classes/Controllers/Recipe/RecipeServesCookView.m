@@ -14,6 +14,9 @@
 
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, assign) CGFloat layoutOffset;
+@property (nonatomic, strong) UILabel *servesLabel;
+@property (nonatomic, strong) UILabel *prepLabel;
+@property (nonatomic, strong) UILabel *cookLabel;
 
 @end
 
@@ -24,35 +27,42 @@
 #define kValueTextGap           -5.0
 #define kStatViewOffset         -4.0
 #define kStatRowGap             -5.0
+#define kLabelTag               300
 #define kContentInsets          (UIEdgeInsets){ 0.0, 0.0, -11.0, 12.0 }
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
     if (self = [super initWithFrame:CGRectZero]) {
         self.recipeDetails = recipeDetails;
         self.backgroundColor = [UIColor clearColor];
+        
+        self.layoutOffset = 0.0;
+        [self updateServes];
+        [self updatePrepCook];
+        [self updateFrame];
+        
         [self update];
     }
     return self;
 }
 
 - (void)update {
-    self.layoutOffset = 0.0;
-    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    [self updateServes];
-    [self updatePrepCook];
-    [self updateFrame];
+    self.servesLabel.text = [NSString stringWithFormat:@"%d", self.recipeDetails.numServes];
+    self.prepLabel.text = [NSString stringWithFormat:@"%d", self.recipeDetails.prepTimeInMinutes];
+    self.cookLabel.text = [NSString stringWithFormat:@"%d", self.recipeDetails.cookingTimeInMinutes];
 }
 
 #pragma mark - Private methods
 
 - (void)updateServes {
+    
     UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
-    UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.numServes]];
+    UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[self defaultValue]];
     CGRect servesFrame = servesStatView.frame;
     CGRect imageFrame = servesImageView.frame;
     servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
     servesStatView.frame = servesFrame;
+    
+    self.servesLabel = (UILabel *)[servesStatView viewWithTag:kLabelTag];
     
     CGRect combinedFrame = CGRectUnion(imageFrame, servesFrame);
     UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
@@ -75,15 +85,19 @@
     UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
     CGRect imageFrame = prepCookImageView.frame;
     
-    UIView *prepStatView = [self viewForStatText:@"Prep" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.prepTimeInMinutes]];
+    UIView *prepStatView = [self viewForStatText:@"Prep" statValue:[self defaultValue]];
     CGRect prepFrame = prepStatView.frame;
     prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
     prepStatView.frame = prepFrame;
     
-    UIView *cookStatView = [self viewForStatText:@"Cook" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.cookingTimeInMinutes]];
+    self.prepLabel = (UILabel *)[prepStatView viewWithTag:kLabelTag];
+    
+    UIView *cookStatView = [self viewForStatText:@"Cook" statValue:[self defaultValue]];
     CGRect cookFrame = cookStatView.frame;
     cookFrame.origin.x = prepFrame.origin.x + prepFrame.size.width + prepCookGap;
     cookStatView.frame = cookFrame;
+    
+    self.cookLabel = (UILabel *)[cookStatView viewWithTag:kLabelTag];
     
     CGRect combinedFrame = CGRectUnion(prepCookImageView.frame, prepFrame);
     combinedFrame = CGRectUnion(combinedFrame, cookFrame);
@@ -129,6 +143,8 @@
     valueLabel.font = [Theme recipeStatValueFont];
     valueLabel.textColor = [Theme recipeStatValueColour];
     valueLabel.text = [statValue uppercaseString];
+    valueLabel.tag = kLabelTag;
+    valueLabel.textAlignment = NSTextAlignmentCenter;
     [valueLabel sizeToFit];
     CGRect valueFrame = valueLabel.frame;
     
@@ -137,6 +153,7 @@
     textLabel.font = [Theme recipeStatTextFont];
     textLabel.textColor = [Theme recipeStatTextColour];
     textLabel.text = [statText uppercaseString];
+    textLabel.textAlignment = NSTextAlignmentCenter;
     [textLabel sizeToFit];
     CGRect textFrame = textLabel.frame;
     textFrame.origin.y = valueLabel.frame.origin.y + textValueGap;
@@ -154,6 +171,12 @@
     [containerView addSubview:textLabel];
     
     return containerView;
+}
+
+- (NSString *)defaultValue {
+    
+    // Ugh.
+    return @"0000";
 }
 
 @end
