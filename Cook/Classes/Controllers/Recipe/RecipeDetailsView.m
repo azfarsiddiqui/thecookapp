@@ -581,25 +581,40 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.methodLabel.textAlignment = NSTextAlignmentLeft;
         self.methodLabel.backgroundColor = [UIColor clearColor];
         self.methodLabel.userInteractionEnabled = NO;
-        self.methodLabel.hidden = YES;
+        self.methodLabel.alpha = 0.0;
         [self addSubview:self.methodLabel];
+        [self updateMethodFrame];
     }
     
-    // Do we have a story to display.
-    if (![self.recipeDetails.method CK_blank]) {
-        self.methodLabel.hidden = NO;
-        NSAttributedString *method = [self attributedTextForText:self.recipeDetails.method font:[Theme methodFont] colour:[Theme methodColor]];
-        self.methodLabel.attributedText = method;
-        CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
-        self.methodLabel.frame = (CGRect){
-            self.bounds.size.width - kMaxRightWidth,
-            self.contentOffset.y,
-            size.width,
-            size.height
-        };
+    // Display if not-blank or in editMode.
+    if (![self.recipeDetails.method CK_blank] || self.editMode) {
+        self.methodLabel.alpha = 1.0;
+        [self updateMethodFrame];
+        [self updateLayoutOffsetVertical:self.titleLabel.frame.size.height];
+    } else {
+        self.methodLabel.alpha = 0.0;
+        [self updateMethodFrame];
     }
-    
 }
+
+- (void)updateMethodFrame {
+    NSString *method = self.recipeDetails.method;
+    
+    if ([self.recipeDetails.method CK_blank]) {
+        method = @"METHOD";
+    }
+    
+    NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
+    self.methodLabel.attributedText = methodDisplay;
+    CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
+    self.methodLabel.frame = (CGRect){
+        self.bounds.size.width - kMaxRightWidth,
+        self.contentOffset.y,
+        size.width,
+        size.height
+    };
+}
+
 
 - (void)updateFrame {
     CGRect frame = (CGRect){ 0.0, 0.0, kWidth, 0.0 };
