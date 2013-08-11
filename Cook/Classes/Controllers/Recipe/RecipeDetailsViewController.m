@@ -1340,10 +1340,19 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)enableEditMode:(BOOL)enable {
-    [self enableEditModeWithoutInformingRecipeDetailsView:enable];
     
-    // Inform recipe detailsView.
-    [self.recipeDetailsView enableEditMode:enable];
+    if (self.currentViewport != SnapViewportTop) {
+        
+        // Snap to top first.
+        [self snapToViewport:SnapViewportTop completion:^{
+            [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+            [self.recipeDetailsView enableEditMode:enable];
+        }];
+        
+    } else {
+        [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+        [self.recipeDetailsView enableEditMode:enable];
+    }
 }
 
 - (void)enableEditModeWithoutInformingRecipeDetailsView {
