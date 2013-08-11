@@ -56,7 +56,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
-@property (nonatomic, strong) NSMutableArray *pageComponents;
 
 @end
 
@@ -84,16 +83,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         
         // Pre-layout updates.
         [self updateFrame];
+        [self layoutComponentsAnimated:NO];
         
-        [self updateComponents];
-        
-        // Post-layout updates.
-        [self updateFrame];
     }
     return self;
 }
 
 - (void)enableEditMode:(BOOL)editMode {
+    DLog();
     
     // If already animating something, then ignore.
     if (self.animating) {
@@ -101,7 +98,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     self.animating = YES;
     
+    // Mark as editMode.
     self.editMode = editMode;
+    
+    // Relayout to make sure missing fields appear.
+    [self layoutComponents];
     
     // Edit mode on fields.
     [self enableFieldsForEditMode:editMode];
@@ -256,8 +257,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Update onscreen layout.
-    [self updateComponents];
-    [self updateFrame];
+    [self layoutComponents];
     
     // Update wrapping
     [self updateEditModeOnView:self.titleLabel
@@ -284,6 +284,35 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 #pragma mark - Private methods
 
+- (void)layoutComponents {
+    [self layoutComponentsAnimated:NO];
+}
+
+- (void)layoutComponentsAnimated:(BOOL)animated {
+    [self layoutComponentsCompletion:nil animated:animated];
+}
+
+- (void)layoutComponentsCompletion:(void (^)())completion animated:(BOOL)animated {
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             [self updateComponents];
+                         }
+                         completion:^(BOOL finished) {
+                             [self updateFrame];
+                             if (completion != nil) {
+                                 completion();
+                             }
+                         }];
+        
+    } else {
+        [self updateComponents];
+        [self updateFrame];
+    }
+}
+
 - (void)updateComponents {
     
     // Init the offset to layout from the top.
@@ -305,7 +334,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                     profileSize:ProfileViewSizeSmall];
         [self addSubview:profilePhotoView];
         self.profilePhotoView = profilePhotoView;
-        [self.pageComponents addObject:profilePhotoView];
         
         // Page label to be toggle visible when profile photo hides.
         UILabel *pageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -318,7 +346,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         pageLabel.hidden = YES;
         [self addSubview:pageLabel];
         self.pageLabel  = pageLabel;
-        [self.pageComponents addObject:pageLabel];
         
         // Wrap it immediately as it's only visible in edit mode.
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
@@ -365,7 +392,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         titleLabel.hidden = YES;
         [self addSubview:titleLabel];
         self.titleLabel = titleLabel;
-        [self.pageComponents addObject:titleLabel];
     }
     
     // Do we have a title to display.
@@ -391,7 +417,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         tagsView.hidden = YES;
         [self addSubview:tagsView];
         self.tagsView = tagsView;
-        [self.pageComponents addObject:tagsView];
     }
     
     // Do we have any tags to display.
@@ -410,7 +435,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyDividerView = [self createQuoteDividerView];
         self.storyDividerView.hidden = YES;
         [self addSubview:self.storyDividerView];
-        [self.pageComponents addObject:self.storyDividerView];
         
         self.storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.storyLabel.font = [Theme storyFont];
@@ -423,11 +447,11 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyLabel.userInteractionEnabled = NO;
         self.storyLabel.hidden = YES;
         [self addSubview:self.storyLabel];
-        [self.pageComponents addObject:self.storyLabel];
     }
     
-    // Do we have a story to display.
-    if (![self.recipeDetails.story CK_blank]) {
+    // Display if not-blank or in editMode.
+    if (![self.recipeDetails.story CK_blank] || self.editMode) {
+        
         self.storyDividerView.hidden = NO;
         self.storyLabel.hidden = NO;
         
@@ -440,7 +464,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             self.storyDividerView.frame.size.height
         };
         
-        self.storyLabel.text = self.recipeDetails.story;
+        self.storyLabel.text = self.editMode ? @"STORY" : self.recipeDetails.story;
         CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
         self.storyLabel.frame = (CGRect){
             floorf((self.bounds.size.width - size.width) / 2.0),
@@ -450,6 +474,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         };
         
         [self updateLayoutOffsetVertical:self.storyDividerView.frame.size.height + dividerStoryGap + size.height];
+        
     }
 }
 
@@ -457,7 +482,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     if (!self.contentDividerView) {
         self.contentDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
         [self addSubview:self.contentDividerView];
-        [self.pageComponents addObject:self.contentDividerView];
     }
     
     CGFloat dividerGap = 30.0;
@@ -483,7 +507,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.servesCookView.hidden = YES;
         self.servesCookView.userInteractionEnabled = NO;
         [self addSubview:self.servesCookView];
-        [self.pageComponents addObject:self.servesCookView];
     } else {
         [self.servesCookView update];
     }
@@ -527,7 +550,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithRecipeDetails:self.recipeDetails maxWidth:kMaxLeftWidth];
         self.ingredientsView.userInteractionEnabled = NO;
         [self addSubview:self.ingredientsView];
-        [self.pageComponents addObject:self.ingredientsView];
     } else {
         [self.ingredientsView updateIngredients];
     }
@@ -554,7 +576,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.methodLabel.userInteractionEnabled = NO;
         self.methodLabel.hidden = YES;
         [self addSubview:self.methodLabel];
-        [self.pageComponents addObject:self.methodLabel];
     }
     
     // Do we have a story to display.
