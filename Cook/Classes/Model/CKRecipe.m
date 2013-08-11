@@ -559,8 +559,13 @@
             return [NSString stringWithFormat:@"%@::%@", ingredient.measurement,ingredient.name];
         }
     }];
+    
     _ingredients = ingredients;
-    [self.parseObject setObject:delimitedIngredients forKey:kRecipeAttrIngredients];
+    if ([_ingredients count] > 0) {
+        [self.parseObject setObject:delimitedIngredients forKey:kRecipeAttrIngredients];
+    } else {
+        [self.parseObject removeObjectForKey:kRecipeAttrIngredients];
+    }
 }
 
 - (NSArray *)ingredients {

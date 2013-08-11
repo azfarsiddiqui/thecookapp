@@ -107,7 +107,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         // Edit mode on fields.
         [self enableFieldsForEditMode:editMode];
         
-    } animated:YES];
+    } animated:NO]; // TODO Polish up animation.
     
     // Hide the pageLabel/textBox.
     CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
@@ -143,6 +143,15 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                          self.animating = NO;
                     }];
     
+}
+
+- (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails {
+    [self updateWithRecipeDetails:recipeDetails editMode:NO];
+}
+
+- (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode {
+    self.recipeDetails = recipeDetails;
+    [self enableEditMode:editMode];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -295,7 +304,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)layoutComponentsCompletion:(void (^)())completion animated:(BOOL)animated {
     if (animated) {
-        [UIView animateWithDuration:0.2
+        [UIView animateWithDuration:0.25
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
@@ -311,6 +320,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     } else {
         [self updateComponents];
         [self updateFrame];
+        if (completion != nil) {
+            completion();
+        }
     }
 }
 
@@ -400,7 +412,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self updateTitleFrame];
         [self updateLayoutOffsetVertical:self.titleLabel.frame.size.height];
     } else {
-        self.storyLabel.alpha = 0.0;
+        self.titleLabel.alpha = 0.0;
         [self updateTitleFrame];
     }
 

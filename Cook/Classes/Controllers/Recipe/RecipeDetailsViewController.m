@@ -1243,14 +1243,21 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 //    self.recipe.story = nil;
 //    self.recipe.name = nil;
 //    self.recipe.method = nil;
+//    self.recipe.ingredients = nil;
     
     // Create transfer object to display/edit.
     self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe];
     
     // Remove any existing.
+//    if (!self.recipeDetailsView) {
+//        self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];
+//    } else {
+//        [self.recipeDetailsView updateWithRecipeDetails:self.recipeDetails];
+//    }
+    
     [self.recipeDetailsView removeFromSuperview];
-    self.recipeDetailsView = nil;   // Need to nil this out, why??? Otherwise get dupes on scrollView.
-    self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];;
+    self.recipeDetailsView = nil;
+    self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];
     
     // Update the scrollView with the recipe details view.
     [self updateRecipeDetailsView];
