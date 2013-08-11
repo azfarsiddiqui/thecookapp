@@ -20,6 +20,8 @@
 @interface RecipeDetailsView : UIView
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate;
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode
+                   delegate:(id<RecipeDetailsViewDelegate>)delegate;
 - (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails;
 - (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode;
 - (void)enableEditMode:(BOOL)editMode;

@@ -72,6 +72,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 // Editing.
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) CKPrivacySliderView *privacyView;
@@ -107,6 +108,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     return self;
 }
 
+- (id)initWithBook:(CKBook *)book page:(NSString *)page {
+    if (self = [self initWithRecipe:[CKRecipe recipeForBook:book page:page]]) {
+        self.addMode = YES;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
@@ -135,10 +143,18 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         // Snap to the start viewport.
         [self snapToViewport:[self startViewPort] animated:YES completion:^{
             
-            // Load stuff.
-            [self updateButtons];
-            [self loadData];
-            
+            // Add mode?
+            if (self.addMode) {
+                [self performSelector:@selector(enableEditModeWithoutInformingRecipeDetailsView) withObject:nil afterDelay:0.0];
+//                [self performSelector:@selector(enableEditMode) withObject:nil afterDelay:0.0];
+            } else {
+                
+                // Load stuff.
+                [self updateButtons];
+                [self loadData];
+                
+            }
+
         }];
         
     } else {
@@ -957,10 +973,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     SnapViewport startViewPort = SnapViewportBottom;
     if (self.recipe && ![self.recipe hasPhotos]) {
         startViewPort = SnapViewportTop;
+    } else if (self.addMode) {
+        startViewPort = SnapViewportTop;
     }
-    
-    // TODO comment this out after dev.
-    startViewPort = SnapViewportTop;
     
     return startViewPort;
 }
@@ -1137,7 +1152,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)editTapped:(id)sender {
-    [self enableEditMode:YES];
+    [self enableEditMode];
 }
 
 - (void)shareTapped:(id)sender {
@@ -1145,8 +1160,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)cancelTapped:(id)sender {
-    [self initRecipeDetails];
-    [self enableEditMode:NO];
+    if (self.addMode) {
+        [self closeRecipeView];
+    } else {
+        [self initRecipeDetails];
+        [self enableEditMode:NO];
+    }
 }
 
 - (void)saveTapped:(id)sender {
@@ -1170,10 +1189,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                     completion:^{
                                         [self enableSaveMode:NO];
                                         [self enableEditMode:NO];
+                                        self.addMode = NO;
                                     }
                                        failure:^(NSError *error) {
                                            [self enableSaveMode:NO];
                                            [self enableEditMode:NO];
+                                           self.addMode = NO;
                                        }];
         
     } else {
@@ -1181,7 +1202,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Nothing to save.
         [self enableSaveMode:NO];
         [self enableEditMode:NO];
-        
+        self.addMode = NO;
     }
 }
 
@@ -1257,18 +1278,32 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     [self.recipeDetailsView removeFromSuperview];
     self.recipeDetailsView = nil;
-    self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];
+    self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails
+                                                                     editMode:self.addMode
+                                                                     delegate:self];
     
     // Update the scrollView with the recipe details view.
     [self updateRecipeDetailsView];
 }
 
+- (void)enableEditMode {
+    [self enableEditMode:YES];
+}
+
 - (void)enableEditMode:(BOOL)enable {
-    self.editMode = enable;
+    [self enableEditModeWithoutInformingRecipeDetailsView:enable];
     
-    // Prepare or discard recipe clipboard.
-    [self updateButtons];
+    // Inform recipe detailsView.
     [self.recipeDetailsView enableEditMode:enable];
+}
+
+- (void)enableEditModeWithoutInformingRecipeDetailsView {
+    [self enableEditModeWithoutInformingRecipeDetailsView:YES];
+}
+
+- (void)enableEditModeWithoutInformingRecipeDetailsView:(BOOL)enable {
+    self.editMode = enable;
+    [self updateButtons];
 }
 
 - (void)enableSaveMode:(BOOL)saveEnabled {

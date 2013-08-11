@@ -174,7 +174,7 @@
     CGFloat recipeSaveProgress = 0.1;
     
     if (image) {
-        
+        DLog(@"Saving image");
         CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
         [self setRecipeImage:recipeImage];
         
@@ -220,6 +220,8 @@
         }];
         
     } else {
+        
+        DLog(@"Saving recipe without an updated image.");
         
         // Now go ahead and save the recipe.
         [self saveInBackground:^{
@@ -344,15 +346,19 @@
 }
 
 - (void)numCommentsWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeCommentModelName];
-    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
-    [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        if (!error) {
-            success(number);
-        } else {
-            failure(error);
-        }
-    }];
+    if ([self persisted]) {
+        PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeCommentModelName];
+        [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
+        [likesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+            if (!error) {
+                success(number);
+            } else {
+                failure(error);
+            }
+        }];
+    } else {
+        failure(nil);
+    }
 }
 
 - (void)commentsWithCompletion:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {

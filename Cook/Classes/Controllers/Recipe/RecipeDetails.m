@@ -82,58 +82,58 @@
 #pragma mark - Properties.
 
 - (void)setPage:(NSString *)page {
+    _page = page;
     if (![self.originalRecipe.page CK_equalsIgnoreCase:page]) {
-        _page = page;
         self.saveRequired = YES;
     }
 }
 
 - (void)setName:(NSString *)name {
+    _name = name;
     if (![self.originalRecipe.name CK_equals:name]) {
-        _name = name;
         self.saveRequired = YES;
     }
 }
 
 - (void)setStory:(NSString *)story {
+    _story = story;
     if (![self.originalRecipe.story CK_equals:story]) {
-        _story = story;
         self.saveRequired = YES;
     }
 }
 
 - (void)setMethod:(NSString *)method {
+    _method = method;
     if (![self.originalRecipe.method CK_equals:method]) {
-        _method = method;
         self.saveRequired = YES;
     }
 }
 
 - (void)setNumServes:(NSInteger)numServes {
+    _numServes = numServes;
     if (self.originalRecipe.numServes != numServes) {
-        _numServes = numServes;
         self.saveRequired = YES;
     }
 }
 
 - (void)setPrepTimeInMinutes:(NSInteger)prepTimeInMinutes {
+    _prepTimeInMinutes = prepTimeInMinutes;
     if (self.originalRecipe.prepTimeInMinutes != prepTimeInMinutes) {
-        _prepTimeInMinutes = prepTimeInMinutes;
         self.saveRequired = YES;
     }
 }
 
 - (void)setCookingTimeInMinutes:(NSInteger)cookingTimeInMinutes {
+    _cookingTimeInMinutes = cookingTimeInMinutes;
     if (self.originalRecipe.cookingTimeInMinutes != cookingTimeInMinutes) {
-        _cookingTimeInMinutes = cookingTimeInMinutes;
         self.saveRequired = YES;
     }
 }
 
 - (void)setIngredients:(NSArray *)ingredients {
     BOOL ingredientsChanged = [self ingredientsChangedForIngredients:ingredients];
+    _ingredients = ingredients;
     if (ingredientsChanged) {
-        _ingredients = ingredients;
         self.saveRequired = YES;
     }
 }

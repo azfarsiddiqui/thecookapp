@@ -72,9 +72,15 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #define kContentInsets          (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate {
+    return [self initWithRecipeDetails:recipeDetails editMode:NO delegate:delegate];
+}
+
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode
+                   delegate:(id<RecipeDetailsViewDelegate>)delegate {
     
     if (self = [super initWithFrame:CGRectZero]) {
         
+        self.editMode = editMode;
         self.recipeDetails = recipeDetails;
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
@@ -83,7 +89,16 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         
         // Pre-layout updates.
         [self updateFrame];
-        [self layoutComponentsAnimated:NO];
+        
+        // Layout components.
+        [self layoutComponentsCompletion:^{
+            
+            // Edit mode on fields.
+            if (self.editMode) {
+                [self enableFieldsForEditMode:editMode];
+            }
+            
+        } animated:NO]; // TODO Polish up animation.
         
     }
     return self;

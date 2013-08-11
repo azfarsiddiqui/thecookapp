@@ -10,9 +10,11 @@
 #import "BookModalViewController.h"
 
 @class CKRecipe;
+@class CKBook;
 
 @interface RecipeDetailsViewController : UIViewController <BookModalViewController>
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
+- (id)initWithBook:(CKBook *)book page:(NSString *)page;
 
 @end
