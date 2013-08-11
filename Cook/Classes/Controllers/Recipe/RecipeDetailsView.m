@@ -102,10 +102,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     self.editMode = editMode;
     
     // Relayout to make sure missing fields appear.
-    [self layoutComponents];
-    
-    // Edit mode on fields.
-    [self enableFieldsForEditMode:editMode];
+    [self layoutComponentsCompletion:^{
+        
+        // Edit mode on fields.
+        [self enableFieldsForEditMode:editMode];
+        
+    } animated:YES];
     
     // Hide the pageLabel/textBox.
     CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
@@ -127,7 +129,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                          pageTextBoxView.alpha = editMode ? 1.0 : 0.0;
                          
                          // Fade the divider lines.
-                         self.storyDividerView.alpha = editMode ? 0.0 : 1.0;
                          self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
                          self.ingredientsDividerView.alpha = editMode ? 0.0 : 1.0;
                          
@@ -285,7 +286,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #pragma mark - Private methods
 
 - (void)layoutComponents {
-    [self layoutComponentsAnimated:NO];
+    [self layoutComponentsAnimated:YES];
 }
 
 - (void)layoutComponentsAnimated:(BOOL)animated {
@@ -294,7 +295,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)layoutComponentsCompletion:(void (^)())completion animated:(BOOL)animated {
     if (animated) {
-        [UIView animateWithDuration:0.3
+        [UIView animateWithDuration:0.2
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
@@ -320,7 +321,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     [self updateProfilePhoto];
     [self updateTitle];
-    [self updateTags];
     [self updateStory];
     [self updateContentDivider];
     [self updateServesCook];
@@ -382,60 +382,58 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateTitle {
     if (!self.titleLabel) {
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        titleLabel.font = [Theme recipeNameFont];
-        titleLabel.textColor = [Theme recipeNameColor];
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        titleLabel.shadowColor = [UIColor whiteColor];
-        titleLabel.hidden = YES;
-        [self addSubview:titleLabel];
-        self.titleLabel = titleLabel;
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.titleLabel.font = [Theme recipeNameFont];
+        self.titleLabel.textColor = [Theme recipeNameColor];
+        self.titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.titleLabel.backgroundColor = [UIColor clearColor];
+        self.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        self.titleLabel.shadowColor = [UIColor whiteColor];
+        self.titleLabel.alpha = 0.0;
+        [self updateTitleFrame];
+        [self addSubview:self.titleLabel];
     }
     
-    // Do we have a title to display.
-    if (![self.recipeDetails.name CK_blank]) {
-        self.titleLabel.hidden = NO;
-        self.titleLabel.text = [[self.recipeDetails.name CK_whitespaceTrimmed] uppercaseString];
-        CGSize size = [self.titleLabel sizeThatFits:(CGSize){ kMaxTitleWidth, MAXFLOAT }];
-        self.titleLabel.frame = (CGRect){
-            floorf((self.bounds.size.width - size.width) / 2.0),
-            self.layoutOffset.y,
-            size.width,
-            size.height
-        };
-        
-        // Update layout offset.
-        [self updateLayoutOffsetVertical:size.height];
+    // Display if not-blank or in editMode.
+    if (![self.recipeDetails.name CK_blank] || self.editMode) {
+        self.titleLabel.alpha = 1.0;
+        [self updateTitleFrame];
+        [self updateLayoutOffsetVertical:self.titleLabel.frame.size.height];
+    } else {
+        self.storyLabel.alpha = 0.0;
+        [self updateTitleFrame];
     }
+
 }
 
-- (void)updateTags {
-    if (!self.tagsView) {
-        UIView *tagsView = [[UIView alloc] initWithFrame:CGRectZero];
-        tagsView.hidden = YES;
-        [self addSubview:tagsView];
-        self.tagsView = tagsView;
+- (void)updateTitleFrame {
+    NSString *name = self.recipeDetails.name;
+    
+    if ([self.recipeDetails.name CK_blank]) {
+        name = @"TITLE";
     }
     
-    // Do we have any tags to display.
-    if ([self.recipeDetails.tags count] > 0) {
-        
-        // TODO adjust frame
-        
-        self.tagsView.hidden = NO;
-    }
+    self.titleLabel.text = [[name CK_whitespaceTrimmed] uppercaseString];
+    CGSize size = [self.titleLabel sizeThatFits:(CGSize){ kMaxTitleWidth, MAXFLOAT }];
+    self.titleLabel.frame = (CGRect){
+        floorf((self.bounds.size.width - size.width) / 2.0),
+        self.layoutOffset.y,
+        size.width,
+        size.height
+    };
 }
 
 - (void)updateStory {
+    CGFloat dividerStoryGap = 5.0;
+    
     if (!self.storyLabel) {
         
         // Top quote divider.
         self.storyDividerView = [self createQuoteDividerView];
-        self.storyDividerView.hidden = YES;
+        self.storyDividerView.alpha = 0.0;
         [self addSubview:self.storyDividerView];
         
+        // Story label.
         self.storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.storyLabel.font = [Theme storyFont];
         self.storyLabel.textColor = [Theme storyColor];
@@ -445,37 +443,49 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         self.storyLabel.shadowColor = [UIColor whiteColor];
         self.storyLabel.userInteractionEnabled = NO;
-        self.storyLabel.hidden = YES;
+        self.storyLabel.alpha = 0.0;
         [self addSubview:self.storyLabel];
+        
+        [self updateStoryFrame];
     }
     
     // Display if not-blank or in editMode.
     if (![self.recipeDetails.story CK_blank] || self.editMode) {
+        self.storyDividerView.alpha = self.editMode ? 0.0 : 1.0;
+        self.storyLabel.alpha = 1.0;
+        [self updateStoryFrame];
+        [self updateLayoutOffsetVertical:self.storyDividerView.frame.size.height + dividerStoryGap + self.storyLabel.frame.size.height];
         
-        self.storyDividerView.hidden = NO;
-        self.storyLabel.hidden = NO;
-        
-        CGFloat dividerStoryGap = 5.0;
-        
-        self.storyDividerView.frame = (CGRect){
-            floorf((self.bounds.size.width - self.storyDividerView.frame.size.width) / 2.0),
-            self.layoutOffset.y,
-            self.storyDividerView.frame.size.width,
-            self.storyDividerView.frame.size.height
-        };
-        
-        self.storyLabel.text = self.editMode ? @"STORY" : self.recipeDetails.story;
-        CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
-        self.storyLabel.frame = (CGRect){
-            floorf((self.bounds.size.width - size.width) / 2.0),
-            self.storyDividerView.frame.origin.y + self.storyDividerView.frame.size.height + dividerStoryGap,
-            size.width,
-            size.height
-        };
-        
-        [self updateLayoutOffsetVertical:self.storyDividerView.frame.size.height + dividerStoryGap + size.height];
-        
+    } else {
+        self.storyLabel.alpha = 0.0;
+        [self updateStoryFrame];
     }
+}
+
+- (void)updateStoryFrame {
+    NSString *story = self.recipeDetails.story;
+    
+    if ([self.recipeDetails.story CK_blank]) {
+        story = @"STORY";
+    }
+    
+    CGFloat dividerStoryGap = 5.0;
+    
+    self.storyDividerView.frame = (CGRect){
+        floorf((self.bounds.size.width - self.storyDividerView.frame.size.width) / 2.0),
+        self.layoutOffset.y,
+        self.storyDividerView.frame.size.width,
+        self.storyDividerView.frame.size.height
+    };
+    
+    self.storyLabel.text = story;
+    CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
+    self.storyLabel.frame = (CGRect){
+        floorf((self.bounds.size.width - size.width) / 2.0),
+        self.storyDividerView.frame.origin.y + self.storyDividerView.frame.size.height + dividerStoryGap,
+        size.width,
+        size.height
+    };
 }
 
 - (void)updateContentDivider {

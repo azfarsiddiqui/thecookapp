@@ -47,74 +47,68 @@
 #pragma mark - Private methods
 
 - (void)updateServes {
-    if (self.recipeDetails.numServes >= 0) {
-        
-        UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
-        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.numServes]];
-        CGRect servesFrame = servesStatView.frame;
-        CGRect imageFrame = servesImageView.frame;
-        servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
-        servesStatView.frame = servesFrame;
-        
-        CGRect combinedFrame = CGRectUnion(imageFrame, servesFrame);
-        UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
-        containerView.backgroundColor = [UIColor clearColor];
-        imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
-        servesImageView.frame = imageFrame;
-        servesFrame.origin.y = floorf((combinedFrame.size.height - servesFrame.size.height) / 2.0) + kStatViewOffset;
-        servesStatView.frame = servesFrame;
-        
-        [containerView addSubview:servesImageView];
-        [containerView addSubview:servesStatView];
-        [self addSubview:containerView];
-        
-        self.layoutOffset += containerView.frame.size.height;
-    }
+    UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
+    UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.numServes]];
+    CGRect servesFrame = servesStatView.frame;
+    CGRect imageFrame = servesImageView.frame;
+    servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
+    servesStatView.frame = servesFrame;
+    
+    CGRect combinedFrame = CGRectUnion(imageFrame, servesFrame);
+    UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
+    containerView.backgroundColor = [UIColor clearColor];
+    imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
+    servesImageView.frame = imageFrame;
+    servesFrame.origin.y = floorf((combinedFrame.size.height - servesFrame.size.height) / 2.0) + kStatViewOffset;
+    servesStatView.frame = servesFrame;
+    
+    [containerView addSubview:servesImageView];
+    [containerView addSubview:servesStatView];
+    [self addSubview:containerView];
+    
+    self.layoutOffset += containerView.frame.size.height;
 }
 
 - (void)updatePrepCook {
-    if (self.recipeDetails.prepTimeInMinutes >= 0 || self.recipeDetails.cookingTimeInMinutes >= 0) {
-        
-        CGFloat prepCookGap = 20.0;
-        
-        UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
-        CGRect imageFrame = prepCookImageView.frame;
-        
-        UIView *prepStatView = [self viewForStatText:@"Prep" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.prepTimeInMinutes]];
-        CGRect prepFrame = prepStatView.frame;
-        prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
-        prepStatView.frame = prepFrame;
-        
-        UIView *cookStatView = [self viewForStatText:@"Cook" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.cookingTimeInMinutes]];
-        CGRect cookFrame = cookStatView.frame;
-        cookFrame.origin.x = prepFrame.origin.x + prepFrame.size.width + prepCookGap;
-        cookStatView.frame = cookFrame;
-        
-        CGRect combinedFrame = CGRectUnion(prepCookImageView.frame, prepFrame);
-        combinedFrame = CGRectUnion(combinedFrame, cookFrame);
-        
-        UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
-        CGRect containerFrame = containerView.frame;
-        containerFrame.origin.y = kStatRowGap + self.layoutOffset;
-        containerView.frame = containerFrame;
-        containerView.backgroundColor = [UIColor clearColor];
-        
-        imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
-        prepCookImageView.frame = imageFrame;
-        prepFrame.origin.y = floorf((combinedFrame.size.height - prepFrame.size.height) / 2.0) + kStatViewOffset;
-        prepStatView.frame = prepFrame;
-        cookFrame.origin.y = floorf((combinedFrame.size.height - cookFrame.size.height) / 2.0) + kStatViewOffset;
-        cookStatView.frame = cookFrame;
-        prepCookImageView.frame = imageFrame;
-        prepStatView.frame = prepFrame;
-        cookStatView.frame = cookFrame;
-        [containerView addSubview:prepCookImageView];
-        [containerView addSubview:prepStatView];
-        [containerView addSubview:cookStatView];
-        [self addSubview:containerView];
-        
-        self.layoutOffset += kStatRowGap + containerView.frame.size.height;
-    }
+    CGFloat prepCookGap = 20.0;
+    
+    UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
+    CGRect imageFrame = prepCookImageView.frame;
+    
+    UIView *prepStatView = [self viewForStatText:@"Prep" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.prepTimeInMinutes]];
+    CGRect prepFrame = prepStatView.frame;
+    prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
+    prepStatView.frame = prepFrame;
+    
+    UIView *cookStatView = [self viewForStatText:@"Cook" statValue:[NSString stringWithFormat:@"%d", self.recipeDetails.cookingTimeInMinutes]];
+    CGRect cookFrame = cookStatView.frame;
+    cookFrame.origin.x = prepFrame.origin.x + prepFrame.size.width + prepCookGap;
+    cookStatView.frame = cookFrame;
+    
+    CGRect combinedFrame = CGRectUnion(prepCookImageView.frame, prepFrame);
+    combinedFrame = CGRectUnion(combinedFrame, cookFrame);
+    
+    UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
+    CGRect containerFrame = containerView.frame;
+    containerFrame.origin.y = kStatRowGap + self.layoutOffset;
+    containerView.frame = containerFrame;
+    containerView.backgroundColor = [UIColor clearColor];
+    
+    imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
+    prepCookImageView.frame = imageFrame;
+    prepFrame.origin.y = floorf((combinedFrame.size.height - prepFrame.size.height) / 2.0) + kStatViewOffset;
+    prepStatView.frame = prepFrame;
+    cookFrame.origin.y = floorf((combinedFrame.size.height - cookFrame.size.height) / 2.0) + kStatViewOffset;
+    cookStatView.frame = cookFrame;
+    prepCookImageView.frame = imageFrame;
+    prepStatView.frame = prepFrame;
+    cookStatView.frame = cookFrame;
+    [containerView addSubview:prepCookImageView];
+    [containerView addSubview:prepStatView];
+    [containerView addSubview:cookStatView];
+    [self addSubview:containerView];
+    
+    self.layoutOffset += kStatRowGap + containerView.frame.size.height;
 }
 
 - (void)updateFrame {
