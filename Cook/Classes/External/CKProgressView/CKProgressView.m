@@ -21,8 +21,8 @@
     if (self = [super initWithProgressViewStyle:UIProgressViewStyleDefault]) {
         self.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
         
-        self.trackImage = [[UIImage imageNamed:@"cook_recipe_progressbar_bg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 8.0, 0.0, 8.0)];
-        self.progressImage = [[UIImage imageNamed:@"cook_recipe_progressbar_inner.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 8.0, 0.0, 8.0)];
+        self.trackImage = [[UIImage imageNamed:@"cook_book_recipe_progressbar_bg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 9.0, 0.0, 9.0)];
+        self.progressImage = [[UIImage imageNamed:@"cook_book_recipe_progressbar_inner.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 9.0, 0.0, 9.0)];
         
         // Fix the width.
         CGRect frame = self.frame;
