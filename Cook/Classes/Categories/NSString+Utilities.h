@@ -17,7 +17,7 @@
 - (BOOL)CK_equalsIgnoreCase:(NSString *)string;
 - (BOOL)CK_equals:(NSString *)string;
 - (NSString *)CK_whitespaceTrimmed;
-- (BOOL)CK_blank;
+- (BOOL)CK_containsText;
 - (NSString *)CK_truncatedStringToLength:(NSInteger)length;
 - (NSInteger)wordCount;
 

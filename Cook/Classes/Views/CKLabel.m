@@ -106,7 +106,7 @@
 }
 
 - (BOOL)textIsEmpty {
-    return (!self.text || !self.attributedText || [self.text CK_blank] || [self.attributedText.string CK_blank]);
+    return (!self.text || !self.attributedText || [self.text CK_containsText] || [self.attributedText.string CK_containsText]);
 }
 
 @end

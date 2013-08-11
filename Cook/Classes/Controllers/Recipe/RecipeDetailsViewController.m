@@ -143,16 +143,17 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         // Snap to the start viewport.
         [self snapToViewport:[self startViewPort] animated:YES completion:^{
             
+            [self loadData];
+            
             // Add mode?
             if (self.addMode) {
-                [self performSelector:@selector(enableEditModeWithoutInformingRecipeDetailsView) withObject:nil afterDelay:0.0];
-//                [self performSelector:@selector(enableEditMode) withObject:nil afterDelay:0.0];
+//                [self performSelector:@selector(enableEditModeWithoutInformingRecipeDetailsView) withObject:nil afterDelay:0.0];
+                
+                // No buttons to start off with in add-mode.
+                [self updateButtonsWithAlpha:0.0];
+                [self performSelector:@selector(enableEditMode) withObject:nil afterDelay:0.0];
             } else {
-                
-                // Load stuff.
                 [self updateButtons];
-                [self loadData];
-                
             }
 
         }];
@@ -506,9 +507,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         floorf((imageView.bounds.size.height - photoButtonFrame.size.height) / 2.0)
     };
     self.photoButtonView.frame = photoButtonFrame;
+    self.photoButtonView.alpha = [self currentAlphaForPhotoButtonView];
     self.photoButtonView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     [self.imageView addSubview:self.photoButtonView];
-    self.photoButtonView.hidden = YES;
     
     // Register tap on background image for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTapped:)];
@@ -1279,7 +1280,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.recipeDetailsView removeFromSuperview];
     self.recipeDetailsView = nil;
     self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails
-                                                                     editMode:self.addMode
                                                                      delegate:self];
     
     // Update the scrollView with the recipe details view.

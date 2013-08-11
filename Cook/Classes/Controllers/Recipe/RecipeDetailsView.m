@@ -422,7 +422,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Display if not-blank or in editMode.
-    if (![self.recipeDetails.name CK_blank] || self.editMode) {
+    if ([self.recipeDetails.name CK_containsText] || self.editMode) {
         self.titleLabel.alpha = 1.0;
         [self updateTitleFrame];
         [self updateLayoutOffsetVertical:self.titleLabel.frame.size.height];
@@ -436,7 +436,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateTitleFrame {
     NSString *name = self.recipeDetails.name;
     
-    if ([self.recipeDetails.name CK_blank]) {
+    if (![self.recipeDetails.name CK_containsText]) {
         name = @"TITLE";
     }
     
@@ -477,7 +477,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Display if not-blank or in editMode.
-    if (![self.recipeDetails.story CK_blank] || self.editMode) {
+    if ([self.recipeDetails.story CK_containsText] || self.editMode) {
         self.storyDividerView.alpha = self.editMode ? 0.0 : 1.0;
         self.storyLabel.alpha = 1.0;
         [self updateStoryFrame];
@@ -492,7 +492,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateStoryFrame {
     NSString *story = self.recipeDetails.story;
     
-    if ([self.recipeDetails.story CK_blank]) {
+    if (![self.recipeDetails.story CK_containsText]) {
         story = @"STORY";
     }
     
@@ -615,7 +615,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Display if not-blank or in editMode.
-    if (![self.recipeDetails.method CK_blank] || self.editMode) {
+    if ([self.recipeDetails.method CK_containsText] || self.editMode) {
         self.methodLabel.alpha = 1.0;
         [self updateMethodFrame];
         [self updateLayoutOffsetVertical:self.titleLabel.frame.size.height];
@@ -628,7 +628,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateMethodFrame {
     NSString *method = self.recipeDetails.method;
     
-    if ([self.recipeDetails.method CK_blank]) {
+    if (![self.recipeDetails.method CK_containsText]) {
         method = @"METHOD";
     }
     
