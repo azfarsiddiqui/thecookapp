@@ -27,6 +27,7 @@
 #import "UIImage+ProportionalFill.h"
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
+#import "BookNavigationHelper.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -77,6 +78,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIView *photoButtonView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
+@property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) CKProgressView *progressView;
 
 // Social layer.
 @property (nonatomic, strong) BookSocialViewController *bookSocialViewController;
@@ -1147,19 +1150,92 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)saveTapped:(id)sender {
+    [self saveRecipe];
+}
+
+- (void)saveRecipe {
+    
     DLog(@"saveRequired: %@", [NSString CK_stringForBoolean:self.recipeDetails.saveRequired]);
     if (self.recipeDetails.saveRequired) {
         
         // Transfer updated values to the current recipe.
         [self.recipeDetails updateToRecipe:self.recipe];
         
-        // Enable save mode.
+        // Enable save mode to hide all buttons and show black overlay.
         [self enableSaveMode:YES];
         
-        // TODO.
-
+        // Save off the recipe that span 0.1 and 0.9 progress, with the remaining 0.1 for laying out the book.
+        [self saveRecipeWithImageStartProgress:0.1
+                                   endProgress:0.9
+                                    completion:^{
+                                        [self enableSaveMode:NO];
+                                        [self enableEditMode:NO];
+                                    }
+                                       failure:^(NSError *error) {
+                                           [self enableSaveMode:NO];
+                                           [self enableEditMode:NO];
+                                       }];
+        
+    } else {
+        
+        // Nothing to save.
+        [self enableSaveMode:NO];
+        [self enableEditMode:NO];
+        
     }
 }
+
+- (void)saveRecipeWithImageStartProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress {
+    [self saveRecipeWithImageStartProgress:startProgress endProgress:endProgress completion:nil failure:nil];
+}
+
+- (void)saveRecipeWithImageStartProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
+                              completion:(void (^)())completion failure:(void (^)(NSError *))failure {
+    
+    // Keep a weak reference of the progressView for tracking of updates.
+    __weak CKProgressView *weakProgressView = self.progressView;
+    
+    [self.recipe saveWithImage:self.recipeDetails.image startProgress:startProgress endProgress:endProgress
+                      progress:^(int percentDone) {
+                          [weakProgressView setProgress:(percentDone / 100.0) animated:YES];
+                      }
+                    completion:^{
+                        
+                        // Ask the opened book to relayout.
+                        if ([self.recipeDetails pageUpdated]) {
+                            [[BookNavigationHelper sharedInstance] updateBookNavigationWithRecipe:self.recipe
+                                                                                       completion:^{
+                                                                                           
+                                                                                           // Run completion.
+                                                                                           if (completion != nil) {
+                                                                                               completion();
+                                                                                           }
+                                                                                           
+                                                                                       }];
+                        } else {
+                            
+                            // Set 100% progress completion.
+                            [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                
+                                // Run completion.
+                                if (completion != nil) {
+                                    completion();
+                                }
+                                
+                            }];
+                            
+                        }
+                    }
+                       failure:^(NSError *error) {
+                           
+                           // Run failure.
+                           if (failure != nil) {
+                               failure(error);
+                           }
+                           
+                       }];
+}
+
 
 - (void)initRecipeDetails {
     
@@ -1189,19 +1265,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)enableSaveMode:(BOOL)saveEnabled {
-    self.editMode = NO;
-    [self.recipeDetailsView enableEditMode:NO];
     
     // Hide all buttons.
     if (saveEnabled) {
         [self hideButtons];
-    } else {
-        [self updateButtons];
     }
     
-    
-    
-    
+    // Fade in/out the overlay.
+    [self showProgressOverlayView:saveEnabled];
 }
 
 - (void)updateRecipeDetailsView {
@@ -1259,5 +1330,53 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                      }];
 }
 
+- (void)showProgressOverlayView:(BOOL)show {
+    [self showProgressOverlayView:show completion:nil];
+}
+
+- (void)showProgressOverlayView:(BOOL)show completion:(void (^)())completion {
+    if (show) {
+        self.overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        self.overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.7];
+        self.overlayView.userInteractionEnabled = YES;  // To block touches.
+        self.overlayView.alpha = 0.0;
+        [self.view addSubview:self.overlayView];
+        
+        // Add progress view.
+        CGFloat statusBarOffset = 20.0;
+        CGFloat topOffset = [self offsetForViewport:SnapViewportTop];
+        CKProgressView *progressView = [[CKProgressView alloc] initWithWidth:300.0];
+        progressView.frame = CGRectMake(floorf((self.overlayView.bounds.size.width - progressView.frame.size.width) / 2.0),
+                                        statusBarOffset + floorf((topOffset - statusBarOffset - progressView.frame.size.height) / 2.0),
+                                        progressView.frame.size.width,
+                                        progressView.frame.size.height);
+        [self.overlayView addSubview:progressView];
+        self.progressView = progressView;
+    }
+    
+    [UIView animateWithDuration:show ? 0.3 : 0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.overlayView.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (show) {
+                             
+                             // Mark 10% progress to start off with.
+                             [self.progressView setProgress:0.1];
+                             
+                         } else {
+                             
+                             [self.overlayView removeFromSuperview];
+                             self.overlayView = nil;
+                         }
+                         
+                         if (completion != nil) {
+                             completion();
+                         }
+                     }];
+}
 
 @end
