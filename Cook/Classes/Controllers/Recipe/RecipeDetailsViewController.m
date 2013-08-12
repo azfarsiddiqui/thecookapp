@@ -93,7 +93,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
 #define kContentTopOffset   64.0
-#define kHeaderHeight       230.0
+#define kHeaderHeight       280.0
 #define kDragRatio          0.9
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
 
