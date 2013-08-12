@@ -173,7 +173,7 @@
     
     if ([recipe hasPhotos]) {
         
-        CGSize imageSize = [recipeCell imageSize];
+        CGSize imageSize = [BookRecipeCollectionViewCell imageSize];
         [self.photoStore imageForParseFile:[recipe imageFile]
                                       size:imageSize
                                  indexPath:indexPath

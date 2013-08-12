@@ -50,6 +50,10 @@
 #define kStoryTopOffset         30.0
 #define kContentInsets          UIEdgeInsetsMake(30.0, 40.0, 20.0, 40.0)
 
++ (CGSize)imageSize {
+    return kImageSize;
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
@@ -178,10 +182,6 @@
         self.topRoundedMaskImageView.alpha = 0.0;
         self.bottomShadowImageView.alpha = 0.0;
     }
-}
-
-- (CGSize)imageSize {
-    return kImageSize;
 }
 
 - (void)setSelected:(BOOL)selected {
