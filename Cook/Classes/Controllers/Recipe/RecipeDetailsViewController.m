@@ -62,6 +62,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) SnapViewport previousViewport;
 @property (nonatomic, assign) BOOL draggingDown;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, assign) BOOL pullingBottom;
 
 // Normal controls.
 @property (nonatomic, strong) UIButton *closeButton;
@@ -315,7 +316,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     NSLog(@"contentOffset %f", scrollView.contentOffset.y);
     
     CGRect contentFrame = self.scrollView.frame;
+    CGSize contentSize = self.scrollView.contentSize;
     CGPoint contentOffset = scrollView.contentOffset;
+    self.pullingBottom = NO;
     
     // Scroll view is now pulling its own frame down.
     if (contentOffset.y <= 0) {
@@ -339,6 +342,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             contentFrame.origin.y = MAX([self offsetForViewport:SnapViewportTop], contentFrame.origin.y);
             self.scrollView.frame = contentFrame;
         }
+        
+    } else if (contentOffset.y > contentSize.height - contentFrame.size.height) {
+        self.pullingBottom = YES;
     }
 }
 
@@ -350,17 +356,23 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     NSLog(@"scrollViewDidEndDragging willDecelerate[%@]", decelerate ? @"YES" : @"NO");
-    [self panSnapIfRequired];
+    if (!self.pullingBottom) {
+        [self panSnapIfRequired];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     NSLog(@"scrollViewDidEndDecelerating");
-    [self panSnapIfRequired];
+    if (!self.pullingBottom) {
+        [self panSnapIfRequired];
+    }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     NSLog(@"scrollViewDidEndScrollingAnimation");
-    [self panSnapIfRequired];
+    if (!self.pullingBottom) {
+        [self panSnapIfRequired];
+    }
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
