@@ -198,6 +198,8 @@
                                         [recipeCell configureImage:image];
                                     }
                                 }];
+    } else {
+        [recipeCell configureImage:nil];
     }
 }
 
