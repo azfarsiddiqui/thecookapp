@@ -873,7 +873,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size updated:(BOOL)updated {
-    [self updateEditModeOnView:view toDisplayAsSize:size padDirection:EditPadDirectionLeftRight updated:updated];
+    [self updateEditModeOnView:view toDisplayAsSize:size padDirection:EditPadDirectionLeftRight updated:NO];
+    // TODO Removed updated cell indivate value changed.
+    // [self updateEditModeOnView:view toDisplayAsSize:size padDirection:EditPadDirectionLeftRight updated:updated];
 }
 
 - (void)updateEditModeOnView:(UIView *)view toDisplayAsSize:(CGSize)size padDirection:(EditPadDirection)padDirection {
