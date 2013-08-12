@@ -331,7 +331,7 @@
     
     if (self.benchtopLevel == kStoreLevel
         && CGRectIntersection(self.view.bounds,
-                              self.benchtopViewController.view.frame).size.height > self.view.bounds.size.height - [self.storeViewController visibleHeight] - [self.storeViewController bottomShadowHeight] - kSnapHeight) {
+                              self.storeViewController.view.frame).size.height < [self.storeViewController visibleHeight] - kSnapHeight) {
         
         toggleLevel = kBenchtopLevel;
         
