@@ -17,7 +17,6 @@
 #import "BookModalViewController.h"
 #import "WelcomeViewController.h"
 #import "EventHelper.h"
-#import "RecipeViewController.h"
 #import "RecipeDetailsViewController.h"
 #import "BookNavigationHelper.h"
 #import "BookNavigationStackViewController.h"
@@ -40,7 +39,7 @@
 @property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
 @property (nonatomic, assign) BOOL panEnabled;
 @property (nonatomic, assign) NSUInteger benchtopLevel;
-@property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) UIView *modalOverlayView;
 @property (nonatomic, strong) UIView *benchtopOverlayView;  // Darker overlay to dim the benchtop between levels.
 @property (nonatomic, strong) UIImageView *defaultImageView;
 
@@ -54,7 +53,7 @@
 #define kStoreLevel                     2
 #define kBenchtopLevel                  1
 #define kSettingsLevel                  0
-#define kOverlayViewAlpha               0.3
+#define kOverlayViewAlpha               0.5
 #define kBookScaleTransform             0.9
 #define kMaxBenchtopOverlayAlpha        1.0
 
@@ -669,17 +668,12 @@
 }
 
 - (void)viewRecipe:(CKRecipe *)recipe {
-//    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithRecipe:recipe book:self.selectedBook];
     RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
-    
     [self showModalViewController:recipeViewController];
 }
 
 - (void)addRecipeForBook:(CKBook *)book page:(NSString *)page {
-//    RecipeViewController *recipeViewController = [[RecipeViewController alloc] initWithBook:self.selectedBook
-//                                                                                       page:page];
-    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:self.selectedBook
-                                                                                                     page:page];
+    RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithBook:self.selectedBook page:page];
     [self showModalViewController:recipeViewController];
 }
 
@@ -696,11 +690,11 @@
     self.panEnabled = NO;
     
     // Prepare the dimView
-    UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-    overlayView.backgroundColor = [UIColor blackColor];
-    overlayView.alpha = 0.0;
-    [self.view addSubview:overlayView];
-    self.overlayView = overlayView;
+    self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.modalOverlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kOverlayViewAlpha];
+    self.modalOverlayView.alpha = 0.0;
+    [self.view addSubview:self.modalOverlayView];
     
     // Prepare the modalVC to be transitioned.
     modalViewController.view.frame = self.view.bounds;
@@ -715,11 +709,8 @@
     [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
                               withObject:[NSNumber numberWithBool:YES]];
     
-    // Animate the book back, and slide up the modalVC.
-    CGAffineTransform transform = [self bookScaleTransform];
-    
     // Inform book navigation it is about to become inactive.
-    [self.bookNavigationViewController setActive:NO];
+    // [self.bookNavigationViewController setActive:NO];
     
     [UIView animateWithDuration:0.4
                           delay:0.0
@@ -727,11 +718,7 @@
                      animations:^{
                      
                          // Fade in overlay.
-//                         overlayView.alpha = kOverlayViewAlpha;
-                     
-//                         // Scale back.
-//                         self.bookCoverViewController.view.transform = transform;
-//                         self.bookNavigationViewController.view.transform = transform;
+                         self.modalOverlayView.alpha = 1.0;
                      
                          // Slide up the modal.
                          modalViewController.view.transform = CGAffineTransformIdentity;
@@ -753,7 +740,7 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.overlayView.alpha = 0.0;
+                         self.modalOverlayView.alpha = 0.0;
                          self.bookNavigationViewController.view.transform = CGAffineTransformIdentity;
                          self.bookCoverViewController.view.transform = CGAffineTransformIdentity;
                          modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
@@ -762,14 +749,16 @@
                          [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
                                                    withObject:[NSNumber numberWithBool:NO]];
                          
-                         [self.overlayView removeFromSuperview];
-                         self.overlayView = nil;
+                         // Get rid of overlay.
+                         [self.modalOverlayView removeFromSuperview];
+                         self.modalOverlayView = nil;
+                         
+                         // Get rid of modalVC and reference to it.
                          [modalViewController.view removeFromSuperview];
                          self.bookModalViewController = nil;
                          
-                         // Book navigation becomes active.
                          // Inform book navigation it is about to become inactive.
-                         [self.bookNavigationViewController setActive:YES];
+                         // [self.bookNavigationViewController setActive:YES];
                          
                          // Re-enable panning.
                          self.panEnabled = YES;
