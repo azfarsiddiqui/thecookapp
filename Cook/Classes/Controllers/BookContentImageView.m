@@ -47,6 +47,44 @@
 - (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder {
     self.imageView.image = image;
     self.vignetteOverlayView.hidden = placeholder;
+    
+    if (!image) {
+        return;
+    }
+    
+    if (image) {
+        
+        // Fade image in if there were no prior images.
+        if (!self.imageView.image) {
+            
+            // Prep imageView to be faded in.
+            self.imageView.alpha = 0.0;
+            self.imageView.image = image;
+            self.vignetteOverlayView.hidden = NO;
+            self.vignetteOverlayView.alpha = 0.0;
+            
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.imageView.alpha = 1.0;
+                                 self.vignetteOverlayView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished)  {
+                             }];
+            
+        } else {
+            
+            // Otherwise change image straight away.
+            self.imageView.image = image;
+            self.vignetteOverlayView.hidden = YES;
+        }
+        
+    } else {
+        self.imageView.image = nil;
+        self.vignetteOverlayView.hidden = YES;
+    }
+    
 }
 
 #pragma mark - Properties
