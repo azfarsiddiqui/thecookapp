@@ -91,9 +91,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @implementation RecipeDetailsViewController
 
 #define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
+#define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 15.0, 5.0)
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
-#define kContentTopOffset   64.0
+#define kContentTopOffset   94.0
 #define kHeaderHeight       280.0
 #define kDragRatio          0.9
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
@@ -314,6 +315,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //    NSLog(@"contentOffset %f", scrollView.contentOffset.y);
+//    NSLog(@"scrollView.frame.origin.y %f", scrollView.frame.origin.y);
     
     CGRect contentFrame = self.scrollView.frame;
     CGSize contentSize = self.scrollView.contentSize;
@@ -460,8 +462,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (!_cancelButton) {
         _cancelButton = [ViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
         _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_cancelButton setFrame:CGRectMake(kButtonInsets.left,
-                                           kButtonInsets.top,
+        [_cancelButton setFrame:CGRectMake(kEditButtonInsets.left,
+                                           kEditButtonInsets.top,
                                            _cancelButton.frame.size.width,
                                            _cancelButton.frame.size.height)];
     }
@@ -472,8 +474,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (!_saveButton) {
         _saveButton = [ViewHelper okButtonWithTarget:self selector:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kButtonInsets.right,
-                                         kButtonInsets.top,
+        [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kEditButtonInsets.right,
+                                         kEditButtonInsets.top,
                                          _saveButton.frame.size.width,
                                          _saveButton.frame.size.height)];
     }
