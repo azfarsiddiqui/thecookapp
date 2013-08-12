@@ -596,7 +596,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     scrollView.alwaysBounceVertical = YES;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.delegate = self;
-    scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+//    scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     scrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:scrollView];
     self.scrollView = scrollView;
