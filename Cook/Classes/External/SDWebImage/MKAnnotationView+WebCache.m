@@ -49,16 +49,20 @@ static char operationKey;
         __weak MKAnnotationView *wself = self;
         id<SDWebImageOperation> operation = [SDWebImageManager.sharedManager downloadWithURL:url options:options progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished)
         {
-            __strong MKAnnotationView *sself = wself;
-            if (!sself) return;
-            if (image)
+            if (!wself) return;
+            dispatch_main_sync_safe(^
             {
-                sself.image = image;
-            }
-            if (completedBlock && finished)
-            {
-                completedBlock(image, error, cacheType);
-            }
+                __strong MKAnnotationView *sself = wself;
+                if (!sself) return;
+                if (image)
+                {
+                    sself.image = image;
+                }
+                if (completedBlock && finished)
+                {
+                    completedBlock(image, error, cacheType);
+                }
+            });
         }];
         objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }

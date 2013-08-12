@@ -589,6 +589,10 @@
 		76D2BF6117B8C43100BA46A1 /* cook_book_graphic_lobster@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76D2BF5F17B8C43100BA46A1 /* cook_book_graphic_lobster@2x.png */; };
 		76D2BF6417B8C43E00BA46A1 /* cook_book_graphic_onion.png in Resources */ = {isa = PBXBuildFile; fileRef = 76D2BF6217B8C43E00BA46A1 /* cook_book_graphic_onion.png */; };
 		76D2BF6517B8C43E00BA46A1 /* cook_book_graphic_onion@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76D2BF6317B8C43E00BA46A1 /* cook_book_graphic_onion@2x.png */; };
+		76D2BF6817B9097A00BA46A1 /* NSData+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D2BF6717B9097A00BA46A1 /* NSData+GIF.m */; };
+		76D2BF6F17B90A3700BA46A1 /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D2BF6A17B90A3700BA46A1 /* UIImage+GIF.m */; };
+		76D2BF7017B90A3700BA46A1 /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D2BF6C17B90A3700BA46A1 /* UIImage+MultiFormat.m */; };
+		76D2BF7117B90A3700BA46A1 /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D2BF6E17B90A3700BA46A1 /* UIImage+WebP.m */; };
 		76D69AB216E705BB0028E036 /* StoreTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76D69AB116E705BB0028E036 /* StoreTabView.m */; };
 		76D69ABE16E706D60028E036 /* cook_dash_library_icon_featured.png in Resources */ = {isa = PBXBuildFile; fileRef = 76D69AB316E706D60028E036 /* cook_dash_library_icon_featured.png */; };
 		76D69ABF16E706D60028E036 /* cook_dash_library_icon_featured@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76D69AB416E706D60028E036 /* cook_dash_library_icon_featured@2x.png */; };
@@ -1513,6 +1517,14 @@
 		76D2BF5F17B8C43100BA46A1 /* cook_book_graphic_lobster@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_lobster@2x.png"; sourceTree = "<group>"; };
 		76D2BF6217B8C43E00BA46A1 /* cook_book_graphic_onion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_onion.png; sourceTree = "<group>"; };
 		76D2BF6317B8C43E00BA46A1 /* cook_book_graphic_onion@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_onion@2x.png"; sourceTree = "<group>"; };
+		76D2BF6617B9097A00BA46A1 /* NSData+GIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+GIF.h"; sourceTree = "<group>"; };
+		76D2BF6717B9097A00BA46A1 /* NSData+GIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+GIF.m"; sourceTree = "<group>"; };
+		76D2BF6917B90A3700BA46A1 /* UIImage+GIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+GIF.h"; sourceTree = "<group>"; };
+		76D2BF6A17B90A3700BA46A1 /* UIImage+GIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+GIF.m"; sourceTree = "<group>"; };
+		76D2BF6B17B90A3700BA46A1 /* UIImage+MultiFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+MultiFormat.h"; sourceTree = "<group>"; };
+		76D2BF6C17B90A3700BA46A1 /* UIImage+MultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MultiFormat.m"; sourceTree = "<group>"; };
+		76D2BF6D17B90A3700BA46A1 /* UIImage+WebP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+WebP.h"; sourceTree = "<group>"; };
+		76D2BF6E17B90A3700BA46A1 /* UIImage+WebP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+WebP.m"; sourceTree = "<group>"; };
 		76D69AB016E705BB0028E036 /* StoreTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreTabView.h; sourceTree = "<group>"; };
 		76D69AB116E705BB0028E036 /* StoreTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreTabView.m; sourceTree = "<group>"; };
 		76D69AB316E706D60028E036 /* cook_dash_library_icon_featured.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_icon_featured.png; sourceTree = "<group>"; };
@@ -3086,6 +3098,14 @@
 				76EE2CCF170AE7A30043D128 /* UIButton+WebCache.m */,
 				76EE2CD0170AE7A30043D128 /* UIImageView+WebCache.h */,
 				76EE2CD1170AE7A30043D128 /* UIImageView+WebCache.m */,
+				76D2BF6617B9097A00BA46A1 /* NSData+GIF.h */,
+				76D2BF6717B9097A00BA46A1 /* NSData+GIF.m */,
+				76D2BF6917B90A3700BA46A1 /* UIImage+GIF.h */,
+				76D2BF6A17B90A3700BA46A1 /* UIImage+GIF.m */,
+				76D2BF6B17B90A3700BA46A1 /* UIImage+MultiFormat.h */,
+				76D2BF6C17B90A3700BA46A1 /* UIImage+MultiFormat.m */,
+				76D2BF6D17B90A3700BA46A1 /* UIImage+WebP.h */,
+				76D2BF6E17B90A3700BA46A1 /* UIImage+WebP.m */,
 			);
 			path = SDWebImage;
 			sourceTree = "<group>";
@@ -4057,6 +4077,7 @@
 				76DC8DBB1659BF23005C472B /* BookCoverViewController.m in Sources */,
 				76CB7EEE165CF4C9007BECA0 /* StoreViewController.m in Sources */,
 				76BEE77F165DEE600065B97B /* CKBookCover.m in Sources */,
+				76D2BF7117B90A3700BA46A1 /* UIImage+WebP.m in Sources */,
 				76BEE780165DEE600065B97B /* CKBookCoverView.m in Sources */,
 				7651070D165F22820077B551 /* StoreCollectionViewController.m in Sources */,
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
@@ -4066,11 +4087,13 @@
 				76381C981668418C00404FB1 /* BenchtopBookCoverViewCell.m in Sources */,
 				7635A2CE17A9F2A0002F30F2 /* IngredientListEditViewController.m in Sources */,
 				76381CA716685A7500404FB1 /* FeaturedStoreCollectionViewController.m in Sources */,
+				76D2BF6817B9097A00BA46A1 /* NSData+GIF.m in Sources */,
 				763E00FB17AD3DAD00CCA412 /* PageListCell.m in Sources */,
 				76381CAB16685A8900404FB1 /* FriendsStoreCollectionViewController.m in Sources */,
 				76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */,
 				892282B61671933D002FE936 /* CKRecipeLike.m in Sources */,
 				765E65C91672144400D5D54E /* LoginViewController.m in Sources */,
+				76D2BF7017B90A3700BA46A1 /* UIImage+MultiFormat.m in Sources */,
 				76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */,
 				7600972D17A0E8B7001DFC9F /* CKListLayout.m in Sources */,
 				76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */,
@@ -4139,6 +4162,7 @@
 				7647853B17A697D800387A7B /* CKPrivacySliderView.m in Sources */,
 				76EBE62E179522210099E2CB /* BookSocialViewController.m in Sources */,
 				7619515A179382C3008AB495 /* BookProfileHeaderView.m in Sources */,
+				76D2BF6F17B90A3700BA46A1 /* UIImage+GIF.m in Sources */,
 				76EE2CDB170AE7A30043D128 /* UIImageView+WebCache.m in Sources */,
 				76819813170BCC840091F91F /* CKBookSummaryView.m in Sources */,
 				764F4D0A179CECF500821221 /* BookTitleCell.m in Sources */,

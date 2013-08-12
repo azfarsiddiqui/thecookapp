@@ -38,6 +38,11 @@ typedef enum SDImageCacheType SDImageCacheType;
 @property (assign, nonatomic) NSInteger maxCacheAge;
 
 /**
+ * The maximum size of the cache, in bytes.
+ */
+@property (assign, nonatomic) unsigned long long maxCacheSize;
+
+/**
  * Returns global shared cache instance
  *
  * @return SDImageCache global instance
@@ -50,6 +55,14 @@ typedef enum SDImageCacheType SDImageCacheType;
  * @param ns The namespace to use for this cache store
  */
 - (id)initWithNamespace:(NSString *)ns;
+
+/**
+ * Add a read-only cache path to search for images pre-cached by SDImageCache
+ * Useful if you want to bundle pre-loaded images with your app
+ *
+ * @param path The path to use for this read-only cache path
+ */
+- (void)addReadOnlyCachePath:(NSString *)path;
 
 /**
  * Store an image into memory and disk cache at the given key.
@@ -85,7 +98,7 @@ typedef enum SDImageCacheType SDImageCacheType;
  *
  * @param key The unique key used to store the wanted image
  */
-- (void)queryDiskCacheForKey:(NSString *)key done:(void (^)(UIImage *image, SDImageCacheType cacheType))doneBlock;
+- (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(void (^)(UIImage *image, SDImageCacheType cacheType))doneBlock;
 
 /**
  * Query the memory cache synchronously.
@@ -140,5 +153,10 @@ typedef enum SDImageCacheType SDImageCacheType;
  * Get the number of images in the disk cache
  */
 - (int)getDiskCount;
+
+/**
+ * Asynchronously calculate the disk cache's size.
+ */
+- (void)calculateSizeWithCompletionBlock:(void (^)(NSUInteger fileCount, unsigned long long totalSize))completionBlock;
 
 @end

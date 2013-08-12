@@ -48,16 +48,20 @@ static char operationKey;
         __weak UIButton *wself = self;
         id<SDWebImageOperation> operation = [SDWebImageManager.sharedManager downloadWithURL:url options:options progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished)
         {
-            __strong UIButton *sself = wself;
-            if (!sself) return;
-            if (image)
+            if (!wself) return;
+            dispatch_main_sync_safe(^
             {
-                [sself setImage:image forState:state];
-            }
-            if (completedBlock && finished)
-            {
-                completedBlock(image, error, cacheType);
-            }
+                __strong UIButton *sself = wself;
+                if (!sself) return;
+                if (image)
+                {
+                    [sself setImage:image forState:state];
+                }
+                if (completedBlock && finished)
+                {
+                    completedBlock(image, error, cacheType);
+                }
+            });
         }];
         objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
@@ -99,16 +103,20 @@ static char operationKey;
         __weak UIButton *wself = self;
         id<SDWebImageOperation> operation = [SDWebImageManager.sharedManager downloadWithURL:url options:options progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished)
         {
-            __strong UIButton *sself = wself;
-            if (!sself) return;
-            if (image)
+            if (!wself) return;
+            dispatch_main_sync_safe(^
             {
-                [sself setBackgroundImage:image forState:state];
-            }
-            if (completedBlock && finished)
-            {
-                completedBlock(image, error, cacheType);
-            }
+                __strong UIButton *sself = wself;
+                if (!sself) return;
+                if (image)
+                {
+                    [sself setBackgroundImage:image forState:state];
+                }
+                if (completedBlock && finished)
+                {
+                    completedBlock(image, error, cacheType);
+                }
+            });
         }];
         objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }

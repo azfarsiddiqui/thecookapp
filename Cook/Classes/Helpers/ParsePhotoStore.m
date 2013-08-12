@@ -9,11 +9,9 @@
 #import "ParsePhotoStore.h"
 #import "UIImage+ProportionalFill.h"
 #import "ImageHelper.h"
+#import "SDImageCache.h"
 
 @interface ParsePhotoStore ()
-
-// A cache of URL+Size => UIImage
-@property (nonatomic, strong) NSMutableDictionary *cache;
 
 // A monitor of downloads in progress
 @property (nonatomic, strong) NSMutableArray *downloadsInProgress;
@@ -24,14 +22,13 @@
 
 - (id)init {
     if (self = [super init]) {
-        self.cache = [NSMutableDictionary dictionary];
         self.downloadsInProgress = [NSMutableArray array];
     }
     return self;
 }
 
 - (void)storeImage:(UIImage *)image parseFile:(PFFile *)parseFile size:(CGSize)size {
-    [self.cache setObject:image forKey:[self cacheKeyForParseFile:parseFile size:size]];
+    [[SDImageCache sharedImageCache] storeImage:image forKey:[self cacheKeyForParseFile:parseFile size:size]];
 }
 
 - (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size {
@@ -40,7 +37,7 @@
     UIImage *scaledImage = [self cachedImageForName:name size:size];
     if (!scaledImage) {
         scaledImage = [ImageHelper scaledImage:image size:size];
-        [self.cache setObject:scaledImage forKey:cacheKey];
+        [[SDImageCache sharedImageCache] storeImage:scaledImage forKey:cacheKey];
     }
     return scaledImage;
 }
@@ -97,7 +94,7 @@
                 
                 // Update cache and remove from in-progress downloads.
                 if (imageToFit) {
-                    [self.cache setObject:imageToFit forKey:cacheKey];
+                    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey];
                     [self.downloadsInProgress removeObject:cacheKey];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -118,7 +115,11 @@
 }
 
 - (UIImage *)cachedImageForName:(NSString *)name size:(CGSize)size {
-    return [self.cache objectForKey:[self cacheKeyForName:name size:size]];
+    UIImage *cachedImage = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:name];
+    if (!cachedImage) {
+        cachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:name];
+    }
+    return cachedImage;
 }
 
 - (NSString *)cacheKeyForParseFile:(PFFile *)parseFile size:(CGSize)size {

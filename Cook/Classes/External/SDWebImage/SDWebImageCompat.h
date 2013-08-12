@@ -30,11 +30,25 @@
 #endif
 
 #if OS_OBJECT_USE_OBJC
+    #undef SDDispatchQueueRelease
+    #undef SDDispatchQueueSetterSementics
     #define SDDispatchQueueRelease(q)
     #define SDDispatchQueueSetterSementics strong
 #else
+    #undef SDDispatchQueueRelease
+    #undef SDDispatchQueueSetterSementics
     #define SDDispatchQueueRelease(q) (dispatch_release(q))
     #define SDDispatchQueueSetterSementics assign
 #endif
 
-extern inline UIImage *SDScaledImageForPath(NSString *path, NSObject *imageOrData);
+extern inline UIImage *SDScaledImageForKey(NSString *key, UIImage *image);
+
+#define dispatch_main_sync_safe(block)\
+    if ([NSThread isMainThread])\
+    {\
+        block();\
+    }\
+    else\
+    {\
+        dispatch_sync(dispatch_get_main_queue(), block);\
+    }
