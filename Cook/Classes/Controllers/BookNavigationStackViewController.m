@@ -24,6 +24,7 @@
 #import "BookContentImageView.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
+#import "BookContentCell.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -36,7 +37,7 @@
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
-@property (nonatomic, strong) NSMutableDictionary *categoryControllers;
+@property (nonatomic, strong) NSMutableDictionary *contentControllers;
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
@@ -183,6 +184,42 @@
             [EventHelper postStatusBarChangeForLight:self.lightStatusBar];
         }
     }
+}
+
+- (void)updatePageOverlays {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    BookPagingStackLayout *layout = [self currentLayout];
+    
+    NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
+    NSArray *pageIndexPaths = [visibleIndexPaths select:^BOOL(NSIndexPath *indexPath) {
+        return (indexPath.section >= [self stackContentStartSection] - 1);
+    }];
+    
+    if ([pageIndexPaths count] > 0) {
+        
+        NSSortDescriptor *pageSorter = [[NSSortDescriptor alloc] initWithKey:@"section" ascending:YES];
+        pageIndexPaths = [pageIndexPaths sortedArrayUsingDescriptors:@[pageSorter]];
+        NSIndexPath *topIndexPath = [pageIndexPaths firstObject];
+        NSInteger topPageIndex = topIndexPath.section - [self stackContentStartSection];
+        
+        // See if there's a next page.
+        NSInteger nextPageIndex = topPageIndex + 1;
+        if (nextPageIndex < [self.pages count]) {
+            
+            CGFloat currentPageOffset = [layout pageOffsetForIndexPath:topIndexPath];
+            NSString *nextPage = [self.pages objectAtIndex:nextPageIndex];
+            
+            CGFloat distance = ABS(visibleFrame.origin.x - currentPageOffset);
+            CGFloat overlayAlpha = 1.0 - (distance / visibleFrame.size.width);
+//            DLog(@"PAGE [%@] distance[%f] overlay [%f]", nextPage, distance, overlayAlpha);
+            
+            BookContentViewController *pageViewController = [self.contentControllers objectForKey:nextPage];
+            if (pageViewController) {
+                [pageViewController applyOverlayAlpha:overlayAlpha];
+            }
+        }
+    }
+    
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -336,16 +373,15 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self updateStatusBar];
+    [self updatePageOverlays];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
-//        [self updateStatusBar];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-//    [self updateStatusBar];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -529,7 +565,7 @@
     // Profile, Index, Category.
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kIndexCellId];
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kContentCellId];
+    [self.collectionView registerClass:[BookContentCell class] forCellWithReuseIdentifier:kContentCellId];
 }
 
 - (void)loadData {
@@ -601,7 +637,7 @@
     }
     
     // Initialise the categoryControllers
-    self.categoryControllers = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
+    self.contentControllers = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
     
     // Now reload the categories.
     if ([self.pages count] > 0) {
@@ -650,27 +686,24 @@
     NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
+    [self loadContentForPage:page cell:(BookContentCell *)categoryCell];
+    
+    return categoryCell;
+}
+
+- (void)loadContentForPage:(NSString *)page cell:(BookContentCell *)cell {
+    
     // Load or create categoryController.
-    BookContentViewController *categoryController = [self.categoryControllers objectForKey:page];
+    BookContentViewController *categoryController = [self.contentControllers objectForKey:page];
     if (!categoryController) {
         DLog(@"Create page VC for [%@]", page);
         categoryController = [[BookContentViewController alloc] initWithBook:self.book page:page delegate:self];
         categoryController.bookPageDelegate = self;
-        [self.categoryControllers setObject:categoryController forKey:page];
+        [self.contentControllers setObject:categoryController forKey:page];
     } else {
         DLog(@"Reusing page VC for [%@]", page);
     }
-    
-    // Unload existing page view.
-    UIView *contentView = [categoryCell.contentView viewWithTag:kContentViewTag];
-    [contentView removeFromSuperview];
-    
-    // Load the current category view.
-    categoryController.view.frame = categoryCell.contentView.bounds;
-    categoryController.view.tag = kContentViewTag;
-    [categoryCell.contentView addSubview:categoryController.view];
-    
-    return categoryCell;
+    cell.contentViewController = categoryController;
 }
 
 - (NSString *)currentPage {
@@ -745,8 +778,6 @@
                                 }];
         
     } else {
-        
-        // Load default book cover image.
         [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
                               placeholder:YES];
     }
@@ -779,7 +810,7 @@
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
     // Get the corresponding categoryVC to retrieve current scroll offset.
-    BookContentViewController *categoryController = [self.categoryControllers objectForKey:page];
+    BookContentViewController *categoryController = [self.contentControllers objectForKey:page];
     [categoryHeaderView applyOffset:[categoryController currentScrollOffset].y];
     
     // Load featured recipe image.

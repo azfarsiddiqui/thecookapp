@@ -31,6 +31,11 @@
     return self;
 }
 
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.imageView.image = nil;
+}
+
 - (void)applyOffset:(CGFloat)offset {
     [self applyOffset:offset distance:500.0 view:self.whiteOverlayView];
 }

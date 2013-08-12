@@ -20,6 +20,7 @@
 
 @property (nonatomic, weak) id<BookContentViewControllerDelegate> delegate;
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSString *page;
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
@@ -50,6 +51,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
     [self initCollectionView];
+    [self initOverlay];
     [self loadData];
 }
 
@@ -61,6 +63,10 @@
 - (CGPoint)currentScrollOffset {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     return visibleFrame.origin;
+}
+
+- (void)applyOverlayAlpha:(CGFloat)alpha {
+    self.overlayView.alpha = alpha;
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -157,6 +163,14 @@
     
     [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
     [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
+}
+
+- (void)initOverlay {
+    UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+    [self.view addSubview:overlayView];
+    self.overlayView = overlayView;
 }
 
 - (void)loadFeaturedRecipe {
