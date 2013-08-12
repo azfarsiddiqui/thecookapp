@@ -321,7 +321,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.pullingBottom = NO;
     
     // Scroll view is now pulling its own frame down.
-    if (contentOffset.y <= 0) {
+    if (!self.scrollView.decelerating && contentOffset.y <= 0) {
         
         // Dragging myself down.
         contentFrame.origin.y -= contentOffset.y * kDragRatio;
