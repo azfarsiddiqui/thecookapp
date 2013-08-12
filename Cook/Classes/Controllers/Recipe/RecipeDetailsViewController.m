@@ -313,7 +313,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSLog(@"contentOffset %f", scrollView.contentOffset.y);
+//    NSLog(@"contentOffset %f", scrollView.contentOffset.y);
     
     CGRect contentFrame = self.scrollView.frame;
     CGSize contentSize = self.scrollView.contentSize;
@@ -349,34 +349,34 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    NSLog(@"scrollViewWillBeginDragging");
-    NSLog(@"scrollEnabled: %@", scrollView.scrollEnabled ? @"YES" : @"NO");
-    NSLog(@"panGesture   : %@", self.panGesture.enabled ? @"YES" : @"NO");
+//    NSLog(@"scrollViewWillBeginDragging");
+//    NSLog(@"scrollEnabled: %@", scrollView.scrollEnabled ? @"YES" : @"NO");
+//    NSLog(@"panGesture   : %@", self.panGesture.enabled ? @"YES" : @"NO");
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    NSLog(@"scrollViewDidEndDragging willDecelerate[%@]", decelerate ? @"YES" : @"NO");
+//    NSLog(@"scrollViewDidEndDragging willDecelerate[%@]", decelerate ? @"YES" : @"NO");
     if (!self.pullingBottom) {
         [self panSnapIfRequired];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    NSLog(@"scrollViewDidEndDecelerating");
+//    NSLog(@"scrollViewDidEndDecelerating");
     if (!self.pullingBottom) {
         [self panSnapIfRequired];
     }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-    NSLog(@"scrollViewDidEndScrollingAnimation");
+//    NSLog(@"scrollViewDidEndScrollingAnimation");
     if (!self.pullingBottom) {
         [self panSnapIfRequired];
     }
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    NSLog(@"scrollViewWillEndDragging velocity[%@]", NSStringFromCGPoint(velocity));
+//    NSLog(@"scrollViewWillEndDragging velocity[%@]", NSStringFromCGPoint(velocity));
 }
 
 #pragma mark - KVO methods
