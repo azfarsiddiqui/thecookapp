@@ -766,6 +766,7 @@
 
 - (void)configureImageForHeaderView:(BookContentImageView *)contentHeaderView recipe:(CKRecipe *)recipe
                           indexPath:(NSIndexPath *)indexPath {
+    DLog(@"Content Image for %d", indexPath.section);
     
     if ([recipe hasPhotos]) {
         [self.photoStore imageForParseFile:[recipe imageFile]

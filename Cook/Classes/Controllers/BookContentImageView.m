@@ -12,6 +12,7 @@
 
 @interface BookContentImageView ()
 
+@property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
 @property (nonatomic, strong) UIView *whiteOverlayView;
@@ -21,12 +22,19 @@
 
 @implementation BookContentImageView
 
+#define kForceVisibleOffset         1.0
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [Theme recipeGridImageBackgroundColour];
-        [self addSubview:self.imageView];
-        [self addSubview:self.vignetteOverlayView];
-        [self addSubview:self.whiteOverlayView];
+        self.backgroundColor = [UIColor clearColor];
+        
+        // The containerView is merely to serve as an opaque background for smooth scrolling without much of it clear.
+        self.containerView = [[UIView alloc] initWithFrame:[self contentBoundsWithoutForceVisibleOffset]];
+        self.containerView.backgroundColor = [Theme recipeGridImageBackgroundColour];
+        [self.containerView addSubview:self.imageView];
+        [self.containerView addSubview:self.vignetteOverlayView];
+        [self.containerView addSubview:self.whiteOverlayView];
+        [self addSubview:self.containerView];
     }
     return self;
 }
@@ -45,81 +53,46 @@
 }
 
 - (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder {
-    self.imageView.image = image;
-    self.vignetteOverlayView.hidden = placeholder;
-    
-    if (!image) {
-        return;
-    }
-    
     if (image) {
-        
-        // Fade image in if there were no prior images.
-        if (!self.imageView.image) {
-            
-            // Prep imageView to be faded in.
-            self.imageView.alpha = 0.0;
-            self.imageView.image = image;
-            self.vignetteOverlayView.hidden = NO;
-            self.vignetteOverlayView.alpha = 0.0;
-            
-            [UIView animateWithDuration:0.2
-                                  delay:0.0
-                                options:UIViewAnimationCurveEaseIn
-                             animations:^{
-                                 self.imageView.alpha = 1.0;
-                                 self.vignetteOverlayView.alpha = 1.0;
-                             }
-                             completion:^(BOOL finished)  {
-                             }];
-            
-        } else {
-            
-            // Otherwise change image straight away.
-            self.imageView.image = image;
-            self.vignetteOverlayView.hidden = YES;
-        }
-        
+        self.imageView.image = image;
+        self.vignetteOverlayView.hidden = NO;
     } else {
         self.imageView.image = nil;
         self.vignetteOverlayView.hidden = YES;
     }
-    
 }
 
 #pragma mark - Properties
 
 - (UIImageView *)imageView {
     if (!_imageView) {
-        _imageView = [[UIImageView alloc] initWithImage:nil];
-        _imageView.frame = self.bounds;
+        _imageView = [[UIImageView alloc] initWithFrame:self.containerView.bounds];
     }
     return _imageView;
 }
 
 - (UIImageView *)vignetteOverlayView {
     if (!_vignetteOverlayView) {
-        _vignetteOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_page_overlay.png"]];
+        _vignetteOverlayView = [[UIImageView alloc] initWithFrame:self.containerView.bounds];
+        _vignetteOverlayView.image = [UIImage imageNamed:@"cook_book_inner_page_overlay.png"];
     }
     return _vignetteOverlayView;
 }
 
 - (UIView *)whiteOverlayView {
     if (!_whiteOverlayView) {
-        _whiteOverlayView = [[UIView alloc] initWithFrame:self.bounds];
+        _whiteOverlayView = [[UIView alloc] initWithFrame:self.containerView.bounds];
         _whiteOverlayView.backgroundColor = [UIColor colorWithHexString:@"f2f2f2"];
         _whiteOverlayView.hidden = YES;
-        [self addSubview:_whiteOverlayView];
     }
     return _whiteOverlayView;
 }
 
 - (UIToolbar *)toolbarView {
     if (!_toolbarView) {
-        _toolbarView = [[UIToolbar alloc] initWithFrame:self.bounds];
+        _toolbarView = [[UIToolbar alloc] initWithFrame:self.containerView.bounds];
         _toolbarView.translucent = YES;
         _toolbarView.hidden = YES;
-        [self addSubview:_toolbarView];
     }
     return _toolbarView;
 }
@@ -145,6 +118,15 @@
     } else {
         view.hidden = YES;
     }
+}
+
+- (CGRect)contentBoundsWithoutForceVisibleOffset {
+    return (CGRect){
+        self.bounds.origin.x + kForceVisibleOffset,
+        self.bounds.origin.y,
+        self.bounds.size.width - (kForceVisibleOffset * 2.0),
+        self.bounds.size.height
+    };
 }
 
 @end

@@ -84,7 +84,6 @@
     [self.downloadsInProgress addObject:cacheKey];
     
     [parseFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        DLog(@"Got file with data, error %@", [error localizedDescription]);
         if (!error) {
             
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -102,7 +101,8 @@
                     });
                 }
             });
-            
+        } else {
+            DLog(@"Got file with data, error %@", [error localizedDescription]);
         }
     }];
     

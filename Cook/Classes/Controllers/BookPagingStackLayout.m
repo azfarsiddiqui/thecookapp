@@ -33,6 +33,7 @@
 #define kProfileHeaderOffset        50.0
 #define kMaxScale                   0.9
 #define kMaxRotationDegrees         10.0
+#define kForceVisibleOffset         1.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
 #define kPageNavigationtKind        @"PageNavigationtKind"
 
@@ -120,8 +121,6 @@
             }
             
         } else {
-            
-            // Header cells.
             if (CGRectIntersectsRect(rect, attributes.frame)) {
                 [layoutAttributes addObject:attributes];
             }
@@ -212,9 +211,9 @@
         UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                             withIndexPath:sectionIndexPath];
         headerAttributes.frame = (CGRect){
-            [self pageOffsetForIndexPath:sectionIndexPath],
+            [self pageOffsetForIndexPath:sectionIndexPath] - kForceVisibleOffset,
             self.collectionView.bounds.origin.y,
-            self.collectionView.bounds.size.width,
+            self.collectionView.bounds.size.width + (kForceVisibleOffset * 2.0),
             self.collectionView.bounds.size.height
         };
         
@@ -352,26 +351,29 @@
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     CGFloat requiredTranslation = 0.0;
     
+    NSIndexPath *indexPath = attributes.indexPath;
+    CGFloat pageOffset = [self pageOffsetForIndexPath:indexPath];
+    CGFloat availableDistance = self.collectionView.bounds.size.width;
+    
     CGFloat offset =  kShiftOffset;
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         offset = kHeaderShiftOffset;
+        pageOffset -= kForceVisibleOffset;
+        availableDistance += (kForceVisibleOffset * 2.0);
     }
-    
-    NSIndexPath *indexPath = attributes.indexPath;
-    CGFloat pageOffset = [self pageOffsetForIndexPath:indexPath];
     
     if (pageOffset >= visibleFrame.origin.x) {
         
         // Figure out the pageDistance and the ratio.
         CGFloat distance = pageOffset - visibleFrame.origin.x;
-        CGFloat normalisedDistance = distance / self.collectionView.bounds.size.width;
+        CGFloat normalisedDistance = distance / availableDistance;
         NSInteger pageDistance = (NSInteger)normalisedDistance;
         
         if (pageDistance < 1) {
             
             // Magic formula.
-            CGFloat effectiveDistance = (pageDistance * offset) + (self.collectionView.bounds.size.width - ((pageDistance + 1) * offset));
-            CGFloat distanceRatio = distance / self.collectionView.bounds.size.width;
+            CGFloat effectiveDistance = (pageDistance * offset) + (availableDistance - ((pageDistance + 1) * offset));
+            CGFloat distanceRatio = distance / availableDistance;
             requiredTranslation = -effectiveDistance * distanceRatio;
             
         }
