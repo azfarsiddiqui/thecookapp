@@ -22,32 +22,14 @@
     [super prepareForReuse];
     if (_contentViewController) {
         [_contentViewController.view removeFromSuperview];
+        _contentViewController = nil;
     }
 }
 
 - (void)setContentViewController:(BookContentViewController *)contentViewController {
     contentViewController.view.frame = self.contentView.bounds;
-    
-    if (_contentViewController) {
-        
-        // Prep for the BookContentVC to be faded in first time.
-        contentViewController.view.alpha = 0.0;
-        [self.contentView addSubview:contentViewController.view];
-        
-        [UIView animateWithDuration:0.25
-                              delay:0.0
-                            options:UIViewAnimationCurveEaseIn
-                         animations:^{
-                             _contentViewController.view.alpha = 0.0;
-                             contentViewController.view.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished)  {
-                             _contentViewController = contentViewController;
-                         }];
-    } else {
-        [self.contentView addSubview:contentViewController.view];
-        _contentViewController = contentViewController;
-    }
+    [self.contentView addSubview:contentViewController.view];
+    _contentViewController = contentViewController;
 }
 
 @end

@@ -13,6 +13,7 @@
 
 // Manually store an image into the cache.
 - (void)storeImage:(UIImage *)image parseFile:(PFFile *)parseFile size:(CGSize)size;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey;
 
 // Resturns the cached image of a scaled size - non-Parse related.
 - (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size;
@@ -27,5 +28,8 @@
                        completion:(void (^)(NSIndexPath *indexPath, UIImage *image))completion;
 - (void)downloadImageForParseFile:(PFFile *)parseFile size:(CGSize)size completion:(void (^)(UIImage *image))completion;
 
+// Checks if there was a cached image for the given key.
+- (BOOL)hasCachedImageForKey:(NSString *)cacheKey;
+- (UIImage *)cachedImageForKey:(NSString *)cacheKey;
 
 @end

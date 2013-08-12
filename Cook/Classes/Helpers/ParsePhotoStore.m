@@ -28,13 +28,17 @@
 }
 
 - (void)storeImage:(UIImage *)image parseFile:(PFFile *)parseFile size:(CGSize)size {
-    [[SDImageCache sharedImageCache] storeImage:image forKey:[self cacheKeyForParseFile:parseFile size:size]];
+    [self storeImage:image forKey:[self cacheKeyForParseFile:parseFile size:size]];
+}
+
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey {
+    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey];
 }
 
 - (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size {
     
     NSString *cacheKey = [self cacheKeyForName:name size:size];
-    UIImage *scaledImage = [self cachedImageForName:name size:size];
+    UIImage *scaledImage = [self cachedImageForKey:cacheKey];
     if (!scaledImage) {
         scaledImage = [ImageHelper scaledImage:image size:size];
         [[SDImageCache sharedImageCache] storeImage:scaledImage forKey:cacheKey];
@@ -93,7 +97,6 @@
                 
                 // Update cache and remove from in-progress downloads.
                 if (imageToFit) {
-                    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey];
                     [self.downloadsInProgress removeObject:cacheKey];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -108,18 +111,24 @@
     
 }
 
+// Checks if there was a cached image for the given key.
+- (BOOL)hasCachedImageForKey:(NSString *)cacheKey {
+    return ([self cachedImageForKey:cacheKey] != nil);
+}
+
+- (UIImage *)cachedImageForKey:(NSString *)cacheKey {
+    UIImage *cachedImage = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:cacheKey];
+    if (!cachedImage) {
+        cachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:cacheKey];
+    }
+    return cachedImage;
+}
+
 #pragma mark - Private methods
 
 - (UIImage *)cachedImageForParseFile:(PFFile *)parseFile size:(CGSize)size {
-    return [self cachedImageForName:parseFile.url size:size];
-}
-
-- (UIImage *)cachedImageForName:(NSString *)name size:(CGSize)size {
-    UIImage *cachedImage = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:name];
-    if (!cachedImage) {
-        cachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:name];
-    }
-    return cachedImage;
+    NSString *cacheKey = [self cacheKeyForParseFile:parseFile size:size];
+    return [self cachedImageForKey:cacheKey];
 }
 
 - (NSString *)cacheKeyForParseFile:(PFFile *)parseFile size:(CGSize)size {

@@ -28,6 +28,7 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
+@property (nonatomic, assign) BOOL titleImageLoaded;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
 
@@ -90,22 +91,19 @@
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
     
-    // Only set the hero recipe once.
-    if (self.heroRecipe) {
-        return;
-    }
-    
-    self.heroRecipe = recipe;
-    if ([recipe hasPhotos]) {
-        [self.photoStore imageForParseFile:[recipe imageFile]
-                                      size:self.imageView.bounds.size
-                                completion:^(UIImage *image) {
-                                    [ImageHelper configureImageView:self.imageView image:image];
-                                    
-                                    // Apply top shadow.
-                                    [ViewHelper addTopShadowView:self.imageView];
-                                    
-                                }];
+    NSString *bookTitleCacheKey = [NSString stringWithFormat:@"BookTitle_%@", self.book.objectId];
+    UIImage *bookTitleImage = [self.photoStore cachedImageForKey:bookTitleCacheKey];
+    if (bookTitleImage) {
+        [self configureHeroRecipeImage:bookTitleImage];
+    } else {
+        if ([recipe hasPhotos]) {
+            [self.photoStore imageForParseFile:[recipe imageFile]
+                                          size:self.imageView.bounds.size
+                                    completion:^(UIImage *image) {
+                                        [self configureHeroRecipeImage:image];
+                                        [self.photoStore storeImage:image forKey:bookTitleCacheKey];
+                                    }];
+        }
     }
 }
 
@@ -336,6 +334,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.view addSubview:imageView];
     self.imageView = imageView;
     
+    // Attempt to load cached image.
+    NSString *bookTitleCacheKey = [NSString stringWithFormat:@"BookTitle_%@", self.book.objectId];
+    UIImage *bookTitleImage = [self.photoStore cachedImageForKey:bookTitleCacheKey];
+    if (bookTitleImage) {
+        [self configureHeroRecipeImage:bookTitleImage];
+    }
+
     UIImage *borderImage = [[UIImage imageNamed:@"cook_book_inner_title_border.png"] resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
     UIImageView *borderImageView = [[UIImageView alloc] initWithImage:borderImage];
     borderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
@@ -400,6 +405,19 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)enableAddMode:(BOOL)addMode {
     self.collectionView.scrollEnabled = !addMode;
     [self.bookPageDelegate bookPageViewControllerPanEnable:!addMode];
+}
+
+- (void)configureHeroRecipeImage:(UIImage *)image {
+    if (self.titleImageLoaded) {
+        return;
+    }
+    self.titleImageLoaded = YES;
+    
+    [ImageHelper configureImageView:self.imageView image:image];
+    
+    // Apply top shadow.
+    [ViewHelper addTopShadowView:self.imageView];
+    
 }
 
 @end
