@@ -24,6 +24,8 @@
 
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *topRoundedMaskImageView;
+@property (nonatomic, strong) UIImageView *bottomShadowImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *dividerImageView;
 @property (nonatomic, strong) UIImageView *dividerQuoteImageView;
@@ -38,7 +40,7 @@
 @implementation BookRecipeCollectionViewCell
 
 #define kViewDebug              0
-#define kImageSize              CGSizeMake(320.0, 264.0)
+#define kImageSize              CGSizeMake(316.0, 260.0)
 #define kTitleOffsetNoImage     45.0
 #define kTitleTopGap            45.0
 #define kTitleDividerGap        20.0
@@ -52,29 +54,7 @@
     if (self = [super initWithFrame:frame]) {
         
         [self initBackground];
-        
-        // Top thumbnail.
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
-        imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
-        imageView.frame = (CGRect){
-            self.contentView.bounds.origin.x,
-            self.contentView.bounds.origin.y,
-            kImageSize.width,
-            kImageSize.height
-        };
-        [ViewHelper applyRoundedCornersToView:imageView corners:UIRectCornerTopLeft|UIRectCornerTopRight size:(CGSize){ 4.0, 4.0 }];
-        [self.contentView addSubview:imageView];
-        self.imageView = imageView;
-        
-        // Image spinner.
-        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        activityView.frame = CGRectMake(floorf((imageView.bounds.size.width - activityView.frame.size.width) / 2.0),
-                                        floorf((imageView.bounds.size.height - activityView.frame.size.height) / 2.0),
-                                        activityView.frame.size.width,
-                                        activityView.frame.size.height);
-        [imageView addSubview:activityView];
-        [activityView startAnimating];
-        self.activityView = activityView;
+        [self initImageView];
         
         // Recipe title that spans 2 lines.
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -157,7 +137,6 @@
         [self.activityView startAnimating];
         self.imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
     } else {
-        [self.activityView stopAnimating];
         self.imageView.backgroundColor = [UIColor clearColor];
     }
 }
@@ -166,11 +145,43 @@
     if (image) {
         [self.activityView stopAnimating];
     }
-    [ImageHelper configureImageView:self.imageView image:image];
+    
+    if (image) {
+        
+        // Fade image in if there were no prior images.
+        if (!self.imageView.image) {
+            self.imageView.alpha = 0.0;
+            self.imageView.image = image;
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.imageView.alpha = 1.0;
+                                 self.topRoundedMaskImageView.alpha = 1.0;
+                                 self.bottomShadowImageView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished)  {
+                             }];
+            
+        } else {
+            
+            // Otherwise change image straight away.
+            self.imageView.image = image;
+            self.topRoundedMaskImageView.alpha = 1.0;
+            self.bottomShadowImageView.alpha = 1.0;
+        }
+        
+    } else {
+        
+        // Clear it straight away if none.
+        self.imageView.image = nil;
+        self.topRoundedMaskImageView.alpha = 0.0;
+        self.bottomShadowImageView.alpha = 0.0;
+    }
 }
 
 - (CGSize)imageSize {
-    return self.imageView.frame.size;
+    return kImageSize;
 }
 
 - (void)setSelected:(BOOL)selected {
@@ -199,19 +210,89 @@
     return _dividerQuoteImageView;
 }
 
+- (UIImageView *)topRoundedMaskImageView {
+    if (!_topRoundedMaskImageView) {
+        UIImage *topRoundedMaskImage = [[UIImage imageNamed:@"cook_book_inner_grid_image_top.png"]
+                                        resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 2.0, 0.0, 2.0 }];
+        _topRoundedMaskImageView = [[UIImageView alloc] initWithImage:topRoundedMaskImage];
+    }
+    return _topRoundedMaskImageView;
+}
+
+- (UIImageView *)bottomShadowImageView {
+    if (!_bottomShadowImageView) {
+        UIImage *bottomShadowImage = [UIImage imageNamed:@"cook_book_inner_grid_image_bottom.png"];
+        _bottomShadowImageView = [[UIImageView alloc] initWithImage:bottomShadowImage];
+    }
+    return _bottomShadowImageView;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
-    UIEdgeInsets backgroundInsets = (UIEdgeInsets){ 5.0, 3.0, 5.0, 3.0 };
-    UIImageView *cellBackgroundImageView = [[UIImageView alloc] initWithImage:nil];
-    cellBackgroundImageView.autoresizingMask = UIViewAutoresizingNone;
-    cellBackgroundImageView.frame = CGRectMake(-backgroundInsets.left,
-                                               -backgroundInsets.top,
-                                               self.bounds.size.width + backgroundInsets.left + backgroundInsets.right,
-                                               self.bounds.size.height + backgroundInsets.top + backgroundInsets.bottom);
+    self.contentView.backgroundColor = [UIColor clearColor];
+
+    // Shadow is outside of cell bounds..
+    UIEdgeInsets backgroundInsets = (UIEdgeInsets){ 3.0, 5.0, 7.0, 5.0 };
+    
+    UIImageView *cellBackgroundImageView = [[UIImageView alloc] initWithFrame:(CGRect){
+        self.contentView.bounds.origin.x - backgroundInsets.left,
+        self.contentView.bounds.origin.y - backgroundInsets.top,
+        self.contentView.bounds.size.width + backgroundInsets.left + backgroundInsets.right,
+        self.contentView.bounds.size.height + backgroundInsets.top + backgroundInsets.bottom
+    }];
     [self.contentView addSubview:cellBackgroundImageView];
     self.cellBackgroundImageView = cellBackgroundImageView;
+    
     [self setSelected:NO];
+}
+
+- (void)initImageView {
+    
+    // Image is 2-in.
+    UIEdgeInsets imageInsets = (UIEdgeInsets){ 2.0, 2.0, 0.0, 2.0 };
+    
+    // Top thumbnail.
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:(CGRect){
+        self.contentView.bounds.origin.x + imageInsets.left,
+        self.contentView.bounds.origin.y + imageInsets.top,
+        kImageSize.width,
+        kImageSize.height
+    }];
+    imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
+    [self.contentView addSubview:imageView];
+    self.imageView = imageView;
+    
+    // Image spinner.
+    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityView.frame = CGRectMake(floorf((self.imageView.bounds.size.width - activityView.frame.size.width) / 2.0),
+                                    floorf((self.imageView.bounds.size.height - activityView.frame.size.height) / 2.0),
+                                    activityView.frame.size.width,
+                                    activityView.frame.size.height);
+    [self.imageView addSubview:activityView];
+    self.activityView = activityView;
+    
+    // Top rounded mask image.
+    self.topRoundedMaskImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    self.topRoundedMaskImageView.frame = (CGRect){
+        self.imageView.bounds.origin.x,
+        self.imageView.bounds.origin.y,
+        self.imageView.bounds.size.width,
+        self.topRoundedMaskImageView.frame.size.height
+    };
+    self.topRoundedMaskImageView.alpha = 0.0;   // Clear to start off with.
+    [self.imageView addSubview:self.topRoundedMaskImageView];
+    
+    // Bottom shadow image.
+    self.bottomShadowImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    self.bottomShadowImageView.frame = (CGRect){
+        self.imageView.bounds.origin.x,
+        self.imageView.bounds.size.height - self.bottomShadowImageView.frame.size.height,
+        self.imageView.bounds.size.width,
+        self.bottomShadowImageView.frame.size.height
+    };
+    self.bottomShadowImageView.alpha = 0.0;   // Clear to start off with.
+    [self.imageView addSubview:self.bottomShadowImageView];
 }
 
 - (void)updateTitle {
@@ -375,7 +456,7 @@
 
 - (UIImage *)backgroundImageForSelected:(BOOL)selected {
     return [[UIImage imageNamed:@"cook_book_inner_grid_cell.png"]
-            resizableImageWithCapInsets:(UIEdgeInsets){ 10.0, 8.0, 10.0, 8.0 }];
+            resizableImageWithCapInsets:(UIEdgeInsets){ 8.0, 11.0, 12.0, 11.0 }];
 }
 
 - (CGSize)availableSize {
