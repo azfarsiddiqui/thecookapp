@@ -173,33 +173,46 @@
         return;
     }
     
-    // Remember selected store tab.
-    self.currentStoreCollectionViewController = storeCollectionViewController;
+    // Fade out the current VC.
+    if (self.currentStoreCollectionViewController) {
+        
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.currentStoreCollectionViewController.view.alpha = 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             // Unload the existing data.
+                             [self.currentStoreCollectionViewController unloadData];
+                             self.currentStoreCollectionViewController.view.hidden = YES;
+                             
+                             // Show the selected one.
+                             [self showStoreCollectionViewController:storeCollectionViewController];
+                         }];
+        
+    } else {
+        [self showStoreCollectionViewController:storeCollectionViewController];
+    }
+}
+
+- (void)showStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
     
-    // Unload existing data.
-    [UIView animateWithDuration:0.2
+    // Prep the selected one to be faded in.
+    storeCollectionViewController.view.alpha = 0.0;
+    storeCollectionViewController.view.hidden = NO;
+    
+    // Fade in the selected one.
+    [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         for (StoreCollectionViewController *viewController in self.storeCollectionViewControllers) {
-                             if (viewController != storeCollectionViewController) {
-                                 [viewController unloadData];
-                             }
-                         }
+                         storeCollectionViewController.view.alpha = 1.0;
                      }
                      completion:^(BOOL finished) {
-                         
-                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                             for (StoreCollectionViewController *viewController in self.storeCollectionViewControllers) {
-                                 if (viewController != storeCollectionViewController) {
-                                     viewController.view.hidden = YES;
-                                 }
-                             }
-                             storeCollectionViewController.view.hidden = NO;
-                             [storeCollectionViewController loadData];
-                         });
-                         
-                         
+                         [storeCollectionViewController loadData];
+                         self.currentStoreCollectionViewController = storeCollectionViewController;
                      }];
 }
 
