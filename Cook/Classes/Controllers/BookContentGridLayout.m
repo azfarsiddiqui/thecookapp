@@ -274,7 +274,14 @@
         CGFloat distance = visibleFrame.origin.y * dragRatio;
         CGFloat ratio = MIN(distance / effectiveDistance, 1.0);
         CGFloat translate = effectiveDistance * ratio;
-        attributes.transform3D = CATransform3DMakeTranslation(0.0, translate, 0.0);
+        CGFloat targetWidth = self.collectionView.bounds.size.width - kContentInsets.left - kContentInsets.right;
+//        CGFloat width = (targetWidth - headerSize.width) * ratio;
+//        attributes.transform3D = CATransform3DMakeTranslation(0.0, translate, 0.0);
+        CGRect frame = attributes.frame;
+        frame.origin.y = self.headerStartOffset + translate;
+//        frame.size.width = headerSize.width + width;
+//        frame.origin.x = floorf((self.collectionView.bounds.size.width - frame.size.width) / 2.0);
+        attributes.frame = frame;
     }
     
 }
