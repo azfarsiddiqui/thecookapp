@@ -181,6 +181,7 @@
     collectionView.dataSource = self;
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     collectionView.alwaysBounceVertical = YES;
+    collectionView.showsVerticalScrollIndicator = NO;
     collectionView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:collectionView];
     self.collectionView = collectionView;
