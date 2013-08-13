@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BookContentGridLayout.h"
 
 @class CKRecipe;
 @class CKBook;
@@ -16,7 +17,7 @@
 @property (nonatomic, strong) CKRecipe *recipe;
 
 + (CGSize)imageSize;
-- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book;
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book gridType:(BookContentGridType)gridType;
 - (void)configureImage:(UIImage *)image;
 
 @end

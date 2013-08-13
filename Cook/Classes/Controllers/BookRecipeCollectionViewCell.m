@@ -17,11 +17,13 @@
 #import "ImageHelper.h"
 #import "CKBookCover.h"
 #import "ViewHelper.h"
+#import "NSString+Utilities.h"
 
 @interface BookRecipeCollectionViewCell ()
 
 @property (nonatomic, strong) CKBook *book;
 
+@property (nonatomic, assign) BookContentGridType gridType;
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topRoundedMaskImageView;
@@ -34,6 +36,7 @@
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) GridRecipeStatsView *statsView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
+@property (nonatomic, assign) CGFloat layoutOffset;
 
 @end
 
@@ -59,90 +62,35 @@
         
         [self initBackground];
         [self initImageView];
-        
-        // Recipe title that spans 2 lines.
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        titleLabel.backgroundColor = [self backgroundColorOrDebug];
-        titleLabel.font = [Theme recipeGridTitleFont];
-        titleLabel.numberOfLines = 2;
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [self.contentView addSubview:titleLabel];
-        self.titleLabel = titleLabel;
-        
-        // Recipe ingredients.
-        UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        ingredientsLabel.backgroundColor = [self backgroundColorOrDebug];
-        ingredientsLabel.font = [Theme recipeGridIngredientsFont];
-        ingredientsLabel.textColor = [Theme recipeGridIngredientsColour];
-        ingredientsLabel.numberOfLines = 0;
-        ingredientsLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [self.contentView addSubview:ingredientsLabel];
-        self.ingredientsLabel = ingredientsLabel;
-        
-        // Recipe ingredients ellipsis.
-        NSString *ellipsis = @"...";
-        CGRect ingredientsFrame = [ellipsis boundingRectWithSize:self.contentView.bounds.size
-                                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                                      attributes:nil context:nil];
-        UILabel *ingredientsEllipsisLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentInsets.left,
-                                                                                      self.ingredientsLabel.frame.size.height,
-                                                                                      ingredientsFrame.size.width,
-                                                                                      ingredientsFrame.size.height)];
-        ingredientsEllipsisLabel.backgroundColor = [self backgroundColorOrDebug];
-        ingredientsEllipsisLabel.font = [Theme recipeGridIngredientsFont];
-        ingredientsEllipsisLabel.textColor = [Theme recipeGridIngredientsColour];
-        ingredientsEllipsisLabel.numberOfLines = 1;
-        ingredientsEllipsisLabel.lineBreakMode =NSLineBreakByClipping;
-        ingredientsEllipsisLabel.text = @"...";
-        [self.contentView addSubview:ingredientsEllipsisLabel];
-        self.ingredientsEllipsisLabel = ingredientsEllipsisLabel;
-        
-        // Story.
-        UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        storyLabel.backgroundColor = [self backgroundColorOrDebug];
-        storyLabel.font = [Theme recipeGridIngredientsFont];
-        storyLabel.textColor = [Theme recipeGridIngredientsColour];
-        storyLabel.numberOfLines = 0;
-        storyLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        storyLabel.textAlignment = NSTextAlignmentCenter;
-        [self.contentView addSubview:storyLabel];
-        self.storyLabel = storyLabel;
-        
-        // Bottom stats view.
-        CGFloat availableWidth = self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right;
-        GridRecipeStatsView *statsView = [[GridRecipeStatsView alloc] initWithWidth:availableWidth];
-        statsView.frame = (CGRect) {
-            kContentInsets.left + floorf((self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right - statsView.frame.size.width) / 2.0),
-            self.contentView.bounds.size.height - statsView.frame.size.height - kContentInsets.bottom,
-            statsView.frame.size.width,
-            statsView.frame.size.height
-        };
-        [self.contentView addSubview:statsView];
-        self.statsView = statsView;
+        [self initTitleLabel];
+        [self initIngredientsLabel];
+        [self initStoryLabel];
+        [self initStatsView];
         
     }
     return self;
 }
 
-- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book {
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    // Nil the image and stop spinning.
+    self.imageView.image = nil;
+    [self.activityView stopAnimating];
+}
+
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book gridType:(BookContentGridType)gridType {
     self.recipe = recipe;
     self.book = book;
+    self.gridType = gridType;
+    self.layoutOffset = 0.0;
     
+    [self updateImageView];
     [self updateTitle];
     [self updateDivider];
     [self updateStory];
     [self updateIngredients];
     [self updateStats];
-    
-    // Nil the image and start spinning if required.
-    self.imageView.image = nil;
-    if ([recipe hasPhotos]) {
-        [self.activityView startAnimating];
-        self.imageView.backgroundColor = [Theme recipeGridImageBackgroundColour];
-    } else {
-        self.imageView.backgroundColor = [UIColor clearColor];
-    }
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -295,25 +243,116 @@
     [self.imageView addSubview:self.bottomShadowImageView];
 }
 
-- (void)updateTitle {
-    self.titleLabel.textColor = [CKBookCover textColourForCover:self.book.cover];
+- (void)initTitleLabel {
+    // Recipe title that spans 2 lines.
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.backgroundColor = [self backgroundColorOrDebug];
+    titleLabel.font = [Theme recipeGridTitleFont];
+    titleLabel.numberOfLines = 2;
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.contentView addSubview:titleLabel];
+    self.titleLabel = titleLabel;
+}
+
+- (void)initIngredientsLabel {
+    // Recipe ingredients.
+    UILabel *ingredientsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    ingredientsLabel.backgroundColor = [self backgroundColorOrDebug];
+    ingredientsLabel.font = [Theme recipeGridIngredientsFont];
+    ingredientsLabel.textColor = [Theme recipeGridIngredientsColour];
+    ingredientsLabel.numberOfLines = 0;
+    ingredientsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.contentView addSubview:ingredientsLabel];
+    self.ingredientsLabel = ingredientsLabel;
     
-    NSString *title = [self.recipe.name uppercaseString];
-    CGRect frame = self.titleLabel.frame;
-    CGSize availableSize = [self availableSize];
-    NSMutableDictionary *attributes = [NSMutableDictionary new];
-    [attributes setObject:self.titleLabel.font forKey:NSFontAttributeName];
-    if (![self.recipe hasPhotos]) {
-        frame.origin.y = kTitleOffsetNoImage;
+    // Recipe ingredients ellipsis.
+    NSString *ellipsis = @"...";
+    CGRect ingredientsFrame = [ellipsis boundingRectWithSize:self.contentView.bounds.size
+                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:nil context:nil];
+    UILabel *ingredientsEllipsisLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentInsets.left,
+                                                                                  self.ingredientsLabel.frame.size.height,
+                                                                                  ingredientsFrame.size.width,
+                                                                                  ingredientsFrame.size.height)];
+    ingredientsEllipsisLabel.backgroundColor = [self backgroundColorOrDebug];
+    ingredientsEllipsisLabel.font = [Theme recipeGridIngredientsFont];
+    ingredientsEllipsisLabel.textColor = [Theme recipeGridIngredientsColour];
+    ingredientsEllipsisLabel.numberOfLines = 1;
+    ingredientsEllipsisLabel.lineBreakMode =NSLineBreakByClipping;
+    ingredientsEllipsisLabel.text = @"...";
+    [self.contentView addSubview:ingredientsEllipsisLabel];
+    self.ingredientsEllipsisLabel = ingredientsEllipsisLabel;
+}
+
+- (void)initStoryLabel {
+    // Story.
+    UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    storyLabel.backgroundColor = [self backgroundColorOrDebug];
+    storyLabel.font = [Theme recipeGridIngredientsFont];
+    storyLabel.textColor = [Theme recipeGridIngredientsColour];
+    storyLabel.numberOfLines = 0;
+    storyLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    storyLabel.textAlignment = NSTextAlignmentCenter;
+    [self.contentView addSubview:storyLabel];
+    self.storyLabel = storyLabel;
+}
+
+- (void)initStatsView {
+    
+    // Bottom stats view.
+    CGFloat availableWidth = self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right;
+    GridRecipeStatsView *statsView = [[GridRecipeStatsView alloc] initWithWidth:availableWidth];
+    statsView.frame = (CGRect) {
+        kContentInsets.left + floorf((self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right - statsView.frame.size.width) / 2.0),
+        self.contentView.bounds.size.height - statsView.frame.size.height - kContentInsets.bottom,
+        statsView.frame.size.width,
+        statsView.frame.size.height
+    };
+    [self.contentView addSubview:statsView];
+    self.statsView = statsView;
+}
+
+- (void)updateImageView {
+    if ([self.recipe hasPhotos]) {
+        self.imageView.hidden = NO;
+        self.activityView.hidden = NO;
+        [self.activityView startAnimating];
+        self.layoutOffset = self.imageView.frame.origin.y + self.imageView.frame.size.height;
+    } else {
+        self.activityView.hidden = YES;
+        self.imageView.hidden = YES;
     }
-    self.titleLabel.backgroundColor = [UIColor clearColor];
-    self.titleLabel.text = title;
-    CGSize size = [self.titleLabel sizeThatFits:availableSize];
-    self.titleLabel.frame = (CGRect){
-        kContentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-        self.imageView.frame.origin.y + self.imageView.frame.size.height + kTitleTopGap,
-        size.width,
-        size.height};
+}
+
+- (void)updateTitle {
+    
+    if ([self.recipe.name CK_containsText]) {
+        self.titleLabel.hidden = NO;
+        
+        // Book specific text colour.
+        self.titleLabel.textColor = [CKBookCover textColourForCover:self.book.cover];
+        NSString *title = [self.recipe.name uppercaseString];
+        CGSize availableSize = [self availableSize];
+        NSMutableDictionary *attributes = [NSMutableDictionary new];
+        [attributes setObject:self.titleLabel.font forKey:NSFontAttributeName];
+        
+        self.titleLabel.text = title;
+        
+        CGRect frame = self.titleLabel.frame;
+        CGSize size = [self.titleLabel sizeThatFits:availableSize];
+        frame.origin.x = kContentInsets.left + floorf((availableSize.width - size.width) / 2.0);
+        frame.origin.y = self.layoutOffset + kContentInsets.top;
+        frame.size.width = size.width;
+        frame.size.height = size.height;
+        self.titleLabel.frame = frame;
+        
+        self.layoutOffset += kContentInsets.top + frame.size.height;
+        
+    } else {
+        self.titleLabel.hidden = YES;
+    }
+    
 }
 
 - (void)updateDivider {

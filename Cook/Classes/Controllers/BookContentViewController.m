@@ -11,12 +11,12 @@
 #import "CKRecipe.h"
 #import "BookCategoryLayout.h"
 #import "ParsePhotoStore.h"
-#import "BookRecipeCollectionViewCell.h"
 #import "MRCEnumerable.h"
 #import "BookContentTitleView.h"
 #import "ViewHelper.h"
 #import "BookContentGridLayout.h"
 #import "NSString+Utilities.h"
+#import "BookRecipeGridLargeCell.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate>
@@ -119,8 +119,12 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    BookRecipeCollectionViewCell *recipeCell = (BookRecipeCollectionViewCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kRecipeCellId forIndexPath:indexPath];
     CKRecipe *recipe = [self.recipes objectAtIndex:indexPath.item];
+    BookContentGridType gridType = [self gridTypeForRecipe:recipe];
+    NSString *cellId = [self cellIdentifierForGridType:gridType];
+    
+    BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
+    
     [recipeCell configureRecipe:recipe book:self.book];
     
     // Configure image.
@@ -170,7 +174,15 @@
     [self.view addSubview:collectionView];
     self.collectionView = collectionView;
     
-    [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
+    [self.collectionView registerClass:[BookRecipeGridLargeCell class]
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeLarge]];
+    [self.collectionView registerClass:[BookRecipeGridLargeCell class]
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeMedium]];
+    [self.collectionView registerClass:[BookRecipeGridLargeCell class]
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeSmall]];
+    [self.collectionView registerClass:[BookRecipeGridLargeCell class]
+            forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeExtraSmall]];
+    
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
 }
 
@@ -191,12 +203,11 @@
                             }];
 }
 
-- (void)configureImageForRecipeCell:(BookRecipeCollectionViewCell *)recipeCell recipe:(CKRecipe *)recipe
+- (void)configureImageForRecipeCell:(BookRecipeGridCell *)recipeCell recipe:(CKRecipe *)recipe
                           indexPath:(NSIndexPath *)indexPath {
     
     if ([recipe hasPhotos]) {
-        
-        CGSize imageSize = [BookRecipeCollectionViewCell imageSize];
+        CGSize imageSize = [BookRecipeGridCell imageSize];
         [self.photoStore imageForParseFile:[recipe imageFile]
                                       size:imageSize
                                  indexPath:indexPath
@@ -310,6 +321,10 @@
     }
     
     return gridType;
+}
+
+- (NSString *)cellIdentifierForGridType:(BookContentGridType)gridType {
+    return [NSString stringWithFormat:@"GridType%d", gridType];
 }
 
 @end
