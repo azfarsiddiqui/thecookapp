@@ -12,6 +12,7 @@
 
 - (id)initWithIngredients:(NSArray *)ingredients maxWidth:(CGFloat)maxWidth;
 - (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize;
+- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize textAlignment:(NSTextAlignment)textAlignment;
 - (void)updateIngredients:(NSArray *)ingredients;
 
 @end

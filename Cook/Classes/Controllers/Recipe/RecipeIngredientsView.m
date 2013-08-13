@@ -13,6 +13,7 @@
 @interface RecipeIngredientsView ()
 
 @property (nonatomic, assign) CGSize maxSize;
+@property (nonatomic, assign) NSTextAlignment textAlignment;
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
 @property (nonatomic, strong) NSMutableArray *ingredientLabels;
@@ -28,8 +29,13 @@
 }
 
 - (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize {
+    return [self initWithIngredients:ingredients maxSize:maxSize textAlignment:NSTextAlignmentLeft];
+}
+
+- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize textAlignment:(NSTextAlignment)textAlignment {
     if (self = [super initWithFrame:CGRectZero]) {
         self.maxSize = maxSize;
+        self.textAlignment = textAlignment;
         self.ingredientLabels = [NSMutableArray arrayWithCapacity:[ingredients count]];
         [self updateIngredients:ingredients];
     }
@@ -98,7 +104,7 @@
     if (!_paragraphAttributes) {
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-        paragraphStyle.alignment = NSTextAlignmentLeft;
+        paragraphStyle.alignment = self.textAlignment;
         _paragraphAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                 [Theme ingredientsListFont], NSFontAttributeName,
                                 [Theme ingredientsListColor], NSForegroundColorAttributeName,
@@ -127,15 +133,15 @@
     NSString *ingredientString = [self ingredientAsString:ingredient];
     NSMutableAttributedString *ingredientDisplay = [[NSMutableAttributedString alloc] initWithString:ingredientString
                                                                                           attributes:self.paragraphAttributes];
-    NSString *measurement = ingredient.measurement;
-    if ([measurement length] > 0) {
-        [ingredientDisplay addAttribute:NSFontAttributeName
-                                  value:[Theme ingredientsListMeasurementFont]
-                                  range:NSMakeRange(0, [measurement length])];
-        [ingredientDisplay addAttribute:NSForegroundColorAttributeName
-                                  value:[Theme ingredientsListMeasurementColor]
-                                  range:NSMakeRange(0, [measurement length])];
-    }
+//    NSString *measurement = ingredient.measurement;
+//    if ([measurement length] > 0) {
+//        [ingredientDisplay addAttribute:NSFontAttributeName
+//                                  value:[Theme ingredientsListMeasurementFont]
+//                                  range:NSMakeRange(0, [measurement length])];
+//        [ingredientDisplay addAttribute:NSForegroundColorAttributeName
+//                                  value:[Theme ingredientsListMeasurementColor]
+//                                  range:NSMakeRange(0, [measurement length])];
+//    }
     
     return ingredientDisplay;
 }
