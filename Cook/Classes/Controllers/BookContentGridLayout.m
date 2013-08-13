@@ -14,6 +14,8 @@
 @property (nonatomic, assign) BOOL layoutCompleted;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
+@property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
+@property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
 @property (nonatomic, strong) NSMutableArray *columnOffsets;
 @property (nonatomic, assign) CGSize contentSize;
 
@@ -21,23 +23,26 @@
 
 @implementation BookContentGridLayout
 
-#define kContentInsets  (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
-#define kRowGap         15.0
+#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kUnitWidth          320.0
+#define kRowGap             12.0
+#define kColumnGap          12.0
+#define kHeaderCellsGap     200.0
 
 + (CGSize)sizeForBookContentGridType:(BookContentGridType)gridType {
     CGSize size = CGSizeZero;
     switch (gridType) {
         case BookContentGridTypeExtraSmall:
-            size = (CGSize){ 320.0, 340.0 };
+            size = (CGSize){ kUnitWidth, 340.0 };
             break;
         case BookContentGridTypeSmall:
-            size = (CGSize){ 320.0, 460.0 };
+            size = (CGSize){ kUnitWidth, 460.0 };
             break;
         case BookContentGridTypeMedium:
-            size = (CGSize){ 320.0, 560.0 };
+            size = (CGSize){ kUnitWidth, 560.0 };
             break;
         case BookContentGridTypeLarge:
-            size = (CGSize){ 320.0, 660.0 };
+            size = (CGSize){ kUnitWidth, 660.0 };
             break;
         default:
             break;
@@ -69,6 +74,10 @@
     CGSize contentSize = (CGSize){ self.collectionView.bounds.size.width, 0.0 };
     contentSize.height += kContentInsets.top;
     UIOffset offset = (UIOffset){ kContentInsets.left, kContentInsets.top };
+    
+    // Header offsets.
+    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
+    offset.vertical += floorf((self.collectionView.bounds.size.height - headerSize.height) / 2.0) + headerSize.height + kHeaderCellsGap;
     
     // Set up the column offsets.
     NSInteger numColumns = [self.delegate bookContentGridLayoutNumColumns];
@@ -121,7 +130,11 @@
     
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
+    self.supplementaryLayoutAttributes = [NSMutableArray array];
+    self.indexPathItemAttributes = [NSMutableDictionary dictionary];
+    self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
     
+    [self buildHeaderLayout];
     [self buildGridLayout];
     
     // Mark layout as generated.
@@ -138,6 +151,13 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray* layoutAttributes = [NSMutableArray array];
     
+    // Header cells.
+    for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
+        if (CGRectIntersectsRect(rect, attributes.frame)) {
+            [layoutAttributes addObject:attributes];
+        }
+    }
+    
     // Item cells.
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
         if (CGRectIntersectsRect(rect, attributes.frame)) {
@@ -151,13 +171,74 @@
     return layoutAttributes;
 }
 
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind
+                                                                     atIndexPath:(NSIndexPath *)indexPath {
+    return [self.indexPathSupplementaryAttributes objectForKey:indexPath];
+}
+
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
     return [self.indexPathItemAttributes objectForKey:indexPath];
 }
 
 #pragma mark - Private methods
 
+- (void)buildHeaderLayout {
+    
+    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
+    NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
+    headerAttributes.frame = (CGRect){
+        floorf((self.collectionView.bounds.size.width - headerSize.width) / 2.0),
+        floorf((self.collectionView.bounds.size.height - headerSize.height) / 2.0),
+        headerSize.width,
+        headerSize.height
+    };
+    [self.supplementaryLayoutAttributes addObject:headerAttributes];
+    [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:headerIndexPath];
+}
+
 - (void)buildGridLayout {
+    
+    // Set up the column offsets.
+    UIOffset offset = (UIOffset){ kContentInsets.left, kContentInsets.top };
+    
+    // Increment by the header and headerGap.
+    UICollectionViewLayoutAttributes *headerAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    offset.vertical += headerAttributes.frame.origin.y + headerAttributes.frame.size.height + kHeaderCellsGap;
+    
+    NSInteger numColumns = [self.delegate bookContentGridLayoutNumColumns];
+    self.columnOffsets = [NSMutableArray arrayWithCapacity:numColumns];
+    for (NSInteger columnIndex = 0; columnIndex < numColumns; columnIndex++) {
+        [self.columnOffsets addObject:@(offset.vertical)];
+    }
+    
+    // Now go ahead and figure it out.
+    NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
+    for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
+        
+        // Get the gridType and size.
+        BookContentGridType gridType = [self.delegate bookContentGridTypeForItemAtIndex:itemIndex];
+        CGSize size = [BookContentGridLayout sizeForBookContentGridType:gridType];
+        
+        // Choose the column for this go to.
+        NSInteger shortestColumnIndex = [self nextShortestColumn];
+        CGFloat columnOffset = [[self.columnOffsets objectAtIndex:shortestColumnIndex] floatValue];
+        
+        // Build the attributes.
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:itemIndex inSection:0];
+        UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+        attributes.frame = (CGRect){
+            [self offsetForColumnIndex:shortestColumnIndex],
+            columnOffset,
+            size.width,
+            size.height
+        };
+        [self.itemsLayoutAttributes addObject:attributes];
+        [self.indexPathItemAttributes setObject:attributes forKey:indexPath];
+        
+        // Update the offset for the column.
+        [self.columnOffsets replaceObjectAtIndex:shortestColumnIndex withObject:@(columnOffset + size.height + kRowGap)];
+    }
     
 }
 
@@ -186,6 +267,14 @@
         }
     }
     return maxHeight;
+}
+
+- (CGFloat)offsetForColumnIndex:(NSInteger)columnIndex {
+    CGFloat offset = kContentInsets.left + (columnIndex * kUnitWidth);
+    if (columnIndex > 0) {
+        offset += columnIndex * kColumnGap;
+    }
+    return offset;
 }
 
 @end

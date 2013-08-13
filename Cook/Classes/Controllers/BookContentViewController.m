@@ -13,10 +13,12 @@
 #import "ParsePhotoStore.h"
 #import "BookRecipeCollectionViewCell.h"
 #import "MRCEnumerable.h"
-#import "BookHeaderView.h"
+#import "BookContentTitleView.h"
 #import "ViewHelper.h"
+#import "BookContentGridLayout.h"
 
-@interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
+    BookContentGridLayoutDelegate>
 
 @property (nonatomic, weak) id<BookContentViewControllerDelegate> delegate;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -27,7 +29,7 @@
 @property (nonatomic, strong) NSMutableArray *recipes;
 
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) BookHeaderView *bookHeaderView;
+@property (nonatomic, strong) BookContentTitleView *contentTitleView;
 
 @end
 
@@ -50,6 +52,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
+
     [self initCollectionView];
     [self initOverlay];
     [self loadData];
@@ -69,34 +72,46 @@
     self.overlayView.alpha = alpha;
 }
 
+#pragma mark - BookContentGridLayoutDelegate methods
+
+- (void)bookContentGridLayoutDidFinish {
+    DLog();
+}
+
+- (NSInteger)bookContentGridLayoutNumColumns {
+    return 3;
+}
+
+- (BookContentGridType)bookContentGridTypeForItemAtIndex:(NSInteger)itemIndex {
+    NSInteger typeIndex = itemIndex % 4;
+    BookContentGridType type = BookContentGridTypeExtraSmall;
+    switch (typeIndex) {
+        case 0:
+            type = BookContentGridTypeExtraSmall;
+            break;
+        case 1:
+            type = BookContentGridTypeSmall;
+            break;
+        case 2:
+            type = BookContentGridTypeMedium;
+            break;
+        case 3:
+            type = BookContentGridTypeLarge;
+            break;
+        default:
+            break;
+    }
+    return type;
+}
+
+- (CGSize)bookContentGridLayoutHeaderSize {
+    return self.contentTitleView.frame.size;
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self applyScrollingEffectsOnCategoryView];
-}
-
-#pragma mark - UICollectionViewDelegateFlowLayout methods
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-        insetForSectionAtIndex:(NSInteger)section {
-    
-    return (UIEdgeInsets) { 210.0, 20.0, 20.0, 20.0 };
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-    referenceSizeForHeaderInSection:(NSInteger)section {
-    
-    CGSize headerSize = (CGSize) {
-        self.collectionView.bounds.size.width,
-        470.0
-    };
-    return headerSize;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-  
-    return [BookCategoryLayout unitSize];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -133,13 +148,22 @@
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
            viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
-    BookHeaderView *bookHeaderView = (BookHeaderView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId forIndexPath:indexPath];
-    [bookHeaderView configureTitle:self.page];
+    UICollectionReusableView *reusableView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId forIndexPath:indexPath];
+    if (!self.contentTitleView.superview) {
+        self.contentTitleView.frame = reusableView.bounds;
+        [reusableView addSubview:self.contentTitleView];
+    }
     
-    // Keep a reference of it around so we can fade it out later.
-    self.bookHeaderView = bookHeaderView;
-    
-    return bookHeaderView;
+    return reusableView;
+}
+
+#pragma mark - Properties
+
+- (BookContentTitleView *)contentTitleView {
+    if (!_contentTitleView) {
+        _contentTitleView = [[BookContentTitleView alloc] initWithTitle:self.page];
+    }
+    return _contentTitleView;
 }
 
 #pragma mark - Private 
@@ -152,7 +176,7 @@
 
 - (void)initCollectionView {
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
-                                                          collectionViewLayout:[[BookCategoryLayout alloc] init]];
+                                                          collectionViewLayout:[[BookContentGridLayout alloc] initWithDelegate:self]];
     collectionView.delegate = self;
     collectionView.dataSource = self;
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -162,7 +186,7 @@
     self.collectionView = collectionView;
     
     [self.collectionView registerClass:[BookRecipeCollectionViewCell class] forCellWithReuseIdentifier:kRecipeCellId];
-    [self.collectionView registerClass:[BookHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
+    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
 }
 
 - (void)initOverlay {
