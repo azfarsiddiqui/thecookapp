@@ -41,16 +41,14 @@
 #pragma mark - Private methods
 -(void)style
 {
-    self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"cook_keyboard_autosuggest_bg"]];
+    self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"cook_keyboard_autosuggest_bg.png"]];
     
-    UIImage *buttonImage = [[UIImage imageNamed:@"cook_keyboard_autosuggest_btn"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 11.0f, 0.0f, 11.0f)];
+    UIImage *buttonImage = [[UIImage imageNamed:@"cook_keyboard_autosuggest_btn.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 11.0f, 0.0f, 11.0f)];
     __block float xPosIndex = 0;
     [self.shortNames enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
         if ([@"" isEqualToString:name]) {
-            //divider
-            UIImageView *dividerImageView = [self dividerAtXOrigin:xPosIndex+kButtonSpacer];
-            [self addSubview:dividerImageView];
-            xPosIndex+=(dividerImageView.frame.size.width+kButtonSpacer);
+            // Divider
+            xPosIndex += kButtonSpacer;
         } else {
             UIButton *button  = [ViewHelper buttonWithTitle:name backgroundImage:buttonImage
                                                      target:self selector:@selector(buttonTapped:)];
