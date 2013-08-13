@@ -31,6 +31,15 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
     
+    [self applyHeaderPagingEffects:layoutAttributes];
+    
+    return layoutAttributes;
+}
+
+#pragma mark - Private methods
+
+- (void)applyHeaderPagingEffects:(NSArray *)layoutAttributes {
+    
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         
         // Fade the header.
@@ -48,9 +57,7 @@
             }
             
             attributes.alpha = MIN(alpha, 0.9);
-            
             if (visibleFrame.origin.y < 0.0) {
-                
                 headerFrame.origin.y = visibleFrame.origin.y * 0.7;
                 
             } else {
@@ -64,7 +71,6 @@
         
     }
     
-    return layoutAttributes;
 }
 
 @end
