@@ -48,7 +48,7 @@
 #define kDividerIngredientsGap  20.0
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
-#define kContentInsets          UIEdgeInsetsMake(30.0, 40.0, 20.0, 40.0)
+#define kContentInsets          UIEdgeInsetsMake(50.0, 20.0, 45.0, 20.0)
 
 + (CGSize)imageSize {
     return kImageSize;

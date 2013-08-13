@@ -53,10 +53,10 @@
 
 - (void)initIconViews {
     self.iconViews = [NSMutableArray array];
-    [self configureIcon:@"cook_recipe_iconbar_serves.png"];
-    [self configureIcon:@"cook_recipe_iconbar_time.png"];
-    [self configureIcon:@"cook_recipe_iconbar_comments.png"];
-    [self configureIcon:@"cook_recipe_iconbar_likes.png"];
+    [self configureIcon:@"cook_book_inner_icon_small_serves.png"];
+    [self configureIcon:@"cook_book_inner_icon_small_time.png"];
+    [self configureIcon:@"cook_book_inner_icon_small_comments.png"];
+    [self configureIcon:@"cook_book_inner_icon_small_likes_off.png"];
 }
 
 - (void)configureIcon:(NSString *)iconName {
