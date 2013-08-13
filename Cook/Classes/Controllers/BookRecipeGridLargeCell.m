@@ -129,7 +129,7 @@
         
 
     } else {
-        self.storyLabel.hidden = YES;
+        self.methodLabel.hidden = YES;
     }
 }
 

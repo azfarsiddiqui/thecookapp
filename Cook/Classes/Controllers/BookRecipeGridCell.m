@@ -123,7 +123,7 @@
 
 - (void)updateTitle {
     
-    if ([self.recipe.name CK_containsText]) {
+    if ([self hasTitle]) {
         self.titleLabel.hidden = NO;
         
         // Book specific text colour.
@@ -139,27 +139,15 @@
 }
 
 - (void)updateStory {
-    if ([self.recipe.story CK_containsText]) {
+    if ([self hasStory]) {
         self.storyLabel.hidden = NO;
-        NSString *story = self.recipe.story;
-        CGSize availableSize = (CGSize) {
-            self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
-            self.statsView.frame.origin.y - self.dividerQuoteImageView.frame.origin.y - self.dividerQuoteImageView.frame.size.height - kDividerStoryGap,
-        };
-        self.storyLabel.text = story;
-        CGSize size = [self.storyLabel sizeThatFits:availableSize];
-        self.storyLabel.frame = (CGRect){
-            kContentInsets.left,
-            self.dividerQuoteImageView.frame.origin.y + self.dividerQuoteImageView.frame.size.height + kDividerStoryGap,
-            size.width,
-            size.height};
     } else {
         self.storyLabel.hidden = YES;
     }
 }
 
 - (void)updateMethod {
-    if ([self.recipe.method CK_containsText]) {
+    if ([self hasMethod]) {
         self.storyLabel.hidden = NO;
     } else {
         self.storyLabel.hidden = YES;

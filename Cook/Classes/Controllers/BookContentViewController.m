@@ -17,6 +17,7 @@
 #import "BookContentGridLayout.h"
 #import "NSString+Utilities.h"
 #import "BookRecipeGridLargeCell.h"
+#import "BookRecipeGridMediumCell.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate>
@@ -176,7 +177,7 @@
     
     [self.collectionView registerClass:[BookRecipeGridLargeCell class]
             forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeLarge]];
-    [self.collectionView registerClass:[BookRecipeGridLargeCell class]
+    [self.collectionView registerClass:[BookRecipeGridMediumCell class]
             forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeMedium]];
     [self.collectionView registerClass:[BookRecipeGridLargeCell class]
             forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeSmall]];
