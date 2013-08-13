@@ -577,13 +577,7 @@
         // Fetch all recipes for the book, and categorise them.
         [self.book fetchRecipesSuccess:^(NSArray *recipes){
             
-            self.recipes = [NSMutableArray arrayWithArray:recipes];
-            
-            // Mark layout needs to be re-generated.
-            [[self currentLayout] setNeedsRelayout:YES];
-            
-            [self loadRecipes];
-            [self loadTitlePage];
+            [self processRecipes:recipes];
             
         } failure:^(NSError *error) {
             DLog(@"Error %@", [error localizedDescription]);
@@ -598,13 +592,7 @@
                                      // Fetch all recipes for the book, and categorise them.
                                      [self.book fetchRecipesOwner:NO friends:alreadyConnected success:^(NSArray *recipes) {
                                          
-                                         self.recipes = [NSMutableArray arrayWithArray:recipes];
-                                         
-                                         // Mark layout needs to be re-generated.
-                                         [[self currentLayout] setNeedsRelayout:YES];
-                                         
-                                         [self loadRecipes];
-                                         [self loadTitlePage];
+                                         [self processRecipes:recipes];
                                          
                                      } failure:^(NSError *error) {
                                          DLog(@"Error %@", [error localizedDescription]);
@@ -613,6 +601,14 @@
                                  } failure:^(NSError *error) {
                                  }];
     }
+    
+}
+
+- (void)processRecipes:(NSArray *)recipes {
+    self.recipes = [NSMutableArray arrayWithArray:recipes];
+    
+    [self loadRecipes];
+    [self loadTitlePage];
     
 }
 
