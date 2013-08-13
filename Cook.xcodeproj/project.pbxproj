@@ -323,6 +323,7 @@
 		76735C8E17BA16780027CA3B /* BookRecipeGridLargeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C8D17BA16780027CA3B /* BookRecipeGridLargeCell.m */; };
 		76735C9117BA5C770027CA3B /* BookRecipeGridMediumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C9017BA5C770027CA3B /* BookRecipeGridMediumCell.m */; };
 		76735C9417BA5ECB0027CA3B /* BookRecipeGridSmallCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C9317BA5ECB0027CA3B /* BookRecipeGridSmallCell.m */; };
+		76735C9A17BA61B50027CA3B /* BookRecipeGridExtraSmallCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C9917BA61B50027CA3B /* BookRecipeGridExtraSmallCell.m */; };
 		76751590170CFF52008B675D /* cook_book_graphic_featured_hongkong.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751582170CFF52008B675D /* cook_book_graphic_featured_hongkong.png */; };
 		76751591170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751583170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png */; };
 		76751592170CFF52008B675D /* cook_book_graphic_featured_london.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751584170CFF52008B675D /* cook_book_graphic_featured_london.png */; };
@@ -1199,6 +1200,8 @@
 		76735C9017BA5C770027CA3B /* BookRecipeGridMediumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookRecipeGridMediumCell.m; sourceTree = "<group>"; };
 		76735C9217BA5ECB0027CA3B /* BookRecipeGridSmallCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookRecipeGridSmallCell.h; sourceTree = "<group>"; };
 		76735C9317BA5ECB0027CA3B /* BookRecipeGridSmallCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookRecipeGridSmallCell.m; sourceTree = "<group>"; };
+		76735C9817BA61B50027CA3B /* BookRecipeGridExtraSmallCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookRecipeGridExtraSmallCell.h; sourceTree = "<group>"; };
+		76735C9917BA61B50027CA3B /* BookRecipeGridExtraSmallCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookRecipeGridExtraSmallCell.m; sourceTree = "<group>"; };
 		76751582170CFF52008B675D /* cook_book_graphic_featured_hongkong.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_featured_hongkong.png; sourceTree = "<group>"; };
 		76751583170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_featured_hongkong@2x.png"; sourceTree = "<group>"; };
 		76751584170CFF52008B675D /* cook_book_graphic_featured_london.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_featured_london.png; sourceTree = "<group>"; };
@@ -3191,6 +3194,10 @@
 				76735C8D17BA16780027CA3B /* BookRecipeGridLargeCell.m */,
 				76735C8F17BA5C770027CA3B /* BookRecipeGridMediumCell.h */,
 				76735C9017BA5C770027CA3B /* BookRecipeGridMediumCell.m */,
+				76735C9217BA5ECB0027CA3B /* BookRecipeGridSmallCell.h */,
+				76735C9317BA5ECB0027CA3B /* BookRecipeGridSmallCell.m */,
+				76735C9817BA61B50027CA3B /* BookRecipeGridExtraSmallCell.h */,
+				76735C9917BA61B50027CA3B /* BookRecipeGridExtraSmallCell.m */,
 				764E46ED16C865C900DD168F /* BookRecipeCollectionViewCell.h */,
 				764E46EE16C865C900DD168F /* BookRecipeCollectionViewCell.m */,
 				76E0B95E1791205D00AD70E3 /* BookCategoryLayout.h */,
@@ -3257,8 +3264,6 @@
 				76C8FB161796BED700488A80 /* BookAddViewController.m */,
 				76D2BF5717B8BB5700BA46A1 /* BookContentCell.h */,
 				76D2BF5817B8BB5700BA46A1 /* BookContentCell.m */,
-				76735C9217BA5ECB0027CA3B /* BookRecipeGridSmallCell.h */,
-				76735C9317BA5ECB0027CA3B /* BookRecipeGridSmallCell.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -4132,6 +4137,7 @@
 				764E46EF16C865C900DD168F /* BookRecipeCollectionViewCell.m in Sources */,
 				764E46F516C871EB00DD168F /* BookCategoryView.m in Sources */,
 				7693D1F916C9C23100E7D15C /* BookNavigationFlowLayoutAttributes.m in Sources */,
+				76735C9A17BA61B50027CA3B /* BookRecipeGridExtraSmallCell.m in Sources */,
 				76D84CA416CDB44400FB5FB0 /* ParsePhotoStore.m in Sources */,
 				76D84CAC16CDF3B500FB5FB0 /* RSMaskedLabel.m in Sources */,
 				76C8FB171796BED700488A80 /* BookAddViewController.m in Sources */,
