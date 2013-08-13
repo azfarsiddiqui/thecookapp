@@ -17,15 +17,15 @@
 
 @interface BookRecipeGridCell ()
 
-@property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) CKRecipe *recipe;
-
 @end
 
 @implementation BookRecipeGridCell
 
 #define kViewDebug              0
 #define kImageSize              (CGSize){316.0, 260.0}
+#define kBlockUnitHeight        200.0
+#define kContentInsets          (UIEdgeInsets){50.0, 20.0, 45.0, 20.0}
+
 #define kTitleOffsetNoImage     45.0
 #define kTitleTopGap            45.0
 #define kTitleDividerGap        20.0
@@ -33,7 +33,6 @@
 #define kDividerIngredientsGap  20.0
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
-#define kContentInsets          (UIEdgeInsets){50.0, 20.0, 45.0, 20.0}
 
 + (CGSize)imageSize {
     return kImageSize;
@@ -46,6 +45,7 @@
         [self initTitleLabel];
         [self initIngredientsView];
         [self initStoryLabel];
+        [self initMethodLabel];
         [self initStatsView];
     }
     return self;
@@ -185,8 +185,31 @@
     };
 }
 
+- (CGSize)availableBlockSize {
+    return (CGSize){
+        self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
+        kBlockUnitHeight
+    };
+}
+
 - (UIEdgeInsets)contentInsets {
     return kContentInsets;
+}
+
+- (BOOL)hasTitle {
+    return [self.recipe.name CK_containsText];
+}
+
+- (BOOL)hasStory {
+    return [self.recipe.story CK_containsText];
+}
+
+- (BOOL)hasMethod {
+    return [self.recipe.method CK_containsText];
+}
+
+- (BOOL)hasIngredients {
+    return ([self.recipe.ingredients count] > 0);
 }
 
 #pragma mark - UICollectionViewCell methods
@@ -282,11 +305,13 @@
 }
 
 - (void)initIngredientsView {
-
+    RecipeIngredientsView *ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:nil
+                                                                                        maxSize:[self availableBlockSize]];
+    [self.contentView addSubview:ingredientsView];
+    self.ingredientsView = ingredientsView;
 }
 
 - (void)initStoryLabel {
-    // Story.
     UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     storyLabel.backgroundColor = [self backgroundColorOrDebug];
     storyLabel.font = [Theme recipeGridIngredientsFont];
@@ -296,6 +321,18 @@
     storyLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:storyLabel];
     self.storyLabel = storyLabel;
+}
+
+- (void)initMethodLabel {
+    UILabel *methodLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    methodLabel.backgroundColor = [self backgroundColorOrDebug];
+    methodLabel.font = [Theme recipeGridIngredientsFont];
+    methodLabel.textColor = [Theme recipeGridIngredientsColour];
+    methodLabel.numberOfLines = 0;
+    methodLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    methodLabel.textAlignment = NSTextAlignmentCenter;
+    [self.contentView addSubview:methodLabel];
+    self.methodLabel = methodLabel;
 }
 
 - (void)initStatsView {

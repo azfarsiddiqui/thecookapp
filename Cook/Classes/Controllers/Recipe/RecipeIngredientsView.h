@@ -11,6 +11,7 @@
 @interface RecipeIngredientsView : UIView
 
 - (id)initWithIngredients:(NSArray *)ingredients maxWidth:(CGFloat)maxWidth;
+- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize;
 - (void)updateIngredients:(NSArray *)ingredients;
 
 @end

@@ -12,7 +12,7 @@
 
 @interface RecipeIngredientsView ()
 
-@property (nonatomic, assign) CGFloat maxWidth;
+@property (nonatomic, assign) CGSize maxSize;
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
 @property (nonatomic, strong) NSMutableArray *ingredientLabels;
@@ -24,8 +24,12 @@
 #define kRowGap 3.0
 
 - (id)initWithIngredients:(NSArray *)ingredients maxWidth:(CGFloat)maxWidth {
+    return [self initWithIngredients:ingredients maxSize:(CGSize){ maxWidth, MAXFLOAT }];
+}
+
+- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize {
     if (self = [super initWithFrame:CGRectZero]) {
-        self.maxWidth = maxWidth;
+        self.maxSize = maxSize;
         self.ingredientLabels = [NSMutableArray arrayWithCapacity:[ingredients count]];
         [self updateIngredients:ingredients];
     }
@@ -59,9 +63,15 @@
             
             // Update the display text.
             ingredientsLabel.attributedText = ingredientAttributedText;
-            CGSize size = [ingredientsLabel sizeThatFits:CGSizeMake(self.maxWidth, MAXFLOAT)];
-            ingredientsLabel.frame = (CGRect){ 0.0, self.layoutOffset, size.width, size.height };
+            CGSize size = [ingredientsLabel sizeThatFits:self.maxSize];
             
+            // Have we exceeded the max height,then remove this label.
+            if (self.layoutOffset + size.height > self.maxSize.height) {
+                [ingredientsLabel removeFromSuperview];
+                break;
+            }
+            
+            ingredientsLabel.frame = (CGRect){ 0.0, self.layoutOffset, size.width, size.height };
             self.layoutOffset += size.height;
             if (ingredientIndex < [ingredients count] - 1) {
                 self.layoutOffset += kRowGap;

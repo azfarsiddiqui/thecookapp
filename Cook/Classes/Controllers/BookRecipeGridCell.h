@@ -15,6 +15,9 @@
 
 @interface BookRecipeGridCell : UICollectionViewCell
 
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKRecipe *recipe;
+
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
@@ -43,5 +46,11 @@
 
 - (UIEdgeInsets)contentInsets;
 - (CGSize)availableSize;
+- (CGSize)availableBlockSize;
+
+- (BOOL)hasTitle;
+- (BOOL)hasStory;
+- (BOOL)hasMethod;
+- (BOOL)hasIngredients;
 
 @end
