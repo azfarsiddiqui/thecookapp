@@ -7,6 +7,7 @@
 //
 
 #import "BookContentGridLayout.h"
+#import "ViewHelper.h"
 
 @interface BookContentGridLayout ()
 
@@ -19,6 +20,9 @@
 @property (nonatomic, strong) NSMutableArray *columnOffsets;
 @property (nonatomic, assign) CGSize contentSize;
 
+@property (nonatomic, assign) CGFloat cellStartOffset;
+@property (nonatomic, assign) CGFloat headerStartOffset;
+
 @end
 
 @implementation BookContentGridLayout
@@ -28,6 +32,7 @@
 #define kRowGap             12.0
 #define kColumnGap          12.0
 #define kHeaderCellsGap     200.0
+#define kHeaderCellsMinGap  20.0
 
 + (CGSize)sizeForBookContentGridType:(BookContentGridType)gridType {
     CGSize size = CGSizeZero;
@@ -71,6 +76,7 @@
         return self.contentSize;
     }
     
+    DLog();
     CGSize contentSize = (CGSize){ self.collectionView.bounds.size.width, 0.0 };
     contentSize.height += kContentInsets.top;
     UIOffset offset = (UIOffset){ kContentInsets.left, kContentInsets.top };
@@ -78,6 +84,9 @@
     // Header offsets.
     CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
     offset.vertical += floorf((self.collectionView.bounds.size.height - headerSize.height) / 2.0) + headerSize.height + kHeaderCellsGap;
+    
+    // Remember cell start offset.
+    self.cellStartOffset = offset.vertical;
     
     // Set up the column offsets.
     NSInteger numColumns = [self.delegate bookContentGridLayoutNumColumns];
@@ -145,7 +154,7 @@
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-    return NO;
+    return YES;
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
@@ -183,9 +192,14 @@
 #pragma mark - Private methods
 
 - (void)buildHeaderLayout {
-    
-    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
     NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    UICollectionViewLayoutAttributes *headerAttributes = [self headerLayoutAttributesForIndexPath:headerIndexPath];
+    [self.supplementaryLayoutAttributes addObject:headerAttributes];
+    [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:headerIndexPath];
+}
+
+- (UICollectionViewLayoutAttributes *)headerLayoutAttributesForIndexPath:(NSIndexPath *)headerIndexPath {
+    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
     UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
     headerAttributes.frame = (CGRect){
         floorf((self.collectionView.bounds.size.width - headerSize.width) / 2.0),
@@ -193,8 +207,8 @@
         headerSize.width,
         headerSize.height
     };
-    [self.supplementaryLayoutAttributes addObject:headerAttributes];
-    [self.indexPathSupplementaryAttributes setObject:headerAttributes forKey:headerIndexPath];
+    self.headerStartOffset = headerAttributes.frame.origin.y;
+    return headerAttributes;
 }
 
 - (void)buildGridLayout {
@@ -243,6 +257,26 @@
 }
 
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            [self applyHeaderPagingEffects:attributes];
+        }
+    }
+}
+
+- (void)applyHeaderPagingEffects:(UICollectionViewLayoutAttributes *)attributes {
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
+    
+    if (visibleFrame.origin.y > 0.0) {
+        CGFloat dragRatio = 0.6;
+        CGFloat effectiveDistance = self.cellStartOffset - self.headerStartOffset - headerSize.height - kHeaderCellsMinGap;
+        CGFloat distance = visibleFrame.origin.y * dragRatio;
+        CGFloat ratio = MIN(distance / effectiveDistance, 1.0);
+        CGFloat translate = effectiveDistance * ratio;
+        attributes.transform3D = CATransform3DMakeTranslation(0.0, translate, 0.0);
+    }
+    
 }
 
 - (NSInteger)nextShortestColumn {
