@@ -1,20 +1,48 @@
 //
-//  BookRecipeGridMediumCell.m
+//  BookRecipeGridSmallCell.m
 //  Cook
 //
 //  Created by Jeff Tan-Ang on 13/08/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookRecipeGridMediumCell.h"
+#import "BookRecipeGridSmallCell.h"
 #import "RecipeIngredientsView.h"
 #import "CKRecipe.h"
 
-@implementation BookRecipeGridMediumCell
+@implementation BookRecipeGridSmallCell
 
-#define kImageStoryGap          45.0
-#define kImageMethodGap         45.0
-#define kImageIngredientsGap    20.0
+#define kImageTitleGap          50.0
+#define kTitleIngredientsGap    30.0
+#define kTitleStoryGap          45.0
+#define kTitleMethodGap         45.0
+
+- (UIEdgeInsets)contentInsets {
+    UIEdgeInsets insets = [super contentInsets];
+    insets.top += 10.0;
+    return insets;
+}
+
+// Title always at the top.
+- (void)updateTitle {
+    [super updateTitle];
+    
+    UIEdgeInsets contentInsets = [self contentInsets];
+    CGRect frame = self.titleLabel.frame;
+    CGSize availableSize = [self availableSize];
+    CGSize size = [self.titleLabel sizeThatFits:availableSize];
+    frame.origin.x = contentInsets.left + floorf((availableSize.width - size.width) / 2.0);
+    
+    if (self.imageView.hidden) {
+        frame.origin.y = contentInsets.top;
+    } else {
+        frame.origin.y = self.imageView.frame.origin.y + self.imageView.frame.size.height + kImageTitleGap;
+    }
+    
+    frame.size.width = size.width;
+    frame.size.height = size.height;
+    self.titleLabel.frame = frame;
+}
 
 - (void)updateIngredients {
     if ([self hasIngredients]) {
@@ -26,7 +54,7 @@
         [self.ingredientsView updateIngredients:self.recipe.ingredients];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left,
-            self.imageView.frame.origin.y + self.imageView.frame.size.height + kImageIngredientsGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
@@ -49,7 +77,7 @@
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
             contentInsets.left,
-            self.imageView.frame.origin.y + self.imageView.frame.size.height + kImageStoryGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap,
             size.width,
             size.height
         };
@@ -72,7 +100,7 @@
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
             contentInsets.left,
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kImageMethodGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap,
             size.width,
             size.height
         };

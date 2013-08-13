@@ -322,6 +322,7 @@
 		76735C8B17BA12000027CA3B /* BookRecipeGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C8A17BA12000027CA3B /* BookRecipeGridCell.m */; };
 		76735C8E17BA16780027CA3B /* BookRecipeGridLargeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C8D17BA16780027CA3B /* BookRecipeGridLargeCell.m */; };
 		76735C9117BA5C770027CA3B /* BookRecipeGridMediumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C9017BA5C770027CA3B /* BookRecipeGridMediumCell.m */; };
+		76735C9417BA5ECB0027CA3B /* BookRecipeGridSmallCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76735C9317BA5ECB0027CA3B /* BookRecipeGridSmallCell.m */; };
 		76751590170CFF52008B675D /* cook_book_graphic_featured_hongkong.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751582170CFF52008B675D /* cook_book_graphic_featured_hongkong.png */; };
 		76751591170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751583170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png */; };
 		76751592170CFF52008B675D /* cook_book_graphic_featured_london.png in Resources */ = {isa = PBXBuildFile; fileRef = 76751584170CFF52008B675D /* cook_book_graphic_featured_london.png */; };
@@ -1196,6 +1197,8 @@
 		76735C8D17BA16780027CA3B /* BookRecipeGridLargeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookRecipeGridLargeCell.m; sourceTree = "<group>"; };
 		76735C8F17BA5C770027CA3B /* BookRecipeGridMediumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookRecipeGridMediumCell.h; sourceTree = "<group>"; };
 		76735C9017BA5C770027CA3B /* BookRecipeGridMediumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookRecipeGridMediumCell.m; sourceTree = "<group>"; };
+		76735C9217BA5ECB0027CA3B /* BookRecipeGridSmallCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookRecipeGridSmallCell.h; sourceTree = "<group>"; };
+		76735C9317BA5ECB0027CA3B /* BookRecipeGridSmallCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookRecipeGridSmallCell.m; sourceTree = "<group>"; };
 		76751582170CFF52008B675D /* cook_book_graphic_featured_hongkong.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_featured_hongkong.png; sourceTree = "<group>"; };
 		76751583170CFF52008B675D /* cook_book_graphic_featured_hongkong@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_featured_hongkong@2x.png"; sourceTree = "<group>"; };
 		76751584170CFF52008B675D /* cook_book_graphic_featured_london.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_featured_london.png; sourceTree = "<group>"; };
@@ -3254,6 +3257,8 @@
 				76C8FB161796BED700488A80 /* BookAddViewController.m */,
 				76D2BF5717B8BB5700BA46A1 /* BookContentCell.h */,
 				76D2BF5817B8BB5700BA46A1 /* BookContentCell.m */,
+				76735C9217BA5ECB0027CA3B /* BookRecipeGridSmallCell.h */,
+				76735C9317BA5ECB0027CA3B /* BookRecipeGridSmallCell.m */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -4235,6 +4240,7 @@
 				76C3BB90173B73F0004F6444 /* CKDialerControl.m in Sources */,
 				76C3BB97173B795D004F6444 /* ServesAndTimeEditViewController.m in Sources */,
 				76AA97A4173BC941008549EB /* RecipeClipboard.m in Sources */,
+				76735C9417BA5ECB0027CA3B /* BookRecipeGridSmallCell.m in Sources */,
 				764F4D0D179E1AEC00821221 /* BookTitleLayout.m in Sources */,
 				76DA35DC173C8E65009681CE /* CKPrivacyView.m in Sources */,
 				76871BE117420DA40030BDE4 /* CKItemCollectionViewCell.m in Sources */,
