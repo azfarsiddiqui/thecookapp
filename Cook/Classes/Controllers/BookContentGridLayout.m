@@ -78,7 +78,6 @@
         return self.contentSize;
     }
     
-    DLog();
     CGSize contentSize = (CGSize){ self.collectionView.bounds.size.width, 0.0 };
     contentSize.height += kContentInsets.top;
     UIOffset offset = (UIOffset){ kContentInsets.left, kCellsStartOffset };
@@ -107,7 +106,11 @@
         NSInteger shortestColumnIndex = [self nextShortestColumn];
         
         // Update the offset for the column.
-        CGFloat columnOffset = [[self.columnOffsets objectAtIndex:shortestColumnIndex] floatValue] + size.height + kRowGap;
+        CGFloat columnOffset = [[self.columnOffsets objectAtIndex:shortestColumnIndex] floatValue] + size.height;
+        if (itemIndex != numItems - 1) {
+            columnOffset += kRowGap;    // Row gap for all rows in between.
+        }
+        
         [self.columnOffsets replaceObjectAtIndex:shortestColumnIndex withObject:@(columnOffset)];
         
         // Remember the maxHeight.
@@ -120,6 +123,7 @@
     // Resolve the contentSize.
     contentSize.height += maxHeight;
     contentSize.height += kContentInsets.bottom;
+    contentSize.height = MAX(contentSize.height, self.collectionView.bounds.size.height);
     
     // Cache the contentSize and inform layout finished.
     self.contentSize = contentSize;
