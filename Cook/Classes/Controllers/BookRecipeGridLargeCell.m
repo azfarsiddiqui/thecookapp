@@ -9,14 +9,15 @@
 #import "BookRecipeGridLargeCell.h"
 #import "RecipeIngredientsView.h"
 #import "CKRecipe.h"
+#import "GridRecipeStatsView.h"
 
 @implementation BookRecipeGridLargeCell
 
 #define kTitleIngredientsGap    10.0
 #define kTitleStoryGap          45.0    // To make room for quote divider.
 #define kTitleMethodGap         45.0
-#define kIngredientsStoryGap    45.0
-#define kIngredientsMethodGap   45.0
+#define kStoryStatsGap          20.0
+#define kMethodStatsGap         20.0
 
 // Title always come first.
 - (void)updateTitle {
@@ -39,15 +40,24 @@
     self.titleLabel.frame = frame;
 }
 
-// Ingredients always comes next if it exists.
 - (void)updateIngredients {
-    if ([self hasIngredients]) {
+    
+    // Ingredients appear only in the following situations:
+    //
+    // 1. +Photo +Title -Story -Method +Ingredients
+    // 2. -Photo +Title (+/-)Story (+/-)Method +Ingredients
+    //
+    if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients] )
+        || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])) {
+        
         self.ingredientsView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients];
+      
+        // And it only appears after title.
         self.ingredientsView.frame = (CGRect){
-            contentInsets.left,
+            contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
@@ -60,33 +70,40 @@
 
 - (void)updateStory {
     
-    if (!self.imageView.hidden && [self hasTitle] && [self hasStory] && ![self hasMethod] && ![self hasIngredients]) {
+    if ([self hasPhotos] && [self hasTitle] && [self hasStory]) {
         
-        // Image + Title + Story
+        // +Photo +Title +Story (+/-)Method (+/-)Ingredients
         self.storyLabel.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
         self.storyLabel.text = story;
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
+        CGSize availableSize = [self availableSize];
+        
+        // And it comes after Title.
         self.storyLabel.frame = (CGRect){
-            contentInsets.left,
+            contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap,
             size.width,
             size.height};
         
-    } else if (self.imageView.hidden && [self hasIngredients] && [self hasStory] & ![self hasMethod]) {
+    } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
     
-        // Title + Ingredients + Story
+        // -Photo +Title +Story (+/-)Method +Ingredients
         self.storyLabel.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
         self.storyLabel.text = story;
-        CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
+        CGSize availableSize = [self availableSize];
+        CGSize blockSize = [self availableBlockSize];
+        CGSize size = [self.storyLabel sizeThatFits:blockSize];
+        
+        // And it comes before stats view (ingredientsView not rendered yet).
         self.storyLabel.frame = (CGRect){
-            contentInsets.left,
-            self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsStoryGap,
+            contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
+            self.statsView.frame.origin.y - kStoryStatsGap - blockSize.height + floorf((blockSize.height - size.height) / 2.0),
             size.width,
             size.height};
         
@@ -97,35 +114,42 @@
 
 - (void)updateMethod {
     
-    if (!self.imageView.hidden && [self hasTitle] && ![self hasStory] && [self hasMethod] && ![self hasIngredients]) {
+    if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod]) {
         
-        // Image + Title + Method
+        // +Photo +Title -Story +Method (+/-)Ingredients
         self.methodLabel.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
         self.methodLabel.text = method;
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
+        
+        // Comes after Title.
         self.methodLabel.frame = (CGRect){
-            contentInsets.left,
+            contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap,
             size.width,
-            size.height};
+            size.height
+        };
         
-    } else if (self.imageView.hidden && [self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
+    } else if (![self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
         
-        // Title + Ingredients + Method
+        // -Photo +Title -Story +Method +Ingredients
         self.methodLabel.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
         self.methodLabel.text = method;
-        CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
+        CGSize blockSize = [self availableBlockSize];
+        CGSize size = [self.methodLabel sizeThatFits:blockSize];
+        
+        // And it comes before stats view (ingredientsView not rendered yet).
         self.methodLabel.frame = (CGRect){
-            contentInsets.left,
-            self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsMethodGap,
+            contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
+            self.statsView.frame.origin.y - kMethodStatsGap - blockSize.height + floorf((blockSize.height - size.height) / 2.0),
             size.width,
-            size.height};
+            size.height
+        };
         
 
     } else {

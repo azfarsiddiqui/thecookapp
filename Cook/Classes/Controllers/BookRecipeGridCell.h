@@ -48,6 +48,7 @@
 - (CGSize)availableSize;
 - (CGSize)availableBlockSize;
 
+- (BOOL)hasPhotos;
 - (BOOL)hasTitle;
 - (BOOL)hasStory;
 - (BOOL)hasMethod;

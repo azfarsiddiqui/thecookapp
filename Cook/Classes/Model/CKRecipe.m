@@ -381,10 +381,6 @@
     return [self.recipeImage imageFile];
 }
 
-- (BOOL)hasPhotos {
-    return ([self imageFile] != nil);
-}
-
 - (void)setImage:(UIImage *)image {
     if (image) {
         self.recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipeImage.png"];
@@ -579,6 +575,28 @@
         _ingredients = [self assembleIngredients];
     }
     return _ingredients;
+}
+
+#pragma mark - Existence methods
+
+- (BOOL)hasPhotos {
+    return ([self imageFile] != nil);
+}
+
+- (BOOL)hasTitle {
+    return [self.name CK_containsText];
+}
+
+- (BOOL)hasStory {
+    return [self.story CK_containsText];
+}
+
+- (BOOL)hasMethod {
+    return [self.method CK_containsText];
+}
+
+- (BOOL)hasIngredients {
+    return ([self.ingredients count] > 0);
 }
 
 #pragma mark - Private Methods

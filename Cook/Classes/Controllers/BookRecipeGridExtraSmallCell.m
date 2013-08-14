@@ -47,7 +47,7 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients];
         self.ingredientsView.frame = (CGRect){
-            contentInsets.left,
+            contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
             contentInsets.top,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
@@ -70,7 +70,7 @@
         self.storyLabel.text = story;
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
-            contentInsets.left,
+            contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             kStoryGap,
             size.width,
             size.height
@@ -93,7 +93,7 @@
         self.methodLabel.text = method;
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
-            contentInsets.left,
+            contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
             kMethodGap,
             size.width,
             size.height

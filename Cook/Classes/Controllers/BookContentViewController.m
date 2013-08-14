@@ -15,7 +15,6 @@
 #import "BookContentTitleView.h"
 #import "ViewHelper.h"
 #import "BookContentGridLayout.h"
-#import "NSString+Utilities.h"
 #import "BookRecipeGridLargeCell.h"
 #import "BookRecipeGridMediumCell.h"
 #import "BookRecipeGridSmallCell.h"
@@ -244,80 +243,68 @@
     
     if ([recipe hasPhotos]) {
         
-        if (![recipe.name CK_containsText] && ![recipe.story CK_containsText] && ![recipe.method CK_containsText]
-            && [recipe.ingredients count] == 0) {
+        if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Photo only.
+            // +Photo -Title -Story -Method -Ingredients
             gridType = BookContentGridTypeExtraSmall;
             
-        } else if ([recipe.name CK_containsText] && ![recipe.story CK_containsText] && ![recipe.method CK_containsText]
-                   && [recipe.ingredients count] == 0) {
+        } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Photo + name.
+            // +Photo +Title -Story -Method -Ingredients
             gridType = BookContentGridTypeSmall;
             
-        } else if (![recipe.name CK_containsText] && [recipe.story CK_containsText] && ![recipe.method CK_containsText]
-                   && [recipe.ingredients count] == 0) {
+        } else if (![recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Photo + story.
+            // +Photo -Title +Story -Method -Ingredients
             gridType = BookContentGridTypeMedium;
             
-        } else if (![recipe.name CK_containsText] && ![recipe.story CK_containsText] && [recipe.method CK_containsText]
-                   && [recipe.ingredients count] == 0) {
+        } else if (![recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Photo + method.
+            // +Photo -Title -Story +Method -Ingredients
             gridType = BookContentGridTypeMedium;
             
-        } else if (![recipe.name CK_containsText] && ![recipe.story CK_containsText] && ![recipe.method CK_containsText]
-                   && [recipe.ingredients count] > 0) {
+        } else if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
             
-            // Photo + ingredients.
+            // +Photo -Title -Story -Method +Ingredients
             gridType = BookContentGridTypeMedium;
             
         }
         
     } else {
         
-        if ([recipe.name CK_containsText] && ![recipe.story CK_containsText] && ![recipe.method CK_containsText]
-            && [recipe.ingredients count] == 0) {
+        if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Name only.
+            // -Photo +Title -Story -Method -Ingredients
             gridType = BookContentGridTypeExtraSmall;
             
-        } else if (![recipe.name CK_containsText] && [recipe.story CK_containsText] && ![recipe.method CK_containsText]
-                   && [recipe.ingredients count] == 0) {
+        } else if (![recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Story only.
+            // -Photo -Title +Story -Method -Ingredients
             gridType = BookContentGridTypeExtraSmall;
             
-        } else if (![recipe.name CK_containsText] && ![recipe.story CK_containsText] && [recipe.method CK_containsText]
-                   && [recipe.ingredients count] == 0) {
+        } else if (![recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Method only
+            // -Photo -Title -Story +Method -Ingredients
             gridType = BookContentGridTypeExtraSmall;
             
-        } else if (![recipe.name CK_containsText] && ![recipe.story CK_containsText] && ![recipe.method CK_containsText]
-                   && [recipe.ingredients count] > 0) {
+        } else if (![recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && [recipe hasIngredients]) {
             
-            // Ingredients only.
+            // -Photo -Title -Story -Method +Ingredients
             gridType = BookContentGridTypeExtraSmall;
             
-        } else if ([recipe.name CK_containsText] && [recipe.story CK_containsText] && ![recipe.method CK_containsText]
-                   && [recipe.ingredients count] == 0) {
+        } else if ([recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Name + Story
+            // -Photo +Title +Story -Method -Ingredients
             gridType = BookContentGridTypeSmall;
             
-        } else if ([recipe.name CK_containsText] && ![recipe.story CK_containsText] && [recipe.method CK_containsText]
-                   && [recipe.ingredients count] == 0) {
+        } else if ([recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Name + Method
+            // -Photo +Title -Story +Method -Ingredients
             gridType = BookContentGridTypeSmall;
             
-        } else if ([recipe.name CK_containsText] && ![recipe.story CK_containsText] && ![recipe.method CK_containsText]
-                   && [recipe.ingredients count] > 0) {
+        } else if ([recipe hasTitle] && ![recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
             
-            // Name + Ingredients
+            // -Photo +Title -Story -Method +Ingredients
             gridType = BookContentGridTypeSmall;
             
         }

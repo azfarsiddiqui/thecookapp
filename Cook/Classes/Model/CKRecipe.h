@@ -70,11 +70,17 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 
 - (void)setImage:(UIImage *)image;
 - (PFFile *)imageFile;
-- (BOOL)hasPhotos;
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
 
 // Geopoint
 - (void)clearLocation;
 - (void)setLocation:(CLLocation *)location;
+
+// Data existence methods
+- (BOOL)hasPhotos;
+- (BOOL)hasTitle;
+- (BOOL)hasStory;
+- (BOOL)hasMethod;
+- (BOOL)hasIngredients;
 
 @end

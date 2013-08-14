@@ -184,20 +184,24 @@
     return kContentInsets;
 }
 
+- (BOOL)hasPhotos {
+    return [self.recipe hasPhotos];
+}
+
 - (BOOL)hasTitle {
-    return [self.recipe.name CK_containsText];
+    return [self.recipe hasTitle];
 }
 
 - (BOOL)hasStory {
-    return [self.recipe.story CK_containsText];
+    return [self.recipe hasStory];
 }
 
 - (BOOL)hasMethod {
-    return [self.recipe.method CK_containsText];
+    return [self.recipe hasMethod];
 }
 
 - (BOOL)hasIngredients {
-    return ([self.recipe.ingredients count] > 0);
+    return [self.recipe hasIngredients];
 }
 
 #pragma mark - UICollectionViewCell methods
