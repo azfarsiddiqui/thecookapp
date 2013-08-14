@@ -136,7 +136,7 @@
 }
 
 - (NSString *)cacheKeyForName:(NSString *)name size:(CGSize)size {
-    return [NSString stringWithFormat:@"%@_%@", name, NSStringFromCGSize(size)];
+    return [NSString stringWithFormat:@"%@_%d_%d", name, (NSInteger)size.width, (NSInteger)size.height];
 }
 
 @end
