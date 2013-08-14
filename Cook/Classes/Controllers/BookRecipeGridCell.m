@@ -212,6 +212,25 @@
     self.cellBackgroundImageView.image = [self backgroundImageForSelected:highlighted];
 }
 
+#pragma mark - Properties
+
+- (UIImageView *)topRoundedMaskImageView {
+    if (!_topRoundedMaskImageView) {
+        UIImage *topRoundedMaskImage = [[UIImage imageNamed:@"cook_book_inner_grid_image_top.png"]
+                                        resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 2.0, 0.0, 2.0 }];
+        _topRoundedMaskImageView = [[UIImageView alloc] initWithImage:topRoundedMaskImage];
+    }
+    return _topRoundedMaskImageView;
+}
+
+- (UIImageView *)bottomShadowImageView {
+    if (!_bottomShadowImageView) {
+        UIImage *bottomShadowImage = [UIImage imageNamed:@"cook_book_inner_grid_image_bottom.png"];
+        _bottomShadowImageView = [[UIImageView alloc] initWithImage:bottomShadowImage];
+    }
+    return _bottomShadowImageView;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
