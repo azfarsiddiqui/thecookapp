@@ -28,7 +28,7 @@
 
 @implementation BookContentGridLayout
 
-#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 0.0, 20.0 }
 #define kUnitWidth          320.0
 #define kRowGap             12.0
 #define kColumnGap          12.0

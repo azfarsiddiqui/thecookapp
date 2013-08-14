@@ -47,7 +47,7 @@
     // 1. +Photo +Title -Story -Method +Ingredients
     // 2. -Photo +Title (+/-)Story (+/-)Method +Ingredients
     //
-    if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients] )
+    if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients])
         || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])) {
         
         self.ingredientsView.hidden = NO;
@@ -74,7 +74,6 @@
         
         // +Photo +Title +Story (+/-)Method (+/-)Ingredients
         self.storyLabel.hidden = NO;
-        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
@@ -89,15 +88,10 @@
             size.width,
             size.height};
         
-        self.dividerQuoteImageView.frame = (CGRect){
-            
-        };
-        
     } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
     
         // -Photo +Title +Story (+/-)Method +Ingredients
         self.storyLabel.hidden = NO;
-        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
@@ -115,7 +109,6 @@
         
     } else {
         self.storyLabel.hidden = YES;
-        self.dividerQuoteImageView.hidden = YES;
     }
 }
 
@@ -125,7 +118,6 @@
         
         // +Photo +Title -Story +Method (+/-)Ingredients
         self.methodLabel.hidden = NO;
-        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
@@ -144,7 +136,6 @@
         
         // -Photo +Title -Story +Method +Ingredients
         self.methodLabel.hidden = NO;
-        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
@@ -163,8 +154,37 @@
 
     } else {
         self.methodLabel.hidden = YES;
-        self.dividerQuoteImageView.hidden = YES;
     }
+}
+
+- (void)updateDividers {
+    
+    self.dividerImageView.hidden = NO;
+    
+    if ([self hasPhotos] && [self hasTitle] && [self hasStory]) {
+        
+        self.dividerImageView.frame = [self centeredFrameBetweenView:self.titleLabel andView:self.storyLabel forView:self.dividerImageView];
+        
+    } else if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod]) {
+        
+        self.dividerImageView.frame = [self centeredFrameBetweenView:self.titleLabel andView:self.methodLabel forView:self.dividerImageView];
+        
+    } else if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients]) {
+        
+        self.dividerImageView.frame = [self centeredFrameBetweenView:self.titleLabel andView:self.ingredientsView forView:self.dividerImageView];
+        
+    } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
+        
+        self.dividerImageView.frame = [self centeredFrameBetweenView:self.ingredientsView andView:self.storyLabel forView:self.dividerImageView];
+        
+    } else if (![self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
+        
+        self.dividerImageView.frame = [self centeredFrameBetweenView:self.ingredientsView andView:self.methodLabel forView:self.dividerImageView];
+        
+    } else {
+        self.dividerImageView.hidden = YES;
+    }
+
 }
 
 @end

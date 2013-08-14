@@ -27,7 +27,7 @@
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
-@property (nonatomic, strong) UIImageView *dividerQuoteImageView;
+@property (nonatomic, strong) UIImageView *dividerImageView;
 @property (nonatomic, strong) GridRecipeStatsView *statsView;
 
 + (CGSize)imageSize;
@@ -50,5 +50,7 @@
 - (BOOL)hasStory;
 - (BOOL)hasMethod;
 - (BOOL)hasIngredients;
+
+- (CGRect)centeredFrameBetweenView:(UIView *)fromView andView:(UIView *)toView forView:(UIView *)forView;
 
 @end

@@ -44,6 +44,7 @@
         [self initImageView];
         [self initTitleLabel];
         [self initIngredientsView];
+        [self initDividers];
         [self initStoryLabel];
         [self initMethodLabel];
         [self initStatsView];
@@ -69,6 +70,7 @@
     [self updateMethod];
     [self updateIngredients];
     [self updateStats];
+    [self updateDividers];
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -140,20 +142,16 @@
 
 - (void)updateStory {
     if ([self hasStory]) {
-        self.dividerQuoteImageView.hidden = NO;
         self.storyLabel.hidden = NO;
     } else {
-        self.dividerQuoteImageView.hidden = YES;
         self.storyLabel.hidden = YES;
     }
 }
 
 - (void)updateMethod {
     if ([self hasMethod]) {
-        self.dividerQuoteImageView.hidden = NO;
         self.storyLabel.hidden = NO;
     } else {
-        self.dividerQuoteImageView.hidden = YES;
         self.storyLabel.hidden = YES;
     }
 }
@@ -168,6 +166,10 @@
 
 - (void)updateStats {
     [self.statsView configureRecipe:self.recipe];
+}
+
+- (void)updateDividers {
+    self.dividerImageView.hidden = YES;
 }
 
 - (CGSize)availableSize {
@@ -208,6 +210,16 @@
     return [self.recipe hasIngredients];
 }
 
+- (CGRect)centeredFrameBetweenView:(UIView *)fromView andView:(UIView *)toView forView:(UIView *)forView {
+    CGFloat fromEndOffset = fromView.frame.origin.y + fromView.frame.size.height;
+    return (CGRect){
+        floorf((self.contentView.bounds.size.width - forView.frame.size.width) / 2.0),
+        fromEndOffset + floorf((toView.frame.origin.y - fromEndOffset - forView.frame.size.height) / 2.0),
+        forView.frame.size.width,
+        forView.frame.size.height
+    };
+}
+
 #pragma mark - UICollectionViewCell methods
 
 - (void)setSelected:(BOOL)selected {
@@ -240,11 +252,11 @@
     return _bottomShadowImageView;
 }
 
-- (UIImageView *)dividerQuoteImageView {
-    if (!_dividerQuoteImageView) {
-        _dividerQuoteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_titledivider_quote.png"]];
+- (UIImageView *)dividerImageView {
+    if (!_dividerImageView) {
+        _dividerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_titledivider_quote.png"]];
     }
-    return _dividerQuoteImageView;
+    return _dividerImageView;
 }
 
 #pragma mark - Private methods
@@ -333,6 +345,11 @@
                                                                                   textAlignment:NSTextAlignmentCenter];
     [self.contentView addSubview:ingredientsView];
     self.ingredientsView = ingredientsView;
+}
+
+- (void)initDividers {
+    self.dividerImageView.hidden = YES;
+    [self.contentView addSubview:self.dividerImageView];
 }
 
 - (void)initStoryLabel {
