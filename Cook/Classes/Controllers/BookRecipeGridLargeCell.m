@@ -14,8 +14,8 @@
 @implementation BookRecipeGridLargeCell
 
 #define kTitleIngredientsGap    10.0
-#define kTitleStoryGap          45.0    // To make room for quote divider.
-#define kTitleMethodGap         45.0
+#define kTitleStoryGap          20.0    // To make room for quote divider.
+#define kTitleMethodGap         20.0
 #define kStoryStatsGap          20.0
 #define kMethodStatsGap         20.0
 
@@ -58,7 +58,7 @@
         // And it only appears after title.
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap + floorf(([self availableBlockSize].height - self.ingredientsView.frame.size.height) / 2.0),
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
@@ -74,6 +74,7 @@
         
         // +Photo +Title +Story (+/-)Method (+/-)Ingredients
         self.storyLabel.hidden = NO;
+        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
@@ -84,7 +85,7 @@
         // And it comes after Title.
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
             size.width,
             size.height};
         
@@ -92,6 +93,7 @@
     
         // -Photo +Title +Story (+/-)Method +Ingredients
         self.storyLabel.hidden = NO;
+        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
@@ -109,6 +111,7 @@
         
     } else {
         self.storyLabel.hidden = YES;
+        self.dividerQuoteImageView.hidden = YES;
     }
 }
 
@@ -118,6 +121,7 @@
         
         // +Photo +Title -Story +Method (+/-)Ingredients
         self.methodLabel.hidden = NO;
+        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
@@ -127,7 +131,7 @@
         // Comes after Title.
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
             size.width,
             size.height
         };
@@ -136,6 +140,7 @@
         
         // -Photo +Title -Story +Method +Ingredients
         self.methodLabel.hidden = NO;
+        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
@@ -154,6 +159,7 @@
 
     } else {
         self.methodLabel.hidden = YES;
+        self.dividerQuoteImageView.hidden = YES;
     }
 }
 

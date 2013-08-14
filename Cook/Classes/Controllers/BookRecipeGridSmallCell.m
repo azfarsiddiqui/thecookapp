@@ -54,7 +54,7 @@
         [self.ingredientsView updateIngredients:self.recipe.ingredients];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap + floorf(([self availableBlockSize].height - self.ingredientsView.frame.size.height) / 2.0),
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
@@ -70,6 +70,7 @@
         
         // Image + Story.
         self.storyLabel.hidden = NO;
+        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
@@ -77,13 +78,14 @@
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
             size.width,
             size.height
         };
         
     } else {
         self.storyLabel.hidden = YES;
+        self.dividerQuoteImageView.hidden = YES;
     }
 }
 
@@ -93,6 +95,7 @@
         
         // Image + Method
         self.methodLabel.hidden = NO;
+        self.dividerQuoteImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
@@ -100,13 +103,14 @@
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap,
+            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
             size.width,
             size.height
         };
         
     } else {
         self.methodLabel.hidden = YES;
+        self.dividerQuoteImageView.hidden = YES;
     }
 }
 

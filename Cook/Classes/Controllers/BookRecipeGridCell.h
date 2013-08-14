@@ -27,10 +27,7 @@
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
-
-@property (nonatomic, strong) UIImageView *dividerImageView;
 @property (nonatomic, strong) UIImageView *dividerQuoteImageView;
-@property (nonatomic, strong) UILabel *ingredientsEllipsisLabel;
 @property (nonatomic, strong) GridRecipeStatsView *statsView;
 
 + (CGSize)imageSize;

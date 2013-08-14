@@ -140,16 +140,20 @@
 
 - (void)updateStory {
     if ([self hasStory]) {
+        self.dividerQuoteImageView.hidden = NO;
         self.storyLabel.hidden = NO;
     } else {
+        self.dividerQuoteImageView.hidden = YES;
         self.storyLabel.hidden = YES;
     }
 }
 
 - (void)updateMethod {
     if ([self hasMethod]) {
+        self.dividerQuoteImageView.hidden = NO;
         self.storyLabel.hidden = NO;
     } else {
+        self.dividerQuoteImageView.hidden = YES;
         self.storyLabel.hidden = YES;
     }
 }
@@ -233,6 +237,13 @@
         _bottomShadowImageView = [[UIImageView alloc] initWithImage:bottomShadowImage];
     }
     return _bottomShadowImageView;
+}
+
+- (UIImageView *)dividerQuoteImageView {
+    if (!_dividerQuoteImageView) {
+        _dividerQuoteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_titledivider_quote.png"]];
+    }
+    return _dividerQuoteImageView;
 }
 
 #pragma mark - Private methods
