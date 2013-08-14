@@ -34,7 +34,7 @@
 #define kColumnGap          12.0
 #define kCellsStartOffset   700.0
 #define kHeaderCellsGap     200.0
-#define kHeaderCellsMinGap  20.0
+#define kHeaderCellsMinGap  40.0
 
 + (CGSize)sizeForBookContentGridType:(BookContentGridType)gridType {
     CGSize size = CGSizeZero;
