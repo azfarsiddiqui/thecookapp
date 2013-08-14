@@ -218,6 +218,7 @@
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
     self.cellBackgroundImageView.image = [self backgroundImageForSelected:highlighted];
+    self.cellBackgroundImageView.alpha = highlighted ? 0.7 : 1.0;
 }
 
 #pragma mark - Properties
