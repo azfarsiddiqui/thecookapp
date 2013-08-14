@@ -8,6 +8,7 @@
 
 #import "BookContentGridLayout.h"
 #import "ViewHelper.h"
+#import "BookNavigationView.h"
 
 @interface BookContentGridLayout ()
 
@@ -31,6 +32,7 @@
 #define kUnitWidth          320.0
 #define kRowGap             12.0
 #define kColumnGap          12.0
+#define kCellsStartOffset   700.0
 #define kHeaderCellsGap     200.0
 #define kHeaderCellsMinGap  20.0
 
@@ -81,10 +83,6 @@
     contentSize.height += kContentInsets.top;
     UIOffset offset = (UIOffset){ kContentInsets.left, kContentInsets.top };
     
-    // Header offsets.
-    CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
-    offset.vertical += floorf((self.collectionView.bounds.size.height - headerSize.height) / 2.0) + headerSize.height + kHeaderCellsGap;
-    
     // Remember cell start offset.
     self.cellStartOffset = offset.vertical;
     
@@ -96,6 +94,7 @@
     }
     
     // Now go ahead and figure it out.
+    offset.vertical = kCellsStartOffset;
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
     CGFloat maxHeight = 0.0;
     for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
@@ -200,10 +199,13 @@
 
 - (UICollectionViewLayoutAttributes *)headerLayoutAttributesForIndexPath:(NSIndexPath *)headerIndexPath {
     CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
+    CGFloat navigationHeight = [BookNavigationView navigationHeight];
+    CGFloat availableHeaderHeight = kCellsStartOffset - navigationHeight;
+    
     UICollectionViewLayoutAttributes *headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
     headerAttributes.frame = (CGRect){
         floorf((self.collectionView.bounds.size.width - headerSize.width) / 2.0),
-        floorf((self.collectionView.bounds.size.height - headerSize.height) / 2.0),
+        navigationHeight + floorf((availableHeaderHeight - headerSize.height) / 2.0),
         headerSize.width,
         headerSize.height
     };
@@ -214,11 +216,7 @@
 - (void)buildGridLayout {
     
     // Set up the column offsets.
-    UIOffset offset = (UIOffset){ kContentInsets.left, kContentInsets.top };
-    
-    // Increment by the header and headerGap.
-    UICollectionViewLayoutAttributes *headerAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    offset.vertical += headerAttributes.frame.origin.y + headerAttributes.frame.size.height + kHeaderCellsGap;
+    UIOffset offset = (UIOffset){ kContentInsets.left, kCellsStartOffset };
     
     NSInteger numColumns = [self.delegate bookContentGridLayoutNumColumns];
     self.columnOffsets = [NSMutableArray arrayWithCapacity:numColumns];
@@ -269,18 +267,13 @@
     CGSize headerSize = [self.delegate bookContentGridLayoutHeaderSize];
     
     if (visibleFrame.origin.y > 0.0) {
-        CGFloat dragRatio = 0.6;
-        CGFloat effectiveDistance = self.cellStartOffset - self.headerStartOffset - headerSize.height - kHeaderCellsMinGap;
-        CGFloat distance = visibleFrame.origin.y * dragRatio;
-        CGFloat ratio = MIN(distance / effectiveDistance, 1.0);
-        CGFloat translate = effectiveDistance * ratio;
-        CGFloat targetWidth = self.collectionView.bounds.size.width - kContentInsets.left - kContentInsets.right;
-//        CGFloat width = (targetWidth - headerSize.width) * ratio;
-//        attributes.transform3D = CATransform3DMakeTranslation(0.0, translate, 0.0);
+        
+        CGFloat navigationHeight = [BookNavigationView navigationHeight];
+        CGFloat availableHeaderHeight = kCellsStartOffset - visibleFrame.origin.y - navigationHeight;
+
         CGRect frame = attributes.frame;
-        frame.origin.y = self.headerStartOffset + translate;
-//        frame.size.width = headerSize.width + width;
-//        frame.origin.x = floorf((self.collectionView.bounds.size.width - frame.size.width) / 2.0);
+        frame.origin.y = visibleFrame.origin.y + navigationHeight + floorf((availableHeaderHeight - headerSize.height) / 2.0),
+        frame.origin.y = MIN(frame.origin.y, kCellsStartOffset - kHeaderCellsMinGap - headerSize.height);
         attributes.frame = frame;
     }
     
