@@ -81,7 +81,7 @@
     DLog();
     CGSize contentSize = (CGSize){ self.collectionView.bounds.size.width, 0.0 };
     contentSize.height += kContentInsets.top;
-    UIOffset offset = (UIOffset){ kContentInsets.left, kContentInsets.top };
+    UIOffset offset = (UIOffset){ kContentInsets.left, kCellsStartOffset };
     
     // Remember cell start offset.
     self.cellStartOffset = offset.vertical;
