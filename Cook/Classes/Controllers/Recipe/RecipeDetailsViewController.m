@@ -295,9 +295,25 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     BOOL shouldReceiveTouch = YES;
     
-    // Ignore taps on background image view when in edit mode.
-    if (self.editMode && gestureRecognizer.view == self.imageView) {
-        shouldReceiveTouch = NO;
+    if (gestureRecognizer.view == self.imageView) {
+        
+        CGPoint tappedLocation = [touch locationInView:self.imageView];
+        CGPoint location = [self.imageView convertPoint:tappedLocation toView:self.view];
+        CGRect navFrame = self.view.bounds;
+        navFrame.size.height = self.closeButton.frame.origin.y + self.closeButton.frame.size.height;
+        
+        if (self.editMode) {
+            
+            // No taps on edit mode.
+            shouldReceiveTouch = NO;
+            
+        } else if (self.currentViewport != SnapViewportBelow
+                   && CGRectContainsPoint(navFrame, location)) {
+            
+            // No taps when not in fullscreen mode, and touch is in the nav area.
+            shouldReceiveTouch = NO;
+        }
+        
     }
     
     return shouldReceiveTouch;
