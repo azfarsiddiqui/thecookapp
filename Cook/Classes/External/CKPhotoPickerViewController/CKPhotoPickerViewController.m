@@ -8,7 +8,6 @@
 
 #import "CKPhotoPickerViewController.h"
 #import "UIImage+ProportionalFill.h"
-#import "CKEditingViewHelper.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
@@ -28,6 +27,8 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *retakeButton;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) UIButton *flashButton;
+@property (nonatomic, strong) UIButton *toggleButton;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
@@ -35,8 +36,7 @@
 @implementation CKPhotoPickerViewController
 
 #define kToolbarHeight  44.0
-#define kContentInsets  UIEdgeInsetsMake(15.0, 20.0, 15.0, 20.0)
-#define kButtonInsets   UIEdgeInsetsMake(15.0, 3.0, 15.0, 3.0)
+#define kContentInsets  UIEdgeInsetsMake(20.0, 15.0, 10.0, 15.0)
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
@@ -55,13 +55,17 @@
     
     self.view.frame = [UIApplication sharedApplication].keyWindow.rootViewController.view.bounds;
     self.view.backgroundColor = [UIColor lightGrayColor];
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initImagePicker];
     [self updateButtons];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
 }
 
 #pragma mark - UIImagePickerControllerDelegate methods
@@ -77,7 +81,6 @@
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self.popoverViewController dismissPopoverAnimated:NO];
     [self.delegate photoPickerViewControllerCloseRequested];
 }
 
@@ -106,6 +109,7 @@
         pickerViewController.sourceType = UIImagePickerControllerSourceTypeCamera;
         pickerViewController.delegate = self;
         pickerViewController.showsCameraControls = NO;
+        pickerViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.cameraPickerViewController = pickerViewController;
         [self.view addSubview:self.cameraPickerViewController.view];
     }
@@ -116,13 +120,13 @@
 }
 
 - (CGRect)parentBounds {
-    return self.view.bounds;
+    return [self parentView].bounds;
 }
 
 - (UIButton *)libraryButton {
     if (!_libraryButton) {
         UIView *parentView = [self parentView];
-        _libraryButton = [self buttonWithImage:[UIImage imageNamed:@"cook_book_btn_selectphoto.png"] target:self action:@selector(libraryTapped:)];
+        _libraryButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameraroll.png"] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameraroll_onpress.png"] target:self selector:@selector(libraryTapped:)];
         _libraryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
         [_libraryButton setFrame:CGRectMake(kContentInsets.left,
                                             parentView.bounds.size.height - _libraryButton.frame.size.height - kContentInsets.bottom,
@@ -135,7 +139,7 @@
 - (UIButton *)snapButton {
     if (!_snapButton && [self cameraSupported]) {
         UIView *parentView = [self parentView];
-        _snapButton = [self buttonWithImage:[UIImage imageNamed:@"cook_book_btn_takephoto.png"] target:self action:@selector(snapTapped:)];
+        _snapButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_takephoto.png"] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_takephoto_onpress.png"] target:self selector:@selector(snapTapped:)];
         _snapButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
         [_snapButton setFrame:CGRectMake(floorf((parentView.bounds.size.width - _snapButton.frame.size.width) / 2.0),
                                          parentView.bounds.size.height - _snapButton.frame.size.height - kContentInsets.bottom,
@@ -147,9 +151,9 @@
 
 - (UIButton *)closeButton {
     if (!_closeButton) {
-        _closeButton = [CKEditingViewHelper cancelButtonWithTarget:self selector:@selector(closeTapped:)];
+        _closeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_photo_cancel.png"] target:self selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_closeButton setFrame:CGRectMake(kButtonInsets.left,
+        [_closeButton setFrame:CGRectMake(kContentInsets.left,
                                           kContentInsets.top,
                                           _closeButton.frame.size.width,
                                           _closeButton.frame.size.height)];
@@ -159,7 +163,7 @@
 
 - (UIButton *)retakeButton {
     if (!_retakeButton) {
-        _retakeButton = [CKEditingViewHelper cancelButtonWithTarget:self selector:@selector(retakeTapped:)];
+        _retakeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_photo_back.png"] target:self selector:@selector(retakeTapped:)];
         _retakeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
         [_retakeButton setFrame:CGRectMake(kContentInsets.left,
                                            kContentInsets.top,
@@ -172,14 +176,57 @@
 - (UIButton *)saveButton {
     if (!_saveButton) {
         CGRect parentBounds = [self parentBounds];
-        _saveButton = [CKEditingViewHelper okayButtonWithTarget:self selector:@selector(saveTapped:)];
+        _saveButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_photo_okay.png"] target:self selector:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_saveButton setFrame:CGRectMake(parentBounds.size.width - _saveButton.frame.size.width - kButtonInsets.right,
+        [_saveButton setFrame:CGRectMake(parentBounds.size.width - _saveButton.frame.size.width - kContentInsets.right,
                                          kContentInsets.top,
                                          _saveButton.frame.size.width,
                                          _saveButton.frame.size.height)];
     }
     return _saveButton;
+}
+
+- (UIButton *)flashButton {
+    if (!_flashButton && [self cameraSupported] && [self flashSupported]) {
+        _flashButton = [self buttonWithImage:[self imageForFlashMode] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_flash_onpress.png"] target:self selector:@selector(flashTapped:)];
+        _flashButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin;
+        [_flashButton setFrame:CGRectMake(self.toggleButton.frame.origin.x - _flashButton.frame.size.width + 3.0,
+                                          self.toggleButton.frame.origin.y,
+                                          _flashButton.frame.size.width,
+                                          _flashButton.frame.size.height)];
+    }
+    return _flashButton;
+}
+
+- (UIButton *)toggleButton {
+    if (!_toggleButton && [self cameraSupported]) {
+        CGRect parentBounds = [self parentBounds];
+        _toggleButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameratoggle.png"] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameratoggle_onpress.png"] target:self selector:@selector(toggleTapped:)];
+        _toggleButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin;
+        [_toggleButton setFrame:CGRectMake(parentBounds.size.width - _toggleButton.frame.size.width - kContentInsets.right,
+                                           parentBounds.size.height - _toggleButton.frame.size.height - kContentInsets.bottom,
+                                           _toggleButton.frame.size.width,
+                                           _toggleButton.frame.size.height)];
+    }
+    return _toggleButton;
+}
+
+- (UIImage *)imageForFlashMode {
+    UIImage *flashImage = nil;
+    switch (self.cameraPickerViewController.cameraFlashMode) {
+        case UIImagePickerControllerCameraFlashModeOff:
+            flashImage = [UIImage imageNamed:@"cook_customise_photo_btn_flash_off.png"];
+            break;
+        case UIImagePickerControllerCameraFlashModeAuto:
+            flashImage = [UIImage imageNamed:@"cook_customise_photo_btn_flash_auto.png"];
+            break;
+        case UIImagePickerControllerCameraFlashModeOn:
+            flashImage = [UIImage imageNamed:@"cook_customise_photo_btn_flash_on.png"];
+            break;
+        default:
+            break;
+    }
+    return flashImage;
 }
 
 - (void)libraryTapped:(id)sender {
@@ -198,6 +245,14 @@
     self.selectedImage = nil;
     [self updateImagePreview];
     [self updateButtons];
+}
+
+- (void)flashTapped:(id)sender {
+    [self toggleFlash];
+}
+
+- (void)toggleTapped:(id)sender {
+    [self toggleCamera];
 }
 
 - (void)saveTapped:(id)sender {
@@ -249,6 +304,10 @@
     return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
 }
 
+- (BOOL)flashSupported {
+    return [UIImagePickerController isFlashAvailableForCameraDevice:self.cameraPickerViewController.cameraDevice];
+}
+
 - (void)showLibrary:(BOOL)show {
     if (show) {
         UIImagePickerController *pickerViewController = [[UIImagePickerController alloc] init];
@@ -281,33 +340,44 @@
         [parentView addSubview:self.retakeButton];
         [parentView addSubview:self.saveButton];
     } else {
+        self.closeButton.alpha = 0.0;
         self.libraryButton.alpha = 0.0;
         self.snapButton.alpha = 0.0;
-        self.closeButton.alpha = 0.0;
+        self.flashButton.alpha = 0.0;
+        self.toggleButton.alpha = 0.0;
+        [parentView addSubview:self.closeButton];
         [parentView addSubview:self.libraryButton];
         [parentView addSubview:self.snapButton];
-        [parentView addSubview:self.closeButton];
+        [parentView addSubview:self.flashButton];
+        [parentView addSubview:self.toggleButton];
     }
     [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         self.closeButton.alpha = photoSelected ? 0.0 : 1.0;
                          self.libraryButton.alpha = photoSelected ? 0.0 : 1.0;
                          self.snapButton.alpha = photoSelected ? 0.0 : 1.0;
-                         self.closeButton.alpha = photoSelected ? 0.0 : 1.0;
+                         self.flashButton.alpha = photoSelected ? 0.0 : 1.0;
+                         self.toggleButton.alpha = photoSelected ? 0.0 : 1.0;
                          self.retakeButton.alpha = photoSelected ? 1.0 : 0.0;
                          self.saveButton.alpha = photoSelected ? 1.0 : 0.0;
+                         
+                         self.closeButton.userInteractionEnabled = enabled;
                          self.libraryButton.userInteractionEnabled = enabled;
                          self.snapButton.userInteractionEnabled = enabled;
-                         self.closeButton.userInteractionEnabled = enabled;
+                         self.flashButton.userInteractionEnabled = enabled;
+                         self.toggleButton.userInteractionEnabled = enabled;
                          self.retakeButton.userInteractionEnabled = enabled;
                          self.saveButton.userInteractionEnabled = enabled;
                      }
                      completion:^(BOOL finished)  {
                          if (photoSelected) {
+                             [self.closeButton removeFromSuperview];
                              [self.libraryButton removeFromSuperview];
                              [self.snapButton removeFromSuperview];
-                             [self.closeButton removeFromSuperview];
+                             [self.flashButton removeFromSuperview];
+                             [self.toggleButton removeFromSuperview];
                          } else {
                              [self.retakeButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
@@ -363,16 +433,66 @@
     return croppedImage;
 }
 
-- (UIButton *)buttonWithImage:(UIImage *)image target:(id)target action:(SEL)action {
+- (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:image selectedImage:nil target:target selector:selector];
+}
+
+- (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target
+                     selector:(SEL)selector {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+    if (selectedImage) {
+        [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
+        [button setBackgroundImage:selectedImage forState:UIControlStateHighlighted];
+    }
+    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
+    button.userInteractionEnabled = (target != nil && selector != nil);
+    button.autoresizingMask = UIViewAutoresizingNone;
     return button;
 }
 
 - (CGFloat)deviceScale {
     return [UIScreen mainScreen].scale;
+}
+
+- (void)toggleFlash {
+    self.cameraPickerViewController.cameraFlashMode = [self nextFlashToggleMode];
+    [self.flashButton setBackgroundImage:[self imageForFlashMode] forState:UIControlStateNormal];
+}
+
+- (void)toggleCamera {
+    self.cameraPickerViewController.cameraDevice = [self nextCameraDevice];
+}
+
+- (UIImagePickerControllerCameraFlashMode)nextFlashToggleMode {
+    
+    UIImagePickerControllerCameraFlashMode nextMode = UIImagePickerControllerCameraFlashModeOff;
+    switch (self.cameraPickerViewController.cameraFlashMode) {
+        case UIImagePickerControllerCameraFlashModeOff:
+            nextMode = UIImagePickerControllerCameraFlashModeAuto;
+            break;
+        case UIImagePickerControllerCameraFlashModeAuto:
+            nextMode = UIImagePickerControllerCameraFlashModeOn;
+            break;
+        case UIImagePickerControllerCameraFlashModeOn:
+            nextMode = UIImagePickerControllerCameraFlashModeAuto;
+            break;
+        default:
+            break;
+    }
+    
+    return nextMode;
+}
+
+- (UIImagePickerControllerCameraDevice)nextCameraDevice {
+    UIImagePickerControllerCameraDevice nextDevice = UIImagePickerControllerCameraDeviceRear;
+    if (self.cameraPickerViewController.cameraDevice == UIImagePickerControllerCameraDeviceRear) {
+        return UIImagePickerControllerCameraDeviceFront;
+    } else if (self.cameraPickerViewController.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+        self.cameraPickerViewController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+    }
+    return nextDevice;
 }
 
 @end
