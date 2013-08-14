@@ -23,7 +23,7 @@
 			<key>BackdropHex</key>
 			<string>FF0022</string>
 			<key>TextHex</key>
-			<string>e23a41</string>
+			<string>da506b</string>
 			<key>Vivid</key>
 			<string>Green</string>
 			<key>Balance</key>
@@ -48,7 +48,7 @@
 			<key>BackdropHex</key>
 			<string>FC7300</string>
 			<key>TextHex</key>
-			<string>eb592e</string>
+			<string>fca85a</string>
 			<key>Vivid</key>
 			<string>Blue</string>
 			<key>Balance</key>
@@ -73,7 +73,7 @@
 			<key>BackdropHex</key>
 			<string>FFB505</string>
 			<key>TextHex</key>
-			<string>ee9c0e</string>
+			<string>ffbe26</string>
 			<key>Vivid</key>
 			<string>Purple</string>
 			<key>Balance</key>
@@ -98,7 +98,7 @@
 			<key>BackdropHex</key>
 			<string>7ADA00</string>
 			<key>TextHex</key>
-			<string>379937</string>
+			<string>90cf42</string>
 			<key>Vivid</key>
 			<string>Red</string>
 			<key>Balance</key>
@@ -123,7 +123,7 @@
 			<key>BackdropHex</key>
 			<string>0094FF</string>
 			<key>TextHex</key>
-			<string>235a97</string>
+			<string>56b7f0</string>
 			<key>Vivid</key>
 			<string>Orange</string>
 			<key>Balance</key>
@@ -148,7 +148,7 @@
 			<key>BackdropHex</key>
 			<string>AC26DA</string>
 			<key>TextHex</key>
-			<string>cf8ee5</string>
+			<string>d081ec</string>
 			<key>Vivid</key>
 			<string>Yellow</string>
 			<key>Balance</key>
@@ -173,7 +173,7 @@
 			<key>BackdropHex</key>
 			<string>4670B9</string>
 			<key>TextHex</key>
-			<string>8c98ad</string>
+			<string>8a97ad</string>
 			<key>Vivid</key>
 			<string>Gray</string>
 			<key>Balance</key>
@@ -198,7 +198,7 @@
 			<key>BackdropHex</key>
 			<string>000F83</string>
 			<key>TextHex</key>
-			<string>7b80a9</string>
+			<string>606483</string>
 			<key>Vivid</key>
 			<string>Neutral</string>
 			<key>Balance</key>
