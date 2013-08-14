@@ -140,7 +140,7 @@
 }
 
 + (UIFont *)recipeGridIngredientsFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0];
 }
 
 + (UIColor *)recipeGridIngredientsColour {
@@ -156,7 +156,7 @@
 }
 
 + (UIFont *)recipeGridStatFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:13.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
 }
 
 + (UIColor *)recipeGridStatColour {

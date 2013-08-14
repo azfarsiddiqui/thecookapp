@@ -24,7 +24,7 @@
 #define kViewDebug              0
 #define kImageSize              (CGSize){316.0, 260.0}
 #define kBlockUnitHeight        200.0
-#define kContentInsets          (UIEdgeInsets){50.0, 20.0, 45.0, 20.0}
+#define kContentInsets          (UIEdgeInsets){50.0, 40.0, 55.0, 40.0}
 
 #define kTitleOffsetNoImage     45.0
 #define kTitleTopGap            45.0

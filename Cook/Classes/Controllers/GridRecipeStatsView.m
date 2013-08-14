@@ -24,7 +24,7 @@
 
 @implementation GridRecipeStatsView
 
-#define kIconLabelGap       2.0
+#define kIconLabelGap       -6.0
 #define kContentInsets      UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
 #define kUnitStatSize       CGSizeMake(60.0, 40.0)
 #define kContainerLabelTag  301

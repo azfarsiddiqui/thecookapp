@@ -89,6 +89,10 @@
             size.width,
             size.height};
         
+        self.dividerQuoteImageView.frame = (CGRect){
+            
+        };
+        
     } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
     
         // -Photo +Title +Story (+/-)Method +Ingredients
