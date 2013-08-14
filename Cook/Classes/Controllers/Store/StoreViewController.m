@@ -35,7 +35,7 @@
 #define kShelfTopOffsetFromBottom   275.0
 #define kShelfHeight                249.0
 #define kShellBottomShelfTrayHeight 25.0
-#define kShellBottomShadowHeight    24.0
+#define kShellBottomShadowHeight    48.0
 
 - (void)dealloc {
 }
