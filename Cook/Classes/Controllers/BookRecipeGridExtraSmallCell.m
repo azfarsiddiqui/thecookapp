@@ -28,7 +28,7 @@
         CGSize size = [self.titleLabel sizeThatFits:[self availableSize]];
         self.titleLabel.frame = (CGRect){
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-            contentInsets.top + floorf((self.statsView.frame.origin.y - size.height) / 2.0),
+            floorf((self.statsView.frame.origin.y - size.height) / 2.0),
             size.width,
             size.height
         };
