@@ -178,7 +178,7 @@
         CGRect parentBounds = [self parentBounds];
         _saveButton = [self buttonWithImage:[UIImage imageNamed:@"cook_btns_photo_okay.png"] target:self selector:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_saveButton setFrame:CGRectMake(parentBounds.size.width - _saveButton.frame.size.width - kContentInsets.right,
+        [_saveButton setFrame:CGRectMake(1024.0 - _saveButton.frame.size.width - kContentInsets.right,  // UGH!
                                          kContentInsets.top,
                                          _saveButton.frame.size.width,
                                          _saveButton.frame.size.height)];
