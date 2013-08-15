@@ -151,7 +151,7 @@
         if (scrollView.contentOffset.x < 0) {
             
             self.backdropScrollView.contentOffset = (CGPoint) {
-                self.collectionView.contentOffset.x,
+                self.collectionView.contentOffset.x - ((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
                 self.backdropScrollView.contentOffset.y
             };
             
@@ -159,7 +159,7 @@
             
             self.backdropScrollView.contentOffset = (CGPoint) {
 //                (self.collectionView.bounds.size.width - kBlendPageWidth) + self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0),
-                self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0),
+                self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0) - ((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
                 self.backdropScrollView.contentOffset.y
             };
             DLog(@"backdrop contentOffset %@", NSStringFromCGPoint(self.backdropScrollView.contentOffset));
@@ -891,6 +891,10 @@
         
         // Updates contentSize to new blended benchtop.
         self.backdropScrollView.contentSize = pagingBenchtopView.frame.size;
+        self.backdropScrollView.contentOffset = (CGPoint){
+            -((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
+            0.0
+        };
         
         // Move it below the existing one.
         if (self.pagingBenchtopView) {
@@ -964,7 +968,8 @@
         } else if (section == kFollowSection) {
             
             // Add white for gap.
-//            [pagingBenchtopView addColour:[UIColor whiteColor]];
+            // [pagingBenchtopView addColour:[UIColor colorWithRed:255 green:0 blue:255 alpha:0.5]];
+            // [pagingBenchtopView addColour:[UIColor whiteColor]];
             
             NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
@@ -974,6 +979,12 @@
                 
                 // Add the next book colour at the gap.
                 if (followIndex == 0) {
+                    
+                    // Extract components to reset alpha
+                    CGFloat red, green, blue, alpha;
+                    [bookColour getRed:&red green:&green blue:&blue alpha:&alpha];
+                    // [pagingBenchtopView addColour:[UIColor colorWithRed:red green:green blue:blue alpha:0.1]];
+                    
                     [pagingBenchtopView addColour:bookColour];
                 }
                 
