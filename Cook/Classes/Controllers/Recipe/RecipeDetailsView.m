@@ -479,13 +479,13 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Display if not-blank or in editMode.
     if ([self.recipeDetails.story CK_containsText] || self.editMode) {
-//        self.storyDividerView.alpha = self.editMode ? 0.0 : 1.0;
         self.storyDividerView.alpha = 1.0;
         self.storyLabel.alpha = 1.0;
         [self updateStoryFrame];
         [self updateLayoutOffsetVertical:self.storyDividerView.frame.size.height + dividerStoryGap + self.storyLabel.frame.size.height];
         
     } else {
+        self.storyDividerView.alpha = 0.0;
         self.storyLabel.alpha = 0.0;
         [self updateStoryFrame];
     }
