@@ -183,15 +183,18 @@
 #pragma mark - Buttons
 
 + (UIButton *)okayButtonWithTarget:(id)target selector:(SEL)selector {
-    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_okay.png"] target:target selector:selector];
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_okay.png"]
+                   selectedImage:[UIImage imageNamed:@"cook_btns_okay_onpress.png"] target:target selector:selector];
 }
 
 + (UIButton *)cancelButtonWithTarget:(id)target selector:(SEL)selector {
-    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_cancel.png"] target:target selector:selector];
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_cancel.png"]
+                   selectedImage:[UIImage imageNamed:@"cook_btns_cancel_onpress.png"] target:target selector:selector];
 }
 
 + (UIButton *)deleteButtonWithTarget:(id)target selector:(SEL)selector {
-    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_delete.png"] target:target selector:selector];
+    return [self buttonWithImage:[UIImage imageNamed:@"cook_btns_delete.png"]
+                   selectedImage:[UIImage imageNamed:@"cook_btns_delete_onpress.png"] target:target selector:selector];
 }
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {

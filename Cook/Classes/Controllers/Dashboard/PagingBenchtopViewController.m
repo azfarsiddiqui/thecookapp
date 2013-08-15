@@ -571,6 +571,7 @@
         // Position the delete button.
         CGRect frame = [self.collectionView convertRect:cell.frame toView:overlayView];
         UIButton *deleteButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_btns_remove.png"]
+                                               selectedImage:[UIImage imageNamed:@"cook_btns_remove_onpress.png"]
                                                       target:self
                                                     selector:@selector(deleteTapped:)];
         deleteButton.frame = CGRectMake(frame.origin.x - floorf(deleteButton.frame.size.width / 2.0) + 3.0,
