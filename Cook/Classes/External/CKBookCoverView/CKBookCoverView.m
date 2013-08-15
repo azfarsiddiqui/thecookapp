@@ -430,7 +430,7 @@
                 20.0,
                 5.0,
                 278.0,
-                260.0
+                290.0
             };
             break;
         case BookCoverLayoutBottom:
