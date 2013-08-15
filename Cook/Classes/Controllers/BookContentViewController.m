@@ -236,7 +236,6 @@
 }
 
 - (BookContentGridType)gridTypeForRecipe:(CKRecipe *)recipe {
-    DLog();
     
     // Defaults to large, which makes computing combinations easier.
     BookContentGridType gridType = BookContentGridTypeLarge;
@@ -292,9 +291,9 @@
             // -Photo -Title -Story -Method +Ingredients
             gridType = BookContentGridTypeExtraSmall;
             
-        } else if ([recipe hasTitle] && [recipe hasStory] && ![recipe hasMethod] && ![recipe hasIngredients]) {
+        } else if ([recipe hasTitle] && [recipe hasStory] && ![recipe hasIngredients]) {
             
-            // -Photo +Title +Story -Method -Ingredients
+            // -Photo +Title +Story (+/-)Method -Ingredients
             gridType = BookContentGridTypeSmall;
             
         } else if ([recipe hasTitle] && ![recipe hasStory] && [recipe hasMethod] && ![recipe hasIngredients]) {
@@ -310,6 +309,8 @@
         }
     }
     
+    DLog(@"recipe[%@] gridType[%d]", recipe.name, gridType);
+
     return gridType;
 }
 

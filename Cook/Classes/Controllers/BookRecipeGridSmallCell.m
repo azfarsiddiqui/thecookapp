@@ -47,7 +47,7 @@
 - (void)updateIngredients {
     if ([self hasIngredients]) {
         
-        // Image + Ingredients.
+        // Title + Ingredients.
         self.ingredientsView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
@@ -68,7 +68,7 @@
     
     if ([self hasStory]) {
         
-        // Image + Story.
+        // Title + Story.
         self.storyLabel.hidden = NO;
         self.dividerImageView.hidden = NO;
         
@@ -91,9 +91,9 @@
 
 - (void)updateMethod {
     
-    if ([self hasMethod]) {
+    if (![self hasStory] && [self hasMethod]) {
         
-        // Image + Method
+        // +Title -Story +Method
         self.methodLabel.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
