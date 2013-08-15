@@ -26,11 +26,6 @@
 
 @synthesize book = _book;
 @synthesize user = _user;
-@synthesize method = _method;
-@synthesize story = _story;
-@synthesize numServes = _numServes;
-@synthesize prepTimeInMinutes = _prepTimeInMinutes;
-@synthesize cookingTimeInMinutes = _cookingTimeInMinutes;
 @synthesize recipeImage = _recipeImage;
 @synthesize ingredients = _ingredients;
 
@@ -445,10 +440,7 @@
 }
 
 - (NSString *)method {
-    if (!_method) {
-        _method = [self.parseObject objectForKey:kRecipeAttrDescription];
-    }
-    return _method;
+    return [self.parseObject objectForKey:kRecipeAttrDescription];
 }
 
 - (void)setMethod:(NSString *)method {
@@ -464,10 +456,7 @@
 }
 
 - (NSString *)story {
-    if (!_story) {
-        _story = [self.parseObject objectForKey:kRecipeAttrStory];
-    }
-    return _story;
+    return [self.parseObject objectForKey:kRecipeAttrStory];
 }
 
 - (void)setStory:(NSString *)story {
@@ -491,10 +480,7 @@
 }
 
 - (NSInteger)numServes {
-    if (!_numServes) {
-        _numServes = [[self.parseObject objectForKey:kRecipeAttrNumServes] integerValue];
-    }
-    return _numServes;
+    return [[self.parseObject objectForKey:kRecipeAttrNumServes] integerValue];
 }
 
 - (void)setNumServes:(NSInteger)numServes {
@@ -506,10 +492,7 @@
 }
 
 - (NSInteger)cookingTimeInMinutes {
-    if (!_cookingTimeInMinutes) {
-        _cookingTimeInMinutes = [[self.parseObject objectForKey:kRecipeAttrCookingTimeInMinutes] integerValue];
-    }
-    return _cookingTimeInMinutes;
+    return [[self.parseObject objectForKey:kRecipeAttrCookingTimeInMinutes] integerValue];
 }
 
 - (void)setPrepTimeInMinutes:(NSInteger)prepTimeInMinutes {
@@ -517,10 +500,7 @@
 }
 
 - (NSInteger)prepTimeInMinutes {
-    if (!_prepTimeInMinutes) {
-        _prepTimeInMinutes = [[self.parseObject objectForKey:kRecipeAttrPrepTimeInMinutes] integerValue];
-    }
-    return _prepTimeInMinutes;
+    return [[self.parseObject objectForKey:kRecipeAttrPrepTimeInMinutes] integerValue];
 }
 
 - (void)setPrivacy:(CKPrivacy)privacy {
