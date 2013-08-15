@@ -68,6 +68,16 @@
     }];
 }
 
+- (void)deleteInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    [self.parseObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            success();
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionary];
     [descriptionProperties setValue:[NSString CK_safeString:self.parseObject.objectId] forKey:@"objectId"];

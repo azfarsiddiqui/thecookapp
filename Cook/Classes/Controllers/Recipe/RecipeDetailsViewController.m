@@ -37,7 +37,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate, RecipeDetailsViewDelegate,
-    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate>
+    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -76,6 +76,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) CKPrivacySliderView *privacyView;
 @property (nonatomic, strong) UIView *photoButtonView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
@@ -91,7 +92,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @implementation RecipeDetailsViewController
 
 #define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
-#define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 15.0, 5.0)
+#define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
 #define kContentTopOffset   94.0
@@ -180,6 +181,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
                      animations:^{
                          self.cancelButton.alpha = editing ? 0.0 : 1.0;
                          self.saveButton.alpha = editing ? 0.0 : 1.0;
+                         self.deleteButton.alpha = editing ? 0.0 : 1.0;
                      }
                      completion:^(BOOL finished)  {
                      }];
@@ -397,6 +399,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 //    NSLog(@"scrollViewWillEndDragging velocity[%@]", NSStringFromCGPoint(velocity));
 }
 
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    // OK Button tapped.
+    if (buttonIndex == 1) {
+        [self deleteRecipe];
+    }
+    
+}
+
 #pragma mark - KVO methods
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
@@ -496,6 +509,18 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                          _saveButton.frame.size.height)];
     }
     return _saveButton;
+}
+
+- (UIButton *)deleteButton {
+    if (!_deleteButton && !self.addMode) {
+        _deleteButton = [ViewHelper deleteButtonWithTarget:self selector:@selector(deleteTapped:)];
+        _deleteButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_deleteButton setFrame:CGRectMake(self.view.bounds.size.width - _deleteButton.frame.size.width - kEditButtonInsets.right,
+                                           self.view.bounds.size.height - _deleteButton.frame.size.height - kEditButtonInsets.bottom,
+                                           _deleteButton.frame.size.width,
+                                           _deleteButton.frame.size.height)];
+    }
+    return _deleteButton;
 }
 
 - (CKRecipeSocialView *)socialView {
@@ -1120,11 +1145,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.cancelButton.alpha = 0.0;
         self.privacyView.alpha = 0.0;
         self.saveButton.alpha = 0.0;
+        self.deleteButton.alpha = 0.0;
         self.cancelButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
-        self.saveButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+        self.saveButton.transform = CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
+        self.deleteButton.transform = CGAffineTransformMakeTranslation(0.0, self.deleteButton.frame.size.height);
         [self.view addSubview:self.cancelButton];
         [self.view addSubview:self.privacyView];
         [self.view addSubview:self.saveButton];
+        [self.view addSubview:self.deleteButton];
     } else {
         self.closeButton.alpha = 0.0;
         self.socialView.alpha = 0.0;
@@ -1142,6 +1170,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                           delay:0.1
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         
+                         // Normal mode buttons.
                          self.closeButton.alpha = self.editMode ? 0.0 : alpha;
                          self.socialView.alpha = self.editMode ? 0.0 : alpha;
                          self.editButton.alpha = self.editMode ? 0.0 : alpha;
@@ -1154,10 +1184,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
                          photoBoxView.alpha = self.editMode ? [self currentAlphaForPhotoButtonView] : 0.0;
                          
+                         // Edit mode buttons.
                          self.cancelButton.alpha = self.editMode ? alpha : 0.0;
                          self.saveButton.alpha = self.editMode ? alpha : 0.0;
+                         self.deleteButton.alpha = self.editMode ? alpha : 0.0;
                          self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
-                         self.saveButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+                         self.saveButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
+                         self.deleteButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, self.deleteButton.frame.size.height);
                      }
                      completion:^(BOOL finished)  {
                          if (self.editMode) {
@@ -1171,8 +1204,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self.editingHelper unwrapEditingView:self.photoButtonView];
 
                              [self.cancelButton removeFromSuperview];
-                             [self.saveButton removeFromSuperview];
                              [self.privacyView removeFromSuperview];
+                             [self.saveButton removeFromSuperview];
+                             [self.deleteButton removeFromSuperview];
                          }
                      }];
 }
@@ -1190,6 +1224,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.privacyView.transform = transform;
     self.cancelButton.transform = transform;
     self.saveButton.transform = transform;
+    self.deleteButton.transform = transform;
 }
 
 - (void)showSocialOverlay:(BOOL)show {
@@ -1258,6 +1293,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self saveRecipe];
 }
 
+- (void)deleteTapped:(id)sender {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Recipe?" message:nil delegate:self
+                                              cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    [alertView show];
+}
+
 - (void)saveRecipe {
     
     DLog(@"saveRequired: %@", [NSString CK_stringForBoolean:self.recipeDetails.saveRequired]);
@@ -1290,6 +1331,45 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self enableEditMode:NO];
         self.addMode = NO;
     }
+}
+
+- (void)deleteRecipe {
+    
+    // Enable save mode to hide all buttons and show black overlay.
+    [self enableSaveMode:YES completion:^{
+        
+        // Keep a weak reference of the progressView for tracking of updates.
+        __weak CKProgressView *weakProgressView = self.progressView;
+        [weakProgressView setProgress:0.1 completion:^{
+            
+            // Deletes in the background.
+            [self.recipe deleteInBackground:^{
+                
+                // Finished deleting, now ask book to relayout.
+                [weakProgressView setProgress:0.9];
+                
+                // Ask the opened book to relayout.
+                [[BookNavigationHelper sharedInstance] updateBookNavigationWithDeletedRecipe:self.recipe
+                                                                                  completion:^{
+                                                                               
+                                                                                   // 100%
+                                                                                   [weakProgressView setProgress:1.0 delay:0.5 completion:^{
+                                                                                       [self closeRecipeView];
+                                                                                   }];
+                                                                               
+                                                                               }];
+                
+            } failure:^(NSError *error) {
+                DLog(@"Error [%@]", [error localizedDescription]);
+                [self enableSaveMode:NO];
+                [self enableEditMode:NO];
+            }];
+            
+        }];
+        
+        
+    }];
+    
 }
 
 - (void)saveRecipeWithImageStartProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress {
@@ -1403,6 +1483,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Fade in/out the overlay.
     [self showProgressOverlayView:saveEnabled];
+}
+
+- (void)enableSaveMode:(BOOL)saveEnabled completion:(void (^)())completion {
+    
+    // Hide all buttons.
+    if (saveEnabled) {
+        [self hideButtons];
+    }
+    
+    // Fade in/out the overlay.
+    [self showProgressOverlayView:saveEnabled completion:completion];
 }
 
 - (void)updateRecipeDetailsView {

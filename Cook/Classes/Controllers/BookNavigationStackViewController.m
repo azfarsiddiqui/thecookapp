@@ -142,6 +142,23 @@
     [self loadRecipes];
 }
 
+- (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
+    DLog(@"Updating layout with deleted recipe [%@][%@]", recipe.name, recipe.page);
+    
+    // Remove the recipes.
+    [self.recipes removeObject:recipe];
+    
+    // Remember the recipe that was actioned.
+    self.saveOrUpdatedRecipe = recipe;
+    
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
+    
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
+}
+
+
 - (void)setActive:(BOOL)active {
     [UIView animateWithDuration:0.3
                           delay:0.0

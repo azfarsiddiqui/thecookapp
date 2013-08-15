@@ -20,5 +20,6 @@ typedef void(^BookNavigationUpdatedBlock)();
 + (BookNavigationHelper *)sharedInstance;
 
 - (void)updateBookNavigationWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateBookNavigationWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 
 @end

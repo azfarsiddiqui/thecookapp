@@ -42,6 +42,7 @@ typedef void(^ProgressBlock)(int percentDone);
 - (void)saveEventually;
 - (void)saveInBackground;
 - (void)saveInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)deleteInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (NSDictionary *)descriptionProperties;
 - (BOOL)persisted;
 
