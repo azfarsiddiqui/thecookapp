@@ -12,8 +12,8 @@
 
 @interface PagingBenchtopBackgroundView ()
 
+@property (nonatomic, assign) CGFloat pageWidth;
 @property (nonatomic, strong) NSMutableArray *colours;
-
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 
@@ -21,8 +21,9 @@
 
 @implementation PagingBenchtopBackgroundView
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame pageWidth:(CGFloat)pageWidth {
     if (self = [super initWithFrame:frame]) {
+        self.pageWidth = pageWidth;
         self.colours = [NSMutableArray array];
     }
     return self;
@@ -46,7 +47,6 @@
     self.gradientLayer = [CAGradientLayer layer];
     self.gradientLayer.frame = self.bounds;
     
-    CGFloat pageWidth = 1024.0;
     CGFloat colourWidth = 100.0;
     NSMutableArray *gradientColours = [NSMutableArray array];
     
@@ -65,7 +65,7 @@
         UIColor *colour = [self.colours objectAtIndex:colourIndex];
         
         // Start of colour.
-        CGFloat offset = (colourIndex * pageWidth) + floorf((pageWidth - colourWidth) / 2.0);
+        CGFloat offset = (colourIndex * self.pageWidth) + floorf((self.pageWidth - colourWidth) / 2.0);
         CGFloat offsetRatio = offset / self.bounds.size.width;
         [gradientColours addObject:colour];
         [colourLocations addObject:@(offsetRatio)];
@@ -91,7 +91,11 @@
     self.gradientLayer.locations = colourLocations;
     
     // Apply blur effect.
-    [self applyBlurEffectCompletion:completion];
+//    [self applyBlurEffectCompletion:completion];
+    // Add the gradient to the view
+    [self.layer insertSublayer:self.gradientLayer atIndex:0];
+
+    completion();
 }
 
 #pragma mark - Private methods

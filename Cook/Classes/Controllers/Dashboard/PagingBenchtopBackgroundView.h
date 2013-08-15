@@ -10,7 +10,7 @@
 
 @interface PagingBenchtopBackgroundView : UICollectionReusableView
 
-- (id)initWithFrame:(CGRect)frame;
+- (id)initWithFrame:(CGRect)frame pageWidth:(CGFloat)pageWidth;
 - (void)addColour:(UIColor *)colour;
 - (void)blend;
 - (void)blendWithCompletion:(void (^)())completion;

@@ -62,6 +62,10 @@
 #define kMyBookSection  0
 #define kFollowSection  1
 #define kPagingRate     2.0
+#define kBlendPageWidth 1024.0
+#define kBlendMinAlpha  0.3
+#define kBlendMaxAlpha  0.45
+
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
@@ -154,9 +158,11 @@
         } else  {
             
             self.backdropScrollView.contentOffset = (CGPoint) {
-                self.collectionView.contentOffset.x * (self.collectionView.bounds.size.width / 300.0),
+//                (self.collectionView.bounds.size.width - kBlendPageWidth) + self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0),
+                self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0),
                 self.backdropScrollView.contentOffset.y
             };
+            DLog(@"backdrop contentOffset %@", NSStringFromCGPoint(self.backdropScrollView.contentOffset));
 
         }
         
@@ -379,6 +385,15 @@
     [cell loadBook:self.myBook];
 }
 
+#pragma mark - Properties
+
+- (UIImageView *)vignetteView {
+    if (!_vignetteView) {
+        _vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background_vignette.png"]];
+    }
+    return _vignetteView;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -451,11 +466,9 @@
     [self.view addGestureRecognizer:tapGesture];
     
     // Vignette overlay to go over the collectionView.
-    UIImageView *vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background_vignette.png"]];
-    vignetteView.center = self.view.center;
-    vignetteView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    [self.view insertSubview:vignetteView aboveSubview:self.collectionView];
-    self.vignetteView = vignetteView;
+    self.vignetteView.center = self.view.center;
+    self.vignetteView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    [self.view insertSubview:self.vignetteView aboveSubview:self.collectionView];
 }
 
 - (void)initBenchtopLevelView {
@@ -925,9 +938,10 @@
     PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
         self.backdropScrollView.bounds.origin.x,
         self.backdropScrollView.bounds.origin.y,
-        self.collectionView.bounds.size.width * (numMyBook + 1 + numFollowBooks),
+//        self.collectionView.bounds.size.width * (numMyBook + 1 + numFollowBooks),
+        kBlendPageWidth * (numMyBook + 1 + numFollowBooks),
         self.backgroundTextureView.frame.size.height
-    }];
+    } pageWidth:kBlendPageWidth];
     
     // Loop through and add colours.
     NSInteger numSections = [self.collectionView numberOfSections];
@@ -942,17 +956,27 @@
         } else if (section == kFollowSection) {
             
             // Add white for gap.
-            [pagingBenchtopView addColour:[UIColor whiteColor]];
+//            [pagingBenchtopView addColour:[UIColor whiteColor]];
             
             NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                 
                 CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:book.cover user:currentUser]];
+                UIColor *bookColour = [CKBookCover backdropColourForCover:book.cover user:currentUser];
+                
+                // Add the next book colour at the gap.
+                if (followIndex == 0) {
+                    [pagingBenchtopView addColour:bookColour];
+                }
+                
+                [pagingBenchtopView addColour:bookColour];
             }
             
         }
     }
+    
+    // Initialise as max alpha.
+    pagingBenchtopView.alpha = kBlendMaxAlpha;
     
     return pagingBenchtopView;
 }
@@ -1002,6 +1026,7 @@
 }
 
 - (void)processPagingFade {
+    
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     CGPoint visibleCenter = (CGPoint){ CGRectGetMidX(visibleFrame), CGRectGetMidY(visibleFrame) };
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:visibleCenter];
@@ -1012,7 +1037,10 @@
             CGFloat distance = ABS(cell.center.x - visibleCenter.x);
             CGFloat effectiveDistance = 300.0 / 2.0;
             CGFloat fadeAlpha = 1.0 - MIN(distance, effectiveDistance) / effectiveDistance;
-            fadeAlpha = MAX(0.5, fadeAlpha);
+//            fadeAlpha = MAX(0.5, fadeAlpha);
+            fadeAlpha = MAX(kBlendMinAlpha, fadeAlpha);
+            fadeAlpha = MIN(fadeAlpha, kBlendMaxAlpha);
+
 //            DLog(@"FADE ALPHA %f", fadeAlpha);
             self.pagingBenchtopView.alpha = fadeAlpha;
             
