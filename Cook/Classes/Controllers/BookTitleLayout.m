@@ -29,27 +29,27 @@
     }
 }
 
-- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    UICollectionViewLayoutAttributes *initialAttributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
-    
-    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
-        
-        if (initialAttributes == nil) {
-            initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-        }
-        
-        // Normal cells slide up.
-        if (!initialAttributes.representedElementKind) {
-            CATransform3D translateTransform = CATransform3DMakeTranslation(0.0, 50.0, 0.0);
-            initialAttributes.transform3D = translateTransform;
-        }
-        
-        // Always opaque.
-        initialAttributes.alpha = 1.0;
-    }
-    
-    return initialAttributes;
-}
+//- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+//    UICollectionViewLayoutAttributes *initialAttributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
+//    
+//    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
+//        
+//        if (initialAttributes == nil) {
+//            initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+//        }
+//        
+//        // Normal cells slide up.
+//        if (!initialAttributes.representedElementKind) {
+//            CATransform3D translateTransform = CATransform3DMakeTranslation(0.0, 50.0, 0.0);
+//            initialAttributes.transform3D = translateTransform;
+//        }
+//        
+//        // Always opaque.
+//        initialAttributes.alpha = 1.0;
+//    }
+//    
+//    return initialAttributes;
+//}
 
 
 @end

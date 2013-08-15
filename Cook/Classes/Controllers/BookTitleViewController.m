@@ -35,6 +35,7 @@
 @property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKBookTitleIndexView *bookTitleView;
 
@@ -52,6 +53,7 @@
 #define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 2.0, 0.0 }
 #define kTitleAnimateOffset     50.0
 #define kTitleHeaderTag         460
+#define kStartUpOffset          75.0
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -86,7 +88,19 @@
         [pageIndexPaths addObject:[NSIndexPath indexPathForItem:[pageIndexPaths count] inSection:0]];
     }
     
-    [self.collectionView insertItemsAtIndexPaths:pageIndexPaths];
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView insertItemsAtIndexPaths:pageIndexPaths];
+    } completion:^(BOOL finished){
+        
+        [UIView animateWithDuration:0.25
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
+                             self.collectionView.transform = CGAffineTransformIdentity;
+                         }
+                         completion:^(BOOL finished){
+                         }];
+    }];
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
@@ -105,6 +119,12 @@
                                     }];
         }
     }
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self applyOffset:scrollView.contentOffset.y distance:200.0 view:self.blurredImageView];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -334,6 +354,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.view addSubview:imageView];
     self.imageView = imageView;
     
+    self.blurredImageView = [[UIImageView alloc] initWithFrame:imageView.frame];
+    self.blurredImageView.alpha = 0.0;
+    [self.view addSubview:self.blurredImageView];
+    
     // Attempt to load cached image.
     NSString *bookTitleCacheKey = [NSString stringWithFormat:@"BookTitle_%@", self.book.objectId];
     UIImage *bookTitleImage = [self.photoStore cachedImageForKey:bookTitleCacheKey];
@@ -370,6 +394,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [collectionView registerClass:[BookTitleCell class] forCellWithReuseIdentifier:kCellId];
     [collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
               withReuseIdentifier:kHeaderId];
+    
+    // Start slightly lower.
+    self.collectionView.transform = CGAffineTransformMakeTranslation(0.0, kStartUpOffset);
 }
 
 - (void)configureImageForTitleCell:(BookTitleCell *)titleCell recipe:(CKRecipe *)recipe
@@ -415,9 +442,37 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     [ImageHelper configureImageView:self.imageView image:image];
     
+    // #808080
+    UIColor *tintColour = [UIColor colorWithRed:128 green:128 blue:128 alpha:0.7];
+    [ImageHelper blurredImage:image tintColour:tintColour completion:^(UIImage *blurredImage) {
+        self.blurredImageView.image = blurredImage;
+    }];
+    
     // Apply top shadow.
     [ViewHelper addTopShadowView:self.imageView];
+}
+
+- (void)applyOffset:(CGFloat)offset distance:(CGFloat)distance view:(UIView *)view {
+    CGFloat alpha = 0.0;
+    if (offset <= 0.0) {
+        alpha = 0.0;
+    } else {
+        
+        CGFloat ratio = offset / distance;
+        alpha = MIN(ratio, 1.0);
+    }
     
+    [self applyAlpha:alpha view:view];
+}
+
+- (void)applyAlpha:(CGFloat)alpha view:(UIView *)view {
+    //    NSLog(@"Alpha %f", alpha);
+    if (alpha > 0) {
+        view.hidden = NO;
+        view.alpha = alpha;
+    } else {
+        view.hidden = YES;
+    }
 }
 
 @end
