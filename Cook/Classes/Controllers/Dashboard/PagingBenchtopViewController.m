@@ -818,7 +818,13 @@
     
     // Kick off the immediate removal of the book onscreen.
     [self.followBooks removeObjectAtIndex:indexPath.item];
-    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+    
+    [[self pagingLayout] markLayoutDirty];
+    
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section]]];
+    } completion:^(BOOL finished) {
+    }];
     
     // Unfollow in the background, then inform listeners of the update.
     BOOL isFriendsBook = [book isThisMyFriendsBook];
