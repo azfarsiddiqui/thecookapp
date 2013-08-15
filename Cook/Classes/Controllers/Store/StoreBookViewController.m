@@ -45,13 +45,13 @@
 
 @implementation StoreBookViewController
 
-#define kBookViewContentInsets  UIEdgeInsetsMake(50.0, 55.0, 50.0, 50.0)
-#define kBookViewSize           CGSizeMake(740.0, 540.0)
-#define kBookShadowAdjustment   20.0
+#define kBookViewContentInsets  UIEdgeInsetsMake(50.0, 100.0, 50.0, 50.0)
+#define kBookViewSize           CGSizeMake(840.0, 614.0)
 #define kOverlayAlpha           0.5
 #define kBookViewAlpha          0.7
 #define kProfileNameGap         20.0
 #define kNameStoryGap           20.0
+#define kBookSummaryGap         20.0
 
 - (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -111,7 +111,7 @@
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          bookCoverView.transform = CGAffineTransformIdentity;
-                         bookCoverView.center = CGPointMake(self.view.center.x, self.view.center.y + kBookShadowAdjustment);
+                         bookCoverView.center = self.view.center;
                      }
                      completion:^(BOOL finished) {
                          
@@ -121,7 +121,7 @@
                                              options:UIViewAnimationOptionCurveEaseIn
                                           animations:^{
                                               self.bookCoverView.frame = CGRectMake(self.bookContainerView.frame.origin.x + kBookViewContentInsets.left,
-                                                                                    self.bookContainerView.frame.origin.y + kBookViewContentInsets.top + kBookShadowAdjustment,
+                                                                                    bookCoverView.frame.origin.y,
                                                                                     self.bookCoverView.frame.size.width,
                                                                                     self.bookCoverView.frame.size.height);
                                               self.bookContainerView.alpha = 1.0;
@@ -187,9 +187,9 @@
     self.bookContainerView = bookContainerView;
     
     // Black overlay.
-    UIView *overlayView = [[UIView alloc] initWithFrame:bookContainerView.bounds];
-    overlayView.backgroundColor = [UIColor blackColor];
-    overlayView.alpha = kBookViewAlpha;
+    UIImage *overlayImage = [[UIImage imageNamed:@"cook_dash_library_selected_bg.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 36.0, 44.0, 52.0, 44.0 }];
+    UIImageView *overlayView = [[UIImageView alloc] initWithFrame:bookContainerView.bounds];
+    overlayView.image = overlayImage;
     [bookContainerView addSubview:overlayView];
     
     // Close button.
@@ -201,7 +201,7 @@
 - (void)initBookSummaryView {
     
     CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book];
-    bookSummaryView.frame = CGRectMake(floorf((self.bookContainerView.bounds.size.width) / 2.0),
+    bookSummaryView.frame = CGRectMake(floorf((self.bookContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
                                        kBookViewContentInsets.top - 5.0,
                                        bookSummaryView.frame.size.width,
                                        bookSummaryView.frame.size.height);
@@ -293,7 +293,7 @@
 - (void)initActionButtonWithSelector:(SEL)selector {
     CKButtonView *actionButtonView = [[CKButtonView alloc] initWithTarget:self action:selector];
     actionButtonView.frame = CGRectMake(floorf((self.bookSummaryView.bounds.size.width - actionButtonView.frame.size.width) / 2.0),
-                                        self.bookSummaryView.bounds.size.height - actionButtonView.frame.size.height - 16.0,
+                                        self.bookSummaryView.bounds.size.height - actionButtonView.frame.size.height,
                                         actionButtonView.frame.size.width,
                                         actionButtonView.frame.size.height);
     [self.bookSummaryView addSubview:actionButtonView];
@@ -305,12 +305,12 @@
 }
 
 - (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled selector:(SEL)selector {
-    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_profile_icon_addtodash.png"];
+    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_selected_icon_addtodash.png"];
     [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled selector:selector];
 }
 
 - (void)updateRequestButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
-    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_profile_icon_friendrequest.png"];
+    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_selected_icon_friend.png"];
     [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled];
 }
 

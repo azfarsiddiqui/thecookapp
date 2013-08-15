@@ -7,6 +7,7 @@
 //
 
 #import "CKButtonView.h"
+#import "UIColor+Expanded.h"
 
 @interface CKButtonView ()
 
@@ -22,11 +23,13 @@
 
 @implementation CKButtonView
 
-#define kIconOffset     10.0
-#define kTextFont       [UIFont boldSystemFontOfSize:12.0];
+#define kIconOffset         20.0
+#define kTextFont           [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0]
+#define kIconTextGap        5.0
+#define kActivityTextGap    10.0
 
 - (id)initWithTarget:(id)target action:(SEL)selector {  
-    return [self initWithTarget:target action:selector backgroundImage:[UIImage imageNamed:@"cook_dash_library_profile_btn.png"]];
+    return [self initWithTarget:target action:selector backgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn.png"]];
 }
 
 - (id)initWithTarget:(id)target action:(SEL)selector backgroundImage:(UIImage *)backgroundImage {
@@ -51,6 +54,22 @@
         self.action = selector;
     }
     
+    // Button text.
+    [self.textLabel removeFromSuperview];
+    UIFont *buttonFont = kTextFont;
+    
+    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    textLabel.backgroundColor = [UIColor clearColor];
+    textLabel.textColor = [UIColor colorWithHexString:@"333333"];
+    textLabel.text = text;
+    textLabel.font = buttonFont;
+    textLabel.alpha = [self textAlphaForEnabled:enabled];
+    [self addSubview:textLabel];
+    [textLabel sizeToFit];
+    self.textLabel = textLabel;
+    CGRect textFrame = self.textLabel.frame;
+    textFrame.origin.y = ceilf((self.bounds.size.height - textFrame.size.height) / 2.0);
+    
     // Icon
     [self.activityView stopAnimating];
     [self.activityView removeFromSuperview];
@@ -59,53 +78,39 @@
     // Spinner on button.
     if (activity) {
         if (!self.activityView) {
-            UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-            activityView.frame = CGRectMake(kIconOffset,
-                                            ceilf((self.bounds.size.height - activityView.frame.size.height) / 2),
-                                            activityView.frame.size.width,
-                                            activityView.frame.size.height);
-            self.activityView = activityView;
+            self.activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         }
+        self.activityView.frame = CGRectMake(floorf((self.bounds.size.width - self.textLabel.frame.size.width - kActivityTextGap - self.activityView.frame.size.width) / 2.0) - 2.0,
+                                             ceilf((self.bounds.size.height - self.activityView.frame.size.height) / 2) - 1.0,
+                                             self.activityView.frame.size.width,
+                                             self.activityView.frame.size.height);
         [self.activityView startAnimating];
         [self addSubview:self.activityView];
+        
+        textFrame.origin.x = self.activityView.frame.origin.x + self.activityView.frame.size.width + kActivityTextGap;
         
     } else if (icon) {
         
         if (!self.iconImageView) {
-            UIImageView *iconImageView = [[UIImageView alloc] initWithImage:icon];
-            iconImageView.frame = CGRectMake(kIconOffset,
-                                             ceilf((self.bounds.size.height - iconImageView.frame.size.height) / 2),
-                                             iconImageView.frame.size.width,
-                                             iconImageView.frame.size.height);
-            self.iconImageView = iconImageView;
+            self.iconImageView = [[UIImageView alloc] initWithImage:icon];
         }
-        
+        self.iconImageView.frame = CGRectMake(floorf((self.bounds.size.width - self.textLabel.frame.size.width - kIconTextGap - self.activityView.frame.size.width) / 2.0) - 5.0,
+                                              ceilf((self.bounds.size.height - self.iconImageView.frame.size.height) / 2),
+                                              self.iconImageView.frame.size.width,
+                                              self.iconImageView.frame.size.height);
         self.iconImageView.alpha = [self iconAlphaForEnabled:enabled];
         [self addSubview:self.iconImageView];
+        
+        textFrame.origin.x = self.iconImageView.frame.origin.x + self.iconImageView.frame.size.width + kIconTextGap;
+        
+    } else {
+        
+        textFrame.origin.x = floorf((self.bounds.size.width - self.textLabel.frame.size.width) / 2.0);
+        
     }
     
-    // Button text.
-    CGFloat offset = 0.0;
-    if (activity || icon) {
-        offset = 30.0;
-    }
-    [self.textLabel removeFromSuperview];
-    UIFont *buttonFont = kTextFont;
-    CGSize textSize = [text sizeWithFont:buttonFont constrainedToSize:CGSizeMake(self.bounds.size.width - offset, self.bounds.size.height)
-                           lineBreakMode:NSLineBreakByTruncatingTail];
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(offset + floorf((self.bounds.size.width - offset - textSize.width) / 2.0),
-                                                                   floorf((self.bounds.size.height - textSize.height) / 2.0),
-                                                                   textSize.width,
-                                                                   textSize.height)];
-    textLabel.backgroundColor = [UIColor clearColor];
-    textLabel.textColor = [UIColor whiteColor];
-    textLabel.shadowColor = [UIColor blackColor];
-    textLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    textLabel.text = text;
-    textLabel.font = buttonFont;
-    textLabel.alpha = [self textAlphaForEnabled:enabled];
-    [self addSubview:textLabel];
-    self.textLabel = textLabel;
+    // Update the position of the label.
+    self.textLabel.frame = textFrame;
     
     // Enabled?
     self.button.userInteractionEnabled = enabled;

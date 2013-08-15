@@ -112,11 +112,11 @@
 }
 
 + (UIFont *)storeBookSummaryStoryFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:14.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
 }
 
 + (UIColor *)storeBookSummaryStoryColour {
-    return [UIColor whiteColor];
+    return [UIColor colorWithHexString:@"FFFFFF"];
 }
 
 #pragma mark - Grid category headers
