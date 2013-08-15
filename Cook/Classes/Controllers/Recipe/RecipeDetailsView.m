@@ -595,7 +595,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSArray *ingredients = self.recipeDetails.ingredients;
     
     if ([ingredients count] == 0) {
-        ingredients = @[[Ingredient ingredientwithName:@"INGREDIENT" measurement:nil]];
+        ingredients = @[[Ingredient ingredientwithName:@"INGREDIENTS" measurement:nil]];
     }
     
     // Update divider.
