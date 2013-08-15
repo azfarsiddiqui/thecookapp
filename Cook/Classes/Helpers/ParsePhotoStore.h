@@ -17,6 +17,7 @@
 
 // Resturns the cached image of a scaled size - non-Parse related.
 - (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size;
+- (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size cache:(BOOL)cache;
 
 // Returns the cached image if exists otherwise initiates downloads. Both cases return in blocks.
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size completion:(void (^)(UIImage *image))completion;

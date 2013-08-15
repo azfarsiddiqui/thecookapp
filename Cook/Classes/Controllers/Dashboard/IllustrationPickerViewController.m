@@ -134,14 +134,16 @@
 
 - (UIImage *)imageForIllustration:(NSString *)illustration size:(CGSize)size {
     return [self.photoStore scaledImageForImage:[CKBookCover imageForIllustration:illustration]
-                                    name:illustration
-                                    size:size];
+                                           name:[NSString stringWithFormat:@"IllustrationPicker_Illustration_%@", illustration]
+                                           size:size
+                                          cache:NO];
 }
 
 - (UIImage *)imageForCover:(NSString *)cover size:(CGSize)size {
     return [self.photoStore scaledImageForImage:[CKBookCover imageForCover:cover]
-                                           name:cover
-                                           size:size];
+                                           name:[NSString stringWithFormat:@"IllustrationPicker_Cover_%@", cover]
+                                           size:size
+                                          cache:YES];
 }
 
 #pragma mark - Private

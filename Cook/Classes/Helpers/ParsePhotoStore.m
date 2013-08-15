@@ -36,12 +36,20 @@
 }
 
 - (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size {
-    
-    NSString *cacheKey = [self cacheKeyForName:name size:size];
-    UIImage *scaledImage = [self cachedImageForKey:cacheKey];
-    if (!scaledImage) {
+    return [self scaledImageForImage:image name:name size:size cache:YES];
+}
+
+- (UIImage *)scaledImageForImage:(UIImage *)image name:(NSString *)name size:(CGSize)size cache:(BOOL)cache {
+    UIImage *scaledImage = nil;
+    if (cache) {
+        NSString *cacheKey = [self cacheKeyForName:name size:size];
+        scaledImage = [self cachedImageForKey:cacheKey];
+        if (!scaledImage) {
+            scaledImage = [ImageHelper scaledImage:image size:size];
+            [[SDImageCache sharedImageCache] storeImage:scaledImage forKey:cacheKey];
+        }
+    } else {
         scaledImage = [ImageHelper scaledImage:image size:size];
-        [[SDImageCache sharedImageCache] storeImage:scaledImage forKey:cacheKey];
     }
     return scaledImage;
 }
