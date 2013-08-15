@@ -24,9 +24,9 @@
 
 @implementation CKBookTitleIndexView
 
-#define kMaxSize        CGSizeMake(450.0, 200.0)
-#define kLabelGap       -10.0
-#define kLabelInsets    UIEdgeInsetsMake(0.0, 20.0, 20.0, 20.0)
+#define kMaxSize        CGSizeMake(480.0, 208.0)
+#define kLabelGap       -15.0
+#define kLabelInsets    UIEdgeInsetsMake(-5.0, 20.0, 20.0, 20.0)
 #define kContentInsets  UIEdgeInsetsMake(18.0, 18.0, 19.0, 16.0)
 
 - (id)initWithBook:(CKBook *)book {
@@ -122,7 +122,7 @@
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     nameLabel.backgroundColor = [UIColor clearColor];
     nameLabel.textColor = [UIColor blackColor];
-    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:40];
+    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     nameLabel.numberOfLines = 1;
     nameLabel.text = self.name;
     nameLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -132,7 +132,7 @@
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textColor = [UIColor blackColor];
-    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20];
+    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
     titleLabel.numberOfLines = 1;
     titleLabel.text = self.title;
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;

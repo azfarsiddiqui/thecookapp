@@ -288,7 +288,7 @@
 }
 
 + (UIFont *)bookIndexFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:24];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
 }
 
 + (UIColor *)bookIndexColour {
