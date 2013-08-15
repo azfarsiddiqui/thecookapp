@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CKRecipe.h"
 
 @class CKUser;
-@class CKRecipe;
 
 @interface RecipeDetails : NSObject
 
@@ -25,6 +25,7 @@
 @property (nonatomic, assign) NSInteger cookingTimeInMinutes;
 @property (nonatomic, strong) NSArray *ingredients;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, assign) CKPrivacy privacy;
 
 @property (nonatomic, assign) BOOL saveRequired;
 
@@ -37,6 +38,7 @@
 - (BOOL)methodUpdated;
 - (BOOL)servesPrepUpdated;
 - (BOOL)ingredientsUpdated;
+- (BOOL)privacyUpdated;
 
 - (BOOL)hasTitle;
 - (BOOL)hasStory;

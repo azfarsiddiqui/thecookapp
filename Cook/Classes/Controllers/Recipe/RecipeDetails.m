@@ -9,7 +9,6 @@
 #import "RecipeDetails.h"
 #import "Ingredient.h"
 #import "MRCEnumerable.h"
-#import "CKRecipe.h"
 #import "NSString+Utilities.h"
 
 @interface RecipeDetails ()
@@ -34,6 +33,7 @@
         _numServes = recipe.numServes;
         _prepTimeInMinutes = recipe.prepTimeInMinutes;
         _cookingTimeInMinutes = recipe.cookingTimeInMinutes;
+        _privacy = recipe.privacy;
         
         _ingredients = [NSArray arrayWithArray:[recipe.ingredients collect:^id(Ingredient *ingredient) {
             return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];
@@ -51,6 +51,7 @@
     recipe.prepTimeInMinutes = self.prepTimeInMinutes;
     recipe.cookingTimeInMinutes = self.cookingTimeInMinutes;
     recipe.ingredients = self.ingredients;
+    recipe.privacy = self.privacy;
 }
 
 - (BOOL)pageUpdated {
@@ -77,6 +78,10 @@
 
 - (BOOL)ingredientsUpdated {
     return [self ingredientsChangedForIngredients:self.ingredients];
+}
+
+- (BOOL)privacyUpdated {
+    return (self.originalRecipe.privacy != self.privacy);
 }
 
 - (BOOL)hasTitle {
@@ -153,6 +158,13 @@
 - (void)setImage:(UIImage *)image {
     _image = image;
     self.saveRequired = (image != nil);
+}
+
+- (void)setPrivacy:(CKPrivacy)privacy {
+    _privacy = privacy;
+    if (self.originalRecipe.privacy != privacy) {
+        self.saveRequired = YES;
+    }
 }
 
 #pragma mark - Private methods

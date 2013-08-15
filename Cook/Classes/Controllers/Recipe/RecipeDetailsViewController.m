@@ -28,6 +28,7 @@
 #import "NSString+Utilities.h"
 #import "CKProgressView.h"
 #import "BookNavigationHelper.h"
+#import "CKServerManager.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -74,6 +75,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 // Editing.
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL addMode;
+@property (nonatomic, assign) BOOL locatingInProgress;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIButton *deleteButton;
@@ -256,40 +258,36 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #pragma mark - CKPrivacySliderViewDelegate methods
 
 - (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
-//    [self selectedPrivacy:CKPrivacyPrivate];
-//    [self.recipe clearLocation];
-//    self.saveRequired = YES;
-//    self.saveButton.enabled = YES;
+    self.recipeDetails.privacy = CKPrivacyPrivate;
+    self.saveButton.enabled = YES;
 }
 
 - (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
-//    [self selectedPrivacy:CKPrivacyFriends];
-//    [self.recipe clearLocation];
-//    self.saveRequired = YES;
-//    self.saveButton.enabled = YES;
+    [self.recipe clearLocation];
+    self.recipeDetails.privacy = CKPrivacyFriends;
+    self.saveButton.enabled = YES;
 }
 
 - (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
-//    [self selectedPrivacy:CKPrivacyGlobal];
-//    
-//    // Locating is in progress.
-//    if (self.locatingInProgress) {
-//        return;
-//    }
-//    self.locatingInProgress = YES;
-//    
-//    // Disable save button until location is obtained.
-//    self.saveButton.enabled = NO;
-//    
-//    [[CKServerManager sharedInstance] requestForCurrentLocation:^(double latitude, double longitude){
-//        [self.recipe setLocation:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
-//        self.saveButton.enabled = YES;
-//        self.locatingInProgress = NO;
-//        self.saveRequired = YES;
-//    } failure:^(NSError *error) {
-//        self.saveButton.enabled = YES;
-//        self.locatingInProgress = NO;
-//    }];
+    
+    // Locating is in progress.
+    if (self.locatingInProgress) {
+        return;
+    }
+    self.locatingInProgress = YES;
+    
+    // Disable save button until location is obtained.
+    self.saveButton.enabled = NO;
+    
+    [[CKServerManager sharedInstance] requestForCurrentLocation:^(double latitude, double longitude){
+        self.recipeDetails.privacy = CKPrivacyGlobal;
+        [self.recipe setLocation:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
+        self.saveButton.enabled = YES;
+        self.locatingInProgress = NO;
+    } failure:^(NSError *error) {
+        self.saveButton.enabled = YES;
+        self.locatingInProgress = NO;
+    }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -1199,6 +1197,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self.editButton removeFromSuperview];
                              [self.shareButton removeFromSuperview];
                              [self.likeButton removeFromSuperview];
+                             
+                             // Select the privacy level.
+                             [self.privacyView selectNotch:self.recipeDetails.privacy animated:YES];
+                             
                          } else {
                              self.photoButtonView.hidden = YES;
                              [self.editingHelper unwrapEditingView:self.photoButtonView];
