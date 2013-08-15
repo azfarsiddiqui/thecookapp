@@ -698,6 +698,7 @@
                            NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
                            
                            if (reload) {
+                               [[self pagingLayout] markLayoutDirty];
                                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
                            } else {
                                [[self pagingLayout] markLayoutDirty];
