@@ -253,40 +253,43 @@
 }
 
 - (void)initAddButton {
+    NSString *buttonText = @"ADD TO BENCH";
     [self initActionButtonWithSelector:@selector(addTapped:)];
-    [self updateAddButtonText:@"Add Book" activity:YES enabled:NO];
+    [self updateAddButtonText:buttonText activity:YES enabled:NO];
     
     [self.book isFollowedByUser:self.currentUser
                         success:^(BOOL followed) {
                             if (followed) {
-                                [self updateAddButtonText:@"Already Added" activity:NO enabled:NO];
+                                [self updateAddButtonText:@"ALREADY ADDED" activity:NO enabled:NO];
                             } else {
-                                [self updateAddButtonText:@"Add Book" activity:NO enabled:YES];
+                                [self updateAddButtonText:buttonText activity:NO enabled:YES];
                             }
                         }
                         failure:^(NSError *error) {
-                            [self updateAddButtonText:@"Add Book" activity:NO enabled:NO];
+                            [self updateAddButtonText:buttonText activity:NO enabled:NO];
                         }];
 }
 
 - (void)initFriendsButton {
+    NSString *friendRequestText = @"ADD FRIEND";
+    
     [self initActionButtonWithSelector:@selector(requestTapped:)];
-    [self updateRequestButtonText:@"Send Friend Request" activity:YES enabled:NO];
+    [self updateRequestButtonText:friendRequestText activity:YES enabled:NO];
     
     [self.currentUser checkIsFriendsWithUser:self.book.user
                                   completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
                                       if (alreadyConnected) {
-                                          [self updateRequestButtonText:@"Already Friends" activity:NO enabled:NO];
+                                          [self updateRequestButtonText:@"ALREADY FRIENDS" activity:NO enabled:NO];
                                       } else if (pendingAcceptance) {
                                           self.pendingAcceptance = pendingAcceptance;
-                                          [self updateRequestButtonText:@"Accept Friend Request" activity:NO enabled:YES];
+                                          [self updateRequestButtonText:@"ACCEPT FRIEND" activity:NO enabled:YES];
                                       } else if (alreadySent) {
-                                          [self updateRequestButtonText:@"Already Requested" activity:NO enabled:NO];
+                                          [self updateRequestButtonText:@"REQUESTED" activity:NO enabled:NO];
                                       } else {
-                                          [self updateRequestButtonText:@"Send Friend Request" activity:NO enabled:YES];
+                                          [self updateRequestButtonText:friendRequestText activity:NO enabled:YES];
                                       }
                                   } failure:^(NSError *error) {
-                                      [self updateRequestButtonText:@"Send Friend Request" activity:NO enabled:NO];
+                                      [self updateRequestButtonText:friendRequestText activity:NO enabled:NO];
                                   }];
 }
 
