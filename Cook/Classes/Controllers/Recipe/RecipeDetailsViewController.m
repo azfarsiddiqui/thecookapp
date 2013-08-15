@@ -1082,8 +1082,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (SnapViewport)startViewPort {
     SnapViewport startViewPort = SnapViewportBottom;
-    if (!self.addMode && self.recipe && ![self.recipe hasPhotos]) {
-        startViewPort = SnapViewportTop;
+    if (self.addMode) {
+        startViewPort = SnapViewportBottom;
+    } else if ([self.recipe hasPhotos]) {
+        startViewPort = SnapViewportBottom;
     }
     
     return startViewPort;
@@ -1448,8 +1450,18 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)enableEditMode:(BOOL)enable {
-    [self enableEditModeWithoutInformingRecipeDetailsView:enable];
-    [self.recipeDetailsView enableEditMode:enable];
+    if (!self.addMode && ([self.recipe hasMethod] || [self.recipe hasIngredients]) && self.currentViewport != SnapViewportTop) {
+        
+        // Snap to top first.
+        [self snapToViewport:SnapViewportTop completion:^{
+            [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+            [self.recipeDetailsView enableEditMode:enable];
+        }];
+        
+    } else {
+        [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+        [self.recipeDetailsView enableEditMode:enable];
+    }
 }
 
 - (void)enableEditModeWithoutInformingRecipeDetailsView {
