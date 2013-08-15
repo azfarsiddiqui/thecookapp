@@ -132,7 +132,7 @@
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textColor = [UIColor blackColor];
-    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:30.0];
     titleLabel.numberOfLines = 1;
     titleLabel.text = self.title;
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
