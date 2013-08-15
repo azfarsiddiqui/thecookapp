@@ -38,4 +38,8 @@
 - (BOOL)servesPrepUpdated;
 - (BOOL)ingredientsUpdated;
 
+- (BOOL)hasTitle;
+- (BOOL)hasStory;
+- (BOOL)hasMethod;
+
 @end

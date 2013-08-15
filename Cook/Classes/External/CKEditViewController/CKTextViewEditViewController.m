@@ -51,7 +51,7 @@
     UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
     
     // Initial TextView height taking into account containing text.
-    NSString *currentText = [self currentTextValue];
+    NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textView.text = currentText;
     CGFloat requiredTextViewHeight = [self requiredTextViewHeight];
 //    requiredTextViewHeight = [self heightForText:currentText];

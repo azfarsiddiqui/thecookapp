@@ -33,7 +33,7 @@
     textField.backgroundColor = [UIColor clearColor];
     textField.textAlignment = NSTextAlignmentCenter;
     textField.delegate = self;
-    textField.text = [self currentTextValue];
+    textField.text = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textField = textField;
     return textField;
 }

@@ -180,6 +180,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                               white:YES
                                                                                                               title:@"Name"
                                                                                                      characterLimit:30];
+        editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
         editViewController.forceUppercase = YES;
         editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         [editViewController performEditing:YES];
@@ -206,6 +207,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                             white:YES
                                                                                                             title:@"Story"
                                                                                                    characterLimit:120];
+        editViewController.clearOnFocus = ![self.recipeDetails hasStory];
         ((CKTextViewEditViewController *)editViewController).numLines = 2;
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
@@ -218,6 +220,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
                                                                                                             title:@"Method"];
+        editViewController.clearOnFocus = ![self.recipeDetails hasMethod];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;

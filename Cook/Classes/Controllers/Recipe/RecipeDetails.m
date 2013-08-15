@@ -79,6 +79,18 @@
     return [self ingredientsChangedForIngredients:self.ingredients];
 }
 
+- (BOOL)hasTitle {
+    return [self.name CK_containsText];
+}
+
+- (BOOL)hasStory {
+    return [self.story CK_containsText];
+}
+
+- (BOOL)hasMethod {
+    return [self.method CK_containsText];
+}
+
 #pragma mark - Properties.
 
 - (void)setPage:(NSString *)page {
