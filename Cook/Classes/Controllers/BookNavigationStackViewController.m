@@ -344,6 +344,7 @@
 #pragma mark - BookPagingStackLayoutDelegate methods
 
 - (void)stackPagingLayoutDidFinish {
+    DLog();
     
     if (self.bookUpdatedBlock != nil) {
         
@@ -1003,6 +1004,7 @@
 }
 
 - (void)scrollToPage:(NSString *)page animated:(BOOL)animated {
+    DLog(@"page [%@]", page);
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self stackContentStartSection];
     
