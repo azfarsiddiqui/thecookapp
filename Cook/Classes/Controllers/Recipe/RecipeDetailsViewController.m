@@ -1576,7 +1576,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.progressView = progressView;
     }
     
-    [UIView animateWithDuration:show ? 0.3 : 0.2
+    [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
