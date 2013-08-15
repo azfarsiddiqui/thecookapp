@@ -313,6 +313,9 @@
     // Fetch recipes that are in the book's pages.
     [query whereKey:kRecipeAttrPage containedIn:[self pages]];
     
+    // Order by descending modifiedDate
+    [query orderByDescending:kModelAttrUpdatedAt];
+    
     // Only fetch public recipes if it's not your own book.
     if (!owner) {
         if (friends) {
