@@ -15,5 +15,6 @@
 + (UIImage *)blurredImage:(UIImage *)image;
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour;
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
++ (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour completion:(void (^)(UIImage *blurredImage))completion;
 
 @end

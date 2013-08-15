@@ -60,11 +60,17 @@
 }
 
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion {
+    [self blurredImage:image tintColour:[UIColor colorWithWhite:1.0 alpha:0.58] completion:completion];
+}
+
++ (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour
+          completion:(void (^)(UIImage *blurredImage))completion {
+    
     dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(concurrentQueue, ^{
         
         // This might take awhile.
-        UIImage *blurredImage = [self blurredImage:image];
+        UIImage *blurredImage = [self blurredImage:image tintColour:tintColour];
         
         // Cascade up to UIKit again on the mainthread.
         dispatch_async(dispatch_get_main_queue(), ^{

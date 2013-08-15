@@ -9,6 +9,7 @@
 #import "BookContentImageView.h"
 #import "UIColor+Expanded.h"
 #import "Theme.h"
+#import "ImageHelper.h"
 
 @interface BookContentImageView ()
 
@@ -17,6 +18,8 @@
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
 @property (nonatomic, strong) UIView *whiteOverlayView;
 @property (nonatomic, strong) UIToolbar *toolbarView;
+
+@property (nonatomic, strong) UIImageView *blurredImageView;
 
 @end
 
@@ -33,7 +36,12 @@
         self.containerView.backgroundColor = [Theme recipeGridImageBackgroundColour];
         [self.containerView addSubview:self.imageView];
         [self.containerView addSubview:self.vignetteOverlayView];
-        [self.containerView addSubview:self.whiteOverlayView];
+        
+        // Scrolling overlays
+//        [self.containerView addSubview:self.whiteOverlayView];
+        [self.containerView addSubview:self.blurredImageView];
+//        [self.containerView addSubview:self.toolbarView];
+        
         [self addSubview:self.containerView];
     }
     return self;
@@ -45,7 +53,9 @@
 }
 
 - (void)applyOffset:(CGFloat)offset {
-    [self applyOffset:offset distance:500.0 view:self.whiteOverlayView];
+//    [self applyOffset:offset distance:500.0 view:self.whiteOverlayView];
+    [self applyOffset:offset distance:200.0 view:self.blurredImageView];
+//    [self applyOffset:offset distance:500.0 view:self.toolbarView];
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -56,6 +66,13 @@
     if (image) {
         self.imageView.image = image;
         self.vignetteOverlayView.hidden = NO;
+        
+        // #808080
+        UIColor *tintColour = [UIColor colorWithRed:128 green:128 blue:128 alpha:0.7];
+        [ImageHelper blurredImage:image tintColour:tintColour completion:^(UIImage *blurredImage) {
+            self.blurredImageView.image = blurredImage;
+        }];
+        
     } else {
         self.imageView.image = nil;
         self.vignetteOverlayView.hidden = YES;
@@ -88,6 +105,13 @@
     return _whiteOverlayView;
 }
 
+- (UIImageView *)blurredImageView {
+    if (!_blurredImageView) {
+        _blurredImageView = [[UIImageView alloc] initWithFrame:self.imageView.frame];
+    }
+    return _blurredImageView;
+}
+
 - (UIToolbar *)toolbarView {
     if (!_toolbarView) {
         _toolbarView = [[UIToolbar alloc] initWithFrame:self.containerView.bounds];
@@ -108,10 +132,12 @@
         CGFloat ratio = offset / distance;
         alpha = MIN(ratio, 1.0);
     }
+
     [self applyAlpha:alpha view:view];
 }
 
 - (void)applyAlpha:(CGFloat)alpha view:(UIView *)view {
+//    NSLog(@"Alpha %f", alpha);
     if (alpha > 0) {
         view.hidden = NO;
         view.alpha = alpha;
