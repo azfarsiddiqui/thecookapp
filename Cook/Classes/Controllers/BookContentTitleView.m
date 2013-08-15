@@ -20,8 +20,8 @@
 
 @implementation BookContentTitleView
 
-#define kCategoryFont       [Theme defaultFontWithSize:100.0]
-#define kCategoryMinFont    [Theme defaultFontWithSize:90.0]
+#define kCategoryFont       [Theme defaultFontWithSize:118.0]
+#define kCategoryMinFont    [Theme defaultFontWithSize:110.0]
 #define kCategoryInsets     UIEdgeInsetsMake(40.0, 40.0, 28.0, 40.0)
 
 - (id)initWithTitle:(NSString *)title {

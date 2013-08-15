@@ -23,10 +23,10 @@
 @implementation RecipeServesCookView
 
 #define kWidth                  200.0
-#define kIconStatGap            15.0
-#define kValueTextGap           -5.0
+#define kIconStatGap            12.0
+#define kValueTextGap           -6.0
 #define kStatViewOffset         -4.0
-#define kStatRowGap             -5.0
+#define kStatRowGap             -10.0
 #define kLabelTag               300
 #define kContentInsets          (UIEdgeInsets){ 0.0, 0.0, -11.0, 12.0 }
 
@@ -80,7 +80,7 @@
 }
 
 - (void)updatePrepCook {
-    CGFloat prepCookGap = 20.0;
+    CGFloat prepCookGap = 5.0;
     
     UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
     CGRect imageFrame = prepCookImageView.frame;

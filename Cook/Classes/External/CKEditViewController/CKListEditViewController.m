@@ -143,6 +143,10 @@
     });
 }
 
+- (CGSize)cellSize {
+    return kPlaceholderSize;
+}
+
 #pragma mark - Lifecycle events.
 
 - (void)keyboardWillAppear:(BOOL)appear {
@@ -203,7 +207,7 @@
 
 - (UIView *)createTargetEditView {
     UIEdgeInsets contentInsets = [self contentInsets];
-    CGSize size = kPlaceholderSize;
+    CGSize size = [self cellSize];
     
     UIView *placeholderView = [[UIView alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
                                                                        contentInsets.top,

@@ -122,7 +122,7 @@
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     nameLabel.backgroundColor = [UIColor clearColor];
     nameLabel.textColor = [UIColor blackColor];
-    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:46.0];
     nameLabel.numberOfLines = 1;
     nameLabel.text = self.name;
     nameLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;

@@ -62,13 +62,13 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 @implementation RecipeDetailsView
 
-#define kWidth                  756.0
-#define kMaxTitleWidth          756.0
+#define kWidth                  780.0
+#define kMaxTitleWidth          780.0
 #define kMaxStoryWidth          600.0
-#define kMaxLeftWidth           222.0
-#define kMaxRightWidth          465.0
+#define kMaxLeftWidth           240.0
+#define kMaxRightWidth          480.0
 #define kMaxMethodHeight        300.0
-#define kDividerWidth           568.0
+#define kDividerWidth           600.0
 #define kIngredientDividerWidth 170.0
 #define kContentInsets          (UIEdgeInsets){ 35.0, 0.0, 35.0, 0.0 }
 
@@ -145,7 +145,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                          pageTextBoxView.alpha = editMode ? 1.0 : 0.0;
                          
                          // Fade the divider lines.
-                         self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
+//                         self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
                          self.ingredientsDividerView.alpha = editMode ? 0.0 : 1.0;
                          
                      }
@@ -479,7 +479,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Display if not-blank or in editMode.
     if ([self.recipeDetails.story CK_containsText] || self.editMode) {
-        self.storyDividerView.alpha = self.editMode ? 0.0 : 1.0;
+//        self.storyDividerView.alpha = self.editMode ? 0.0 : 1.0;
+        self.storyDividerView.alpha = 1.0;
         self.storyLabel.alpha = 1.0;
         [self updateStoryFrame];
         [self updateLayoutOffsetVertical:self.storyDividerView.frame.size.height + dividerStoryGap + self.storyLabel.frame.size.height];
@@ -525,9 +526,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     CGFloat dividerGap = 30.0;
     
     self.contentDividerView.frame = (CGRect){
-        floorf((self.bounds.size.width - kWidth) / 2.0),    // use kDividerWidth
+        floorf((self.bounds.size.width - kDividerWidth) / 2.0),
         self.layoutOffset.y + dividerGap,
-        kWidth,                                             // use kDividerWidth
+        kDividerWidth,
         self.contentDividerView.frame.size.height
     };
     
@@ -598,7 +599,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Update divider.
-    CGFloat dividerGap = 10.0;
+    CGFloat dividerGap = 5.0;
     self.ingredientsDividerView.frame = (CGRect){
         kContentInsets.left,
         self.layoutOffset.y + dividerGap,
@@ -790,9 +791,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Serves.
     [self enableEditModeOnView:self.servesCookView editMode:editMode
                  minimumInsets:(UIEdgeInsets){
-                     defaultEditInsets.top + 2.0,
+                     defaultEditInsets.top + 7.0,
                      defaultEditInsets.left - 19.0,
-                     defaultEditInsets.bottom + 3.0,
+                     defaultEditInsets.bottom + 5.0,
                      defaultEditInsets.right
                  }
                toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
@@ -804,7 +805,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                      defaultEditInsets.top + 10.0,
                      defaultEditInsets.left - 4.0,
                      defaultEditInsets.bottom + 10.0,
-                     defaultEditInsets.right + 10.0
+                     defaultEditInsets.right - 7.0
                  }
                toDisplayAsSize:(CGSize){ kMaxLeftWidth + 20.0, 0.0 }
                   padDirection:EditPadDirectionRight];

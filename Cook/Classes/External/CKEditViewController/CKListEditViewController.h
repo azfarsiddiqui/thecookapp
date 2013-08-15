@@ -44,4 +44,7 @@
 - (void)showItems;
 - (void)hideItems;
 
+// Cell size
+- (CGSize)cellSize;
+
 @end

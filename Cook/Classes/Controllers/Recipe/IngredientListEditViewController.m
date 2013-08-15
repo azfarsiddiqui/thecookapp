@@ -37,6 +37,14 @@
     return [Ingredient ingredientwithName:nil measurement:nil];
 }
 
+- (CGSize)cellSize {
+    CGSize size = [super cellSize];
+    return (CGSize){
+        size.width,
+        70.0
+    };
+}
+
 #pragma mark - CKListCellDelegate methods
 
 - (BOOL)listItemValidatedForCell:(CKListCell *)cell {

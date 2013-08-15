@@ -339,7 +339,7 @@
 }
 
 + (UIFont *)recipeNameFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:50];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:52];
 }
 
 +(UIColor *)recipeNameColor
@@ -375,7 +375,7 @@
 }
 
 + (UIFont *)recipeStatValueFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:22.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:21.0];
 }
 
 + (UIColor *)recipeStatValueColour {
