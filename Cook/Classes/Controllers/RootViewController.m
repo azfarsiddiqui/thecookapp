@@ -799,6 +799,8 @@
 
 - (void)showLoginView:(BOOL)show {
     
+    [self updateStatusBar:show];
+    
     if (show) {
         
         // Recreate the login.
