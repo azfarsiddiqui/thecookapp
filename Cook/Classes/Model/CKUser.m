@@ -200,6 +200,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
     } else if ([self.facebookId length] > 0) {
         pictureUrl = [NSURL URLWithString:
                       [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", self.facebookId]];
+    } else {
+        pictureUrl = [[NSBundle mainBundle] URLForResource:@"cook_default_profile" withExtension:@"png"];
     }
     return pictureUrl;
 }
