@@ -10,6 +10,9 @@
 
 @interface PagingBenchtopBackgroundView : UICollectionReusableView
 
+@property (nonatomic, strong) UIColor *leftEdgeColour;
+@property (nonatomic, strong) UIColor *rightEdgeColour;
+
 - (id)initWithFrame:(CGRect)frame pageWidth:(CGFloat)pageWidth;
 - (void)addColour:(UIColor *)colour;
 - (void)blend;

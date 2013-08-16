@@ -187,7 +187,7 @@
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:62];
+        _titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:62];
         _titleLabel.textColor = [UIColor whiteColor];
         _titleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
         _titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
@@ -199,7 +199,7 @@
     if (!_subtitleLabel) {
         _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _subtitleLabel.backgroundColor = [UIColor clearColor];
-        _subtitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:26];
+        _subtitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:26];
         _subtitleLabel.textColor = [UIColor whiteColor];
         _subtitleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
         _subtitleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
@@ -212,7 +212,7 @@
         _orLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _orLabel.backgroundColor = [UIColor clearColor];
         _orLabel.text = @"or";
-        _orLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:26];
+        _orLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:26];
         _orLabel.textColor = [UIColor whiteColor];
         _orLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
         _orLabel.shadowOffset = CGSizeMake(0.0, 1.0);

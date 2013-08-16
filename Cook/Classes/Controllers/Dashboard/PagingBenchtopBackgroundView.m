@@ -25,6 +25,8 @@
     if (self = [super initWithFrame:frame]) {
         self.pageWidth = pageWidth;
         self.colours = [NSMutableArray array];
+        self.leftEdgeColour = [UIColor whiteColor];
+        self.rightEdgeColour = [UIColor whiteColor];
     }
     return self;
 }
@@ -58,7 +60,7 @@
     
     // Create the gradient colours and stops, and start with white.
     NSMutableArray *colourLocations = [NSMutableArray arrayWithCapacity:[self.colours count]];
-    [gradientColours addObject:[UIColor whiteColor]];
+    [gradientColours addObject:self.leftEdgeColour];
     [colourLocations addObject:@0.0];
     
     // Loop through and create the gradient points.
@@ -71,19 +73,19 @@
         CGFloat offsetRatio = offset / self.bounds.size.width;
         [gradientColours addObject:colour];
         [colourLocations addObject:@(offsetRatio)];
-//        DLog(@"Start Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
+        DLog(@"Start Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
         
         // End of colour
         offset += colourWidth;
         offsetRatio = offset / self.bounds.size.width;
         [gradientColours addObject:colour];
         [colourLocations addObject:@(offsetRatio)];
-//        DLog(@"  End Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
+        DLog(@"  End Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
         
     }
     
     // Ends with white.
-    [gradientColours addObject:[UIColor whiteColor]];
+    [gradientColours addObject:self.rightEdgeColour];
     [colourLocations addObject:@1.0];
     
     // Set the gradients onto the layer.
