@@ -123,13 +123,21 @@
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
-    // Check if this was a new recipe, in which case add it to the recipes list
-    if (![self.recipes detect:^BOOL(CKRecipe *existingRecipe) {
+    // Check if this was a new recipe, in which case add it to the front of recipes list
+    CKRecipe *foundRecipe = [self.recipes detect:^BOOL(CKRecipe *existingRecipe) {
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
-    }]) {
+    }];
+    if (!foundRecipe) {
         
         // Add to the list of recipes.
         [self.recipes insertObject:recipe atIndex:0];
+        
+    } else {
+        
+        // Swap it around.
+        [self.recipes removeObject:foundRecipe];
+        [self.recipes insertObject:recipe atIndex:0];
+        
     }
     
     // Remember the recipe that was actioned.
