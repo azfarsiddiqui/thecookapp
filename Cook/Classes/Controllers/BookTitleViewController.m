@@ -442,8 +442,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     [ImageHelper configureImageView:self.imageView image:image];
     
-    // #808080
-    UIColor *tintColour = [UIColor colorWithRed:128 green:128 blue:128 alpha:0.7];
+    UIColor *tintColour = [UIColor colorWithRed:22 green:35 blue:30 alpha:0.7];
     [ImageHelper blurredImage:image tintColour:tintColour completion:^(UIImage *blurredImage) {
         self.blurredImageView.image = blurredImage;
     }];
