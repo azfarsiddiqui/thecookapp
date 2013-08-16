@@ -47,9 +47,7 @@
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
         
-        // TODO COMMENTED TO FIGURE OUT POSITIONING OF ICON
-        // self.password = password;
-        
+        self.password = password;
         self.placeholder = placeholder;
         self.contentInsets = contentInsets;
         self.backgroundColor = [UIColor clearColor];
@@ -92,20 +90,10 @@
     // Change the validation icon image.
     self.validationImageView.image = [self validationImageForValidated:validated];
     
-    // Figure out the end of the text.
-    NSString *text = self.textField.text;
-    CGFloat offset = self.password ? 10.0 : 5.0;
-    CGSize size = [text sizeWithFont:self.textField.font constrainedToSize:self.textField.frame.size
-                       lineBreakMode:NSLineBreakByClipping];
-    CGPoint validationPoint = (CGPoint){
-        floorf((self.textField.bounds.size.width - size.width) / 2.0) + size.width + offset,
-        floor((self.textField.bounds.size.height - self.validationImageView.frame.size.height) / 2.0)
-    };
-    
     // Position it at the end of the text/caret.
     self.validationImageView.frame = (CGRect) {
-        validationPoint.x,
-        validationPoint.y,
+        self.textField.bounds.size.width - self.validationImageView.frame.size.width,
+        floorf((self.textField.bounds.size.height - self.validationImageView.frame.size.height) / 2.0),
         self.validationImageView.frame.size.width,
         self.validationImageView.frame.size.height
     };
