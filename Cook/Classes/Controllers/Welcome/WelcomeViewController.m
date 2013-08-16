@@ -52,7 +52,7 @@
 #define kSignUpSection      3
 #define kAdornmentTag       470
 #define kLabelTitleFont     [UIFont fontWithName:@"BrandonGrotesque-Medium" size:67.0]
-#define kLabelSubtitleFont  [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.0]
+#define kLabelSubtitleFont  [UIFont fontWithName:@"AvenirNext-Regular" size:22.0]
 #define kPageHeaderSize     CGSizeMake(500.0, 500.0)
 #define kLabelGap           10.0
 
@@ -140,7 +140,7 @@
 
 - (CKSignInButtonView *)signUpButton {
     if (!_signUpButton) {
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
+        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_clear.png"]
                                 resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
         _signUpButton = [[CKSignInButtonView alloc] initWithWidth:kButtonWidth image:buttonImage text:@"SIGN UP" activity:NO delegate:self];
     }
@@ -149,7 +149,7 @@
 
 - (CKSignInButtonView *)signInButton {
     if (!_signInButton) {
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup.png"]
+        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_clear.png"]
                                 resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
         _signInButton = [[CKSignInButtonView alloc] initWithWidth:kButtonWidth image:buttonImage text:@"SIGN IN" activity:NO delegate:self];
     }
@@ -158,14 +158,14 @@
 
 - (UIView *)welcomeImageView {
     if (!_welcomeImageView) {
-        _welcomeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_recipes_left.png"]];
+        _welcomeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_leftstack.png"]];
     }
     return _welcomeImageView;
 }
 
 - (UIView *)welcomeImageView2 {
     if (!_welcomeImageView2) {
-        _welcomeImageView2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_recipes_right.png"]];
+        _welcomeImageView2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_rightstack.png"]];
     }
     return _welcomeImageView2;
 }
@@ -200,32 +200,35 @@
         _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:67.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:64.0]
                                                    text:@"WELCOME" textAlignment:NSTextAlignmentCenter
                                           availableSize:size lineSpacing:-20.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
-                                      0.0,
+                                      120.0,
                                       titleLabel.frame.size.width,
                                       titleLabel.frame.size.height);
         [_welcomePageView addSubview:titleLabel];
+        
+        // HR
+        CGFloat hrWidth = titleLabel.frame.size.width;
+        CGFloat dividerOffset = 0.0;
+        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
+        dividerView.frame = (CGRect){
+            floorf((_welcomePageView.bounds.size.width - hrWidth) / 2.0),
+            titleLabel.frame.origin.y + titleLabel.frame.size.height + dividerOffset,
+            hrWidth,
+            dividerView.frame.size.height
+        };
+        [_welcomePageView addSubview:dividerView];
         
         // Subtitle
         UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Gather your recipes, it's time to create\u2028your very own Cookbook for iPad."
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
-                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + 24.0,
                                          subtitleLabel.frame.size.width,
                                          subtitleLabel.frame.size.height);
         [_welcomePageView addSubview:subtitleLabel];
-        
-        // SubSubtitle
-        UILabel *subSubtitleLabel = [self createSubtitleLabelWithText:@"Gather all those scattered\u2028recipes love and bring\u2028them together in one place..."
-                                                    textAlignment:NSTextAlignmentCenter availableSize:size];
-        subSubtitleLabel.frame = CGRectMake(floorf((size.width - subSubtitleLabel.frame.size.width) / 2.0),
-                                            subtitleLabel.frame.origin.y + subtitleLabel.frame.size.height + kLabelGap,
-                                            subSubtitleLabel.frame.size.width,
-                                            subSubtitleLabel.frame.size.height);
-        [_welcomePageView addSubview:subSubtitleLabel];
         
     }
     return _welcomePageView;
@@ -235,25 +238,37 @@
     if (!_createPageView) {
         CGSize size = [self sizeOfPageHeaderForPage:kCreateSection
                                           indexPath:[NSIndexPath indexPathForItem:0 inSection:kCreateSection]];
-        _createPageView = [[UIView alloc] initWithFrame:CGRectZero];
+        _createPageView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
         _createPageView.backgroundColor = [UIColor clearColor];
         _createPageView.autoresizingMask = UIViewAutoresizingNone;
 
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:56.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:58.0]
                                                    text:@"CREATE YOUR\u2028COOKBOOK" textAlignment:NSTextAlignmentLeft
-                                          availableSize:size lineSpacing:-15.0];
+                                          availableSize:size lineSpacing:-20.0];
         titleLabel.frame = CGRectMake(0.0,
                                       50.0,
                                       titleLabel.frame.size.width,
                                       titleLabel.frame.size.height);
         [_createPageView addSubview:titleLabel];
         
+        // HR
+        CGFloat hrWidth = titleLabel.frame.size.width;
+        CGFloat dividerOffset = 10.0;
+        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
+        dividerView.frame = (CGRect){
+            0.0,
+            titleLabel.frame.origin.y + titleLabel.frame.size.height + dividerOffset,
+            hrWidth,
+            dividerView.frame.size.height
+        };
+        [_createPageView addSubview:dividerView];
+        
         // Subtitle
         UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Forget Jamie or Delia, add all your\u2028favourite recipes, then customise\u2028the cover of your book and it's\u2028ready to share with your friends..."
                                                      textAlignment:NSTextAlignmentLeft availableSize:size];
         subtitleLabel.frame = CGRectMake(0.0,
-                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap,
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
                                          subtitleLabel.frame.size.width,
                                          subtitleLabel.frame.size.height);
         [_createPageView addSubview:subtitleLabel];
@@ -265,25 +280,37 @@
     if (!_collectPageView) {
         CGSize size = [self sizeOfPageHeaderForPage:kCollectSection
                                           indexPath:[NSIndexPath indexPathForItem:0 inSection:kCollectSection]];
-        _collectPageView = [[UIView alloc] initWithFrame:CGRectZero];
+        _collectPageView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
         _collectPageView.backgroundColor = [UIColor clearColor];
         _collectPageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:52.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:58.0]
                                                    text:@"ADD TO YOUR\u2028COLLECTION" textAlignment:NSTextAlignmentCenter
                                           availableSize:size lineSpacing:-15.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
-                                      10.0,
+                                      70.0,
                                       titleLabel.frame.size.width,
                                       titleLabel.frame.size.height);
         [_collectPageView addSubview:titleLabel];
+        
+        // HR
+        CGFloat hrWidth = titleLabel.frame.size.width;
+        CGFloat dividerOffset = 10.0;
+        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
+        dividerView.frame = (CGRect){
+            floorf((_collectPageView.bounds.size.width - hrWidth) / 2.0),
+            titleLabel.frame.origin.y + titleLabel.frame.size.height + dividerOffset,
+            hrWidth,
+            dividerView.frame.size.height
+        };
+        [_collectPageView addSubview:dividerView];
         
         // Subtitle
         UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Browse the library, check out your\u2028friends' books or discover new\u2028recipes from around the world."
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
-                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + kLabelGap + 5.0,
+                                         titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
                                          subtitleLabel.frame.size.width,
                                          subtitleLabel.frame.size.height);
         [_collectPageView addSubview:subtitleLabel];
@@ -625,8 +652,8 @@
     paragraphStyle.alignment = textAlignment;
     
     NSShadow *shadow = [NSShadow new];
-    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-    shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
+    shadow.shadowOffset = CGSizeMake(0.0, 2.0);
     shadow.shadowBlurRadius = 4.0;
 
     return [NSDictionary dictionaryWithObjectsAndKeys:

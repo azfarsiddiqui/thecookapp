@@ -21,9 +21,9 @@
 
 @implementation WelcomeCollectionViewLayout
 
-#define kAdornmentOffset    128.0
-#define kPagingUpOffset     150.0
-#define kPagingDownOffset   120.0
+#define kAdornmentOffset    190.0
+#define kPagingUpOffset     110.0
+#define kPagingDownOffset   100.0
 #define kWelcomeSection     0
 #define kCreateSection      1
 #define kCollectSection     2
@@ -501,7 +501,7 @@
 }
 
 - (CGPoint)startOffsetForSignUpButtonsAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat bottomGap = 70.0;
+    CGFloat bottomGap = 30.0;
     CGFloat buttonGap = 5.0;
     CGFloat pageOffset = [self pageOffsetForPage:kWelcomeSection];
     CGSize size = [self.dataSource sizeOfPageHeaderForPage:kWelcomeSection indexPath:indexPath];

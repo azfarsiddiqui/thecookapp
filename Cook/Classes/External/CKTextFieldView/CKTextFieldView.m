@@ -15,7 +15,6 @@
 @property (nonatomic, assign) id<CKTextFieldViewDelegate> delegate;
 @property (nonatomic, assign) CGFloat width;
 @property (nonatomic, strong) UILabel *placeholderLabel;
-@property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UIImageView *validationImageView;
 
 @end
@@ -23,13 +22,10 @@
 @implementation CKTextFieldView
 
 #define kDefaultContentInsets   UIEdgeInsetsMake(8.0, 20.0, 8.0, 20.0)
-#define kTextFieldFont          [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20]
-#define kTextFieldColour        [UIColor colorWithHexString:@"555555"]
-#define kPlaceholderFont        [UIFont fontWithName:@"BrandonGrotesque-Medium" size:16]
-#define kPlaceholderColour      [UIColor colorWithHexString:@"555555"]
-#define kMessageFont            [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14]
-#define kMessageColour          [UIColor colorWithHexString:@"55A33A"]
-#define kMessageErrorColour     [UIColor colorWithHexString:@"F2583F"]
+#define kTextFieldFont          [UIFont fontWithName:@"AvenirNext-Regular" size:18]
+#define kTextFieldColour        [UIColor colorWithHexString:@"FFFFFF"]
+#define kPlaceholderFont        [UIFont fontWithName:@"AvenirNext-Regular" size:18]
+#define kPlaceholderColour      [UIColor colorWithHexString:@"FFFFFF"]
 #define kFieldMessageGap        0.0
 #define kDefaultMaxLength       50
 
@@ -64,19 +60,22 @@
         self.frame = CGRectMake(0.0,
                                 0.0,
                                 width,
-                                contentInsets.top + self.textField.frame.size.height + kFieldMessageGap + self.messageLabel.frame.size.height + contentInsets.bottom);
+                                contentInsets.top + self.textField.frame.size.height + contentInsets.bottom);
+        
+        // Background textfield.
+        UIImage *textBackground = [[UIImage imageNamed:@"cook_login_textfield.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 24.0, 0.0, 24.0 }];
+        UIImageView *textBackgroundImageView = [[UIImageView alloc] initWithImage:textBackground];
+        textBackgroundImageView.frame = (CGRect){
+            self.bounds.origin.x,
+            floorf((self.bounds.size.height - textBackgroundImageView.frame.size.height) / 2.0),
+            self.bounds.size.width,
+            textBackgroundImageView.frame.size.height
+        };
+        [self addSubview:textBackgroundImageView];
         
         // Update frame of textField to start center.
         self.textField.frame = [self textFieldFrameForMessagePresent:NO];
         [self addSubview:self.textField];
-        
-        // Message label.
-        CGRect focusedTextFieldFrame = [self textFieldFrameForMessagePresent:YES];
-        self.messageLabel.frame = CGRectMake(focusedTextFieldFrame.origin.x,
-                                             focusedTextFieldFrame.origin.y + focusedTextFieldFrame.size.height + kFieldMessageGap,
-                                             focusedTextFieldFrame.size.width,
-                                             self.messageLabel.frame.size.height);
-        [self insertSubview:self.messageLabel belowSubview:self.textField];
         
         // Show placeholder to start off with.
         [self showPlaceholder:YES animated:NO];
@@ -122,10 +121,6 @@
 
 - (void)setValidated:(BOOL)validated message:(NSString *)message {
     [self setValidated:validated];
-    if ([message length] > 0) {
-        self.messageLabel.textColor = validated ? kMessageColour : kMessageErrorColour;
-        self.messageLabel.text = message;
-    }
 }
 
 - (void)focusTextFieldView:(BOOL)focus {
@@ -185,9 +180,6 @@
         return NO;
     }
     
-    NSString *progressText = [self.delegate progressTextForTextFieldView:self currentText:newString];
-    self.messageLabel.textColor = kMessageColour;
-    self.messageLabel.text = progressText;
     return YES;
 }
 
@@ -223,28 +215,11 @@
         placeholderLabel.text = self.placeholder;
         placeholderLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         placeholderLabel.backgroundColor = [UIColor clearColor];
-        placeholderLabel.shadowColor = [UIColor whiteColor];
-        placeholderLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        placeholderLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
+        placeholderLabel.shadowOffset = CGSizeMake(0.0, 2.0);
         _placeholderLabel = placeholderLabel;
     }
     return _placeholderLabel;
-}
-
-- (UILabel *)messageLabel {
-    if (!_messageLabel) {
-        CGSize size = [@"A" sizeWithFont:kMessageFont constrainedToSize:self.textField.bounds.size
-                           lineBreakMode:NSLineBreakByTruncatingTail];
-        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, size.height)];
-        messageLabel.textAlignment = NSTextAlignmentCenter;
-        messageLabel.font = kMessageFont;
-        messageLabel.textColor = kMessageColour;
-        messageLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        messageLabel.backgroundColor = [UIColor clearColor];
-        messageLabel.shadowColor = [UIColor whiteColor];
-        messageLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        _messageLabel = messageLabel;
-    }
-    return _messageLabel;
 }
 
 - (UIImageView *)validationImageView {
@@ -305,25 +280,7 @@
 }
 
 - (void)focus:(BOOL)focus {
-    NSString *messageText = [self trimmedTextFor:self.messageLabel.text];
-    BOOL messagePresent = ([messageText length] > 0);
-    NSLog(@"focus[%@] messageText[%@] messagePresent[%@]", focus ? @"YES" : @"NO", messageText, messagePresent ? @"YES" : @"NO");
-    
-    // Always shifted up provided it's unfocused and no messages.
-    CGRect frame = [self textFieldFrameForMessagePresent:YES];
-    if (!focus && !messagePresent) {
-        frame = [self textFieldFrameForMessagePresent:NO];
-    }
-    
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.textField.frame = frame;
-                         [self showPlaceholder:!focus animated:NO];
-                     }
-                     completion:^(BOOL finished) {
-                     }];
+    [self showPlaceholder:!focus animated:NO];
 }
 
 - (CGRect)textFieldFrameForMessagePresent:(BOOL)messagePresent {

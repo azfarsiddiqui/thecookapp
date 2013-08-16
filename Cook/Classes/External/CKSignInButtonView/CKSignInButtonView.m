@@ -190,10 +190,10 @@
 
 - (UILabel *)labelWithText:(NSString *)text activity:(BOOL)activity {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:16];
+    label.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:16];
     label.textColor = [UIColor whiteColor];
-    label.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-    label.shadowOffset = CGSizeMake(0.0, 1.0);
+    label.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
+    label.shadowOffset = CGSizeMake(0.0, 2.0);
     label.backgroundColor = [UIColor clearColor];
 
     // Update frame.
