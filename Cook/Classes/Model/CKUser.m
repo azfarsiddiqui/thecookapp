@@ -579,16 +579,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     if (self == user)
         return YES;
     
-    if (![self.name isEqualToString:user.name])
-        return NO;
-    
-    if (![self.facebookId isEqualToString:user.facebookId])
-        return NO;
-    
-    return YES;
-}
-- (unsigned)hash {
-    return [self.name hash] ^ [self.facebookId hash];
+    return [self.objectId isEqualToString:user.objectId];
 }
 
 @end
