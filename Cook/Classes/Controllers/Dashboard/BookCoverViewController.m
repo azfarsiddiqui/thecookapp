@@ -161,7 +161,6 @@
     self.rootBookLayer = rootBookLayer;
     
     // Opened RHS layer.
-    CGFloat radius = 5.0;
     CALayer *rightOpenLayer = [CALayer layer];
     rightOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
     rightOpenLayer.position = CGPointMake(floorf(self.rootBookLayer.bounds.size.width / 2),
@@ -171,18 +170,7 @@
                                       rootBookLayer.bounds.size.width,
                                       rootBookLayer.bounds.size.height);
     rightOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, nil, CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMidY(rightOpenLayer.bounds));
-	CGPathAddArcToPoint(path, nil, CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMinY(rightOpenLayer.bounds), CGRectGetMidX(rightOpenLayer.bounds), CGRectGetMinY(rightOpenLayer.bounds), 0.0);
-	CGPathAddArcToPoint(path, nil, CGRectGetMaxX(rightOpenLayer.bounds), CGRectGetMinY(rightOpenLayer.bounds), CGRectGetMaxX(rightOpenLayer.bounds), CGRectGetMidY(rightOpenLayer.bounds), radius);
-	CGPathAddArcToPoint(path, nil, CGRectGetMaxX(rightOpenLayer.bounds), CGRectGetMaxY(rightOpenLayer.bounds), CGRectGetMidX(rightOpenLayer.bounds), CGRectGetMaxY(rightOpenLayer.bounds), radius);
-	CGPathAddArcToPoint(path, nil, CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMaxY(rightOpenLayer.bounds), CGRectGetMinX(rightOpenLayer.bounds), CGRectGetMidY(rightOpenLayer.bounds), 0.0);
-	CGPathCloseSubpath(path);
-    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
-	[maskLayer setPath:path];
-    rightOpenLayer.mask = nil;
-    rightOpenLayer.mask = maskLayer;
+    rightOpenLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_right.png"].CGImage;
     [self.rootBookLayer addSublayer:rightOpenLayer];
     self.rightOpenLayer = rightOpenLayer;
     
@@ -200,6 +188,7 @@
     leftOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
     leftOpenLayer.doubleSided = NO;
     leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
+    leftOpenLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_left.png"].CGImage;
     [rootBookCoverLayer addSublayer:leftOpenLayer];
     self.leftOpenLayer = leftOpenLayer;
     
