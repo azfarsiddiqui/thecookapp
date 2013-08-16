@@ -239,7 +239,7 @@
                                           self.emailContainerView.bounds.size.height - insets.top - insets.bottom);
         
         UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_facebook.png"]
-                                     resizableImageWithCapInsets:UIEdgeInsetsMake(31.0, 30.0, 38.0, 30.0)];
+                                resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 30.0, 0.0, 30.0)];
         _facebookButton = [[CKSignInButtonView alloc] initWithWidth:self.emailButton.frame.size.width image:buttonImage
                                                                text:[self facebookButtonTextForSignUp:YES] activity:NO delegate:self];
         _facebookButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
