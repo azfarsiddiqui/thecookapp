@@ -10,6 +10,7 @@
 #import "CKBook.h"
 #import "CKUser.h"
 #import "CKUserProfilePhotoView.h"
+#import "UIColor+Expanded.h"
 
 @interface CKBookTitleIndexView ()
 
@@ -25,7 +26,7 @@
 @implementation CKBookTitleIndexView
 
 #define kMaxSize        CGSizeMake(480.0, 208.0)
-#define kLabelGap       -15.0
+#define kLabelGap       -10.0
 #define kLabelInsets    UIEdgeInsetsMake(-5.0, 20.0, 20.0, 20.0)
 #define kContentInsets  UIEdgeInsetsMake(18.0, 18.0, 19.0, 16.0)
 
@@ -121,8 +122,8 @@
     // Name label.
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     nameLabel.backgroundColor = [UIColor clearColor];
-    nameLabel.textColor = [UIColor blackColor];
-    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:46.0];
+    nameLabel.textColor = [UIColor colorWithHexString:@"222222"];
+    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:42.0];
     nameLabel.numberOfLines = 1;
     nameLabel.text = self.name;
     nameLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -131,8 +132,8 @@
     // Title label.
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textColor = [UIColor blackColor];
-    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:30.0];
+    titleLabel.textColor = [UIColor colorWithHexString:@"222222"];
+    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:28.0];
     titleLabel.numberOfLines = 1;
     titleLabel.text = self.title;
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
