@@ -11,8 +11,6 @@
 
 @interface CKButtonView ()
 
-@property (nonatomic, strong) id target;
-@property (nonatomic, assign) SEL action;
 @property (nonatomic, strong) UIImage *backgroundImage;
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UIImageView *iconImageView;
@@ -34,25 +32,19 @@
 
 - (id)initWithTarget:(id)target action:(SEL)selector backgroundImage:(UIImage *)backgroundImage {
     if (self = [super initWithFrame:CGRectZero]) {
-        self.target = target;
-        self.action = selector;
         self.backgroundImage = backgroundImage;
         self.backgroundColor = [UIColor clearColor];
-        [self initButtonView];
+        [self initButtonViewWithTarget:target selector:selector];
     }
     return self;
 }
 
 - (void)setText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)icon enabled:(BOOL)enabled {
-    [self setText:text activity:activity icon:icon enabled:enabled selector:nil];
+    [self setText:text activity:activity icon:icon enabled:enabled target:nil selector:nil];
 }
 
-- (void)setText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)icon enabled:(BOOL)enabled selector:(SEL)selector {
-    
-    // Change selector?
-    if (selector) {
-        self.action = selector;
-    }
+- (void)setText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)icon enabled:(BOOL)enabled target:(id)target
+       selector:(SEL)selector {
     
     // Button text.
     [self.textLabel removeFromSuperview];
@@ -112,27 +104,30 @@
     // Update the position of the label.
     self.textLabel.frame = textFrame;
     
+    // Update selector if non-nil target
+    if (target != nil) {
+        [self updateButtonWithTarget:target selector:selector];
+    }
+    
     // Enabled?
     self.button.userInteractionEnabled = enabled;
 }
 
 #pragma mark - Private
 
-- (void)initButtonView {
+- (void)initButtonViewWithTarget:(id)target selector:(SEL)selector {
     self.frame = CGRectMake(0.0, 0.0, self.backgroundImage.size.width, self.backgroundImage.size.height);
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setBackgroundImage:self.backgroundImage forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(0.0, 0.0, self.backgroundImage.size.width, self.backgroundImage.size.height)];
     button.autoresizingMask = UIViewAutoresizingNone;
     [self addSubview:button];
     self.button = button;
+    [self updateButtonWithTarget:target selector:selector];
 }
 
-- (void)buttonTapped:(id)sender {
-    if ([self.target respondsToSelector:self.action]) {
-        [self.target performSelector:self.action];
-    }
+- (void)updateButtonWithTarget:(id)target selector:(SEL)selector {
+    [self.button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (CGFloat)textAlphaForEnabled:(BOOL)enabled {

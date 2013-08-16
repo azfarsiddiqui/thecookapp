@@ -304,12 +304,12 @@
 }
 
 - (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
-    [self updateAddButtonText:text activity:activity enabled:enabled selector:nil];
+    [self updateAddButtonText:text activity:activity enabled:enabled target:nil selector:nil];
 }
 
-- (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled selector:(SEL)selector {
+- (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled target:(id)target selector:(SEL)selector {
     UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_selected_icon_addtodash.png"];
-    [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled selector:selector];
+    [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled target:target selector:selector];
 }
 
 - (void)updateRequestButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {

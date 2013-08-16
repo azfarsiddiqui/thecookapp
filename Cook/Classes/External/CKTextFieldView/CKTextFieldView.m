@@ -199,6 +199,7 @@
         textField.text = @"";
         textField.keyboardType = UIKeyboardTypeEmailAddress;
         textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        textField.autocorrectionType = UITextAutocorrectionTypeNo;
         [textField setSecureTextEntry:self.password];
         [textField sizeToFit];
         _textField = textField;
