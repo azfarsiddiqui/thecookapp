@@ -390,6 +390,8 @@
 		767EEA4F17BDE57C001E7D0B /* cook_login_divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767EEA4B17BDE57C001E7D0B /* cook_login_divider@2x.png */; };
 		767EEA5217BDFBDF001E7D0B /* cook_default_profile.png in Resources */ = {isa = PBXBuildFile; fileRef = 767EEA5017BDFBDF001E7D0B /* cook_default_profile.png */; };
 		767EEA5317BDFBDF001E7D0B /* cook_default_profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 767EEA5117BDFBDF001E7D0B /* cook_default_profile@2x.png */; };
+		767EEA5717BE5E59001E7D0B /* DashboardTutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 767EEA5617BE5E59001E7D0B /* DashboardTutorialViewController.m */; };
+		767EEA5A17BE5F18001E7D0B /* cook_overlay_tutorial_dash.png in Resources */ = {isa = PBXBuildFile; fileRef = 767EEA5917BE5F18001E7D0B /* cook_overlay_tutorial_dash.png */; };
 		76800FEC17A8C3A40065B2C6 /* CategoryListEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76800FEB17A8C3A40065B2C6 /* CategoryListEditViewController.m */; };
 		76800FEF17A8C7E70065B2C6 /* CategoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76800FEE17A8C7E70065B2C6 /* CategoryListCell.m */; };
 		7680103717A92A370065B2C6 /* ThemeTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7680103617A92A370065B2C6 /* ThemeTabView.m */; };
@@ -1340,6 +1342,9 @@
 		767EEA4B17BDE57C001E7D0B /* cook_login_divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_divider@2x.png"; sourceTree = "<group>"; };
 		767EEA5017BDFBDF001E7D0B /* cook_default_profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_default_profile.png; sourceTree = "<group>"; };
 		767EEA5117BDFBDF001E7D0B /* cook_default_profile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_default_profile@2x.png"; sourceTree = "<group>"; };
+		767EEA5517BE5E59001E7D0B /* DashboardTutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardTutorialViewController.h; sourceTree = "<group>"; };
+		767EEA5617BE5E59001E7D0B /* DashboardTutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardTutorialViewController.m; sourceTree = "<group>"; };
+		767EEA5917BE5F18001E7D0B /* cook_overlay_tutorial_dash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_overlay_tutorial_dash.png; sourceTree = "<group>"; };
 		76800FEA17A8C3A40065B2C6 /* CategoryListEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListEditViewController.h; sourceTree = "<group>"; };
 		76800FEB17A8C3A40065B2C6 /* CategoryListEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListEditViewController.m; sourceTree = "<group>"; };
 		76800FED17A8C7E70065B2C6 /* CategoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListCell.h; sourceTree = "<group>"; };
@@ -2530,6 +2535,23 @@
 			path = welcome;
 			sourceTree = "<group>";
 		};
+		767EEA5417BE5E44001E7D0B /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				767EEA5517BE5E59001E7D0B /* DashboardTutorialViewController.h */,
+				767EEA5617BE5E59001E7D0B /* DashboardTutorialViewController.m */,
+			);
+			path = Tutorial;
+			sourceTree = "<group>";
+		};
+		767EEA5817BE5F18001E7D0B /* tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				767EEA5917BE5F18001E7D0B /* cook_overlay_tutorial_dash.png */,
+			);
+			path = tutorial;
+			sourceTree = "<group>";
+		};
 		769B5E071715063B0046934D /* Recipe */ = {
 			isa = PBXGroup;
 			children = (
@@ -3257,6 +3279,7 @@
 				76520459161A80CB00EE253C /* Dashboard */,
 				76C99D70163A12BD00788679 /* Settings */,
 				76CB7EEA165CF466007BECA0 /* Store */,
+				767EEA5417BE5E44001E7D0B /* Tutorial */,
 				76BF202117544124000F0798 /* Welcome */,
 			);
 			path = Controllers;
@@ -3272,6 +3295,7 @@
 				76B015AB161C0AC100AF3C2C /* books */,
 				762C0E4D161A7FC400EBA344 /* dashboard */,
 				767EE9FF17BDBF62001E7D0B /* welcome */,
+				767EEA5817BE5F18001E7D0B /* tutorial */,
 				767EEA5017BDFBDF001E7D0B /* cook_default_profile.png */,
 				767EEA5117BDFBDF001E7D0B /* cook_default_profile@2x.png */,
 				76ED27831612DEB80012E479 /* Icon.png */,
@@ -4208,6 +4232,7 @@
 				7680104417A92ACF0065B2C6 /* cook_dash_settings_tab_selected_mid.png in Resources */,
 				767EEA4C17BDE57C001E7D0B /* cook_login_rightarrow.png in Resources */,
 				7647854017A697D800387A7B /* cook_customise_privacy_bg_right.png in Resources */,
+				767EEA5A17BE5F18001E7D0B /* cook_overlay_tutorial_dash.png in Resources */,
 				76B3AE8A174B2B9F001B4661 /* cook_customise_colour_bar_blue@2x.png in Resources */,
 				767EE9FE17BDA586001E7D0B /* cook_book_inner_page_right@2x.png in Resources */,
 				7632F24E17AF46D900E80952 /* cook_dash_icons_notifications_on@2x.png in Resources */,
@@ -4486,6 +4511,7 @@
 				76EE2CD9170AE7A30043D128 /* SDWebImagePrefetcher.m in Sources */,
 				76EE2CDA170AE7A30043D128 /* UIButton+WebCache.m in Sources */,
 				76EA65F417A639D10093B9D9 /* CKImageDecorationView.m in Sources */,
+				767EEA5717BE5E59001E7D0B /* DashboardTutorialViewController.m in Sources */,
 				7647853B17A697D800387A7B /* CKPrivacySliderView.m in Sources */,
 				76EBE62E179522210099E2CB /* BookSocialViewController.m in Sources */,
 				7619515A179382C3008AB495 /* BookProfileHeaderView.m in Sources */,

@@ -15,6 +15,7 @@ typedef enum {
 	ProfileViewSizeSmall,
 	ProfileViewSizeMedium,
 	ProfileViewSizeLarge,
+	ProfileViewSizeLargeIntro,
 } ProfileViewSize;
 
 @interface CKUserProfilePhotoView : UIView

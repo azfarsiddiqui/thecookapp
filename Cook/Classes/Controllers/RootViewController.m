@@ -21,9 +21,10 @@
 #import "BookNavigationHelper.h"
 #import "BookNavigationStackViewController.h"
 #import "BookTitleViewController.h"
+#import "DashboardTutorialViewController.h"
 
 @interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate>
 
 @property (nonatomic, strong) PagingBenchtopViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -32,6 +33,7 @@
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
 @property (nonatomic, strong) BookNavigationStackViewController *bookNavigationViewController;
 @property (nonatomic, strong) BookTitleViewController *snapshotBookTitleViewController;
+@property (nonatomic, strong) DashboardTutorialViewController *tutorialViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, assign) BOOL lightStatusBar;
@@ -251,16 +253,22 @@
     return [self.benchtopViewController.view snapshotViewAfterScreenUpdates:YES];
 }
 
-#pragma mark - UIGestureRecognizerDelegate methods
+#pragma mark - DashboardTutorialViewControllerDelegate methods
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return self.panEnabled;
+- (void)dashboardTutorialViewControllerDismissRequested {
+    [self showTutorialView:NO];
 }
 
 #pragma mark - BookModalViewControllerDelegate methods
 
 - (void)closeRequestedForBookModalViewController:(UIViewController *)viewController {
     [self hideModalViewController:viewController];
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return self.panEnabled;
 }
 
 #pragma mark - Private methods
@@ -811,28 +819,21 @@
         
     } else {
         
-        [self.welcomeViewController.view removeFromSuperview];
-        self.welcomeViewController = nil;
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.welcomeViewController.view.alpha = 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                             [self.welcomeViewController.view removeFromSuperview];
+                             self.welcomeViewController = nil;
+                             
+                             if (!show) {
+                                 [self showTutorialView:YES];
+                             }
+                         }];
     }
-    
-//    [UIView animateWithDuration:0.2
-//                          delay:0.0
-//                        options:UIViewAnimationOptionCurveEaseIn
-//                     animations:^{
-//                         self.welcomeViewController.view.alpha = show ? 1.0 : 0.0;
-//                     }
-//                     completion:^(BOOL finished) {
-//                         
-//                         if (!show) {
-//                             [self.welcomeViewController.view removeFromSuperview];
-//                             self.welcomeViewController = nil;
-//                         } else {
-//                             [self.welcomeViewController enable:YES];
-//                         }
-//                         
-//                         [self enable:!show];
-//                         
-//                     }];
     
 }
 
@@ -850,6 +851,28 @@
                         failure:^(NSError *error) {
                             DLog(@"error %@", [error localizedDescription]);
                         }];
+}
+
+- (void)showTutorialView:(BOOL)show {
+    if (show) {
+        self.tutorialViewController = [[DashboardTutorialViewController alloc] initWithDelegate:self];
+        self.tutorialViewController.view.alpha = 0.0;
+        self.tutorialViewController.view.frame = self.view.bounds;
+        [self.view addSubview:self.tutorialViewController.view];
+    }
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.tutorialViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.tutorialViewController.view removeFromSuperview];
+                             self.tutorialViewController = nil;
+                         }
+                     }];
+
 }
 
 @end
