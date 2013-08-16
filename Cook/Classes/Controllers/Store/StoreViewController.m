@@ -30,7 +30,7 @@
 @implementation StoreViewController
 
 #define kInsets                     UIEdgeInsetsMake(100.0, 0.0, 100.0, 0.0)
-#define kVisibleHeight              449.0   // Varies by taste
+#define kVisibleHeight              460.0   // Varies by taste
 #define kShelfTopOffset             439.0
 #define kShelfTopOffsetFromBottom   275.0
 #define kShelfHeight                249.0
