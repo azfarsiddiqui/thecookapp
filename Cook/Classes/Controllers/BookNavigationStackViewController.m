@@ -129,7 +129,7 @@
     }]) {
         
         // Add to the list of recipes.
-        [self.recipes addObject:recipe];
+        [self.recipes insertObject:recipe atIndex:0];
     }
     
     // Remember the recipe that was actioned.
