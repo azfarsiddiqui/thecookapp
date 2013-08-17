@@ -278,7 +278,14 @@
     
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     UIEdgeInsets contentInsets = [self contentInsets];
-    return (UIEdgeInsets) { contentInsets.top - targetTextBoxView.contentInsets.top, 90.0, 20.0, 90.0 };
+    UIEdgeInsets sectionInsets = { contentInsets.top - targetTextBoxView.contentInsets.top, 90.0 + 10, 20.0, 90.0 };
+//    UIEdgeInsets sectionInsets = (UIEdgeInsets){
+//        contentInsets.top - targetTextBoxView.contentInsets.top,
+//        targetTextBoxView.frame.origin.x,
+//        targetTextBoxView.frame.size.width,
+//        targetTextBoxView.frame.size.height
+//    };
+    return sectionInsets;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -318,6 +325,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     CKListCell *cell = (CKListCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
     cell.allowSelection = self.allowSelection;
     cell.delegate = self;
+    cell.backgroundColor = [UIColor clearColor];
     
     [self configureCell:cell indexPath:indexPath];
     
@@ -681,6 +689,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     }
     
     self.itemsLoaded = show;
+    
+    // There is at least one item - the empty cell.
     NSInteger numItems = MAX(1, [self.items count]);
     
     // Items to animate is everything below the initial placeholder.
