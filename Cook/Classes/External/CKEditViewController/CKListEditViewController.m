@@ -11,6 +11,8 @@
 #import "CKListCell.h"
 #import "CKListLayout.h"
 #import "UICollectionView+Draggable.h"
+#import "MRCEnumerable.h"
+#import "LSCollectionViewHelper.h"
 
 @interface CKListEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UICollectionViewDataSource_Draggable, CKListCellDelegate, UIGestureRecognizerDelegate>
@@ -19,16 +21,13 @@
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UILabel *topAddLabel;
-@property (nonatomic, strong) UILabel *botAddLabel;
 @property (nonatomic, strong) CKListCell *editingCell;
 @property (nonatomic, strong) CKListCell *panningCell;
-@property (nonatomic, strong) NSIndexPath *editingIndexPath;
 @property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) BOOL topAddActivated;
-@property (nonatomic, assign) BOOL botAddActivated;
 @property (nonatomic, assign) BOOL editMode;
-@property (nonatomic, assign) BOOL addingMode;
+@property (nonatomic, assign) BOOL processing;
 
 @end
 
@@ -36,7 +35,7 @@
 
 #define kEditButtonInsets               UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kCellId                         @"ListItemCellId"
-#define kPlaceholderSize                CGSizeMake(750.0, 50.0)
+#define kPlaceholderSize                CGSizeMake(750.0, 70.0)
 #define kPullActivatedOffset            150.0
 #define kLabelOffset                    10.0
 #define kLabelTag                       270
@@ -60,13 +59,14 @@
         if ([items count] > 0) {
             self.items = [NSMutableArray arrayWithArray:items];
         } else {
-            self.items = [NSMutableArray array];    // Empty array if no items were given.
+            self.items = [NSMutableArray arrayWithObject:[self createNewItem]];    // One empty cell if given none
         }
         self.selectedIndexNumber = selectedIndexNumber;
         self.canReorderItems = YES;
         self.canAddItems = YES;
         self.canDeleteItems = YES;
         self.allowSelection = YES;
+        self.addItemAfterEach = YES;
     }
     return self;
 }
@@ -89,7 +89,7 @@
             
             // Loading actual item cells.
             [cell configureValue:[self.items objectAtIndex:indexPath.item]
-                        selected:([self.selectedIndexNumber integerValue] == indexPath.item)];
+                      selected:([self.selectedIndexNumber integerValue] == indexPath.item)];
             
         } else {
             
@@ -106,6 +106,8 @@
 }
 
 - (id)createNewItem {
+    
+    // String implementation.
     return @"";
 }
 
@@ -114,12 +116,29 @@
     // Subclasses to implement.
     if (show) {
         
+        DLog(@"show: items[%@] selected[%@]", self.items, self.selectedIndexNumber);
+        
         // Update pull labels.
         [self updateAddState];
+        
+        // Focus on first cell if it was the only empty single cell.
+        if ([self.items count] == 1) {
+            CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            if ([cell isEmpty]) {
+                [cell setEditing:YES];
+            }
+        }
         
     } else {
         
         if (self.saveRequired) {
+            
+            // Trim items of empty cells.
+            self.items = [NSMutableArray arrayWithArray:[self.items select:^BOOL(id currentValue) {
+                return ![self isEmptyForValue:currentValue];
+            }]];
+            
+            DLog(@"hide: items[%@] selected[%@]", self.items, self.selectedIndexNumber);
             
             // Calls save on the the textbox view, which in turn triggers update via delegate.
             CKEditingTextBoxView *textBoxView = [self targetEditTextBoxView];
@@ -151,7 +170,7 @@
 
 - (void)keyboardWillAppear:(BOOL)appear {
     DLog(@"appear[%@]", appear ? @"YES" : @"NO");
-    self.collectionView.scrollEnabled = !appear;
+//    self.collectionView.scrollEnabled = !appear;
     
     if (appear) {
         
@@ -314,16 +333,17 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSInteger numItems = 1;
     if (self.itemsLoaded) {
-        numItems = MAX(1, [self.items count]);  // Always an item onscreen for editing.
+        return [self.items count];
+    } else {
+        return 1;   // Placeholder cell.
     }
-    return numItems;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CKListCell *cell = (CKListCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
     cell.allowSelection = self.allowSelection;
+    cell.allowReorder = self.canReorderItems;
     cell.delegate = self;
     cell.backgroundColor = [UIColor clearColor];
     
@@ -343,19 +363,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     // Check for top activation.
     if (scrollView.isDragging) {
         
-        // Check for top activation.
+        // Check for add activation.
         BOOL topActivated = (scrollView.contentOffset.y <= -kPullActivatedOffset);
-        if (topActivated != self.topAddActivated) {
-            self.topAddActivated = topActivated;
-            [self updateAddState];
-        }
+        [self updateAddStateWithActivation:topActivated];
         
-        // Check for bottom activation.
-        BOOL botActivated = (scrollView.contentOffset.y >= MAX(self.collectionView.contentSize.height, self.collectionView.bounds.size.height) - self.collectionView.bounds.size.height + kPullActivatedOffset);
-        if (botActivated != self.botAddActivated) {
-            self.botAddActivated = botActivated;
-            [self updateAddState];
-        }
     }
     
 }
@@ -369,8 +380,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (self.topAddActivated) {
         self.collectionView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0.0, 0.0, 0.0);
         [self addCellFromTop];
-    } else if (self.botAddActivated) {
-        [self addCellFromBot];
     }
     
 }
@@ -393,18 +402,29 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     DLog(@"selectedItem [%d]", indexPath.item);
-    self.selectedIndexNumber = @(indexPath.item);
     
-    for (NSIndexPath *visibleIndexPath in [self.collectionView indexPathsForVisibleItems]) {
+    if (self.allowSelection) {
         
-        // Skip the current one, cos that will be selected by the system.
-        if ([visibleIndexPath isEqual:indexPath]) {
-            continue;
+        // Remeber the selected index, and go and unselect all other cells.
+        self.selectedIndexNumber = @(indexPath.item);
+        for (NSIndexPath *visibleIndexPath in [self.collectionView indexPathsForVisibleItems]) {
+            
+            // Unselect all others.
+            CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:visibleIndexPath];
+            
+            // Make sure the current one is selected.
+            if ([visibleIndexPath isEqual:indexPath]) {
+                if (!cell.selected) {
+                    [cell setSelected:YES];
+                }
+            } else {
+                [cell setSelected:NO];
+            }
+            
         }
         
-        CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:visibleIndexPath];
-        [cell setSelected:NO];
     }
+    
 }
 
 #pragma mark - Lifecycle events.
@@ -443,7 +463,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         // Show the real collectionView.
         if (self.canAddItems) {
             [self.collectionView addSubview:self.topAddLabel];
-            [self.collectionView addSubview:self.botAddLabel];
             [self updateAddState];
         }
         [self.view addSubview:self.collectionView];
@@ -461,60 +480,52 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 #pragma mark - CKListCellDelegate methods
 
-- (void)listItemChangedForCell:(CKListCell *)cell {
-    DLog();
+- (BOOL)listItemEmptyForCell:(CKListCell *)cell {
     
-    id currentValue = [cell currentValue];
+    return [self isEmptyForValue:[cell currentValue]];
+}
+
+- (void)listItemReturnedForCell:(CKListCell *)cell {
+    
+    // Cell returned from Done, and start processing.
+    [self processCell:cell];
+}
+
+- (void)listItemFocused:(BOOL)focused cell:(CKListCell *)cell {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+    DLog(@"focus[%@] item[%d]", focused ? @"YES" : @"NO", indexPath.item);
     
-    // Add items if there was none.
-    if ([self.items count] > 0) {
-        [self.items replaceObjectAtIndex:indexPath.item withObject:currentValue];
-    } else {
-        [self.items addObject:currentValue];
+    self.editingCell = focused ? cell : nil;
+    
+    // Disable/enable drag/drop according to focus mode.
+    [self.collectionView getHelper].enabled = !focused;
+    
+    // Mark as not top add activation.
+    [self updateAddStateWithActivation:NO];
+    
+    // Save value if it was not empty.
+    if (!focused) {
+        
+        if (![cell isEmpty]) {
+            
+            // Save current value if it was not empty.
+            [self.items replaceObjectAtIndex:indexPath.item withObject:[cell currentValue]];
+            
+        } else {
+            
+            if ([self.items count] > 1 && !self.processing) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self deleteCellAtIndexPath:indexPath];
+                });
+            }
+            
+        }
     }
     
-    [self setEditing:NO cell:cell];
-}
-
-- (BOOL)listItemCanCancelForCell:(CKListCell *)cell {
-    NSString *text = [cell currentValue];
-    
-    // Can cancel if no items (lone empty cell) OR in adding mode and length is zero.
-    BOOL canCancel = (([self.items count] == 0) || (self.addingMode && [text length] == 0));
-    
-    DLog(@"canCancel %@", canCancel ? @"YES" : @"NO");
-    return canCancel;
-}
-
-- (void)listItemProcessCancelForCell:(CKListCell *)cell {
-    DLog();
-    
-    // Delete cell with animation if this was adding mode. Otherwise do nothing as it could be a lone empty cell.
-    if (self.addingMode) {
-        
-        // Mark as adding mode cancelled.
-        self.addingMode = NO;
-        
-        [self setEditing:NO];
-        
-        // Delete the rows in question in next runloop to wait for keyboard to be resigned.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            NSIndexPath *cancelledIndexPath = [self.collectionView indexPathForCell:cell];
-            [self.items removeObjectAtIndex:cancelledIndexPath.item];
-            [self.collectionView performBatchUpdates:^{
-                [self.collectionView deleteItemsAtIndexPaths:@[cancelledIndexPath]];
-            } completion:^(BOOL finished) {
-                [self updateAddState];
-            }];
-        });
+    // Mark as finished processing the current cell.
+    if (!focused) {
+        self.processing = NO;
     }
-}
-
-- (BOOL)listItemValidatedForCell:(CKListCell *)cell {
-    DLog();
-    NSString *text = [cell currentValue];
-    return ([text length] > 0);
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -554,11 +565,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.alwaysBounceHorizontal = NO;
         [_collectionView registerClass:[self classForListCell] forCellWithReuseIdentifier:kCellId];
-        
-        // Register double tap to detect cell.
-        UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapped:)];
-        doubleTap.numberOfTapsRequired = 2;
-        [_collectionView addGestureRecognizer:doubleTap];
         
         // Register pan to delete for cells.
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -603,16 +609,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return _topAddLabel;
 }
 
-- (UILabel *)botAddLabel {
-    if (!_botAddLabel) {
-        _botAddLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _botAddLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        _botAddLabel.backgroundColor = [UIColor clearColor];
-        _botAddLabel.textColor = [UIColor whiteColor];
-    }
-    return _botAddLabel;
-}
-
 #pragma mark - Private methods
 
 - (UIButton *)buttonWithImage:(UIImage *)image target:(id)target action:(SEL)action {
@@ -633,11 +629,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)saveAndDismissItems:(BOOL)save {
     self.saveRequired = save;
-    
-    DLog(@"EDITING CELL %@", self.editingCell);
-    if (self.editingCell) {
-        [self.editingCell resignFirstResponder];
-    }
     
     // Hide items, which will trigger itemsDidShow.
     [self hideItems];
@@ -691,7 +682,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     self.itemsLoaded = show;
     
     // There is at least one item - the empty cell.
-    NSInteger numItems = MAX(1, [self.items count]);
+    NSInteger numItems = [self.items count];
     
     // Items to animate is everything below the initial placeholder.
     NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems];
@@ -730,13 +721,17 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return (CKListLayout *)self.collectionView.collectionViewLayout;
 }
 
+- (void)updateAddStateWithActivation:(BOOL)activated {
+    self.topAddActivated = activated;
+    [self updateAddState];
+}
+
 - (void)updateAddState {
     if (!self.canAddItems) {
         return;
     }
     
     // Top add
-    self.topAddLabel.hidden = self.editMode;
     self.topAddLabel.text = [self displayForActivated:self.topAddActivated];
     [self.topAddLabel sizeToFit];
     self.topAddLabel.frame = (CGRect){
@@ -744,17 +739,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         -self.topAddLabel.frame.size.height - kLabelOffset,
         self.topAddLabel.frame.size.width,
         self.topAddLabel.frame.size.height
-    };
-    
-    // Bottom add
-    self.botAddLabel.hidden = self.editMode;
-    self.botAddLabel.text = [self displayForActivated:self.botAddActivated];
-    [self.botAddLabel sizeToFit];
-    self.botAddLabel.frame = (CGRect){
-        floorf((self.collectionView.bounds.size.width - self.botAddLabel.frame.size.width) / 2.0),
-        MAX(self.collectionView.contentSize.height, self.collectionView.bounds.size.height) + kLabelOffset,
-        self.botAddLabel.frame.size.width,
-        self.botAddLabel.frame.size.height
     };
     
 }
@@ -769,7 +753,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     }
     
     // Mark as adding mode and turn off activation mode.
-    self.addingMode = YES;
     self.topAddActivated = NO;
     
     // Insert an empty item at front.
@@ -801,57 +784,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     }];
 }
 
-- (void)addCellFromBot {
-    if (!self.canAddItems) {
-        return;
-    }
-    
-    // Mark as adding mode and turn off activation mode.
-    self.addingMode = YES;
-    self.botAddActivated = NO;
-    
-    // Add an empty item at end.
-    [self.items addObject:[self createNewItem]];
-    
-    // Index path of new item at end.
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:([self.items count] - 1) inSection:0];
-    
-    [self.collectionView performBatchUpdates:^{
-        [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
-    } completion:^(BOOL finished) {
-        
-        [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
-        [self.collectionView setContentOffset:(CGPoint){
-            self.collectionView.contentOffset.x,
-            MAX(self.collectionView.contentSize.height, self.collectionView.bounds.size.height) - self.collectionView.bounds.size.height
-        } animated:YES];
-        
-        [self updateAddState];
-        
-        // Set editing on the new cell.
-        CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-        [self setEditing:YES cell:cell];
-        
-    }];
-}
-
 - (NSInteger)integerForIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
     UILabel *label = (UILabel *)[cell.contentView viewWithTag:kLabelTag];
     return [label.text integerValue];
-}
-
-- (void)doubleTapped:(UITapGestureRecognizer *)doubleTap {
-    CGPoint location = [doubleTap locationInView:self.collectionView];
-    NSIndexPath *indexPath =  [self.collectionView indexPathForItemAtPoint:location];
-    if (indexPath) {
-        
-        CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-        if (cell) {
-            [self setEditing:YES cell:cell];
-        }
-        
-    }
 }
 
 - (void)panned:(UIPanGestureRecognizer *)panGesture {
@@ -926,23 +862,104 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)setEditing:(BOOL)editing {
     self.editMode = editing;
-    self.canAddItems = !editing;
-    self.canDeleteItems = !editing;
-    self.canReorderItems = !editing;
     [self updateAddState];
 }
 
 - (void)setEditing:(BOOL)editing cell:(CKListCell *)cell {
     [self setEditing:editing];
-    if (editing) {
-        self.editingCell = cell;
-        self.editingIndexPath = [self.collectionView indexPathForCell:cell];
-    } else {
-        self.editingCell = nil;
-        self.editingIndexPath = nil;
-    }
-    
     [cell setEditing:editing];
+}
+
+- (void)deleteCellAtIndexPath:(NSIndexPath *)indexPath {
+    DLog(@"Deleting item [%d] items %@", indexPath.item, self.items);
+    [self.items removeObjectAtIndex:indexPath.item];
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+    } completion:^(BOOL finished) {
+    }];
+}
+
+- (void)createNewCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    // Insert an empty item at the requested position.
+    [self.items insertObject:[self createNewItem] atIndex:indexPath.item];
+    
+    [self.collectionView performBatchUpdates:^{
+        
+        [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+        
+    } completion:^(BOOL finished) {
+        
+        CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        [cell setEditing:YES];
+        
+    }];
+
+}
+
+- (void)processCell:(CKListCell *)cell {
+    
+    // Mark as processing cell.
+    self.processing = YES;
+    
+    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+    DLog(@"processCell item[%d]", indexPath.item);
+    
+    // Empty cell?
+    if ([cell isEmpty]) {
+        
+        if ([self.items count] > 1) {
+            
+            // Delete an empty cell.
+            [self deleteCellAtIndexPath:indexPath];
+            
+        } else {
+            
+            // Last empty cell, just unfocus.
+            [cell setEditing:NO];
+            
+        }
+        
+    } else {
+        
+        // Get the current value and update the items array.
+        id currentValue = [cell currentValue];
+        [self.items replaceObjectAtIndex:indexPath.item withObject:currentValue];
+        
+        // Grab the next indexpath, be it to create or focus on.
+        NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item + 1 inSection:indexPath.section];
+        
+        // Add item after every resign?
+        if (self.addItemAfterEach) {
+            
+            // Add new cell if at last cell.
+            [self createNewCellAtIndexPath:nextIndexPath];
+            
+        } else {
+            
+            if (indexPath.item == [self.items count] - 1) {
+                
+                // Add new cell if at last cell.
+                [self createNewCellAtIndexPath:nextIndexPath];
+                
+            } else {
+                
+                // Move to next cell.
+                CKListCell *nextCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:nextIndexPath];
+                [nextCell setEditing:YES];
+            }
+            
+        }
+        
+    }
+}
+
+- (BOOL)isEmptyForValue:(id)currentValue {
+    
+    // NSString comparison implementation.
+    NSString *text = [currentValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return ([text length] == 0);
+
 }
 
 // Fixes the missing action method when the keyboard is visible

@@ -12,10 +12,9 @@
 
 @protocol CKListCellDelegate <NSObject>
 
-- (void)listItemChangedForCell:(CKListCell *)cell;
-- (void)listItemProcessCancelForCell:(CKListCell *)cell;
-- (BOOL)listItemValidatedForCell:(CKListCell *)cell;
-- (BOOL)listItemCanCancelForCell:(CKListCell *)cell;
+- (BOOL)listItemEmptyForCell:(CKListCell *)cell;
+- (void)listItemFocused:(BOOL)focused cell:(CKListCell *)cell;
+- (void)listItemReturnedForCell:(CKListCell *)cell;
 
 @end
 
@@ -24,6 +23,7 @@
 @property (nonatomic, weak) id<CKListCellDelegate> delegate;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, assign) BOOL allowSelection;
+@property (nonatomic, assign) BOOL allowReorder;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) UIFont *font;
 
@@ -34,6 +34,11 @@
 
 - (NSString *)textValueForValue:(id)value;
 - (id)currentValue;
-- (void)setEditing:(BOOL)editMode;
+
+// Enable editing on cell, empty refers to it being a newly created cell.
+- (void)setEditing:(BOOL)editing;
+- (void)setEditing:(BOOL)editing empty:(BOOL)empty;
+
+- (BOOL)isEmpty;
 
 @end

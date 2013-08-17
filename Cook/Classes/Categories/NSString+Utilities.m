@@ -34,6 +34,10 @@
     return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
+- (NSString *)CK_whitespaceAndNewLinesTrimmed {
+    return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
 - (BOOL)CK_containsText {
     return ([[self CK_whitespaceTrimmed] length] > 0);
 }

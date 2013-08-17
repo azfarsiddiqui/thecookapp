@@ -51,7 +51,7 @@
         unitTextField.textColor = self.textField.textColor;
         unitTextField.keyboardType = UIKeyboardTypeNumberPad;
         unitTextField.returnKeyType = UIReturnKeyNext;
-        unitTextField.userInteractionEnabled = NO;
+//        unitTextField.userInteractionEnabled = NO;
         unitTextField.inputAccessoryView = self.ingredientEditKeyboardAccessoryView;
         [self.contentView addSubview:unitTextField];
         self.unitTextField = unitTextField;
@@ -85,15 +85,14 @@
     self.ingredient = (Ingredient *)value;
     [super configureValue:value selected:selected];
     
-    // NSString *unit = [self.ingredient.measurement CK_whitespaceTrimmed];
-    NSString *unit = self.ingredient.measurement;
+    NSString *unit = [self.ingredient.measurement CK_whitespaceTrimmed];
     self.unitTextField.text = unit;
 }
 
 - (NSString *)textValueForValue:(id)value {
     NSString *textValue = nil;
     if ([value isKindOfClass:[Ingredient class]]) {
-        textValue = ((Ingredient *)value).name;
+        textValue = [((Ingredient *)value).name CK_whitespaceAndNewLinesTrimmed];
     } else {
         [super textValueForValue:value];
     }
@@ -101,16 +100,16 @@
 }
 
 - (id)currentValue {
-    NSString *unit = [self.unitTextField.text CK_whitespaceTrimmed];
-    NSString *name = [self.textField.text CK_whitespaceTrimmed];
+    NSString *unit = [self.unitTextField.text CK_whitespaceAndNewLinesTrimmed];
+    NSString *name = [self.textField.text CK_whitespaceAndNewLinesTrimmed];
     self.ingredient = [Ingredient ingredientwithName:name measurement:unit];
     return self.ingredient;
 }
 
 - (void)setEditing:(BOOL)editMode {
     self.editMode = editMode;
-    self.unitTextField.userInteractionEnabled = editMode;
-    self.textField.userInteractionEnabled = editMode;
+//    self.unitTextField.userInteractionEnabled = editMode;
+//    self.textField.userInteractionEnabled = editMode;
     
     if (editMode) {
         [self.unitTextField becomeFirstResponder];
