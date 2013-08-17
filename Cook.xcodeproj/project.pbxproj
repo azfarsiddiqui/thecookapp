@@ -272,6 +272,13 @@
 		7654E09017B2724900446BC6 /* cook_edit_bg_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7654E08E17B2724900446BC6 /* cook_edit_bg_blank@2x.png */; };
 		7654E09317B2751800446BC6 /* cook_book_inner_title_profile_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7654E09117B2751800446BC6 /* cook_book_inner_title_profile_overlay.png */; };
 		7654E09417B2751800446BC6 /* cook_book_inner_title_profile_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7654E09217B2751800446BC6 /* cook_book_inner_title_profile_overlay@2x.png */; };
+		76558EBC17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76558EBB17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m */; };
+		76558EBF17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76558EBE17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.m */; };
+		76558EC417BFD27500644036 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC017BFD27500644036 /* cook_keyboard_autosuggest_bg.png */; };
+		76558EC517BFD27500644036 /* cook_keyboard_autosuggest_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC117BFD27500644036 /* cook_keyboard_autosuggest_bg@2x.png */; };
+		76558EC617BFD27500644036 /* cook_keyboard_autosuggest_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC217BFD27500644036 /* cook_keyboard_autosuggest_btn.png */; };
+		76558EC717BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC317BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png */; };
+		76558ECB17BFD4CB00644036 /* ingredientsKeyboard.plist in Resources */ = {isa = PBXBuildFile; fileRef = 76558EC817BFD3E600644036 /* ingredientsKeyboard.plist */; };
 		76582AAC165497310007FCE1 /* MPAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA3165497310007FCE1 /* MPAnimation.m */; };
 		76582AAD165497310007FCE1 /* MPFlipTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA6165497310007FCE1 /* MPFlipTransition.m */; };
 		76582AAE165497310007FCE1 /* MPFlipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76582AA8165497310007FCE1 /* MPFlipViewController.m */; };
@@ -1199,6 +1206,15 @@
 		7654E08E17B2724900446BC6 /* cook_edit_bg_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_bg_blank@2x.png"; sourceTree = "<group>"; };
 		7654E09117B2751800446BC6 /* cook_book_inner_title_profile_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_title_profile_overlay.png; sourceTree = "<group>"; };
 		7654E09217B2751800446BC6 /* cook_book_inner_title_profile_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_title_profile_overlay@2x.png"; sourceTree = "<group>"; };
+		76558EBA17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientsKeyboardAccessoryViewController.h; sourceTree = "<group>"; };
+		76558EBB17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientsKeyboardAccessoryViewController.m; sourceTree = "<group>"; };
+		76558EBD17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IngredientsKeyboardAccessoryCell.h; sourceTree = "<group>"; };
+		76558EBE17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IngredientsKeyboardAccessoryCell.m; sourceTree = "<group>"; };
+		76558EC017BFD27500644036 /* cook_keyboard_autosuggest_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_bg.png; sourceTree = "<group>"; };
+		76558EC117BFD27500644036 /* cook_keyboard_autosuggest_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_bg@2x.png"; sourceTree = "<group>"; };
+		76558EC217BFD27500644036 /* cook_keyboard_autosuggest_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_btn.png; sourceTree = "<group>"; };
+		76558EC317BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_btn@2x.png"; sourceTree = "<group>"; };
+		76558EC817BFD3E600644036 /* ingredientsKeyboard.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ingredientsKeyboard.plist; sourceTree = "<group>"; };
 		76582AA2165497310007FCE1 /* MPAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPAnimation.h; sourceTree = "<group>"; };
 		76582AA3165497310007FCE1 /* MPAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPAnimation.m; sourceTree = "<group>"; };
 		76582AA4165497310007FCE1 /* MPFlipEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPFlipEnumerations.h; sourceTree = "<group>"; };
@@ -2595,6 +2611,10 @@
 				763E00F717AD357200CCA412 /* PageListEditViewController.m */,
 				763E00F917AD3DAD00CCA412 /* PageListCell.h */,
 				763E00FA17AD3DAD00CCA412 /* PageListCell.m */,
+				76558EBA17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.h */,
+				76558EBB17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m */,
+				76558EBD17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.h */,
+				76558EBE17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.m */,
 			);
 			path = Recipe;
 			sourceTree = "<group>";
@@ -3656,6 +3676,11 @@
 				7676057B17B3EB7000CA441B /* cook_book_recipe_icon_serves@2x.png */,
 				7676057C17B3EB7000CA441B /* cook_book_recipe_icon_time.png */,
 				7676057D17B3EB7000CA441B /* cook_book_recipe_icon_time@2x.png */,
+				76558EC017BFD27500644036 /* cook_keyboard_autosuggest_bg.png */,
+				76558EC117BFD27500644036 /* cook_keyboard_autosuggest_bg@2x.png */,
+				76558EC217BFD27500644036 /* cook_keyboard_autosuggest_btn.png */,
+				76558EC317BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png */,
+				76558EC817BFD3E600644036 /* ingredientsKeyboard.plist */,
 			);
 			path = recipes;
 			sourceTree = "<group>";
@@ -3913,6 +3938,7 @@
 				76EDC32416702642008EF2CE /* cook_dash_bg_settings.png in Resources */,
 				76EDC32516702642008EF2CE /* cook_dash_bg_settings@2x.png in Resources */,
 				76CED54D16704E750026E794 /* cook_dash_settingsplaceholder1.png in Resources */,
+				76558ECB17BFD4CB00644036 /* ingredientsKeyboard.plist in Resources */,
 				76CED54E16704E750026E794 /* cook_dash_settingsplaceholder1@2x.png in Resources */,
 				76CED54F16704E750026E794 /* cook_dash_settingsplaceholder2.png in Resources */,
 				7676057717B3EB3A00CA441B /* cook_book_recipe_divider_tile@2x.png in Resources */,
@@ -4198,6 +4224,7 @@
 				7614D5AD1744B7D400B16AC9 /* Brandon_thin_it.otf in Resources */,
 				7667998F17AA9FCE001C5E8D /* cook_book_inner_category_add@2x.png in Resources */,
 				762D0ABE1785966500E5947B /* cook_dash_background_whiteout.png in Resources */,
+				76558EC517BFD27500644036 /* cook_keyboard_autosuggest_bg@2x.png in Resources */,
 				7640CE0C1784093B00873073 /* cook_customise_colour_picker_purple.png in Resources */,
 				7614D5AE1744B7D400B16AC9 /* Brandon_thin.otf in Resources */,
 				7689A14017BB135D0093C56F /* cook_book_inner_category_stack_one@2x.png in Resources */,
@@ -4220,6 +4247,7 @@
 				76B3AE3D174B2727001B4661 /* cook_book_edge_yellow@2x.png in Resources */,
 				767EEA5217BDFBDF001E7D0B /* cook_default_profile.png in Resources */,
 				76B3AE3E174B2727001B4661 /* cook_book_edge_blue.png in Resources */,
+				76558EC617BFD27500644036 /* cook_keyboard_autosuggest_btn.png in Resources */,
 				761951D31793B8FD008AB495 /* cook_book_inner_icon_home_light.png in Resources */,
 				76B3AE3F174B2727001B4661 /* cook_book_edge_blue@2x.png in Resources */,
 				76B3AE42174B2727001B4661 /* cook_book_edge_gray.png in Resources */,
@@ -4262,6 +4290,7 @@
 				76B3AEAD174B2BAA001B4661 /* cook_customise_colour_picker_blue.png in Resources */,
 				7689A1B117BBDADF0093C56F /* cook_customise_photo_btn_takephoto.png in Resources */,
 				76A9178117BCE0F300CB8E9A /* cook_btns_photo_okay.png in Resources */,
+				76558EC417BFD27500644036 /* cook_keyboard_autosuggest_bg.png in Resources */,
 				76B3AEAE174B2BAA001B4661 /* cook_customise_colour_picker_blue@2x.png in Resources */,
 				76B3AEB1174B2BAA001B4661 /* cook_customise_colour_picker_gray.png in Resources */,
 				767EEA2717BDBF62001E7D0B /* cook_login_btn_bottom_full@2x.png in Resources */,
@@ -4303,6 +4332,7 @@
 				7647853E17A697D800387A7B /* cook_customise_privacy_bg_middle.png in Resources */,
 				762CB77B17B7A112000197E8 /* cook_book_recipe_progressbar_inner.png in Resources */,
 				7628150C174E2B29002D4E19 /* cook_customise_textbox_black_edit@2x.png in Resources */,
+				76558EC717BFD27500644036 /* cook_keyboard_autosuggest_btn@2x.png in Resources */,
 				7628150D174E2B29002D4E19 /* cook_customise_textbox_white_edit.png in Resources */,
 				7628150E174E2B29002D4E19 /* cook_customise_textbox_white_edit@2x.png in Resources */,
 				767EEA2517BDBF62001E7D0B /* cook_login_bottom_button_bg@2x.png in Resources */,
@@ -4525,6 +4555,7 @@
 				76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */,
 				761951B21793B86A008AB495 /* BookNavigationView.m in Sources */,
 				769B5E0A1715063B0046934D /* RecipeViewController.m in Sources */,
+				76558EBC17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m in Sources */,
 				76735C8E17BA16780027CA3B /* BookRecipeGridLargeCell.m in Sources */,
 				76A8CB9C1715998400A6B14B /* CKRecipeSocialView.m in Sources */,
 				761951AF1793AEF5008AB495 /* BookPageViewController.m in Sources */,
@@ -4573,6 +4604,7 @@
 				76181A911747A1B200886B88 /* CKLabel.m in Sources */,
 				76091F45175069C400018E6E /* CKPagingView.m in Sources */,
 				76091F4B17506A9600018E6E /* CKEditViewController.m in Sources */,
+				76558EBF17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.m in Sources */,
 				76BF1FFC1753263A000F0798 /* CKTextFieldView.m in Sources */,
 				76BF202617544140000F0798 /* WelcomeViewController.m in Sources */,
 				76BF202717544140000F0798 /* SignupViewController.m in Sources */,

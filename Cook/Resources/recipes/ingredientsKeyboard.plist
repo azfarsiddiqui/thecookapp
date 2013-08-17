@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<array>
+		<string>ml</string>
+		<string>l</string>
+		<string>g</string>
+		<string>kg</string>
+	</array>
+	<array>
+		<string>fl oz</string>
+		<string>pt</string>
+		<string>oz</string>
+		<string>lb</string>
+	</array>
+	<array>
+		<string>tsp</string>
+		<string>tbsp</string>
+		<string>cup</string>
+	</array>
+</array>
+</plist>

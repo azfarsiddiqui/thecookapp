@@ -10,4 +10,8 @@
 
 @interface IngredientListCell : CKListCell
 
+@property (nonatomic, strong) UIView *ingredientsAccessoryView;
+
+- (void)configureMeasure:(NSString *)measure;
+
 @end

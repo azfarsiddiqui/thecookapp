@@ -55,4 +55,9 @@
     return [self rootView].bounds;
 }
 
+- (NSArray *)keyboardIngredients {
+    return [NSArray arrayWithContentsOfFile:[[[NSBundle mainBundle] resourcePath]
+                                             stringByAppendingPathComponent:@"ingredientsKeyboard.plist"]];
+}
+
 @end

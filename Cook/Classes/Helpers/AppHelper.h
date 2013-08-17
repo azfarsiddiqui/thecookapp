@@ -18,4 +18,7 @@
 // Provides a landscape frame which can be tricky to obtain in pre-rotation situations.
 - (CGRect)fullScreenFrame;
 
+// Returns the keyboard ingredients items.
+- (NSArray *)keyboardIngredients;
+
 @end

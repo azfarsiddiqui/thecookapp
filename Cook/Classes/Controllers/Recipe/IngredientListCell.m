@@ -10,15 +10,13 @@
 #import "Ingredient.h"
 #import "NSString+Utilities.h"
 #import "CKEditingViewHelper.h"
-#import "IngredientEditKeyboardAccessoryView.h"
 #import "Theme.h"
 #import "ViewHelper.h"
 
-@interface IngredientListCell () <UITextFieldDelegate, IngredientEditKeyboardAccessoryViewDelegate>
+@interface IngredientListCell () <UITextFieldDelegate>
 
 @property (nonatomic, strong) Ingredient *ingredient;
 @property (nonatomic, strong) UITextField *unitTextField;
-@property (nonatomic, strong) IngredientEditKeyboardAccessoryView *ingredientEditKeyboardAccessoryView;
 
 @end
 
@@ -51,7 +49,6 @@
         unitTextField.textColor = self.textField.textColor;
         unitTextField.keyboardType = UIKeyboardTypeNumberPad;
         unitTextField.returnKeyType = UIReturnKeyNext;
-        unitTextField.inputAccessoryView = self.ingredientEditKeyboardAccessoryView;
         [self.contentView addSubview:unitTextField];
         self.unitTextField = unitTextField;
         
@@ -75,6 +72,11 @@
         };
     }
     return self;
+}
+
+- (void)configureMeasure:(NSString *)measure {
+    self.unitTextField.text = measure;
+    [self focusNameField];
 }
 
 #pragma mark - CKListCell methods
@@ -119,32 +121,6 @@
     }
 }
 
-#pragma mark - Properties
-
-- (UIView *)ingredientEditKeyboardAccessoryView {
-    if (!_ingredientEditKeyboardAccessoryView) {
-        _ingredientEditKeyboardAccessoryView = [[IngredientEditKeyboardAccessoryView alloc] initWithDelegate:self];
-    }
-    return _ingredientEditKeyboardAccessoryView;
-}
-
-#pragma mark - IngredientEditKeyboardAccessoryViewDelegate methods
-
-- (void)didEnterMeasurementShortCut:(NSString*)name isAmount:(BOOL)isAmount {
-    
-    // Concat the values.
-    NSString *newValue = [NSString stringWithFormat:@"%@ %@", self.unitTextField.text, [name lowercaseString]];
-    if (newValue.length < kMaxLengthMeasurement) {
-        self.unitTextField.text = newValue;
-    }
-    
-    // If this was not the amount field, then jump to the ingredient field.
-    if (!isAmount) {
-        [self focusNameField];
-    }
-    
-}
-
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
@@ -164,6 +140,13 @@
         [super textFieldShouldReturn:textField];
     }
     return shouldReturn;
+}
+
+#pragma mark - Properties
+
+- (void)setIngredientsAccessoryView:(UIView *)ingredientsAccessoryView {
+    self.unitTextField.inputAccessoryView = ingredientsAccessoryView;
+    _ingredientsAccessoryView = ingredientsAccessoryView;
 }
 
 #pragma mark - Private methods

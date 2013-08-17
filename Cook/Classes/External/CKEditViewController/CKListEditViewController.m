@@ -21,7 +21,6 @@
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UILabel *topAddLabel;
-@property (nonatomic, strong) CKListCell *editingCell;
 @property (nonatomic, strong) CKListCell *panningCell;
 @property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL saveRequired;
