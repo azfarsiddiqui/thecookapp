@@ -9,6 +9,7 @@
 #import "IngredientListEditViewController.h"
 #import "IngredientListCell.h"
 #import "Ingredient.h"
+#import "NSString+Utilities.h"
 
 @interface IngredientListEditViewController ()
 
@@ -45,14 +46,15 @@
     };
 }
 
-#pragma mark - CKListCellDelegate methods
-
-- (BOOL)listItemValidatedForCell:(CKListCell *)cell {
-    Ingredient *ingredient = (Ingredient *)[cell currentValue];
-    NSString *text = ingredient.name;
-    return ([text length] > 0);
+- (BOOL)isEmptyForValue:(id)currentValue {
+    
+    Ingredient *ingredient = (Ingredient *)currentValue;
+    
+    // Empty if both contains no value.
+    return (![ingredient.measurement CK_containsText] && ![ingredient.name CK_containsText]);
 }
 
+#pragma mark - CKListCellDelegate methods
 
 
 @end

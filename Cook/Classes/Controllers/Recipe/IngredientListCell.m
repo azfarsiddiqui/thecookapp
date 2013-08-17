@@ -51,7 +51,6 @@
         unitTextField.textColor = self.textField.textColor;
         unitTextField.keyboardType = UIKeyboardTypeNumberPad;
         unitTextField.returnKeyType = UIReturnKeyNext;
-//        unitTextField.userInteractionEnabled = NO;
         unitTextField.inputAccessoryView = self.ingredientEditKeyboardAccessoryView;
         [self.contentView addSubview:unitTextField];
         self.unitTextField = unitTextField;
@@ -108,8 +107,6 @@
 
 - (void)setEditing:(BOOL)editMode {
     self.editMode = editMode;
-//    self.unitTextField.userInteractionEnabled = editMode;
-//    self.textField.userInteractionEnabled = editMode;
     
     if (editMode) {
         [self.unitTextField becomeFirstResponder];
@@ -163,8 +160,8 @@
     BOOL shouldReturn = YES;
     if (textField == self.unitTextField) {
         [self focusNameField];
-    } else if (textField == self.textField) {
-        [self setEditing:NO];
+    } else {
+        [super textFieldShouldReturn:textField];
     }
     return shouldReturn;
 }

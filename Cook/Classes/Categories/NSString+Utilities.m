@@ -39,7 +39,7 @@
 }
 
 - (BOOL)CK_containsText {
-    return ([[self CK_whitespaceTrimmed] length] > 0);
+    return ([[self CK_whitespaceAndNewLinesTrimmed] length] > 0);
 }
 
 - (NSString *)CK_truncatedStringToLength:(NSInteger)length {
