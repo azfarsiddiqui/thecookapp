@@ -34,7 +34,7 @@
 
 @implementation CKListEditViewController
 
-#define kButtonOffset                   CGPointMake(15.0, 15.0)
+#define kEditButtonInsets               UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kCellId                         @"ListItemCellId"
 #define kPlaceholderSize                CGSizeMake(750.0, 50.0)
 #define kPullActivatedOffset            150.0
@@ -573,8 +573,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (!_cancelButton) {
         _cancelButton = [CKEditingViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
         _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _cancelButton.frame = CGRectMake(kButtonOffset.x,
-                                         kButtonOffset.y,
+        _cancelButton.frame = CGRectMake(kEditButtonInsets.left,
+                                         kEditButtonInsets.top,
                                          _cancelButton.frame.size.width,
                                          _cancelButton.frame.size.height);
     }
@@ -585,8 +585,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (!_saveButton) {
         _saveButton = [CKEditingViewHelper okayButtonWithTarget:self selector:@selector(saveTapped:)];
         _saveButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _saveButton.frame = CGRectMake(self.view.bounds.size.width - kButtonOffset.x - _saveButton.frame.size.width,
-                                       kButtonOffset.y,
+        _saveButton.frame = CGRectMake(self.view.bounds.size.width - kEditButtonInsets.left - _saveButton.frame.size.width,
+                                       kEditButtonInsets.top,
                                        _saveButton.frame.size.width,
                                        _saveButton.frame.size.height);
     }
