@@ -208,7 +208,7 @@
                          }];
         
         // This has to be here to work with updateContentSize in didBeginEditing.
-        [self updateContentSize];
+        [self updateContentSizeAnimated:YES];
         
     }
 }
@@ -237,19 +237,45 @@
 #pragma mark - Private methods
 
 - (void)updateContentSize {
+    [self updateContentSizeAnimated:NO];
+}
+
+- (void)updateContentSizeAnimated:(BOOL)animated {
     
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             [self updateContentSizeFrame];
+                         }
+                         completion:^(BOOL finished) {
+                             // See if the caret is out of view?
+                             [self scrollToCursorIfRequired];
+                         }];
+        
+    } else {
+        [self updateContentSizeFrame];
+        
+        // See if the caret is out of view?
+        [self scrollToCursorIfRequired];
+    }
+    
+}
+
+- (void)updateContentSizeFrame {
     // TextView adjustments.
     UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
-
+    
     // Figure out the requiredHeight vs minimum height.
     CGFloat requiredHeight = [self requiredTextViewHeight];
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
-
+    
     // Updates the textView frame.
     CGRect textViewFrame = self.textView.frame;
     textViewFrame.size.height = MAX(requiredHeight, minHeight);
     self.textView.frame = textViewFrame;
-
+    
     // Updates the surrounding textboxes.
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
@@ -261,17 +287,11 @@
     // we have to take into account the textBox's contentInsets.
     UIEdgeInsets contentInsets = [self contentInsets];
     CGFloat requiredContentHeight = (contentInsets.top - targetTextBoxView.contentInsets.top) + proposedTargetTextBoxFrame.size.height + (contentInsets.bottom - targetTextBoxView.contentInsets.bottom);
-    NSLog(@"requiredContentHeight [%f]", requiredContentHeight);
-    NSLog(@"self.scrollView.contentSize.height [%f]", self.scrollView.contentSize.height);
-    NSLog(@"self.scrollView.bounds.size.height [%f]", self.scrollView.bounds.size.height);
     self.scrollView.contentSize = (CGSize) {
         self.scrollView.contentSize.width,
         ceilf(MAX(self.scrollView.bounds.size.height, requiredContentHeight))
     };
-    NSLog(@"self.scrollView.contentSize.height2 [%f]", self.scrollView.contentSize.height);
-    
-    // See if the caret is out of view?
-    [self scrollToCursorIfRequired];
+
 }
 
 - (void)scrollToCursorIfRequired {
