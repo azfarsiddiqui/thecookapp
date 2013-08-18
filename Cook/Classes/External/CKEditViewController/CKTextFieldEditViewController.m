@@ -111,10 +111,6 @@
     self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
     [self updateInfoLabels];
 
-    // No save if no characters
-    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    [targetTextBoxView showSaveIcon:YES enabled:([newString length] > 0) animated:NO];
-    
     if (self.forceUppercase) {
         
         UITextPosition *beginning = textField.beginningOfDocument;
