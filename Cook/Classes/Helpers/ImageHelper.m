@@ -50,6 +50,10 @@
     return [self blurredImage:image tintColour:[UIColor colorWithWhite:1.0 alpha:0.58]];
 }
 
++ (UIImage *)blurredRecipeImage:(UIImage *)image {
+    return [self blurredImage:image tintColour:[UIColor colorWithRed:22 green:35 blue:30 alpha:0.1]];
+}
+
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour {
     
     // Calls ImageEffects

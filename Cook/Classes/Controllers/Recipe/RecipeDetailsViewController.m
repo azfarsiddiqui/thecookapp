@@ -29,6 +29,7 @@
 #import "CKProgressView.h"
 #import "BookNavigationHelper.h"
 #import "CKServerManager.h"
+#import "UIColor+Expanded.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -48,13 +49,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 // Blurring artifacts.
 @property (nonatomic, assign) BOOL blur;
-@property (nonatomic, strong) UIImageView *blurredImageView;    // As reference to sample from.
-@property (nonatomic, strong) UIView *blurredImageSnapshotView;
-@property (nonatomic, strong) UIView *blurredHeaderView;
+@property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, strong) CALayer *blurredMaskLayer;
 
 // Content and panning related.
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
+@property (nonatomic, strong) UIView *placeholderHeaderView;    // Used to as white backing for the header until image fades in.
 @property (nonatomic, strong) UIImageView *contentImageView;
 @property (nonatomic, strong) RecipeDetailsView *recipeDetailsView;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -112,7 +113,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.book = recipe.book;
         self.photoStore = [[ParsePhotoStore alloc] init];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
-        self.blur = NO;
+        self.blur = YES;
     }
     return self;
 }
@@ -597,9 +598,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.imageView = imageView;
     
     if (self.blur) {
-        UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:imageView.frame];
+        UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:imageView.bounds];
         blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        [self.imageView addSubview:blurredImageView];
         self.blurredImageView = blurredImageView;
+        
+        // Setting up mask
+        self.blurredMaskLayer = [CALayer layer];
+        self.blurredMaskLayer.frame = CGRectZero;
+        self.blurredMaskLayer.backgroundColor = [UIColor blackColor].CGColor;
+        self.blurredImageView.layer.mask = self.blurredMaskLayer;
+
     }
     
     // Top shadow.
@@ -658,18 +667,16 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.view insertSubview:contentImageView belowSubview:self.scrollView];
     self.contentImageView = contentImageView;
     
-    if (self.blur) {
-        UIView *blurredHeaderView = [[UIImageView alloc] initWithFrame:(CGRect){
-            self.scrollView.frame.origin.x,
-            self.scrollView.frame.origin.y,
-            self.scrollView.frame.size.width,
-            kHeaderHeight
-        }];
-        blurredHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-        blurredHeaderView.backgroundColor = [UIColor greenColor];
-        [self.view insertSubview:blurredHeaderView belowSubview:contentImageView];
-        self.blurredHeaderView = blurredHeaderView;
-    }
+    // Set up a placeholder view so that it can back the whiteColor before blurredImage fades in.
+    self.placeholderHeaderView = [[UIView alloc] initWithFrame:(CGRect){
+        self.scrollView.bounds.origin.x,
+        self.scrollView.bounds.origin.y,
+        self.contentImageView.bounds.size.width,
+        kHeaderHeight
+    }];
+    self.placeholderHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    self.placeholderHeaderView.backgroundColor = [UIColor whiteColor];  // White colour to start off with then fade out.
+    [self.scrollView addSubview:self.placeholderHeaderView];
     
     // Register a concurrent panGesture to drag panel up and down.
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -691,9 +698,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGRect imageFrame = self.imageView.frame;
     imageFrame.origin.y = (contentFrame.origin.y - imageFrame.size.height) / 2.0;
     self.imageView.frame = imageFrame;
-    if (self.blur) {
-        self.blurredImageView.frame = imageFrame;
-    }
     
     // Fade in/out photo button if in edit mode.
     if (self.editMode) {
@@ -710,21 +714,22 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Dynamic blur.
     if (self.blur) {
-        CGRect blurredFrame = self.blurredHeaderView.frame;
-        blurredFrame.origin.y = contentFrame.origin.y;
-        self.blurredHeaderView.frame = blurredFrame;
-        self.blurredImageView.frame = contentBackgroundFrame;
-        CGRect intersection = CGRectIntersection(self.blurredHeaderView.frame, self.scrollView.frame);
         
-        UIView *blurredSnapshotView = [self.blurredImageSnapshotView resizableSnapshotViewFromRect:intersection
-                                                                                afterScreenUpdates:YES
-                                                                                     withCapInsets:UIEdgeInsetsZero];
-        blurredSnapshotView.frame = blurredFrame;
-        blurredSnapshotView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-        [self.view insertSubview:blurredSnapshotView belowSubview:self.contentImageView];
-        [self.blurredHeaderView removeFromSuperview];
-        self.blurredHeaderView = blurredSnapshotView;
-        DLog(@"Intersection %@", NSStringFromCGRect(intersection));
+        CGRect headerFrame = (CGRect){
+            self.scrollView.bounds.origin.x,
+            self.scrollView.bounds.origin.y,
+            self.scrollView.bounds.size.width,
+            kHeaderHeight
+        };
+        CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
+        CGRect headerFrameOnImageView = [self.view convertRect:headerFrameRootView toView:self.imageView];
+        
+        // From Fun with Masks: https://github.com/evanwdavis/Fun-with-Masks
+        // Without the CATransaction the mask's frame setting is actually slighty animated, appearing to give it a delay as we scroll around.
+        [CATransaction begin];
+        [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+        self.blurredMaskLayer.frame = headerFrameOnImageView;
+        [CATransaction commit];
     }
     
 }
@@ -755,19 +760,21 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
     self.imageView.image = image;
-    if (self.blur) {
-        self.blurredImageView.image = [ImageHelper blurredImage:image tintColour:nil];
-        self.blurredImageSnapshotView = [self.blurredImageView snapshotViewAfterScreenUpdates:YES];
-    }
     
+    if (self.blur) {
+        self.blurredImageView.image = [ImageHelper blurredRecipeImage:image];
+    }
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.topShadowView.alpha = placeholder ? 0.0 : 1.0;
                          self.imageView.alpha = 1.0;
+                         self.placeholderHeaderView.alpha = 0.0;
                      }
                      completion:^(BOOL finished)  {
+                         [self.placeholderHeaderView removeFromSuperview];
+                         self.placeholderHeaderView = nil;
                      }];
 }
 

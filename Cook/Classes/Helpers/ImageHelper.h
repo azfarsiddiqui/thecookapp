@@ -12,7 +12,10 @@
 
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image;
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size;
+
+// Blurring
 + (UIImage *)blurredImage:(UIImage *)image;
++ (UIImage *)blurredRecipeImage:(UIImage *)image;
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour;
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour completion:(void (^)(UIImage *blurredImage))completion;
