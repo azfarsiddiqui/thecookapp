@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) Ingredient *ingredient;
 @property (nonatomic, strong) UITextField *unitTextField;
+@property (nonatomic, assign) BOOL focusName;
 
 @end
 
@@ -162,10 +163,16 @@
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    if (textField == self.unitTextField) {
-        return YES;
-    } else {
+    if (self.focusName) {
+        
+        // Not dismissed from UoM field, hence do the normal empty cells processing.
         return [super textFieldShouldEndEditing:textField];
+        
+    } else {
+        
+        // This was keyboard dismissal from UoM field.
+        self.focusName = NO;
+        return YES;
     }
     
 }
@@ -174,6 +181,10 @@
     BOOL shouldReturn = YES;
     if (textField == self.unitTextField) {
         [self focusNameField];
+        
+        // Set a flag to indicate focussing onto next field, so we don't process empty cells in shouldEndEditing.
+        self.focusName = YES;
+        
     } else {
         [super textFieldShouldReturn:textField];
     }

@@ -12,7 +12,7 @@
 #import "NSString+Utilities.h"
 #import "IngredientsKeyboardAccessoryViewController.h"
 
-@interface IngredientListEditViewController () <IngredientsKeyboardAccessoryViewControllerDelegate>
+@interface IngredientListEditViewController ()
 
 @property (nonatomic, strong) IngredientsKeyboardAccessoryViewController *ingredientsAccessoryViewController;
 
