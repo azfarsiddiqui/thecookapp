@@ -1431,13 +1431,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Create transfer object to display/edit.
     self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe];
     
-    // Remove any existing.
-//    if (!self.recipeDetailsView) {
-//        self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails delegate:self];
-//    } else {
-//        [self.recipeDetailsView updateWithRecipeDetails:self.recipeDetails];
-//    }
-    
+    // Create a new RecipeDetailsView everytime, getting rid of the last one if it exists.
     [self.recipeDetailsView removeFromSuperview];
     self.recipeDetailsView = nil;
     self.recipeDetailsView = [[RecipeDetailsView alloc] initWithRecipeDetails:self.recipeDetails
