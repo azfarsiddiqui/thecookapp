@@ -581,7 +581,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.ingredientsView.userInteractionEnabled = NO;
         self.ingredientsView.alpha = 1.0;
         [self addSubview:self.ingredientsView];
-        [self updateIngredientsFrame];
+//        [self updateIngredientsFrame];
     }
     
     // Display if not-blank or in editMode.
