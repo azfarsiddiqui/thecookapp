@@ -86,6 +86,7 @@
 }
 
 - (void)configureValue:(id)value selected:(BOOL)selected {
+    self.alpha = 1.0;   // May be faded by subclasses.
     self.editing = NO;
     self.textField.text = [self textValueForValue:value];
     [self setSelected:selected];

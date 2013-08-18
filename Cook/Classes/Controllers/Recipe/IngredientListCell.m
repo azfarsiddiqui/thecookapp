@@ -12,8 +12,9 @@
 #import "CKEditingViewHelper.h"
 #import "Theme.h"
 #import "ViewHelper.h"
+#import "MRCEnumerable.h"
 
-@interface IngredientListCell () <UITextFieldDelegate>
+@interface IngredientListCell () <UITextFieldDelegate, IngredientsKeyboardAccessoryViewControllerDelegate>
 
 @property (nonatomic, strong) Ingredient *ingredient;
 @property (nonatomic, strong) UITextField *unitTextField;
@@ -75,7 +76,31 @@
 }
 
 - (void)configureMeasure:(NSString *)measure {
-    self.unitTextField.text = measure;
+    NSMutableString *currentMeasureValue = [NSMutableString stringWithString:[self.unitTextField.text CK_whitespaceAndNewLinesTrimmed]];
+    NSString *detectedMeasureValue = nil;
+   
+    // Loop and detect any entered uoms, and replace it if necessary.
+    for (NSString *currentMeasure in [self.ingredientsAccessoryViewController allUnitOfMeasureOptions]) {
+        
+        NSString *searchString = [NSString stringWithFormat:@" %@", currentMeasure];
+        if ([currentMeasureValue hasSuffix:searchString]) {
+            detectedMeasureValue = searchString;
+            break;
+        }
+        
+    }
+    
+    // Do we have a detected value, if so remove it so that we can replace with the new value.
+    if ([detectedMeasureValue length] > 0) {
+        [currentMeasureValue deleteCharactersInRange:(NSRange){
+            [currentMeasureValue length] - [detectedMeasureValue length],
+            [detectedMeasureValue length]
+        }];
+    }
+    [currentMeasureValue appendFormat:@" %@", measure];
+    
+    self.unitTextField.text = currentMeasureValue;
+    
     [self focusNameField];
 }
 
@@ -121,7 +146,20 @@
     }
 }
 
+#pragma mark - IngredientsKeyboardAccessoryViewControllerDelegate methods
+
+- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value {
+    [self configureMeasure:value];
+}
+
 #pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    if (textField == self.unitTextField) {
+        self.ingredientsAccessoryViewController.delegate = self;
+    }
+    return [super textFieldShouldBeginEditing:textField];
+}
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
     if (textField == self.unitTextField) {
@@ -144,9 +182,9 @@
 
 #pragma mark - Properties
 
-- (void)setIngredientsAccessoryView:(UIView *)ingredientsAccessoryView {
-    self.unitTextField.inputAccessoryView = ingredientsAccessoryView;
-    _ingredientsAccessoryView = ingredientsAccessoryView;
+- (void)setIngredientsAccessoryViewController:(IngredientsKeyboardAccessoryViewController *)ingredientsAccessoryViewController {
+    _ingredientsAccessoryViewController = ingredientsAccessoryViewController;
+    self.unitTextField.inputAccessoryView = ingredientsAccessoryViewController.view;
 }
 
 #pragma mark - Private methods

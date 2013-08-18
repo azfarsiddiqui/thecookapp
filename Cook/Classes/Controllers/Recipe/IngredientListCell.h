@@ -7,11 +7,10 @@
 //
 
 #import "CKListCell.h"
+#import "IngredientsKeyboardAccessoryViewController.h"
 
 @interface IngredientListCell : CKListCell
 
-@property (nonatomic, strong) UIView *ingredientsAccessoryView;
-
-- (void)configureMeasure:(NSString *)measure;
+@property (nonatomic, strong) IngredientsKeyboardAccessoryViewController *ingredientsAccessoryViewController;
 
 @end

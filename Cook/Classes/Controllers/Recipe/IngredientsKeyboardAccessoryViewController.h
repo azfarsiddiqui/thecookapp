@@ -16,6 +16,8 @@
 
 @interface IngredientsKeyboardAccessoryViewController : UICollectionViewController
 
-- (id)initWithDelegate:(id<IngredientsKeyboardAccessoryViewControllerDelegate>)delegate;
+@property (nonatomic, weak) id<IngredientsKeyboardAccessoryViewControllerDelegate> delegate;
+
+- (NSArray *)allUnitOfMeasureOptions;
 
 @end

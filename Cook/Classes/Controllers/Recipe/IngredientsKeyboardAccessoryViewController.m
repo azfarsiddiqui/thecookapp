@@ -12,8 +12,8 @@
 
 @interface IngredientsKeyboardAccessoryViewController ()
 
-@property (nonatomic, weak) id<IngredientsKeyboardAccessoryViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSArray *keyboardIngredients;
+@property (nonatomic, strong) NSArray *flattenKeyboardIngredients;
 
 @end
 
@@ -22,10 +22,10 @@
 #define kHeight 56.0
 #define kCellId @"CellId"
 
-- (id)initWithDelegate:(id<IngredientsKeyboardAccessoryViewControllerDelegate>)delegate {
+- (id)init {
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
-        self.delegate = delegate;
         self.keyboardIngredients = [[AppHelper sharedInstance] keyboardIngredients];
+        self.flattenKeyboardIngredients = [self.keyboardIngredients valueForKeyPath:@"@unionOfArrays.self"];
     }
     return self;
 }
@@ -46,6 +46,10 @@
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [self.collectionView registerClass:[IngredientsKeyboardAccessoryCell class] forCellWithReuseIdentifier:kCellId];
+}
+
+- (NSArray *)allUnitOfMeasureOptions {
+    return self.flattenKeyboardIngredients;
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods

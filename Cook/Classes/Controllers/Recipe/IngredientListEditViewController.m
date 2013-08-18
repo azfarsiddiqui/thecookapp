@@ -34,7 +34,7 @@
 
 - (void)configureCell:(IngredientListCell *)itemCell indexPath:(NSIndexPath *)indexPath {
     [super configureCell:itemCell indexPath:indexPath];
-    itemCell.ingredientsAccessoryView = self.ingredientsAccessoryViewController.view;
+    itemCell.ingredientsAccessoryViewController = self.ingredientsAccessoryViewController;
     itemCell.allowSelection = NO;
 }
 
@@ -58,23 +58,11 @@
     return (![ingredient.measurement CK_containsText] && ![ingredient.name CK_containsText]);
 }
 
-#pragma mark - IngredientsKeyboardAccessoryViewControllerDelegate methods
-
-- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value {
-    IngredientListCell *ingredientCell = (IngredientListCell *)self.editingCell;
-    
-    // TODO
-    // NIL??
-    //
-    
-    [ingredientCell configureMeasure:value];
-}
-
 #pragma mark - Properties
 
 - (IngredientsKeyboardAccessoryViewController *)ingredientsAccessoryViewController {
     if (!_ingredientsAccessoryViewController) {
-        _ingredientsAccessoryViewController = [[IngredientsKeyboardAccessoryViewController alloc] initWithDelegate:self];
+        _ingredientsAccessoryViewController = [[IngredientsKeyboardAccessoryViewController alloc] init];
     }
     return _ingredientsAccessoryViewController;
 }

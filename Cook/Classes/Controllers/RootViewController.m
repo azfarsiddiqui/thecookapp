@@ -85,8 +85,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self initViewControllers];
-//    [self loadSampleRecipe];
+//    [self initViewControllers];
+    [self loadSampleRecipe];
 }
 
 - (void)didReceiveMemoryWarning {

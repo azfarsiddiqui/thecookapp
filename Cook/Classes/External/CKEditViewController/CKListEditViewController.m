@@ -807,7 +807,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     }
     
     // Process the panning.
-    CGFloat dragRatio = 0.3;
+    CGFloat dragRatio = 0.5;
     CGPoint translation = [panGesture translationInView:self.collectionView];
     CGFloat panOffset = ceilf(translation.x * dragRatio);
 //    DLog(@"translation %@", NSStringFromCGPoint(translation));
@@ -819,12 +819,23 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         // Drag the cell around.
         self.panningCell.transform = CGAffineTransformMakeTranslation(panOffset, 0.0);
         
+        // Fade the cell if it was delete detected.
+        if (panOffset > kDeleteOffset) {
+            self.panningCell.alpha = 0.7;
+        } else {
+            self.panningCell.alpha = 1.0;
+        }
+        
     } else  {
         
         // Have we exceed offset to delete.
         if (panOffset > kDeleteOffset) {
             
-            [self deleteCell:self.panningCell];
+            // Add a new item after this last cell has been deleted.
+            BOOL addNew = ([self.items count] == 1);
+            
+            // Delete the cell, and optionally create a new one.
+            [self deleteCell:self.panningCell addNew:addNew];
             
         } else {
             
@@ -835,15 +846,29 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 }
 
-- (void)deleteCell:(CKListCell *)cell {
+- (void)deleteCell:(CKListCell *)cell addNew:(BOOL)addNew {
     if (!self.canDeleteItems || !cell) {
         return;
     }
     
     NSIndexPath *deleteIndexPath = [self.collectionView indexPathForCell:cell];
+    
+    // Delete from model.
     [self.items removeObjectAtIndex:deleteIndexPath.item];
-    [self.collectionView deleteItemsAtIndexPaths:@[deleteIndexPath]];
-    self.panningCell = nil;
+    
+    [self.collectionView performBatchUpdates:^{
+        
+        // Delete the cell.
+        [self.collectionView deleteItemsAtIndexPaths:@[deleteIndexPath]];
+        
+    } completion:^(BOOL finished) {
+        self.panningCell = nil;
+        
+        if (addNew) {
+            [self createNewCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        }
+    }];
+    
 }
 
 - (void)restoreTransformForCell:(CKListCell *)cell {
