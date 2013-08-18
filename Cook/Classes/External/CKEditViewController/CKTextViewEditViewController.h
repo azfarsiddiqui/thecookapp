@@ -13,6 +13,4 @@
 @property (nonatomic, assign) NSInteger numLines;
 @property (nonatomic, strong) UIFont *textViewFont;
 
-- (BOOL)contentScrollable;
-
 @end

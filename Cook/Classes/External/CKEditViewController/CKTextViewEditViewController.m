@@ -82,10 +82,6 @@
     return (UIEdgeInsets) { 93.0, 20.0, 50.0, 20.0 };
 }
 
-- (BOOL)contentScrollable {
-    return !self.textLimited;
-}
-
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -94,18 +90,17 @@
 
 #pragma mark - UITextViewDelegate methods
 
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    [self updateContentSize];
+}
+
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     BOOL shouldChangeText = YES;
     
     NSString *newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     BOOL isBackspace = [newString length] < [textView.text length];
     
-    if (self.textLimited && [text isEqualToString:@"\n"]) {
-        
-        // Disallow newline characters in textLimited mode.
-        shouldChangeText = NO;
-        
-    } else if ([textView.text length] >= self.characterLimit && !isBackspace) {
+    if ([textView.text length] >= self.characterLimit && !isBackspace) {
         
         // Disallow text entry if it's over limit and NOT backspace.
         shouldChangeText = NO;
@@ -212,7 +207,7 @@
                          completion:^(BOOL finished) {
                          }];
         
-        // Move this somewhere else?
+        // This has to be here to work with updateContentSize in didBeginEditing.
         [self updateContentSize];
         
     }
@@ -221,8 +216,20 @@
 - (void)keyboardWillAppear:(BOOL)appear {
     CGRect keyboardFrame = [self currentKeyboardFrame];
     
+    UIEdgeInsets contentInsets = [self contentInsets];
+
+    // Figure out how much inset to add to bottom to offset the keyboard.
+    CGFloat heightOffset = keyboardFrame.size.height;
+    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+    CGFloat requiredContentHeight = (contentInsets.top - targetTextBoxView.contentInsets.top) + self.textView.frame.size.height + (contentInsets.bottom - targetTextBoxView.contentInsets.bottom);
+    if (requiredContentHeight > self.scrollView.bounds.size.height) {
+        heightOffset = keyboardFrame.size.height;
+    } else {
+        heightOffset = self.scrollView.bounds.size.height - requiredContentHeight;
+    }
+    
     // Update the scrollView to be above the keyboard area.
-    self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, keyboardFrame.size.height, 0.0 };
+    self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, heightOffset, 0.0 };
     NSLog(@"contentInset %@", NSStringFromUIEdgeInsets(self.scrollView.contentInset));
     
 }
@@ -230,13 +237,6 @@
 #pragma mark - Private methods
 
 - (void)updateContentSize {
-    
-    // No need to adjust if textLimited.
-    if (![self contentScrollable]) {
-        return;
-    }
-    
-    NSLog(@"updateContentSize");
     
     // TextView adjustments.
     UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
