@@ -1410,10 +1410,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                                                            }
                                                                                            
                                                                                        }];
-                                                                                       // Run completion.
-                                                                                       if (completion != nil) {
-                                                                                           completion();
-                                                                                       }
                                                                                        
                                                                                    }];
                     } failure:^(NSError *error) {
