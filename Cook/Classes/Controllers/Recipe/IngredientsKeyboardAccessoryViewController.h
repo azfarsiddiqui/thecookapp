@@ -10,7 +10,7 @@
 
 @protocol IngredientsKeyboardAccessoryViewControllerDelegate <NSObject>
 
-- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value;
+- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value unit:(BOOL)unit;
 
 @end
 
@@ -19,5 +19,7 @@
 @property (nonatomic, weak) id<IngredientsKeyboardAccessoryViewControllerDelegate> delegate;
 
 - (NSArray *)allUnitOfMeasureOptions;
+- (BOOL)isUnitForMeasure:(NSString *)measure;
+- (BOOL)unitOfMeasure:(NSString *)measure isEqualToMeasure:(NSString *)anotherMeasure;
 
 @end

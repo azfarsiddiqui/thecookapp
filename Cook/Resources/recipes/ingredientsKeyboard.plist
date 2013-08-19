@@ -3,38 +3,148 @@
 <plist version="1.0">
 <array>
 	<array>
-		<string>1/2</string>
-		<string>1/3</string>
-		<string>1/4</string>
+		<dict>
+			<key>Value</key>
+			<string>1/2</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>1/3</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>1/4</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
 	</array>
 	<array>
-		<string>in</string>
-		<string>fl oz</string>
-		<string>pt</string>
-		<string>oz</string>
-		<string>lb</string>
+		<dict>
+			<key>Value</key>
+			<string>in</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>fl oz</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>pt</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>oz</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>lb</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
 	</array>
 	<array>
-		<string>tsp</string>
-		<string>tbsp</string>
-		<string>cup</string>
+		<dict>
+			<key>Value</key>
+			<string>tsp</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>tbsp</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>cup</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
 	</array>
 	<array>
-		<string>1/2</string>
-		<string>1/3</string>
-		<string>1/4</string>
+		<dict>
+			<key>Value</key>
+			<string>1/2</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>1/3</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>1/4</string>
+			<key>Unit</key>
+			<false/>
+		</dict>
 	</array>
 	<array>
-		<string>mm</string>
-		<string>ml</string>
-		<string>l</string>
-		<string>g</string>
-		<string>kg</string>
+		<dict>
+			<key>Value</key>
+			<string>mm</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>ml</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>l</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>g</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>kg</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
 	</array>
 	<array>
-		<string>tsp</string>
-		<string>tbsp</string>
-		<string>cup</string>
+		<dict>
+			<key>Value</key>
+			<string>tsp</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>tbsp</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Value</key>
+			<string>cup</string>
+			<key>Unit</key>
+			<true/>
+		</dict>
 	</array>
 </array>
 </plist>

@@ -9,11 +9,13 @@
 #import "IngredientsKeyboardAccessoryViewController.h"
 #import "IngredientsKeyboardAccessoryCell.h"
 #import "AppHelper.h"
+#import "MRCEnumerable.h"
 
 @interface IngredientsKeyboardAccessoryViewController ()
 
-@property (nonatomic, strong) NSArray *keyboardIngredients;
-@property (nonatomic, strong) NSArray *flattenKeyboardIngredients;
+@property (nonatomic, strong) NSArray *keyboardIngredientsInfo;
+@property (nonatomic, strong) NSMutableDictionary *ingredientsLookup;
+@property (nonatomic, strong) NSMutableArray *keyboardIngredients;
 
 @end
 
@@ -24,8 +26,22 @@
 
 - (id)init {
     if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
-        self.keyboardIngredients = [[AppHelper sharedInstance] keyboardIngredients];
-        self.flattenKeyboardIngredients = [self.keyboardIngredients valueForKeyPath:@"@unionOfArrays.self"];
+        
+        // Load from the plist.
+        self.keyboardIngredientsInfo = [[AppHelper sharedInstance] keyboardIngredients];
+        
+        // Merge all the lookups, replaces duplicated keys.
+        self.ingredientsLookup = [NSMutableDictionary dictionary];
+        self.keyboardIngredients = [NSMutableArray array];
+        for (NSArray *ingredients in self.keyboardIngredientsInfo) {
+            for (NSDictionary *ingredientsInfo in ingredients) {
+                
+                NSString *ingredient = [ingredientsInfo valueForKey:@"Value"];
+                [self.ingredientsLookup setObject:ingredientsInfo forKey:ingredient];
+                [self.keyboardIngredients addObject:ingredient];
+            }
+        }
+        
     }
     return self;
 }
@@ -51,7 +67,17 @@
 }
 
 - (NSArray *)allUnitOfMeasureOptions {
-    return self.flattenKeyboardIngredients;
+    return self.keyboardIngredients;
+}
+
+- (BOOL)isUnitForMeasure:(NSString *)measure {
+    NSDictionary *ingredient = [self.ingredientsLookup valueForKey:measure];
+    return [[ingredient valueForKey:@"Unit"] boolValue];
+}
+
+- (BOOL)unitOfMeasure:(NSString *)measure isEqualToMeasure:(NSString *)anotherMeasure {
+    return ([measure isEqualToString:anotherMeasure]
+            && ([self isUnitForMeasure:measure] == [self isUnitForMeasure:anotherMeasure]));
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -89,25 +115,32 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *text = [[self.keyboardIngredients objectAtIndex:indexPath.section] objectAtIndex:indexPath.item];
-    [self.delegate ingredientsKeyboardAccessorySelectedValue:text];
+    NSArray *ingredientsInfo = [self.keyboardIngredientsInfo objectAtIndex:indexPath.section];
+    NSDictionary *ingredient = [ingredientsInfo objectAtIndex:indexPath.item];
+    NSString *text = [ingredient valueForKey:@"Value"];
+    BOOL unit = [[ingredient valueForKey:@"Unit"] boolValue];
+
+    [self.delegate ingredientsKeyboardAccessorySelectedValue:text unit:unit];
 }
 
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return [self.keyboardIngredients count];
+    return [self.keyboardIngredientsInfo count];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return [[self.keyboardIngredients objectAtIndex:section] count];
+    return [[self.keyboardIngredientsInfo objectAtIndex:section] count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     IngredientsKeyboardAccessoryCell *cell = (IngredientsKeyboardAccessoryCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-    [cell configureText:[[self.keyboardIngredients objectAtIndex:indexPath.section] objectAtIndex:indexPath.item]];
+    
+    NSArray *ingredientsInfo = [self.keyboardIngredientsInfo objectAtIndex:indexPath.section];
+    NSDictionary *ingredient = [ingredientsInfo objectAtIndex:indexPath.item];
+    [cell configureText:[ingredient valueForKey:@"Value"]];
     
     return cell;
 }

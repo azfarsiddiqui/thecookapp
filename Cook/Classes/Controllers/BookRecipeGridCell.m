@@ -341,6 +341,7 @@
 
 - (void)initIngredientsView {
     RecipeIngredientsView *ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:nil
+                                                                                           book:self.book
                                                                                         maxSize:[self availableBlockSize]
                                                                                   textAlignment:NSTextAlignmentCenter];
     [self.contentView addSubview:ingredientsView];

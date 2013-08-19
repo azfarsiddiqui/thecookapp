@@ -76,17 +76,33 @@
     return self;
 }
 
-- (void)configureMeasure:(NSString *)measure {
+- (void)configureMeasure:(NSString *)measure unit:(BOOL)unit {
     NSMutableString *currentMeasureValue = [NSMutableString stringWithString:[self.unitTextField.text CK_whitespaceAndNewLinesTrimmed]];
     NSString *detectedMeasureValue = nil;
+    BOOL exactMatch = NO;
    
     // Loop and detect any entered uoms, and replace it if necessary.
     for (NSString *currentMeasure in [self.ingredientsAccessoryViewController allUnitOfMeasureOptions]) {
         
-        NSString *searchString = [NSString stringWithFormat:@" %@", currentMeasure];
-        if ([currentMeasureValue hasSuffix:searchString]) {
-            detectedMeasureValue = searchString;
-            break;
+        // If not unit, then it's no match at all.
+        if (unit != [self.ingredientsAccessoryViewController isUnitForMeasure:currentMeasure]) {
+            continue;
+        }
+        
+        if ([currentMeasureValue isEqualToString:currentMeasure]) {
+            
+            // Exact match, then mark as found.
+            detectedMeasureValue = currentMeasure;
+            exactMatch = YES;
+            
+        } else {
+            
+            // Search with a space infront, as we don't want to replace other characters.
+            NSString *searchString = [NSString stringWithFormat:@" %@", currentMeasure];
+            if ([currentMeasureValue hasSuffix:searchString]) {
+                detectedMeasureValue = searchString;
+                break;
+            }
         }
         
     }
@@ -98,11 +114,22 @@
             [detectedMeasureValue length]
         }];
     }
-    [currentMeasureValue appendFormat:@" %@", measure];
+    if (exactMatch) {
+        [currentMeasureValue appendString:measure];
+    } else {
+        [currentMeasureValue appendFormat:@" %@", measure];
+    }
     
     self.unitTextField.text = currentMeasureValue;
     
-    [self focusNameField];
+    // Only move onto the next field when it's unit.
+    if (unit) {
+        [self focusNameField];
+    }
+}
+
+- (void)insertOrReplaceMeasure:(NSString *)measure {
+    
 }
 
 #pragma mark - CKListCell methods
@@ -149,8 +176,8 @@
 
 #pragma mark - IngredientsKeyboardAccessoryViewControllerDelegate methods
 
-- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value {
-    [self configureMeasure:value];
+- (void)ingredientsKeyboardAccessorySelectedValue:(NSString *)value unit:(BOOL)unit {
+    [self configureMeasure:value unit:unit];
 }
 
 #pragma mark - UITextFieldDelegate methods
