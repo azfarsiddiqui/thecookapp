@@ -27,6 +27,7 @@
 @property (nonatomic, assign) BOOL topAddActivated;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL processing;
+@property (nonatomic, strong) NSIndexPath *editingIndexPath;
 
 @end
 
@@ -41,6 +42,7 @@
 #define kHiddenFieldScrollUpOffset      40.0
 #define kHiddenFieldScrollDownOffset    20.0
 #define kDeleteOffset                   100.0
+#define kInactiveCellFade               0.7
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
                  items:(NSArray *)items editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white
@@ -346,6 +348,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     cell.delegate = self;
     cell.backgroundColor = [UIColor clearColor];
     
+    if (self.editingIndexPath) {
+        cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
+    }
+    
     [self configureCell:cell indexPath:indexPath];
     
     return cell;
@@ -495,6 +501,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     DLog(@"focus[%@] item[%d]", focused ? @"YES" : @"NO", indexPath.item);
     
     self.editingCell = focused ? cell : nil;
+    self.editingIndexPath = focused ? indexPath : nil;
     
     // Disable/enable drag/drop according to focus mode.
     [self.collectionView getHelper].enabled = !focused;
@@ -519,12 +526,18 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             }
             
         }
+        
+    } else {
+        
+        [self updateCellsState];
+        
     }
     
     // Mark as finished processing the current cell.
     if (!focused) {
         self.processing = NO;
     }
+    
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -896,10 +909,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)deleteCellAtIndexPath:(NSIndexPath *)indexPath {
     DLog(@"Deleting item [%d] items %@", indexPath.item, self.items);
+    
     [self.items removeObjectAtIndex:indexPath.item];
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
     } completion:^(BOOL finished) {
+        [self updateCellsState];
     }];
 }
 
@@ -984,6 +999,21 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     NSString *text = [currentValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     return ([text length] == 0);
 
+}
+
+- (void)updateCellsState {
+    
+    // Fade out all other cells.
+    NSArray *visibleCells = [self.collectionView visibleCells];
+    for (UICollectionViewCell *cell in visibleCells) {
+        NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+        
+        if (self.editingIndexPath) {
+            cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
+        } else {
+            cell.backgroundView.alpha = 1.0;
+        }
+    }
 }
 
 // Fixes the missing action method when the keyboard is visible
