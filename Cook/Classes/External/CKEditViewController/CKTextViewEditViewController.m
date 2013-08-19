@@ -121,10 +121,6 @@
     self.limitLabel.text = [NSString stringWithFormat:@"%d", currentLimit];
     [self.limitLabel sizeToFit];
     
-    // No save if no characters
-    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    [targetTextBoxView showSaveIcon:YES enabled:([textView.text length] > 0) animated:NO];
-    
     [self updateInfoLabels];
     [self updateContentSize];
 }
