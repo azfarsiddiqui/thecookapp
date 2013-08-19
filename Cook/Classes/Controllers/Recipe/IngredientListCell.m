@@ -26,7 +26,7 @@
 
 #define kFieldDividerGap        10.0
 #define kUnitWidth              160.0
-#define kDividerInsets          (UIEdgeInsets){ 16.0, 0.0, 11.0, 0.0 }
+#define kDividerInsets          (UIEdgeInsets){ 17.0, 0.0, 10.0, 0.0 }
 #define kMaxLengthMeasurement   10
 
 - (id)initWithFrame:(CGRect)frame {
