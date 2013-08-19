@@ -10,7 +10,6 @@
 
 @interface CKNotchSliderView ()
 
-@property (nonatomic, assign) NSInteger numNotches;
 @property (nonatomic, assign) BOOL animating;
 
 @end

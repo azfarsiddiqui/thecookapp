@@ -108,7 +108,7 @@
         _servesLabel.backgroundColor = [UIColor clearColor];
         _servesLabel.font = [Theme editServesFont];
         _servesLabel.textColor = [Theme editServesColour];
-        _servesLabel.text = @"2";
+        _servesLabel.text = @"0";   // Starts at 0
         [_servesLabel sizeToFit];
     }
     return _servesLabel;
@@ -116,7 +116,7 @@
 
 - (CKNotchSliderView *)servesSlider {
     if (!_servesSlider) {
-        _servesSlider = [[CKNotchSliderView alloc] initWithNumNotches:5 delegate:self];
+        _servesSlider = [[CKNotchSliderView alloc] initWithNumNotches:7 delegate:self];
     }
     return _servesSlider;
 }
@@ -186,9 +186,17 @@
 #pragma mark - CKNotchSliderViewDelegate methods
 
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex {
-    NSInteger serves = (notchIndex + 1) * kUnitServes;
+    NSInteger serves = notchIndex * kUnitServes;
+    BOOL maxServe = (notchIndex == sliderView.numNotches - 1);
     self.recipeDetails.numServes = serves;
-    self.servesLabel.text = [NSString stringWithFormat:@"%d", serves];
+    
+    NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
+    if (maxServe) {
+        [servesDisplay appendFormat:@"%d+", (notchIndex - 1) * kUnitServes];
+    } else {
+        [servesDisplay appendFormat:@"%d", serves];
+    }
+    self.servesLabel.text = servesDisplay;
     [self.servesLabel sizeToFit];
 }
 

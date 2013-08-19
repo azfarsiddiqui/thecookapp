@@ -23,6 +23,7 @@
 @property (nonatomic, assign) NSInteger currentNotchIndex;
 @property (nonatomic, strong) UIImageView *currentNotchView;
 @property (nonatomic, strong) NSMutableArray *trackNotches;
+@property (nonatomic, assign) NSInteger numNotches;
 
 - (id)initWithNumNotches:(NSInteger)numNotches delegate:(id<CKNotchSliderViewDelegate>)delegate;
 - (void)selectNotch:(NSInteger)notch;
