@@ -642,6 +642,13 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)saveAndDismissItems:(BOOL)save {
     self.saveRequired = save;
     
+    // If save, replace the current edited values. This handles the case when save is tapped while the field in focus.
+    if (save && self.editingIndexPath) {
+        CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:self.editingIndexPath];
+        id currentValue = [cell currentValue];
+        [self.items replaceObjectAtIndex:self.editingIndexPath.item withObject:currentValue];
+    }
+    
     // Hide items, which will trigger itemsDidShow.
     [self hideItems];
 }
