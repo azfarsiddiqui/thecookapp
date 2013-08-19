@@ -42,6 +42,8 @@
     UIImage *backgroundImage = [[UIImage imageNamed:@"cook_keyboard_autosuggest_bg.png"]
                                 resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 4.0, 0.0, 4.0 }];
     self.collectionView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+    self.collectionView.pagingEnabled = YES;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
     
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -57,10 +59,10 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    UIEdgeInsets insets = (UIEdgeInsets) { 10.0, 7.0, 6.0, 21.0 };
+    UIEdgeInsets insets = (UIEdgeInsets) { 10.0, 5.0, 6.0, 12.0 };
     NSInteger numSections = [self.collectionView numberOfSections];
     if (section == numSections - 1) {
-        insets.right = 7.0; // Ends with a 7pt.
+        insets.right = 5.0; // Ends with a 7pt.
     }
     return insets;
 }
@@ -75,7 +77,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // Space between columns.
-    return 10.0;
+    return 6.0;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout

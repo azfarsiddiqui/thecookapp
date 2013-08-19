@@ -3,16 +3,33 @@
 <plist version="1.0">
 <array>
 	<array>
-		<string>ml</string>
-		<string>l</string>
-		<string>g</string>
-		<string>kg</string>
+		<string>1/2</string>
+		<string>1/3</string>
+		<string>1/4</string>
 	</array>
 	<array>
+		<string>in</string>
 		<string>fl oz</string>
 		<string>pt</string>
 		<string>oz</string>
 		<string>lb</string>
+	</array>
+	<array>
+		<string>tsp</string>
+		<string>tbsp</string>
+		<string>cup</string>
+	</array>
+	<array>
+		<string>1/2</string>
+		<string>1/3</string>
+		<string>1/4</string>
+	</array>
+	<array>
+		<string>mm</string>
+		<string>ml</string>
+		<string>l</string>
+		<string>g</string>
+		<string>kg</string>
 	</array>
 	<array>
 		<string>tsp</string>
