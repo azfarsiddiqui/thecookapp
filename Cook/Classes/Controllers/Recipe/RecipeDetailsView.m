@@ -314,7 +314,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #pragma mark - Private methods
 
 - (void)layoutComponents {
-    [self layoutComponentsAnimated:YES];
+    [self layoutComponentsAnimated:NO];
 }
 
 - (void)layoutComponentsAnimated:(BOOL)animated {
@@ -445,9 +445,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     self.titleLabel.text = [[name CK_whitespaceTrimmed] uppercaseString];
-    CGSize size = [self.titleLabel sizeThatFits:(CGSize){ kMaxTitleWidth, MAXFLOAT }];
+    CGSize size = [self.titleLabel sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
     self.titleLabel.frame = (CGRect){
-        floorf((self.bounds.size.width - size.width) / 2.0),
+        floorf((kWidth - size.width) / 2.0),
         self.layoutOffset.y,
         size.width,
         size.height
