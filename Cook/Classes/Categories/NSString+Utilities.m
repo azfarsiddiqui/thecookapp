@@ -22,6 +22,10 @@
     return boolean ? @"YES" : @"NO";
 }
 
++ (NSString *)CK_stringOrNilForNumber:(NSNumber *)number {
+    return (number != nil) ? [number stringValue] : nil;
+}
+
 - (BOOL)CK_equalsIgnoreCase:(NSString *)string {
     return ([self localizedCaseInsensitiveCompare:string] == NSOrderedSame);
 }

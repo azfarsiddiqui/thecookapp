@@ -28,9 +28,9 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 @property (nonatomic, strong) NSString *story;
 @property (nonatomic, strong) NSString *method;
 
-@property (nonatomic, assign) NSInteger numServes;
-@property (nonatomic, assign) NSInteger prepTimeInMinutes;
-@property (nonatomic, assign) NSInteger cookingTimeInMinutes;
+@property (nonatomic, assign) NSNumber *numServes;
+@property (nonatomic, assign) NSNumber *prepTimeInMinutes;
+@property (nonatomic, assign) NSNumber *cookingTimeInMinutes;
 
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;

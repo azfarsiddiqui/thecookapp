@@ -69,9 +69,9 @@
 }
 
 - (BOOL)servesPrepUpdated {
-    return ((self.originalRecipe.numServes != self.numServes)
-            || (self.originalRecipe.prepTimeInMinutes != self.prepTimeInMinutes)
-            || (self.originalRecipe.cookingTimeInMinutes != self.cookingTimeInMinutes));
+    return (([self.originalRecipe.numServes isEqualToNumber:self.numServes])
+            || ([self.originalRecipe.prepTimeInMinutes isEqualToNumber:self.prepTimeInMinutes])
+            || ([self.originalRecipe.cookingTimeInMinutes isEqualToNumber:self.cookingTimeInMinutes]));
 }
 
 - (BOOL)ingredientsUpdated {
@@ -124,23 +124,23 @@
     }
 }
 
-- (void)setNumServes:(NSInteger)numServes {
+- (void)setNumServes:(NSNumber *)numServes {
     _numServes = numServes;
-    if (self.originalRecipe.numServes != numServes) {
+    if ([self.originalRecipe.numServes integerValue] != [numServes integerValue]) {
         self.saveRequired = YES;
     }
 }
 
-- (void)setPrepTimeInMinutes:(NSInteger)prepTimeInMinutes {
+- (void)setPrepTimeInMinutes:(NSNumber *)prepTimeInMinutes {
     _prepTimeInMinutes = prepTimeInMinutes;
-    if (self.originalRecipe.prepTimeInMinutes != prepTimeInMinutes) {
+    if ([self.originalRecipe.prepTimeInMinutes integerValue] != [prepTimeInMinutes integerValue]) {
         self.saveRequired = YES;
     }
 }
 
-- (void)setCookingTimeInMinutes:(NSInteger)cookingTimeInMinutes {
+- (void)setCookingTimeInMinutes:(NSNumber *)cookingTimeInMinutes {
     _cookingTimeInMinutes = cookingTimeInMinutes;
-    if (self.originalRecipe.cookingTimeInMinutes != cookingTimeInMinutes) {
+    if ([self.originalRecipe.cookingTimeInMinutes integerValue] != [cookingTimeInMinutes integerValue]) {
         self.saveRequired = YES;
     }
 }

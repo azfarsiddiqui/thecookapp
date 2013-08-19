@@ -188,7 +188,9 @@
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex {
     NSInteger serves = notchIndex * kUnitServes;
     BOOL maxServe = (notchIndex == sliderView.numNotches - 1);
-    self.recipeDetails.numServes = serves;
+    
+    // Nil out if num serves was zero.
+    self.recipeDetails.numServes = (serves == 0) ? nil : [NSNumber numberWithInteger:serves];
     
     NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
     if (maxServe) {
@@ -206,11 +208,16 @@
     NSInteger minutes = selectedIndex * kUnitMinutes;
     NSString *minutesDisplay = [NSString stringWithFormat:@"%dm", minutes];
     if (dialerControl == self.prepDialer) {
-        self.recipeDetails.prepTimeInMinutes = minutes;
+        
+        // Nil out if num was zero.
+        self.recipeDetails.prepTimeInMinutes = (minutes == 0) ? nil : [NSNumber numberWithInteger:minutes];
         self.prepLabel.text = minutesDisplay;
+        
         [self.prepLabel sizeToFit];
     } else if (dialerControl == self.cookDialer) {
-        self.recipeDetails.cookingTimeInMinutes = minutes;
+        
+        // Nil out if num was zero.
+        self.recipeDetails.cookingTimeInMinutes = (minutes == 0) ? nil : [NSNumber numberWithInteger:minutes];
         self.cookLabel.text = minutesDisplay;
         [self.cookLabel sizeToFit];
     }
@@ -307,21 +314,19 @@
 }
 
 - (NSInteger)servesIndex {
-    NSInteger numServes = self.recipeDetails.numServes;
-    if (numServes == 0) {
-        numServes = 2;
-    } else if (numServes % kUnitServes != 0) {
+    NSInteger numServes = [self.recipeDetails.numServes integerValue];
+    if (numServes % kUnitServes != 0) {
         numServes += 1;
     }
-    return (numServes / kUnitServes) - 1;
+    return (numServes / kUnitServes);
 }
 
 - (NSInteger)prepIndex {
-    return [self dialerIndexForMinutes:self.recipeDetails.prepTimeInMinutes];
+    return [self dialerIndexForMinutes:[self.recipeDetails.prepTimeInMinutes integerValue]];
 }
 
 - (NSInteger)cookIndex {
-    return [self dialerIndexForMinutes:self.recipeDetails.cookingTimeInMinutes];
+    return [self dialerIndexForMinutes:[self.recipeDetails.cookingTimeInMinutes integerValue]];
 }
 
 - (NSInteger)dialerIndexForMinutes:(NSInteger)minutes {

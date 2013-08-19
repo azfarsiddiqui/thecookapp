@@ -13,6 +13,7 @@
 + (NSString *)CK_safeString:(NSString *)string;
 + (NSString *)CK_safeString:(NSString *)string defaultString:(NSString *)defaultString;
 + (NSString *)CK_stringForBoolean:(BOOL)boolean;
++ (NSString *)CK_stringOrNilForNumber:(NSNumber *)number;
 
 - (BOOL)CK_equalsIgnoreCase:(NSString *)string;
 - (BOOL)CK_equals:(NSString *)string;

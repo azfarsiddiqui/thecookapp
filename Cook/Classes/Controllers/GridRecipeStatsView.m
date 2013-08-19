@@ -11,6 +11,7 @@
 #import "UIColor+Expanded.h"
 #import "CKRecipe.h"
 #import "Theme.h"
+#import "NSString+Utilities.h"
 
 @interface GridRecipeStatsView ()
 
@@ -41,8 +42,8 @@
 - (void)configureRecipe:(CKRecipe *)recipe {
     [self reset];
     
-    [self configureValue:[NSString stringWithFormat:@"%d", recipe.numServes] iconIndex:0];
-    [self configureValue:[NSString stringWithFormat:@"%d", recipe.cookingTimeInMinutes] iconIndex:1];
+    [self configureValue:[NSString CK_stringOrNilForNumber:recipe.numServes] iconIndex:0];
+    [self configureValue:[NSString CK_stringOrNilForNumber:recipe.cookingTimeInMinutes] iconIndex:1];
     [self configureValue:[NSString stringWithFormat:@"%d", 0] iconIndex:2];
     [self configureValue:[NSString stringWithFormat:@"%d", recipe.likes] iconIndex:3];
     

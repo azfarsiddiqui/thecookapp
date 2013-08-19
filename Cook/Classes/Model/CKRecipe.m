@@ -50,20 +50,10 @@
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user {
     CKRecipe *recipe = [[CKRecipe alloc] initWithParseObject:parseRecipe];
         
-    NSNumber *cookingTime = [parseRecipe objectForKey:kRecipeAttrCookingTimeInMinutes];
-    if (cookingTime) {
-        recipe.cookingTimeInMinutes = [cookingTime integerValue];
-    }
-    
-    NSNumber *prepTime = [parseRecipe objectForKey:kRecipeAttrPrepTimeInMinutes];
-    if (prepTime) {
-        recipe.prepTimeInMinutes = [prepTime integerValue];
-    }
-    
-    NSNumber *numServes = [parseRecipe objectForKey:kRecipeAttrNumServes];
-    if (numServes) {
-        recipe.numServes = [numServes intValue];
-    }
+    recipe.numServes = [parseRecipe objectForKey:kRecipeAttrNumServes];
+    recipe.cookingTimeInMinutes = [parseRecipe objectForKey:kRecipeAttrCookingTimeInMinutes];
+    recipe.prepTimeInMinutes = [parseRecipe objectForKey:kRecipeAttrPrepTimeInMinutes];
+
     // At the moment, only support one image even though database supports multiple.
     NSArray *photos = [parseRecipe objectForKey:kRecipeAttrRecipePhotos];
     if ([photos count] > 0) {
@@ -93,7 +83,8 @@
                   failure:(ObjectFailureBlock)failure {
     
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
-    [query setCachePolicy:kPFCachePolicyCacheOnly];
+//    [query setCachePolicy:kPFCachePolicyCacheOnly];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query includeKey:kRecipeAttrRecipePhotos];
     [query includeKey:kBookModelForeignKeyName];
     [query includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];
@@ -406,9 +397,9 @@
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.story length]] forKey:kRecipeAttrStory];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.method length]] forKey:kRecipeAttrDescription];
     [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.ingredients count]] forKey:kRecipeAttrIngredients];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", self.numServes] forKey:kRecipeAttrNumServes];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", self.prepTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
-    [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", self.cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%d", [self.numServes integerValue]] forKey:kRecipeAttrNumServes];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", [self.prepTimeInMinutes integerValue]] forKey:kRecipeAttrPrepTimeInMinutes];
+    [descriptionProperties setValue:[NSString stringWithFormat:@"%dm", [self.cookingTimeInMinutes integerValue]] forKey:kRecipeAttrCookingTimeInMinutes];
     [descriptionProperties setValue:self.page forKey:kRecipeAttrPage];
     [descriptionProperties setValue:[self.book description] forKey:kBookModelForeignKeyName];
     [descriptionProperties setValue:[self.user description] forKey:kUserModelForeignKeyName];
@@ -479,28 +470,40 @@
     [self.parseObject setObject:[NSNumber numberWithInt:categoryIndex]forKey:kRecipeAttrCategoryIndex];
 }
 
-- (NSInteger)numServes {
-    return [[self.parseObject objectForKey:kRecipeAttrNumServes] integerValue];
+- (NSNumber *)numServes {
+    return [self.parseObject objectForKey:kRecipeAttrNumServes];
 }
 
-- (void)setNumServes:(NSInteger)numServes {
-    [self.parseObject setObject:[NSNumber numberWithInt:numServes] forKey:kRecipeAttrNumServes];
+- (void)setNumServes:(NSNumber *)numServes {
+    if (numServes) {
+        [self.parseObject setObject:numServes forKey:kRecipeAttrNumServes];
+    } else {
+        [self.parseObject removeObjectForKey:kRecipeAttrNumServes];
+    }
 }
 
-- (void)setCookingTimeInMinutes:(NSInteger)cookingTimeInMinutes {
-    [self.parseObject setObject:[NSNumber numberWithInt:cookingTimeInMinutes] forKey:kRecipeAttrCookingTimeInMinutes];
+- (void)setCookingTimeInMinutes:(NSNumber *)cookingTimeInMinutes {
+    if (cookingTimeInMinutes) {
+        [self.parseObject setObject:cookingTimeInMinutes forKey:kRecipeAttrCookingTimeInMinutes];
+    } else {
+        [self.parseObject removeObjectForKey:kRecipeAttrCookingTimeInMinutes];
+    }
 }
 
-- (NSInteger)cookingTimeInMinutes {
-    return [[self.parseObject objectForKey:kRecipeAttrCookingTimeInMinutes] integerValue];
+- (NSNumber *)cookingTimeInMinutes {
+    return [self.parseObject objectForKey:kRecipeAttrCookingTimeInMinutes];
 }
 
-- (void)setPrepTimeInMinutes:(NSInteger)prepTimeInMinutes {
-    [self.parseObject setObject:[NSNumber numberWithInt:prepTimeInMinutes] forKey:kRecipeAttrPrepTimeInMinutes];
+- (void)setPrepTimeInMinutes:(NSNumber *)prepTimeInMinutes {
+    if (prepTimeInMinutes) {
+        [self.parseObject setObject:prepTimeInMinutes forKey:kRecipeAttrPrepTimeInMinutes];
+    } else {
+        [self.parseObject removeObjectForKey:kRecipeAttrPrepTimeInMinutes];
+    }
 }
 
-- (NSInteger)prepTimeInMinutes {
-    return [[self.parseObject objectForKey:kRecipeAttrPrepTimeInMinutes] integerValue];
+- (NSNumber *)prepTimeInMinutes {
+    return [self.parseObject objectForKey:kRecipeAttrPrepTimeInMinutes];
 }
 
 - (void)setPrivacy:(CKPrivacy)privacy {

@@ -9,6 +9,7 @@
 #import "RecipeServesCookView.h"
 #import "RecipeDetails.h"
 #import "Theme.h"
+#import "NSString+Utilities.h"
 
 @interface RecipeServesCookView ()
 
@@ -46,9 +47,9 @@
 }
 
 - (void)update {
-    self.servesLabel.text = [NSString stringWithFormat:@"%d", self.recipeDetails.numServes];
-    self.prepLabel.text = [NSString stringWithFormat:@"%d", self.recipeDetails.prepTimeInMinutes];
-    self.cookLabel.text = [NSString stringWithFormat:@"%d", self.recipeDetails.cookingTimeInMinutes];
+    self.servesLabel.text = [NSString CK_stringOrNilForNumber:self.recipeDetails.numServes];
+    self.prepLabel.text = [NSString CK_stringOrNilForNumber:self.recipeDetails.prepTimeInMinutes];
+    self.cookLabel.text = [NSString CK_stringOrNilForNumber:self.recipeDetails.cookingTimeInMinutes];
 }
 
 #pragma mark - Private methods
