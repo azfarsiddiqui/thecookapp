@@ -51,7 +51,7 @@
         textField.backgroundColor = [UIColor clearColor];
         textField.textAlignment = NSTextAlignmentCenter;
         textField.delegate = self;
-        textField.returnKeyType = UIReturnKeyNext;
+        textField.returnKeyType = UIReturnKeyDone;
         textField.font = self.font;
         textField.userInteractionEnabled = NO;
         [self.contentView addSubview:textField];
@@ -199,17 +199,14 @@
 - (UIView *)reorderView {
     if (!_reorderView) {
         UIEdgeInsets listItemInsets = [CKListCell listItemInsets];
-        CGFloat unitDimension = self.contentView.bounds.size.height - listItemInsets.top - listItemInsets.bottom;
-        _reorderView = [[UIView alloc] initWithFrame:(CGRect){
-            self.contentView.bounds.size.width - listItemInsets.right - unitDimension,
-            listItemInsets.top,
-            unitDimension,
-            unitDimension
-        }];
+        _reorderView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_textbox_icon_drag.png"]];
+        _reorderView.frame = (CGRect){
+            self.contentView.bounds.size.width - listItemInsets.right - _reorderView.frame.size.width - 8.0,
+            floorf((self.contentView.bounds.size.height - _reorderView.frame.size.height) / 2.0) + 4.0,
+            _reorderView.frame.size.width,
+            _reorderView.frame.size.height
+        };
         _reorderView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        _reorderView.userInteractionEnabled = NO;
-        _reorderView.alpha = 0.5;
-        _reorderView.backgroundColor = [UIColor lightGrayColor];
     }
     return _reorderView;
 }

@@ -37,7 +37,7 @@
 }
 
 + (UIImage *)textEditingBoxWhite:(BOOL)white editMode:(BOOL)editMode {
-    UIEdgeInsets capInsets = (UIEdgeInsets){ 50.0, 37.0, 15.0, 45.0 };
+    UIEdgeInsets capInsets = (UIEdgeInsets){ 49.0, 24.0, 15.0, 58.0 };
 
     // Construct the required image name.
     NSMutableString *textBoxName = [NSMutableString stringWithString:@"cook_customise_textbox"];
@@ -51,7 +51,7 @@
 
 + (UIImage *)textEditingSelectionBoxWhite:(BOOL)white {
     return [[UIImage imageNamed:@"cook_customise_textbox_blue.png"]
-            resizableImageWithCapInsets:(UIEdgeInsets){ 50.0, 37.0, 15.0, 45.0 }];
+            resizableImageWithCapInsets:(UIEdgeInsets){ 49.0, 24.0, 15.0, 58.0 }];
 }
 
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
