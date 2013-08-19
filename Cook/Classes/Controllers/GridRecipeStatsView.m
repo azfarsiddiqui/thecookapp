@@ -43,7 +43,7 @@
     [self reset];
     
     [self configureValue:[NSString CK_stringOrNilForNumber:recipe.numServes] iconIndex:0];
-    [self configureValue:[NSString CK_stringOrNilForNumber:recipe.cookingTimeInMinutes] iconIndex:1];
+    [self configureValue:[self prepCookTotalDisplayForPrepTime:recipe.prepTimeInMinutes cookTime:recipe.cookingTimeInMinutes] iconIndex:1];
     [self configureValue:[NSString stringWithFormat:@"%d", 0] iconIndex:2];
     [self configureValue:[NSString stringWithFormat:@"%d", recipe.likes] iconIndex:3];
     
@@ -147,6 +147,16 @@
         }
     }
     
+}
+
+- (NSString *)prepCookTotalDisplayForPrepTime:(NSNumber *)prepTime cookTime:(NSNumber *)cookTime {
+    NSString *totalDisplay = nil;
+    NSInteger totalTimeInMinutes = 0;
+    if (prepTime || cookTime) {
+        totalTimeInMinutes = [prepTime integerValue] + [cookTime integerValue];
+        totalDisplay = [NSString stringWithFormat:@"%d", totalTimeInMinutes];
+    }
+    return totalDisplay;
 }
 
 @end

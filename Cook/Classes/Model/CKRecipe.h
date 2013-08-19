@@ -40,6 +40,9 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 
+// Max servings.
++ (NSInteger)maxServes;
+
 // Creation
 + (CKRecipe *)recipeForBook:(CKBook *)book;
 + (CKRecipe *)recipeForBook:(CKBook *)book page:(NSString *)page;

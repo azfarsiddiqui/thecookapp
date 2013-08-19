@@ -31,6 +31,10 @@
 
 #define kIngredientDelimiter    @"::"
 
++ (NSInteger)maxServes {
+    return 10;
+}
+
 #pragma mark - creation
 
 + (CKRecipe *)recipeForBook:(CKBook *)book {
@@ -83,8 +87,8 @@
                   failure:(ObjectFailureBlock)failure {
     
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
-//    [query setCachePolicy:kPFCachePolicyCacheOnly];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query setCachePolicy:kPFCachePolicyCacheOnly];
+//    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query includeKey:kRecipeAttrRecipePhotos];
     [query includeKey:kBookModelForeignKeyName];
     [query includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];

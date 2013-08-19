@@ -675,7 +675,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         kHeaderHeight
     }];
     self.placeholderHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    self.placeholderHeaderView.backgroundColor = [UIColor whiteColor];  // White colour to start off with then fade out.
+    self.placeholderHeaderView.backgroundColor = [Theme recipeGridImageBackgroundColour];  // White colour to start off with then fade out.
     [self.scrollView addSubview:self.placeholderHeaderView];
     
     // Register a concurrent panGesture to drag panel up and down.

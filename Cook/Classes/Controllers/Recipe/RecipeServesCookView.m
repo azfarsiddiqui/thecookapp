@@ -10,6 +10,7 @@
 #import "RecipeDetails.h"
 #import "Theme.h"
 #import "NSString+Utilities.h"
+#import "CKRecipe.h"
 
 @interface RecipeServesCookView ()
 
@@ -35,95 +36,141 @@
     if (self = [super initWithFrame:CGRectZero]) {
         self.recipeDetails = recipeDetails;
         self.backgroundColor = [UIColor clearColor];
-        
-        self.layoutOffset = 0.0;
-        [self updateServes];
-        [self updatePrepCook];
-        [self updateFrame];
-        
-        [self update];
+        [self updateLayout];
     }
     return self;
 }
 
-- (void)update {
-    self.servesLabel.text = [NSString CK_stringOrNilForNumber:self.recipeDetails.numServes];
-    self.prepLabel.text = [NSString CK_stringOrNilForNumber:self.recipeDetails.prepTimeInMinutes];
-    self.cookLabel.text = [NSString CK_stringOrNilForNumber:self.recipeDetails.cookingTimeInMinutes];
+- (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails {
+    
+    self.recipeDetails = recipeDetails;
+    
+    // Remove all subviews and relayout.
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    self.servesLabel = nil;
+    self.prepLabel = nil;
+    self.cookLabel = nil;
+    [self updateLayout];
 }
 
 #pragma mark - Private methods
+    
+- (void)updateLayout {
+    self.layoutOffset = 0.0;
+    [self updateServes];
+    [self updatePrepCook];
+    [self updateFrame];
+}
 
 - (void)updateServes {
-    
-    UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
-    UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[self defaultValue]];
-    CGRect servesFrame = servesStatView.frame;
-    CGRect imageFrame = servesImageView.frame;
-    servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
-    servesStatView.frame = servesFrame;
-    
-    self.servesLabel = (UILabel *)[servesStatView viewWithTag:kLabelTag];
-    
-    CGRect combinedFrame = CGRectUnion(imageFrame, servesFrame);
-    UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
-    containerView.backgroundColor = [UIColor clearColor];
-    imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
-    servesImageView.frame = imageFrame;
-    servesFrame.origin.y = floorf((combinedFrame.size.height - servesFrame.size.height) / 2.0) + kStatViewOffset;
-    servesStatView.frame = servesFrame;
-    
-    [containerView addSubview:servesImageView];
-    [containerView addSubview:servesStatView];
-    [self addSubview:containerView];
-    
-    self.layoutOffset += containerView.frame.size.height;
+    if (self.recipeDetails.numServes) {
+        UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
+        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[NSString CK_stringOrNilForNumber:self.recipeDetails.numServes]];
+        CGRect servesFrame = servesStatView.frame;
+        CGRect imageFrame = servesImageView.frame;
+        servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
+        servesStatView.frame = servesFrame;
+        
+        self.servesLabel = (UILabel *)[servesStatView viewWithTag:kLabelTag];
+        
+        CGRect combinedFrame = CGRectUnion(imageFrame, servesFrame);
+        UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
+        containerView.backgroundColor = [UIColor clearColor];
+        imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
+        servesImageView.frame = imageFrame;
+        servesFrame.origin.y = floorf((combinedFrame.size.height - servesFrame.size.height) / 2.0) + kStatViewOffset;
+        servesStatView.frame = servesFrame;
+        
+        [containerView addSubview:servesImageView];
+        [containerView addSubview:servesStatView];
+        [self addSubview:containerView];
+        self.layoutOffset += containerView.frame.size.height;
+    }
 }
 
 - (void)updatePrepCook {
-    CGFloat prepCookGap = 5.0;
+    CGFloat prepCookGap = 20.0;
     
-    UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
-    CGRect imageFrame = prepCookImageView.frame;
+    UIView *prepStatView = nil;
+    UIView *cookStatView = nil;
+    CGRect prepFrame = CGRectZero;
+    CGRect cookFrame = CGRectZero;
     
-    UIView *prepStatView = [self viewForStatText:@"Prep" statValue:[self defaultValue]];
-    CGRect prepFrame = prepStatView.frame;
-    prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
-    prepStatView.frame = prepFrame;
-    
-    self.prepLabel = (UILabel *)[prepStatView viewWithTag:kLabelTag];
-    
-    UIView *cookStatView = [self viewForStatText:@"Cook" statValue:[self defaultValue]];
-    CGRect cookFrame = cookStatView.frame;
-    cookFrame.origin.x = prepFrame.origin.x + prepFrame.size.width + prepCookGap;
-    cookStatView.frame = cookFrame;
-    
-    self.cookLabel = (UILabel *)[cookStatView viewWithTag:kLabelTag];
-    
-    CGRect combinedFrame = CGRectUnion(prepCookImageView.frame, prepFrame);
-    combinedFrame = CGRectUnion(combinedFrame, cookFrame);
-    
-    UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
-    CGRect containerFrame = containerView.frame;
-    containerFrame.origin.y = kStatRowGap + self.layoutOffset;
-    containerView.frame = containerFrame;
-    containerView.backgroundColor = [UIColor clearColor];
-    
-    imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
-    prepCookImageView.frame = imageFrame;
-    prepFrame.origin.y = floorf((combinedFrame.size.height - prepFrame.size.height) / 2.0) + kStatViewOffset;
-    prepStatView.frame = prepFrame;
-    cookFrame.origin.y = floorf((combinedFrame.size.height - cookFrame.size.height) / 2.0) + kStatViewOffset;
-    cookStatView.frame = cookFrame;
-    prepCookImageView.frame = imageFrame;
-    prepStatView.frame = prepFrame;
-    cookStatView.frame = cookFrame;
-    [containerView addSubview:prepCookImageView];
-    [containerView addSubview:prepStatView];
-    [containerView addSubview:cookStatView];
-    [self addSubview:containerView];
-    
-    self.layoutOffset += kStatRowGap + containerView.frame.size.height;
+    if (self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
+        
+        UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
+        CGRect imageFrame = prepCookImageView.frame;
+        
+        if (self.recipeDetails.prepTimeInMinutes) {
+            
+            // Prep.
+            prepStatView = [self viewForStatText:@"Prep" statValue:[NSString CK_stringOrNilForNumber:self.recipeDetails.prepTimeInMinutes]];
+            prepFrame = prepStatView.frame;
+            prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
+            
+            // Vertically align with the serves label if it's there.
+            if (self.servesLabel.superview) {
+                CGRect servesFrame = self.servesLabel.superview.frame;
+                prepFrame.origin.x += floorf((servesFrame.size.width - prepFrame.size.width) / 2.0);
+            }
+            prepStatView.frame = prepFrame;
+            self.prepLabel = (UILabel *)[prepStatView viewWithTag:kLabelTag];
+        }
+        
+        if (self.recipeDetails.cookingTimeInMinutes) {
+            
+            // Cook.
+            cookStatView = [self viewForStatText:@"Cook" statValue:[NSString CK_stringOrNilForNumber:self.recipeDetails.cookingTimeInMinutes]];
+            cookFrame = cookStatView.frame;
+            
+            if (!CGRectEqualToRect(prepFrame, CGRectZero)) {
+                cookFrame.origin.x = prepFrame.origin.x + prepFrame.size.width + prepCookGap;
+            } else {
+                
+                cookFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
+                
+                // Vertically align with the serves label if it's there.
+                if (self.servesLabel.superview) {
+                    CGRect servesFrame = self.servesLabel.superview.frame;
+                    cookFrame.origin.x += floorf((servesFrame.size.width - cookFrame.size.width) / 2.0);
+                }
+                
+            }
+            
+            cookStatView.frame = cookFrame;
+            self.cookLabel = (UILabel *)[cookStatView viewWithTag:kLabelTag];
+        }
+        
+        // Merge the frame to get our container frame.
+        CGRect combinedFrame = CGRectUnion(prepCookImageView.frame, prepFrame);
+        combinedFrame = CGRectUnion(combinedFrame, cookFrame);
+        UIView *containerView = [[UIView alloc] initWithFrame:combinedFrame];
+        CGRect containerFrame = containerView.frame;
+        
+        if (self.servesLabel.superview) {
+            containerFrame.origin.y = kStatRowGap + self.layoutOffset;
+        }
+        containerView.frame = containerFrame;
+        containerView.backgroundColor = [UIColor clearColor];
+        
+        // Reposition everything within the container.
+        imageFrame.origin.y = floorf((combinedFrame.size.height - imageFrame.size.height) / 2.0);
+        prepCookImageView.frame = imageFrame;
+        
+        prepFrame.origin.y = floorf((combinedFrame.size.height - prepFrame.size.height) / 2.0) + kStatViewOffset;
+        prepStatView.frame = prepFrame;
+        cookFrame.origin.y = floorf((combinedFrame.size.height - cookFrame.size.height) / 2.0) + kStatViewOffset;
+        cookStatView.frame = cookFrame;
+        prepCookImageView.frame = imageFrame;
+        prepStatView.frame = prepFrame;
+        cookStatView.frame = cookFrame;
+        [containerView addSubview:prepCookImageView];
+        [containerView addSubview:prepStatView];
+        [containerView addSubview:cookStatView];
+        [self addSubview:containerView];
+        
+        self.layoutOffset += kStatRowGap + containerView.frame.size.height;
+    }
 }
 
 - (void)updateFrame {
@@ -133,6 +180,7 @@
     }
     frame.size.width += kContentInsets.right;
     frame.size.height += kContentInsets.bottom;
+    self.backgroundColor = [UIColor clearColor];
     self.frame = frame;
 }
 

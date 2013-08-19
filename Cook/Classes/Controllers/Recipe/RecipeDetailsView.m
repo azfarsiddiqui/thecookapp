@@ -543,16 +543,23 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateServesCook {
     
-    // Add the serves cook view once.
-    if (!self.servesCookView) {
-        self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails];
-        self.servesCookView.userInteractionEnabled = NO;
-        [self addSubview:self.servesCookView];
+    if (self.recipeDetails.numServes || self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
+        
+        // Add the serves cook view once.
+        if (!self.servesCookView) {
+            self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails];
+            self.servesCookView.userInteractionEnabled = NO;
+            [self addSubview:self.servesCookView];
+        } else {
+            [self.servesCookView updateWithRecipeDetails:self.recipeDetails];
+        }
+        [self updateServesCookFrame];
+        
     } else {
-        [self.servesCookView update];
+        [self.servesCookView removeFromSuperview];
+        self.servesCookView = nil;
     }
     
-    [self updateServesCookFrame];
 }
 
 - (void)updateServesCookFrame {
@@ -582,7 +589,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.ingredientsView.userInteractionEnabled = NO;
         self.ingredientsView.alpha = 1.0;
         [self addSubview:self.ingredientsView];
-//        [self updateIngredientsFrame];
     }
     
     // Display if not-blank or in editMode.
@@ -603,21 +609,21 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     // Update divider.
-    CGFloat dividerGap = 5.0;
+    CGFloat preDividerGap = 20.0;
     self.ingredientsDividerView.frame = (CGRect){
         kContentInsets.left,
-        self.layoutOffset.y + dividerGap,
+        self.layoutOffset.y + preDividerGap,
         kMaxLeftWidth,
         self.ingredientsDividerView.frame.size.height
     };
-    [self updateLayoutOffsetVertical:dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap];
+    [self updateLayoutOffsetVertical:preDividerGap + self.ingredientsDividerView.frame.size.height];
     
     // Update ingredients.
     [self.ingredientsView updateIngredients:ingredients];
-    CGFloat beforeIngredientsGap = 10.0;
+    CGFloat beforeIngredientsGap = 23.0;
     self.ingredientsView.frame = (CGRect){
         kContentInsets.left + 15.0,
-        self.layoutOffset.y + dividerGap + self.ingredientsDividerView.frame.size.height + dividerGap + beforeIngredientsGap,
+        self.ingredientsDividerView.frame.origin.y + self.ingredientsDividerView.frame.size.height + beforeIngredientsGap,
         self.ingredientsView.frame.size.width,
         self.ingredientsView.frame.size.height
     };

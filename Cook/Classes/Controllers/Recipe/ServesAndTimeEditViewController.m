@@ -12,6 +12,7 @@
 #import "Theme.h"
 #import "RecipeDetails.h"
 #import "UIColor+Expanded.h"
+#import "CKRecipe.h"
 
 @interface ServesAndTimeEditViewController () <CKDialerControlDelegate, CKNotchSliderViewDelegate>
 
@@ -187,13 +188,12 @@
 
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex {
     NSInteger serves = notchIndex * kUnitServes;
-    BOOL maxServe = (notchIndex == sliderView.numNotches - 1);
     
     // Nil out if num serves was zero.
     self.recipeDetails.numServes = (serves == 0) ? nil : [NSNumber numberWithInteger:serves];
     
     NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
-    if (maxServe) {
+    if (serves > [CKRecipe maxServes]) {
         [servesDisplay appendFormat:@"%d+", (notchIndex - 1) * kUnitServes];
     } else {
         [servesDisplay appendFormat:@"%d", serves];
