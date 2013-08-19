@@ -10,9 +10,12 @@
 #import "Theme.h"
 #import "Ingredient.h"
 #import "NSString+Utilities.h"
+#import "CKBook.h"
+#import "CKBookCover.h"
 
 @interface RecipeIngredientsView ()
 
+@property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) CGSize maxSize;
 @property (nonatomic, assign) NSTextAlignment textAlignment;
 @property (nonatomic, assign) CGFloat layoutOffset;
@@ -25,16 +28,17 @@
 
 #define kRowGap 3.0
 
-- (id)initWithIngredients:(NSArray *)ingredients maxWidth:(CGFloat)maxWidth {
-    return [self initWithIngredients:ingredients maxSize:(CGSize){ maxWidth, MAXFLOAT }];
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth {
+    return [self initWithIngredients:ingredients book:book maxSize:(CGSize){ maxWidth, MAXFLOAT }];
 }
 
-- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize {
-    return [self initWithIngredients:ingredients maxSize:maxSize textAlignment:NSTextAlignmentLeft];
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize {
+    return [self initWithIngredients:ingredients book:book maxSize:maxSize textAlignment:NSTextAlignmentLeft];
 }
 
-- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize textAlignment:(NSTextAlignment)textAlignment {
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize textAlignment:(NSTextAlignment)textAlignment {
     if (self = [super initWithFrame:CGRectZero]) {
+        self.book = book;
         self.maxSize = maxSize;
         self.textAlignment = textAlignment;
         self.ingredientLabels = [NSMutableArray arrayWithCapacity:[ingredients count]];
@@ -134,15 +138,12 @@
     NSString *ingredientString = [self ingredientAsString:ingredient];
     NSMutableAttributedString *ingredientDisplay = [[NSMutableAttributedString alloc] initWithString:ingredientString
                                                                                           attributes:self.paragraphAttributes];
-//    NSString *measurement = ingredient.measurement;
-//    if ([measurement length] > 0) {
-//        [ingredientDisplay addAttribute:NSFontAttributeName
-//                                  value:[Theme ingredientsListMeasurementFont]
-//                                  range:NSMakeRange(0, [measurement length])];
-//        [ingredientDisplay addAttribute:NSForegroundColorAttributeName
-//                                  value:[Theme ingredientsListMeasurementColor]
-//                                  range:NSMakeRange(0, [measurement length])];
-//    }
+    NSString *measurement = ingredient.measurement;
+    if ([measurement length] > 0) {
+        [ingredientDisplay addAttribute:NSForegroundColorAttributeName
+                                  value:[CKBookCover textColourForCover:self.book.cover]
+                                  range:NSMakeRange(0, [measurement length])];
+    }
     
     return ingredientDisplay;
 }

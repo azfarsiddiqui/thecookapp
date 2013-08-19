@@ -13,8 +13,6 @@
 
 @interface RecipeDetails ()
 
-@property (nonatomic, strong) CKRecipe *originalRecipe;
-
 @end
 
 @implementation RecipeDetails

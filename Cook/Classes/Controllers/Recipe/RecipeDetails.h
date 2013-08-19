@@ -13,6 +13,7 @@
 
 @interface RecipeDetails : NSObject
 
+@property (nonatomic, strong) CKRecipe *originalRecipe;
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, copy) NSString *page;
 @property (nonatomic, strong) NSArray *availablePages;

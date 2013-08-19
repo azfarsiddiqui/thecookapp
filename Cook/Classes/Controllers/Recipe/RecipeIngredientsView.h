@@ -8,11 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKBook;
+
 @interface RecipeIngredientsView : UIView
 
-- (id)initWithIngredients:(NSArray *)ingredients maxWidth:(CGFloat)maxWidth;
-- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize;
-- (id)initWithIngredients:(NSArray *)ingredients maxSize:(CGSize)maxSize textAlignment:(NSTextAlignment)textAlignment;
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth;
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize;
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
+            textAlignment:(NSTextAlignment)textAlignment;
 - (void)updateIngredients:(NSArray *)ingredients;
 
 @end

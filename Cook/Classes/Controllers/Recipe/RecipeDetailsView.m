@@ -21,6 +21,7 @@
 #import "PageListEditViewController.h"
 #import "CKEditingTextBoxView.h"
 #import "Ingredient.h"
+#import "CKBook.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -576,6 +577,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Add ingredients view once, then update thereafter.
     if (!self.ingredientsView) {
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
+                                                                             book:self.recipeDetails.originalRecipe.book
                                                                          maxWidth:kMaxLeftWidth];
         self.ingredientsView.userInteractionEnabled = NO;
         self.ingredientsView.alpha = 1.0;
