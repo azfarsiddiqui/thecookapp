@@ -602,6 +602,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateIngredientsFrame {
+    CGFloat leftOffset = 15.0;
     NSArray *ingredients = self.recipeDetails.ingredients;
     
     if ([ingredients count] == 0) {
@@ -611,9 +612,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Update divider.
     CGFloat preDividerGap = 20.0;
     self.ingredientsDividerView.frame = (CGRect){
-        kContentInsets.left,
+        kContentInsets.left + leftOffset,
         self.layoutOffset.y + preDividerGap,
-        kMaxLeftWidth,
+        kMaxLeftWidth - leftOffset,
         self.ingredientsDividerView.frame.size.height
     };
     [self updateLayoutOffsetVertical:preDividerGap + self.ingredientsDividerView.frame.size.height];
@@ -622,7 +623,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self.ingredientsView updateIngredients:ingredients];
     CGFloat beforeIngredientsGap = 23.0;
     self.ingredientsView.frame = (CGRect){
-        kContentInsets.left + 15.0,
+        kContentInsets.left + leftOffset,
         self.ingredientsDividerView.frame.origin.y + self.ingredientsDividerView.frame.size.height + beforeIngredientsGap,
         self.ingredientsView.frame.size.width,
         self.ingredientsView.frame.size.height
