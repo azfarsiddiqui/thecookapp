@@ -128,10 +128,6 @@
     }
 }
 
-- (void)insertOrReplaceMeasure:(NSString *)measure {
-    
-}
-
 #pragma mark - CKListCell methods
 
 - (void)configureValue:(id)value selected:(BOOL)selected {
@@ -190,32 +186,41 @@
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    if (self.focusName) {
+    if (textField == self.unitTextField) {
         
-        // Not dismissed from UoM field, hence do the normal empty cells processing.
-        return [super textFieldShouldEndEditing:textField];
+        return YES;
+        
+//        if (self.focusName) {
+//            
+//            // Next on unit field, should move on to the normal text field and do nothing here.
+//            self.focusName = NO;
+//            return YES;
+//            
+//        } else {
+//            
+//            // This was keyboard dismissal from UoM field, do empty processing.
+//            self.focusName = NO;
+//            return [super textFieldShouldEndEditing:textField];
+//        }
         
     } else {
         
-        // This was keyboard dismissal from UoM field.
-        self.focusName = NO;
-        return YES;
+        return [super textFieldShouldEndEditing:textField];
     }
     
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    BOOL shouldReturn = YES;
     if (textField == self.unitTextField) {
         [self focusNameField];
         
         // Set a flag to indicate focussing onto next field, so we don't process empty cells in shouldEndEditing.
         self.focusName = YES;
+        return YES;
         
     } else {
-        [super textFieldShouldReturn:textField];
+        return [super textFieldShouldReturn:textField];
     }
-    return shouldReturn;
 }
 
 #pragma mark - Properties
