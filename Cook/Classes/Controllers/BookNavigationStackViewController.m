@@ -156,6 +156,12 @@
     // Remove the recipes.
     [self.recipes removeObject:recipe];
     
+    // Remove the recipe from the cached featured recipe if it is featured.
+    CKRecipe *featuredRecipe = [self featuredRecipeForPage:recipe.page];
+    if ([featuredRecipe.objectId isEqualToString:recipe.objectId]) {
+        [self.pageFeaturedRecipes removeObjectForKey:recipe.page];
+    }
+    
     // Remember the recipe that was actioned.
     self.saveOrUpdatedRecipe = recipe;
     
@@ -768,7 +774,7 @@
         NSArray *recipes = [self.pageRecipes objectForKey:page];
         NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
         if ([recipesWithPhotos count] > 0) {
-            featuredRecipe = [recipes objectAtIndex:arc4random_uniform([recipes count])];
+            featuredRecipe = [recipesWithPhotos objectAtIndex:arc4random_uniform([recipesWithPhotos count])];
             [self.pageFeaturedRecipes setObject:featuredRecipe forKey:page];
         }
     }
