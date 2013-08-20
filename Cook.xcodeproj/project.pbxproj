@@ -758,6 +758,7 @@
 		76EBE641179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */; };
 		76EC556117C3030D000DEA08 /* RecipeSocialCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */; };
 		76EC556417C3069C000DEA08 /* RecipeSocialHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556317C3069C000DEA08 /* RecipeSocialHeaderView.m */; };
+		76EC556717C33322000DEA08 /* RecipeSocialViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -1812,6 +1813,8 @@
 		76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialCommentCell.m; sourceTree = "<group>"; };
 		76EC556217C3069C000DEA08 /* RecipeSocialHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialHeaderView.h; sourceTree = "<group>"; };
 		76EC556317C3069C000DEA08 /* RecipeSocialHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialHeaderView.m; sourceTree = "<group>"; };
+		76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialViewLayout.h; sourceTree = "<group>"; };
+		76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialViewLayout.m; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -2592,6 +2595,8 @@
 				76AA97A3173BC941008549EB /* RecipeClipboard.m */,
 				763AE0661716DD0500E0922D /* RecipeSocialViewController.h */,
 				763AE0671716DD0500E0922D /* RecipeSocialViewController.m */,
+				76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */,
+				76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */,
 				76EC555F17C3030D000DEA08 /* RecipeSocialCommentCell.h */,
 				76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */,
 				76EC556217C3069C000DEA08 /* RecipeSocialHeaderView.h */,
@@ -4476,6 +4481,7 @@
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
 				76510714165F31180077B551 /* StoreBookCoverViewCell.m in Sources */,
 				89A906F9166460DD0056E4CF /* Theme.m in Sources */,
+				76EC556717C33322000DEA08 /* RecipeSocialViewLayout.m in Sources */,
 				76381C9516683E9500404FB1 /* RootViewController.m in Sources */,
 				76381C981668418C00404FB1 /* BenchtopBookCoverViewCell.m in Sources */,
 				7635A2CE17A9F2A0002F30F2 /* IngredientListEditViewController.m in Sources */,

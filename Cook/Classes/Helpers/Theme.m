@@ -513,7 +513,7 @@
 #pragma mark - Social view.
 
 + (UIFont *)recipeCommenterFont {
-    return [UIFont fontWithName:@"AvenirNext-Bold" size:20.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:22.0];
 }
 
 + (UIColor *)recipeCommenterColour {

@@ -10,16 +10,14 @@
 #import "CKUser.h"
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
-#import "CKEditingViewHelper.h"
 #import "CKRecipeComment.h"
+#import "CKEditingTextBoxView.h"
 
 @interface RecipeSocialCommentCell () <CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *commentLabel;
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
-@property (nonatomic, strong) CKUser *currentUser;
-@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 
 @end
 
@@ -27,7 +25,7 @@
 
 #define kWidth              600.0
 #define kProfileCommentGap  30.0
-#define kNameCommentGap     5.0
+#define kNameCommentGap     10.0
 #define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
 #define kTextBoxInsets      (UIEdgeInsets){ 30.0, 28.0, 22.0, 40.0 }
 
@@ -43,10 +41,8 @@
     if (self = [super initWithFrame:frame]) {
         
         self.contentView.backgroundColor = [UIColor clearColor];
-        self.currentUser = [CKUser currentUser];
-        self.editingHelper = [[CKEditingViewHelper alloc] init];
-        
         [self.contentView addSubview:self.profileView];
+        [self.contentView addSubview:self.nameLabel];
         [self.contentView addSubview:self.commentLabel];
     }
     return self;
@@ -68,7 +64,7 @@
     self.nameLabel.hidden = NO;
     self.nameLabel.text = user.name;
     CGSize size = [self.nameLabel sizeThatFits:availableSize];
-    self.commentLabel.frame = (CGRect){
+    self.nameLabel.frame = (CGRect){
         self.profileView.frame.origin.x + self.profileView.frame.size.width + kProfileCommentGap,
         kContentInsets.top,
         size.width,
@@ -88,12 +84,13 @@
         availableSize.width,
         size.height
     };
+    
 }
 
-- (void)configureAsPostCommentCell {
+- (void)configureAsPostCommentCellForUser:(CKUser *)user {
     
     // Load current user's profile.
-    [self.profileView loadProfilePhotoForUser:self.currentUser];
+    [self.profileView loadProfilePhotoForUser:user];
     
     // Placeholder for commenting.
     self.commentLabel.text = @"Your Comment";
@@ -115,14 +112,18 @@
     [self.editingHelper wrapEditingView:self.commentLabel contentInsets:kTextBoxInsets delegate:self white:NO editMode:NO];
 }
 
+- (NSString *)currentComment {
+    return self.commentLabel.text;
+}
+
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    DLog();
+    [self.delegate recipeSocialCommentCellEditForCell:self editingView:editingView];
 }
 
 - (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
-    DLog();
+    // This triggers update via the editVC delegate.
 }
 
 #pragma mark - Properties

@@ -9,16 +9,28 @@
 #import "RecipeSocialViewController.h"
 #import "ViewHelper.h"
 #import "CKRecipe.h"
+#import "CKUser.h"
 #import "CKRecipeComment.h"
 #import "RecipeSocialHeaderView.h"
 #import "RecipeSocialCommentCell.h"
+#import "CKTextViewEditViewController.h"
+#import "CKEditingViewHelper.h"
+#import "NSString+Utilities.h"
+#import "RecipeSocialViewLayout.h"
 
-@interface RecipeSocialViewController ()
+@interface RecipeSocialViewController () <RecipeSocialCommentCellDelegate, CKEditViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSMutableArray *comments;
+
+// Posting comments.
+@property (nonatomic, strong) RecipeSocialCommentCell *editingCell;
+@property (nonatomic, strong) UIView *editingView;
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+@property (nonatomic, strong) CKTextViewEditViewController *editViewController;
 
 @end
 
@@ -32,9 +44,11 @@
 #define kCommentCellId      @"CommentCell"
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+    if (self = [super initWithCollectionViewLayout:[[RecipeSocialViewLayout alloc] init]]) {
+        self.currentUser = [CKUser currentUser];
         self.recipe = recipe;
         self.delegate = delegate;
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
     return self;
 }
@@ -53,6 +67,76 @@
     [self.view addSubview:self.closeButton];
     
     [self loadData];
+}
+
+#pragma mark - RecipeSocialCommentCellDelegate methods
+
+- (void)recipeSocialCommentCellEditForCell:(RecipeSocialCommentCell *)commentCell editingView:(UIView *)editingView {
+    
+    // Remember the editing cell.
+    self.editingCell = commentCell;
+    
+    // Configure a text view for editing.
+    CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+                                                                                                     delegate:self
+                                                                                                editingHelper:self.editingHelper
+                                                                                                        white:YES
+                                                                                                        title:@"Comment"
+                                                                                               characterLimit:500];
+    editViewController.clearOnFocus = YES;
+    editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+    [editViewController performEditing:YES];
+    self.editViewController = editViewController;
+}
+
+#pragma mark - CKEditViewControllerDelegate methods
+
+- (void)editViewControllerWillAppear:(BOOL)appear {
+}
+
+- (void)editViewControllerDidAppear:(BOOL)appear {
+    
+    if (!appear) {
+        
+        // Remove the editVC.
+        [self.editViewController.view removeFromSuperview];
+        self.editViewController = nil;
+        
+        // Now unwrap it.
+        [self.editingHelper unwrapEditingView:self.editingView animated:YES];
+        
+        // Then insert another empty row below it.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self insertAddCommentCell];
+        });
+    }
+}
+
+- (void)editViewControllerDismissRequested {
+    [self.editViewController performEditing:NO];
+}
+
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+    DLog(@"Comment: %@", value);
+    
+    NSString *text = (NSString *)value;
+    if ([text CK_containsText]) {
+        
+        // Create a new comment.
+        CKRecipeComment *comment = [CKRecipeComment recipeCommentForUser:self.currentUser recipe:self.recipe text:text];
+        [self.comments addObject:comment];
+        DLog(@"COmmentes: %@", self.comments);
+        
+        // Configure the editingCell to display the created comment.
+        [self.editingCell configureWithComment:comment];
+        
+        // Remember the editingView for us to unwrap it later.
+        self.editingView = editingView;
+        
+        // Update editing box.
+        [self.editingHelper updateEditingView:editingView];
+        
+    }
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -140,6 +224,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     RecipeSocialCommentCell *cell = (RecipeSocialCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId forIndexPath:indexPath];
+    cell.editingHelper = self.editingHelper;
+    cell.delegate = self;
     
     if (indexPath.item < [self.comments count]) {
         
@@ -148,10 +234,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         
     } else {
         
-        // Add cell.
-        [cell configureAsPostCommentCell];
+        // Add cell for the current user.
+        [cell configureAsPostCommentCellForUser:self.currentUser];
+        
     }
-    
     
     return cell;
 }
@@ -191,9 +277,11 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - Private methods
 
 - (void)loadData {
+    self.comments = [NSMutableArray array];
+    
     [self.recipe commentsWithCompletion:^(NSArray *comments){
         DLog(@"Loaded [%d] comments", [comments count]);
-        self.comments = [NSMutableArray arrayWithArray:comments];
+        [self.comments addObjectsFromArray:comments];
     } failure:^(NSError *error) {
         [self.collectionView reloadData];
     }];
@@ -201,6 +289,14 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)closeTapped:(id)sender {
     [self.delegate recipeSocialViewControllerCloseRequested];
+}
+
+- (void)insertAddCommentCell {
+    NSIndexPath *addIndexPath = [NSIndexPath indexPathForItem:[self.comments count] inSection:kCommentsSection];
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView insertItemsAtIndexPaths:@[addIndexPath]];
+    } completion:^(BOOL finished) {
+    }];
 }
 
 @end
