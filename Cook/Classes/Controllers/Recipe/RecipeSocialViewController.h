@@ -2,7 +2,7 @@
 //  RecipeSocialViewController.h
 //  Cook
 //
-//  Created by Jeff Tan-Ang on 11/04/13.
+//  Created by Jeff Tan-Ang on 20/08/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
@@ -10,8 +10,14 @@
 
 @class CKRecipe;
 
-@interface RecipeSocialViewController : UIViewController
+@protocol RecipeSocialViewControllerDelegate <NSObject>
 
-- (id)initWithRecipe:(CKRecipe *)recipe;
+- (void)recipeSocialViewControllerCloseRequested;
+
+@end
+
+@interface RecipeSocialViewController : UICollectionViewController
+
+- (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate;
 
 @end

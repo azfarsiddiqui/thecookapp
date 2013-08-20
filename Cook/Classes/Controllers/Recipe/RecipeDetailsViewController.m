@@ -20,7 +20,7 @@
 #import "CKPrivacySliderView.h"
 #import "CKRecipeSocialView.h"
 #import "CKEditingViewHelper.h"
-#import "BookSocialViewController.h"
+#import "RecipeSocialViewController.h"
 #import "Theme.h"
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 };
 
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
-    CKRecipeSocialViewDelegate, BookSocialViewControllerDelegate, RecipeDetailsViewDelegate,
+    CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
@@ -88,7 +88,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKProgressView *progressView;
 
 // Social layer.
-@property (nonatomic, strong) BookSocialViewController *bookSocialViewController;
+@property (nonatomic, strong) RecipeSocialViewController *socialViewController;
 
 @end
 
@@ -235,9 +235,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     }];
 }
 
-#pragma mark - BookSocialViewControllerDelegate methods
+#pragma mark - RecipeSocialViewControllerDelegate methods
 
-- (void)bookSocialViewControllerCloseRequested {
+- (void)recipeSocialViewControllerCloseRequested {
     [self showSocialOverlay:NO];
 }
 
@@ -1239,21 +1239,21 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)showSocialOverlay:(BOOL)show {
     if (show) {
         [self hideButtons];
-        self.bookSocialViewController = [[BookSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
-        self.bookSocialViewController.view.frame = self.view.bounds;
-        self.bookSocialViewController.view.alpha = 0.0;
-        [self.view addSubview:self.bookSocialViewController.view];
+        self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
+        self.socialViewController.view.frame = self.view.bounds;
+        self.socialViewController.view.alpha = 0.0;
+        [self.view addSubview:self.socialViewController.view];
     }
     [UIView animateWithDuration:show? 0.3 : 0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.bookSocialViewController.view.alpha = show ? 1.0 : 0.0;
+                         self.socialViewController.view.alpha = show ? 1.0 : 0.0;
                      }
                      completion:^(BOOL finished) {
                          if (!show) {
-                             [self.bookSocialViewController.view removeFromSuperview];
-                             self.bookSocialViewController = nil;
+                             [self.socialViewController.view removeFromSuperview];
+                             self.socialViewController = nil;
                              [self updateButtons];
                          }
                      }];
