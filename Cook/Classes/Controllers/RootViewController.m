@@ -844,7 +844,10 @@
 }
 
 - (void)loadSampleRecipe {
-    [CKRecipe recipeForObjectId:@"cFmMoF95S2"
+    
+    // cFmMoF95S2 NASI GORENG
+    // bafbyvhtSj VATAPA
+    [CKRecipe recipeForObjectId:@"bafbyvhtSj"
                         success:^(CKRecipe *recipe){
                             [self viewRecipe:recipe];
                         }
