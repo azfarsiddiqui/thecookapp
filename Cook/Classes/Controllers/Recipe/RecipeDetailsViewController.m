@@ -1495,15 +1495,28 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)updateRecipeDetailsView {
+    
+    if (self.scrollView.contentOffset.y > 0) {
+        
+        [self.scrollView setContentOffset:CGPointZero animated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self resetRecipeDetailsView];
+        });
+
+    } else {
+        [self resetRecipeDetailsView];
+    }
+}
+
+- (void)resetRecipeDetailsView {
     self.scrollView.contentSize = self.recipeDetailsView.frame.size;
     self.recipeDetailsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     self.recipeDetailsView.frame = (CGRect){
         floorf((self.scrollView.bounds.size.width - self.recipeDetailsView.frame.size.width) / 2.0),
-        self.scrollView.bounds.origin.y,
+        0.0,
         self.recipeDetailsView.frame.size.width,
         self.recipeDetailsView.frame.size.height
     };
-    NSLog(@"RecipeDetailsView %@", NSStringFromCGRect(self.recipeDetailsView.frame));
     
     if (!self.recipeDetailsView.superview) {
         [self.scrollView addSubview:self.recipeDetailsView];
