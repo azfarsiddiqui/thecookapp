@@ -713,25 +713,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.contentImageView.frame = contentBackgroundFrame;
     
     // Dynamic blur.
-    if (self.blur) {
-        
-        CGRect headerFrame = (CGRect){
-            self.scrollView.bounds.origin.x,
-            self.scrollView.bounds.origin.y,
-            self.scrollView.bounds.size.width,
-            kHeaderHeight
-        };
-        CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
-        CGRect headerFrameOnImageView = [self.view convertRect:headerFrameRootView toView:self.imageView];
-        
-        // From Fun with Masks: https://github.com/evanwdavis/Fun-with-Masks
-        // Without the CATransaction the mask's frame setting is actually slighty animated, appearing to give it a delay as we scroll around.
-        [CATransaction begin];
-        [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-        self.blurredMaskLayer.frame = headerFrameOnImageView;
-        [CATransaction commit];
-    }
-    
+    [self performDynamicBlur];
 }
 
 - (void)loadData {
@@ -1609,6 +1591,27 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              completion();
                          }
                      }];
+}
+
+- (void)performDynamicBlur {
+    if (self.blur) {
+        CGRect headerFrame = (CGRect){
+            self.scrollView.bounds.origin.x,
+            self.scrollView.bounds.origin.y,
+            self.scrollView.bounds.size.width,
+            kHeaderHeight
+        };
+        CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
+        CGRect headerFrameOnImageView = [self.view convertRect:headerFrameRootView toView:self.imageView];
+        
+        // From Fun with Masks: https://github.com/evanwdavis/Fun-with-Masks
+        // Without the CATransaction the mask's frame setting is actually slighty animated, appearing to give it a delay as we scroll around.
+        // This disables implicit animation.
+        [CATransaction begin];
+        [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+        self.blurredMaskLayer.frame = headerFrameOnImageView;
+        [CATransaction commit];
+    }
 }
 
 @end
