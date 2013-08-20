@@ -512,6 +512,22 @@
 
 #pragma mark - Social view.
 
++ (UIFont *)recipeCommenterFont {
+    return [UIFont fontWithName:@"AvenirNext-Bold" size:20.0];
+}
+
++ (UIColor *)recipeCommenterColour {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
++ (UIFont *)recipeCommentFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:18.0];
+}
+
++ (UIColor *)recipeCommentColour {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
 + (UIFont *)bookSocialTitleFont {
     return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
 }

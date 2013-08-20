@@ -112,6 +112,7 @@ NSString *const kRecipeLikeModelName           = @"RecipeLike";
 #pragma mark - RecipeComment class
 
 NSString *const kRecipeCommentModelName        = @"RecipeComment";
+NSString *const kRecipeCommentText              = @"text";
 
 #pragma mark - Activity class
 

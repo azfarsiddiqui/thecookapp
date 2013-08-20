@@ -111,6 +111,7 @@ extern NSString *const kRecipeLikeModelName;
 #pragma mark - RecipeComment class
 
 extern NSString *const kRecipeCommentModelName;
+extern NSString *const kRecipeCommentText;
 
 #pragma mark - Activity class
 

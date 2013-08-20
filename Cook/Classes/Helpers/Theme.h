@@ -151,6 +151,11 @@
 
 #pragma mark - Social view.
 
++ (UIFont *)recipeCommenterFont;
++ (UIColor *)recipeCommenterColour;
++ (UIFont *)recipeCommentFont;
++ (UIColor *)recipeCommentColour;
+
 + (UIFont *)bookSocialTitleFont;
 + (UIColor *)bookSocialTitleColour;
 + (UIFont *)bookSocialCommentBoxFont;

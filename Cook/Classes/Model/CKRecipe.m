@@ -326,7 +326,7 @@
         failure:(ObjectFailureBlock)failure {
     
     // Create comment object for (user, recipe).
-    CKRecipeComment *recipeComment = [CKRecipeComment recipeCommentForUser:user recipe:self];
+    CKRecipeComment *recipeComment = [CKRecipeComment recipeCommentForUser:user recipe:self text:comment];
     [recipeComment saveInBackground:^{
         success();
     } failure:^(NSError *error) {
@@ -352,9 +352,10 @@
 }
 
 - (void)commentsWithCompletion:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeCommentModelName];
-    [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
-    [likesQuery findObjectsInBackgroundWithBlock:^(NSArray *parseComments, NSError *error) {
+    PFQuery *commentsQuery = [PFQuery queryWithClassName:kRecipeCommentModelName];
+    [commentsQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
+    [commentsQuery includeKey:kUserModelForeignKeyName];
+    [commentsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseComments, NSError *error) {
         if (!error) {
             success([parseComments collect:^id(PFObject *parseComment) {
                 return [[CKRecipeComment alloc] initWithParseObject:parseComment];

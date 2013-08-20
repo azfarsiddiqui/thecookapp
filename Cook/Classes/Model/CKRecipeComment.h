@@ -13,6 +13,9 @@
 
 @interface CKRecipeComment : CKModel
 
-+ (CKRecipeComment *)recipeCommentForUser:(CKUser *)user recipe:(CKRecipe *)recipe;
+@property (nonatomic, strong) CKUser *user;
+@property (nonatomic, strong) NSString *text;
+
++ (CKRecipeComment *)recipeCommentForUser:(CKUser *)user recipe:(CKRecipe *)recipe text:(NSString *)text;
 
 @end

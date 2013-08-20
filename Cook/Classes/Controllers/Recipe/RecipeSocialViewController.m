@@ -51,6 +51,8 @@
     [self.collectionView registerClass:[RecipeSocialHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
     
     [self.view addSubview:self.closeButton];
+    
+    [self loadData];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -128,6 +130,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     if (section == kCommentsSection) {
         numItems = [self.comments count];
+        numItems += 1;  // Post comment.
     }
     
     return numItems;
@@ -137,12 +140,16 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     RecipeSocialCommentCell *cell = (RecipeSocialCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId forIndexPath:indexPath];
+    
     if (indexPath.item < [self.comments count]) {
         
+        CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
+        [cell configureWithComment:comment];
         
     } else {
         
         // Add cell.
+        [cell configureAsPostCommentCell];
     }
     
     
@@ -184,7 +191,12 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - Private methods
 
 - (void)loadData {
-    self.comments = [NSMutableArray array];
+    [self.recipe commentsWithCompletion:^(NSArray *comments){
+        DLog(@"Loaded [%d] comments", [comments count]);
+        self.comments = [NSMutableArray arrayWithArray:comments];
+    } failure:^(NSError *error) {
+        [self.collectionView reloadData];
+    }];
 }
 
 - (void)closeTapped:(id)sender {

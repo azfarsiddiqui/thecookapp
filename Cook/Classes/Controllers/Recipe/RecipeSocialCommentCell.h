@@ -15,4 +15,7 @@
 + (CGSize)sizeForComment:(CKRecipeComment *)comment;
 + (CGSize)unitSize;
 
+- (void)configureWithComment:(CKRecipeComment *)comment;
+- (void)configureAsPostCommentCell;
+
 @end
