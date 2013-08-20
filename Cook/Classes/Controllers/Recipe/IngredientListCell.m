@@ -179,6 +179,7 @@
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
     if (textField == self.unitTextField) {
         self.ingredientsAccessoryViewController.delegate = self;
     }
@@ -186,22 +187,22 @@
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    DLog(@"textField %@", textField);
+    
     if (textField == self.unitTextField) {
         
-        return YES;
-        
-//        if (self.focusName) {
-//            
-//            // Next on unit field, should move on to the normal text field and do nothing here.
-//            self.focusName = NO;
-//            return YES;
-//            
-//        } else {
-//            
-//            // This was keyboard dismissal from UoM field, do empty processing.
-//            self.focusName = NO;
-//            return [super textFieldShouldEndEditing:textField];
-//        }
+        if (self.focusName) {
+            
+            // Next on unit field, should move on to the normal text field and do nothing here.
+            self.focusName = NO;
+            return YES;
+            
+        } else {
+            
+            // This was keyboard dismissal from UoM field, do empty processing.
+            self.focusName = NO;
+            return [super textFieldShouldEndEditing:textField];
+        }
         
     } else {
         
@@ -211,14 +212,19 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    DLog(@"textField %@", textField);
+    
     if (textField == self.unitTextField) {
-        [self focusNameField];
         
         // Set a flag to indicate focussing onto next field, so we don't process empty cells in shouldEndEditing.
         self.focusName = YES;
+        
+        [self focusNameField];
+        
         return YES;
         
     } else {
+        
         return [super textFieldShouldReturn:textField];
     }
 }

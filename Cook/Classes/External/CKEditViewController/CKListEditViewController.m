@@ -209,6 +209,11 @@
         
     } else {
         
+        // Restore visibility.
+        self.editingCell = nil;
+        self.editingIndexPath = nil;
+        [self updateCellsState];
+        
         // Restore and animate the contentInset.
         [UIView animateWithDuration:0.3
                               delay:0.0
@@ -350,6 +355,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     if (self.editingIndexPath) {
         cell.backgroundView.alpha = ([self.editingIndexPath isEqual:indexPath]) ? 1.0 : kInactiveCellFade;
+    } else {
+        cell.backgroundView.alpha = 1.0;
     }
     
     [self configureCell:cell indexPath:indexPath];
@@ -500,8 +507,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
     DLog(@"focus[%@] item[%d]", focused ? @"YES" : @"NO", indexPath.item);
     
-    self.editingCell = focused ? cell : nil;
-    self.editingIndexPath = focused ? indexPath : nil;
+    if (focused) {
+        self.editingIndexPath = indexPath;
+        self.editingCell = cell;
+    }
     
     // Disable/enable drag/drop according to focus mode.
     [self.collectionView getHelper].enabled = !focused;
