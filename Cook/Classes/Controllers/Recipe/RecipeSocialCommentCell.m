@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *commentLabel;
+@property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
 
 @end
@@ -30,7 +31,30 @@
 #define kTextBoxInsets      (UIEdgeInsets){ 30.0, 28.0, 22.0, 40.0 }
 
 + (CGSize)sizeForComment:(CKRecipeComment *)comment {
-    return CGSizeZero;
+    CGSize size = (CGSize){ kWidth, 0.0 };
+    size.height += kContentInsets.top;
+    
+    CKUser *user = comment.user;
+    
+    // Name.
+    CGRect nameFrame = [user.name boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:@{ NSFontAttributeName : [Theme recipeCommenterFont] }
+                                               context:nil];
+    size.height += nameFrame.size.height;
+    
+    // Name/Comment Gap.
+    size.height += kProfileCommentGap;
+    
+    // Comment.
+    CGRect commentFrame = [comment.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
+                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:@{ NSFontAttributeName : [Theme recipeCommentFont] }
+                                                     context:nil];
+    size.height += commentFrame.size.height;
+    
+    size.height += kContentInsets.bottom;
+    return size;
 }
 
 + (CGSize)unitSize {
@@ -44,6 +68,7 @@
         [self.contentView addSubview:self.profileView];
         [self.contentView addSubview:self.nameLabel];
         [self.contentView addSubview:self.commentLabel];
+        [self.contentView addSubview:self.dividerView];
     }
     return self;
 }
@@ -85,18 +110,28 @@
         size.height
     };
     
+    // Divider.
+    self.dividerView.hidden = NO;
+    self.dividerView.frame = (CGRect){
+        self.contentView.bounds.origin.x,
+        self.contentView.bounds.size.height - self.dividerView.frame.size.height,
+        self.contentView.bounds.size.width,
+        self.dividerView.frame.size.height
+    };
+    
 }
 
-- (void)configureAsPostCommentCellForUser:(CKUser *)user {
+- (void)configureAsPostCommentCellForUser:(CKUser *)user loading:(BOOL)loading {
     
     // Load current user's profile.
     [self.profileView loadProfilePhotoForUser:user];
     
     // Placeholder for commenting.
-    self.commentLabel.text = @"Your Comment";
+    self.commentLabel.text = loading ? @"Loading comments..." : @"Your Comment";
     
-    // Hide the name.
+    // Hide the name and divider.
     self.nameLabel.hidden = YES;
+    self.dividerView.hidden = YES;
     
     //  Reposition the box to be centered.
     CGSize availableSize = [self availableCommentSize];
@@ -109,7 +144,9 @@
     };
     
     // Wrap it in a box.
-    [self.editingHelper wrapEditingView:self.commentLabel contentInsets:kTextBoxInsets delegate:self white:NO editMode:NO];
+    if (![self.editingHelper alreadyWrappedForEditingView:self.commentLabel]) {
+        [self.editingHelper wrapEditingView:self.commentLabel contentInsets:kTextBoxInsets delegate:self white:NO editMode:NO];
+    }
 }
 
 - (NSString *)currentComment {
@@ -127,6 +164,20 @@
 }
 
 #pragma mark - Properties
+
+- (CKUserProfilePhotoView *)profileView {
+    if (!_profileView) {
+        _profileView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium];
+        _profileView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _profileView.frame = (CGRect){
+            kContentInsets.left,
+            kContentInsets.top,
+            _profileView.frame.size.width,
+            _profileView.frame.size.height
+        };
+    }
+    return _profileView;
+}
 
 - (UILabel *)nameLabel {
     if (!_nameLabel) {
@@ -156,18 +207,13 @@
     return _commentLabel;
 }
 
-- (CKUserProfilePhotoView *)profileView {
-    if (!_profileView) {
-        _profileView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium];
-        _profileView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _profileView.frame = (CGRect){
-            kContentInsets.left,
-            floorf((self.contentView.bounds.size.height - _profileView.frame.size.height) / 2.0),
-            _profileView.frame.size.width,
-            _profileView.frame.size.height
-        };
+- (UIView *)dividerView {
+    if (!_dividerView) {
+        _dividerView = [[UIView alloc] initWithFrame:(CGRect){ 0.0, 0.0, 1.0, 1.0 }];
+        _dividerView.backgroundColor = [UIColor darkGrayColor];
+        _dividerView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleWidth;
     }
-    return _profileView;
+    return _dividerView;
 }
 
 #pragma mark - Privaet methods

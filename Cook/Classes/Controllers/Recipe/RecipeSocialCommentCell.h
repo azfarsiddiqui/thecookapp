@@ -28,8 +28,6 @@
 + (CGSize)unitSize;
 
 - (void)configureWithComment:(CKRecipeComment *)comment;
-- (void)configureAsPostCommentCellForUser:(CKUser *)user;
-
-- (NSString *)currentComment;
+- (void)configureAsPostCommentCellForUser:(CKUser *)user loading:(BOOL)loading;
 
 @end

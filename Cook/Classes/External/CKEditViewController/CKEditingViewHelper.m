@@ -151,6 +151,10 @@
                      editMode:editMode animated:animated];
 }
 
+- (BOOL)alreadyWrappedForEditingView:(UIView *)editingView {
+    return ([self textBoxViewForEditingView:editingView] != nil);
+}
+
 - (void)updateEditingView:(UIView *)editingView {
     [self updateEditingView:editingView animated:YES];
 }

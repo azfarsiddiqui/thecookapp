@@ -17,6 +17,7 @@
 #import "CKEditingViewHelper.h"
 #import "NSString+Utilities.h"
 #import "RecipeSocialViewLayout.h"
+#import "MRCEnumerable.h"
 
 @interface RecipeSocialViewController () <RecipeSocialCommentCellDelegate, CKEditViewControllerDelegate>
 
@@ -24,13 +25,17 @@
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
+
+// Data
 @property (nonatomic, strong) NSMutableArray *comments;
+@property (nonatomic, assign) BOOL loading;
 
 // Posting comments.
 @property (nonatomic, strong) RecipeSocialCommentCell *editingCell;
 @property (nonatomic, strong) UIView *editingView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKTextViewEditViewController *editViewController;
+@property (nonatomic, assign) BOOL saving;
 
 @end
 
@@ -73,6 +78,11 @@
 
 - (void)recipeSocialCommentCellEditForCell:(RecipeSocialCommentCell *)commentCell editingView:(UIView *)editingView {
     
+    // No posting if it was loading.
+    if (self.loading) {
+        return;
+    }
+    
     // Remember the editing cell.
     self.editingCell = commentCell;
     
@@ -106,9 +116,12 @@
         [self.editingHelper unwrapEditingView:self.editingView animated:YES];
         
         // Then insert another empty row below it.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [self insertAddCommentCell];
-        });
+        if (self.saving) {
+            self.saving = NO;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self insertAddCommentCell];
+            });
+        }
     }
 }
 
@@ -117,7 +130,6 @@
 }
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
-    DLog(@"Comment: %@", value);
     
     NSString *text = (NSString *)value;
     if ([text CK_containsText]) {
@@ -125,7 +137,10 @@
         // Create a new comment.
         CKRecipeComment *comment = [CKRecipeComment recipeCommentForUser:self.currentUser recipe:self.recipe text:text];
         [self.comments addObject:comment];
-        DLog(@"COmmentes: %@", self.comments);
+        
+        // Saves the comment in the background.
+        self.saving = YES;
+        [comment saveInBackground];
         
         // Configure the editingCell to display the created comment.
         [self.editingCell configureWithComment:comment];
@@ -235,7 +250,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         
         // Add cell for the current user.
-        [cell configureAsPostCommentCellForUser:self.currentUser];
+        [cell configureAsPostCommentCellForUser:self.currentUser loading:self.loading];
         
     }
     
@@ -278,12 +293,30 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)loadData {
     self.comments = [NSMutableArray array];
+    self.loading = YES;
     
     [self.recipe commentsWithCompletion:^(NSArray *comments){
         DLog(@"Loaded [%d] comments", [comments count]);
+        
+        self.loading = NO;
         [self.comments addObjectsFromArray:comments];
+        
+        NSArray *indexPathsToInsert = [comments collectWithIndex:^id(CKRecipeComment *comment, NSUInteger commentIndex) {
+            return [NSIndexPath indexPathForItem:commentIndex inSection:kCommentsSection];
+        }];
+        [self.collectionView performBatchUpdates:^{
+            
+            // Insert comments.
+            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+            
+        } completion:^(BOOL finished) {
+            
+            // Reload the comments post field.
+            [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[comments count] inSection:kCommentsSection]]];
+            
+        }];
+        
     } failure:^(NSError *error) {
-        [self.collectionView reloadData];
     }];
 }
 

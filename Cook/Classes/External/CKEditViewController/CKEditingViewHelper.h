@@ -42,6 +42,9 @@
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
                animated:(BOOL)animated;
 
+// Checks wrappign.
+- (BOOL)alreadyWrappedForEditingView:(UIView *)editingView;
+
 // Updates the editing box around an updated editingView.
 - (void)updateEditingView:(UIView *)editingView;
 - (void)updateEditingView:(UIView *)editingView animated:(BOOL)animated;
