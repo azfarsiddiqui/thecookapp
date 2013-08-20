@@ -800,11 +800,21 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
         if (bounceRequired) {
             
+            CGFloat bounceDuration = [self animationDurationFromViewport:currentViewport toViewport:viewport];
+            
             // Do a bounce.
-            [UIView animateWithDuration:[self animationDurationFromViewport:currentViewport toViewport:viewport]
+            [UIView animateWithDuration:bounceDuration
                                   delay:0.0
                                 options:[self animationCurveFromViewport:currentViewport toViewport:viewport]
                              animations:^{
+                                 
+                                 // Make an explicit CA transaction that synchronises with UIView animation.
+                                 [CATransaction begin];
+                                 [CATransaction setAnimationDuration:bounceDuration];
+                                 [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
+                                 self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:bounceFrame];
+                                 [CATransaction commit];
+                                 
                                  self.scrollView.frame = bounceFrame;
                                  [self updateButtonsWithBounceOffset:buttonBounceOffset];
                              }
@@ -815,6 +825,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                        delay:0.0
                                                      options:UIViewAnimationOptionCurveEaseIn
                                                   animations:^{
+                                                      
+                                                      // Bounce back
+                                                      [CATransaction begin];
+                                                      [CATransaction setAnimationDuration:0.1];
+                                                      [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+                                                      self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
+                                                      [CATransaction commit];
+                                                      
                                                       self.scrollView.frame = frame;
                                                       [self updateButtonsWithBounceOffset:UIOffsetZero];
                                                   }
@@ -830,10 +848,20 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              }];
         } else {
             
-            [UIView animateWithDuration:[self animationDurationFromViewport:currentViewport toViewport:viewport]
+            CGFloat duration = [self animationDurationFromViewport:currentViewport toViewport:viewport];
+            
+            [UIView animateWithDuration:duration
                                   delay:0.0
                                 options:[self animationCurveFromViewport:currentViewport toViewport:viewport]
                              animations:^{
+                                 
+                                 // Make an explicit CA transaction that synchronises with UIView animation.
+                                 [CATransaction begin];
+                                 [CATransaction setAnimationDuration:duration];
+                                 [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
+                                 self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
+                                 [CATransaction commit];
+                                 
                                  self.scrollView.frame = frame;
                              }
                              completion:^(BOOL finished) {
@@ -876,6 +904,27 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
     
     return animationCurve;
+}
+
+- (CAMediaTimingFunction *)timingFunctionFromViewport:(SnapViewport)fromViewport toViewport:(SnapViewport)toViewport {
+    NSString *timingFunction = kCAMediaTimingFunctionEaseIn;
+    if (toViewport == SnapViewportTop) {
+        
+        // Fast to top.
+        timingFunction = kCAMediaTimingFunctionEaseOut;
+        
+    } else if (toViewport == SnapViewportBottom) {
+        
+        // Slow down to bottom.
+        timingFunction = kCAMediaTimingFunctionEaseOut;
+        
+    } else if (toViewport == SnapViewportBelow) {
+        
+        // Fast to below.
+        timingFunction = kCAMediaTimingFunctionEaseIn;
+    }
+    
+    return [CAMediaTimingFunction functionWithName:timingFunction];
 }
 
 - (CGFloat)animationDurationFromViewport:(SnapViewport)fromViewport toViewport:(SnapViewport)toViewport {
@@ -1594,24 +1643,39 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)performDynamicBlur {
+    [self performDynamicBlurInsideTransaction:NO];
+}
+
+- (void)performDynamicBlurInsideTransaction:(BOOL)insideTransaction {
+    [self performDynamicBlurInsideTransaction:insideTransaction proposedScrollViewBounds:self.scrollView.bounds];
+}
+
+- (void)performDynamicBlurInsideTransaction:(BOOL)insideTransaction proposedScrollViewBounds:(CGRect)scrollViewBounds {
     if (self.blur) {
-        CGRect headerFrame = (CGRect){
-            self.scrollView.bounds.origin.x,
-            self.scrollView.bounds.origin.y,
-            self.scrollView.bounds.size.width,
-            kHeaderHeight
-        };
-        CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
-        CGRect headerFrameOnImageView = [self.view convertRect:headerFrameRootView toView:self.imageView];
         
         // From Fun with Masks: https://github.com/evanwdavis/Fun-with-Masks
         // Without the CATransaction the mask's frame setting is actually slighty animated, appearing to give it a delay as we scroll around.
         // This disables implicit animation.
-        [CATransaction begin];
-        [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-        self.blurredMaskLayer.frame = headerFrameOnImageView;
-        [CATransaction commit];
+        if (!insideTransaction) {
+            [CATransaction begin];
+            [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+        }
+        self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:scrollViewBounds];
+        if (!insideTransaction) {
+            [CATransaction commit];
+        }
     }
+}
+
+- (CGRect)blurredFrameForProposedScrollViewBounds:(CGRect)bounds {
+    CGRect headerFrame = (CGRect){
+        bounds.origin.x,
+        bounds.origin.y,
+        bounds.size.width,
+        kHeaderHeight
+    };
+    CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
+    return [self.view convertRect:headerFrameRootView toView:self.imageView];
 }
 
 @end
