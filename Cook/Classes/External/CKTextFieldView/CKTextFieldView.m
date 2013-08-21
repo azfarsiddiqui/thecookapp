@@ -125,6 +125,14 @@
     }
 }
 
+- (BOOL)becomeFirstResponder {
+    return [self.textField becomeFirstResponder];
+}
+
+- (BOOL)resignFirstResponder {
+    return [self.textField resignFirstResponder];
+}
+
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -138,7 +146,7 @@
     textField.text = text;
     
     if ([text length] > 0) {
-        [self.delegate didReturnForTextFieldView:self];
+        [self.delegate didEndForTextFieldView:self];
     } else {
         [self focus:NO];
     }
@@ -147,7 +155,7 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
+    [self.delegate didReturnForTextFieldView:self];
     return YES;
 }
 
@@ -183,7 +191,7 @@
         textField.backgroundColor = [UIColor clearColor];
         textField.textAlignment = NSTextAlignmentCenter;
         textField.delegate = self;
-        textField.returnKeyType = UIReturnKeyDone;
+        textField.returnKeyType = UIReturnKeyGo;
         textField.text = @"";
         textField.keyboardType = UIKeyboardTypeEmailAddress;
         textField.autocapitalizationType = UITextAutocapitalizationTypeNone;

@@ -168,9 +168,16 @@
     return progressText;
 }
 
+- (void)didEndForTextFieldView:(CKTextFieldView *)textFieldView {
+    NSLog(@"textFieldViewDidEnd:");
+    [self validateFields:@[textFieldView]];
+}
+
 - (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView {
     NSLog(@"textFieldViewDidReturn:");
-    [self validateFields:@[textFieldView]];
+    if ([self validateFields:@[textFieldView]]) {
+        [self emailButtonTapped];
+    }
 }
 
 #pragma mark - Properties

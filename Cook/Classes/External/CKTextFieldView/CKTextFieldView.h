@@ -13,6 +13,7 @@
 @protocol CKTextFieldViewDelegate <NSObject>
 
 - (NSString *)progressTextForTextFieldView:(CKTextFieldView *)textFieldView currentText:(NSString *)text;
+- (void)didEndForTextFieldView:(CKTextFieldView *)textFieldView;
 - (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView;
 
 @end
