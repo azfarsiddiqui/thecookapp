@@ -12,11 +12,20 @@
 
 + (CKServerManager *)sharedInstance;
 
-- (void)start;
+- (void)startWithLaunchOptions:(NSDictionary *)launchOptions;
 - (void)stop;
 
+// Facebook integration.
 - (BOOL)handleFacebookCallback:(NSURL *)url;
+
+// Geolocation.
 - (void)requestForCurrentLocation:(void(^)(double latitude, double longitude))completion
                           failure:(void(^)(NSError *error))failure;
+
+// Push notifications.
+- (void)registerForPush;
+- (void)handleDeviceToken:(NSData *)deviceToken;
+- (void)handlePushWithUserInfo:(NSDictionary *)userInfo;
+
 
 @end

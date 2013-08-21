@@ -7,6 +7,7 @@
 //
 
 #import "CKServerManager.h"
+#import "CKUser.h"
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 
@@ -31,11 +32,19 @@
     return self;
 }
 
-- (void)start {
+- (void)startWithLaunchOptions:(NSDictionary *)launchOptions {
     
     // Set up Parse
     [Parse setApplicationId:@"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS"
                   clientKey:@"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN"];
+    
+    // Set up Parse analytics.
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    // Register/refresh device tokens if logged in.
+    if ([CKUser isLoggedIn]) {
+        [self registerForPush];
+    }
     
     // Set up Facebook
     [PFFacebookUtils initializeFacebook];
@@ -64,6 +73,22 @@
             DLog(@"Unable to get current location [%@]", [error localizedDescription]);
         }
     }];
+}
+
+#pragma mark - Push notifications
+
+- (void)registerForPush {
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound];
+}
+
+- (void)handleDeviceToken:(NSData *)deviceToken {
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation saveInBackground];
+}
+
+- (void)handlePushWithUserInfo:(NSDictionary *)userInfo {
+    [PFPush handlePush:userInfo];
 }
 
 @end

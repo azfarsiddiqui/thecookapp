@@ -12,6 +12,7 @@
 #import "MRCEnumerable.h"
 #import "CKUserNotification.h"
 #import "CKUserFriend.h"
+#import "CKServerManager.h"
 #import <FacebookSDK/FacebookSDK.h>
 
 @interface CKUser ()
@@ -102,6 +103,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     // Register.
     [parseUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
+            
+            // Update push tokens.
+            [[CKServerManager sharedInstance] registerForPush];
+            
             success();
         } else {
             failure(error);
@@ -115,7 +120,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
     DLog(@"Login with Email[%@]", email);
     [PFUser logInWithUsernameInBackground:email password:password block:^(PFUser *user, NSError *error) {
         if (!error) {
+            
+            // Update push tokens.
+            [[CKServerManager sharedInstance] registerForPush];
+            
             success();
+            
         } else {
             failure(error);
         }
@@ -536,9 +546,14 @@ static ObjectFailureBlock loginFailureBlock = nil;
             // Save it off.
             [currentUser.parseUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (!error) {
+                    
+                    // Update push tokens.
+                    [[CKServerManager sharedInstance] registerForPush];
+                    
                     loginSuccessfulBlock();
                     loginSuccessfulBlock = nil;
                     loginFailureBlock = nil;
+                    
                 } else {
                     loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
                                                      message:[NSString stringWithFormat:@"Unable to save friends for %@", currentUser]]);
