@@ -31,4 +31,17 @@
     [[CKServerManager sharedInstance] stop];
 }
 
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [[CKServerManager sharedInstance] handleDeviceToken:deviceToken];
+}
+
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    [[CKServerManager sharedInstance] handleDeviceTokenError:error];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [[CKServerManager sharedInstance] handlePushWithUserInfo:userInfo];
+}
+
 @end

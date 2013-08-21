@@ -87,6 +87,14 @@
     [currentInstallation saveInBackground];
 }
 
+- (void)handleDeviceTokenError:(NSError *)error {
+    if ([error code] == 3010) {
+        DLog(@"Push notifications don't work in the simulator!");
+    } else {
+        DLog(@"didFailToRegisterForRemoteNotificationsWithError: %@", error);
+    }
+}
+
 - (void)handlePushWithUserInfo:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
 }

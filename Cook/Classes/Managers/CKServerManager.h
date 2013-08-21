@@ -25,6 +25,8 @@
 // Push notifications.
 - (void)registerForPush;
 - (void)handleDeviceToken:(NSData *)deviceToken;
+- (void)handleDeviceTokenError:(NSError *)error;
+- (void)handlePushWithUserInfo:(NSDictionary *)userInfo;
 - (void)handlePushWithUserInfo:(NSDictionary *)userInfo;
 
 
