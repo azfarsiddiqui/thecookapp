@@ -55,6 +55,17 @@
     DLog(@"Started ServerManager");
 }
 
+- (void)handleActive {
+    
+    // Resets the badge.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    if (currentInstallation.badge != 0) {
+        currentInstallation.badge = 0;
+        [currentInstallation saveEventually];
+    }
+    
+}
+
 - (void)stop {
     DLog(@"Stopped ServerManager");
 }

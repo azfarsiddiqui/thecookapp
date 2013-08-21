@@ -22,6 +22,10 @@
     return YES;
 }
 
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [[CKServerManager sharedInstance] handleActive];
+}
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [[CKServerManager sharedInstance] handleFacebookCallback:url];
