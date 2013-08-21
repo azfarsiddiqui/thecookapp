@@ -720,10 +720,20 @@
     // Inform book navigation it is about to become inactive.
     // [self.bookNavigationViewController setActive:NO];
     
+    // Book scale/translate transform.
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
+    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 50.0);
+//    CGAffineTransform bookTransform = CGAffineTransformConcat(scaleTransform, translateTransform);
+    CGAffineTransform bookTransform = scaleTransform;
+    
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
+                         
+                         // Scale the book back.
+                         self.bookNavigationViewController.view.transform = bookTransform;
+                         self.bookCoverViewController.view.transform = bookTransform;
                      
                          // Fade in overlay.
                          self.modalOverlayView.alpha = 1.0;
