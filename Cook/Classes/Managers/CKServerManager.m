@@ -94,6 +94,12 @@
 
 - (void)handleDeviceToken:(NSData *)deviceToken {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    
+    // Set the owner for this installation by associating with the currently logged on user.
+    if ([CKUser isLoggedIn]) {
+        [currentInstallation setObject:[CKUser currentUser].parseUser forKey:kUserModelForeignKeyName];
+    }
+    
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
 }
