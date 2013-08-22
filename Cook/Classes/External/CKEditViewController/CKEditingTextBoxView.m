@@ -12,7 +12,7 @@
 @interface CKEditingTextBoxView () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *editingView;
-@property (nonatomic, strong) UIImageView *textEditBoxImageView;
+@property (nonatomic, strong) UIButton *textEditBoxImageView;
 @property (nonatomic, strong) UIButton *textEditingSaveButton;
 @property (nonatomic, assign) CGPoint iconOffset;
 @property (nonatomic, assign) BOOL white;
@@ -25,11 +25,28 @@
 #define kSaveButtonScaling 0.78
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {
+    return [self buttonWithImage:image selectedImage:Nil target:target selector:selector];
+}
+
++ (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target
+                     selector:(SEL)selector {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setBackgroundImage:image forState:UIControlStateNormal];
+    if (selectedImage) {
+        [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
+        [button setBackgroundImage:selectedImage forState:UIControlStateHighlighted];
+    }
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(0.0, 0.0, image.size.width, image.size.height)];
     return button;
+}
+
++ (void)updateButton:(UIButton *)button image:(UIImage *)image selectedImage:(UIImage *)selectedImage {
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    if (selectedImage) {
+        [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
+        [button setBackgroundImage:selectedImage forState:UIControlStateHighlighted];
+    }
 }
 
 + (UIImage *)textEditingBoxWhite:(BOOL)white {
@@ -37,12 +54,17 @@
 }
 
 + (UIImage *)textEditingBoxWhite:(BOOL)white editMode:(BOOL)editMode {
-    UIEdgeInsets capInsets = (UIEdgeInsets){ 49.0, 24.0, 15.0, 58.0 };
+    return [self textEditingBoxWhite:white editMode:editMode selected:NO];
+}
 
++ (UIImage *)textEditingBoxWhite:(BOOL)white editMode:(BOOL)editMode selected:(BOOL)selected {
+    UIEdgeInsets capInsets = (UIEdgeInsets){ 49.0, 24.0, 15.0, 58.0 };
+    
     // Construct the required image name.
     NSMutableString *textBoxName = [NSMutableString stringWithString:@"cook_customise_textbox"];
     [textBoxName appendString:white ? @"_white" : @"_black"];
     [textBoxName appendString:editMode ? @"_edit" : @""];
+    [textBoxName appendString:selected ? @"_onpress" : @""];
     [textBoxName appendString:@".png"];
     
     UIImage *textBoxImage = [[UIImage imageNamed:textBoxName] resizableImageWithCapInsets:capInsets];
@@ -50,8 +72,13 @@
 }
 
 + (UIImage *)textEditingSelectionBoxWhite:(BOOL)white {
-    return [[UIImage imageNamed:@"cook_customise_textbox_blue.png"]
-            resizableImageWithCapInsets:(UIEdgeInsets){ 49.0, 24.0, 15.0, 58.0 }];
+    return [self textEditingSelectionBoxWhite:white selected:NO];
+}
+
++ (UIImage *)textEditingSelectionBoxWhite:(BOOL)white selected:(BOOL)selected {
+    UIEdgeInsets capInsets = (UIEdgeInsets){ 49.0, 24.0, 15.0, 58.0 };
+    UIImage *textBoxImage = selected ? [UIImage imageNamed:@"cook_customise_textbox_blue.png"] : [UIImage imageNamed:@"cook_customise_textbox_blue.png"];
+    return [textBoxImage resizableImageWithCapInsets:capInsets];
 }
 
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
@@ -75,7 +102,10 @@
         self.iconOffset = CGPointMake(-32.0, -11.0);
         
         // Text box.
-        UIImageView *textEditImageView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode]];
+        UIButton *textEditImageView = [CKEditingTextBoxView buttonWithImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode]
+                                                              selectedImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode selected:YES]
+                                                                     target:self
+                                                                   selector:@selector(tapped:)];
         textEditImageView.userInteractionEnabled = YES;
         textEditImageView.autoresizingMask = [self textBoxResizingMask];
         self.textEditBoxImageView = textEditImageView;
@@ -113,9 +143,13 @@
 
 - (void)updateEditingView:(UIView *)editingView updated:(BOOL)updated {
     if (updated) {
-        self.textEditBoxImageView.image = [CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode];
+        [CKEditingTextBoxView updateButton:self.textEditBoxImageView
+                                     image:[CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode]
+                             selectedImage:[CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode selected:YES]];
     } else {
-        self.textEditBoxImageView.image = [CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode];
+        [CKEditingTextBoxView updateButton:self.textEditBoxImageView
+                                     image:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode]
+                             selectedImage:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode selected:YES]];
     }
     
     // First set them to no auto-resize as we're gonna position/size them ourselves.
@@ -176,7 +210,9 @@
 }
 
 - (void)setTextBoxViewWithEdit:(BOOL)editMode {
-    self.textEditBoxImageView.image = [CKEditingTextBoxView textEditingBoxWhite:self.white editMode:editMode];
+    [CKEditingTextBoxView updateButton:self.textEditBoxImageView
+                                 image:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:editMode]
+                         selectedImage:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:editMode selected:YES]];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -192,6 +228,13 @@
         [self.delegate editingTextBoxViewTappedForEditingView:self.editingView];
     }
 }
+
+- (void)tapped:(id)sender {
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(editingTextBoxViewTappedForEditingView:)]) {
+        [self.delegate editingTextBoxViewTappedForEditingView:self.editingView];
+    }
+}
+
 - (void)saveTapped:(id)sender {
     if (self.delegate != nil && [self.delegate respondsToSelector:@selector(editingTextBoxViewSaveTappedForEditingView:)]) {
         [self.delegate editingTextBoxViewSaveTappedForEditingView:self.editingView];

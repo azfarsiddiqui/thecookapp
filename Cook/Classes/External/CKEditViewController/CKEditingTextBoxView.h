@@ -24,7 +24,10 @@
 
 + (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector;
 + (UIImage *)textEditingBoxWhite:(BOOL)white;
++ (UIImage *)textEditingBoxWhite:(BOOL)white editMode:(BOOL)editMode;
++ (UIImage *)textEditingBoxWhite:(BOOL)white editMode:(BOOL)editMode selected:(BOOL)selected;
 + (UIImage *)textEditingSelectionBoxWhite:(BOOL)white;
++ (UIImage *)textEditingSelectionBoxWhite:(BOOL)white selected:(BOOL)selected;
 
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
                   delegate:(id<CKEditingTextBoxViewDelegate>)delegate;
