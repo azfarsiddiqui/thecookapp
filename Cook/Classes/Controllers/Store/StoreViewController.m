@@ -111,10 +111,11 @@
     [self.view sendSubviewToBack:backgroundView];
     
     // Bottom shadow.
+    bottomShadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     bottomShadowView.frame = (CGRect){
         self.view.bounds.origin.x,
         self.view.bounds.origin.y + backgroundView.frame.size.height,
-        bottomShadowView.frame.size.width,
+        self.view.bounds.size.width,
         bottomShadowView.frame.size.height
     };
     [self.view addSubview:bottomShadowView];
