@@ -85,39 +85,27 @@
         return;
     }
     
-    // Left opened page.
-    UIView *leftSnapshotView = [snapshotView resizableSnapshotViewFromRect:(CGRect){
-        0.0,
-        0.0,
-        snapshotView.frame.size.width / 2.0,
-        snapshotView.frame.size.height
-    } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
-    leftSnapshotView.layer.frame = self.leftOpenLayer.bounds;
-    leftSnapshotView.layer.anchorPoint = self.leftOpenLayer.anchorPoint;
-    DLog(@"leftSnapshotView %@", leftSnapshotView);
-    
     // Left image.
-    UIGraphicsBeginImageContextWithOptions(leftSnapshotView.bounds.size, NO, 0);
-    BOOL leftDone = [leftSnapshotView drawViewHierarchyInRect:leftSnapshotView.bounds afterScreenUpdates:YES];
+    UIGraphicsBeginImageContextWithOptions((CGSize){ (snapshotView.bounds.size.width / 2.0), snapshotView.bounds.size.height}, NO, 0);
+    BOOL leftDone = [snapshotView drawViewHierarchyInRect:(CGRect){
+        0.0,
+        0.0,
+        snapshotView.frame.size.width,
+        snapshotView.frame.size.height
+    } afterScreenUpdates:YES];
     UIImage *leftImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     self.leftOpenLayer.contents = (id)leftImage.CGImage;
     DLog(@"Drawn leftImage %@", leftDone ? @"YES" : @"NO");
     
-    // Right opened page.
-    UIView *rightSnapshotView = [snapshotView resizableSnapshotViewFromRect:(CGRect){
-        snapshotView.frame.size.width / 2.0,
+    // Right image.
+    UIGraphicsBeginImageContextWithOptions((CGSize){snapshotView.bounds.size.width/2.0, snapshotView.bounds.size.height}, NO, 0);
+    BOOL rightDone = [snapshotView drawViewHierarchyInRect:(CGRect){
+        -(snapshotView.frame.size.width / 2.0),
         0.0,
-        snapshotView.frame.size.width / 2.0,
+        snapshotView.frame.size.width,
         snapshotView.frame.size.height
-    } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
-    rightSnapshotView.layer.anchorPoint = self.rightOpenLayer.anchorPoint;
-    rightSnapshotView.layer.frame = self.rightOpenLayer.bounds;
-    DLog(@"rightSnapshotView %@", rightSnapshotView);
-    
-    // Left image.
-    UIGraphicsBeginImageContextWithOptions(rightSnapshotView.bounds.size, NO, 0);
-    BOOL rightDone = [rightSnapshotView drawViewHierarchyInRect:rightSnapshotView.bounds afterScreenUpdates:YES];
+    } afterScreenUpdates:YES];
     UIImage *rightImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     self.rightOpenLayer.contents = (id)rightImage.CGImage;
