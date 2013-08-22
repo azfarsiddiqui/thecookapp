@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UIColor+Expanded.h"
 
 @interface Theme : NSObject
 

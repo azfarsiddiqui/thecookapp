@@ -29,6 +29,8 @@
 #define kEventThemeChange           @"CKThemeChange"
 #define kEventStatusBarChange       @"CKStatusBarChange"
 #define kBoolLightStatusBar         @"CKStatusBarLight"
+#define kEventUserNotifications     @"CKUserNotifications"
+#define kUserNotificationsCount     @"CKUserNotificationsCount"
 
 #pragma mark - Login successful event
 
@@ -212,6 +214,24 @@
 
 + (void)unregisterStatusBarChange:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventStatusBarChange];
+}
+
+#pragma mark - User Notifications
+
++ (void)registerUserNotifications:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventUserNotifications];
+}
+
++ (void)postUserNotifications:(NSInteger)notificationsCount {
+    [EventHelper postEvent:kEventUserNotifications withUserInfo:@{ kUserNotificationsCount : @(notificationsCount) }];
+}
+
++ (NSInteger)userNotificationsCountForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kUserNotificationsCount] integerValue];
+}
+
++ (void)unregisterUserNotifications:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventUserNotifications];
 }
 
 #pragma mark - Private

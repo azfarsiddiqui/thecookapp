@@ -58,4 +58,9 @@
 + (BOOL)lightStatusBarChangeForNotification:(NSNotification *)notification;
 + (void)unregisterStatusBarChange:(id)observer;
 
++ (void)registerUserNotifications:(id)observer selector:(SEL)selector;
++ (void)postUserNotifications:(NSInteger)notificationsCount;
++ (NSInteger)userNotificationsCountForNotification:(NSNotification *)notification;
++ (void)unregisterUserNotifications:(id)observer;
+
 @end

@@ -27,9 +27,9 @@
     }];
 }
 
-+ (void)notificationsForUser:(CKUser *)user completion:(ListObjectsSuccessBlock)completion
-                     failure:(ObjectFailureBlock)failure {
++ (void)notificationsCompletion:(ListObjectsSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     
+    CKUser *user = [CKUser currentUser];
     PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
     [query includeKey:kUserModelForeignKeyName];
@@ -48,6 +48,21 @@
             
             completion(notifications);
             
+        } else {
+            failure(error);
+        }
+    }];
+}
+
++ (void)notificationsCountCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure {
+    CKUser *user = [CKUser currentUser];
+    PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
+    [query whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
+    [query includeKey:kUserModelForeignKeyName];
+    [query orderByDescending:kModelAttrCreatedAt];
+    [query countObjectsInBackgroundWithBlock:^(int count, NSError *error) {
+        if (!error) {
+            completion(count);
         } else {
             failure(error);
         }

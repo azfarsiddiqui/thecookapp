@@ -110,15 +110,15 @@
 - (void)loadData {
     [self.activityView startAnimating];
     CKUser *currentUser = [CKUser currentUser];
-    [CKUserNotification notificationsForUser:currentUser
-                                  completion:^(NSArray *notifications) {
-                                      self.notifications = [NSMutableArray arrayWithArray:notifications];
-                                      [self.activityView stopAnimating];
-                                      [self.tableView reloadData];
-                                  } failure:^(NSError *error) {
-                                      DLog(@"Error %@", [error localizedDescription]);
-                                      [self.activityView stopAnimating];
-                                  }];
+//    [CKUserNotification notificationsForUser:currentUser
+//                                  completion:^(NSArray *notifications) {
+//                                      self.notifications = [NSMutableArray arrayWithArray:notifications];
+//                                      [self.activityView stopAnimating];
+//                                      [self.tableView reloadData];
+//                                  } failure:^(NSError *error) {
+//                                      DLog(@"Error %@", [error localizedDescription]);
+//                                      [self.activityView stopAnimating];
+//                                  }];
 }
 
 @end

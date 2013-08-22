@@ -7,7 +7,6 @@
 //
 
 #import "Theme.h"
-#import "UIColor+Expanded.h"
 
 
 @implementation Theme
