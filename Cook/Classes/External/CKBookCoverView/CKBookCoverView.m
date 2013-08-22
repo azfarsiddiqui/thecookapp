@@ -382,14 +382,13 @@
     self.editable = editable;
     if (editable) {
         if (!self.editButton) {
-            UIButton *editButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            UIImage *editImage = [UIImage imageNamed:@"cook_dash_icons_customise.png"];
-            [editButton setBackgroundImage:editImage forState:UIControlStateNormal];
-            [editButton addTarget:self action:@selector(editTapped:) forControlEvents:UIControlEventTouchUpInside];
-            editButton.frame = CGRectMake(self.bounds.size.width - editImage.size.width + 5.0,
+            UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]
+                                                 selectedImage:[UIImage imageNamed:@"cook_dash_icons_customise_onpress.png"]
+                                                        target:self selector:@selector(editTapped:)];
+            editButton.frame = CGRectMake(self.bounds.size.width - editButton.frame.size.width + 5.0,
                                           self.bounds.origin.y - 7.0,
-                                          editImage.size.width,
-                                          editImage.size.height);
+                                          editButton.frame.size.width,
+                                          editButton.frame.size.height);
             [self addSubview:editButton];
             self.editButton = editButton;
         }
