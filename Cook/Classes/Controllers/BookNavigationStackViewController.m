@@ -377,10 +377,10 @@
         
     } else if (self.justOpened) {
         
-        // Start on page 1.
-        [self.collectionView setContentOffset:(CGPoint){ kIndexSection * self.collectionView.bounds.size.width, 0.0 }
-                                     animated:NO];
         self.justOpened = NO;
+        
+        // Start on page 1.
+        [self peekTheBook];
         
     }
     
@@ -785,13 +785,6 @@
     [self closeBook];
 }
 
-- (void)scrollToHome {
-    [self.collectionView setContentOffset:(CGPoint){
-        kIndexSection * self.collectionView.bounds.size.width,
-        self.collectionView.contentOffset.y
-    } animated:YES];
-}
-
 - (void)configureImageForHeaderView:(BookContentImageView *)contentHeaderView recipe:(CKRecipe *)recipe
                           indexPath:(NSIndexPath *)indexPath {
     DLog(@"Content Image for %d", indexPath.section);
@@ -1026,6 +1019,21 @@
         pageIndex * self.collectionView.bounds.size.width,
         self.collectionView.contentOffset.y
     } animated:animated];
+}
+
+- (void)scrollToHome {
+    [self scrollToHomeAnimated:YES];
+}
+
+- (void)scrollToHomeAnimated:(BOOL)animated {
+    [self.collectionView setContentOffset:(CGPoint){
+        kIndexSection * self.collectionView.bounds.size.width,
+        self.collectionView.contentOffset.y
+    } animated:animated];
+}
+
+- (void)peekTheBook {
+    [self scrollToHomeAnimated:NO];
 }
 
 @end
