@@ -142,7 +142,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 }
 
 - (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
-    DLog();
+    [EventHelper postStatusBarChangeForLight:[appearNumber boolValue]];
 }
 
 - (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {
