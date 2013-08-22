@@ -54,12 +54,12 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor lightGrayColor];
-    [self initImageView];
     [EventHelper registerEditMode:self selector:@selector(editModeReceived:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self initImageView];
     [self loadData];
 }
 
@@ -123,11 +123,27 @@
 #pragma mark - Private methods
 
 - (void)initImageView {
+    
+    // Image container view to clip the motion effects of the imageView.
+    UIView *imageContainerView = [[UIView alloc] initWithFrame:self.view.bounds];
+    imageContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    imageContainerView.clipsToBounds = YES;
+    [self.view addSubview:imageContainerView];
+    
+    UIOffset motionOffset = [ViewHelper standardMotionOffset];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
-    imageView.frame = self.view.bounds;
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:imageView];
+    imageView.frame = (CGRect) {
+        imageContainerView.bounds.origin.x - motionOffset.horizontal,
+        imageContainerView.bounds.origin.y - motionOffset.vertical,
+        imageContainerView.bounds.size.width + (motionOffset.horizontal * 2.0),
+        imageContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
+    };
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [imageContainerView addSubview:imageView];
     self.imageView = imageView;
+    
+    // Motion effects.
+    [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
 }
 
 - (void)initIntroView {

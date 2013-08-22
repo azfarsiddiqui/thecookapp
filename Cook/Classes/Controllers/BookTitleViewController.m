@@ -347,16 +347,31 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - Private methods
 
 - (void)initBackgroundView {
+    
+    UIOffset motionOffset = [ViewHelper standardMotionOffset];
+    UIView *imageContainerView = [[UIView alloc] initWithFrame:self.view.bounds];
+    imageContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    imageContainerView.clipsToBounds = YES;
+    [self.view addSubview:imageContainerView];
+    
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_bg_blank.png"]];
-    imageView.frame = self.view.bounds;
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    imageView.frame = (CGRect) {
+        imageContainerView.bounds.origin.x - motionOffset.horizontal,
+        imageContainerView.bounds.origin.y - motionOffset.vertical,
+        imageContainerView.bounds.size.width + (motionOffset.horizontal * 2.0),
+        imageContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
+    };
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
-    [self.view addSubview:imageView];
+    [imageContainerView addSubview:imageView];
     self.imageView = imageView;
     
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:imageView.frame];
+    self.blurredImageView = [[UIImageView alloc] initWithFrame:imageView.bounds];
     self.blurredImageView.alpha = 0.0;
-    [self.view addSubview:self.blurredImageView];
+    [self.imageView addSubview:self.blurredImageView];
+    
+    // Motion effects.
+    [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
     
     // Attempt to load cached image.
     NSString *bookTitleCacheKey = [NSString stringWithFormat:@"BookTitle_%@", self.book.objectId];

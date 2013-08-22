@@ -25,7 +25,6 @@
 @implementation BookContentImageView
 
 #define kForceVisibleOffset         1.0
-#define kMotionOffset               (UIOffset){ 20.0, 20.0 }
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -44,7 +43,7 @@
         
         // Motion effects.
         self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
-        [ViewHelper applyDraggyMotionEffectsToView:self.imageView offset:kMotionOffset];
+        [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
         
     }
     return self;
@@ -87,11 +86,12 @@
 
 - (UIImageView *)imageView {
     if (!_imageView) {
+        UIOffset motionOffset = [ViewHelper standardMotionOffset];
         _imageView = [[UIImageView alloc] initWithFrame:(CGRect){
-            self.containerView.bounds.origin.x - kMotionOffset.horizontal,
-            self.containerView.bounds.origin.y - kMotionOffset.vertical,
-            self.containerView.bounds.size.width + (kMotionOffset.horizontal * 2.0),
-            self.containerView.bounds.size.height + (kMotionOffset.vertical * 2.0),
+            self.containerView.bounds.origin.x - motionOffset.horizontal,
+            self.containerView.bounds.origin.y - motionOffset.vertical,
+            self.containerView.bounds.size.width + (motionOffset.horizontal * 2.0),
+            self.containerView.bounds.size.height + (motionOffset.vertical * 2.0),
         }];
         _imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     }

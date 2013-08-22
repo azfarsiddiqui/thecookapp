@@ -102,7 +102,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kHeaderHeight       280.0
 #define kDragRatio          0.9
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
-#define kMotionOffset       (UIOffset){ 20.0, 20.0 }
 
 - (void)dealloc {
     [self.scrollView removeObserver:self forKeyPath:@"frame"];
@@ -591,11 +590,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)initImageView {
     
+    UIOffset motionOffset = [ViewHelper standardMotionOffset];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:(CGRect){
-        self.view.bounds.origin.x - kMotionOffset.horizontal,
-        self.view.bounds.origin.y - kMotionOffset.vertical,
-        self.view.bounds.size.width + (kMotionOffset.horizontal * 2.0),
-        self.view.bounds.size.height + (kMotionOffset.vertical * 2.0)
+        self.view.bounds.origin.x - motionOffset.horizontal,
+        self.view.bounds.origin.y - motionOffset.vertical,
+        self.view.bounds.size.width + (motionOffset.horizontal * 2.0),
+        self.view.bounds.size.height + (motionOffset.vertical * 2.0)
     }];
     imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     imageView.alpha = 0.0;
@@ -640,7 +640,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.imageView addGestureRecognizer:tapGesture];
     
     // Motion effects.
-    [ViewHelper applyDraggyMotionEffectsToView:self.imageView offset:kMotionOffset];
+    [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
 }
 
 - (void)initScrollView {

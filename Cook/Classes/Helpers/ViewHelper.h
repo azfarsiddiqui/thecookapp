@@ -42,8 +42,10 @@
 
 // Motion effects.
 + (void)applyMotionEffectsToView:(UIView *)view;
++ (void)applyDraggyMotionEffectsToView:(UIView *)view;
 + (void)applyDraggyMotionEffectsToView:(UIView *)view offset:(UIOffset)offset;
 + (void)applyMotionEffectsWithOffset:(CGFloat)offset view:(UIView *)view;
++ (UIOffset)standardMotionOffset;
 
 // Collection view.
 + (CGRect)visibleFrameForCollectionView:(UICollectionView *)collectionView;

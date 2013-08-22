@@ -159,6 +159,10 @@
     [self applyMotionEffectsWithOffset:50.0 view:view];
 }
 
++ (void)applyDraggyMotionEffectsToView:(UIView *)view {
+    [self applyDraggyMotionEffectsToView:view offset:[ViewHelper standardMotionOffset]];
+}
+
 + (void)applyDraggyMotionEffectsToView:(UIView *)view offset:(UIOffset)offset {
     CKOffsetMotionEffect *motionEffect = [[CKOffsetMotionEffect alloc] initWithOffset:offset];
     [view addMotionEffect:motionEffect];
@@ -180,6 +184,10 @@
     UIMotionEffectGroup *motionEffectGroup = [[UIMotionEffectGroup alloc] init];
     motionEffectGroup.motionEffects = @[xAxis, yAxis];
     [view addMotionEffect:motionEffectGroup];
+}
+
++ (UIOffset)standardMotionOffset {
+    return (UIOffset){ 20.0, 20.0 };
 }
 
 #pragma mark - Collection views
