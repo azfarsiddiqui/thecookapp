@@ -7,19 +7,22 @@
 //
 
 #import "CKPrivacySliderView.h"
+#import "Theme.h"
 
 @interface CKPrivacySliderView () <CKNotchSliderViewDelegate>
 
 @property (nonatomic, strong) UIImageView *sliderPrivateIconView;
 @property (nonatomic, strong) UIImageView *sliderFriendsIconView;
 @property (nonatomic, strong) UIImageView *sliderGlobalIconView;
+@property (nonatomic, strong) UILabel *infoPrivateLabel;
+@property (nonatomic, strong) UILabel *infoFriendsLabel;
 
 @end
 
 @implementation CKPrivacySliderView
 
 - (id)initWithDelegate:(id<CKPrivacySliderViewDelegate>)delegate {
-    if (self = [super initWithNumNotches:3 delegate:delegate]) {
+    if (self = [super initWithNumNotches:2 delegate:delegate]) {
     }
     return self;
 }
@@ -28,16 +31,12 @@
     return [UIImage imageNamed:@"cook_customise_privacy_bg_left.png"];
 }
 
-- (UIImage *)imageForMiddleTrack {
-    return [UIImage imageNamed:@"cook_customise_privacy_bg_middle.png"];
-}
-
 - (UIImage *)imageForRightTrack {
     return [UIImage imageNamed:@"cook_customise_privacy_bg_right.png"];
 }
 
-- (UIImage *)imageForSlider {
-    return [UIImage imageNamed:@"cook_customise_privacy_picker.png"];
+- (UIImage *)imageForSliderSelected:(BOOL)selected {
+    return selected ? [UIImage imageNamed:@"cook_customise_privacy_picker_onpress.png"] : [UIImage imageNamed:@"cook_customise_privacy_picker.png"];
 }
 
 - (void)initNotchIndex:(NSInteger)selectedNotchIndex {
@@ -47,6 +46,10 @@
     [self.currentNotchView addSubview:self.sliderPrivateIconView];
     [self.currentNotchView addSubview:self.sliderFriendsIconView];
     [self.currentNotchView addSubview:self.sliderGlobalIconView];
+    
+    // Info label floats in the middle.
+    [self insertSubview:self.infoPrivateLabel belowSubview:self.currentNotchView];
+    [self insertSubview:self.infoFriendsLabel belowSubview:self.currentNotchView];
 }
 
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {
@@ -74,6 +77,9 @@
         // Figure out the intersection of the slider, if fully covered, then fully visible.
         CGFloat intersectionRatio = MIN(1.0, trackIntersection.size.width / sliderFrame.size.width);
         [self sliderIconViewForIndex:trackIndex].alpha = intersectionRatio;
+        [self infoLabelForIndex:trackIndex].alpha = intersectionRatio;
+        
+        DLog(@"INTERSECTION WIDTH: %f", trackIntersection.size.width);
     }
 
 }
@@ -82,7 +88,6 @@
     [super slideToNotchIndex:notchIndex animated:animated];
     [self updateNotchSliderWithFrame:self.currentNotchView.frame];
 }
-
 
 #pragma mark - Properties
 
@@ -125,6 +130,20 @@
     return _sliderGlobalIconView;
 }
 
+- (UILabel *)infoPrivateLabel {
+    if (!_infoPrivateLabel) {
+        _infoPrivateLabel = [self infoLabelForText:[self infoForNotchIndex:0]];
+    }
+    return _infoPrivateLabel;
+}
+
+- (UILabel *)infoFriendsLabel {
+    if (!_infoFriendsLabel) {
+        _infoFriendsLabel = [self infoLabelForText:[self infoForNotchIndex:1]];
+    }
+    return _infoFriendsLabel;
+}
+
 #pragma mark - Private methods
 
 - (UIImageView *)sliderIconViewForIndex:(NSInteger)notchIndex {
@@ -163,6 +182,21 @@
     return iconImage;
 }
 
+- (UILabel *)infoLabelForIndex:(NSInteger)notchIndex {
+    UILabel *infoLabel = nil;
+    switch (notchIndex) {
+        case 0:
+            infoLabel = self.infoPrivateLabel;
+            break;
+        case 1:
+            infoLabel = self.infoFriendsLabel;
+            break;
+        default:
+            break;
+    }
+    return infoLabel;
+}
+
 - (void)selectedPrivacyAtNotchIndex:(NSInteger)notchIndex {
     id<CKPrivacySliderViewDelegate> privacyDelegate = (id<CKPrivacySliderViewDelegate>)self.delegate;
     switch (notchIndex) {
@@ -178,6 +212,39 @@
         default:
             break;
     }
+}
+
+- (NSString *)infoForNotchIndex:(NSInteger)notchIndex {
+    NSString *info = nil;
+    switch (notchIndex) {
+        case 0:
+            info = @"SECRET";
+            break;
+        case 1:
+            info = @"FRIENDS";
+            break;
+        default:
+            break;
+    }
+    return info;
+}
+
+- (UILabel *)infoLabelForText:(NSString *)text {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.backgroundColor = [UIColor clearColor];
+    label.font = [Theme privacyInfoFont];
+    label.textColor = [Theme privacyInfoColour];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.lineBreakMode = NSLineBreakByClipping;
+    label.text = text;
+    [label sizeToFit];
+    label.frame = (CGRect){
+        floorf((self.bounds.size.width - label.frame.size.width) / 2.0),
+        floorf((self.bounds.size.height - label.frame.size.height) / 2.0) - 7.0,
+        label.frame.size.width,
+        label.frame.size.height
+    };
+    return label;
 }
 
 @end

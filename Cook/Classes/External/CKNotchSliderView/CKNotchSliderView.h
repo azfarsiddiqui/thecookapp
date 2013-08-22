@@ -32,6 +32,7 @@
 - (UIImage *)imageForMiddleTrack;
 - (UIImage *)imageForRightTrack;
 - (UIImage *)imageForSlider;
+- (UIImage *)imageForSliderSelected:(BOOL)selected;
 - (void)initNotchIndex:(NSInteger)selectedNotchIndex;
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex;
 - (void)updateNotchSliderWithFrame:(CGRect)sliderFrame;

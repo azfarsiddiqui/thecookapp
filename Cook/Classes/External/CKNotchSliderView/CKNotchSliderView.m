@@ -82,7 +82,11 @@
 }
 
 - (UIImage *)imageForSlider {
-    return [UIImage imageNamed:@"cook_edit_serves_slider.png"];
+    return [self imageForSliderSelected:NO];
+}
+
+- (UIImage *)imageForSliderSelected:(BOOL)selected {
+    return selected ? [UIImage imageNamed:@"cook_edit_serves_slider.png"] : [UIImage imageNamed:@"cook_edit_serves_slider.png"];
 }
          
 - (void)initNotchIndex:(NSInteger)selectedNotchIndex {
@@ -186,6 +190,9 @@
     CGRect frame = self.currentNotchView.frame;
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
+        
+        self.currentNotchView.image = [self imageForSliderSelected:YES];
+        
     } else if (panGesture.state == UIGestureRecognizerStateChanged) {
         
         frame.origin.x += translation.x;
@@ -203,6 +210,11 @@
         
         NSInteger selectedTrackIndex = [self currentNotchIndexForSliderFrame:frame];
         [self selectNotch:selectedTrackIndex];
+        
+        self.currentNotchView.image = [self imageForSliderSelected:NO];
+    } else {
+        
+        self.currentNotchView.image = [self imageForSliderSelected:NO];
     }
     
     [panGesture setTranslation:CGPointZero inView:self];

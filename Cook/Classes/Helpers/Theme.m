@@ -418,6 +418,14 @@
     return [UIColor colorWithHexString:@"4E4E4E"];
 }
 
++ (UIColor *)privacyInfoColour {
+    return [UIColor colorWithHexString:@"959595"];
+}
+
++ (UIFont *)privacyInfoFont {
+    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:12.0];
+}
+
 #pragma mark - Recipe Editing
 
 + (UIColor *)bookCoverInsideBackgroundColour {

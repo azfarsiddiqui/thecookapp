@@ -123,6 +123,8 @@
 + (UIColor *)recipeViewBackgroundColour;
 + (UIFont *)editPhotoFont;
 + (UIColor *)editPhotoColour;
++ (UIColor *)privacyInfoColour;
++ (UIFont *)privacyInfoFont;
 
 #pragma mark - Recipe Editing
 + (UIFont *) cookServesPrepEditTitleFont;
