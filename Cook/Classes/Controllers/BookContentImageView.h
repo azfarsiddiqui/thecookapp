@@ -13,5 +13,6 @@
 - (void)configureImage:(UIImage *)image;
 - (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder;
 - (void)applyOffset:(CGFloat)offset;
+- (CGSize)imageSizeWithMotionOffset;
 
 @end

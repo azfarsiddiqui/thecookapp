@@ -798,7 +798,7 @@
     
     if ([recipe hasPhotos]) {
         [self.photoStore imageForParseFile:[recipe imageFile]
-                                      size:contentHeaderView.frame.size
+                                      size:[contentHeaderView imageSizeWithMotionOffset]
                                  indexPath:indexPath
                                 completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
                                     if ([indexPath isEqual:completedIndexPath]) {

@@ -12,6 +12,7 @@
 #import "AppHelper.h"
 #import "UIImage+ProportionalFill.h"
 #import "CKEditingViewHelper.h"
+#import "CKOffsetMotionEffect.h"
 
 @implementation ViewHelper
 
@@ -158,6 +159,11 @@
     [self applyMotionEffectsWithOffset:50.0 view:view];
 }
 
++ (void)applyDraggyMotionEffectsToView:(UIView *)view offset:(UIOffset)offset {
+    CKOffsetMotionEffect *motionEffect = [[CKOffsetMotionEffect alloc] initWithOffset:offset];
+    [view addMotionEffect:motionEffect];
+}
+
 + (void)applyMotionEffectsWithOffset:(CGFloat)offset view:(UIView *)view {
     
     // Add some motion effects
@@ -165,14 +171,15 @@
                                                                                          type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
     xAxis.minimumRelativeValue = [NSNumber numberWithFloat:-offset];
     xAxis.maximumRelativeValue = [NSNumber numberWithFloat:offset];
-    [view addMotionEffect:xAxis];
     
     UIInterpolatingMotionEffect *yAxis = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
                                                                                          type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
     yAxis.minimumRelativeValue = [NSNumber numberWithFloat:-offset];
     yAxis.maximumRelativeValue = [NSNumber numberWithFloat:offset];
-    [view addMotionEffect:yAxis];
     
+    UIMotionEffectGroup *motionEffectGroup = [[UIMotionEffectGroup alloc] init];
+    motionEffectGroup.motionEffects = @[xAxis, yAxis];
+    [view addMotionEffect:motionEffectGroup];
 }
 
 #pragma mark - Collection views

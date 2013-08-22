@@ -10,14 +10,13 @@
 #import "UIColor+Expanded.h"
 #import "Theme.h"
 #import "ImageHelper.h"
+#import "ViewHelper.h"
 
 @interface BookContentImageView ()
 
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
-@property (nonatomic, strong) UIView *whiteOverlayView;
-@property (nonatomic, strong) UIToolbar *toolbarView;
 
 @property (nonatomic, strong) UIImageView *blurredImageView;
 
@@ -26,6 +25,7 @@
 @implementation BookContentImageView
 
 #define kForceVisibleOffset         1.0
+#define kMotionOffset               (UIOffset){ 20.0, 20.0 }
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -38,11 +38,14 @@
         [self.containerView addSubview:self.vignetteOverlayView];
         
         // Scrolling overlays
-//        [self.containerView addSubview:self.whiteOverlayView];
-        [self.containerView addSubview:self.blurredImageView];
-//        [self.containerView addSubview:self.toolbarView];
+        [self.imageView addSubview:self.blurredImageView];
         
         [self addSubview:self.containerView];
+        
+        // Motion effects.
+        self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
+        [ViewHelper applyDraggyMotionEffectsToView:self.imageView offset:kMotionOffset];
+        
     }
     return self;
 }
@@ -53,9 +56,7 @@
 }
 
 - (void)applyOffset:(CGFloat)offset {
-//    [self applyOffset:offset distance:500.0 view:self.whiteOverlayView];
     [self applyOffset:offset distance:200.0 view:self.blurredImageView];
-//    [self applyOffset:offset distance:500.0 view:self.toolbarView];
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -78,11 +79,21 @@
     }
 }
 
+- (CGSize)imageSizeWithMotionOffset {
+    return self.imageView.frame.size;
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)imageView {
     if (!_imageView) {
-        _imageView = [[UIImageView alloc] initWithFrame:self.containerView.bounds];
+        _imageView = [[UIImageView alloc] initWithFrame:(CGRect){
+            self.containerView.bounds.origin.x - kMotionOffset.horizontal,
+            self.containerView.bounds.origin.y - kMotionOffset.vertical,
+            self.containerView.bounds.size.width + (kMotionOffset.horizontal * 2.0),
+            self.containerView.bounds.size.height + (kMotionOffset.vertical * 2.0),
+        }];
+        _imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     }
     return _imageView;
 }
@@ -95,29 +106,11 @@
     return _vignetteOverlayView;
 }
 
-- (UIView *)whiteOverlayView {
-    if (!_whiteOverlayView) {
-        _whiteOverlayView = [[UIView alloc] initWithFrame:self.containerView.bounds];
-        _whiteOverlayView.backgroundColor = [UIColor colorWithHexString:@"f2f2f2"];
-        _whiteOverlayView.hidden = YES;
-    }
-    return _whiteOverlayView;
-}
-
 - (UIImageView *)blurredImageView {
     if (!_blurredImageView) {
-        _blurredImageView = [[UIImageView alloc] initWithFrame:self.imageView.frame];
+        _blurredImageView = [[UIImageView alloc] initWithFrame:self.imageView.bounds];
     }
     return _blurredImageView;
-}
-
-- (UIToolbar *)toolbarView {
-    if (!_toolbarView) {
-        _toolbarView = [[UIToolbar alloc] initWithFrame:self.containerView.bounds];
-        _toolbarView.translucent = YES;
-        _toolbarView.hidden = YES;
-    }
-    return _toolbarView;
 }
 
 #pragma mark - Private methods
