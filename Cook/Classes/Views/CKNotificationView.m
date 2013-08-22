@@ -26,6 +26,8 @@
 
 @implementation CKNotificationView
 
+#define RADIANS(degrees) ((degrees * M_PI) / 180.0)
+
 - (id)initWithDelegate:(id<CKNotificationViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
@@ -122,10 +124,21 @@
                              animations:^{
                                  self.offButtonIcon.alpha = 0.0;
                                  self.onButtonIcon.alpha = 1.0;
+                                 self.onButtonIcon.transform = CGAffineTransformMakeScale(1.1, 1.1);
                                  self.badgeLabel.alpha = 1.0;
                              }
                              completion:^(BOOL finished) {
                                  self.offButtonIcon.hidden = YES;
+                                 
+                                 [UIView animateWithDuration:0.3
+                                                       delay:0.0
+                                                     options:UIViewAnimationOptionCurveEaseIn
+                                                  animations:^{
+                                                      self.onButtonIcon.transform = CGAffineTransformIdentity;
+                                                  }
+                                                  completion:^(BOOL finished) {
+                                                  }];
+
                              }];
         }
         

@@ -468,7 +468,7 @@
 
 - (void)initNotificationView {
     CKNotificationView *notificationView = [[CKNotificationView alloc] initWithDelegate:self];
-    notificationView.frame = CGRectMake(13.0, 50.0, notificationView.frame.size.width, notificationView.frame.size.height);
+    notificationView.frame = CGRectMake(18.0, 33.0, notificationView.frame.size.width, notificationView.frame.size.height);
     [self.view addSubview:notificationView];
     self.notificationView = notificationView;
 }
