@@ -356,18 +356,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
             
             // Save requests.
             NSMutableArray *batchSaves = [NSMutableArray arrayWithArray:@[requestorFriendRequest, requesteeFriendRequest]];
-            
-            // Do we need a user notification?
-            if (newRequest) {
-                PFObject *parseNotification = [PFObject objectWithClassName:kUserNotificationModelName];
-                [parseNotification setObject:friendUser.parseUser forKey:kUserModelForeignKeyName];
-                [parseNotification setObject:kUserNotificationNameFriendRequest forKey:kModelAttrName];
-                [parseNotification setObject:requesteeFriendRequest forKey:kUserNotificationUserFriend];
-                [parseNotification setObject:@NO forKey:kUserNotificationUnread];
-                [parseNotification setACL:[PFACL ACLWithUser:friendUser.parseUser]];
-                [batchSaves addObject:parseNotification];
-            }
-            
             [PFObject saveAllInBackground:batchSaves block:^(BOOL succeeded, NSError *error) {
                 if (!error) {
                     success();
