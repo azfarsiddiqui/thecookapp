@@ -165,9 +165,6 @@
         self.storeViewController.view.hidden = NO;
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
-        
-        // Update status bar.
-        [self updateStatusBarLight:open];
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -199,9 +196,6 @@
                              [bookNavigationViewController updateBinderAlpha:0.0];
                          }
                          completion:^(BOOL finished) {
-                             
-                             // Update status bar.
-                             [self updateStatusBarLight:open];
                              
                              // Inform benchtop of didOpen.
                              [self.benchtopViewController bookDidOpen:open];
@@ -821,8 +815,6 @@
 }
 
 - (void)showLoginView:(BOOL)show {
-    
-    [self updateStatusBarLight:show];
     
     if (show) {
         
