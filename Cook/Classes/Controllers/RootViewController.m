@@ -66,6 +66,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Default splash.
     self.defaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_defaultimage.png"]];
     self.defaultImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     [self.view addSubview:self.defaultImageView];
@@ -76,6 +77,9 @@
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGesture.delegate = self;
     [self.view addGestureRecognizer:panGesture];
+    
+    // Light status bar.
+    self.lightStatusBar = YES;
     
     // Register login/logout events.
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
@@ -141,7 +145,7 @@
 }
 
 - (void)deleteModeToggled:(BOOL)deleteMode {
-    [self showStoreShelf:!deleteMode animated:NO];
+    DLog();
 }
 
 #pragma mark - BookCoverViewControllerDelegate methods
@@ -163,7 +167,7 @@
         self.bookNavigationViewController = nil;
         
         // Update status bar.
-        [self updateStatusBar:open];
+        [self updateStatusBarLight:open];
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -197,7 +201,7 @@
                          completion:^(BOOL finished) {
                              
                              // Update status bar.
-                             [self updateStatusBar:open];
+                             [self updateStatusBarLight:open];
                              
                              // Inform benchtop of didOpen.
                              [self.benchtopViewController bookDidOpen:open];
@@ -320,7 +324,7 @@
     
     // Analog fade.
     CGRect storeIntersection = CGRectIntersection(self.view.bounds, self.storeViewController.view.frame);
-    CGFloat storeOffset = storeIntersection.size.height - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight];
+    CGFloat storeOffset = storeIntersection.size.height - [self.storeViewController bottomShadowHeight];
     CGRect settingsIntersection = CGRectIntersection(self.view.bounds, self.settingsViewController.view.frame);
     CGFloat settingsOffset = settingsIntersection.size.height;
     if (storeOffset > 0) {
@@ -329,6 +333,13 @@
         self.benchtopOverlayView.alpha = MIN((settingsOffset / self.settingsViewController.view.frame.size.height) * kMaxBenchtopOverlayAlpha, kMaxBenchtopOverlayAlpha);
     } else {
         self.benchtopOverlayView.alpha = 0.0;
+    }
+    
+    // Status bar toggle as store is getting shown.
+    if (storeIntersection.size.height - [self.storeViewController bottomShadowHeight] > 15.0) {
+        [self updateStatusBarLight:NO];
+    } else {
+        [self updateStatusBarLight:YES];
     }
     
 }
@@ -344,7 +355,7 @@
         
     } else if (self.benchtopLevel == kBenchtopLevel
                && CGRectIntersection(self.view.bounds,
-                                     self.storeViewController.view.frame).size.height > ([self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight] + kSnapHeight)) {
+                                     self.storeViewController.view.frame).size.height > ([self.storeViewController bottomShadowHeight] + kSnapHeight)) {
         
         toggleLevel = kStoreLevel;
         
@@ -415,13 +426,22 @@
                                                   self.settingsViewController.view.frame = [self settingsFrameForLevel:benchtopLevel];
                                               }
                                               completion:^(BOOL finished) {
+                                                  
                                                   self.benchtopLevel = benchtopLevel;
                                                   [self.storeViewController enable:(benchtopLevel == kStoreLevel)];
                                                   [self.benchtopViewController enable:(benchtopLevel == kBenchtopLevel)];
+                                                  
+                                                  // Black status bar only in store mode.
+                                                  [self updateStatusBarLight:(benchtopLevel != kStoreLevel)];
+
                                                   completion();
                                               }];
                          } else {
                              self.benchtopLevel = benchtopLevel;
+                             
+                             // Black status bar only in store mode.
+                             [self updateStatusBarLight:(benchtopLevel != kStoreLevel)];
+                             
                          }
                          
                      }];
@@ -457,7 +477,7 @@
         
         // Hidden frame is above view bounds but lowered to show the bottom shelf.
         CGRect hideFrame = CGRectMake(self.view.bounds.origin.x,
-                                      -self.storeViewController.view.frame.size.height + [self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight],
+                                      -self.storeViewController.view.frame.size.height + [self.storeViewController bottomShadowHeight],
                                       self.view.bounds.size.width,
                                       self.storeViewController.view.frame.size.height);
         if (bounce) {
@@ -503,12 +523,12 @@
                            self.storeViewController.view.frame.size.height);
     } else if (level == kBenchtopLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           -self.storeViewController.view.frame.size.height + [self.storeViewController bottomShelfTrayHeight] + [self.storeViewController bottomShadowHeight],
+                           -self.storeViewController.view.frame.size.height + [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     } else if (level == kSettingsLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           self.view.bounds.origin.y - self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight],
+                           self.view.bounds.origin.y - self.view.bounds.size.height - self.settingsViewController.view.frame.size.height - [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.storeViewController.view.frame.size.height);
     }
@@ -522,7 +542,7 @@
     
     if (level == kStoreLevel) {
         frame = CGRectMake(self.view.bounds.origin.x,
-                           [self.storeViewController visibleHeight] - [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShadowHeight],
+                           [self.storeViewController visibleHeight] - [self.storeViewController bottomShadowHeight],
                            self.view.bounds.size.width,
                            self.view.bounds.size.height);
     } else if (level == kBenchtopLevel) {
@@ -564,7 +584,6 @@
 
 - (CGRect)editFrameForStore {
     CGRect storeFrame = [self storeFrameForShow:NO];
-    storeFrame.origin.y -= [self.storeViewController bottomShelfTrayHeight] - [self.storeViewController bottomShelfTrayHeight];
     return storeFrame;
 }
 
@@ -583,23 +602,6 @@
     [bookCoverViewController openBook:YES centerPoint:centerPoint];
     self.bookCoverViewController = bookCoverViewController;
     
-}
-
-- (void)showStoreShelf:(BOOL)show animated:(BOOL)animated {
-    CGAffineTransform transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -[self.storeViewController bottomShelfTrayHeight]);
-    if (animated) {
-        [UIView animateWithDuration:0.3
-                              delay:show ? 0.1 : 0.2
-                            options:show ? UIViewAnimationOptionCurveEaseOut : UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.storeViewController.view.transform = transform;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-    } else {
-        self.storeViewController.view.transform = transform;
-    }
-    DLog(@"show[%@] %@", show ? @"YES" : @"NO", NSStringFromCGRect(self.storeViewController.view.frame));
 }
 
 - (void)initViewControllers {
@@ -807,17 +809,20 @@
 }
 
 - (void)statusBarChanged:(NSNotification *)notification {
-    [self updateStatusBar:[EventHelper lightStatusBarChangeForNotification:notification]];
+    [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
 }
 
-- (void)updateStatusBar:(BOOL)light {
+- (void)updateStatusBarLight:(BOOL)light {
+    if (self.lightStatusBar == light) {
+        return;
+    }
     self.lightStatusBar = light;
     [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)showLoginView:(BOOL)show {
     
-    [self updateStatusBar:show];
+    [self updateStatusBarLight:show];
     
     if (show) {
         
