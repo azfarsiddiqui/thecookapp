@@ -80,7 +80,7 @@
 #pragma mark - Private methods
 
 - (void)tapped:(id)sender {
-    DLog();
+    [self.delegate notificationViewTapped];
 }
 
 - (UIImage *)imageForHasNotifications:(BOOL)hasNotifications selected:(BOOL)selected {
