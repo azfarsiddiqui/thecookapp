@@ -132,7 +132,7 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return (UIEdgeInsets) { 100.0, 90.0, 90.0, 90.0 };
+    return (UIEdgeInsets) { 135.0, 90.0, 90.0, 90.0 };
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
