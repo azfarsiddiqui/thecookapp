@@ -12,7 +12,6 @@
 #import "EventHelper.h"
 #import "CKPagingView.h"
 #import "CKNotificationView.h"
-#import "NotificationsViewController.h"
 #import "CKPopoverViewController.h"
 #import "ViewHelper.h"
 #import "CKBook.h"

@@ -26,7 +26,11 @@
 
 @implementation CKNotificationView
 
-#define RADIANS(degrees) ((degrees * M_PI) / 180.0)
+- (void)dealloc {
+    [EventHelper unregisterUserNotifications:self];
+    [EventHelper unregisterLoginSucessful:self];
+    [EventHelper unregisterLogout:self];
+}
 
 - (id)initWithDelegate:(id<CKNotificationViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -37,6 +41,8 @@
         [self addSubview:self.badgeLabel];
         
         [EventHelper registerUserNotifications:self selector:@selector(notificationsReceived:)];
+        [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
+        [EventHelper registerLoginSucessful:self selector:@selector(loggedOut:)];
         
         [self loadData];
     }
@@ -95,6 +101,14 @@
     NSInteger badgeCount = [EventHelper userNotificationsCountForNotification:notification];
     self.badgeCount = badgeCount;
     [self updateBadge];
+}
+
+- (void)loggedIn:(NSNotification *)notification {
+    [self loadData];
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    [self loadData];
 }
 
 - (void)updateBadge {
@@ -174,7 +188,8 @@
 - (void)loadData {
     
     if ([CKUser isLoggedIn]) {
-        [CKUserNotification notificationsCountCompletion:^(int count) {
+        
+        [[CKUser currentUser] numUnreadNotificationsCompletion:^(int count) {
             
             self.badgeCount = count;
             [self updateBadge];
@@ -186,6 +201,10 @@
             [self updateBadge];
         }];
         
+    } else {
+        
+        self.badgeCount = 0;
+        [self updateBadge];
     }
     
 }

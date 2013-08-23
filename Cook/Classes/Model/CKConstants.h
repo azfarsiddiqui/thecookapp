@@ -123,6 +123,4 @@ extern NSString *const kActivityNameLikeRecipe;
 #pragma mark - UserNotification class
 
 extern NSString *const kUserNotificationModelName;
-extern NSString *const kUserNotificationNameFriendRequest;  // Name of the notification type
-extern NSString *const kUserNotificationUserFriend;         // References the UserFriend model
-extern NSString *const kUserNotificationUnread;             // Whether notification was read.
+extern NSString *const kUserNotificationAttrRead;               // Whether notification was read.

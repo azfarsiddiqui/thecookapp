@@ -389,6 +389,21 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return ([self parseCoverPhotoFile] != nil);
 }
 
+- (void)numUnreadNotificationsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure {
+    PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
+    [query whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+    [query whereKey:kUserNotificationAttrRead equalTo:@NO];
+    [query includeKey:kUserModelForeignKeyName];
+    [query orderByDescending:kModelAttrCreatedAt];
+    [query countObjectsInBackgroundWithBlock:^(int count, NSError *error) {
+        if (!error) {
+            completion(count);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 #pragma mark - Properties
 
 - (void)setPassword:(NSString *)password {

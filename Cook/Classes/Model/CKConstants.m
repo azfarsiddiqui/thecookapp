@@ -124,6 +124,4 @@ NSString *const kActivityNameLikeRecipe         = @"LikeRecipe";
 #pragma mark - UserNotification class
 
 NSString *const kUserNotificationModelName          = @"UserNotification";
-NSString *const kUserNotificationNameFriendRequest  = @"FriendRequest";
-NSString *const kUserNotificationUserFriend         = @"UserFriend";
-NSString *const kUserNotificationUnread             = @"Unread";
+NSString *const kUserNotificationAttrRead           = @"read";

@@ -56,4 +56,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 - (PFFile *)parseCoverPhotoFile;
 - (BOOL)hasCoverPhoto;
 
+// Notifications
+- (void)numUnreadNotificationsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure;
+
 @end

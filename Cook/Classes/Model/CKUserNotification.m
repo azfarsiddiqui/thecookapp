@@ -17,7 +17,7 @@
     
     PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
-    [query whereKey:kUserNotificationUnread equalTo:@YES];
+    [query whereKey:kUserNotificationAttrRead equalTo:@YES];
     [query countObjectsInBackgroundWithBlock:^(int numRows, NSError *error) {
         if (!error) {
             completion(numRows > 0);
@@ -42,7 +42,7 @@
             
             // Mark them as read and save in the background.
             [notificationObjects each:^(PFObject *parseNotification) {
-                [parseNotification setObject:@NO forKey:kUserNotificationUnread];
+                [parseNotification setObject:@YES forKey:kUserNotificationAttrRead];
             }];
             [PFObject saveAllInBackground:notificationObjects];
             
@@ -69,26 +69,16 @@
     }];
 }
 
-+ (PFObject *)createNotificationForParseUser:(PFUser *)parseUser parseFriendRequest:(PFObject *)parseFriendRequest {
-    PFObject *parseNotification = [PFObject objectWithClassName:kUserNotificationModelName];
-    [parseNotification setObject:parseUser forKey:kUserModelForeignKeyName];
-    [parseNotification setObject:kUserNotificationNameFriendRequest forKey:kModelAttrName];
-    [parseNotification setObject:parseFriendRequest forKey:kUserNotificationUserFriend];
-    [parseNotification setObject:@NO forKey:kUserNotificationUnread];
-    [parseNotification setACL:[PFACL ACLWithUser:parseUser]];
-    return parseNotification;
-}
-
 - (CKUser *)user {
     return [CKUser userWithParseUser:[self.parseObject objectForKey:kUserModelForeignKeyName]];
 }
 
-- (void)setUnread:(BOOL)unread {
-    [self.parseObject setObject:[NSNumber numberWithBool:unread] forKey:kUserNotificationUnread];
+- (void)setRead:(BOOL)read {
+    [self.parseObject setObject:[NSNumber numberWithBool:read] forKey:kUserNotificationAttrRead];
 }
 
-- (BOOL)unread {
-    return [[self.parseObject objectForKey:kUserNotificationUnread] boolValue];
+- (BOOL)read {
+    return [[self.parseObject objectForKey:kUserNotificationAttrRead] boolValue];
 }
 
 - (NSString *)actionName {

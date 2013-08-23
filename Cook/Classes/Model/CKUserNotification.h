@@ -12,13 +12,12 @@
 
 @interface CKUserNotification : CKModel
 
-@property (nonatomic, assign) BOOL unread;
+@property (nonatomic, assign) BOOL read;
 
 + (void)hasNotificationsForUser:(CKUser *)user completion:(BoolObjectSuccessBlock)completion
                         failure:(ObjectFailureBlock)failure;
 + (void)notificationsCompletion:(ListObjectsSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 + (void)notificationsCountCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure;
-+ (PFObject *)createNotificationForParseUser:(PFUser *)parseUser parseFriendRequest:(PFObject *)parseFriendRequest;
 
 - (CKUser *)user;
 - (NSString *)actionName;
