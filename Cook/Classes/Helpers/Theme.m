@@ -127,7 +127,7 @@
 #pragma mark - Grid recipe cells
 
 + (UIColor *)recipeGridImageBackgroundColour {
-    return [UIColor colorWithHexString:@"EFEFEF"];
+    return [UIColor colorWithHexString:@"f5f5f5"];
 }
 
 + (UIFont *)recipeGridTitleFont {
