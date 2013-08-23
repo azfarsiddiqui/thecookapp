@@ -15,8 +15,11 @@
 #import "CKBookCover.h"
 #import "RecipeIngredientsView.h"
 #import "CKActivityIndicatorView.h"
+#import "TTTTimeIntervalFormatter.h"
 
 @interface BookRecipeGridCell ()
+
+@property (nonatomic, strong) TTTTimeIntervalFormatter *timeIntervalFormatter;
 
 @end
 
@@ -34,6 +37,7 @@
 #define kDividerIngredientsGap  20.0
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
+#define kTimeStatsGap           -5.0
 
 + (CGSize)imageSize {
     return kImageSize;
@@ -49,6 +53,11 @@
         [self initStoryLabel];
         [self initMethodLabel];
         [self initStatsView];
+        [self initTimeIntervalLabel];
+        
+        // Past dates formatting.
+        self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
+        [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
     }
     return self;
 }
@@ -71,6 +80,7 @@
     [self updateMethod];
     [self updateIngredients];
     [self updateStats];
+    [self updateTimeInterval];
     [self updateDividers];
 }
 
@@ -163,6 +173,19 @@
     } else {
         self.ingredientsView.hidden = YES;
     }
+}
+
+- (void)updateTimeInterval {
+    self.timeIntervalLabel.text = [[self.timeIntervalFormatter stringForTimeIntervalFromDate:[NSDate date]
+                                                                                      toDate:self.recipe.updatedDateTime] uppercaseString];
+    [self.timeIntervalLabel sizeToFit];
+    self.timeIntervalLabel.frame = (CGRect){
+        floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
+        self.statsView.frame.origin.y - self.timeIntervalLabel.frame.size.height - kTimeStatsGap,
+        self.timeIntervalLabel.frame.size.width,
+        self.timeIntervalLabel.frame.size.height
+    };
+
 }
 
 - (void)updateStats {
@@ -391,6 +414,16 @@
     };
     [self.contentView addSubview:statsView];
     self.statsView = statsView;
+}
+
+- (void)initTimeIntervalLabel {
+    UILabel *timeIntervalLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    timeIntervalLabel.backgroundColor = [self backgroundColorOrDebug];
+    timeIntervalLabel.font = [Theme recipeGridTimeIntervalFont];
+    timeIntervalLabel.textColor = [Theme recipeGridTimeIntervalColour];
+    timeIntervalLabel.lineBreakMode = NSLineBreakByClipping;
+    [self.contentView addSubview:timeIntervalLabel];
+    self.timeIntervalLabel = timeIntervalLabel;
 }
 
 - (UIColor *)backgroundColorOrDebug {

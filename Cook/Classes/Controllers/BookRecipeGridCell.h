@@ -29,6 +29,7 @@
 @property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
 @property (nonatomic, strong) UIImageView *dividerImageView;
+@property (nonatomic, strong) UILabel *timeIntervalLabel;
 @property (nonatomic, strong) GridRecipeStatsView *statsView;
 
 + (CGSize)imageSize;
@@ -41,6 +42,7 @@
 - (void)updateStory;
 - (void)updateMethod;
 - (void)updateIngredients;
+- (void)updateTimeInterval;
 
 - (UIEdgeInsets)contentInsets;
 - (CGSize)availableSize;

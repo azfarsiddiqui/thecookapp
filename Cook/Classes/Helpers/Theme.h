@@ -37,6 +37,8 @@
 + (UIColor *)recipeGridTitleColour;
 + (UIFont *)recipeGridIngredientsFont;
 + (UIColor *)recipeGridIngredientsColour;
++ (UIFont *)recipeGridTimeIntervalFont;
++ (UIColor *)recipeGridTimeIntervalColour;
 + (UIFont *)recipeGridStoryFont;
 + (UIColor *)recipeGridStoryColour;
 + (UIFont *)recipeGridStatFont;

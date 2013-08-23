@@ -146,6 +146,14 @@
     return [UIColor colorWithHexString:@"3A3A3A"];
 }
 
++ (UIFont *)recipeGridTimeIntervalFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:14.0];
+}
+
++ (UIColor *)recipeGridTimeIntervalColour {
+    return [UIColor colorWithHexString:@"b7b7b7"];
+}
+
 + (UIFont *)recipeGridStoryFont {
     return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
 }
