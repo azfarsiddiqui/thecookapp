@@ -8,6 +8,7 @@
 
 #import "CKServerManager.h"
 #import "CKUser.h"
+#import "EventHelper.h"
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 
@@ -26,8 +27,15 @@
     return sharedInstance;
 }
 
+- (void)dealloc {
+    [EventHelper unregisterLoginSucessful:self];
+    [EventHelper unregisterLogout:self];
+}
+
 - (id)init {
     if (self = [super init]) {
+        [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
+        [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     }
     return self;
 }
@@ -114,6 +122,23 @@
 
 - (void)handlePushWithUserInfo:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
+}
+
+#pragma mark - Private methods
+
+- (void)loggedIn:(NSNotification *)notification {
+    
+    // Register for push.
+    [self registerForPush];
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    
+    // Remove owner from the current installation.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation removeObjectForKey:kUserModelForeignKeyName];
+    [currentInstallation saveInBackground];
+    
 }
 
 @end

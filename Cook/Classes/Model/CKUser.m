@@ -103,10 +103,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
     // Register.
     [parseUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
-            
-            // Update push tokens.
-            [[CKServerManager sharedInstance] registerForPush];
-            
             success();
         } else {
             failure(error);
@@ -120,12 +116,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     DLog(@"Login with Email[%@]", email);
     [PFUser logInWithUsernameInBackground:email password:password block:^(PFUser *user, NSError *error) {
         if (!error) {
-            
-            // Update push tokens.
-            [[CKServerManager sharedInstance] registerForPush];
-            
             success();
-            
         } else {
             failure(error);
         }
@@ -549,9 +540,6 @@ static ObjectFailureBlock loginFailureBlock = nil;
             // Save it off.
             [currentUser.parseUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (!error) {
-                    
-                    // Update push tokens.
-                    [[CKServerManager sharedInstance] registerForPush];
                     
                     loginSuccessfulBlock();
                     loginSuccessfulBlock = nil;
