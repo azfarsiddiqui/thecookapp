@@ -22,6 +22,7 @@
 #import "MRCEnumerable.h"
 #import "AppHelper.h"
 #import "ViewHelper.h"
+#import "CKActivityIndicatorView.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     UIAlertViewDelegate, UITextFieldDelegate>
@@ -38,6 +39,7 @@
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKBookTitleIndexView *bookTitleView;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @property (nonatomic, strong) UIAlertView *alertView;
 
@@ -72,11 +74,14 @@
     
     [self initBackgroundView];
     [self initCollectionView];
+    [self initActivityView];
     
     [self addCloseButtonLight:YES];
 }
 
 - (void)configurePages:(NSArray *)pages {
+    [self.activityView stopAnimating];
+    
     self.pages = [NSMutableArray arrayWithArray:pages];
     
     NSMutableArray *pageIndexPaths = [NSMutableArray arrayWithArray:[self.pages collectWithIndex:^id(NSString *page, NSUInteger pageIndex) {
@@ -412,6 +417,20 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     // Start slightly lower.
     self.collectionView.transform = CGAffineTransformMakeTranslation(0.0, kStartUpOffset);
+}
+
+- (void)initActivityView {
+    CKActivityIndicatorView *activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleLarge];
+    activityView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - activityView.frame.size.width) / 2.0),
+        self.view.bounds.size.height - 205.0,
+        activityView.frame.size.width,
+        activityView.frame.size.height
+    };
+    activityView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    [self.view addSubview:activityView];
+    self.activityView = activityView;
+    [activityView startAnimating];
 }
 
 - (void)configureImageForTitleCell:(BookTitleCell *)titleCell recipe:(CKRecipe *)recipe
