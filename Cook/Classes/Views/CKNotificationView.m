@@ -173,17 +173,20 @@
 
 - (void)loadData {
     
-    [CKUserNotification notificationsCountCompletion:^(int count) {
+    if ([CKUser isLoggedIn]) {
+        [CKUserNotification notificationsCountCompletion:^(int count) {
+            
+            self.badgeCount = count;
+            [self updateBadge];
+            
+        } failure:^(NSError *error) {
+            
+            // Ignore error.
+            self.badgeCount = 0;
+            [self updateBadge];
+        }];
         
-        self.badgeCount = count;
-        [self updateBadge];
-        
-    } failure:^(NSError *error) {
-        
-        // Ignore error.
-        self.badgeCount = 0;
-        [self updateBadge];
-    }];
+    }
     
 }
 
