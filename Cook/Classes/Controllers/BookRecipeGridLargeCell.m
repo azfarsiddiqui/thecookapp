@@ -53,7 +53,7 @@
         self.ingredientsView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
-        [self.ingredientsView updateIngredients:self.recipe.ingredients];
+        [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
       
         // And it only appears after title.
         self.ingredientsView.frame = (CGRect){

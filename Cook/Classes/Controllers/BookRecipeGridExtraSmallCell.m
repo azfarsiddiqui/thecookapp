@@ -45,7 +45,7 @@
         self.ingredientsView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
-        [self.ingredientsView updateIngredients:self.recipe.ingredients];
+        [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
             contentInsets.top + floorf(([self availableBlockSize].height - self.ingredientsView.frame.size.height) / 2.0),

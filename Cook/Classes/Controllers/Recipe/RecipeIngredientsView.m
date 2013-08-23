@@ -42,12 +42,17 @@
         self.maxSize = maxSize;
         self.textAlignment = textAlignment;
         self.ingredientLabels = [NSMutableArray arrayWithCapacity:[ingredients count]];
-        [self updateIngredients:ingredients];
+        [self updateIngredients:ingredients book:book];
     }
     return self;
 }
 
 - (void)updateIngredients:(NSArray *)ingredients {
+    [self updateIngredients:ingredients book:self.book];
+}
+
+- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book {
+    self.book = book;
     self.layoutOffset = 0.0;
     
     if ([ingredients count] > 0) {

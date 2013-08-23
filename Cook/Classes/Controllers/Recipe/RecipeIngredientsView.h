@@ -17,5 +17,6 @@
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
             textAlignment:(NSTextAlignment)textAlignment;
 - (void)updateIngredients:(NSArray *)ingredients;
+- (void)updateIngredients:(NSArray *)ingredients book:(CKBook *)book;
 
 @end
