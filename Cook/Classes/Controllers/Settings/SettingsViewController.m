@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *logoutButtonView;
+@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UISwitch *notificationsSwitch;
 @property (nonatomic, strong) UILabel *themeLabel;
 @property (nonatomic, strong) ThemeTabView *themeTabView;
@@ -72,6 +73,7 @@
             photoView.frame.size.height
         };
         [_logoutButtonView addSubview:photoView];
+        self.profilePhotoView = photoView;
         
         UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         profileLabel.autoresizingMask = UIViewAutoresizingNone;
@@ -178,7 +180,11 @@
 - (void)createLogoutButton {
     CKUser *currentUser = [CKUser currentUser];
     if ([currentUser isSignedIn]) {
-        [self.scrollView addSubview:self.logoutButtonView];
+        
+        if (!self.logoutButtonView.superview) {
+            [self.scrollView addSubview:self.logoutButtonView];
+        }
+        [self.profilePhotoView loadProfilePhotoForUser:currentUser];
     }
 }
 
