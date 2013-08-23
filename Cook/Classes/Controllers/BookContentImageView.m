@@ -52,6 +52,7 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     self.imageView.image = nil;
+    self.blurredImageView.image = nil;
 }
 
 - (void)applyOffset:(CGFloat)offset {
