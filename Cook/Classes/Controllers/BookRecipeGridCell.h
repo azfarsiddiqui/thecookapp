@@ -12,6 +12,7 @@
 @class CKBook;
 @class GridRecipeStatsView;
 @class RecipeIngredientsView;
+@class CKActivityIndicatorView;
 
 @interface BookRecipeGridCell : UICollectionViewCell
 
@@ -20,7 +21,7 @@
 
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UIImageView *topRoundedMaskImageView;
 @property (nonatomic, strong) UIImageView *bottomShadowImageView;
 @property (nonatomic, strong) UILabel *titleLabel;

@@ -11,7 +11,8 @@
 
 @interface CKActivityIndicatorView()
 
-@property (nonatomic, retain) UIImageView *activityIndicatorImageView;
+@property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIImageView *activityIndicatorImageView;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) CGAffineTransform currentTransform;
 @property (nonatomic, assign) CKActivityIndicatorViewStyle style;
@@ -25,9 +26,10 @@
         self.style = style;
         self.currentTransform = CGAffineTransformIdentity;
         
-        UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_loading_large_outer.png"]];
+        UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[self backgroundImageForStyle:style]];
         self.frame = backgroundView.frame;
         [self addSubview:backgroundView];
+        self.backgroundImageView = backgroundView;
         
         UIImageView *activityIndicatorImageView = [[UIImageView alloc] initWithImage:[self imageForStyle:style]];
         self.activityIndicatorImageView = activityIndicatorImageView;
@@ -45,6 +47,7 @@
         [self stopAnimating];
     }
     
+    self.backgroundImageView.hidden = NO;
     self.activityIndicatorImageView.hidden = NO;
     self.animating = YES;
     [self spin];
@@ -60,6 +63,7 @@
     self.activityIndicatorImageView.layer.transform = pLayer.transform;
     [self.activityIndicatorImageView.layer removeAnimationForKey:@"spinAnimation"];
     self.activityIndicatorImageView.hidden = YES;
+    self.backgroundImageView.hidden = YES;
 }
 
 - (BOOL)isAnimating {
@@ -79,9 +83,27 @@
     [self.activityIndicatorImageView.layer addAnimation:spinAnimation forKey:@"spinAnimation"];
 }
 
+- (UIImage *)backgroundImageForStyle:(CKActivityIndicatorViewStyle)style {
+    UIImage *image = nil;
+    switch (style) {
+        case CKActivityIndicatorViewStyleSmall:
+            image = [UIImage imageNamed:@"cook_book_inner_loading_small_outer.png"];
+            break;
+        case CKActivityIndicatorViewStyleLarge:
+            image = [UIImage imageNamed:@"cook_book_inner_loading_large_outer.png"];
+            break;
+        default:
+            break;
+    }
+    return image;
+}
+
 - (UIImage *)imageForStyle:(CKActivityIndicatorViewStyle)style {
     UIImage *image = nil;
     switch (style) {
+        case CKActivityIndicatorViewStyleSmall:
+            image = [UIImage imageNamed:@"cook_book_inner_loading_small_inner.png"];
+            break;
         case CKActivityIndicatorViewStyleLarge:
             image = [UIImage imageNamed:@"cook_book_inner_loading_large_inner.png"];
             break;

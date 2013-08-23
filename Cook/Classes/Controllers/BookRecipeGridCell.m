@@ -14,6 +14,7 @@
 #import "NSString+Utilities.h"
 #import "CKBookCover.h"
 #import "RecipeIngredientsView.h"
+#import "CKActivityIndicatorView.h"
 
 @interface BookRecipeGridCell ()
 
@@ -296,7 +297,7 @@
     self.imageView = imageView;
     
     // Image spinner.
-    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    CKActivityIndicatorView *activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
     activityView.frame = CGRectMake(floorf((self.imageView.bounds.size.width - activityView.frame.size.width) / 2.0),
                                     floorf((self.imageView.bounds.size.height - activityView.frame.size.height) / 2.0),
                                     activityView.frame.size.width,
