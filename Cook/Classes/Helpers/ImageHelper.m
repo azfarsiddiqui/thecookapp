@@ -12,6 +12,10 @@
 
 @implementation ImageHelper
 
++ (CGSize)thumbSize {
+    return (CGSize) { 256.0, 192.0 };
+}
+
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image {
     if (!imageView) {
         return;
@@ -45,6 +49,12 @@
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {
     return [image imageScaledToFitSize:size];
 }
+
++ (UIImage *)thumbImageForImage:(UIImage *)image {
+    return [image imageScaledToFitSize:[self thumbSize]];
+}
+
+#pragma mark - Blurring 
 
 + (UIImage *)blurredImage:(UIImage *)image {
     return [self blurredImage:image tintColour:[UIColor colorWithWhite:1.0 alpha:0.58]];

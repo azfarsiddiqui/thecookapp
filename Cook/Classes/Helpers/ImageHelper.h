@@ -10,8 +10,14 @@
 
 @interface ImageHelper : NSObject
 
+// Sizes
++ (CGSize)thumbSize;
+
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image;
+
+// Image scaling.
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size;
++ (UIImage *)thumbImageForImage:(UIImage *)image;
 
 // Blurring
 + (UIImage *)blurredImage:(UIImage *)image;

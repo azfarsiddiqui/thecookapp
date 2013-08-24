@@ -17,6 +17,7 @@
 #import "CKRecipeImage.h"
 #import "CKRecipeLike.h"
 #import "CKRecipeComment.h"
+#import "CKServerManager.h"
 
 @interface CKRecipe ()
 
@@ -62,6 +63,19 @@
     NSArray *photos = [parseRecipe objectForKey:kRecipeAttrRecipePhotos];
     if ([photos count] > 0) {
         recipe.recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[photos objectAtIndex:0]];
+        
+    } else {
+        
+        // Check if we have images in transit if it's the current user (who can uploads images).
+        if ([[CKUser currentUser] isEqual:user]) {
+            
+            // Also tries and see if there are any images in transit.
+            CKRecipeImage *recipeImage = [[CKServerManager sharedInstance] recipeImageInTransitForRecipe:recipe];
+            if (recipeImage) {
+                recipe.recipeImage = recipeImage;
+            }
+            
+        }
     }
     
     recipe.user = user;
@@ -525,10 +539,14 @@
 }
 
 - (void)setRecipeImage:(CKRecipeImage *)recipeImage {
+    _recipeImage = recipeImage;
     
-    // Replace the list with a single-element list, future expandable for more photos.
-    [self.parseObject setObject:@[recipeImage.parseObject] forKey:kRecipeAttrRecipePhotos];
-    
+    if (recipeImage.imageFile) {
+        
+        // Replace the list with a single-element list, future expandable for more photos.
+        [self.parseObject setObject:@[recipeImage.parseObject] forKey:kRecipeAttrRecipePhotos];
+        
+    }
 }
 
 - (CKRecipeImage *)recipeImage {
@@ -568,7 +586,7 @@
 #pragma mark - Existence methods
 
 - (BOOL)hasPhotos {
-    return ([self imageFile] != nil);
+    return (self.recipeImage.imageFile != nil) || ([self.recipeImage.imageUuid CK_containsText]);
 }
 
 - (BOOL)hasTitle {

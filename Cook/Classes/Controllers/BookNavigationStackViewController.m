@@ -10,6 +10,7 @@
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "CKUser.h"
+#import "CKServerManager.h"
 #import "BookPagingStackLayout.h"
 #import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
@@ -790,14 +791,20 @@
     DLog(@"Content Image for %d", indexPath.section);
     
     if ([recipe hasPhotos]) {
-        [self.photoStore imageForParseFile:[recipe imageFile]
-                                      size:[contentHeaderView imageSizeWithMotionOffset]
-                                 indexPath:indexPath
-                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
-                                    if ([indexPath isEqual:completedIndexPath]) {
-                                        [contentHeaderView configureImage:image];
-                                    }
-                                }];
+        
+        [self.photoStore imageForRecipeImage:recipe.recipeImage
+                                      recipe:recipe size:[contentHeaderView imageSizeWithMotionOffset]
+                                        name:recipe.page
+                             thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                 if ([name isEqualToString:recipe.page]) {
+                                     [contentHeaderView configureImage:thumbImage];
+                                 }
+                             }
+                                  completion:^(UIImage *image, NSString *name) {
+                                      if ([name isEqualToString:recipe.page]) {
+                                          [contentHeaderView configureImage:image];
+                                      }
+                                  }];
         
     } else {
         [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]

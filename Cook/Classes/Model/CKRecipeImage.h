@@ -11,10 +11,15 @@
 
 @interface CKRecipeImage : CKModel
 
+@property (nonatomic, strong) PFFile *imageFile;
+@property (nonatomic, strong) PFFile *thumbImageFile;
+
+// UUIDs for images that are being uploaded, doesn't get persisted to Parse.
+@property (nonatomic, strong) NSString *imageUuid;
+@property (nonatomic, strong) NSString *thumbImageUuid;
+
++ (CKRecipeImage *)recipeImage;
 + (CKRecipeImage *)recipeImageForParseRecipeImage:(PFObject *)parseRecipeImage;
-+ (CKRecipeImage*)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName;
-
-- (PFFile *)imageFile;
-
++ (CKRecipeImage *)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName;
 
 @end
