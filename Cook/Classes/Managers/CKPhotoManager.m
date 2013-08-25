@@ -183,6 +183,7 @@
                     recipeImage.imageFile = imageFile;
                     
                     // Clear the placeholders.
+                    NSString *cacheKey = recipeImage.imageUuid;
                     recipeImage.thumbImageUuid = nil;
                     recipeImage.imageUuid = nil;
                     
@@ -192,7 +193,7 @@
                         NSLog(@"Fullsize image uploaded successfully");
                         
                         // Successful, and remove the local copy
-                        [self clearTransferForCacheKey:recipeImage.imageUuid];
+                        [self clearTransferForCacheKey:cacheKey];
                         
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];

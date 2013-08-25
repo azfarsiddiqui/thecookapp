@@ -1430,7 +1430,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Keep a weak reference of the progressView for tracking of updates.
     __weak CKProgressView *weakProgressView = self.progressView;
     
-    [self.recipe saveWithImage:self.recipeDetails.image startProgress:startProgress endProgress:endProgress
+    [self.recipe saveWithImage:self.recipeDetails.image
+                 startProgress:startProgress
+                   endProgress:endProgress
                       progress:^(int percentDone) {
                           [weakProgressView setProgress:(percentDone / 100.0) animated:YES];
                       }

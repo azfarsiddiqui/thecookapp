@@ -17,7 +17,7 @@
 #import "CKRecipeImage.h"
 #import "CKRecipeLike.h"
 #import "CKRecipeComment.h"
-#import "CKServerManager.h"
+#import "CKPhotoManager.h"
 
 @interface CKRecipe ()
 
@@ -63,19 +63,6 @@
     NSArray *photos = [parseRecipe objectForKey:kRecipeAttrRecipePhotos];
     if ([photos count] > 0) {
         recipe.recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[photos objectAtIndex:0]];
-        
-    } else {
-        
-        // Check if we have images in transit if it's the current user (who can uploads images).
-        if ([[CKUser currentUser] isEqual:user]) {
-            
-            // Also tries and see if there are any images in transit.
-            CKRecipeImage *recipeImage = [[CKServerManager sharedInstance] recipeImageInTransitForRecipe:recipe];
-            if (recipeImage) {
-                recipe.recipeImage = recipeImage;
-            }
-            
-        }
     }
     
     recipe.user = user;
@@ -118,66 +105,6 @@
 
 #pragma mark - Save
 
-- (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
-              failure:(ObjectFailureBlock)failure {
-    
-    if (image) {
-        
-        // Generate image placeholders.
-        CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
-        recipeImage.imageUuid = [[NSUUID UUID] UUIDString];
-        recipeImage.thumbImageUuid = [[NSUUID UUID] UUIDString];
-        [self setRecipeImage:recipeImage];
-        
-        [recipeImage saveInBackground:^{
-        } failure:^(NSError *error) {
-        }];
-        
-        // Save the photo first to get its objectId.
-        PFFile *recipePhotoFile = [recipeImage imageFile];
-        [recipePhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            if (!error) {
-                
-                // Save CKRecipeImage now that PFFile has been persisted.
-                [recipeImage saveInBackground:^{
-                    
-                    // Associate with recipe.
-                    [self setRecipeImage:recipeImage];
-                    
-                    // Now go ahead and save the recipe.
-                    [self saveInBackground:^{
-                        success();
-                    } failure:^(NSError *error) {
-                        failure(error);
-                    }];
-                    
-                } failure:^(NSError *error) {
-                    failure(error);
-                }];
-                
-            } else {
-                failure(error);
-            }
-            
-        } progressBlock:^(int percentDone) {
-            
-            progress(percentDone);
-            
-        }];
-        
-    } else {
-        
-        // Now go ahead and save the recipe.
-        [self saveInBackground:^{
-            success();
-        } failure:^(NSError *error) {
-            failure(error);
-        }];
-        
-    }
-}
-
 - (void)saveWithImage:(UIImage *)image startProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
              progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure {
@@ -201,14 +128,7 @@
                 
                 // If we have an image, now go ahead and upload it via CKServerManager.
                 if (image) {
-                    
-                    [[CKServerManager sharedInstance] uploadImage:image recipe:self];
-                    
-                    // Place an in-transit recipe image.
-                    CKRecipeImage *recipeImage = [[CKServerManager sharedInstance] recipeImageInTransitForRecipe:self];
-                    if (recipeImage) {
-                        self.recipeImage = recipeImage;
-                    }
+                    [[CKPhotoManager sharedInstance] addImage:image recipe:self];
                 }
                 
                 // 100% progress and return.
@@ -542,12 +462,11 @@
 
 - (void)setRecipeImage:(CKRecipeImage *)recipeImage {
     _recipeImage = recipeImage;
-    
-    if (recipeImage.imageFile) {
+
+    if (recipeImage.parseObject) {
         
         // Replace the list with a single-element list, future expandable for more photos.
         [self.parseObject setObject:@[recipeImage.parseObject] forKey:kRecipeAttrRecipePhotos];
-        
     }
 }
 
