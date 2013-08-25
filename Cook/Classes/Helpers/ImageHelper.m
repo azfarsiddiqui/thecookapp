@@ -13,7 +13,7 @@
 @implementation ImageHelper
 
 + (CGSize)thumbSize {
-    return (CGSize) { 256.0, 192.0 };
+    return (CGSize) { 512.0, 384.0 };
 }
 
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image {
@@ -44,6 +44,10 @@
         imageView.image = nil;
     }
     
+}
+
++ (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size {
+    return [image imageCroppedToFitSize:size];
 }
 
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size {

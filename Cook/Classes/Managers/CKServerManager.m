@@ -152,8 +152,8 @@
     
     // Create the wrapper object.
     CKRecipeImage *recipeImage = [CKRecipeImage recipeImage];
-    recipeImage.imageUuid = [NSUUID UUID];
-    recipeImage.thumbImageUuid = [NSUUID UUID];
+    recipeImage.imageUuid = [[NSUUID UUID] UUIDString];
+    recipeImage.thumbImageUuid = [[NSUUID UUID] UUIDString];
     
     // Keep a reference of the recipe and its associated CKRecipeImage, it is assumed that the recipe has been persisted.
     [self.transientImages setObject:recipeImage forKey:recipe.objectId];

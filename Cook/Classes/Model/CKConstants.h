@@ -97,6 +97,8 @@ extern NSString *const kRecipeImageModelName;
 extern NSString *const kRecipeImageModelForeignKeyName;
 extern NSString *const kRecipeImageAttrImageFile;
 extern NSString *const kRecipeImageAttrThumbImageFile;
+extern NSString *const kRecipeImageAttrImageUUID;
+extern NSString *const kRecipeImageAttrThumnImageUUID;
 extern NSString *const kRecipeImageAttrImageName;
 
 #pragma mark - Category class

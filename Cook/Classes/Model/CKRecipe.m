@@ -123,8 +123,15 @@
     
     if (image) {
         
+        // Generate image placeholders.
         CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
+        recipeImage.imageUuid = [[NSUUID UUID] UUIDString];
+        recipeImage.thumbImageUuid = [[NSUUID UUID] UUIDString];
         [self setRecipeImage:recipeImage];
+        
+        [recipeImage saveInBackground:^{
+        } failure:^(NSError *error) {
+        }];
         
         // Save the photo first to get its objectId.
         PFFile *recipePhotoFile = [recipeImage imageFile];
@@ -175,61 +182,55 @@
              progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure {
     
-    CGFloat recipeSaveProgress = 0.1;
-    
+    // If we have an image, generate a recipe image placeholder.
     if (image) {
-        DLog(@"Saving image");
-        CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForImage:image imageName:@"recipe.jpg"];
-        [self setRecipeImage:recipeImage];
         
-        // Save the photo first to get its objectId.
-        PFFile *recipePhotoFile = [recipeImage imageFile];
-        [recipePhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        // Generate image placeholders.
+        CKRecipeImage *recipeImage = [CKRecipeImage recipeImage];
+        recipeImage.imageUuid = [[NSUUID UUID] UUIDString];
+        recipeImage.thumbImageUuid = [[NSUUID UUID] UUIDString];
+        
+        // Now save it off in the background first before associating it with this recipe.
+        [recipeImage saveInBackground:^{
             
-            if (!error) {
+            // Now associate the recipeImage with this recipe.
+            [self setRecipeImage:recipeImage];
+            
+            // Now go ahead and save the recipe.
+            [self saveInBackground:^{
                 
-                // Save CKRecipeImage now that PFFile has been persisted.
-                [recipeImage saveInBackground:^{
+                // If we have an image, now go ahead and upload it via CKServerManager.
+                if (image) {
                     
-                    // Associate with recipe.
-                    [self setRecipeImage:recipeImage];
+                    [[CKServerManager sharedInstance] uploadImage:image recipe:self];
                     
-                    // Now go ahead and save the recipe.
-                    [self saveInBackground:^{
-                        
-                        progress(recipeSaveProgress * 100);
-                        success();
-                        
-                    } failure:^(NSError *error) {
-                        failure(error);
-                    }];
-                    
-                } failure:^(NSError *error) {
-                    failure(error);
-                }];
+                    // Place an in-transit recipe image.
+                    CKRecipeImage *recipeImage = [[CKServerManager sharedInstance] recipeImageInTransitForRecipe:self];
+                    if (recipeImage) {
+                        self.recipeImage = recipeImage;
+                    }
+                }
                 
-            } else {
+                // 100% progress and return.
+                progress(endProgress * 100);
+                success();
+                
+            } failure:^(NSError *error) {
                 failure(error);
-            }
+            }];
             
-        } progressBlock:^(int percentDone) {
+        } failure:^(NSError *error) {
             
-            int overallProgress = percentDone;
-            if (overallProgress > startProgress) {
-                overallProgress = percentDone * (((endProgress - recipeSaveProgress) * 100) / 100);
-            }
-            
-            progress(overallProgress);
-            
+            failure(error);
         }];
         
+
     } else {
         
-        DLog(@"Saving recipe without an updated image.");
-        
-        // Now go ahead and save the recipe.
+        // Just go ahead and save the recipe.
         [self saveInBackground:^{
             
+            // 100% progress and return.
             progress(endProgress * 100);
             success();
             
@@ -238,6 +239,7 @@
         }];
         
     }
+    
 }
 
 #pragma mark - Likes

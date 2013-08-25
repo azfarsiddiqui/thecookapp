@@ -55,8 +55,6 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
                   failure:(ObjectFailureBlock)failure;
 
 // Save
-- (void)saveWithImage:(UIImage *)image uploadProgress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
-              failure:(ObjectFailureBlock)failure;
 - (void)saveWithImage:(UIImage *)image startProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
              progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure;
