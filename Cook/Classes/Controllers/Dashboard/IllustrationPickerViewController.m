@@ -12,7 +12,7 @@
 #import "IllustrationFlowLayout.h"
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
-#import "ParsePhotoStore.h"
+#import "ImageHelper.h"
 
 @interface IllustrationPickerViewController () <IllustrationBookCellDelegate>
 
@@ -20,7 +20,6 @@
 @property (nonatomic, strong) NSMutableArray *availableIllustrations;
 @property (nonatomic, assign) id<IllustrationPickerViewControllerDelegate> delegate;
 @property (nonatomic, assign) NSInteger currentIndex;
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @end
 
@@ -39,7 +38,6 @@
         self.currentIndex = [self.availableIllustrations findIndexWithBlock:^(NSString *illustration) {
             return [self.illustration isEqualToString:illustration];
         }];
-        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -133,17 +131,11 @@
 #pragma mark - IllustrationBookCellDelegate methods
 
 - (UIImage *)imageForIllustration:(NSString *)illustration size:(CGSize)size {
-    return [self.photoStore scaledImageForImage:[CKBookCover imageForIllustration:illustration]
-                                           name:[NSString stringWithFormat:@"IllustrationPicker_Illustration_%@", illustration]
-                                           size:size
-                                          cache:NO];
+    return [ImageHelper scaledImage:[CKBookCover imageForIllustration:illustration] size:size];
 }
 
 - (UIImage *)imageForCover:(NSString *)cover size:(CGSize)size {
-    return [self.photoStore scaledImageForImage:[CKBookCover imageForCover:cover]
-                                           name:[NSString stringWithFormat:@"IllustrationPicker_Cover_%@", cover]
-                                           size:size
-                                          cache:YES];
+    return [ImageHelper scaledImage:[CKBookCover imageForCover:cover] size:size];
 }
 
 #pragma mark - Private

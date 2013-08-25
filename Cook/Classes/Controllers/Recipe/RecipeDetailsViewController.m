@@ -10,7 +10,6 @@
 #import "CKRecipe.h"
 #import "RecipeDetails.h"
 #import "RecipeDetailsView.h"
-#import "ParsePhotoStore.h"
 #import "ViewHelper.h"
 #import "CKBookCover.h"
 #import "CKBook.h"
@@ -29,6 +28,7 @@
 #import "CKProgressView.h"
 #import "BookNavigationHelper.h"
 #import "CKServerManager.h"
+#import "CKPhotoManager.h"
 #import "UIColor+Expanded.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
@@ -45,7 +45,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 // Blurring artifacts.
 @property (nonatomic, assign) BOOL blur;
@@ -111,7 +110,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     if (self = [super init]) {
         self.recipe = recipe;
         self.book = recipe.book;
-        self.photoStore = [[ParsePhotoStore alloc] init];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.blur = YES;
     }
@@ -730,11 +728,15 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)loadPhoto {
     if ([self.recipe hasPhotos]) {
-        [self.photoStore imageForParseFile:[self.recipe imageFile]
-                                      size:self.imageView.bounds.size
-                                completion:^(UIImage *image) {
-                                    [self loadImageViewWithPhoto:image placeholder:NO];
-                                }];
+        
+        
+        [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:self.imageView.bounds.size name:@"RecipePhoto"
+                                               progress:^(CGFloat progressRatio, NSString *name) {
+                                               } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                   [self loadImageViewWithPhoto:thumbImage placeholder:NO];
+                                               } completion:^(UIImage *image, NSString *name) {
+                                                   [self loadImageViewWithPhoto:image placeholder:NO];
+                                               }];
     } else {
         
         // Load placeholder editing background based on book cover.

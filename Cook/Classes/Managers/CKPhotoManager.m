@@ -7,7 +7,6 @@
 //
 
 #import "CKPhotoManager.h"
-#import "ParsePhotoStore.h"
 #import "ImageHelper.h"
 #import "CKRecipeImage.h"
 #import "CKRecipe.h"
@@ -17,7 +16,6 @@
 
 @interface CKPhotoManager ()
 
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) NSMutableDictionary *transferInProgress;
 
 @end
@@ -35,11 +33,12 @@
 
 - (id)init {
     if (self = [super init]) {
-        self.photoStore = [[ParsePhotoStore alloc] init];
         self.transferInProgress = [NSMutableDictionary dictionary];
     }
     return self;
 }
+
+#pragma mark - Image retrieval and downloads.
 
 // Fullsize image retrieval for the given recipe at the specified size and name for callback completion comparison.
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
@@ -144,6 +143,39 @@
                                      completion(nil, name);
                                  }
                              }];
+}
+
+- (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name
+                 progress:(void (^)(CGFloat progressRatio))progress
+               completion:(void (^)(UIImage *image, NSString *name))completion {
+    
+    if (parseFile) {
+        
+        // Get cached image for the persisted parseFile.
+        UIImage *image = [self cachedImageForParseFile:parseFile size:size];
+        if (image) {
+            
+            // Return cached image.
+            completion(image, name);
+            
+        } else {
+            
+            // Otherwise download from Parse.
+            [self downloadImageForParseFile:parseFile size:size name:name
+                                   progress:^(CGFloat progressRatio) {
+                                       progress(progressRatio);
+                                   }
+                                 completion:^(UIImage *image, NSString *name) {
+                                     completion(image, name);
+                                 }];
+        }
+        
+    } else {
+        
+        // Return no image.
+        completion(nil, name);
+    }
+    
 }
 
 #pragma mark - Image uploads.
@@ -308,39 +340,6 @@
         
         // Return no image.
         DLog(@"No image, returning nil");
-        completion(nil, name);
-    }
-    
-}
-
-- (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name
-                 progress:(void (^)(CGFloat progressRatio))progress
-               completion:(void (^)(UIImage *image, NSString *name))completion {
-    
-    if (parseFile) {
-        
-        // Get cached image for the persisted parseFile.
-        UIImage *image = [self cachedImageForParseFile:parseFile size:size];
-        if (image) {
-            
-            // Return cached image.
-            completion(image, name);
-            
-        } else {
-            
-            // Otherwise download from Parse.
-            [self downloadImageForParseFile:parseFile size:size name:name
-                                   progress:^(CGFloat progressRatio) {
-                                       progress(progressRatio);
-                                   }
-                                 completion:^(UIImage *image, NSString *name) {
-                                     completion(image, name);
-                                 }];
-        }
-        
-    } else {
-        
-        // Return no image.
         completion(nil, name);
     }
     

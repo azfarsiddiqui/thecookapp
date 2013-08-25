@@ -19,9 +19,9 @@
 #import "CKUserProfilePhotoView.h"
 #import "CKBookSummaryView.h"
 #import "EventHelper.h"
-#import "ParsePhotoStore.h"
 #import "NSString+Utilities.h"
 #import <QuartzCore/QuartzCore.h>
+#import "CKPhotoManager.h"
 
 @interface StoreBookViewController () <CKBookCoverViewDelegate>
 
@@ -39,7 +39,6 @@
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL updated;
 @property (nonatomic, assign) CGPoint originPoint;
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @end
 
@@ -59,7 +58,6 @@
         self.addMode = addMode;
         self.delegate = delegate;
         self.currentUser = [CKUser currentUser];
-        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -364,25 +362,27 @@
 }
 
 - (void)loadData {
-    [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
-                                  size:self.imageView.bounds.size
-                            completion:^(UIImage *image) {
-                                
-                                // Set the image and prepare for fade-in.
-                                self.imageView.image = image;
-                                self.imageView.alpha = 0.0;
-                                
-                                // Fade it in.
-                                [UIView animateWithDuration:0.6
-                                                      delay:0.0
-                                                    options:UIViewAnimationOptionCurveEaseIn
-                                                 animations:^{
-                                                     self.imageView.alpha = 1.0;
-                                                 }
-                                                 completion:^(BOOL finished) {
-                                                 }];
-                                
-                            }];
+    
+    [[CKPhotoManager sharedInstance] imageForParseFile:[self.book.user parseCoverPhotoFile]
+                                                  size:self.imageView.bounds.size name:@"profileCover"
+                                              progress:^(CGFloat progressRatio) {
+                                              } completion:^(UIImage *image, NSString *name) {
+                                                  
+                                                  // Set the image and prepare for fade-in.
+                                                  self.imageView.image = image;
+                                                  self.imageView.alpha = 0.0;
+                                                  
+                                                  // Fade it in.
+                                                  [UIView animateWithDuration:0.6
+                                                                        delay:0.0
+                                                                      options:UIViewAnimationOptionCurveEaseIn
+                                                                   animations:^{
+                                                                       self.imageView.alpha = 1.0;
+                                                                   }
+                                                                   completion:^(BOOL finished) {
+                                                                   }];
+                                                  
+                                              }];
 }
 
 - (CGFloat)storeScale {

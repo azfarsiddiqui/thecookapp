@@ -32,10 +32,4 @@
 - (void)handleDeviceTokenError:(NSError *)error;
 - (void)handlePushWithUserInfo:(NSDictionary *)userInfo;
 
-// Image uploads.
-- (void)uploadImage:(UIImage *)image recipe:(CKRecipe *)recipe;
-- (UIImage *)imageForRecipe:(CKRecipe *)recipe;
-- (UIImage *)thumbnailImageForRecipe:(CKRecipe *)recipe;
-- (CKRecipeImage *)recipeImageInTransitForRecipe:(CKRecipe *)recipe;
-
 @end

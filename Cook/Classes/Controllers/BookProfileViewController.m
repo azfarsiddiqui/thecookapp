@@ -16,9 +16,9 @@
 #import "EventHelper.h"
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
-#import "ParsePhotoStore.h"
 #import "UIImage+ProportionalFill.h"
 #import "CKEditingViewHelper.h"
+#import "CKPhotoManager.h"
 #import <Parse/Parse.h>
 
 @interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate>
@@ -30,7 +30,6 @@
 @property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) UIImage *uploadedCoverPhoto;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 
@@ -44,7 +43,6 @@
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
         self.book = book;
-        self.photoStore = [[ParsePhotoStore alloc] init];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
     return self;
@@ -240,22 +238,24 @@
 
 - (void)loadData {
     if ([self.book.user hasCoverPhoto]) {
-        [self.photoStore imageForParseFile:[self.book.user parseCoverPhotoFile]
-                                      size:self.imageView.bounds.size
-                                completion:^(UIImage *image) {
-                                    self.imageView.alpha = 0.0;
-                                    self.imageView.image = image;
-                                    
-                                    // Fade it in.
-                                    [UIView animateWithDuration:0.6
-                                                          delay:0.0
-                                                        options:UIViewAnimationOptionCurveEaseIn
-                                                     animations:^{
-                                                         self.imageView.alpha = 1.0;
-                                                     }
-                                                     completion:^(BOOL finished) {
-                                                     }];
-                                }];
+        
+        [[CKPhotoManager sharedInstance] imageForParseFile:[self.book.user parseCoverPhotoFile]
+                                                      size:self.imageView.bounds.size name:@"profileCover"
+                                                  progress:^(CGFloat progressRatio) {
+                                                  } completion:^(UIImage *image, NSString *name) {
+                                                      self.imageView.alpha = 0.0;
+                                                      self.imageView.image = image;
+                                                      
+                                                      // Fade it in.
+                                                      [UIView animateWithDuration:0.6
+                                                                            delay:0.0
+                                                                          options:UIViewAnimationOptionCurveEaseIn
+                                                                       animations:^{
+                                                                           self.imageView.alpha = 1.0;
+                                                                       }
+                                                                       completion:^(BOOL finished) {
+                                                                       }];
+                                                  }];
     }
 }
 
