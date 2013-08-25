@@ -217,6 +217,11 @@
                     [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
                 }
                 
+            } progressBlock:^(int percentage) {
+                
+                // Update progress on full size upload.
+                [self updateTransferProgress:percentage cacheKey:recipeImage.imageUuid];
+                
             }];
             
         } else {
