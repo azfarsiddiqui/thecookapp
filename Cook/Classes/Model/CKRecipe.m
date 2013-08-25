@@ -507,7 +507,7 @@
 #pragma mark - Existence methods
 
 - (BOOL)hasPhotos {
-    return (self.recipeImage.imageFile != nil) || ([self.recipeImage.imageUuid CK_containsText]);
+    return (self.recipeImage.imageFile != nil);
 }
 
 - (BOOL)hasTitle {

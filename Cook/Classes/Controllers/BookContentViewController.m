@@ -10,7 +10,6 @@
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "BookCategoryLayout.h"
-#import "ParsePhotoStore.h"
 #import "MRCEnumerable.h"
 #import "BookContentTitleView.h"
 #import "ViewHelper.h"
@@ -19,6 +18,7 @@
 #import "BookRecipeGridMediumCell.h"
 #import "BookRecipeGridSmallCell.h"
 #import "BookRecipeGridExtraSmallCell.h"
+#import "CKPhotoManager.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate>
@@ -28,7 +28,6 @@
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSString *page;
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 @property (nonatomic, strong) NSMutableArray *recipes;
 
 @property (nonatomic, strong) UIImageView *imageView;
@@ -47,7 +46,6 @@
         self.delegate = delegate;
         self.book = book;
         self.page = page;
-        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -199,11 +197,18 @@
 
 - (void)loadFeaturedRecipe {
     CKRecipe *featuredRecipe = [self.delegate featuredRecipeForBookContentViewControllerForPage:self.page];
-    [self.photoStore imageForParseFile:[featuredRecipe imageFile]
-                                  size:self.imageView.bounds.size
-                            completion:^(UIImage *image) {
-                                self.imageView.image = image;
-                            }];
+    NSString *loadingName = [NSString stringWithFormat:@"%@_FeaturedRecipe", self.page];
+    
+    [[CKPhotoManager sharedInstance] imageForRecipe:featuredRecipe size:self.imageView.bounds.size name:loadingName
+                                           progress:^(CGFloat progressRatio, NSString *name) {
+                                               DLog(@"image progress[%f]", progressRatio);
+                                           } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                               self.imageView.image = thumbImage;
+                                           } completion:^(UIImage *image, NSString *name) {
+                                               if ([name isEqualToString:loadingName]) {
+                                                   self.imageView.image = image;
+                                               }
+                                           }];
 }
 
 - (void)configureImageForRecipeCell:(BookRecipeGridCell *)recipeCell recipe:(CKRecipe *)recipe
@@ -211,16 +216,15 @@
     
     if ([recipe hasPhotos]) {
         CGSize imageSize = [BookRecipeGridCell imageSize];
-        [self.photoStore imageForParseFile:[recipe imageFile]
-                                      size:imageSize
-                                 indexPath:indexPath
-                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
-                                    
-                                    // Check that we have matching indexPaths as cells are re-used.
-                                    if ([indexPath isEqual:completedIndexPath]) {
-                                        [recipeCell configureImage:image];
-                                    }
-                                }];
+        
+        
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize name:recipe.objectId
+                                                    progress:^(CGFloat progressRatio, NSString *name) {
+                                                    } completion:^(UIImage *thumbImage, NSString *name) {
+                                                        if ([name isEqualToString:recipe.objectId]) {
+                                                            [recipeCell configureImage:thumbImage];
+                                                        }
+                                                    }];
     } else {
         [recipeCell configureImage:nil];
     }

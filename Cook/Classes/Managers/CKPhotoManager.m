@@ -43,7 +43,7 @@
 
 // Fullsize image retrieval for the given recipe at the specified size and name for callback completion comparison.
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
-              progress:(void (^)(int percentage, NSString *name))progress
+              progress:(void (^)(CGFloat progressRatio, NSString *name))progress
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
     [self checkInTransferImageForRecipe:recipe size:size name:name
@@ -56,8 +56,8 @@
                                  
                                  // Otherwise try and load the parseFile.
                                  [self imageForParseFile:recipe.recipeImage.imageFile size:size name:name
-                                                progress:^(int percentage) {
-                                                    progress(percentage, name);
+                                                progress:^(CGFloat progressRatio) {
+                                                    progress(progressRatio, name);
                                                 } completion:^(UIImage *image, NSString *name) {
                                                     completion(image, name);
                                                 }];
@@ -66,7 +66,7 @@
 
 // Thumbnail image retrieval for the given recipe at the specified size and name for callbacl completion comparison.
 - (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
-                   progress:(void (^)(int percentage, NSString *name))progress
+                   progress:(void (^)(CGFloat progressRatio, NSString *name))progress
                  completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
     
     [self checkInTransferImageForRecipe:recipe size:size name:name
@@ -77,21 +77,31 @@
                                  
                              } otherwiseHandler:^{
                                  
-                                 // Otherwise try and load the parseFile.
-                                 [self imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:name
-                                                progress:^(int percentage) {
-                                                    progress(percentage, name);
-                                                } completion:^(UIImage *image, NSString *name) {
-                                                    completion(image, name);
-                                                }];
+                                 // Check if we have a thumbnail image, otherwise load the big one.
+                                 if (recipe.recipeImage.thumbImageFile) {
+                                     [self imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:name
+                                                    progress:^(CGFloat progressRatio) {
+                                                        progress(progressRatio, name);
+                                                    } completion:^(UIImage *image, NSString *name) {
+                                                        completion(image, name);
+                                                    }];
+                                 } else {
+                                     [self imageForParseFile:recipe.recipeImage.imageFile size:size name:name
+                                                    progress:^(CGFloat progressRatio) {
+                                                        progress(progressRatio, name);
+                                                    } completion:^(UIImage *image, NSString *name) {
+                                                        completion(image, name);
+                                                    }];
+                                 }
+                                 
                              }];
 }
 
 // Image retrieval for the given recipe at the specified size and with logical name for callback completion comparison.
 // Returns the thumbnail first if both required network access, otherwise fullsized image is returned first. Use case
 // is for full recipe details screen. The progress is of the fullsize image.
-- (void)imageForRecipe:(CKRecipe *)recipe thumbSize:(CGSize)thumbSize size:(CGSize)size name:(NSString *)name
-              progress:(void (^)(int percentage, NSString *name))progress
+- (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
+              progress:(void (^)(CGFloat progressRatio, NSString *name))progress
        thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
@@ -114,16 +124,16 @@
                                          
                                          // Get the fullsize image with progress reporting.
                                          [self imageForRecipe:recipe size:size name:name
-                                                     progress:^(int percentage, NSString *name) {
-                                                         progress(percentage, name);
+                                                     progress:^(CGFloat progressRatio, NSString *name) {
+                                                         progress(progressRatio, name);
                                                      }
                                                    completion:^(UIImage *image, NSString *name) {
                                                        completion(image, name);
                                                    }];
                                          
                                          // Get the thumbnail.
-                                         [self thumbImageForRecipe:recipe size:thumbSize name:name
-                                                          progress:^(int percentage, NSString *name) {
+                                         [self thumbImageForRecipe:recipe size:[ImageHelper thumbSize] name:name
+                                                          progress:^(CGFloat progressRatio, NSString *name) {
                                                               // No reporting of progress for thumbnail.
                                                           } completion:^(UIImage *thumbImage, NSString *name) {
                                                               thumbCompletion(thumbImage, name);
@@ -304,7 +314,7 @@
 }
 
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name
-                 progress:(void (^)(int progress))progress
+                 progress:(void (^)(CGFloat progressRatio))progress
                completion:(void (^)(UIImage *image, NSString *name))completion {
     
     if (parseFile) {
@@ -314,15 +324,14 @@
         if (image) {
             
             // Return cached image.
-            DLog(@"Found cached image.");
             completion(image, name);
             
         } else {
             
             // Otherwise download from Parse.
             [self downloadImageForParseFile:parseFile size:size name:name
-                                   progress:^(int percentage) {
-                                       progress(percentage);
+                                   progress:^(CGFloat progressRatio) {
+                                       progress(progressRatio);
                                    }
                                  completion:^(UIImage *image, NSString *name) {
                                      completion(image, name);
@@ -332,7 +341,6 @@
     } else {
         
         // Return no image.
-        DLog(@"No image, returning nil");
         completion(nil, name);
     }
     
@@ -363,7 +371,7 @@
 }
 
 - (void)downloadImageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name
-                         progress:(void (^)(int progress))progress
+                         progress:(void (^)(CGFloat progressRatio))progress
                        completion:(void (^)(UIImage *image, NSString *name))completion {
     
     // Generate a cache key for the given file and size combination.
@@ -413,10 +421,12 @@
         }
         
     } progressBlock:^(int progressPercentage) {
-        DLog(@"CacheKey[%@] Progress[%d]", cacheKey, progressPercentage);
+        if (progressPercentage % 10 == 0) {
+            DLog(@"CacheKey[%@] Progress[%d]", cacheKey, progressPercentage);
+        }
         
         // Update the transfer progress.
-        [self updateTransferProgress:@(progressPercentage) cacheKey:cacheKey];
+        [self updateTransferProgress:@(progressPercentage / 100.0) cacheKey:cacheKey];
         progress(progressPercentage);
         
     }];

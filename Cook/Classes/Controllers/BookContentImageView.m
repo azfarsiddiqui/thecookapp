@@ -17,7 +17,6 @@
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
-
 @property (nonatomic, strong) UIImageView *blurredImageView;
 
 @end

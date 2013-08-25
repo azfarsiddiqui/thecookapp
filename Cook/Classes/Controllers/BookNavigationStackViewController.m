@@ -12,7 +12,6 @@
 #import "CKUser.h"
 #import "CKServerManager.h"
 #import "BookPagingStackLayout.h"
-#import "ParsePhotoStore.h"
 #import "BookProfileViewController.h"
 #import "BookTitleViewController.h"
 #import "BookHeaderView.h"
@@ -26,6 +25,7 @@
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
 #import "BookContentCell.h"
+#import "CKPhotoManager.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -52,8 +52,6 @@
 @property (nonatomic, strong) UIView *benchtopSnapshotView;
 @property (nonatomic, strong) UIView *leftOutlineView;
 @property (nonatomic, strong) UIView *rightOutlineView;
-
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
 @property (nonatomic, strong) BookTitleViewController *titleViewController;
@@ -82,7 +80,6 @@
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
         self.delegate = delegate;
         self.book = book;
-        self.photoStore = [[ParsePhotoStore alloc] init];
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.profileViewController.bookPageDelegate = self;
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
@@ -791,20 +788,19 @@
     DLog(@"Content Image for %d", indexPath.section);
     
     if ([recipe hasPhotos]) {
-        
-        [self.photoStore imageForRecipeImage:recipe.recipeImage
-                                      recipe:recipe size:[contentHeaderView imageSizeWithMotionOffset]
-                                        name:recipe.page
-                             thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                 if ([name isEqualToString:recipe.page]) {
-                                     [contentHeaderView configureImage:thumbImage];
-                                 }
-                             }
-                                  completion:^(UIImage *image, NSString *name) {
-                                      if ([name isEqualToString:recipe.page]) {
-                                          [contentHeaderView configureImage:image];
-                                      }
-                                  }];
+    
+        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[contentHeaderView imageSizeWithMotionOffset]
+                                                   name:recipe.objectId
+                                               progress:^(CGFloat progressRatio, NSString *name) {
+                                               } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                   if ([name isEqualToString:recipe.objectId]) {
+                                                       [contentHeaderView configureImage:thumbImage];
+                                                   }
+                                               } completion:^(UIImage *image, NSString *name) {
+                                                   if ([name isEqualToString:recipe.objectId]) {
+                                                       [contentHeaderView configureImage:image];
+                                                   }
+                                               }];
         
     } else {
         [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]

@@ -18,13 +18,13 @@
 
 // Image retrieval/downloads.
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
-              progress:(void (^)(int percentage, NSString *name))progress
+              progress:(void (^)(CGFloat progressRatio, NSString *name))progress
             completion:(void (^)(UIImage *image, NSString *name))completion;
 - (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
-                   progress:(void (^)(int percentage, NSString *name))progress
+                   progress:(void (^)(CGFloat progressRatio, NSString *name))progress
                  completion:(void (^)(UIImage *thumbImage, NSString *name))completion;
-- (void)imageForRecipe:(CKRecipe *)recipe thumbSize:(CGSize)thumbSize size:(CGSize)size name:(NSString *)name
-              progress:(void (^)(int percentage, NSString *name))progress
+- (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size name:(NSString *)name
+              progress:(void (^)(CGFloat progressRatio, NSString *name))progress
        thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
             completion:(void (^)(UIImage *image, NSString *name))completion;
 

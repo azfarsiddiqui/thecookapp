@@ -11,7 +11,6 @@
 #import "CKBookCover.h"
 #import "Theme.h"
 #import "CKBookTitleIndexView.h"
-#import "ParsePhotoStore.h"
 #import "CKRecipe.h"
 #import "CKUser.h"
 #import "ImageHelper.h"
@@ -23,6 +22,7 @@
 #import "AppHelper.h"
 #import "ViewHelper.h"
 #import "CKActivityIndicatorView.h"
+#import "CKPhotoManager.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     UIAlertViewDelegate, UITextFieldDelegate>
@@ -32,8 +32,6 @@
 @property (nonatomic, assign) BOOL titleImageLoaded;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
-
-@property (nonatomic, strong) ParsePhotoStore *photoStore;
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
@@ -61,7 +59,6 @@
     if (self = [super init]) {
         self.book = book;
         self.delegate = delegate;
-        self.photoStore = [[ParsePhotoStore alloc] init];
     }
     return self;
 }
@@ -111,17 +108,22 @@
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
     
     NSString *bookTitleCacheKey = [NSString stringWithFormat:@"BookTitle_%@", self.book.objectId];
-    UIImage *bookTitleImage = [self.photoStore cachedImageForKey:bookTitleCacheKey];
+    UIImage *bookTitleImage = [[CKPhotoManager sharedInstance] cachedImageForKey:bookTitleCacheKey];
     if (bookTitleImage) {
         [self configureHeroRecipeImage:bookTitleImage];
     } else {
+        
         if ([recipe hasPhotos]) {
-            [self.photoStore imageForParseFile:[recipe imageFile]
-                                          size:self.imageView.bounds.size
-                                    completion:^(UIImage *image) {
-                                        [self configureHeroRecipeImage:image];
-                                        [self.photoStore storeImage:image forKey:bookTitleCacheKey];
-                                    }];
+            
+            [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:self.imageView.bounds.size
+                                                            name:@"BookTitleFeaturedRecipe"
+                                                        progress:^(CGFloat progressRatio, NSString *name) {
+                                                            // Ignore progress.
+                                                        } completion:^(UIImage *thumbImage, NSString *name) {
+                                                            
+                                                            [self configureHeroRecipeImage:thumbImage];
+                                                            [[CKPhotoManager sharedInstance] storeImage:thumbImage forKey:bookTitleCacheKey];
+                                                        }];
         }
     }
 }
@@ -378,13 +380,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
     
-    // Attempt to load cached image.
-    NSString *bookTitleCacheKey = [NSString stringWithFormat:@"BookTitle_%@", self.book.objectId];
-    UIImage *bookTitleImage = [self.photoStore cachedImageForKey:bookTitleCacheKey];
-    if (bookTitleImage) {
-        [self configureHeroRecipeImage:bookTitleImage];
-    }
-
     UIImage *borderImage = [[UIImage imageNamed:@"cook_book_inner_title_border.png"] resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
     UIImageView *borderImageView = [[UIImageView alloc] initWithImage:borderImage];
     borderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
@@ -438,16 +433,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     if ([recipe hasPhotos]) {
         CGSize imageSize = [BookTitleCell cellSize];
-        [self.photoStore imageForParseFile:[recipe imageFile]
-                                      size:imageSize
-                                 indexPath:indexPath
-                                completion:^(NSIndexPath *completedIndexPath, UIImage *image) {
-                                    
-                                    // Check that we have matching indexPaths as cells are re-used.
-                                    if ([indexPath isEqual:completedIndexPath]) {
-                                        [titleCell configureImage:image];
-                                    }
-                                }];
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize name:recipe.page
+                                                    progress:^(CGFloat progressRatio, NSString *name) {
+                                                    } completion:^(UIImage *thumbImage, NSString *name) {
+                                                        if ([recipe.page isEqualToString:name]) {
+                                                            [titleCell configureImage:thumbImage];
+                                                        }
+                                                    }];
     } else {
         [titleCell configureImage:nil];
     }
