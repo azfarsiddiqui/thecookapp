@@ -12,7 +12,6 @@
 #import "EventHelper.h"
 #import "CKPagingView.h"
 #import "CKNotificationView.h"
-#import "CKPopoverViewController.h"
 #import "ViewHelper.h"
 #import "CKBook.h"
 #import "MRCEnumerable.h"
@@ -23,9 +22,9 @@
 #import "CKBookCover.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
-    UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKPopoverViewControllerDelegate,
-    CKNotificationViewDelegate, BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate,
-    IllustrationPickerViewControllerDelegate>
+    UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
+    BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate,
+IllustrationPickerViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
@@ -37,7 +36,6 @@
 @property (nonatomic, strong) UIImageView *vignetteView;
 @property (nonatomic, strong) UIButton *deleteButton;
 
-@property (nonatomic, strong) CKPopoverViewController *popoverViewController;
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 
@@ -270,21 +268,6 @@
 
 - (void)notificationViewTapped {
     DLog();
-}
-
-#pragma mark - CKPopoverViewControllerDelegate methods
-
-- (void)popoverViewController:(CKPopoverViewController *)popoverViewController willAppear:(BOOL)appear {
-    if (appear) {
-        [self enable:NO];
-    }
-}
-
-- (void)popoverViewController:(CKPopoverViewController *)popoverViewController didAppear:(BOOL)appear {
-    if (!appear) {
-        self.popoverViewController = nil;
-        [self enable:YES];
-    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
