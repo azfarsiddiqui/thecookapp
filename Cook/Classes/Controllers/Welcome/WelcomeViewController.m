@@ -627,21 +627,21 @@
         // Lock the welcome screen and initiate dismissal.
         self.collectionView.scrollEnabled = NO;
         
+        CGAffineTransform transform = CGAffineTransformMakeScale(0.95, 0.95);
+//        CGAffineTransform transform = CGAffineTransformMakeScale(1.05, 1.05);
+        
         // Fade the paging view.
         [UIView animateWithDuration:0.3
                               delay:0.3
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             self.signUpPageView.transform = CGAffineTransformMakeTranslation(-20.0, 0.0);
+                             self.signUpPageView.transform = transform;
                              self.signUpPageView.alpha = 0.0;
-                             self.pagingView.transform = CGAffineTransformMakeTranslation(-20.0, 0.0);
                              self.pagingView.alpha = 0.0;
                          }
                          completion:^(BOOL finished) {
                              [self.delegate welcomeViewControllerGetStartedReached];
                          }];
-        
-        
     }
 }
 

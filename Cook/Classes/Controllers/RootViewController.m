@@ -830,8 +830,18 @@
         // Recreate the login.
         WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] initWithDelegate:self];
         welcomeViewController.view.frame = self.view.bounds;
+        welcomeViewController.view.alpha = 0.0;
         [self.view addSubview:welcomeViewController.view];
         self.welcomeViewController = welcomeViewController;
+        
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.welcomeViewController.view.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
         
     } else {
         
