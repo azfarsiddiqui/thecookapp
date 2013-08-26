@@ -17,6 +17,7 @@
 #import "CKUser.h"
 #import "EventHelper.h"
 #import "ImageHelper.h"
+#import "NSString+Utilities.h"
 
 @interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate>
 
@@ -67,6 +68,9 @@
     [self initHeaderView];
     [self initButtons];
     [self initFooterView];
+    
+//    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
+    [self loadSnapshotImage:[self.delegate signupViewControllerSnapshotImageRequested]];
     
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -160,14 +164,22 @@
 
 - (void)loadSnapshot:(UIView *)snapshotView {
     
-    // Grab an image of the screenshot so we can blur it.
+    // Only works with snapshotted views.
     UIGraphicsBeginImageContextWithOptions(snapshotView.frame.size, NO, 0);
-    [snapshotView drawViewHierarchyInRect:snapshotView.bounds afterScreenUpdates:YES];
+    BOOL snapshotDone = [snapshotView drawViewHierarchyInRect:snapshotView.bounds afterScreenUpdates:YES];
+    DLog(@"Snapshot Done: %@", [NSString CK_stringForBoolean:snapshotDone]);
     UIImage *screenshotImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
-    UIImage *blurredImage = [ImageHelper blurredSignUpImage:screenshotImage];
-    self.blurredImageView.image = blurredImage;
+
+    [ImageHelper blurredSignUpImage:screenshotImage completion:^(UIImage *blurredImage) {
+        self.blurredImageView.image = blurredImage;
+    }];
+}
+
+- (void)loadSnapshotImage:(UIImage *)snapshotImage {
+    [ImageHelper blurredSignUpImage:snapshotImage completion:^(UIImage *blurredImage) {
+        self.blurredImageView.image = blurredImage;
+    }];
 }
 
 #pragma mark - CKTextFieldViewDelegate methods
@@ -286,7 +298,6 @@
     self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.blurredImageView];
-    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
     
     // Register tap to dismiss.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapped:)];
