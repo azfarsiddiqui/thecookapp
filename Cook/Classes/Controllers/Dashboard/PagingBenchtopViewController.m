@@ -1154,7 +1154,7 @@
     self.signUpViewController.view.alpha = 0.0;
     [self.view addSubview:self.signUpViewController.view];
     
-    [UIView animateWithDuration:0.25
+    [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
