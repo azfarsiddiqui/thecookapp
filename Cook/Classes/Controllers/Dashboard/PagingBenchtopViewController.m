@@ -688,9 +688,8 @@
                                  
                                  // Reload the book.
                                  self.myBook = book;
-                                 BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
-                                 [myBookCell loadBook:book];
-                                 
+                                 [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                
                                  // Update after myBook has been set.
                                  if (changedCover) {
                                      [self updatePagingBenchtopView];
@@ -712,12 +711,12 @@
         // Load login book.
         [CKBook fetchGuestBookSuccess:^(CKBook *guestBook) {
             
-            [[self pagingLayout] markLayoutDirty];
-            
             if (self.myBook) {
                 self.myBook = guestBook;
                 [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
             } else {
+                [[self pagingLayout] markLayoutDirty];
+                
                 self.myBook = guestBook;
                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
             }
