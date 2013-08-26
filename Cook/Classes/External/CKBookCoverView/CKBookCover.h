@@ -18,6 +18,8 @@ typedef enum {
 
 @interface CKBookCover : NSObject
 
++ (NSString *)guestCover;
++ (NSString *)guestIllustration;
 + (NSString *)initialCover;
 + (NSString *)initialIllustration;
 + (NSString *)defaultCover;

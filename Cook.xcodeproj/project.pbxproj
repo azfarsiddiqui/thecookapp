@@ -2786,10 +2786,10 @@
 			children = (
 				76BF202517544140000F0798 /* WelcomeViewController.h */,
 				76BF202217544140000F0798 /* WelcomeViewController.m */,
-				76BF202417544140000F0798 /* SignupViewController.h */,
-				76BF202317544140000F0798 /* SignupViewController.m */,
 				76BF202817544248000F0798 /* WelcomeCollectionViewLayout.h */,
 				76BF202917544248000F0798 /* WelcomeCollectionViewLayout.m */,
+				76BF202417544140000F0798 /* SignupViewController.h */,
+				76BF202317544140000F0798 /* SignupViewController.m */,
 				76BF202B17546D31000F0798 /* PageHeaderView.h */,
 				76BF202C17546D31000F0798 /* PageHeaderView.m */,
 			);

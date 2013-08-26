@@ -601,7 +601,6 @@
 - (void)loadData {
     DLog();
     
-    CKUser *currentUser = [CKUser currentUser];
     if ([self.book isOwner]) {
         
         // Fetch all recipes for the book, and categorise them.
@@ -615,21 +614,13 @@
         
     } else {
         
-        // Are we friends with the book's owner?
-        [currentUser checkIsFriendsWithUser:self.book.user
-                                 completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
-                                     
-                                     // Fetch all recipes for the book, and categorise them.
-                                     [self.book fetchRecipesOwner:NO friends:alreadyConnected success:^(NSArray *recipes) {
-                                         
-                                         [self processRecipes:recipes];
-                                         
-                                     } failure:^(NSError *error) {
-                                         DLog(@"Error %@", [error localizedDescription]);
-                                     }];
-                                     
-                                 } failure:^(NSError *error) {
-                                 }];
+        // Fetch all recipes for the book, and categorise them.
+        [self.book fetchRecipesOwner:NO friends:YES success:^(NSArray *recipes) {
+            [self processRecipes:recipes];
+        } failure:^(NSError *error) {
+         DLog(@"Error %@", [error localizedDescription]);
+        }];
+        
     }
     
 }

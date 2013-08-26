@@ -23,6 +23,14 @@
 #define kInitialCover           @"kCookInitialCover"
 #define kInitialIllustration    @"kCookInitialIllustration"
 
++ (NSString *)guestCover {
+    return @"Red";
+}
+
++ (NSString *)guestIllustration {
+    return @"Rice";
+}
+
 + (NSString *)initialCover {
     NSString *initialCover = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialCover];
     if (!initialCover) {

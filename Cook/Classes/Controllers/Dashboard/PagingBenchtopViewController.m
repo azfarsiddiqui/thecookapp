@@ -84,20 +84,37 @@ IllustrationPickerViewControllerDelegate>
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
     self.view.backgroundColor = [UIColor whiteColor];
     [self initBackground];
     [self initCollectionView];
     [self initBenchtopLevelView];
     [self initNotificationView];
     
-    if ([CKUser isLoggedIn]) {
-        [self loadBenchtop:YES];
-    }
-    
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerThemeChange:self selector:@selector(themeChanged:)];
+}
+
+- (void)loadBenchtop:(BOOL)load {
+    DLog(@"load [%@]", load ? @"YES" : @"NO");
+    [self enable:load];
+    
+    if (load) {
+        [self loadMyBook];
+        [self loadFollowBooks];
+    } else {
+        
+        self.myBook = nil;
+        [self.followBooks removeAllObjects];
+        self.followBooks = nil;
+        
+        [[self pagingLayout] markLayoutDirty];
+        [self.collectionView reloadData];
+    }
+    
 }
 
 #pragma mark - PagingBenchtopViewController methods
@@ -159,7 +176,7 @@ IllustrationPickerViewControllerDelegate>
                 self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0) - ((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
                 self.backdropScrollView.contentOffset.y
             };
-            DLog(@"backdrop contentOffset %@", NSStringFromCGPoint(self.backdropScrollView.contentOffset));
+//            DLog(@"backdrop contentOffset %@", NSStringFromCGPoint(self.backdropScrollView.contentOffset));
 
         }
         
@@ -323,7 +340,10 @@ IllustrationPickerViewControllerDelegate>
     BenchtopBookCoverViewCell *cell = [self myBookCell];
     self.myBook.name = cell.bookCoverView.nameValue;
     self.myBook.author = cell.bookCoverView.authorValue;
-    [self.myBook saveInBackground];
+    
+    if (!self.myBook.guest) {
+        [self.myBook saveInBackground];
+    }
     
     [cell loadBook:self.myBook];
     [self enableEditMode:NO];
@@ -601,55 +621,57 @@ IllustrationPickerViewControllerDelegate>
     [self enableDeleteMode:NO indexPath:self.selectedIndexPath];
 }
 
-- (void)loadBenchtop:(BOOL)load {
-    DLog(@"load [%@]", load ? @"YES" : @"NO");
-    [self enable:load];
-    
-    if (load) {
-        [self loadMyBook];
-        [self loadFollowBooks];
-    } else {
-        
-        self.myBook = nil;
-        [self.followBooks removeAllObjects];
-        self.followBooks = nil;
-        
-        [[self pagingLayout] markLayoutDirty];
-        [self.collectionView reloadData];
-    }
-    
-}
-
 - (void)loadMyBook {
+    
     CKUser *currentUser = [CKUser currentUser];
-    [CKBook fetchBookForUser:currentUser
-                     success:^(CKBook *book) {
-                         
-                         if (self.myBook) {
+    if (currentUser) {
+        
+        // Load logged-in user's book.
+        [CKBook fetchBookForUser:currentUser
+                         success:^(CKBook *book) {
                              
-                             // Update benchtop if book is of a different cover.
-                             BOOL changedCover = ![self.myBook.cover isEqualToString:book.cover];
-                             
-                             // Reload the book.
-                             self.myBook = book;
-                             BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
-                             [myBookCell loadBook:book];
-                             
-                             // Update after myBook has been set.
-                             if (changedCover) {
-                                 [self updatePagingBenchtopView];
+                             if (self.myBook) {
+                                 
+                                 // Update benchtop if book is of a different cover.
+                                 BOOL changedCover = ![self.myBook.cover isEqualToString:book.cover];
+                                 
+                                 // Reload the book.
+                                 self.myBook = book;
+                                 BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
+                                 [myBookCell loadBook:book];
+                                 
+                                 // Update after myBook has been set.
+                                 if (changedCover) {
+                                     [self updatePagingBenchtopView];
+                                 }
+                                 
+                             } else {
+                                 
+                                 self.myBook = book;
+                                 [[self pagingLayout] markLayoutDirty];
+                                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                              }
                              
-                         } else {
-                             self.myBook = book;
-                             [[self pagingLayout] markLayoutDirty];
-                             [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                          }
-                         
-                     }
-                     failure:^(NSError *error) {
-                         DLog(@"Error: %@", [error localizedDescription]);
-                     }];
+                         failure:^(NSError *error) {
+                             DLog(@"Error: %@", [error localizedDescription]);
+                         }];
+    } else {
+        
+        // Load login book.
+        [CKBook fetchGuestBookSuccess:^(CKBook *guestBook) {
+            
+            self.myBook = guestBook;
+            [[self pagingLayout] markLayoutDirty];
+            [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+            
+        } failure:^(NSError *error) {
+            
+            // Ignore error.
+        }];
+        
+    }
+    
 }
 
 - (void)loadFollowBooks {
@@ -657,23 +679,22 @@ IllustrationPickerViewControllerDelegate>
 }
 
 - (void)loadFollowBooksReload:(BOOL)reload {
-    CKUser *currentUser = [CKUser currentUser];
-    [CKBook followBooksForUser:currentUser
-                       success:^(NSArray *books) {
-                           self.followBooks = [NSMutableArray arrayWithArray:books];
-                           NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
-                           
-                           if (reload) {
-                               [[self pagingLayout] markLayoutDirty];
-                               [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
-                           } else {
-                               [[self pagingLayout] markLayoutDirty];
-                               [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-                           }
-                       }
-                       failure:^(NSError *error) {
-                           DLog(@"Error: %@", [error localizedDescription]);
-                       }];
+    
+    [CKBook fetchFollowBooksSuccess:^(NSArray *followBooks) {
+        self.followBooks = [NSMutableArray arrayWithArray:followBooks];
+        NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
+        
+        if (reload) {
+            [[self pagingLayout] markLayoutDirty];
+            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+        } else {
+            [[self pagingLayout] markLayoutDirty];
+            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+        }
+    } failure:^(NSError *error) {
+        DLog(@"Error: %@", [error localizedDescription]);
+    }];
+
 }
 
 - (NSArray *)indexPathsForFollowBooks {
@@ -813,6 +834,12 @@ IllustrationPickerViewControllerDelegate>
 
 - (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = (indexPath.section == kMyBookSection) ? self.myBook : [self.followBooks objectAtIndex:indexPath.item];
+    
+    // Cannot open guest book.
+    if (book.guest) {
+        return;
+    }
+    
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
     CGPoint centerPoint = cell.contentView.center;
     [self.delegate openBookRequestedForBook:book centerPoint:centerPoint];

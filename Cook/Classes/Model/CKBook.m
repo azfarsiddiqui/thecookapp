@@ -12,6 +12,10 @@
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
 
+@interface CKBook ()
+
+@end
+
 @implementation CKBook
 
 + (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -48,6 +52,35 @@
         
     }];
 
+}
+
++ (void)fetchGuestBookSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    // This creates it locally and not persisted, may be extended for network fetch.
+    PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
+    [parseBook setObject:kBookAttrGuestCaptionValue forKey:kModelAttrName];
+    [parseBook setObject:kBookAttrGuestNameValue forKey:kBookAttrAuthor];
+    [parseBook setObject:[CKBookCover guestCover] forKey:kBookAttrCover];
+    [parseBook setObject:[CKBookCover guestIllustration] forKey:kBookAttrIllustration];
+    
+    CKBook *guestBook = [[CKBook alloc] initWithParseObject:parseBook];
+    guestBook.guest = YES;
+    
+    success(guestBook);
+}
+
++ (void)fetchFollowBooksSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"followBooks"
+                       withParameters:@{}
+                                block:^(NSArray *books, NSError *error) {
+                                    if (!error) {
+                                        DLog(@"Loaded follow books[%d]: %@", [books count], books);
+                                        success([CKBook booksFromParseBooks:books]);
+                                    } else {
+                                        DLog(@"Error loading follow books: %@", [error localizedDescription]);
+                                    }
+                                }];
 }
 
 + (void)createBookForUser:(CKUser *)user succeess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -364,7 +397,7 @@
 }
 
 - (BOOL)editable {
-    return [self.user.objectId isEqualToString:[CKUser currentUser].objectId];
+    return self.guest || [self.user.objectId isEqualToString:[CKUser currentUser].objectId];
 }
 
 - (void)addFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {

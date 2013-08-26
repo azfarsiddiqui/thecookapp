@@ -13,24 +13,25 @@
 #import "SignupViewController.h"
 #import "WelcomeCollectionViewLayout.h"
 #import "PageHeaderView.h"
-#import "CKSignInButtonView.h"
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
 
-@interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource,
-    CKSignInButtonViewDelegate>
+@interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource>
 
+@property (nonatomic, weak) id<WelcomeViewControllerDelegate> delegate;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *blendedView;
 @property (nonatomic, strong) CKPagingView *pagingView;
 @property (nonatomic, strong) SignupViewController *signupViewController;
-@property (nonatomic, strong) CKSignInButtonView *signUpButton;
-@property (nonatomic, strong) CKSignInButtonView *signInButton;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL enabled;
 
+// Pages
 @property (nonatomic, strong) UIView *welcomePageView;
 @property (nonatomic, strong) UIView *createPageView;
 @property (nonatomic, strong) UIView *collectPageView;
+@property (nonatomic, strong) UIView *signUpPageView;
+
+// Adornments
 @property (nonatomic, strong) UIView *welcomeImageView;
 @property (nonatomic, strong) UIView *welcomeImageView2;
 @property (nonatomic, strong) UIView *createImageView;
@@ -56,8 +57,9 @@
 #define kPageHeaderSize     CGSizeMake(500.0, 500.0)
 #define kLabelGap           10.0
 
-- (id)init {
+- (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[WelcomeCollectionViewLayout alloc] initWithDataSource:self]]) {
+        self.delegate = delegate;
         self.enabled = YES;
     }
     return self;
@@ -136,24 +138,6 @@
         _pagingView.frame = CGRectMake(0.0, 0.0, _pagingView.frame.size.width, _pagingView.frame.size.height);
     }
     return _pagingView;
-}
-
-- (CKSignInButtonView *)signUpButton {
-    if (!_signUpButton) {
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_clear.png"]
-                                resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
-        _signUpButton = [[CKSignInButtonView alloc] initWithWidth:kButtonWidth image:buttonImage text:@"SIGN UP" activity:NO delegate:self];
-    }
-    return _signUpButton;
-}
-
-- (CKSignInButtonView *)signInButton {
-    if (!_signInButton) {
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_clear.png"]
-                                resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 25.0, 0.0, 25.0)];
-        _signInButton = [[CKSignInButtonView alloc] initWithWidth:kButtonWidth image:buttonImage text:@"SIGN IN" activity:NO delegate:self];
-    }
-    return _signInButton;
 }
 
 - (UIView *)welcomeImageView {
@@ -319,6 +303,19 @@
     return _collectPageView;
 }
 
+- (UIView *)signUpPageView {
+    if (!_signUpPageView) {
+        CGSize size = self.collectionView.bounds.size;
+        
+        // Title
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:58.0]
+                                                   text:@"LET'S GET STARTED" textAlignment:NSTextAlignmentCenter
+                                          availableSize:size lineSpacing:-15.0];
+        _signUpPageView = titleLabel;
+    }
+    return _signUpPageView;
+}
+
 #pragma mark - WelcomeCollectionViewLayoutDataSource methods
 
 - (NSInteger)numberOfPagesForWelcomeLayout {
@@ -354,12 +351,6 @@
                 case 0:
                     break;
                 case 1:
-                    size = self.signUpButton.frame.size;
-                    break;
-                case 2:
-                    size = self.signInButton.frame.size;
-                    break;
-                case 3:
                     size = self.pagingView.frame.size;
                     break;
                 default:
@@ -372,7 +363,7 @@
         case kCollectSection:
             break;
         case kSignUpSection:
-            size = self.signupViewController.view.frame.size;
+            size = self.signUpPageView.frame.size;
             break;
         default:
             break;
@@ -445,11 +436,13 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     self.animating = NO;
     [self updatePagingView];
+    [self processGetStarted];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         self.animating = NO;
+        [self processGetStarted];
     }
 }
 
@@ -481,12 +474,6 @@
                     contentView = self.welcomePageView;
                     break;
                 case 1:
-                    contentView = self.signUpButton;
-                    break;
-                case 2:
-                    contentView = self.signInButton;
-                    break;
-                case 3:
                     contentView = self.pagingView;
                     break;
                 default:
@@ -500,7 +487,7 @@
             contentView = self.collectPageView;
             break;
         case kSignUpSection:
-            contentView = self.signupViewController.view;
+            contentView = self.signUpPageView;
             break;
         default:
             break;
@@ -572,17 +559,6 @@
 - (void)signUpViewControllerModalRequested:(BOOL)modal {
     self.collectionView.scrollEnabled = !modal;
     self.pagingView.alpha = modal ? 0.0 : 1.0;
-}
-
-#pragma mark - CKSignInButtonViewDelegate methods
-
-- (void)signInTappedForButtonView:(CKSignInButtonView *)buttonView {
-    if (self.animating) {
-        return;
-    }
-    
-    [self.signupViewController enableSignUpMode:(self.signUpButton == buttonView) animated:YES];
-    [self scrollToPage:kSignUpSection];
 }
 
 #pragma mark - Private methods
@@ -662,6 +638,29 @@
             paragraphStyle, NSParagraphStyleAttributeName,
             shadow, NSShadowAttributeName,
             nil];
+}
+
+- (void)processGetStarted {
+    WelcomeCollectionViewLayout *layout = (WelcomeCollectionViewLayout *)self.collectionView.collectionViewLayout;
+    CGFloat getStartedOffset = [layout pageOffsetForPage:kSignUpSection];
+    if (self.collectionView.contentOffset.x == getStartedOffset) {
+        
+        // Lock the welcome screen and initiate dismissal.
+        self.collectionView.scrollEnabled = NO;
+        
+        // Fade the paging view.
+        [UIView animateWithDuration:0.3
+                              delay:0.3
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.pagingView.alpha = 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                             [self.delegate welcomeViewControllerGetStartedReached];
+                         }];
+        
+        
+    }
 }
 
 @end

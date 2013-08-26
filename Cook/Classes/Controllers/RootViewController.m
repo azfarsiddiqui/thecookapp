@@ -23,7 +23,7 @@
 #import "BookTitleViewController.h"
 #import "DashboardTutorialViewController.h"
 
-@interface RootViewController () <BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
+@interface RootViewController () <WelcomeViewControllerDelegate, BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate>
 
 @property (nonatomic, strong) PagingBenchtopViewController *benchtopViewController;
@@ -114,6 +114,14 @@
 // Need this here so subsequent VC's use it.
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return self.lightStatusBar ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+}
+
+#pragma mark - WelcomeViewControllerDelegate methods
+
+- (void)welcomeViewControllerGetStartedReached {
+    [self dismissWelcomeViewCompletion:^{
+        [self.benchtopViewController loadBenchtop:YES];
+    }];
 }
 
 #pragma mark - BenchtopViewControllerDelegate methods
@@ -819,29 +827,32 @@
     if (show) {
         
         // Recreate the login.
-        WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] init];
+        WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] initWithDelegate:self];
         welcomeViewController.view.frame = self.view.bounds;
         [self.view addSubview:welcomeViewController.view];
         self.welcomeViewController = welcomeViewController;
         
     } else {
         
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.welcomeViewController.view.alpha = 0.0;
-                         }
-                         completion:^(BOOL finished) {
-                             [self.welcomeViewController.view removeFromSuperview];
-                             self.welcomeViewController = nil;
-                             
-                             if (!show) {
-                                 [self showTutorialView:YES];
-                             }
-                         }];
+        [self dismissWelcomeViewCompletion:^{
+            [self showTutorialView:YES];
+        }];
     }
     
+}
+
+- (void)dismissWelcomeViewCompletion:(void (^)())completion {
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.welcomeViewController.view.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.welcomeViewController.view removeFromSuperview];
+                         self.welcomeViewController = nil;
+                         completion();
+                     }];
 }
 
 - (CGAffineTransform)bookScaleTransform {

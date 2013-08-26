@@ -20,5 +20,6 @@
 @interface WelcomeCollectionViewLayout : UICollectionViewLayout
 
 - (id)initWithDataSource:(id<WelcomeCollectionViewLayoutDataSource>)dataSource;
+- (CGFloat)pageOffsetForPage:(NSInteger)page;
 
 @end
