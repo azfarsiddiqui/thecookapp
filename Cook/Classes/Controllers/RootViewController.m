@@ -62,6 +62,7 @@
 
 - (void)dealloc {
     [EventHelper unregisterStatusBarChange:self];
+    [EventHelper unregisterLogout:self];
 }
 
 - (void)viewDidLoad {
@@ -83,6 +84,7 @@
     self.lightStatusBar = YES;
     
     // Register login/logout events.
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerStatusBarChange:self selector:@selector(statusBarChanged:)];
 }
 
@@ -808,6 +810,10 @@
 
 - (void)statusBarChanged:(NSNotification *)notification {
     [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    [self snapToLevel:kBenchtopLevel];
 }
 
 - (void)updateStatusBarLight:(BOOL)light {
