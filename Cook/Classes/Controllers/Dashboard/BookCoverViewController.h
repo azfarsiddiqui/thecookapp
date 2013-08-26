@@ -18,12 +18,14 @@
 
 @optional
 - (UIView *)bookCoverViewInsideSnapshotView;
+- (UIImage *)bookCoverViewInsideSnapshotImage;
 
 @end
 
 @interface BookCoverViewController : UIViewController
 
 @property (nonatomic, assign) BOOL showInsideCover;
+@property (nonatomic, assign) BOOL showInsideCoverLegacy;
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate;
 - (id)initWithBook:(CKBook *)book mine:(BOOL)mine delegate:(id<BookCoverViewControllerDelegate>)delegate;
@@ -31,5 +33,6 @@
 - (void)openBook:(BOOL)open centerPoint:(CGPoint)centerPoint;
 - (void)cleanUpLayers;
 - (void)loadSnapshotView:(UIView *)snapshotView;
+- (void)loadSnapshotImage:(UIImage *)snapshotImage;
 
 @end

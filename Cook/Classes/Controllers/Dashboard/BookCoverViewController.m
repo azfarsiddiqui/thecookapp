@@ -13,6 +13,7 @@
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
 #import "Theme.h"
+#import "ImageHelper.h"
 
 @interface BookCoverViewController ()
 
@@ -44,6 +45,7 @@
         self.mine = mine;
         self.delegate = delegate;
         self.showInsideCover = NO;
+        self.showInsideCoverLegacy = YES;
     }
     return self;
 }
@@ -112,6 +114,31 @@
     DLog(@"Drawn rightImage %@", rightDone ? @"YES" : @"NO");
     
     DLog(@"Loaded snapshotView");
+}
+
+- (void)loadSnapshotImage:(UIImage *)snapshotImage {
+    if (!self.showInsideCoverLegacy) {
+        return;
+    }
+    
+    // Left image.
+    UIImage *leftImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
+        0.0,
+        0.0,
+        snapshotImage.size.width / 2.0,
+        snapshotImage.size.height
+    }];
+    UIGraphicsEndImageContext();
+    self.leftOpenLayer.contents = (id)leftImage.CGImage;
+    
+    // Right image.
+    UIImage *rightImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
+        snapshotImage.size.width / 2.0,
+        0.0,
+        snapshotImage.size.width / 2.0,
+        snapshotImage.size.height
+    }];
+    self.rightOpenLayer.contents = (id)rightImage.CGImage;
 }
 
 #pragma mark - CAAnimation delegate methods
@@ -197,6 +224,7 @@
     
     // Inside snapshot.
     [self loadSnapshotView];
+    [self loadSnapshotImage];
 }
 
 - (void)animateBookOpen:(BOOL)open {
@@ -291,6 +319,15 @@
     }
     if ([self.delegate respondsToSelector:@selector(bookCoverViewInsideSnapshotView)]) {
         [self loadSnapshotView:[self.delegate bookCoverViewInsideSnapshotView]];
+    }
+}
+
+- (void)loadSnapshotImage {
+    if (!self.showInsideCoverLegacy) {
+        return;
+    }
+    if ([self.delegate respondsToSelector:@selector(bookCoverViewInsideSnapshotImage)]) {
+        [self loadSnapshotImage:[self.delegate bookCoverViewInsideSnapshotImage]];
     }
 }
 

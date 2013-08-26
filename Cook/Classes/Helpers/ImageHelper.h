@@ -13,12 +13,17 @@
 // Sizes
 + (CGSize)thumbSize;
 
+// UIImageView loading.
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image;
+
+// Legacy screen capture.
++ (UIImage *)imageFromView:(UIView *)view;
 
 // Image scaling.
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size;
 + (UIImage *)scaledImage:(UIImage *)image size:(CGSize)size;
 + (UIImage *)thumbImageForImage:(UIImage *)image;
++ (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame;
 
 // Blurring
 + (UIImage *)blurredImage:(UIImage *)image;

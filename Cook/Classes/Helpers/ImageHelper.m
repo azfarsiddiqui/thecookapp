@@ -46,6 +46,14 @@
     
 }
 
++ (UIImage *)imageFromView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size {
     return [image imageCroppedToFitSize:size];
 }
@@ -56,6 +64,13 @@
 
 + (UIImage *)thumbImageForImage:(UIImage *)image {
     return [image imageScaledToFitSize:[self thumbSize]];
+}
+
++ (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame {
+    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], frame);
+    UIImage *cropped = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    return cropped;
 }
 
 #pragma mark - Blurring 

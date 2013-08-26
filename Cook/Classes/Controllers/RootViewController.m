@@ -22,6 +22,7 @@
 #import "BookNavigationStackViewController.h"
 #import "BookTitleViewController.h"
 #import "DashboardTutorialViewController.h"
+#import "ImageHelper.h"
 
 @interface RootViewController () <WelcomeViewControllerDelegate, BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate>
@@ -236,6 +237,10 @@
     return [self.snapshotBookTitleViewController.view snapshotViewAfterScreenUpdates:YES];
 }
 
+- (UIImage *)bookCoverViewInsideSnapshotImage {
+    return [ImageHelper imageFromView:self.snapshotBookTitleViewController.view];
+}
+
 #pragma mark - BookNavigationViewControllerDelegate methods
 
 - (void)bookNavigationControllerCloseRequested {
@@ -280,7 +285,8 @@
 
 - (void)performCloseBookAnimationWithBinder:(BOOL)binder {
     
-    //    [self.bookCoverViewController loadSnapshotView:[self.bookNavigationViewController.view snapshotViewAfterScreenUpdates:YES]];
+    // [self.bookCoverViewController loadSnapshotView:[self.bookNavigationViewController.view snapshotViewAfterScreenUpdates:YES]];
+    [self.bookCoverViewController loadSnapshotImage:[ImageHelper imageFromView:self.bookNavigationViewController.view]];
     
     // Let the bookCoverVC above to have a chance of loadinging the snapshot first.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
