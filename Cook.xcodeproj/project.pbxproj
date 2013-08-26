@@ -453,6 +453,9 @@
 		76A10ABF17CB02580051751F /* cook_login_btn_signup_white_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A10ABD17CB02580051751F /* cook_login_btn_signup_white_onpress@2x.png */; };
 		76A10AC217CB02680051751F /* cook_login_btn_signup_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A10AC017CB02680051751F /* cook_login_btn_signup_white.png */; };
 		76A10AC317CB02680051751F /* cook_login_btn_signup_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A10AC117CB02680051751F /* cook_login_btn_signup_white@2x.png */; };
+		76A10AD917CB09680051751F /* SignUpBookCoverViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A10AD817CB09680051751F /* SignUpBookCoverViewCell.m */; };
+		76A10ADC17CB11F00051751F /* FacebookSignInButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A10ADB17CB11F00051751F /* FacebookSignInButtonView.m */; };
+		76A10ADF17CB19CE0051751F /* CKFacebookSignInButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A10ADE17CB19CE0051751F /* CKFacebookSignInButtonView.m */; };
 		76A269DB175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D7175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png */; };
 		76A269DC175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D8175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png */; };
 		76A269DD175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D9175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png */; };
@@ -1393,6 +1396,12 @@
 		76A10ABD17CB02580051751F /* cook_login_btn_signup_white_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_btn_signup_white_onpress@2x.png"; sourceTree = "<group>"; };
 		76A10AC017CB02680051751F /* cook_login_btn_signup_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_login_btn_signup_white.png; sourceTree = "<group>"; };
 		76A10AC117CB02680051751F /* cook_login_btn_signup_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_btn_signup_white@2x.png"; sourceTree = "<group>"; };
+		76A10AD717CB09680051751F /* SignUpBookCoverViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpBookCoverViewCell.h; sourceTree = "<group>"; };
+		76A10AD817CB09680051751F /* SignUpBookCoverViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpBookCoverViewCell.m; sourceTree = "<group>"; };
+		76A10ADA17CB11F00051751F /* FacebookSignInButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookSignInButtonView.h; sourceTree = "<group>"; };
+		76A10ADB17CB11F00051751F /* FacebookSignInButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookSignInButtonView.m; sourceTree = "<group>"; };
+		76A10ADD17CB19CE0051751F /* CKFacebookSignInButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKFacebookSignInButtonView.h; sourceTree = "<group>"; };
+		76A10ADE17CB19CE0051751F /* CKFacebookSignInButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKFacebookSignInButtonView.m; sourceTree = "<group>"; };
 		76A269D7175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_titledivider_quote.png; sourceTree = "<group>"; };
 		76A269D8175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_titledivider_quote@2x.png"; sourceTree = "<group>"; };
 		76A269D9175F0A0C00D7ACA3 /* cook_book_titledivider_solid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_titledivider_solid.png; sourceTree = "<group>"; };
@@ -2145,6 +2154,8 @@
 			children = (
 				762F3BAB1756394E00863DDF /* CKSignInButtonView.h */,
 				762F3BAC1756394E00863DDF /* CKSignInButtonView.m */,
+				76A10ADD17CB19CE0051751F /* CKFacebookSignInButtonView.h */,
+				76A10ADE17CB19CE0051751F /* CKFacebookSignInButtonView.m */,
 			);
 			path = CKSignInButtonView;
 			sourceTree = "<group>";
@@ -2261,6 +2272,8 @@
 				76A28E94177A808E00C98F8B /* PagingBenchtopBackgroundView.m */,
 				76381C961668418C00404FB1 /* BenchtopBookCoverViewCell.h */,
 				76381C971668418C00404FB1 /* BenchtopBookCoverViewCell.m */,
+				76A10AD717CB09680051751F /* SignUpBookCoverViewCell.h */,
+				76A10AD817CB09680051751F /* SignUpBookCoverViewCell.m */,
 				7692260016474D4600752128 /* IllustrationPickerViewController.h */,
 				7692260116474D4600752128 /* IllustrationPickerViewController.m */,
 				769226031647863900752128 /* IllustrationBookCell.h */,
@@ -3264,6 +3277,8 @@
 				7680103617A92A370065B2C6 /* ThemeTabView.m */,
 				76FC077517C5E89B00ABF96F /* CKNotificationView.h */,
 				76FC077617C5E89B00ABF96F /* CKNotificationView.m */,
+				76A10ADA17CB11F00051751F /* FacebookSignInButtonView.h */,
+				76A10ADB17CB11F00051751F /* FacebookSignInButtonView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -4210,6 +4225,7 @@
 				7666B40316141B7E001D1BA1 /* CKModalView.m in Sources */,
 				7666B40616143713001D1BA1 /* AppHelper.m in Sources */,
 				76520465161ABB0F00EE253C /* CKBook.m in Sources */,
+				76A10ADC17CB11F00051751F /* FacebookSignInButtonView.m in Sources */,
 				7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */,
 				8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */,
 				8936F7ED161E78CE00E6EF1D /* CKCategory.m in Sources */,
@@ -4351,8 +4367,10 @@
 				76EF95D617363BF50033DBCE /* CKTextEditViewController.m in Sources */,
 				763546C01794317D007A9DF6 /* BookContentImageView.m in Sources */,
 				76EF95D9173779CA0033DBCE /* BookNavigationHelper.m in Sources */,
+				76A10ADF17CB19CE0051751F /* CKFacebookSignInButtonView.m in Sources */,
 				76C07FC917389134005915D5 /* CKProgressView.m in Sources */,
 				76C3BAFA173B30A2004F6444 /* CKNotchSliderView.m in Sources */,
+				76A10AD917CB09680051751F /* SignUpBookCoverViewCell.m in Sources */,
 				764BA0F717B2225400015456 /* QuietAssertMacros.c in Sources */,
 				76C3BB90173B73F0004F6444 /* CKDialerControl.m in Sources */,
 				76C3BB97173B795D004F6444 /* ServesAndTimeEditViewController.m in Sources */,

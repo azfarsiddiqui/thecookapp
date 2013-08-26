@@ -9,6 +9,7 @@
 #import "PagingBenchtopViewController.h"
 #import "PagingCollectionViewLayout.h"
 #import "BenchtopBookCoverViewCell.h"
+#import "SignUpBookCoverViewCell.h"
 #import "EventHelper.h"
 #import "CKPagingView.h"
 #import "CKNotificationView.h"
@@ -20,11 +21,12 @@
 #import "PagingScrollView.h"
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
+#import "SignupViewController.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
-    BenchtopBookCoverViewCellDelegate, CoverPickerViewControllerDelegate,
-IllustrationPickerViewControllerDelegate>
+    BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
+    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
@@ -38,6 +40,7 @@ IllustrationPickerViewControllerDelegate>
 
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
+@property (nonatomic, strong) SignupViewController *signUpViewController;
 
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
@@ -54,6 +57,7 @@ IllustrationPickerViewControllerDelegate>
 @implementation PagingBenchtopViewController
 
 #define kCellId         @"CellId"
+#define kSignUpCellId   @"SignUpCellId"
 #define kCellSize       CGSizeMake(300.0, 438.0)
 #define kSideMargin     362.0
 #define kMyBookSection  0
@@ -231,8 +235,12 @@ IllustrationPickerViewControllerDelegate>
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    BenchtopBookCoverViewCell *cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
-                                                                                                             forIndexPath:indexPath];
+    BenchtopBookCoverViewCell *cell = nil;
+    if (![CKUser isLoggedIn] && indexPath.section == kMyBookSection) {
+        cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kSignUpCellId forIndexPath:indexPath];
+    } else {
+        cell = (BenchtopBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
+    }
     cell.delegate = self;
     
     if (indexPath.section == kMyBookSection) {
@@ -316,6 +324,40 @@ IllustrationPickerViewControllerDelegate>
 
 - (void)benchtopBookEditDidAppear:(BOOL)appear forCell:(UICollectionViewCell *)cell {
     [self.coverViewController enable:!appear];
+}
+
+#pragma mark - SignUpBookCoverViewCellDelegate methods
+
+- (void)signUpBookSignUpEmailRequestedForCell:(SignUpBookCoverViewCell *)cell {
+    [self showLoginViewSignUp:YES];
+}
+
+- (void)signUpBookSignUpFacebookRequestedForCell:(SignUpBookCoverViewCell *)cell {
+    [self showLoginViewSignUp:YES];
+}
+
+- (void)signUpBookSignInRequestedForCell:(SignUpBookCoverViewCell *)cell {
+    [self showLoginViewSignUp:NO];
+}
+
+#pragma mark - SignupViewControllerDelegate methods
+
+- (UIView *)signupViewControllerSnapshotRequested {
+    return [self.view snapshotViewAfterScreenUpdates:YES];
+}
+
+- (void)signupViewControllerDismissRequested {
+    [self hideLoginViewCompletion:^{
+        // Nothing.
+    }];
+}
+
+- (void)signupViewControllerFocused:(BOOL)focused {
+    DLog();
+}
+
+- (void)signUpViewControllerModalRequested:(BOOL)modal {
+    DLog();
 }
 
 #pragma mark - CoverPickerViewControllerDelegate methods
@@ -439,6 +481,7 @@ IllustrationPickerViewControllerDelegate>
     collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     
     [collectionView registerClass:[BenchtopBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
+    [collectionView registerClass:[SignUpBookCoverViewCell class] forCellWithReuseIdentifier:kSignUpCellId];
     [self.view addSubview:collectionView];
     self.collectionView = collectionView;
     
@@ -1056,6 +1099,45 @@ IllustrationPickerViewControllerDelegate>
             
         }
     }
+}
+
+- (void)showLoginViewSignUp:(BOOL)signUp {
+    
+    // Disable benchtop.
+    [self.delegate panEnabledRequested:NO];
+    [self enable:NO];
+    
+    self.signUpViewController = [[SignupViewController alloc] initWithDelegate:self];
+    self.signUpViewController.view.alpha = 0.0;
+    [self.view addSubview:self.signUpViewController.view];
+    
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.signUpViewController.view.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+
+- (void)hideLoginViewCompletion:(void (^)())completion {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.signUpViewController.view.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.signUpViewController.view removeFromSuperview];
+                         self.signUpViewController = nil;
+                         
+                         // Re-enable benchtop.
+                         [self enable:YES];
+                         [self.delegate panEnabledRequested:YES];
+                         
+                         completion();
+                     }];
 }
 
 @end

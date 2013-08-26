@@ -20,6 +20,8 @@
 
 @interface CKBookCoverView : UIView
 
+@property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIImageView *illustrationImageView;
 @property (nonatomic, copy) NSString *nameValue;
 @property (nonatomic, copy) NSString *authorValue;
 @property (nonatomic, copy) NSString *captionValue;

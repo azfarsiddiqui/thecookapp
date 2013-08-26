@@ -10,6 +10,8 @@
 
 @protocol SignupViewControllerDelegate <NSObject>
 
+- (UIView *)signupViewControllerSnapshotRequested;
+- (void)signupViewControllerDismissRequested;
 - (void)signupViewControllerFocused:(BOOL)focused;
 - (void)signUpViewControllerModalRequested:(BOOL)modal;
 
@@ -20,5 +22,6 @@
 - (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate;
 - (void)enableSignUpMode:(BOOL)signUp;
 - (void)enableSignUpMode:(BOOL)signUp animated:(BOOL)animated;
+- (void)loadSnapshot:(UIView *)snapshotView;
 
 @end

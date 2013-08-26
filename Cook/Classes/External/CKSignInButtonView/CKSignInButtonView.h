@@ -18,14 +18,19 @@
 
 @interface CKSignInButtonView : UIView
 
-- (id)initWithWidth:(CGFloat)width image:(UIImage *)image text:(NSString *)text activity:(BOOL)activity
+- (id)initWithWidth:(CGFloat)width text:(NSString *)text activity:(BOOL)activity
            delegate:(id<CKSignInButtonViewDelegate>)delegate;
-- (id)initWithImage:(UIImage *)image text:(NSString *)text activity:(BOOL)activity
-           delegate:(id<CKSignInButtonViewDelegate>)delegate;
-- (id)initWithSize:(CGSize)size image:(UIImage *)image text:(NSString *)text activity:(BOOL)activity
+- (id)initWithSize:(CGSize)size text:(NSString *)text activity:(BOOL)activity
           delegate:(id<CKSignInButtonViewDelegate>)delegate;
+
 - (void)setText:(NSString *)text activity:(BOOL)activity;
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated;
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled;
+
+- (UIFont *)textLabelFont;
+- (UIColor *)textLabelColour;
+- (UIImage *)normalBackgroundImage;
+- (UIImage *)onPressBackgroundImage;
+- (UIImage *)iconImage;
 
 @end

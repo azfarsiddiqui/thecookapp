@@ -22,11 +22,10 @@
 @implementation CKTextFieldView
 
 #define kDefaultContentInsets   UIEdgeInsetsMake(8.0, 20.0, 8.0, 20.0)
-#define kTextFieldFont          [UIFont fontWithName:@"AvenirNext-Regular" size:18]
+#define kTextFieldFont          [UIFont fontWithName:@"AvenirNext-Regular" size:20]
 #define kTextFieldColour        [UIColor colorWithHexString:@"FFFFFF"]
-#define kPlaceholderFont        [UIFont fontWithName:@"AvenirNext-Regular" size:18]
+#define kPlaceholderFont        [UIFont fontWithName:@"AvenirNext-Regular" size:20]
 #define kPlaceholderColour      [UIColor colorWithHexString:@"FFFFFF"]
-#define kFieldMessageGap        0.0
 #define kDefaultMaxLength       50
 
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder {
@@ -61,7 +60,8 @@
                                 contentInsets.top + self.textField.frame.size.height + contentInsets.bottom);
         
         // Background textfield.
-        UIImage *textBackground = [[UIImage imageNamed:@"cook_login_textfield.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 24.0, 0.0, 24.0 }];
+        UIImage *textBackground = [[UIImage imageNamed:@"cook_login_textfield.png"]
+                                   resizableImageWithCapInsets:UIEdgeInsetsMake(37.0, 10.0, 37.0, 10.0)];
         UIImageView *textBackgroundImageView = [[UIImageView alloc] initWithImage:textBackground];
         textBackgroundImageView.frame = (CGRect){
             self.bounds.origin.x,

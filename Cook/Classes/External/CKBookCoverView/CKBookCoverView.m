@@ -19,8 +19,6 @@
 
 @property (nonatomic, assign) id<CKBookCoverViewDelegate> delegate;
 @property (nonatomic, assign) BookCoverLayout bookCoverLayout;
-@property (nonatomic, strong) UIImageView *backgroundImageView;
-@property (nonatomic, strong) UIImageView *illustrationImageView;
 @property (nonatomic, strong) UIView *contentOverlay;
 @property (nonatomic, strong) UITextView *nameTextView;
 @property (nonatomic, strong) UITextView *authorTextView;

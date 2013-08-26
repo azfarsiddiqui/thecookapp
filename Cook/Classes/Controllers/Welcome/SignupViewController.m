@@ -13,21 +13,24 @@
 #import "ViewHelper.h"
 #import "Theme.h"
 #import "CKSignInButtonView.h"
+#import "CKFacebookSignInButtonView.h"
 #import "CKUser.h"
 #import "EventHelper.h"
+#import "ImageHelper.h"
 
 @interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate>
 
 @property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *subtitleLabel;
-@property (nonatomic, strong) UILabel *orLabel;
+@property (nonatomic, strong) UIImageView *dividerView;
 @property (nonatomic, strong) UIView *emailContainerView;
 @property (nonatomic, strong) CKTextFieldView *emailNameView;
 @property (nonatomic, strong) CKTextFieldView *emailAddressView;
 @property (nonatomic, strong) CKTextFieldView *emailPasswordView;
 @property (nonatomic, strong) CKSignInButtonView *emailButton;
-@property (nonatomic, strong) CKSignInButtonView *facebookButton;
+@property (nonatomic, strong) CKFacebookSignInButtonView *facebookButton;
 @property (nonatomic, strong) UIButton *footerToggleButton;
 @property (nonatomic, assign) BOOL signUpMode;
 @property (nonatomic, assign) BOOL animating;
@@ -36,8 +39,8 @@
 
 @implementation SignupViewController
 
-#define kEmailSignupSize    CGSizeMake(415.0, 330.0)
-#define kEmailSignInSize    CGSizeMake(415.0, 270.0)
+#define kEmailSignupSize    CGSizeMake(460.0, 337.0)
+#define kEmailSignInSize    CGSizeMake(460.0, 263.0)
 #define kTextFieldSize      CGSizeMake(300.0, 50.0)
 #define kDividerInsets      UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0)
 #define kPasswordMinLength  6
@@ -59,6 +62,7 @@
     self.signUpMode = YES;
     self.view.autoresizingMask = UIViewAutoresizingNone;
     
+    [self initBackgroundView];
     [self initEmailContainerView];
     [self initHeaderView];
     [self initButtons];
@@ -99,7 +103,7 @@
                              self.titleLabel.frame = [self titleFrameForSignUp:signUp];
                              self.subtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
                              self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
-                             self.orLabel.frame = [self orLabelFrameForSignUp:signUp];
+                             self.dividerView.frame = [self dividerFrameForSignUp:signUp];
                              
                              self.subtitleLabel.alpha = signUp ? 1.0 : 0.0;
                              self.emailNameView.alpha = signUp ? 1.0 : 0.0;
@@ -130,7 +134,7 @@
         self.titleLabel.frame = [self titleFrameForSignUp:signUp];
         self.subtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
         self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
-        self.orLabel.frame = [self orLabelFrameForSignUp:signUp];
+        self.dividerView.frame = [self dividerFrameForSignUp:signUp];
         
         self.subtitleLabel.alpha = signUp ? 1.0 : 0.0;
         self.emailNameView.alpha = signUp ? 1.0 : 0.0;
@@ -152,6 +156,18 @@
         
          self.animating = NO;
     }
+}
+
+- (void)loadSnapshot:(UIView *)snapshotView {
+    
+    // Grab an image of the screenshot so we can blur it.
+    UIGraphicsBeginImageContextWithOptions(snapshotView.frame.size, NO, 0);
+    [snapshotView drawViewHierarchyInRect:snapshotView.bounds afterScreenUpdates:YES];
+    UIImage *screenshotImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    UIImage *blurredImage = [ImageHelper blurredSignUpImage:screenshotImage];
+    self.blurredImageView.image = blurredImage;
 }
 
 #pragma mark - CKTextFieldViewDelegate methods
@@ -206,54 +222,22 @@
     return _subtitleLabel;
 }
 
-- (UILabel *)orLabel {
-    if (!_orLabel) {
-        _orLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _orLabel.backgroundColor = [UIColor clearColor];
-        _orLabel.text = @"or";
-        _orLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:26];
-        _orLabel.textColor = [UIColor whiteColor];
-        _orLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
-        _orLabel.shadowOffset = CGSizeMake(0.0, 2.0);
-        [_orLabel sizeToFit];
+- (UIImageView *)dividerView {
+    if (!_dividerView) {
+        UIImage *dividerImage = [[UIImage imageNamed:@"cook_login_divider.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 1.0, 0.0, 1.0 }];
+        _dividerView = [[UIImageView alloc] initWithImage:dividerImage];
+        CGRect frame = _dividerView.frame;
+        frame.size.width = 288.0;
+        _dividerView.frame = frame;
     }
-    return _orLabel;
+    return _dividerView;
 }
 
-- (CKSignInButtonView *)emailButton {
-    if (!_emailButton) {
-        UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 20.0, 18.0, 20.0);
-        CGSize availableSize = CGSizeMake(self.emailContainerView.bounds.size.width - insets.left - insets.right,
-                                          self.emailContainerView.bounds.size.height - insets.top - insets.bottom);
-        
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_green.png"]
-                                resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 30.0, 0.0, 30.0)];
-        _emailButton = [[CKSignInButtonView alloc] initWithWidth:availableSize.width image:buttonImage
-                                                            text:[self emailButtonTextForSignUp:YES] activity:NO delegate:self];
-        _emailButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        _emailButton.frame = CGRectMake(floorf((self.emailContainerView.bounds.size.width - _emailButton.frame.size.width) / 2.0),
-                                        self.emailContainerView.bounds.size.height - _emailButton.frame.size.height - insets.bottom,
-                                        _emailButton.frame.size.width,
-                                        _emailButton.frame.size.height);
-    }
-    return _emailButton;
-}
-
-- (CKSignInButtonView *)facebookButton {
+- (CKFacebookSignInButtonView *)facebookButton {
     if (!_facebookButton) {
-        UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 20.0, 18.0, 20.0);
-        CGSize availableSize = CGSizeMake(self.emailContainerView.bounds.size.width - insets.left - insets.right,
-                                          self.emailContainerView.bounds.size.height - insets.top - insets.bottom);
-        
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_facebook.png"]
-                                resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 30.0, 0.0, 30.0)];
-        _facebookButton = [[CKSignInButtonView alloc] initWithWidth:self.emailButton.frame.size.width image:buttonImage
-                                                               text:[self facebookButtonTextForSignUp:YES] activity:NO delegate:self];
+        _facebookButton = [[CKFacebookSignInButtonView alloc] initWithSize:self.emailButton.frame.size
+                                                                      text:[self facebookButtonTextForSignUp:YES] activity:NO delegate:self];
         _facebookButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        _facebookButton.frame = CGRectMake(floorf((self.view.bounds.size.width - _facebookButton.frame.size.width) / 2.0),
-                                           self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 20.0,
-                                           _facebookButton.frame.size.width,
-                                           _facebookButton.frame.size.height);
     }
     return _facebookButton;
 }
@@ -298,17 +282,29 @@
 
 #pragma mark - Private methods
 
-- (void)initEmailContainerView {
-    UIEdgeInsets emailInsets = UIEdgeInsetsMake(50.0, 50.0, 40.0, 50.0);
-    CGFloat fieldsGap = 18.0;
+- (void)initBackgroundView {
+    self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.blurredImageView];
+    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
     
-    UIImage *emailBoxImage = [[UIImage imageNamed:@"cook_login_bg_whitepanel.png"]
-                              resizableImageWithCapInsets:UIEdgeInsetsMake(14.0, 12.0, 14.0, 12.0)];
-    UIImageView *emailContainerView = [[UIImageView alloc] initWithImage:emailBoxImage];
-    emailContainerView.frame = CGRectMake(floorf((self.view.bounds.size.width - kEmailSignupSize.width) / 2.0),
-                                           floorf((self.view.bounds.size.height - kEmailSignupSize.height) / 2.0),
-                                           kEmailSignupSize.width,
-                                           kEmailSignupSize.height);
+    // Register tap to dismiss.
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapped:)];
+    self.blurredImageView.userInteractionEnabled = YES;
+    [self.blurredImageView addGestureRecognizer:tapGesture];
+}
+
+- (void)initEmailContainerView {
+    UIEdgeInsets emailInsets = UIEdgeInsetsMake(50.0, 50.0, 27.0, 50.0);
+    CGFloat fieldsGap = 30.0;
+    
+    UIView *emailContainerView = [[UIView alloc] initWithFrame:(CGRect){
+        floorf((self.view.bounds.size.width - kEmailSignupSize.width) / 2.0),
+        floorf((self.view.bounds.size.height - kEmailSignupSize.height) / 2.0),
+        kEmailSignupSize.width,
+        kEmailSignupSize.height}];
+    emailContainerView.backgroundColor = [UIColor clearColor];
+//    emailContainerView.backgroundColor = [UIColor colorWithRed:0 green:255 blue:0 alpha:0.5];
     emailContainerView.userInteractionEnabled = YES;
     [self.view addSubview:emailContainerView];
     self.emailContainerView = emailContainerView;
@@ -319,10 +315,8 @@
     };
     
     // Email button anchored to the bottom.
-    UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_blue.png"]
-                            resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 30.0, 0.0, 30.0)];
-    self.emailButton = [[CKSignInButtonView alloc] initWithWidth:availableSize.width image:buttonImage
-                                                            text:[self emailButtonTextForSignUp:YES] activity:NO delegate:self];
+    self.emailButton = [[CKSignInButtonView alloc] initWithSize:(CGSize){ availableSize.width, 83.0 }
+                                                           text:[self emailButtonTextForSignUp:YES] activity:NO delegate:self];
     self.emailButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     self.emailButton.frame = (CGRect){
         emailInsets.left + floorf((availableSize.width - self.emailButton.frame.size.width) / 2.0),
@@ -337,7 +331,7 @@
     emailPasswordView.maxLength = kPasswordMaxLength;
     emailPasswordView.frame = (CGRect){
         emailInsets.left + floorf((availableSize.width - emailPasswordView.frame.size.width) / 2.0),
-        self.emailButton.frame.origin.y - fieldsGap - emailPasswordView.frame.size.height,
+        self.emailButton.frame.origin.y - fieldsGap - emailPasswordView.frame.size.height + 20.0,
         emailPasswordView.frame.size.width,
         emailPasswordView.frame.size.height
     };
@@ -371,6 +365,8 @@
     [emailContainerView addSubview:emailNameView];
     self.emailNameView = emailNameView;
     
+    self.dividerView.frame = [self dividerFrameForSignUp:self.signUpMode];
+    [self.view addSubview:self.dividerView];
 }
 
 - (void)initHeaderView {
@@ -384,9 +380,9 @@
     self.titleLabel.frame = [self titleFrameForSignUp:self.signUpMode];
     
     // Signup Subtitle
-    if (!self.subtitleLabel.superview) {
-        [self.view addSubview:self.subtitleLabel];
-    }
+//    if (!self.subtitleLabel.superview) {
+//        [self.view addSubview:self.subtitleLabel];
+//    }
     self.subtitleLabel.text = [self subtitleForSignUp:self.signUpMode];
     [self.subtitleLabel sizeToFit];
     self.subtitleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.subtitleLabel.frame.size.width) / 2.0),
@@ -397,9 +393,8 @@
 }
 
 - (void)initButtons {
+    self.facebookButton.frame = [self facebookFrameForSignUp:self.signUpMode];
     [self.view addSubview:self.facebookButton];
-    self.orLabel.frame = [self orLabelFrameForSignUp:self.signUpMode];
-    [self.view addSubview:self.orLabel];
 }
 
 - (void)initFooterView {
@@ -432,7 +427,7 @@
 }
 
 - (NSString *)titleForSignUp:(BOOL)signUp {
-    return signUp ? @"GET STARTED" : @"SIGN IN";
+    return signUp ? @"SIGNUP" : @"SIGN IN";
 }
 
 - (NSString *)subtitleForSignUp:(BOOL)signUp {
@@ -462,11 +457,12 @@
 - (CGRect)titleFrameForSignUp:(BOOL)signUp {
     CGRect frame = self.titleLabel.frame;
     frame.origin.x = floorf((self.view.bounds.size.width - frame.size.width) / 2.0);
-    if (signUp) {
-        frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height - 20.0;
-    } else {
-        frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height + 5.0;
-    }
+    frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height - 0.0;
+//    if (signUp) {
+//        frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height - 20.0;
+//    } else {
+//        frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height + 5.0;
+//    }
     return frame;
 }
 
@@ -479,16 +475,16 @@
 
 - (CGRect)facebookFrameForSignUp:(BOOL)signUp {
     return CGRectMake(floorf((self.view.bounds.size.width - self.facebookButton.frame.size.width) / 2.0),
-                      self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 20.0,
+                      self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 30.0,
                       self.facebookButton.frame.size.width,
                       self.facebookButton.frame.size.height);
 }
 
-- (CGRect)orLabelFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.orLabel.frame.size.width) / 2.0),
-                      self.facebookButton.frame.origin.y - self.orLabel.frame.size.height + 7.0,
-                      self.orLabel.frame.size.width,
-                      self.orLabel.frame.size.height);
+- (CGRect)dividerFrameForSignUp:(BOOL)signUp {
+    return CGRectMake(floorf((self.view.bounds.size.width - self.dividerView.frame.size.width) / 2.0),
+                      self.emailContainerView.frame.origin.y + self.emailContainerView.frame.size.height + 0,
+                      self.dividerView.frame.size.width,
+                      self.dividerView.frame.size.height);
 }
 
 - (void)handleKeyboardShow:(BOOL)show keyboardFrame:(CGRect)keyboardFrame {
@@ -505,7 +501,7 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.orLabel.alpha = show ? 0.0: 1.0;
+                         self.dividerView.alpha = show ? 0.0: 1.0;
                          self.facebookButton.alpha = show ? 0.0 : 1.0;
                          self.view.transform = show ? translateTransform : CGAffineTransformIdentity;
                      }
@@ -698,12 +694,12 @@
                          // Shift SignIn Title
                          
                          // Shift or label up.
-                         self.orLabel.frame = [self orLabelFrameForSignUp:self.signUpMode];
+                         self.dividerView.frame = [self dividerFrameForSignUp:self.signUpMode];
                          
                          // Fade out the emil container.
                          self.emailContainerView.alpha = enable ? 0.0 : 1.0;
                          self.footerToggleButton.alpha = enable ? 0.0 : 1.0;
-                         self.orLabel.alpha = enable ? 0.0 : 1.0;
+                         self.dividerView.alpha = enable ? 0.0 : 1.0;
                          
                      }
                      completion:^(BOOL finished) {
@@ -717,7 +713,7 @@
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          
-                         self.orLabel.alpha = enable ? 0.0 : 1.0;
+                         self.dividerView.alpha = enable ? 0.0 : 1.0;
                          self.facebookButton.alpha = enable ? 0.0 : 1.0;
                      }
                      completion:^(BOOL finished) {
@@ -760,6 +756,10 @@
         }
     }
     return validated;
+}
+
+- (void)backgroundTapped:(UITapGestureRecognizer *)tapGesture {
+    [self.delegate signupViewControllerDismissRequested];
 }
 
 @end

@@ -7,18 +7,21 @@
 //
 
 #import "CKSignInButtonView.h"
+#import "Theme.h"
+#import "ViewHelper.h"
+#import "CKActivityIndicatorView.h"
 
 @interface CKSignInButtonView ()
 
 @property (nonatomic, assign) CGSize size;
-@property (nonatomic, strong) UIImage *image;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, assign) BOOL activity;
 @property (nonatomic, assign) id<CKSignInButtonViewDelegate> delegate;
 
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UILabel *textLabel;
-@property (nonatomic, strong) UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
+@property (nonatomic, strong) UIImageView *iconImageView;
 
 @property (nonatomic, assign) BOOL animating;
 
@@ -26,25 +29,18 @@
 
 @implementation CKSignInButtonView
 
-- (id)initWithWidth:(CGFloat)width image:(UIImage *)image text:(NSString *)text activity:(BOOL)activity
+- (id)initWithWidth:(CGFloat)width text:(NSString *)text activity:(BOOL)activity
            delegate:(id<CKSignInButtonViewDelegate>)delegate {
 
-    return [self initWithSize:CGSizeMake(width, image.size.height) image:image text:text activity:activity
+    return [self initWithSize:CGSizeMake(width, [self normalBackgroundImage].size.height) text:text activity:activity
                      delegate:delegate];
 }
 
-- (id)initWithImage:(UIImage *)image text:(NSString *)text activity:(BOOL)activity
-           delegate:(id<CKSignInButtonViewDelegate>)delegate {
-    
-    return [self initWithSize:image.size image:image text:text activity:activity delegate:delegate];
-}
-
-- (id)initWithSize:(CGSize)size image:(UIImage *)image text:(NSString *)text activity:(BOOL)activity
-     delegate:(id<CKSignInButtonViewDelegate>)delegate {
+- (id)initWithSize:(CGSize)size text:(NSString *)text activity:(BOOL)activity
+          delegate:(id<CKSignInButtonViewDelegate>)delegate {
     
     if (self = [super initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)]) {
         self.size = size;
-        self.image = image;
         self.text = text;
         self.activity = activity;
         self.delegate = delegate;
@@ -85,6 +81,10 @@
         [self.button addSubview:self.activityView];
     }
     
+    if (!activity && !self.iconImageView.superview) {
+        [self.button addSubview:self.iconImageView];
+    }
+    
     if (animated) {
         
         [UIView animateWithDuration:0.1
@@ -100,6 +100,7 @@
                                                  options:UIViewAnimationOptionCurveEaseIn
                                               animations:^{
                                                   self.activityView.alpha = activity ? 1.0 : 0.0;
+                                                  self.iconImageView.alpha = activity ? 0.0 : 1.0;
                                                   label.alpha = 1.0;
                                               }
                                               completion:^(BOOL finished) {
@@ -126,6 +127,7 @@
     } else {
         self.textLabel.alpha = 0.0;
         self.activityView.alpha = activity ? 1.0 : 0.0;
+        self.iconImageView.alpha = activity ? 0.0 : 1.0;
         label.alpha = 1.0;
         
         // Swap the labels.
@@ -146,31 +148,62 @@
     
 }
 
+- (UIFont *)textLabelFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:15];
+}
+
+- (UIColor *)textLabelColour {
+    return [UIColor colorWithHexString:@"333333"];
+}
+
+- (UIImage *)normalBackgroundImage {
+    return [[UIImage imageNamed:@"cook_login_btn_signup_white.png"]
+            resizableImageWithCapInsets:UIEdgeInsetsMake(37.0, 10.0, 37.0, 10.0)];
+}
+
+- (UIImage *)onPressBackgroundImage {
+    return [[UIImage imageNamed:@"cook_login_btn_signup_white_onpress.png"]
+            resizableImageWithCapInsets:UIEdgeInsetsMake(37.0, 10.0, 37.0, 10.0)];
+}
+
+- (UIImage *)iconImage {
+    return nil;
+}
+
 #pragma mark - Properties
 
 - (UIButton *)button {
     if (!_button) {
-        _button = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_button setBackgroundImage:self.image forState:UIControlStateNormal];
-        [_button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown|UIControlEventTouchDragEnter|UIControlEventTouchDragInside];
-        [_button addTarget:self action:@selector(buttonTouchUpOutside:) forControlEvents:UIControlEventTouchDragExit|UIControlEventTouchDragOutside|UIControlEventTouchUpOutside|UIControlEventTouchCancel];
-        [_button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        _button = [ViewHelper buttonWithImage:[self normalBackgroundImage] selectedImage:[self onPressBackgroundImage]
+                                       target:self selector:@selector(buttonTapped:)];
         [_button setFrame:self.bounds];
         _button.autoresizingMask = UIViewAutoresizingNone;
     }
     return _button;
 }
 
-- (UIActivityIndicatorView *)activityView {
+- (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
-        _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTiny];
         _activityView.hidesWhenStopped = YES;
         _activityView.frame = CGRectMake(20.0,
-                                         floorf((self.button.bounds.size.height - _activityView.frame.size.height) / 2.0) - 2.0,
+                                         floorf((self.button.bounds.size.height - _activityView.frame.size.height) / 2.0),
                                          _activityView.frame.size.width,
                                          _activityView.frame.size.height);
     }
     return _activityView;
+}
+
+- (UIImageView *)iconImageView {
+    UIImage *iconImage = [self iconImage];
+    if (!_iconImageView && iconImage) {
+        _iconImageView = [[UIImageView alloc] initWithImage:iconImage];
+        _iconImageView.frame = CGRectMake(20.0,
+                                         floorf((self.button.bounds.size.height - _iconImageView.frame.size.height) / 2.0),
+                                         _iconImageView.frame.size.width,
+                                         _iconImageView.frame.size.height);
+    }
+    return _iconImageView;
 }
 
 #pragma mark - Private methods
@@ -190,10 +223,8 @@
 
 - (UILabel *)labelWithText:(NSString *)text activity:(BOOL)activity {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:16];
-    label.textColor = [UIColor whiteColor];
-    label.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
-    label.shadowOffset = CGSizeMake(0.0, 2.0);
+    label.font = [self textLabelFont];
+    label.textColor = [self textLabelColour];
     label.backgroundColor = [UIColor clearColor];
 
     // Update frame.
@@ -201,12 +232,12 @@
     [label sizeToFit];
     CGRect frame = label.frame;
     frame.origin.x = floorf((self.button.bounds.size.width - frame.size.width) / 2.0);
-    frame.origin.y = floorf((self.button.bounds.size.height - frame.size.height) / 2.0) - 2.0;
+    frame.origin.y = floorf((self.button.bounds.size.height - frame.size.height) / 2.0) + 2.0;
     
     if (activity) {
-//        CGFloat offset = self.activityView.frame.origin.x + self.activityView.frame.size.width + kActivityTextGap;
-//        frame.origin.x = offset + floorf((self.button.bounds.size.width - offset - frame.size.width) / 2.0);
         frame.origin.x += 5.0;
+    } else if (self.iconImageView) {
+        frame.origin.x += 10.0;
     }
     
     label.frame = frame;
