@@ -29,6 +29,13 @@
 
 @implementation CKSignInButtonView
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
+                                                  object:[UIApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification
+                                                  object:[UIApplication sharedApplication]];
+}
+
 - (id)initWithWidth:(CGFloat)width text:(NSString *)text activity:(BOOL)activity
            delegate:(id<CKSignInButtonViewDelegate>)delegate {
 
@@ -48,6 +55,18 @@
         self.backgroundColor = [UIColor clearColor];
         [self addSubview:self.button];
         [self setText:text activity:activity];
+        
+        // Register for notification that app did enter background
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(pauseActivityIfRequired)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:[UIApplication sharedApplication]];
+        
+        // Register for notification that app did enter foreground
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(resumeActivityIfRequired)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:[UIApplication sharedApplication]];
     }
     return self;
 }
@@ -247,6 +266,18 @@
 
 - (void)holdLabel:(BOOL)hold {
     self.textLabel.alpha = hold ? 0.7 : 1.0;
+}
+
+- (void)pauseActivityIfRequired {
+    if (!self.activityView.hidden) {
+        [self.activityView stopAnimating];
+    }
+}
+
+- (void)resumeActivityIfRequired {
+    if (!self.activityView.hidden) {
+        [self.activityView startAnimating];
+    }
 }
 
 @end
