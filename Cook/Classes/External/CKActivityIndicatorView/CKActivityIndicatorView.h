@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSUInteger, CKActivityIndicatorViewStyle) {
+    CKActivityIndicatorViewStyleTiny,
+    CKActivityIndicatorViewStyleTinyDark,
     CKActivityIndicatorViewStyleSmall,
     CKActivityIndicatorViewStyleLarge
 };
