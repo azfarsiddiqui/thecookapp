@@ -60,7 +60,7 @@
 #define kMaxBenchtopOverlayAlpha        1.0
 
 - (void)dealloc {
-    [EventHelper unregisterLogout:self];
+    [EventHelper unregisterStatusBarChange:self];
 }
 
 - (void)viewDidLoad {
@@ -82,8 +82,6 @@
     self.lightStatusBar = YES;
     
     // Register login/logout events.
-    [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
-    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerStatusBarChange:self selector:@selector(statusBarChanged:)];
 }
 
@@ -610,7 +608,9 @@
 - (void)initViewControllers {
     BOOL isLoggedIn = [self isLoggedIn];
     [self initBenchtop];
-    if (!isLoggedIn) {
+    if (isLoggedIn) {
+        [self.benchtopViewController loadBenchtop:YES];
+    } else {
         [self showLoginView:YES];
     }
     [self enable:isLoggedIn];
@@ -798,17 +798,6 @@
 
     // Enable/disable benchtop
     [self.benchtopViewController enable:enable];
-}
-
-- (void)loggedIn:(NSNotification *)notification {
-    [self showLoginView:NO];
-    [self enable:YES];
-}
-
-- (void)loggedOut:(NSNotification *)notification {
-    [self snapToLevel:kBenchtopLevel completion:^{
-        [self showLoginView:YES];
-    }];
 }
 
 - (void)statusBarChanged:(NSNotification *)notification {

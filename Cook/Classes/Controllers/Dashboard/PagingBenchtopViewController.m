@@ -342,6 +342,14 @@
 
 #pragma mark - SignupViewControllerDelegate methods
 
+- (UIImage *)signupViewControllerSnapshotImageRequested {
+    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.0);
+    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 - (UIView *)signupViewControllerSnapshotRequested {
     return [self.view snapshotViewAfterScreenUpdates:YES];
 }
@@ -704,9 +712,15 @@
         // Load login book.
         [CKBook fetchGuestBookSuccess:^(CKBook *guestBook) {
             
-            self.myBook = guestBook;
             [[self pagingLayout] markLayoutDirty];
-            [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+            
+            if (self.myBook) {
+                self.myBook = guestBook;
+                [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+            } else {
+                self.myBook = guestBook;
+                [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+            }
             
         } failure:^(NSError *error) {
             
@@ -904,12 +918,20 @@
 - (void)loggedIn:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
-        [self loadBenchtop:YES];
+        
+        [self hideLoginViewCompletion:^{
+            [self loadMyBook];
+            [self loadFollowBooksReload:YES];
+        }];
+        
     }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
-    [self loadBenchtop:NO];
+    
+    // Reload benchtop.
+    [self loadMyBook];
+    [self loadFollowBooksReload:YES];
 }
 
 - (void)themeChanged:(NSNotification *)notification {
