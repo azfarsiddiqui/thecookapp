@@ -10,18 +10,16 @@
 #import "AppHelper.h"
 #import "ViewHelper.h"
 #import "CKPagingView.h"
-#import "SignupViewController.h"
 #import "WelcomeCollectionViewLayout.h"
 #import "PageHeaderView.h"
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
 
-@interface WelcomeViewController () <SignupViewControllerDelegate, WelcomeCollectionViewLayoutDataSource>
+@interface WelcomeViewController () <WelcomeCollectionViewLayoutDataSource>
 
 @property (nonatomic, weak) id<WelcomeViewControllerDelegate> delegate;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *blendedView;
 @property (nonatomic, strong) CKPagingView *pagingView;
-@property (nonatomic, strong) SignupViewController *signupViewController;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL enabled;
 
@@ -123,14 +121,6 @@
 }
 
 #pragma mark - Properties
-
-- (SignupViewController *)signupViewController {
-    if (!_signupViewController) {
-        _signupViewController = [[SignupViewController alloc] initWithDelegate:self];
-        _signupViewController.view.hidden = NO;
-    }
-    return _signupViewController;
-}
 
 - (CKPagingView *)pagingView {
     if (!_pagingView) {
@@ -548,17 +538,6 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
-}
-
-#pragma mark - SignupViewControllerDelegate methods
-
-- (void)signupViewControllerFocused:(BOOL)focused {
-    [self signUpViewControllerModalRequested:focused];
-}
-
-- (void)signUpViewControllerModalRequested:(BOOL)modal {
-    self.collectionView.scrollEnabled = !modal;
-    self.pagingView.alpha = modal ? 0.0 : 1.0;
 }
 
 #pragma mark - Private methods
