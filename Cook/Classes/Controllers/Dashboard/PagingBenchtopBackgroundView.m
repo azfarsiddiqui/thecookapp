@@ -94,8 +94,6 @@
     }];
     self.gradientLayer.locations = colourLocations;
     
-    // Apply blur effect.
-//    [self applyBlurEffectCompletion:completion];
     // Add the gradient to the view
     [self.layer insertSublayer:self.gradientLayer atIndex:0];
 
@@ -103,33 +101,5 @@
 }
 
 #pragma mark - Private methods
-
-- (void)applyBlurEffectCompletion:(void (^)())completion {
-    
-    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
-    [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    // Blur the image in the background and update the layer.
-    [ImageHelper blurredImage:image completion:^(UIImage *blurredImage) {
-        
-        // Add the gradient to the view
-        [self.layer insertSublayer:self.gradientLayer atIndex:0];
-        
-        self.blurredImageView = [[UIImageView alloc] initWithImage:blurredImage];
-        [self addSubview:self.blurredImageView];
-        
-        // Calls overall completion block.
-        if (completion != nil) {
-            completion();
-        }
-    }];
-    
-//    UIImage *blurImage = [ImageHelper blurredImage:image];
-//    self.blurredImageView = [[UIImageView alloc] initWithImage:blurImage];
-//    [self addSubview:self.blurredImageView];
-    
-}
 
 @end
