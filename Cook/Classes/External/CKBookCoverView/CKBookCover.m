@@ -101,10 +101,10 @@
     return [UIColor colorWithHexString:hexValue];
 }
 
-+ (UIColor *)backdropColourForCover:(NSString *)cover user:(CKUser *)user {
++ (UIColor *)themeBackdropColourForCover:(NSString *)cover {
     BOOL vivid = NO;
     BOOL balance = NO;
-    switch (user.theme) {
+    switch ([CKUser currentTheme]) {
         case DashThemeVivid:
             vivid = YES;
             break;

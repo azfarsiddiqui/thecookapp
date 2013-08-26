@@ -24,6 +24,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 @implementation CKUser
 
+#define kCookGuestTheme     @"kCookGuestTheme"
+
 + (CKUser *)currentUser {
     PFUser *parseUser = [PFUser currentUser];
     if (parseUser) {
@@ -150,6 +152,19 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 + (BOOL)usernameExistsForSignUpError:(NSError *)error {
     return ([error code] == kPFErrorUsernameTaken);
+}
+
++ (void)setGuestTheme:(DashTheme)theme {
+    [[NSUserDefaults standardUserDefaults] setObject:@(theme) forKey:kCookGuestTheme];
+}
+
++ (DashTheme)currentTheme {
+    CKUser *currentUser = [CKUser currentUser];
+    if (currentUser) {
+        return currentUser.theme;
+    } else {
+        return [[[NSUserDefaults standardUserDefaults] objectForKey:kCookGuestTheme] integerValue];
+    }
 }
 
 #pragma mark - CKModel 

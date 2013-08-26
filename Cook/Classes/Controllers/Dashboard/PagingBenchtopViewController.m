@@ -934,7 +934,6 @@ IllustrationPickerViewControllerDelegate>
 }
 
 - (PagingBenchtopBackgroundView *)createPagingBenchtopBackgroundView {
-    CKUser *currentUser = [CKUser currentUser];
     
     NSInteger numMyBook = [self.collectionView numberOfItemsInSection:kMyBookSection];
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
@@ -954,7 +953,7 @@ IllustrationPickerViewControllerDelegate>
         if (section == kMyBookSection) {
             
             if (self.myBook) {
-                [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:self.myBook.cover user:currentUser]];
+                [pagingBenchtopView addColour:[CKBookCover themeBackdropColourForCover:self.myBook.cover]];
             }
             
         } else if (section == kFollowSection) {
@@ -967,7 +966,7 @@ IllustrationPickerViewControllerDelegate>
             for (NSInteger followIndex = 0; followIndex < numFollowBooks; followIndex++) {
                 
                 CKBook *book = [self.followBooks objectAtIndex:followIndex];
-                UIColor *bookColour = [CKBookCover backdropColourForCover:book.cover user:currentUser];
+                UIColor *bookColour = [CKBookCover themeBackdropColourForCover:book.cover];
                 
                 // Add the next book colour at the gap.
                 if (followIndex == 0) {

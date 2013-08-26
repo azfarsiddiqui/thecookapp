@@ -146,8 +146,12 @@
         }
     }
     
-    [self.currentUser setTheme:optionIndex];
-    [self.currentUser saveInBackground];
+    if (self.currentUser) {
+        [self.currentUser setTheme:optionIndex];
+        [self.currentUser saveInBackground];
+    } else {
+        [CKUser setGuestTheme:optionIndex];
+    }
     
     // Post theme change.
     [EventHelper postThemeChange];

@@ -120,6 +120,7 @@
 
 - (void)welcomeViewControllerGetStartedReached {
     [self dismissWelcomeViewCompletion:^{
+        self.panEnabled = YES;
         [self.benchtopViewController loadBenchtop:YES];
     }];
 }
