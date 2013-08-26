@@ -73,14 +73,14 @@
         CGFloat offsetRatio = offset / self.bounds.size.width;
         [gradientColours addObject:colour];
         [colourLocations addObject:@(offsetRatio)];
-        DLog(@"Start Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
+//        DLog(@"Start Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
         
         // End of colour
         offset += colourWidth;
         offsetRatio = offset / self.bounds.size.width;
         [gradientColours addObject:colour];
         [colourLocations addObject:@(offsetRatio)];
-        DLog(@"  End Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
+//        DLog(@"  End Colour [%d] at [%f][%f]", colourIndex, offset, offsetRatio);
         
     }
     

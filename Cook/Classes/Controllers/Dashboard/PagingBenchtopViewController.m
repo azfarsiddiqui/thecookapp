@@ -382,7 +382,6 @@
     [self.illustrationViewController changeCover:self.coverViewController.cover];
     
     [self enableEditMode:NO];
-    [self updatePagingBenchtopView];
 }
 
 - (void)coverPickerDoneRequested {
@@ -681,19 +680,36 @@
         [CKBook fetchBookForUser:currentUser
                          success:^(CKBook *book) {
                              
+                             // Could be called again via cache, or reloaded via login.
                              if (self.myBook) {
                                  
                                  // Update benchtop if book is of a different cover.
                                  BOOL changedCover = ![self.myBook.cover isEqualToString:book.cover];
                                  
-                                 // Reload the book.
-                                 self.myBook = book;
-                                 [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
-                                
-                                 // Update after myBook has been set.
-                                 if (changedCover) {
-                                     [self updatePagingBenchtopView];
+                                 // If it's the same book, just reload it.
+                                 if ([self.myBook.objectId isEqual:book.objectId]) {
+                                     
+                                     self.myBook = book;
+                                     
+                                     // Reload the book, then update the benchtop if cover has changed.
+                                     [self.collectionView performBatchUpdates:^{
+                                         [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                     } completion:^(BOOL finished) {
+                                         
+                                         // Update after myBook has been set.
+                                         if (changedCover) {
+                                             [self updatePagingBenchtopView];
+                                         }
+                                         
+                                     }];
+                                     
+                                 } else {
+                                     
+                                     // Just reload the book.
+                                     self.myBook = book;
+                                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                  }
+                                 
                                  
                              } else {
                                  
@@ -938,6 +954,7 @@
 }
 
 - (void)updatePagingBenchtopView {
+    DLog();
     
     // Create a new blended benchtop with the current layout.
     PagingBenchtopBackgroundView *pagingBenchtopView = [self createPagingBenchtopBackgroundView];
@@ -974,7 +991,7 @@
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
-                                 self.pagingBenchtopView.alpha = 1.0;
+                                 self.pagingBenchtopView.alpha = kBlendMaxAlpha;
                              }
                              completion:^(BOOL finished) {
                              }];
@@ -1124,6 +1141,11 @@
 
 - (void)showLoginViewSignUp:(BOOL)signUp {
     
+    // Ignore in editMode.
+    if (self.editMode) {
+        return;
+    }
+    
     // Disable benchtop.
     [self.delegate panEnabledRequested:NO];
     [self enable:NO];
@@ -1132,7 +1154,7 @@
     self.signUpViewController.view.alpha = 0.0;
     [self.view addSubview:self.signUpViewController.view];
     
-    [UIView animateWithDuration:0.4
+    [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
