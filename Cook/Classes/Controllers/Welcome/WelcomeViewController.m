@@ -299,7 +299,7 @@
         
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:58.0]
-                                                   text:@"LET'S GET STARTED" textAlignment:NSTextAlignmentCenter
+                                                   text:@"LET'S GET STARTED..." textAlignment:NSTextAlignmentCenter
                                           availableSize:size lineSpacing:-15.0];
         _signUpPageView = titleLabel;
     }
@@ -632,6 +632,9 @@
                               delay:0.3
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
+                             self.signUpPageView.transform = CGAffineTransformMakeTranslation(-20.0, 0.0);
+                             self.signUpPageView.alpha = 0.0;
+                             self.pagingView.transform = CGAffineTransformMakeTranslation(-20.0, 0.0);
                              self.pagingView.alpha = 0.0;
                          }
                          completion:^(BOOL finished) {
