@@ -69,7 +69,8 @@
 
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame {
     CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], frame);
-    UIImage *cropped = [UIImage imageWithCGImage:imageRef scale:[[AppHelper sharedInstance] screenScale] orientation:UIImageOrientationUp];
+    UIImage *cropped = [UIImage imageWithCGImage:imageRef scale:[[AppHelper sharedInstance] screenScale]
+                                     orientation:image.imageOrientation];
     CGImageRelease(imageRef);
     return cropped;
 }
