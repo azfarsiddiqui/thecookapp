@@ -39,6 +39,7 @@
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
+@property (nonatomic, strong) NSMutableDictionary *contentControllerOffsets;
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
@@ -481,13 +482,37 @@
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
       forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
-    // Remove a reference to the content image view.
-    if (indexPath.section >= [self stackContentStartSection]
-        && [elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+    if (indexPath.section >= [self stackContentStartSection]) {
         
+        // Remove a reference to the content image view.
+        if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+            NSString *page = [self.pages objectAtIndex:pageIndex];
+            [self.pageHeaderViews removeObjectForKey:page];
+        }
+    }
+    
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
+    forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section >= [self stackContentStartSection]) {
+        
+        // Remove reference to BookContentVC and remember its vertical scroll offset.
         NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
         NSString *page = [self.pages objectAtIndex:pageIndex];
-        [self.pageHeaderViews removeObjectForKey:page];
+        
+        BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
+        if (contentViewController) {
+            
+            // Remember its current offset so we can restore later.
+            [self.contentControllerOffsets setObject:[NSValue valueWithCGPoint:[contentViewController currentScrollOffset]]
+                                              forKey:page];
+            [self.contentControllers removeObjectForKey:page];
+            contentViewController = nil;
+        }
+        
     }
     
 }
@@ -655,6 +680,7 @@
     
     // Initialise the categoryControllers
     self.contentControllers = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
+    self.contentControllerOffsets = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
     
     // Now reload the categories.
     if ([self.pages count] > 0) {
@@ -716,11 +742,20 @@
         DLog(@"Create page VC for [%@]", page);
         categoryController = [[BookContentViewController alloc] initWithBook:self.book page:page delegate:self];
         categoryController.bookPageDelegate = self;
+        
+        // Remember this so that we can unset it on disEndDisplayingCell
         [self.contentControllers setObject:categoryController forKey:page];
+        
     } else {
         DLog(@"Reusing page VC for [%@]", page);
     }
+    
+    // Add the contentVC to the cell.
     cell.contentViewController = categoryController;
+    
+    // Scroll offset?
+    CGPoint scrollOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
+    [categoryController setScrollOffset:scrollOffset];
 }
 
 - (NSString *)currentPage {
@@ -826,14 +861,14 @@
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
     // Get the corresponding categoryVC to retrieve current scroll offset.
-    BookContentViewController *categoryController = [self.contentControllers objectForKey:page];
-    [categoryHeaderView applyOffset:[categoryController currentScrollOffset].y];
+    CGPoint contentOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
+    [categoryHeaderView applyOffset:contentOffset.y];
     
     // Load featured recipe image.
     CKRecipe *featuredRecipe = [self featuredRecipeForPage:page];
     [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
     
-    // Keep track of category views keyed on indexPath.
+    // Keep track of category views keyed on page name.
     [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
     
     return headerView;

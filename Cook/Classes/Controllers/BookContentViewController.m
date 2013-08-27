@@ -69,6 +69,10 @@
     return visibleFrame.origin;
 }
 
+- (void)setScrollOffset:(CGPoint)scrollOffset {
+    [self.collectionView setContentOffset:scrollOffset animated:NO];
+}
+
 - (void)applyOverlayAlpha:(CGFloat)alpha {
     self.overlayView.alpha = alpha;
 }

@@ -25,6 +25,7 @@
 - (id)initWithBook:(CKBook *)book page:(NSString *)page delegate:(id<BookContentViewControllerDelegate>)delegate;
 - (void)loadData;
 - (CGPoint)currentScrollOffset;
+- (void)setScrollOffset:(CGPoint)scrollOffset;
 - (void)applyOverlayAlpha:(CGFloat)alpha;
 
 @end
