@@ -14,6 +14,7 @@
 #import "EventHelper.h"
 #import "Theme.h"
 #import "ImageHelper.h"
+#import "AppHelper.h"
 
 @interface BookCoverViewController ()
 
@@ -121,23 +122,28 @@
         return;
     }
     
+    CGFloat screenScale = [[AppHelper sharedInstance] screenScale];
+    CGRect screenFrame = [[AppHelper sharedInstance] fullScreenFrame];
+    
     // Left image.
     UIImage *leftImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
         0.0,
         0.0,
-        snapshotImage.size.width / 2.0,
-        snapshotImage.size.height
+        (screenFrame.size.width / 2.0) * screenScale,
+        screenFrame.size.height * screenScale
     }];
     UIGraphicsEndImageContext();
+    self.leftOpenLayer.contentsScale = screenScale;
     self.leftOpenLayer.contents = (id)leftImage.CGImage;
     
     // Right image.
     UIImage *rightImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
-        snapshotImage.size.width / 2.0,
+        (screenFrame.size.width / 2.0) * screenScale,
         0.0,
-        snapshotImage.size.width / 2.0,
-        snapshotImage.size.height
+        (screenFrame.size.width / 2.0) * screenScale,
+        screenFrame.size.height * screenScale
     }];
+    self.rightOpenLayer.contentsScale = screenScale;
     self.rightOpenLayer.contents = (id)rightImage.CGImage;
 }
 

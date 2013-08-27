@@ -55,6 +55,10 @@
     return [self rootView].bounds;
 }
 
+- (CGFloat)screenScale {
+    return [UIScreen mainScreen].scale;
+}
+
 - (NSArray *)keyboardIngredients {
     return [NSArray arrayWithContentsOfFile:[[[NSBundle mainBundle] resourcePath]
                                              stringByAppendingPathComponent:@"ingredientsKeyboard.plist"]];

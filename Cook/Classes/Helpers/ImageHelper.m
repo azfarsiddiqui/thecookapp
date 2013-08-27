@@ -9,6 +9,7 @@
 #import "ImageHelper.h"
 #import "UIImage+ProportionalFill.h"
 #import "UIImage+ImageEffects.h"
+#import "AppHelper.h"
 
 @implementation ImageHelper
 
@@ -68,7 +69,7 @@
 
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame {
     CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], frame);
-    UIImage *cropped = [UIImage imageWithCGImage:imageRef];
+    UIImage *cropped = [UIImage imageWithCGImage:imageRef scale:[[AppHelper sharedInstance] screenScale] orientation:UIImageOrientationUp];
     CGImageRelease(imageRef);
     return cropped;
 }
