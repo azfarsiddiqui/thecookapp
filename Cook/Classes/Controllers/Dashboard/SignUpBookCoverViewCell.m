@@ -9,21 +9,23 @@
 #import "SignUpBookCoverViewCell.h"
 #import "CKBook.h"
 #import "CKSignInButtonView.h"
-#import "CKFacebookSignInButtonView.h"
+#import "CKBlueSignInButtonView.h"
 
 @interface SignUpBookCoverViewCell () <CKSignInButtonViewDelegate>
 
-@property (nonatomic, strong) CKSignInButtonView *emailButton;
-@property (nonatomic, strong) CKFacebookSignInButtonView *facebookButton;
+@property (nonatomic, strong) CKSignInButtonView *registerButton;
+@property (nonatomic, strong) CKBlueSignInButtonView *signInButton;
 
 @end
 
 @implementation SignUpBookCoverViewCell
 
+#define kWidth  142.0
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self.contentView addSubview:self.emailButton];
-        [self.contentView addSubview:self.facebookButton];
+        [self.contentView addSubview:self.signInButton];
+        [self.contentView addSubview:self.registerButton];
     }
     return self;
 }
@@ -36,55 +38,42 @@
 #pragma mark - CKSignInButtonViewDelegate methods
 
 - (void)signInTappedForButtonView:(CKSignInButtonView *)buttonView {
-    if (buttonView == self.facebookButton) {
-        if ([self.delegate respondsToSelector:@selector(signUpBookSignUpFacebookRequestedForCell:)]) {
-            [self.delegate performSelector:@selector(signUpBookSignUpFacebookRequestedForCell:) withObject:self];
+    if (buttonView == self.signInButton) {
+        if ([self.delegate respondsToSelector:@selector(signUpBookSignInRequestedForCell:)]) {
+            [self.delegate performSelector:@selector(signUpBookSignInRequestedForCell:) withObject:self];
         }
-    } else if (buttonView == self.emailButton) {
-        if ([self.delegate respondsToSelector:@selector(signUpBookSignUpEmailRequestedForCell:)]) {
-            [self.delegate performSelector:@selector(signUpBookSignUpEmailRequestedForCell:) withObject:self];
+    } else if (buttonView == self.registerButton) {
+        if ([self.delegate respondsToSelector:@selector(signUpBookRegisterRequestedForCell:)]) {
+            [self.delegate performSelector:@selector(signUpBookRegisterRequestedForCell:) withObject:self];
         }
     }
 }
 
 #pragma mark - Properties
 
-- (CKFacebookSignInButtonView *)facebookButton {
-    if (!_facebookButton) {
-        UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 40.0, 40.0, 40.0);
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_facebook.png"]
-                                resizableImageWithCapInsets:UIEdgeInsetsMake(37.0, 10.0, 37.0, 10.0)];
-        CGSize availableSize = CGSizeMake(self.bookCoverView.bounds.size.width - insets.left - insets.right,
-                                          buttonImage.size.height);
-        
-        _facebookButton = [[CKFacebookSignInButtonView alloc] initWithWidth:self.emailButton.frame.size.width
-                                                                       text:@"SIGNUP WITH FACEBOOK" activity:NO delegate:self];
-        _facebookButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        _facebookButton.frame = CGRectMake(insets.left + floorf((availableSize.width - _emailButton.frame.size.width) / 2.0),
-                                           self.emailButton.frame.origin.y - _facebookButton.frame.size.height + 7.0,
-                                           _facebookButton.frame.size.width,
-                                           _facebookButton.frame.size.height);
+- (CKBlueSignInButtonView *)signInButton {
+    if (!_signInButton) {
+        UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 8.0, 8.0, 0.0);
+        _signInButton = [[CKBlueSignInButtonView alloc] initWithWidth:self.registerButton.frame.size.width text:@"SIGN IN" activity:NO delegate:self];
+        _signInButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin;
+        _signInButton.frame = CGRectMake(insets.left,
+                                         self.contentView.bounds.size.height - _signInButton.frame.size.height - insets.bottom,
+                                         _signInButton.frame.size.width,
+                                         _signInButton.frame.size.height);
     }
-    return _facebookButton;
+    return _signInButton;
 }
 
-- (CKSignInButtonView *)emailButton {
-    if (!_emailButton) {
-        UIEdgeInsets insets = UIEdgeInsetsMake(20.0, 20.0, 10.0, 20.0);
-        UIImage *buttonImage = [[UIImage imageNamed:@"cook_login_btn_signup_white.png"]
-                                resizableImageWithCapInsets:UIEdgeInsetsMake(37.0, 10.0, 37.0, 10.0)];
-        CGSize availableSize = CGSizeMake(self.bookCoverView.bounds.size.width - insets.left - insets.right,
-                                          buttonImage.size.height);
-        
-        _emailButton = [[CKSignInButtonView alloc] initWithWidth:availableSize.width text:@"SIGNUP WITH EMAIL"
-                                                        activity:NO delegate:self];
-        _emailButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        _emailButton.frame = CGRectMake(insets.left + floorf((availableSize.width - _emailButton.frame.size.width) / 2.0),
-                                        self.contentView.bounds.size.height - _emailButton.frame.size.height - insets.bottom,
-                                        _emailButton.frame.size.width,
-                                        _emailButton.frame.size.height);
+- (CKSignInButtonView *)registerButton {
+    if (!_registerButton) {
+        _registerButton = [[CKSignInButtonView alloc] initWithWidth:kWidth text:@"REGISTER" activity:NO delegate:self];
+        _registerButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin;
+        _registerButton.frame = CGRectMake(self.signInButton.frame.origin.x + self.signInButton.frame.size.width,
+                                           self.signInButton.frame.origin.y,
+                                           _registerButton.frame.size.width,
+                                           _registerButton.frame.size.height);
     }
-    return _emailButton;
+    return _registerButton;
 }
 
 @end

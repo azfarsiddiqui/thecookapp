@@ -13,9 +13,8 @@
 @protocol SignUpBookCoverViewCellDelegate <BenchtopBookCoverViewCellDelegate>
 
 @optional
-- (void)signUpBookSignUpEmailRequestedForCell:(SignUpBookCoverViewCell *)cell;
-- (void)signUpBookSignUpFacebookRequestedForCell:(SignUpBookCoverViewCell *)cell;
 - (void)signUpBookSignInRequestedForCell:(SignUpBookCoverViewCell *)cell;
+- (void)signUpBookRegisterRequestedForCell:(SignUpBookCoverViewCell *)cell;
 
 @end
 

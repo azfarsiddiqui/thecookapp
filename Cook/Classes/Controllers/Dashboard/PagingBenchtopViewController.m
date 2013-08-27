@@ -328,17 +328,14 @@
 
 #pragma mark - SignUpBookCoverViewCellDelegate methods
 
-- (void)signUpBookSignUpEmailRequestedForCell:(SignUpBookCoverViewCell *)cell {
-    [self showLoginViewSignUp:YES];
-}
-
-- (void)signUpBookSignUpFacebookRequestedForCell:(SignUpBookCoverViewCell *)cell {
-    [self showLoginViewSignUp:YES];
-}
-
 - (void)signUpBookSignInRequestedForCell:(SignUpBookCoverViewCell *)cell {
     [self showLoginViewSignUp:NO];
 }
+
+- (void)signUpBookRegisterRequestedForCell:(SignUpBookCoverViewCell *)cell {
+    [self showLoginViewSignUp:YES];
+}
+
 
 #pragma mark - SignupViewControllerDelegate methods
 
@@ -1152,6 +1149,7 @@
     
     self.signUpViewController = [[SignupViewController alloc] initWithDelegate:self];
     self.signUpViewController.view.alpha = 0.0;
+    [self.signUpViewController enableSignUpMode:signUp animated:NO];
     [self.view addSubview:self.signUpViewController.view];
     
     [UIView animateWithDuration:0.3

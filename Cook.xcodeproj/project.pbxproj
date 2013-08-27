@@ -424,6 +424,9 @@
 		7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */; };
 		7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */; };
 		7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C74F17782A3B00A5CA5C /* PagingScrollView.m */; };
+		769AA77017CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = 769AA76E17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png */; };
+		769AA77117CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 769AA76F17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png */; };
+		769AA77417CC855B00B73718 /* CKBlueSignInButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769AA77317CC855B00B73718 /* CKBlueSignInButtonView.m */; };
 		769AD7B2177BF360001FBE08 /* cook_dash_shelves_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 769AD7B0177BF360001FBE08 /* cook_dash_shelves_shadow.png */; };
 		769AD7B3177BF360001FBE08 /* cook_dash_shelves_shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 769AD7B1177BF360001FBE08 /* cook_dash_shelves_shadow@2x.png */; };
 		769B5E11171541AC0046934D /* cook_recipe_background_tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 769B5E0F171541AC0046934D /* cook_recipe_background_tile.png */; };
@@ -1364,6 +1367,10 @@
 		7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingCollectionViewLayout.m; sourceTree = "<group>"; };
 		7692C74E17782A3B00A5CA5C /* PagingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingScrollView.h; sourceTree = "<group>"; };
 		7692C74F17782A3B00A5CA5C /* PagingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingScrollView.m; sourceTree = "<group>"; };
+		769AA76E17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_login_btn_signup_blue_onpress.png; sourceTree = "<group>"; };
+		769AA76F17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_btn_signup_blue_onpress@2x.png"; sourceTree = "<group>"; };
+		769AA77217CC855B00B73718 /* CKBlueSignInButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBlueSignInButtonView.h; sourceTree = "<group>"; };
+		769AA77317CC855B00B73718 /* CKBlueSignInButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKBlueSignInButtonView.m; sourceTree = "<group>"; };
 		769AD7B0177BF360001FBE08 /* cook_dash_shelves_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_shelves_shadow.png; sourceTree = "<group>"; };
 		769AD7B1177BF360001FBE08 /* cook_dash_shelves_shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_shelves_shadow@2x.png"; sourceTree = "<group>"; };
 		769B5E0F171541AC0046934D /* cook_recipe_background_tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_recipe_background_tile.png; sourceTree = "<group>"; };
@@ -2156,6 +2163,8 @@
 				762F3BAC1756394E00863DDF /* CKSignInButtonView.m */,
 				76A10ADD17CB19CE0051751F /* CKFacebookSignInButtonView.h */,
 				76A10ADE17CB19CE0051751F /* CKFacebookSignInButtonView.m */,
+				769AA77217CC855B00B73718 /* CKBlueSignInButtonView.h */,
+				769AA77317CC855B00B73718 /* CKBlueSignInButtonView.m */,
 			);
 			path = CKSignInButtonView;
 			sourceTree = "<group>";
@@ -2436,6 +2445,8 @@
 				767EEA4517BDE49E001E7D0B /* cook_login_btn_signup_clear@2x.png */,
 				767EEA1017BDBF62001E7D0B /* cook_login_btn_signup_blue.png */,
 				767EEA1117BDBF62001E7D0B /* cook_login_btn_signup_blue@2x.png */,
+				769AA76E17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png */,
+				769AA76F17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png */,
 				767EEA1217BDBF62001E7D0B /* cook_login_btn_signup_facebook.png */,
 				767EEA1317BDBF62001E7D0B /* cook_login_btn_signup_facebook@2x.png */,
 				767EEA1417BDBF62001E7D0B /* cook_login_btn_signup_green.png */,
@@ -3630,6 +3641,7 @@
 				761951CD1793B8FD008AB495 /* cook_book_inner_icon_close_light.png in Resources */,
 				76F5EE411782A3AD004AB119 /* cook_book_orange@2x.png in Resources */,
 				76A9177D17BCE0F300CB8E9A /* cook_btns_photo_back.png in Resources */,
+				769AA77017CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png in Resources */,
 				7612B46717B36E6D0093B4FD /* cook_book_recipe_background_tile@2x.png in Resources */,
 				76BEE73C165DEE600065B97B /* cook_book_blue.png in Resources */,
 				76BEE73D165DEE600065B97B /* cook_book_blue@2x.png in Resources */,
@@ -3882,6 +3894,7 @@
 				767EEA3417BDBF62001E7D0B /* cook_login_btn_signup_facebook.png in Resources */,
 				76751592170CFF52008B675D /* cook_book_graphic_featured_london.png in Resources */,
 				7680104217A92ACF0065B2C6 /* cook_dash_settings_tab_selected_left.png in Resources */,
+				769AA77117CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png in Resources */,
 				76462D311782FB9C002EA7D0 /* cook_library_icons_friends@2x.png in Resources */,
 				7647855B17A74F7600387A7B /* cook_edit_bg_blue@2x.png in Resources */,
 				76751593170CFF52008B675D /* cook_book_graphic_featured_london@2x.png in Resources */,
@@ -4340,6 +4353,7 @@
 				76E0B95717903B8E00AD70E3 /* BookPagingStackLayout.m in Sources */,
 				768E735E170BD5440063CF49 /* CKStatView.m in Sources */,
 				76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */,
+				769AA77417CC855B00B73718 /* CKBlueSignInButtonView.m in Sources */,
 				761951B21793B86A008AB495 /* BookNavigationView.m in Sources */,
 				76558EBC17BFCF5400644036 /* IngredientsKeyboardAccessoryViewController.m in Sources */,
 				76735C8E17BA16780027CA3B /* BookRecipeGridLargeCell.m in Sources */,
