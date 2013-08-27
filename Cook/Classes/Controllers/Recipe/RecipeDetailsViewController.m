@@ -211,8 +211,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
     
     // Present the image.
-    UIImage *croppedImage = [image imageCroppedToFitSize:self.imageView.bounds.size];
-    [self loadImageViewWithPhoto:croppedImage];
+    [self loadImageViewWithPhoto:image];
     
     // Save photo to be uploaded.
     self.recipeDetails.image = image;
