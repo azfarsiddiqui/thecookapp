@@ -322,6 +322,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 
 - (void)clearMemory
 {
+    DLog(@"clearMemory");
     [self.memCache removeAllObjects];
 }
 
