@@ -74,8 +74,8 @@
     if (!_badgeLabel) {
         _badgeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _badgeLabel.backgroundColor = [UIColor clearColor];
-        _badgeLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:17.0];
-        _badgeLabel.textColor = [UIColor colorWithHexString:@"626262"];
+        _badgeLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:20.0];
+        _badgeLabel.textColor = [UIColor colorWithHexString:@"8e8e8e"];
         _badgeLabel.textAlignment = NSTextAlignmentCenter;
         _badgeLabel.lineBreakMode = NSLineBreakByClipping;
         _badgeLabel.hidden = YES;   // Hidden to start off with.
