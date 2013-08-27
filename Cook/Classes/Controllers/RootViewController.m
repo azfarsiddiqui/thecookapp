@@ -96,6 +96,7 @@
 
 - (void)didReceiveMemoryWarning {
     DLog();
+    [super didReceiveMemoryWarning];
     [self.defaultImageView removeFromSuperview];
     self.defaultImageView = nil;
 }
