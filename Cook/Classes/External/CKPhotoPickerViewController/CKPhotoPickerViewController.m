@@ -14,7 +14,7 @@
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, assign) id<CKPhotoPickerViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<CKPhotoPickerViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL saveToPhotoAlbum;
 @property (nonatomic, strong) UIImagePickerController *cameraPickerViewController;
 @property (nonatomic, strong) UIImagePickerController *libraryPickerViewController;
@@ -71,8 +71,7 @@
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIView *parentView = [self parentView];
-    self.selectedImage = [[info valueForKey:UIImagePickerControllerOriginalImage] imageCroppedToFitSize:parentView.bounds.size];
+    self.selectedImage = [info valueForKey:UIImagePickerControllerOriginalImage];
     [self.popoverViewController dismissPopoverAnimated:YES];
     self.popoverViewController = nil;
     self.libraryPickerViewController = nil;
@@ -81,7 +80,11 @@
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self.delegate photoPickerViewControllerCloseRequested];
+    
+    // Cleanup manually as this doesn't call the popover delegate.
+    [self.popoverViewController dismissPopoverAnimated:YES];
+    self.popoverViewController = nil;
+    self.libraryPickerViewController = nil;
 }
 
 #pragma mark - UIPopoverControllerDelegate methods
@@ -126,7 +129,9 @@
 - (UIButton *)libraryButton {
     if (!_libraryButton) {
         UIView *parentView = [self parentView];
-        _libraryButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameraroll.png"] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameraroll_onpress.png"] target:self selector:@selector(libraryTapped:)];
+        _libraryButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameraroll.png"]
+                                 selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameraroll_onpress.png"]
+                                        target:self selector:@selector(libraryTapped:)];
         _libraryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
         [_libraryButton setFrame:CGRectMake(kContentInsets.left,
                                             parentView.bounds.size.height - _libraryButton.frame.size.height - kContentInsets.bottom,
@@ -139,7 +144,9 @@
 - (UIButton *)snapButton {
     if (!_snapButton && [self cameraSupported]) {
         UIView *parentView = [self parentView];
-        _snapButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_takephoto.png"] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_takephoto_onpress.png"] target:self selector:@selector(snapTapped:)];
+        _snapButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_takephoto.png"]
+                              selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_takephoto_onpress.png"]
+                                     target:self selector:@selector(snapTapped:)];
         _snapButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
         [_snapButton setFrame:CGRectMake(floorf((parentView.bounds.size.width - _snapButton.frame.size.width) / 2.0),
                                          parentView.bounds.size.height - _snapButton.frame.size.height - kContentInsets.bottom,
@@ -188,7 +195,9 @@
 
 - (UIButton *)flashButton {
     if (!_flashButton && [self cameraSupported] && [self flashSupported]) {
-        _flashButton = [self buttonWithImage:[self imageForFlashMode] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_flash_onpress.png"] target:self selector:@selector(flashTapped:)];
+        _flashButton = [self buttonWithImage:[self imageForFlashMode]
+                               selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_flash_onpress.png"]
+                                      target:self selector:@selector(flashTapped:)];
         _flashButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin;
         [_flashButton setFrame:CGRectMake(self.toggleButton.frame.origin.x - _flashButton.frame.size.width + 3.0,
                                           self.toggleButton.frame.origin.y,
@@ -201,7 +210,9 @@
 - (UIButton *)toggleButton {
     if (!_toggleButton && [self cameraSupported]) {
         CGRect parentBounds = [self parentBounds];
-        _toggleButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameratoggle.png"] selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameratoggle_onpress.png"] target:self selector:@selector(toggleTapped:)];
+        _toggleButton = [self buttonWithImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameratoggle.png"]
+                                selectedImage:[UIImage imageNamed:@"cook_customise_photo_btn_cameratoggle_onpress.png"]
+                                       target:self selector:@selector(toggleTapped:)];
         _toggleButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin;
         [_toggleButton setFrame:CGRectMake(parentBounds.size.width - _toggleButton.frame.size.width - kContentInsets.right,
                                            parentBounds.size.height - _toggleButton.frame.size.height - kContentInsets.bottom,
@@ -391,7 +402,8 @@
     if (photoSelected) {
         CGRect visibleFrame = parentView.bounds;
         
-        UIImageView *previewImageView = [[UIImageView alloc] initWithImage:[self.selectedImage imageCroppedToFitSize:visibleFrame.size]];
+        UIImageView *previewImageView = [[UIImageView alloc] initWithFrame:visibleFrame];
+        previewImageView.image = self.selectedImage;
         previewImageView.autoresizingMask = UIViewAutoresizingNone;
         
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:parentView.bounds];
