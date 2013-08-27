@@ -224,7 +224,7 @@
 }
 
 - (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    if ([self persisted]) {
+    if ([self persisted] && user) {
         PFQuery *likesQuery = [PFQuery queryWithClassName:kRecipeLikeModelName];
         [likesQuery whereKey:kRecipeModelForeignKeyName equalTo:self.parseObject];
         [likesQuery whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
