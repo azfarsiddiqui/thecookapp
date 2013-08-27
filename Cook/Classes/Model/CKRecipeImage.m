@@ -8,15 +8,19 @@
 
 #import "CKConstants.h"
 #import "CKRecipeImage.h"
+#import "CKRecipe.h"
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
 
 @implementation CKRecipeImage
 
-+ (CKRecipeImage *)recipeImage {
++ (CKRecipeImage *)recipeImageForRecipe:(CKRecipe *)recipe {
     
     // Create parse object and wrapper.
     PFObject *parseRecipeImage = [self objectWithDefaultSecurityWithClassName:kRecipeImageModelName];
+    [parseRecipeImage setObject:[PFObject objectWithoutDataWithClassName:kRecipeModelName
+                                                                objectId:recipe.parseObject.objectId]
+                         forKey:kRecipeModelForeignKeyName];
     return [[CKRecipeImage alloc] initWithParseObject:parseRecipeImage];
 }
 

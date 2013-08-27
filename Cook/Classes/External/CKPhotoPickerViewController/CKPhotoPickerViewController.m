@@ -284,11 +284,14 @@
 }
 
 - (void)savePhoto {
-    float scale = [self deviceScale] / self.previewScrollView.zoomScale;
-    CGRect visibleRect = CGRectMake(self.previewScrollView.contentOffset.x * scale,
-                                    self.previewScrollView.contentOffset.y * scale,
-                                    self.previewScrollView.bounds.size.width * scale,
-                                    self.previewScrollView.bounds.size.height * scale);
+    
+    CGFloat imageScale = self.selectedImage.size.width / self.previewScrollView.bounds.size.width;
+    CGFloat deviceScale = [self deviceScale];
+    CGFloat scale = (deviceScale / self.previewScrollView.zoomScale) * imageScale;
+    CGRect visibleRect = CGRectMake(self.previewScrollView.contentOffset.x,
+                                    self.previewScrollView.contentOffset.y,
+                                    self.previewScrollView.bounds.size.width,
+                                    self.previewScrollView.bounds.size.height);
     
     // Crop out the visible image off the scrollView.
     UIImage *visibleImage = [self cropSelectedImageAtRect:visibleRect scale:scale];
@@ -436,8 +439,14 @@
                      }];
 }
 
-- (UIImage *)cropSelectedImageAtRect:(CGRect)rect scale:(CGFloat)scale {
-    CGImageRef croppedImageRef = CGImageCreateWithImageInRect([self.selectedImage CGImage], rect);
+- (UIImage *)cropSelectedImageAtRect:(CGRect)frame scale:(CGFloat)scale {
+    frame = (CGRect){
+        frame.origin.x * scale,
+        frame.origin.y * scale,
+        frame.size.width * scale,
+        frame.size.height * scale
+    };
+    CGImageRef croppedImageRef = CGImageCreateWithImageInRect([self.selectedImage CGImage], frame);
     UIImage* croppedImage = [[UIImage alloc] initWithCGImage:croppedImageRef
                                                        scale:scale
                                                  orientation:self.selectedImage.imageOrientation];

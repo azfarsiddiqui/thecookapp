@@ -14,7 +14,11 @@
 @implementation ImageHelper
 
 + (CGSize)thumbSize {
-    return (CGSize) { 512.0, 384.0 };
+    CGFloat screenScale = [[AppHelper sharedInstance] screenScale];
+    return (CGSize) {
+        512.0 / screenScale,
+        384.0 / screenScale
+    };
 }
 
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image {
@@ -64,7 +68,10 @@
 }
 
 + (UIImage *)thumbImageForImage:(UIImage *)image {
-    return [image imageScaledToFitSize:[self thumbSize]];
+    CGSize thumbSize = [self thumbSize];
+    thumbSize.width = thumbSize.width;
+    thumbSize.height = thumbSize.height;
+    return [image imageScaledToFitSize:thumbSize];
 }
 
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame {

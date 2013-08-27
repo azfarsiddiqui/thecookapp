@@ -198,6 +198,8 @@
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
     }];
     
+    DLog(@"Uploading images for recipe [%@]", recipe.objectId);
+    
     // Fullsize and thumbnail.
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8);  // Least compression.
     PFFile *imageFile = [PFFile fileWithName:@"fullsize.jpg" data:imageData];
@@ -213,6 +215,8 @@
     
     // Now upload the thumb sized.
     __weak CKPhotoManager *weakSelf = self;
+    NSString *cacheKey = recipeImage.imageUuid;
+    
     [thumbImageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (!error) {
@@ -230,7 +234,6 @@
                     recipeImage.imageFile = imageFile;
                     
                     // Clear the placeholders.
-                    NSString *cacheKey = recipeImage.imageUuid;
                     recipeImage.thumbImageUuid = nil;
                     recipeImage.imageUuid = nil;
                     
@@ -248,7 +251,7 @@
                     } failure:^(NSError *error) {
                         
                         // Failed, and still remove the local copy
-                        [weakSelf clearTransferForCacheKey:recipeImage.imageUuid];
+                        [weakSelf clearTransferForCacheKey:cacheKey];
                         
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
@@ -259,7 +262,7 @@
                     DLog(@"Fullsize image error %@", [error localizedDescription]);
                     
                     // Failed, and still remove the local copy
-                    [weakSelf clearTransferForCacheKey:recipeImage.imageUuid];
+                    [weakSelf clearTransferForCacheKey:cacheKey];
                     
                     // End background task.
                     [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
@@ -268,7 +271,7 @@
             } progressBlock:^(int percentage) {
                 
                 // Update progress on full size upload.
-                [weakSelf updateTransferProgress:percentage cacheKey:recipeImage.imageUuid];
+                [weakSelf updateTransferProgress:percentage cacheKey:cacheKey];
                 
             }];
             
@@ -277,7 +280,7 @@
             DLog(@"Thumbnail image error %@", [error localizedDescription]);
             
             // Failed, and still remove the local copy
-            [weakSelf clearTransferForCacheKey:recipeImage.imageUuid];
+            [weakSelf clearTransferForCacheKey:cacheKey];
             
             // End background task.
             [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];

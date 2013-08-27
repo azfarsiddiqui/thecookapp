@@ -9,6 +9,8 @@
 #import "CKModel.h"
 #import "CKRecipeImage.h"
 
+@class CKRecipe;
+
 @interface CKRecipeImage : CKModel
 
 @property (nonatomic, strong) PFFile *imageFile;
@@ -18,7 +20,7 @@
 @property (nonatomic, strong) NSString *imageUuid;
 @property (nonatomic, strong) NSString *thumbImageUuid;
 
-+ (CKRecipeImage *)recipeImage;
++ (CKRecipeImage *)recipeImageForRecipe:(CKRecipe *)recipe;
 + (CKRecipeImage *)recipeImageForParseRecipeImage:(PFObject *)parseRecipeImage;
 + (CKRecipeImage *)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName;
 
