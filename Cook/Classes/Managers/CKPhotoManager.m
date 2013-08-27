@@ -45,6 +45,7 @@
               progress:(void (^)(CGFloat progressRatio, NSString *name))progress
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    __weak CKPhotoManager *weakSelf = self;
     [self checkInTransferImageForRecipe:recipe size:size name:name
                              completion:^(UIImage *image, NSString *name) {
                                  
@@ -54,12 +55,12 @@
                              } otherwiseHandler:^{
                                  
                                  // Otherwise try and load the parseFile.
-                                 [self imageForParseFile:recipe.recipeImage.imageFile size:size name:name
-                                                progress:^(CGFloat progressRatio) {
-                                                    progress(progressRatio, name);
-                                                } completion:^(UIImage *image, NSString *name) {
-                                                    completion(image, name);
-                                                }];
+                                 [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:name
+                                                    progress:^(CGFloat progressRatio) {
+                                                        progress(progressRatio, name);
+                                                    } completion:^(UIImage *image, NSString *name) {
+                                                        completion(image, name);
+                                                    }];
                              }];
 }
 
@@ -68,6 +69,7 @@
                    progress:(void (^)(CGFloat progressRatio, NSString *name))progress
                  completion:(void (^)(UIImage *thumbImage, NSString *name))completion {
     
+    __weak CKPhotoManager *weakSelf = self;
     [self checkInTransferImageForRecipe:recipe size:size name:name
                              completion:^(UIImage *image, NSString *name) {
                                  
@@ -78,19 +80,19 @@
                                  
                                  // Check if we have a thumbnail image, otherwise load the big one.
                                  if (recipe.recipeImage.thumbImageFile) {
-                                     [self imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:name
-                                                    progress:^(CGFloat progressRatio) {
-                                                        progress(progressRatio, name);
-                                                    } completion:^(UIImage *image, NSString *name) {
-                                                        completion(image, name);
-                                                    }];
+                                     [weakSelf imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:name
+                                                        progress:^(CGFloat progressRatio) {
+                                                            progress(progressRatio, name);
+                                                        } completion:^(UIImage *image, NSString *name) {
+                                                            completion(image, name);
+                                                        }];
                                  } else {
-                                     [self imageForParseFile:recipe.recipeImage.imageFile size:size name:name
-                                                    progress:^(CGFloat progressRatio) {
-                                                        progress(progressRatio, name);
-                                                    } completion:^(UIImage *image, NSString *name) {
-                                                        completion(image, name);
-                                                    }];
+                                     [weakSelf imageForParseFile:recipe.recipeImage.imageFile size:size name:name
+                                                        progress:^(CGFloat progressRatio) {
+                                                            progress(progressRatio, name);
+                                                        } completion:^(UIImage *image, NSString *name) {
+                                                            completion(image, name);
+                                                        }];
                                  }
                                  
                              }];
@@ -104,6 +106,7 @@
        thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
             completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    __weak CKPhotoManager *weakSelf = self;
     [self checkInTransferImageForRecipe:recipe size:size name:name
                              completion:^(UIImage *image, NSString *name) {
                                  
@@ -122,21 +125,21 @@
                                      } else {
                                          
                                          // Get the fullsize image with progress reporting.
-                                         [self imageForRecipe:recipe size:size name:name
-                                                     progress:^(CGFloat progressRatio, NSString *name) {
-                                                         progress(progressRatio, name);
-                                                     }
-                                                   completion:^(UIImage *image, NSString *name) {
-                                                       completion(image, name);
-                                                   }];
+                                         [weakSelf imageForRecipe:recipe size:size name:name
+                                                         progress:^(CGFloat progressRatio, NSString *name) {
+                                                             progress(progressRatio, name);
+                                                         }
+                                                       completion:^(UIImage *image, NSString *name) {
+                                                           completion(image, name);
+                                                       }];
                                          
                                          // Get the thumbnail.
-                                         [self thumbImageForRecipe:recipe size:[ImageHelper thumbSize] name:name
-                                                          progress:^(CGFloat progressRatio, NSString *name) {
-                                                              // No reporting of progress for thumbnail.
-                                                          } completion:^(UIImage *thumbImage, NSString *name) {
-                                                              thumbCompletion(thumbImage, name);
-                                                          }];
+                                         [weakSelf thumbImageForRecipe:recipe size:[ImageHelper thumbSize] name:name
+                                                              progress:^(CGFloat progressRatio, NSString *name) {
+                                                                  // No reporting of progress for thumbnail.
+                                                              } completion:^(UIImage *thumbImage, NSString *name) {
+                                                                  thumbCompletion(thumbImage, name);
+                                                              }];
                                      }
                                      
                                  } else {
@@ -149,10 +152,11 @@
                  progress:(void (^)(CGFloat progressRatio))progress
                completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    __weak CKPhotoManager *weakSelf = self;
     if (parseFile) {
         
         // Get cached image for the persisted parseFile.
-        UIImage *image = [self cachedImageForParseFile:parseFile size:size];
+        UIImage *image = [weakSelf cachedImageForParseFile:parseFile size:size];
         if (image) {
             
             // Return cached image.
@@ -161,13 +165,13 @@
         } else {
             
             // Otherwise download from Parse.
-            [self downloadImageForParseFile:parseFile size:size name:name
-                                   progress:^(CGFloat progressRatio) {
-                                       progress(progressRatio);
-                                   }
-                                 completion:^(UIImage *image, NSString *name) {
-                                     completion(image, name);
-                                 }];
+            [weakSelf downloadImageForParseFile:parseFile size:size name:name
+                                       progress:^(CGFloat progressRatio) {
+                                           progress(progressRatio);
+                                       }
+                                     completion:^(UIImage *image, NSString *name) {
+                                         completion(image, name);
+                                     }];
         }
         
     } else {
@@ -195,10 +199,10 @@
     }];
     
     // Fullsize and thumbnail.
-    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);  // Least compression.
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.8);  // Least compression.
     PFFile *imageFile = [PFFile fileWithName:@"fullsize.jpg" data:imageData];
     UIImage *thumbImage = [ImageHelper thumbImageForImage:image];
-    NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, 1.0);  // TODO Less compression?
+    NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, 0.8);  // TODO Less compression?
     PFFile *thumbImageFile = [PFFile fileWithName:@"thumbnail.jpg" data:thumbImageData];
     
     // Initialise transfer progress for recipe image, using its imageUuid.
@@ -208,6 +212,7 @@
     [self storeImage:image forKey:recipeImage.imageUuid];
     
     // Now upload the thumb sized.
+    __weak CKPhotoManager *weakSelf = self;
     [thumbImageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (!error) {
@@ -235,7 +240,7 @@
                         NSLog(@"Fullsize image uploaded successfully");
                         
                         // Successful, and remove the local copy
-                        [self clearTransferForCacheKey:cacheKey];
+                        [weakSelf clearTransferForCacheKey:cacheKey];
                         
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
@@ -243,7 +248,7 @@
                     } failure:^(NSError *error) {
                         
                         // Failed, and still remove the local copy
-                        [self clearTransferForCacheKey:recipeImage.imageUuid];
+                        [weakSelf clearTransferForCacheKey:recipeImage.imageUuid];
                         
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
@@ -254,7 +259,7 @@
                     DLog(@"Fullsize image error %@", [error localizedDescription]);
                     
                     // Failed, and still remove the local copy
-                    [self clearTransferForCacheKey:recipeImage.imageUuid];
+                    [weakSelf clearTransferForCacheKey:recipeImage.imageUuid];
                     
                     // End background task.
                     [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
@@ -263,7 +268,7 @@
             } progressBlock:^(int percentage) {
                 
                 // Update progress on full size upload.
-                [self updateTransferProgress:percentage cacheKey:recipeImage.imageUuid];
+                [weakSelf updateTransferProgress:percentage cacheKey:recipeImage.imageUuid];
                 
             }];
             
@@ -272,7 +277,7 @@
             DLog(@"Thumbnail image error %@", [error localizedDescription]);
             
             // Failed, and still remove the local copy
-            [self clearTransferForCacheKey:recipeImage.imageUuid];
+            [weakSelf clearTransferForCacheKey:recipeImage.imageUuid];
             
             // End background task.
             [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
