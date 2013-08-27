@@ -25,9 +25,9 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIView *introView;
 @property (nonatomic, strong) UIButton *editButton;
-@property (nonatomic, strong) UILabel *photoLabel;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UIImage *uploadedCoverPhoto;
@@ -37,8 +37,8 @@
 
 @implementation BookProfileViewController
 
-#define kIntroOffset    CGPointMake(0.0, 0.0)
-#define kIntroWidth     400.0
+#define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
+#define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
@@ -52,12 +52,12 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor lightGrayColor];
-    [EventHelper registerEditMode:self selector:@selector(editModeReceived:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initImageView];
+    [self updateButtons];
     [self loadData];
 }
 
@@ -81,41 +81,46 @@
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    if (editingView == self.photoLabel) {
-        [self showPhotoPicker:YES];
-    }
 }
 
-#pragma mark - Lazy getters
+#pragma mark - Properties
 
 - (UIButton *)editButton {
     if (!_editButton && [self canEditBook]) {
-        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_edit.png"] target:self selector:@selector(editTapped:)];
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
+                                           target:self
+                                         selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_editButton setFrame:CGRectMake(self.introView.bounds.size.width - _editButton.frame.size.width - 15.0,
-                                         30.0,
-                                         _editButton.frame.size.width,
-                                         _editButton.frame.size.height)];
+        _editButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _editButton.frame.size.width,
+                                       kButtonInsets.top,
+                                       _editButton.frame.size.width,
+                                       _editButton.frame.size.height);
     }
     return _editButton;
 }
 
-- (UILabel *)editPhotoLabel {
-    if (!_photoLabel) {
-        _photoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _photoLabel.font = [Theme editPhotoFont];
-        _photoLabel.backgroundColor = [UIColor clearColor];
-        _photoLabel.textColor = [Theme editPhotoColour];
-        _photoLabel.text = @"EDIT PHOTO";
-        [_photoLabel sizeToFit];
-        _photoLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        CGFloat availableWidth = self.view.bounds.size.width - (self.introView.frame.origin.x + self.introView.frame.size.width);
-        [_photoLabel setFrame:CGRectMake(self.introView.frame.origin.x + self.introView.frame.size.width + floorf((availableWidth -_photoLabel.frame.size.width) / 2.0),
-                                              floorf((self.view.bounds.size.height - _photoLabel.frame.size.height) / 2.0),
-                                              _photoLabel.frame.size.width,
-                                              _photoLabel.frame.size.height)];
+- (UIButton *)cancelButton {
+    if (!_cancelButton) {
+        _cancelButton = [ViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
+        _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_cancelButton setFrame:CGRectMake(kEditButtonInsets.left,
+                                           kEditButtonInsets.top,
+                                           _cancelButton.frame.size.width,
+                                           _cancelButton.frame.size.height)];
     }
-    return _photoLabel;
+    return _cancelButton;
+}
+
+- (UIButton *)saveButton {
+    if (!_saveButton) {
+        _saveButton = [ViewHelper okButtonWithTarget:self selector:@selector(saveTapped:)];
+        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kEditButtonInsets.right,
+                                         kEditButtonInsets.top,
+                                         _saveButton.frame.size.width,
+                                         _saveButton.frame.size.height)];
+    }
+    return _saveButton;
 }
 
 #pragma mark - Private methods
@@ -142,70 +147,6 @@
     
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
-}
-
-- (void)initIntroView {
-    
-    UIView *introView = [[UIView alloc] initWithFrame:CGRectMake(kIntroOffset.x,
-                                                                 kIntroOffset.y,
-                                                                 kIntroWidth,
-                                                                 self.view.bounds.size.height - (kIntroOffset.y * 2.0))];
-    introView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    introView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:introView];
-    self.introView = introView;
-    
-    // Semi-transparent black overlay.
-    UIView *introOverlay = [[UIView alloc] initWithFrame:introView.bounds];
-    introOverlay.backgroundColor = [UIColor blackColor];
-    introOverlay.alpha = 0.8;
-    [introView addSubview:introOverlay];
-    
-    // Book summary view.
-    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book];
-    bookSummaryView.frame = CGRectMake(floorf((introView.bounds.size.width - bookSummaryView.frame.size.width) / 2.0),
-                                       floorf((introView.bounds.size.height - bookSummaryView.frame.size.height) / 2.0),
-                                       bookSummaryView.frame.size.width,
-                                       bookSummaryView.frame.size.height);
-    [introView addSubview:bookSummaryView];
-    
-    // Buttons for the page.
-    [self updateButtons];
-}
-
-- (void)updateButtons {
-    
-    // Add edit button if own book.
-    if (self.editButton && !self.editButton.superview) {
-        [self.introView addSubview:self.editButton];
-    }
-    
-    if (self.editMode) {
-        [self.view addSubview:self.photoLabel];
-        [self.editingHelper wrapEditingView:self.photoLabel contentInsets:UIEdgeInsetsMake(15.0, 20.0, 10.0, 20.0)
-                                   delegate:self white:YES];
-    } else {
-        [self.editingHelper unwrapEditingView:self.photoLabel];
-        [self.photoLabel removeFromSuperview];
-        self.photoLabel = nil;
-    }
-    
-}
-
-- (void)editTapped:(id)sender {
-    [EventHelper postEditMode:!self.editMode];
-}
-
-- (void)editModeReceived:(NSNotification *)notification {
-    self.editMode = [EventHelper editModeForNotification:notification];
-    BOOL saveMode = [EventHelper editModeSaveForNotification:notification];
-    [self updateButtons];
-    
-    if (!self.editMode && saveMode) {
-        [self.book.user saveCoverPhoto:self.uploadedCoverPhoto
-                            completion:^{
-                            }];
-    }
 }
 
 - (void)showPhotoPicker:(BOOL)show {
@@ -260,7 +201,49 @@
 }
 
 - (BOOL)canEditBook {
-    return ([self.book.user isEqual:[CKUser currentUser]]);
+    return [self.book isOwner];
+}
+
+- (void)updateButtons {
+    if (self.editMode) {
+        self.cancelButton.alpha = 0.0;
+        self.saveButton.alpha = 0.0;
+        self.cancelButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+        self.saveButton.transform = CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
+        [self.view addSubview:self.cancelButton];
+        [self.view addSubview:self.saveButton];
+    } else {
+        self.editButton.alpha = 0.0;
+        [self.view addSubview:self.editButton];
+    }
+    
+    [UIView animateWithDuration:0.4
+                          delay:0.1
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         // Normal mode buttons.
+                         self.editButton.alpha = self.editMode ? 0.0 : 1.0;
+                         
+                         // Edit mode buttons.
+                         self.cancelButton.alpha = self.editMode ? 1.0 : 0.0;
+                         self.saveButton.alpha = self.editMode ? 1.0 : 0.0;
+                         self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+                         self.saveButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
+                     }
+                     completion:^(BOOL finished)  {
+                         if (self.editMode) {
+                             [self.editButton removeFromSuperview];
+                         } else {
+                             [self.cancelButton removeFromSuperview];
+                             [self.saveButton removeFromSuperview];
+                         }
+                     }];
+}
+
+- (void)editTapped:(id)sender {
+//    self.editMode = YES;
+//    [self updateButtons];
 }
 
 @end
