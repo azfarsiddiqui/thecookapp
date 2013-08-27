@@ -75,7 +75,6 @@
                        withParameters:@{}
                                 block:^(NSArray *books, NSError *error) {
                                     if (!error) {
-                                        DLog(@"Loaded follow books[%d]: %@", [books count], books);
                                         success([CKBook booksFromParseBooks:books]);
                                     } else {
                                         DLog(@"Error loading follow books: %@", [error localizedDescription]);
