@@ -26,7 +26,7 @@
 @implementation CKBookTitleIndexView
 
 #define kMaxSize        CGSizeMake(480.0, 208.0)
-#define kLabelGap       -10.0
+#define kLabelGap       5.0
 #define kLabelInsets    UIEdgeInsetsMake(-5.0, 20.0, 20.0, 20.0)
 #define kContentInsets  UIEdgeInsetsMake(18.0, 18.0, 19.0, 16.0)
 
@@ -107,7 +107,7 @@
 
 - (UIImageView *)boxImageView {
     if (!_boxImageView) {
-        UIImage *boxImage = [[UIImage imageNamed:@"cook_book_titlebox.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(24.0, 29.0, 24.0, 29.0)];
+        UIImage *boxImage = [[UIImage imageNamed:@"cook_book_inner_title_box.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(21.0, 21.0, 21.0, 21.0)];
         _boxImageView = [[UIImageView alloc] initWithImage:boxImage];
         _boxImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         _boxImageView.frame = self.bounds;
@@ -123,7 +123,7 @@
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     nameLabel.backgroundColor = [UIColor clearColor];
     nameLabel.textColor = [UIColor colorWithHexString:@"222222"];
-    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:42.0];
+    nameLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:46.0];
     nameLabel.numberOfLines = 1;
     nameLabel.text = self.name;
     nameLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -133,7 +133,7 @@
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textColor = [UIColor colorWithHexString:@"222222"];
-    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:28.0];
+    titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:24.0];
     titleLabel.numberOfLines = 1;
     titleLabel.text = self.title;
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -167,7 +167,6 @@
     
     // Container view.
     UIView *labelContainerView = [[UIView alloc] initWithFrame:combinedFrame];
-    labelContainerView.backgroundColor = [UIColor clearColor];
     labelContainerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
     labelContainerView.frame = (CGRect){
         floorf((self.bounds.size.width - labelContainerView.frame.size.width) / 2.0),
@@ -189,10 +188,22 @@
         titleLabel.frame.size.width,
         titleLabel.frame.size.height
     };
+    
     [labelContainerView addSubview:titleLabel];
     [labelContainerView addSubview:nameLabel];
     [self addSubview:labelContainerView];
     self.labelContainerView = labelContainerView;
+    
+    // Divider view.
+    CGFloat dividerWidth = self.bounds.size.width * 0.35;
+    UIView *dividerView = [[UIView alloc] initWithFrame:(CGRect) {
+        floorf((labelContainerView.bounds.size.width - dividerWidth) / 2.0),
+        nameLabel.frame.origin.y + nameLabel.frame.size.height - 3.0,
+        dividerWidth,
+        1.0
+    }];
+    dividerView.backgroundColor = [UIColor colorWithHexString:@"888888"];
+    [labelContainerView addSubview:dividerView];
     
 }
 

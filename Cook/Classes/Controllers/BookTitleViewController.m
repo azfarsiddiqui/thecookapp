@@ -50,10 +50,13 @@
 #define kIndexWidth             240.0
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
-#define kBorderInsets           (UIEdgeInsets){ 20.0, 0.0, 2.0, 0.0 }
+#define kBorderInsets           (UIEdgeInsets){ 20.0, 10.0, 12.0, 10.0 }
 #define kTitleAnimateOffset     50.0
 #define kTitleHeaderTag         460
 #define kStartUpOffset          75.0
+
+#define kHeaderHeight           420.0
+#define kHeaderCellGap          135.0
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -140,7 +143,11 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return (UIEdgeInsets) { 135.0, 90.0, 90.0, 90.0 };
+    CGFloat headerCellGap = kHeaderCellGap;
+    if (self.pages) {
+        headerCellGap -= kStartUpOffset - 15.0;
+    }
+    return (UIEdgeInsets) { headerCellGap, 90.0, 90.0, 90.0 };
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -158,11 +165,11 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 referenceSizeForHeaderInSection:(NSInteger)section {
     
-    CGSize headerSize = (CGSize) {
-        self.collectionView.bounds.size.width,
-        420.0
-    };
-    return headerSize;
+    CGFloat headerHeight = kHeaderHeight;
+    if (self.pages) {
+        headerHeight += kStartUpOffset - 20.0;
+    }
+    return (CGSize){ self.collectionView.bounds.size.width, headerHeight };
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -234,8 +241,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         supplementaryView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                     withReuseIdentifier:kHeaderId forIndexPath:indexPath];
+//        supplementaryView.backgroundColor = [UIColor greenColor];
         
         if (![supplementaryView viewWithTag:kTitleHeaderTag]) {
+            self.bookTitleView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
             self.bookTitleView.frame = (CGRect){
                 floorf((supplementaryView.bounds.size.width - self.bookTitleView.frame.size.width) / 2.0),
                 supplementaryView.bounds.size.height - self.bookTitleView.frame.size.height,

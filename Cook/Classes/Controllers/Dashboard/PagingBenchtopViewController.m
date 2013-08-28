@@ -125,16 +125,9 @@
 
 - (void)enable:(BOOL)enable {
     self.collectionView.userInteractionEnabled = enable;
-    
-    if ([CKUser isLoggedIn]) {
-        self.benchtopLevelView.hidden = NO;
-        self.notificationView.hidden = NO;
-        [self updateBenchtopLevelView];
-    } else {
-        self.benchtopLevelView.hidden = YES;
-        self.notificationView.hidden = YES;
-    }
-    
+    self.benchtopLevelView.hidden = NO;
+    self.notificationView.hidden = NO;
+    [self updateBenchtopLevelView];
 }
 
 - (void)bookWillOpen:(BOOL)open {

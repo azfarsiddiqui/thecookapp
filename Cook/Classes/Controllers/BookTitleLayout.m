@@ -14,42 +14,46 @@
 
 @end
 
-
 @implementation BookTitleLayout
 
-- (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
-    [super prepareForCollectionViewUpdates:updateItems];
+#define kHeaderHeight           475.0
+#define kCellOffset             550.0   // 475 headerHeight + 75 gap
+#define kHeaderCellMinGap       30.0
+
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
+    return YES;
+}
+
+- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
     
-    self.insertedIndexPaths = [NSMutableArray array];
+    [self applyPagingEffects:layoutAttributes];
     
-    for (UICollectionViewUpdateItem *updateItem in updateItems) {
-        if (updateItem.updateAction == UICollectionUpdateActionInsert) {
-            [self.insertedIndexPaths addObject:updateItem.indexPathAfterUpdate];
-        }
+    return layoutAttributes;
+}
+
+#pragma mark - Private methods
+
+- (void)applyPagingEffects:(NSArray *)layoutAttributes {
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        [self applyHeaderEffects:attributes];
     }
 }
 
-//- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-//    UICollectionViewLayoutAttributes *initialAttributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
-//    
-//    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
-//        
-//        if (initialAttributes == nil) {
-//            initialAttributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-//        }
-//        
-//        // Normal cells slide up.
-//        if (!initialAttributes.representedElementKind) {
-//            CATransform3D translateTransform = CATransform3DMakeTranslation(0.0, 50.0, 0.0);
-//            initialAttributes.transform3D = translateTransform;
-//        }
-//        
-//        // Always opaque.
-//        initialAttributes.alpha = 1.0;
-//    }
-//    
-//    return initialAttributes;
-//}
-
+- (void)applyHeaderEffects:(UICollectionViewLayoutAttributes *)attributes {
+    
+    CGPoint currentOffset = self.collectionView.contentOffset;
+    if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        
+        if (currentOffset.y > 0) {
+            CGFloat headerHeight = kHeaderHeight + currentOffset.y;
+            headerHeight = MIN(headerHeight, kCellOffset - kHeaderCellMinGap);
+            CGRect frame = attributes.frame;
+            frame.size.height = headerHeight;
+            attributes.frame = frame;
+        }
+        
+    }
+}
 
 @end

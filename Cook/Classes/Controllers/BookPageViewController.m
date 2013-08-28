@@ -19,7 +19,7 @@
 
 @implementation BookPageViewController
 
-#define kContentInsets  (UIEdgeInsets){ 35.0, 20.0, 0.0, 0.0 }
+#define kContentInsets  (UIEdgeInsets){ 35.0, 30.0, 0.0, 0.0 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
