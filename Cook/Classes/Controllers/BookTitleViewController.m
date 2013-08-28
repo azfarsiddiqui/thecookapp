@@ -78,6 +78,7 @@
 
 - (void)configurePages:(NSArray *)pages {
     [self.activityView stopAnimating];
+    [self.activityView removeFromSuperview];
     
     self.pages = [NSMutableArray arrayWithArray:pages];
     
