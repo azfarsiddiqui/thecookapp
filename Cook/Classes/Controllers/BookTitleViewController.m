@@ -145,7 +145,7 @@
     
     CGFloat headerCellGap = kHeaderCellGap;
     if (self.pages) {
-        headerCellGap -= kStartUpOffset - 15.0;
+        headerCellGap -= kStartUpOffset - 4.0;
     }
     return (UIEdgeInsets) { headerCellGap, 90.0, 90.0, 90.0 };
 }

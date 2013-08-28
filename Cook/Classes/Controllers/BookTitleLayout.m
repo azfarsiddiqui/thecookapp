@@ -17,7 +17,7 @@
 @implementation BookTitleLayout
 
 #define kHeaderHeight           475.0
-#define kCellOffset             550.0   // 475 headerHeight + 75 gap
+#define kCellOffset             539.0   // 475 headerHeight + 64 gap
 #define kHeaderCellMinGap       30.0
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
