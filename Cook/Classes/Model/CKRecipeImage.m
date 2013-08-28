@@ -14,6 +14,13 @@
 
 @implementation CKRecipeImage
 
++ (CKRecipeImage *)recipeImage {
+    
+    // Create parse object and wrapper.
+    PFObject *parseRecipeImage = [self objectWithDefaultSecurityWithClassName:kRecipeImageModelName];
+    return [[CKRecipeImage alloc] initWithParseObject:parseRecipeImage];
+}
+
 + (CKRecipeImage *)recipeImageForRecipe:(CKRecipe *)recipe {
     
     // Create parse object and wrapper.
@@ -39,6 +46,11 @@
 + (CKRecipeImage *)recipeImageForParseRecipeImage:(PFObject *)parseRecipeImage {
     CKRecipeImage *recipeImage = [[CKRecipeImage alloc] initWithParseObject:parseRecipeImage];
     return recipeImage;
+}
+
+- (void)associateWithRecipe:(CKRecipe *)recipe {
+    [self.parseObject setObject:[PFObject objectWithoutDataWithClassName:kRecipeModelName objectId:recipe.parseObject.objectId]
+                         forKey:kRecipeModelForeignKeyName];
 }
 
 #pragma mark - Properties

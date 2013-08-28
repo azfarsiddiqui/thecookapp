@@ -20,8 +20,11 @@
 @property (nonatomic, strong) NSString *imageUuid;
 @property (nonatomic, strong) NSString *thumbImageUuid;
 
++ (CKRecipeImage *)recipeImage;
 + (CKRecipeImage *)recipeImageForRecipe:(CKRecipe *)recipe;
 + (CKRecipeImage *)recipeImageForParseRecipeImage:(PFObject *)parseRecipeImage;
 + (CKRecipeImage *)recipeImageForImage:(UIImage *)image imageName:(NSString *)imageName;
+
+- (void)associateWithRecipe:(CKRecipe *)recipe;
 
 @end

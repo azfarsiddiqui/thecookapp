@@ -230,6 +230,9 @@
                 
                 if (!error) {
                     
+                    // Associate with recipe.
+                    [recipeImage associateWithRecipe:recipe];
+                    
                     // Attach it to the recipe image.
                     recipeImage.imageFile = imageFile;
                     

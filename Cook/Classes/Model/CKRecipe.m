@@ -113,8 +113,7 @@
     if (image) {
         
         // Generate image placeholders.
-//        __weak id weakSelf = self;
-        CKRecipeImage *recipeImage = [CKRecipeImage recipeImageForRecipe:self];
+        CKRecipeImage *recipeImage = [CKRecipeImage recipeImage];
         recipeImage.imageUuid = [[NSUUID UUID] UUIDString];
         recipeImage.thumbImageUuid = [[NSUUID UUID] UUIDString];
         
