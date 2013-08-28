@@ -365,7 +365,7 @@
     
 //    [self adjustsFontSizeForLabel:self.authorLabel attributes:attributes toFitSize:self.contentOverlay.bounds.size decrementFontSize:5.0];
     [self adjustsFontSizeForLabel:self.authorTextView text:name attributes:attributes
-                        toFitSize:self.contentOverlay.bounds.size fontSizes:@[@56, @48, @44, @40]];
+                        toFitSize:self.contentOverlay.bounds.size fontSizes:@[@58, @50, @46, @42]];
     
     self.authorTextView.frame = [self authorFrame];
     
