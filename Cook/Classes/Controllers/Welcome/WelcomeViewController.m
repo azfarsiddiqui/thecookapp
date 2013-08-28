@@ -67,8 +67,10 @@
     [super viewDidLoad];
     
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
-    
+    self.view.clipsToBounds = NO;
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    UIOffset motionOffset = [ViewHelper standardMotionOffset];
     
     // Background texture.
     UIImageView *backgroundTextureView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
@@ -76,15 +78,21 @@
     backgroundTextureView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     [self.view insertSubview:backgroundTextureView belowSubview:self.collectionView];
     
+    // Add motion effects on the blendedView.
+    [ViewHelper applyDraggyMotionEffectsToView:backgroundTextureView];
+    
     [self initCollectionView];
     
     // Blended benchtop.
     PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
-        self.collectionView.bounds.origin.x,
-        self.collectionView.bounds.origin.y,
-        self.collectionView.bounds.size.width * [self numberOfPagesForWelcomeLayout],
-        self.collectionView.bounds.size.height
+        self.collectionView.bounds.origin.x - motionOffset.horizontal,
+        self.collectionView.bounds.origin.y - motionOffset.vertical,
+        (self.collectionView.bounds.size.width * [self numberOfPagesForWelcomeLayout]) + (motionOffset.horizontal * 2.0),
+        self.collectionView.bounds.size.height  + (motionOffset.vertical * 2.0)
     } pageWidth:self.collectionView.bounds.size.width];
+    
+    // Add motion effects on the blendedView.
+    [ViewHelper applyDraggyMotionEffectsToView:pagingBenchtopView];
     
     // Colours
     pagingBenchtopView.leftEdgeColour = [UIColor orangeColor];
@@ -96,14 +104,14 @@
     self.blendedView = pagingBenchtopView;
     
     [pagingBenchtopView blendWithCompletion:^{
-        pagingBenchtopView.alpha = 0.45;
+        pagingBenchtopView.alpha = 0.5;
         [self.collectionView insertSubview:pagingBenchtopView atIndex:0];
         
-        // Dark overlay over the benchtop.
-        UIView *overlayView = [[UIView alloc] initWithFrame:pagingBenchtopView.frame];
-        overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.1];
-        [pagingBenchtopView addSubview:overlayView];
+//        // Dark overlay over the benchtop.
+//        UIView *overlayView = [[UIView alloc] initWithFrame:pagingBenchtopView.frame];
+//        overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+//        overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.1];
+//        [pagingBenchtopView addSubview:overlayView];
         
     }];
 }
@@ -174,7 +182,7 @@
         _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:64.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:70.0]
                                                    text:@"WELCOME" textAlignment:NSTextAlignmentCenter
                                           availableSize:size lineSpacing:-20.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
@@ -196,7 +204,7 @@
         [_welcomePageView addSubview:dividerView];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Gather your recipes, it's time to create\u2028your very own Cookbook for iPad."
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Gather your recipes, it's time to create\u2028your very own Cookbook for iPad.\u2028\u2028This is a beta build of Cook."
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 24.0,
@@ -217,8 +225,8 @@
         _createPageView.autoresizingMask = UIViewAutoresizingNone;
 
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:58.0]
-                                                   text:@"CREATE YOUR\u2028COOKBOOK" textAlignment:NSTextAlignmentLeft
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
+                                                   text:@"YOUR\u2028COOKBOOK" textAlignment:NSTextAlignmentLeft
                                           availableSize:size lineSpacing:-20.0];
         titleLabel.frame = CGRectMake(0.0,
                                       50.0,
@@ -239,7 +247,7 @@
         [_createPageView addSubview:dividerView];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Forget Jamie or Delia, add all your\u2028favourite recipes, then customise\u2028the cover of your book and it's\u2028ready to share with your friends..."
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Customize the cover of your book\u2028then add your family recipes, the\u2028meals you've cooked lately, tips,\u2028tricks, anything food related!"
                                                      textAlignment:NSTextAlignmentLeft availableSize:size];
         subtitleLabel.frame = CGRectMake(0.0,
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
@@ -259,8 +267,8 @@
         _collectPageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:58.0]
-                                                   text:@"ADD TO YOUR\u2028COLLECTION" textAlignment:NSTextAlignmentCenter
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
+                                                   text:@"SHARE YOUR\u2028RECIPES" textAlignment:NSTextAlignmentCenter
                                           availableSize:size lineSpacing:-15.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
                                       70.0,
@@ -281,7 +289,7 @@
         [_collectPageView addSubview:dividerView];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Browse the library, check out your\u2028friends' books or discover new\u2028recipes from around the world."
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Check out your friends' books and\u2028keep the best on your bench. Share\u2028your recipes on Facebook or Twitter\u2028or keep them all to yourself."
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
@@ -298,7 +306,7 @@
         CGSize size = self.collectionView.bounds.size;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Regular" size:58.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
                                                    text:@"LET'S GET STARTED..." textAlignment:NSTextAlignmentCenter
                                           availableSize:size lineSpacing:-15.0];
         _signUpPageView = titleLabel;
@@ -543,6 +551,7 @@
 #pragma mark - Private methods
 
 - (void)initCollectionView {
+    self.collectionView.clipsToBounds = NO;
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.pagingEnabled = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
