@@ -762,6 +762,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         photoBoxView.alpha = requiredAlpha;
     }
     
+    // Fade in/out activity view.
+    if (!self.activityView.hidden) {
+        CGFloat requiredAlpha = [self currentAlphaForPhotoButtonView];
+        self.activityView.alpha = requiredAlpha;
+    }
+    
     // Update backgroundImageView.
     CGRect contentBackgroundFrame = self.contentImageView.frame;
     contentBackgroundFrame.origin.y = contentFrame.origin.y + kContentImageOffset.vertical;
