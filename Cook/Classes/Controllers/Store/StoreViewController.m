@@ -170,10 +170,6 @@
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
     
-    if (![CKUser isLoggedIn]) {
-        return;
-    }
-    
     // Fade out the current VC.
     if (self.currentStoreCollectionViewController) {
         

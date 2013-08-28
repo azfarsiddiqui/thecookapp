@@ -140,6 +140,14 @@
 
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
+    // No friends for guest-user.
+    if (!user) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            success(nil);
+        });
+        return;
+    }
+    
     // Friends query.
     PFQuery *friendsQuery = [PFQuery queryWithClassName:kUserFriendModelName];
     [friendsQuery setCachePolicy:kPFCachePolicyNetworkElseCache];
@@ -188,6 +196,14 @@
 
 + (void)suggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
+    // No friends for guest-user.
+    if (!user) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            success(nil);
+        });
+        return;
+    }
+    
     // Facebook friends.
     NSArray *facebookFriends = [user.parseUser objectForKey:kUserAttrFacebookFriends];
     
@@ -229,14 +245,20 @@
     [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
         if (!error) {
             
-            [self annotateFollowedBooks:parseBooks
-                                   user:user
-                                success:^(NSArray *annotatedBooks) {
-                                    success(annotatedBooks);
-                                }
-                                failure:^(NSError *error) {
-                                    failure(error);
-                                }];
+            if (user) {
+                [self annotateFollowedBooks:parseBooks
+                                       user:user
+                                    success:^(NSArray *annotatedBooks) {
+                                        success(annotatedBooks);
+                                    }
+                                    failure:^(NSError *error) {
+                                        failure(error);
+                                    }];
+            } else {
+                success([parseBooks collect:^id(PFObject *parseBook) {
+                    return [[CKBook alloc] initWithParseObject:parseBook];
+                }]);
+            }
             
         } else {
             failure(error);

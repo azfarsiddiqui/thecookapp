@@ -255,17 +255,21 @@
     [self initActionButtonWithSelector:@selector(addTapped:)];
     [self updateAddButtonText:buttonText activity:YES enabled:NO];
     
-    [self.book isFollowedByUser:self.currentUser
-                        success:^(BOOL followed) {
-                            if (followed) {
-                                [self updateAddButtonText:@"ALREADY ADDED" activity:NO enabled:NO];
-                            } else {
-                                [self updateAddButtonText:buttonText activity:NO enabled:YES];
+    if (self.currentUser) {
+        [self.book isFollowedByUser:self.currentUser
+                            success:^(BOOL followed) {
+                                if (followed) {
+                                    [self updateAddButtonText:@"ALREADY ADDED" activity:NO enabled:NO];
+                                } else {
+                                    [self updateAddButtonText:buttonText activity:NO enabled:YES];
+                                }
                             }
-                        }
-                        failure:^(NSError *error) {
-                            [self updateAddButtonText:buttonText activity:NO enabled:NO];
-                        }];
+                            failure:^(NSError *error) {
+                                [self updateAddButtonText:buttonText activity:NO enabled:NO];
+                            }];
+    } else {
+        [self updateAddButtonText:@"PLEASE SIGN IN" activity:NO enabled:NO];
+    }
 }
 
 - (void)initFriendsButton {

@@ -29,5 +29,6 @@
 - (void)reloadBooks;
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;
 - (BOOL)addMode;
+- (void)showActivity:(BOOL)show;
 
 @end

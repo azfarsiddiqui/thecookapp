@@ -15,6 +15,7 @@
 #import "AppHelper.h"
 #import "MRCEnumerable.h"
 #import "StoreBookViewController.h"
+#import "CKActivityIndicatorView.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
     StoreBookViewControllerDelegate>
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) UIView *emptyBanner;
 @property (nonatomic, strong) StoreBookViewController *storeBookViewController;
 @property (nonatomic, strong) UICollectionViewCell *selectedBookCell;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @end
 
@@ -66,7 +68,8 @@
 }
 
 - (void)loadData {
-    // Subclasses to implement.
+    // Subclasses to extend.
+    [self showActivity:YES];
 }
 
 - (void)unloadData {
@@ -87,6 +90,8 @@
 - (void)loadBooks:(NSArray *)books {
     DLog(@"Books [%d] Existing [%d]", [books count], [self.books count]);
     
+    [self showActivity:NO];
+    
     if ([self.books count] > 0) {
         
         // Reload the books.
@@ -102,6 +107,7 @@
         NSArray *insertIndexPaths = [books collectWithIndex:^id(CKBook *book, NSUInteger index) {
             return [NSIndexPath indexPathForItem:index inSection:0];
         }];
+        
         [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
         
     }
@@ -118,6 +124,19 @@
 
 - (BOOL)addMode {
     return NO;
+}
+
+- (void)showActivity:(BOOL)show {
+    if (show) {
+        self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleLarge];
+        self.activityView.center = self.collectionView.center;
+        [self.collectionView addSubview:self.activityView];
+        [self.activityView startAnimating];
+    } else {
+        [self.activityView stopAnimating];
+        [self.activityView removeFromSuperview];
+        self.activityView = nil;
+    }
 }
 
 #pragma mark - UICollectionViewDelegate methods
