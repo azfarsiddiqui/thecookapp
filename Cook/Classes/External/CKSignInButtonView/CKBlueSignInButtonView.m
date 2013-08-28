@@ -29,4 +29,8 @@
             resizableImageWithCapInsets:UIEdgeInsetsMake(37.0, 10.0, 37.0, 10.0)];
 }
 
+- (CKActivityIndicatorViewStyle)activityViewStyle {
+    return CKActivityIndicatorViewStyleTiny;
+}
+
 @end

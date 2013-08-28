@@ -33,4 +33,8 @@
     return [UIImage imageNamed:@"cook_login_icon_facebook.png"];
 }
 
+- (CKActivityIndicatorViewStyle)activityViewStyle {
+    return CKActivityIndicatorViewStyleTiny;
+}
+
 @end

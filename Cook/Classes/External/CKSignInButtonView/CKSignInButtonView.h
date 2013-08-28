@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKActivityIndicatorView.h"
 
 @class CKSignInButtonView;
 
@@ -32,5 +33,6 @@
 - (UIImage *)normalBackgroundImage;
 - (UIImage *)onPressBackgroundImage;
 - (UIImage *)iconImage;
+- (CKActivityIndicatorViewStyle)activityViewStyle;
 
 @end

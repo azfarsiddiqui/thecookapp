@@ -189,6 +189,10 @@
     return nil;
 }
 
+- (CKActivityIndicatorViewStyle)activityViewStyle {
+    return CKActivityIndicatorViewStyleTinyDark;
+}
+
 #pragma mark - Properties
 
 - (UIButton *)button {
@@ -203,7 +207,7 @@
 
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
-        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTiny];
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:[self activityViewStyle]];
         _activityView.hidesWhenStopped = YES;
         _activityView.frame = CGRectMake(20.0,
                                          floorf((self.button.bounds.size.height - _activityView.frame.size.height) / 2.0),
