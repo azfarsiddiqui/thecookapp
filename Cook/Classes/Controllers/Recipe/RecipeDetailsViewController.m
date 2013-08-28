@@ -52,6 +52,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CALayer *blurredMaskLayer;
 
 // Content and panning related.
+@property (nonatomic, strong) UIScrollView *imageScrollView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIView *placeholderHeaderView;    // Used to as white backing for the header until image fades in.
@@ -111,7 +112,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.recipe = recipe;
         self.book = recipe.book;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
-        self.blur = YES;
+        self.blur = NO;
     }
     return self;
 }
@@ -330,6 +331,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 //    NSLog(@"contentOffset %f", scrollView.contentOffset.y);
 //    NSLog(@"scrollView.frame.origin.y %f", scrollView.frame.origin.y);
     
+    if (scrollView != self.scrollView) {
+        return;
+    }
+    
     CGRect contentFrame = self.scrollView.frame;
     CGSize contentSize = self.scrollView.contentSize;
     CGPoint contentOffset = scrollView.contentOffset;
@@ -371,6 +376,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 //    NSLog(@"scrollViewDidEndDragging willDecelerate[%@]", decelerate ? @"YES" : @"NO");
+    if (scrollView != self.scrollView) {
+        return;
+    }
+    
     if (!self.pullingBottom) {
         [self panSnapIfRequired];
     }
@@ -378,6 +387,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 //    NSLog(@"scrollViewDidEndDecelerating");
+    
+    if (scrollView != self.scrollView) {
+        return;
+    }
+    
     if (!self.pullingBottom) {
         [self panSnapIfRequired];
     }
@@ -385,6 +399,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
 //    NSLog(@"scrollViewDidEndScrollingAnimation");
+    
+    if (scrollView != self.scrollView) {
+        return;
+    }
+    
     if (!self.pullingBottom) {
         [self panSnapIfRequired];
     }
@@ -393,6 +412,15 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
 //    NSLog(@"scrollViewWillEndDragging velocity[%@]", NSStringFromCGPoint(velocity));
 }
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    if (scrollView == self.imageScrollView) {
+        return self.imageView;
+    } else {
+        return nil;
+    }
+}
+
 
 #pragma mark - UIAlertViewDelegate methods
 
@@ -588,15 +616,29 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)initImageView {
     
     UIOffset motionOffset = [ViewHelper standardMotionOffset];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:(CGRect){
+    
+    UIScrollView *imageScrollView = [[UIScrollView alloc] initWithFrame:(CGRect){
         self.view.bounds.origin.x - motionOffset.horizontal,
         self.view.bounds.origin.y - motionOffset.vertical,
         self.view.bounds.size.width + (motionOffset.horizontal * 2.0),
         self.view.bounds.size.height + (motionOffset.vertical * 2.0)
     }];
+    imageScrollView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    imageScrollView.contentSize = imageScrollView.bounds.size;
+    imageScrollView.alwaysBounceHorizontal = YES;
+    imageScrollView.alwaysBounceVertical = YES;
+    imageScrollView.maximumZoomScale = 2.0;
+    imageScrollView.minimumZoomScale = 1.0;
+    imageScrollView.bouncesZoom = YES;   // Allow more than zoom scale but bounces back.
+    imageScrollView.delegate = self;
+    imageScrollView.scrollEnabled = NO;    // Not scrollable to start off with.
+    [self.view addSubview:imageScrollView];
+    self.imageScrollView = imageScrollView;
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.imageScrollView.bounds];
     imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     imageView.alpha = 0.0;
-    [self.view addSubview:imageView];
+    [self.imageScrollView addSubview:imageView];
     self.imageView = imageView;
     
     if (self.blur) {
@@ -637,7 +679,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.imageView addGestureRecognizer:tapGesture];
     
     // Motion effects.
-    [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
+    [ViewHelper applyDraggyMotionEffectsToView:self.imageScrollView];
 }
 
 - (void)initScrollView {
@@ -699,10 +741,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)updateDependentViews {
     CGRect contentFrame = self.scrollView.frame;
     
-    // Update imageView.
-    CGRect imageFrame = self.imageView.frame;
-    imageFrame.origin.y = (contentFrame.origin.y - imageFrame.size.height) / 2.0;
-    self.imageView.frame = imageFrame;
+    // Update imageScrollView/imageView.
+    CGRect imageScrollViewFrame = self.imageScrollView.frame;
+    imageScrollViewFrame.origin.y = (contentFrame.origin.y - imageScrollViewFrame.size.height) / 2.0;
+    self.imageScrollView.frame = imageScrollViewFrame;
     
     // Fade in/out photo button if in edit mode.
     if (self.editMode) {
@@ -727,7 +769,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)loadPhoto {
     if ([self.recipe hasPhotos]) {
-        
         
         [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:self.imageView.bounds.size name:@"RecipePhoto"
                                                progress:^(CGFloat progressRatio, NSString *name) {
@@ -1146,13 +1187,27 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     SnapViewport toggleViewport = (self.currentViewport == SnapViewportBelow) ? self.previousViewport : SnapViewportBelow;
     BOOL fullscreen = (toggleViewport == SnapViewportBelow);
     
+//    if (!fullscreen) {
+//        [self.imageScrollView setZoomScale:1.0 animated:YES];
+//    }
+    
     [self snapToViewport:toggleViewport animated:YES completion:^{
+        
+        // Turn on zoomable in belowmode.
+        self.imageScrollView.scrollEnabled = fullscreen;
+        
+        // Opaque background so when you zoom less, you don't get a clear background.
+        self.imageScrollView.backgroundColor = fullscreen ? [Theme recipeGridImageBackgroundColour] : [UIColor clearColor];
         
         // Fade in/out the buttons based on fullscreen mode or not.
         [UIView animateWithDuration:0.2
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
+                             if (!fullscreen) {
+                                 [self.imageScrollView setZoomScale:1.0 animated:NO];
+                             }
+                             self.topShadowView.alpha = fullscreen ? 0.0 : 1.0;
                              self.closeButton.alpha = fullscreen ? 0.0 : 1.0;
                              self.socialView.alpha = fullscreen ? 0.0 : 1.0;
                              self.editButton.alpha = fullscreen ? 0.0 : 1.0;
