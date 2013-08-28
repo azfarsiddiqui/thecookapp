@@ -29,7 +29,7 @@
 #import "BookNavigationHelper.h"
 #import "CKServerManager.h"
 #import "CKPhotoManager.h"
-#import "UIColor+Expanded.h"
+#import "CKActivityIndicatorView.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -54,6 +54,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 // Content and panning related.
 @property (nonatomic, strong) UIScrollView *imageScrollView;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIView *placeholderHeaderView;    // Used to as white backing for the header until image fades in.
 @property (nonatomic, strong) UIImageView *contentImageView;
@@ -672,6 +673,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.photoButtonView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     [self.imageView addSubview:self.photoButtonView];
     
+    // Activity spinner at the center.
+    self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+    self.activityView.hidesWhenStopped = YES;
+    self.activityView.center = self.imageView.center;
+    self.activityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+    [self.imageScrollView addSubview:self.activityView];
+    
     // Register tap on background image for tap expand.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTapped:)];
     tapGesture.delegate = self;
@@ -770,18 +778,27 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)loadPhoto {
     if ([self.recipe hasPhotos]) {
         
+        // Start the spinner.
+        [self.activityView startAnimating];
+        
         [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:self.imageView.bounds.size name:@"RecipePhoto"
                                                progress:^(CGFloat progressRatio, NSString *name) {
                                                } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
                                                    [self loadImageViewWithPhoto:thumbImage placeholder:NO];
                                                } completion:^(UIImage *image, NSString *name) {
                                                    [self loadImageViewWithPhoto:image placeholder:NO];
+                                                   
+                                                   // Stop spinner.
+                                                   [self.activityView stopAnimating];
                                                }];
     } else {
         
         // Load placeholder editing background based on book cover.
         [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.recipe.book.cover]
                          placeholder:YES];
+        
+        // Stop spinner.
+        [self.activityView stopAnimating];
     }
     
 }

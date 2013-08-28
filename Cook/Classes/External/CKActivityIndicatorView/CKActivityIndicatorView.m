@@ -38,6 +38,9 @@
         [self addSubview:self.activityIndicatorImageView];
         self.activityIndicatorImageView.hidden = YES;
         
+        // To be shown when animation is started.
+        self.hidden = YES;
+        
     }
     return self;
 }
@@ -47,6 +50,7 @@
         [self stopAnimating];
     }
     
+    self.hidden = NO;
     self.backgroundImageView.hidden = NO;
     self.activityIndicatorImageView.hidden = NO;
     self.animating = YES;
@@ -64,6 +68,10 @@
     [self.activityIndicatorImageView.layer removeAnimationForKey:@"spinAnimation"];
     self.activityIndicatorImageView.hidden = YES;
     self.backgroundImageView.hidden = YES;
+    
+    if (self.hidesWhenStopped) {
+        self.hidden = YES;
+    }
 }
 
 - (BOOL)isAnimating {
