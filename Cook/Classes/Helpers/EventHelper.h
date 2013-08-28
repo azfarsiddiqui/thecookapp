@@ -54,7 +54,9 @@
 + (void)unregisterThemeChange:(id)observer;
 
 + (void)registerStatusBarChange:(id)observer selector:(SEL)selector;
++ (void)postStatusBarChangeUpdate;
 + (void)postStatusBarChangeForLight:(BOOL)light;
++ (BOOL)lightStatusBarChangeUpdateOnly:(NSNotification *)notification;
 + (BOOL)lightStatusBarChangeForNotification:(NSNotification *)notification;
 + (void)unregisterStatusBarChange:(id)observer;
 

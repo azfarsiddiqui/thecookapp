@@ -204,8 +204,16 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventStatusBarChange];
 }
 
++ (void)postStatusBarChangeUpdate {
+    [EventHelper postEvent:kEventStatusBarChange];
+}
+
 + (void)postStatusBarChangeForLight:(BOOL)light {
     [EventHelper postEvent:kEventStatusBarChange withUserInfo:@{kBoolLightStatusBar : @(light)}];
+}
+
++ (BOOL)lightStatusBarChangeUpdateOnly:(NSNotification *)notification {
+    return ([[notification userInfo] objectForKey:kBoolLightStatusBar] == nil);
 }
 
 + (BOOL)lightStatusBarChangeForNotification:(NSNotification *)notification {

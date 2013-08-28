@@ -180,6 +180,9 @@
         self.storeViewController.view.hidden = NO;
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
+        
+        // Always light status bar when book closed.
+        [self updateStatusBarLight:YES];
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -817,7 +820,11 @@
 }
 
 - (void)statusBarChanged:(NSNotification *)notification {
-    [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
+    if ([EventHelper lightStatusBarChangeUpdateOnly:notification]) {
+        [self updateStatusBarLight:self.lightStatusBar];
+    } else {
+        [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
+    }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
