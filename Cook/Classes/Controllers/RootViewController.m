@@ -173,6 +173,10 @@
                      }];
     
     if (!open) {
+        
+        // Show the bookCoverVC.
+        self.bookCoverViewController.view.hidden = NO;
+        
         self.storeViewController.view.hidden = NO;
         [self.bookNavigationViewController.view removeFromSuperview];
         self.bookNavigationViewController = nil;
@@ -207,6 +211,9 @@
                              [bookNavigationViewController updateBinderAlpha:0.0];
                          }
                          completion:^(BOOL finished) {
+                             
+                             // Hide the bookCoverVC.
+                             self.bookCoverViewController.view.hidden = YES;
                              
                              // Inform benchtop of didOpen.
                              [self.benchtopViewController bookDidOpen:open];
