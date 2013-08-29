@@ -155,23 +155,25 @@
     __weak CKPhotoManager *weakSelf = self;
     if (parseFile) {
         
-        // Get cached image for the persisted parseFile.
-        UIImage *image = [weakSelf cachedImageForParseFile:parseFile size:size];
-        if (image) {
-            
-            // Return cached image.
-            completion(image, name);
-            
-        } else {
-            
-            // Otherwise download from Parse.
-            [weakSelf downloadImageForParseFile:parseFile size:size name:name
-                                       progress:^(CGFloat progressRatio) {
-                                           progress(progressRatio);
-                                       }
-                                     completion:^(UIImage *image, NSString *name) {
-                                         completion(image, name);
-                                     }];
+        @autoreleasepool {
+            // Get cached image for the persisted parseFile.
+            UIImage *image = [weakSelf cachedImageForParseFile:parseFile size:size];
+            if (image) {
+                
+                // Return cached image.
+                completion(image, name);
+                
+            } else {
+                
+                // Otherwise download from Parse.
+                [weakSelf downloadImageForParseFile:parseFile size:size name:name
+                                           progress:^(CGFloat progressRatio) {
+                                               progress(progressRatio);
+                                           }
+                                         completion:^(UIImage *image, NSString *name) {
+                                             completion(image, name);
+                                         }];
+            }
         }
         
     } else {
@@ -330,13 +332,15 @@
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             dispatch_async(queue, ^{
                 
-                // Resize the image.
-                UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
-                
-                // Callback on mainqueue.
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(imageToFit, name);
-                });
+                @autoreleasepool {
+                    // Resize the image.
+                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                    
+                    // Callback on mainqueue.
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(imageToFit, name);
+                    });
+                }
                 
             });
             
@@ -405,19 +409,23 @@
             // Go ahead and download on a separate queue.
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             dispatch_async(queue, ^{
-                UIImage *image = [UIImage imageWithData:data];
-                UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
                 
-                // Keep it in the cache.
-                [self storeImage:imageToFit forKey:cacheKey];
-                
-                // Mark as completed transfer.
-                [self.transferInProgress removeObjectForKey:cacheKey];
-                
-                // Callback on mainqueue.
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(imageToFit, name);
-                });
+                @autoreleasepool {
+                    
+                    UIImage *image = [UIImage imageWithData:data];
+                    UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                    
+                    // Keep it in the cache.
+                    [self storeImage:imageToFit forKey:cacheKey];
+                    
+                    // Mark as completed transfer.
+                    [self.transferInProgress removeObjectForKey:cacheKey];
+                    
+                    // Callback on mainqueue.
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(imageToFit, name);
+                    });
+                }
                 
             });
             
