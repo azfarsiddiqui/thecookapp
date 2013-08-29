@@ -1807,10 +1807,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (CGRect)zoomFrameForScale:(float)scale withCenter:(CGPoint)center {
     CGRect zoomRect;
-    zoomRect.origin.x    = center.x - (zoomRect.size.width  / 2.0);
-    zoomRect.origin.y    = center.y - (zoomRect.size.height / 2.0);
     zoomRect.size.height = [self.imageScrollView frame].size.height / scale;
     zoomRect.size.width  = [self.imageScrollView frame].size.width  / scale;
+    zoomRect.origin.x    = center.x - (zoomRect.size.width  / 2.0);
+    zoomRect.origin.y    = center.y - (zoomRect.size.height / 2.0);
     return zoomRect;
 }
 
