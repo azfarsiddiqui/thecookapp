@@ -598,15 +598,15 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [photoLabel sizeToFit];
         CGRect photoLabelFrame = photoLabel.frame;
         photoLabelFrame = (CGRect){
-            cameraImageView.frame.origin.x + cameraImageView.frame.size.width - 18.0,
-            floorf((cameraImageView.frame.size.height - photoLabel.frame.size.height) / 2.0),
+            cameraImageView.frame.origin.x + cameraImageView.frame.size.width + 6.0,
+            floorf((cameraImageView.frame.size.height - photoLabel.frame.size.height) / 2.0) + 2.0,
             photoLabel.frame.size.width,
             photoLabel.frame.size.height
         };
         photoLabel.frame = photoLabelFrame;
         
         UIEdgeInsets contentInsets = (UIEdgeInsets){
-            -8.0, -18.0, -9.0, 6.0
+            0.0, 0.0, 0.0, 0.0
         };
         CGRect frame = CGRectUnion(cameraImageView.frame, photoLabel.frame);
         _photoButtonView = [[UIView alloc] initWithFrame:frame];
@@ -1295,7 +1295,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (self.editMode) {
         
         // Prep photo edit button to be transitioned in.
-        [self.editingHelper wrapEditingView:self.photoButtonView delegate:self white:YES editMode:NO animated:NO];
+        [self.editingHelper wrapEditingView:self.photoButtonView contentInsets:(UIEdgeInsets){
+            32.0, 32.0, 20.0, 41.0
+        } delegate:self white:YES editMode:NO];
         CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
         self.photoButtonView.hidden = NO;
         self.photoButtonView.alpha = 0.0;

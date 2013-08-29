@@ -418,7 +418,7 @@
 }
 
 + (UIFont *)editPhotoFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0f];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:20.0];
 }
 
 + (UIColor *)editPhotoColour {
