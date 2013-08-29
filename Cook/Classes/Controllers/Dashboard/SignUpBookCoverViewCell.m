@@ -37,6 +37,14 @@
     [super loadBook:book];
 }
 
+- (void)enableEditMode:(BOOL)enable {
+    [super enableEditMode:enable];
+    
+    self.registerButton.hidden = enable;
+    self.signInButton.hidden = enable;
+    self.dullOverlayView.hidden = enable;
+}
+
 #pragma mark - CKSignInButtonViewDelegate methods
 
 - (void)signInTappedForButtonView:(CKSignInButtonView *)buttonView {
