@@ -30,6 +30,7 @@
 #import "CKServerManager.h"
 #import "CKPhotoManager.h"
 #import "CKActivityIndicatorView.h"
+#import "RecipeImageView.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -39,7 +40,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
-    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate, UIAlertViewDelegate>
+    CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate,
+    RecipeImageViewDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -53,7 +55,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 // Content and panning related.
 @property (nonatomic, strong) UIScrollView *imageScrollView;
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) RecipeImageView *imageView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIView *placeholderHeaderView;    // Used to as white backing for the header until image fades in.
@@ -66,6 +68,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) BOOL draggingDown;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL pullingBottom;
+@property (nonatomic, assign) BOOL zoomedLevel;
 
 // Normal controls.
 @property (nonatomic, strong) UIButton *closeButton;
@@ -288,6 +291,20 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     }];
 }
 
+#pragma mark - RecipeImageViewDelegate methods
+
+- (void)recipeImageViewTapped {
+    if (self.imageScrollView.zoomScale == 1.0) {
+        [self toggleImage];
+    }
+}
+
+- (void)recipeImageViewDoubleTappedAtPoint:(CGPoint)point {
+    CGFloat scale = (self.imageScrollView.zoomScale == 1.0) ? 2.0 : 1.0;
+    CGRect zoomFrame = [self zoomFrameForScale:scale withCenter:point];
+    [self.imageScrollView zoomToRect:zoomFrame animated:YES];
+}
+
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -423,6 +440,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
 }
 
+- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
+    if (scrollView == self.imageScrollView) {
+        self.zoomedLevel = (scrollView.zoomScale == 2.0);
+    }
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+    if (scrollView == self.imageScrollView && scale == 1.0 && !self.zoomedLevel) {
+        [self toggleImage];
+    }
+}
 
 #pragma mark - UIAlertViewDelegate methods
 
@@ -637,9 +665,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.view addSubview:imageScrollView];
     self.imageScrollView = imageScrollView;
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.imageScrollView.bounds];
+    RecipeImageView *imageView = [[RecipeImageView alloc] initWithFrame:self.imageScrollView.bounds];
     imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     imageView.alpha = 0.0;
+    imageView.userInteractionEnabled = YES;
+    imageView.delegate = self;
     [self.imageScrollView addSubview:imageView];
     self.imageView = imageView;
     
@@ -680,12 +710,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.activityView.center = self.imageView.center;
     self.activityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     [self.imageScrollView addSubview:self.activityView];
-    
-    // Register tap on background image for tap expand.
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTapped:)];
-    tapGesture.delegate = self;
-    self.imageView.userInteractionEnabled = YES;
-    [self.imageView addGestureRecognizer:tapGesture];
     
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageScrollView];
@@ -1210,6 +1234,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)imageTapped:(UITapGestureRecognizer *)tapGesture {
+    [self toggleImage];
+}
+
+- (void)toggleImage {
     if (self.animating) {
         return;
     }
@@ -1219,11 +1247,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     SnapViewport toggleViewport = (self.currentViewport == SnapViewportBelow) ? self.previousViewport : SnapViewportBelow;
     BOOL fullscreen = (toggleViewport == SnapViewportBelow);
     
-//    if (!fullscreen) {
-//        [self.imageScrollView setZoomScale:1.0 animated:YES];
-//    }
-    
     [self snapToViewport:toggleViewport animated:YES completion:^{
+        
+        // Toggle double-tap mode when in fullscreen mode.
+        self.imageView.enableDoubleTap = fullscreen;
         
         // Turn on zoomable in belowmode.
         self.imageScrollView.scrollEnabled = fullscreen;
@@ -1774,6 +1801,15 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     };
     CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
     return [self.view convertRect:headerFrameRootView toView:self.imageView];
+}
+
+- (CGRect)zoomFrameForScale:(float)scale withCenter:(CGPoint)center {
+    CGRect zoomRect;
+    zoomRect.origin.x    = center.x - (zoomRect.size.width  / 2.0);
+    zoomRect.origin.y    = center.y - (zoomRect.size.height / 2.0);
+    zoomRect.size.height = [self.imageScrollView frame].size.height / scale;
+    zoomRect.size.width  = [self.imageScrollView frame].size.width  / scale;
+    return zoomRect;
 }
 
 @end
