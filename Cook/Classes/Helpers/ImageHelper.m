@@ -25,6 +25,13 @@
     };
 }
 
++ (CGSize)blurredSize {
+    return (CGSize) {
+        512.0,
+        384.0
+    };
+}
+
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image {
     if (!imageView) {
         return;
@@ -119,8 +126,11 @@
     dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(concurrentQueue, ^{
         
+        // First downscale to blur.
+        UIImage *scaledImage = [self scaledImage:image size:[self blurredSize]];
+        
         // This might take awhile.
-        UIImage *blurredImage = [self blurredImage:image tintColour:tintColour];
+        UIImage *blurredImage = [self blurredImage:scaledImage tintColour:tintColour];
         
         // Cascade up to UIKit again on the mainthread.
         dispatch_async(dispatch_get_main_queue(), ^{
