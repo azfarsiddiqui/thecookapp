@@ -1220,7 +1220,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.imageScrollView.scrollEnabled = fullscreen;
         
         // Opaque background so when you zoom less, you don't get a clear background.
-        self.imageScrollView.backgroundColor = fullscreen ? [Theme recipeGridImageBackgroundColour] : [UIColor clearColor];
+        self.imageScrollView.backgroundColor = fullscreen ? [UIColor blackColor] : [UIColor clearColor];
         
         // Fade in/out the buttons based on fullscreen mode or not.
         [UIView animateWithDuration:0.2
