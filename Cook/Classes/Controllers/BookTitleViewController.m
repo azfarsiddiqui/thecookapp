@@ -10,7 +10,7 @@
 #import "CKBook.h"
 #import "CKBookCover.h"
 #import "Theme.h"
-#import "CKBookTitleIndexView.h"
+#import "BookTitleView.h"
 #import "CKRecipe.h"
 #import "CKUser.h"
 #import "ImageHelper.h"
@@ -36,7 +36,7 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) CKBookTitleIndexView *bookTitleView;
+@property (nonatomic, strong) BookTitleView *bookTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @property (nonatomic, strong) UIAlertView *alertView;
@@ -354,9 +354,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 #pragma mark - Properties
 
-- (CKBookTitleIndexView *)bookTitleView {
+- (BookTitleView *)bookTitleView {
     if (!_bookTitleView) {
-        _bookTitleView = [[CKBookTitleIndexView alloc] initWithBook:self.book];
+        _bookTitleView = [[BookTitleView alloc] initWithBook:self.book];
     }
     return _bookTitleView;
 }

@@ -31,6 +31,7 @@
 
 - (void)RS_commonInit
 {
+    // Text colour
     [super setTextColor:[UIColor whiteColor]];
     [self setBackgroundColor:[UIColor clearColor]];
     [self setOpaque:NO];

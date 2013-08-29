@@ -1,143 +1,124 @@
 //
 //  BookTitleView.m
-//  Cook
+//  CKMaskedLabelDemo
 //
-//  Created by Jeff Tan-Ang on 19/03/13.
+//  Created by Jeff Tan-Ang on 30/08/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
 #import "BookTitleView.h"
-#import "Theme.h"
-#import "CKBook.h"
-#import "ImageHelper.h"
 #import "CKMaskedLabel.h"
+#import "CKBook.h"
 #import "CKUserProfilePhotoView.h"
 
 @interface BookTitleView ()
 
-@property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) CKMaskedLabel *maskedLabel;
-@property (nonatomic, strong) UILabel *authorLabel;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *subtitle;
 
 @end
 
 @implementation BookTitleView
 
-#define kTitleInsets    UIEdgeInsetsMake(40.0, 40.0, 28.0, 40.0)
-#define kTitleNameGap   0.0
+#define kTitleFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:46.0]
+#define kSubtitleFont   [UIFont fontWithName:@"BrandonGrotesque-Light" size:24.0]
+#define kLabelInsets    (UIEdgeInsets) { 44.0, 73.0, 25.0, 73.0 }
 
-+ (CGSize)headerSize {
-    // Only height is used for a vertically scrolling collection view.
-    return CGSizeMake(964.0, 520.0);
-}
-
-+ (CGSize)heroImageSize {
-    CGSize headerSize = [BookTitleView headerSize];
-    return CGSizeMake(headerSize.width, headerSize.height);
-}
-
-- (id)initWithFrame:(CGRect)frame {
-    if ([super initWithFrame:frame]) {
-        
-        self.backgroundColor = [UIColor whiteColor];
-        CGSize headerSize = [BookTitleView headerSize];
-        
-        // Pre-create the background image view to have exactly 964.0 width.
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
-        imageView.frame = CGRectMake(floorf((self.bounds.size.width - headerSize.width) / 2.0),
-                                     self.bounds.origin.y,
-                                     headerSize.width,
-                                     self.bounds.size.height);
-        imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
-        [self addSubview:imageView];
-        self.imageView = imageView;
-        
-        // Black overlay under the label.
-        UIView *overlayView = [[UIView alloc] initWithFrame:CGRectZero];
-        overlayView.backgroundColor = [UIColor blackColor];
-        overlayView.alpha = 0.3;
-        [self addSubview:overlayView];
-        self.overlayView = overlayView;
-        
-        // Labels.
-        CKMaskedLabel *maskedLabel = [[CKMaskedLabel alloc] initWithFrame:CGRectZero];
-        maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        maskedLabel.numberOfLines = 2;
-        maskedLabel.font = [Theme bookContentsTitleFont];
-        maskedLabel.insets = kTitleInsets;
-        [self addSubview:maskedLabel];
-        self.maskedLabel = maskedLabel;
-        
-        UILabel *authorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        authorLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-        authorLabel.backgroundColor = [UIColor clearColor];
-        authorLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        authorLabel.font = [Theme bookContentsNameFont];
-        authorLabel.textColor = [Theme bookContentsNameColour];
-        [self.maskedLabel addSubview:authorLabel];
-        self.authorLabel = authorLabel;
+- (id)initWithBook:(CKBook *)book {
+    if (self = [self initWithTitle:book.author subtitle:book.name]) {
         
         // Profile photo view.
-        CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium
-                                                                                                border:YES];
-        [self addSubview:profilePhotoView];
-        self.profilePhotoView = profilePhotoView;
+        self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:book.user profileSize:ProfileViewSizeLarge];
+        self.profilePhotoView.frame = (CGRect){
+            floorf((self.bounds.size.width - self.profilePhotoView.frame.size.width) / 2.0),
+            -55.0,
+            self.profilePhotoView.frame.size.width,
+            self.profilePhotoView.frame.size.height
+        };
+        [self addSubview:self.profilePhotoView];
         
+        // Profile photo frame.
+        UIImageView *frameImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_title_profile_overlay.png"]];
+        frameImageView.frame = (CGRect){
+            floorf((self.profilePhotoView.bounds.size.width - frameImageView.frame.size.width) / 2.0),
+            -5.0,
+            frameImageView.frame.size.width,
+            frameImageView.frame.size.height
+        };
+        [self.profilePhotoView addSubview:frameImageView];
+
     }
     return self;
 }
 
-- (void)configureBook:(CKBook *)book {
-    NSString *bookAuthor = [book.user.name uppercaseString];
-    NSString *bookTitle = [NSString stringWithFormat:@"%@\u2028%@",[book.name uppercaseString], bookAuthor];
-    NSAttributedString *titleDisplay = [self attributedTextForTitle:bookTitle titleFont:[Theme bookContentsTitleFont]
-                                                             author:bookAuthor authorFont:[Theme bookContentsNameFont]];
-    self.maskedLabel.attributedText = titleDisplay;
-    
-    // Figure out the required size with padding.
-    CGSize availableSize = CGSizeMake(self.bounds.size.width - kTitleInsets.left - kTitleInsets.right, self.bounds.size.height);
-    CGSize size = [self.maskedLabel sizeThatFits:availableSize];
-    size.width += kTitleInsets.left + kTitleInsets.right;
-    size.height += kTitleInsets.top + kTitleInsets.bottom;
-    
-    // Bump down font if exceeds maximum width.
-    if (size.width >= availableSize.width) {
-        titleDisplay = [self attributedTextForTitle:bookTitle titleFont:[Theme bookContentsTitleFont]
-                                             author:bookAuthor authorFont:[Theme bookContentsNameFont]];
-        self.maskedLabel.attributedText = titleDisplay;
-        size = [self.maskedLabel sizeThatFits:availableSize];
-        size.width += kTitleInsets.left + kTitleInsets.right;
-        size.height += kTitleInsets.top + kTitleInsets.bottom;
+- (id)initWithTitle:(NSString *)title subtitle:(NSString *)subtitle {
+    if (self = [super initWithFrame:CGRectZero]) {
+        self.title = title;
+        self.subtitle = subtitle;
+        [self initLabel];
     }
-    
-    // Set the frame in motion.
-    self.maskedLabel.frame = CGRectMake(floorf((self.bounds.size.width - size.width) / 2.0),
-                                        floorf((self.bounds.size.height - size.height) / 2.0),
-                                        size.width,
-                                        size.height);
-    self.overlayView.frame = self.maskedLabel.frame;
-    
-    // Load profile photoView.
-    self.profilePhotoView.frame = CGRectMake(self.maskedLabel.frame.origin.x + floorf((self.maskedLabel.frame.size.width - self.profilePhotoView.frame.size.width) / 2.0),
-                                             self.maskedLabel.frame.origin.y - floorf(self.profilePhotoView.frame.size.height / 2.0),
-                                             self.profilePhotoView.frame.size.width,
-                                             self.profilePhotoView.frame.size.height);
-    [self.profilePhotoView loadProfilePhotoForUser:book.user];
-}
-
-- (void)configureImage:(UIImage *)image {
-    [ImageHelper configureImageView:self.imageView image:image];
+    return self;
 }
 
 #pragma mark - Private methods
+
+- (void)initLabel {
+    
+    // Pre-create the label.
+    CKMaskedLabel *maskedLabel = [[CKMaskedLabel alloc] initWithFrame:CGRectZero];
+    maskedLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    maskedLabel.textColour = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+    maskedLabel.boxBackgroundColour = [UIColor colorWithWhite:1.0 alpha:0.9];
+    maskedLabel.insets = kLabelInsets;
+    maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    maskedLabel.numberOfLines = 2;
+    [self addSubview:maskedLabel];
+    self.maskedLabel = maskedLabel;
+    
+    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:kTitleFont];
+    NSString *display = [NSString stringWithFormat:@"%@\u2028%@", self.title, self.subtitle];
+    
+    NSMutableAttributedString *titleDisplay = [[NSMutableAttributedString alloc] initWithString:display attributes:paragraphAttributes];
+    if ([self.subtitle length] > 0) {
+        [titleDisplay addAttribute:NSFontAttributeName
+                             value:kSubtitleFont
+                             range:NSMakeRange([display length] - [self.subtitle length], [self.subtitle length])];
+    }
+    
+    self.maskedLabel.attributedText = titleDisplay;
+    
+    CGSize size = [self.maskedLabel sizeThatFits:(CGSize){ MAXFLOAT, MAXFLOAT }];
+    size.width += kLabelInsets.left + kLabelInsets.right;
+    size.height += kLabelInsets.top + kLabelInsets.bottom;
+    
+    self.maskedLabel.frame = (CGRect){ 0.0, 0.0, size.width, size.height };
+    self.frame = self.maskedLabel.frame;
+    
+    // Outer box image.
+    UIEdgeInsets boxInsets = (UIEdgeInsets) { 19.0, 19.0, 19.0, 19.0 };
+    UIImage *boxImage = [[UIImage imageNamed:@"cook_book_inner_title_box.png"]
+                         resizableImageWithCapInsets:(UIEdgeInsets){ 21.0, 21.0, 21.0, 21.0}];
+    UIImageView *boxImageView = [[UIImageView alloc] initWithImage:boxImage];
+    boxImageView.frame = (CGRect){
+        -boxInsets.left,
+        -boxInsets.top,
+        boxInsets.left + self.bounds.size.width + boxInsets.right,
+        boxInsets.top + self.bounds.size.height + boxInsets.bottom,
+    };
+    [self addSubview:boxImageView];
+    
+}
 
 - (NSDictionary *)paragraphAttributesForFont:(UIFont *)font {
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
-    paragraphStyle.lineSpacing = -10.0;
+    paragraphStyle.lineSpacing = 0.0;
+    paragraphStyle.paragraphSpacing = 0.0;
+//    paragraphStyle.paragraphSpacingBefore = 6.0;
+    paragraphStyle.paragraphSpacingBefore = -3.0;
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
@@ -147,15 +128,5 @@
             nil];
 }
 
-- (NSMutableAttributedString *)attributedTextForTitle:(NSString *)bookTitle titleFont:(UIFont *)titleFont
-                                               author:(NSString *)author authorFont:(UIFont *)authorFont {
-    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:titleFont];
-    NSMutableAttributedString *titleDisplay = [[NSMutableAttributedString alloc] initWithString:bookTitle attributes:paragraphAttributes];
-    [titleDisplay addAttribute:NSFontAttributeName
-                         value:authorFont
-                         range:NSMakeRange([bookTitle length] - [author length],
-                                           [author length])];
-    return titleDisplay;
-}
 
 @end

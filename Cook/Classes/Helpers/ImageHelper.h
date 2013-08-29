@@ -21,6 +21,8 @@
 
 // Legacy screen capture.
 + (UIImage *)imageFromView:(UIView *)view;
++ (UIImage *)imageFromView:(UIView *)view opaque:(BOOL)opaque;
++ (UIImage *)negativeImageFor:(UIImage *)image;
 
 // Image scaling.
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size;

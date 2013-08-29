@@ -1,8 +1,8 @@
 //
 //  BookTitleView.h
-//  Cook
+//  CKMaskedLabelDemo
 //
-//  Created by Jeff Tan-Ang on 19/03/13.
+//  Created by Jeff Tan-Ang on 30/08/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
@@ -10,11 +10,9 @@
 
 @class CKBook;
 
-@interface BookTitleView : UICollectionReusableView
+@interface BookTitleView : UIView
 
-+ (CGSize)headerSize;
-+ (CGSize)heroImageSize;
-- (void)configureBook:(CKBook *)book;
-- (void)configureImage:(UIImage *)image;
+- (id)initWithBook:(CKBook *)book;
+- (id)initWithTitle:(NSString *)title subtitle:(NSString *)subtitle;
 
 @end

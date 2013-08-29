@@ -12,7 +12,6 @@
 
 @interface BookContentTitleView ()
 
-@property (nonatomic, strong) UIView *underlayView;
 @property (nonatomic, strong) CKMaskedLabel *maskedLabel;
 @property (nonatomic, strong) NSString *title;
 
@@ -36,19 +35,14 @@
 
 - (void)initMaskedLabel {
     
-    // Black overlay under the label.
-    UIView *underlayView = [[UIView alloc] initWithFrame:CGRectZero];
-    underlayView.backgroundColor = [UIColor blackColor];
-    underlayView.alpha = 0.3;
-    [self addSubview:underlayView];
-    self.underlayView = underlayView;
-    
     // Pre-create the label.
     CKMaskedLabel *maskedLabel = [[CKMaskedLabel alloc] initWithFrame:CGRectZero];
     maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
     maskedLabel.numberOfLines = 2;
     maskedLabel.font = kCategoryFont;
     maskedLabel.insets = kCategoryInsets;
+    maskedLabel.textColour = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+    maskedLabel.boxBackgroundColour = [UIColor colorWithWhite:1.0 alpha:0.9];
     [self addSubview:maskedLabel];
     self.maskedLabel = maskedLabel;
     NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:kCategoryFont];
@@ -73,7 +67,6 @@
     
     // Anchor the frame at the bottom
     self.maskedLabel.frame = (CGRect){ 0.0, 0.0, size.width, size.height };
-    self.underlayView.frame = self.maskedLabel.frame;
     self.frame = self.maskedLabel.frame;
 }
 
