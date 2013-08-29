@@ -109,11 +109,14 @@
 
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour {
     
+    // First downscale to blur.
+    UIImage *scaledImage = [self scaledImage:image size:[self blurredSize]];
+    
     // Calls ImageEffects
-    return [image applyBlurWithRadius:30
-                            tintColor:tintColour
-                saturationDeltaFactor:1.8
-                            maskImage:nil];
+    return [scaledImage applyBlurWithRadius:30
+                                  tintColor:tintColour
+                      saturationDeltaFactor:1.8
+                                  maskImage:nil];
 }
 
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion {
@@ -126,11 +129,8 @@
     dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(concurrentQueue, ^{
         
-        // First downscale to blur.
-        UIImage *scaledImage = [self scaledImage:image size:[self blurredSize]];
-        
         // This might take awhile.
-        UIImage *blurredImage = [self blurredImage:scaledImage tintColour:tintColour];
+        UIImage *blurredImage = [self blurredImage:image tintColour:tintColour];
         
         // Cascade up to UIKit again on the mainthread.
         dispatch_async(dispatch_get_main_queue(), ^{
