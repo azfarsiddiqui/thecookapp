@@ -22,6 +22,9 @@
 
 @implementation CKPhotoManager
 
+#define kImageCompression       0.6
+#define kThumbImageCompression  0.6
+
 + (CKPhotoManager *)sharedInstance {
     static dispatch_once_t pred;
     static CKPhotoManager *sharedInstance = nil;
@@ -203,10 +206,10 @@
     DLog(@"Uploading images for recipe [%@]", recipe.objectId);
     
     // Fullsize and thumbnail.
-    NSData *imageData = UIImageJPEGRepresentation(image, 0.8);  // Least compression.
+    NSData *imageData = UIImageJPEGRepresentation(image, kImageCompression);
     PFFile *imageFile = [PFFile fileWithName:@"fullsize.jpg" data:imageData];
     UIImage *thumbImage = [ImageHelper thumbImageForImage:image];
-    NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, 0.8);  // TODO Less compression?
+    NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, kThumbImageCompression);
     PFFile *thumbImageFile = [PFFile fileWithName:@"thumbnail.jpg" data:thumbImageData];
     
     // Initialise transfer progress for recipe image, using its imageUuid.
