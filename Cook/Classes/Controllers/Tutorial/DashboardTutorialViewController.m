@@ -9,6 +9,7 @@
 #import "DashboardTutorialViewController.h"
 #import "CKUserProfilePhotoView.h"
 #import "CKUser.h"
+#import "ImageHelper.h"
 
 @interface DashboardTutorialViewController ()
 
@@ -39,7 +40,7 @@
 
 - (UIImageView *)tutorialView {
     if (!_tutorialView) {
-        _tutorialView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_overlay_tutorial_dash.png"]];
+        _tutorialView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_overlay_tutorial_dash" type:@"png"]];
         
         CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:[CKUser currentUser]
                                                                              placeholder:[UIImage imageNamed:@"cook_default_profile.png"]

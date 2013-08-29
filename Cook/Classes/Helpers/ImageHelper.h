@@ -10,6 +10,9 @@
 
 @interface ImageHelper : NSObject
 
+// UIImage loads from disk directly bypassing UIImage cache.
++ (UIImage *)imageFromDiskNamed:(NSString *)name type:(NSString *)type;
+
 // Sizes
 + (CGSize)thumbSize;
 

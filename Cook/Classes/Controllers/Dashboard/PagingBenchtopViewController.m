@@ -22,6 +22,7 @@
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
 #import "SignupViewController.h"
+#import "ImageHelper.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -414,7 +415,7 @@
 
 - (UIImageView *)vignetteView {
     if (!_vignetteView) {
-        _vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background_vignette.png"]];
+        _vignetteView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_background_vignette" type:@"png"]];
     }
     return _vignetteView;
 }
@@ -424,7 +425,7 @@
 - (void)initBackground {
     
     // Background texture.
-    UIImage *backgroundTextureImage = [UIImage imageNamed:@"cook_dash_background.png"];
+    UIImage *backgroundTextureImage = [ImageHelper imageFromDiskNamed:@"cook_dash_background" type:@"png"];
     
     UIScrollView *backdropScrollView = [[UIScrollView alloc] initWithFrame:(CGRect){
         self.view.bounds.origin.x,
@@ -577,7 +578,7 @@
         [self.delegate panEnabledRequested:NO];
         
         // Dim overlay view.
-        UIImageView *overlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background_whiteout.png"]];
+        UIImageView *overlayView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_background_whiteout" type:@"png"]];
         overlayView.center = self.view.center;
         overlayView.alpha = 0.0;
         overlayView.userInteractionEnabled = YES;

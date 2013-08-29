@@ -13,6 +13,7 @@
 #import "StoreBookCoverViewCell.h"
 #import "EventHelper.h"
 #import "StoreTabView.h"
+#import "ImageHelper.h"
 
 @interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate>
 
@@ -96,8 +97,8 @@
 #pragma mark - Private methods
 
 - (void)initBackground {
-    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_shelves.png"]];
-    UIImageView *bottomShadowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_shelves_shadow.png"]];
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_shelves" type:@"png"]];
+    UIImageView *bottomShadowView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_shelves_shadow" type:@"png"]];
     
     // Shelf + Bottom Shadow
     self.view.frame = (CGRect){

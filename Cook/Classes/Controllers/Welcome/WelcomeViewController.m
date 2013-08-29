@@ -14,6 +14,7 @@
 #import "PageHeaderView.h"
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
+#import "ImageHelper.h"
 
 @interface WelcomeViewController () <WelcomeCollectionViewLayoutDataSource>
 
@@ -73,7 +74,7 @@
     UIOffset motionOffset = [ViewHelper standardMotionOffset];
     
     // Background texture.
-    UIImageView *backgroundTextureView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_background.png"]];
+    UIImageView *backgroundTextureView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_background" type:@"png"]];
     backgroundTextureView.center = self.view.center;
     backgroundTextureView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     [self.view insertSubview:backgroundTextureView belowSubview:self.collectionView];
@@ -140,35 +141,35 @@
 
 - (UIView *)welcomeImageView {
     if (!_welcomeImageView) {
-        _welcomeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_leftstack.png"]];
+        _welcomeImageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_login_leftstack" type:@"png"]];
     }
     return _welcomeImageView;
 }
 
 - (UIView *)welcomeImageView2 {
     if (!_welcomeImageView2) {
-        _welcomeImageView2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_rightstack.png"]];
+        _welcomeImageView2 = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_login_rightstack" type:@"png"]];
     }
     return _welcomeImageView2;
 }
 
 - (UIView *)createImageView {
     if (!_createImageView) {
-        _createImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_mybook.png"]];
+        _createImageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_login_mybook" type:@"png"]];
     }
     return _createImageView;
 }
 
 - (UIView *)collectImageView {
     if (!_collectImageView) {
-        _collectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_friendsbooks_left.png"]];
+        _collectImageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_login_friendsbooks_left" type:@"png"]];
     }
     return _collectImageView;
 }
 
 - (UIView *)collectImageView2 {
     if (!_collectImageView2) {
-        _collectImageView2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_friendsbooks_right.png"]];
+        _collectImageView2 = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_login_friendsbooks_right" type:@"png"]];
     }
     return _collectImageView2;
 }

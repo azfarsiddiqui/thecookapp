@@ -13,6 +13,7 @@
 #import "Theme.h"
 #import "CKUserProfilePhotoView.h"
 #import "ThemeTabView.h"
+#import "ImageHelper.h"
 
 @interface SettingsViewController ()
 
@@ -39,7 +40,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_bg_settings.png"]];
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_bg_settings" type:@"png"]];
     self.view.frame = CGRectMake(0.0, 0.0, backgroundView.frame.size.width, kSettingsHeight);
     self.view.clipsToBounds = NO;   // So that background extends below.
     [self.view addSubview:backgroundView];

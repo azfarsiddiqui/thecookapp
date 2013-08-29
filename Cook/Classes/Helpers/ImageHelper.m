@@ -13,6 +13,10 @@
 
 @implementation ImageHelper
 
++ (UIImage *)imageFromDiskNamed:(NSString *)name type:(NSString *)type {
+    return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:type]];
+}
+
 + (CGSize)thumbSize {
     CGFloat screenScale = [[AppHelper sharedInstance] screenScale];
     return (CGSize) {

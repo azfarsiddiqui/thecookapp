@@ -371,7 +371,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     imageContainerView.clipsToBounds = YES;
     [self.view addSubview:imageContainerView];
     
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_edit_bg_blank.png"]];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_edit_bg_blank" type:@"png"]];
     imageView.frame = (CGRect) {
         imageContainerView.bounds.origin.x - motionOffset.horizontal,
         imageContainerView.bounds.origin.y - motionOffset.vertical,

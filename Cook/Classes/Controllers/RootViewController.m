@@ -69,7 +69,7 @@
     [super viewDidLoad];
     
     // Default splash.
-    self.defaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_defaultimage.png"]];
+    self.defaultImageView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_defaultimage" type:@"png"]];
     self.defaultImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     [self.view addSubview:self.defaultImageView];
     
@@ -649,7 +649,7 @@
     [self.view insertSubview:self.benchtopViewController.view belowSubview:self.storeViewController.view];
     
     // Benchtop overlay to be hidden to start off with.
-    self.benchtopOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_overlay.png"]];
+    self.benchtopOverlayView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_overlay" type:@"png"]];
     self.benchtopOverlayView.alpha = 0.0;
     [self.view insertSubview:self.benchtopOverlayView aboveSubview:self.benchtopViewController.view];
     
