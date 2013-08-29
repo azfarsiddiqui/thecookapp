@@ -105,7 +105,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
 
 - (void)dealloc {
-    [self.scrollView removeObserver:self forKeyPath:@"frame"];
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
@@ -348,6 +347,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         contentFrame.origin.y -= contentOffset.y * kDragRatio;
         contentFrame.origin.y = MIN([self offsetForViewport:SnapViewportBottom], contentFrame.origin.y);
         self.scrollView.frame = contentFrame;
+        [self updateDependentViews];
         self.draggingDown = YES;
         
     } else if (self.draggingDown) {
@@ -362,6 +362,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             contentFrame.origin.y -= contentOffset.y * kDragRatio;
             contentFrame.origin.y = MAX([self offsetForViewport:SnapViewportTop], contentFrame.origin.y);
             self.scrollView.frame = contentFrame;
+            [self updateDependentViews];
         }
         
     } else if (contentOffset.y > contentSize.height - contentFrame.size.height) {
@@ -740,7 +741,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.panGesture = panGestureRecognizer;
     
     // Start observing the frame of scrollView.
-    [scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    // [scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
     
     // Start at bottom viewport.
     [self snapToViewport:SnapViewportBelow animated:NO];
@@ -889,6 +890,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                  [CATransaction commit];
                                  
                                  self.scrollView.frame = bounceFrame;
+                                 [self updateDependentViews];
+                                 
                                  [self updateButtonsWithBounceOffset:buttonBounceOffset];
                              }
                              completion:^(BOOL finished) {
@@ -907,6 +910,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                       [CATransaction commit];
                                                       
                                                       self.scrollView.frame = frame;
+                                                      [self updateDependentViews];
+                                                      
                                                       [self updateButtonsWithBounceOffset:UIOffsetZero];
                                                   }
                                                   completion:^(BOOL finished) {
@@ -936,6 +941,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                  [CATransaction commit];
                                  
                                  self.scrollView.frame = frame;
+                                 [self updateDependentViews];
                              }
                              completion:^(BOOL finished) {
                                  self.scrollView.scrollEnabled = scrollEnabled;
@@ -949,6 +955,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
     } else {
         self.scrollView.frame = frame;
+        [self updateDependentViews];
         self.scrollView.scrollEnabled = scrollEnabled;
         self.panGesture.enabled = panEnabld;
         self.draggingDown = NO;
@@ -1126,6 +1133,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Disable scrollview when at top.
     self.scrollView.scrollEnabled = (contentFrame.origin.y == [self offsetForViewport:SnapViewportTop]);
+    
+    [self updateDependentViews];
 }
 
 - (void)panSnapIfRequired {
