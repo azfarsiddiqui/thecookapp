@@ -50,12 +50,20 @@
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
+// Edit mode.
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, assign) BOOL editMode;
+
+// Left/right book edges.
 @property (nonatomic, strong) UIView *benchtopSnapshotView;
 @property (nonatomic, strong) UIView *leftOutlineView;
 @property (nonatomic, strong) UIView *rightOutlineView;
 
+// Content VCs
 @property (nonatomic, strong) BookProfileViewController *profileViewController;
 @property (nonatomic, strong) BookTitleViewController *titleViewController;
+@property (nonatomic, strong) BookPageViewController *currentEditViewController;
 
 @property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
 
@@ -76,6 +84,7 @@
 #define kContentViewTag             460
 #define kBookOutlineOffset          (UIOffset){-64.0, -26.0}
 #define kBookOutlineSnapshotWidth   400.0
+#define kEditButtonInsets           (UIEdgeInsets){ 20.0, 5.0, 0.0, 5.0 }
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
@@ -271,6 +280,13 @@
 
 - (void)bookPageViewControllerPanEnable:(BOOL)enable {
     self.collectionView.scrollEnabled = enable;
+}
+
+- (void)bookPageViewController:(BookPageViewController *)bookPageViewController editModeRequested:(BOOL)editMode {
+    if (bookPageViewController == self.profileViewController) {
+        self.currentEditViewController = self.profileViewController;
+        [self enableEditMode:editMode];
+    }
 }
 
 #pragma mark - BookNavigationViewDelegate methods
@@ -580,6 +596,30 @@
 
     }
     return _rightOutlineView;
+}
+
+- (UIButton *)cancelButton {
+    if (!_cancelButton) {
+        _cancelButton = [ViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
+        _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_cancelButton setFrame:CGRectMake(kEditButtonInsets.left,
+                                           kEditButtonInsets.top,
+                                           _cancelButton.frame.size.width,
+                                           _cancelButton.frame.size.height)];
+    }
+    return _cancelButton;
+}
+
+- (UIButton *)saveButton {
+    if (!_saveButton) {
+        _saveButton = [ViewHelper okButtonWithTarget:self selector:@selector(saveTapped:)];
+        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kEditButtonInsets.right,
+                                         kEditButtonInsets.top,
+                                         _saveButton.frame.size.width,
+                                         _saveButton.frame.size.height)];
+    }
+    return _saveButton;
 }
 
 #pragma mark - Private methods
@@ -1065,4 +1105,50 @@
     [self scrollToHomeAnimated:NO];
 }
 
+- (void)cancelTapped:(id)sender {
+    [self enableEditMode:NO];
+    [self.currentEditViewController enableEditMode:NO];
+    self.currentEditViewController = nil;
+}
+
+- (void)saveTapped:(id)sender {
+    [self enableEditMode:NO];
+    [self.currentEditViewController enableEditMode:NO];
+    self.currentEditViewController = nil;
+}
+
+- (void)enableEditMode:(BOOL)editMode {
+    self.editMode = editMode;
+    [self updateButtons];
+}
+
+- (void)updateButtons {
+    if (self.editMode) {
+        self.cancelButton.alpha = 0.0;
+        self.saveButton.alpha = 0.0;
+        self.cancelButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+        self.saveButton.transform = CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
+        [self.view addSubview:self.cancelButton];
+        [self.view addSubview:self.saveButton];
+    }
+    
+    // Lock scrolling in editMode.
+    self.collectionView.scrollEnabled = !self.editMode;
+    
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.cancelButton.alpha = self.editMode ? 1.0 : 0.0;
+                         self.saveButton.alpha = self.editMode ? 1.0 : 0.0;
+                         self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
+                         self.saveButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
+                     }
+                     completion:^(BOOL finished)  {
+                         if (!self.editMode) {
+                             [self.cancelButton removeFromSuperview];
+                             [self.saveButton removeFromSuperview];
+                         }
+                     }];
+}
 @end

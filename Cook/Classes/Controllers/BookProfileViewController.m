@@ -26,9 +26,6 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIButton *editButton;
-@property (nonatomic, strong) UIButton *cancelButton;
-@property (nonatomic, strong) UIButton *saveButton;
-@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UIImage *uploadedCoverPhoto;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
@@ -57,7 +54,11 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initImageView];
-    [self updateButtons];
+    
+    if ([self canEditBook]) {
+        [self.view addSubview:self.editButton];
+    }
+    
     [self loadData];
 }
 
@@ -86,7 +87,7 @@
 #pragma mark - Properties
 
 - (UIButton *)editButton {
-    if (!_editButton && [self canEditBook]) {
+    if (!_editButton) {
         _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
                                            target:self
                                          selector:@selector(editTapped:)];
@@ -97,30 +98,6 @@
                                        _editButton.frame.size.height);
     }
     return _editButton;
-}
-
-- (UIButton *)cancelButton {
-    if (!_cancelButton) {
-        _cancelButton = [ViewHelper cancelButtonWithTarget:self selector:@selector(cancelTapped:)];
-        _cancelButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_cancelButton setFrame:CGRectMake(kEditButtonInsets.left,
-                                           kEditButtonInsets.top,
-                                           _cancelButton.frame.size.width,
-                                           _cancelButton.frame.size.height)];
-    }
-    return _cancelButton;
-}
-
-- (UIButton *)saveButton {
-    if (!_saveButton) {
-        _saveButton = [ViewHelper okButtonWithTarget:self selector:@selector(saveTapped:)];
-        _saveButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [_saveButton setFrame:CGRectMake(self.view.bounds.size.width - _saveButton.frame.size.width - kEditButtonInsets.right,
-                                         kEditButtonInsets.top,
-                                         _saveButton.frame.size.width,
-                                         _saveButton.frame.size.height)];
-    }
-    return _saveButton;
 }
 
 #pragma mark - Private methods
@@ -204,46 +181,25 @@
     return [self.book isOwner];
 }
 
-- (void)updateButtons {
-    if (self.editMode) {
-        self.cancelButton.alpha = 0.0;
-        self.saveButton.alpha = 0.0;
-        self.cancelButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
-        self.saveButton.transform = CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
-        [self.view addSubview:self.cancelButton];
-        [self.view addSubview:self.saveButton];
-    } else {
-        self.editButton.alpha = 0.0;
-        [self.view addSubview:self.editButton];
-    }
-    
-    [UIView animateWithDuration:0.4
-                          delay:0.1
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         
-                         // Normal mode buttons.
-                         self.editButton.alpha = self.editMode ? 0.0 : 1.0;
-                         
-                         // Edit mode buttons.
-                         self.cancelButton.alpha = self.editMode ? 1.0 : 0.0;
-                         self.saveButton.alpha = self.editMode ? 1.0 : 0.0;
-                         self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
-                         self.saveButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
-                     }
-                     completion:^(BOOL finished)  {
-                         if (self.editMode) {
-                             [self.editButton removeFromSuperview];
-                         } else {
-                             [self.cancelButton removeFromSuperview];
-                             [self.saveButton removeFromSuperview];
-                         }
-                     }];
+- (void)editTapped:(id)sender {
+    [self enableEditMode:YES completion:^{
+        [self.bookPageDelegate bookPageViewController:self editModeRequested:YES];
+    }];
 }
 
-- (void)editTapped:(id)sender {
-//    self.editMode = YES;
-//    [self updateButtons];
+- (void)enableEditMode:(BOOL)editMode completion:(void (^)())completion {
+    self.editMode = editMode;
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.editButton.alpha = editMode ? 0.0 : 1.0;
+                     }
+                     completion:^(BOOL finished)  {
+                         if (completion != nil) {
+                             completion();
+                         }
+                     }];
 }
 
 @end

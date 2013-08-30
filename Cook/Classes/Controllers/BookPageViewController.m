@@ -87,4 +87,12 @@
     [self.bookPageDelegate bookPageViewControllerCloseRequested];
 }
 
+- (void)enableEditMode:(BOOL)editMode {
+    [self enableEditMode:editMode completion:nil];
+}
+
+- (void)enableEditMode:(BOOL)editMode completion:(void (^)())completion {
+    self.editMode = editMode;
+}
+
 @end
