@@ -41,8 +41,6 @@
     maskedLabel.numberOfLines = 2;
     maskedLabel.font = kCategoryFont;
     maskedLabel.insets = kCategoryInsets;
-    maskedLabel.textColour = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
-    maskedLabel.boxBackgroundColour = [UIColor colorWithWhite:1.0 alpha:0.9];
     [self addSubview:maskedLabel];
     self.maskedLabel = maskedLabel;
     NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:kCategoryFont];
@@ -68,6 +66,26 @@
     // Anchor the frame at the bottom
     self.maskedLabel.frame = (CGRect){ 0.0, 0.0, size.width, size.height };
     self.frame = self.maskedLabel.frame;
+    
+    // Dark underlay.
+    UIView *underlayView = [[UIView alloc] initWithFrame:CGRectZero];
+    underlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.45];
+    underlayView.frame = self.maskedLabel.frame;
+    [self insertSubview:underlayView belowSubview:self.maskedLabel];
+
+    // Outer box image.
+    UIEdgeInsets boxInsets = (UIEdgeInsets) { 12.0, 12.0, 12.0, 12.0 };
+    UIImage *boxImage = [[UIImage imageNamed:@"cook_book_inner_category_box.png"]
+                         resizableImageWithCapInsets:(UIEdgeInsets){ 21.0, 21.0, 21.0, 21.0}];
+    UIImageView *boxImageView = [[UIImageView alloc] initWithImage:boxImage];
+    boxImageView.frame = (CGRect){
+        -boxInsets.left,
+        -boxInsets.top,
+        boxInsets.left + self.bounds.size.width + boxInsets.right,
+        boxInsets.top + self.bounds.size.height + boxInsets.bottom,
+    };
+    [self addSubview:boxImageView];
+    [self sendSubviewToBack:boxImageView];
 }
 
 - (NSDictionary *)paragraphAttributesForFont:(UIFont *)font {

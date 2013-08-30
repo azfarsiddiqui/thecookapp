@@ -14,10 +14,11 @@
 
 @implementation CKMaskedLabel
 
-
-- (void)RS_commonInit {
-    [super RS_commonInit];
-    [super setTextColor:self.textColour];
+- (id)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.boxBackgroundColour = [UIColor colorWithWhite:1.0 alpha:0.9];
+    }
+    return self;
 }
 
 - (void)drawTextInRect:(CGRect)rect {

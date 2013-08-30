@@ -11,7 +11,6 @@
 @interface CKMaskedLabel : RSMaskedLabel
 
 @property (nonatomic, assign) UIEdgeInsets insets;
-@property (nonatomic, strong) UIColor *textColour;
 @property (nonatomic, strong) UIColor *boxBackgroundColour;
 
 @end

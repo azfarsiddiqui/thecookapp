@@ -10,7 +10,6 @@
 
 @interface RSMaskedLabel : UILabel
 
-- (void)RS_commonInit;
 - (void)RS_drawBackgroundInRect:(CGRect)rect;
 
 @end

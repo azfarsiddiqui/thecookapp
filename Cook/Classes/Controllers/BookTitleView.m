@@ -10,6 +10,7 @@
 #import "CKMaskedLabel.h"
 #import "CKBook.h"
 #import "CKUserProfilePhotoView.h"
+#import "Theme.h"
 
 @interface BookTitleView ()
 
@@ -22,9 +23,9 @@
 
 @implementation BookTitleView
 
-#define kTitleFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:46.0]
-#define kSubtitleFont   [UIFont fontWithName:@"BrandonGrotesque-Light" size:24.0]
-#define kLabelInsets    (UIEdgeInsets) { 44.0, 73.0, 25.0, 73.0 }
+#define kTitleFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:50.0]
+#define kSubtitleFont   [UIFont fontWithName:@"BrandonGrotesque-Light" size:28.0]
+#define kLabelInsets    (UIEdgeInsets) { 38.0, 40.0, 25.0, 40.0 }
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [self initWithTitle:book.author subtitle:book.name]) {
@@ -69,8 +70,6 @@
     // Pre-create the label.
     CKMaskedLabel *maskedLabel = [[CKMaskedLabel alloc] initWithFrame:CGRectZero];
     maskedLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    maskedLabel.textColour = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
-    maskedLabel.boxBackgroundColour = [UIColor colorWithWhite:1.0 alpha:0.9];
     maskedLabel.insets = kLabelInsets;
     maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
     maskedLabel.numberOfLines = 2;
@@ -96,6 +95,24 @@
     self.maskedLabel.frame = (CGRect){ 0.0, 0.0, size.width, size.height };
     self.frame = self.maskedLabel.frame;
     
+    // Dark underlay.
+    UIView *underlayView = [[UIView alloc] initWithFrame:CGRectZero];
+    underlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.45];
+    underlayView.frame = self.maskedLabel.frame;
+    [self insertSubview:underlayView belowSubview:self.maskedLabel];
+    
+    // Dark divider.
+    CGFloat dividerWidth = self.bounds.size.width * 0.3;
+    UIView *darkDivider = [[UIView alloc] initWithFrame:CGRectZero];
+    darkDivider.backgroundColor = [UIColor colorWithHexString:@"888888"];
+    darkDivider.frame = (CGRect){
+        floorf((self.bounds.size.width - dividerWidth) / 2.0),
+        105.0,
+        dividerWidth,
+        1.0
+    };
+    [self addSubview:darkDivider];
+    
     // Outer box image.
     UIEdgeInsets boxInsets = (UIEdgeInsets) { 19.0, 19.0, 19.0, 19.0 };
     UIImage *boxImage = [[UIImage imageNamed:@"cook_book_inner_title_box.png"]
@@ -108,7 +125,7 @@
         boxInsets.top + self.bounds.size.height + boxInsets.bottom,
     };
     [self addSubview:boxImageView];
-    
+    [self sendSubviewToBack:boxImageView];
 }
 
 - (NSDictionary *)paragraphAttributesForFont:(UIFont *)font {
@@ -118,7 +135,7 @@
     paragraphStyle.lineSpacing = 0.0;
     paragraphStyle.paragraphSpacing = 0.0;
 //    paragraphStyle.paragraphSpacingBefore = 6.0;
-    paragraphStyle.paragraphSpacingBefore = -3.0;
+    paragraphStyle.paragraphSpacingBefore = 1.0;
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
