@@ -851,6 +851,8 @@
 		89E2CA8D165F024800CDE0D4 /* cook_editrecipe_categorybg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA8B165F024800CDE0D4 /* cook_editrecipe_categorybg@2x.png */; };
 		89E2CA94165F438300CDE0D4 /* cook_editrecipe_textbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA92165F438300CDE0D4 /* cook_editrecipe_textbox.png */; };
 		89E2CA95165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */; };
+		F6526BB017D0D49F000DDD95 /* Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAE17D0D49F000DDD95 /* Debug.plist */; };
+		F6526BB117D0D49F000DDD95 /* Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAF17D0D49F000DDD95 /* Release.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1899,6 +1901,8 @@
 		89E2CA8B165F024800CDE0D4 /* cook_editrecipe_categorybg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_categorybg@2x.png"; sourceTree = "<group>"; };
 		89E2CA92165F438300CDE0D4 /* cook_editrecipe_textbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_editrecipe_textbox.png; sourceTree = "<group>"; };
 		89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_textbox@2x.png"; sourceTree = "<group>"; };
+		F6526BAE17D0D49F000DDD95 /* Debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Debug.plist; sourceTree = "<group>"; };
+		F6526BAF17D0D49F000DDD95 /* Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Release.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3028,6 +3032,7 @@
 		76ED27321612DC180012E479 = {
 			isa = PBXGroup;
 			children = (
+				F6526BAD17D0D49F000DDD95 /* Configurations */,
 				76ED27471612DC180012E479 /* Cook */,
 				76ED27401612DC180012E479 /* Frameworks */,
 				76ED273E1612DC180012E479 /* Products */,
@@ -3483,6 +3488,15 @@
 			path = servesSlider;
 			sourceTree = "<group>";
 		};
+		F6526BAD17D0D49F000DDD95 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				F6526BAE17D0D49F000DDD95 /* Debug.plist */,
+				F6526BAF17D0D49F000DDD95 /* Release.plist */,
+			);
+			path = Configurations;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3612,6 +3626,7 @@
 				76F5EE411782A3AD004AB119 /* cook_book_orange@2x.png in Resources */,
 				76A9177D17BCE0F300CB8E9A /* cook_btns_photo_back.png in Resources */,
 				769AA77017CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png in Resources */,
+				F6526BB017D0D49F000DDD95 /* Debug.plist in Resources */,
 				7612B46717B36E6D0093B4FD /* cook_book_recipe_background_tile@2x.png in Resources */,
 				76BEE73C165DEE600065B97B /* cook_book_blue.png in Resources */,
 				76BEE73D165DEE600065B97B /* cook_book_blue@2x.png in Resources */,
@@ -4121,6 +4136,7 @@
 				76462D361782FC0E002EA7D0 /* cook_library_tab_selected.png in Resources */,
 				76B23952174DF44300BEEF94 /* cook_btns_okay.png in Resources */,
 				7689A1AF17BBDADF0093C56F /* cook_customise_photo_btn_takephoto_onpress.png in Resources */,
+				F6526BB117D0D49F000DDD95 /* Release.plist in Resources */,
 				76B23953174DF44300BEEF94 /* cook_btns_okay@2x.png in Resources */,
 				7628150B174E2B29002D4E19 /* cook_customise_textbox_black_edit.png in Resources */,
 				7647853E17A697D800387A7B /* cook_customise_privacy_bg_middle.png in Resources */,
@@ -4185,7 +4201,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "releaseConfig=\"Release\"\nif [ \"$releaseConfig\" = \"${CONFIGURATION}\" ]; then\necho \"Running Crashlytics\"\n./Crashlytics.framework/run 78b5ee31da5ef077dd802aa93ca267444ea27b07\nfi\n\n\n";
+			shellScript = "echo \"Copying ${CONFIGURATION}.plist from ${SRCROOT}/Configurations/${CONFIGURATION}.plist to ${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app/Configuration.plist\"\ncp \"${SRCROOT}/Configurations/${CONFIGURATION}.plist\" \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app/Configuration.plist\"\n\nreleaseConfig=\"Release\"\nif [ \"$releaseConfig\" = \"${CONFIGURATION}\" ]; then\necho \"Running Crashlytics\"\n./Crashlytics.framework/run 78b5ee31da5ef077dd802aa93ca267444ea27b07\nfi\n\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

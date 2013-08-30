@@ -1442,7 +1442,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)shareTapped:(id)sender {
-    DLog();
+    DLog(@"Base URL is: %@", [AppHelper configValueForKey:@"COOK_SHARE_BASE_URL"]);
 }
 
 - (void)cancelTapped:(id)sender {
