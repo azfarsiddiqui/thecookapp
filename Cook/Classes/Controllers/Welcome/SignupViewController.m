@@ -48,6 +48,11 @@
 #define kPasswordMaxLength  32
 #define kFooterTextInsets   UIEdgeInsetsMake(5.0, 20.0, 25.0, 20.0)
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
 - (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
