@@ -61,6 +61,8 @@ extern NSString *const kBookFollowSuggestionAttrUser;
 extern NSString *const kBookModelName;
 extern NSString *const kBookModelForeignKeyName;
 extern NSString *const kBookAttrCover;
+extern NSString *const kBookAttrCoverPhoto;
+extern NSString *const kBookAttrCoverPhotoThumb;
 extern NSString *const kBookAttrIllustration;
 extern NSString *const kBookAttrCaption;
 extern NSString *const kBookAttrNumRecipes;

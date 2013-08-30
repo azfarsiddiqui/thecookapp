@@ -103,7 +103,7 @@
 }
 
 + (UIFont *)storeBookSummaryNameFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:30.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
 }
 
 + (UIColor *)storeBookSummaryNameColour {
@@ -111,7 +111,7 @@
 }
 
 + (UIFont *)storeBookSummaryStoryFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:18.0];
 }
 
 + (UIColor *)storeBookSummaryStoryColour {

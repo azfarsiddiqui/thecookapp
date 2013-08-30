@@ -31,6 +31,10 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @property (nonatomic, assign) BOOL followed;
 @property (nonatomic, assign) BOOL guest;
 
+// Cover photos.
+@property (nonatomic, strong) PFFile *coverPhotoFile;
+@property (nonatomic, strong) PFFile *coverPhotoThumbFile;
+
 
 // Fetches
 + (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
@@ -51,6 +55,9 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 - (void)removeFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)isFollowedByUser:(CKUser *)user success:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
+// Saves.
+- (void)saveWithImage:(UIImage *)image completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 // Parse operations
 + (PFObject *)createParseBookForParseUser:(PFUser *)parseUser;
 + (PFObject *)createParseBook;
@@ -62,5 +69,6 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 - (BOOL)isOwner;
 - (BOOL)isUserBookAuthor:(CKUser*)user;
 - (BOOL)isPublic;
+- (BOOL)hasCoverPhoto;
 
 @end

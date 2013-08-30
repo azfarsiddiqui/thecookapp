@@ -139,7 +139,7 @@
 
 + (UIImage *)recipeEditBackgroundImageForCover:(NSString *)cover {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.RecipeEdit", cover]];
-    return [UIImage imageNamed:imageName];
+    return [ImageHelper imageFromDiskNamed:imageName type:@"png"];
 }
 
 + (UIImage *)imageForIllustration:(NSString *)illustration {

@@ -11,6 +11,7 @@
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
+#import "CKPhotoManager.h"
 
 @interface CKBook ()
 
@@ -470,6 +471,13 @@
     }];
 }
 
+- (void)saveWithImage:(UIImage *)image completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    if (image) {
+        [[CKPhotoManager sharedInstance] addImage:image book:self];
+    } else {
+        [self saveInBackground];
+    }
+}
 
 - (BOOL)isThisMyFriendsBook {
     NSString *userId = [self.user facebookId];
@@ -489,6 +497,29 @@
 - (BOOL)isPublic {
     // Featured books are public.
     return self.featured;
+}
+
+- (BOOL)hasCoverPhoto {
+    return (self.coverPhotoFile != nil);
+}
+
+- (void)setCoverPhotoFile:(PFFile *)coverPhotoFile {
+    if (!coverPhotoFile) {
+        return;
+    }
+    [self.parseObject setObject:coverPhotoFile forKey:kBookAttrCoverPhoto];
+}
+
+- (PFFile *)coverPhotoFile {
+    return [self.parseObject objectForKey:kBookAttrCoverPhoto];
+}
+
+- (void)setCoverPhotoThumbFile:(PFFile *)coverPhotoThumbFile {
+    [self.parseObject setObject:coverPhotoThumbFile forKey:kBookAttrCoverPhotoThumb];
+}
+
+- (PFFile *)coverPhotoThumbFile {
+    return [self.parseObject objectForKey:kBookAttrCoverPhotoThumb];
 }
 
 #pragma mark - CKModel

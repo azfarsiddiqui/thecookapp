@@ -10,6 +10,7 @@
 #import "ImageHelper.h"
 #import "CKRecipeImage.h"
 #import "CKRecipe.h"
+#import "CKBook.h"
 #import "SDImageCache.h"
 #import "NSString+Utilities.h"
 #import "CKUser.h"
@@ -155,6 +156,44 @@
                                      completion(nil, name);
                                  }
                              }];
+}
+
+- (void)imageForBook:(CKBook *)book size:(CGSize)size name:(NSString *)name
+            progress:(void (^)(CGFloat progressRatio, NSString *name))progress
+     thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
+          completion:(void (^)(UIImage *image, NSString *name))completion {
+    
+    __weak CKPhotoManager *weakSelf = self;
+    PFFile *fullsizeFile = book.coverPhotoFile;
+    if (fullsizeFile) {
+        
+        // Check if a fullsized file was cached, then just return that immediately and bypass thumbnail processing.
+        UIImage *cachedFullsizeImage = [self cachedImageForParseFile:fullsizeFile size:size];
+        if (cachedFullsizeImage) {
+            completion(cachedFullsizeImage, name);
+        } else {
+            
+            // Get the fullsize image with progress reporting.
+            [weakSelf imageForParseFile:fullsizeFile size:size name:name
+                               progress:^(CGFloat progressRatio) {
+                                   progress(progressRatio, name);
+                               } completion:^(UIImage *image, NSString *name) {
+                                   completion(image, name);
+                               }];
+            
+            // Get the thumbnail.
+            [weakSelf imageForParseFile:book.coverPhotoThumbFile size:[ImageHelper thumbSize] name:name
+                               progress:^(CGFloat progressRatio) {
+                                   // No reporting of progress for thumbnail.
+                               } completion:^(UIImage *image, NSString *name) {
+                                   completion(image, name);
+                               }];
+        }
+        
+    } else {
+        completion(nil, name);
+    }
+
 }
 
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name
@@ -315,6 +354,73 @@
         }
     }];
     
+}
+
+- (void)addImage:(UIImage *)image book:(CKBook *)book {
+    
+    // Request a background execution task to allow us to finish uploading the photo even if the app is backgrounded
+    __block UIBackgroundTaskIdentifier *backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+    }];
+    
+    DLog(@"Uploading images for book [%@]", book.objectId);
+    
+    // Fullsize and thumbnail.
+    NSData *imageData = UIImageJPEGRepresentation(image, kImageCompression);
+    PFFile *imageFile = [PFFile fileWithName:@"cover.jpg" data:imageData];
+    UIImage *thumbImage = [ImageHelper thumbImageForImage:image];
+    NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, kThumbImageCompression);
+    PFFile *thumbImageFile = [PFFile fileWithName:@"coverthumb.jpg" data:thumbImageData];
+    
+    // Now upload the thumb sized.
+    [thumbImageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (!error) {
+            DLog(@"Book thumbnail cover uploaded successfully.");
+            
+            // Attach it to the book.
+            book.coverPhotoThumbFile = thumbImageFile;
+            
+            // Now upload fullsized.
+            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (!error) {
+                    
+                    // Attach it to the book.
+                    book.coverPhotoFile = imageFile;
+                    
+                    // Save the book to Parse.
+                    [book saveInBackground:^{
+                        
+                        DLog(@"Book fullsize cover uploaded successfully.");
+                        
+                        // End background task.
+                        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+                        
+                    } failure:^(NSError *error) {
+
+                        // End background task.
+                        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+                    }];
+                    
+                } else {
+                    
+                    DLog(@"Fullsize image error %@", [error localizedDescription]);
+                    
+                    // End background task.
+                    [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+                }
+                
+            }];
+            
+        } else {
+            
+            DLog(@"Thumbnail image error %@", [error localizedDescription]);
+            
+            // End background task.
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+        }
+    }];
 }
 
 #pragma mark - Image caching.

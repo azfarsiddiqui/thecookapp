@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
+@class CKBook;
 @class CKRecipe;
 @class CKRecipeImage;
 
@@ -27,6 +28,10 @@
               progress:(void (^)(CGFloat progressRatio, NSString *name))progress
        thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
             completion:(void (^)(UIImage *image, NSString *name))completion;
+- (void)imageForBook:(CKBook *)book size:(CGSize)size name:(NSString *)name
+            progress:(void (^)(CGFloat progressRatio, NSString *name))progress
+     thumbCompletion:(void (^)(UIImage *thumbImage, NSString *name))thumbCompletion
+          completion:(void (^)(UIImage *image, NSString *name))completion;
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name
                  progress:(void (^)(CGFloat progressRatio))progress
                completion:(void (^)(UIImage *image, NSString *name))completion;
@@ -39,5 +44,6 @@
 
 // Image uploads, including thumbnail generation.
 - (void)addImage:(UIImage *)image recipe:(CKRecipe *)recipe;
+- (void)addImage:(UIImage *)image book:(CKBook *)book;
 
 @end

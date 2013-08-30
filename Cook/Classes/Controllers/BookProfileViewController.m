@@ -19,15 +19,16 @@
 #import "UIImage+ProportionalFill.h"
 #import "CKEditingViewHelper.h"
 #import "CKPhotoManager.h"
+#import "CKBookCover.h"
 #import <Parse/Parse.h>
 
 @interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIView *photoButtonView;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
-@property (nonatomic, strong) UIImage *uploadedCoverPhoto;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 
 @end
@@ -36,6 +37,7 @@
 
 #define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
 #define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
+#define kAvailableWidth     624.0
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
@@ -82,6 +84,7 @@
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    [self showPhotoPicker:YES];
 }
 
 #pragma mark - Properties
@@ -98,6 +101,55 @@
                                        _editButton.frame.size.height);
     }
     return _editButton;
+}
+
+- (UIView *)photoButtonView {
+    if (!_photoButtonView) {
+        
+        UIImageView *cameraImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_icon_photo.png"]];
+        CGRect cameraImageFrame = cameraImageView.frame;
+        
+        UILabel *photoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        photoLabel.font = [Theme editPhotoFont];
+        photoLabel.textColor = [Theme editPhotoColour];
+        photoLabel.textAlignment = NSTextAlignmentCenter;
+        photoLabel.backgroundColor = [UIColor clearColor];
+        photoLabel.text = @"PHOTO";
+        [photoLabel sizeToFit];
+        CGRect photoLabelFrame = photoLabel.frame;
+        photoLabelFrame = (CGRect){
+            cameraImageView.frame.origin.x + cameraImageView.frame.size.width + 6.0,
+            floorf((cameraImageView.frame.size.height - photoLabel.frame.size.height) / 2.0) + 2.0,
+            photoLabel.frame.size.width,
+            photoLabel.frame.size.height
+        };
+        photoLabel.frame = photoLabelFrame;
+        
+        UIEdgeInsets contentInsets = (UIEdgeInsets){
+            0.0, 0.0, 0.0, 0.0
+        };
+        CGRect frame = CGRectUnion(cameraImageView.frame, photoLabel.frame);
+        _photoButtonView = [[UIView alloc] initWithFrame:frame];
+        _photoButtonView.backgroundColor = [UIColor clearColor];
+        [_photoButtonView addSubview:cameraImageView];
+        _photoButtonView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin;
+        [_photoButtonView addSubview:photoLabel];
+        cameraImageFrame.origin.x += contentInsets.left;
+        cameraImageFrame.origin.y += contentInsets.top;
+        photoLabelFrame.origin.x += contentInsets.left;
+        photoLabelFrame.origin.y += contentInsets.top;
+        frame.size.height += contentInsets.top + contentInsets.bottom;
+        frame.size.width += contentInsets.left + contentInsets.right;
+        frame.origin.x = (self.view.bounds.size.width - kAvailableWidth) + floorf((kAvailableWidth - frame.size.width) / 2.0);
+        frame.origin.y = floorf((self.view.bounds.size.height - frame.size.height) / 2.0);
+        cameraImageView.frame = cameraImageFrame;
+        photoLabel.frame = photoLabelFrame;
+        _photoButtonView.frame = frame;
+        
+        // Disable interaction for CKEditing to take over.
+        _photoButtonView.userInteractionEnabled = NO;
+    }
+    return _photoButtonView;
 }
 
 #pragma mark - Private methods
@@ -155,25 +207,17 @@
 }
 
 - (void)loadData {
-    if ([self.book.user hasCoverPhoto]) {
-        
-        [[CKPhotoManager sharedInstance] imageForParseFile:[self.book.user parseCoverPhotoFile]
-                                                      size:self.imageView.bounds.size name:@"profileCover"
-                                                  progress:^(CGFloat progressRatio) {
-                                                  } completion:^(UIImage *image, NSString *name) {
-                                                      self.imageView.alpha = 0.0;
-                                                      self.imageView.image = image;
-                                                      
-                                                      // Fade it in.
-                                                      [UIView animateWithDuration:0.6
-                                                                            delay:0.0
-                                                                          options:UIViewAnimationOptionCurveEaseIn
-                                                                       animations:^{
-                                                                           self.imageView.alpha = 1.0;
-                                                                       }
-                                                                       completion:^(BOOL finished) {
-                                                                       }];
-                                                  }];
+    if ([self.book hasCoverPhoto]) {
+        [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size name:@"profileCover"
+                                             progress:^(CGFloat progressRatio, NSString *name) {
+                                             } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                 self.imageView.image = thumbImage;
+                                             } completion:^(UIImage *image, NSString *name) {
+                                                 self.imageView.image = image;
+                                             }];
+    } else {
+        UIImage *bookCoverImage = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
+        self.imageView.image = bookCoverImage;
     }
 }
 
@@ -189,13 +233,37 @@
 
 - (void)enableEditMode:(BOOL)editMode completion:(void (^)())completion {
     self.editMode = editMode;
+    
+    // Prep photo edit button to be transitioned in.
+    if (self.editMode) {
+        [self.view addSubview:self.photoButtonView];
+        
+        [self.editingHelper wrapEditingView:self.photoButtonView contentInsets:(UIEdgeInsets){
+            32.0, 32.0, 20.0, 41.0
+        } delegate:self white:YES editMode:NO];
+        CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+        self.photoButtonView.alpha = 0.0;
+        photoBoxView.alpha = 0.0;
+        
+    }
+    
     [UIView animateWithDuration:0.25
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.editButton.alpha = editMode ? 0.0 : 1.0;
+                         
+                         // Photo icon and textBox fade in/out
+                         self.photoButtonView.alpha = self.editMode ? 1.0 : 0.0;
+                         CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+                         photoBoxView.alpha = self.photoButtonView.alpha;
+                         
                      }
                      completion:^(BOOL finished)  {
+                         if (!self.editMode) {
+                             [self.photoButtonView removeFromSuperview];
+                         }
+                         
                          if (completion != nil) {
                              completion();
                          }

@@ -17,7 +17,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_red.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_red.png</string>
+			<string>cook_edit_bg_red</string>
 			<key>Hex</key>
 			<string>DB2F36</string>
 			<key>BackdropHex</key>
@@ -42,7 +42,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_orange.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_orange.png</string>
+			<string>cook_edit_bg_orange</string>
 			<key>Hex</key>
 			<string>DF5329</string>
 			<key>BackdropHex</key>
@@ -67,7 +67,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_yellow.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_yellow.png</string>
+			<string>cook_edit_bg_yellow</string>
 			<key>Hex</key>
 			<string>FBB437</string>
 			<key>BackdropHex</key>
@@ -92,7 +92,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_green.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_green.png</string>
+			<string>cook_edit_bg_green</string>
 			<key>Hex</key>
 			<string>3E9D3E</string>
 			<key>BackdropHex</key>
@@ -117,7 +117,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_blue.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_blue.png</string>
+			<string>cook_edit_bg_blue</string>
 			<key>Hex</key>
 			<string>3885C4</string>
 			<key>BackdropHex</key>
@@ -142,7 +142,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_purple.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_purple.png</string>
+			<string>cook_edit_bg_purple</string>
 			<key>Hex</key>
 			<string>F88886</string>
 			<key>BackdropHex</key>
@@ -167,7 +167,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_gray.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_gray.png</string>
+			<string>cook_edit_bg_gray</string>
 			<key>Hex</key>
 			<string>6B7073</string>
 			<key>BackdropHex</key>
@@ -192,7 +192,7 @@
 			<key>Outline</key>
 			<string>cook_book_edge_brown.png</string>
 			<key>RecipeEdit</key>
-			<string>cook_edit_bg_neutral.png</string>
+			<string>cook_edit_bg_neutral</string>
 			<key>Hex</key>
 			<string>896E54</string>
 			<key>BackdropHex</key>

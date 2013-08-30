@@ -13,6 +13,8 @@
 
 @interface BookProfileViewController : BookPageViewController
 
+@property (nonatomic, strong) UIImage *uploadedCoverPhoto;
+
 - (id)initWithBook:(CKBook *)book;
 
 @end

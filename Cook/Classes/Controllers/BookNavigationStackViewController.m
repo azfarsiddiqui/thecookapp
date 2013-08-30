@@ -1114,6 +1114,16 @@
 - (void)saveTapped:(id)sender {
     [self enableEditMode:NO];
     [self.currentEditViewController enableEditMode:NO];
+    
+    if (self.currentEditViewController == self.profileViewController) {
+        [self.book saveWithImage:self.profileViewController.uploadedCoverPhoto
+                      completion:^{
+                          DLog(@"Saved book cover.")
+                      } failure:^(NSError *error) {
+                          DLog(@"Error saving book cover [%@]", [error localizedDescription]);
+                      }];
+    }
+    
     self.currentEditViewController = nil;
 }
 
