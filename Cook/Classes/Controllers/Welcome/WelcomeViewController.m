@@ -51,8 +51,7 @@
 #define kCollectSection     2
 #define kSignUpSection      3
 #define kAdornmentTag       470
-#define kLabelTitleFont     [UIFont fontWithName:@"BrandonGrotesque-Medium" size:67.0]
-#define kLabelSubtitleFont  [UIFont fontWithName:@"AvenirNext-Regular" size:22.0]
+#define kLabelSubtitleFont  [UIFont fontWithName:@"AvenirNext-Regular" size:24.0]
 #define kPageHeaderSize     CGSizeMake(500.0, 500.0)
 #define kLabelGap           10.0
 
@@ -183,9 +182,9 @@
         _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:70.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:68.0]
                                                    text:@"WELCOME" textAlignment:NSTextAlignmentCenter
-                                          availableSize:size lineSpacing:-20.0];
+                                          availableSize:size paragraphBefore:-10.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
                                       120.0,
                                       titleLabel.frame.size.width,
@@ -228,7 +227,7 @@
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
                                                    text:@"YOUR\u2028COOKBOOK" textAlignment:NSTextAlignmentLeft
-                                          availableSize:size lineSpacing:-20.0];
+                                          availableSize:size paragraphBefore:-10.0];
         titleLabel.frame = CGRectMake(0.0,
                                       50.0,
                                       titleLabel.frame.size.width,
@@ -270,7 +269,7 @@
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
                                                    text:@"SHARE YOUR\u2028RECIPES" textAlignment:NSTextAlignmentCenter
-                                          availableSize:size lineSpacing:-15.0];
+                                          availableSize:size paragraphBefore:-14.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
                                       70.0,
                                       titleLabel.frame.size.width,
@@ -309,7 +308,7 @@
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
                                                    text:@"LET'S GET STARTED..." textAlignment:NSTextAlignmentCenter
-                                          availableSize:size lineSpacing:-15.0];
+                                          availableSize:size paragraphBefore:-10.0];
         _signUpPageView = titleLabel;
     }
     return _signUpPageView;
@@ -575,25 +574,18 @@
     [self.pagingView setPage:page];
 }
 
-- (UILabel *)createTitleLabelWithText:(NSString *)text textAlignment:(NSTextAlignment)textAlignment
-                        availableSize:(CGSize)availableSize {
-    
-    return [self createLabelWithFont:kLabelTitleFont text:text textAlignment:textAlignment availableSize:availableSize
-                         lineSpacing:-20.0];
-}
-
 - (UILabel *)createSubtitleLabelWithText:(NSString *)text textAlignment:(NSTextAlignment)textAlignment
                         availableSize:(CGSize)availableSize {
     
     return [self createLabelWithFont:kLabelSubtitleFont text:text textAlignment:textAlignment availableSize:availableSize
-                         lineSpacing:-8.0];
+                     paragraphBefore:4.0];
 }
 
 - (UILabel *)createLabelWithFont:(UIFont *)font text:(NSString *)text textAlignment:(NSTextAlignment)textAlignment
-                   availableSize:(CGSize)availableSize lineSpacing:(CGFloat)lineSpacing {
+                   availableSize:(CGSize)availableSize paragraphBefore:(CGFloat)paragraphBefore {
     
     // Paragraph attributes.
-    NSDictionary *textAttributes = [self textAttributesForFont:font lineSpacing:lineSpacing textAlignment:textAlignment];
+    NSDictionary *textAttributes = [self textAttributesForFont:font paragraphBefore:paragraphBefore textAlignment:textAlignment];
     NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:text attributes:textAttributes];
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -607,20 +599,25 @@
     return label;
 }
 
-- (NSDictionary *)textAttributesForFont:(UIFont *)font lineSpacing:(CGFloat)lineSpacing
-                               textAlignment:(NSTextAlignment)textAlignment {
+- (NSDictionary *)textAttributesForFont:(UIFont *)font textAlignment:(NSTextAlignment)textAlignment {
+    
+    return [self textAttributesForFont:font paragraphBefore:0.0 textAlignment:textAlignment];
+}
+
+- (NSDictionary *)textAttributesForFont:(UIFont *)font paragraphBefore:(CGFloat)paragraphBefore
+                          textAlignment:(NSTextAlignment)textAlignment {
     
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
-    paragraphStyle.lineSpacing = lineSpacing;
+    paragraphStyle.paragraphSpacingBefore = paragraphBefore;
     paragraphStyle.alignment = textAlignment;
     
     NSShadow *shadow = [NSShadow new];
     shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
-    shadow.shadowOffset = CGSizeMake(0.0, 2.0);
-    shadow.shadowBlurRadius = 4.0;
-
+    shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+    shadow.shadowBlurRadius = 3.0;
+    
     return [NSDictionary dictionaryWithObjectsAndKeys:
             font, NSFontAttributeName,
             [UIColor whiteColor], NSForegroundColorAttributeName,
