@@ -273,13 +273,13 @@
 }
 
 - (void)pauseActivityIfRequired {
-    if (!self.activityView.hidden) {
+    if (self.activityView.superview) {
         [self.activityView stopAnimating];
     }
 }
 
 - (void)resumeActivityIfRequired {
-    if (!self.activityView.hidden) {
+    if (self.activityView.superview) {
         [self.activityView startAnimating];
     }
 }
