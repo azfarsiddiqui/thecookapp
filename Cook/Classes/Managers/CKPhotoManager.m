@@ -17,6 +17,7 @@
 @interface CKPhotoManager ()
 
 @property (nonatomic, strong) NSMutableDictionary *transferInProgress;
+@property (nonatomic, strong) NSOperationQueue *imageDownloadQueue;
 
 @end
 
@@ -37,6 +38,10 @@
 - (id)init {
     if (self = [super init]) {
         self.transferInProgress = [NSMutableDictionary dictionary];
+        self.imageDownloadQueue = [[NSOperationQueue alloc] init];
+        
+        // 4 downloads at the same time.
+        self.imageDownloadQueue.maxConcurrentOperationCount = 4;
     }
     return self;
 }
@@ -84,6 +89,7 @@
                                  // Check if we have a thumbnail image, otherwise load the big one.
                                  if (recipe.recipeImage.thumbImageFile) {
                                      [weakSelf imageForParseFile:recipe.recipeImage.thumbImageFile size:size name:name
+                                                           thumb:YES
                                                         progress:^(CGFloat progressRatio) {
                                                             progress(progressRatio, name);
                                                         } completion:^(UIImage *image, NSString *name) {
@@ -155,6 +161,13 @@
                  progress:(void (^)(CGFloat progressRatio))progress
                completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    [self imageForParseFile:parseFile size:size name:name thumb:NO progress:progress completion:completion];
+}
+
+- (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name thumb:(BOOL)thumb
+                 progress:(void (^)(CGFloat progressRatio))progress
+               completion:(void (^)(UIImage *image, NSString *name))completion {
+    
     __weak CKPhotoManager *weakSelf = self;
     if (parseFile) {
         
@@ -168,14 +181,21 @@
                 
             } else {
                 
-                // Otherwise download from Parse.
-                [weakSelf downloadImageForParseFile:parseFile size:size name:name
-                                           progress:^(CGFloat progressRatio) {
-                                               progress(progressRatio);
-                                           }
-                                         completion:^(UIImage *image, NSString *name) {
-                                             completion(image, name);
-                                         }];
+                // Otherwise download from Parse in an operation.
+                NSBlockOperation *imageDownloadOperation = [NSBlockOperation blockOperationWithBlock:^{
+                    [weakSelf downloadImageForParseFile:parseFile size:size name:name
+                                               progress:^(CGFloat progressRatio) {
+                                                   progress(progressRatio);
+                                               }
+                                             completion:^(UIImage *image, NSString *name) {
+                                                 completion(image, name);
+                                             }];
+                }];
+                
+                // Thumbs are highest priority to download.
+                imageDownloadOperation.queuePriority = thumb ? NSOperationQueuePriorityHigh : NSOperationQueuePriorityNormal;
+                [self.imageDownloadQueue addOperation:imageDownloadOperation];
+
             }
         }
         
