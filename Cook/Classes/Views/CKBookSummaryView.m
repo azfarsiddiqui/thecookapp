@@ -103,6 +103,10 @@
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     DLog();
+    NSString *story = (NSString *)value;
+    self.updatedStory = story;
+    [self updateStory:story];
+    [self.editingHelper updateEditingView:editingView];
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
@@ -133,7 +137,7 @@
 #pragma mark - CKSaveableContent methods
 
 - (BOOL)contentSaveRequired {
-    return ((self.updatedProfileImage != nil) && (![self.updatedStory CK_equals:self.book.story]));
+    return ((self.updatedProfileImage != nil) || (![self.updatedStory CK_equals:self.book.story]));
 }
 
 - (void)contentPerformSave:(BOOL)save {
@@ -150,9 +154,13 @@
         
     } else {
         
+        // Clear any updated covers.
+        self.updatedStory = nil;
+        
         // Restore user profile.
         if (self.updatedProfileImage) {
             [self.profilePhotoView reloadProfilePhoto];
+            self.updatedProfileImage = nil;
         }
         
         // Restore story.

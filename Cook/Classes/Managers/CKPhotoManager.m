@@ -12,6 +12,7 @@
 #import "CKRecipe.h"
 #import "CKBook.h"
 #import "SDImageCache.h"
+#import "SDWebImageDownloader.h"
 #import "NSString+Utilities.h"
 #import "CKUser.h"
 
@@ -207,8 +208,9 @@
                  progress:(void (^)(CGFloat progressRatio))progress
                completion:(void (^)(UIImage *image, NSString *name))completion {
     
-    __weak CKPhotoManager *weakSelf = self;
     if (parseFile) {
+        
+        __weak CKPhotoManager *weakSelf = self;
         
         @autoreleasepool {
             // Get cached image for the persisted parseFile.
@@ -233,7 +235,7 @@
                 
                 // Thumbs are highest priority to download.
                 imageDownloadOperation.queuePriority = thumb ? NSOperationQueuePriorityHigh : NSOperationQueuePriorityNormal;
-                [self.imageDownloadQueue addOperation:imageDownloadOperation];
+                [weakSelf.imageDownloadQueue addOperation:imageDownloadOperation];
 
             }
         }
@@ -244,6 +246,40 @@
         completion(nil, name);
     }
     
+}
+
+- (void)imageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
+           progress:(void (^)(CGFloat progressRatio))progress
+         completion:(void (^)(UIImage *image, NSString *name))completion {
+    if (url) {
+
+        __weak CKPhotoManager *weakSelf = self;
+        
+        @autoreleasepool {
+            // Get cached image for the persisted parseFile.
+            UIImage *image = [weakSelf cachedImageForName:[url absoluteString] size:size];
+            if (image) {
+                
+                // Return cached image.
+                completion(image, name);
+                
+            } else {
+                
+                // Otherwise download directly via URL.
+                [weakSelf downloadImageForUrl:url size:size name:name
+                                 progress:^(CGFloat progressRatio) {
+                                     progress(progressRatio);
+                                 } completion:^(UIImage *image, NSString *name) {
+                                     completion(image, name);
+                                 }];
+            }
+        }
+
+    } else {
+        
+        // Return no image.
+        completion(nil, name);
+    }
 }
 
 #pragma mark - Image uploads.
@@ -595,7 +631,7 @@
                     [self storeImage:imageToFit forKey:cacheKey];
                     
                     // Mark as completed transfer.
-                    [self.transferInProgress removeObjectForKey:cacheKey];
+                    [self clearTransferForCacheKey:cacheKey];
                     
                     // Callback on mainqueue.
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -627,8 +663,65 @@
     
 }
 
+- (void)downloadImageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
+                   progress:(void (^)(CGFloat progressRatio))progress
+                 completion:(void (^)(UIImage *image, NSString *name))completion {
+    
+    // Generate a cache key for the given file and size combination.
+    NSString *cacheKey = [self cacheKeyForName:[url absoluteString] size:size];
+    
+    // Return if a download is in progress for this cacheKey.
+    if ([self transferInProgressForCacheKey:cacheKey]) {
+        return;
+    }
+    
+    DLog(@"Downloading URL %@", url);
+    
+    // Mark as in-progress transfer. Just set as zero progress for downloads until we need progress.
+    [self updateTransferProgress:@(0) cacheKey:cacheKey];
+    
+    __weak CKPhotoManager *weakSelf = self;
+    
+    // Go ahead and download the file with progress updates.
+    [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:0
+                                                         progress:^(NSUInteger receivedSize, long long expectedSize) {
+                                                             progress(receivedSize / expectedSize);
+                                                         } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                             
+                                                             if (!error) {
+                                                                 
+                                                                 @autoreleasepool {
+                                                                     UIImage *image = [UIImage imageWithData:data];
+                                                                     UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
+                                                                     
+                                                                     // Keep it in the cache.
+                                                                     [weakSelf storeImage:imageToFit forKey:cacheKey];
+                                                                     
+                                                                     // Mark as completed transfer.
+                                                                     [weakSelf.transferInProgress removeObjectForKey:cacheKey];
+                                                                     
+                                                                     // Callback on mainqueue.
+                                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                                         completion(imageToFit, name);
+                                                                     });
+                                                                 }
+                                                                 
+                                                             } else {
+                                                                 
+                                                                 // Mark as failed transfer.
+                                                                 [weakSelf clearTransferForCacheKey:cacheKey];
+
+                                                             }
+                                                         }];
+}
+
 - (UIImage *)cachedImageForParseFile:(PFFile *)parseFile size:(CGSize)size {
     NSString *cacheKey = [self cacheKeyForParseFile:parseFile size:size];
+    return [self cachedImageForKey:cacheKey];
+}
+
+- (UIImage *)cachedImageForName:(NSString *)name size:(CGSize)size {
+    NSString *cacheKey = [self cacheKeyForName:name size:size];
     return [self cachedImageForKey:cacheKey];
 }
 

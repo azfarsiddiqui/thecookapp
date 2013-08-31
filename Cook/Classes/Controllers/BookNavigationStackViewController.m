@@ -1116,7 +1116,6 @@
     [self.currentEditViewController enableEditMode:NO completion:^{
         [self.currentEditViewController contentPerformSave:NO];
     }];
-    self.currentEditViewController = nil;
 }
 
 - (void)saveTapped:(id)sender {
@@ -1124,7 +1123,6 @@
     [self.currentEditViewController enableEditMode:NO completion:^{
         [self.currentEditViewController contentPerformSave:YES];
     }];
-    self.currentEditViewController = nil;
 }
 
 - (void)enableEditMode:(BOOL)editMode {

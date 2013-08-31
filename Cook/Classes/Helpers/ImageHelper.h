@@ -15,6 +15,7 @@
 
 // Sizes
 + (CGSize)thumbSize;
++ (CGSize)profileSize;
 
 // UIImageView loading.
 + (void)configureImageView:(UIImageView *)imageView image:(UIImage *)image;
@@ -22,7 +23,6 @@
 // Legacy screen capture.
 + (UIImage *)imageFromView:(UIView *)view;
 + (UIImage *)imageFromView:(UIView *)view opaque:(BOOL)opaque;
-+ (UIImage *)negativeImageFor:(UIImage *)image;
 
 // Image scaling.
 + (UIImage *)croppedImage:(UIImage *)image size:(CGSize)size;

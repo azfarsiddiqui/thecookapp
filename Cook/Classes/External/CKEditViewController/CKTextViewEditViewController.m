@@ -83,7 +83,7 @@
 }
 
 - (BOOL)contentScrollable {
-    return !self.textLimited;
+    return YES;
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -100,12 +100,7 @@
     NSString *newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     BOOL isBackspace = [newString length] < [textView.text length];
     
-    if (self.textLimited && [text isEqualToString:@"\n"]) {
-        
-        // Disallow newline characters in textLimited mode.
-        shouldChangeText = NO;
-        
-    } else if ([textView.text length] >= self.characterLimit && !isBackspace) {
+    if ([textView.text length] >= self.characterLimit && !isBackspace) {
         
         // Disallow text entry if it's over limit and NOT backspace.
         shouldChangeText = NO;

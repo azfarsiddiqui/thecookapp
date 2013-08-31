@@ -8,9 +8,9 @@
 
 #import "CKUserProfilePhotoView.h"
 #import "CKUser.h"
-#import "UIImageView+WebCache.h"
 #import "ViewHelper.h"
 #import "ImageHelper.h"
+#import "CKPhotoManager.h"
 
 @interface CKUserProfilePhotoView ()
 
@@ -126,9 +126,11 @@
     self.user = user;
     
     // Load profile photo if available.
-    if ([user profilePhotoUrl]) {
-        [self.profileImageView setImageWithURL:[user profilePhotoUrl]];
-    }
+    [[CKPhotoManager sharedInstance] imageForUrl:[user profilePhotoUrl] size:[ImageHelper profileSize] name:@"profilePhoto"
+                                        progress:^(CGFloat progressRatio) {
+                                        } completion:^(UIImage *image, NSString *name) {
+                                            [self loadProfileImage:image];
+                                        }];
 }
 
 - (void)reloadProfilePhoto {
@@ -165,7 +167,7 @@
 }
 
 - (void)loadProfileImage:(UIImage *)profileImage {
-    self.profileImageView.image = profileImage;
+    self.profileImageView.image = [ImageHelper croppedImage:profileImage size:self.profileImageView.bounds.size];
 }
 
 #pragma mark - Properties

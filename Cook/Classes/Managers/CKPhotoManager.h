@@ -36,6 +36,10 @@
 - (void)imageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name
                  progress:(void (^)(CGFloat progressRatio))progress
                completion:(void (^)(UIImage *image, NSString *name))completion;
+- (void)imageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
+           progress:(void (^)(CGFloat progressRatio))progress
+         completion:(void (^)(UIImage *image, NSString *name))completion;
+
 
 // Image caching.
 - (BOOL)imageCachedForKey:(NSString *)cacheKey;

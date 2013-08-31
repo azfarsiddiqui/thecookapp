@@ -79,13 +79,13 @@
     [self loadData];
 }
 
-#pragma mark - BookPageViewController methods
+#pragma mark - CKSaveableContent methods
 
-- (BOOL)pageSaveRequired {
+- (BOOL)contentSaveRequired {
     return (self.updatedBookCoverPhoto != nil || ([self.summaryView contentSaveRequired]));
 }
 
-- (void)pagePerformSave:(BOOL)save {
+- (void)contentPerformSave:(BOOL)save {
     if (save) {
         
         // Upload profile photo if given.
@@ -103,6 +103,9 @@
         }
         
     } else {
+        
+        // Clear any updated covers.
+        self.updatedBookCoverPhoto = nil;
         
         // Reload the data.
         [self loadData];

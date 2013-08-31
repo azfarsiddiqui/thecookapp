@@ -406,7 +406,7 @@
         CGRect visibleFrame = parentView.bounds;
         
         UIImageView *previewImageView = [[UIImageView alloc] initWithFrame:visibleFrame];
-        previewImageView.image = self.selectedImage;
+        previewImageView.image = [self.selectedImage imageCroppedToFitSize:previewImageView.bounds.size];
         previewImageView.autoresizingMask = UIViewAutoresizingNone;
         
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:parentView.bounds];
