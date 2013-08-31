@@ -20,6 +20,7 @@
 #import "CKRecipeSocialView.h"
 #import "CKEditingViewHelper.h"
 #import "RecipeSocialViewController.h"
+#import "RecipeShareViewController.h"
 #import "Theme.h"
 #import "CKPhotoPickerViewController.h"
 #import "AppHelper.h"
@@ -41,7 +42,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate,
-    RecipeImageViewDelegate, UIAlertViewDelegate>
+    RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
@@ -93,6 +94,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 // Social layer.
 @property (nonatomic, strong) RecipeSocialViewController *socialViewController;
+
+// Share layer.
+@property (nonatomic, strong) RecipeShareViewController *shareViewController;
 
 @end
 
@@ -239,6 +243,12 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)recipeSocialViewControllerCloseRequested {
     [self showSocialOverlay:NO];
+}
+
+#pragma mark - RecipeShareViewControllerDelegate methods
+
+- (void)recipeShareViewControllerCloseRequested {
+    [self showShareOverlay:NO];
 }
 
 #pragma mark - CKRecipeSocialViewDelegate methods
@@ -1442,7 +1452,30 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)shareTapped:(id)sender {
-    DLog();
+    [self showShareOverlay:YES];
+}
+
+- (void)showShareOverlay:(BOOL)show {
+    if (show) {
+        [self hideButtons];
+        self.shareViewController = [[RecipeShareViewController alloc] initWithRecipe:self.recipe delegate:self];
+        self.shareViewController.view.frame = self.view.bounds;
+        self.shareViewController.view.alpha = 0.0;
+        [self.view addSubview:self.shareViewController.view];
+    }
+    [UIView animateWithDuration:show? 0.3 : 0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.shareViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self.shareViewController.view removeFromSuperview];
+                             self.shareViewController = nil;
+                             [self updateButtons];
+                         }
+                     }];
 }
 
 - (void)cancelTapped:(id)sender {

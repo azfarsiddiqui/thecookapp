@@ -64,4 +64,11 @@
                                              stringByAppendingPathComponent:@"ingredientsKeyboard.plist"]];
 }
 
++ (id) configValueForKey:(NSString*) key
+{
+    NSString *configFilePath = [[NSBundle mainBundle] pathForResource:@"Configuration" ofType:@"plist"];
+    id value = [[NSDictionary dictionaryWithContentsOfFile:configFilePath] objectForKey:key];
+    return value;
+}
+
 @end

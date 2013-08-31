@@ -21,5 +21,6 @@
 
 // Returns the keyboard ingredients items.
 - (NSArray *)keyboardIngredients;
++ (id) configValueForKey:(NSString*) key;
 
 @end
