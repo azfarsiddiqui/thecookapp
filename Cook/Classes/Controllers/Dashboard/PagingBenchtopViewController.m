@@ -683,22 +683,18 @@
                                      self.myBook = book;
                                      
                                      // Reload the book, then update the benchtop if cover has changed.
-                                     [self.collectionView performBatchUpdates:^{
-                                         [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
-                                     } completion:^(BOOL finished) {
-                                         
-                                         // Update after myBook has been set.
-                                         if (changedCover) {
-                                             [self updatePagingBenchtopView];
-                                         }
-                                         
-                                     }];
+                                     BenchtopBookCoverViewCell *cell = [self myBookCell];
+                                     [cell loadBook:book];
+                                     
+                                     // Update after myBook has been set.
+                                     if (changedCover) {
+                                         [self updatePagingBenchtopView];
+                                     }
                                      
                                  } else {
                                      
                                      // Just reload the book.
                                      self.myBook = book;
-                                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                  }
                                  
                                  
