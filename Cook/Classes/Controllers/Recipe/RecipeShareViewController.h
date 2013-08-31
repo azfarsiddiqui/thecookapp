@@ -10,6 +10,13 @@
 
 @class CKRecipe;
 
+typedef enum {
+    CKShareTwitter = 0,
+    CKShareFacebook,
+    CKShareMail,
+    CKShareMessage
+} CKShareType;
+
 @protocol RecipeShareViewControllerDelegate <NSObject>
 
 - (void)recipeShareViewControllerCloseRequested;

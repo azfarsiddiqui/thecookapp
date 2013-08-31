@@ -856,6 +856,7 @@
 		F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */; };
 		F6526BB617D15FE2000DDD95 /* RecipeShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6526BB517D15FE2000DDD95 /* RecipeShareViewController.xib */; };
 		F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB717D1C998000DDD95 /* Social.framework */; };
+		F6526BBA17D1D575000DDD95 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB917D1D575000DDD95 /* MessageUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1910,6 +1911,7 @@
 		F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeShareViewController.m; sourceTree = "<group>"; };
 		F6526BB517D15FE2000DDD95 /* RecipeShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecipeShareViewController.xib; sourceTree = "<group>"; };
 		F6526BB717D1C998000DDD95 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		F6526BB917D1D575000DDD95 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1917,6 +1919,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6526BBA17D1D575000DDD95 /* MessageUI.framework in Frameworks */,
 				F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */,
 				76025440171191A100950571 /* AssetsLibrary.framework in Frameworks */,
 				76EE2CDF170AEADF0043D128 /* ImageIO.framework in Frameworks */,
@@ -3061,6 +3064,7 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6526BB917D1D575000DDD95 /* MessageUI.framework */,
 				F6526BB717D1C998000DDD95 /* Social.framework */,
 				76888D0B17CF7CCD00904F15 /* Reveal.framework */,
 				7632F25017AF4CFA00E80952 /* Crashlytics.framework */,
