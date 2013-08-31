@@ -853,6 +853,9 @@
 		89E2CA95165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */; };
 		F6526BB017D0D49F000DDD95 /* Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAE17D0D49F000DDD95 /* Debug.plist */; };
 		F6526BB117D0D49F000DDD95 /* Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAF17D0D49F000DDD95 /* Release.plist */; };
+		F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */; };
+		F6526BB617D15FE2000DDD95 /* RecipeShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6526BB517D15FE2000DDD95 /* RecipeShareViewController.xib */; };
+		F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB717D1C998000DDD95 /* Social.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1903,6 +1906,10 @@
 		89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_editrecipe_textbox@2x.png"; sourceTree = "<group>"; };
 		F6526BAE17D0D49F000DDD95 /* Debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Debug.plist; sourceTree = "<group>"; };
 		F6526BAF17D0D49F000DDD95 /* Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Release.plist; sourceTree = "<group>"; };
+		F6526BB217D15E01000DDD95 /* RecipeShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeShareViewController.h; sourceTree = "<group>"; };
+		F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeShareViewController.m; sourceTree = "<group>"; };
+		F6526BB517D15FE2000DDD95 /* RecipeShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecipeShareViewController.xib; sourceTree = "<group>"; };
+		F6526BB717D1C998000DDD95 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1910,6 +1917,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */,
 				76025440171191A100950571 /* AssetsLibrary.framework in Frameworks */,
 				76EE2CDF170AEADF0043D128 /* ImageIO.framework in Frameworks */,
 				76EE2CDD170AEAB80043D128 /* CoreImage.framework in Frameworks */,
@@ -2509,6 +2517,9 @@
 				76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */,
 				76EC556217C3069C000DEA08 /* RecipeSocialHeaderView.h */,
 				76EC556317C3069C000DEA08 /* RecipeSocialHeaderView.m */,
+				F6526BB217D15E01000DDD95 /* RecipeShareViewController.h */,
+				F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */,
+				F6526BB517D15FE2000DDD95 /* RecipeShareViewController.xib */,
 				76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */,
 				76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */,
 				7635A2CC17A9F2A0002F30F2 /* IngredientListEditViewController.h */,
@@ -3050,6 +3061,7 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6526BB717D1C998000DDD95 /* Social.framework */,
 				76888D0B17CF7CCD00904F15 /* Reveal.framework */,
 				7632F25017AF4CFA00E80952 /* Crashlytics.framework */,
 				7602543F171191A100950571 /* AssetsLibrary.framework */,
@@ -3901,6 +3913,7 @@
 				761951C91793B8FD008AB495 /* cook_book_inner_icon_add.png in Resources */,
 				7675159C170CFF52008B675D /* cook_book_graphic_featured_sydney.png in Resources */,
 				7667999017AA9FCE001C5E8D /* cook_book_inner_category_blank.png in Resources */,
+				F6526BB617D15FE2000DDD95 /* RecipeShareViewController.xib in Resources */,
 				7675159D170CFF52008B675D /* cook_book_graphic_featured_sydney@2x.png in Resources */,
 				7675159F170D2ACD008B675D /* cook_featured_profileimage.png in Resources */,
 				767515A1170D2E95008B675D /* cook_featured_profileimage@2x.png in Resources */,
@@ -4250,6 +4263,7 @@
 				76E0B95A179045FD00AD70E3 /* BookHeaderView.m in Sources */,
 				76A0E48217B4B82F0027F927 /* RecipeDetails.m in Sources */,
 				76DEF050164A262C00B7DB9C /* CoverPickerViewController.m in Sources */,
+				F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */,
 				764F4D07179CE85A00821221 /* UICollectionView+Draggable.m in Sources */,
 				76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */,
 				764F4D04179CE85A00821221 /* LSCollectionViewHelper.m in Sources */,
