@@ -10,10 +10,11 @@
 #import "BookPageViewController.h"
 
 @class CKBook;
+@class CKBookSummaryView;
 
 @interface BookProfileViewController : BookPageViewController
 
-@property (nonatomic, strong) UIImage *uploadedCoverPhoto;
+@property (nonatomic, strong) CKBookSummaryView *summaryView;
 
 - (id)initWithBook:(CKBook *)book;
 

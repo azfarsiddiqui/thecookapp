@@ -423,6 +423,53 @@
     }];
 }
 
+- (void)addImage:(UIImage *)image user:(CKUser *)user {
+    
+    // Request a background execution task to allow us to finish uploading the photo even if the app is backgrounded
+    __block UIBackgroundTaskIdentifier *backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+    }];
+    
+    DLog(@"Uploading images for user [%@]", user.objectId);
+    
+    // Just the thumbnail size for the user photo.
+    UIImage *thumbImage = [ImageHelper thumbImageForImage:image];
+    NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, kThumbImageCompression);
+    PFFile *thumbImageFile = [PFFile fileWithName:@"profile.jpg" data:thumbImageData];
+    
+    // Now upload the thumb sized.
+    [thumbImageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (!error) {
+            DLog(@"Profile photo uploaded successfully.");
+            
+            // Attach it to the book.
+            user.profilePhoto = thumbImageFile;
+            
+            // Save the book to Parse.
+            [user saveInBackground:^{
+                
+                DLog(@"User saved successfully.");
+                
+                // End background task.
+                [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+                
+            } failure:^(NSError *error) {
+                
+                // End background task.
+                [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+            }];
+            
+        } else {
+            
+            DLog(@"Profile photo image error %@", [error localizedDescription]);
+            
+            // End background task.
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+        }
+    }];
+}
+
 #pragma mark - Image caching.
 
 - (BOOL)imageCachedForKey:(NSString *)cacheKey {

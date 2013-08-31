@@ -50,6 +50,28 @@
     [self.view addSubview:self.rightShadowView];
 }
 
+- (void)enableEditMode:(BOOL)editMode {
+    [self enableEditMode:editMode completion:nil];
+}
+
+- (void)enableEditMode:(BOOL)editMode completion:(void (^)())completion {
+    [self enableEditMode:editMode animated:YES completion:completion];
+}
+
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
+    self.editMode = editMode;
+}
+
+#pragma mark - CKSaveableContent methods
+
+- (BOOL)contentSaveRequired {
+    return NO;
+}
+
+- (void)contentPerformSave:(BOOL)save {
+    // Subclasses to implement.
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)leftShadowView {
@@ -85,14 +107,6 @@
 - (void)closeTapped:(id)sender {
     DLog();
     [self.bookPageDelegate bookPageViewControllerCloseRequested];
-}
-
-- (void)enableEditMode:(BOOL)editMode {
-    [self enableEditMode:editMode completion:nil];
-}
-
-- (void)enableEditMode:(BOOL)editMode completion:(void (^)())completion {
-    self.editMode = editMode;
 }
 
 @end

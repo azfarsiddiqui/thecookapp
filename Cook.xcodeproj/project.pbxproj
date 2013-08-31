@@ -1354,6 +1354,7 @@
 		768BBB92171B93FA00E8809F /* CKImageEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKImageEditViewController.h; sourceTree = "<group>"; };
 		768E735C170BD5440063CF49 /* CKStatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKStatView.h; sourceTree = "<group>"; };
 		768E735D170BD5440063CF49 /* CKStatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKStatView.m; sourceTree = "<group>"; };
+		768EC2F717D1A13F00F323D7 /* CKSaveableContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKSaveableContent.h; sourceTree = "<group>"; };
 		7692260016474D4600752128 /* IllustrationPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationPickerViewController.h; sourceTree = "<group>"; };
 		7692260116474D4600752128 /* IllustrationPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationPickerViewController.m; sourceTree = "<group>"; };
 		769226031647863900752128 /* IllustrationBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationBookCell.h; sourceTree = "<group>"; };
@@ -3279,6 +3280,7 @@
 		89232B931625431900152940 /* Book */ = {
 			isa = PBXGroup;
 			children = (
+				768EC2F717D1A13F00F323D7 /* CKSaveableContent.h */,
 				76E0B95217903B7600AD70E3 /* BookNavigationStackViewController.h */,
 				76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */,
 				76E0B95517903B8E00AD70E3 /* BookPagingStackLayout.h */,

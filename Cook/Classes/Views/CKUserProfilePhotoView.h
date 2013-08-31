@@ -18,7 +18,15 @@ typedef enum {
 	ProfileViewSizeLargeIntro,
 } ProfileViewSize;
 
+@protocol CKUserProfilePhotoViewDelegate <NSObject>
+
+- (void)userProfilePhotoViewEditRequested;
+
+@end
+
 @interface CKUserProfilePhotoView : UIView
+
+@property (nonatomic, weak) id<CKUserProfilePhotoViewDelegate> delegate;
 
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize;
 + (CGSize)sizeForProfileSize:(ProfileViewSize)profileSize border:(BOOL)border;
@@ -30,6 +38,9 @@ typedef enum {
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize;
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
             border:(BOOL)border;
+- (void)reloadProfilePhoto;
 - (void)loadProfilePhotoForUser:(CKUser *)user;
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
+- (void)loadProfileImage:(UIImage *)profileImage;
 
 @end

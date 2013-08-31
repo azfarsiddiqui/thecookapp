@@ -32,6 +32,7 @@
     UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
 @property (nonatomic, strong) CKRecipe *saveOrUpdatedRecipe;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
@@ -90,6 +91,7 @@
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
         self.delegate = delegate;
         self.book = book;
+        self.user = book.user;
         self.profileViewController = [[BookProfileViewController alloc] initWithBook:book];
         self.profileViewController.bookPageDelegate = self;
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
@@ -287,6 +289,10 @@
         self.currentEditViewController = self.profileViewController;
         [self enableEditMode:editMode];
     }
+}
+
+- (void)bookPageViewController:(BookPageViewController *)bookPageViewController editing:(BOOL)editing {
+    [self updateButtonsWithAlpha:editing ? 0.0 : 1.0];
 }
 
 #pragma mark - BookNavigationViewDelegate methods
@@ -887,7 +893,7 @@
                                                                                    withReuseIdentifier:kProfileHeaderId
                                                                                           forIndexPath:indexPath];
     BookProfileHeaderView *profileHeaderView = (BookProfileHeaderView *)headerView;
-    [profileHeaderView configureWithBook:self.book];
+    [profileHeaderView configureBookSummaryView:self.profileViewController.summaryView];
     return headerView;
 }
 
@@ -920,7 +926,7 @@
                                                                                           forIndexPath:indexPath];
     BookNavigationView *navigationView = (BookNavigationView *)headerView;
     navigationView.delegate = self;
-    [navigationView setTitle:self.book.user.name editable:[self.book isOwner]];
+    [navigationView setTitle:self.user.name editable:[self.book isOwner]];
     [navigationView setDark:NO];
     self.bookNavigationView = navigationView;
     
@@ -1107,33 +1113,32 @@
 
 - (void)cancelTapped:(id)sender {
     [self enableEditMode:NO];
-    [self.currentEditViewController enableEditMode:NO];
+    [self.currentEditViewController enableEditMode:NO completion:^{
+        [self.currentEditViewController contentPerformSave:NO];
+    }];
     self.currentEditViewController = nil;
 }
 
 - (void)saveTapped:(id)sender {
     [self enableEditMode:NO];
-    [self.currentEditViewController enableEditMode:NO];
-    
-    if (self.currentEditViewController == self.profileViewController) {
-        [self.book saveWithImage:self.profileViewController.uploadedCoverPhoto
-                      completion:^{
-                          DLog(@"Saved book cover.")
-                      } failure:^(NSError *error) {
-                          DLog(@"Error saving book cover [%@]", [error localizedDescription]);
-                      }];
-    }
-    
+    [self.currentEditViewController enableEditMode:NO completion:^{
+        [self.currentEditViewController contentPerformSave:YES];
+    }];
     self.currentEditViewController = nil;
 }
 
 - (void)enableEditMode:(BOOL)editMode {
     self.editMode = editMode;
-    [self updateButtons];
+    [self updateButtonsWithAlpha:1.0];
+    [self.currentEditViewController enableEditMode:editMode animated:NO completion:nil];
 }
 
 - (void)updateButtons {
-    if (self.editMode) {
+    [self updateButtonsWithAlpha:1.0];
+}
+
+- (void)updateButtonsWithAlpha:(CGFloat)alpha {
+    if (self.editMode && !self.cancelButton.superview && !self.saveButton.superview) {
         self.cancelButton.alpha = 0.0;
         self.saveButton.alpha = 0.0;
         self.cancelButton.transform = CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
@@ -1149,8 +1154,8 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.cancelButton.alpha = self.editMode ? 1.0 : 0.0;
-                         self.saveButton.alpha = self.editMode ? 1.0 : 0.0;
+                         self.cancelButton.alpha = self.editMode ? alpha : 0.0;
+                         self.saveButton.alpha = self.editMode ? alpha : 0.0;
                          self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);
                          self.saveButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.saveButton.frame.size.height);
                      }
@@ -1159,6 +1164,6 @@
                              [self.cancelButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
                          }
-                     }];
-}
+                     }];}
+
 @end

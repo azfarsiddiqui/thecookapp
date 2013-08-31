@@ -441,6 +441,17 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }
 }
 
+- (void)setProfilePhoto:(PFFile *)profilePhoto {
+    if (!profilePhoto) {
+        return;
+    }
+    [self.parseObject setObject:profilePhoto forKey:kUserAttrProfilePhoto];
+}
+
+- (PFFile *)profilePhoto {
+    return [self.parseObject objectForKey:kUserAttrProfilePhoto];
+}
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {

@@ -473,8 +473,10 @@
 
 - (void)saveWithImage:(UIImage *)image completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     if (image) {
+        DLog(@"Saving book with image.");
         [[CKPhotoManager sharedInstance] addImage:image book:self];
     } else {
+        DLog(@"Saving book without image.");
         [self saveInBackground];
     }
 }

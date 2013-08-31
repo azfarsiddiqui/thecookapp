@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
+@class CKUser;
 @class CKBook;
 @class CKRecipe;
 @class CKRecipeImage;
@@ -45,5 +46,6 @@
 // Image uploads, including thumbnail generation.
 - (void)addImage:(UIImage *)image recipe:(CKRecipe *)recipe;
 - (void)addImage:(UIImage *)image book:(CKBook *)book;
+- (void)addImage:(UIImage *)image user:(CKUser *)user;
 
 @end

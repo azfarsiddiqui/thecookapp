@@ -12,13 +12,27 @@
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
 #import "CKStatView.h"
+#import "CKPhotoPickerViewController.h"
+#import "AppHelper.h"
+#import "ImageHelper.h"
+#import "NSString+Utilities.h"
+#import "CKPhotoManager.h"
+#import "CKEditingViewHelper.h"
+#import "CKEditViewController.h"
+#import "CKTextViewEditViewController.h"
 
-@interface CKBookSummaryView ()
+@interface CKBookSummaryView () <CKPhotoPickerViewControllerDelegate, CKUserProfilePhotoViewDelegate,
+    CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
+@property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) CKStatView *friendsStatView;
 @property (nonatomic, strong) CKStatView *recipesStatView;
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+@property (nonatomic, strong) CKEditViewController *editViewController;
 
 @end
 
@@ -35,28 +49,138 @@
     if (self = [super initWithFrame:CGRectMake(0.0, 0.0, kSummarySize.width, kSummarySize.height)]) {
         self.book = book;
         self.backgroundColor = [UIColor clearColor];
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
         [self initViews];
         [self loadData];
     }
     return self;
 }
 
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
+    if (editMode) {
+        [self.editingHelper wrapEditingView:self.storyLabel delegate:self white:NO];
+    } else {
+        [self.editingHelper unwrapEditingView:self.storyLabel];
+    }
+    [self.profilePhotoView enableEditMode:editMode animated:animated];
+}
+
+#pragma mark CKEditingTextBoxViewDelegate methods
+
+- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    if (editingView == self.storyLabel) {
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+                                                                                                         delegate:self
+                                                                                                    editingHelper:self.editingHelper
+                                                                                                            white:YES
+                                                                                                            title:@"Story"
+                                                                                                   characterLimit:500];
+//        editViewController.clearOnFocus = ![self.recipeDetails hasStory];
+        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+    }
+}
+
+- (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
+    DLog();
+}
+
+#pragma mark - CKEditViewControllerDelegate methods
+
+- (void)editViewControllerWillAppear:(BOOL)appear {
+    if ([self.delegate respondsToSelector:@selector(bookSummaryViewEditing:)]) {
+        [self.delegate bookSummaryViewEditing:appear];
+    }
+}
+
+- (void)editViewControllerDidAppear:(BOOL)appear {
+}
+
+- (void)editViewControllerDismissRequested {
+    [self.editViewController performEditing:NO];
+}
+
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+    DLog();
+}
+
+#pragma mark - CKPhotoPickerViewControllerDelegate methods
+
+- (void)photoPickerViewControllerSelectedImage:(UIImage *)image {
+    [self showPhotoPicker:NO];
+    
+    // Present the image.
+    UIImage *scaledImage = [ImageHelper scaledImage:image size:[ImageHelper thumbSize]];
+    [self.profilePhotoView loadProfileImage:scaledImage];
+    
+    // Save photo to be uploaded.
+    self.updatedProfileImage = scaledImage;
+}
+
+- (void)photoPickerViewControllerCloseRequested {
+    self.updatedProfileImage = nil;
+    [self.profilePhotoView reloadProfilePhoto];
+    [self showPhotoPicker:NO];
+}
+
+#pragma mark - CKUserProfilePhotoViewDelegate methods
+
+- (void)userProfilePhotoViewEditRequested {
+    [self showPhotoPicker:YES];
+}
+
+#pragma mark - CKSaveableContent methods
+
+- (BOOL)contentSaveRequired {
+    return ((self.updatedProfileImage != nil) && (![self.updatedStory CK_equals:self.book.story]));
+}
+
+- (void)contentPerformSave:(BOOL)save {
+    if (save) {
+        
+        // Save image if given.
+        if (self.updatedProfileImage) {
+            [[CKPhotoManager sharedInstance] addImage:self.updatedProfileImage user:self.book.user];
+        }
+        
+        // Save story regardless user can choose to clear it.
+        self.book.story = self.updatedStory;
+        [self.book saveInBackground];
+        
+    } else {
+        
+        // Restore user profile.
+        if (self.updatedProfileImage) {
+            [self.profilePhotoView reloadProfilePhoto];
+        }
+        
+        // Restore story.
+        if (![self.updatedStory CK_equals:self.book.story]) {
+            [self updateStory:self.book.story];
+        }
+    }
+}
+
 #pragma mark - Private methods
 
 - (void)initViews {
     
-    CGSize availableSize = [self availableSize];
-    
     // Top profile photo.
     UIImage *placeholderImage = self.book.featured ? [UIImage imageNamed:@"cook_featured_profileimage.png"] : nil;
-    CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
-                                                                                placeholder:placeholderImage
-                                                                                profileSize:ProfileViewSizeLarge];
-    profilePhotoView.frame = CGRectMake(floorf((self.bounds.size.width - profilePhotoView.frame.size.width) / 2.0),
-                                        kContentInsets.top,
-                                        profilePhotoView.frame.size.width,
-                                        profilePhotoView.frame.size.height);
-    [self addSubview:profilePhotoView];
+    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
+                                                             placeholder:placeholderImage
+                                                             profileSize:ProfileViewSizeLarge];
+    self.profilePhotoView.frame = CGRectMake(floorf((self.bounds.size.width - self.profilePhotoView.frame.size.width) / 2.0),
+                                             kContentInsets.top,
+                                             self.profilePhotoView.frame.size.width,
+                                             self.profilePhotoView.frame.size.height);
+    if ([self.book isOwner]) {
+        self.profilePhotoView.delegate = self;
+    }
+    [self addSubview:self.profilePhotoView];
+    
+    // Can edit?
     
     // User name
     NSString *name = [self.book.user.name uppercaseString];
@@ -70,7 +194,7 @@
     nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     [nameLabel sizeToFit];
     nameLabel.frame = CGRectMake(floorf((self.bounds.size.width - nameLabel.frame.size.width) / 2.0),
-                                 profilePhotoView.frame.origin.y + profilePhotoView.frame.size.height + kProfileNameGap,
+                                 self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + kProfileNameGap,
                                  nameLabel.frame.size.width,
                                  nameLabel.frame.size.height);
     [self addSubview:nameLabel];
@@ -92,26 +216,36 @@
     [self updateStatViews];
     
     // Book story.
+    [self updateStory:self.book.story];
+}
+
+- (void)updateStory:(NSString *)story {
+    if (!self.storyLabel) {
+        self.storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.storyLabel.font = [Theme storeBookSummaryStoryFont];
+        self.storyLabel.backgroundColor = [UIColor clearColor];
+        self.storyLabel.textColor = [Theme storeBookSummaryStoryColour];
+        self.storyLabel.shadowColor = [UIColor blackColor];
+        self.storyLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+        self.storyLabel.textAlignment = NSTextAlignmentCenter;
+        self.storyLabel.numberOfLines = 0;
+        self.storyLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        [self addSubview:self.storyLabel];
+    }
+    
     UIEdgeInsets storyInsets = UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0);
-    NSString *story = self.book.story;
-    CGSize storySize = [story sizeWithFont:[Theme storeBookSummaryStoryFont]
-                         constrainedToSize:CGSizeMake(availableSize.width - storyInsets.left - storyInsets.right,
-                                                      availableSize.height - self.recipesStatView.frame.origin.y - self.recipesStatView.frame.size.height)
-                             lineBreakMode:NSLineBreakByWordWrapping];
-    UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentInsets.left + storyInsets.left + floorf((availableSize.width - storyInsets.left - storyInsets.right - storySize.width) / 2.0),
-                                                                    self.recipesStatView.frame.origin.y + kStatsStoryGap,
-                                                                    storySize.width,
-                                                                    storySize.height)];
-    storyLabel.font = [Theme storeBookSummaryStoryFont];
-    storyLabel.backgroundColor = [UIColor clearColor];
-    storyLabel.textColor = [Theme storeBookSummaryStoryColour];
-    storyLabel.shadowColor = [UIColor blackColor];
-    storyLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    storyLabel.textAlignment = NSTextAlignmentCenter;
-    storyLabel.text = story;
-    storyLabel.numberOfLines = 0;
-    storyLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [self addSubview:storyLabel];
+    self.storyLabel.text = story;
+    
+    CGSize availableSize = [self availableSize];
+    availableSize.width = availableSize.width - storyInsets.left - storyInsets.right;
+    availableSize.height = availableSize.height - self.recipesStatView.frame.origin.y - self.recipesStatView.frame.size.height - kStatsStoryGap;
+    CGSize storySize = [self.storyLabel sizeThatFits:availableSize];
+    self.storyLabel.frame = (CGRect) {
+        kContentInsets.left + storyInsets.left + floorf((availableSize.width - storySize.width) / 2.0),
+        self.recipesStatView.frame.origin.y + kStatsStoryGap,
+        storySize.width,
+        storySize.height
+    };
 }
 
 - (void)updateStatViews {
@@ -150,6 +284,34 @@
     } failure:^(NSError *error) {
         // Ignore failure.
     }];
+}
+
+- (void)showPhotoPicker:(BOOL)show {
+    if (show) {
+        // Present photo picker fullscreen.
+        UIView *rootView = [[AppHelper sharedInstance] rootView];
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self];
+        self.photoPickerViewController = photoPickerViewController;
+        self.photoPickerViewController.view.alpha = 0.0;
+        [rootView addSubview:self.photoPickerViewController.view];
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.photoPickerViewController.view.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         if (!show) {
+                             [self cleanupPhotoPicker];
+                         }
+                     }];
+}
+
+- (void)cleanupPhotoPicker {
+    [self.photoPickerViewController.view removeFromSuperview];
+    self.photoPickerViewController = nil;
 }
 
 @end

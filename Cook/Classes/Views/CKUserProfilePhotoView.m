@@ -8,9 +8,9 @@
 
 #import "CKUserProfilePhotoView.h"
 #import "CKUser.h"
-#import <QuartzCore/QuartzCore.h>
 #import "UIImageView+WebCache.h"
 #import "ViewHelper.h"
+#import "ImageHelper.h"
 
 @interface CKUserProfilePhotoView ()
 
@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UIView *borderView;
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UIImage *placeholderImage;
+@property (nonatomic, strong) UIButton *editButton;
 
 @end
 
@@ -110,6 +111,9 @@
         }
         [self applyRoundProfileImageMask];
         
+        // Add edit.
+        [self initEditButton];
+        
         // Load photo if user was given.
         if (user) {
             [self loadProfilePhotoForUser:user];
@@ -125,6 +129,54 @@
     if ([user profilePhotoUrl]) {
         [self.profileImageView setImageWithURL:[user profilePhotoUrl]];
     }
+}
+
+- (void)reloadProfilePhoto {
+    if (!self.user) {
+        return;
+    }
+    
+    [self loadProfilePhotoForUser:self.user];
+}
+
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
+    
+    // Edit mode only in Large mode.
+    if (self.profileSize != ProfileViewSizeLarge) {
+        return;
+    }
+    
+    if (editMode) {
+        self.editButton.alpha = 0.0;
+    }
+    
+    if (animated) {
+        [UIView animateWithDuration:0.25
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.editButton.alpha = editMode ? 1.0 : 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    } else {
+        self.editButton.alpha = editMode ? 1.0 : 0.0;
+    }
+}
+
+- (void)loadProfileImage:(UIImage *)profileImage {
+    self.profileImageView.image = profileImage;
+}
+
+#pragma mark - Properties
+
+- (UIButton *)editButton {
+    if (!_editButton) {
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_customise_profile_photo.png"]
+                                    selectedImage:[UIImage imageNamed:@"cook_customise_profile_photo_onpress.png"]
+                                           target:self selector:@selector(editTapped:)];
+    }
+    return _editButton;
 }
 
 #pragma mark - Private methods
@@ -167,6 +219,23 @@
                                      size:(CGSize){
                                          floorf(self.profileImageView.bounds.size.width / 2.0),
                                          floorf(self.profileImageView.bounds.size.height / 2.0)}];
+}
+
+- (void)editTapped:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(userProfilePhotoViewEditRequested)]) {
+        [self.delegate performSelector:@selector(userProfilePhotoViewEditRequested)];
+    }
+}
+
+- (void)initEditButton {
+    self.editButton.frame = (CGRect){
+        floorf((self.bounds.size.width - self.editButton.frame.size.width) / 2.0),
+        floorf((self.bounds.size.height - self.editButton.frame.size.height) / 2.0),
+        self.editButton.frame.size.width,
+        self.editButton.frame.size.height
+    };
+    [self addSubview:self.editButton];
+    self.editButton.alpha = 0.0;
 }
 
 @end

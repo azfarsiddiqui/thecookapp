@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class CKBook;
+@class CKBookSummaryView;
 
 @interface BookProfileHeaderView : UICollectionReusableView
 
 + (CGFloat)profileHeaderWidth;
-- (void)configureWithBook:(CKBook *)book;
+- (void)configureBookSummaryView:(CKBookSummaryView *)summaryView;
 
 @end

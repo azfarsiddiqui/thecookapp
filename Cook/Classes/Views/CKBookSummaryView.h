@@ -7,11 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CKSaveableContent.h"
 
 @class CKBook;
 
-@interface CKBookSummaryView : UIView
+@protocol CKBookSummaryViewDelegate <NSObject>
+
+@optional
+- (void)bookSummaryViewEditing:(BOOL)editing;
+
+@end
+
+@interface CKBookSummaryView : UIView <CKSaveableContent>
+
+@property (nonatomic, weak) id<CKBookSummaryViewDelegate> delegate;
+@property (nonatomic, strong) UIImage *updatedProfileImage;
+@property (nonatomic, strong) NSString *updatedStory;
 
 - (id)initWithBook:(CKBook *)book;
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
 
 @end

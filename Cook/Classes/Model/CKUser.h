@@ -32,6 +32,9 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 @property (nonatomic, strong) NSString *password;
 @property (nonatomic, assign) DashTheme theme;
 
+// Cover photos.
+@property (nonatomic, strong) PFFile *profilePhoto;
+
 + (CKUser *)currentUser;
 + (BOOL)isLoggedIn;
 + (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

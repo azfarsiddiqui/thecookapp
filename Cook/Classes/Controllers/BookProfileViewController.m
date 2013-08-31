@@ -20,9 +20,9 @@
 #import "CKEditingViewHelper.h"
 #import "CKPhotoManager.h"
 #import "CKBookCover.h"
-#import <Parse/Parse.h>
 
-@interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate>
+@interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate,
+    CKBookSummaryViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
@@ -30,6 +30,11 @@
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+
+// Edited content.
+@property (nonatomic, strong) UIImage *updatedBookCoverPhoto;
+@property (nonatomic, strong) UIImage *updatedUserPhoto;
+@property (nonatomic, strong) NSString *updatedBookStory;
 
 @end
 
@@ -58,10 +63,53 @@
     [self initImageView];
     
     if ([self canEditBook]) {
+        [self.view addSubview:self.photoButtonView];
+        
+        // Wrap an editBox box.
+        [self.editingHelper wrapEditingView:self.photoButtonView contentInsets:(UIEdgeInsets){
+            32.0, 32.0, 20.0, 41.0
+        } delegate:self white:YES editMode:NO];
+        UIView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+        self.photoButtonView.alpha = 0.0;
+        photoBoxView.alpha = 0.0;
+        
         [self.view addSubview:self.editButton];
     }
     
     [self loadData];
+}
+
+#pragma mark - BookPageViewController methods
+
+- (BOOL)pageSaveRequired {
+    return (self.updatedBookCoverPhoto != nil || ([self.summaryView contentSaveRequired]));
+}
+
+- (void)pagePerformSave:(BOOL)save {
+    if (save) {
+        
+        // Upload profile photo if given.
+        if (self.updatedBookCoverPhoto) {
+            [self.book saveWithImage:self.updatedBookCoverPhoto
+                          completion:^{
+                              DLog(@"Saved book.");
+                          } failure:^(NSError *error) {
+                              // Ignore returns.
+                          }];
+        }
+        
+        if ([self.summaryView contentSaveRequired]) {
+            [self.summaryView contentPerformSave:YES];
+        }
+        
+    } else {
+        
+        // Reload the data.
+        [self loadData];
+        
+        // Restore the data in summary view.
+        [self.summaryView contentPerformSave:NO];
+    }
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
@@ -74,7 +122,7 @@
     self.imageView.image = croppedImage;
     
     // Save photo to be uploaded.
-    self.uploadedCoverPhoto = image;
+    self.updatedBookCoverPhoto = image;
 }
 
 - (void)photoPickerViewControllerCloseRequested {
@@ -85,6 +133,12 @@
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
     [self showPhotoPicker:YES];
+}
+
+#pragma mark - CKBookSummaryViewDelegate methods
+
+- (void)bookSummaryViewEditing:(BOOL)editing {
+    [self.bookPageDelegate bookPageViewController:self editing:editing];
 }
 
 #pragma mark - Properties
@@ -150,6 +204,14 @@
         _photoButtonView.userInteractionEnabled = NO;
     }
     return _photoButtonView;
+}
+
+- (CKBookSummaryView *)summaryView {
+    if (!_summaryView) {
+        _summaryView = [[CKBookSummaryView alloc] initWithBook:self.book];
+        _summaryView.delegate = self;
+    }
+    return _summaryView;
 }
 
 #pragma mark - Private methods
@@ -226,48 +288,56 @@
 }
 
 - (void)editTapped:(id)sender {
-    [self enableEditMode:YES completion:^{
-        [self.bookPageDelegate bookPageViewController:self editModeRequested:YES];
-    }];
+    [self.bookPageDelegate bookPageViewController:self editModeRequested:YES];
 }
 
 - (void)enableEditMode:(BOOL)editMode completion:(void (^)())completion {
+    [self enableEditMode:editMode animated:YES completion:completion];
+}
+
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
     self.editMode = editMode;
     
     // Prep photo edit button to be transitioned in.
     if (self.editMode) {
-        [self.view addSubview:self.photoButtonView];
-        
-        [self.editingHelper wrapEditingView:self.photoButtonView contentInsets:(UIEdgeInsets){
-            32.0, 32.0, 20.0, 41.0
-        } delegate:self white:YES editMode:NO];
-        CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+        UIView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
         self.photoButtonView.alpha = 0.0;
         photoBoxView.alpha = 0.0;
-        
     }
     
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.editButton.alpha = editMode ? 0.0 : 1.0;
-                         
-                         // Photo icon and textBox fade in/out
-                         self.photoButtonView.alpha = self.editMode ? 1.0 : 0.0;
-                         CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
-                         photoBoxView.alpha = self.photoButtonView.alpha;
-                         
-                     }
-                     completion:^(BOOL finished)  {
-                         if (!self.editMode) {
-                             [self.photoButtonView removeFromSuperview];
+    if (animated) {
+        [UIView animateWithDuration:0.25
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             
+                             // Photo button.
+                             self.editButton.alpha = editMode ? 0.0 : 1.0;
+                             self.photoButtonView.alpha = self.editMode ? 1.0 : 0.0;
+                             CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+                             photoBoxView.alpha = self.photoButtonView.alpha;
+                             
                          }
-                         
-                         if (completion != nil) {
-                             completion();
-                         }
-                     }];
+                         completion:^(BOOL finished)  {
+                             
+                             // Summary view.
+                             [self.summaryView enableEditMode:editMode animated:YES];
+                             
+                             if (completion != nil) {
+                                 completion();
+                             }
+                         }];
+    } else {
+        
+        // Photo button.
+        self.editButton.alpha = editMode ? 0.0 : 1.0;
+        self.photoButtonView.alpha = self.editMode ? 1.0 : 0.0;
+        CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
+        photoBoxView.alpha = self.photoButtonView.alpha;
+        
+        // Summary view.
+        [self.summaryView enableEditMode:editMode animated:NO];
+    }
 }
 
 @end

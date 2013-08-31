@@ -30,12 +30,12 @@
     return self;
 }
 
-- (void)configureWithBook:(CKBook *)book {
-    if (self.summaryView.superview) {
+- (void)configureBookSummaryView:(CKBookSummaryView *)summaryView {
+    if (self.summaryView) {
         return;
     }
     
-    self.summaryView = [[CKBookSummaryView alloc] initWithBook:book];
+    self.summaryView = summaryView;
     self.summaryView.frame = (CGRect){
         floorf((self.bounds.size.width - self.summaryView.frame.size.width) / 2.0),
         floorf((self.bounds.size.height - self.summaryView.frame.size.height) / 2.0),
@@ -43,7 +43,6 @@
         self.summaryView.frame.size.height
     };
     [self addSubview:self.summaryView];
-    
 }
 
 #pragma mark - Properties
