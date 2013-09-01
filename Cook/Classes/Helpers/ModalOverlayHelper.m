@@ -11,6 +11,14 @@
 
 @implementation ModalOverlayHelper
 
++ (UIColor *)modalOverlayBackgroundColour {
+    return [self modalOverlayBackgroundColourWithAlpha:0.7];
+}
+
++ (UIColor *)modalOverlayBackgroundColourWithAlpha:(CGFloat)alpha {
+    return [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:alpha];
+}
+
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
                                completion:(void (^)())completion {
     

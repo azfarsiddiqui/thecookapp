@@ -18,10 +18,12 @@
 #import "EventHelper.h"
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
+#import "ModalOverlayHelper.h"
 
 @interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate>
 
 @property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIView *blackOverlayView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *subtitleLabel;
@@ -182,9 +184,31 @@
 }
 
 - (void)loadSnapshotImage:(UIImage *)snapshotImage {
-    [ImageHelper blurredSignUpImage:snapshotImage completion:^(UIImage *blurredImage) {
-        self.blurredImageView.image = blurredImage;
-    }];
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveLinear
+                     animations:^{
+                         self.blackOverlayView.alpha = 1.0;
+                     } completion:^(BOOL finished) {
+                         
+                         // Now start blurring.
+                         [ImageHelper blurredSignUpImage:snapshotImage completion:^(UIImage *blurredImage) {
+                             self.blurredImageView.alpha = 0.0;
+                             self.blurredImageView.image = blurredImage;
+                             
+                             // Fade blurred image in, while fade the dark overlay out.
+                             [UIView animateWithDuration:0.5
+                                                   delay:0.0
+                                                 options:UIViewAnimationCurveLinear
+                                              animations:^{
+                                                  self.blackOverlayView.alpha = 0.0;
+                                                  self.blurredImageView.alpha = 1.0;
+                                              } completion:^(BOOL finished) {
+                                              }];
+
+                         }];
+                     }];
+    
 }
 
 #pragma mark - CKTextFieldViewDelegate methods
@@ -300,9 +324,17 @@
 #pragma mark - Private methods
 
 - (void)initBackgroundView {
+    // Blurred imageView to be hidden to start off with.
     self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.blurredImageView];
+    self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
+    
+    // Temporary dark overlay to be in place before blur comes in.
+    self.blackOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.blackOverlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
+    [self.view addSubview:self.blackOverlayView];
+    self.blackOverlayView.alpha = 0.0;  // To be faded in.
     
     // Register tap to dismiss.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapped:)];

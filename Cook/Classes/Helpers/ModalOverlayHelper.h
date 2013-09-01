@@ -10,6 +10,9 @@
 
 @interface ModalOverlayHelper : NSObject
 
++ (UIColor *)modalOverlayBackgroundColour;
++ (UIColor *)modalOverlayBackgroundColourWithAlpha:(CGFloat)alpha;
+
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
                                completion:(void (^)())completion;
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show

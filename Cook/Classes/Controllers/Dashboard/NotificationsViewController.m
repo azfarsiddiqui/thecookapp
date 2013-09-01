@@ -14,6 +14,7 @@
 #import "NotificationsFlowLayout.h"
 #import "MRCEnumerable.h"
 #import "CKActivityIndicatorView.h"
+#import "ModalOverlayHelper.h"
 
 @interface NotificationsViewController ()
 
@@ -42,7 +43,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor clearColor];
-    self.collectionView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kUnderlayMaxAlpha];
+    self.collectionView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
     self.collectionView.bounces = YES;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.alwaysBounceVertical = YES;
