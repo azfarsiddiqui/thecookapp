@@ -278,6 +278,9 @@
 		766B0DE41664495E00A934FD /* Neutra2Display-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */; };
 		766B0DE51664495E00A934FD /* Neutra2Display-Titling.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */; };
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
+		766D96F517D2E54700A9104E /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 766D96F417D2E54700A9104E /* NotificationsViewController.m */; };
+		766D96F817D2E80000A9104E /* NotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 766D96F717D2E80000A9104E /* NotificationCell.m */; };
+		766D96FB17D2EB0200A9104E /* ModalOverlayHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 766D96FA17D2EB0200A9104E /* ModalOverlayHelper.m */; };
 		766E431617C7129400F1044B /* CKActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 766E431017C7129400F1044B /* CKActivityIndicatorView.m */; };
 		766E431717C7129400F1044B /* cook_book_inner_loading_large_inner.png in Resources */ = {isa = PBXBuildFile; fileRef = 766E431217C7129400F1044B /* cook_book_inner_loading_large_inner.png */; };
 		766E431817C7129400F1044B /* cook_book_inner_loading_large_inner@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 766E431317C7129400F1044B /* cook_book_inner_loading_large_inner@2x.png */; };
@@ -714,7 +717,7 @@
 		76EBE640179549C10099E2CB /* cook_book_inner_icon_like_light_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE638179549C10099E2CB /* cook_book_inner_icon_like_light_on.png */; };
 		76EBE641179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */; };
 		76EC556117C3030D000DEA08 /* RecipeSocialCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */; };
-		76EC556417C3069C000DEA08 /* RecipeSocialHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556317C3069C000DEA08 /* RecipeSocialHeaderView.m */; };
+		76EC556417C3069C000DEA08 /* ModalOverlayHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */; };
 		76EC556717C33322000DEA08 /* RecipeSocialViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
@@ -1213,6 +1216,12 @@
 		766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Titling.otf"; sourceTree = "<group>"; };
 		766BFC201630DE990083EB0E /* UIColor+Expanded.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Expanded.h"; sourceTree = "<group>"; };
 		766BFC211630DE990083EB0E /* UIColor+Expanded.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Expanded.m"; sourceTree = "<group>"; };
+		766D96F317D2E54700A9104E /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = "<group>"; };
+		766D96F417D2E54700A9104E /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
+		766D96F617D2E80000A9104E /* NotificationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationCell.h; sourceTree = "<group>"; };
+		766D96F717D2E80000A9104E /* NotificationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationCell.m; sourceTree = "<group>"; };
+		766D96F917D2EB0200A9104E /* ModalOverlayHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalOverlayHelper.h; sourceTree = "<group>"; };
+		766D96FA17D2EB0200A9104E /* ModalOverlayHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModalOverlayHelper.m; sourceTree = "<group>"; };
 		766E430F17C7129400F1044B /* CKActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKActivityIndicatorView.h; sourceTree = "<group>"; };
 		766E431017C7129400F1044B /* CKActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKActivityIndicatorView.m; sourceTree = "<group>"; };
 		766E431217C7129400F1044B /* cook_book_inner_loading_large_inner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_loading_large_inner.png; sourceTree = "<group>"; };
@@ -1737,8 +1746,8 @@
 		76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_like_light_on@2x.png"; sourceTree = "<group>"; };
 		76EC555F17C3030D000DEA08 /* RecipeSocialCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialCommentCell.h; sourceTree = "<group>"; };
 		76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialCommentCell.m; sourceTree = "<group>"; };
-		76EC556217C3069C000DEA08 /* RecipeSocialHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialHeaderView.h; sourceTree = "<group>"; };
-		76EC556317C3069C000DEA08 /* RecipeSocialHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialHeaderView.m; sourceTree = "<group>"; };
+		76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalOverlayHeaderView.h; sourceTree = "<group>"; };
+		76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModalOverlayHeaderView.m; sourceTree = "<group>"; };
 		76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialViewLayout.h; sourceTree = "<group>"; };
 		76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialViewLayout.m; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2334,6 +2343,10 @@
 				76386C231668D01700471C44 /* BenchtopViewControllerDelegate.h */,
 				76492D63166DCC5F0042CF92 /* CoverPickerView.h */,
 				76492D64166DCC5F0042CF92 /* CoverPickerView.m */,
+				766D96F317D2E54700A9104E /* NotificationsViewController.h */,
+				766D96F417D2E54700A9104E /* NotificationsViewController.m */,
+				766D96F617D2E80000A9104E /* NotificationCell.h */,
+				766D96F717D2E80000A9104E /* NotificationCell.m */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -2368,6 +2381,8 @@
 				76D6E7E916D5EEE8007B1851 /* ImageHelper.m */,
 				76EF95D7173779C90033DBCE /* BookNavigationHelper.h */,
 				76EF95D8173779C90033DBCE /* BookNavigationHelper.m */,
+				766D96F917D2EB0200A9104E /* ModalOverlayHelper.h */,
+				766D96FA17D2EB0200A9104E /* ModalOverlayHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2553,8 +2568,8 @@
 				76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */,
 				76EC555F17C3030D000DEA08 /* RecipeSocialCommentCell.h */,
 				76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */,
-				76EC556217C3069C000DEA08 /* RecipeSocialHeaderView.h */,
-				76EC556317C3069C000DEA08 /* RecipeSocialHeaderView.m */,
+				76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */,
+				76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */,
 				F6526BB217D15E01000DDD95 /* RecipeShareViewController.h */,
 				F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */,
 				76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */,
@@ -4318,11 +4333,13 @@
 				7666B40616143713001D1BA1 /* AppHelper.m in Sources */,
 				76520465161ABB0F00EE253C /* CKBook.m in Sources */,
 				76A10ADC17CB11F00051751F /* FacebookSignInButtonView.m in Sources */,
+				766D96F517D2E54700A9104E /* NotificationsViewController.m in Sources */,
 				7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */,
 				8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */,
 				8936F7ED161E78CE00E6EF1D /* CKCategory.m in Sources */,
 				8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */,
 				8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */,
+				766D96FB17D2EB0200A9104E /* ModalOverlayHelper.m in Sources */,
 				89622193161EA6610023EC30 /* NSArray+Enumerable.m in Sources */,
 				89622194161EA6610023EC30 /* NSArray+Utilities.m in Sources */,
 				89622195161EA6610023EC30 /* NSDictionary+Enumerable.m in Sources */,
@@ -4411,7 +4428,7 @@
 				764F4D06179CE85A00821221 /* DraggableCollectionViewFlowLayout.m in Sources */,
 				76E0B95D17911FE100AD70E3 /* BookContentViewController.m in Sources */,
 				762F62D517012BF1006769E5 /* CKMaskedLabel.m in Sources */,
-				76EC556417C3069C000DEA08 /* RecipeSocialHeaderView.m in Sources */,
+				76EC556417C3069C000DEA08 /* ModalOverlayHeaderView.m in Sources */,
 				7605B4BD170A54B800216DF1 /* CKUserProfilePhotoView.m in Sources */,
 				76EE2CD3170AE7A30043D128 /* SDImageCache.m in Sources */,
 				76EE2CD4170AE7A30043D128 /* SDWebImageCompat.m in Sources */,
@@ -4452,6 +4469,7 @@
 				76EF95D017363BF50033DBCE /* CKListCollectionViewCell.m in Sources */,
 				76EF95D117363BF50033DBCE /* CKListCollectionViewFlowLayout.m in Sources */,
 				76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */,
+				766D96F817D2E80000A9104E /* NotificationCell.m in Sources */,
 				76EC556117C3030D000DEA08 /* RecipeSocialCommentCell.m in Sources */,
 				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,

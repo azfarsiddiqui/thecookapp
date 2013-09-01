@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RecipeSocialHeaderView : UICollectionReusableView
+@interface ModalOverlayHeaderView : UICollectionReusableView
 
++ (CGFloat)unitHeight;
 - (void)configureTitle:(NSString *)title;
 
 @end

@@ -6,16 +6,20 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "RecipeSocialHeaderView.h"
+#import "ModalOverlayHeaderView.h"
 #import "Theme.h"
 
-@interface RecipeSocialHeaderView ()
+@interface ModalOverlayHeaderView ()
 
 @property (nonatomic, strong) UILabel *titleLabel;
 
 @end
 
-@implementation RecipeSocialHeaderView
+@implementation ModalOverlayHeaderView
+
++ (CGFloat)unitHeight {
+    return 100.0;
+}
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {

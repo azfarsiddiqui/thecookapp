@@ -23,11 +23,13 @@
 #import "CKBookCover.h"
 #import "SignupViewController.h"
 #import "ImageHelper.h"
+#import "ModalOverlayHelper.h"
+#import "NotificationsViewController.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
     BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
-    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate>
+    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
@@ -42,6 +44,7 @@
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, strong) SignupViewController *signUpViewController;
+@property (nonatomic, strong) NotificationsViewController *notificationsViewController;
 
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
@@ -125,10 +128,24 @@
 #pragma mark - PagingBenchtopViewController methods
 
 - (void)enable:(BOOL)enable {
+    [self enable:enable animated:NO];
+}
+
+- (void)enable:(BOOL)enable animated:(BOOL)animated {
     self.collectionView.userInteractionEnabled = enable;
-    self.benchtopLevelView.hidden = NO;
-    self.notificationView.hidden = NO;
-    [self updateBenchtopLevelView];
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.notificationView.alpha = enable ? 1.0 : 0.0;
+                         } completion:^(BOOL finished) {
+                             [self updatePagingBenchtopView];
+                         }];
+    } else {
+        self.notificationView.alpha = enable ? 1.0 : 0.0;
+        [self updateBenchtopLevelViewAnimated:NO];
+    }
 }
 
 - (void)bookWillOpen:(BOOL)open {
@@ -286,7 +303,7 @@
 #pragma mark - CKNotificationViewDelegate methods
 
 - (void)notificationViewTapped {
-    DLog();
+    [self showNotificationsOverlay:YES];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -409,6 +426,17 @@
     BenchtopBookCoverViewCell *cell = [self myBookCell];
     self.myBook.illustration = illustration;
     [cell loadBook:self.myBook];
+}
+
+#pragma mark - NotificationsViewControllerDelegate methods
+
+- (void)notificationsViewControllerDismissRequested {
+    [ModalOverlayHelper hideModalOverlayForViewController:self.notificationsViewController
+                                                animation:^{
+                                                    [self enable:YES animated:NO];
+                                                } completion:^{
+                                                    self.notificationsViewController = nil;
+                                                }];
 }
 
 #pragma mark - Properties
@@ -542,17 +570,21 @@
 }
 
 - (void)updateBenchtopLevelView {
+    [self updateBenchtopLevelViewAnimated:YES];
+}
+
+- (void)updateBenchtopLevelViewAnimated:(BOOL)animated {
     self.benchtopLevelView.hidden = NO;
     NSInteger level = [self.delegate currentBenchtopLevel];
     switch (level) {
         case 2:
-            [self.benchtopLevelView setPage:0];
+            [self.benchtopLevelView setPage:0 animated:animated];
             break;
         case 1:
-            [self.benchtopLevelView setPage:1];
+            [self.benchtopLevelView setPage:1 animated:animated];
             break;
         case 0:
-            [self.benchtopLevelView setPage:2];
+            [self.benchtopLevelView setPage:2 animated:animated];
             break;
         default:
             break;
@@ -1169,6 +1201,14 @@
                          
                          completion();
                      }];
+}
+
+- (void)showNotificationsOverlay:(BOOL)show {
+    self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
+    [ModalOverlayHelper showModalOverlayForViewController:self.notificationsViewController show:YES parentView:self.view
+                                                animation:^{
+                                                    [self enable:NO animated:YES];
+                                                } completion:nil];
 }
 
 @end

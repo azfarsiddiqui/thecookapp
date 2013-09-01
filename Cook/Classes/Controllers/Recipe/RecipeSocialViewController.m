@@ -11,7 +11,7 @@
 #import "CKRecipe.h"
 #import "CKUser.h"
 #import "CKRecipeComment.h"
-#import "RecipeSocialHeaderView.h"
+#import "ModalOverlayHeaderView.h"
 #import "RecipeSocialCommentCell.h"
 #import "CKTextViewEditViewController.h"
 #import "CKEditingViewHelper.h"
@@ -67,7 +67,7 @@
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.alwaysBounceVertical = YES;
     [self.collectionView registerClass:[RecipeSocialCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
-    [self.collectionView registerClass:[RecipeSocialHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
+    [self.collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
     
     [self.view addSubview:self.closeButton];
     
@@ -263,8 +263,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     UICollectionReusableView *supplementaryView = nil;
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        RecipeSocialHeaderView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+        ModalOverlayHeaderView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                      withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
+        [headerView configureTitle:@"COMMENTS"];
         supplementaryView = headerView;
     }
     
