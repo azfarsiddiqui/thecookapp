@@ -132,3 +132,5 @@ NSString *const kActivityNameLikeRecipe         = @"LikeRecipe";
 
 NSString *const kUserNotificationModelName          = @"UserNotification";
 NSString *const kUserNotificationAttrRead           = @"read";
+NSString *const kUserNotificationAttrActionUser     = @"actionUser";
+

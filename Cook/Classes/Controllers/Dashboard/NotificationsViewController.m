@@ -10,6 +10,9 @@
 #import "ModalOverlayHeaderView.h"
 #import "ViewHelper.h"
 #import "NotificationCell.h"
+#import "CKUserNotification.h"
+#import "NotificationsFlowLayout.h"
+#import "MRCEnumerable.h"
 
 @interface NotificationsViewController ()
 
@@ -28,7 +31,7 @@
 #define kNotificationsSection   0
 
 - (id)initWithDelegate:(id<NotificationsViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[UICollectionViewFlowLayout alloc] init]]) {
+    if (self = [super initWithCollectionViewLayout:[[NotificationsFlowLayout alloc] init]]) {
         self.delegate = delegate;
     }
     return self;
@@ -70,7 +73,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // Between rows in the same column.
-    return 20.0;
+    return 10.0;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -117,6 +120,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     NotificationCell *cell = (NotificationCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
                                                                                                 forIndexPath:indexPath];
+    CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
+    [cell configureNotification:notification];
     return cell;
 }
 
@@ -154,11 +159,35 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - Private methods
 
 - (void)loadData {
-    DLog();
+    [CKUserNotification notificationsCompletion:^(NSArray *notifications) {
+        DLog(@"Loaded notifications [%d]", [notifications count]);
+        [self.delegate notificationsViewControllerDataLoaded];
+        
+        // Get only the accepted notifications.
+        NSArray *acceptedNotificationNames = [self acceptedNotificationNames];
+        self.notifications = [NSMutableArray arrayWithArray:[notifications select:^BOOL(CKUserNotification *notification) {
+            return [acceptedNotificationNames containsObject:notification.name];
+        }]];
+        
+        // Collect the indexpaths to insert.
+        NSArray *indexPathsToInsert = [self.notifications collectWithIndex:^id(CKUserNotification *notification,
+                                                                               NSUInteger notificationIndex) {
+            return [NSIndexPath indexPathForItem:notificationIndex inSection:kNotificationsSection];
+            
+        }];
+        [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+        
+    } failure:^(NSError *error) {
+        DLog(@"Unable to load notifications");
+    }];
 }
 
 - (void)closeTapped:(id)sender {
     [self.delegate notificationsViewControllerDismissRequested];
+}
+
+- (NSArray *)acceptedNotificationNames {
+    return @[@"FriendRequest", @"FriendAccept", @"Comment", @"Like"];
 }
 
 @end

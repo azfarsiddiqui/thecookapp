@@ -8,6 +8,7 @@
 
 #import "CKUserNotification.h"
 #import "CKUser.h"
+#import "CKRecipe.h"
 #import "MRCEnumerable.h"
 
 @implementation CKUserNotification
@@ -29,29 +30,19 @@
 
 + (void)notificationsCompletion:(ListObjectsSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     
-    CKUser *user = [CKUser currentUser];
-    PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
-    [query whereKey:kUserModelForeignKeyName equalTo:user.parseUser];
-    [query includeKey:kUserModelForeignKeyName];
-    [query orderByDescending:kModelAttrCreatedAt];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *notificationObjects, NSError *error) {
-        if (!error) {
-            NSArray *notifications = [notificationObjects collect:^id(PFObject *parseNotification) {
-                return [[CKUserNotification alloc] initWithParseObject:parseNotification];
-            }];
-            
-            // Mark them as read and save in the background.
-            [notificationObjects each:^(PFObject *parseNotification) {
-                [parseNotification setObject:@YES forKey:kUserNotificationAttrRead];
-            }];
-            [PFObject saveAllInBackground:notificationObjects];
-            
-            completion(notifications);
-            
-        } else {
-            failure(error);
-        }
-    }];
+    [PFCloud callFunctionInBackground:@"notifications"
+                       withParameters:@{}
+                                block:^(NSArray *notificationObjects, NSError *error) {
+                                    if (!error) {
+                                        NSArray *notifications = [notificationObjects collect:^id(PFObject *parseNotification) {
+                                            return [[CKUserNotification alloc] initWithParseObject:parseNotification];
+                                        }];
+                                        completion(notifications);
+                                        
+                                    } else {
+                                        DLog(@"Error loading notifications: %@", [error localizedDescription]);
+                                    }
+                                }];
 }
 
 + (void)notificationsCountCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure {
@@ -71,6 +62,14 @@
 
 - (CKUser *)user {
     return [CKUser userWithParseUser:[self.parseObject objectForKey:kUserModelForeignKeyName]];
+}
+
+- (CKUser *)actionUser {
+    return [CKUser userWithParseUser:[self.parseObject objectForKey:kUserNotificationAttrActionUser]];
+}
+
+- (CKRecipe *)recipe {
+    return [CKRecipe recipeForParseRecipe:[self.parseObject objectForKey:kRecipeModelForeignKeyName] user:[self user]];
 }
 
 - (void)setRead:(BOOL)read {

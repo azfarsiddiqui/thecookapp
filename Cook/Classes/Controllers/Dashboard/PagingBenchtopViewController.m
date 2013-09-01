@@ -430,6 +430,10 @@
 
 #pragma mark - NotificationsViewControllerDelegate methods
 
+- (void)notificationsViewControllerDataLoaded {
+    [self.notificationView clearBadge];
+}
+
 - (void)notificationsViewControllerDismissRequested {
     [self showNotificationsOverlay:NO];
 }

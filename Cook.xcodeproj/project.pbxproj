@@ -427,6 +427,8 @@
 		7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */; };
 		7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */; };
 		7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C74F17782A3B00A5CA5C /* PagingScrollView.m */; };
+		7698ED4D17D362D9003898A4 /* NotificationsFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7698ED4C17D362D9003898A4 /* NotificationsFlowLayout.m */; };
+		7698ED5017D37368003898A4 /* DateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7698ED4F17D37368003898A4 /* DateHelper.m */; };
 		769AA77017CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = 769AA76E17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png */; };
 		769AA77117CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 769AA76F17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png */; };
 		769AA77417CC855B00B73718 /* CKBlueSignInButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769AA77317CC855B00B73718 /* CKBlueSignInButtonView.m */; };
@@ -1397,6 +1399,10 @@
 		7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingCollectionViewLayout.m; sourceTree = "<group>"; };
 		7692C74E17782A3B00A5CA5C /* PagingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingScrollView.h; sourceTree = "<group>"; };
 		7692C74F17782A3B00A5CA5C /* PagingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingScrollView.m; sourceTree = "<group>"; };
+		7698ED4B17D362D9003898A4 /* NotificationsFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsFlowLayout.h; sourceTree = "<group>"; };
+		7698ED4C17D362D9003898A4 /* NotificationsFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsFlowLayout.m; sourceTree = "<group>"; };
+		7698ED4E17D37368003898A4 /* DateHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateHelper.h; sourceTree = "<group>"; };
+		7698ED4F17D37368003898A4 /* DateHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateHelper.m; sourceTree = "<group>"; };
 		769AA76E17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_login_btn_signup_blue_onpress.png; sourceTree = "<group>"; };
 		769AA76F17CC84CD00B73718 /* cook_login_btn_signup_blue_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_btn_signup_blue_onpress@2x.png"; sourceTree = "<group>"; };
 		769AA77217CC855B00B73718 /* CKBlueSignInButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBlueSignInButtonView.h; sourceTree = "<group>"; };
@@ -2347,6 +2353,8 @@
 				766D96F417D2E54700A9104E /* NotificationsViewController.m */,
 				766D96F617D2E80000A9104E /* NotificationCell.h */,
 				766D96F717D2E80000A9104E /* NotificationCell.m */,
+				7698ED4B17D362D9003898A4 /* NotificationsFlowLayout.h */,
+				7698ED4C17D362D9003898A4 /* NotificationsFlowLayout.m */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -2383,6 +2391,8 @@
 				76EF95D8173779C90033DBCE /* BookNavigationHelper.m */,
 				766D96F917D2EB0200A9104E /* ModalOverlayHelper.h */,
 				766D96FA17D2EB0200A9104E /* ModalOverlayHelper.m */,
+				7698ED4E17D37368003898A4 /* DateHelper.h */,
+				7698ED4F17D37368003898A4 /* DateHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -4370,6 +4380,7 @@
 				76735C9117BA5C770027CA3B /* BookRecipeGridMediumCell.m in Sources */,
 				76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */,
 				76C8FAF617966FDC00488A80 /* BookSocialLayout.m in Sources */,
+				7698ED4D17D362D9003898A4 /* NotificationsFlowLayout.m in Sources */,
 				769D22E017B49AC50048C572 /* RecipeServesCookView.m in Sources */,
 				76DC8DBB1659BF23005C472B /* BookCoverViewController.m in Sources */,
 				76CB7EEE165CF4C9007BECA0 /* StoreViewController.m in Sources */,
@@ -4510,6 +4521,7 @@
 				76F98EA117977BB500AC2B9C /* BookCommentView.m in Sources */,
 				76C8FAF91796737700488A80 /* BookSocialHeaderView.m in Sources */,
 				7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */,
+				7698ED5017D37368003898A4 /* DateHelper.m in Sources */,
 				7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */,
 				7680103717A92A370065B2C6 /* ThemeTabView.m in Sources */,
 				7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */,

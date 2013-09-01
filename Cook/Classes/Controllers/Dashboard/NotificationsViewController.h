@@ -10,6 +10,7 @@
 
 @protocol NotificationsViewControllerDelegate <NSObject>
 
+- (void)notificationsViewControllerDataLoaded;
 - (void)notificationsViewControllerDismissRequested;
 
 @end

@@ -543,6 +543,14 @@
     return [UIColor colorWithHexString:@"ffffff"];
 }
 
++ (UIFont *)overlayTimeFont {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:14.0];
+}
+
++ (UIColor *)overlayTimeColour {
+    return [UIColor colorWithHexString:@"ffffff"];
+}
+
 + (UIFont *)bookSocialTitleFont {
     return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
 }

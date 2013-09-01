@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKUserNotification;
+
 @interface NotificationCell : UICollectionViewCell
 
 + (CGSize)unitSize;
+
+- (void)configureNotification:(CKUserNotification *)notification;
 
 @end

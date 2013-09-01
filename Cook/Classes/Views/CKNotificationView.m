@@ -49,6 +49,11 @@
     return self;
 }
 
+- (void)clearBadge {
+    self.badgeCount = 0;
+    [self updateBadge];
+}
+
 #pragma mark - Properties
 
 - (UIButton *)offButtonIcon {

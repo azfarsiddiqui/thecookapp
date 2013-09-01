@@ -9,6 +9,7 @@
 #import "CKModel.h"
 
 @class CKUser;
+@class CKRecipe;
 
 @interface CKUserNotification : CKModel
 
@@ -20,6 +21,8 @@
 + (void)notificationsCountCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 
 - (CKUser *)user;
+- (CKUser *)actionUser;
+- (CKRecipe *)recipe;
 - (NSString *)actionName;
 
 @end

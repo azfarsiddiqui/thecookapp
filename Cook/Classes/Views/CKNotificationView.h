@@ -17,5 +17,6 @@
 @interface CKNotificationView : UIView
 
 - (id)initWithDelegate:(id<CKNotificationViewDelegate>)delegate;
+- (void)clearBadge;
 
 @end

@@ -160,6 +160,8 @@
 + (UIColor *)recipeCommenterColour;
 + (UIFont *)recipeCommentFont;
 + (UIColor *)recipeCommentColour;
++ (UIFont *)overlayTimeFont;
++ (UIColor *)overlayTimeColour;
 
 + (UIFont *)bookSocialTitleFont;
 + (UIColor *)bookSocialTitleColour;
