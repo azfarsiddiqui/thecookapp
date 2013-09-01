@@ -22,10 +22,10 @@
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, weak) id<RecipeShareViewControllerDelegate> delegate;
 
-@property (weak, nonatomic) IBOutlet UIButton *facebookShareButton;
-@property (weak, nonatomic) IBOutlet UIButton *twitterShareButton;
-@property (weak, nonatomic) IBOutlet UIButton *mailShareButton;
-@property (weak, nonatomic) IBOutlet UIButton *msgShareButton;
+@property (nonatomic, strong) UIButton *facebookShareButton;
+@property (nonatomic, strong) UIButton *twitterShareButton;
+@property (nonatomic, strong) UIButton *mailShareButton;
+@property (nonatomic, strong) UIButton *messageShareButton;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong, readonly) NSURL *shareURL;
 
@@ -34,12 +34,12 @@
 @implementation RecipeShareViewController
 
 #define kUnderlayMaxAlpha   0.7
-#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kContentInsets      (UIEdgeInsets){ 20.0, 10.0, 20.0, 20.0 }
 #define SHARE_TITLE @"Check out this recipe"
 #define SHARE_DESCRIPTION @"Shared from Cook"
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeShareViewControllerDelegate>)delegate {
-    if (self = [super  initWithNibName:@"RecipeShareViewController" bundle:nil]) {
+    if (self = [super  init]) {
         self.currentUser = [CKUser currentUser];
         self.recipe = recipe;
         self.delegate = delegate;
@@ -53,11 +53,111 @@
     self.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kUnderlayMaxAlpha];
     [self.view addSubview:self.closeButton];
     
+    UIView *middleContentView = [[UIView alloc] init];
+    middleContentView.translatesAutoresizingMaskIntoConstraints = NO;
+    middleContentView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:middleContentView];
+    
+    // Setting up constraints to center share content horizontally and vertically
+    {
+        NSDictionary *metrics = @{@"height":@180.0, @"width":@470.0};
+        NSDictionary *views = NSDictionaryOfVariableBindings(middleContentView);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[middleContentView(width)]-(>=20)-|"
+                                                                          options:NSLayoutFormatAlignAllCenterX
+                                                                          metrics:metrics
+                                                                            views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=20)-[middleContentView(height)]-(>=20)-|"
+                                                                          options:NSLayoutFormatAlignAllCenterY
+                                                                          metrics:metrics
+                                                                            views:views]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:middleContentView
+                                                              attribute:NSLayoutAttributeCenterX
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeCenterX
+                                                             multiplier:1.f constant:0.f]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:middleContentView
+                                                              attribute:NSLayoutAttributeCenterY
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeCenterY
+                                                             multiplier:1.f constant:0.f]];
+    }
+    
+    //Styling and placing buttons
+    self.facebookShareButton = [[UIButton alloc] init];
+    [self.facebookShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_facebook"] forState:UIControlStateNormal];
+    [self.facebookShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_facebook_onpress"] forState:UIControlStateHighlighted];
+    self.facebookShareButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [middleContentView addSubview:self.facebookShareButton];
+    self.twitterShareButton = [[UIButton alloc] init];
+    [self.twitterShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_twitter"] forState:UIControlStateNormal];
+    [self.twitterShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_twitter_onpress"] forState:UIControlStateHighlighted];
+    self.twitterShareButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [middleContentView addSubview:self.twitterShareButton];
+    self.mailShareButton = [[UIButton alloc] init];
+    [self.mailShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_email"] forState:UIControlStateNormal];
+    [self.mailShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_email_onpress"] forState:UIControlStateHighlighted];
+    self.mailShareButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [middleContentView addSubview:self.mailShareButton];
+    self.messageShareButton = [[UIButton alloc] init];
+    [self.messageShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_imessage"] forState:UIControlStateNormal];
+    [self.messageShareButton setBackgroundImage:[UIImage imageNamed:@"cook_book_share_icon_imessage_onpress"] forState:UIControlStateHighlighted];
+    self.messageShareButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [middleContentView addSubview:self.messageShareButton];
+    UILabel *shareTitleLabel = [[UILabel alloc] init];
+    [shareTitleLabel setBackgroundColor:[UIColor clearColor]];
+    shareTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    shareTitleLabel.textAlignment = NSTextAlignmentCenter;
+    shareTitleLabel.text = @"SHARE RECIPE";
+    shareTitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:38.0];
+    shareTitleLabel.textColor = [UIColor whiteColor];
+    [middleContentView addSubview:shareTitleLabel];
+    
+    UILabel *bottomLabel = [[UILabel alloc] init];
+    [bottomLabel setBackgroundColor:[UIColor clearColor]];
+    bottomLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    bottomLabel.textAlignment = NSTextAlignmentLeft;
+    bottomLabel.text = @"SHARING YOUR RECIPE WILL CREATE A PUBLICLY VISIBLE COPY ON THE WEB";
+    bottomLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+    bottomLabel.textColor = [UIColor whiteColor];
+    [self.view addSubview:bottomLabel];
+    UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_share_icon_unlocked"]];
+    lockImageView.backgroundColor = [UIColor clearColor];
+    lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:lockImageView];
+    
+    { //Setting up constraints to space buttons in content view
+        NSDictionary *metrics = @{@"height":@110.0, @"width":@110.0, @"titleHeight":@38.0, @"spacing":@10.0};
+        NSDictionary *views = @{@"facebook" : self.facebookShareButton,
+                                @"twitter" : self.twitterShareButton,
+                                @"mail" : self.mailShareButton,
+                                @"message" : self.messageShareButton,
+                                @"title" : shareTitleLabel};
+        NSString *buttonConstraints = @"|[facebook(width)]-spacing-[twitter(facebook)]-spacing-[mail(facebook)]-spacing-[message(facebook)]|";
+        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
+        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[title(titleHeight)]-[facebook(height)]|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[title]-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
+    }
+    { //Setting up constraints to space label and lock at bottom
+        NSDictionary *metrics = @{@"width":@39.0, @"height":@39.0};
+        NSDictionary *views = NSDictionaryOfVariableBindings(bottomLabel, lockImageView);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[lockImageView(width)]-4.0-[bottomLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=100)-[lockImageView(height)]-10.0-|" options:0 metrics:metrics views:views]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:bottomLabel
+                                                              attribute:NSLayoutAttributeCenterX
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeCenterX
+                                                             multiplier:1.f constant:0.f]];
+    }
+    
+    
     // Attach actions to buttons
 	[self.facebookShareButton addTarget:self action:@selector(facebookShareTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.twitterShareButton addTarget:self action:@selector(twitterShareTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.mailShareButton addTarget:self action:@selector(mailShareTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.msgShareButton addTarget:self action:@selector(messageShareTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.messageShareButton addTarget:self action:@selector(messageShareTapped:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning
