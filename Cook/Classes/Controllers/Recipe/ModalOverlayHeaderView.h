@@ -10,7 +10,7 @@
 
 @interface ModalOverlayHeaderView : UICollectionReusableView
 
-+ (CGFloat)unitHeight;
++ (CGSize)unitSize;
 - (void)configureTitle:(NSString *)title;
 
 @end

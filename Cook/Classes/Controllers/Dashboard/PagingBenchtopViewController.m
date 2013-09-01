@@ -431,12 +431,7 @@
 #pragma mark - NotificationsViewControllerDelegate methods
 
 - (void)notificationsViewControllerDismissRequested {
-    [ModalOverlayHelper hideModalOverlayForViewController:self.notificationsViewController
-                                                animation:^{
-                                                    [self enable:YES animated:NO];
-                                                } completion:^{
-                                                    self.notificationsViewController = nil;
-                                                }];
+    [self showNotificationsOverlay:NO];
 }
 
 #pragma mark - Properties
@@ -1206,11 +1201,21 @@
 }
 
 - (void)showNotificationsOverlay:(BOOL)show {
-    self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
-    [ModalOverlayHelper showModalOverlayForViewController:self.notificationsViewController show:YES parentView:self.view
-                                                animation:^{
-                                                    [self enable:NO animated:YES];
-                                                } completion:nil];
+    if (show) {
+        self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
+        [ModalOverlayHelper showModalOverlayForViewController:self.notificationsViewController show:YES
+                                                    animation:^{
+                                                        [self enable:NO animated:YES];
+                                                    } completion:nil];
+    } else {
+        [ModalOverlayHelper hideModalOverlayForViewController:self.notificationsViewController
+                                                    animation:^{
+                                                        [self enable:YES animated:NO];
+                                                    } completion:^{
+                                                        self.notificationsViewController = nil;
+                                                    }];
+    }
+    
 }
 
 @end

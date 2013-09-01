@@ -76,12 +76,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 referenceSizeForHeaderInSection:(NSInteger)section {
     
-    CGFloat unitHeaderHeight = [ModalOverlayHeaderView unitHeight];
-    CGSize headerSize = (CGSize) {
-        self.collectionView.bounds.size.width,
-        unitHeaderHeight
-    };
-    return headerSize;
+    return [ModalOverlayHeaderView unitSize];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout

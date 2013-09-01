@@ -17,8 +17,8 @@
 
 @implementation ModalOverlayHeaderView
 
-+ (CGFloat)unitHeight {
-    return 100.0;
++ (CGSize)unitSize {
+    return (CGSize){ 600.0, 100.0 };
 }
 
 - (id)initWithFrame:(CGRect)frame {

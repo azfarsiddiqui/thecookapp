@@ -11,7 +11,7 @@
 @implementation NotificationCell
 
 + (CGSize)unitSize {
-    return CGSizeMake(600.0, 120.0);
+    return (CGSize){ 600.0, 120.0 };
 }
 
 - (id)initWithFrame:(CGRect)frame {

@@ -7,24 +7,24 @@
 //
 
 #import "ModalOverlayHelper.h"
+#import "AppHelper.h"
 
 @implementation ModalOverlayHelper
 
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
-                               parentView:(UIView *)parentView completion:(void (^)())completion {
+                               completion:(void (^)())completion {
     
-    [self showModalOverlayForViewController:viewController show:show parentView:parentView animation:nil
-                                 completion:completion];
+    [self showModalOverlayForViewController:viewController show:show animation:nil completion:completion];
 }
 
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
-                               parentView:(UIView *)parentView animation:(void (^)())animation
-                               completion:(void (^)())completion {
+                                animation:(void (^)())animation completion:(void (^)())completion {
     
     if (show) {
-        viewController.view.frame = parentView.bounds;
+        UIView *rootView = [[AppHelper sharedInstance] rootView];
+        viewController.view.frame = rootView.bounds;
         viewController.view.alpha = 0.0;
-        [parentView addSubview:viewController.view];
+        [rootView addSubview:viewController.view];
     }
     [UIView animateWithDuration:show? 0.3 : 0.2
                           delay:0.0
@@ -55,8 +55,7 @@
 + (void)hideModalOverlayForViewController:(UIViewController *)viewController animation:(void (^)())animation
                                completion:(void (^)())completion {
     
-    [self showModalOverlayForViewController:viewController show:NO parentView:nil animation:animation
-                                 completion:completion];
+    [self showModalOverlayForViewController:viewController show:NO animation:animation completion:completion];
 }
 
 @end

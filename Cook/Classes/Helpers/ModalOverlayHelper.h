@@ -11,10 +11,9 @@
 @interface ModalOverlayHelper : NSObject
 
 + (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
-                               parentView:(UIView *)parentView completion:(void (^)())completion;
-+ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
-                               parentView:(UIView *)parentView animation:(void (^)())animation
                                completion:(void (^)())completion;
++ (void)showModalOverlayForViewController:(UIViewController *)viewController show:(BOOL)show
+                                animation:(void (^)())animation completion:(void (^)())completion;
 
 + (void)hideModalOverlayForViewController:(UIViewController *)viewController completion:(void (^)())completion;
 + (void)hideModalOverlayForViewController:(UIViewController *)viewController animation:(void (^)())animation
