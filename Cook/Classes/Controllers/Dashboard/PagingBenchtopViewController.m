@@ -706,12 +706,11 @@
                              // Could be called again via cache, or reloaded via login.
                              if (self.myBook) {
                                  
-                                 // Update benchtop if book is of a different cover.
-                                 BOOL changedCover = ![self.myBook.cover isEqualToString:book.cover];
-                                 
                                  // If it's the same book, just reload it.
                                  if ([self.myBook.objectId isEqual:book.objectId]) {
                                      
+                                     // Update benchtop if book is of a different cover.
+                                     BOOL changedCover = ![self.myBook.cover isEqualToString:book.cover];
                                      self.myBook = book;
                                      
                                      // Reload the book, then update the benchtop if cover has changed.
@@ -727,8 +726,11 @@
                                      
                                      // Just reload the book.
                                      self.myBook = book;
+                                     
+                                     // Reload the book.
+                                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                     
                                  }
-                                 
                                  
                              } else {
                                  
