@@ -52,7 +52,6 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kUnderlayMaxAlpha];
     [self.view addSubview:self.closeButton];
-    
     UIView *middleContentView = [[UIView alloc] init];
     middleContentView.translatesAutoresizingMaskIntoConstraints = NO;
     middleContentView.backgroundColor = [UIColor clearColor];
@@ -134,10 +133,10 @@
                                 @"mail" : self.mailShareButton,
                                 @"message" : self.messageShareButton,
                                 @"title" : shareTitleLabel};
-        NSString *buttonConstraints = @"|[facebook(width)]-spacing-[twitter(facebook)]-spacing-[mail(facebook)]-spacing-[message(facebook)]|";
+        NSString *buttonConstraints = @"|[facebook(width)]-spacing-[twitter(facebook)]-spacing-[mail(facebook)]-spacing-[message(facebook)]";
         [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
-        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[title(titleHeight)]-[facebook(height)]|" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
-        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[title]-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
+        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[title(titleHeight)]-[facebook(height)]" options:0 metrics:metrics views:views]];
+        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[title(400)]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
     }
     { //Setting up constraints to space label and lock at bottom
         NSDictionary *metrics = @{@"width":@39.0, @"height":@39.0};
