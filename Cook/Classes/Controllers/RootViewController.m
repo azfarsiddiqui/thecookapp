@@ -627,9 +627,7 @@
 - (void)initViewControllers {
     BOOL isLoggedIn = [self isLoggedIn];
     [self initBenchtop];
-    if (isLoggedIn) {
-        [self.benchtopViewController loadBenchtop:YES];
-    } else {
+    if (!isLoggedIn) {
         [self showLoginView:YES];
     }
     [self enable:isLoggedIn];

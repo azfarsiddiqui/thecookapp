@@ -100,6 +100,10 @@
     [self initBenchtopLevelView];
     [self initNotificationView];
     
+    if ([CKUser isLoggedIn]) {
+        [self loadBenchtop:YES];
+    }
+    
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
@@ -726,16 +730,26 @@
                                      // Just reload the book.
                                      self.myBook = book;
                                      
-                                     // Reload the book.
-                                     [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                     // Reload the book then update blended benchtop.
+                                     [self.collectionView performBatchUpdates:^{
+                                         [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                     } completion:^(BOOL finished) {
+                                         [self updatePagingBenchtopView];
+                                     }];
                                      
                                  }
                                  
                              } else {
                                  
-                                 self.myBook = book;
                                  [[self pagingLayout] markLayoutDirty];
-                                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                 self.myBook = book;
+                                 
+                                 // Insert book then update blended benchtop.
+                                 [self.collectionView performBatchUpdates:^{
+                                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                 } completion:^(BOOL finished) {
+                                     // No need to reblend, as layoutDidGenerate will trigger it.
+                                 }];
                              }
                              
                          }
@@ -749,13 +763,27 @@
             
             if (self.myBook) {
                 self.myBook = guestBook;
-                [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
-            } else {
-                [[self pagingLayout] markLayoutDirty];
                 
+                // Insert book then update blended benchtop.
+                [self.collectionView performBatchUpdates:^{
+                    [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                } completion:^(BOOL finished) {
+                    [self updatePagingBenchtopView];
+                }];
+            } else {
+                
+                [[self pagingLayout] markLayoutDirty];
                 self.myBook = guestBook;
-                [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                
+                // Insert book then update blended benchtop.
+                [self.collectionView performBatchUpdates:^{
+                    [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                } completion:^(BOOL finished) {
+                    // No need to reblend, as layoutDidGenerate will trigger it.
+                }];
+
             }
+            
             
         } failure:^(NSError *error) {
             
@@ -783,6 +811,7 @@
             [[self pagingLayout] markLayoutDirty];
             [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
         }
+        
     } failure:^(NSError *error) {
         DLog(@"Error: %@", [error localizedDescription]);
     }];
