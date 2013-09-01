@@ -44,7 +44,6 @@
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
-@property (nonatomic, assign) BOOL updatePages;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
@@ -350,8 +349,6 @@
     DLog(@"Pages order changed: %@", [NSString CK_stringForBoolean:orderChanged]);
     if (orderChanged) {
         
-        // Mark to update categories on backend.
-        self.updatePages = YES;
         self.pages = [NSMutableArray arrayWithArray:pages];
         
         // Now relayout the content pages.
@@ -367,13 +364,14 @@
     
     [self.pages addObject:page];
     [self.pageRecipes setObject:[NSMutableArray array] forKey:page];
+    self.book.pages = self.pages;
     
     // Mark layout needs to be re-generated.
     [[self currentLayout] setNeedsRelayout:YES];
     [self.collectionView reloadData];
     
-    // Mark as pages updated.
-    self.updatePages = YES;
+    // Save the book in the background.
+    [self.book saveInBackground];
 }
 
 #pragma mark - BookPagingStackLayoutDelegate methods
@@ -1071,13 +1069,6 @@
 }
 
 - (void)closeBookWithPinch:(BOOL)pinch {
-    
-    // Update categories if required. This also updates the ordering of the category.
-    if (self.updatePages) {
-        self.book.pages = self.pages;
-        [self.book saveInBackground];
-    }
-    
     if (pinch) {
         [self.delegate bookNavigationControllerCloseRequested];
     } else {
