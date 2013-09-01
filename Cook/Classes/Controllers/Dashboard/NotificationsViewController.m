@@ -13,6 +13,7 @@
 #import "CKUserNotification.h"
 #import "NotificationsFlowLayout.h"
 #import "MRCEnumerable.h"
+#import "CKActivityIndicatorView.h"
 
 @interface NotificationsViewController ()
 
@@ -28,6 +29,7 @@
 #define kUnderlayMaxAlpha       0.7
 #define kHeaderCellId           @"HeaderCell"
 #define kCellId                 @"NotificationCell"
+#define kActivityId             @"ActivityCell"
 #define kNotificationsSection   0
 
 - (id)initWithDelegate:(id<NotificationsViewControllerDelegate>)delegate {
@@ -44,6 +46,7 @@
     self.collectionView.bounces = YES;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.alwaysBounceVertical = YES;
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
     [self.collectionView registerClass:[NotificationCell class] forCellWithReuseIdentifier:kCellId];
     [self.collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
     
@@ -85,11 +88,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGSize cellSize = CGSizeZero;
-    if (indexPath.section == kNotificationsSection) {
-        cellSize = [NotificationCell unitSize];
-    }
-    
+    CGSize cellSize = [NotificationCell unitSize];    
     return cellSize;
 }
 
@@ -108,8 +107,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
-    if (section == kNotificationsSection) {
+    if (self.notifications) {
         numItems = [self.notifications count];
+    } else {
+        numItems = 1;
     }
     
     return numItems;
@@ -118,10 +119,22 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    NotificationCell *cell = (NotificationCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
-                                                                                                forIndexPath:indexPath];
-    CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
-    [cell configureNotification:notification];
+    UICollectionViewCell *cell = nil;
+    if (self.notifications) {
+        NotificationCell *notificationCell = (NotificationCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
+                                                                                                                forIndexPath:indexPath];
+        CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
+        [notificationCell configureNotification:notification];
+        cell = notificationCell;
+    } else {
+        
+        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+        CKActivityIndicatorView *activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+        activityView.center = cell.contentView.center;
+        [cell.contentView addSubview:activityView];
+        [activityView startAnimating];
+        
+    }
     return cell;
 }
 
@@ -175,7 +188,12 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             return [NSIndexPath indexPathForItem:notificationIndex inSection:kNotificationsSection];
             
         }];
-        [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+        
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+        } completion:^(BOOL finished) {
+        }];
         
     } failure:^(NSError *error) {
         DLog(@"Unable to load notifications");
