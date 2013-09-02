@@ -13,8 +13,11 @@
 #import "UIImage+ProportionalFill.h"
 #import "CKEditingViewHelper.h"
 #import "CKOffsetMotionEffect.h"
+#import "Theme.h"
 
 @implementation ViewHelper
+
+#define kNoConnectionCardTag    1911
 
 + (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector {
     return [CKEditingViewHelper okayButtonWithTarget:target selector:selector];
@@ -234,10 +237,96 @@
 #pragma mark - Connection messages
 
 + (UIView *)noConnectionCardView {
-    return nil;
+    return [self messageCardViewWithText:@"CANNOT CONNECT" subtitle:@"CHECK YOUR WI-FI OR CELLULAR DATA"];
 }
 
 + (UIView *)messageCardViewWithText:(NSString *)text subtitle:(NSString *)subtitle {
+    UIEdgeInsets contentInsets = (UIEdgeInsets) { 25.0, 30.0, 20.0, 30.0 };
+    CGFloat titleSubtitleGap = 0.0;
+    
+    UIImage *cardImage = [[UIImage imageNamed:@"cook_message_popover.png"]
+                          resizableImageWithCapInsets:(UIEdgeInsets){ 13.0, 12.0, 13.0, 12.0 }];
+    
+    // Title label.
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.backgroundColor = [UIColor clearColor];
+    label.font = [Theme cardViewTitleFont];
+    label.textColor = [Theme cardViewTitleColour];
+    label.text = text;
+    [label sizeToFit];
+    CGRect labelFrame = label.frame;
+    
+    // Subtitle label.
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    subtitleLabel.backgroundColor = [UIColor clearColor];
+    subtitleLabel.font = [Theme cardViewSubtitleFont];
+    subtitleLabel.textColor = [Theme cardViewSubtitleColour];
+    subtitleLabel.text = subtitle;
+    [subtitleLabel sizeToFit];
+    CGRect subtitleFrame = subtitleLabel.frame;
+    subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;
+    
+    // Combined frame.
+    CGRect cardFrame = CGRectUnion(labelFrame, subtitleFrame);
+    UIImageView *cardImageView = [[UIImageView alloc] initWithImage:cardImage];
+    cardFrame.size.width += contentInsets.left + contentInsets.right;
+    cardFrame.size.height += contentInsets.top + contentInsets.bottom;
+    cardImageView.frame = cardFrame;
+    
+    // Position labels.
+    labelFrame.origin.x = floorf((cardImageView.bounds.size.width - labelFrame.size.width) / 2.0);
+    labelFrame.origin.y = contentInsets.top;
+    subtitleFrame.origin.x = floorf((cardImageView.bounds.size.width - subtitleFrame.size.width) / 2.0);
+    subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;
+    label.frame = labelFrame;
+    subtitleLabel.frame = subtitleFrame;
+    [cardImageView addSubview:label];
+    [cardImageView addSubview:subtitleLabel];
+    
+    return cardImageView;
+}
+
++ (void)hideNoConnectionCardInView:(UIView *)view {
+    [self showNoConnectionCard:NO view:view center:CGPointZero];
+}
+
++ (void)showNoConnectionCard:(BOOL)show view:(UIView *)view center:(CGPoint)center {
+    UIView *connectionCard = [view viewWithTag:kNoConnectionCardTag];
+    BOOL alreadyVisible = (connectionCard != nil);
+    
+    if (show && !alreadyVisible) {
+        
+        if (!connectionCard) {
+            connectionCard = [self noConnectionCardView];
+            connectionCard.center = center;
+            connectionCard.alpha = 0.0;
+            connectionCard.tag = kNoConnectionCardTag;
+            [view addSubview:connectionCard];
+        }
+        
+        // Fade it in.
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             connectionCard.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+        
+    } else if (!show && alreadyVisible) {
+        
+        // Fade it out then remove.
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             connectionCard.alpha = 0.0;
+                         }
+                         completion:^(BOOL finished) {
+                             [connectionCard removeFromSuperview];
+                         }];
+    }
     
 }
 

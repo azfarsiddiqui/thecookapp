@@ -647,4 +647,22 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:16.0];
 }
 
+#pragma mark - Card messages
+
++ (UIFont *)cardViewTitleFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:16.0];
+}
+
++ (UIColor *)cardViewTitleColour {
+    return [UIColor darkGrayColor];
+}
+
++ (UIFont *)cardViewSubtitleFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0];
+}
+
++ (UIColor *)cardViewSubtitleColour {
+    return [UIColor darkGrayColor];
+}
+
 @end

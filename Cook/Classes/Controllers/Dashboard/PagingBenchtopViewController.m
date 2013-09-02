@@ -25,6 +25,7 @@
 #import "ImageHelper.h"
 #import "ModalOverlayHelper.h"
 #import "NotificationsViewController.h"
+#import "CKServerManager.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -71,12 +72,15 @@
 #define kBlendMinAlpha  0.3
 #define kBlendMaxAlpha  0.45
 
-
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
     [EventHelper unregisterThemeChange:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
+                                                  object:[UIApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification
+                                                  object:[UIApplication sharedApplication]];
 }
 
 - (id)init {
@@ -108,6 +112,18 @@
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerThemeChange:self selector:@selector(themeChanged:)];
+    
+    // Register for notification that app did enter background
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didBecomeInactive)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:[UIApplication sharedApplication]];
+    
+    // Register for notification that app did enter foreground
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didBecomeActive)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:[UIApplication sharedApplication]];
 }
 
 - (void)loadBenchtop:(BOOL)load {
@@ -755,6 +771,12 @@
                          }
                          failure:^(NSError *error) {
                              DLog(@"Error: %@", [error localizedDescription]);
+                             
+                             // No connection?
+                             if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+                                 [ViewHelper showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+                             }
+                             
                          }];
     } else {
         
@@ -787,7 +809,10 @@
             
         } failure:^(NSError *error) {
             
-            // Ignore error.
+            // No connection?
+            if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+                [ViewHelper showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+            }
         }];
         
     }
@@ -814,6 +839,11 @@
         
     } failure:^(NSError *error) {
         DLog(@"Error: %@", [error localizedDescription]);
+        
+        // No connection?
+        if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+            [ViewHelper showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+        }
     }];
 
 }
@@ -1249,6 +1279,22 @@
                                                     }];
     }
     
+}
+
+- (CGPoint)noConnectionCardCenter {
+    return (CGPoint) {
+        floorf(self.view.bounds.size.width / 2.0),
+        100.0
+    };
+}
+
+- (void)didBecomeInactive {
+    DLog();
+}
+
+- (void)didBecomeActive {
+    DLog();
+    [self loadBenchtop:YES];
 }
 
 @end

@@ -30,5 +30,6 @@
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;
 - (BOOL)addMode;
 - (void)showActivity:(BOOL)show;
+- (void)showNoConnectionCardIfApplicableError:(NSError *)error;
 
 @end

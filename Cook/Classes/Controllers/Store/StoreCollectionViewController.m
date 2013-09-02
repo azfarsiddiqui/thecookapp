@@ -16,6 +16,8 @@
 #import "MRCEnumerable.h"
 #import "StoreBookViewController.h"
 #import "CKActivityIndicatorView.h"
+#import "CKServerManager.h"
+#import "ViewHelper.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
     StoreBookViewControllerDelegate>
@@ -70,10 +72,12 @@
 - (void)loadData {
     // Subclasses to extend.
     [self showActivity:YES];
+    [ViewHelper hideNoConnectionCardInView:self.collectionView];
 }
 
 - (void)unloadData {
     DLog(@"Unloading Books [%d]", [self.books count]);
+    [ViewHelper hideNoConnectionCardInView:self.collectionView];
     if ([self.books count] > 0) {
         
 //        NSArray *deletedIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
@@ -91,6 +95,7 @@
     DLog(@"Books [%d] Existing [%d]", [books count], [self.books count]);
     
     [self showActivity:NO];
+    [ViewHelper hideNoConnectionCardInView:self.collectionView];
     
     if ([self.books count] > 0) {
         
@@ -136,6 +141,13 @@
         [self.activityView stopAnimating];
         [self.activityView removeFromSuperview];
         self.activityView = nil;
+    }
+}
+
+- (void)showNoConnectionCardIfApplicableError:(NSError *)error {
+    if ([[CKServerManager sharedInstance] noConnectionError:error]) {
+        [ViewHelper showNoConnectionCard:YES view:self.collectionView center:self.collectionView.center];
+        [self showActivity:NO];
     }
 }
 

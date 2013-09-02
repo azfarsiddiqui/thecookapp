@@ -197,5 +197,12 @@
 #pragma mark - Book navigation view.
 + (UIFont *)navigationTitleFont;
 
+#pragma mark - Card messages
+
++ (UIFont *)cardViewTitleFont;
++ (UIColor *)cardViewTitleColour;
++ (UIFont *)cardViewSubtitleFont;
++ (UIColor *)cardViewSubtitleColour;
+
 @end
 

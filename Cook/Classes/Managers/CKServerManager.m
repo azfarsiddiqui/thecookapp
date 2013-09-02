@@ -126,6 +126,12 @@
     [PFPush handlePush:userInfo];
 }
 
+#pragma mark - Parse no connection error.
+
+- (BOOL)noConnectionError:(NSError *)error {
+    return ([error.domain isEqualToString:@"Parse"] && error.code == 100);
+}
+
 #pragma mark - Private methods
 
 - (void)loggedIn:(NSNotification *)notification {

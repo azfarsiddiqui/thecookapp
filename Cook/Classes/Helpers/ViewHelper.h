@@ -60,5 +60,7 @@
 // Connection messages
 + (UIView *)noConnectionCardView;
 + (UIView *)messageCardViewWithText:(NSString *)text subtitle:(NSString *)subtitle;
++ (void)hideNoConnectionCardInView:(UIView *)view;
++ (void)showNoConnectionCard:(BOOL)show view:(UIView *)view center:(CGPoint)center;
 
 @end

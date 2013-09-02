@@ -32,6 +32,7 @@
                          }
                          failure:^(NSError *error) {
                             DLog(@"Error: %@", [error localizedDescription]);
+                             [self showNoConnectionCardIfApplicableError:error];
                          }];
 }
 

@@ -32,7 +32,7 @@
 #define kContentHeight  44.0
 #define kInterItemGap   5.0
 #define kIconStatGap    0.0
-#define kFont           [UIFont boldSystemFontOfSize:15]
+#define kFont           [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
 
 - (void)dealloc {
     [EventHelper unregisterLiked:self];
@@ -88,8 +88,11 @@
         _commentsLabel.backgroundColor = [UIColor clearColor];
         _commentsLabel.font = kFont;
         _commentsLabel.textColor = [UIColor whiteColor];
-        _commentsLabel.shadowColor = [UIColor blackColor];
+        _commentsLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
         _commentsLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        
+        // TODO Shadow blur radius 3.0
+        
         [self addSubview:_commentsLabel];
     }
     return _commentsLabel;
@@ -109,7 +112,7 @@
         _likeLabel.backgroundColor = [UIColor clearColor];
         _likeLabel.font = kFont;
         _likeLabel.textColor = [UIColor whiteColor];
-        _likeLabel.shadowColor = [UIColor blackColor];
+        _likeLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
         _likeLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         [self addSubview:_likeLabel];
     }
