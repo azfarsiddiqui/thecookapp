@@ -31,6 +31,7 @@
 @property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) BOOL topAddActivated;
+@property (nonatomic, assign) BOOL swipeDeleteActivated;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL processing;
 @property (nonatomic, strong) NSIndexPath *editingIndexPath;
@@ -47,7 +48,7 @@
 #define kLabelTag                       270
 #define kHiddenFieldScrollUpOffset      40.0
 #define kHiddenFieldScrollDownOffset    20.0
-#define kDeleteOffset                   160.0
+#define kDeleteOffset                   120.0
 #define kInactiveCellFade               0.7
 #define kArrowLabelGap                  10.0
 #define kLabelArrowGap                  10.0
@@ -181,6 +182,10 @@
 
 - (NSString *)pullToReleaseTextForActivated:(BOOL)activated {
     return activated ? @"Release to add" : @"Pull to add";
+}
+
+- (NSString *)swipeToDeleteTextActivated:(BOOL)activated {
+    return activated ? @"Release to delete" : @"Swipe to delete";
 }
 
 - (NSString *)swipeToDeleteText {
@@ -723,7 +728,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         _swipeDeleteLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         _swipeDeleteLabel.backgroundColor = [UIColor clearColor];
         _swipeDeleteLabel.textColor = [UIColor colorWithHexString:@"FA4E6F"];
-        _swipeDeleteLabel.text = [self swipeToDeleteText];
+        _swipeDeleteLabel.text = [self swipeToDeleteTextActivated:NO];
         _swipeDeleteLabel.font = kPullToAddFont;
         [_swipeDeleteLabel sizeToFit];
     }
@@ -745,6 +750,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)cancelTapped:(id)sender {
+    
+    // Turn of delegate callbacks.
+    if (self.editingCell) {
+        self.editingCell.delegate = nil;
+    }
+    
     [self saveAndDismissItems:NO];
 }
 
@@ -954,9 +965,19 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         CGRect arrowFrame = self.swipeToDeleteView.frame;
         arrowFrame.origin.x = self.panningCell.frame.origin.x - arrowFrame.size.width;
         arrowFrame.origin.y = self.panningCell.frame.origin.y + floorf((self.panningCell.frame.size.height - arrowFrame.size.height) / 2.0);
-//        self.swipeToDeleteView.alpha = kSwipeAlpha;
         self.swipeToDeleteView.frame = arrowFrame;
+        self.swipeToDeleteView.alpha = 0.0;
         [self.collectionView addSubview:self.swipeToDeleteView];
+        
+        // Fade it in.
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.swipeToDeleteView.alpha =1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
         
     } else if (panGesture.state == UIGestureRecognizerStateChanged) {
         
@@ -967,37 +988,55 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         // Fade the cell if it was delete detected.
         if (panOffset > kDeleteOffset) {
             
-            // Arrow update.
-            if (CATransform3DEqualToTransform(self.swipeToDeleteArrowView.layer.transform, CATransform3DIdentity)) {
-                [CATransaction begin];
-                [CATransaction setAnimationDuration:0.2];
-                [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-                self.swipeToDeleteArrowView.layer.transform = CATransform3DMakeRotation(RADIANS(180), 0.0, 1.0, 0.0);
-                [CATransaction commit];
+            // Activate swipe delete.
+            if (!self.swipeDeleteActivated) {
+                
+                // Mark as swipe delete activated.
+                self.swipeDeleteActivated = YES;
+                
+                // Update text.
+                [self updateSwipeToDeleteLabel];
+                
+                // Arrow update.
+                if (CATransform3DEqualToTransform(self.swipeToDeleteArrowView.layer.transform, CATransform3DIdentity)) {
+                    [CATransaction begin];
+                    [CATransaction setAnimationDuration:0.2];
+                    [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+                    self.swipeToDeleteArrowView.layer.transform = CATransform3DMakeRotation(RADIANS(180), 0.0, 1.0, 0.0);
+                    [CATransaction commit];
+                }
+                
+                self.panningCell.alpha = kSwipeAlpha;
             }
             
-//            self.swipeToDeleteView.alpha = 1.0;
-            self.panningCell.alpha = kSwipeAlpha;
             
         } else {
             
-            // Arrow update.
-            if (!CATransform3DEqualToTransform(self.swipeToDeleteArrowView.layer.transform, CATransform3DIdentity)) {
-                [CATransaction begin];
-                [CATransaction setAnimationDuration:0.2];
-                [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-                self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
-                [CATransaction commit];
+            // Deactive swipe delete.
+            if (self.swipeDeleteActivated) {
+                
+                self.swipeDeleteActivated = NO;
+                
+                // Update text.
+                [self updateSwipeToDeleteLabel];
+                
+                // Arrow update.
+                if (!CATransform3DEqualToTransform(self.swipeToDeleteArrowView.layer.transform, CATransform3DIdentity)) {
+                    [CATransaction begin];
+                    [CATransaction setAnimationDuration:0.2];
+                    [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+                    self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
+                    [CATransaction commit];
+                }
+                
+                self.panningCell.alpha = 1.0;
             }
-            
-//            self.swipeToDeleteView.alpha = kSwipeAlpha;
-            self.panningCell.alpha = 1.0;
         }
         
     } else  {
         
         // Have we exceed offset to delete.
-        if (panOffset > kDeleteOffset) {
+        if (self.swipeDeleteActivated) {
             
             // Add a new item after this last cell has been deleted.
             BOOL addNew = ([self.items count] == 1);
@@ -1024,24 +1063,39 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     // Delete from model.
     [self.items removeObjectAtIndex:deleteIndexPath.item];
     
-    [self.collectionView performBatchUpdates:^{
-        
-        // Remove the arrow.
-        self.swipeToDeleteView.transform = CGAffineTransformIdentity;
-        self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
-        [self.swipeToDeleteView removeFromSuperview];
-        
-        
-        // Delete the cell.
-        [self.collectionView deleteItemsAtIndexPaths:@[deleteIndexPath]];
-        
-    } completion:^(BOOL finished) {
-        self.panningCell = nil;
-        
-        if (addNew) {
-            [self createNewCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        }
-    }];
+    // Fade arrow out.
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.swipeToDeleteView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // Remove the arrow.
+                         [self.swipeToDeleteView removeFromSuperview];
+                         
+                         [self.collectionView performBatchUpdates:^{
+                             
+                             // Delete the cell.
+                             [self.collectionView deleteItemsAtIndexPaths:@[deleteIndexPath]];
+                             
+                         } completion:^(BOOL finished) {
+                             
+                             // Restore state of swipes.
+                             self.swipeToDeleteView.transform = CGAffineTransformIdentity;
+                             self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
+                             self.swipeDeleteActivated = NO;
+                             [self updateSwipeToDeleteLabel];
+                             
+                             self.panningCell = nil;
+                             
+                             if (addNew) {
+                                 [self createNewCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+                             }
+                         }];
+                         
+                     }];
     
 }
 
@@ -1051,11 +1105,16 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.swipeToDeleteView.transform = CGAffineTransformIdentity;
+                         self.swipeToDeleteView.alpha = 0.0;
                          cell.transform = CGAffineTransformIdentity;
                      }
                      completion:^(BOOL finished) {
+                         // Restore state of swipes.
+                         self.swipeToDeleteView.transform = CGAffineTransformIdentity;
                          self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
-                         [self.swipeToDeleteView removeFromSuperview];
+                         self.swipeDeleteActivated = NO;
+                         [self updateSwipeToDeleteLabel];
+                         
                          self.panningCell = nil;
                      }];
     
@@ -1178,6 +1237,16 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             cell.backgroundView.alpha = 1.0;
         }
     }
+}
+
+- (void)updateSwipeToDeleteLabel {
+    CGRect beforeFrame = self.swipeDeleteLabel.frame;
+    self.swipeDeleteLabel.text = [self swipeToDeleteTextActivated:self.swipeDeleteActivated];
+    [self.swipeDeleteLabel sizeToFit];
+    CGRect frame = self.swipeDeleteLabel.frame;
+    CGFloat xOffset = beforeFrame.size.width - frame.size.width;
+    frame.origin.x += xOffset;
+    self.swipeDeleteLabel.frame = frame;
 }
 
 // Fixes the missing action method when the keyboard is visible
