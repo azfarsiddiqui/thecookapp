@@ -1294,7 +1294,6 @@
 
 - (void)didBecomeActive {
     DLog();
-    [self loadBenchtop:YES];
 }
 
 @end
