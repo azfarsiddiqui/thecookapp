@@ -128,7 +128,7 @@
 
 - (void)showActivity:(BOOL)show {
     if (show) {
-        self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleLarge];
+        self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
         self.activityView.center = self.collectionView.center;
         [self.collectionView addSubview:self.activityView];
         [self.activityView startAnimating];
