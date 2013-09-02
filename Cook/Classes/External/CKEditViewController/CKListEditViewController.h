@@ -49,4 +49,8 @@
 // Cell size
 - (CGSize)cellSize;
 
+// Gesture titles.
+- (NSString *)pullToReleaseTextForActivated:(BOOL)activated;
+- (NSString *)swipeToDeleteText;
+
 @end

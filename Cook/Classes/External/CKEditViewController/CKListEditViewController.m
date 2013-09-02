@@ -13,6 +13,7 @@
 #import "UICollectionView+Draggable.h"
 #import "MRCEnumerable.h"
 #import "LSCollectionViewHelper.h"
+#import "UIColor+Expanded.h"
 
 @interface CKListEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UICollectionViewDataSource_Draggable, CKListCellDelegate, UIGestureRecognizerDelegate>
@@ -20,7 +21,12 @@
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) UIView *pullToAddView;
+@property (nonatomic, strong) UIImageView *pullToAddArrowView;
 @property (nonatomic, strong) UILabel *topAddLabel;
+@property (nonatomic, strong) UIView *swipeToDeleteView;
+@property (nonatomic, strong) UIImageView *swipeToDeleteArrowView;
+@property (nonatomic, strong) UILabel *swipeDeleteLabel;
 @property (nonatomic, strong) CKListCell *panningCell;
 @property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL saveRequired;
@@ -41,8 +47,14 @@
 #define kLabelTag                       270
 #define kHiddenFieldScrollUpOffset      40.0
 #define kHiddenFieldScrollDownOffset    20.0
-#define kDeleteOffset                   100.0
+#define kDeleteOffset                   160.0
 #define kInactiveCellFade               0.7
+#define kArrowLabelGap                  10.0
+#define kLabelArrowGap                  10.0
+#define kPullToAddFont                  [UIFont fontWithName:@"BrandonGrotesque-Regular" size:38.0]
+#define kSwipeToDeleteFont              [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.0]
+#define RADIANS(degrees) ((degrees * M_PI) / 180.0)
+#define kSwipeAlpha                     0.7
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
                  items:(NSArray *)items editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white
@@ -165,6 +177,14 @@
 
 - (CGSize)cellSize {
     return kPlaceholderSize;
+}
+
+- (NSString *)pullToReleaseTextForActivated:(BOOL)activated {
+    return activated ? @"Release to add" : @"Pull to add";
+}
+
+- (NSString *)swipeToDeleteText {
+    return @"Swipe to delete";
 }
 
 #pragma mark - Lifecycle events.
@@ -474,7 +494,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         
         // Show the real collectionView.
         if (self.canAddItems) {
-            [self.collectionView addSubview:self.topAddLabel];
+            [self.collectionView addSubview:self.pullToAddView];
             [self updateAddState];
         }
         [self.view addSubview:self.collectionView];
@@ -620,14 +640,94 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return _saveButton;
 }
 
+- (UIView *)pullToAddView {
+    if (!_pullToAddView) {
+        
+        // Calculate the required frame.
+        CGRect arrowFrame = self.pullToAddArrowView.frame;
+        CGRect labelFrame = self.topAddLabel.frame;
+        labelFrame.origin.x = self.pullToAddArrowView.frame.origin.x + self.pullToAddArrowView.frame.size.width + kArrowLabelGap;
+        CGRect combinedFrame = CGRectUnion(arrowFrame, labelFrame);
+        
+        // Reposition elements.
+        arrowFrame.origin.y = floorf((combinedFrame.size.height - arrowFrame.size.height) / 2.0);
+        labelFrame.origin.y = floorf((combinedFrame.size.height - labelFrame.size.height) / 2.0);
+        self.pullToAddArrowView.frame = arrowFrame;
+        self.topAddLabel.frame = labelFrame;
+        
+        // Combined container.
+        _pullToAddView = [[UIView alloc] initWithFrame:combinedFrame];
+        _pullToAddView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        _pullToAddView.backgroundColor = [UIColor clearColor];
+        [_pullToAddView addSubview:self.pullToAddArrowView];
+        [_pullToAddView addSubview:self.topAddLabel];
+        
+    }
+    return _pullToAddView;
+}
+
+- (UIImageView *)pullToAddArrowView {
+    if (!_pullToAddArrowView) {
+        _pullToAddArrowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_textbox_icon_pulladd.png"]];
+    }
+    return _pullToAddArrowView;
+}
+
 - (UILabel *)topAddLabel {
     if (!_topAddLabel) {
         _topAddLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _topAddLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         _topAddLabel.backgroundColor = [UIColor clearColor];
         _topAddLabel.textColor = [UIColor whiteColor];
+        _topAddLabel.font = kPullToAddFont;
+        _topAddLabel.text = [self pullToReleaseTextForActivated:NO];
+        [_topAddLabel sizeToFit];
     }
     return _topAddLabel;
+}
+
+- (UIView *)swipeToDeleteView {
+    if (!_swipeToDeleteView) {
+        
+        // Calculate the required frame.
+        CGRect arrowFrame = self.swipeToDeleteArrowView.frame;
+        CGRect labelFrame = self.swipeDeleteLabel.frame;
+        arrowFrame.origin.x = labelFrame.origin.x + labelFrame.size.width + kLabelArrowGap;
+        CGRect combinedFrame = CGRectUnion(labelFrame, arrowFrame);
+        
+        // Reposition elements.
+        labelFrame.origin.y = floorf((combinedFrame.size.height - labelFrame.size.height) / 2.0);
+        arrowFrame.origin.y = floorf((combinedFrame.size.height - arrowFrame.size.height) / 2.0) + 2.0;
+        self.swipeToDeleteArrowView.frame = arrowFrame;
+        self.swipeDeleteLabel.frame = labelFrame;
+        
+        // Combined container.
+        _swipeToDeleteView = [[UIView alloc] initWithFrame:combinedFrame];
+        _swipeToDeleteView.backgroundColor = [UIColor clearColor];
+        [_swipeToDeleteView addSubview:self.swipeDeleteLabel];
+        [_swipeToDeleteView addSubview:self.swipeToDeleteArrowView];
+    }
+    return _swipeToDeleteView;
+}
+
+- (UIImageView *)swipeToDeleteArrowView {
+    if (!_swipeToDeleteArrowView) {
+        _swipeToDeleteArrowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_textbox_icon_swipedelete.png"]];
+    }
+    return _swipeToDeleteArrowView;
+}
+
+- (UILabel *)swipeDeleteLabel {
+    if (!_swipeDeleteLabel) {
+        _swipeDeleteLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _swipeDeleteLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        _swipeDeleteLabel.backgroundColor = [UIColor clearColor];
+        _swipeDeleteLabel.textColor = [UIColor colorWithHexString:@"FA4E6F"];
+        _swipeDeleteLabel.text = [self swipeToDeleteText];
+        _swipeDeleteLabel.font = kPullToAddFont;
+        [_swipeDeleteLabel sizeToFit];
+    }
+    return _swipeDeleteLabel;
 }
 
 #pragma mark - Private methods
@@ -750,6 +850,9 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)updateAddStateWithActivation:(BOOL)activated {
+    if (self.topAddActivated == activated) {
+        return;
+    }
     self.topAddActivated = activated;
     [self updateAddState];
 }
@@ -760,19 +863,22 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     }
     
     // Top add
-    self.topAddLabel.text = [self displayForActivated:self.topAddActivated];
+    self.topAddLabel.text = [self pullToReleaseTextForActivated:self.topAddActivated];
     [self.topAddLabel sizeToFit];
-    self.topAddLabel.frame = (CGRect){
-        floorf((self.collectionView.bounds.size.width - self.topAddLabel.frame.size.width) / 2.0),
-        -self.topAddLabel.frame.size.height - kLabelOffset,
-        self.topAddLabel.frame.size.width,
-        self.topAddLabel.frame.size.height
+    self.pullToAddView.frame = (CGRect){
+        floorf((self.collectionView.bounds.size.width - self.pullToAddView.frame.size.width) / 2.0),
+        -self.pullToAddView.frame.size.height - kLabelOffset,
+        self.pullToAddView.frame.size.width,
+        self.pullToAddView.frame.size.height
     };
     
-}
-
-- (NSString *)displayForActivated:(BOOL)activated {
-    return activated ? @"Release to Add" : @"Pull to Add";
+    // Arrow update.
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0.4];
+    [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+    self.pullToAddArrowView.layer.transform = self.topAddActivated ? CATransform3DMakeRotation(RADIANS(180), 1.0, 0.0, 0.0) : CATransform3DIdentity;
+    [CATransaction commit];
+    
 }
 
 - (void)addCellFromTop {
@@ -842,16 +948,49 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 //    DLog(@"translation %@", NSStringFromCGPoint(translation));
 //    DLog(@"panOffset %f", panOffset);
     
-    if (panGesture.state == UIGestureRecognizerStateBegan
-        || panGesture.state == UIGestureRecognizerStateChanged) {
+    if (panGesture.state == UIGestureRecognizerStateBegan) {
+        
+        // Add the arrow.
+        CGRect arrowFrame = self.swipeToDeleteView.frame;
+        arrowFrame.origin.x = self.panningCell.frame.origin.x - arrowFrame.size.width;
+        arrowFrame.origin.y = self.panningCell.frame.origin.y + floorf((self.panningCell.frame.size.height - arrowFrame.size.height) / 2.0);
+//        self.swipeToDeleteView.alpha = kSwipeAlpha;
+        self.swipeToDeleteView.frame = arrowFrame;
+        [self.collectionView addSubview:self.swipeToDeleteView];
+        
+    } else if (panGesture.state == UIGestureRecognizerStateChanged) {
         
         // Drag the cell around.
+        self.swipeToDeleteView.transform = CGAffineTransformMakeTranslation(panOffset, 0.0);
         self.panningCell.transform = CGAffineTransformMakeTranslation(panOffset, 0.0);
         
         // Fade the cell if it was delete detected.
         if (panOffset > kDeleteOffset) {
-            self.panningCell.alpha = 0.7;
+            
+            // Arrow update.
+            if (CATransform3DEqualToTransform(self.swipeToDeleteArrowView.layer.transform, CATransform3DIdentity)) {
+                [CATransaction begin];
+                [CATransaction setAnimationDuration:0.2];
+                [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+                self.swipeToDeleteArrowView.layer.transform = CATransform3DMakeRotation(RADIANS(180), 0.0, 1.0, 0.0);
+                [CATransaction commit];
+            }
+            
+//            self.swipeToDeleteView.alpha = 1.0;
+            self.panningCell.alpha = kSwipeAlpha;
+            
         } else {
+            
+            // Arrow update.
+            if (!CATransform3DEqualToTransform(self.swipeToDeleteArrowView.layer.transform, CATransform3DIdentity)) {
+                [CATransaction begin];
+                [CATransaction setAnimationDuration:0.2];
+                [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+                self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
+                [CATransaction commit];
+            }
+            
+//            self.swipeToDeleteView.alpha = kSwipeAlpha;
             self.panningCell.alpha = 1.0;
         }
         
@@ -887,6 +1026,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     [self.collectionView performBatchUpdates:^{
         
+        // Remove the arrow.
+        self.swipeToDeleteView.transform = CGAffineTransformIdentity;
+        self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
+        [self.swipeToDeleteView removeFromSuperview];
+        
+        
         // Delete the cell.
         [self.collectionView deleteItemsAtIndexPaths:@[deleteIndexPath]];
         
@@ -905,9 +1050,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         self.swipeToDeleteView.transform = CGAffineTransformIdentity;
                          cell.transform = CGAffineTransformIdentity;
                      }
                      completion:^(BOOL finished) {
+                         self.swipeToDeleteArrowView.layer.transform = CATransform3DIdentity;
+                         [self.swipeToDeleteView removeFromSuperview];
                          self.panningCell = nil;
                      }];
     
