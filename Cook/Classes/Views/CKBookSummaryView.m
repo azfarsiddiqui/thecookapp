@@ -72,7 +72,7 @@
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
-                                                                                                            white:YES
+                                                                                                            white:NO
                                                                                                             title:@"Story"
                                                                                                    characterLimit:500];
 //        editViewController.clearOnFocus = ![self.recipeDetails hasStory];
