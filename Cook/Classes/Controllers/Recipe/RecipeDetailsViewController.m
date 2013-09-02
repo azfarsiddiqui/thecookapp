@@ -140,6 +140,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self initImageView];
     [self initScrollView];
     [self initRecipeDetails];
+    
+    // Register left screen edge for shortcut to close.
+    UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                          action:@selector(screenEdgePanned:)];
+    leftEdgeGesture.edges = UIRectEdgeLeft;
+    leftEdgeGesture.delegate = self;
+    [self.view addGestureRecognizer:leftEdgeGesture];
 }
 
 #pragma mark - BookModalViewController methods
@@ -1860,5 +1867,20 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     zoomRect.origin.y    = center.y - (zoomRect.size.height / 2.0);
     return zoomRect;
 }
+
+- (void)screenEdgePanned:(UIScreenEdgePanGestureRecognizer *)edgeGesture {
+    
+    // If detected, then close the recipe.
+    if (edgeGesture.state == UIGestureRecognizerStateBegan) {
+        if (self.editMode) {
+            [self cancelTapped:nil];
+        } else if (self.currentViewport == SnapViewportBelow) {
+            [self toggleImage];
+        } else {
+            [self closeRecipeView];
+        }
+    }
+}
+
 
 @end
