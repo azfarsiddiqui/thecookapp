@@ -19,5 +19,6 @@
 
 @property (nonatomic, weak) id<RecipeImageViewDelegate> delegate;
 @property (nonatomic, assign) BOOL enableDoubleTap;
+@property (nonatomic, assign) BOOL placeholder;
 
 @end

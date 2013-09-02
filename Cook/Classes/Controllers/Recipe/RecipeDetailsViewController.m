@@ -850,6 +850,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
     self.imageView.image = image;
+    self.imageView.placeholder = placeholder;
     
     if (self.blur) {
         self.blurredImageView.image = [ImageHelper blurredRecipeImage:image];
@@ -1239,7 +1240,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (SnapViewport)startViewPort {
-    SnapViewport startViewPort = SnapViewportBottom;
+    SnapViewport startViewPort = SnapViewportTop;
     if (self.addMode) {
         startViewPort = SnapViewportBottom;
     } else if ([self.recipe hasPhotos]) {
@@ -1247,10 +1248,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
     
     return startViewPort;
-}
-
-- (void)imageTapped:(UITapGestureRecognizer *)tapGesture {
-    [self toggleImage];
 }
 
 - (void)toggleImage {
@@ -1282,7 +1279,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              if (!fullscreen) {
                                  [self.imageScrollView setZoomScale:1.0 animated:NO];
                              }
-                             self.topShadowView.alpha = fullscreen ? 0.0 : 1.0;
+                             if (!self.imageView.placeholder) {
+                                 self.topShadowView.alpha =  fullscreen ? 0.0 : 1.0;
+                             }
                              self.closeButton.alpha = fullscreen ? 0.0 : 1.0;
                              self.socialView.alpha = fullscreen ? 0.0 : 1.0;
                              self.editButton.alpha = fullscreen ? 0.0 : 1.0;

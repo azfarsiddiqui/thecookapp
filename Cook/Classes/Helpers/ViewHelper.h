@@ -57,4 +57,8 @@
 // Rounded corners.
 + (void)applyRoundedCornersToView:(UIView *)view corners:(UIRectCorner)corners size:(CGSize)size;
 
+// Connection messages
++ (UIView *)noConnectionCardView;
++ (UIView *)messageCardViewWithText:(NSString *)text subtitle:(NSString *)subtitle;
+
 @end

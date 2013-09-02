@@ -13,6 +13,11 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch *touch = [touches anyObject];
     
+    // Ignore taps if no images.
+    if (self.placeholder) {
+        return;
+    }
+    
     if (!self.enableDoubleTap) {
         return;
     }
@@ -24,6 +29,11 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch *touch = [touches anyObject];
+    
+    // Ignore taps if no images.
+    if (self.placeholder) {
+        return;
+    }
     
     if (touch.tapCount == 1) {
         

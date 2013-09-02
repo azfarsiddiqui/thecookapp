@@ -231,5 +231,14 @@
     view.layer.mask = maskLayer;
 }
 
+#pragma mark - Connection messages
+
++ (UIView *)noConnectionCardView {
+    return nil;
+}
+
++ (UIView *)messageCardViewWithText:(NSString *)text subtitle:(NSString *)subtitle {
+    
+}
 
 @end
