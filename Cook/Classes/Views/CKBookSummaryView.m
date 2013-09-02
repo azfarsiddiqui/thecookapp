@@ -137,7 +137,7 @@
 #pragma mark - CKSaveableContent methods
 
 - (BOOL)contentSaveRequired {
-    return ((self.updatedProfileImage != nil) || (![self.updatedStory CK_equals:self.book.story]));
+    return ((self.updatedProfileImage != nil) || ([self.updatedStory CK_containsText] && ![self.updatedStory CK_equals:self.book.story]));
 }
 
 - (void)contentPerformSave:(BOOL)save {
