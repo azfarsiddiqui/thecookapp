@@ -318,6 +318,10 @@
     return  [self.user isEqual:user];
 }
 
+- (BOOL)shareable {
+    return ([self isUserRecipeAuthor:[CKUser currentUser]] && ([self privacy] != CKPrivacyPrivate));
+}
+
 - (void)clearLocation {
     [self.parseObject removeObjectForKey:kRecipeAttrLocation];
 }

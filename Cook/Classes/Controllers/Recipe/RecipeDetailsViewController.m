@@ -45,6 +45,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
@@ -120,6 +121,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.book = recipe.book;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.blur = NO;
+        self.currentUser = [CKUser currentUser];
     }
     return self;
 }
@@ -516,10 +518,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (UIButton *)shareButton {
-    if (!_shareButton) {
-        _shareButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_share_light.png"]
-                                            target:self
-                                          selector:@selector(shareTapped:)];
+    if (!_shareButton && [self.recipe isUserRecipeAuthor:self.currentUser]) {
+        
+        BOOL shareable = [self.recipe shareable];
+        UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
+        _shareButton = [ViewHelper buttonWithImage:shareImage
+                                            target:shareable ?  self : nil
+                                          selector:shareable ? @selector(shareTapped:) : nil];
         _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         
         if (self.likeButton) {
@@ -1457,6 +1462,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)shareTapped:(id)sender {
+    if (![self.recipe shareable]) {
+        return;
+    }
+    
     [self showShareOverlay:YES];
 }
 

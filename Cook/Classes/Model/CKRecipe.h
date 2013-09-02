@@ -72,6 +72,7 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 - (void)setImage:(UIImage *)image;
 - (PFFile *)imageFile;
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
+- (BOOL)shareable;
 
 // Geopoint
 - (void)clearLocation;
