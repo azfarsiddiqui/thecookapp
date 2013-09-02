@@ -646,8 +646,8 @@
                         
                         // Re-enable the email button.
                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                            [self.facebookButton setText:[self emailButtonTextForSignUp:self.signUpMode] activity:NO
-                                                animated:NO enabled:YES];
+                            [self.emailButton setText:[self emailButtonTextForSignUp:self.signUpMode] activity:NO
+                                             animated:NO enabled:YES];
                         });
                     }];
                     
