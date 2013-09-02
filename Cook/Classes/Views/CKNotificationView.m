@@ -143,7 +143,7 @@
                              animations:^{
                                  self.offButtonIcon.alpha = 0.0;
                                  self.onButtonIcon.alpha = 1.0;
-                                 self.onButtonIcon.transform = CGAffineTransformMakeScale(1.1, 1.1);
+//                                 self.onButtonIcon.transform = CGAffineTransformMakeScale(1.1, 1.1);
                                  self.badgeLabel.alpha = 1.0;
                              }
                              completion:^(BOOL finished) {
@@ -153,7 +153,7 @@
                                                        delay:0.0
                                                      options:UIViewAnimationOptionCurveEaseIn
                                                   animations:^{
-                                                      self.onButtonIcon.transform = CGAffineTransformIdentity;
+//                                                      self.onButtonIcon.transform = CGAffineTransformIdentity;
                                                   }
                                                   completion:^(BOOL finished) {
                                                   }];
