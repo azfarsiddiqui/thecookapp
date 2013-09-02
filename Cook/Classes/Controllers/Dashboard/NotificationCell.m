@@ -79,7 +79,7 @@
         self.notificationIconView.hidden = NO;
         self.notificationIconView.frame = (CGRect) {
             self.nameLabel.frame.origin.x - 13.0,
-            self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height - 13.0,
+            self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height - 10.0,
             iconImage.size.width,
             iconImage.size.height
         };
@@ -213,9 +213,9 @@
     } else if ([notificationName isEqualToString:@"FriendAccept"]) {
         iconImage = [UIImage imageNamed:@"cook_book_inner_icon_small_serves.png"];
     } else if ([notificationName isEqualToString:@"Comment"]) {
-        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_small_comments.png"];
+        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_comment_light.png"];
     } else if ([notificationName isEqualToString:@"Like"]) {
-        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_small_likes_off.png"];
+        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_like_light.png"];
     }
     
     return iconImage;
