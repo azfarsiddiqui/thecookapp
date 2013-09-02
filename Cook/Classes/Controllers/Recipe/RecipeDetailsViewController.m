@@ -917,11 +917,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              animations:^{
                                  
                                  // Make an explicit CA transaction that synchronises with UIView animation.
-                                 [CATransaction begin];
-                                 [CATransaction setAnimationDuration:bounceDuration];
-                                 [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
-                                 self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:bounceFrame];
-                                 [CATransaction commit];
+                                 if (self.blur) {
+                                     [CATransaction begin];
+                                     [CATransaction setAnimationDuration:bounceDuration];
+                                     [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
+                                     self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:bounceFrame];
+                                     [CATransaction commit];
+                                 }
                                  
                                  self.scrollView.frame = bounceFrame;
                                  [self updateDependentViews];
@@ -937,11 +939,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                   animations:^{
                                                       
                                                       // Bounce back
-                                                      [CATransaction begin];
-                                                      [CATransaction setAnimationDuration:0.1];
-                                                      [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-                                                      self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
-                                                      [CATransaction commit];
+                                                      if (self.blur) {
+                                                          [CATransaction begin];
+                                                          [CATransaction setAnimationDuration:0.1];
+                                                          [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+                                                          self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
+                                                          [CATransaction commit];
+                                                      }
                                                       
                                                       self.scrollView.frame = frame;
                                                       [self updateDependentViews];
@@ -968,11 +972,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              animations:^{
                                  
                                  // Make an explicit CA transaction that synchronises with UIView animation.
-                                 [CATransaction begin];
-                                 [CATransaction setAnimationDuration:duration];
-                                 [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
-                                 self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
-                                 [CATransaction commit];
+                                 if (self.blur) {
+                                     [CATransaction begin];
+                                     [CATransaction setAnimationDuration:duration];
+                                     [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
+                                     self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
+                                     [CATransaction commit];
+                                 }
                                  
                                  self.scrollView.frame = frame;
                                  [self updateDependentViews];
