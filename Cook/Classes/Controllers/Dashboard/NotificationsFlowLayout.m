@@ -24,6 +24,20 @@
     return self;
 }
 
+#pragma mark - UICollectionViewFlowLayout methods
+
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
+    return YES;
+}
+
+- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
+    
+    [self applyPagingEffects:layoutAttributes];
+    
+    return layoutAttributes;
+}
+
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
     [super prepareForCollectionViewUpdates:updateItems];
     
@@ -50,6 +64,48 @@
     }
     
     return attributes;
+}
+
+#pragma mark - Private methods
+
+- (void)applyPagingEffects:(NSArray *)layoutAttributes {
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        [self applyHeaderEffects:attributes];
+        [self applyFadingEffects:attributes];
+    }
+}
+
+- (void)applyHeaderEffects:(UICollectionViewLayoutAttributes *)attributes {
+    
+    if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame];
+    }
+}
+
+- (void)applyFadingEffects:(UICollectionViewLayoutAttributes *)attributes {
+    if (!attributes.representedElementKind) {
+        
+        UICollectionViewLayoutAttributes *headerAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                  atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        CGRect proposedHeaderFrame = [self adjustedFrameForHeaderFrame:headerAttributes.frame];
+        CGFloat fadeOffset = proposedHeaderFrame.origin.y + proposedHeaderFrame.size.height;
+        CGRect frame = attributes.frame;
+        CGFloat effectiveDistance = 100.0;
+        
+        if (frame.origin.y < fadeOffset) {
+            CGFloat distance = fadeOffset - frame.origin.y;
+            attributes.alpha = 1.0 - (distance / effectiveDistance);
+        }
+    }
+}
+
+- (CGRect)adjustedFrameForHeaderFrame:(CGRect)frame {
+    CGRect adjustedFrame = frame;
+    CGPoint currentOffset = self.collectionView.contentOffset;
+    if (currentOffset.y > 0) {
+        adjustedFrame.origin.y = currentOffset.y;
+    }
+    return adjustedFrame;
 }
 
 @end
