@@ -229,7 +229,7 @@
     if ([notificationName isEqualToString:@"FriendRequest"]) {
         text = @"Wants to be your friend!";
     } else if ([notificationName isEqualToString:@"FriendAccept"]) {
-        text = @"Is now frieds with you!";
+        text = @"Is now friends with you!";
     } else if ([notificationName isEqualToString:@"Comment"]) {
         text = [NSString stringWithFormat:@"Commented on your recipe: %@", notification.recipe.name];
     } else if ([notificationName isEqualToString:@"Like"]) {
