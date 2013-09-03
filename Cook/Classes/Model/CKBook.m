@@ -20,6 +20,7 @@
 @implementation CKBook
 
 + (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
@@ -34,13 +35,26 @@
                 parseBook = [parseResults objectAtIndex:0];
             }
             
+            // If there was no book, then create it!
             if (!parseBook) {
                 
                 // Create new book.
                 [CKBook createBookForUser:user
                                  succeess:^(CKBook *book) {
+                                     
+                                     // Pre-cache
+                                     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
+                                     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+                                     [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
+                                     [query includeKey:kUserModelForeignKeyName];
+                                     [query findObjectsInBackgroundWithBlock:^(NSArray *parseResults, NSError *error) {
+                                         // Ignore, only for pre-caching purposes.
+                                     }];
+                                     
                                      success(book);
+                                     
                                  } failure:^(NSError *error) {
+                                     failure(error);
                                  }];
             } else {
                 success([[CKBook alloc] initWithParseBook:parseBook user:user]);
