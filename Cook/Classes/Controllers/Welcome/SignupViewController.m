@@ -935,7 +935,14 @@
 }
 
 - (void)backgroundTapped:(UITapGestureRecognizer *)tapGesture {
-    [self.delegate signupViewControllerDismissRequested];
+    CGPoint touchPoint = [tapGesture locationInView:self.scrollView];
+    
+    // Check if we have any subview that responded.
+    UIView *hitView = [self.scrollView hitTest:touchPoint withEvent:nil];
+    if (hitView == self.scrollView) {
+        [self.delegate signupViewControllerDismissRequested];
+    }
+    
 }
 
 @end
