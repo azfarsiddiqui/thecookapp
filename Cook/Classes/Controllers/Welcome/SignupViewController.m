@@ -780,13 +780,13 @@
                    } failure:^(NSError *error) {
                        
                        if ([CKUser usernameExistsForSignUpError:error]) {
-                           [self.emailButton setText:@"USERNAME EXISTS" activity:NO animated:NO enabled:NO];
+                           [self.emailButton setText:@"USER EMAIL EXISTS" activity:NO animated:NO enabled:NO];
                        } else {
                            [self.emailButton setText:@"UNABLE TO REGISTER" activity:NO animated:NO enabled:NO];
                        }
 
                        // Re-enable the email button.
-                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                            [self.emailButton setText:[self emailButtonTextForSignUp:self.signUpMode] activity:NO
                                                 animated:NO enabled:YES];
                        });
@@ -812,16 +812,14 @@
                     
                 } failure:^(NSError *error) {
                     
-                    [self enableFacebookLogin:NO completion:^{
-                        [self.emailButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
-                        [self informLoginSuccessful:NO];
-                        
-                        // Re-enable the email button.
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                            [self.emailButton setText:[self emailButtonTextForSignUp:self.signUpMode] activity:NO
-                                             animated:NO enabled:YES];
-                        });
-                    }];
+                    [self.emailButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
+                    [self informLoginSuccessful:NO];
+                    
+                    // Re-enable the email button.
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                        [self.emailButton setText:[self emailButtonTextForSignUp:self.signUpMode] activity:NO
+                                         animated:NO enabled:YES];
+                    });
                     
                 }];
 }
@@ -866,7 +864,7 @@
             [self informLoginSuccessful:NO];
             
             // Re-enable the facebook button.
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [self.facebookButton setText:[self facebookButtonTextForSignUp:self.signUpMode] activity:NO animated:NO
                                      enabled:YES];
             });
@@ -907,7 +905,7 @@
                          // Shift or label up.
                          self.dividerView.frame = [self dividerFrameForSignUp:self.signUpMode];
                          
-                         // Fade out the emil container.
+                         // Fade out the email container.
                          self.emailContainerView.alpha = enable ? 0.0 : 1.0;
                          self.footerToggleButton.alpha = enable ? 0.0 : 1.0;
                          self.footerForgotButton.alpha = enable ? 0.0 : 1.0;
