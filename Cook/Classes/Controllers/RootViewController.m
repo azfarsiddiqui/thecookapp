@@ -121,10 +121,13 @@
 #pragma mark - WelcomeViewControllerDelegate methods
 
 - (void)welcomeViewControllerGetStartedReached {
+    
+    __weak RootViewController *weakSelf = self;
     [self dismissWelcomeViewCompletion:^{
-        self.panEnabled = YES;
-        [self.benchtopViewController loadBenchtop:YES];
+        weakSelf.panEnabled = YES;
+        [weakSelf.benchtopViewController loadBenchtop:YES];
     }];
+    
 }
 
 #pragma mark - BenchtopViewControllerDelegate methods
