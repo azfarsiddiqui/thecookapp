@@ -90,17 +90,17 @@
     // Change the validation icon image.
     self.validationImageView.image = [self validationImageForValidated:validated];
     
-    // Position it at the end of the text/caret.
+    // Position it at the end.
     self.validationImageView.frame = (CGRect) {
-        self.textField.bounds.size.width - self.validationImageView.frame.size.width,
-        floorf((self.textField.bounds.size.height - self.validationImageView.frame.size.height) / 2.0),
+        self.bounds.size.width - self.validationImageView.frame.size.width - 8.0,
+        floorf((self.bounds.size.height - self.validationImageView.frame.size.height) / 2.0) + 1.0,
         self.validationImageView.frame.size.width,
         self.validationImageView.frame.size.height
     };
     
     // Add it to textfield if not there already.
     if (!self.validationImageView.superview) {
-        [self.textField addSubview:self.validationImageView];
+        [self addSubview:self.validationImageView];
     }
     
     // Mark as validated.
@@ -300,9 +300,9 @@
 
 - (UIImage *)validationImageForValidated:(BOOL)validated {
     if (validated) {
-        return [UIImage imageNamed:@"cook_signin_icon_okay.png"];
+        return [UIImage imageNamed:@"cook_login_check_okay.png"];
     } else {
-        return [UIImage imageNamed:@"cook_signin_icon_error.png"];
+        return [UIImage imageNamed:@"cook_login_check_error.png"];
     }
 }
 

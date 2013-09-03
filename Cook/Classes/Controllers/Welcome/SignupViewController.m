@@ -43,6 +43,7 @@
 @property (nonatomic, strong) UILabel *forgotLabel;
 @property (nonatomic, strong) CKTextFieldView *forgotEmailView;
 @property (nonatomic, strong) CKSignInButtonView *forgotButton;
+@property (nonatomic, strong) UIImageView *leftArrowView;
 
 @end
 
@@ -247,19 +248,38 @@
 
 #pragma mark - UIScrollViewDelegate methods
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (self.leftArrowView.alpha == 1.0) {
+        [self showForgotArrow:NO];
+    }
+    
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
     // Re-enable the forgot button.
     if (!decelerate && self.scrollView.contentOffset.x == 0) {
         [self.forgotButton setText:[self forgotButtonText] activity:NO animated:NO enabled:YES];
     }
+    
+    // Fade in the arrow if we're on the forgot page.
+    if (!decelerate && self.scrollView.contentOffset.x == self.scrollView.bounds.size.width) {
+        [self showForgotArrow:YES];
+    }
 }
 
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
     // Re-enable the forgot button.
     if (self.scrollView.contentOffset.x == 0) {
         [self.forgotButton setText:[self forgotButtonText] activity:NO animated:NO enabled:YES];
+    }
+    
+    // Fade in the arrow if we're on the forgot page.
+    DLog(@"CONTENTOFFSET %@", NSStringFromCGPoint(self.scrollView.contentOffset));
+    if (self.scrollView.contentOffset.x == self.scrollView.bounds.size.width) {
+        [self showForgotArrow:YES];
     }
 }
 
@@ -337,6 +357,17 @@
         [_footerForgotButton setTitleColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.2] forState:UIControlStateHighlighted];
         [_footerForgotButton addTarget:self action:@selector(forgotButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [_footerForgotButton sizeToFit];
+        
+        UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_rightarrow_sm.png"]];
+        arrowImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        arrowImageView.frame = (CGRect) {
+            _footerForgotButton.frame.size.width + 5.0,
+            floorf((_footerForgotButton.bounds.size.height - arrowImageView.frame.size.height) / 2.0),
+            arrowImageView.frame.size.width,
+            arrowImageView.frame.size.height
+        };
+        [_footerForgotButton addSubview:arrowImageView];
+        
     }
     return _footerForgotButton;
 }
@@ -509,6 +540,17 @@
     [self.scrollView addSubview:self.forgotEmailView];
     [self.scrollView addSubview:self.forgotButton];
     
+    // Left arrow.
+    UIImageView *leftArrowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_leftarrow.png"]];
+    leftArrowView.frame = (CGRect) {
+        self.scrollView.bounds.size.width + 30.0,
+        floorf((self.scrollView.bounds.size.height - leftArrowView.frame.size.height) / 2.0) + 10.0,
+        leftArrowView.frame.size.width,
+        leftArrowView.frame.size.height
+    };
+    leftArrowView.alpha = 0.0;  // Hidden to start off with.
+    [self.scrollView addSubview:leftArrowView];
+    self.leftArrowView = leftArrowView;
 }
 
 - (void)initHeaderView {
@@ -943,6 +985,17 @@
         [self.delegate signupViewControllerDismissRequested];
     }
     
+}
+
+- (void)showForgotArrow:(BOOL)show {
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.leftArrowView.alpha = show ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 @end
