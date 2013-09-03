@@ -280,12 +280,14 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
     self.recipeDetails.privacy = CKPrivacyPrivate;
     self.saveButton.enabled = YES;
+    [self updateShareButton];
 }
 
 - (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
     [self.recipe clearLocation];
     self.recipeDetails.privacy = CKPrivacyFriends;
     self.saveButton.enabled = YES;
+    [self updateShareButton];
 }
 
 - (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
@@ -308,6 +310,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.saveButton.enabled = YES;
         self.locatingInProgress = NO;
     }];
+    
+    [self updateShareButton];
 }
 
 #pragma mark - RecipeImageViewDelegate methods
@@ -527,7 +531,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (UIButton *)shareButton {
     if (!_shareButton && [self.recipe isUserRecipeAuthor:self.currentUser]) {
         
-        BOOL shareable = [self.recipe shareable];
+        BOOL shareable = [self shareable];
         UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
         _shareButton = [ViewHelper buttonWithImage:shareImage
                                             target:shareable ?  self : nil
@@ -1469,7 +1473,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)shareTapped:(id)sender {
-    if (![self.recipe shareable]) {
+    if (![self shareable]) {
         return;
     }
     
@@ -1882,5 +1886,21 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
 }
 
+- (void)updateShareButton {
+    if (self.shareButton) {
+        BOOL shareable = [self shareable];
+        UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
+        [self.shareButton setBackgroundImage:shareImage forState:UIControlStateNormal];
+        if (shareable && [[self.shareButton actionsForTarget:self forControlEvent:UIControlEventTouchUpInside] count] == 0) {
+            [self.shareButton addTarget:self action:@selector(shareTapped:) forControlEvents:UIControlEventTouchUpInside];
+        } else if (!shareable && [[self.shareButton actionsForTarget:self forControlEvent:UIControlEventTouchUpInside] count] > 0) {
+            [self.shareButton removeTarget:self action:@selector(shareTapped:) forControlEvents:UIControlEventTouchUpInside];
+        }
+    }
+}
+
+- (BOOL)shareable {
+    return ([self.recipe isUserRecipeAuthor:self.currentUser] && (self.recipeDetails.privacy != CKPrivacyPrivate));
+}
 
 @end
