@@ -10,6 +10,7 @@
 
 @protocol RecipeImageViewDelegate <NSObject>
 
+- (BOOL)recipeImageViewShouldTapAtPoint:(CGPoint)point;
 - (void)recipeImageViewTapped;
 - (void)recipeImageViewDoubleTappedAtPoint:(CGPoint)point;
 

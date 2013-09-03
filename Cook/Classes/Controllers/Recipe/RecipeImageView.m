@@ -13,6 +13,11 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch *touch = [touches anyObject];
     
+    // Should we receive this tap?
+    if (![self.delegate recipeImageViewShouldTapAtPoint:[touch locationInView:self]]) {
+        return;
+    }
+    
     // Ignore taps if no images.
     if (self.placeholder) {
         return;
@@ -29,6 +34,11 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch *touch = [touches anyObject];
+    
+    // Should we receive this tap?
+    if (![self.delegate recipeImageViewShouldTapAtPoint:[touch locationInView:self]]) {
+        return;
+    }
     
     // Ignore taps if no images.
     if (self.placeholder) {
