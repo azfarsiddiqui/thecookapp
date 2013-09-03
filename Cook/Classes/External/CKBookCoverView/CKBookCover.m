@@ -32,23 +32,11 @@
 }
 
 + (NSString *)initialCover {
-    NSString *initialCover = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialCover];
-    if (!initialCover) {
-        initialCover = [CKBookCover randomCover];
-        [[NSUserDefaults standardUserDefaults] setObject:initialCover forKey:kInitialCover];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    return initialCover;
+    return [CKBookCover randomCover];
 }
 
 + (NSString *)initialIllustration {
-    NSString *initialIllustration = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialIllustration];
-    if (!initialIllustration) {
-        initialIllustration = [CKBookCover randomIllustration];
-        [[NSUserDefaults standardUserDefaults] setObject:initialIllustration forKey:kInitialIllustration];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    return initialIllustration;
+    return [CKBookCover randomIllustration];
 }
 
 + (NSString *)defaultCover {
