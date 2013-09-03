@@ -180,15 +180,16 @@
     NSString *text = nil;
     
     NSString *notificationName = notification.name;
+    CKUser *actionUser = notification.actionUser;
     
     if ([notificationName isEqualToString:@"FriendRequest"]) {
-        text = @"Wants to be your friend!";
+        text = [NSString stringWithFormat:@"%@ wants to be friends.", [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:@"FriendAccept"]) {
-        text = @"Is now friends with you!";
+        text = [NSString stringWithFormat:@"%@ is now friends with you.", [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:@"Comment"]) {
-        text = [NSString stringWithFormat:@"Commented on your recipe: %@", notification.recipe.name];
+        text = [NSString stringWithFormat:@"%@ commented on your recipe \"%@\"", [actionUser friendlyName], notification.recipe.name];
     } else if ([notificationName isEqualToString:@"Like"]) {
-        text = [NSString stringWithFormat:@"Liked your recipe: %@", notification.recipe.name];
+        text = [NSString stringWithFormat:@"%@ liked on your recipe \"%@\"", [actionUser friendlyName], notification.recipe.name];
     }
     
     return text;

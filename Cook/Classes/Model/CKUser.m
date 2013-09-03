@@ -412,6 +412,14 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return ([self parseCoverPhotoFile] != nil);
 }
 
+- (NSString *)friendlyName {
+    NSString *friendlyName = self.firstName;
+    if (![friendlyName CK_containsText]) {
+        friendlyName = self.name;
+    }
+    return friendlyName;
+}
+
 - (void)numUnreadNotificationsCompletion:(NumObjectSuccessBlock)completion failure:(ObjectFailureBlock)failure {
     PFQuery *query = [PFQuery queryWithClassName:kUserNotificationModelName];
     [query whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
