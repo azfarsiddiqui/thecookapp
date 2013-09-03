@@ -126,6 +126,23 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
++ (void)requestPasswordResetForEmail:(NSString *)email completion:(ObjectSuccessBlock)success
+                             failure:(ObjectFailureBlock)failure {
+    
+    DLog(@"Requesting password reset for Email[%@]", email);
+    [PFUser requestPasswordResetForEmailInBackground:email
+                                               block:^(BOOL succeeded, NSError *error) {
+                                                   if (!error) {
+                                                       DLog(@"Requested email");
+                                                       success();
+                                                   } else {
+                                                       DLog(@"Error: %@", [error localizedDescription]);
+                                                       failure(error);
+                                                   }
+                                                   
+                                               }];
+}
+
 + (CKUser *)userWithParseUser:(PFUser *)parseUser {
     return [[CKUser alloc] initWithParseUser:parseUser];
 }

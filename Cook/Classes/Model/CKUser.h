@@ -43,6 +43,8 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
                completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)loginWithEmail:(NSString *)email password:(NSString *)password completion:(ObjectSuccessBlock)success
                failure:(ObjectFailureBlock)failure;
++ (void)requestPasswordResetForEmail:(NSString *)email completion:(ObjectSuccessBlock)success
+                             failure:(ObjectFailureBlock)failure;
 + (CKUser *)userWithParseUser:(PFUser *)parseUser;
 + (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend requestor:(PFUser *)parseRequestor;
 + (BOOL)usernameExistsForSignUpError:(NSError *)error;

@@ -20,13 +20,13 @@
 #import "NSString+Utilities.h"
 #import "ModalOverlayHelper.h"
 
-@interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate>
+@interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *blackOverlayView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *dividerView;
 @property (nonatomic, strong) UIView *emailContainerView;
 @property (nonatomic, strong) CKTextFieldView *emailNameView;
@@ -35,8 +35,14 @@
 @property (nonatomic, strong) CKSignInButtonView *emailButton;
 @property (nonatomic, strong) CKFacebookSignInButtonView *facebookButton;
 @property (nonatomic, strong) UIButton *footerToggleButton;
+@property (nonatomic, strong) UIButton *footerForgotButton;
 @property (nonatomic, assign) BOOL signUpMode;
 @property (nonatomic, assign) BOOL animating;
+
+// Forgot password.
+@property (nonatomic, strong) UILabel *forgotLabel;
+@property (nonatomic, strong) CKTextFieldView *forgotEmailView;
+@property (nonatomic, strong) CKSignInButtonView *forgotButton;
 
 @end
 
@@ -49,6 +55,7 @@
 #define kPasswordMinLength  6
 #define kPasswordMaxLength  32
 #define kFooterTextInsets   UIEdgeInsetsMake(5.0, 20.0, 25.0, 20.0)
+#define kFooterButtonHeight 50.0
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -71,10 +78,12 @@
     self.view.autoresizingMask = UIViewAutoresizingNone;
     
     [self initBackgroundView];
+    [self initScrollView];
     [self initEmailContainerView];
     [self initHeaderView];
     [self initButtons];
     [self initFooterView];
+    [self initForgotView];
     
 //    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
     [self loadSnapshotImage:[self.delegate signupViewControllerSnapshotImageRequested]];
@@ -100,8 +109,6 @@
     if (signUp) {
         self.emailNameView.alpha = 0.0;
         self.emailNameView.hidden = NO;
-        self.subtitleLabel.alpha = 0.0;
-        self.subtitleLabel.hidden = NO;
     }
     
     if (animated) {
@@ -112,12 +119,11 @@
                          animations:^{
                              self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
                              self.titleLabel.frame = [self titleFrameForSignUp:signUp];
-                             self.subtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
                              self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
                              self.dividerView.frame = [self dividerFrameForSignUp:signUp];
                              
-                             self.subtitleLabel.alpha = signUp ? 1.0 : 0.0;
                              self.emailNameView.alpha = signUp ? 1.0 : 0.0;
+                             self.footerForgotButton.alpha = signUp ? 0.0 : 1.0;
                              
                          }
                          completion:^(BOOL finished) {
@@ -134,7 +140,6 @@
                              
                              if (!signUp) {
                                  self.emailNameView.hidden = YES;
-                                 self.subtitleLabel.hidden = NO;
                              }
                              
                              self.animating = NO;
@@ -143,11 +148,10 @@
     } else {
         self.emailContainerView.frame = [self emailContainerFrameForSignUp:signUp];
         self.titleLabel.frame = [self titleFrameForSignUp:signUp];
-        self.subtitleLabel.frame = [self signupSubtitleFrameForSignUp:signUp];
         self.facebookButton.frame = [self facebookFrameForSignUp:signUp];
         self.dividerView.frame = [self dividerFrameForSignUp:signUp];
         
-        self.subtitleLabel.alpha = signUp ? 1.0 : 0.0;
+        self.footerForgotButton.alpha = signUp ? 0.0 : 1.0;
         self.emailNameView.alpha = signUp ? 1.0 : 0.0;
         
         // Update header text.
@@ -162,7 +166,6 @@
         
          if (!signUp) {
              self.emailNameView.hidden = YES;
-             self.subtitleLabel.hidden = NO;
          }
         
          self.animating = NO;
@@ -233,7 +236,30 @@
 - (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView {
     NSLog(@"textFieldViewDidReturn:");
     if ([self validateFields:@[textFieldView]]) {
-        [self emailButtonTapped];
+        
+        if (textFieldView == self.emailAddressView) {
+            [self emailButtonTapped];
+        } else if (textFieldView == self.forgotEmailView) {
+            [self forgotButtonTapped];
+        }
+    }
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    
+    // Re-enable the forgot button.
+    if (!decelerate && self.scrollView.contentOffset.x == 0) {
+        [self.forgotButton setText:[self forgotButtonText] activity:NO animated:NO enabled:YES];
+    }
+}
+
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    
+    // Re-enable the forgot button.
+    if (self.scrollView.contentOffset.x == 0) {
+        [self.forgotButton setText:[self forgotButtonText] activity:NO animated:NO enabled:YES];
     }
 }
 
@@ -251,16 +277,18 @@
     return _titleLabel;
 }
 
-- (UILabel *)subtitleLabel {
-    if (!_subtitleLabel) {
-        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _subtitleLabel.backgroundColor = [UIColor clearColor];
-        _subtitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:26];
-        _subtitleLabel.textColor = [UIColor whiteColor];
-        _subtitleLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
-        _subtitleLabel.shadowOffset = CGSizeMake(0.0, 2.0);
+- (UILabel *)forgotLabel {
+    if (!_forgotLabel) {
+        _forgotLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _forgotLabel.backgroundColor = [UIColor clearColor];
+        _forgotLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:64];
+        _forgotLabel.textColor = [UIColor whiteColor];
+        _forgotLabel.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
+        _forgotLabel.shadowOffset = CGSizeMake(0.0, 2.0);
+        _forgotLabel.text = @"RESET PASSWORD";
+        [_forgotLabel sizeToFit];
     }
-    return _subtitleLabel;
+    return _forgotLabel;
 }
 
 - (UIImageView *)dividerView {
@@ -297,6 +325,22 @@
     return _footerToggleButton;
 }
 
+- (UIButton *)footerForgotButton {
+    if (!_footerForgotButton) {
+        _footerForgotButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _footerForgotButton.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14];
+        _footerForgotButton.titleLabel.shadowOffset = CGSizeMake(0.0, 2.0);
+        _footerForgotButton.userInteractionEnabled = YES;
+        [_footerForgotButton setTitle:@"FORGOT PASSWORD" forState:UIControlStateNormal];
+        [_footerForgotButton setTitleShadowColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2] forState:UIControlStateNormal];
+        [_footerForgotButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_footerForgotButton setTitleColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.2] forState:UIControlStateHighlighted];
+        [_footerForgotButton addTarget:self action:@selector(forgotButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [_footerForgotButton sizeToFit];
+    }
+    return _footerForgotButton;
+}
+
 #pragma mark - Keyboard events
 
 - (void)keyboardDidShow:(NSNotification *)notification {
@@ -318,6 +362,8 @@
         [self facebookButtonTapped];
     } else if (buttonView == self.emailButton) {
         [self emailButtonTapped];
+    } else if (buttonView == self.forgotButton) {
+        [self forgotButtonTapped];
     }
 }
 
@@ -335,11 +381,21 @@
     self.blackOverlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
     [self.view addSubview:self.blackOverlayView];
     self.blackOverlayView.alpha = 0.0;  // To be faded in.
+}
+
+- (void)initScrollView {
+    self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    self.scrollView.backgroundColor = [UIColor clearColor];
+    self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.scrollView.contentSize = (CGSize) { self.view.bounds.size.width * 2.0, self.view.bounds.size.height };
+    self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.scrollView.pagingEnabled = YES;
+    self.scrollView.delegate = self;
+    [self.view addSubview:self.scrollView];
     
     // Register tap to dismiss.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapped:)];
-    self.blurredImageView.userInteractionEnabled = YES;
-    [self.blurredImageView addGestureRecognizer:tapGesture];
+    [self.scrollView addGestureRecognizer:tapGesture];
 }
 
 - (void)initEmailContainerView {
@@ -347,14 +403,14 @@
     CGFloat fieldsGap = 30.0;
     
     UIView *emailContainerView = [[UIView alloc] initWithFrame:(CGRect){
-        floorf((self.view.bounds.size.width - kEmailSignupSize.width) / 2.0),
-        floorf((self.view.bounds.size.height - kEmailSignupSize.height) / 2.0),
+        floorf((self.scrollView.bounds.size.width - kEmailSignupSize.width) / 2.0),
+        floorf((self.scrollView.bounds.size.height - kEmailSignupSize.height) / 2.0),
         kEmailSignupSize.width,
         kEmailSignupSize.height}];
     emailContainerView.backgroundColor = [UIColor clearColor];
 //    emailContainerView.backgroundColor = [UIColor colorWithRed:0 green:255 blue:0 alpha:0.5];
     emailContainerView.userInteractionEnabled = YES;
-    [self.view addSubview:emailContainerView];
+    [self.scrollView addSubview:emailContainerView];
     self.emailContainerView = emailContainerView;
     
     CGSize availableSize = (CGSize){
@@ -414,35 +470,62 @@
     self.emailNameView = emailNameView;
     
     self.dividerView.frame = [self dividerFrameForSignUp:self.signUpMode];
-    [self.view addSubview:self.dividerView];
+    [self.scrollView addSubview:self.dividerView];
+}
+
+- (void)initForgotView {
+    
+    CGFloat labelFieldGap = 26.0;
+    CGFloat fieldButtonGap = 14.0;
+    
+    // Forgot label.
+    CGRect forgotLabelFrame = self.forgotLabel.frame;
+    
+    // Forgot email.
+    self.forgotEmailView = [[CKTextFieldView alloc] initWithWidth:self.emailAddressView.frame.size.width delegate:self
+                                                      placeholder:@"Email Address"];
+    CGRect forgotEmailFrame = self.forgotEmailView.frame;
+    forgotEmailFrame.origin.y = forgotLabelFrame.origin.y + forgotLabelFrame.size.height + labelFieldGap;
+    [self.scrollView addSubview:self.forgotEmailView];
+    
+    // Send button.
+    self.forgotButton = [[CKSignInButtonView alloc] initWithSize:(CGSize){ self.emailButton.frame.size.width, 83.0 }
+                                                            text:[self forgotButtonText] activity:NO delegate:self];
+    CGRect forgotButtonFrame = self.forgotButton.frame;
+    forgotButtonFrame.origin.y = forgotEmailFrame.origin.y + fieldButtonGap;
+    
+    // Update positioning.
+    CGRect combinedFrame = CGRectUnion(forgotLabelFrame, CGRectUnion(forgotEmailFrame, forgotButtonFrame));
+    forgotLabelFrame.origin.x = self.scrollView.bounds.size.width + floorf((self.scrollView.bounds.size.width - forgotLabelFrame.size.width) / 2.0);
+    forgotLabelFrame.origin.y = floorf((self.scrollView.bounds.size.height - combinedFrame.size.height) / 2.0) - 25.0;
+    self.forgotLabel.frame = forgotLabelFrame;
+    forgotEmailFrame.origin.x = self.scrollView.bounds.size.width + floorf((self.scrollView.bounds.size.width - forgotEmailFrame.size.width) / 2.0);
+    forgotEmailFrame.origin.y = forgotLabelFrame.origin.y + forgotLabelFrame.size.height + labelFieldGap;
+    self.forgotEmailView.frame = forgotEmailFrame;
+    forgotButtonFrame.origin.x = self.scrollView.bounds.size.width + floorf((self.scrollView.bounds.size.width - forgotButtonFrame.size.width) / 2.0);
+    forgotButtonFrame.origin.y = forgotEmailFrame.origin.y + forgotEmailFrame.size.height + fieldButtonGap;
+    self.forgotButton.frame = forgotButtonFrame;
+    [self.scrollView addSubview:self.forgotLabel];
+    [self.scrollView addSubview:self.forgotEmailView];
+    [self.scrollView addSubview:self.forgotButton];
+    
 }
 
 - (void)initHeaderView {
     
     // Signup Title
     if (!self.titleLabel.superview) {
-        [self.view addSubview:self.titleLabel];
+        [self.scrollView addSubview:self.titleLabel];
     }
     self.titleLabel.text = [self titleForSignUp:self.signUpMode];
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = [self titleFrameForSignUp:self.signUpMode];
     
-    // Signup Subtitle
-//    if (!self.subtitleLabel.superview) {
-//        [self.view addSubview:self.subtitleLabel];
-//    }
-    self.subtitleLabel.text = [self subtitleForSignUp:self.signUpMode];
-    [self.subtitleLabel sizeToFit];
-    self.subtitleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - self.subtitleLabel.frame.size.width) / 2.0),
-                                                self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height - 20.0,
-                                                self.subtitleLabel.frame.size.width,
-                                                self.subtitleLabel.frame.size.height);
-    
 }
 
 - (void)initButtons {
     self.facebookButton.frame = [self facebookFrameForSignUp:self.signUpMode];
-    [self.view addSubview:self.facebookButton];
+    [self.scrollView addSubview:self.facebookButton];
 }
 
 - (void)initFooterView {
@@ -457,16 +540,27 @@
 
 - (void)updateFooterButtonForSignUp:(BOOL)signUp {
     if (!self.footerToggleButton.superview) {
-        [self.view addSubview:self.footerToggleButton];
+        [self.scrollView addSubview:self.footerToggleButton];
     }
     [self.footerToggleButton setTitle:[self footerTextForSignUp:signUp] forState:UIControlStateNormal];
     [self.footerToggleButton sizeToFit];
     self.footerToggleButton.backgroundColor = [UIColor clearColor];
     self.footerToggleButton.frame = (CGRect){
-        floorf((self.view.bounds.size.width - self.footerToggleButton.frame.size.width - kFooterTextInsets.left - kFooterTextInsets.right) / 2.0),
-        self.view.bounds.size.height - self.footerToggleButton.frame.size.height - kFooterTextInsets.top - kFooterTextInsets.bottom,
-        kFooterTextInsets.left + self.footerToggleButton.frame.size.width+ kFooterTextInsets.right,
-        kFooterTextInsets.top + self.footerToggleButton.frame.size.height + kFooterTextInsets.bottom
+        floorf((self.scrollView.bounds.size.width - self.footerToggleButton.frame.size.width) / 2.0),
+        self.scrollView.bounds.size.height - kFooterButtonHeight,
+        self.footerToggleButton.frame.size.width,
+        kFooterButtonHeight
+    };
+    
+    // Forgot button on the previous page.
+    if (!self.footerForgotButton.superview) {
+        [self.scrollView addSubview:self.footerForgotButton];
+    }
+    self.footerForgotButton.frame = (CGRect) {
+        self.scrollView.bounds.size.width - self.footerForgotButton.frame.size.width - 40.0,
+        self.footerToggleButton.frame.origin.y,
+        self.footerForgotButton.frame.size.width,
+        kFooterButtonHeight
     };
 }
 
@@ -474,12 +568,12 @@
     [self enableSignUpMode:!self.signUpMode];
 }
 
-- (NSString *)titleForSignUp:(BOOL)signUp {
-    return signUp ? @"SIGNUP" : @"SIGN IN";
+- (void)forgotButtonTapped:(id)sender {
+    [self.scrollView setContentOffset:(CGPoint){ self.scrollView.bounds.size.width, 0.0 } animated:YES];
 }
 
-- (NSString *)subtitleForSignUp:(BOOL)signUp {
-    return signUp ? @"Just choose a way to signup below..." : @"";
+- (NSString *)titleForSignUp:(BOOL)signUp {
+    return signUp ? @"SIGNUP" : @"SIGN IN";
 }
 
 - (NSString *)footerTextForSignUp:(BOOL)signUp {
@@ -494,17 +588,21 @@
     return signUp ? @"SIGNUP WITH FACEBOOK" : @"SIGNIN WITH FACEBOOK";
 }
 
+- (NSString *)forgotButtonText {
+    return @"SEND";
+}
+
 - (CGRect)emailContainerFrameForSignUp:(BOOL)signUp {
     CGSize size = signUp ? kEmailSignupSize : kEmailSignInSize;
-    return CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
-                      floorf((self.view.bounds.size.height - size.height) / 2.0),
+    return CGRectMake(floorf((self.scrollView.bounds.size.width - size.width) / 2.0),
+                      floorf((self.scrollView.bounds.size.height - size.height) / 2.0),
                       size.width,
                       size.height);
 }
 
 - (CGRect)titleFrameForSignUp:(BOOL)signUp {
     CGRect frame = self.titleLabel.frame;
-    frame.origin.x = floorf((self.view.bounds.size.width - frame.size.width) / 2.0);
+    frame.origin.x = floorf((self.scrollView.bounds.size.width - frame.size.width) / 2.0);
     frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height - 0.0;
 //    if (signUp) {
 //        frame.origin.y = self.emailContainerView.frame.origin.y - self.titleLabel.frame.size.height - 20.0;
@@ -514,22 +612,15 @@
     return frame;
 }
 
-- (CGRect)signupSubtitleFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.subtitleLabel.frame.size.width) / 2.0),
-                      self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height - 20.0,
-                      self.subtitleLabel.frame.size.width,
-                      self.subtitleLabel.frame.size.height);
-}
-
 - (CGRect)facebookFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.facebookButton.frame.size.width) / 2.0),
+    return CGRectMake(floorf((self.scrollView.bounds.size.width - self.facebookButton.frame.size.width) / 2.0),
                       self.emailContainerView.frame.origin.y + self.emailContainerView.bounds.size.height + 30.0,
                       self.facebookButton.frame.size.width,
                       self.facebookButton.frame.size.height);
 }
 
 - (CGRect)dividerFrameForSignUp:(BOOL)signUp {
-    return CGRectMake(floorf((self.view.bounds.size.width - self.dividerView.frame.size.width) / 2.0),
+    return CGRectMake(floorf((self.scrollView.bounds.size.width - self.dividerView.frame.size.width) / 2.0),
                       self.emailContainerView.frame.origin.y + self.emailContainerView.frame.size.height + 0,
                       self.dividerView.frame.size.width,
                       self.dividerView.frame.size.height);
@@ -541,7 +632,7 @@
     [self.delegate signupViewControllerFocused:show];
     
     // Convert keyboard frame to currentView to handle rotated interface.
-    keyboardFrame = [self.view convertRect:keyboardFrame fromView:nil];
+    keyboardFrame = [self.scrollView convertRect:keyboardFrame fromView:nil];
     
     CGFloat yOffset = self.signUpMode ? 70.0 : 55.0;
     CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, -floorf(keyboardFrame.origin.y / 2.0) + yOffset);
@@ -551,7 +642,7 @@
                      animations:^{
                          self.dividerView.alpha = show ? 0.0: 1.0;
                          self.facebookButton.alpha = show ? 0.0 : 1.0;
-                         self.view.transform = show ? translateTransform : CGAffineTransformIdentity;
+                         self.scrollView.transform = show ? translateTransform : CGAffineTransformIdentity;
                      }
                      completion:^(BOOL finished) {
                      }];
@@ -589,6 +680,42 @@
         }];
     }
     
+}
+
+- (void)forgotButtonTapped {
+    
+    // Make sure all fields are validated before proceeding.
+    BOOL validated = [self validateFields:@[self.forgotEmailView]];
+    if (!validated) {
+        return;
+    }
+    
+    // Inform for modal.
+    [self.delegate signUpViewControllerModalRequested:YES];
+    
+    [self.forgotButton setText:@"SENDING" activity:YES animated:NO enabled:NO];
+    [self sendForgotPassword];
+}
+
+- (void)sendForgotPassword {
+    DLog();
+    NSString *email = [self.forgotEmailView inputText];
+    [CKUser requestPasswordResetForEmail:email completion:^{
+        
+        [self.forgotButton setText:@"SENT! PLEASE CHECK YOUR EMAIL" activity:NO animated:NO enabled:NO];
+        [self.forgotEmailView focusTextFieldView:NO];
+        
+    } failure:^(NSError *error) {
+        
+        [self.forgotButton setText:@"EMAIL ADDRESS IS NOT REGISTERED" activity:NO animated:NO enabled:NO];
+        
+        // Re-enable the forgot button.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self.forgotButton setText:[self forgotButtonText] activity:NO
+                              animated:NO enabled:YES];
+        });
+        
+    }];
 }
 
 - (void)registerViaEmail {
@@ -721,7 +848,7 @@
                          // Shift Facebook Button.
                          CGRect facebookButtonFrame = [self facebookFrameForSignUp:self.signUpMode];
                          if (enable) {
-                             facebookButtonFrame.origin.y = floorf((self.view.bounds.size.height - self.facebookButton.frame.size.height) / 2.0);
+                             facebookButtonFrame.origin.y = floorf((self.scrollView.bounds.size.height - self.facebookButton.frame.size.height) / 2.0);
                          }
                          self.facebookButton.frame = facebookButtonFrame;
                          
@@ -732,21 +859,13 @@
                          }
                          self.titleLabel.frame = signUpTitleFrame;
                          
-                         // Shift SignUp Subtitle.
-                         CGRect signUpSubtitleFrame = [self signupSubtitleFrameForSignUp:self.signUpMode];
-                         if (enable) {
-                             signUpSubtitleFrame.origin.y = signUpTitleFrame.origin.y + signUpTitleFrame.size.height - 20.0;
-                         }
-                         self.subtitleLabel.frame = signUpSubtitleFrame;
-                         
-                         // Shift SignIn Title
-                         
                          // Shift or label up.
                          self.dividerView.frame = [self dividerFrameForSignUp:self.signUpMode];
                          
                          // Fade out the emil container.
                          self.emailContainerView.alpha = enable ? 0.0 : 1.0;
                          self.footerToggleButton.alpha = enable ? 0.0 : 1.0;
+                         self.footerForgotButton.alpha = enable ? 0.0 : 1.0;
                          self.dividerView.alpha = enable ? 0.0 : 1.0;
                          
                      }
@@ -798,6 +917,15 @@
                 [self.emailPasswordView setValidated:YES message:@"THANKS"];
             } else {
                 [self.emailPasswordView setValidated:NO message:@"INVALID PASSWORD"];
+                validated = NO;
+            }
+            
+        } else if (textFieldView == self.forgotEmailView) {
+            
+            if ([CKTextFieldViewHelper isValidEmailForString:text]) {
+                [self.forgotEmailView setValidated:YES message:@"THANKS"];
+            } else {
+                [self.forgotEmailView setValidated:NO message:@"INVALID EMAIL"];
                 validated = NO;
             }
             

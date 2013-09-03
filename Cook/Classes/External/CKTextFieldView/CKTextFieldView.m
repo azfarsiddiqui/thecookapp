@@ -125,6 +125,10 @@
     }
 }
 
+- (void)setText:(NSString *)text {
+    self.textField.text = text;
+}
+
 - (BOOL)becomeFirstResponder {
     return [self.textField becomeFirstResponder];
 }
