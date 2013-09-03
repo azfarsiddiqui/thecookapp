@@ -33,6 +33,10 @@
     return [UIImage imageNamed:@"cook_login_icon_facebook.png"];
 }
 
+- (UIImage *)doneIconImage {
+    return [UIImage imageNamed:@"cook_login_icon_tick_white.png"];
+}
+
 - (CKActivityIndicatorViewStyle)activityViewStyle {
     return CKActivityIndicatorViewStyleTiny;
 }

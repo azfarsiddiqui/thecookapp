@@ -29,6 +29,8 @@
 
 @implementation CKSignInButtonView
 
+#define kIconOffset 20.0
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
                                                   object:[UIApplication sharedApplication]];
@@ -80,6 +82,10 @@
 }
 
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled {
+    [self setText:text done:NO activity:activity animated:animated enabled:enabled];
+}
+
+- (void)setText:(NSString *)text done:(BOOL)done activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled {
     if (self.animating) {
         return;
     }
@@ -100,9 +106,19 @@
         [self.button addSubview:self.activityView];
     }
     
+    // Icon.
     if (!activity && !self.iconImageView.superview) {
         [self.button addSubview:self.iconImageView];
     }
+    
+    UIImage *iconImage = done ? [self doneIconImage] : [self iconImage];
+    self.iconImageView.image = iconImage;
+    self.iconImageView.frame = (CGRect) {
+        kIconOffset,
+        floorf((self.button.bounds.size.height - iconImage.size.height) / 2.0),
+        iconImage.size.width,
+        iconImage.size.height
+    };
     
     if (animated) {
         
@@ -189,6 +205,10 @@
     return nil;
 }
 
+- (UIImage *)doneIconImage {
+    return [UIImage imageNamed:@"cook_login_icon_tick_dark.png"];
+}
+
 - (CKActivityIndicatorViewStyle)activityViewStyle {
     return CKActivityIndicatorViewStyleTinyDark;
 }
@@ -219,9 +239,9 @@
 
 - (UIImageView *)iconImageView {
     UIImage *iconImage = [self iconImage];
-    if (!_iconImageView && iconImage) {
+    if (!_iconImageView) {
         _iconImageView = [[UIImageView alloc] initWithImage:iconImage];
-        _iconImageView.frame = CGRectMake(20.0,
+        _iconImageView.frame = CGRectMake(kIconOffset,
                                          floorf((self.button.bounds.size.height - _iconImageView.frame.size.height) / 2.0),
                                          _iconImageView.frame.size.width,
                                          _iconImageView.frame.size.height);
@@ -259,7 +279,7 @@
     
     if (activity) {
         frame.origin.x += 5.0;
-    } else if (self.iconImageView) {
+    } else if (self.iconImageView.image) {
         frame.origin.x += 10.0;
     }
     

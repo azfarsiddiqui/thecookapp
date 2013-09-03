@@ -277,7 +277,6 @@
     }
     
     // Fade in the arrow if we're on the forgot page.
-    DLog(@"CONTENTOFFSET %@", NSStringFromCGPoint(self.scrollView.contentOffset));
     if (self.scrollView.contentOffset.x == self.scrollView.bounds.size.width) {
         [self showForgotArrow:YES];
     }
@@ -744,7 +743,7 @@
     NSString *email = [self.forgotEmailView inputText];
     [CKUser requestPasswordResetForEmail:email completion:^{
         
-        [self.forgotButton setText:@"SENT! PLEASE CHECK YOUR EMAIL" activity:NO animated:NO enabled:NO];
+        [self.forgotButton setText:@"SENT! PLEASE CHECK YOUR EMAIL" done:YES activity:NO animated:NO enabled:NO];
         [self.forgotEmailView focusTextFieldView:NO];
         
     } failure:^(NSError *error) {
@@ -771,8 +770,10 @@
                      password:password
                    completion:^{
                        
+                       [self.emailButton setText:@"THANK YOU" done:YES activity:NO animated:NO enabled:NO];
+                       
                        // Wait before informing login successful.
-                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                            [self informLoginSuccessful:YES];
                        });
                        
@@ -802,8 +803,10 @@
                   password:password
                 completion:^{
                     
+                    [self.emailButton setText:@"THANK YOU" done:YES activity:NO animated:NO enabled:NO];
+                    
                     // Wait before informing login successful.
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                         [self informLoginSuccessful:YES];
                     });
                     
@@ -848,7 +851,7 @@
     // Now tries and log the user in.
     [CKUser loginWithFacebookCompletion:^{
         
-        [self.facebookButton setText:@"CONNECTED TO FACEBOOK" activity:NO animated:NO enabled:NO];
+        [self.facebookButton setText:@"CONNECTED TO FACEBOOK" done:YES activity:NO animated:NO enabled:NO];
         
         // Wait before informing login successful.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{

@@ -27,12 +27,14 @@
 - (void)setText:(NSString *)text activity:(BOOL)activity;
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated;
 - (void)setText:(NSString *)text activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled;
+- (void)setText:(NSString *)text done:(BOOL)done activity:(BOOL)activity animated:(BOOL)animated enabled:(BOOL)enabled;
 
 - (UIFont *)textLabelFont;
 - (UIColor *)textLabelColour;
 - (UIImage *)normalBackgroundImage;
 - (UIImage *)onPressBackgroundImage;
 - (UIImage *)iconImage;
+- (UIImage *)doneIconImage;
 - (CKActivityIndicatorViewStyle)activityViewStyle;
 
 @end
