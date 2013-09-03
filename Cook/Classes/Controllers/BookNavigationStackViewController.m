@@ -45,6 +45,7 @@
 @property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
+@property (nonatomic, assign) BOOL fastForward;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
 
@@ -342,6 +343,7 @@
 
 - (void)bookTitleSelectedPage:(NSString *)page {
     [self scrollToPage:page animated:YES];
+//    [self fastForwardToPage:page];
 }
 
 - (void)bookTitleUpdatedOrderOfPages:(NSArray *)pages {
@@ -433,6 +435,7 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    self.fastForward = NO;
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -773,7 +776,12 @@
     NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
-    [self loadContentForPage:page cell:(BookContentCell *)categoryCell];
+    // Skip content if we're fast forwarding.
+    if (self.fastForward) {
+        [self clearFastForwardContentForPage:page cell:(BookContentCell *)categoryCell];
+    } else {
+        [self loadContentForPage:page cell:(BookContentCell *)categoryCell];
+    }
     
     return categoryCell;
 }
@@ -800,6 +808,10 @@
     // Scroll offset?
     CGPoint scrollOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
     [categoryController setScrollOffset:scrollOffset];
+}
+
+- (void)clearFastForwardContentForPage:(NSString *)page cell:(BookContentCell *)cell {
+    cell.contentViewController = nil;
 }
 
 - (NSString *)currentPage {
@@ -1089,6 +1101,46 @@
 
 - (void)scrollToHome {
     [self scrollToHomeAnimated:YES];
+//    [self fastForwardToPage:kIndexSection];
+}
+
+- (void)fastForwardToPage:(NSString *)page {
+    NSInteger numPeekPages = 2;
+    NSInteger pageIndex = [self.pages indexOfObject:page];
+    pageIndex += [self stackContentStartSection];
+    
+//    self.fastForward = YES;
+    
+    BOOL customJump = (pageIndex > [self stackContentStartSection] + numPeekPages);
+    
+    // Animate to the next one
+//    if (customJump) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.collectionView setContentOffset:(CGPoint){
+//                ([self stackContentStartSection] + numPeekPages) * self.collectionView.bounds.size.width,
+//                self.collectionView.contentOffset.y
+//            } animated:YES];
+//        });
+//    }
+    
+    // Then jump direct to the page before.
+    if (customJump) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.collectionView setContentOffset:(CGPoint){
+                (pageIndex - numPeekPages) * self.collectionView.bounds.size.width,
+                self.collectionView.contentOffset.y
+            } animated:NO];
+        });
+    }
+    
+    // Then animate to the intended destination.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.collectionView setContentOffset:(CGPoint){
+            pageIndex * self.collectionView.bounds.size.width,
+            self.collectionView.contentOffset.y
+        } animated:YES];
+    });
+
 }
 
 - (void)scrollToHomeAnimated:(BOOL)animated {
