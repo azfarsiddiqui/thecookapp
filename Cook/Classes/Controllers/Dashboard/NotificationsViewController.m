@@ -26,7 +26,7 @@
 
 @implementation NotificationsViewController
 
-#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 50.0, 20.0 }
 #define kUnderlayMaxAlpha       0.7
 #define kHeaderCellId           @"HeaderCell"
 #define kCellId                 @"NotificationCell"
@@ -63,7 +63,12 @@
     
     CGSize unitSize = [NotificationCell unitSize];
     CGFloat sideGap = floorf((self.collectionView.bounds.size.width - unitSize.width) / 2.0);
-    return (UIEdgeInsets) { kContentInsets.top, sideGap, kContentInsets.bottom, sideGap };
+    return (UIEdgeInsets) {
+        kContentInsets.top,
+        sideGap,
+        kContentInsets.bottom,
+        sideGap
+    };
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout

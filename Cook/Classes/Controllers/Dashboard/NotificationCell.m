@@ -18,7 +18,6 @@
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UIImageView *notificationIconView;
 @property (nonatomic, strong) UILabel *notificationLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UIView *dividerView;
@@ -42,7 +41,6 @@
         self.contentView.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.profileView];
         [self.contentView addSubview:self.nameLabel];
-        [self.contentView addSubview:self.notificationIconView];
         [self.contentView addSubview:self.notificationLabel];
         [self.contentView addSubview:self.timeLabel];
         [self.contentView addSubview:self.dividerView];
@@ -73,29 +71,11 @@
         size.height
     };
     
-    // Notification Icon.
-    UIImage *iconImage = [self iconImageForNotification:notification];
-    if (iconImage) {
-        self.notificationIconView.hidden = NO;
-        self.notificationIconView.frame = (CGRect) {
-            self.nameLabel.frame.origin.x - 13.0,
-            self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height - 10.0,
-            iconImage.size.width,
-            iconImage.size.height
-        };
-        self.notificationIconView.image = iconImage;
-    } else {
-        self.notificationIconView.image = nil;
-        self.notificationIconView.hidden = YES;
-    }
-    
     // Notification.
-    CGSize notificationAvailableSize = availableSize;
-    notificationAvailableSize.width -= iconImage ? iconImage.size.width + kIconNotificationGap : 0.0;
     self.notificationLabel.text = [self textForNotification:notification];
-    size = [self.notificationLabel sizeThatFits:notificationAvailableSize];
+    size = [self.notificationLabel sizeThatFits:availableSize];
     self.notificationLabel.frame = (CGRect){
-        iconImage ? self.notificationIconView.frame.origin.x + self.notificationIconView.frame.size.width + kIconNotificationGap : self.nameLabel.frame.origin.x,
+        self.nameLabel.frame.origin.x,
         self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameNotificationGap,
         size.width,
         size.height
@@ -150,14 +130,6 @@
     return _nameLabel;
 }
 
-- (UIImageView *)notificationIconView {
-    if (!_notificationIconView) {
-        _notificationIconView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _notificationIconView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-    }
-    return _notificationIconView;
-}
-
 - (UILabel *)notificationLabel {
     if (!_notificationLabel) {
         _notificationLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -202,23 +174,6 @@
         self.contentView.bounds.size.width - kContentInsets.left - kContentInsets.right,
         self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom
     };
-}
-
-- (UIImage *)iconImageForNotification:(CKUserNotification *)notification {
-    UIImage *iconImage = nil;
-    NSString *notificationName = notification.name;
-    
-    if ([notificationName isEqualToString:@"FriendRequest"]) {
-        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_small_serves.png"];
-    } else if ([notificationName isEqualToString:@"FriendAccept"]) {
-        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_small_serves.png"];
-    } else if ([notificationName isEqualToString:@"Comment"]) {
-        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_comment_light.png"];
-    } else if ([notificationName isEqualToString:@"Like"]) {
-        iconImage = [UIImage imageNamed:@"cook_book_inner_icon_like_light.png"];
-    }
-    
-    return iconImage;
 }
 
 - (NSString *)textForNotification:(CKUserNotification *)notification {
