@@ -237,34 +237,31 @@
 }
 
 + (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
-    [query includeKey:kUserModelForeignKeyName];
-    [query whereKey:kBookAttrFeatured equalTo:[NSNumber numberWithBool:YES]];
-    [query orderByAscending:kBookAttrFeaturedOrder];
-    [query setLimit:10];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *parseBooks, NSError *error) {
-        if (!error) {
-            
-            if (user) {
-                [self annotateFollowedBooks:parseBooks
-                                       user:user
-                                    success:^(NSArray *annotatedBooks) {
-                                        success(annotatedBooks);
+    
+    [PFCloud callFunctionInBackground:@"featuredBooks"
+                       withParameters:@{}
+                                block:^(NSArray *parseBooks, NSError *error) {
+                                    
+                                    if (!error) {
+                                        
+                                        if (user) {
+                                            [self annotateFollowedBooks:parseBooks
+                                                                   user:user
+                                                                success:^(NSArray *annotatedBooks) {
+                                                                    success(annotatedBooks);
+                                                                }
+                                                                failure:^(NSError *error) {
+                                                                    failure(error);
+                                                                }];
+                                        } else {
+                                            success([parseBooks collect:^id(PFObject *parseBook) {
+                                                return [[CKBook alloc] initWithParseObject:parseBook];
+                                            }]);
+                                        }
+                                    } else {
+                                        DLog(@"Error loading featured books: %@", [error localizedDescription]);
                                     }
-                                    failure:^(NSError *error) {
-                                        failure(error);
-                                    }];
-            } else {
-                success([parseBooks collect:^id(PFObject *parseBook) {
-                    return [[CKBook alloc] initWithParseObject:parseBook];
-                }]);
-            }
-            
-        } else {
-            failure(error);
-        }
-    }];
+                                }];
 }
 
 #pragma mark - Instance
