@@ -78,16 +78,15 @@
     self.signUpMode = YES;
     self.view.autoresizingMask = UIViewAutoresizingNone;
     
-    [self initBackgroundView];
+    //    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
+    [self loadSnapshotImage:[self.delegate signupViewControllerSnapshotImageRequested]];
+    
     [self initScrollView];
     [self initEmailContainerView];
     [self initHeaderView];
     [self initButtons];
     [self initFooterView];
     [self initForgotView];
-    
-//    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
-    [self loadSnapshotImage:[self.delegate signupViewControllerSnapshotImageRequested]];
     
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -182,12 +181,26 @@
     UIImage *screenshotImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
-    [ImageHelper blurredSignUpImage:screenshotImage completion:^(UIImage *blurredImage) {
+    [ImageHelper blurredOverlayImage:screenshotImage completion:^(UIImage *blurredImage) {
         self.blurredImageView.image = blurredImage;
     }];
 }
 
 - (void)loadSnapshotImage:(UIImage *)snapshotImage {
+    
+    // Blurred imageView to be hidden to start off with.
+    self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.blurredImageView];
+    self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
+    
+    // Temporary dark overlay to be in place before blur comes in.
+    self.blackOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.blackOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.blackOverlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
+    [self.view addSubview:self.blackOverlayView];
+    self.blackOverlayView.alpha = 0.0;  // To be faded in.
+
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveLinear
@@ -196,7 +209,7 @@
                      } completion:^(BOOL finished) {
                          
                          // Now start blurring.
-                         [ImageHelper blurredSignUpImage:snapshotImage completion:^(UIImage *blurredImage) {
+                         [ImageHelper blurredOverlayImage:snapshotImage completion:^(UIImage *blurredImage) {
                              self.blurredImageView.alpha = 0.0;
                              self.blurredImageView.image = blurredImage;
                              
@@ -398,20 +411,6 @@
 }
 
 #pragma mark - Private methods
-
-- (void)initBackgroundView {
-    // Blurred imageView to be hidden to start off with.
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:self.blurredImageView];
-    self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
-    
-    // Temporary dark overlay to be in place before blur comes in.
-    self.blackOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-    self.blackOverlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
-    [self.view addSubview:self.blackOverlayView];
-    self.blackOverlayView.alpha = 0.0;  // To be faded in.
-}
 
 - (void)initScrollView {
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];

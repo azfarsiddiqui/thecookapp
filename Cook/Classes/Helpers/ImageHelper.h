@@ -32,7 +32,7 @@
 
 // Blurring
 + (UIImage *)blurredImage:(UIImage *)image;
-+ (void)blurredSignUpImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
++ (void)blurredOverlayImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
 + (UIImage *)blurredRecipeImage:(UIImage *)image;
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour;
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;

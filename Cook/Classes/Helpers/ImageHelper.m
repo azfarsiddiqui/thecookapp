@@ -109,7 +109,7 @@
     return [self blurredImage:image tintColour:[UIColor colorWithWhite:1.0 alpha:0.58]];
 }
 
-+ (void)blurredSignUpImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion {
++ (void)blurredOverlayImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion {
     [self blurredImage:image tintColour:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.38] completion:completion];
 }
 

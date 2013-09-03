@@ -12,6 +12,7 @@
 
 - (void)notificationsViewControllerDataLoaded;
 - (void)notificationsViewControllerDismissRequested;
+- (UIImage *)notificationsViewControllerSnapshotImageRequested;
 
 @end
 
