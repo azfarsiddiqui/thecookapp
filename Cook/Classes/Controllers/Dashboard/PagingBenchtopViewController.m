@@ -1292,6 +1292,7 @@
 }
 
 - (void)showNotificationsOverlay:(BOOL)show {
+    [self.delegate panEnabledRequested:!show];
     if (show) {
         self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
         [ModalOverlayHelper showModalOverlayForViewController:self.notificationsViewController show:YES
