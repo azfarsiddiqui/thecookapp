@@ -12,7 +12,7 @@
 @implementation ModalOverlayHelper
 
 + (UIColor *)modalOverlayBackgroundColour {
-    return [self modalOverlayBackgroundColourWithAlpha:0.7];
+    return [self modalOverlayBackgroundColourWithAlpha:0.8];
 }
 
 + (UIColor *)modalOverlayBackgroundColourWithAlpha:(CGFloat)alpha {
