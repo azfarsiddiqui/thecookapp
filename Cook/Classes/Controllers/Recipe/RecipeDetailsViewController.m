@@ -32,6 +32,7 @@
 #import "CKPhotoManager.h"
 #import "CKActivityIndicatorView.h"
 #import "RecipeImageView.h"
+#import "ModalOverlayHelper.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -1785,21 +1786,35 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         self.overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
         self.overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.7];
+        self.overlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
         self.overlayView.userInteractionEnabled = YES;  // To block touches.
         self.overlayView.alpha = 0.0;
         [self.view addSubview:self.overlayView];
         
         // Add progress view.
-        CGFloat statusBarOffset = 20.0;
-        CGFloat topOffset = [self offsetForViewport:SnapViewportTop];
         CKProgressView *progressView = [[CKProgressView alloc] initWithWidth:300.0];
-        progressView.frame = CGRectMake(floorf((self.overlayView.bounds.size.width - progressView.frame.size.width) / 2.0),
-                                        statusBarOffset + floorf((topOffset - statusBarOffset - progressView.frame.size.height) / 2.0),
-                                        progressView.frame.size.width,
-                                        progressView.frame.size.height);
+        progressView.frame = (CGRect){
+            floorf((self.overlayView.bounds.size.width - progressView.frame.size.width) / 2.0),
+            floorf((self.overlayView.bounds.size.height - progressView.frame.size.height) / 2.0) - 13.0,
+            progressView.frame.size.width,
+            progressView.frame.size.height};
         [self.overlayView addSubview:progressView];
         self.progressView = progressView;
+        
+        // Saving text.
+        UILabel *savingLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        savingLabel.backgroundColor = [UIColor clearColor];
+        savingLabel.text = @"SAVING";
+        savingLabel.font = [Theme progressSavingFont];
+        savingLabel.textColor = [Theme progressSavingColour];
+        [savingLabel sizeToFit];
+        savingLabel.frame = (CGRect){
+            floorf((self.overlayView.bounds.size.width - savingLabel.frame.size.width) / 2.0),
+            self.progressView.frame.origin.y - savingLabel.frame.size.height + 13.0,
+            savingLabel.frame.size.width,
+            savingLabel.frame.size.height
+        };
+        [self.overlayView addSubview:savingLabel];
     }
     
     [UIView animateWithDuration:0.2

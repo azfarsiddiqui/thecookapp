@@ -128,6 +128,8 @@
 + (UIColor *)editPhotoColour;
 + (UIColor *)privacyInfoColour;
 + (UIFont *)privacyInfoFont;
++ (UIColor *)progressSavingColour;
++ (UIFont *)progressSavingFont;
 
 #pragma mark - Recipe Editing
 + (UIFont *) cookServesPrepEditTitleFont;

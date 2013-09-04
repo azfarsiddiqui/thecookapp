@@ -433,6 +433,14 @@
     return [UIFont fontWithName:@"Neutraface2Display-Medium" size:12.0];
 }
 
++ (UIColor *)progressSavingColour {
+    return [UIColor whiteColor];
+}
+
++ (UIFont *)progressSavingFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:40];
+}
+
 #pragma mark - Recipe Editing
 
 + (UIColor *)bookCoverInsideBackgroundColour {
