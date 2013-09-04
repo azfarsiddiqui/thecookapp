@@ -41,6 +41,7 @@
 @property (nonatomic, strong) UIImageView *overlayView;
 @property (nonatomic, strong) UIImageView *vignetteView;
 @property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) UIImage *signupBlurImage;
 
 @property (nonatomic, strong) CoverPickerViewController *coverViewController;
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
@@ -323,7 +324,10 @@
 #pragma mark - CKNotificationViewDelegate methods
 
 - (void)notificationViewTapped {
-    [self showNotificationsOverlay:YES];
+    
+    if ([CKUser isLoggedIn]) {
+        [self showNotificationsOverlay:YES];
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -371,11 +375,11 @@
 #pragma mark - SignupViewControllerDelegate methods
 
 - (UIImage *)signupViewControllerSnapshotImageRequested {
-    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.0);
-    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
+    if (self.signupBlurImage) {
+        return self.signupBlurImage;
+    } else {
+        return [ImageHelper blurredImageFromView:self.view];
+    }
 }
 
 - (UIView *)signupViewControllerSnapshotRequested {
@@ -459,11 +463,11 @@
 }
 
 - (UIImage *)notificationsViewControllerSnapshotImageRequested {
-    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.0);
-    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
+    if (self.signupBlurImage) {
+        return self.signupBlurImage;
+    } else {
+        return [ImageHelper blurredImageFromView:self.view];
+    }
 }
 
 #pragma mark - Properties
@@ -800,6 +804,7 @@
                 } completion:^(BOOL finished) {
                     [self updatePagingBenchtopView];
                 }];
+                
             } else {
                 
                 [[self pagingLayout] markLayoutDirty];
@@ -809,11 +814,15 @@
                 [self.collectionView performBatchUpdates:^{
                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                 } completion:^(BOOL finished) {
+                    
                     // No need to reblend, as layoutDidGenerate will trigger it.
+                    
                 }];
 
             }
             
+            // Sample a snapshot.
+            [self snapshotBenchtop];
             
         } failure:^(NSError *error) {
             
@@ -844,6 +853,9 @@
             [[self pagingLayout] markLayoutDirty];
             [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
         }
+        
+        // Sample a snapshot.
+        [self snapshotBenchtop];
         
     } failure:^(NSError *error) {
         DLog(@"Error: %@", [error localizedDescription]);
@@ -1025,6 +1037,9 @@
             [self loadMyBook];
             [self loadFollowBooksReload:YES];
         }];
+        
+        // Clear the sign up image.
+        self.signupBlurImage = nil;
         
     }
 }
@@ -1302,6 +1317,12 @@
 
 - (void)didBecomeActive {
     DLog();
+}
+
+- (void)snapshotBenchtop {
+    [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
+        self.signupBlurImage = blurredImage;
+    }];
 }
 
 @end
