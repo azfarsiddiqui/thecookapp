@@ -544,21 +544,27 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateServesCook {
     
-    if (self.recipeDetails.numServes || self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
+    if (self.editMode || self.recipeDetails.numServes || self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
         
         // Add the serves cook view once.
         if (!self.servesCookView) {
-            self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails];
+            self.servesCookView = [[RecipeServesCookView alloc] initWithRecipeDetails:self.recipeDetails editMode:self.editMode];
             self.servesCookView.userInteractionEnabled = NO;
             [self addSubview:self.servesCookView];
         } else {
-            [self.servesCookView updateWithRecipeDetails:self.recipeDetails];
+            [self.servesCookView updateWithRecipeDetails:self.recipeDetails editMode:self.editMode];
         }
         [self updateServesCookFrame];
         
     } else {
+        
+        // Remove any edit wrapping.
+        [self.editingHelper unwrapEditingView:self.servesCookView animated:YES];
+        
         [self.servesCookView removeFromSuperview];
         self.servesCookView = nil;
+        
+        
     }
     
 }
@@ -576,10 +582,16 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateIngredients {
     
-    // Add divider once.
-    if (!self.ingredientsDividerView) {
-        self.ingredientsDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
-        [self addSubview:self.ingredientsDividerView];
+    // Add divider once if only we have servesCookView.
+    if (self.servesCookView) {
+        if (!self.ingredientsDividerView) {
+            self.ingredientsDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
+            self.ingredientsDividerView.hidden = !self.servesCookView;
+            [self addSubview:self.ingredientsDividerView];
+        }
+    } else {
+        [self.ingredientsDividerView removeFromSuperview];
+        self.ingredientsDividerView = nil;
     }
     
     // Add ingredients view once, then update thereafter.
@@ -610,22 +622,24 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         ingredients = @[[Ingredient ingredientwithName:@"INGREDIENTS" measurement:nil]];
     }
     
-    // Update divider.
-    CGFloat preDividerGap = 20.0;
-    self.ingredientsDividerView.frame = (CGRect){
-        kContentInsets.left + leftOffset,
-        self.layoutOffset.y + preDividerGap,
-        kMaxLeftWidth - leftOffset,
-        self.ingredientsDividerView.frame.size.height
-    };
-    [self updateLayoutOffsetVertical:preDividerGap + self.ingredientsDividerView.frame.size.height];
+    // Update divider if exists.
+    if (self.ingredientsDividerView) {
+        CGFloat preDividerGap = 20.0;
+        self.ingredientsDividerView.frame = (CGRect){
+            kContentInsets.left + leftOffset,
+            self.layoutOffset.y + preDividerGap,
+            kMaxLeftWidth - leftOffset,
+            self.ingredientsDividerView.frame.size.height
+        };
+        [self updateLayoutOffsetVertical:preDividerGap + self.ingredientsDividerView.frame.size.height];
+    }
     
     // Update ingredients.
     [self.ingredientsView updateIngredients:ingredients];
-    CGFloat beforeIngredientsGap = 23.0;
+    CGFloat beforeIngredientsGap = self.ingredientsDividerView ? 23.0 : 0.0;
     self.ingredientsView.frame = (CGRect){
         kContentInsets.left + leftOffset,
-        self.ingredientsDividerView.frame.origin.y + self.ingredientsDividerView.frame.size.height + beforeIngredientsGap,
+        self.layoutOffset.y + beforeIngredientsGap,
         self.ingredientsView.frame.size.width,
         self.ingredientsView.frame.size.height
     };

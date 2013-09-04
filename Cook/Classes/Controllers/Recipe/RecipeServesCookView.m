@@ -15,6 +15,7 @@
 @interface RecipeServesCookView ()
 
 @property (nonatomic, strong) RecipeDetails *recipeDetails;
+@property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) UILabel *servesLabel;
 @property (nonatomic, strong) UILabel *prepLabel;
@@ -32,18 +33,19 @@
 #define kLabelTag               300
 #define kContentInsets          (UIEdgeInsets){ 0.0, 0.0, -11.0, 12.0 }
 
-- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails {
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode {
     if (self = [super initWithFrame:CGRectZero]) {
         self.recipeDetails = recipeDetails;
+        self.editMode = editMode;
         self.backgroundColor = [UIColor clearColor];
         [self updateLayout];
     }
     return self;
 }
 
-- (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails {
-    
+- (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode {
     self.recipeDetails = recipeDetails;
+    self.editMode = editMode;
     
     // Remove all subviews and relayout.
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -63,9 +65,9 @@
 }
 
 - (void)updateServes {
-    if (self.recipeDetails.numServes) {
+    if (self.editMode || self.recipeDetails.numServes) {
         UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
-        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[NSString CK_stringOrNilForNumber:self.recipeDetails.numServes]];
+        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[self textValueForStatNumber:self.recipeDetails.numServes]];
         CGRect servesFrame = servesStatView.frame;
         CGRect imageFrame = servesImageView.frame;
         servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
@@ -96,15 +98,15 @@
     CGRect prepFrame = CGRectZero;
     CGRect cookFrame = CGRectZero;
     
-    if (self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
+    if (self.editMode ||self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
         
         UIImageView *prepCookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_time.png"]];
         CGRect imageFrame = prepCookImageView.frame;
         
-        if (self.recipeDetails.prepTimeInMinutes) {
+        if (self.editMode ||self.recipeDetails.prepTimeInMinutes) {
             
             // Prep.
-            prepStatView = [self viewForStatText:@"Prep" statValue:[NSString CK_stringOrNilForNumber:self.recipeDetails.prepTimeInMinutes]];
+            prepStatView = [self viewForStatText:@"Prep" statValue:[self textValueForStatNumber:self.recipeDetails.prepTimeInMinutes]];
             prepFrame = prepStatView.frame;
             prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
             
@@ -117,10 +119,10 @@
             self.prepLabel = (UILabel *)[prepStatView viewWithTag:kLabelTag];
         }
         
-        if (self.recipeDetails.cookingTimeInMinutes) {
+        if (self.editMode ||self.recipeDetails.cookingTimeInMinutes) {
             
             // Cook.
-            cookStatView = [self viewForStatText:@"Cook" statValue:[NSString CK_stringOrNilForNumber:self.recipeDetails.cookingTimeInMinutes]];
+            cookStatView = [self viewForStatText:@"Cook" statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes]];
             cookFrame = cookStatView.frame;
             
             if (!CGRectEqualToRect(prepFrame, CGRectZero)) {
@@ -226,6 +228,14 @@
     
     // Ugh.
     return @"0000";
+}
+
+- (NSString *)textValueForStatNumber:(NSNumber *)statNumber {
+    NSString *statValue = [NSString CK_stringOrNilForNumber:statNumber];
+    if (!statValue && self.editMode) {
+        statValue = @"0";
+    }
+    return statValue;
 }
 
 @end

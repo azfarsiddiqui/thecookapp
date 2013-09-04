@@ -12,7 +12,7 @@
 
 @interface RecipeServesCookView : UIView
 
-- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails;
-- (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails;
+- (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode;
+- (void)updateWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode;
 
 @end

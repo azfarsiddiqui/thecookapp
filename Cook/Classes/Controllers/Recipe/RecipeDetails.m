@@ -69,9 +69,9 @@
 }
 
 - (BOOL)servesPrepUpdated {
-    return (([self.originalRecipe.numServes isEqualToNumber:self.numServes])
-            || ([self.originalRecipe.prepTimeInMinutes isEqualToNumber:self.prepTimeInMinutes])
-            || ([self.originalRecipe.cookingTimeInMinutes isEqualToNumber:self.cookingTimeInMinutes]));
+    return (([self.numServes integerValue] != [self.originalRecipe.numServes integerValue])
+            || ([self.prepTimeInMinutes integerValue] != [self.originalRecipe.prepTimeInMinutes integerValue])
+            || ([self.cookingTimeInMinutes integerValue] != [self.originalRecipe.cookingTimeInMinutes integerValue]));
 }
 
 - (BOOL)ingredientsUpdated {
