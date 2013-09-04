@@ -22,8 +22,6 @@
 @property (nonatomic, weak) id<NotificationsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSMutableArray *notifications;
-@property (nonatomic, strong) UIView *blackOverlayView;
-@property (nonatomic, strong) UIImageView *blurredImageView;
 
 @end
 
@@ -46,11 +44,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor clearColor];
-    
-    //    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
-    // [self loadSnapshotImage:[self.delegate notificationsViewControllerSnapshotImageRequested]];
-    
-    self.collectionView.backgroundColor = [UIColor clearColor];
+    self.collectionView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
     self.collectionView.bounces = YES;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.alwaysBounceVertical = YES;
@@ -60,8 +54,6 @@
                    withReuseIdentifier:kHeaderCellId];
     
     [self.view addSubview:self.closeButton];
-    
-    [self initBackgroundView];
     
     [self loadData];
 }
@@ -209,10 +201,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
             [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
         } completion:^(BOOL finished) {
-            
-            // Load blurred snapshot.
-            [self loadBlurredSnapshot];
-            
         }];
         
     } failure:^(NSError *error) {
@@ -226,41 +214,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (NSArray *)acceptedNotificationNames {
     return @[@"FriendRequest", @"FriendAccept", @"Comment", @"Like"];
-}
-
-- (void)initBackgroundView {
-    
-    // Temporary dark overlay to be in place before blur comes in.
-    self.blackOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-    self.blackOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.blackOverlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
-    [self.view insertSubview:self.blackOverlayView belowSubview:self.collectionView];
-    self.blackOverlayView.alpha = 1.0;
-    
-    // Blurred imageView to be hidden to start off with.
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    [self.view insertSubview:self.blurredImageView belowSubview:self.blackOverlayView];
-    
-    // Load snapshot image to be faded in later.
-    [ImageHelper blurredOverlayImage:[self.delegate notificationsViewControllerSnapshotImageRequested]
-                                                        completion:^(UIImage *blurredImage){
-                                                            self.blurredImageView.image = blurredImage;
-                                                        }];
-    self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
-}
-
-- (void)loadBlurredSnapshot {
-
-    // Fade blurred image in, while fade the dark overlay out.
-    [UIView animateWithDuration:0.4
-                          delay:0.0
-                        options:UIViewAnimationCurveLinear
-                     animations:^{
-                         self.blackOverlayView.alpha = 0.0;
-                         self.blurredImageView.alpha = 1.0;
-                     } completion:^(BOOL finished) {
-                     }];
 }
 
 @end
