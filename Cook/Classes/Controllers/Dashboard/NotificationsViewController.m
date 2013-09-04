@@ -16,12 +16,15 @@
 #import "CKActivityIndicatorView.h"
 #import "ModalOverlayHelper.h"
 #import "ImageHelper.h"
+#import "NSString+Utilities.h"
+#import "CKUser.h"
 
-@interface NotificationsViewController ()
+@interface NotificationsViewController () <NotificationCellDelegate>
 
 @property (nonatomic, weak) id<NotificationsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSMutableArray *notifications;
+@property (nonatomic, strong) NSMutableDictionary *notificationActionsInProgress;
 
 @end
 
@@ -37,6 +40,7 @@
 - (id)initWithDelegate:(id<NotificationsViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[NotificationsFlowLayout alloc] init]]) {
         self.delegate = delegate;
+        self.notificationActionsInProgress = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -44,7 +48,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor clearColor];
-    self.collectionView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
+    self.collectionView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
     self.collectionView.bounces = YES;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.alwaysBounceVertical = YES;
@@ -56,6 +60,16 @@
     [self.view addSubview:self.closeButton];
     
     [self loadData];
+}
+
+#pragma mark - NotificationCellDelegate methods
+
+- (void)notificationCell:(NotificationCell *)notificationCell acceptFriendRequest:(BOOL)accept {
+    [self acceptFriendRequestForNotificationCell:notificationCell accept:accept];
+}
+
+- (BOOL)notificationCellInProgress:(NotificationCell *)notificationCell {
+    return [self notificationActionInProgressForNotification:notificationCell.notification];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -131,6 +145,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if (self.notifications) {
         NotificationCell *notificationCell = (NotificationCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
                                                                                                                 forIndexPath:indexPath];
+        notificationCell.delegate = self;
         CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
         [notificationCell configureNotification:notification];
         cell = notificationCell;
@@ -213,7 +228,102 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (NSArray *)acceptedNotificationNames {
-    return @[@"FriendRequest", @"FriendAccept", @"Comment", @"Like"];
+    return @[kUserNotificationTypeFriendRequest, kUserNotificationTypeFriendAccept, kUserNotificationTypeComment, kUserNotificationTypeLike];
+}
+
+- (BOOL)notificationActionInProgressForNotification:(CKUserNotification *)notification {
+    return ([self.notificationActionsInProgress objectForKey:notification.objectId] != nil);
+}
+
+- (void)markNotificationInAction:(CKUserNotification *)notification inProgress:(BOOL)inProgress {
+    if (inProgress) {
+        [self.notificationActionsInProgress setObject:notification forKey:notification.objectId];
+    } else {
+        [self.notificationActionsInProgress removeObjectForKey:notification.objectId];
+    }
+}
+
+- (void)acceptFriendRequestForNotificationCell:(NotificationCell *)notificationCell accept:(BOOL)accept {
+    DLog(@"accept[%@]", [NSString CK_stringForBoolean:accept]);
+    CKUser *user = notificationCell.notification.user;
+    CKUser *actionUser = notificationCell.notification.actionUser;
+    
+    // Mark as in progress.
+    NSIndexPath *indexPath = [self.collectionView indexPathForCell:notificationCell];
+    [self markNotificationInAction:notificationCell.notification inProgress:YES];
+    [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+    
+    if (accept) {
+        
+        // Accept friend request.
+        [user requestFriend:actionUser
+                 completion:^{
+                     
+                     // Get the cell to refresh.
+                     NotificationCell *cell = [self notificationCellForNotification:notificationCell.notification];
+                     if (cell) {
+                         
+                         // Mark as completed.
+                         [self markNotificationInAction:notificationCell.notification inProgress:NO];
+                         notificationCell.notification.friendRequestAccepted = YES;
+                         
+                         NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+                         [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+                         
+                     }
+                     
+                 } failure:^(NSError *error) {
+                     
+                     // Get the cell to refresh.
+                     NotificationCell *cell = [self notificationCellForNotification:notificationCell.notification];
+                     if (cell) {
+                         [self markNotificationInAction:notificationCell.notification inProgress:NO];
+                         NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+                         [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+                     }
+                     
+                 }];
+        
+    } else {
+        
+        // Ignore friend request.
+        [user ignoreFriendRequestFrom:actionUser completion:^{
+            
+            // Get the cell to refresh.
+            NotificationCell *cell = [self notificationCellForNotification:notificationCell.notification];
+            if (cell) {
+                
+                // Mark as completed.
+                [self markNotificationInAction:notificationCell.notification inProgress:NO];
+                
+                // Remove notification from list.
+                [self.notifications removeObject:notificationCell.notification];
+                
+                NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+                [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+                
+            }
+            
+        } failure:^(NSError *errro) {
+            
+            // Get the cell to refresh.
+            NotificationCell *cell = [self notificationCellForNotification:notificationCell.notification];
+            if (cell) {
+                [self markNotificationInAction:notificationCell.notification inProgress:NO];
+                NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+                [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }
+            
+        }];
+        
+    }
+}
+
+- (NotificationCell *)notificationCellForNotification:(CKUserNotification *)notification {
+    NSArray *visibleCells = [self.collectionView visibleCells];
+    return [visibleCells detect:^BOOL(NotificationCell *notificationCell) {
+        return [notificationCell.notification.objectId isEqualToString:notification.objectId];
+    }];
 }
 
 @end

@@ -14,6 +14,7 @@
 @interface CKUserNotification : CKModel
 
 @property (nonatomic, assign) BOOL read;
+@property (nonatomic, assign) BOOL friendRequestAccepted;
 
 + (void)hasNotificationsForUser:(CKUser *)user completion:(BoolObjectSuccessBlock)completion
                         failure:(ObjectFailureBlock)failure;

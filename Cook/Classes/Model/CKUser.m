@@ -322,6 +322,8 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
+    DLog(@"Process friend connections between [%@] and [%@].", self.objectId, friendUser.objectId);
+    
     // Existing request for me?
     PFQuery *requestorFriendRequestQuery = [PFQuery queryWithClassName:kUserFriendModelName];
     [requestorFriendRequestQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
@@ -391,6 +393,65 @@ static ObjectFailureBlock loginFailureBlock = nil;
             failure(error);
         }
     }];
+    
+}
+
+- (void)ignoreFriendRequestFrom:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    // Existing request for me?
+    PFQuery *requestorFriendRequestQuery = [PFQuery queryWithClassName:kUserFriendModelName];
+    [requestorFriendRequestQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+    [requestorFriendRequestQuery whereKey:kUserFriendFriend equalTo:friendUser.parseUser];
+    
+    // Existing request from requestee?
+    PFQuery *requesteeFriendRequestQuery = [PFQuery queryWithClassName:kUserFriendModelName];
+    [requesteeFriendRequestQuery whereKey:kUserModelForeignKeyName equalTo:friendUser.parseUser];
+    [requesteeFriendRequestQuery whereKey:kUserFriendFriend equalTo:self.parseUser];
+    
+    // Compound both to determine if any of the above is true?
+    PFQuery *existingFriendRequestQuery = [PFQuery orQueryWithSubqueries:
+                                           [NSArray arrayWithObjects:requestorFriendRequestQuery, requesteeFriendRequestQuery, nil]];
+    [existingFriendRequestQuery findObjectsInBackgroundWithBlock:^(NSArray *friendRequests, NSError *error) {
+
+        if (!error) {
+            
+            // Delete all friend requests and UserNotification.
+            if ([friendRequests count] > 0) {
+                
+                // Delete the friend requests.
+                DLog(@"Deleting friend connections between [%@] and [%@].", self.objectId, friendUser.objectId);
+                [PFObject deleteAllInBackground:friendRequests block:^(BOOL succeeded, NSError *error) {
+                    if (!error) {
+                        
+                        // Delete notification.
+                        PFQuery *notificationQuery = [PFQuery queryWithClassName:kUserNotificationModelName];
+                        [notificationQuery whereKey:kModelAttrName equalTo:kUserNotificationTypeFriendRequest];
+                        [notificationQuery whereKey:kUserModelForeignKeyName equalTo:self.parseUser];
+                        [notificationQuery whereKey:kUserNotificationAttrActionUser equalTo:friendUser.parseUser];
+                        [notificationQuery findObjectsInBackgroundWithBlock:^(NSArray *notifications, NSError *error) {
+                            [PFObject deleteAllInBackground:notifications block:^(BOOL succeeded, NSError *error) {
+                                if (!error) {
+                                    success();
+                                } else {
+                                    failure(error);
+                                }
+                            }];
+                        }];
+                        
+                        
+                    } else {
+                        failure(error);
+                    }
+                }];
+                
+            }
+            
+        } else {
+            failure(error);
+        }
+        
+    }];
+    
     
 }
 

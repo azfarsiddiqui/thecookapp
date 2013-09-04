@@ -84,4 +84,16 @@
     return [self.parseObject objectForKey:kModelAttrName];
 }
 
+- (BOOL)friendRequestAccepted {
+    return [[self.parseObject objectForKey:kUserNotificationAttrFriendRequestAccepted] boolValue];
+}
+
+- (void)setFriendRequestAccepted:(BOOL)friendRequestAccepted {
+    if (friendRequestAccepted) {
+        [self.parseObject setObject:@YES forKey:kUserNotificationAttrFriendRequestAccepted];
+    } else {
+        [self.parseObject removeObjectForKey:kUserNotificationAttrFriendRequestAccepted];
+    }
+}
+
 @end

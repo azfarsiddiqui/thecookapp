@@ -9,8 +9,19 @@
 #import <UIKit/UIKit.h>
 
 @class CKUserNotification;
+@class NotificationCell;
+
+@protocol NotificationCellDelegate <NSObject>
+
+- (void)notificationCell:(NotificationCell *)notificationCell acceptFriendRequest:(BOOL)accept;
+- (BOOL)notificationCellInProgress:(NotificationCell *)notificationCell;
+
+@end
 
 @interface NotificationCell : UICollectionViewCell
+
+@property (nonatomic, weak) id<NotificationCellDelegate> delegate;
+@property (nonatomic, strong) CKUserNotification *notification;
 
 + (CGSize)unitSize;
 
