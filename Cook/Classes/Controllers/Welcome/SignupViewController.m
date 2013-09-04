@@ -23,7 +23,6 @@
 @interface SignupViewController () <CKTextFieldViewDelegate, CKSignInButtonViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, assign) id<SignupViewControllerDelegate> delegate;
-@property (nonatomic, strong) UIView *blackOverlayView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -80,7 +79,6 @@
     
     //    [self loadSnapshot:[self.delegate signupViewControllerSnapshotRequested]];
     [self loadSnapshotImage:[self.delegate signupViewControllerSnapshotImageRequested]];
-    
     [self initScrollView];
     [self initEmailContainerView];
     [self initHeaderView];
@@ -193,37 +191,14 @@
     self.blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.blurredImageView];
     self.blurredImageView.alpha = 0.0;  // To be faded in after blurred image has finished loaded.
-    
-    // Temporary dark overlay to be in place before blur comes in.
-    self.blackOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-    self.blackOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.blackOverlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColourWithAlpha:0.5];
-    [self.view addSubview:self.blackOverlayView];
-    self.blackOverlayView.alpha = 0.0;  // To be faded in.
+    self.blurredImageView.image = snapshotImage;
 
-    [UIView animateWithDuration:0.4
+    [UIView animateWithDuration:0.25
                           delay:0.0
-                        options:UIViewAnimationCurveLinear
+                        options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         self.blackOverlayView.alpha = 1.0;
+                         self.blurredImageView.alpha = 1.0;
                      } completion:^(BOOL finished) {
-                         
-                         // Now start blurring.
-                         [ImageHelper blurredOverlayImage:snapshotImage completion:^(UIImage *blurredImage) {
-                             self.blurredImageView.alpha = 0.0;
-                             self.blurredImageView.image = blurredImage;
-                             
-                             // Fade blurred image in, while fade the dark overlay out.
-                             [UIView animateWithDuration:0.5
-                                                   delay:0.0
-                                                 options:UIViewAnimationCurveLinear
-                                              animations:^{
-                                                  self.blackOverlayView.alpha = 0.0;
-                                                  self.blurredImageView.alpha = 1.0;
-                                              } completion:^(BOOL finished) {
-                                              }];
-
-                         }];
                      }];
     
 }
@@ -267,6 +242,10 @@
         [self showForgotArrow:NO];
     }
     
+    // Fade in the arrow if we're on the forgot page.
+    if (self.scrollView.contentOffset.x == self.scrollView.bounds.size.width) {
+        [self showForgotArrow:YES];
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
