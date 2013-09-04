@@ -31,5 +31,7 @@
 - (BOOL)addMode;
 - (void)showActivity:(BOOL)show;
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error;
+- (void)showNoBooksCard;
+- (void)hideMessageCard;
 
 @end

@@ -174,21 +174,30 @@
     // Fade out the current VC.
     if (self.currentStoreCollectionViewController) {
         
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.currentStoreCollectionViewController.view.alpha = 0.0;
-                         }
-                         completion:^(BOOL finished) {
-                             
-                             // Unload the existing data.
-                             [self.currentStoreCollectionViewController unloadData];
-                             self.currentStoreCollectionViewController.view.hidden = YES;
-                             
-                             // Show the selected one.
-                             [self showStoreCollectionViewController:storeCollectionViewController];
-                         }];
+        if (self.currentStoreCollectionViewController == storeCollectionViewController) {
+            
+            // Just show again.
+            [storeCollectionViewController loadData];
+            
+        } else {
+            
+            // Fade between controllers.
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.currentStoreCollectionViewController.view.alpha = 0.0;
+                             }
+                             completion:^(BOOL finished) {
+                                 
+                                 // Unload the existing data.
+                                 [self.currentStoreCollectionViewController unloadData];
+                                 self.currentStoreCollectionViewController.view.hidden = YES;
+                                 
+                                 // Show the selected one.
+                                 [self showStoreCollectionViewController:storeCollectionViewController];
+                             }];
+        }
         
     } else {
         [self showStoreCollectionViewController:storeCollectionViewController];

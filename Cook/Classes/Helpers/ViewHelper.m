@@ -17,7 +17,7 @@
 
 @implementation ViewHelper
 
-#define kNoConnectionCardTag    1911
+#define kCardTag    1911
 
 + (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector {
     return [CKEditingViewHelper okayButtonWithTarget:target selector:selector];
@@ -236,10 +236,6 @@
 
 #pragma mark - Connection messages
 
-+ (UIView *)noConnectionCardView {
-    return [self messageCardViewWithText:@"CANNOT CONNECT" subtitle:@"CHECK YOUR WI-FI OR CELLULAR DATA"];
-}
-
 + (UIView *)messageCardViewWithText:(NSString *)text subtitle:(NSString *)subtitle {
     UIEdgeInsets contentInsets = (UIEdgeInsets) { 25.0, 30.0, 20.0, 30.0 };
     CGFloat titleSubtitleGap = 0.0;
@@ -257,14 +253,18 @@
     CGRect labelFrame = label.frame;
     
     // Subtitle label.
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    subtitleLabel.backgroundColor = [UIColor clearColor];
-    subtitleLabel.font = [Theme cardViewSubtitleFont];
-    subtitleLabel.textColor = [Theme cardViewSubtitleColour];
-    subtitleLabel.text = subtitle;
-    [subtitleLabel sizeToFit];
-    CGRect subtitleFrame = subtitleLabel.frame;
-    subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;
+    UILabel *subtitleLabel = nil;
+    CGRect subtitleFrame = CGRectZero;
+    if ([subtitle length] > 0) {
+        subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        subtitleLabel.backgroundColor = [UIColor clearColor];
+        subtitleLabel.font = [Theme cardViewSubtitleFont];
+        subtitleLabel.textColor = [Theme cardViewSubtitleColour];
+        subtitleLabel.text = subtitle;
+        [subtitleLabel sizeToFit];
+        subtitleFrame = subtitleLabel.frame;
+        subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;
+    }
     
     // Combined frame.
     CGRect cardFrame = CGRectUnion(labelFrame, subtitleFrame);
@@ -279,9 +279,11 @@
     subtitleFrame.origin.x = floorf((cardImageView.bounds.size.width - subtitleFrame.size.width) / 2.0);
     subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;
     label.frame = labelFrame;
-    subtitleLabel.frame = subtitleFrame;
     [cardImageView addSubview:label];
-    [cardImageView addSubview:subtitleLabel];
+    if (subtitleLabel) {
+        subtitleLabel.frame = subtitleFrame;
+        [cardImageView addSubview:subtitleLabel];
+    }
     
     return cardImageView;
 }
@@ -291,43 +293,66 @@
 }
 
 + (void)showNoConnectionCard:(BOOL)show view:(UIView *)view center:(CGPoint)center {
-    UIView *connectionCard = [view viewWithTag:kNoConnectionCardTag];
-    BOOL alreadyVisible = (connectionCard != nil);
+    [self showCardText:@"CANNOT CONNECT" subtitle:@"CHECK YOUR WI-FI OR CELLULAR DATA" view:view show:show center:center];
+}
+
++ (void)showCardText:(NSString *)text subtitle:(NSString *)subtitle view:(UIView *)view show:(BOOL)show
+              center:(CGPoint)center {
     
-    if (show && !alreadyVisible) {
+    // Check for existing card.
+    UIView *cardView = [view viewWithTag:kCardTag];
+    BOOL alreadyVisible = (cardView != nil);
+
+    if (show) {
         
-        if (!connectionCard) {
-            connectionCard = [self noConnectionCardView];
-            connectionCard.center = center;
-            connectionCard.alpha = 0.0;
-            connectionCard.tag = kNoConnectionCardTag;
-            [view addSubview:connectionCard];
+        // Remove any existing one straigh away.
+        [cardView removeFromSuperview];
+        
+        // Create a new card with the given text.
+        cardView = [self messageCardViewWithText:text subtitle:subtitle];
+        cardView.tag = kCardTag;
+        cardView.center = center;
+        
+        // Straight replace.
+        if (alreadyVisible) {
+            [view addSubview:cardView];
+        } else {
+            cardView.alpha = 0.0;
+            [view addSubview:cardView];
+            
+            // Fade it in.
+            [UIView animateWithDuration:0.4
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 cardView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
         }
         
-        // Fade it in.
-        [UIView animateWithDuration:0.4
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             connectionCard.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
+    } else {
         
-    } else if (!show && alreadyVisible) {
+        // Fade it out if there was something there.
+        if (alreadyVisible) {
+            
+            // Fade it out then remove.
+            [UIView animateWithDuration:0.1
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 cardView.alpha = 0.0;
+                             }
+                             completion:^(BOOL finished) {
+                                 [cardView removeFromSuperview];
+                             }];
+        }
         
-        // Fade it out then remove.
-        [UIView animateWithDuration:0.4
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             connectionCard.alpha = 0.0;
-                         }
-                         completion:^(BOOL finished) {
-                             [connectionCard removeFromSuperview];
-                         }];
     }
-    
+}
+
++ (void)hideCardInView:(UIView *)view {
+    [self showCardText:nil subtitle:nil view:view show:NO center:CGPointZero];
 }
 
 @end

@@ -72,20 +72,13 @@
 - (void)loadData {
     // Subclasses to extend.
     [self showActivity:YES];
-    [ViewHelper hideNoConnectionCardInView:self.collectionView];
+    [self hideMessageCard];
 }
 
 - (void)unloadData {
     DLog(@"Unloading Books [%d]", [self.books count]);
-    [ViewHelper hideNoConnectionCardInView:self.collectionView];
+    [self hideMessageCard];
     if ([self.books count] > 0) {
-        
-//        NSArray *deletedIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
-//            return [NSIndexPath indexPathForItem:index inSection:0];
-//        }];
-//        [self.books removeAllObjects];
-//        [self.collectionView deleteItemsAtIndexPaths:deletedIndexPaths];
-        
         [self.books removeAllObjects];
         [self.collectionView reloadData];
     }
@@ -95,16 +88,11 @@
     DLog(@"Books [%d] Existing [%d]", [books count], [self.books count]);
     
     [self showActivity:NO];
-    [ViewHelper hideNoConnectionCardInView:self.collectionView];
     
-    if ([self.books count] > 0) {
-        
-        // Reload the books.
-        [self.books removeAllObjects];
-        self.books = [NSMutableArray arrayWithArray:books];
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
-        
-    } else {
+    // Hide any message cards.
+    [self hideMessageCard];
+    
+    if ([books count] > 0) {
         
         self.books = [NSMutableArray arrayWithArray:books];
         
@@ -114,6 +102,11 @@
         }];
         
         [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+        
+    } else {
+        
+        // Show no books card.
+        [self showNoBooksCard];
         
     }
     
@@ -149,6 +142,14 @@
         [ViewHelper showNoConnectionCard:YES view:self.collectionView center:self.collectionView.center];
         [self showActivity:NO];
     }
+}
+
+- (void)showNoBooksCard {
+    DLog();
+}
+
+- (void)hideMessageCard {
+    [ViewHelper hideCardInView:self.collectionView];
 }
 
 #pragma mark - UICollectionViewDelegate methods

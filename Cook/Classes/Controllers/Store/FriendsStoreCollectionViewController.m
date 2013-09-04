@@ -10,6 +10,7 @@
 #import "CKBook.h"
 #import "CKUser.h"
 #import "EventHelper.h"
+#import "ViewHelper.h"
 
 @interface FriendsStoreCollectionViewController ()
 
@@ -39,6 +40,11 @@
 
 - (BOOL)addMode {
     return YES;
+}
+
+- (void)showNoBooksCard {
+    [ViewHelper showCardText:@"NO FRIENDS" subtitle:@"FIND PEOPLE YOU KNOW IN SUGGESTED"
+                        view:self.collectionView show:YES center:self.collectionView.center];
 }
 
 @end

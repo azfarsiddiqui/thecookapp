@@ -8,6 +8,7 @@
 
 #import "SuggestedStoreCollectionViewController.h"
 #import "CKBook.h"
+#import "ViewHelper.h"
 
 @interface SuggestedStoreCollectionViewController ()
 
@@ -37,6 +38,11 @@
 
 - (BOOL)addMode {
     return NO;
+}
+
+- (void)showNoBooksCard {
+    [ViewHelper showCardText:@"NO SUGGESTIONS" subtitle:@"MORE WAYS TO FIND FRIENDS SOON"
+                        view:self.collectionView show:YES center:self.collectionView.center];
 }
 
 @end
