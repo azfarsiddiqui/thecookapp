@@ -528,7 +528,7 @@
 #pragma mark - Social view.
 
 + (UIFont *)recipeCommenterFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:22.0];
+    return [UIFont fontWithName:@"AvenirNext-Medium" size:20.0];
 }
 
 + (UIColor *)recipeCommenterColour {
@@ -644,7 +644,7 @@
 #pragma mark - Book navigation view.
 
 + (UIFont *)navigationTitleFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:16.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
 }
 
 #pragma mark - Card messages
