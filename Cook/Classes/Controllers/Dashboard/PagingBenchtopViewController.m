@@ -817,6 +817,11 @@
                     
                     // No need to reblend, as layoutDidGenerate will trigger it.
                     
+                    // First time launch.
+                    if ([self.delegate respondsToSelector:@selector(benchtopFirstTimeLaunched)]) {
+                        [self.delegate benchtopFirstTimeLaunched];
+                    }
+                    
                 }];
 
             }

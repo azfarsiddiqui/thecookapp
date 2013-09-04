@@ -162,6 +162,10 @@
     DLog();
 }
 
+- (void)benchtopFirstTimeLaunched {
+//    [self performIntroPan];
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
@@ -922,6 +926,54 @@
                          }
                      }];
 
+}
+
+- (void)performIntroPan {
+    CGFloat panOffset = 40.0;
+    
+    CGAffineTransform downTransform = CGAffineTransformMakeTranslation(0.0, panOffset);
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.98, 0.98);
+    CGAffineTransform upTransform = CGAffineTransformMakeTranslation(0.0, -panOffset);
+    CGAffineTransform plompTransform = CGAffineTransformConcat(downTransform, scaleTransform);
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                         self.storeViewController.view.transform = plompTransform;
+                         self.benchtopViewController.view.transform = plompTransform;
+                         self.settingsViewController.view.transform = plompTransform;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         [UIView animateWithDuration:0.3
+                                               delay:0.0
+                                             options:UIViewAnimationOptionCurveEaseOut
+                                          animations:^{
+                                              self.storeViewController.view.transform = upTransform;
+                                              self.benchtopViewController.view.transform = upTransform;
+                                              self.settingsViewController.view.transform = upTransform;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              
+                                              [UIView animateWithDuration:0.2
+                                                                    delay:0.0
+                                                                  options:UIViewAnimationOptionCurveEaseIn
+                                                               animations:^{
+                                                                   self.storeViewController.view.transform = CGAffineTransformIdentity;
+                                                                   self.benchtopViewController.view.transform = CGAffineTransformIdentity;
+                                                                   self.settingsViewController.view.transform = CGAffineTransformIdentity;
+                                                               }
+                                                               completion:^(BOOL finished) {
+                                                               }];
+                                          }];
+                     }];
+}
+
+- (void)performIntroDynamics {
+    UIDynamicAnimator *animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+    UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:self.benchtopViewController.view offsetFromCenter:(UIOffset){0.0, 20.0} attachedToAnchor:self.view.center];
+    [animator addBehavior:spring];
+    self.benchtopViewController.view.center = (CGPoint){ self.benchtopViewController.view.center.x, self.benchtopViewController.view.center.y + 20.0 };
 }
 
 @end

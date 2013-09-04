@@ -18,4 +18,7 @@
 - (NSInteger)currentBenchtopLevel;
 - (void)deleteModeToggled:(BOOL)deleteMode;
 
+@optional
+- (void)benchtopFirstTimeLaunched;
+
 @end
