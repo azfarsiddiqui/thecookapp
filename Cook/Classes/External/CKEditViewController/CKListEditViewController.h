@@ -51,6 +51,6 @@
 
 // Gesture titles.
 - (NSString *)pullToReleaseTextForActivated:(BOOL)activated;
-- (NSString *)swipeToDeleteText;
+- (NSString *)swipeToDeleteTextActivated:(BOOL)activated;
 
 @end

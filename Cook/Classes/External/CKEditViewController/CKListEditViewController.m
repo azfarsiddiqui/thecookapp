@@ -52,8 +52,8 @@
 #define kInactiveCellFade               0.7
 #define kArrowLabelGap                  10.0
 #define kLabelArrowGap                  10.0
-#define kPullToAddFont                  [UIFont fontWithName:@"BrandonGrotesque-Regular" size:38.0]
-#define kSwipeToDeleteFont              [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.0]
+#define kPullToAddFont                  [UIFont fontWithName:@"BrandonGrotesque-Regular" size:28.0]
+#define kSwipeToDeleteFont              [UIFont fontWithName:@"BrandonGrotesque-Regular" size:25.0]
 #define RADIANS(degrees) ((degrees * M_PI) / 180.0)
 #define kSwipeAlpha                     0.7
 
@@ -186,10 +186,6 @@
 
 - (NSString *)swipeToDeleteTextActivated:(BOOL)activated {
     return activated ? @"Release to delete" : @"Swipe to delete";
-}
-
-- (NSString *)swipeToDeleteText {
-    return @"Swipe to delete";
 }
 
 #pragma mark - Lifecycle events.
@@ -877,7 +873,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     self.topAddLabel.text = [self pullToReleaseTextForActivated:self.topAddActivated];
     [self.topAddLabel sizeToFit];
     self.pullToAddView.frame = (CGRect){
-        floorf((self.collectionView.bounds.size.width - self.pullToAddView.frame.size.width) / 2.0),
+        floorf((self.collectionView.bounds.size.width - self.topAddLabel.frame.size.width) / 2.0) - self.pullToAddArrowView.frame.size.width - kArrowLabelGap,
         -self.pullToAddView.frame.size.height - kLabelOffset,
         self.pullToAddView.frame.size.width,
         self.pullToAddView.frame.size.height
