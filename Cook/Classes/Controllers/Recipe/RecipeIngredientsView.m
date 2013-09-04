@@ -114,6 +114,7 @@
     if (!_paragraphAttributes) {
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        paragraphStyle.lineSpacing = 8.0;
         paragraphStyle.alignment = self.textAlignment;
         _paragraphAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                 [Theme ingredientsListFont], NSFontAttributeName,

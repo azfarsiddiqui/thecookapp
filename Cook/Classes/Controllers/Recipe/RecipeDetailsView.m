@@ -510,7 +510,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyDividerView.frame.size.height
     };
     
-    self.storyLabel.text = story;
+    NSAttributedString *storyDisplay = [self attributedTextForText:story font:[Theme storyFont] colour:[Theme storyColor]];
+    self.storyLabel.attributedText = storyDisplay;
     CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
     self.storyLabel.frame = (CGRect){
         floorf((self.bounds.size.width - size.width) / 2.0),
@@ -754,7 +755,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (NSMutableAttributedString *)attributedTextForText:(NSString *)text font:(UIFont *)font colour:(UIColor *)colour {
-    return [self attributedTextForText:text lineSpacing:10.0 font:font colour:colour];
+    return [self attributedTextForText:text lineSpacing:8.0 font:font colour:colour];
 }
 
 - (NSMutableAttributedString *)attributedTextForText:(NSString *)text lineSpacing:(CGFloat)lineSpacing
