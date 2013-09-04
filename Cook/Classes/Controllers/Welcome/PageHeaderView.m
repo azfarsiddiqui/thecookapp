@@ -16,7 +16,6 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        DLog(@"FRAME: %@", NSStringFromCGRect(frame));
     }
     return self;
 }
