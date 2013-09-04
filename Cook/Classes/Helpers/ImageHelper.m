@@ -109,6 +109,10 @@
     return [self blurredImage:image tintColour:[UIColor colorWithWhite:1.0 alpha:0.58]];
 }
 
++ (UIImage *)blurredOverlayImage:(UIImage *)image {
+    return [self blurredImage:image tintColour:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.38]];
+}
+
 + (void)blurredOverlayImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion {
     [self blurredImage:image tintColour:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.38] completion:completion];
 }
@@ -127,6 +131,25 @@
                                   tintColor:tintColour
                       saturationDeltaFactor:1.8
                                   maskImage:nil];
+}
+
++ (UIImage *)blurredImageFromView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [self blurredOverlayImage:image];
+}
+
++ (void)blurredImageFromView:(UIView *)view completion:(void (^)(UIImage *blurredImage))completion {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    [self blurredOverlayImage:image completion:^(UIImage *blurredImage) {
+        completion(blurredImage);
+    }];
 }
 
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion {

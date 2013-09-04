@@ -32,9 +32,12 @@
 
 // Blurring
 + (UIImage *)blurredImage:(UIImage *)image;
++ (UIImage *)blurredOverlayImage:(UIImage *)image;
 + (void)blurredOverlayImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
 + (UIImage *)blurredRecipeImage:(UIImage *)image;
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour;
++ (UIImage *)blurredImageFromView:(UIView *)view;
++ (void)blurredImageFromView:(UIView *)view completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour completion:(void (^)(UIImage *blurredImage))completion;
 
