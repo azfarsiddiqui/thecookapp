@@ -97,7 +97,7 @@
     
     // Dark underlay.
     UIView *underlayView = [[UIView alloc] initWithFrame:CGRectZero];
-    underlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.45];
+    underlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.38];
     underlayView.frame = self.maskedLabel.frame;
     [self insertSubview:underlayView belowSubview:self.maskedLabel];
     
