@@ -854,7 +854,7 @@
         NSArray *recipes = [self.pageRecipes objectForKey:page];
         NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
         if ([recipesWithPhotos count] > 0) {
-            featuredRecipe = [recipesWithPhotos objectAtIndex:arc4random_uniform([recipesWithPhotos count])];
+            featuredRecipe = [recipesWithPhotos firstObject];   // Most recently updated recipe with photo.
             [self.pageFeaturedRecipes setObject:featuredRecipe forKey:page];
         }
     }
