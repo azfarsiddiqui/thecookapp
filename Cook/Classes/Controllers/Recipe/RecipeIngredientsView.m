@@ -16,7 +16,6 @@
 @interface RecipeIngredientsView ()
 
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, assign) CGSize maxSize;
 @property (nonatomic, assign) NSTextAlignment textAlignment;
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
@@ -27,7 +26,8 @@
 
 @implementation RecipeIngredientsView
 
-#define kRowGap 3.0
+#define kRowGap         3.0
+#define kCompactRowGap  0.0
 
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth {
     return [self initWithIngredients:ingredients book:book maxSize:(CGSize){ maxWidth, MAXFLOAT }];
@@ -95,19 +95,21 @@
                 break;
             }
             
-            ingredientsLabel.frame = (CGRect){ 0.0, self.layoutOffset, size.width, size.height };
+            ingredientsLabel.frame = (CGRect){ 0.0, self.layoutOffset, self.maxSize.width, size.height };
             self.layoutOffset += size.height;
             if (ingredientIndex < [ingredients count] - 1) {
-                self.layoutOffset += kRowGap;
+                self.layoutOffset += self.compact ? kCompactRowGap : kRowGap;
             }
         }
         
         // Remove any unused ingredientsLabel.
         if ([ingredients count] < [self.ingredientLabels count]) {
-            for (NSUInteger unwantedIndex = [ingredients count]; unwantedIndex < [self.ingredientLabels count]; unwantedIndex++) {
-                UILabel *unwantedLabel = [self.ingredientLabels objectAtIndex:unwantedIndex];
-                [unwantedLabel removeFromSuperview];
-                [self.ingredientLabels removeObjectAtIndex:unwantedIndex];
+            for (NSUInteger unwantedIndex = [ingredients count]; unwantedIndex < [self.ingredientLabels count] + 1; unwantedIndex++) {
+                if (unwantedIndex < [self.ingredientLabels count]) {
+                    UILabel *unwantedLabel = [self.ingredientLabels objectAtIndex:unwantedIndex];
+                    [unwantedLabel removeFromSuperview];
+                    [self.ingredientLabels removeObjectAtIndex:unwantedIndex];
+                }
             }
         }
         

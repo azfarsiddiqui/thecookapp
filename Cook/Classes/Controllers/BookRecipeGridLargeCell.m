@@ -19,6 +19,8 @@
 #define kStoryStatsGap          20.0
 #define kMethodStatsGap         20.0
 #define kTimeAfterGap           10.0
+#define kIngredientsMethodGap   20.0
+#define kIngredientsStoryGap    20.0
 
 // Title always come first.
 - (void)updateTitle {
@@ -48,10 +50,16 @@
     // 1. +Photo +Title -Story -Method +Ingredients
     // 2. -Photo +Title +Ingredients (+/-)Story (+/-)Method
     //
+    // DONE
     if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients])
         || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])) {
         
         self.ingredientsView.hidden = NO;
+        CGSize blockSize = [self availableBlockSize];
+        if (![self multilineTitle]) {
+            blockSize.height += 30.0;
+        }
+        self.ingredientsView.maxSize = blockSize;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
@@ -71,6 +79,7 @@
 
 - (void)updateStory {
     
+    // DONE
     if ([self hasPhotos] && [self hasTitle] && [self hasStory]) {
         
         // +Photo +Title +Story (+/-)Method (+/-)Ingredients
@@ -79,16 +88,20 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
         self.storyLabel.text = story;
-        CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         CGSize availableSize = [self availableSize];
+        CGSize blockSize = [self availableBlockSize];
+        self.storyLabel.numberOfLines -= [self multilineTitle] ? 1 : 0;
+        CGSize size = [self.storyLabel sizeThatFits:blockSize];
         
         // And it comes after Title.
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
             size.width,
-            size.height};
+            size.height
+        };
         
+    // DONE
     } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
     
         // -Photo +Title +Story (+/-)Method +Ingredients
@@ -104,7 +117,7 @@
         // And it comes before stats view (ingredientsView not rendered yet).
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-            self.statsView.frame.origin.y - kStoryStatsGap - blockSize.height + floorf((blockSize.height - size.height) / 2.0),
+            self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsStoryGap,
             size.width,
             size.height};
         
@@ -115,6 +128,7 @@
 
 - (void)updateMethod {
     
+    // DONE
     if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod]) {
         
         // +Photo +Title -Story +Method (+/-)Ingredients
@@ -123,7 +137,9 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
         self.methodLabel.text = method;
-        CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
+        CGSize blockSize = [self availableBlockSize];
+        self.methodLabel.numberOfLines -= [self multilineTitle] ? 1 : 0;
+        CGSize size = [self.methodLabel sizeThatFits:blockSize];
         
         // Comes after Title.
         self.methodLabel.frame = (CGRect){
@@ -133,6 +149,7 @@
             size.height
         };
         
+    // DONE
     } else if (![self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
         
         // -Photo +Title -Story +Method +Ingredients
@@ -147,7 +164,7 @@
         // And it comes before stats view (ingredientsView not rendered yet).
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.statsView.frame.origin.y - kMethodStatsGap - blockSize.height + floorf((blockSize.height - size.height) / 2.0),
+            self.ingredientsView.frame.origin.y + self.ingredientsView.frame.size.height + kIngredientsMethodGap,
             size.width,
             size.height
         };

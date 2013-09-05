@@ -28,8 +28,8 @@
 
 #define kViewDebug              0
 #define kImageSize              (CGSize){316.0, 260.0}
-#define kBlockUnitHeight        200.0
-#define kContentInsets          (UIEdgeInsets){50.0, 40.0, 55.0, 40.0}
+#define kBlockUnitHeight        140.0
+#define kContentInsets          (UIEdgeInsets){50.0, 40.0, 45.0, 40.0}
 
 #define kTitleOffsetNoImage     45.0
 #define kTitleTopGap            45.0
@@ -78,9 +78,9 @@
     [self updateImageView];
     [self updateTitle];
     [self updateTimeInterval];
+    [self updateIngredients];
     [self updateStory];
     [self updateMethod];
-    [self updateIngredients];
     [self updateStats];
 }
 
@@ -233,6 +233,10 @@
     return [self.recipe hasIngredients];
 }
 
+- (BOOL)multilineTitle {
+    return ((self.titleLabel.frame.size.height / self.titleLabel.font.lineHeight) > 1.5);   // Dirty hack.
+}
+
 - (CGRect)centeredFrameBetweenView:(UIView *)fromView andView:(UIView *)toView forView:(UIView *)forView {
     CGFloat fromEndOffset = fromView.frame.origin.y + fromView.frame.size.height;
     return (CGRect){
@@ -370,8 +374,8 @@
     storyLabel.backgroundColor = [self backgroundColorOrDebug];
     storyLabel.font = [Theme recipeGridIngredientsFont];
     storyLabel.textColor = [Theme recipeGridIngredientsColour];
-    storyLabel.numberOfLines = 0;
-    storyLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    storyLabel.numberOfLines = 7;
+    storyLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     storyLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:storyLabel];
     self.storyLabel = storyLabel;
@@ -382,8 +386,8 @@
     methodLabel.backgroundColor = [self backgroundColorOrDebug];
     methodLabel.font = [Theme recipeGridIngredientsFont];
     methodLabel.textColor = [Theme recipeGridIngredientsColour];
-    methodLabel.numberOfLines = 0;
-    methodLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    methodLabel.numberOfLines = 7;
+    methodLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     methodLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:methodLabel];
     self.methodLabel = methodLabel;

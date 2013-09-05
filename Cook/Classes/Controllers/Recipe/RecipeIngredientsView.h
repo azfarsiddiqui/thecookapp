@@ -12,6 +12,8 @@
 
 @interface RecipeIngredientsView : UIView
 
+@property (nonatomic, assign) CGSize maxSize;
+
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxWidth:(CGFloat)maxWidth;
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize;
 - (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize

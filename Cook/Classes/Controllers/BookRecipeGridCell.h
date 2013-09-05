@@ -52,6 +52,7 @@
 - (BOOL)hasStory;
 - (BOOL)hasMethod;
 - (BOOL)hasIngredients;
+- (BOOL)multilineTitle;
 
 - (CGRect)centeredFrameBetweenView:(UIView *)fromView andView:(UIView *)toView forView:(UIView *)forView;
 
