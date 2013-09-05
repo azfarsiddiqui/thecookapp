@@ -42,7 +42,7 @@
 @property (nonatomic, strong) UILabel *forgotLabel;
 @property (nonatomic, strong) CKTextFieldView *forgotEmailView;
 @property (nonatomic, strong) CKSignInButtonView *forgotButton;
-@property (nonatomic, strong) UIImageView *leftArrowView;
+@property (nonatomic, strong) UIButton *leftArrowButton;
 
 @end
 
@@ -238,7 +238,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if (self.leftArrowView.alpha == 1.0) {
+    if (self.leftArrowButton.alpha == 1.0) {
         [self showForgotArrow:NO];
     }
     
@@ -518,16 +518,17 @@
     [self.scrollView addSubview:self.forgotButton];
     
     // Left arrow.
-    UIImageView *leftArrowView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_leftarrow.png"]];
-    leftArrowView.frame = (CGRect) {
+    UIButton *leftArrowButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_login_leftarrow.png"]
+                                                     target:self selector:@selector(arrowTapped:)];
+    leftArrowButton.frame = (CGRect) {
         self.scrollView.bounds.size.width + 30.0,
-        floorf((self.scrollView.bounds.size.height - leftArrowView.frame.size.height) / 2.0) + 10.0,
-        leftArrowView.frame.size.width,
-        leftArrowView.frame.size.height
+        floorf((self.scrollView.bounds.size.height - leftArrowButton.frame.size.height) / 2.0) + 10.0,
+        leftArrowButton.frame.size.width,
+        leftArrowButton.frame.size.height
     };
-    leftArrowView.alpha = 0.0;  // Hidden to start off with.
-    [self.scrollView addSubview:leftArrowView];
-    self.leftArrowView = leftArrowView;
+    leftArrowButton.alpha = 0.0;  // Hidden to start off with.
+    [self.scrollView addSubview:leftArrowButton];
+    self.leftArrowButton = leftArrowButton;
 }
 
 - (void)initHeaderView {
@@ -971,10 +972,14 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.leftArrowView.alpha = show ? 1.0 : 0.0;
+                         self.leftArrowButton.alpha = show ? 1.0 : 0.0;
                      }
                      completion:^(BOOL finished) {
                      }];
+}
+
+- (void)arrowTapped:(id)sender {
+    [self.scrollView setContentOffset:CGPointZero animated:YES];
 }
 
 @end
