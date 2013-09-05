@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKBook;
+
 @interface BookContentImageView : UICollectionReusableView
 
-- (void)configureImage:(UIImage *)image;
-- (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder;
+- (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder book:(CKBook *)book;
 - (void)applyOffset:(CGFloat)offset;
 - (CGSize)imageSizeWithMotionOffset;
 

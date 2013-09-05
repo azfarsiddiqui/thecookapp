@@ -941,17 +941,17 @@
                                                progress:^(CGFloat progressRatio, NSString *name) {
                                                } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
                                                    if ([name isEqualToString:recipe.objectId]) {
-                                                       [contentHeaderView configureImage:thumbImage];
+                                                       [contentHeaderView configureImage:thumbImage placeholder:NO book:self.book];
                                                    }
                                                } completion:^(UIImage *image, NSString *name) {
                                                    if ([name isEqualToString:recipe.objectId]) {
-                                                       [contentHeaderView configureImage:image];
+                                                       [contentHeaderView configureImage:image placeholder:NO book:self.book];
                                                    }
                                                }];
         
     } else {
         [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
-                              placeholder:YES];
+                              placeholder:YES book:self.book];
     }
 }
 

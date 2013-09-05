@@ -11,6 +11,8 @@
 #import "Theme.h"
 #import "ImageHelper.h"
 #import "ViewHelper.h"
+#import "CKBook.h"
+#import "CKBookCover.h"
 
 @interface BookContentImageView ()
 
@@ -58,16 +60,13 @@
     [self applyOffset:offset distance:200.0 view:self.blurredImageView];
 }
 
-- (void)configureImage:(UIImage *)image {
-    [self configureImage:image placeholder:NO];
-}
-
-- (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder {
+- (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder book:(CKBook *)book {
     if (image) {
         self.imageView.image = image;
         self.vignetteOverlayView.hidden = NO;
         
-        UIColor *tintColour = [UIColor colorWithRed:22 green:35 blue:30 alpha:0.7];
+//        UIColor *tintColour = [UIColor colorWithRed:22 green:35 blue:30 alpha:0.7];
+        UIColor *tintColour = [[CKBookCover colourForCover:book.cover] colorWithAlphaComponent:0.7];
         [ImageHelper blurredImage:image tintColour:tintColour completion:^(UIImage *blurredImage) {
             self.blurredImageView.image = blurredImage;
         }];
