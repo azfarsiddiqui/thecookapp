@@ -25,11 +25,10 @@
 @property (nonatomic, strong) UIImageView *topRoundedMaskImageView;
 @property (nonatomic, strong) UIImageView *bottomShadowImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *timeIntervalLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
-@property (nonatomic, strong) UIImageView *dividerImageView;
-@property (nonatomic, strong) UILabel *timeIntervalLabel;
 @property (nonatomic, strong) GridRecipeStatsView *statsView;
 
 + (CGSize)imageSize;
@@ -39,10 +38,10 @@
 - (void)updateImageView;
 - (void)updateStats;
 - (void)updateTitle;
+- (void)updateTimeInterval;
 - (void)updateStory;
 - (void)updateMethod;
 - (void)updateIngredients;
-- (void)updateTimeInterval;
 
 - (UIEdgeInsets)contentInsets;
 - (CGSize)availableSize;

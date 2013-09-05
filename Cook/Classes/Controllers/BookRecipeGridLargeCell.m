@@ -18,6 +18,7 @@
 #define kTitleMethodGap         20.0
 #define kStoryStatsGap          20.0
 #define kMethodStatsGap         20.0
+#define kTimeAfterGap           10.0
 
 // Title always come first.
 - (void)updateTitle {
@@ -45,7 +46,7 @@
     // Ingredients appear only in the following situations:
     //
     // 1. +Photo +Title -Story -Method +Ingredients
-    // 2. -Photo +Title (+/-)Story (+/-)Method +Ingredients
+    // 2. -Photo +Title +Ingredients (+/-)Story (+/-)Method
     //
     if (([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients])
         || (![self hasPhotos] && [self hasTitle] && [self hasIngredients])) {
@@ -58,7 +59,7 @@
         // And it only appears after title.
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap + floorf(([self availableBlockSize].height - self.ingredientsView.frame.size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
@@ -84,7 +85,7 @@
         // And it comes after Title.
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
             size.width,
             size.height};
         
@@ -127,7 +128,7 @@
         // Comes after Title.
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kTimeAfterGap,
             size.width,
             size.height
         };
@@ -155,36 +156,6 @@
     } else {
         self.methodLabel.hidden = YES;
     }
-}
-
-- (void)updateDividers {
-    
-    self.dividerImageView.hidden = NO;
-    
-    if ([self hasPhotos] && [self hasTitle] && [self hasStory]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.titleLabel andView:self.storyLabel forView:self.dividerImageView];
-        
-    } else if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.titleLabel andView:self.methodLabel forView:self.dividerImageView];
-        
-    } else if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && ![self hasMethod] && [self hasIngredients]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.titleLabel andView:self.ingredientsView forView:self.dividerImageView];
-        
-    } else if (![self hasPhotos] && [self hasTitle] && [self hasStory] && [self hasIngredients]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.ingredientsView andView:self.storyLabel forView:self.dividerImageView];
-        
-    } else if (![self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod] && [self hasIngredients]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.ingredientsView andView:self.methodLabel forView:self.dividerImageView];
-        
-    } else {
-        self.dividerImageView.hidden = YES;
-    }
-
 }
 
 @end

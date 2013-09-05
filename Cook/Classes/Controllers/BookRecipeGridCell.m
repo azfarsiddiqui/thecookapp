@@ -16,6 +16,7 @@
 #import "RecipeIngredientsView.h"
 #import "CKActivityIndicatorView.h"
 #import "TTTTimeIntervalFormatter.h"
+#import "ViewHelper.h"
 
 @interface BookRecipeGridCell ()
 
@@ -38,6 +39,7 @@
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
 #define kTimeStatsGap           -5.0
+#define kTitleTimeGap           10.0
 
 + (CGSize)imageSize {
     return kImageSize;
@@ -49,7 +51,6 @@
         [self initImageView];
         [self initTitleLabel];
         [self initIngredientsView];
-        [self initDividers];
         [self initStoryLabel];
         [self initMethodLabel];
         [self initStatsView];
@@ -76,12 +77,11 @@
     
     [self updateImageView];
     [self updateTitle];
+    [self updateTimeInterval];
     [self updateStory];
     [self updateMethod];
     [self updateIngredients];
     [self updateStats];
-    [self updateTimeInterval];
-    [self updateDividers];
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -139,12 +139,15 @@
     if ([self hasTitle]) {
         self.titleLabel.hidden = NO;
         
-        // Book specific text colour.
-        self.titleLabel.textColor = [CKBookCover textColourForCover:self.book.cover];
         NSString *title = [self.recipe.name uppercaseString];
-        NSMutableDictionary *attributes = [NSMutableDictionary new];
-        [attributes setObject:self.titleLabel.font forKey:NSFontAttributeName];
-        self.titleLabel.text = title;
+        UIColor *textColour = [CKBookCover textColourForCover:self.book.cover];
+        NSDictionary *textAttributes = [ViewHelper paragraphAttributesForFont:[Theme recipeGridTitleFont]
+                                                                   textColour:textColour textAlignment:NSTextAlignmentCenter
+                                                                  lineSpacing:0.0 lineBreakMode:NSLineBreakByWordWrapping];
+        NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:title attributes:textAttributes];
+        
+        // Book specific text colour.
+        self.titleLabel.attributedText = textDisplay;
         
     } else {
         self.titleLabel.hidden = YES;
@@ -181,7 +184,7 @@
     [self.timeIntervalLabel sizeToFit];
     self.timeIntervalLabel.frame = (CGRect){
         floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
-        self.statsView.frame.origin.y - self.timeIntervalLabel.frame.size.height - kTimeStatsGap,
+        self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleTimeGap,
         self.timeIntervalLabel.frame.size.width,
         self.timeIntervalLabel.frame.size.height
     };
@@ -190,10 +193,6 @@
 
 - (void)updateStats {
     [self.statsView configureRecipe:self.recipe];
-}
-
-- (void)updateDividers {
-    self.dividerImageView.hidden = YES;
 }
 
 - (CGSize)availableSize {
@@ -274,13 +273,6 @@
         _bottomShadowImageView = [[UIImageView alloc] initWithImage:bottomShadowImage];
     }
     return _bottomShadowImageView;
-}
-
-- (UIImageView *)dividerImageView {
-    if (!_dividerImageView) {
-        _dividerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_titledivider_quote.png"]];
-    }
-    return _dividerImageView;
 }
 
 #pragma mark - Private methods
@@ -367,14 +359,10 @@
     RecipeIngredientsView *ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:nil
                                                                                            book:self.book
                                                                                         maxSize:[self availableBlockSize]
-                                                                                  textAlignment:NSTextAlignmentCenter];
+                                                                                  textAlignment:NSTextAlignmentCenter
+                                                                                        compact:YES];
     [self.contentView addSubview:ingredientsView];
     self.ingredientsView = ingredientsView;
-}
-
-- (void)initDividers {
-    self.dividerImageView.hidden = YES;
-    [self.contentView addSubview:self.dividerImageView];
 }
 
 - (void)initStoryLabel {

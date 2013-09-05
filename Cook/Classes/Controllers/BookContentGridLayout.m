@@ -43,13 +43,13 @@
             size = (CGSize){ kUnitWidth, 340.0 };
             break;
         case BookContentGridTypeSmall:
-            size = (CGSize){ kUnitWidth, 460.0 };
+            size = (CGSize){ kUnitWidth, 480.0 };
             break;
         case BookContentGridTypeMedium:
-            size = (CGSize){ kUnitWidth, 560.0 };
+            size = (CGSize){ kUnitWidth, 540.0 };
             break;
         case BookContentGridTypeLarge:
-            size = (CGSize){ kUnitWidth, 660.0 };
+            size = (CGSize){ kUnitWidth, 640.0 };
             break;
         default:
             break;

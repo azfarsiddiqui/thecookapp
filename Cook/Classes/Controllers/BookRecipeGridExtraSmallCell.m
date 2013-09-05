@@ -13,6 +13,7 @@
 
 @implementation BookRecipeGridExtraSmallCell
 
+#define kTimeGap        30.0
 #define kStoryGap       45.0
 #define kMethodGap      45.0
 
@@ -35,6 +36,18 @@
         
     } else {
         self.titleLabel.hidden = YES;
+    }
+}
+
+- (void)updateTimeInterval {
+    [super updateTimeInterval];
+    if (![self hasTitle]) {
+        self.timeIntervalLabel.frame = (CGRect){
+            floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
+            kTimeGap,
+            self.timeIntervalLabel.frame.size.width,
+            self.timeIntervalLabel.frame.size.height
+        };
     }
 }
 
@@ -64,7 +77,6 @@
         
         // Story only.
         self.storyLabel.hidden = NO;
-        self.dividerImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
@@ -79,7 +91,6 @@
         
     } else {
         self.storyLabel.hidden = YES;
-        self.dividerImageView.hidden = YES;
     }
 }
 
@@ -106,44 +117,4 @@
     }
 }
 
-- (void)updateDividers {
-    
-    self.dividerImageView.hidden = NO;
-    
-    if ([self hasStory]) {
-        
-        CGFloat fromEndOffset = [self contentInsets].top;
-        self.dividerImageView.frame = (CGRect){
-            floorf((self.contentView.bounds.size.width - self.dividerImageView.frame.size.width) / 2.0),
-            fromEndOffset + floorf((self.storyLabel.frame.origin.y - fromEndOffset - self.dividerImageView.frame.size.height) / 2.0),
-            self.dividerImageView.frame.size.width,
-            self.dividerImageView.frame.size.height
-        };
-        
-    } else if ([self hasMethod]) {
-        
-        CGFloat fromEndOffset = [self contentInsets].top;
-        self.dividerImageView.frame = (CGRect){
-            floorf((self.contentView.bounds.size.width - self.dividerImageView.frame.size.width) / 2.0),
-            fromEndOffset + floorf((self.methodLabel.frame.origin.y - fromEndOffset - self.dividerImageView.frame.size.height) / 2.0),
-            self.dividerImageView.frame.size.width,
-            self.dividerImageView.frame.size.height
-        };
-        
-        
-    } else if ([self hasIngredients]) {
-        
-        CGFloat fromEndOffset = [self contentInsets].top;
-        self.dividerImageView.frame = (CGRect){
-            floorf((self.contentView.bounds.size.width - self.dividerImageView.frame.size.width) / 2.0),
-            fromEndOffset + floorf((self.ingredientsView.frame.origin.y - fromEndOffset - self.dividerImageView.frame.size.height) / 2.0),
-            self.dividerImageView.frame.size.width,
-            self.dividerImageView.frame.size.height
-        };
-        
-    } else {
-        self.dividerImageView.hidden = YES;
-    }
-    
-}
 @end

@@ -21,6 +21,7 @@
 @property (nonatomic, assign) CGFloat layoutOffset;
 @property (nonatomic, strong) NSDictionary *paragraphAttributes;
 @property (nonatomic, strong) NSMutableArray *ingredientLabels;
+@property (nonatomic, assign) BOOL compact;
 
 @end
 
@@ -36,11 +37,18 @@
     return [self initWithIngredients:ingredients book:book maxSize:maxSize textAlignment:NSTextAlignmentLeft];
 }
 
-- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize textAlignment:(NSTextAlignment)textAlignment {
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
+            textAlignment:(NSTextAlignment)textAlignment {
+    return [self initWithIngredients:ingredients book:book maxSize:maxSize textAlignment:textAlignment compact:NO];
+}
+
+- (id)initWithIngredients:(NSArray *)ingredients book:(CKBook *)book maxSize:(CGSize)maxSize
+            textAlignment:(NSTextAlignment)textAlignment compact:(BOOL)compact {
     if (self = [super initWithFrame:CGRectZero]) {
         self.book = book;
         self.maxSize = maxSize;
         self.textAlignment = textAlignment;
+        self.compact = compact;
         self.ingredientLabels = [NSMutableArray arrayWithCapacity:[ingredients count]];
         [self updateIngredients:ingredients book:book];
     }
@@ -114,7 +122,7 @@
     if (!_paragraphAttributes) {
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-        paragraphStyle.lineSpacing = 8.0;
+        paragraphStyle.lineSpacing = self.compact ? 0.0 : 8.0;
         paragraphStyle.alignment = self.textAlignment;
         _paragraphAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                 [Theme ingredientsListFont], NSFontAttributeName,

@@ -355,4 +355,21 @@
     [self showCardText:nil subtitle:nil view:view show:NO center:CGPointZero];
 }
 
+#pragma mark - Attributed String
+
++ (NSDictionary *)paragraphAttributesForFont:(UIFont *)font textColour:(UIColor *)textColour
+                               textAlignment:(NSTextAlignment)textAlignment lineSpacing:(CGFloat)lineSpacing
+                               lineBreakMode:(NSLineBreakMode)lineBreakMode {
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = lineBreakMode;
+    paragraphStyle.lineSpacing = lineSpacing;
+    paragraphStyle.alignment = textAlignment;
+    return @{
+             NSFontAttributeName : font,
+             NSForegroundColorAttributeName : textColour,
+             NSParagraphStyleAttributeName : paragraphStyle
+             };
+}
+
 @end

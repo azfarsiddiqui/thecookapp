@@ -65,4 +65,9 @@
               center:(CGPoint)center;
 + (void)hideCardInView:(UIView *)view;
 
+// Attributed String
++ (NSDictionary *)paragraphAttributesForFont:(UIFont *)font textColour:(UIColor *)textColour
+                               textAlignment:(NSTextAlignment)textAlignment lineSpacing:(CGFloat)lineSpacing
+                               lineBreakMode:(NSLineBreakMode)lineBreakMode;
+
 @end

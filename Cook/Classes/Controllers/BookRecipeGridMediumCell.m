@@ -42,7 +42,6 @@
         
         // Image + Story.
         self.storyLabel.hidden = NO;
-        self.dividerImageView.hidden = NO;
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
@@ -57,7 +56,6 @@
         
     } else {
         self.storyLabel.hidden = YES;
-        self.dividerImageView.hidden = YES;
     }
 }
 
@@ -82,28 +80,6 @@
     } else {
         self.methodLabel.hidden = YES;
     }
-}
-
-- (void)updateDividers {
-    
-    self.dividerImageView.hidden = NO;
-    
-    if ([self hasStory]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.imageView andView:self.storyLabel forView:self.dividerImageView];
-        
-    } else if ([self hasMethod]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.imageView andView:self.methodLabel forView:self.dividerImageView];
-        
-    } else if ([self hasIngredients]) {
-        
-        self.dividerImageView.frame = [self centeredFrameBetweenView:self.imageView andView:self.ingredientsView forView:self.dividerImageView];
-        
-    } else {
-        self.dividerImageView.hidden = YES;
-    }
-    
 }
 
 @end
