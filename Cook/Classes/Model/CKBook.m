@@ -362,49 +362,30 @@
     return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
 }
 
-- (void)fetchRecipesSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
-    [self fetchRecipesOwner:YES friends:NO success:success failure:failure];
-}
-
-- (void)fetchRecipesOwner:(BOOL)owner friends:(BOOL)friends success:(ListObjectsSuccessBlock)success
-                  failure:(ObjectFailureBlock)failure {
+- (void)fetchRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
-//    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
-    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
-//    [query setCachePolicy:kPFCachePolicyCacheOnly];
-    [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
-    [query whereKey:kBookModelForeignKeyName equalTo:self.parseObject];
-    
-    // Fetch recipes that are in the book's pages.
-    [query whereKey:kRecipeAttrPage containedIn:[self pages]];
-    
-    // Order by descending modifiedDate
-    [query orderByDescending:kModelAttrUpdatedAt];
-    
-    // Only fetch public recipes if it's not your own book.
-    if (!owner) {
-        if (friends) {
-            [query whereKey:kRecipeAttrPrivacy containedIn:@[@(CKPrivacyFriends), @(CKPrivacyGlobal)]];
-        } else {
-            [query whereKey:kRecipeAttrPrivacy equalTo:@(CKPrivacyGlobal)];
-        }
-    }
-    
-    // Include photo references.
-    [query includeKey:kRecipeAttrRecipePhotos];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray *parseRecipes, NSError *error) {
-        if (!error) {
-            NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
-                return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
-            }];
-            DLog(@"fetch returned %i recipes", [recipes count]);
-            success(recipes);
-        } else {
-            failure(error);
-        }
-    }];
+    [PFCloud callFunctionInBackground:@"bookRecipes"
+                       withParameters:@{ @"bookId": self.objectId }
+                                block:^(NSDictionary *recipeResults, NSError *error) {
+                                    if (!error) {
+                                        
+                                        NSArray *parseRecipes = [recipeResults objectForKey:@"recipes"];
+                                        NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
+                                        NSDictionary *pageFeaturedRecipes = [recipeResults objectForKey:@"pageFeatured"];
+                                        NSString *bookFeaturedRecipeId = [recipeResults objectForKey:@"bookFeatured"];
+                                        
+                                        // Wrap the recipes in our model.
+                                        NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
+                                            return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
+                                        }];
+                                        
+                                        success(recipes, accessDate, pageFeaturedRecipes, bookFeaturedRecipeId);
+                                        
+                                    } else {
+                                        DLog(@"Error loading recipes: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
 }
 
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {

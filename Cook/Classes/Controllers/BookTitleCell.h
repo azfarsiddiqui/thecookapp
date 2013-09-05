@@ -12,7 +12,7 @@
 
 + (CGSize)cellSize;
 
-- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes;
+- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes;
 - (void)configureImage:(UIImage *)image;
 - (void)configureAsAddCell;
 

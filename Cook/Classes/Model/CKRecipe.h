@@ -85,4 +85,7 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 - (BOOL)hasMethod;
 - (BOOL)hasIngredients;
 
+// Stats.
+- (void)incrementPageViewInBackground;
+
 @end

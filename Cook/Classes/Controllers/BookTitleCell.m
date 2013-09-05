@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UIImageView *stackImageView;
 @property (nonatomic, strong) UIImageView *blankOverlayView;
 @property (nonatomic, strong) UIImageView *addView;
+@property (nonatomic, strong) UIImageView *newIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 
@@ -42,11 +43,12 @@
         [self.contentView addSubview:self.addView];
         [self.contentView addSubview:self.titleLabel];
         [self.contentView addSubview:self.subtitleLabel];
+        [self.contentView addSubview:self.newIndicatorView];
     }
     return self;
 }
 
-- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes {
+- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes {
     self.titleLabel.hidden = NO;
     self.subtitleLabel.hidden = NO;
     self.blankOverlayView.hidden = YES;
@@ -72,6 +74,9 @@
         self.subtitleLabel.frame.size.width,
         self.subtitleLabel.frame.size.height
     };
+    
+    // New indicator.
+    self.newIndicatorView.hidden = !newRecipes;
 }
 
 - (void)configureImage:(UIImage *)image {
@@ -92,6 +97,7 @@
     self.subtitleLabel.hidden = YES;
     self.blankOverlayView.hidden = NO;
     self.addView.hidden = NO;
+    self.newIndicatorView.hidden = YES;
 }
 
 #pragma mark - Properties
@@ -171,6 +177,19 @@
         _subtitleLabel.backgroundColor = [UIColor clearColor];
     }
     return _subtitleLabel;
+}
+
+- (UIImageView *)newIndicatorView {
+    if (!_newIndicatorView) {
+        _newIndicatorView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_category_new.png"]];
+        _newIndicatorView.frame = (CGRect){
+            floorf((self.contentView.bounds.size.width - _newIndicatorView.frame.size.width) / 2.0),
+            38.0,
+            _newIndicatorView.frame.size.width,
+            _newIndicatorView.frame.size.height
+        };
+    }
+    return _newIndicatorView;
 }
 
 #pragma mark - Private methods

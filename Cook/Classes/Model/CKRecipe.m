@@ -530,6 +530,13 @@
     return ([self.ingredients count] > 0);
 }
 
+- (void)incrementPageViewInBackground {
+    if ([self persisted]) {
+        [self.parseObject incrementKey:kRecipeAttrNumViews];
+        [self.parseObject saveEventually];
+    }
+}
+
 #pragma mark - Private Methods
 
 - (NSArray *)assembleIngredients {

@@ -20,6 +20,7 @@
 - (void)bookTitleSelectedPage:(NSString *)page;
 - (void)bookTitleUpdatedOrderOfPages:(NSArray *)pages;
 - (void)bookTitleAddedPage:(NSString *)page;
+- (BOOL)bookTitleIsNewForPage:(NSString *)page;
 
 @end
 

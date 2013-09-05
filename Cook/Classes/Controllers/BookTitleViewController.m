@@ -110,25 +110,21 @@
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
-    
-    NSString *bookTitleCacheKey = [NSString stringWithFormat:@"BookTitle_%@", self.book.objectId];
-    UIImage *bookTitleImage = [[CKPhotoManager sharedInstance] cachedImageForKey:bookTitleCacheKey];
-    if (bookTitleImage) {
-        [self configureHeroRecipeImage:bookTitleImage];
-    } else {
+    if ([recipe hasPhotos]) {
         
-        if ([recipe hasPhotos]) {
-            
-            [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:self.imageView.bounds.size
-                                                            name:@"BookTitleFeaturedRecipe"
-                                                        progress:^(CGFloat progressRatio, NSString *name) {
-                                                            // Ignore progress.
-                                                        } completion:^(UIImage *thumbImage, NSString *name) {
-                                                            
-                                                            [self configureHeroRecipeImage:thumbImage];
-                                                            [[CKPhotoManager sharedInstance] storeImage:thumbImage forKey:bookTitleCacheKey];
-                                                        }];
-        }
+        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageView.bounds.size
+                                                   name:recipe.objectId
+                                               progress:^(CGFloat progressRatio, NSString *name) {
+                                                   // Ignore progress.
+                                               } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                   if ([name isEqualToString:recipe.objectId]) {
+                                                       [self configureHeroRecipeImage:thumbImage];
+                                                   }
+                                               } completion:^(UIImage *image, NSString *name) {
+                                                   if ([name isEqualToString:recipe.objectId]) {
+                                                       [self configureHeroRecipeImage:image];
+                                                   }
+                                               }];
     }
 }
 
@@ -219,7 +215,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if (indexPath.item < [self.pages count]) {
         
         NSString *page = [self.pages objectAtIndex:indexPath.item];
-        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page]];
+        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page] containNewRecipes:[self.delegate bookTitleIsNewForPage:page]];
         
         // Load featured recipe for the category.
         CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForPage:page];

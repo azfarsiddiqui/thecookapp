@@ -39,15 +39,20 @@
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
+@property (nonatomic, strong) NSMutableDictionary *pagesContainingUpdatedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
 @property (nonatomic, strong) NSMutableDictionary *contentControllerOffsets;
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
 @property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
+@property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipeIds;
+@property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
+@property (nonatomic, strong) NSString *bookFeaturedRecipeId;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
+@property (nonatomic, strong) NSDate *bookLastAccessedDate;
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
@@ -376,6 +381,16 @@
     [self.book saveInBackground];
 }
 
+- (BOOL)bookTitleIsNewForPage:(NSString *)page {
+    
+    if ([self.book isOwner]) {
+        return NO;
+    } else {
+        return ([self.pagesContainingUpdatedRecipes objectForKey:page] != nil);
+    }
+    
+}
+
 #pragma mark - BookPagingStackLayoutDelegate methods
 
 - (void)stackPagingLayoutDidFinish {
@@ -673,28 +688,19 @@
 - (void)loadData {
     DLog();
     
-    if ([self.book isOwner]) {
+    // Fetch all recipes for the book, and categorise them.
+    [self.book fetchRecipesSuccess:^(NSArray *recipes, NSDate *lastAccessedDate, NSDictionary *pageFeaturedRecipes,
+                                     NSString *bookFeaturedId) {
         
-        // Fetch all recipes for the book, and categorise them.
-        [self.book fetchRecipesSuccess:^(NSArray *recipes){
-            
-            [self processRecipes:recipes];
-            
-        } failure:^(NSError *error) {
-            DLog(@"Error %@", [error localizedDescription]);
-        }];
+        self.pageFeaturedRecipeIds = [NSMutableDictionary dictionaryWithDictionary:pageFeaturedRecipes];
+        self.bookFeaturedRecipeId = bookFeaturedId;
+        self.bookLastAccessedDate = lastAccessedDate;
+        [self processRecipes:recipes];
         
-    } else {
+    } failure:^(NSError *error) {
         
-        // Fetch all recipes for the book, and categorise them.
-        [self.book fetchRecipesOwner:NO friends:YES success:^(NSArray *recipes) {
-            [self processRecipes:recipes];
-        } failure:^(NSError *error) {
-         DLog(@"Error %@", [error localizedDescription]);
-        }];
-        
-    }
-    
+        DLog(@"Error %@", [error localizedDescription]);
+    }];
 }
 
 - (void)processRecipes:(NSArray *)recipes {
@@ -702,13 +708,14 @@
     
     [self loadRecipes];
     [self loadTitlePage];
-    
 }
 
 - (void)loadRecipes {
     self.pageRecipes = [NSMutableDictionary dictionary];
-    self.pageHeaderViews = [NSMutableDictionary dictionary];
+    self.pagesContainingUpdatedRecipes = [NSMutableDictionary dictionary];
     self.pageFeaturedRecipes = [NSMutableDictionary dictionary];
+    self.pageCoverRecipes = [NSMutableDictionary dictionary];
+    self.pageHeaderViews = [NSMutableDictionary dictionary];
     
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
@@ -723,6 +730,14 @@
             [self.pageRecipes setObject:pageRecipes forKey:page];
         }
         [pageRecipes addObject:recipe];
+        
+        // Is this a new recipe?
+        if (self.bookLastAccessedDate
+            && ([recipe.updatedDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
+            
+            // Mark the page as new.
+            [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
+        }
     }
     
     // Initialise the categoryControllers
@@ -746,8 +761,7 @@
     
     // Load the hero recipe.
     if ([self.pages count] > 0) {
-        NSString *page = [self.pages objectAtIndex:arc4random_uniform([self.pages count])];
-        self.featuredRecipe = [self featuredRecipeForPage:page];
+        self.featuredRecipe = [self bookFeaturedRecipe];
         [self.titleViewController configureHeroRecipe:self.featuredRecipe];
     }
 }
@@ -851,14 +865,65 @@
 - (CKRecipe *)featuredRecipeForPage:(NSString *)page {
     CKRecipe *featuredRecipe = [self.pageFeaturedRecipes objectForKey:page];
     if (!featuredRecipe) {
-        NSArray *recipes = [self.pageRecipes objectForKey:page];
-        NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
+        
+        NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
+        NSArray *recipesWithPhotos = [self recipesWithPhotos:pageRecipes];
         if ([recipesWithPhotos count] > 0) {
             featuredRecipe = [recipesWithPhotos firstObject];   // Most recently updated recipe with photo.
+        }
+        
+        // Set the featured recipe.
+        if (featuredRecipe) {
             [self.pageFeaturedRecipes setObject:featuredRecipe forKey:page];
         }
     }
+    
     return featuredRecipe;
+}
+
+- (CKRecipe *)coverRecipeForPage:(NSString *)page {
+    CKRecipe *coverRecipe = [self.pageCoverRecipes objectForKey:page];
+    
+    if (!coverRecipe) {
+        
+        // Get from the server-issued featured recipe.
+        NSString *pageFeaturedRecipeId = [self.pageFeaturedRecipeIds objectForKey:page];
+        NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
+        if ([pageFeaturedRecipeId length] > 0) {
+            coverRecipe = [pageRecipes detect:^BOOL(CKRecipe *recipe) {
+                return [recipe.objectId isEqualToString:pageFeaturedRecipeId];
+            }];
+        }
+        
+        // Set the featured recipe.
+        if (coverRecipe) {
+            [self.pageCoverRecipes setObject:coverRecipe forKey:page];
+        }
+    }
+    
+    return coverRecipe;
+}
+
+- (CKRecipe *)bookFeaturedRecipe {
+    CKRecipe *bookFeaturedRecipe = nil;
+    
+    if ([self.bookFeaturedRecipeId length] > 0) {
+        
+        // Get the server-issued book featured recipe.
+        bookFeaturedRecipe = [self.recipes detect:^BOOL(CKRecipe *recipe) {
+            return [recipe.objectId isEqualToString:self.bookFeaturedRecipeId];
+        }];
+        
+    }
+    
+    // Fallback to getting featured recipe for a random page.
+    if (!bookFeaturedRecipe) {
+        
+        NSString *page = [self.pages objectAtIndex:arc4random_uniform([self.pages count])];
+        bookFeaturedRecipe = [self featuredRecipeForPage:page];
+    }
+    
+    return bookFeaturedRecipe;
 }
 
 - (void)closeTapped:(id)sender {
@@ -921,8 +986,8 @@
     [categoryHeaderView applyOffset:contentOffset.y];
     
     // Load featured recipe image.
-    CKRecipe *featuredRecipe = [self featuredRecipeForPage:page];
-    [self configureImageForHeaderView:categoryHeaderView recipe:featuredRecipe indexPath:indexPath];
+    CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+    [self configureImageForHeaderView:categoryHeaderView recipe:coverRecipe indexPath:indexPath];
     
     // Keep track of category views keyed on page name.
     [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
