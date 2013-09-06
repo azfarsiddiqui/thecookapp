@@ -227,7 +227,7 @@
         return;
     }
     
-    NSLog(@"updateContentSize");
+//    NSLog(@"updateContentSize");
     
     // TextView adjustments.
     UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
@@ -252,14 +252,14 @@
     // we have to take into account the textBox's contentInsets.
     UIEdgeInsets contentInsets = [self contentInsets];
     CGFloat requiredContentHeight = (contentInsets.top - targetTextBoxView.contentInsets.top) + proposedTargetTextBoxFrame.size.height + (contentInsets.bottom - targetTextBoxView.contentInsets.bottom);
-    NSLog(@"requiredContentHeight [%f]", requiredContentHeight);
-    NSLog(@"self.scrollView.contentSize.height [%f]", self.scrollView.contentSize.height);
-    NSLog(@"self.scrollView.bounds.size.height [%f]", self.scrollView.bounds.size.height);
+//    NSLog(@"requiredContentHeight [%f]", requiredContentHeight);
+//    NSLog(@"self.scrollView.contentSize.height [%f]", self.scrollView.contentSize.height);
+//    NSLog(@"self.scrollView.bounds.size.height [%f]", self.scrollView.bounds.size.height);
     self.scrollView.contentSize = (CGSize) {
         self.scrollView.contentSize.width,
         ceilf(MAX(self.scrollView.bounds.size.height, requiredContentHeight))
     };
-    NSLog(@"self.scrollView.contentSize.height2 [%f]", self.scrollView.contentSize.height);
+//    NSLog(@"self.scrollView.contentSize.height2 [%f]", self.scrollView.contentSize.height);
     
     // See if the caret is out of view?
     [self scrollToCursorIfRequired];
