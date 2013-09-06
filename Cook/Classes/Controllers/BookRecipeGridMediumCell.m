@@ -12,9 +12,21 @@
 
 @implementation BookRecipeGridMediumCell
 
-#define kImageStoryGap          45.0
-#define kImageMethodGap         45.0
-#define kImageIngredientsGap    20.0
+#define kTimeGap                30.0
+#define kAfterTimeGap           15.0
+
+- (void)updateTimeInterval {
+    [super updateTimeInterval];
+    
+    if (![self hasTitle]) {
+        self.timeIntervalLabel.frame = (CGRect){
+            floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
+            self.imageView.frame.origin.y + self.imageView.frame.size.height + kTimeGap,
+            self.timeIntervalLabel.frame.size.width,
+            self.timeIntervalLabel.frame.size.height
+        };
+    }
+}
 
 - (void)updateIngredients {
     if ([self hasIngredients]) {
@@ -26,7 +38,7 @@
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
-            self.imageView.frame.origin.y + self.imageView.frame.size.height + kImageIngredientsGap + floorf(([self availableBlockSize].height - self.ingredientsView.frame.size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
@@ -45,11 +57,12 @@
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *story = self.recipe.story;
+        self.storyLabel.numberOfLines = 5;
         self.storyLabel.text = story;
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.imageView.frame.origin.y + self.imageView.frame.size.height + kImageStoryGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
             size.height
         };
@@ -68,11 +81,12 @@
         
         UIEdgeInsets contentInsets = [self contentInsets];
         NSString *method = self.recipe.method;
+        self.methodLabel.numberOfLines = 5;
         self.methodLabel.text = method;
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kImageMethodGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
             size.height
         };
@@ -80,6 +94,12 @@
     } else {
         self.methodLabel.hidden = YES;
     }
+}
+
+- (CGSize)availableBlockSize {
+    CGSize blockSize = [super availableBlockSize];
+    blockSize.height -= 30.0;
+    return blockSize;
 }
 
 @end

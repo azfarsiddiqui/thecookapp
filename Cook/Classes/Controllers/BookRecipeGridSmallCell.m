@@ -13,9 +13,7 @@
 @implementation BookRecipeGridSmallCell
 
 #define kImageTitleGap          30.0
-#define kTitleIngredientsGap    30.0
-#define kTitleStoryGap          45.0
-#define kTitleMethodGap         45.0
+#define kAfterTimeGap           30.0
 
 - (UIEdgeInsets)contentInsets {
     UIEdgeInsets insets = [super contentInsets];
@@ -50,11 +48,14 @@
         // Title + Ingredients.
         self.ingredientsView.hidden = NO;
         
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height += 40.0;   // Have more vertical space.
+        self.ingredientsView.maxSize = blockSize;
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleIngredientsGap + floorf(([self availableBlockSize].height - self.ingredientsView.frame.size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
@@ -77,7 +78,7 @@
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleStoryGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
             size.height
         };
@@ -100,7 +101,7 @@
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kTitleMethodGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kAfterTimeGap,
             size.width,
             size.height
         };

@@ -14,8 +14,7 @@
 @implementation BookRecipeGridExtraSmallCell
 
 #define kTimeGap        30.0
-#define kStoryGap       45.0
-#define kMethodGap      45.0
+#define kStandardGap    30.0
 
 // Title centered vertically.
 - (void)updateTitle {
@@ -57,11 +56,15 @@
         // Ingredients only.
         self.ingredientsView.hidden = NO;
         
+        CGSize blockSize = [self availableBlockSize];
+        blockSize.height += 30.0;   // Have more vertical space.
+        self.ingredientsView.maxSize = blockSize;
+        
         UIEdgeInsets contentInsets = [self contentInsets];
         [self.ingredientsView updateIngredients:self.recipe.ingredients book:self.book];
         self.ingredientsView.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - self.ingredientsView.frame.size.width) / 2.0),
-            contentInsets.top + floorf(([self availableBlockSize].height - self.ingredientsView.frame.size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kStandardGap,
             self.ingredientsView.frame.size.width,
             self.ingredientsView.frame.size.height
         };
@@ -84,7 +87,7 @@
         CGSize size = [self.storyLabel sizeThatFits:[self availableBlockSize]];
         self.storyLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            kStoryGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kStandardGap,
             size.width,
             size.height
         };
@@ -107,7 +110,7 @@
         CGSize size = [self.methodLabel sizeThatFits:[self availableBlockSize]];
         self.methodLabel.frame = (CGRect){
             contentInsets.left + floorf(([self availableSize].width - size.width) / 2.0),
-            kMethodGap + floorf(([self availableBlockSize].height - size.height) / 2.0),
+            self.timeIntervalLabel.frame.origin.y + self.timeIntervalLabel.frame.size.height + kStandardGap,
             size.width,
             size.height
         };
