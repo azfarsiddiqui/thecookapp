@@ -18,11 +18,16 @@
 @property (nonatomic, assign) CGRect startTextBoxFullScreenFrame;
 @property (nonatomic, assign) BOOL animating;
 
+// Headless support.
+@property (nonatomic, assign) NSNumber *headlessNumber;
+@property (nonatomic, assign) UIOffset headlessTransformOffset;
+
 @end
 
 @implementation CKEditViewController
 
 #define kOverlayAlpha   0.7
+#define kHeadlessScale  0.9
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -73,206 +78,20 @@
 }
 
 - (void)performEditing:(BOOL)editing {
-    
-    // Ignore if animation in progress.
-    if (self.animating) {
-        return;
-    }
-    self.animating = YES;
-    
-    if (editing) {
-        
-        // Attach to the rootView for fullscreen mode.
-        UIView *rootView = [self rootView];
-        self.view.frame = rootView.bounds;
-        [rootView addSubview:self.view];
-        
-        // Overlay.
-        [self initOverlay];
-        
-        // Get original textbox and remember its frame on the source's parent.
-        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
-        self.startTextBoxSourceFrame = originalTextBoxView.frame;
-        
-        // Get the originalTextBoxView's frame relative to the fullscreen view.
-        CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
-        self.startTextBoxFullScreenFrame = sourceOnFullScreenFrame;
-        
-        // Lifecycle start event.
-        [self targetTextEditingViewWillAppear:YES];
-        
-        // Create target editing view.
-        UIView *targetEditView = [self createTargetEditView];
-        
-        // Animate into fullscreen edit mode.
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             
-                             // Fade out source editing view.
-                             self.sourceEditView.alpha = 0.0;
-                             
-                         }
-                         completion:^(BOOL finished) {
-                             
-                             // Lift the originalTextBox from its superview and place it on the editing fullscreen view.
-                             [originalTextBoxView removeFromSuperview];
-                             originalTextBoxView.frame = sourceOnFullScreenFrame;
-                             [self.scrollView addSubview:originalTextBoxView];
-                             
-                             // Hide the source view.
-                             self.sourceEditView.hidden = YES;
-                             
-                             // Prepare the target view on fullscreen mode.
-                             targetEditView.alpha = 0.0;
-                             [self.scrollView addSubview:targetEditView];
-                             self.targetEditView = targetEditView;
-                             
-                             // Lifecycle event to inform of creation/adding of target editing view.
-                             [self targetTextEditingViewDidCreated];
-                             
-                             // Wrap and prepare the target field textbox.
-                             [self wrapTargetEditView:targetEditView delegate:self];
-                             CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:targetEditView];
-                             targetTextBoxView.hidden = YES;
-                             
-                             // Animate into fullscreen edit mode.
-                             [UIView animateWithDuration:[self transitionDurationBetweenFrame:originalTextBoxView.frame
-                                                                                 anotherFrame:targetTextBoxView.frame]
-                                                   delay:0.0
-                                                 options:UIViewAnimationOptionCurveEaseOut
-                                              animations:^{
-                                                  
-                                                  // Fade in the save icon.
-                                                  if ([self showSaveIcon]) {
-                                                      [originalTextBoxView showSaveIcon:YES animated:NO];
-                                                  }
-                                                  
-                                                  // Bring in the overlay.
-                                                  self.overlayView.alpha = kOverlayAlpha;
-                                                  
-                                                  // Move the original textbox to the target textbox
-                                                  originalTextBoxView.frame = targetTextBoxView.frame;
-                                                  
-                                              }
-                                              completion:^(BOOL finished) {
-                                                  
-                                                  // Show the save icon.
-                                                  if ([self showSaveIcon]) {
-                                                      [targetTextBoxView showSaveIcon:YES animated:NO];
-                                                  }
-                                                  
-                                                  // Swap visibility of target with original.
-                                                  originalTextBoxView.hidden = YES;
-                                                  targetTextBoxView.hidden = NO;
-                                                  
-                                                  [UIView animateWithDuration:0.2
-                                                                        delay:0.0
-                                                                      options:UIViewAnimationOptionCurveEaseIn
-                                                                   animations:^{
-                                                                       
-                                                                       // Fade in target editing view.
-                                                                       targetEditView.alpha = 1.0;
-                                                                       
-                                                                       if (!self.white) {
-                                                                           [targetTextBoxView setTextBoxViewWithEdit:NO];
-                                                                       }
-                                                                       
-                                                                   }
-                                                                   completion:^(BOOL finished) {
-                                                                       
-                                                                       // Lifecycle event.
-                                                                       [self targetTextEditingViewDidAppear:YES];
-                                                                       
-                                                                       // Mark end of animation.
-                                                                       self.animating = NO;
-                                                                       
-                                                                   }];
-                                              }];
-                         }];
-    } else {
-        
-        // Target textbox to hide.
-        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+    [self performEditing:editing headless:[self.headlessNumber boolValue] transformOffset:self.headlessTransformOffset];
+}
 
-        // Get original textbox to fade in.
-        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
-        
-        // Lifecycle start event.
-        [self targetTextEditingViewWillAppear:NO];
-        
-        [UIView animateWithDuration:0.2
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             
-                             // Fade out the target editing view.
-                             self.targetEditView.alpha = 0.0;
-                             
-                         }
-                         completion:^(BOOL finished) {
-                             
-                             // Swap visibility of target with original.
-                             targetTextBoxView.hidden = YES;
-                             originalTextBoxView.hidden = NO;
-                             
-                             [UIView animateWithDuration:[self transitionDurationBetweenFrame:originalTextBoxView.frame
-                                                                                 anotherFrame:self.startTextBoxFullScreenFrame]
-                                                   delay:0.0
-                                                 options:UIViewAnimationOptionCurveEaseOut
-                                              animations:^{
-                                                  
-                                                  // Fade out the overlay.
-                                                  self.overlayView.alpha = 0.0;
-                                                  
-                                                  // Resize the original textbox back to its original frame.
-                                                  originalTextBoxView.frame = self.startTextBoxFullScreenFrame;
-                                                  
-                                                  // Fade in the save icon.
-                                                  if ([self showSaveIcon]) {
-                                                      [originalTextBoxView showSaveIcon:NO animated:NO];
-                                                  }
-                                                  
-                                              }
-                                              completion:^(BOOL finished) {
-                                                  
-                                                  // Now re-attach the originalTextBoxView to the source view's parent.
-                                                  [originalTextBoxView removeFromSuperview];
-                                                  originalTextBoxView.frame = self.startTextBoxSourceFrame;
-                                                  [self.sourceEditView.superview insertSubview:originalTextBoxView belowSubview:self.sourceEditView];
-                                                  
-                                                  // Prepare source edit view to be faded in.
-                                                  self.sourceEditView.hidden = NO;
-                                                  self.sourceEditView.alpha = 0.0;
-                                                  
-                                                  [UIView animateWithDuration:0.3
-                                                                        delay:0.0
-                                                                      options:UIViewAnimationOptionCurveEaseIn
-                                                                   animations:^{
-                                                                       
-                                                                       self.sourceEditView.alpha = 1.0;
-                                                                       
-                                                                   }
-                                                                   completion:^(BOOL finished) {
-                                                                       
-                                                                       // Clean up editing helper.
-                                                                       [self.editingHelper unwrapEditingView:self.targetEditView];
-                                                                        
-                                                                       // Remove myself from the parent.
-                                                                       [self.view removeFromSuperview];
-                                                                        
-                                                                       // Lifecycle end event.
-                                                                       [self targetTextEditingViewDidAppear:NO];
-                                                                       
-                                                                       // Mark end of animation.
-                                                                       self.animating = NO;
-                                                                       
-                                                                   }];
-                                                  
-                                              }];
-                         }];
+- (void)performEditing:(BOOL)editing headless:(BOOL)headless transformOffset:(UIOffset)transformOffset {
+    
+    // Headless editing or, editingView scaling required.
+    if (headless) {
+        self.headlessNumber = @YES;
+        self.headlessTransformOffset = transformOffset;
+        [self doHeadlessEditing:editing];
+    } else {
+        [self doStandardEditing:editing];
     }
+    
 }
 
 // Subclasses to implement.
@@ -438,31 +257,41 @@
 // Note that editingView is actually the targetEditingView (e.g.UITextField)
 - (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
     
-    CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
-    CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    
-    // Re-attach to source parentView to update its wrapping.
-    [originalTextBoxView removeFromSuperview];
-    originalTextBoxView.frame = self.startTextBoxSourceFrame;
-    [self.sourceEditView.superview insertSubview:originalTextBoxView belowSubview:self.sourceEditView];
-    
-    // Tell original editingView to update with new value.
-    [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedValue]];
-    
-    // Update the start textbox frame.
-    self.startTextBoxSourceFrame = originalTextBoxView.frame;
-    
-    // Get the originalTextBoxView's frame relative to the fullscreen view.
-    CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
-    self.startTextBoxFullScreenFrame = sourceOnFullScreenFrame;
-    
-    // Now re-attach to the fullscreen view.
-    [originalTextBoxView removeFromSuperview];
-    originalTextBoxView.frame = targetTextBoxView.frame;
-    [self.view insertSubview:originalTextBoxView belowSubview:targetTextBoxView];
-    
-    // Ensure that source is still hidden before transitioning back.
-    self.sourceEditView.hidden = YES;
+    if ([self.headlessNumber boolValue]) {
+        
+        if ([self.delegate respondsToSelector:@selector(editViewControllerHeadlessUpdatedWithValue:)]) {
+            [self.delegate editViewControllerHeadlessUpdatedWithValue:[self updatedValue]];
+        }
+        
+    } else {
+        
+        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
+        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+        
+        // Re-attach to source parentView to update its wrapping.
+        [originalTextBoxView removeFromSuperview];
+        originalTextBoxView.frame = self.startTextBoxSourceFrame;
+        [self.sourceEditView.superview insertSubview:originalTextBoxView belowSubview:self.sourceEditView];
+        
+        // Tell original editingView to update with new value.
+        [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedValue]];
+        
+        // Update the start textbox frame.
+        self.startTextBoxSourceFrame = originalTextBoxView.frame;
+        
+        // Get the originalTextBoxView's frame relative to the fullscreen view.
+        CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
+        self.startTextBoxFullScreenFrame = sourceOnFullScreenFrame;
+        
+        // Now re-attach to the fullscreen view.
+        [originalTextBoxView removeFromSuperview];
+        originalTextBoxView.frame = targetTextBoxView.frame;
+        [self.view insertSubview:originalTextBoxView belowSubview:targetTextBoxView];
+        
+        // Ensure that source is still hidden before transitioning back.
+        self.sourceEditView.hidden = YES;
+        
+    }
     
     // Transition back.
     [self performEditing:NO];
@@ -547,6 +376,337 @@
     
     duration = 0.25;
     return duration;
+}
+
+- (void)doStandardEditing:(BOOL)editing {
+    
+    // Ignore if animation in progress.
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
+    if (editing) {
+        
+        // Attach to the rootView for fullscreen mode.
+        UIView *rootView = [self rootView];
+        self.view.frame = rootView.bounds;
+        [rootView addSubview:self.view];
+        
+        // Overlay.
+        [self initOverlay];
+        
+        // Get original textbox and remember its frame on the source's parent.
+        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
+        self.startTextBoxSourceFrame = originalTextBoxView.frame;
+        
+        // Get the originalTextBoxView's frame relative to the fullscreen view.
+        CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
+        self.startTextBoxFullScreenFrame = sourceOnFullScreenFrame;
+        
+        // Lifecycle start event.
+        [self targetTextEditingViewWillAppear:YES];
+        
+        // Create target editing view.
+        UIView *targetEditView = [self createTargetEditView];
+        
+        // Animate into fullscreen edit mode.
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             
+                             // Fade out source editing view.
+                             self.sourceEditView.alpha = 0.0;
+                             
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             // Lift the originalTextBox from its superview and place it on the editing fullscreen view.
+                             [originalTextBoxView removeFromSuperview];
+                             originalTextBoxView.frame = sourceOnFullScreenFrame;
+                             [self.scrollView addSubview:originalTextBoxView];
+                             
+                             // Hide the source view.
+                             self.sourceEditView.hidden = YES;
+                             
+                             // Prepare the target view on fullscreen mode.
+                             targetEditView.alpha = 0.0;
+                             [self.scrollView addSubview:targetEditView];
+                             self.targetEditView = targetEditView;
+                             
+                             // Lifecycle event to inform of creation/adding of target editing view.
+                             [self targetTextEditingViewDidCreated];
+                             
+                             // Wrap and prepare the target field textbox.
+                             [self wrapTargetEditView:targetEditView delegate:self];
+                             CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:targetEditView];
+                             targetTextBoxView.hidden = YES;
+                             
+                             // Animate into fullscreen edit mode.
+                             [UIView animateWithDuration:[self transitionDurationBetweenFrame:originalTextBoxView.frame
+                                                                                 anotherFrame:targetTextBoxView.frame]
+                                                   delay:0.0
+                                                 options:UIViewAnimationOptionCurveEaseOut
+                                              animations:^{
+                                                  
+                                                  // Fade in the save icon.
+                                                  if ([self showSaveIcon]) {
+                                                      [originalTextBoxView showSaveIcon:YES animated:NO];
+                                                  }
+                                                  
+                                                  // Bring in the overlay.
+                                                  self.overlayView.alpha = kOverlayAlpha;
+                                                  
+                                                  // Move the original textbox to the target textbox
+                                                  originalTextBoxView.frame = targetTextBoxView.frame;
+                                                  
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  
+                                                  // Show the save icon.
+                                                  if ([self showSaveIcon]) {
+                                                      [targetTextBoxView showSaveIcon:YES animated:NO];
+                                                  }
+                                                  
+                                                  // Swap visibility of target with original.
+                                                  originalTextBoxView.hidden = YES;
+                                                  targetTextBoxView.hidden = NO;
+                                                  
+                                                  [UIView animateWithDuration:0.2
+                                                                        delay:0.0
+                                                                      options:UIViewAnimationOptionCurveEaseIn
+                                                                   animations:^{
+                                                                       
+                                                                       // Fade in target editing view.
+                                                                       targetEditView.alpha = 1.0;
+                                                                       
+                                                                       if (!self.white) {
+                                                                           [targetTextBoxView setTextBoxViewWithEdit:NO];
+                                                                       }
+                                                                       
+                                                                   }
+                                                                   completion:^(BOOL finished) {
+                                                                       
+                                                                       // Lifecycle event.
+                                                                       [self targetTextEditingViewDidAppear:YES];
+                                                                       
+                                                                       // Mark end of animation.
+                                                                       self.animating = NO;
+                                                                       
+                                                                   }];
+                                              }];
+                         }];
+    } else {
+        
+        // Target textbox to hide.
+        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+        
+        // Get original textbox to fade in.
+        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
+        
+        // Lifecycle start event.
+        [self targetTextEditingViewWillAppear:NO];
+        
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             
+                             // Fade out the target editing view.
+                             self.targetEditView.alpha = 0.0;
+                             
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             // Swap visibility of target with original.
+                             targetTextBoxView.hidden = YES;
+                             originalTextBoxView.hidden = NO;
+                             
+                             [UIView animateWithDuration:[self transitionDurationBetweenFrame:originalTextBoxView.frame
+                                                                                 anotherFrame:self.startTextBoxFullScreenFrame]
+                                                   delay:0.0
+                                                 options:UIViewAnimationOptionCurveEaseOut
+                                              animations:^{
+                                                  
+                                                  // Fade out the overlay.
+                                                  self.overlayView.alpha = 0.0;
+                                                  
+                                                  // Resize the original textbox back to its original frame.
+                                                  originalTextBoxView.frame = self.startTextBoxFullScreenFrame;
+                                                  
+                                                  // Fade in the save icon.
+                                                  if ([self showSaveIcon]) {
+                                                      [originalTextBoxView showSaveIcon:NO animated:NO];
+                                                  }
+                                                  
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  
+                                                  // Now re-attach the originalTextBoxView to the source view's parent.
+                                                  [originalTextBoxView removeFromSuperview];
+                                                  originalTextBoxView.frame = self.startTextBoxSourceFrame;
+                                                  [self.sourceEditView.superview insertSubview:originalTextBoxView belowSubview:self.sourceEditView];
+                                                  
+                                                  // Prepare source edit view to be faded in.
+                                                  self.sourceEditView.hidden = NO;
+                                                  self.sourceEditView.alpha = 0.0;
+                                                  
+                                                  [UIView animateWithDuration:0.3
+                                                                        delay:0.0
+                                                                      options:UIViewAnimationOptionCurveEaseIn
+                                                                   animations:^{
+                                                                       
+                                                                       self.sourceEditView.alpha = 1.0;
+                                                                       
+                                                                   }
+                                                                   completion:^(BOOL finished) {
+                                                                       
+                                                                       // Clean up editing helper.
+                                                                       [self.editingHelper unwrapEditingView:self.targetEditView];
+                                                                       
+                                                                       // Remove myself from the parent.
+                                                                       [self.view removeFromSuperview];
+                                                                       
+                                                                       // Lifecycle end event.
+                                                                       [self targetTextEditingViewDidAppear:NO];
+                                                                       
+                                                                       // Mark end of animation.
+                                                                       self.animating = NO;
+                                                                       
+                                                                   }];
+                                                  
+                                              }];
+                         }];
+    }
+}
+
+- (void)doHeadlessEditing:(BOOL)editing {
+    
+    // Ignore if animation in progress.
+    if (self.animating) {
+        return;
+    }
+    self.animating = YES;
+    
+    if (editing) {
+        
+        // Attach to the rootView for fullscreen mode.
+        UIView *rootView = [self rootView];
+        self.view.frame = rootView.bounds;
+        [rootView addSubview:self.view];
+        
+        // Overlay.
+        [self initOverlay];
+        
+        // Lifecycle start event.
+        [self targetTextEditingViewWillAppear:YES];
+        
+        // Create target editing view.
+        UIView *targetEditView = [self createTargetEditView];
+        
+        // Prepare the target view on fullscreen mode.
+        targetEditView.alpha = 0.0;
+        [self.scrollView addSubview:targetEditView];
+        self.targetEditView = targetEditView;
+        
+        // Wrap and prepare the target field textbox.
+        [self wrapTargetEditView:targetEditView editMode:NO delegate:self];
+        CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:targetEditView];
+        targetTextBoxView.alpha = 0.0;
+        
+        // Lifecycle event to inform of creation/adding of target editing view.
+        [self targetTextEditingViewDidCreated];
+        
+        // Start transform.
+        CGAffineTransform scaleTransform = CGAffineTransformMakeScale(kHeadlessScale, kHeadlessScale);
+        CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(self.headlessTransformOffset.horizontal,
+                                                                                self.headlessTransformOffset.vertical);
+        CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, translateTransform);
+        targetEditView.transform = transform;
+        targetTextBoxView.transform = transform;
+        
+        // Animate into fullscreen edit mode.
+        [UIView animateWithDuration:0.25
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             
+                             // Scale up.
+                             targetEditView.transform = CGAffineTransformIdentity;
+                             targetTextBoxView.transform = CGAffineTransformIdentity;
+                             
+                             // Fade in target editing view.
+                             targetEditView.alpha = 1.0;
+                             targetTextBoxView.alpha = 1.0;
+                             
+                             if (!self.white) {
+                                 [targetTextBoxView setTextBoxViewWithEdit:NO];
+                             }
+                             
+                             // Bring in the overlay.
+                             self.overlayView.alpha = kOverlayAlpha;
+                             
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             // Show the save icon.
+                             if ([self showSaveIcon]) {
+                                 [targetTextBoxView showSaveIcon:YES animated:YES];
+                             }
+                             
+                             // Lifecycle event.
+                             [self targetTextEditingViewDidAppear:YES];
+                             
+                             // Mark end of animation.
+                             self.animating = NO;
+                             
+                         }];
+    } else {
+        
+        // Lifecycle start event.
+        [self targetTextEditingViewWillAppear:NO];
+        
+        // Stop transform.
+        CGAffineTransform scaleTransform = CGAffineTransformMakeScale(kHeadlessScale, kHeadlessScale);
+        CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(self.headlessTransformOffset.horizontal,
+                                                                                self.headlessTransformOffset.vertical);
+        CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, translateTransform);
+        
+        // Get a reference on the targetTextBoxView for closing animation.
+        CKEditingTextBoxView *targetTextBoxView = [self.editingHelper textBoxViewForEditingView:self.targetEditView];
+        
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             
+                             // Transform the views.
+                             self.targetEditView.transform = transform;
+                             targetTextBoxView.transform = transform;
+                             
+                             // Fade out the target editing view.
+                             self.targetEditView.alpha = 0.0;
+                             targetTextBoxView.alpha = 0.0;
+                             self.overlayView.alpha = 0.0;
+                             
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             // Clean up editing helper.
+                             [self.editingHelper unwrapEditingView:self.targetEditView];
+                             
+                             // Remove myself from the parent.
+                             [self.view removeFromSuperview];
+                             
+                             // Lifecycle end event.
+                             [self targetTextEditingViewDidAppear:NO];
+                             
+                             // Mark end of animation.
+                             self.animating = NO;
+                             self.headlessNumber = nil;
+                         }];
+    }
 }
 
 @end

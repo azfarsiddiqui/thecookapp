@@ -20,6 +20,7 @@
 
 @optional
 - (void)editViewControllerDidCreated;
+- (void)editViewControllerHeadlessUpdatedWithValue:(id)value;
 
 @end
 
@@ -43,6 +44,7 @@
          editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title;
 
 - (void)performEditing:(BOOL)editing;
+- (void)performEditing:(BOOL)editing headless:(BOOL)headless transformOffset:(UIOffset)transformOffset;
 - (UIView *)createTargetEditView;
 - (NSString *)currentTextValue;
 - (id)updatedValue;

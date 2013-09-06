@@ -188,7 +188,7 @@
         self.textEditingSaveButton.alpha = 0.0;
     }
     if (animated) {
-        [UIView animateWithDuration:0.3
+        [UIView animateWithDuration:0.2
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
