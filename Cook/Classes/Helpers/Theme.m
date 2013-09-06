@@ -482,7 +482,7 @@
 }
 
 + (UIFont *)editServesTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:42.0];
+    return [UIFont fontWithName:@"AvenirNext-Medium" size:42.0];
 }
 
 + (UIColor *)editServesTitleColour {
@@ -490,7 +490,7 @@
 }
 
 + (UIFont *)editServesFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:54.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:36.0];
 }
 
 + (UIColor *)editServesColour {
