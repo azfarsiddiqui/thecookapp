@@ -36,9 +36,12 @@
 + (void)blurredOverlayImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
 + (UIImage *)blurredRecipeImage:(UIImage *)image;
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour;
++ (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius;
 + (UIImage *)blurredImageFromView:(UIView *)view;
 + (void)blurredImageFromView:(UIView *)view completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image completion:(void (^)(UIImage *blurredImage))completion;
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour completion:(void (^)(UIImage *blurredImage))completion;
++ (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius
+          completion:(void (^)(UIImage *blurredImage))completion;
 
 @end

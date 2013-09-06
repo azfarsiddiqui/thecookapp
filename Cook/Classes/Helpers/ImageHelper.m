@@ -13,6 +13,8 @@
 
 @implementation ImageHelper
 
+#define kBlurDefaultRadius  30.0
+
 + (UIImage *)imageFromDiskNamed:(NSString *)name type:(NSString *)type {
     return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:type]];
 }
@@ -122,12 +124,16 @@
 }
 
 + (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour {
+    return [self blurredImage:image tintColour:tintColour radius:kBlurDefaultRadius];
+}
+
++ (UIImage *)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius {
     
     // First downscale to blur.
     UIImage *scaledImage = [self scaledImage:image size:[self blurredSize]];
     
     // Calls ImageEffects
-    return [scaledImage applyBlurWithRadius:30
+    return [scaledImage applyBlurWithRadius:radius
                                   tintColor:tintColour
                       saturationDeltaFactor:1.8
                                   maskImage:nil];
@@ -159,11 +165,17 @@
 + (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour
           completion:(void (^)(UIImage *blurredImage))completion {
     
+    [self blurredImage:image tintColour:tintColour radius:kBlurDefaultRadius completion:completion];
+}
+
++ (void)blurredImage:(UIImage *)image tintColour:(UIColor *)tintColour radius:(CGFloat)radius
+          completion:(void (^)(UIImage *blurredImage))completion {
+    
     dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(concurrentQueue, ^{
         
         // This might take awhile.
-        UIImage *blurredImage = [self blurredImage:image tintColour:tintColour];
+        UIImage *blurredImage = [self blurredImage:image tintColour:tintColour radius:radius];
         
         // Cascade up to UIKit again on the mainthread.
         dispatch_async(dispatch_get_main_queue(), ^{

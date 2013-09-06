@@ -65,9 +65,9 @@
         self.imageView.image = image;
         self.vignetteOverlayView.hidden = NO;
         
-//        UIColor *tintColour = [UIColor colorWithRed:22 green:35 blue:30 alpha:0.7];
-        UIColor *tintColour = [[CKBookCover colourForCover:book.cover] colorWithAlphaComponent:0.7];
-        [ImageHelper blurredImage:image tintColour:tintColour completion:^(UIImage *blurredImage) {
+        UIColor *tintColour = [[[CKBookCover colourForCover:book.cover] colorWithAlphaComponent:0.7]
+                               colorByAddingColor:[UIColor colorWithWhite:1.0 alpha:0.1]];
+        [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
             self.blurredImageView.image = blurredImage;
         }];
         
