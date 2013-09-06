@@ -35,6 +35,7 @@
 @property (nonatomic, strong) CKFacebookSignInButtonView *facebookButton;
 @property (nonatomic, strong) UIButton *footerToggleButton;
 @property (nonatomic, strong) UIButton *footerForgotButton;
+@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, assign) BOOL signUpMode;
 @property (nonatomic, assign) BOOL animating;
 
@@ -48,6 +49,7 @@
 
 @implementation SignupViewController
 
+#define kCloseButtonInsets  (UIEdgeInsets){ 30.0, 20.0, 0.0, 0.0 }
 #define kEmailSignupSize    CGSizeMake(460.0, 337.0)
 #define kEmailSignInSize    CGSizeMake(460.0, 263.0)
 #define kTextFieldSize      CGSizeMake(300.0, 50.0)
@@ -56,6 +58,7 @@
 #define kPasswordMaxLength  32
 #define kFooterTextInsets   UIEdgeInsetsMake(5.0, 20.0, 25.0, 20.0)
 #define kFooterButtonHeight 50.0
+#define kUntappableSize     (CGSize){ 500.0, 600.0 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -363,6 +366,13 @@
     return _footerForgotButton;
 }
 
+- (UIButton *)closeButton {
+    if (!_closeButton) {
+        _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped:)];
+    }
+    return _closeButton;
+}
+
 #pragma mark - Keyboard events
 
 - (void)keyboardDidShow:(NSNotification *)notification {
@@ -544,6 +554,17 @@
 }
 
 - (void)initButtons {
+    
+    // Top-left close button.
+    self.closeButton.frame = (CGRect){
+        kCloseButtonInsets.left,
+        kCloseButtonInsets.top,
+        self.closeButton.frame.size.width,
+        self.closeButton.frame.size.height
+    };
+    [self.view addSubview:self.closeButton];
+    
+    // Facebook button
     self.facebookButton.frame = [self facebookFrameForSignUp:self.signUpMode];
     [self.scrollView addSubview:self.facebookButton];
 }
@@ -958,10 +979,16 @@
 
 - (void)backgroundTapped:(UITapGestureRecognizer *)tapGesture {
     CGPoint touchPoint = [tapGesture locationInView:self.scrollView];
+    CGPoint untappableArea = [self.scrollView convertPoint:touchPoint toView:self.view];
     
-    // Check if we have any subview that responded.
-    UIView *hitView = [self.scrollView hitTest:touchPoint withEvent:nil];
-    if (hitView == self.scrollView) {
+    CGRect untappableFrame = (CGRect){
+        floor((self.view.bounds.size.width - kUntappableSize.width) / 2.0),
+        floorf((self.view.bounds.size.height - kUntappableSize.height) / 2.0),
+        kUntappableSize.width,
+        kUntappableSize.height
+    };
+    
+    if (!CGRectContainsPoint(untappableFrame, untappableArea)) {
         [self.delegate signupViewControllerDismissRequested];
     }
     
@@ -980,6 +1007,10 @@
 
 - (void)arrowTapped:(id)sender {
     [self.scrollView setContentOffset:CGPointZero animated:YES];
+}
+
+- (void)closeTapped:(id)sender {
+    [self.delegate signupViewControllerDismissRequested];
 }
 
 @end
