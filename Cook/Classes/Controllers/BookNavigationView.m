@@ -12,11 +12,13 @@
 
 @interface BookNavigationView ()
 
+@property (nonatomic, assign) BOOL editable;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *homeButton;
-@property (nonatomic, strong) UIButton *addButton;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIButton *addButton;
+@property (nonatomic, strong) UIButton *editButton;
 
 @end
 
@@ -45,6 +47,7 @@
 }
 
 - (void)setTitle:(NSString *)title editable:(BOOL)editable {
+    self.editable = editable;
     self.titleLabel.textColor = [self.delegate bookNavigationColour];
     self.titleLabel.text = [title uppercaseString];
     [self.titleLabel sizeToFit];
@@ -57,6 +60,7 @@
     
     if (editable) {
         [self addSubview:self.addButton];
+        [self addSubview:self.editButton];
     }
 }
 
@@ -145,6 +149,21 @@
     return _addButton;
 }
 
+- (UIButton *)editButton {
+    if (!_editButton && self.editable) {
+        _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_dark.png"]
+                                           target:self
+                                         selector:@selector(editTapped:)];
+        _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _editButton.frame = CGRectMake(self.addButton.frame.origin.x - 5.0 - _editButton.frame.size.width,
+                                       kContentInsets.top,
+                                       _editButton.frame.size.width,
+                                       _editButton.frame.size.height);
+    }
+    return _editButton;
+}
+
+
 #pragma mark - Private methods
 
 - (void)closeTapped:(id)sender {
@@ -157,6 +176,10 @@
 
 - (void)addTapped:(id)sender {
     [self.delegate bookNavigationViewAddTapped];
+}
+
+- (void)editTapped:(id)sender {
+    [self.delegate bookNavigationViewEditTapped];
 }
 
 - (UIImage *)backgroundImageForDark:(BOOL)dark {

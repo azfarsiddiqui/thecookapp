@@ -31,5 +31,6 @@
 - (void)enableEditMode:(BOOL)editMode;
 - (void)enableEditMode:(BOOL)editMode completion:(void (^)())completion;
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion;
+- (UIEdgeInsets)pageContentInsets;
 
 @end

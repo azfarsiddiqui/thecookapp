@@ -11,5 +11,6 @@
 @interface BookContentTitleView : UIView
 
 - (id)initWithTitle:(NSString *)title;
+- (void)updateWithTitle:(NSString *)title;
 
 @end

@@ -316,6 +316,20 @@
     }
 }
 
+- (void)bookNavigationViewEditTapped {
+    if ([self.book isOwner]) {
+        
+        [self enableEditMode:YES];
+
+        // Get current page.
+        NSString *page = [self currentPage];
+        BookContentViewController *categoryController = [self.contentControllers objectForKey:page];
+        [categoryController enableEditMode:YES];
+        self.currentEditViewController = categoryController;
+        
+    }
+}
+
 - (UIColor *)bookNavigationColour {
     return [CKBookCover textColourForCover:self.book.cover];
 }
@@ -1236,7 +1250,7 @@
 - (void)enableEditMode:(BOOL)editMode {
     self.editMode = editMode;
     [self updateButtonsWithAlpha:1.0];
-    [self.currentEditViewController enableEditMode:editMode animated:NO completion:nil];
+    [self.currentEditViewController enableEditMode:editMode animated:YES completion:nil];
 }
 
 - (void)updateButtons {
@@ -1260,6 +1274,10 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         
+                         // Hide away the navigation bar.
+                         self.bookNavigationView.alpha = self.editMode ? 0.0 : 1.0;
+                         
                          self.cancelButton.alpha = self.editMode ? alpha : 0.0;
                          self.saveButton.alpha = self.editMode ? alpha : 0.0;
                          self.cancelButton.transform = self.editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.cancelButton.frame.size.height);

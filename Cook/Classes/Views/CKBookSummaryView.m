@@ -65,7 +65,7 @@
     [self.profilePhotoView enableEditMode:editMode animated:animated];
 }
 
-#pragma mark CKEditingTextBoxViewDelegate methods
+#pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
     if (editingView == self.storyLabel) {

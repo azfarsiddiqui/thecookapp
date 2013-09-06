@@ -31,13 +31,19 @@
     return self;
 }
 
+- (void)updateWithTitle:(NSString *)title {
+    self.title = title;
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self initMaskedLabel];
+}
+
 #pragma mark - Private methods
 
 - (void)initMaskedLabel {
     
     // Pre-create the label.
     CKMaskedLabel *maskedLabel = [[CKMaskedLabel alloc] initWithFrame:CGRectZero];
-    maskedLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    maskedLabel.lineBreakMode = NSLineBreakByClipping;
     maskedLabel.numberOfLines = 2;
     maskedLabel.font = kCategoryFont;
     maskedLabel.insets = kCategoryInsets;

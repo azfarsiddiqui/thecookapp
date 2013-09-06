@@ -19,7 +19,7 @@
 
 @implementation BookPageViewController
 
-#define kContentInsets  (UIEdgeInsets){ 35.0, 30.0, 0.0, 0.0 }
+#define kContentInsets  (UIEdgeInsets){ 35.0, 30.0, 0.0, 10.0 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -60,6 +60,10 @@
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
     self.editMode = editMode;
+}
+
+- (UIEdgeInsets)pageContentInsets {
+    return kContentInsets;
 }
 
 #pragma mark - CKSaveableContent methods

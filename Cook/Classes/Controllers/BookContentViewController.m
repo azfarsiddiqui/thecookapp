@@ -19,9 +19,12 @@
 #import "BookRecipeGridSmallCell.h"
 #import "BookRecipeGridExtraSmallCell.h"
 #import "CKPhotoManager.h"
+#import "CKEditingViewHelper.h"
+#import "CKEditViewController.h"
+#import "CKTextFieldEditViewController.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
-    BookContentGridLayoutDelegate>
+    BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
 @property (nonatomic, weak) id<BookContentViewControllerDelegate> delegate;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -32,6 +35,11 @@
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) BookContentTitleView *contentTitleView;
+
+// Editing.
+@property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+@property (nonatomic, strong) CKTextFieldEditViewController *editViewController;
 
 @end
 
@@ -46,6 +54,7 @@
         self.delegate = delegate;
         self.book = book;
         self.page = page;
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
     return self;
 }
@@ -77,6 +86,64 @@
     self.overlayView.alpha = alpha;
 }
 
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
+    self.editMode = editMode;
+    self.collectionView.scrollEnabled = !editMode;
+    
+    if (editMode) {
+        
+        // Scroll to top.
+        [self.collectionView setContentOffset:CGPointZero animated:YES];
+        
+        // Prep delete button to be faded in.
+        self.deleteButton.alpha = 0.0;
+        if (animated) {
+            self.deleteButton.transform = CGAffineTransformMakeTranslation(0.0, self.deleteButton.frame.size.height);
+        }
+        if (!self.deleteButton.superview) {
+            [self.view addSubview:self.deleteButton];
+        }
+        
+        // Wrap up the headerView.
+        UIEdgeInsets contentInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
+        [self.editingHelper wrapEditingView:self.contentTitleView
+                              contentInsets:(UIEdgeInsets) {
+                                  contentInsets.top + 10.0,
+                                  contentInsets.left + 10.0,
+                                  contentInsets.bottom + 10.0,
+                                  contentInsets.right + 10.0
+                              }
+                                   delegate:self white:YES editMode:YES animated:YES];
+        
+    } else {
+        
+        [self.editingHelper unwrapEditingView:self.contentTitleView animated:YES];
+    }
+    
+    if (animated) {
+        
+        [UIView animateWithDuration:0.25
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             
+                             for (UICollectionViewCell *cell in [self.collectionView visibleCells]) {
+                                 cell.alpha = editMode ? 0.0 : 1.0;
+                             }
+                             
+                             // Slide up/down the delete button.
+                             self.deleteButton.alpha = editMode ? 1.0 : 0.0;
+                             self.deleteButton.transform = editMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, self.deleteButton.frame.size.height);
+                             
+                         }
+                         completion:^(BOOL finished)  {
+                         }];
+    } else {
+        self.deleteButton.alpha = editMode ? 1.0 : 0.0;
+        
+    }
+}
+
 #pragma mark - BookContentGridLayoutDelegate methods
 
 - (void)bookContentGridLayoutDidFinish {
@@ -94,6 +161,39 @@
 
 - (CGSize)bookContentGridLayoutHeaderSize {
     return self.contentTitleView.frame.size;
+}
+
+#pragma mark - CKEditingTextBoxViewDelegate methods
+
+- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
+    DLog();
+    [self performPageNameEdit];
+}
+
+- (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
+    DLog();
+}
+
+#pragma mark - CKEditViewControllerDelegate methods
+
+- (void)editViewControllerWillAppear:(BOOL)appear {
+    [self.bookPageDelegate bookPageViewController:self editing:appear];
+}
+
+- (void)editViewControllerDidAppear:(BOOL)appear {
+}
+
+- (void)editViewControllerDismissRequested {
+    [self.editViewController performEditing:NO];
+}
+
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+    [self.contentTitleView updateWithTitle:value];
+    [self.editingHelper updateEditingView:editingView];
+}
+
+- (id)editViewControllerInitialValue {
+    return [self.page uppercaseString];
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -154,9 +254,24 @@
 - (BookContentTitleView *)contentTitleView {
     if (!_contentTitleView) {
         _contentTitleView = [[BookContentTitleView alloc] initWithTitle:self.page];
+        _contentTitleView.userInteractionEnabled = NO;
     }
     return _contentTitleView;
 }
+
+- (UIButton *)deleteButton {
+    if (!_deleteButton) {
+        UIEdgeInsets contentInsets = [self pageContentInsets];
+        _deleteButton = [ViewHelper deleteButtonWithTarget:self selector:@selector(deleteTapped:)];
+        _deleteButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [_deleteButton setFrame:CGRectMake(self.view.bounds.size.width - _deleteButton.frame.size.width - contentInsets.right,
+                                           self.view.bounds.size.height - _deleteButton.frame.size.height - contentInsets.bottom,
+                                           _deleteButton.frame.size.width,
+                                           _deleteButton.frame.size.height)];
+    }
+    return _deleteButton;
+}
+
 
 #pragma mark - Private 
 
@@ -325,6 +440,24 @@
 
 - (NSString *)cellIdentifierForGridType:(BookContentGridType)gridType {
     return [NSString stringWithFormat:@"GridType%d", gridType];
+}
+
+- (void)deleteTapped:(id)sender {
+    DLog();
+}
+
+- (void)performPageNameEdit {
+    CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:self.contentTitleView
+                                                                                                       delegate:self
+                                                                                                  editingHelper:self.editingHelper
+                                                                                                          white:YES
+                                                                                                          title:@"Name"
+                                                                                                 characterLimit:20];
+    editViewController.forceUppercase = YES;
+    editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+    [editViewController performEditing:YES];
+    self.editViewController = editViewController;
+
 }
 
 @end

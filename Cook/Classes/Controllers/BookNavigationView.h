@@ -13,6 +13,7 @@
 - (void)bookNavigationViewCloseTapped;
 - (void)bookNavigationViewHomeTapped;
 - (void)bookNavigationViewAddTapped;
+- (void)bookNavigationViewEditTapped;
 - (UIColor *)bookNavigationColour;
 
 @end
