@@ -94,8 +94,7 @@
         notchTitle.text = [self titleForNotchIndex:[self.trackNotches indexOfObject:trackNotchView]];
         notchTitle.textColor = [UIColor whiteColor];
         notchTitle.textAlignment = NSTextAlignmentCenter;
-        //TEMP, change to Brandon when adding back to project
-        notchTitle.font = [UIFont systemFontOfSize:12];
+        notchTitle.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0];
         [self addSubview:notchTitle];
     }
 }
