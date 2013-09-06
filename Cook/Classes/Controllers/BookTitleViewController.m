@@ -23,9 +23,12 @@
 #import "ViewHelper.h"
 #import "CKActivityIndicatorView.h"
 #import "CKPhotoManager.h"
+#import "CKEditViewController.h"
+#import "CKEditingViewHelper.h"
+#import "CKTextFieldEditViewController.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
-    UIAlertViewDelegate, UITextFieldDelegate>
+    UIAlertViewDelegate, UITextFieldDelegate, CKEditViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
@@ -39,7 +42,10 @@
 @property (nonatomic, strong) BookTitleView *bookTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
-@property (nonatomic, strong) UIAlertView *alertView;
+// Editing.
+@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
+@property (nonatomic, strong) CKTextFieldEditViewController *editViewController;
+@property (nonatomic, strong) NSString *editingPageName;
 
 @end
 
@@ -62,6 +68,7 @@
     if (self = [super init]) {
         self.book = book;
         self.delegate = delegate;
+        self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
     return self;
 }
@@ -277,75 +284,58 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate bookTitleUpdatedOrderOfPages:self.pages];
 }
 
-#pragma mark - UIAlertViewDelegate methods
+#pragma mark - CKEditViewControllerDelegate methods
 
-- (void)willPresentAlertView:(UIAlertView *)alertView {
-    UITextField *textField = [alertView textFieldAtIndex:0];
-    textField.returnKeyType = UIReturnKeyDone;
-    textField.delegate = self;
+- (void)editViewControllerWillAppear:(BOOL)appear {
 }
 
-- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
+- (void)editViewControllerDidAppear:(BOOL)appear {
+    if (!appear) {
+        [self.editViewController.view removeFromSuperview];
+        self.editViewController = nil;
+    }
+}
+
+- (void)editViewControllerDismissRequested {
+    [self.editViewController performEditing:NO];
+}
+
+- (void)editViewControllerEditRequested {
+}
+
+- (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+}
+
+- (void)editViewControllerHeadlessUpdatedWithValue:(id)value {
     
-    NSInteger minLimit = 2;
-    NSInteger maxLimit = 20;
-    UITextField *textField = [alertView textFieldAtIndex:0];
-    NSString *text = textField.text;
-    BOOL enableOKButton = YES;
-    NSString *message = nil;
-    
-    if ([text length] == 0 || ([text length] > 0 && [text length] < minLimit)) {
-        enableOKButton = NO;
-        message = @"Please enter a page name";
-    } else if ([text length] > maxLimit) {
-        enableOKButton = NO;
-        message = [NSString stringWithFormat:@"%d characters over", [text length] - maxLimit];
-    } else if ([self.pages detect:^BOOL(NSString *page) {
+    NSString *text = value;
+    if ([self.pages detect:^BOOL(NSString *page) {
         return [[page uppercaseString] isEqualToString:[text uppercaseString]];
     }]) {
-        enableOKButton = NO;
-        message = [NSString stringWithFormat:@"Page with name already '%@' exists", text];
-    }
-    
-    if (enableOKButton) {
-        message = @"Looks good!";
-    }
-    
-    alertView.message = message;
-    
-    return enableOKButton;
-}
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    
-    // OK Button tapped.
-    if (buttonIndex == 1) {
+        self.editingPageName = text;
         
-        UITextField *textField = [alertView textFieldAtIndex:0];
-        NSString *text = textField.text;
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Category Aleady Exists" message:nil delegate:self
+                                                  cancelButtonTitle:nil otherButtonTitles:@"Enter Another One", nil];
+        alertView.alertViewStyle = UIAlertViewStyleDefault;
+        [alertView show];
+        
+    } else {
         [self.pages addObject:text];
-        
         [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
         [self.delegate bookTitleAddedPage:text];
     }
     
-    // Re-enable paging.
     [self enableAddMode:NO];
-    
-    // Resets the alertView.
-    self.alertView = nil;
 }
 
-#pragma mark - UITextFieldDelegate methods
+- (id)editViewControllerInitialValue {
+    return self.editingPageName;
+}
 
-- (BOOL)textFieldShouldReturn:(UITextField *)alertTextField {
-    
-    BOOL validated = [self alertViewShouldEnableFirstOtherButton:self.alertView];
-    if (validated) {
-        [self.alertView dismissWithClickedButtonIndex:1 animated:YES];
-    }
-    
-    return NO;
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    [self performAddPageWithName:self.editingPageName];
 }
 
 #pragma mark - Properties
@@ -453,12 +443,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)addPage {
     [self enableAddMode:YES];
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"New Page" message:nil delegate:self
-                                              cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [alertView show];
-    self.alertView = alertView;
+    [self performAddPageWithName:nil];
 }
 
 - (void)enableAddMode:(BOOL)addMode {
@@ -505,6 +490,20 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         view.hidden = YES;
     }
+}
+
+- (void)performAddPageWithName:(NSString *)name {
+    
+    CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:nil
+                                                                                                       delegate:self
+                                                                                                  editingHelper:self.editingHelper
+                                                                                                          white:YES
+                                                                                                          title:@"Name"
+                                                                                                 characterLimit:20];
+    editViewController.forceUppercase = YES;
+    editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+    [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
+    self.editViewController = editViewController;
 }
 
 @end

@@ -101,13 +101,19 @@
 
 - (NSString *)currentTextValue {
     NSString *textValue = nil;
-    if ([self.sourceEditView isKindOfClass:[UILabel class]]) {
-        textValue = ((UILabel *)self.sourceEditView).text;
-    } else if ([self.sourceEditView isKindOfClass:[UITextField class]]) {
-        textValue = ((UITextField *)self.sourceEditView).text;
-    } else if ([self.sourceEditView isKindOfClass:[UITextView class]]) {
-        textValue = ((UITextView *)self.sourceEditView).text;
+    
+    if ([self.delegate respondsToSelector:@selector(editViewControllerInitialValue)]) {
+        textValue = [self.delegate editViewControllerInitialValue];
+    } else {
+        if ([self.sourceEditView isKindOfClass:[UILabel class]]) {
+            textValue = ((UILabel *)self.sourceEditView).text;
+        } else if ([self.sourceEditView isKindOfClass:[UITextField class]]) {
+            textValue = ((UITextField *)self.sourceEditView).text;
+        } else if ([self.sourceEditView isKindOfClass:[UITextView class]]) {
+            textValue = ((UITextView *)self.sourceEditView).text;
+        }
     }
+    
     return textValue;
 }
 

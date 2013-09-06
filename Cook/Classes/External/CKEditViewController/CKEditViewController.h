@@ -21,6 +21,7 @@
 @optional
 - (void)editViewControllerDidCreated;
 - (void)editViewControllerHeadlessUpdatedWithValue:(id)value;
+- (id)editViewControllerInitialValue;
 
 @end
 
