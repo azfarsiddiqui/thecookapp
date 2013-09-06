@@ -11,6 +11,7 @@
 #import "Theme.h"
 #import "NSString+Utilities.h"
 #import "CKRecipe.h"
+#import "DateHelper.h"
 
 @interface RecipeServesCookView ()
 
@@ -193,7 +194,7 @@
     valueLabel.backgroundColor = [UIColor clearColor];
     valueLabel.font = [Theme recipeStatValueFont];
     valueLabel.textColor = [Theme recipeStatValueColour];
-    valueLabel.text = [statValue uppercaseString];
+    valueLabel.text = statValue;
     valueLabel.tag = kLabelTag;
     valueLabel.textAlignment = NSTextAlignmentCenter;
     [valueLabel sizeToFit];
@@ -231,10 +232,26 @@
 }
 
 - (NSString *)textValueForStatNumber:(NSNumber *)statNumber {
-    NSString *statValue = [NSString CK_stringOrNilForNumber:statNumber];
-    if (!statValue && self.editMode) {
-        statValue = @"0";
+    return [self textValueForStatNumber:statNumber formatted:NO];
+}
+
+- (NSString *)textValueForStatNumber:(NSNumber *)statNumber formatted:(BOOL)formatted {
+    NSString *statValue = nil;
+    
+    if (!formatted) {
+        if (!statNumber && self.editMode) {
+            statValue = @"0";
+        } else {
+            NSInteger minutes = [statNumber integerValue];
+            statValue = [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes];
+        }
+    } else {
+        statValue = [NSString CK_stringOrNilForNumber:statNumber];
+        if (!statValue && self.editMode) {
+            statValue = @"0";
+        }
     }
+    
     return statValue;
 }
 

@@ -13,6 +13,7 @@
 #import "RecipeDetails.h"
 #import "UIColor+Expanded.h"
 #import "CKRecipe.h"
+#import "DateHelper.h"
 
 @interface ServesAndTimeEditViewController () <CKDialerControlDelegate, CKNotchSliderViewDelegate>
 
@@ -206,8 +207,15 @@
 
 - (void)dialerControl:(CKDialerControl *)dialerControl selectedIndex:(NSInteger)selectedIndex {
     NSInteger minutes = selectedIndex * kUnitMinutes;
-    NSString *minutesDisplay = [NSString stringWithFormat:@"%dm", minutes];
+    
     if (dialerControl == self.prepDialer) {
+        
+        NSMutableString *minutesDisplay = [NSMutableString stringWithString:@""];
+        if (minutes > [CKRecipe maxPrepTimeInMinutes]) {
+            [minutesDisplay appendFormat:@"%@+", [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:[CKRecipe maxCookTimeInMinutes]]];
+        } else {
+            [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
+        }
         
         // Nil out if num was zero.
         self.recipeDetails.prepTimeInMinutes = (minutes == 0) ? nil : [NSNumber numberWithInteger:minutes];
@@ -215,6 +223,13 @@
         
         [self.prepLabel sizeToFit];
     } else if (dialerControl == self.cookDialer) {
+        
+        NSMutableString *minutesDisplay = [NSMutableString string];
+        if (minutes > [CKRecipe maxCookTimeInMinutes]) {
+            [minutesDisplay appendFormat:@"%@+", [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:[CKRecipe maxCookTimeInMinutes]]];
+        } else {
+            [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
+        }
         
         // Nil out if num was zero.
         self.recipeDetails.cookingTimeInMinutes = (minutes == 0) ? nil : [NSNumber numberWithInteger:minutes];
@@ -233,7 +248,7 @@
                                              self.servesTitleLabel.frame.size.width,
                                              self.servesTitleLabel.frame.size.height);
     self.servesLabel.frame = CGRectMake(self.servesTitleLabel.frame.origin.x + self.servesTitleLabel.frame.size.width + kTitleLabelGap,
-                                        self.servesTitleLabel.frame.origin.y + self.servesTitleLabel.frame.size.height - self.servesLabel.frame.size.height + 4.0,
+                                        self.servesTitleLabel.frame.origin.y + floorf((self.servesTitleLabel.frame.size.height - self.servesLabel.frame.size.height) / 2.0) + 2.0,
                                         self.servesLabel.frame.size.width,
                                         self.servesLabel.frame.size.height);
     self.servesSlider.frame = CGRectMake(kContentInsets.left + floorf((availableSize.width - self.servesSlider.frame.size.width) / 2.0),
@@ -281,7 +296,7 @@
                                            self.prepTitleLabel.frame.size.width,
                                            self.prepTitleLabel.frame.size.height);
     self.prepLabel.frame = CGRectMake(self.prepTitleLabel.frame.origin.x + self.prepTitleLabel.frame.size.width + kTitleLabelGap,
-                                      self.prepTitleLabel.frame.origin.y + self.prepTitleLabel.frame.size.height - self.prepLabel.frame.size.height + 4.0,
+                                      self.prepTitleLabel.frame.origin.y + floorf((self.prepTitleLabel.frame.size.height - self.prepLabel.frame.size.height) / 2.0) + 2.0,
                                       self.prepLabel.frame.size.width,
                                       self.prepLabel.frame.size.height);
     
@@ -296,7 +311,7 @@
                                            self.cookTitleLabel.frame.size.width,
                                            self.cookTitleLabel.frame.size.height);
     self.cookLabel.frame = CGRectMake(self.cookTitleLabel.frame.origin.x + self.cookTitleLabel.frame.size.width + kTitleLabelGap,
-                                      self.cookTitleLabel.frame.origin.y + self.cookTitleLabel.frame.size.height - self.cookLabel.frame.size.height + 4.0,
+                                      self.cookTitleLabel.frame.origin.y + floorf((self.cookTitleLabel.frame.size.height - self.cookLabel.frame.size.height) / 2.0) + 2.0,
                                       self.cookLabel.frame.size.width,
                                       self.cookLabel.frame.size.height);
     

@@ -104,38 +104,7 @@
 }
 
 - (BOOL)continueTrackingWithTouch:(UITouch*)touch withEvent:(UIEvent*)event {
-
-    CGPoint pt = [touch locationInView:self];
-    CGFloat dx = pt.x  - self.dialerView.center.x;
-    CGFloat dy = pt.y  - self.dialerView.center.y;
-    CGFloat ang = atan2(dy,dx);
-    CGFloat angleDifference = self.deltaAngle - ang;
-    
-    // Figure out the radians to snap to.
-    CGFloat unitRadians = [self unitRadians];
-    
-    // Determine the transform required.
-    CGAffineTransform transform = CGAffineTransformRotate(self.startTransform, -angleDifference);
-    
-    // Then grab the overall radians that would've rotated.
-    CGFloat overallRadians = atan2f(transform.b, transform.a);
-    
-    // Get the discrete snap radians by dividing by radians-per-unit.
-    NSInteger remainder = overallRadians / unitRadians;
-    CGFloat snapRadians = unitRadians * remainder;
-    if (remainder < 0) {
-        remainder = [self maxOptionIndex] + remainder - 1;
-    }
-    
-    // Keep it within the range.
-    if (remainder >= 0 && remainder <= [self maxOptionIndex] && abs(self.selectedOptionIndex - remainder) == 1) {
-        self.dialerView.transform = CGAffineTransformMakeRotation(snapRadians);
-        self.selectedOptionIndex = remainder;
-        
-        // Inform delegate.
-        [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
-    }
-    
+    [self processTouch:touch];
     return YES;
 }
 
@@ -157,11 +126,47 @@
 }
 
 - (NSInteger)maxOptionIndex {
-    return (360.0 / self.unitDegrees) -1;
+    return (360.0 / self.unitDegrees);
 }
 
 - (void)informDelegateOfSelectedOptionIndex:(NSInteger)selectedOptionIndex {
     [self.delegate dialerControl:self selectedIndex:self.selectedOptionIndex];
+}
+
+- (void)processTouch:(UITouch *)touch {
+    CGPoint pt = [touch locationInView:self];
+    CGFloat dx = pt.x - self.dialerView.center.x;
+    CGFloat dy = pt.y - self.dialerView.center.y;
+    CGFloat ang = atan2(dy,dx);
+    CGFloat angleDifference = self.deltaAngle - ang;
+    
+    // Figure out the radians to snap to.
+    CGFloat unitRadians = [self unitRadians];
+    
+    // Determine the transform required.
+    CGAffineTransform transform = CGAffineTransformRotate(self.startTransform, -angleDifference);
+    
+    // Then grab the overall radians that would've rotated.
+    CGFloat overallRadians = atan2f(transform.b, transform.a);
+    
+    // Get the discrete snap radians by dividing by radians-per-unit.
+    NSInteger remainder = overallRadians / unitRadians;
+    if (remainder < 0) {
+//        NSLog(@"REMAINDER [%d]", remainder);
+        remainder = [self maxOptionIndex] + remainder;
+    }
+    CGFloat snapRadians = unitRadians * remainder;
+    
+    // Keep it within the range.
+//    NSLog(@"REMAINDER [%d] MAX [%d] SELECTED [%d]", remainder, [self maxOptionIndex], self.selectedOptionIndex);
+    if (remainder >= 0 && remainder <= [self maxOptionIndex]) {
+        //    if (remainder >= 0 && remainder <= [self maxOptionIndex] && abs(self.selectedOptionIndex - remainder) == 1) {
+        self.dialerView.transform = CGAffineTransformMakeRotation(snapRadians);
+        self.selectedOptionIndex = remainder;
+        
+        // Inform delegate.
+        [self informDelegateOfSelectedOptionIndex:self.selectedOptionIndex];
+    }
 }
 
 @end

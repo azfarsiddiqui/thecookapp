@@ -36,6 +36,14 @@
     return 10;
 }
 
++ (NSInteger)maxPrepTimeInMinutes {
+    return 340.0;
+}
+
++ (NSInteger)maxCookTimeInMinutes {
+    return 340.0;
+}
+
 #pragma mark - creation
 
 + (CKRecipe *)recipeForBook:(CKBook *)book {
