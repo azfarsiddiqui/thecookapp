@@ -289,7 +289,7 @@
 			<key>Image</key>
 			<string>cook_book_graphic_lobster.png</string>
 			<key>Layout</key>
-			<string>Layout1</string>
+			<string>Layout2</string>
 		</dict>
 		<key>Mushrooms</key>
 		<dict>
@@ -316,6 +316,13 @@
 		<dict>
 			<key>Image</key>
 			<string>cook_book_graphic_oranges.png</string>
+			<key>Layout</key>
+			<string>Layout1</string>
+		</dict>
+		<key>Pancakes</key>
+		<dict>
+			<key>Image</key>
+			<string>cook_book_graphic_pancakes.png</string>
 			<key>Layout</key>
 			<string>Layout1</string>
 		</dict>

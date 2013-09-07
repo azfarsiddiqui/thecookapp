@@ -799,6 +799,8 @@
 		76F5EE451782A3E7004AB119 /* cook_book_purple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F5EE431782A3E7004AB119 /* cook_book_purple@2x.png */; };
 		76F5EE481782A3F1004AB119 /* cook_book_neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F5EE461782A3F1004AB119 /* cook_book_neutral.png */; };
 		76F5EE491782A3F1004AB119 /* cook_book_neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F5EE471782A3F1004AB119 /* cook_book_neutral@2x.png */; };
+		76F61C6C17DB5688006C93AB /* cook_book_graphic_pancakes.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F61C6A17DB5688006C93AB /* cook_book_graphic_pancakes.png */; };
+		76F61C6D17DB5688006C93AB /* cook_book_graphic_pancakes@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F61C6B17DB5688006C93AB /* cook_book_graphic_pancakes@2x.png */; };
 		76F6448E16F1522A00F86223 /* CKUserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 76F6448D16F1522A00F86223 /* CKUserNotification.m */; };
 		76F6449516F152C200F86223 /* cook_dash_library_profile_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F6448F16F152C200F86223 /* cook_dash_library_profile_btn.png */; };
 		76F6449616F152C200F86223 /* cook_dash_library_profile_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76F6449016F152C200F86223 /* cook_dash_library_profile_btn@2x.png */; };
@@ -1917,6 +1919,8 @@
 		76F5EE431782A3E7004AB119 /* cook_book_purple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_purple@2x.png"; sourceTree = "<group>"; };
 		76F5EE461782A3F1004AB119 /* cook_book_neutral.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_neutral.png; sourceTree = "<group>"; };
 		76F5EE471782A3F1004AB119 /* cook_book_neutral@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_neutral@2x.png"; sourceTree = "<group>"; };
+		76F61C6A17DB5688006C93AB /* cook_book_graphic_pancakes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_graphic_pancakes.png; sourceTree = "<group>"; };
+		76F61C6B17DB5688006C93AB /* cook_book_graphic_pancakes@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_graphic_pancakes@2x.png"; sourceTree = "<group>"; };
 		76F6448C16F1522A00F86223 /* CKUserNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKUserNotification.h; sourceTree = "<group>"; };
 		76F6448D16F1522A00F86223 /* CKUserNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKUserNotification.m; sourceTree = "<group>"; };
 		76F6448F16F152C200F86223 /* cook_dash_library_profile_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_library_profile_btn.png; sourceTree = "<group>"; };
@@ -3036,6 +3040,8 @@
 				7614D5941744AD1200B16AC9 /* cook_book_graphic_oranges@2x.png */,
 				76BEE709165DEE600065B97B /* cook_book_graphic_pasta.png */,
 				76BEE70A165DEE600065B97B /* cook_book_graphic_pasta@2x.png */,
+				76F61C6A17DB5688006C93AB /* cook_book_graphic_pancakes.png */,
+				76F61C6B17DB5688006C93AB /* cook_book_graphic_pancakes@2x.png */,
 				76BEE713165DEE600065B97B /* cook_book_graphic_rice.png */,
 				76BEE714165DEE600065B97B /* cook_book_graphic_rice@2x.png */,
 				762D0AB01785919200E5947B /* cook_book_graphic_sausages.png */,
@@ -4004,6 +4010,7 @@
 				76BEE774165DEE600065B97B /* cook_book_overlay.png in Resources */,
 				F64E465C17DA0DE600F99A5A /* cook_customise_photo_filter_bg_bright.png in Resources */,
 				766E432017C7298000F1044B /* cook_book_inner_loading_small_inner@2x.png in Resources */,
+				76F61C6C17DB5688006C93AB /* cook_book_graphic_pancakes.png in Resources */,
 				76BEE775165DEE600065B97B /* cook_book_overlay@2x.png in Resources */,
 				7647853D17A697D800387A7B /* cook_customise_privacy_bg_left@2x.png in Resources */,
 				76BEE77A165DEE600065B97B /* cook_book_red.png in Resources */,
@@ -4182,6 +4189,7 @@
 				76F6449516F152C200F86223 /* cook_dash_library_profile_btn.png in Resources */,
 				76F6449616F152C200F86223 /* cook_dash_library_profile_btn@2x.png in Resources */,
 				76F6449716F152C200F86223 /* cook_dash_library_profile_icon_addtodash.png in Resources */,
+				76F61C6D17DB5688006C93AB /* cook_book_graphic_pancakes@2x.png in Resources */,
 				767EEA2E17BDBF62001E7D0B /* cook_login_btn_bottom_right.png in Resources */,
 				76F6449816F152C200F86223 /* cook_dash_library_profile_icon_addtodash@2x.png in Resources */,
 				769BFDF4177B170E00332B5D /* cook_dash_shelves@2x.png in Resources */,
