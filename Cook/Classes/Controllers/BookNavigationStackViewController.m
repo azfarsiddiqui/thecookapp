@@ -135,6 +135,35 @@
     [self.collectionView addGestureRecognizer:leftEdgeGesture];
 }
 
+- (void)setActive:(BOOL)active {
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         
+                         // Fade the book navigation view.
+                         self.bookNavigationView.alpha = active ? 1.0 : 0.0;
+                         
+                         // Fade the cells.
+                         NSArray *visibleCells = [self.collectionView visibleCells];
+                         for (UICollectionViewCell *cell in visibleCells) {
+                             cell.alpha = active ? 1.0 : 0.0;
+                         }
+                         
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+
+- (void)updateBinderAlpha:(CGFloat)alpha {
+    if (!self.bookBindingView) {
+        self.bookBindingView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
+        self.bookBindingView.frame = self.bookOutlineView.frame;
+        [self.view addSubview:self.bookBindingView];
+    }
+    self.bookBindingView.alpha = alpha;
+}
+
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
@@ -187,34 +216,19 @@
     [self loadRecipes];
 }
 
-
-- (void)setActive:(BOOL)active {
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         
-                         // Fade the book navigation view.
-                         self.bookNavigationView.alpha = active ? 1.0 : 0.0;
-                         
-                         // Fade the cells.
-                         NSArray *visibleCells = [self.collectionView visibleCells];
-                         for (UICollectionViewCell *cell in visibleCells) {
-                             cell.alpha = active ? 1.0 : 0.0;
-                         }
-                         
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-}
-
-- (void)updateBinderAlpha:(CGFloat)alpha {
-    if (!self.bookBindingView) {
-        self.bookBindingView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
-        self.bookBindingView.frame = self.bookOutlineView.frame;
-        [self.view addSubview:self.bookBindingView];
-    }
-    self.bookBindingView.alpha = alpha;
+- (void)updateWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion {
+    DLog(@"Updating layout with deleted page [%@]", page);
+    
+    // Remove the recipes in the page.
+    self.recipes = [NSMutableArray arrayWithArray:[self.recipes reject:^BOOL(CKRecipe *recipe) {
+        return [recipe.page CK_equalsIgnoreCase:page];
+    }]];
+    
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
+    
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
 }
 
 - (void)updateStatusBar {
@@ -418,6 +432,11 @@
             // Get the index of the page within the book.
             NSString *page = self.saveOrUpdatedRecipe.page;
             [self scrollToPage:page animated:NO];
+            
+        } else {
+            
+            // Go to home; this is the case when page is deleted.
+            [self scrollToHomeAnimated:NO];
             
         }
         
