@@ -330,7 +330,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             return [[page uppercaseString] isEqualToString:[text uppercaseString]];
         }]) {
             canSave = NO;
-            [editViewController updateTitle:@"PAGE EXISTS" toast:YES];
+            [editViewController updateTitle:@"PAGE ALREADY EXISTS" toast:YES];
         }
 
     }
@@ -497,7 +497,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                                                                                        delegate:self
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES
-                                                                                                          title:@"Name"
+                                                                                                          title:@"Page Name"
                                                                                                  characterLimit:20];
     editViewController.showTitle = YES;
     editViewController.forceUppercase = YES;

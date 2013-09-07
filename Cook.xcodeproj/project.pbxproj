@@ -40,7 +40,7 @@
 		7614D5AC1744B7D400B16AC9 /* Brandon_reg.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5A01744B7D400B16AC9 /* Brandon_reg.otf */; };
 		7614D5AD1744B7D400B16AC9 /* Brandon_thin_it.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5A11744B7D400B16AC9 /* Brandon_thin_it.otf */; };
 		7614D5AE1744B7D400B16AC9 /* Brandon_thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7614D5A21744B7D400B16AC9 /* Brandon_thin.otf */; };
-		7614D6B417DAE216001CF052 /* SaveOverlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7614D6B317DAE216001CF052 /* SaveOverlayViewController.m */; };
+		7614D6B417DAE216001CF052 /* ProgressOverlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7614D6B317DAE216001CF052 /* ProgressOverlayViewController.m */; };
 		76166F3B16E850950077DE09 /* SuggestedStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76166F3A16E850950077DE09 /* SuggestedStoreCollectionViewController.m */; };
 		76182B5E17B110A900B64648 /* cook_customise_icon_photo.png in Resources */ = {isa = PBXBuildFile; fileRef = 76182B5A17B110A900B64648 /* cook_customise_icon_photo.png */; };
 		76182B5F17B110A900B64648 /* cook_customise_icon_photo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76182B5B17B110A900B64648 /* cook_customise_icon_photo@2x.png */; };
@@ -980,8 +980,8 @@
 		7614D5A01744B7D400B16AC9 /* Brandon_reg.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_reg.otf; sourceTree = "<group>"; };
 		7614D5A11744B7D400B16AC9 /* Brandon_thin_it.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_thin_it.otf; sourceTree = "<group>"; };
 		7614D5A21744B7D400B16AC9 /* Brandon_thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Brandon_thin.otf; sourceTree = "<group>"; };
-		7614D6B217DAE216001CF052 /* SaveOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaveOverlayViewController.h; sourceTree = "<group>"; };
-		7614D6B317DAE216001CF052 /* SaveOverlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SaveOverlayViewController.m; sourceTree = "<group>"; };
+		7614D6B217DAE216001CF052 /* ProgressOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressOverlayViewController.h; sourceTree = "<group>"; };
+		7614D6B317DAE216001CF052 /* ProgressOverlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressOverlayViewController.m; sourceTree = "<group>"; };
 		76166F3916E850950077DE09 /* SuggestedStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestedStoreCollectionViewController.h; sourceTree = "<group>"; };
 		76166F3A16E850950077DE09 /* SuggestedStoreCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuggestedStoreCollectionViewController.m; sourceTree = "<group>"; };
 		76182B5A17B110A900B64648 /* cook_customise_icon_photo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_icon_photo.png; sourceTree = "<group>"; };
@@ -2195,8 +2195,8 @@
 		7614D6B117DAE1ED001CF052 /* General */ = {
 			isa = PBXGroup;
 			children = (
-				7614D6B217DAE216001CF052 /* SaveOverlayViewController.h */,
-				7614D6B317DAE216001CF052 /* SaveOverlayViewController.m */,
+				7614D6B217DAE216001CF052 /* ProgressOverlayViewController.h */,
+				7614D6B317DAE216001CF052 /* ProgressOverlayViewController.m */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -4709,7 +4709,7 @@
 				76EE2CD6170AE7A30043D128 /* SDWebImageDownloader.m in Sources */,
 				76EE2CD7170AE7A30043D128 /* SDWebImageDownloaderOperation.m in Sources */,
 				76EBE63117952C110099E2CB /* CKLikeView.m in Sources */,
-				7614D6B417DAE216001CF052 /* SaveOverlayViewController.m in Sources */,
+				7614D6B417DAE216001CF052 /* ProgressOverlayViewController.m in Sources */,
 				76EE2CD8170AE7A30043D128 /* SDWebImageManager.m in Sources */,
 				76EE2CD9170AE7A30043D128 /* SDWebImagePrefetcher.m in Sources */,
 				76EE2CDA170AE7A30043D128 /* UIButton+WebCache.m in Sources */,

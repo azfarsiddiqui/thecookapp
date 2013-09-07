@@ -10,9 +10,11 @@
 
 @class CKProgressView;
 
-@interface SaveOverlayViewController : UIViewController
+@interface ProgressOverlayViewController : UIViewController
 
 - (id)initWithTitle:(NSString *)title;
 - (void)updateProgress:(CGFloat)progress;
+- (void)updateProgress:(CGFloat)progress animated:(BOOL)animated;
+- (void)updateProgress:(float)progress delay:(NSTimeInterval)delay completion:(void (^)())completion;
 
 @end

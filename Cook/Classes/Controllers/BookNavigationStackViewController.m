@@ -305,10 +305,8 @@
 }
 
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editModeRequested:(BOOL)editMode {
-    if (bookPageViewController == self.profileViewController) {
-        self.currentEditViewController = self.profileViewController;
-        [self enableEditMode:editMode];
-    }
+    self.currentEditViewController = self.profileViewController;
+    [self enableEditMode:editMode];
 }
 
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editing:(BOOL)editing {

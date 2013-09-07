@@ -6,19 +6,19 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "SaveOverlayViewController.h"
+#import "ProgressOverlayViewController.h"
 #import "ModalOverlayHelper.h"
 #import "CKProgressView.h"
 #import "Theme.h"
 
-@interface SaveOverlayViewController ()
+@interface ProgressOverlayViewController ()
 
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) CKProgressView *progressView;
 
 @end
 
-@implementation SaveOverlayViewController
+@implementation ProgressOverlayViewController
 
 - (id)initWithTitle:(NSString *)title {
     if (self = [super init]) {
@@ -36,6 +36,7 @@
     
     // Add progress view.
     CKProgressView *progressView = [[CKProgressView alloc] initWithWidth:300.0];
+    progressView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     progressView.frame = (CGRect){
         floorf((self.view.bounds.size.width - progressView.frame.size.width) / 2.0),
         floorf((self.view.bounds.size.height - progressView.frame.size.height) / 2.0) - 13.0,
@@ -46,6 +47,7 @@
     
     // Saving text.
     UILabel *savingLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    savingLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
     savingLabel.backgroundColor = [UIColor clearColor];
     savingLabel.text = [self.title uppercaseString];
     savingLabel.font = [Theme progressSavingFont];
@@ -58,13 +60,18 @@
         savingLabel.frame.size.height
     };
     [self.view addSubview:savingLabel];
-
-    // Start at 0.1
-    [self updateProgress:0.1];
 }
 
 - (void)updateProgress:(CGFloat)progress {
     [self.progressView setProgress:progress];
+}
+
+- (void)updateProgress:(CGFloat)progress animated:(BOOL)animated {
+    [self.progressView setProgress:progress animated:animated];
+}
+
+- (void)updateProgress:(float)progress delay:(NSTimeInterval)delay completion:(void (^)())completion {
+    [self.progressView setProgress:progress delay:delay completion:completion];
 }
 
 @end

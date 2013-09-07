@@ -49,4 +49,15 @@
     [self.bookNavigationViewController updateWithDeletedRecipe:recipe completion:completion];
 }
 
+- (void)updateBookNavigationWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion {
+    
+    // Return immediately if no opened book.
+    if (!self.bookNavigationViewController) {
+        completion();
+    }
+    
+    // Ask the opened book to update with the recipe.
+    [self.bookNavigationViewController updateWithDeletedPage:page completion:completion];
+}
+
 @end

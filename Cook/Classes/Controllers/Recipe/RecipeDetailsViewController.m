@@ -26,13 +26,13 @@
 #import "AppHelper.h"
 #import "UIImage+ProportionalFill.h"
 #import "NSString+Utilities.h"
-#import "CKProgressView.h"
 #import "BookNavigationHelper.h"
 #import "CKServerManager.h"
 #import "CKPhotoManager.h"
 #import "CKActivityIndicatorView.h"
 #import "RecipeImageView.h"
 #import "ModalOverlayHelper.h"
+#import "ProgressOverlayViewController.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -91,8 +91,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIView *photoButtonView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
-@property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, strong) CKProgressView *progressView;
+@property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
 
 // Social layer.
 @property (nonatomic, strong) RecipeSocialViewController *socialViewController;
@@ -1570,36 +1569,35 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     // Enable save mode to hide all buttons and show black overlay.
     [self enableDeleteMode:YES completion:^{
         
-        // Keep a weak reference of the progressView for tracking of updates.
-        __weak CKProgressView *weakProgressView = self.progressView;
-        [weakProgressView setProgress:0.1 completion:^{
+        [self.saveOverlayViewController updateProgress:0.1];
+        
+        // Deletes in the background.
+        [self.recipe deleteInBackground:^{
             
-            // Deletes in the background.
-            [self.recipe deleteInBackground:^{
-                
-                // Finished deleting, now ask book to relayout.
-                [weakProgressView setProgress:0.9];
-                
-                // Ask the opened book to relayout.
-                [[BookNavigationHelper sharedInstance] updateBookNavigationWithDeletedRecipe:self.recipe
-                                                                                  completion:^{
-                                                                               
-                                                                                   // 100%
-                                                                                   [weakProgressView setProgress:1.0 delay:0.5 completion:^{
-                                                                                       [self closeRecipeView];
-                                                                                   }];
-                                                                               
-                                                                               }];
-                
-            } failure:^(NSError *error) {
-                DLog(@"Error [%@]", [error localizedDescription]);
-                [self enableSaveMode:NO];
-                [self enableEditMode:NO];
-            }];
+            [self.saveOverlayViewController updateProgress:0.9];
             
+            // Ask the opened book to relayout.
+            [[BookNavigationHelper sharedInstance] updateBookNavigationWithDeletedRecipe:self.recipe
+                                                                              completion:^{
+                                                                           
+                                                                                  __weak RecipeDetailsViewController *weakSelf = self;
+                                                                                  [weakSelf.saveOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
+                                                                                      
+                                                                                      [weakSelf enableDeleteMode:NO completion:^{
+                                                                                          
+                                                                                          [weakSelf closeRecipeView];
+                                                                                          
+                                                                                      }];
+                                                                                  }];
+                                                                              
+                                                                           }];
+            
+        } failure:^(NSError *error) {
+            DLog(@"Error [%@]", [error localizedDescription]);
+            [self enableSaveMode:NO];
+            [self enableEditMode:NO];
         }];
-        
-        
+            
     }];
     
 }
@@ -1611,14 +1609,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)saveRecipeWithImageStartProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
                               completion:(void (^)())completion failure:(void (^)(NSError *))failure {
     
-    // Keep a weak reference of the progressView for tracking of updates.
-    __weak CKProgressView *weakProgressView = self.progressView;
-    
     [self.recipe saveWithImage:self.recipeDetails.image
                  startProgress:startProgress
                    endProgress:endProgress
                       progress:^(int percentDone) {
-                          [weakProgressView setProgress:(percentDone / 100.0) animated:YES];
+                          [self.saveOverlayViewController updateProgress:(percentDone / 100.0) animated:YES];
+                          
                       }
                     completion:^{
                         
@@ -1627,15 +1623,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                                                    completion:^{
                                                                                        
                                                                                        // Set 100% progress completion.
-                                                                                       [weakProgressView setProgress:1.0 delay:0.5 completion:^{
-                                                                                           
+                                                                                       [self.saveOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
                                                                                            // Run completion.
                                                                                            if (completion != nil) {
                                                                                                completion();
                                                                                            }
                                                                                            
                                                                                        }];
-                                                                                       
                                                                                    }];
                     } failure:^(NSError *error) {
                            
@@ -1808,61 +1802,18 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)showProgressOverlayView:(BOOL)show title:(NSString *)title completion:(void (^)())completion {
     if (show) {
-        self.overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-        self.overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.overlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
-        self.overlayView.userInteractionEnabled = YES;  // To block touches.
-        self.overlayView.alpha = 0.0;
-        [self.view addSubview:self.overlayView];
-        
-        // Add progress view.
-        CKProgressView *progressView = [[CKProgressView alloc] initWithWidth:300.0];
-        progressView.frame = (CGRect){
-            floorf((self.overlayView.bounds.size.width - progressView.frame.size.width) / 2.0),
-            floorf((self.overlayView.bounds.size.height - progressView.frame.size.height) / 2.0) - 13.0,
-            progressView.frame.size.width,
-            progressView.frame.size.height};
-        [self.overlayView addSubview:progressView];
-        self.progressView = progressView;
-        
-        // Saving text.
-        UILabel *savingLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        savingLabel.backgroundColor = [UIColor clearColor];
-        savingLabel.text = [title uppercaseString];
-        savingLabel.font = [Theme progressSavingFont];
-        savingLabel.textColor = [Theme progressSavingColour];
-        [savingLabel sizeToFit];
-        savingLabel.frame = (CGRect){
-            floorf((self.overlayView.bounds.size.width - savingLabel.frame.size.width) / 2.0),
-            self.progressView.frame.origin.y - savingLabel.frame.size.height + 13.0,
-            savingLabel.frame.size.width,
-            savingLabel.frame.size.height
-        };
-        [self.overlayView addSubview:savingLabel];
+        self.saveOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:title];
     }
-    
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.overlayView.alpha = show ? 1.0 : 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         if (show) {
-                             
-                             // Mark 10% progress to start off with.
-                             [self.progressView setProgress:0.1];
-                             
-                         } else {
-                             
-                             [self.overlayView removeFromSuperview];
-                             self.overlayView = nil;
-                         }
-                         
-                         if (completion != nil) {
-                             completion();
-                         }
-                     }];
+    [ModalOverlayHelper showModalOverlayForViewController:self.saveOverlayViewController
+                                                     show:show
+                                               completion:^{
+                                                   if (!show) {
+                                                       self.saveOverlayViewController = nil;
+                                                   }
+                                                   if (completion != nil) {
+                                                       completion();
+                                                   }
+                                               }];
 }
 
 - (void)performDynamicBlur {

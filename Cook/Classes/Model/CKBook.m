@@ -463,6 +463,32 @@
     }];
 }
 
+- (void)deletePage:(NSString *)page success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    if (![page CK_containsText]) {
+        failure(nil);
+    }
+    
+    [PFCloud callFunctionInBackground:@"bookDeletePage"
+                       withParameters:@{ @"bookId" : self.objectId, @"page" : page }
+                                block:^(id result, NSError *error) {
+                                    if (!error) {
+                                        DLog(@"Deleted page from book and its associated recipes");
+                                        
+                                        // Remove page from the local book.
+                                        NSArray *pages = self.pages;
+                                        self.pages = [pages reject:^BOOL(NSString *existingPage) {
+                                            return [existingPage CK_equalsIgnoreCase:page];
+                                        }];
+                                        
+                                        success();
+                                    } else {
+                                        DLog(@"Error deleting page: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
 - (void)saveWithImage:(UIImage *)image completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     if (image) {
         DLog(@"Saving book with image.");
