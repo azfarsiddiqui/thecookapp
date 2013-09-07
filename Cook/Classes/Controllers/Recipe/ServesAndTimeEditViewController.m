@@ -42,7 +42,6 @@
 #define kTitleLabelGap      15.0
 #define kTitleDialerGap     5.0
 #define kUnitServes         2
-#define kUnitMinutes        10
 
 - (id)initWithEditView:(UIView *)editView recipeDetails:(RecipeDetails *)recipeDetails
               delegate:(id<CKEditViewControllerDelegate>)delegate editingHelper:(CKEditingViewHelper *)editingHelper
@@ -149,7 +148,7 @@
 
 - (CKDialerControl *)prepDialer {
     if (!_prepDialer) {
-        _prepDialer = [[CKDialerControl alloc] initWithUnitDegrees:10 delegate:self];
+        _prepDialer = [[CKDialerControl alloc] initWithUnitDegrees:9 delegate:self];
     }
     return _prepDialer;
 }
@@ -180,7 +179,7 @@
 
 - (CKDialerControl *)cookDialer {
     if (!_cookDialer) {
-        _cookDialer = [[CKDialerControl alloc] initWithUnitDegrees:10 delegate:self];
+        _cookDialer = [[CKDialerControl alloc] initWithUnitDegrees:9 delegate:self];
     }
     return _cookDialer;
 }
@@ -206,29 +205,27 @@
 #pragma mark - CKDialerControlDelegate methods
 
 - (void)dialerControl:(CKDialerControl *)dialerControl selectedIndex:(NSInteger)selectedIndex {
-    NSInteger minutes = selectedIndex * kUnitMinutes;
+    NSInteger minutes = [self minutesForDialerIndex:selectedIndex];
     
     if (dialerControl == self.prepDialer) {
         
         NSMutableString *minutesDisplay = [NSMutableString stringWithString:@""];
-        if (minutes > [CKRecipe maxPrepTimeInMinutes]) {
-            [minutesDisplay appendFormat:@"%@+", [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:[CKRecipe maxCookTimeInMinutes]]];
-        } else {
-            [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
+        [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
+        if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
+            [minutesDisplay appendString:@"+"];
         }
         
         // Nil out if num was zero.
         self.recipeDetails.prepTimeInMinutes = (minutes == 0) ? nil : [NSNumber numberWithInteger:minutes];
         self.prepLabel.text = minutesDisplay;
-        
         [self.prepLabel sizeToFit];
+        
     } else if (dialerControl == self.cookDialer) {
         
         NSMutableString *minutesDisplay = [NSMutableString string];
-        if (minutes > [CKRecipe maxCookTimeInMinutes]) {
-            [minutesDisplay appendFormat:@"%@+", [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:[CKRecipe maxCookTimeInMinutes]]];
-        } else {
-            [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
+        [minutesDisplay appendString:[[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes]];
+        if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
+            [minutesDisplay appendString:@"+"];
         }
         
         // Nil out if num was zero.
@@ -346,14 +343,57 @@
 
 - (NSInteger)dialerIndexForMinutes:(NSInteger)minutes {
     NSInteger dialerIndex = 0;
-    if (minutes % kUnitMinutes != 0) {
-        minutes += (minutes % kUnitMinutes);
-    }
     
     if (minutes > 0) {
-        dialerIndex = (minutes / kUnitMinutes);
+        
+        if (minutes <= 60) {
+            
+            // 5-minute increments to 1-hour.
+            dialerIndex = (minutes / 5);
+            
+            
+        } else if (minutes <= 240) {
+            
+            // 10-minute increments from 1-hour to 4-hours.
+            dialerIndex = 12 + ((minutes - 60) / 10);
+            
+        } else {
+            
+            // 30-minute increments onwards.
+            dialerIndex = 30 + ((minutes - 240) / 30);
+            
+        }
+        
     }
     return dialerIndex;
+}
+
+- (NSInteger)minutesForDialerIndex:(NSInteger)dialerIndex {
+    DLog(@"Dialer Index: %d", dialerIndex);
+    NSInteger minutes = 0;
+    
+    if (dialerIndex <= 12) {
+        
+        // 5-minute increments to 1-hour.
+        minutes = dialerIndex * 5;
+        
+    } else if (dialerIndex <= 30) {
+        
+        // 10-minute increments from 1-hour to 4-hours.
+        minutes = 60 + ((dialerIndex - 12) * 10);
+        
+    } else {
+        
+        // 30-minute increments from 3-hours onwards.
+        minutes = 240 + ((dialerIndex - 30) * 30);
+    }
+    
+    
+    return minutes;
+}
+
+- (NSInteger)maxIndexForDialer:(CKDialerControl *)dialer {
+    return (360 / dialer.unitDegrees - 2);
 }
 
 @end

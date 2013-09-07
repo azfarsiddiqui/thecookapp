@@ -243,7 +243,11 @@
             statValue = @"0";
         } else {
             NSInteger minutes = [statNumber integerValue];
-            statValue = [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes];
+            NSString *minutesDisplay = [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:minutes];
+            if (minutes >= [RecipeDetails maxPrepCookMinutes]) {
+                minutesDisplay = [NSString stringWithFormat:@"%@+", minutesDisplay];
+            }
+            statValue = minutesDisplay;
         }
     } else {
         statValue = [NSString CK_stringOrNilForNumber:statNumber];

@@ -17,6 +17,10 @@
 
 @implementation RecipeDetails
 
++ (NSInteger)maxPrepCookMinutes {
+    return 480.0;
+}
+
 - (id)initWithRecipe:(CKRecipe *)recipe {
     if (self = [super init]) {
         self.originalRecipe = recipe;
