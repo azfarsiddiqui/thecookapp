@@ -629,6 +629,9 @@
         case CKPhotoFilterTypeNone:
             self.selectedImage = self.tempImage;
             break;
+        case CKPhotoFilterAuto:
+            self.selectedImage = [self autoFilterOnImage:self.tempImage];
+            break;
         case CKPhotoFilterOutdoors:
             self.selectedImage = [self outdoorFilterOnImage:self.tempImage];
             break;
@@ -667,96 +670,118 @@
 //    return returnImage;
 //}
 
+- (UIImage *)autoFilterOnImage:(UIImage *)image
+{
+    UIImage *returnImage;
+    @autoreleasepool {
+        CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+        NSArray *adjustments = [filteredImage autoAdjustmentFiltersWithOptions:@{kCIImageAutoAdjustEnhance: @YES,
+                                                         kCIImageAutoAdjustRedEye: @NO}];
+        for (CIFilter *filter in adjustments){
+            [filter setValue:filteredImage forKey:kCIInputImageKey];
+            filteredImage = filter.outputImage;
+        }
+        CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+        returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+        filteredImage = nil;
+        CGImageRelease(returnCGImage);
+    }
+    return returnImage;
+}
+
 - (UIImage *)outdoorFilterOnImage:(UIImage *)image
 {
-    CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputBrightness", [NSNumber numberWithFloat:0.0],
-                     @"inputContrast", [NSNumber numberWithFloat:0.9],
-                     @"inputSaturation", [NSNumber numberWithFloat:1.0], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CIExposureAdjust" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputEV", [NSNumber numberWithFloat:1.02], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CIVibrance" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputAmount", [NSNumber numberWithFloat:1.19], nil].outputImage;
-    CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
-    UIImage *returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
-    filteredImage = nil;
-    CGImageRelease(returnCGImage);
+    UIImage *returnImage;
+    @autoreleasepool {
+        CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+        filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage, @"inputContrast", [NSNumber numberWithFloat:0.9], @"inputSaturation", [NSNumber numberWithFloat:1.0], nil].outputImage;
+//        filteredImage = [CIFilter filterWithName:@"CIExposureAdjust" keysAndValues:kCIInputImageKey, filteredImage, @"inputEV", [NSNumber numberWithFloat:1.02], nil].outputImage;
+        filteredImage = [CIFilter filterWithName:@"CIVibrance" keysAndValues:kCIInputImageKey, filteredImage, @"inputAmount", [NSNumber numberWithFloat:1.1], nil].outputImage;
+        CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+        returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+        filteredImage = nil;
+        CGImageRelease(returnCGImage);
+    }
     return returnImage;
 }
 
 - (UIImage *)vibrantFilterOnImage:(UIImage *)image
 {
-    CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputBrightness", [NSNumber numberWithFloat:0.0],
-                     @"inputContrast", [NSNumber numberWithFloat:1.3],
-                     @"inputSaturation", [NSNumber numberWithFloat:1.2], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CIVibrance" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputAmount", [NSNumber numberWithFloat:1.3], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CISharpenLuminance" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputSharpness", [NSNumber numberWithFloat:0.5], nil].outputImage;
-    CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
-    UIImage *returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
-    filteredImage = nil;
-    CGImageRelease(returnCGImage);
-    return returnImage;
-}
-
-- (UIImage *)warmFilterOnImage:(UIImage *)image
-{
-    CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputBrightness", [NSNumber numberWithFloat:0.0],
-                     @"inputContrast", [NSNumber numberWithFloat:1.03],
-                     @"inputSaturation", [NSNumber numberWithFloat:1.08], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CITemperatureAndTint" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputNeutral", [CIVector vectorWithX:6500 Y:500],
-                     @"inputTargetNeutral", [CIVector vectorWithX:6700 Y:500], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CIUnsharpMask" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputRadius", [NSNumber numberWithFloat:1.7],
-                     @"inputIntensity", [NSNumber numberWithFloat:0.3], nil].outputImage;
-    CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
-    UIImage *returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
-    filteredImage = nil;
-    CGImageRelease(returnCGImage);
+    UIImage *returnImage;
+    @autoreleasepool {
+        CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+        filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
+                         @"inputBrightness", [NSNumber numberWithFloat:0.0],
+                         @"inputContrast", [NSNumber numberWithFloat:1.3],
+                         @"inputSaturation", [NSNumber numberWithFloat:1.15], nil].outputImage;
+        filteredImage = [CIFilter filterWithName:@"CIVibrance" keysAndValues:kCIInputImageKey, filteredImage,
+                         @"inputAmount", [NSNumber numberWithFloat:1.3], nil].outputImage;
+        filteredImage = [CIFilter filterWithName:@"CISharpenLuminance" keysAndValues:kCIInputImageKey, filteredImage,
+                         @"inputSharpness", [NSNumber numberWithFloat:0.5], nil].outputImage;
+        CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+        returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+        filteredImage = nil;
+        CGImageRelease(returnCGImage);
+    }
     return returnImage;
 }
 
 - (UIImage *)coolFilterOnImage:(UIImage *)image
 {
-    CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputBrightness", [NSNumber numberWithFloat:0.0],
-                     @"inputContrast", [NSNumber numberWithFloat:1.03],
-                     @"inputSaturation", [NSNumber numberWithFloat:1.02], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CITemperatureAndTint" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputNeutral", [CIVector vectorWithX:6500 Y:500],
-                     @"inputTargetNeutral", [CIVector vectorWithX:6100 Y:500], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CIUnsharpMask" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputRadius", [NSNumber numberWithFloat:1.7],
-                     @"inputIntensity", [NSNumber numberWithFloat:0.3], nil].outputImage;
-    CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
-    UIImage *returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
-    filteredImage = nil;
-    CGImageRelease(returnCGImage);
+    UIImage *returnImage;
+    @autoreleasepool {
+        CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+        filteredImage = [CIFilter filterWithName:@"CIPhotoEffectProcess" keysAndValues:kCIInputImageKey, filteredImage, nil].outputImage;
+        //    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage, @"inputContrast", [NSNumber numberWithFloat:1.03], @"inputSaturation", [NSNumber numberWithFloat:1.08], nil].outputImage;
+        //    filteredImage = [CIFilter filterWithName:@"CITemperatureAndTint" keysAndValues:kCIInputImageKey, filteredImage, @"inputNeutral", [CIVector vectorWithX:6500 Y:500], @"inputTargetNeutral", [CIVector vectorWithX:6700 Y:500], nil].outputImage;
+        //    filteredImage = [CIFilter filterWithName:@"CIUnsharpMask" keysAndValues:kCIInputImageKey, filteredImage,
+        //                     @"inputRadius", [NSNumber numberWithFloat:1.7],
+        //                     @"inputIntensity", [NSNumber numberWithFloat:0.3], nil].outputImage;
+        CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+        returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+        filteredImage = nil;
+        CGImageRelease(returnCGImage);
+    }
+    return returnImage;
+}
+
+- (UIImage *)warmFilterOnImage:(UIImage *)image
+{
+    UIImage *returnImage;
+    @autoreleasepool {
+        CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+        filteredImage = [CIFilter filterWithName:@"CIPhotoEffectTransfer" keysAndValues:kCIInputImageKey, filteredImage, nil].outputImage;
+        //    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage, @"inputContrast", [NSNumber numberWithFloat:1.03], @"inputSaturation", [NSNumber numberWithFloat:1.02], nil].outputImage;
+        //    filteredImage = [CIFilter filterWithName:@"CITemperatureAndTint" keysAndValues:kCIInputImageKey, filteredImage, @"inputNeutral", [CIVector vectorWithX:6500 Y:500], @"inputTargetNeutral", [CIVector vectorWithX:6100 Y:500], nil].outputImage;
+        //    filteredImage = [CIFilter filterWithName:@"CIUnsharpMask" keysAndValues:kCIInputImageKey, filteredImage,
+        //                     @"inputRadius", [NSNumber numberWithFloat:1.7],
+        //                     @"inputIntensity", [NSNumber numberWithFloat:0.3], nil].outputImage;
+        CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+        returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+        filteredImage = nil;
+        CGImageRelease(returnCGImage);
+    }
     return returnImage;
 }
 
 - (UIImage *)textFilterOnImage:(UIImage *)image
 {
-    CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputBrightness", [NSNumber numberWithFloat:0.0],
-                     @"inputContrast", [NSNumber numberWithFloat:1.5],
-                     @"inputSaturation", [NSNumber numberWithFloat:0.0], nil].outputImage;
-    filteredImage = [CIFilter filterWithName:@"CIExposureAdjust" keysAndValues:kCIInputImageKey, filteredImage,
-                     @"inputEV", [NSNumber numberWithFloat:1.3], nil].outputImage;
-    CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
-    UIImage *returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
-    filteredImage = nil;
-    CGImageRelease(returnCGImage);
-    return returnImage;
+    UIImage *finalImage;
+    @autoreleasepool {
+        CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+        filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
+                         @"inputBrightness", [NSNumber numberWithFloat:0.0],
+                         @"inputContrast", [NSNumber numberWithFloat:1.5],
+                         @"inputSaturation", [NSNumber numberWithFloat:0.0], nil].outputImage;
+        filteredImage = [CIFilter filterWithName:@"CIExposureAdjust" keysAndValues:kCIInputImageKey, filteredImage,
+                         @"inputEV", [NSNumber numberWithFloat:1.3], nil].outputImage;
+        CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+        finalImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+        filteredImage = nil;
+        CGImageRelease(returnCGImage);
+    }
+    
+    return finalImage;
 }
 
 
