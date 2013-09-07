@@ -10,6 +10,7 @@
 #import "CKEditingTextBoxView.h"
 
 @class CKEditingViewHelper;
+@class CKEditViewController;
 
 @protocol CKEditViewControllerDelegate <NSObject>
 
@@ -20,6 +21,7 @@
 
 @optional
 - (void)editViewControllerDidCreated;
+- (BOOL)editViewControllerCanSaveFor:(CKEditViewController *)editViewController;
 - (void)editViewControllerHeadlessUpdatedWithValue:(id)value;
 - (id)editViewControllerInitialValue;
 
@@ -35,6 +37,7 @@
 @property (nonatomic, strong) UIView *targetEditView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, assign) BOOL dismissableOverlay;
+@property (nonatomic, assign) BOOL showTitle;
 @property (nonatomic, assign) BOOL white;
 @property (nonatomic, strong) UIFont *font;
 @property (nonatomic, assign) CGRect keyboardFrame;
@@ -64,8 +67,11 @@
 - (void)wrapTargetEditView:(UIView *)targetEditView editMode:(BOOL)editMode delegate:(id<CKEditingTextBoxViewDelegate>)delegate;
 - (BOOL)showTitleLabel;
 - (BOOL)showSaveIcon;
+- (BOOL)headless;
 - (void)dismissEditView;
 - (UIFont *)textFontWithSize:(CGFloat)size;
+- (void)updateTitle:(NSString *)title;
+- (void)updateTitle:(NSString *)title toast:(BOOL)toast;
 
 // Lifecycle events.
 - (void)targetTextEditingViewDidCreated;
