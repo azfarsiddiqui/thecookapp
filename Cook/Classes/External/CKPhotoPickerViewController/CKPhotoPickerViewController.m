@@ -126,6 +126,7 @@
     [self.popoverViewController dismissPopoverAnimated:YES];
     self.popoverViewController = nil;
     self.libraryPickerViewController = nil;
+    [self removeImagePicker];
     [self updateImagePreview];
     [self updateButtons];
     self.tempImage = pickedImage;
@@ -160,7 +161,7 @@
 #pragma mark - Private methods
 
 - (void)initImagePicker {
-    if ([self cameraSupported]) {
+    if ([self cameraSupported] && !self.cameraPickerViewController) {
         UIImagePickerController *pickerViewController = [[UIImagePickerController alloc] init];
         pickerViewController.sourceType = UIImagePickerControllerSourceTypeCamera;
         pickerViewController.delegate = self;
@@ -171,8 +172,16 @@
     }
 }
 
+- (void)removeImagePicker {
+    if (self.cameraPickerViewController)
+    {
+        [self.cameraPickerViewController.view removeFromSuperview];
+        self.cameraPickerViewController = nil;
+    }
+}
+
 - (UIView *)parentView {
-    return self.cameraPickerViewController ? self.cameraPickerViewController.view : self.view;
+    return self.view;//self.cameraPickerViewController ? self.cameraPickerViewController.view : self.view;
 }
 
 - (CGRect)parentBounds {
@@ -320,6 +329,7 @@
 
 - (void)retakeTapped:(id)sender {
     self.selectedImage = nil;
+    [self initImagePicker];
     [self updateImagePreview];
     [self updateButtons];
 }
@@ -476,6 +486,8 @@
                          }
                      }];
 }
+
+
 
 - (void)updateImagePreview {
     UIView *parentView = [self parentView];
