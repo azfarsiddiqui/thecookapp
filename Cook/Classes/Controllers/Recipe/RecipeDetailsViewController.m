@@ -1568,7 +1568,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)deleteRecipe {
     
     // Enable save mode to hide all buttons and show black overlay.
-    [self enableSaveMode:YES completion:^{
+    [self enableDeleteMode:YES completion:^{
         
         // Keep a weak reference of the progressView for tracking of updates.
         __weak CKProgressView *weakProgressView = self.progressView;
@@ -1719,6 +1719,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self showProgressOverlayView:saveEnabled completion:completion];
 }
 
+- (void)enableDeleteMode:(BOOL)deleteMode completion:(void (^)())completion {
+    
+    // Hide all buttons.
+    if (deleteMode) {
+        [self hideButtons];
+    }
+    
+    // Fade in/out the overlay.
+    [self showProgressOverlayView:deleteMode title:@"DELETING" completion:completion];
+}
+
 - (void)updateRecipeDetailsView {
     
     if (self.scrollView.contentOffset.y > 0) {
@@ -1792,6 +1803,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)showProgressOverlayView:(BOOL)show completion:(void (^)())completion {
+    [self showProgressOverlayView:show title:@"SAVING" completion:completion];
+}
+
+- (void)showProgressOverlayView:(BOOL)show title:(NSString *)title completion:(void (^)())completion {
     if (show) {
         self.overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
         self.overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -1813,7 +1828,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Saving text.
         UILabel *savingLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         savingLabel.backgroundColor = [UIColor clearColor];
-        savingLabel.text = @"SAVING";
+        savingLabel.text = [title uppercaseString];
         savingLabel.font = [Theme progressSavingFont];
         savingLabel.textColor = [Theme progressSavingColour];
         [savingLabel sizeToFit];
