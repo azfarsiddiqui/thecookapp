@@ -170,6 +170,10 @@
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
     
+    // Disable panning on book open.
+    self.panEnabled = !open;
+    
+    // Fade the store away.
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseOut

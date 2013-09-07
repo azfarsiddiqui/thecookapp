@@ -22,9 +22,12 @@
 #import "CKEditingViewHelper.h"
 #import "CKEditViewController.h"
 #import "CKTextFieldEditViewController.h"
+#import "ProgressOverlayViewController.h"
+#import "ModalOverlayHelper.h"
+#import "BookNavigationHelper.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
-    BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
+    BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) id<BookContentViewControllerDelegate> delegate;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -40,6 +43,7 @@
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKTextFieldEditViewController *editViewController;
+@property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
 
 @end
 
@@ -137,10 +141,23 @@
                              
                          }
                          completion:^(BOOL finished)  {
+                             
+                             if (!self.editMode) {
+                                 [self.bookPageDelegate bookPageViewController:self editModeRequested:NO];
+                             }
+                             
+                             if (completion != nil) {
+                                 completion();
+                             }
                          }];
     } else {
         self.deleteButton.alpha = editMode ? 1.0 : 0.0;
-        
+        if (!self.editMode) {
+            [self.bookPageDelegate bookPageViewController:self editModeRequested:NO];
+        }
+        if (completion != nil) {
+            completion();
+        }
     }
 }
 
@@ -247,6 +264,17 @@
     }
     
     return reusableView;
+}
+
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    // OK Button tapped.
+    if (buttonIndex == 1) {
+        [self deletePage];
+    }
+    
 }
 
 #pragma mark - Properties
@@ -443,7 +471,47 @@
 }
 
 - (void)deleteTapped:(id)sender {
-    DLog();
+    NSString *message = nil;
+    if ([self.recipes count] > 0) {
+        message = [NSString stringWithFormat:@"This will also delete %d recipes on this page.", [self.recipes count]];
+    }
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Page?"
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    [alertView show];
+}
+
+- (void)deletePage {
+    self.saveOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:@"DELETING"];
+    [ModalOverlayHelper showModalOverlayForViewController:self.saveOverlayViewController
+                                                     show:YES
+                                               completion:^{
+                                                   
+                                                   __weak BookContentViewController *weakSelf = self;
+                                                   [weakSelf.saveOverlayViewController updateProgress:0.1];
+                                                   
+                                                   [weakSelf.book deletePage:weakSelf.page
+                                                                     success:^{
+                                                                     
+                                                                         [weakSelf.saveOverlayViewController updateProgress:0.9];
+                                                                     
+                                                                         // Ask the opened book to relayout.
+                                                                         [[BookNavigationHelper sharedInstance] updateBookNavigationWithDeletedPage:weakSelf.page
+                                                                                                                                         completion:^{
+                                                                                                                                             
+                                                                                                                                             [weakSelf.saveOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
+                                                                                                                                                 [weakSelf enableEditMode:NO animated:NO completion:^{
+                                                                                                                                                     [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.saveOverlayViewController completion:nil];
+                                                                                                                                                 }];
+                                                                                                                                             }];
+                                                                         }];
+                                                                 }
+                                                                 failure:^(NSError *error) {
+                                                                 }];
+                                               }];
+    
+
 }
 
 - (void)performPageNameEdit {

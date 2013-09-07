@@ -171,10 +171,14 @@
 
 - (void)updateInfoLabels {
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x,
-                                       targetTextBoxView.frame.origin.y - self.titleLabel.frame.size.height + 5.0,
-                                       self.titleLabel.frame.size.width,
-                                       self.titleLabel.frame.size.height);
+    self.titleLabel.text = [self.titleLabel.text uppercaseString];
+    [self.titleLabel sizeToFit];
+    self.titleLabel.frame = (CGRect){
+        floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
+        targetTextBoxView.frame.origin.y - self.titleLabel.frame.size.height + 5.0,
+        self.titleLabel.frame.size.width,
+        self.titleLabel.frame.size.height
+    };
 }
 
 - (void)wrapTargetEditView:(UIView *)targetEditView delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
@@ -186,11 +190,15 @@
 }
 
 - (BOOL)showTitleLabel {
-    return NO;
+    return self.showTitle;
 }
 
 - (BOOL)showSaveIcon {
     return YES;
+}
+
+- (BOOL)headless {
+    return [self.headlessNumber boolValue];
 }
 
 - (void)dismissEditView {
@@ -199,6 +207,21 @@
 
 - (UIFont *)textFontWithSize:(CGFloat)size {
     return [self.font fontWithSize:size];
+}
+
+- (void)updateTitle:(NSString *)title {
+    [self updateTitle:title toast:NO];
+}
+
+- (void)updateTitle:(NSString *)title toast:(BOOL)toast {
+    self.titleLabel.text = title;
+    [self updateInfoLabels];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        self.titleLabel.text = self.editTitle;
+        [self updateInfoLabels];
+    });
+
 }
 
 #pragma mark - Lifecycle events
@@ -262,6 +285,16 @@
 
 // Note that editingView is actually the targetEditingView (e.g.UITextField)
 - (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
+    
+    BOOL canSave = YES;
+    if ([self.delegate respondsToSelector:@selector(editViewControllerCanSaveFor:)]) {
+        canSave = [self.delegate editViewControllerCanSaveFor:self];
+    }
+    
+    // Return if cannot save.
+    if (!canSave) {
+        return;
+    }
     
     if ([self.headlessNumber boolValue]) {
         

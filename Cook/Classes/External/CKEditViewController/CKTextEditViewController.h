@@ -12,6 +12,7 @@
 
 @property (nonatomic, assign) NSUInteger characterLimit;
 @property (nonatomic, strong) UILabel *limitLabel;
+@property (nonatomic, assign) BOOL showLimit;
 @property (nonatomic, assign) BOOL textLimited;
 @property (nonatomic, assign) BOOL forceUppercase;
 @property (nonatomic, assign) BOOL clearOnFocus;

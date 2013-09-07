@@ -16,9 +16,11 @@
 @interface BookNavigationStackViewController : UICollectionViewController
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate;
-- (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
-- (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 - (void)setActive:(BOOL)active;
 - (void)updateBinderAlpha:(CGFloat)alpha;
+
+- (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion;
 
 @end

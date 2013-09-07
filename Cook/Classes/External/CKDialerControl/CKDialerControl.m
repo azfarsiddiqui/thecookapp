@@ -13,7 +13,6 @@
 @property (nonatomic, assign) id<CKDialerControlDelegate> delegate;
 @property (nonatomic, strong) UIView *dialerView;
 @property (nonatomic, assign) CGAffineTransform startTransform;
-@property (nonatomic, assign) CGFloat unitDegrees;
 @property (nonatomic, assign) CGFloat deltaAngle;
 
 @end
@@ -151,10 +150,11 @@
     
     // Get the discrete snap radians by dividing by radians-per-unit.
     NSInteger remainder = overallRadians / unitRadians;
+//    NSLog(@"REMAINDER [%d]", remainder);
     if (remainder < 0) {
-//        NSLog(@"REMAINDER [%d]", remainder);
-        remainder = [self maxOptionIndex] + remainder;
+        remainder = [self maxOptionIndex] + remainder - 1;
     }
+//    NSLog(@"   >>> REMAINDER [%d]", remainder);
     CGFloat snapRadians = unitRadians * remainder;
     
     // Keep it within the range.

@@ -20,6 +20,8 @@
 
 @property (nonatomic, assign) NSInteger selectedOptionIndex;
 
+@property (nonatomic, assign) CGFloat unitDegrees;
+
 - (id)initWithUnitDegrees:(CGFloat)unitDegrees delegate:(id<CKDialerControlDelegate>)delegate;
 - (void)selectOptionAtIndex:(NSInteger)optionIndex;
 - (void)selectOptionAtIndex:(NSInteger)optionIndex animated:(BOOL)animated;

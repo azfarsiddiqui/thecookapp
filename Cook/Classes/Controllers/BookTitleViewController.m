@@ -28,7 +28,7 @@
 #import "CKTextFieldEditViewController.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
-    UIAlertViewDelegate, UITextFieldDelegate, CKEditViewControllerDelegate>
+    CKEditViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
@@ -298,6 +298,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)editViewControllerDismissRequested {
     [self.editViewController performEditing:NO];
+    [self enableAddMode:NO];
 }
 
 - (void)editViewControllerEditRequested {
@@ -309,21 +310,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)editViewControllerHeadlessUpdatedWithValue:(id)value {
     
     NSString *text = value;
-    if ([self.pages detect:^BOOL(NSString *page) {
-        return [[page uppercaseString] isEqualToString:[text uppercaseString]];
-    }]) {
-        self.editingPageName = text;
-        
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Category Aleady Exists" message:nil delegate:self
-                                                  cancelButtonTitle:nil otherButtonTitles:@"Enter Another One", nil];
-        alertView.alertViewStyle = UIAlertViewStyleDefault;
-        [alertView show];
-        
-    } else {
-        [self.pages addObject:text];
-        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
-        [self.delegate bookTitleAddedPage:text];
-    }
+    [self.pages addObject:text];
+    [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
+    [self.delegate bookTitleAddedPage:text];
     
     [self enableAddMode:NO];
 }
@@ -332,10 +321,20 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return self.editingPageName;
 }
 
-#pragma mark - UIAlertViewDelegate methods
+- (BOOL)editViewControllerCanSaveFor:(CKEditViewController *)editViewController {
+    BOOL canSave = YES;
+    if ([editViewController headless]) {
+        
+        NSString *text = [editViewController updatedValue];
+        if ([self.pages detect:^BOOL(NSString *page) {
+            return [[page uppercaseString] isEqualToString:[text uppercaseString]];
+        }]) {
+            canSave = NO;
+            [editViewController updateTitle:@"PAGE ALREADY EXISTS" toast:YES];
+        }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    [self performAddPageWithName:self.editingPageName];
+    }
+    return canSave;
 }
 
 #pragma mark - Properties
@@ -498,8 +497,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                                                                                        delegate:self
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES
-                                                                                                          title:@"Name"
+                                                                                                          title:@"Page Name"
                                                                                                  characterLimit:20];
+    editViewController.showTitle = YES;
     editViewController.forceUppercase = YES;
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
