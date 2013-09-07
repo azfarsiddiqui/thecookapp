@@ -114,6 +114,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.userInteractionEnabled = YES; // To block touches filtering down.
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     // Mark as just opened.
