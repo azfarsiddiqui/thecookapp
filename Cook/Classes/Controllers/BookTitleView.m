@@ -56,8 +56,8 @@
 
 - (id)initWithTitle:(NSString *)title subtitle:(NSString *)subtitle {
     if (self = [super initWithFrame:CGRectZero]) {
-        self.title = title;
-        self.subtitle = subtitle;
+        self.title = [title uppercaseString];
+        self.subtitle = [subtitle uppercaseString];
         [self initLabel];
     }
     return self;
