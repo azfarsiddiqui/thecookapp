@@ -377,6 +377,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     self.blurredImageView.alpha = 0.0;
     [self.imageView addSubview:self.blurredImageView];
     
+    // Apply top shadow.
+    [ViewHelper addTopShadowView:self.imageView];
+    
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
     
@@ -469,8 +472,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.blurredImageView.image = blurredImage;
     }];
     
-    // Apply top shadow.
-    [ViewHelper addTopShadowView:self.imageView];
 }
 
 - (void)applyOffset:(CGFloat)offset distance:(CGFloat)distance view:(UIView *)view {

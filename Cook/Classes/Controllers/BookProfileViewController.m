@@ -239,6 +239,10 @@
     [imageContainerView addSubview:imageView];
     self.imageView = imageView;
     
+    // Top shadow.
+    UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view];
+    [self.view insertSubview:topShadowView aboveSubview:self.imageView];
+    
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
 }

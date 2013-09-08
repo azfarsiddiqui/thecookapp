@@ -883,7 +883,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.topShadowView.alpha = placeholder ? 0.0 : 1.0;
+                         self.topShadowView.alpha = 1.0;
                          self.imageView.alpha = 1.0;
                          self.placeholderHeaderView.alpha = 0.0;
                      }
