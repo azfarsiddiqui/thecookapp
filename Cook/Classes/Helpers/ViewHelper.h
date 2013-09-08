@@ -52,7 +52,9 @@
 
 // Shadows.
 + (UIImageView *)topShadowViewForView:(UIView *)view;
++ (UIImageView *)topShadowViewForView:(UIView *)view subtle:(BOOL)subtle;
 + (void)addTopShadowView:(UIView *)view;
++ (void)addTopShadowView:(UIView *)view subtle:(BOOL)subtle;
 
 // Rounded corners.
 + (void)applyRoundedCornersToView:(UIView *)view corners:(UIRectCorner)corners size:(CGSize)size;
