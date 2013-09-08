@@ -24,7 +24,7 @@
 @implementation CKPhotoFilterSliderView
 
 - (id)initWithDelegate:(id<CKNotchSliderViewDelegate>)delegate {
-    if (self = [super initWithNumNotches:6 delegate:delegate]) {
+    if (self = [super initWithNumNotches:7 delegate:delegate]) {
         [self loadTitleLabels];
     }
     return self;
@@ -43,6 +43,13 @@
             noneFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_none"];
             noneFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_none"];
             [_filterArray addObject:noneFilterObj];
+        }
+        { //CKPhotoFilterAuto
+            FilterObject *autoFilterObj = [[FilterObject alloc] init];
+            autoFilterObj.title = @"AUTO";
+            autoFilterObj.trackImage = [UIImage imageNamed:@"cook_customise_photo_filter_bg_indoor"];
+            autoFilterObj.iconImage = [UIImage imageNamed:@"cook_customise_photo_filter_icon_indoor"];
+            [_filterArray addObject:autoFilterObj];
         }
         { //CKPhotoFilterOutdoors
             FilterObject *outdoorsFilterObj = [[FilterObject alloc] init];
