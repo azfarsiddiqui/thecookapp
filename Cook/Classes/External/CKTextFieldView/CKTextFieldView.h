@@ -37,7 +37,11 @@
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
            password:(BOOL)password;
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+     autoCapitalise:(BOOL)autoCapitalise;
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
            password:(BOOL)password contentInsets:(UIEdgeInsets)contentInsets;
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+           password:(BOOL)password autoCapitalise:(BOOL)autoCapitalise contentInsets:(UIEdgeInsets)contentInsets;
 
 - (NSString *)inputText;
 - (void)setValidated:(BOOL)validated;

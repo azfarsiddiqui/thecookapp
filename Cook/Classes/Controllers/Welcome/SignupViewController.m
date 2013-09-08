@@ -476,7 +476,7 @@
     self.emailAddressView = emailAddressView;
     
     // Name field anchor to the top.
-    CKTextFieldView *emailNameView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"Your Name"];
+    CKTextFieldView *emailNameView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"Your Name" autoCapitalise:YES];
     emailNameView.frame = (CGRect){
         emailInsets.left + floorf((availableSize.width - emailNameView.frame.size.width) / 2.0),
         self.emailAddressView.frame.origin.y - fieldsGap - emailNameView.frame.size.height,

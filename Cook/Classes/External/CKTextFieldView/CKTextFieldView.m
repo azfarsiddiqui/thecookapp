@@ -16,6 +16,7 @@
 @property (nonatomic, assign) CGFloat width;
 @property (nonatomic, strong) UILabel *placeholderLabel;
 @property (nonatomic, strong) UIImageView *validationImageView;
+@property (nonatomic, assign) BOOL autoCapitalise;
 
 @end
 
@@ -41,13 +42,28 @@
 }
 
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+     autoCapitalise:(BOOL)autoCapitalise {
+    
+    return [self initWithWidth:width delegate:delegate placeholder:placeholder password:NO autoCapitalise:autoCapitalise
+                 contentInsets:kDefaultContentInsets];
+}
+
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
            password:(BOOL)password contentInsets:(UIEdgeInsets)contentInsets {
+    
+    return [self initWithWidth:width delegate:delegate placeholder:placeholder password:password autoCapitalise:NO
+                 contentInsets:contentInsets];
+}
+
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+           password:(BOOL)password autoCapitalise:(BOOL)autoCapitalise contentInsets:(UIEdgeInsets)contentInsets {
     
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
         
         self.password = password;
         self.placeholder = placeholder;
+        self.autoCapitalise = autoCapitalise;
         self.contentInsets = contentInsets;
         self.backgroundColor = [UIColor clearColor];
         self.width = width;
@@ -198,7 +214,7 @@
         textField.returnKeyType = UIReturnKeyGo;
         textField.text = @"";
         textField.keyboardType = UIKeyboardTypeEmailAddress;
-        textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        textField.autocapitalizationType = self.autoCapitalise ? UITextAutocapitalizationTypeWords : UITextAutocapitalizationTypeNone;
         textField.autocorrectionType = UITextAutocorrectionTypeNo;
         [textField setSecureTextEntry:self.password];
         [textField sizeToFit];
