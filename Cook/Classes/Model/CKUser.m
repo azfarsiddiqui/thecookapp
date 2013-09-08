@@ -476,7 +476,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 - (NSString *)friendlyName {
     NSString *friendlyName = self.firstName;
     if (![friendlyName CK_containsText]) {
-        friendlyName = self.name;
+        friendlyName = [[self.name componentsSeparatedByString:@" "] firstObject];
     }
     return friendlyName;
 }
