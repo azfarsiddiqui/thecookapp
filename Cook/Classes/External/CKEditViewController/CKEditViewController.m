@@ -386,7 +386,9 @@
 }
 
 - (void)overlayTapped:(UITapGestureRecognizer *)tapGesture {
-    [self dismissEditView];
+    if (self.dismissableOverlay && CGRectEqualToRect(self.keyboardFrame, CGRectZero)) {
+        [self dismissEditView];
+    }
 }
 
 - (void)targetEditingViewKeyboardWillAppear:(BOOL)appear keyboardFrame:(CGRect)keyboardFrame {
