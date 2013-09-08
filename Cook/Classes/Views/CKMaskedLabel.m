@@ -14,9 +14,12 @@
 
 @implementation CKMaskedLabel
 
+#define kBackgroundColour       [UIColor colorWithWhite:1.0 alpha:0.9]
+#define kEditBackgroundColour   [UIColor colorWithWhite:1.0 alpha:1.0]
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.boxBackgroundColour = [UIColor colorWithWhite:1.0 alpha:0.9];
+        self.boxBackgroundColour = kBackgroundColour;
     }
     return self;
 }
@@ -29,6 +32,11 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     [self.boxBackgroundColour set];
     CGContextFillRect(context, rect);
+}
+
+- (void)enableEditMode:(BOOL)editMode {
+    self.boxBackgroundColour = editMode ? kEditBackgroundColour : kBackgroundColour;
+    [self setNeedsDisplay];
 }
 
 @end

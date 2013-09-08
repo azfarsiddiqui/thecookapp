@@ -13,6 +13,8 @@
 @interface ProgressOverlayViewController : UIViewController
 
 - (id)initWithTitle:(NSString *)title;
+- (void)updateWithTitle:(NSString *)title;
+- (void)updateWithTitle:(NSString *)title delay:(NSTimeInterval)delay completion:(void (^)())completion;
 - (void)updateProgress:(CGFloat)progress;
 - (void)updateProgress:(CGFloat)progress animated:(BOOL)animated;
 - (void)updateProgress:(float)progress delay:(NSTimeInterval)delay completion:(void (^)())completion;

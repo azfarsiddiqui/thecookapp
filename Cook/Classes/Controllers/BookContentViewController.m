@@ -25,6 +25,7 @@
 #import "ProgressOverlayViewController.h"
 #import "ModalOverlayHelper.h"
 #import "BookNavigationHelper.h"
+#import "NSString+Utilities.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
@@ -43,7 +44,8 @@
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKTextFieldEditViewController *editViewController;
-@property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
+@property (nonatomic, strong) ProgressOverlayViewController *progressOverlayViewController;
+@property (nonatomic, strong) NSString *updatedPage;
 
 @end
 
@@ -114,10 +116,9 @@
                               contentInsets:(UIEdgeInsets) {
                                   contentInsets.top + 10.0,
                                   contentInsets.left + 10.0,
-                                  contentInsets.bottom + 10.0,
+                                  contentInsets.bottom + 7.0,
                                   contentInsets.right + 10.0
-                              }
-                                   delegate:self white:YES editMode:YES animated:YES];
+                              } delegate:self white:YES editMode:YES animated:YES];
         
     } else {
         
@@ -131,9 +132,13 @@
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              
+                             // Hide all visible cells.
                              for (UICollectionViewCell *cell in [self.collectionView visibleCells]) {
                                  cell.alpha = editMode ? 0.0 : 1.0;
                              }
+                             
+                             // Enable edit mode on content title.
+                             [self.contentTitleView enableEditMode:editMode animated:NO];
                              
                              // Slide up/down the delete button.
                              self.deleteButton.alpha = editMode ? 1.0 : 0.0;
@@ -151,7 +156,9 @@
                              }
                          }];
     } else {
+        [self.contentTitleView enableEditMode:editMode animated:NO];
         self.deleteButton.alpha = editMode ? 1.0 : 0.0;
+        
         if (!self.editMode) {
             [self.bookPageDelegate bookPageViewController:self editModeRequested:NO];
         }
@@ -177,18 +184,33 @@
 }
 
 - (CGSize)bookContentGridLayoutHeaderSize {
-    return self.contentTitleView.frame.size;
+    return (CGSize){
+        self.collectionView.bounds.size.width,
+        self.contentTitleView.frame.size.height
+    };
+}
+
+#pragma mark - CKSaveableContent methods
+
+- (BOOL)contentSaveRequired {
+    return ![self.updatedPage CK_equalsIgnoreCase:self.page];
+}
+
+- (void)contentPerformSave:(BOOL)save {
+    if (save && [self contentSaveRequired]) {
+        [self renamePage];
+    } else {
+        [self restorePage];
+    }
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    DLog();
     [self performPageNameEdit];
 }
 
 - (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
-    DLog();
 }
 
 #pragma mark - CKEditViewControllerDelegate methods
@@ -205,12 +227,29 @@
 }
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
-    [self.contentTitleView updateWithTitle:value];
-    [self.editingHelper updateEditingView:editingView];
+    [self updateContentTitleViewWithTitle:value];
+    self.updatedPage = value;
+    [self.editingHelper updateEditingView:self.contentTitleView];
 }
 
 - (id)editViewControllerInitialValue {
     return [self.page uppercaseString];
+}
+
+- (BOOL)editViewControllerCanSaveFor:(CKEditViewController *)editViewController {
+    BOOL canSave = YES;
+    
+    NSString *text = [editViewController updatedValue];
+    NSArray *pages = [self.bookPageDelegate bookPageViewControllerAllPages];
+
+    if ([pages detect:^BOOL(NSString *page) {
+        return ([page CK_equalsIgnoreCase:text]);
+    }] && ![text CK_equalsIgnoreCase:self.page]) {
+        canSave = NO;
+        [editViewController updateTitle:@"PAGE ALREADY EXISTS" toast:YES];
+    }
+        
+    return canSave;
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -259,7 +298,13 @@
     
     UICollectionReusableView *reusableView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId forIndexPath:indexPath];
     if (!self.contentTitleView.superview) {
-        self.contentTitleView.frame = reusableView.bounds;
+        self.contentTitleView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        self.contentTitleView.frame = (CGRect){
+            floorf((reusableView.bounds.size.width - self.contentTitleView.frame.size.width) / 2.0),
+            floorf((reusableView.bounds.size.height - self.contentTitleView.frame.size.height) / 2.0),
+            self.contentTitleView.frame.size.width,
+            self.contentTitleView.frame.size.height
+        };
         [reusableView addSubview:self.contentTitleView];
     }
     
@@ -483,35 +528,74 @@
 }
 
 - (void)deletePage {
-    self.saveOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:@"DELETING"];
-    [ModalOverlayHelper showModalOverlayForViewController:self.saveOverlayViewController
+    self.progressOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:@"DELETING"];
+    [ModalOverlayHelper showModalOverlayForViewController:self.progressOverlayViewController
                                                      show:YES
                                                completion:^{
                                                    
                                                    __weak BookContentViewController *weakSelf = self;
-                                                   [weakSelf.saveOverlayViewController updateProgress:0.1];
+                                                   [weakSelf.progressOverlayViewController updateProgress:0.1];
                                                    
                                                    [weakSelf.book deletePage:weakSelf.page
                                                                      success:^{
                                                                      
-                                                                         [weakSelf.saveOverlayViewController updateProgress:0.9];
+                                                                         [weakSelf.progressOverlayViewController updateProgress:0.9];
                                                                      
                                                                          // Ask the opened book to relayout.
                                                                          [[BookNavigationHelper sharedInstance] updateBookNavigationWithDeletedPage:weakSelf.page
                                                                                                                                          completion:^{
                                                                                                                                              
-                                                                                                                                             [weakSelf.saveOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
+                                                                                                                                             [weakSelf.progressOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
                                                                                                                                                  [weakSelf enableEditMode:NO animated:NO completion:^{
-                                                                                                                                                     [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.saveOverlayViewController completion:nil];
+                                                                                                                                                     [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
                                                                                                                                                  }];
                                                                                                                                              }];
                                                                          }];
                                                                  }
                                                                  failure:^(NSError *error) {
+                                                                     // Unabel to delete.
                                                                  }];
                                                }];
-    
+}
 
+- (void)renamePage {
+    self.progressOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:@"RENAMING PAGE"];
+    [ModalOverlayHelper showModalOverlayForViewController:self.progressOverlayViewController
+                                                     show:YES
+                                               completion:^{
+                                                   
+                                                   __weak BookContentViewController *weakSelf = self;
+                                                   [weakSelf.progressOverlayViewController updateProgress:0.1];
+                                                   [self.book renamePage:self.page
+                                                                  toPage:self.updatedPage
+                                                                 success:^{
+                                                                     
+                                                                     // Finished, now ask opened book to relayout.
+                                                                     [weakSelf.progressOverlayViewController updateProgress:0.9];
+                                                                     [[BookNavigationHelper sharedInstance] updateBookNavigationWithRenamedPage:weakSelf.updatedPage fromPage:weakSelf.page completion:^{
+                                                                         
+                                                                         // Update current page name.
+                                                                         weakSelf.page = weakSelf.updatedPage;
+                                                                         [weakSelf.progressOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
+                                                                             
+                                                                             // Disable edit mode.
+                                                                             [weakSelf enableEditMode:NO animated:NO completion:^{
+                                                                                 [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
+                                                                             }];
+                                                                             
+                                                                         }];
+                                                                         
+                                                                     }];
+                                                                     
+                                                                 }
+                                                                 failure:^(NSError *error) {
+                                                                     [weakSelf.progressOverlayViewController updateWithTitle:@"Unable to Rename" delay:1.5 completion:^{
+                                                                         
+                                                                         [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
+                                                                         [self restorePage];
+                                                                     }];
+                                                                 }];
+                                               }];
 }
 
 - (void)performPageNameEdit {
@@ -519,13 +603,28 @@
                                                                                                        delegate:self
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES
-                                                                                                          title:@"Name"
-                                                                                                 characterLimit:20];
+                                                                                                          title:@"Page Name"
+                                                                                                 characterLimit:15];
+    editViewController.showTitle = YES;
     editViewController.forceUppercase = YES;
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     [editViewController performEditing:YES];
     self.editViewController = editViewController;
 
+}
+
+- (void)updateContentTitleViewWithTitle:(NSString *)title {
+    [self.contentTitleView updateWithTitle:title];
+    CGRect contentTitleFrame = self.contentTitleView.frame;
+    contentTitleFrame.origin.x = floorf((self.contentTitleView.superview.bounds.size.width - contentTitleFrame.size.width) / 2.0);
+    contentTitleFrame.origin.y = floorf((self.contentTitleView.superview.bounds.size.height - contentTitleFrame.size.height) / 2.0);
+    self.contentTitleView.frame = contentTitleFrame;
+}
+
+- (void)restorePage {
+    [self updateContentTitleViewWithTitle:self.page];
+    [self.editingHelper updateEditingView:self.contentTitleView animated:NO];
+    [self.editingHelper unwrapEditingView:self.contentTitleView animated:YES];
 }
 
 @end

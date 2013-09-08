@@ -35,6 +35,7 @@
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKRecipe *featuredRecipe;
 @property (nonatomic, strong) CKRecipe *saveOrUpdatedRecipe;
+@property (nonatomic, strong) NSString *saveOrUpdatedPage;
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *recipes;
@@ -232,6 +233,32 @@
     [self loadRecipes];
 }
 
+- (void)updateWithRenamedPage:(NSString *)page fromPage:(NSString *)fromPage
+                   completion:(BookNavigationUpdatedBlock)completion {
+    
+    DLog(@"Updating layout with renamed page [%@] fromPage[%@]", page, fromPage);
+    
+    // Rename the page in existing recipes..
+    NSArray *recipesToRename = [self.recipes select:^BOOL(CKRecipe *recipe) {
+        return [recipe.page CK_equalsIgnoreCase:fromPage];
+    }];
+    
+    // Renaming the recipes locally, as server-side has already occured.
+    DLog(@"Renaming [%d] recipes to [%@]", [recipesToRename count], page);
+    [recipesToRename each:^(CKRecipe *recipe) {
+        recipe.page = page;
+    }];
+    
+    // Remember the recipe that was actioned.
+    self.saveOrUpdatedPage = page;
+    
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
+    
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
+}
+
 - (void)updateStatusBar {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     if (visibleFrame.origin.x < (self.collectionView.bounds.size.width * 2.0) - floorf(self.collectionView.bounds.size.width / 2.0)) {
@@ -305,12 +332,16 @@
 }
 
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editModeRequested:(BOOL)editMode {
-    self.currentEditViewController = self.profileViewController;
+    self.currentEditViewController = bookPageViewController;
     [self enableEditMode:editMode];
 }
 
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editing:(BOOL)editing {
     [self updateButtonsWithAlpha:editing ? 0.0 : 1.0];
+}
+
+- (NSArray *)bookPageViewControllerAllPages {
+    return self.pages;
 }
 
 #pragma mark - BookNavigationViewDelegate methods
@@ -432,6 +463,10 @@
             NSString *page = self.saveOrUpdatedRecipe.page;
             [self scrollToPage:page animated:NO];
             
+        } else if (self.saveOrUpdatedPage != nil) {
+        
+            // Do nothing, stay at the page.
+        
         } else {
             
             // Go to home; this is the case when page is deleted.
@@ -442,6 +477,10 @@
         // Invoked from recipe edit/added block.
         self.bookUpdatedBlock();
         self.bookUpdatedBlock = nil;
+        
+        // Clear breadcrumb flags.
+        self.saveOrUpdatedRecipe = nil;
+        self.saveOrUpdatedPage = nil;
         
     } else if (self.justOpened) {
         

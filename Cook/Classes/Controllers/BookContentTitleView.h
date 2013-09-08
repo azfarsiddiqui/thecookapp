@@ -12,5 +12,7 @@
 
 - (id)initWithTitle:(NSString *)title;
 - (void)updateWithTitle:(NSString *)title;
+- (void)enableEditMode:(BOOL)editMode;
+- (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
 
 @end

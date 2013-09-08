@@ -13,4 +13,6 @@
 @property (nonatomic, assign) UIEdgeInsets insets;
 @property (nonatomic, strong) UIColor *boxBackgroundColour;
 
+- (void)enableEditMode:(BOOL)editMode;
+
 @end

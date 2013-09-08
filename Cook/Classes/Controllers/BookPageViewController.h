@@ -19,6 +19,8 @@
 - (void)bookPageViewControllerPanEnable:(BOOL)enable;
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editModeRequested:(BOOL)editMode;
 - (void)bookPageViewController:(BookPageViewController *)bookPageViewController editing:(BOOL)editing;
+- (NSArray *)bookPageViewControllerAllPages;
+
 @end
 
 @interface BookPageViewController : UIViewController <CKSaveableContent>

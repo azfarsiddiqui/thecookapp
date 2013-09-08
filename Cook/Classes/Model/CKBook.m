@@ -489,6 +489,34 @@
                                 }];
 }
 
+- (void)renamePage:(NSString *)page toPage:(NSString *)toPage success:(ObjectSuccessBlock)success
+           failure:(ObjectFailureBlock)failure {
+    
+    if (![page CK_containsText] && ![toPage CK_containsText]) {
+        failure(nil);
+    }
+    
+    [PFCloud callFunctionInBackground:@"bookRenamePage"
+                       withParameters:@{ @"bookId" : self.objectId, @"fromPage" : page, @"toPage" : toPage }
+                                block:^(id result, NSError *error) {
+                                    if (!error) {
+                                        DLog(@"Renamed page for book and its associated recipes");
+                                        
+                                        // Replace page in book.
+                                        NSMutableArray *pages = [NSMutableArray arrayWithArray:self.pages];
+                                        NSUInteger pageIndex = [self.pages indexOfObject:page];
+                                        [pages replaceObjectAtIndex:pageIndex withObject:toPage];
+                                        self.pages = pages;
+                                        
+                                        success();
+                                        
+                                    } else {
+                                        DLog(@"Error deleting page: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
 - (void)saveWithImage:(UIImage *)image completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     if (image) {
         DLog(@"Saving book with image.");
