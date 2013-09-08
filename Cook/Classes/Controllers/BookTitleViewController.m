@@ -90,30 +90,35 @@
     [self.activityView stopAnimating];
     [self.activityView removeFromSuperview];
     
+    BOOL reload = (self.pages != nil);
     self.pages = [NSMutableArray arrayWithArray:pages];
     
-    NSMutableArray *pageIndexPaths = [NSMutableArray arrayWithArray:[self.pages collectWithIndex:^id(NSString *page, NSUInteger pageIndex) {
-        return [NSIndexPath indexPathForItem:pageIndex inSection:0];
-    }]];
-    
-    // Add cell.
-    if ([self.book isOwner]) {
-        [pageIndexPaths addObject:[NSIndexPath indexPathForItem:[pageIndexPaths count] inSection:0]];
-    }
-    
-    [self.collectionView performBatchUpdates:^{
-        [self.collectionView insertItemsAtIndexPaths:pageIndexPaths];
-    } completion:^(BOOL finished){
+    if (reload) {
+        [self.collectionView reloadData];
+    } else {
+        NSMutableArray *pageIndexPaths = [NSMutableArray arrayWithArray:[self.pages collectWithIndex:^id(NSString *page, NSUInteger pageIndex) {
+            return [NSIndexPath indexPathForItem:pageIndex inSection:0];
+        }]];
         
-        [UIView animateWithDuration:0.25
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             self.collectionView.transform = CGAffineTransformIdentity;
-                         }
-                         completion:^(BOOL finished){
-                         }];
-    }];
+        // Add cell.
+        if ([self.book isOwner]) {
+            [pageIndexPaths addObject:[NSIndexPath indexPathForItem:[pageIndexPaths count] inSection:0]];
+        }
+        
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView insertItemsAtIndexPaths:pageIndexPaths];
+        } completion:^(BOOL finished){
+            
+            [UIView animateWithDuration:0.25
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^{
+                                 self.collectionView.transform = CGAffineTransformIdentity;
+                             }
+                             completion:^(BOOL finished){
+                             }];
+        }];
+    }
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {

@@ -473,7 +473,7 @@
 - (void)deleteTapped:(id)sender {
     NSString *message = nil;
     if ([self.recipes count] > 0) {
-        message = [NSString stringWithFormat:@"This will also delete %d recipes on this page.", [self.recipes count]];
+        message = @"This will also delete the recipes on this page.";
     }
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Page?"
                                                         message:message

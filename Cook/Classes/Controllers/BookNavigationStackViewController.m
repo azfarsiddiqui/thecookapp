@@ -557,8 +557,10 @@
         // Remove a reference to the content image view.
         if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
             NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
-            NSString *page = [self.pages objectAtIndex:pageIndex];
-            [self.pageHeaderViews removeObjectForKey:page];
+            if (pageIndex < [self.pages count]) {
+                NSString *page = [self.pages objectAtIndex:pageIndex];
+                [self.pageHeaderViews removeObjectForKey:page];
+            }
         }
     }
     
@@ -571,18 +573,20 @@
         
         // Remove reference to BookContentVC and remember its vertical scroll offset.
         NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
-        NSString *page = [self.pages objectAtIndex:pageIndex];
-        
-        BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
-        if (contentViewController) {
+        if (pageIndex < [self.pages count]) {
+            NSString *page = [self.pages objectAtIndex:pageIndex];
             
-            // Remember its current offset so we can restore later.
-            [self.contentControllerOffsets setObject:[NSValue valueWithCGPoint:[contentViewController currentScrollOffset]]
-                                              forKey:page];
-            [self.contentControllers removeObjectForKey:page];
-            contentViewController = nil;
+            BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
+            if (contentViewController) {
+                
+                // Remember its current offset so we can restore later.
+                [self.contentControllerOffsets setObject:[NSValue valueWithCGPoint:[contentViewController currentScrollOffset]]
+                                                  forKey:page];
+                [self.contentControllers removeObjectForKey:page];
+                contentViewController = nil;
+            }
+            
         }
-        
     }
     
 }
@@ -739,7 +743,6 @@
     self.recipes = [NSMutableArray arrayWithArray:recipes];
     
     [self loadRecipes];
-    [self loadTitlePage];
 }
 
 - (void)loadRecipes {
@@ -778,7 +781,10 @@
     
     // Now reload the categories.
     if ([self.pages count] > 0) {
-        
+     
+        // Refresh title page.
+        [self loadTitlePage];
+
         // Now relayout the category pages.
         [[self currentLayout] setNeedsRelayout:YES];
         [self.collectionView reloadData];
