@@ -708,7 +708,7 @@
     
     if (self.signUpMode) {
         
-        [self.emailButton setText:@"REGISTERING" activity:YES animated:NO enabled:NO];
+        [self.emailButton setText:@"SIGNING UP" activity:YES animated:NO enabled:NO];
         [self enableEmailLogin:YES completion:^{
             [self registerViaEmail];
         }];
@@ -770,7 +770,7 @@
                      password:password
                    completion:^{
                        
-                       [self.emailButton setText:@"THANK YOU" done:YES activity:NO animated:NO enabled:NO];
+                       [self.emailButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
                        
                        // Wait before informing login successful.
                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -780,7 +780,7 @@
                    } failure:^(NSError *error) {
                        
                        if ([CKUser usernameExistsForSignUpError:error]) {
-                           [self.emailButton setText:@"USER EMAIL EXISTS" activity:NO animated:NO enabled:NO];
+                           [self.emailButton setText:@"INCORRECT EMAIL OR PASSWORD" activity:NO animated:NO enabled:NO];
                        } else {
                            [self.emailButton setText:@"UNABLE TO REGISTER" activity:NO animated:NO enabled:NO];
                        }
@@ -803,7 +803,7 @@
                   password:password
                 completion:^{
                     
-                    [self.emailButton setText:@"THANK YOU" done:YES activity:NO animated:NO enabled:NO];
+                    [self.emailButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
                     
                     // Wait before informing login successful.
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -812,7 +812,7 @@
                     
                 } failure:^(NSError *error) {
                     
-                    [self.emailButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
+                    [self.emailButton setText:@"UNABLE TO SIGN IN" activity:NO animated:NO enabled:NO];
                     [self informLoginSuccessful:NO];
                     
                     // Re-enable the email button.
@@ -849,7 +849,7 @@
     // Now tries and log the user in.
     [CKUser loginWithFacebookCompletion:^{
         
-        [self.facebookButton setText:@"CONNECTED TO FACEBOOK" done:YES activity:NO animated:NO enabled:NO];
+        [self.facebookButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
         
         // Wait before informing login successful.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -1011,6 +1011,11 @@
 
 - (void)closeTapped:(id)sender {
     [self.delegate signupViewControllerDismissRequested];
+}
+
+- (NSString *)welcomeText {
+    CKUser *currentUser = [CKUser currentUser];
+    return [[NSString stringWithFormat:@"WELCOME %@", currentUser.friendlyName] uppercaseString];
 }
 
 @end
