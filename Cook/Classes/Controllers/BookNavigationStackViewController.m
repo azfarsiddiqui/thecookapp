@@ -818,17 +818,12 @@
     self.contentControllers = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
     self.contentControllerOffsets = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
     
-    // Now reload the categories.
-    if ([self.pages count] > 0) {
-     
-        // Refresh title page.
-        [self loadTitlePage];
-
-        // Now relayout the category pages.
-        [[self currentLayout] setNeedsRelayout:YES];
-        [self.collectionView reloadData];
-        
-    }
+    // Refresh title page.
+    [self loadTitlePage];
+    
+    // Now relayout the category pages.
+    [[self currentLayout] setNeedsRelayout:YES];
+    [self.collectionView reloadData];
 }
 
 - (void)loadTitlePage {
