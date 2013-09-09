@@ -26,6 +26,7 @@
 #import "CKEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "CKTextFieldEditViewController.h"
+#import "CardViewHelper.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate>
@@ -94,7 +95,13 @@
     self.pages = [NSMutableArray arrayWithArray:pages];
     
     if (reload) {
-        [self.collectionView reloadData];
+        
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        } completion:^(BOOL finished){
+            [self showIntroCard:([pages count] == 0)];
+        }];
+        
     } else {
         NSMutableArray *pageIndexPaths = [NSMutableArray arrayWithArray:[self.pages collectWithIndex:^id(NSString *page, NSUInteger pageIndex) {
             return [NSIndexPath indexPathForItem:pageIndex inSection:0];
@@ -116,6 +123,7 @@
                                  self.collectionView.transform = CGAffineTransformIdentity;
                              }
                              completion:^(BOOL finished){
+                                 [self showIntroCard:([pages count] == 0)];
                              }];
         }];
     }
@@ -320,6 +328,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate bookTitleAddedPage:text];
     
     [self enableAddMode:NO];
+    [self showIntroCard:NO];
 }
 
 - (id)editViewControllerInitialValue {
@@ -510,6 +519,28 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
+}
+
+- (void)showIntroCard:(BOOL)show {
+    NSString *cardTag = @"AddRecipeCard";
+    
+    if (show) {
+        UICollectionViewCell *addCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        CGSize cardSize = [CardViewHelper cardViewSize];
+        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
+                                                        icon:[UIImage imageNamed:@"cook_intro_icon_title.png"]
+                                                       title:@"GET STARTED"
+                                                    subtitle:@"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..."
+                                                        view:self.collectionView
+                                                      anchor:CardViewAnchorMidLeft
+                                                      center:(CGPoint){
+                                                          addCell.frame.origin.x + addCell.frame.size.width + floorf(cardSize.width / 2.0) + 20.0,
+                                                          addCell.frame.origin.y + floorf(addCell.frame.size.height/ 2.0)
+                                                      }];
+    } else {
+        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
+    }
+    
 }
 
 @end
