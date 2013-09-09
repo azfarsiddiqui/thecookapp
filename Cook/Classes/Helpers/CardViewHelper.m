@@ -106,6 +106,7 @@
     
     // Background image view..
     UIImageView *cardView = [[UIImageView alloc] initWithFrame:(CGRect){ 0.0, 0.0, kCardSize.width, kCardSize.height }];
+    cardView.userInteractionEnabled = YES;
     cardView.autoresizingMask = [self viewAutoresizingForAnchor:anchor];
     cardView.image = [self backgroundImageForAnchor:anchor];
     cardView.backgroundColor = [UIColor clearColor];
@@ -181,6 +182,10 @@
     [containerView addSubview:subtitleLabel];
     [cardView addSubview:containerView];
     
+    // Register tap to dismiss.
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    [cardView addGestureRecognizer:tapGesture];
+    
     return cardView;
 }
 
@@ -239,6 +244,21 @@
             break;
     }
     return autoresizing;
+}
+
+- (void)tapped:(UITapGestureRecognizer *)tapGesture {
+    UIView *cardView = tapGesture.view;
+    NSString *tagToDismiss = nil;
+    for (NSString *tagName in [self.cards allKeys]) {
+        if (cardView == [self.cards objectForKey:tagName]) {
+            tagToDismiss = tagName;
+            break;
+        }
+    }
+    
+    if (tagToDismiss) {
+        [self hideCardViewWithTag:tagToDismiss];
+    }
 }
 
 @end
