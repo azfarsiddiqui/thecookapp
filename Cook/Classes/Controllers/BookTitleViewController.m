@@ -444,6 +444,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     collectionView.delegate = self;
     collectionView.alwaysBounceVertical = YES;
     collectionView.alwaysBounceHorizontal = NO;
+    collectionView.showsVerticalScrollIndicator = NO;
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:collectionView];
     self.collectionView = collectionView;
