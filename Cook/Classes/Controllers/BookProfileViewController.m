@@ -27,6 +27,7 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIView *photoButtonView;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
@@ -155,7 +156,7 @@
     
     // Present the image.
     UIImage *croppedImage = [image imageCroppedToFitSize:self.imageView.bounds.size];
-    self.imageView.image = croppedImage;
+    [self loadImage:croppedImage placeholder:NO];
     
     // Save photo to be uploaded.
     self.updatedBookCoverPhoto = image;
@@ -273,8 +274,9 @@
     self.imageView = imageView;
     
     // Top shadow.
-    UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view];
+    UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view subtle:YES];
     [self.view insertSubview:topShadowView aboveSubview:self.imageView];
+    self.topShadowView = topShadowView;
     
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
@@ -313,13 +315,23 @@
         [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size name:@"profileCover"
                                              progress:^(CGFloat progressRatio, NSString *name) {
                                              } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                                 self.imageView.image = thumbImage;
+                                                 [self loadImage:thumbImage placeholder:NO];
                                              } completion:^(UIImage *image, NSString *name) {
-                                                 self.imageView.image = image;
+                                                 [self loadImage:image placeholder:NO];
                                              }];
     } else {
         UIImage *bookCoverImage = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
-        self.imageView.image = bookCoverImage;
+        [self loadImage:bookCoverImage placeholder:YES];
+    }
+}
+
+- (void)loadImage:(UIImage *)image placeholder:(BOOL)placeholder {
+    if (placeholder) {
+        self.topShadowView.image = [ViewHelper topShadowImageSubtle:YES];
+        self.imageView.image = image;
+    } else {
+        self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
+        self.imageView.image = image;;
     }
 }
 
