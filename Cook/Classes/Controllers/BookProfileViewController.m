@@ -141,7 +141,11 @@
         
         // Restore the data in summary view.
         [self.summaryView contentPerformSave:NO];
+        
     }
+    
+    // Show intro card?
+    [self showIntroCard:[self introRequired]];
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
