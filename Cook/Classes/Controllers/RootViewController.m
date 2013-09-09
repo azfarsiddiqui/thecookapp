@@ -25,7 +25,8 @@
 #import "ImageHelper.h"
 
 @interface RootViewController () <WelcomeViewControllerDelegate, BenchtopViewControllerDelegate, BookCoverViewControllerDelegate,
-    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate>
+    UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate,
+    SettingsViewControllerDelegate>
 
 @property (nonatomic, strong) PagingBenchtopViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
@@ -297,6 +298,14 @@
 
 - (void)closeRequestedForBookModalViewController:(UIViewController *)viewController {
     [self hideModalViewController:viewController];
+}
+
+#pragma mark - SettingsViewControllerDelegate methods
+
+- (void)settingsViewControllerSignInRequested {
+    [self snapToLevel:kBenchtopLevel completion:^{
+        [self.benchtopViewController showLoginViewSignUp:NO];
+    }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -703,7 +712,7 @@
 
 - (UIViewController *)settingsViewController {
     if (_settingsViewController == nil) {
-        _settingsViewController = [[SettingsViewController alloc] init];
+        _settingsViewController = [[SettingsViewController alloc] initWithDelegate:self];
     }
     return _settingsViewController;
 }

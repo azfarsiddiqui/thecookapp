@@ -146,6 +146,52 @@
     
 }
 
+- (void)showLoginViewSignUp:(BOOL)signUp {
+    
+    // Ignore in editMode.
+    if (self.editMode) {
+        return;
+    }
+    
+    // Disable benchtop.
+    [self.delegate panEnabledRequested:NO];
+    [self enable:NO];
+    
+    self.signUpViewController = [[SignupViewController alloc] initWithDelegate:self];
+    self.signUpViewController.view.alpha = 0.0;
+    [self.signUpViewController enableSignUpMode:signUp animated:NO];
+    [self.view addSubview:self.signUpViewController.view];
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.signUpViewController.view.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+
+- (void)hideLoginViewCompletion:(void (^)())completion {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.signUpViewController.view.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.signUpViewController.view removeFromSuperview];
+                         self.signUpViewController = nil;
+                         
+                         // Re-enable benchtop.
+                         [self enable:YES];
+                         [self.delegate panEnabledRequested:YES];
+                         
+                         completion();
+                     }];
+}
+
+
 #pragma mark - PagingBenchtopViewController methods
 
 - (void)enable:(BOOL)enable {
@@ -1244,51 +1290,6 @@
             
         }
     }
-}
-
-- (void)showLoginViewSignUp:(BOOL)signUp {
-    
-    // Ignore in editMode.
-    if (self.editMode) {
-        return;
-    }
-    
-    // Disable benchtop.
-    [self.delegate panEnabledRequested:NO];
-    [self enable:NO];
-    
-    self.signUpViewController = [[SignupViewController alloc] initWithDelegate:self];
-    self.signUpViewController.view.alpha = 0.0;
-    [self.signUpViewController enableSignUpMode:signUp animated:NO];
-    [self.view addSubview:self.signUpViewController.view];
-    
-    [UIView animateWithDuration:0.3
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.signUpViewController.view.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-}
-
-- (void)hideLoginViewCompletion:(void (^)())completion {
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.signUpViewController.view.alpha = 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         [self.signUpViewController.view removeFromSuperview];
-                         self.signUpViewController = nil;
-                         
-                         // Re-enable benchtop.
-                         [self enable:YES];
-                         [self.delegate panEnabledRequested:YES];
-                         
-                         completion();
-                     }];
 }
 
 - (void)showNotificationsOverlay:(BOOL)show {
