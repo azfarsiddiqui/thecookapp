@@ -22,5 +22,6 @@ typedef NS_ENUM(NSUInteger, CardViewAnchor) {
 - (void)showCardViewWithTag:(NSString *)tag icon:(UIImage *)icon title:(NSString *)title subtitle:(NSString *)subtitle
                        view:(UIView *)view anchor:(CardViewAnchor)anchor center:(CGPoint)center;
 - (void)hideCardViewWithTag:(NSString *)tag;
+- (void)clearDismissedStates;
 
 @end

@@ -88,11 +88,11 @@
         return;
     }
     
-    NSString *cardTag = @"GetStartedCard";
+    NSString *cardTag = @"AddProfile";
     
     if (show) {
         CGSize cardSize = [CardViewHelper cardViewSize];
-        [[CardViewHelper sharedInstance] showCardViewWithTag:@"addProfile"
+        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
                                                         icon:[UIImage imageNamed:@"cook_intro_icon_profile.png"]
                                                        title:@"YOUR PROFILE"
                                                     subtitle:@"ADD A BACKGROUND IMAGE, PROFILE PHOTO AND BIO."
@@ -337,6 +337,8 @@
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
     self.editMode = editMode;
+    
+    [self showIntroCard:!editMode];
     
     // Prep photo edit button to be transitioned in.
     if (self.editMode) {
