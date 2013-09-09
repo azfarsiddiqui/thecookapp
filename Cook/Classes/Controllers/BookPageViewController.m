@@ -8,6 +8,7 @@
 
 #import "BookPageViewController.h"
 #import "ViewHelper.h"
+#import "CardViewHelper.h"
 
 @interface BookPageViewController ()
 
@@ -64,6 +65,10 @@
 
 - (UIEdgeInsets)pageContentInsets {
     return kContentInsets;
+}
+
+- (void)showIntroCard:(BOOL)show {
+    // Subclasses to implement.
 }
 
 #pragma mark - CKSaveableContent methods

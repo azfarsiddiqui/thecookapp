@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 - (void)ignoreFriendRequestFrom:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)saveCoverPhoto:(UIImage *)coverPhoto completion:(ObjectSuccessBlock)completion;
 - (PFFile *)parseCoverPhotoFile;
-- (BOOL)hasCoverPhoto;
+- (BOOL)hasProfilePhoto;
 - (NSString *)friendlyName;
 
 // Notifications

@@ -26,6 +26,7 @@
 #import "CKEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "CKTextFieldEditViewController.h"
+#import "CardViewHelper.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate>
@@ -94,7 +95,13 @@
     self.pages = [NSMutableArray arrayWithArray:pages];
     
     if (reload) {
-        [self.collectionView reloadData];
+        
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        } completion:^(BOOL finished){
+            [self showIntroCard:([pages count] == 0)];
+        }];
+        
     } else {
         NSMutableArray *pageIndexPaths = [NSMutableArray arrayWithArray:[self.pages collectWithIndex:^id(NSString *page, NSUInteger pageIndex) {
             return [NSIndexPath indexPathForItem:pageIndex inSection:0];
@@ -116,6 +123,7 @@
                                  self.collectionView.transform = CGAffineTransformIdentity;
                              }
                              completion:^(BOOL finished){
+                                 [self showIntroCard:([pages count] == 0)];
                              }];
         }];
     }
@@ -138,6 +146,33 @@
                                                    }
                                                }];
     }
+}
+
+#pragma mark - BookPageViewController methods
+
+- (void)showIntroCard:(BOOL)show {
+    if (![self.book isOwner]) {
+        return;
+    }
+    
+    NSString *cardTag = @"GetStartedCard";
+    
+    if (show) {
+        CGSize cardSize = [CardViewHelper cardViewSize];
+        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
+                                                        icon:[UIImage imageNamed:@"cook_intro_icon_title.png"]
+                                                       title:@"GET STARTED"
+                                                    subtitle:@"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..."
+                                                        view:self.collectionView
+                                                      anchor:CardViewAnchorMidLeft
+                                                      center:(CGPoint){
+                                                          90.0 + [BookTitleCell cellSize].width + floorf(cardSize.width / 2.0) + 20.0,
+                                                          self.view.bounds.size.height - [BookTitleCell cellSize].height + 58.0,
+                                                      }];
+    } else {
+        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
+    }
+    
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -320,6 +355,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate bookTitleAddedPage:text];
     
     [self enableAddMode:NO];
+    [self showIntroCard:NO];
 }
 
 - (id)editViewControllerInitialValue {

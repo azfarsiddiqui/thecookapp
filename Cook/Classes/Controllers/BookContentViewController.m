@@ -26,6 +26,7 @@
 #import "ModalOverlayHelper.h"
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
+#import "CardViewHelper.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
@@ -74,6 +75,12 @@
     [self loadData];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self showIntroCard:([self.recipes count] == 0)];
+}
+
 - (void)loadData {
     self.recipes = [NSMutableArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
@@ -93,6 +100,10 @@
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
+    
+    // Disable any card.
+    [self showIntroCard:!editMode];
+    
     self.editMode = editMode;
     self.collectionView.scrollEnabled = !editMode;
     
@@ -147,10 +158,6 @@
                          }
                          completion:^(BOOL finished)  {
                              
-                             if (!self.editMode) {
-                                 [self.bookPageDelegate bookPageViewController:self editModeRequested:NO];
-                             }
-                             
                              if (completion != nil) {
                                  completion();
                              }
@@ -166,6 +173,34 @@
             completion();
         }
     }
+}
+
+#pragma mark - BookPageViewController methods
+
+- (void)showIntroCard:(BOOL)show {
+    
+    if (![self.book isOwner]) {
+        return;
+    }
+    
+    NSString *cardTag = @"AddRecipeCard";
+    
+    if (show) {
+        CGSize cardSize = [CardViewHelper cardViewSize];
+        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
+                                                        icon:[UIImage imageNamed:@"cook_intro_icon_category.png"]
+                                                       title:@"ADD A RECIPE"
+                                                    subtitle:@"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!"
+                                                        view:self.view
+                                                      anchor:CardViewAnchorTopRight
+                                                      center:(CGPoint){
+                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0) - 12.0,
+                                                          floorf(cardSize.height / 2.0) + 70.0
+                                                      }];
+    } else {
+        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
+    }
+    
 }
 
 #pragma mark - BookContentGridLayoutDelegate methods

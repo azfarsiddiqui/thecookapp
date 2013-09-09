@@ -721,12 +721,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
     }
     
-    // Top shadow.
-    UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view];
-    topShadowView.alpha = 0.0;
-    [self.view insertSubview:topShadowView aboveSubview:self.imageView];
-    self.topShadowView = topShadowView;
-    
     // Photo button to be hidden for editMode.
     CGRect photoButtonFrame = self.photoButtonView.frame;
     photoButtonFrame.origin = (CGPoint){
@@ -876,6 +870,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.imageView.image = image;
     self.imageView.placeholder = placeholder;
     
+    [self.topShadowView removeFromSuperview];
+    self.topShadowView = [ViewHelper topShadowViewForView:self.imageView subtle:placeholder];
+    self.topShadowView.alpha = 0.0;
+    [self.view insertSubview:self.topShadowView aboveSubview:self.imageView];
+
     if (self.blur) {
         self.blurredImageView.image = [ImageHelper blurredRecipeImage:image];
     }
