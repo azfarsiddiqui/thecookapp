@@ -92,6 +92,8 @@
 #define kBookOutlineOffset          (UIOffset){-64.0, -26.0}
 #define kBookOutlineSnapshotWidth   400.0
 #define kEditButtonInsets           (UIEdgeInsets){ 20.0, 5.0, 0.0, 5.0 }
+#define kIndexSectionTag            950
+#define kProfileSectionTag          951
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
@@ -840,8 +842,9 @@
 
 - (UICollectionViewCell *)profileCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *profileCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kProfileCellId forIndexPath:indexPath];;
-    if (!self.profileViewController.view.superview) {
+    if (![profileCell.contentView viewWithTag:kProfileSectionTag]) {
         self.profileViewController.view.frame = profileCell.contentView.bounds;
+        self.profileViewController.view.tag = kProfileSectionTag;
         [profileCell.contentView addSubview:self.profileViewController.view];
     }
     return profileCell;
@@ -849,8 +852,9 @@
 
 - (UICollectionViewCell *)indexCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *indexCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kIndexCellId forIndexPath:indexPath];
-    if (!self.titleViewController.view.superview) {
+    if (![indexCell.contentView viewWithTag:kIndexSectionTag]) {
         self.titleViewController.view.frame = indexCell.contentView.bounds;
+        self.titleViewController.view.tag = kIndexSectionTag;
         [indexCell.contentView addSubview:self.titleViewController.view];
     }
     return indexCell;

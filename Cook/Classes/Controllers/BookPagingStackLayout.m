@@ -36,6 +36,7 @@
 #define kForceVisibleOffset         1.0
 #define DEGREES_TO_RADIANS(angle)   ((angle) / 180.0 * M_PI)
 #define kPageNavigationtKind        @"PageNavigationtKind"
+#define kLayoutDebug                0
 
 + (NSString *)bookPagingNavigationElementKind {
     return kPageNavigationtKind;
@@ -145,6 +146,8 @@
     
     // Apply transform for paging.
     [self applyPagingEffects:layoutAttributes];
+    
+    [self debugLayout:layoutAttributes];
     
     return layoutAttributes;
 }
@@ -450,6 +453,33 @@
             [BookNavigationView navigationHeight]
         };
     }
+}
+
+- (void)debugLayout:(NSArray *)layoutAttributes {
+    if (kLayoutDebug) {
+        NSLog(@"***************************************");
+        NSLog(@"***************************************");
+        NSLog(@"***************************************");
+        for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+            NSLog(@"indexPath[%d,%d] zIndex[%d] type[%@]", attributes.indexPath.section, attributes.indexPath.item,
+                  attributes.zIndex, [self stringTypeForElementCategory:attributes.representedElementCategory]);
+        }
+        NSLog(@"***************************************");
+        NSLog(@"***************************************");
+        NSLog(@"***************************************");
+    }
+}
+
+- (NSString *)stringTypeForElementCategory:(UICollectionElementCategory)category {
+    NSString *type = nil;
+    if (category == UICollectionElementCategoryCell) {
+        type = @"cell";
+    } else if (category == UICollectionElementCategorySupplementaryView) {
+        type = @"supp";
+    } else if (category == UICollectionElementCategoryDecorationView) {
+        type = @"deco";
+    }
+    return type;
 }
 
 @end
