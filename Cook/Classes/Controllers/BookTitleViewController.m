@@ -38,6 +38,7 @@
 @property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) BookTitleView *bookTitleView;
@@ -414,7 +415,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.imageView addSubview:self.blurredImageView];
     
     // Apply top shadow.
-    [ViewHelper addTopShadowView:self.imageView];
+    UIImageView *topShadowView = [ViewHelper topShadowViewForView:self.view subtle:YES];
+    [self.view insertSubview:topShadowView aboveSubview:self.imageView];
+    self.topShadowView = topShadowView;
     
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
@@ -441,6 +444,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     collectionView.delegate = self;
     collectionView.alwaysBounceVertical = YES;
     collectionView.alwaysBounceHorizontal = NO;
+    collectionView.showsVerticalScrollIndicator = NO;
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:collectionView];
     self.collectionView = collectionView;
@@ -501,6 +505,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     self.titleImageLoaded = YES;
     
     [ImageHelper configureImageView:self.imageView image:image];
+    self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     
     UIColor *tintColour = [[[CKBookCover colourForCover:self.book.cover] colorWithAlphaComponent:0.7]
                            colorByAddingColor:[UIColor colorWithWhite:1.0 alpha:0.1]];

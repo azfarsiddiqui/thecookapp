@@ -12,6 +12,7 @@
 @interface CardViewHelper ()
 
 @property (nonatomic, strong) NSMutableDictionary *cards;
+@property (nonatomic, strong) NSMutableDictionary *cardsDismissed;
 
 @end
 
@@ -44,12 +45,18 @@
 - (id)init {
     if (self = [super init]) {
         self.cards = [NSMutableDictionary dictionary];
+        self.cardsDismissed = [NSMutableDictionary dictionary];
     }
     return self;
 }
 
 - (void)showCardViewWithTag:(NSString *)tag icon:(UIImage *)icon title:(NSString *)title subtitle:(NSString *)subtitle
                        view:(UIView *)view anchor:(CardViewAnchor)anchor center:(CGPoint)center {
+    
+    // Has this been dismissed in this session.
+    if ([[self.cardsDismissed objectForKey:tag] boolValue]) {
+        return;
+    }
     
     // Remove any existing one.
     UIView *cardView = [self.cards objectForKey:tag];
@@ -97,6 +104,12 @@
                          [cardView removeFromSuperview];
                          [self.cards removeObjectForKey:tag];
                      }];
+}
+
+- (void)clearDismissedStates {
+    
+    // Forget about manually dismissed cards.
+    [self.cardsDismissed removeAllObjects];
 }
 
 #pragma mark - Private methods
@@ -257,6 +270,7 @@
     }
     
     if (tagToDismiss) {
+        [self.cardsDismissed setObject:@YES forKey:tagToDismiss];
         [self hideCardViewWithTag:tagToDismiss];
     }
 }

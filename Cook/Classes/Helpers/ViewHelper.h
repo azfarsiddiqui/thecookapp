@@ -51,6 +51,7 @@
 + (CGRect)visibleFrameForCollectionView:(UICollectionView *)collectionView;
 
 // Shadows.
++ (UIImage *)topShadowImageSubtle:(BOOL)subtle;
 + (UIImageView *)topShadowViewForView:(UIView *)view;
 + (UIImageView *)topShadowViewForView:(UIView *)view subtle:(BOOL)subtle;
 + (void)addTopShadowView:(UIView *)view;

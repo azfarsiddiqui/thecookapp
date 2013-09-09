@@ -206,12 +206,15 @@
 
 #pragma mark - Shadows
 
++ (UIImage *)topShadowImageSubtle:(BOOL)subtle {
+    return subtle ? [UIImage imageNamed:@"cook_book_inner_titlebar_dark_nophoto.png"] : [UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"];
+}
 + (UIImageView *)topShadowViewForView:(UIView *)view {
     return [self topShadowViewForView:view subtle:NO];
 }
 
 + (UIImageView *)topShadowViewForView:(UIView *)view subtle:(BOOL)subtle {
-    UIImage *topShadowImage = subtle ? [UIImage imageNamed:@"cook_book_inner_titlebar_dark_nophoto.png"] : [UIImage imageNamed:@"cook_book_inner_titlebar_dark.png"];
+    UIImage *topShadowImage = [self topShadowImageSubtle:subtle];
     UIImageView *topShadowView = [[UIImageView alloc] initWithImage:topShadowImage];
     topShadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
     topShadowView.frame = (CGRect){

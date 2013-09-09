@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol SettingsViewControllerDelegate <NSObject>
+
+- (void)settingsViewControllerSignInRequested;
+
+@end
+
 @interface SettingsViewController : UIViewController
+
+- (id)initWithDelegate:(id<SettingsViewControllerDelegate>)delegate;
 
 @end

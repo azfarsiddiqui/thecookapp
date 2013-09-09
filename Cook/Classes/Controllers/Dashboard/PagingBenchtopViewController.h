@@ -18,5 +18,7 @@
 - (void)enable:(BOOL)enable;
 - (void)bookWillOpen:(BOOL)open;
 - (void)bookDidOpen:(BOOL)open;
+- (void)showLoginViewSignUp:(BOOL)signUp;
+- (void)hideLoginViewCompletion:(void (^)())completion;
 
 @end

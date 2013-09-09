@@ -26,6 +26,7 @@
 #import "EventHelper.h"
 #import "BookContentCell.h"
 #import "CKPhotoManager.h"
+#import "CardViewHelper.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -104,6 +105,10 @@
         self.profileViewController.bookPageDelegate = self;
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
         self.titleViewController.bookPageDelegate = self;
+        
+        // Forget about dismissed states.
+        [[CardViewHelper sharedInstance] clearDismissedStates];
+        
     }
     return self;
 }
@@ -1350,6 +1355,7 @@
                              [self.cancelButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
                          }
-                     }];}
+                     }];
+}
 
 @end
