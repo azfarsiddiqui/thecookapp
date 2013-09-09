@@ -221,15 +221,16 @@
 }
 
 - (void)didEndForTextFieldView:(CKTextFieldView *)textFieldView {
-    NSLog(@"textFieldViewDidEnd:");
     [self validateFields:@[textFieldView]];
 }
 
 - (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView {
-    NSLog(@"textFieldViewDidReturn:");
     if ([self validateFields:@[textFieldView]]) {
-        
-        if (textFieldView == self.emailAddressView) {
+        if (textFieldView == self.emailNameView) {
+            [self.emailAddressView becomeFirstResponder];
+        } else if (textFieldView == self.emailAddressView) {
+            [self.emailPasswordView becomeFirstResponder];
+        } else if (textFieldView == self.emailPasswordView) {
             [self emailButtonTapped];
         } else if (textFieldView == self.forgotEmailView) {
             [self forgotButtonTapped];
@@ -448,7 +449,8 @@
     [emailContainerView addSubview:self.emailButton];
 
     // Password field anchor to the bottom.
-    CKTextFieldView *emailPasswordView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self placeholder:@"Password" password:YES];
+    CKTextFieldView *emailPasswordView = [[CKTextFieldView alloc] initWithWidth:availableSize.width delegate:self
+                                                                    placeholder:@"Password" password:YES submit:YES];
     emailPasswordView.allowSpaces = NO;
     emailPasswordView.maxLength = kPasswordMaxLength;
     emailPasswordView.frame = (CGRect){
@@ -501,7 +503,7 @@
     
     // Forgot email.
     self.forgotEmailView = [[CKTextFieldView alloc] initWithWidth:self.emailAddressView.frame.size.width delegate:self
-                                                      placeholder:@"Email Address"];
+                                                      placeholder:@"Email Address" password:NO submit:YES];
     CGRect forgotEmailFrame = self.forgotEmailView.frame;
     forgotEmailFrame.origin.y = forgotLabelFrame.origin.y + forgotLabelFrame.size.height + labelFieldGap;
     [self.scrollView addSubview:self.forgotEmailView];

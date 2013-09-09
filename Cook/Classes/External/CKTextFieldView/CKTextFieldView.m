@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UILabel *placeholderLabel;
 @property (nonatomic, strong) UIImageView *validationImageView;
 @property (nonatomic, assign) BOOL autoCapitalise;
+@property (nonatomic, assign) BOOL submit;
 
 @end
 
@@ -42,6 +43,13 @@
 }
 
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+           password:(BOOL)password submit:(BOOL)submit {
+    
+    return [self initWithWidth:width delegate:delegate placeholder:placeholder password:password autoCapitalise:NO
+                        submit:submit contentInsets:kDefaultContentInsets];
+}
+
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
      autoCapitalise:(BOOL)autoCapitalise {
     
     return [self initWithWidth:width delegate:delegate placeholder:placeholder password:NO autoCapitalise:autoCapitalise
@@ -58,12 +66,21 @@
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
            password:(BOOL)password autoCapitalise:(BOOL)autoCapitalise contentInsets:(UIEdgeInsets)contentInsets {
     
+    return [self initWithWidth:width delegate:delegate placeholder:placeholder password:password
+                autoCapitalise:autoCapitalise submit:NO contentInsets:contentInsets];
+}
+
+- (id)initWithWidth:(CGFloat)width delegate:(id<CKTextFieldViewDelegate>)delegate placeholder:(NSString *)placeholder
+           password:(BOOL)password autoCapitalise:(BOOL)autoCapitalise submit:(BOOL)submit
+      contentInsets:(UIEdgeInsets)contentInsets {
+    
     if (self = [super initWithFrame:CGRectZero]) {
         self.delegate = delegate;
         
         self.password = password;
         self.placeholder = placeholder;
         self.autoCapitalise = autoCapitalise;
+        self.submit = submit;
         self.contentInsets = contentInsets;
         self.backgroundColor = [UIColor clearColor];
         self.width = width;
@@ -211,7 +228,7 @@
         textField.backgroundColor = [UIColor clearColor];
         textField.textAlignment = NSTextAlignmentCenter;
         textField.delegate = self;
-        textField.returnKeyType = UIReturnKeyGo;
+        textField.returnKeyType = self.submit ? UIReturnKeyGo : UIReturnKeyNext;
         textField.text = @"";
         textField.keyboardType = UIKeyboardTypeEmailAddress;
         textField.autocapitalizationType = self.autoCapitalise ? UITextAutocapitalizationTypeWords : UITextAutocapitalizationTypeNone;
