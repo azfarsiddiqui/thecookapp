@@ -298,7 +298,7 @@
     if (show) {
         // Present photo picker fullscreen.
         UIView *rootView = [[AppHelper sharedInstance] rootView];
-        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self];
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self type:CKPhotoPickerImageTypeSquare];
         self.photoPickerViewController = photoPickerViewController;
         self.photoPickerViewController.view.alpha = 0.0;
         [rootView addSubview:self.photoPickerViewController.view];
