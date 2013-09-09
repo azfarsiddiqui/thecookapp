@@ -492,8 +492,10 @@
 - (void)renamePage:(NSString *)page toPage:(NSString *)toPage success:(ObjectSuccessBlock)success
            failure:(ObjectFailureBlock)failure {
     
+    DLog(@"page [%@] toPage [%@]", [page CK_containsText] ? @"YES" : @"NO", [toPage CK_containsText] ? @"YES" : @"NO");
     if (![page CK_containsText] && ![toPage CK_containsText]) {
         failure(nil);
+        return;
     }
     
     [PFCloud callFunctionInBackground:@"bookRenamePage"

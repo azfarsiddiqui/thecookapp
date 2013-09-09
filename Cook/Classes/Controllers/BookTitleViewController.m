@@ -522,7 +522,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)showIntroCard:(BOOL)show {
-    NSString *cardTag = @"AddRecipeCard";
+    NSString *cardTag = @"GetStartedCard";
     
     if (show) {
         UICollectionViewCell *addCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
@@ -534,8 +534,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                                         view:self.collectionView
                                                       anchor:CardViewAnchorMidLeft
                                                       center:(CGPoint){
-                                                          addCell.frame.origin.x + addCell.frame.size.width + floorf(cardSize.width / 2.0) + 20.0,
-                                                          addCell.frame.origin.y + floorf(addCell.frame.size.height/ 2.0)
+                                                          90.0 + [BookTitleCell cellSize].width + floorf(cardSize.width / 2.0) + 20.0,
+                                                          self.view.bounds.size.height - floorf(addCell.frame.size.height/ 2.0) - 37.0
                                                       }];
     } else {
         [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
