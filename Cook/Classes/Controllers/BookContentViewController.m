@@ -194,7 +194,7 @@
                                                         view:self.view
                                                       anchor:CardViewAnchorTopRight
                                                       center:(CGPoint){
-                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0),
+                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0) - 12.0,
                                                           floorf(cardSize.height / 2.0) + 70.0
                                                       }];
     } else {
