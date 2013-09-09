@@ -12,6 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <CoreImage/CoreImage.h>
 #import "CKPhotoFilterSliderView.h"
+#import "ImageHelper.h"
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate, CKNotchSliderViewDelegate>
@@ -48,6 +49,8 @@
 #define kContentInsets  UIEdgeInsetsMake(20.0, 15.0, 10.0, 15.0)
 #define kSquareCropHeight 604
 #define kSquareCropOrigin CGPointMake(210, 82)
+#define MAX_IMAGE_WIDTH 2048
+#define MAX_IMAGE_HEIGHT 1536
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
@@ -122,16 +125,53 @@
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *pickedImage = [info valueForKey:UIImagePickerControllerOriginalImage];
-    self.selectedImage = pickedImage;
+//    NSURL *assetURL = [info objectForKey:UIImagePickerControllerReferenceURL];
+//    
+//    if (assetURL) //Picked from Camera Roll
+//    {
+//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+//        
+//        [library assetForURL:assetURL
+//                 resultBlock:^(ALAsset *__strong asset) {
+//                     // we need to be defensive
+//                     if (asset)
+//                     {
+//                         ALAssetRepresentation *rep = [asset defaultRepresentation];
+//                         
+//                         CGImageRef cgimage = [rep fullScreenImage];
+//                         UIImage *pickedImage = [UIImage imageWithCGImage:cgimage scale:1.0 orientation:];
+//                         CGImageRelease(cgimage);
+//                         DLog(@"Picked image size: %f, %f", pickedImage.size.width, pickedImage.size.height);
+//                         self.selectedImage = pickedImage;
+//                         self.tempImage = pickedImage;
+//                         [self.popoverViewController dismissPopoverAnimated:YES];
+//                         self.popoverViewController = nil;
+//                         self.libraryPickerViewController = nil;
+//                         [self removeImagePicker];
+//                         [self updateImagePreview];
+//                         [self updateButtons];
+//                     }
+//                 } failureBlock:^(NSError *error) {
+//                     DLog(@"Error getting from camera roll: %@", error);
+//                 }];
+//    }
+//    else
+//    {
+    UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    CGFloat cropWidth = chosenImage.size.width > MAX_IMAGE_WIDTH ? MAX_IMAGE_WIDTH : chosenImage.size.width;
+    CGFloat cropHeight = chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
+    chosenImage = [ImageHelper scaledImage:chosenImage size:CGSizeMake(cropWidth, cropHeight)];
+    self.selectedImage = chosenImage;
+    self.tempImage = chosenImage;
+    DLog(@"Picked image size: %f, %f", chosenImage.size.width, chosenImage.size.height);
+    [self updateImagePreview];
+    [self updateButtons];
     [self.popoverViewController dismissPopoverAnimated:YES];
     self.popoverViewController = nil;
     self.libraryPickerViewController = nil;
     [self removeImagePicker];
-    [self updateImagePreview];
-    [self updateButtons];
-    self.tempImage = pickedImage;
-//    [self addTestSliderView];
+//    }
+    
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
