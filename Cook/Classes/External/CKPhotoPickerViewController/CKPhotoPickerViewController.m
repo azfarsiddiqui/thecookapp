@@ -12,6 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <CoreImage/CoreImage.h>
 #import "CKPhotoFilterSliderView.h"
+#import "ImageHelper.h"
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate, CKNotchSliderViewDelegate>
@@ -33,6 +34,7 @@
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIButton *flashButton;
 @property (nonatomic, strong) UIButton *toggleButton;
+@property (nonatomic, strong) UIView *vignetteView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 @property (nonatomic, strong) CIContext *filterContext;
 @property (nonatomic, strong) CKPhotoFilterSliderView *filterPickerView;
@@ -47,6 +49,8 @@
 #define kContentInsets  UIEdgeInsetsMake(20.0, 15.0, 10.0, 15.0)
 #define kSquareCropHeight 604
 #define kSquareCropOrigin CGPointMake(210, 82)
+#define MAX_IMAGE_WIDTH 2048
+#define MAX_IMAGE_HEIGHT 1536
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
@@ -121,16 +125,53 @@
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *pickedImage = [info valueForKey:UIImagePickerControllerOriginalImage];
-    self.selectedImage = pickedImage;
+//    NSURL *assetURL = [info objectForKey:UIImagePickerControllerReferenceURL];
+//    
+//    if (assetURL) //Picked from Camera Roll
+//    {
+//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+//        
+//        [library assetForURL:assetURL
+//                 resultBlock:^(ALAsset *__strong asset) {
+//                     // we need to be defensive
+//                     if (asset)
+//                     {
+//                         ALAssetRepresentation *rep = [asset defaultRepresentation];
+//                         
+//                         CGImageRef cgimage = [rep fullScreenImage];
+//                         UIImage *pickedImage = [UIImage imageWithCGImage:cgimage scale:1.0 orientation:];
+//                         CGImageRelease(cgimage);
+//                         DLog(@"Picked image size: %f, %f", pickedImage.size.width, pickedImage.size.height);
+//                         self.selectedImage = pickedImage;
+//                         self.tempImage = pickedImage;
+//                         [self.popoverViewController dismissPopoverAnimated:YES];
+//                         self.popoverViewController = nil;
+//                         self.libraryPickerViewController = nil;
+//                         [self removeImagePicker];
+//                         [self updateImagePreview];
+//                         [self updateButtons];
+//                     }
+//                 } failureBlock:^(NSError *error) {
+//                     DLog(@"Error getting from camera roll: %@", error);
+//                 }];
+//    }
+//    else
+//    {
+    UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    CGFloat cropWidth = chosenImage.size.width > MAX_IMAGE_WIDTH ? MAX_IMAGE_WIDTH : chosenImage.size.width;
+    CGFloat cropHeight = chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
+    chosenImage = [ImageHelper scaledImage:chosenImage size:CGSizeMake(cropWidth, cropHeight)];
+    self.selectedImage = chosenImage;
+    self.tempImage = chosenImage;
+    DLog(@"Picked image size: %f, %f", chosenImage.size.width, chosenImage.size.height);
+    [self updateImagePreview];
+    [self updateButtons];
     [self.popoverViewController dismissPopoverAnimated:YES];
     self.popoverViewController = nil;
     self.libraryPickerViewController = nil;
     [self removeImagePicker];
-    [self updateImagePreview];
-    [self updateButtons];
-    self.tempImage = pickedImage;
-//    [self addTestSliderView];
+//    }
+    
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -253,6 +294,19 @@
                                          _saveButton.frame.size.height)];
     }
     return _saveButton;
+}
+
+- (UIView *)vignetteView {
+    if (!_vignetteView) {
+        _vignetteView = [[UIView alloc] initWithFrame:self.view.frame];
+        _vignetteView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        UIImage *bottomImage = [UIImage imageNamed:@"cook_book_inner_darkenphoto_strip_bottom"];
+        UIImageView *bottomVignetteView = [[UIImageView alloc] initWithImage:bottomImage];//[bottomImage resizableImageWithCapInsets:UIEdgeInsetsMake(1, 0, 1, 0)]];
+        bottomVignetteView.frame = CGRectMake(0, _vignetteView.frame.size.height - bottomVignetteView.frame.size.height, bottomVignetteView.frame.size.width, bottomVignetteView.frame.size.height);
+        _vignetteView.userInteractionEnabled = NO;
+        [_vignetteView addSubview:bottomVignetteView];
+    }
+    return _vignetteView;
 }
 
 - (CKPhotoFilterSliderView *)filterPickerView {
@@ -434,8 +488,10 @@
         self.retakeButton.alpha = 0.0;
         self.saveButton.alpha = 0.0;
         self.filterPickerView.alpha = 0.0;
+        self.vignetteView.alpha = 0.0;
         [parentView addSubview:self.retakeButton];
         [parentView addSubview:self.saveButton];
+        [parentView addSubview:self.vignetteView];
         if (self.showFilters)
             [parentView addSubview:self.filterPickerView];
     } else {
@@ -462,6 +518,7 @@
                          self.retakeButton.alpha = photoSelected ? 1.0 : 0.0;
                          self.saveButton.alpha = photoSelected ? 1.0 : 0.0;
                          self.filterPickerView.alpha = photoSelected ? 1.0 : 0.0;
+                         self.vignetteView.alpha = photoSelected ? 1.0 : 0.0;
                          
                          self.closeButton.userInteractionEnabled = enabled;
                          self.libraryButton.userInteractionEnabled = enabled;
@@ -483,6 +540,7 @@
                              [self.retakeButton removeFromSuperview];
                              [self.saveButton removeFromSuperview];
                              [self.filterPickerView removeFromSuperview];
+                             [self.vignetteView removeFromSuperview];
                          }
                      }];
 }
@@ -710,14 +768,15 @@
     UIImage *returnImage;
     @autoreleasepool {
         CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-        filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
-                         @"inputBrightness", [NSNumber numberWithFloat:0.0],
-                         @"inputContrast", [NSNumber numberWithFloat:1.3],
-                         @"inputSaturation", [NSNumber numberWithFloat:1.15], nil].outputImage;
-        filteredImage = [CIFilter filterWithName:@"CIVibrance" keysAndValues:kCIInputImageKey, filteredImage,
-                         @"inputAmount", [NSNumber numberWithFloat:1.3], nil].outputImage;
-        filteredImage = [CIFilter filterWithName:@"CISharpenLuminance" keysAndValues:kCIInputImageKey, filteredImage,
-                         @"inputSharpness", [NSNumber numberWithFloat:0.5], nil].outputImage;
+        filteredImage = [CIFilter filterWithName:@"CIPhotoEffectChrome" keysAndValues:kCIInputImageKey, filteredImage, nil].outputImage;
+        //        filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage,
+        //                         @"inputBrightness", [NSNumber numberWithFloat:0.0],
+        //                         @"inputContrast", [NSNumber numberWithFloat:1.3],
+        //                         @"inputSaturation", [NSNumber numberWithFloat:1.15], nil].outputImage;
+        //        filteredImage = [CIFilter filterWithName:@"CIVibrance" keysAndValues:kCIInputImageKey, filteredImage,
+        //                         @"inputAmount", [NSNumber numberWithFloat:1.3], nil].outputImage;
+        //        filteredImage = [CIFilter filterWithName:@"CISharpenLuminance" keysAndValues:kCIInputImageKey, filteredImage,
+        //                         @"inputSharpness", [NSNumber numberWithFloat:0.5], nil].outputImage;
         CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
         returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
         filteredImage = nil;
