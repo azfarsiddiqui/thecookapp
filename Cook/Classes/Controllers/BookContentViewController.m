@@ -175,6 +175,34 @@
     }
 }
 
+#pragma mark - BookPageViewController methods
+
+- (void)showIntroCard:(BOOL)show {
+    
+    if (![self.book isOwner]) {
+        return;
+    }
+    
+    NSString *cardTag = @"AddRecipeCard";
+    
+    if (show) {
+        CGSize cardSize = [CardViewHelper cardViewSize];
+        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
+                                                        icon:[UIImage imageNamed:@"cook_intro_icon_category.png"]
+                                                       title:@"ADD A RECIPE"
+                                                    subtitle:@"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!"
+                                                        view:self.view
+                                                      anchor:CardViewAnchorTopRight
+                                                      center:(CGPoint){
+                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0),
+                                                          floorf(cardSize.height / 2.0) + 70.0
+                                                      }];
+    } else {
+        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
+    }
+    
+}
+
 #pragma mark - BookContentGridLayoutDelegate methods
 
 - (void)bookContentGridLayoutDidFinish {
@@ -632,27 +660,6 @@
     [self updateContentTitleViewWithTitle:self.page];
     [self.editingHelper updateEditingView:self.contentTitleView animated:NO];
     [self.editingHelper unwrapEditingView:self.contentTitleView animated:YES];
-}
-
-- (void)showIntroCard:(BOOL)show {
-    NSString *cardTag = @"AddRecipeCard";
-    
-    if (show) {
-        CGSize cardSize = [CardViewHelper cardViewSize];
-        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
-                                                        icon:[UIImage imageNamed:@"cook_intro_icon_category.png"]
-                                                       title:@"ADD A RECIPE"
-                                                    subtitle:@"OR PHOTOS, TIPS, NOTES, ANYTHING FOOD RELATED!"
-                                                        view:self.view
-                                                      anchor:CardViewAnchorTopRight
-                                                      center:(CGPoint){
-                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0),
-                                                          floorf(cardSize.height / 2.0) + 70.0
-                                                      }];
-    } else {
-        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
-    }
-    
 }
 
 @end

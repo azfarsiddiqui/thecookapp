@@ -20,6 +20,7 @@
 #import "CKEditingViewHelper.h"
 #import "CKPhotoManager.h"
 #import "CKBookCover.h"
+#import "CardViewHelper.h"
 
 @interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate,
     CKBookSummaryViewDelegate>
@@ -77,6 +78,34 @@
     }
     
     [self loadData];
+    [self showIntroCard:[self introRequired]];
+}
+
+#pragma mark - BookPageViewController methods
+
+- (void)showIntroCard:(BOOL)show {
+    if (![self.book isOwner]) {
+        return;
+    }
+    
+    NSString *cardTag = @"GetStartedCard";
+    
+    if (show) {
+        CGSize cardSize = [CardViewHelper cardViewSize];
+        [[CardViewHelper sharedInstance] showCardViewWithTag:@"addProfile"
+                                                        icon:[UIImage imageNamed:@"cook_intro_icon_profile.png"]
+                                                       title:@"YOUR PROFILE"
+                                                    subtitle:@"ADD A BACKGROUND IMAGE, PROFILE PHOTO AND BIO."
+                                                        view:self.view
+                                                      anchor:CardViewAnchorTopRight
+                                                      center:(CGPoint){
+                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0) - 13.0,
+                                                          floorf(cardSize.height / 2.0) + 65.0
+                                                      }];
+    } else {
+        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
+    }
+    
 }
 
 #pragma mark - CKSaveableContent methods
@@ -345,6 +374,10 @@
         // Summary view.
         [self.summaryView enableEditMode:editMode animated:NO];
     }
+}
+
+- (BOOL)introRequired {
+    return (![self.book hasCoverPhoto] && ![self.book.user hasProfilePhoto]);
 }
 
 @end

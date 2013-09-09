@@ -148,6 +148,33 @@
     }
 }
 
+#pragma mark - BookPageViewController methods
+
+- (void)showIntroCard:(BOOL)show {
+    if (![self.book isOwner]) {
+        return;
+    }
+    
+    NSString *cardTag = @"GetStartedCard";
+    
+    if (show) {
+        CGSize cardSize = [CardViewHelper cardViewSize];
+        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
+                                                        icon:[UIImage imageNamed:@"cook_intro_icon_title.png"]
+                                                       title:@"GET STARTED"
+                                                    subtitle:@"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..."
+                                                        view:self.collectionView
+                                                      anchor:CardViewAnchorMidLeft
+                                                      center:(CGPoint){
+                                                          90.0 + [BookTitleCell cellSize].width + floorf(cardSize.width / 2.0) + 20.0,
+                                                          self.view.bounds.size.height - [BookTitleCell cellSize].height + 58.0,
+                                                      }];
+    } else {
+        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
+    }
+    
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -519,28 +546,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
-}
-
-- (void)showIntroCard:(BOOL)show {
-    NSString *cardTag = @"GetStartedCard";
-    
-    if (show) {
-        UICollectionViewCell *addCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        CGSize cardSize = [CardViewHelper cardViewSize];
-        [[CardViewHelper sharedInstance] showCardViewWithTag:cardTag
-                                                        icon:[UIImage imageNamed:@"cook_intro_icon_title.png"]
-                                                       title:@"GET STARTED"
-                                                    subtitle:@"CREATE A NEW PAGE FOR YOUR RECIPES, CALL IT ANYTHING YOU LIKE..."
-                                                        view:self.collectionView
-                                                      anchor:CardViewAnchorMidLeft
-                                                      center:(CGPoint){
-                                                          90.0 + [BookTitleCell cellSize].width + floorf(cardSize.width / 2.0) + 20.0,
-                                                          self.view.bounds.size.height - floorf(addCell.frame.size.height/ 2.0) - 37.0
-                                                      }];
-    } else {
-        [[CardViewHelper sharedInstance] hideCardViewWithTag:cardTag];
-    }
-    
 }
 
 @end
