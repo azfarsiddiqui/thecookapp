@@ -80,6 +80,7 @@ typedef enum SDImageCacheType SDImageCacheType;
  * @param toDisk Store the image to disk cache if YES
  */
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key toDisk:(BOOL)toDisk;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk;
 
 /**
  * Store an image into memory and optionally disk cache at the given key.
@@ -92,6 +93,7 @@ typedef enum SDImageCacheType SDImageCacheType;
  * @param toDisk Store the image to disk cache if YES
  */
 - (void)storeImage:(UIImage *)image imageData:(NSData *)data forKey:(NSString *)key toDisk:(BOOL)toDisk;
+- (void)storeImage:(UIImage *)image imageData:(NSData *)data forKey:(NSString *)key png:(BOOL)png toDisk:(BOOL)toDisk;
 
 /**
  * Query the disk cache asynchronously.
