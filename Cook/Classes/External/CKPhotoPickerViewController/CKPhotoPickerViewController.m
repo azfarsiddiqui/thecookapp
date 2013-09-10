@@ -13,6 +13,7 @@
 #import <CoreImage/CoreImage.h>
 #import "CKPhotoFilterSliderView.h"
 #import "ImageHelper.h"
+#import "CKActivityIndicatorView.h"
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate, CKNotchSliderViewDelegate>
@@ -35,7 +36,7 @@
 @property (nonatomic, strong) UIButton *flashButton;
 @property (nonatomic, strong) UIButton *toggleButton;
 @property (nonatomic, strong) UIView *vignetteView;
-@property (nonatomic, strong) UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CIContext *filterContext;
 @property (nonatomic, strong) CKPhotoFilterSliderView *filterPickerView;
 @property UIDeviceOrientation currentOrientation;
@@ -72,8 +73,6 @@
         self.saveToPhotoAlbum = saveToPhotoAlbum;
         self.delegate = delegate;
         self.filterContext = [CIContext contextWithOptions:nil];
-        DLog(@"Input Max size: %f, %f", [self.filterContext inputImageMaximumSize].width, [self.filterContext inputImageMaximumSize].height);
-        DLog(@"Output MAx Size: %f, %f", [self.filterContext outputImageMaximumSize].width, [self.filterContext outputImageMaximumSize].height);
         self.showFilters = showFilters;
     }
     return self;
@@ -86,6 +85,10 @@
     self.view.backgroundColor = [UIColor lightGrayColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.currentOrientation = [[UIDevice currentDevice] orientation];
+    
+    self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+    self.activityView.center = [self parentView].center;
+    [[self parentView] addSubview:self.activityView];
 }
 
 - (void)receivedRotate:(id)sender
@@ -127,52 +130,18 @@
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-//    NSURL *assetURL = [info objectForKey:UIImagePickerControllerReferenceURL];
-//    
-//    if (assetURL) //Picked from Camera Roll
-//    {
-//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-//        
-//        [library assetForURL:assetURL
-//                 resultBlock:^(ALAsset *__strong asset) {
-//                     // we need to be defensive
-//                     if (asset)
-//                     {
-//                         ALAssetRepresentation *rep = [asset defaultRepresentation];
-//                         
-//                         CGImageRef cgimage = [rep fullScreenImage];
-//                         UIImage *pickedImage = [UIImage imageWithCGImage:cgimage scale:1.0 orientation:];
-//                         CGImageRelease(cgimage);
-//                         DLog(@"Picked image size: %f, %f", pickedImage.size.width, pickedImage.size.height);
-//                         self.selectedImage = pickedImage;
-//                         self.tempImage = pickedImage;
-//                         [self.popoverViewController dismissPopoverAnimated:YES];
-//                         self.popoverViewController = nil;
-//                         self.libraryPickerViewController = nil;
-//                         [self removeImagePicker];
-//                         [self updateImagePreview];
-//                         [self updateButtons];
-//                     }
-//                 } failureBlock:^(NSError *error) {
-//                     DLog(@"Error getting from camera roll: %@", error);
-//                 }];
-//    }
-//    else
-//    {
     UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
     CGFloat cropWidth = chosenImage.size.width > MAX_IMAGE_WIDTH ? MAX_IMAGE_WIDTH : chosenImage.size.width;
     CGFloat cropHeight = chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
-    chosenImage = [ImageHelper scaledImage:chosenImage size:CGSizeMake(cropWidth, cropHeight)];
+    chosenImage = [chosenImage imageCroppedToFitSize:CGSizeMake(cropWidth, cropHeight)]; //[ImageHelper scaledImage:chosenImage size:CGSizeMake(cropWidth, cropHeight)];
     self.selectedImage = chosenImage;
-    DLog(@"Picked image size: %f, %f", chosenImage.size.width, chosenImage.size.height);
     [self updateImagePreview];
     [self updateButtons];
     [self.popoverViewController dismissPopoverAnimated:YES];
     self.popoverViewController = nil;
     self.libraryPickerViewController = nil;
     [self removeImagePicker];
-//    }
-    
+    [self.activityView stopAnimating];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -223,7 +192,7 @@
 }
 
 - (UIView *)parentView {
-    return self.view;//self.cameraPickerViewController ? self.cameraPickerViewController.view : self.view;
+    return self.view;
 }
 
 - (CGRect)parentBounds {
@@ -375,6 +344,8 @@
 }
 
 - (void)snapTapped:(id)sender {
+    [[self parentView] bringSubviewToFront:self.activityView];
+    [self.activityView startAnimating];
     [self.cameraPickerViewController takePicture];
 }
 
@@ -398,15 +369,10 @@
 }
 
 - (void)saveTapped:(id)sender {
-    UIView *parentView = [self parentView];
-    
     // Spin activity and disable buttons.
     [self updateButtonsEnabled:NO];
-    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    [activityView startAnimating];
-    activityView.center = parentView.center;
-    [parentView addSubview:activityView];
-    self.activityView = activityView;
+    [[self parentView] bringSubviewToFront:self.activityView];
+    [self.activityView startAnimating];
     
     // Detach and save photo asynchronously.
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -449,6 +415,7 @@
     }
     
     [self.delegate photoPickerViewControllerSelectedImage:visibleImage];
+    [self.activityView stopAnimating];
 }
 
 - (BOOL)cameraSupported {
@@ -602,6 +569,7 @@
                              self.squareOverlayView = nil;
                          }
                      }];
+
 }
 
 - (UIImage *)cropImage:(UIImage *)sourceImage atRect:(CGRect)frame scale:(CGFloat)scale {
