@@ -35,8 +35,6 @@
 
 // Edited content.
 @property (nonatomic, strong) UIImage *updatedBookCoverPhoto;
-@property (nonatomic, strong) UIImage *updatedUserPhoto;
-@property (nonatomic, strong) NSString *updatedBookStory;
 
 @end
 

@@ -58,10 +58,25 @@
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
     if (editMode) {
-        [self.editingHelper wrapEditingView:self.storyLabel delegate:self white:NO];
+        
+        // If no data, then display placeholder text.
+        if (![self.book.story CK_containsText]) {
+            [self updateStory:[self defaultEditPlaceholderText]];
+        }
+        
+        UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
+
+        [self.editingHelper wrapEditingView:self.storyLabel
+                              contentInsets:(UIEdgeInsets){
+                                  defaultInsets.top + 5.0,
+                                  defaultInsets.left,
+                                  defaultInsets.bottom + 5.0,
+                                  defaultInsets.right
+                              } delegate:self white:NO];
     } else {
         [self.editingHelper unwrapEditingView:self.storyLabel];
     }
+    
     [self.profilePhotoView enableEditMode:editMode animated:animated];
 }
 
@@ -75,7 +90,7 @@
                                                                                                             white:NO
                                                                                                             title:@"Story"
                                                                                                    characterLimit:500];
-//        editViewController.clearOnFocus = ![self.recipeDetails hasStory];
+        editViewController.clearOnFocus = ![self.book.story CK_containsText];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
@@ -105,7 +120,7 @@
     DLog();
     NSString *story = (NSString *)value;
     self.updatedStory = story;
-    [self updateStory:story];
+    [self updateStory:[story CK_containsText] ? story : [self defaultEditPlaceholderText]];
     [self.editingHelper updateEditingView:editingView];
 }
 
@@ -137,7 +152,7 @@
 #pragma mark - CKSaveableContent methods
 
 - (BOOL)contentSaveRequired {
-    return ((self.updatedProfileImage != nil) || ([self.updatedStory CK_containsText] && ![self.updatedStory CK_equals:self.book.story]));
+    return ((self.updatedProfileImage != nil) || ![self.updatedStory CK_equals:self.book.story]);
 }
 
 - (void)contentPerformSave:(BOOL)save {
@@ -147,6 +162,9 @@
         if (self.updatedProfileImage) {
             [[CKPhotoManager sharedInstance] addImage:self.updatedProfileImage user:self.book.user];
         }
+        
+        // Update story label.
+        [self updateStory:self.updatedStory];
         
         // Save story regardless user can choose to clear it.
         self.book.story = self.updatedStory;
@@ -320,6 +338,10 @@
 - (void)cleanupPhotoPicker {
     [self.photoPickerViewController.view removeFromSuperview];
     self.photoPickerViewController = nil;
+}
+
+- (NSString *)defaultEditPlaceholderText {
+    return @"ENTER YOUR BIO";
 }
 
 @end
