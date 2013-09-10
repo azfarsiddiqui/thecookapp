@@ -177,7 +177,9 @@
         if (self.currentStoreCollectionViewController == storeCollectionViewController) {
             
             // Just show again.
-            [storeCollectionViewController loadData];
+            [storeCollectionViewController unloadDataCompletion:^{
+                [storeCollectionViewController loadData];
+            }];
             
         } else {
             

@@ -25,6 +25,7 @@
 - (void)enable:(BOOL)enable;
 - (void)loadData;
 - (void)unloadData;
+- (void)unloadDataCompletion:(void(^)())completion;
 - (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;
