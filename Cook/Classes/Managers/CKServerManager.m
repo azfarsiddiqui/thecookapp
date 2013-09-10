@@ -11,6 +11,7 @@
 #import "EventHelper.h"
 #import "ImageHelper.h"
 #import "CKRecipeImage.h"
+#import "CKPhotoManager.h"
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 
@@ -61,6 +62,9 @@
     
     // Crashlytics.
     [Crashlytics startWithAPIKey:@"78b5ee31da5ef077dd802aa93ca267444ea27b07"];
+    
+    // Start up setup.
+    [[CKPhotoManager sharedInstance] setupBooks];
     
     DLog(@"Started ServerManager");
 }

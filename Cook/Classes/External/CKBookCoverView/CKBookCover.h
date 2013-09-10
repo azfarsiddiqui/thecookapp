@@ -29,7 +29,6 @@ typedef enum {
 + (UIImage *)addCategoryImageForCover:(NSString *)cover selected:(BOOL)selected;
 + (UIImage *)addRecipeImageForCover:(NSString *)cover selected:(BOOL)selected;
 + (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected;
-+ (UIImage *)imageForCover:(NSString *)cover;
 + (UIImage *)outlineImageForCover:(NSString *)cover left:(BOOL)left;
 + (UIImage *)thumbImageForCover:(NSString *)cover;
 + (UIColor *)colourForCover:(NSString *)cover;
@@ -39,10 +38,22 @@ typedef enum {
 + (UIColor *)textColourForCover:(NSString *)cover;
 + (UIImage *)thumbSliderContentImageForCover:(NSString *)cover;
 + (UIImage *)recipeEditBackgroundImageForCover:(NSString *)cover;
++ (UIImage *)imageForCover:(NSString *)cover;
 + (UIImage *)imageForIllustration:(NSString *)illustration;
 + (NSArray *)covers;
 + (NSArray *)illustrations;
 + (NSString *)grayCoverName;
+
+// Scaled and cached images that were setup upfront.
++ (NSString *)smallImageNameForCover:(NSString *)cover;
++ (NSString *)smallImageNameForIllustration:(NSString *)illustration;
++ (NSString *)mediumImageNameForCover:(NSString *)cover;
++ (NSString *)mediumImageNameForIllustration:(NSString *)illustration;
++ (UIImage *)smallImageForCover:(NSString *)cover;
++ (UIImage *)smallImageForIllustration:(NSString *)illustration;
++ (UIImage *)mediumImageForCover:(NSString *)cover;
++ (UIImage *)mediumImageForIllustration:(NSString *)illustration;
+
 
 // CKBookCoverView construction sizes.
 + (CGSize)coverImageSize;

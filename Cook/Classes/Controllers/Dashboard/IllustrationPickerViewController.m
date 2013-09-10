@@ -131,13 +131,11 @@
 #pragma mark - IllustrationBookCellDelegate methods
 
 - (UIImage *)imageForIllustration:(NSString *)illustration size:(CGSize)size {
-    UIImage *illustrationImage = [CKBookCover imageForIllustration:illustration];
-    return [ImageHelper scaledImage:illustrationImage size:size];
-//    return [CKBookCover imageForIllustration:illustration];
+    return [CKBookCover smallImageForIllustration:illustration];
 }
 
 - (UIImage *)imageForCover:(NSString *)cover size:(CGSize)size {
-    return [ImageHelper scaledImage:[CKBookCover imageForCover:cover] size:size];
+    return [CKBookCover smallImageForCover:cover];
 }
 
 #pragma mark - Private

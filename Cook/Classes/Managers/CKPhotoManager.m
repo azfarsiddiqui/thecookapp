@@ -15,6 +15,7 @@
 #import "SDWebImageDownloader.h"
 #import "NSString+Utilities.h"
 #import "CKUser.h"
+#import "CKBookCover.h"
 
 @interface CKPhotoManager ()
 
@@ -504,6 +505,60 @@
             [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
         }
     }];
+}
+
+#pragma mark - Setup books.
+
+- (void)setupBooks {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(queue, ^{
+        
+        @autoreleasepool {
+            
+            NSArray *illustrations = [[CKBookCover illustrations] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+            for (NSString *illustration in illustrations) {
+                
+                UIImage *image = [CKBookCover imageForIllustration:illustration];
+                
+                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover smallImageNameForIllustration:illustration]]) {
+                    UIImage *smallImage = [ImageHelper scaledImage:image size:[CKBookCover smallCoverImageSize]];
+                    [[SDImageCache sharedImageCache] storeImage:smallImage forKey:[CKBookCover smallImageNameForIllustration:illustration] png:YES toDisk:YES];
+                    DLog(@"Scaled small illustration[%@]", illustration);
+                }
+
+                // TODO Not used.
+//                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover mediumImageNameForIllustration:illustration]]) {
+//                    UIImage *mediumImage = [ImageHelper scaledImage:image size:[CKBookCover mediumImageSize]];
+//                    [[SDImageCache sharedImageCache] storeImage:mediumImage forKey:[CKBookCover mediumImageNameForIllustration:illustration] toDisk:YES];
+//                    DLog(@"Scaled medium illustration[%@]", illustration);
+//                }
+                
+            }
+            
+            NSArray *covers = [CKBookCover covers];
+            for (NSString *cover in covers) {
+                
+                UIImage *image = [CKBookCover imageForCover:cover];
+                
+                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover smallImageNameForCover:cover]]) {
+                    UIImage *smallImage = [ImageHelper scaledImage:image size:[CKBookCover smallCoverImageSize]];
+                    [[SDImageCache sharedImageCache] storeImage:smallImage forKey:[CKBookCover smallImageNameForCover:cover] png:YES toDisk:YES];
+                    DLog(@"Scaled small cover[%@]", cover);
+                }
+                
+                // TODO Not used.
+//                if (![[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[CKBookCover mediumImageNameForCover:cover]]) {
+//                    UIImage *mediumImage = [ImageHelper scaledImage:image size:[CKBookCover mediumImageSize]];
+//                    [[SDImageCache sharedImageCache] storeImage:mediumImage forKey:[CKBookCover mediumImageNameForCover:cover] toDisk:YES];
+//                    DLog(@"Scaled medium cover[%@]", cover);
+//                }
+                
+            }
+        }
+        
+    });
+
+    
 }
 
 #pragma mark - Image caching.

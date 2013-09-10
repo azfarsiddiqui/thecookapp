@@ -40,6 +40,8 @@
            progress:(void (^)(CGFloat progressRatio))progress
          completion:(void (^)(UIImage *image, NSString *name))completion;
 
+// Setup books, resizing etc.
+- (void)setupBooks;
 
 // Image caching.
 - (BOOL)imageCachedForKey:(NSString *)cacheKey;
