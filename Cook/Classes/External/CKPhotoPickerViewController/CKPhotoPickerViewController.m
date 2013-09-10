@@ -431,7 +431,7 @@
                                  self.previewScrollView.bounds.size.height);
     }
     // Crop out the visible image off the scrollView.
-    UIImage *visibleImage = [self cropSelectedImageAtRect:visibleRect scale:scale];
+    UIImage *visibleImage = [self cropImage:self.previewImageView.image atRect:visibleRect scale:scale];
     
     // Save to photo album.
     if (self.cameraPickerViewController.sourceType == UIImagePickerControllerSourceTypeCamera && self.saveToPhotoAlbum) {
@@ -604,17 +604,17 @@
                      }];
 }
 
-- (UIImage *)cropSelectedImageAtRect:(CGRect)frame scale:(CGFloat)scale {
+- (UIImage *)cropImage:(UIImage *)sourceImage atRect:(CGRect)frame scale:(CGFloat)scale {
     frame = (CGRect){
         frame.origin.x * scale,
         frame.origin.y * scale,
         frame.size.width * scale,
         frame.size.height * scale
     };
-    CGImageRef croppedImageRef = CGImageCreateWithImageInRect([self.selectedImage CGImage], frame);
+    CGImageRef croppedImageRef = CGImageCreateWithImageInRect([sourceImage CGImage], frame);
     UIImage* croppedImage = [[UIImage alloc] initWithCGImage:croppedImageRef
                                                        scale:scale
-                                                 orientation:self.selectedImage.imageOrientation];
+                                                 orientation:sourceImage.imageOrientation];
     CGImageRelease(croppedImageRef);
     return croppedImage;
 }
@@ -685,7 +685,7 @@
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex
 {
     @autoreleasepool {
-        UIImage *filteredImage = [self.selectedImage imageCroppedToFitSize:self.previewImageView.bounds.size];
+        UIImage *filteredImage = self.selectedImage;
         switch (notchIndex) {
             case CKPhotoFilterTypeNone:
                 break;
