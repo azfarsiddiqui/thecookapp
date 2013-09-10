@@ -76,11 +76,22 @@
 }
 
 - (void)unloadData {
+    [self unloadDataCompletion:nil];
+}
+
+- (void)unloadDataCompletion:(void(^)())completion {
     DLog(@"Unloading Books [%d]", [self.books count]);
     [self hideMessageCard];
     if ([self.books count] > 0) {
         [self.books removeAllObjects];
-        [self.collectionView reloadData];
+        
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        } completion:^(BOOL finished){
+            if (completion != nil) {
+                completion();
+            }
+        }];
     }
 }
 
@@ -94,14 +105,23 @@
     
     if ([books count] > 0) {
         
+        BOOL reloadBooks = [self.books count] > 0;
         self.books = [NSMutableArray arrayWithArray:books];
         
-        // Insert the books.
-        NSArray *insertIndexPaths = [books collectWithIndex:^id(CKBook *book, NSUInteger index) {
-            return [NSIndexPath indexPathForItem:index inSection:0];
-        }];
+        if (reloadBooks) {
+            
+            [self reloadBooks];
+            
+        } else {
+            
+            // Insert the books.
+            NSArray *insertIndexPaths = [books collectWithIndex:^id(CKBook *book, NSUInteger index) {
+                return [NSIndexPath indexPathForItem:index inSection:0];
+            }];
+            
+            [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+        }
         
-        [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
         
     } else {
         

@@ -3118,6 +3118,8 @@
 			children = (
 				76182B5A17B110A900B64648 /* cook_customise_icon_photo.png */,
 				76182B5B17B110A900B64648 /* cook_customise_icon_photo@2x.png */,
+				76CD9FEB17DF3E86004409E1 /* cook_customise_icon_photo_white.png */,
+				76CD9FEC17DF3E86004409E1 /* cook_customise_icon_photo_white@2x.png */,
 				76182B5C17B110A900B64648 /* cook_customise_profile_photo.png */,
 				76182B5D17B110A900B64648 /* cook_customise_profile_photo@2x.png */,
 				76FC076917C5D96E00ABF96F /* cook_customise_profile_photo_onpress.png */,
@@ -3330,8 +3332,6 @@
 				766E438817DEDC0D006B2495 /* cook_book_inner_icon_add_onpress_gray@2x.png */,
 				766E438B17DEDC0D006B2495 /* cook_book_inner_icon_add_onpress_neutral.png */,
 				766E438C17DEDC0D006B2495 /* cook_book_inner_icon_add_onpress_neutral@2x.png */,
-				76CD9FEB17DF3E86004409E1 /* cook_customise_icon_photo_white.png */,
-				76CD9FEC17DF3E86004409E1 /* cook_customise_icon_photo_white@2x.png */,
 			);
 			path = books;
 			sourceTree = "<group>";
