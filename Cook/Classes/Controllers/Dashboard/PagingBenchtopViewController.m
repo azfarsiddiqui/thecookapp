@@ -579,6 +579,7 @@
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     collectionView.showsHorizontalScrollIndicator = NO;
     collectionView.backgroundColor = [UIColor clearColor];
+    collectionView.delaysContentTouches = NO;
     
     // TODO CAUSES JERKY MOVEMENTS
     collectionView.decelerationRate = UIScrollViewDecelerationRateFast;

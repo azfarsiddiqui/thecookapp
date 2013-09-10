@@ -70,6 +70,15 @@
     return self;
 }
 
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    self.bookCoverView.transform = highlighted ? CGAffineTransformMakeScale(0.99, 0.99) : CGAffineTransformIdentity;
+}
+
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
     return [[CKBookCoverView alloc] initWithDelegate:delegate];
 }
