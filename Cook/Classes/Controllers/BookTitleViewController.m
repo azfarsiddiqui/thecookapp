@@ -90,7 +90,10 @@
     
     [self initBackgroundView];
     [self initCollectionView];
-    [self initActivityView];
+    
+    if (!self.snapshot) {
+        [self initActivityView];
+    }
     
     [self addCloseButtonLight:YES];
 }
