@@ -11,6 +11,7 @@
 #import "UIColor+Expanded.h"
 #import "ImageHelper.h"
 #import "CKUser.h"
+#import "SDImageCache.h"
 
 @interface CKBookCover ()
 
@@ -67,18 +68,6 @@
 
 + (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected {
     return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_new" cover:cover selected:selected]];
-}
-
-+ (UIImage *)imageForCover:(NSString *)cover {
-    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
-    if (!imageName) {
-        imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
-                                                             [CKBookCover randomCover]]];
-    }
-    
-    // Load direct from disk.
-    imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
-    return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
 }
 
 + (UIImage *)outlineImageForCover:(NSString *)cover left:(BOOL)left {
@@ -146,20 +135,63 @@
     return [ImageHelper imageFromDiskNamed:imageName type:@"png"];
 }
 
++ (UIImage *)imageForCover:(NSString *)cover {
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
+    if (!imageName) {
+        imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
+                                                             [CKBookCover randomCover]]];
+    }
+    
+    // Load direct from disk.
+    imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+    return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
+}
+
 + (UIImage *)imageForIllustration:(NSString *)illustration {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
     if (!imageName) {
         
         // Direct image loading.
         imageName = illustration;
-//        imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image",
-//                                                           [CKBookCover randomIllustration]]];
-        
     }
     
     // Load direct from disk.
     imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
     return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
+}
+
+#pragma mark - Scaled and cached covers/illustrationsf.
+
++ (NSString *)smallImageNameForCover:(NSString *)cover {
+    return [[NSString stringWithFormat:@"cover_%@_small", cover] lowercaseString];
+}
+
++ (NSString *)smallImageNameForIllustration:(NSString *)illustration {
+    return [[NSString stringWithFormat:@"illustration_%@_small", illustration] lowercaseString];
+}
+
++ (NSString *)mediumImageNameForCover:(NSString *)cover {
+    return [[NSString stringWithFormat:@"cover_%@_medium", cover] lowercaseString];
+}
+
++ (NSString *)mediumImageNameForIllustration:(NSString *)illustration {
+    return [[NSString stringWithFormat:@"illustration_%@_medium", illustration] lowercaseString];
+}
+
++ (UIImage *)smallImageForCover:(NSString *)cover {
+    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self smallImageNameForCover:cover]];
+}
+
++ (UIImage *)smallImageForIllustration:(NSString *)illustration {
+    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self smallImageNameForIllustration:illustration]];
+}
+
++ (UIImage *)mediumImageForCover:(NSString *)cover {
+    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self mediumImageNameForCover:cover]];
+}
+
++ (UIImage *)mediumImageForIllustration:(NSString *)illustration {
+    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[self mediumImageNameForIllustration:illustration]];
 }
 
 + (NSArray *)covers {
