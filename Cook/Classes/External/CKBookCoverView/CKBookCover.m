@@ -63,7 +63,10 @@
         imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
                                                              [CKBookCover randomCover]]];
     }
-    return [UIImage imageNamed:imageName];
+    
+    // Load direct from disk.
+    imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+    return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
 }
 
 + (UIImage *)outlineImageForCover:(NSString *)cover {
@@ -140,7 +143,10 @@
 //                                                           [CKBookCover randomIllustration]]];
         
     }
-    return [UIImage imageNamed:imageName];
+    
+    // Load direct from disk.
+    imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+    return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
 }
 
 + (NSArray *)covers {
