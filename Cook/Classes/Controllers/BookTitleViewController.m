@@ -34,6 +34,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL titleImageLoaded;
+@property (nonatomic, assign) BOOL snapshot;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
 
@@ -67,8 +68,14 @@
 #define kHeaderCellGap          135.0
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
+    
+    return [self initWithBook:book snapshot:NO delegate:delegate];
+}
+
+- (id)initWithBook:(CKBook *)book snapshot:(BOOL)snapshot delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
+        self.snapshot = snapshot;
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
@@ -432,6 +439,19 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.view.bounds.size.height - kBorderInsets.top - kBorderInsets.bottom
     };
     [self.view addSubview:borderImageView];
+    
+    // Binder
+    if (self.snapshot) {
+        UIImageView *bindImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
+        bindImageView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - bindImageView.frame.size.width) / 2.0),
+            self.view.bounds.origin.y,
+            bindImageView.frame.size.width,
+            bindImageView.frame.size.height
+        };
+        bindImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [self.view addSubview:bindImageView];
+    }
 }
 
 - (void)initCollectionView {

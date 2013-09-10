@@ -630,10 +630,12 @@
 - (void)openBook:(CKBook *)book centerPoint:(CGPoint)centerPoint {
     
     self.selectedBook = book;
-    self.snapshotBookTitleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:nil];
+    self.snapshotBookTitleViewController = [[BookTitleViewController alloc] initWithBook:book snapshot:YES delegate:nil];
     self.snapshotBookTitleViewController.view.hidden = NO;
-    [self.view addSubview:self.snapshotBookTitleViewController.view];
-    [self.view sendSubviewToBack:self.snapshotBookTitleViewController.view];
+    
+// Looks like this doesn't affect the snapshotting.
+//    [self.view addSubview:self.snapshotBookTitleViewController.view];
+//    [self.view sendSubviewToBack:self.snapshotBookTitleViewController.view];
     
     // Open book.
     BookCoverViewController *bookCoverViewController = [[BookCoverViewController alloc] initWithBook:book delegate:self];
