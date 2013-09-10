@@ -9,6 +9,8 @@
 #import "BookTitleCell.h"
 #import "ImageHelper.h"
 #import "Theme.h"
+#import "CKBook.h"
+#import "CKBookCover.h"
 
 @interface BookTitleCell ()
 
@@ -48,7 +50,8 @@
     return self;
 }
 
-- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes {
+- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes
+                 book:(CKBook *)book {
     self.titleLabel.hidden = NO;
     self.subtitleLabel.hidden = NO;
     self.blankOverlayView.hidden = YES;
@@ -76,6 +79,7 @@
     };
     
     // New indicator.
+    self.newIndicatorView.image = [CKBookCover newIndicatorImageForCover:book.cover selected:NO];
     self.newIndicatorView.hidden = !newRecipes;
 }
 
@@ -89,13 +93,14 @@
     [ImageHelper configureImageView:self.imageView image:image];
 }
 
-- (void)configureAsAddCell {
+- (void)configureAsAddCellForBook:(CKBook *)book {
     self.imageView.hidden = YES;
     self.stackImageView.hidden = YES;
     self.imageOverlayView.hidden = YES;
     self.titleLabel.hidden = YES;
     self.subtitleLabel.hidden = YES;
     self.blankOverlayView.hidden = NO;
+    self.addView.image = [CKBookCover addCategoryImageForCover:book.cover selected:NO];
     self.addView.hidden = NO;
     self.newIndicatorView.hidden = YES;
 }

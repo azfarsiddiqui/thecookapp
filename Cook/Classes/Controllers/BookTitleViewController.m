@@ -273,7 +273,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if (indexPath.item < [self.pages count]) {
         
         NSString *page = [self.pages objectAtIndex:indexPath.item];
-        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page] containNewRecipes:[self.delegate bookTitleIsNewForPage:page]];
+        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page]
+          containNewRecipes:[self.delegate bookTitleIsNewForPage:page] book:self.book];
         
         // Load featured recipe for the category.
         CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForPage:page];
@@ -282,7 +283,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         
         // Add cell.
-        [cell configureAsAddCell];
+        [cell configureAsAddCellForBook:self.book];
     }
     
     

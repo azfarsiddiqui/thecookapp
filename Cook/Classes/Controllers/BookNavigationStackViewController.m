@@ -1097,7 +1097,7 @@
                                                                                           forIndexPath:indexPath];
     BookNavigationView *navigationView = (BookNavigationView *)headerView;
     navigationView.delegate = self;
-    [navigationView setTitle:self.user.name editable:[self.book isOwner]];
+    [navigationView setTitle:self.user.name editable:[self.book isOwner] book:self.book];
     [navigationView setDark:NO];
     self.bookNavigationView = navigationView;
     

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKBook;
+
 @protocol BookNavigationViewDelegate <NSObject>
 
 - (void)bookNavigationViewCloseTapped;
@@ -25,7 +27,7 @@
 + (CGFloat)navigationHeight;
 + (CGFloat)darkNavigationHeight;
 
-- (void)setTitle:(NSString *)title editable:(BOOL)editable;
+- (void)setTitle:(NSString *)title editable:(BOOL)editable book:(CKBook *)book;
 - (void)setDark:(BOOL)dark;
 - (void)setHomeAlpha:(CGFloat)homeAlpha;
 

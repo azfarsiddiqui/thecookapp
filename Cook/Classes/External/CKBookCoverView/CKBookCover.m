@@ -57,6 +57,18 @@
     return [illustrations objectAtIndex:arc4random() % ([illustrations count] - 1)];
 }
 
++ (UIImage *)addCategoryImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_add" cover:cover selected:selected]];
+}
+
++ (UIImage *)addRecipeImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_add" cover:cover selected:selected]];
+}
+
++ (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_new" cover:cover selected:selected]];
+}
+
 + (UIImage *)imageForCover:(NSString *)cover {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
     if (!imageName) {
@@ -241,6 +253,15 @@
         layout = BookCoverLayoutMid;
     }
     return layout;
+}
+
++ (NSString *)imageNameForBaseName:(NSString *)baseName cover:(NSString *)cover selected:(BOOL)selected {
+    NSMutableString *imageName = [NSMutableString stringWithString:baseName];
+    if (selected) {
+        [imageName appendString:@"_onpress"];
+    }
+    [imageName appendFormat:@"_%@.png", [cover lowercaseString]];
+    return imageName;
 }
 
 @end

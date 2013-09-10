@@ -9,9 +9,12 @@
 #import "BookNavigationView.h"
 #import "ViewHelper.h"
 #import "Theme.h"
+#import "CKBook.h"
+#import "CKBookCover.h"
 
 @interface BookNavigationView ()
 
+@property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -47,8 +50,9 @@
     return self;
 }
 
-- (void)setTitle:(NSString *)title editable:(BOOL)editable {
+- (void)setTitle:(NSString *)title editable:(BOOL)editable book:(CKBook *)book {
     self.editable = editable;
+    self.book = book;
     self.titleLabel.textColor = [self.delegate bookNavigationColour];
     self.titleLabel.text = [title uppercaseString];
     [self.titleLabel sizeToFit];
@@ -136,8 +140,8 @@
 
 - (UIButton *)addButton {
     if (!_addButton) {
-        _addButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_add.png"]
-                                   selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_add_onpress.png"]
+        _addButton = [ViewHelper buttonWithImage:[CKBookCover addRecipeImageForCover:self.book.cover selected:NO]
+                                   selectedImage:[CKBookCover addRecipeImageForCover:self.book.cover selected:YES]
                                           target:self selector:@selector(addTapped:)];
         _addButton.frame = (CGRect){
             self.bounds.size.width - _addButton.frame.size.width - kContentInsets.right,

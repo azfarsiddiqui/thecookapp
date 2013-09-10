@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKBook;
+
 @interface BookTitleCell : UICollectionViewCell
 
 + (CGSize)cellSize;
 
-- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes;
+- (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes book:(CKBook *)book;
 - (void)configureImage:(UIImage *)image;
-- (void)configureAsAddCell;
+- (void)configureAsAddCellForBook:(CKBook *)book;
 
 @end
