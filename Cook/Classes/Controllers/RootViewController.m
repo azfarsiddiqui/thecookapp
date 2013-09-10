@@ -319,7 +319,7 @@
 - (void)performCloseBookAnimationWithBinder:(BOOL)binder {
     
     // [self.bookCoverViewController loadSnapshotView:[self.bookNavigationViewController.view snapshotViewAfterScreenUpdates:YES]];
-    [self.bookCoverViewController loadSnapshotImage:[ImageHelper imageFromView:self.bookNavigationViewController.view]];
+    [self.bookCoverViewController loadSnapshotImage:[ImageHelper imageFromView:self.bookNavigationViewController.view opaque:YES scaling:YES]];
     
     // Let the bookCoverVC above to have a chance of loadinging the snapshot first.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{

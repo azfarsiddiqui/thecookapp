@@ -59,7 +59,7 @@
 #define kIndexWidth             240.0
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
-#define kBorderInsets           (UIEdgeInsets){ 20.0, 10.0, 12.0, 10.0 }
+#define kBorderInsets           (UIEdgeInsets){ 16.0, 10.0, 12.0, 10.0 }
 #define kTitleAnimateOffset     50.0
 #define kTitleHeaderTag         460
 #define kStartUpOffset          75.0

@@ -29,14 +29,19 @@
 @property (nonatomic, strong) CALayer *bookCoverContentsLayer;
 @property (nonatomic, strong) CALayer *leftOpenLayer;
 @property (nonatomic, strong) CALayer *rightOpenLayer;
+@property (nonatomic, strong) CALayer *leftContentsLayer;
+@property (nonatomic, strong) CALayer *rightContentsLayer;
 @property (nonatomic, assign) BOOL opened;
 
 @end
 
 @implementation BookCoverViewController
 
-#define RADIANS(degrees)            ((degrees * (float)M_PI) / 180.0f)
-#define kBookOutlineOffset          (UIOffset){-64.0, -26.0}
+#define RADIANS(degrees)                ((degrees * (float)M_PI) / 180.0f)
+#define kBookContentInset               (UIEdgeInsets){ 26.0, 64.0, 64.0, 64.0 }
+#define kBookOutlineShadowInset         (UIEdgeInsets){ 16.0, 44.0, 54.0, 44.0 }
+#define kSmallBookContentInset          (UIEdgeInsets){ 8.0, 17.0, 12.0, 17.0 }
+#define kSmallBookOutlineShadowInset    (UIEdgeInsets){ 9.0, 26.0, 30.0, 26.0 }
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate {
     return [self initWithBook:book mine:NO delegate:delegate];
@@ -135,8 +140,8 @@
         screenFrame.size.height * screenScale
     }];
     UIGraphicsEndImageContext();
-    self.leftOpenLayer.contentsScale = screenScale;
-    self.leftOpenLayer.contents = (id)leftImage.CGImage;
+    self.leftContentsLayer.contentsScale = screenScale;
+    self.leftContentsLayer.contents = (id)leftImage.CGImage;
     
     // Right image.
     UIImage *rightImage = [ImageHelper slicedImage:snapshotImage frame:(CGRect){
@@ -145,8 +150,8 @@
         (screenFrame.size.width / 2.0) * screenScale,
         screenFrame.size.height * screenScale
     }];
-    self.rightOpenLayer.contentsScale = screenScale;
-    self.rightOpenLayer.contents = (id)rightImage.CGImage;
+    self.rightContentsLayer.contentsScale = screenScale;
+    self.rightContentsLayer.contents = (id)rightImage.CGImage;
 }
 
 #pragma mark - CAAnimation delegate methods
@@ -183,7 +188,7 @@
     [self.view.layer addSublayer:rootBookLayer];
     self.rootBookLayer = rootBookLayer;
     
-    // Opened RHS layer.
+    // Opened RHS layer: outline - shadow.
     CALayer *rightOpenLayer = [CALayer layer];
     rightOpenLayer.anchorPoint = CGPointMake(0.5, 0.5);
     rightOpenLayer.position = CGPointMake(floorf(self.rootBookLayer.bounds.size.width / 2),
@@ -194,23 +199,29 @@
                                       rootBookLayer.bounds.size.height);
     rightOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
     
-    // RHS outline.
+    // RHS outline: outline + shadow.
     UIImage *rightOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:NO];
     CALayer *rightOutlineLayer = [CALayer layer];
     rightOutlineLayer.frame = (CGRect){
-        0.0,
-        (kBookOutlineOffset.vertical * self.bookCoverView.bounds.size.height) / self.view.bounds.size.height,
-        rightOpenLayer.bounds.size.width,
-        rightOpenLayer.bounds.size.height
+        rightOpenLayer.bounds.origin.x,
+         -kSmallBookOutlineShadowInset.top,
+        rightOpenLayer.bounds.size.width + kSmallBookOutlineShadowInset.right,
+        rightOpenLayer.bounds.size.height + kSmallBookOutlineShadowInset.top + kSmallBookOutlineShadowInset.bottom
     };
     rightOutlineLayer.contents = (id)rightOutlineImage.CGImage;
-    //[rightOpenLayer addSublayer:rightOutlineLayer];
+    [rightOpenLayer addSublayer:rightOutlineLayer];
 
     // RHS contents.
     CALayer *rightContentsLayer = [CALayer layer];
-    rightContentsLayer.frame = rightOpenLayer.bounds;
+    rightContentsLayer.frame = (CGRect){
+        rightOpenLayer.bounds.origin.x,
+        kSmallBookContentInset.top,
+        rightOpenLayer.bounds.size.width - kSmallBookContentInset.right,
+        rightOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
+    };
     rightContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_right.png"].CGImage;
     [rightOpenLayer addSublayer:rightContentsLayer];
+    self.rightContentsLayer = rightContentsLayer;
     
     [self.rootBookLayer addSublayer:rightOpenLayer];
     self.rightOpenLayer = rightOpenLayer;
@@ -230,11 +241,29 @@
     leftOpenLayer.doubleSided = NO;
     leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
     
+    // RHS outline.
+    UIImage *leftOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:YES];
+    CALayer *leftOutlineLayer = [CALayer layer];
+    leftOutlineLayer.frame = (CGRect){
+        -kSmallBookOutlineShadowInset.left,
+        -kSmallBookOutlineShadowInset.top,
+        leftOpenLayer.bounds.size.width + kSmallBookOutlineShadowInset.left,
+        leftOpenLayer.bounds.size.height + kSmallBookOutlineShadowInset.top + kSmallBookOutlineShadowInset.bottom
+    };
+    leftOutlineLayer.contents = (id)leftOutlineImage.CGImage;
+    [leftOpenLayer addSublayer:leftOutlineLayer];
+    
     // LHS contents.
     CALayer *leftContentsLayer = [CALayer layer];
-    leftContentsLayer.frame = leftOpenLayer.bounds;
+    leftContentsLayer.frame = (CGRect){
+        kSmallBookContentInset.left,
+        kSmallBookContentInset.top,
+        leftOpenLayer.bounds.size.width - kSmallBookContentInset.left,
+        leftOpenLayer.bounds.size.height - kSmallBookContentInset.top - kSmallBookContentInset.bottom
+    };
     leftContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_left.png"].CGImage;
     [leftOpenLayer addSublayer:leftContentsLayer];
+    self.leftContentsLayer = leftContentsLayer;
     
     [rootBookCoverLayer addSublayer:leftOpenLayer];
     self.leftOpenLayer = leftOpenLayer;
@@ -266,17 +295,13 @@
     }
     self.opened = open;
     
-    // Root view to open the book in.
-    UIView *rootView = self.view;
-    
     // Root book animation changes.
     CGPoint rootBookStartPoint = CGPointMake(0.5, 0.5);
     CGPoint rootBookEndPoint = CGPointMake(0.0, 0.515); // Some magic number to take into account the 10pt that was shifted down.
-    CGFloat rootScale = 0.9;
-    CGFloat requiredScaleY = (rootView.bounds.size.height * rootScale) / self.bookCoverView.bounds.size.height;
+    CGFloat requiredScaleY = [self bookContentsHeightRatio];
     
     // Some magic value to match it against the edge of the book.
-    CGFloat requiredScaleX = requiredScaleY - 0.05;
+    CGFloat requiredScaleX = [self bookContentsWidthRatio];
     
     CATransform3D rootBookScaleUpTransform = CATransform3DMakeScale(requiredScaleX, requiredScaleY, 1.0);
     CATransform3D rootBookScaleDownTransform = CATransform3DIdentity;
@@ -321,6 +346,7 @@
     CAAnimationGroup *groupAnimation = [CAAnimationGroup animation];
     groupAnimation.duration = duration;
     [groupAnimation setAnimations:[NSArray arrayWithObjects:translateAnimation, scaleAnimation, nil]];
+//    [groupAnimation setAnimations:[NSArray arrayWithObjects:translateAnimation, nil]];
     groupAnimation.removedOnCompletion = NO;
     groupAnimation.fillMode = kCAFillModeBoth;
     
@@ -363,6 +389,30 @@
 //    if ([self.delegate respondsToSelector:@selector(bookCoverViewInsideSnapshotImage)]) {
 //        [self loadSnapshotImage:[self.delegate bookCoverViewInsideSnapshotImage]];
 //    }
+}
+
+- (CGFloat)bookContentsHeightRatio {
+    
+    // The ratio required to scale the contents of the book to 0.9
+//    return (0.9 * self.view.bounds.size.height) / [self bookContentsHeight];
+    return 1.62;
+}
+
+- (CGFloat)bookContentsWidthRatio {
+    
+    // The ratio required to scale the contents of the book to 0.9
+//    return (0.9 * floorf(self.view.bounds.size.width / 2.0)) / [self bookContentsWidth];
+    return 1.53;
+}
+
+- (CGFloat)bookContentsHeight {
+    return self.bookCoverView.bounds.size.height - (kBookContentInset.top - kBookOutlineShadowInset.top) - (kBookContentInset.bottom - kBookOutlineShadowInset.bottom);
+//    return self.bookCoverView.bounds.size.height - kBookContentInset.top - kBookContentInset.bottom;
+}
+
+- (CGFloat)bookContentsWidth {
+    return self.bookCoverView.bounds.size.width - (kBookContentInset.left - kBookOutlineShadowInset.left) - (kBookContentInset.right - kBookOutlineShadowInset.right);
+//    return self.bookCoverView.bounds.size.width - kBookContentInset.top - kBookContentInset.bottom;
 }
 
 @end

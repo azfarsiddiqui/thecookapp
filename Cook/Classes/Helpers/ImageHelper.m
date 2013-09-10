@@ -73,8 +73,18 @@
 }
 
 + (UIImage *)imageFromView:(UIView *)view opaque:(BOOL)opaque {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, opaque, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    return [self imageFromView:view opaque:opaque scaling:NO];
+}
+
+// Scaling is to produce a lower quality snapshot for scaling purposes.
++ (UIImage *)imageFromView:(UIView *)view opaque:(BOOL)opaque scaling:(BOOL)scaling {
+    CGFloat scalingFactor = 0.0;    // Native.
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, opaque, scalingFactor);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (scaling) {
+        CGContextSetInterpolationQuality(context, kCGInterpolationNone);
+    }
+    [view.layer renderInContext:context];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
