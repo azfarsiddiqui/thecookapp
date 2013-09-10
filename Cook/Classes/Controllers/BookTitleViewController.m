@@ -34,6 +34,7 @@
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL titleImageLoaded;
+@property (nonatomic, assign) BOOL snapshot;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
 
@@ -58,7 +59,7 @@
 #define kIndexWidth             240.0
 #define kImageIndexGap          10.0
 #define kTitleIndexTopOffset    40.0
-#define kBorderInsets           (UIEdgeInsets){ 20.0, 10.0, 12.0, 10.0 }
+#define kBorderInsets           (UIEdgeInsets){ 16.0, 10.0, 12.0, 10.0 }
 #define kTitleAnimateOffset     50.0
 #define kTitleHeaderTag         460
 #define kStartUpOffset          75.0
@@ -67,8 +68,14 @@
 #define kHeaderCellGap          135.0
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
+    
+    return [self initWithBook:book snapshot:NO delegate:delegate];
+}
+
+- (id)initWithBook:(CKBook *)book snapshot:(BOOL)snapshot delegate:(id<BookTitleViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
+        self.snapshot = snapshot;
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
@@ -83,7 +90,10 @@
     
     [self initBackgroundView];
     [self initCollectionView];
-    [self initActivityView];
+    
+    if (!self.snapshot) {
+        [self initActivityView];
+    }
     
     [self addCloseButtonLight:YES];
 }
@@ -263,7 +273,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if (indexPath.item < [self.pages count]) {
         
         NSString *page = [self.pages objectAtIndex:indexPath.item];
-        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page] containNewRecipes:[self.delegate bookTitleIsNewForPage:page]];
+        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page]
+          containNewRecipes:[self.delegate bookTitleIsNewForPage:page] book:self.book];
         
         // Load featured recipe for the category.
         CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForPage:page];
@@ -272,7 +283,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         
         // Add cell.
-        [cell configureAsAddCell];
+        [cell configureAsAddCellForBook:self.book];
     }
     
     
@@ -432,6 +443,19 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.view.bounds.size.height - kBorderInsets.top - kBorderInsets.bottom
     };
     [self.view addSubview:borderImageView];
+    
+    // Binder
+    if (self.snapshot) {
+        UIImageView *bindImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay_bind.png"]];
+        bindImageView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - bindImageView.frame.size.width) / 2.0),
+            self.view.bounds.origin.y,
+            bindImageView.frame.size.width,
+            bindImageView.frame.size.height
+        };
+        bindImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [self.view addSubview:bindImageView];
+    }
 }
 
 - (void)initCollectionView {

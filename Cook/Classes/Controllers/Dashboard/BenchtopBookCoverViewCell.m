@@ -70,6 +70,14 @@
     return self;
 }
 
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+}
+
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
     return [[CKBookCoverView alloc] initWithDelegate:delegate];
 }

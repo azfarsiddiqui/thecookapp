@@ -57,21 +57,37 @@
     return [illustrations objectAtIndex:arc4random() % ([illustrations count] - 1)];
 }
 
++ (UIImage *)addCategoryImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_add" cover:cover selected:selected]];
+}
+
++ (UIImage *)addRecipeImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_add" cover:cover selected:selected]];
+}
+
++ (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected {
+    return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_new" cover:cover selected:selected]];
+}
+
 + (UIImage *)imageForCover:(NSString *)cover {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image", cover]];
     if (!imageName) {
         imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Image",
                                                              [CKBookCover randomCover]]];
     }
-    return [UIImage imageNamed:imageName];
+    
+    // Load direct from disk.
+    imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+    return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
 }
 
-+ (UIImage *)outlineImageForCover:(NSString *)cover {
++ (UIImage *)outlineImageForCover:(NSString *)cover left:(BOOL)left {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Outline", cover]];
     if (!imageName) {
         imageName = [[CKBookCover settings] valueForKeyPath:@"Covers.Gray.Image"];
     }
-    return [UIImage imageNamed:imageName];
+    imageName = [NSString stringWithFormat:@"%@_%@", imageName, left ? @"left" : @"right"];
+    return [ImageHelper imageFromDiskNamed:imageName type:@"png"];
 }
 
 + (UIImage *)thumbImageForCover:(NSString *)cover {
@@ -140,7 +156,10 @@
 //                                                           [CKBookCover randomIllustration]]];
         
     }
-    return [UIImage imageNamed:imageName];
+    
+    // Load direct from disk.
+    imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+    return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
 }
 
 + (NSArray *)covers {
@@ -234,6 +253,15 @@
         layout = BookCoverLayoutMid;
     }
     return layout;
+}
+
++ (NSString *)imageNameForBaseName:(NSString *)baseName cover:(NSString *)cover selected:(BOOL)selected {
+    NSMutableString *imageName = [NSMutableString stringWithString:baseName];
+    if (selected) {
+        [imageName appendString:@"_onpress"];
+    }
+    [imageName appendFormat:@"_%@.png", [cover lowercaseString]];
+    return imageName;
 }
 
 @end

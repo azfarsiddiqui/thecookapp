@@ -28,6 +28,7 @@
 @interface BookTitleViewController : BookPageViewController
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate;
+- (id)initWithBook:(CKBook *)book snapshot:(BOOL)snapshot delegate:(id<BookTitleViewControllerDelegate>)delegate;
 - (void)configurePages:(NSArray *)pages;
 - (void)configureHeroRecipe:(CKRecipe *)recipe;
 

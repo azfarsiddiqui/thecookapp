@@ -579,6 +579,7 @@
     collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     collectionView.showsHorizontalScrollIndicator = NO;
     collectionView.backgroundColor = [UIColor clearColor];
+    collectionView.delaysContentTouches = NO;
     
     // TODO CAUSES JERKY MOVEMENTS
     collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
@@ -1062,9 +1063,27 @@
         return;
     }
     
+    CGFloat bookScale = 0.98;
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:indexPath];
-    CGPoint centerPoint = cell.contentView.center;
-    [self.delegate openBookRequestedForBook:book centerPoint:centerPoint];
+    [UIView animateWithDuration:0.1
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                         cell.transform = CGAffineTransformMakeScale(bookScale, bookScale);
+                     }
+                     completion:^(BOOL finished){
+                         [UIView animateWithDuration:0.15
+                                               delay:0.0
+                                             options:UIViewAnimationOptionCurveEaseIn
+                                          animations:^{
+                                              cell.transform = CGAffineTransformIdentity;
+                                          }
+                                          completion:^(BOOL finished){
+                                              CGPoint centerPoint = cell.contentView.center;
+                                              [self.delegate openBookRequestedForBook:book centerPoint:centerPoint];
+                                          }];
+                     }];
+    
 }
 
 - (void)scrollToBookAtIndexPath:(NSIndexPath *)indexPath {

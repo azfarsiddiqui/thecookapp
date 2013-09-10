@@ -26,8 +26,11 @@ typedef enum {
 + (NSString *)defaultIllustration;
 + (NSString *)randomCover;
 + (NSString *)randomIllustration;
++ (UIImage *)addCategoryImageForCover:(NSString *)cover selected:(BOOL)selected;
++ (UIImage *)addRecipeImageForCover:(NSString *)cover selected:(BOOL)selected;
++ (UIImage *)newIndicatorImageForCover:(NSString *)cover selected:(BOOL)selected;
 + (UIImage *)imageForCover:(NSString *)cover;
-+ (UIImage *)outlineImageForCover:(NSString *)cover;
++ (UIImage *)outlineImageForCover:(NSString *)cover left:(BOOL)left;
 + (UIImage *)thumbImageForCover:(NSString *)cover;
 + (UIColor *)colourForCover:(NSString *)cover;
 + (UIColor *)backdropColourForCover:(NSString *)cover;

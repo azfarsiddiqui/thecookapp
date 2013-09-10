@@ -15,7 +15,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_red.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_red.png</string>
+			<string>cook_book_edge_red</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_red</string>
 			<key>Hex</key>
@@ -40,7 +40,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_orange.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_orange.png</string>
+			<string>cook_book_edge_orange</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_orange</string>
 			<key>Hex</key>
@@ -65,7 +65,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_yellow.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_yellow.png</string>
+			<string>cook_book_edge_yellow</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_yellow</string>
 			<key>Hex</key>
@@ -90,7 +90,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_green.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_green.png</string>
+			<string>cook_book_edge_green</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_green</string>
 			<key>Hex</key>
@@ -115,7 +115,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_blue.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_blue.png</string>
+			<string>cook_book_edge_blue</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_blue</string>
 			<key>Hex</key>
@@ -140,7 +140,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_purple.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_purple.png</string>
+			<string>cook_book_edge_purple</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_purple</string>
 			<key>Hex</key>
@@ -165,7 +165,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_gray.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_gray.png</string>
+			<string>cook_book_edge_gray</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_gray</string>
 			<key>Hex</key>
@@ -190,7 +190,7 @@
 			<key>Slider</key>
 			<string>cook_customise_colour_picker_neutral.png</string>
 			<key>Outline</key>
-			<string>cook_book_edge_brown.png</string>
+			<string>cook_book_edge_brown</string>
 			<key>RecipeEdit</key>
 			<string>cook_edit_bg_neutral</string>
 			<key>Hex</key>
