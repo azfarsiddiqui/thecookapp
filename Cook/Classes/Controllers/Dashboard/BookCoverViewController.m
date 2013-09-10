@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BookCoverViewController.h"
 #import "CKBookCoverView.h"
+#import "CKBookCover.h"
 #import "BenchtopBookCoverViewCell.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
@@ -34,7 +35,8 @@
 
 @implementation BookCoverViewController
 
-#define RADIANS(degrees)        ((degrees * (float)M_PI) / 180.0f)
+#define RADIANS(degrees)            ((degrees * (float)M_PI) / 180.0f)
+#define kBookOutlineOffset          (UIOffset){-64.0, -26.0}
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookCoverViewControllerDelegate>)delegate {
     return [self initWithBook:book mine:NO delegate:delegate];
@@ -191,7 +193,25 @@
                                       rootBookLayer.bounds.size.width,
                                       rootBookLayer.bounds.size.height);
     rightOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
-    rightOpenLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_right.png"].CGImage;
+    
+    // RHS outline.
+    UIImage *rightOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:NO];
+    CALayer *rightOutlineLayer = [CALayer layer];
+    rightOutlineLayer.frame = (CGRect){
+        0.0,
+        (kBookOutlineOffset.vertical * self.bookCoverView.bounds.size.height) / self.view.bounds.size.height,
+        rightOpenLayer.bounds.size.width,
+        rightOpenLayer.bounds.size.height
+    };
+    rightOutlineLayer.contents = (id)rightOutlineImage.CGImage;
+    //[rightOpenLayer addSublayer:rightOutlineLayer];
+
+    // RHS contents.
+    CALayer *rightContentsLayer = [CALayer layer];
+    rightContentsLayer.frame = rightOpenLayer.bounds;
+    rightContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_right.png"].CGImage;
+    [rightOpenLayer addSublayer:rightContentsLayer];
+    
     [self.rootBookLayer addSublayer:rightOpenLayer];
     self.rightOpenLayer = rightOpenLayer;
     
@@ -209,7 +229,13 @@
     leftOpenLayer.backgroundColor = [Theme bookCoverInsideBackgroundColour].CGColor;
     leftOpenLayer.doubleSided = NO;
     leftOpenLayer.transform = CATransform3DMakeRotation(RADIANS(180.0), 0.0, 1.0, 0.0);
-    leftOpenLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_left.png"].CGImage;
+    
+    // LHS contents.
+    CALayer *leftContentsLayer = [CALayer layer];
+    leftContentsLayer.frame = leftOpenLayer.bounds;
+    leftContentsLayer.contents = (id)[UIImage imageNamed:@"cook_book_inner_page_left.png"].CGImage;
+    [leftOpenLayer addSublayer:leftContentsLayer];
+    
     [rootBookCoverLayer addSublayer:leftOpenLayer];
     self.leftOpenLayer = leftOpenLayer;
     
@@ -332,9 +358,11 @@
     if (!self.showInsideCoverLegacy) {
         return;
     }
-    if ([self.delegate respondsToSelector:@selector(bookCoverViewInsideSnapshotImage)]) {
-        [self loadSnapshotImage:[self.delegate bookCoverViewInsideSnapshotImage]];
-    }
+    
+    // TODO Disable live snapshotting.
+//    if ([self.delegate respondsToSelector:@selector(bookCoverViewInsideSnapshotImage)]) {
+//        [self loadSnapshotImage:[self.delegate bookCoverViewInsideSnapshotImage]];
+//    }
 }
 
 @end

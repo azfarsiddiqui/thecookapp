@@ -730,22 +730,37 @@
 
 - (void)initBookOutlineView {
     
-    // Coloured cover outline.
-    UIImage *outlineImage = [CKBookCover outlineImageForCover:self.book.cover];
-    UIImageView *bookOutlineView = [[UIImageView alloc] initWithImage:outlineImage];
-    bookOutlineView.frame = (CGRect){
-        kBookOutlineOffset.horizontal,
-        kBookOutlineOffset.vertical,
-        bookOutlineView.frame.size.width,
-        bookOutlineView.frame.size.height
-    };
-    [self.view insertSubview:bookOutlineView belowSubview:self.collectionView];
-    self.bookOutlineView = bookOutlineView;
-    
     // Book overlay.
     UIImageView *bookOutlineOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_edge_overlay.png"]];
-    bookOutlineOverlayView.frame = bookOutlineView.bounds;
-    [bookOutlineView addSubview:bookOutlineOverlayView];
+    bookOutlineOverlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+    
+    // Outline container.
+    UIView *outlineContainerView = [[UIView alloc] initWithFrame:CGRectZero];
+    outlineContainerView.backgroundColor = [UIColor clearColor];
+    outlineContainerView.frame = (CGRect){
+        kBookOutlineOffset.horizontal,
+        kBookOutlineOffset.vertical,
+        bookOutlineOverlayView.frame.size.width,
+        bookOutlineOverlayView.frame.size.height
+    };
+    [self.view insertSubview:outlineContainerView belowSubview:self.collectionView];
+    
+    // Left cover outline.
+    UIImage *leftOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:YES];
+    UIImageView *leftBookOutlineView = [[UIImageView alloc] initWithImage:leftOutlineImage];
+    [outlineContainerView addSubview:leftBookOutlineView];
+    
+    // Right cover outline.
+    UIImage *rightOutlineImage = [CKBookCover outlineImageForCover:self.book.cover left:NO];
+    UIImageView *rightBookOutlineView = [[UIImageView alloc] initWithImage:rightOutlineImage];
+    CGRect rightBookOutlineFrame = rightBookOutlineView.frame;
+    rightBookOutlineFrame.origin.x = outlineContainerView.bounds.size.width - rightBookOutlineFrame.size.width;
+    rightBookOutlineView.frame = rightBookOutlineFrame;
+    [outlineContainerView addSubview:rightBookOutlineView];
+    
+    // Overlay.
+    [outlineContainerView addSubview:bookOutlineOverlayView];
+    self.bookOutlineView = outlineContainerView;
 }
 
 - (void)initCollectionView {

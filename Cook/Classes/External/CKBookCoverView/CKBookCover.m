@@ -69,12 +69,13 @@
     return [ImageHelper imageFromDiskNamed:imageName type:@".png"];
 }
 
-+ (UIImage *)outlineImageForCover:(NSString *)cover {
++ (UIImage *)outlineImageForCover:(NSString *)cover left:(BOOL)left {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Outline", cover]];
     if (!imageName) {
         imageName = [[CKBookCover settings] valueForKeyPath:@"Covers.Gray.Image"];
     }
-    return [UIImage imageNamed:imageName];
+    imageName = [NSString stringWithFormat:@"%@_%@", imageName, left ? @"left" : @"right"];
+    return [ImageHelper imageFromDiskNamed:imageName type:@"png"];
 }
 
 + (UIImage *)thumbImageForCover:(NSString *)cover {
