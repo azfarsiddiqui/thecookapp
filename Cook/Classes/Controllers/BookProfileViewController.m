@@ -62,21 +62,7 @@
     [super viewDidAppear:animated];
     [self initImageView];
     [self showIntroCard:[self introRequired]];
-    
-    if ([self canEditBook]) {
-        [self.view addSubview:self.photoButtonView];
-        
-        // Wrap an editBox box.
-        [self.editingHelper wrapEditingView:self.photoButtonView contentInsets:(UIEdgeInsets){
-            32.0, 32.0, 20.0, 41.0
-        } delegate:self white:NO editMode:NO];
-        UIView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
-        self.photoButtonView.alpha = 0.0;
-        photoBoxView.alpha = 0.0;
-        
-        [self.view addSubview:self.editButton];
-    }
-    
+    [self.view addSubview:self.editButton];
     [self loadData];
 }
 
@@ -179,7 +165,7 @@
 #pragma mark - Properties
 
 - (UIButton *)editButton {
-    if (!_editButton) {
+    if (!_editButton && [self canEditBook]) {
         _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
                                            target:self
                                          selector:@selector(editTapped:)];
@@ -352,6 +338,12 @@
     
     // Prep photo edit button to be transitioned in.
     if (self.editMode) {
+        [self.view addSubview:self.photoButtonView];
+        
+        // Wrap an editBox box.
+        [self.editingHelper wrapEditingView:self.photoButtonView contentInsets:(UIEdgeInsets){
+            32.0, 32.0, 20.0, 41.0
+        } delegate:self white:NO editMode:NO];
         UIView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
         self.photoButtonView.alpha = 0.0;
         photoBoxView.alpha = 0.0;
@@ -375,6 +367,12 @@
                              // Summary view.
                              [self.summaryView enableEditMode:editMode animated:YES];
                              
+                             // Remove photo button.
+                             if (!editMode) {
+                                 [self.editingHelper unwrapEditingView:self.photoButtonView];
+                                 [self.photoButtonView removeFromSuperview];
+                             }
+                             
                              if (completion != nil) {
                                  completion();
                              }
@@ -386,6 +384,12 @@
         self.photoButtonView.alpha = self.editMode ? 1.0 : 0.0;
         CKEditingTextBoxView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
         photoBoxView.alpha = self.photoButtonView.alpha;
+        
+        // Remove photo button.
+        if (!editMode) {
+            [self.editingHelper unwrapEditingView:self.photoButtonView];
+            [self.photoButtonView removeFromSuperview];
+        }
         
         // Summary view.
         [self.summaryView enableEditMode:editMode animated:NO];
