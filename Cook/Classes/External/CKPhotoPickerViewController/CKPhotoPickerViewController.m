@@ -302,8 +302,8 @@
         _vignetteView = [[UIView alloc] initWithFrame:self.view.frame];
         _vignetteView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         UIImage *bottomImage = [UIImage imageNamed:@"cook_book_inner_darkenphoto_strip_bottom"];
-        UIImageView *bottomVignetteView = [[UIImageView alloc] initWithImage:bottomImage];//[bottomImage resizableImageWithCapInsets:UIEdgeInsetsMake(1, 0, 1, 0)]];
-        bottomVignetteView.frame = CGRectMake(0, _vignetteView.frame.size.height - bottomVignetteView.frame.size.height, bottomVignetteView.frame.size.width, bottomVignetteView.frame.size.height);
+        UIImageView *bottomVignetteView = [[UIImageView alloc] initWithImage:[bottomImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 1, 0, 1)]];
+        bottomVignetteView.frame = CGRectMake(0, _vignetteView.frame.size.height - bottomVignetteView.frame.size.height, self.view.frame.size.width, bottomVignetteView.frame.size.height);
         _vignetteView.userInteractionEnabled = NO;
         [_vignetteView addSubview:bottomVignetteView];
     }
@@ -695,6 +695,9 @@
             case CKPhotoFilterOutdoors:
                 filteredImage = [self outdoorFilterOnImage:filteredImage];
                 break;
+            case CKPhotoFilterIndoors:
+                filteredImage = [self indoorFilterOnImage:filteredImage];
+                break;
             case CKPhotoFilterVibrant:
                 filteredImage = [self vibrantFilterOnImage:filteredImage];
                 break;
@@ -715,21 +718,19 @@
 }
 
 #pragma mark - Image filtering methods
-//- (UIImage *)indoorFilterOnImage:(UIImage *)image
-//{
-//    CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
-//    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage, @"inputBrightness", [NSNumber numberWithFloat:0.0], @"inputContrast", [NSNumber numberWithFloat:1.03], @"inputSaturation", [NSNumber numberWithFloat:1.04], nil].outputImage;
-////    filteredImage = [CIFilter filterWithName:@"CIExposureAdjust" keysAndValues:kCIInputImageKey, filteredImage, @"inputEV", [NSNumber numberWithFloat:self.slider3.value], nil].outputImage;
-//    filteredImage = [CIFilter filterWithName:@"CITemperatureAndTint" keysAndValues:kCIInputImageKey, filteredImage, @"inputNeutral", [CIVector vectorWithX:6500 Y:500], @"inputTargetNeutral", [CIVector vectorWithX:6250 Y:500], nil].outputImage;
-//    filteredImage = [CIFilter filterWithName:@"CIUnsharpMask" keysAndValues:kCIInputImageKey, filteredImage,
-//                     @"inputRadius", [NSNumber numberWithFloat:1.7],
-//                     @"inputIntensity", [NSNumber numberWithFloat:0.3], nil].outputImage;
-//    CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
-//    UIImage *returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
-//    filteredImage = nil;
-//    CGImageRelease(returnCGImage);
-//    return returnImage;
-//}
+- (UIImage *)indoorFilterOnImage:(UIImage *)image
+{
+    CIImage *filteredImage = [[CIImage alloc] initWithImage:image];
+    filteredImage = [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, filteredImage, @"inputContrast", [NSNumber numberWithFloat:1.03], @"inputSaturation", [NSNumber numberWithFloat:1.04], nil].outputImage;
+    filteredImage = [CIFilter filterWithName:@"CIUnsharpMask" keysAndValues:kCIInputImageKey, filteredImage,
+                     @"inputRadius", [NSNumber numberWithFloat:1.7],
+                     @"inputIntensity", [NSNumber numberWithFloat:0.3], nil].outputImage;
+    CGImageRef returnCGImage = [self.filterContext createCGImage:filteredImage fromRect:filteredImage.extent];
+    UIImage *returnImage = [UIImage imageWithCGImage:returnCGImage scale:image.scale orientation:image.imageOrientation];
+    filteredImage = nil;
+    CGImageRelease(returnCGImage);
+    return returnImage;
+}
 
 - (UIImage *)autoFilterOnImage:(UIImage *)image
 {

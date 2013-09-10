@@ -12,6 +12,7 @@ typedef enum {
     CKPhotoFilterTypeNone = 0,
     CKPhotoFilterAuto,
     CKPhotoFilterOutdoors,
+    CKPhotoFilterIndoors,
     CKPhotoFilterVibrant,
     CKPhotoFilterWarm,
     CKPhotoFilterCool,
