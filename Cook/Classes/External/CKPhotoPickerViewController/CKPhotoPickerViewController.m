@@ -39,7 +39,7 @@
 @property (nonatomic, strong) CIContext *filterContext;
 @property (nonatomic, strong) CKPhotoFilterSliderView *filterPickerView;
 @property UIDeviceOrientation currentOrientation;
-@property (nonatomic, strong) UIImage *tempImage;
+@property (nonatomic, strong) UIView *flashView;
 
 @end
 
@@ -72,6 +72,8 @@
         self.saveToPhotoAlbum = saveToPhotoAlbum;
         self.delegate = delegate;
         self.filterContext = [CIContext contextWithOptions:nil];
+        DLog(@"Input Max size: %f, %f", [self.filterContext inputImageMaximumSize].width, [self.filterContext inputImageMaximumSize].height);
+        DLog(@"Output MAx Size: %f, %f", [self.filterContext outputImageMaximumSize].width, [self.filterContext outputImageMaximumSize].height);
         self.showFilters = showFilters;
     }
     return self;
@@ -162,7 +164,6 @@
     CGFloat cropHeight = chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
     chosenImage = [ImageHelper scaledImage:chosenImage size:CGSizeMake(cropWidth, cropHeight)];
     self.selectedImage = chosenImage;
-    self.tempImage = chosenImage;
     DLog(@"Picked image size: %f, %f", chosenImage.size.width, chosenImage.size.height);
     [self updateImagePreview];
     [self updateButtons];
@@ -683,32 +684,34 @@
 #pragma mark - CKPhotoFilterSliderView delegate methods
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex
 {
-    switch (notchIndex) {
-        case CKPhotoFilterTypeNone:
-            self.selectedImage = self.tempImage;
-            break;
-        case CKPhotoFilterAuto:
-            self.selectedImage = [self autoFilterOnImage:self.tempImage];
-            break;
-        case CKPhotoFilterOutdoors:
-            self.selectedImage = [self outdoorFilterOnImage:self.tempImage];
-            break;
-        case CKPhotoFilterVibrant:
-            self.selectedImage = [self vibrantFilterOnImage:self.tempImage];
-            break;
-        case CKPhotoFilterCool:
-            self.selectedImage = [self coolFilterOnImage:self.tempImage];
-            break;
-        case CKPhotoFilterWarm:
-            self.selectedImage = [self warmFilterOnImage:self.tempImage];
-            break;
-        case CKPhotoFilterText:
-            self.selectedImage = [self textFilterOnImage:self.tempImage];
-            break;
-        default:
-            break;
+    @autoreleasepool {
+        UIImage *filteredImage = [self.selectedImage imageCroppedToFitSize:self.previewImageView.bounds.size];
+        switch (notchIndex) {
+            case CKPhotoFilterTypeNone:
+                break;
+            case CKPhotoFilterAuto:
+                filteredImage = [self autoFilterOnImage:filteredImage];
+                break;
+            case CKPhotoFilterOutdoors:
+                filteredImage = [self outdoorFilterOnImage:filteredImage];
+                break;
+            case CKPhotoFilterVibrant:
+                filteredImage = [self vibrantFilterOnImage:filteredImage];
+                break;
+            case CKPhotoFilterCool:
+                filteredImage = [self coolFilterOnImage:filteredImage];
+                break;
+            case CKPhotoFilterWarm:
+                filteredImage = [self warmFilterOnImage:filteredImage];
+                break;
+            case CKPhotoFilterText:
+                filteredImage = [self textFilterOnImage:filteredImage];
+                break;
+            default:
+                break;
+        }
+        self.previewImageView.image = filteredImage;
     }
-    self.previewImageView.image = [self.selectedImage imageCroppedToFitSize:self.previewImageView.bounds.size];
 }
 
 #pragma mark - Image filtering methods
