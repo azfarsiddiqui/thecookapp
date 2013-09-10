@@ -61,6 +61,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initImageView];
+    [self showIntroCard:[self introRequired]];
     
     if ([self canEditBook]) {
         [self.view addSubview:self.photoButtonView];
@@ -68,7 +69,7 @@
         // Wrap an editBox box.
         [self.editingHelper wrapEditingView:self.photoButtonView contentInsets:(UIEdgeInsets){
             32.0, 32.0, 20.0, 41.0
-        } delegate:self white:YES editMode:NO];
+        } delegate:self white:NO editMode:NO];
         UIView *photoBoxView = [self.editingHelper textBoxViewForEditingView:self.photoButtonView];
         self.photoButtonView.alpha = 0.0;
         photoBoxView.alpha = 0.0;
@@ -77,7 +78,6 @@
     }
     
     [self loadData];
-    [self showIntroCard:[self introRequired]];
 }
 
 #pragma mark - BookPageViewController methods
@@ -195,12 +195,12 @@
 - (UIView *)photoButtonView {
     if (!_photoButtonView) {
         
-        UIImageView *cameraImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_icon_photo.png"]];
+        UIImageView *cameraImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_icon_photo_white.png"]];
         CGRect cameraImageFrame = cameraImageView.frame;
         
         UILabel *photoLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         photoLabel.font = [Theme editPhotoFont];
-        photoLabel.textColor = [Theme editPhotoColour];
+        photoLabel.textColor = [UIColor whiteColor];
         photoLabel.textAlignment = NSTextAlignmentCenter;
         photoLabel.backgroundColor = [UIColor clearColor];
         photoLabel.text = @"PHOTO";
