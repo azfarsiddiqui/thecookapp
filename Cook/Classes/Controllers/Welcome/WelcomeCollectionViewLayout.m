@@ -22,7 +22,7 @@
 @implementation WelcomeCollectionViewLayout
 
 #define kAdornmentOffset    190.0
-#define kPagingUpOffset     20.0
+#define kPagingUpOffset     30.0
 #define kWelcomeSection     0
 #define kCreateSection      1
 #define kCollectSection     2

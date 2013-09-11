@@ -56,6 +56,7 @@
 #define kLabelSubtitleFont  [UIFont fontWithName:@"AvenirNext-Regular" size:24.0]
 #define kPageHeaderSize     CGSizeMake(500.0, 500.0)
 #define kLabelGap           10.0
+#define kBorderInsets       (UIEdgeInsets){ 16.0, 10.0, 12.0, 10.0 }
 
 - (id)initWithDelegate:(id<WelcomeViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[WelcomeCollectionViewLayout alloc] initWithDataSource:self]]) {
@@ -574,6 +575,17 @@
     backgroundTextureView.frame = textureFrame;
     [self.backdropScrollView addSubview:backgroundTextureView];
     self.backgroundTextureView = backgroundTextureView;
+    
+    UIImage *borderImage = [[UIImage imageNamed:@"cook_book_inner_title_border.png"] resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
+    UIImageView *borderImageView = [[UIImageView alloc] initWithImage:borderImage];
+    borderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
+    borderImageView.frame = (CGRect){
+        kBorderInsets.left,
+        kBorderInsets.top,
+        self.view.bounds.size.width - kBorderInsets.left - kBorderInsets.right,
+        self.view.bounds.size.height - kBorderInsets.top - kBorderInsets.bottom
+    };
+    [self.view insertSubview:borderImageView aboveSubview:self.backdropScrollView];
     
     // Start blending.
     pagingBenchtopView.alpha = 0.0;
