@@ -48,6 +48,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 + (CKUser *)userWithParseUser:(PFUser *)parseUser;
 + (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend requestor:(PFUser *)parseRequestor;
 + (BOOL)usernameExistsForSignUpError:(NSError *)error;
++ (BOOL)invalidCredentialsForSignInError:(NSError *)error;
 + (void)setGuestTheme:(DashTheme)theme;
 + (DashTheme)currentTheme;
 

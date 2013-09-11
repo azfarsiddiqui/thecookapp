@@ -616,7 +616,7 @@
 }
 
 - (NSString *)titleForSignUp:(BOOL)signUp {
-    return signUp ? @"SIGNUP" : @"SIGN IN";
+    return signUp ? @"REGISTER" : @"SIGN IN";
 }
 
 - (NSString *)footerTextForSignUp:(BOOL)signUp {
@@ -624,11 +624,11 @@
 }
 
 - (NSString *)emailButtonTextForSignUp:(BOOL)signUp {
-    return signUp ? @"SIGN UP WITH EMAIL" : @"SIGN IN";
+    return signUp ? @"REGISTER WITH EMAIL" : @"SIGN IN";
 }
 
 - (NSString *)facebookButtonTextForSignUp:(BOOL)signUp {
-    return signUp ? @"SIGNUP WITH FACEBOOK" : @"SIGNIN WITH FACEBOOK";
+    return signUp ? @"REGISTER WITH FACEBOOK" : @"SIGN IN WITH FACEBOOK";
 }
 
 - (NSString *)forgotButtonText {
@@ -745,7 +745,7 @@
     NSString *email = [self.forgotEmailView inputText];
     [CKUser requestPasswordResetForEmail:email completion:^{
         
-        [self.forgotButton setText:@"SENT! PLEASE CHECK YOUR EMAIL" done:YES activity:NO animated:NO enabled:NO];
+        [self.forgotButton setText:@"SENT, PLEASE CHECK YOUR EMAIL" done:YES activity:NO animated:NO enabled:NO];
         [self.forgotEmailView focusTextFieldView:NO];
         
     } failure:^(NSError *error) {
@@ -782,9 +782,9 @@
                    } failure:^(NSError *error) {
                        
                        if ([CKUser usernameExistsForSignUpError:error]) {
-                           [self.emailButton setText:@"INCORRECT EMAIL OR PASSWORD" activity:NO animated:NO enabled:NO];
+                           [self.emailButton setText:@"EMAIL IS ALREADY REGISTERED" activity:NO animated:NO enabled:NO];
                        } else {
-                           [self.emailButton setText:@"UNABLE TO REGISTER" activity:NO animated:NO enabled:NO];
+                           [self.emailButton setText:@"COULDN'T CONNECT" activity:NO animated:NO enabled:NO];
                        }
 
                        // Re-enable the email button.
@@ -814,7 +814,12 @@
                     
                 } failure:^(NSError *error) {
                     
-                    [self.emailButton setText:@"UNABLE TO SIGN IN" activity:NO animated:NO enabled:NO];
+                    if ([CKUser invalidCredentialsForSignInError:error]) {
+                        [self.emailButton setText:@"INCORRECT EMAIL OR PASSWORD" activity:NO animated:NO enabled:NO];
+                    } else {
+                        [self.emailButton setText:@"COULDN'T CONNECT" activity:NO animated:NO enabled:NO];
+                    }
+                    
                     [self informLoginSuccessful:NO];
                     
                     // Re-enable the email button.
@@ -830,7 +835,7 @@
     
     // Inform for modal.
     [self.delegate signUpViewControllerModalRequested:YES];
-    [self.facebookButton setText:@"CHATTING TO FACEBOOK" activity:YES animated:NO enabled:NO];
+    [self.facebookButton setText:@"CHATTING WITH FACEBOOK" activity:YES animated:NO enabled:NO];
     [self loginViaFacebook];
 }
 
@@ -862,7 +867,7 @@
         DLog(@"Error logging in: %@", [error localizedDescription]);
         
         [self enableFacebookLogin:NO completion:^{
-            [self.facebookButton setText:@"UNABLE TO LOGIN" activity:NO animated:NO enabled:NO];
+            [self.facebookButton setText:@"COULDN'T CONNECT TO FACEBOOK" activity:NO animated:NO enabled:NO];
             [self informLoginSuccessful:NO];
             
             // Re-enable the facebook button.

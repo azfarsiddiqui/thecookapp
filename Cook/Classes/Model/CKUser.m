@@ -171,6 +171,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return ([error code] == kPFErrorUsernameTaken);
 }
 
++ (BOOL)invalidCredentialsForSignInError:(NSError *)error {
+    return ([error code] == kPFErrorObjectNotFound);
+}
+
 + (void)setGuestTheme:(DashTheme)theme {
     [[NSUserDefaults standardUserDefaults] setObject:@(theme) forKey:kCookGuestTheme];
 }
