@@ -40,7 +40,11 @@
 
 - (void)updateTimeInterval {
     [super updateTimeInterval];
+    
+    self.timeIntervalLabel.hidden = [self hasPhotos];
+    
     if (![self hasTitle]) {
+        
         self.timeIntervalLabel.frame = (CGRect){
             floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
             kTimeGap,
