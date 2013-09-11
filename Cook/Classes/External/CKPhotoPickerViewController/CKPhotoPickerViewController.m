@@ -531,14 +531,14 @@
         CGRect visibleFrame = parentView.bounds;
         
         UIImageView *previewImageView = [[UIImageView alloc] initWithFrame:visibleFrame];
-        previewImageView.image = [self.selectedImage imageCroppedToFitSize:previewImageView.bounds.size];
+        previewImageView.image = self.selectedImage;
         previewImageView.autoresizingMask = UIViewAutoresizingNone;
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:parentView.bounds];
         scrollView.backgroundColor = [UIColor blackColor];
         scrollView.contentSize = previewImageView.frame.size;
         scrollView.alwaysBounceHorizontal = YES;
         scrollView.alwaysBounceVertical = YES;
-        scrollView.maximumZoomScale = 2.0;
+        scrollView.maximumZoomScale = 1.0;
         scrollView.minimumZoomScale = 1.0;
         scrollView.delegate = self;
         scrollView.alpha = 0.0;
@@ -547,6 +547,7 @@
         
         if (self.type == CKPhotoPickerImageTypeSquare) {
             scrollView.contentInset = UIEdgeInsetsMake(kSquareCropOrigin.y, kSquareCropOrigin.x, kSquareCropOrigin.y, kSquareCropOrigin.x);
+            scrollView.maximumZoomScale = 2.0;
         }
         
         [scrollView addSubview:previewImageView];
@@ -555,7 +556,8 @@
         // Reset slider to 'None'
         if (self.showFilters)
         {
-            [self.filterPickerView slideToNotchIndex:0 animated:NO];
+            [self.filterPickerView selectNotch:0];
+            [self.filterPickerView stopFilterLoading];
         }
     }
     if (self.squareOverlayView) [[self parentView] bringSubviewToFront:self.squareOverlayView];
@@ -657,6 +659,9 @@
 #pragma mark - CKPhotoFilterSliderView delegate methods
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex
 {
+    [self.activityView startAnimating];
+    [self.view bringSubviewToFront:self.activityView];
+    [self.filterPickerView startFilterLoading];
     @autoreleasepool {
         UIImage *filteredImage = self.selectedImage;
         switch (notchIndex) {
@@ -688,6 +693,8 @@
         }
         self.previewImageView.image = filteredImage;
     }
+    [self.activityView stopAnimating];
+    [self.filterPickerView stopFilterLoading];
 }
 
 #pragma mark - Image filtering methods

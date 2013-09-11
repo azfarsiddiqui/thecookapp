@@ -31,4 +31,7 @@ typedef enum {
 
 - (id)initWithDelegate:(id<CKNotchSliderViewDelegate>)delegate;
 
+- (void)startFilterLoading;
+- (void)stopFilterLoading;
+
 @end
