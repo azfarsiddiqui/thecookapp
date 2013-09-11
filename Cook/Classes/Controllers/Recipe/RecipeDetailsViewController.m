@@ -104,7 +104,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @implementation RecipeDetailsViewController
 
 #define kButtonInsets       UIEdgeInsetsMake(26.0, 10.0, 15.0, 12.0)
-#define kEditButtonInsets   UIEdgeInsetsMake(14.0, -9.0, -17.0, -9.0)
+#define kEditButtonInsets   UIEdgeInsetsMake(12.0, -9.0, -17.0, -9.0)
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
 #define kContentTopOffset   80.0
@@ -668,7 +668,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         _privacyView = [[CKPrivacySliderView alloc] initWithDelegate:self];
         _privacyView.frame = (CGRect){
             floorf((self.view.bounds.size.width - _privacyView.frame.size.width) / 2.0),
-            kButtonInsets.top,
+            kButtonInsets.top - 14.0,
             _privacyView.frame.size.width,
             _privacyView.frame.size.height};
     }
