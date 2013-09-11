@@ -264,11 +264,11 @@
             text = [NSString stringWithFormat:@"%@ wants to be friends.", [actionUser friendlyName]];
         }
     } else if ([notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
-        text = [NSString stringWithFormat:@"%@ is now friends with you.", [actionUser friendlyName]];
+        text = [NSString stringWithFormat:@"You are now friends with %@.", [actionUser friendlyName]];
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]) {
         text = [NSString stringWithFormat:@"%@ commented on your recipe \"%@\"", [actionUser friendlyName], notification.recipe.name];
     } else if ([notificationName isEqualToString:kUserNotificationTypeLike]) {
-        text = [NSString stringWithFormat:@"%@ liked on your recipe \"%@\"", [actionUser friendlyName], notification.recipe.name];
+        text = [NSString stringWithFormat:@"%@ liked your recipe \"%@\"", [actionUser friendlyName], notification.recipe.name];
     }
     
     return text;
