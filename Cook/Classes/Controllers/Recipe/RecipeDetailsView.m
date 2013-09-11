@@ -439,7 +439,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSString *name = self.recipeDetails.name;
     
     if (![self.recipeDetails.name CK_containsText]) {
-        name = @"TITLE";
+        name = @"RECIPE TITLE";
     }
     
     self.titleLabel.text = [[name CK_whitespaceTrimmed] uppercaseString];
@@ -496,7 +496,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSString *story = self.recipeDetails.story;
     
     if (![self.recipeDetails.story CK_containsText]) {
-        story = @"STORY";
+        story = @"WRITE SOMETHING";
     }
     
     CGFloat dividerStoryGap = 5.0;

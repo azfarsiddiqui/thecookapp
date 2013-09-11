@@ -1887,6 +1887,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if ([self.recipeDetails hasStory]) {
         CGFloat maxStoryHeight = 115.0;
         headerHeight = self.recipeDetailsView.storyLabel.frame.origin.y + MIN(self.recipeDetailsView.storyLabel.frame.size.height, maxStoryHeight) + 15.0;
+    } else if (self.addMode) {
+        headerHeight = 265.0;
     }
     
     return headerHeight;
