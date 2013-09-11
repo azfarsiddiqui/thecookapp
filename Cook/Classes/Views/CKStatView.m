@@ -20,8 +20,8 @@
 
 @implementation CKStatView
 
-#define kNumberFont     [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0]
-#define kUnitFont       [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0]
+#define kNumberFont     [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0]
+#define kUnitFont       [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0]
 #define kContentInsets  UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
 #define kNumberUnitGap  5.0
 

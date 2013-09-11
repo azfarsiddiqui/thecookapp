@@ -111,7 +111,7 @@
 }
 
 + (UIFont *)storeBookSummaryStoryFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:18.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0];
 }
 
 + (UIColor *)storeBookSummaryStoryColour {
