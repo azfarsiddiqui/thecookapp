@@ -103,13 +103,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 @implementation RecipeDetailsViewController
 
-#define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
+#define kButtonInsets       UIEdgeInsetsMake(26.0, 10.0, 15.0, 12.0)
 #define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
-#define kContentTopOffset   94.0
-#define kHeaderHeight       215.0
+#define kContentTopOffset   80.0
 #define kDragRatio          0.9
+#define kIconGap            18.0
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
 
 - (void)dealloc {
@@ -528,7 +528,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                            target:self
                                          selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _editButton.frame = CGRectMake(self.shareButton.frame.origin.x - 15.0 - _editButton.frame.size.width,
+        _editButton.frame = CGRectMake(self.shareButton.frame.origin.x - kIconGap - _editButton.frame.size.width,
                                        kButtonInsets.top,
                                        _editButton.frame.size.width,
                                        _editButton.frame.size.height);
@@ -547,7 +547,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         
         if (self.likeButton) {
-            _shareButton.frame = CGRectMake(self.likeButton.frame.origin.x - 15.0 - _shareButton.frame.size.width,
+            _shareButton.frame = CGRectMake(self.likeButton.frame.origin.x - kIconGap - _shareButton.frame.size.width,
                                             kButtonInsets.top,
                                             _shareButton.frame.size.width,
                                             _shareButton.frame.size.height);
@@ -707,6 +707,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.imageScrollView addSubview:imageView];
     self.imageView = imageView;
     
+    // Top shadow view.
+    self.topShadowView = [ViewHelper topShadowViewForView:self.view subtle:YES];
+    self.topShadowView.alpha = 0.0;
+    [self.view insertSubview:self.topShadowView aboveSubview:self.imageView];
+    
     if (self.blur) {
         UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:imageView.bounds];
         blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -780,7 +785,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.scrollView.bounds.origin.x,
         self.scrollView.bounds.origin.y,
         self.contentImageView.bounds.size.width,
-        kHeaderHeight
+        [self headerHeight]
     }];
     self.placeholderHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
     self.placeholderHeaderView.backgroundColor = [Theme recipeGridImageBackgroundColour];  // White colour to start off with then fade out.
@@ -835,6 +840,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)loadPhoto {
+    
+    // Load placeholder first.
+    [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.recipe.book.cover]
+                     placeholder:YES];
+    
     if ([self.recipe hasPhotos]) {
         
         // Start the spinner.
@@ -850,14 +860,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                    // Stop spinner.
                                                    [self.activityView stopAnimating];
                                                }];
-    } else {
-        
-        // Load placeholder editing background based on book cover.
-        [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.recipe.book.cover]
-                         placeholder:YES];
-        
-        // Stop spinner.
-        [self.activityView stopAnimating];
     }
     
 }
@@ -869,12 +871,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)loadImageViewWithPhoto:(UIImage *)image placeholder:(BOOL)placeholder {
     self.imageView.image = image;
     self.imageView.placeholder = placeholder;
+    self.topShadowView.image = [ViewHelper topShadowImageSubtle:placeholder];
     
-    [self.topShadowView removeFromSuperview];
-    self.topShadowView = [ViewHelper topShadowViewForView:self.imageView subtle:placeholder];
-    self.topShadowView.alpha = 0.0;
-    [self.view insertSubview:self.topShadowView aboveSubview:self.imageView];
-
     if (self.blur) {
         self.blurredImageView.image = [ImageHelper blurredRecipeImage:image];
     }
@@ -1142,7 +1140,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             offset = kContentTopOffset;
             break;
         case SnapViewportBottom:
-            offset = self.view.bounds.size.height - kHeaderHeight;
+            offset = self.view.bounds.size.height - [self headerHeight];
             break;
         case SnapViewportBelow:
             offset = self.view.bounds.size.height;
@@ -1845,7 +1843,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         bounds.origin.x,
         bounds.origin.y,
         bounds.size.width,
-        kHeaderHeight
+        [self headerHeight]
     };
     CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
     return [self.view convertRect:headerFrameRootView toView:self.imageView];
@@ -1889,6 +1887,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (BOOL)shareable {
     return ([self.recipe isUserRecipeAuthor:self.currentUser] && (self.recipeDetails.privacy != CKPrivacyPrivate));
+}
+
+- (CGFloat)headerHeight {
+    return 215.0;
 }
 
 @end
