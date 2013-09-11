@@ -264,7 +264,7 @@
 }
 
 - (UIEdgeInsets)contentInsets {
-    return UIEdgeInsetsMake(35.0, 20.0, 0.0, 20.0);
+    return UIEdgeInsetsMake(29.0, 20.0, 0.0, 20.0);
 }
 
 - (void)wrapTargetEditView:(UIView *)targetEditView delegate:(id<CKEditingTextBoxViewDelegate>)delegate {

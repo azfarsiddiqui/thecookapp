@@ -19,7 +19,9 @@
 @interface WelcomeViewController () <WelcomeCollectionViewLayoutDataSource>
 
 @property (nonatomic, weak) id<WelcomeViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIScrollView *backdropScrollView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *blendedView;
+@property (nonatomic, strong) UIView *backgroundTextureView;
 @property (nonatomic, strong) CKPagingView *pagingView;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL enabled;
@@ -70,50 +72,8 @@
     self.view.clipsToBounds = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UIOffset motionOffset = [ViewHelper standardMotionOffset];
-    
-    // Background texture.
-    UIImageView *backgroundTextureView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_background" type:@"png"]];
-    backgroundTextureView.center = self.view.center;
-    backgroundTextureView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    [self.view insertSubview:backgroundTextureView belowSubview:self.collectionView];
-    
-    // Add motion effects on the blendedView.
-    [ViewHelper applyDraggyMotionEffectsToView:backgroundTextureView];
-    
     [self initCollectionView];
-    
-    // Blended benchtop.
-    PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
-        self.collectionView.bounds.origin.x - motionOffset.horizontal,
-        self.collectionView.bounds.origin.y - motionOffset.vertical,
-        (self.collectionView.bounds.size.width * [self numberOfPagesForWelcomeLayout]) + (motionOffset.horizontal * 2.0),
-        self.collectionView.bounds.size.height  + (motionOffset.vertical * 2.0)
-    } pageWidth:self.collectionView.bounds.size.width];
-    
-    // Add motion effects on the blendedView.
-    [ViewHelper applyDraggyMotionEffectsToView:pagingBenchtopView];
-    
-    // Colours
-    pagingBenchtopView.leftEdgeColour = [CKBookCover backdropColourForCover:@"Orange"];
-    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Red"]];
-    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Blue"]];
-    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Green"]];
-    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Red"]];
-    pagingBenchtopView.rightEdgeColour = [CKBookCover backdropColourForCover:@"Orange"];
-    self.blendedView = pagingBenchtopView;
-    
-    [pagingBenchtopView blendWithCompletion:^{
-        pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
-        [self.collectionView insertSubview:pagingBenchtopView atIndex:0];
-        
-//        // Dark overlay over the benchtop.
-//        UIView *overlayView = [[UIView alloc] initWithFrame:pagingBenchtopView.frame];
-//        overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-//        overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.1];
-//        [pagingBenchtopView addSubview:overlayView];
-        
-    }];
+    [self initBackdropScrollView];
 }
 
 - (void)enable:(BOOL)enable {
@@ -419,15 +379,29 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     self.animating = YES;
     
-    CGRect blendedFrame = self.blendedView.frame;
-    if (scrollView.contentOffset.x < 0) {
-        blendedFrame.origin.x = scrollView.contentOffset.x;
-    } else if (scrollView.contentOffset.x > self.blendedView.frame.size.width - self.collectionView.bounds.size.width) {
-        blendedFrame.origin.x = scrollView.contentOffset.x - (self.blendedView.frame.size.width - self.collectionView.bounds.size.width);
-    } else {
-        blendedFrame.origin.x = 0.0;
+    if (scrollView == self.collectionView) {
+        
+        self.backdropScrollView.contentOffset = self.collectionView.contentOffset;
+        
+    } else if (scrollView == self.backdropScrollView) {
+        
+        // Adjust the blended view.
+        CGRect blendedFrame = self.blendedView.frame;
+        if (scrollView.contentOffset.x < 0) {
+            blendedFrame.origin.x = scrollView.contentOffset.x;
+        } else if (scrollView.contentOffset.x > self.blendedView.frame.size.width - self.collectionView.bounds.size.width) {
+            blendedFrame.origin.x = scrollView.contentOffset.x - (self.blendedView.frame.size.width - self.collectionView.bounds.size.width);
+        } else {
+            blendedFrame.origin.x = 0.0;
+        }
+        self.blendedView.frame = blendedFrame;
+
+        // Texture to stay in place in viewport.
+        CGRect textureFrame = self.backgroundTextureView.frame;
+        textureFrame.origin.x = scrollView.contentOffset.x + floorf((scrollView.bounds.size.width - self.backgroundTextureView.frame.size.width) / 2.0);
+        textureFrame.origin.y = scrollView.contentOffset.y +floorf((scrollView.bounds.size.height - self.backgroundTextureView.frame.size.height) / 2.0);
+        self.backgroundTextureView.frame = textureFrame;
     }
-    self.blendedView.frame = blendedFrame;
     
 }
 
@@ -559,6 +533,61 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kAdornmentCellId];
     [self.collectionView registerClass:[PageHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:kPageHeaderId];
+}
+
+- (void)initBackdropScrollView {
+    UIOffset motionOffset = [ViewHelper standardMotionOffset];
+    
+    // Backdrop scrollview to back the collectionView.
+    self.backdropScrollView = [[UIScrollView alloc] initWithFrame:self.collectionView.frame];
+    self.backdropScrollView.clipsToBounds = NO;
+    self.backdropScrollView.delegate = self;
+    [self.view insertSubview:self.backdropScrollView belowSubview:self.collectionView];
+    
+    // Blended benchtop.
+    PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
+        self.backdropScrollView.bounds.origin.x - motionOffset.horizontal,
+        self.backdropScrollView.bounds.origin.y - motionOffset.vertical,
+        (self.backdropScrollView.bounds.size.width * [self numberOfPagesForWelcomeLayout]) + (motionOffset.horizontal * 2.0),
+        self.backdropScrollView.bounds.size.height  + (motionOffset.vertical * 2.0)
+    } pageWidth:self.backdropScrollView.bounds.size.width];
+    [self.backdropScrollView addSubview:pagingBenchtopView];
+    
+    // Add motion effects on the scrollView.
+    [ViewHelper applyDraggyMotionEffectsToView:self.backdropScrollView];
+    
+    // Colours
+    pagingBenchtopView.leftEdgeColour = [CKBookCover backdropColourForCover:@"Orange"];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Red"]];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Blue"]];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Green"]];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Red"]];
+    pagingBenchtopView.rightEdgeColour = [CKBookCover backdropColourForCover:@"Orange"];
+    self.blendedView = pagingBenchtopView;
+    
+    // Background texture goes over the gradient.
+    UIImageView *backgroundTextureView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_background" type:@"png"]];
+    backgroundTextureView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    CGRect textureFrame = backgroundTextureView.frame;
+    textureFrame.origin.x = floorf((self.backdropScrollView.bounds.size.width - backgroundTextureView.frame.size.width) / 2.0);
+    textureFrame.origin.y = floorf((self.backdropScrollView.bounds.size.height - backgroundTextureView.frame.size.height) / 2.0);
+    backgroundTextureView.frame = textureFrame;
+    [self.backdropScrollView addSubview:backgroundTextureView];
+    self.backgroundTextureView = backgroundTextureView;
+    
+    // Start blending.
+    pagingBenchtopView.alpha = 0.0;
+    [pagingBenchtopView blendWithCompletion:^{
+        
+        [UIView animateWithDuration:0.5
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^{
+                             pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    }];
 }
 
 - (void)updatePagingView {
