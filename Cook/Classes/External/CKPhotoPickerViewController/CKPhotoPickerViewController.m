@@ -48,8 +48,8 @@
 
 #define kToolbarHeight  44.0
 #define kContentInsets  UIEdgeInsetsMake(20.0, 15.0, 10.0, 15.0)
-#define kSquareCropHeight 604
-#define kSquareCropOrigin CGPointMake(210, 82)
+#define kSquareCropHeight 500
+#define kSquareCropOrigin CGPointMake(260, 134)
 #define MAX_IMAGE_WIDTH 2048
 #define MAX_IMAGE_HEIGHT 1536
 
@@ -89,6 +89,13 @@
     self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
     self.activityView.center = [self parentView].center;
     [[self parentView] addSubview:self.activityView];
+    
+    // Square?
+    if (self.type == CKPhotoPickerImageTypeSquare) {
+        self.squareOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_photo_overlay.png"]];
+        self.squareOverlayView.frame = self.view.bounds;
+        [[self parentView] addSubview:self.squareOverlayView];
+    }
 }
 
 - (void)receivedRotate:(id)sender
@@ -180,6 +187,7 @@
         pickerViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.cameraPickerViewController = pickerViewController;
         [self.view addSubview:self.cameraPickerViewController.view];
+        if (self.squareOverlayView) [self.view bringSubviewToFront:self.squareOverlayView];
     }
 }
 
@@ -518,42 +526,41 @@
 - (void)updateImagePreview {
     UIView *parentView = [self parentView];
     BOOL photoSelected = (self.selectedImage != nil);
+    
     if (photoSelected) {
         CGRect visibleFrame = parentView.bounds;
         
         UIImageView *previewImageView = [[UIImageView alloc] initWithFrame:visibleFrame];
-        previewImageView.image = [self.selectedImage imageCroppedToFitSize:previewImageView.bounds.size];
+        previewImageView.image = self.selectedImage;
         previewImageView.autoresizingMask = UIViewAutoresizingNone;
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:parentView.bounds];
         scrollView.backgroundColor = [UIColor blackColor];
         scrollView.contentSize = previewImageView.frame.size;
         scrollView.alwaysBounceHorizontal = YES;
         scrollView.alwaysBounceVertical = YES;
-        scrollView.maximumZoomScale = 2.0;
+        scrollView.maximumZoomScale = 1.0;
         scrollView.minimumZoomScale = 1.0;
         scrollView.delegate = self;
         scrollView.alpha = 0.0;
         [parentView addSubview:scrollView];
         self.previewScrollView = scrollView;
         
-        [scrollView addSubview:previewImageView];
-        self.previewImageView = previewImageView;
-        
-        // Square?
         if (self.type == CKPhotoPickerImageTypeSquare) {
             scrollView.contentInset = UIEdgeInsetsMake(kSquareCropOrigin.y, kSquareCropOrigin.x, kSquareCropOrigin.y, kSquareCropOrigin.x);
-            self.squareOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_photo_overlay.png"]];
-            self.squareOverlayView.frame = self.view.bounds;
-            [[self parentView] insertSubview:self.squareOverlayView belowSubview:self.filterPickerView];
+            scrollView.maximumZoomScale = 2.0;
         }
+        
+        [scrollView addSubview:previewImageView];
+        self.previewImageView = previewImageView;
         
         // Reset slider to 'None'
         if (self.showFilters)
         {
-            [self.filterPickerView slideToNotchIndex:0 animated:NO];
+            [self.filterPickerView selectNotch:0];
+            [self.filterPickerView stopFilterLoading];
         }
     }
-    
+    if (self.squareOverlayView) [[self parentView] bringSubviewToFront:self.squareOverlayView];
     [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -562,11 +569,11 @@
                      }
                      completion:^(BOOL finished)  {
                          if (!photoSelected) {
-                             [self.squareOverlayView removeFromSuperview];
+//                             [self.squareOverlayView removeFromSuperview];
                              [self.previewScrollView removeFromSuperview];
                              self.previewScrollView = nil;
                              self.previewImageView = nil;
-                             self.squareOverlayView = nil;
+//                             self.squareOverlayView = nil;
                          }
                      }];
 
@@ -652,6 +659,9 @@
 #pragma mark - CKPhotoFilterSliderView delegate methods
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex
 {
+    [self.activityView startAnimating];
+    [self.view bringSubviewToFront:self.activityView];
+    [self.filterPickerView startFilterLoading];
     @autoreleasepool {
         UIImage *filteredImage = self.selectedImage;
         switch (notchIndex) {
@@ -683,6 +693,8 @@
         }
         self.previewImageView.image = filteredImage;
     }
+    [self.activityView stopAnimating];
+    [self.filterPickerView stopFilterLoading];
 }
 
 #pragma mark - Image filtering methods

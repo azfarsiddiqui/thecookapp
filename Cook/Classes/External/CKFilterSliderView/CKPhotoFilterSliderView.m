@@ -7,6 +7,7 @@
 //
 
 #import "CKPhotoFilterSliderView.h"
+#import "CKActivityIndicatorView.h"
 
 @interface CKPhotoFilterSliderView ()
 
@@ -15,6 +16,7 @@
 @property (nonatomic, strong) UIImageView *sliderNextState;
 
 @property (nonatomic, strong) NSMutableArray *filterArray;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @end
 
@@ -136,47 +138,46 @@
     self.sliderNextState.alpha = 0.0;
     [self.currentNotchView addSubview:self.sliderNextState];
     [self.currentNotchView addSubview:self.sliderCurrentState];
+    [self.currentNotchView addSubview:self.activityView];
 }
 
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {
     // Transitions from current slider icon to destination one
-    self.sliderNextState.image = [self imageForIconAtNotchIndex:selectedNotchIndex];
-    self.sliderNextState.alpha = 0.0;
-    self.sliderCurrentState.alpha = 1.0;
-    [UIView animateWithDuration:0.1
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.sliderCurrentState.alpha = 0.0;
-                         self.sliderNextState.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished){
+//    self.sliderNextState.image = [self imageForIconAtNotchIndex:selectedNotchIndex];
+//    self.sliderNextState.alpha = 0.0;
+//    self.sliderCurrentState.alpha = 1.0;
+//    [UIView animateWithDuration:0.1
+//                          delay:0.0
+//                        options:UIViewAnimationOptionCurveEaseIn
+//                     animations:^{
+//                         self.sliderCurrentState.alpha = 0.0;
+//                         self.sliderNextState.alpha = 1.0;
+//                     }
+//                     completion:^(BOOL finished){
                          self.sliderCurrentState.image = [self imageForIconAtNotchIndex:selectedNotchIndex];
-                         self.sliderCurrentState.alpha = 1.0;
-                         self.sliderNextState.alpha = 0.0;
+//                         self.sliderCurrentState.alpha = 1.0;
+//                         self.sliderNextState.alpha = 0.0;
                          [self.delegate notchSliderView:self selectedIndex:selectedNotchIndex];
-                     }];
+//                     }];
 }
-//
-//- (void)updateNotchSliderWithFrame:(CGRect)sliderFrame {
-//    [super updateNotchSliderWithFrame:sliderFrame];
-//    
-//    for (NSInteger trackIndex = 0; trackIndex < [self.trackNotches count]; trackIndex++) {
-//        UIImageView *trackImageView = [self.trackNotches objectAtIndex:trackIndex];
-//        CGRect trackIntersection = CGRectIntersection(trackImageView.frame, sliderFrame);
-//        
-//        // Figure out the intersection of the slider, if fully covered, then fully visible.
-//        CGFloat intersectionRatio = MIN(1.0, trackIntersection.size.width / sliderFrame.size.width);
-//        self.sliderCurrentState.alpha = intersectionRatio;
-//        self.sliderNextState.alpha = 1/intersectionRatio;
-//    }
-//    
-//}
-//
-//- (void)slideToNotchIndex:(NSInteger)notchIndex animated:(BOOL)animated {
-//    [super slideToNotchIndex:notchIndex animated:animated];
-//    [self updateNotchSliderWithFrame:self.currentNotchView.frame];
-//}
+
+- (void)startFilterLoading
+{
+    [self.activityView startAnimating];
+    self.sliderCurrentState.hidden = YES;
+}
+
+- (void)stopFilterLoading
+{
+    [self.activityView stopAnimating];
+    self.sliderCurrentState.hidden = NO;
+}
+
+- (void)selectNotch:(NSInteger)notch
+{
+    [self startFilterLoading];
+    [super selectNotch:notch];
+}
 
 - (UIImageView *)sliderCurrentState {
     if (!_sliderCurrentState) {
@@ -201,6 +202,19 @@
         };
     }
     return _sliderNextState;
+}
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTinyDark];
+        _activityView.hidesWhenStopped = YES;
+        _activityView.frame = (CGRect){
+            floorf((self.currentNotchView.bounds.size.width - _activityView.frame.size.width) / 2.0),
+            floorf((self.currentNotchView.bounds.size.height - _activityView.frame.size.height) / 2.0) - 8,
+            _activityView.frame.size.width,
+            _activityView.frame.size.height
+        };
+    }
+    return _activityView;
 }
 
 @end
