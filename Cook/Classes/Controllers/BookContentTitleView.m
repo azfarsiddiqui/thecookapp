@@ -25,7 +25,7 @@
 #define kCategoryFont       [Theme defaultFontWithSize:118.0]
 #define kCategoryMinFont    [Theme defaultFontWithSize:110.0]
 #define kCategoryInsets     UIEdgeInsetsMake(40.0, 40.0, 28.0, 40.0)
-#define kUnderlayColour     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.38]
+#define kUnderlayColour     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.42]
 #define kEditUnderlayColour [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7]
 
 - (id)initWithTitle:(NSString *)title {
