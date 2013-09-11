@@ -18,7 +18,6 @@
 @interface CKListEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UICollectionViewDataSource_Draggable, CKListCellDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIView *pullToAddView;
@@ -28,7 +27,6 @@
 @property (nonatomic, strong) UIImageView *swipeToDeleteArrowView;
 @property (nonatomic, strong) UILabel *swipeDeleteLabel;
 @property (nonatomic, strong) CKListCell *panningCell;
-@property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL saveRequired;
 @property (nonatomic, assign) BOOL topAddActivated;
 @property (nonatomic, assign) BOOL swipeDeleteActivated;
@@ -324,13 +322,12 @@
     
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     UIEdgeInsets contentInsets = [self contentInsets];
-    UIEdgeInsets sectionInsets = { contentInsets.top - targetTextBoxView.contentInsets.top, 90.0 + 10, 20.0, 90.0 };
-//    UIEdgeInsets sectionInsets = (UIEdgeInsets){
-//        contentInsets.top - targetTextBoxView.contentInsets.top,
-//        targetTextBoxView.frame.origin.x,
-//        targetTextBoxView.frame.size.width,
-//        targetTextBoxView.frame.size.height
-//    };
+    UIEdgeInsets sectionInsets = {
+        contentInsets.top - targetTextBoxView.contentInsets.top,
+        90.0 + 10,
+        20.0,
+        90.0
+    };
     return sectionInsets;
 }
 

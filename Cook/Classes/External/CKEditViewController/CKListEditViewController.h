@@ -13,11 +13,13 @@
 
 @interface CKListEditViewController : CKEditViewController
 
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) NSNumber *selectedIndexNumber;
 @property (nonatomic, assign) BOOL allowSelection;
 @property (nonatomic, strong) CKListCell *editingCell;
 
+@property (nonatomic, assign) BOOL itemsLoaded;
 @property (nonatomic, assign) BOOL canReorderItems;
 @property (nonatomic, assign) BOOL canAddItems;
 @property (nonatomic, assign) BOOL canDeleteItems;

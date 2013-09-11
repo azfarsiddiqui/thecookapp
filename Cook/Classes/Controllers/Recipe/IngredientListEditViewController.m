@@ -15,15 +15,25 @@
 @interface IngredientListEditViewController ()
 
 @property (nonatomic, strong) IngredientsKeyboardAccessoryViewController *ingredientsAccessoryViewController;
+@property (nonatomic, strong) UIView *hintsView;
 
 @end
 
 @implementation IngredientListEditViewController
 
+#define kFooterId   @"FooterId"
+
 #pragma mark - CKEditViewController methods
 
 - (id)updatedValue {
     return self.items;
+}
+
+#pragma mark - Lifecycle events.
+
+- (void)targetTextEditingViewDidCreated {
+    [self.collectionView registerClass:[UICollectionReusableView class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kFooterId];
 }
 
 #pragma mark - CKListEditViewController methods
@@ -58,6 +68,36 @@
     return (![ingredient.measurement CK_containsText] && ![ingredient.name CK_containsText]);
 }
 
+#pragma mark - UICollectionViewDataSource methods
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionReusableView *suppView = nil;
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        suppView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                                                      withReuseIdentifier:kFooterId forIndexPath:indexPath];
+        CGRect hintsFrame = self.hintsView.frame;
+        hintsFrame.origin.x = floorf((self.collectionView.bounds.size.width - hintsFrame.size.width) / 2.0);
+        self.hintsView.frame = hintsFrame;
+        self.hintsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        [suppView addSubview:self.hintsView];
+    }
+    
+    return suppView;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout methods
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+referenceSizeForFooterInSection:(NSInteger)section {
+    CGSize footerSize = CGSizeZero;
+    
+    footerSize = self.hintsView.frame.size;
+    
+    return footerSize;
+}
+
 #pragma mark - Properties
 
 - (IngredientsKeyboardAccessoryViewController *)ingredientsAccessoryViewController {
@@ -65,6 +105,13 @@
         _ingredientsAccessoryViewController = [[IngredientsKeyboardAccessoryViewController alloc] init];
     }
     return _ingredientsAccessoryViewController;
+}
+
+- (UIView *)hintsView {
+    if (!_hintsView) {
+        _hintsView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_Ingredientshint.png"]];
+    }
+    return _hintsView;
 }
 
 @end
