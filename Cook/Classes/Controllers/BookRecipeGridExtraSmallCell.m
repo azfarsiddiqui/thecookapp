@@ -13,7 +13,7 @@
 
 @implementation BookRecipeGridExtraSmallCell
 
-#define kTimeGap        30.0
+#define kTimeGap        29.0
 #define kStandardGap    30.0
 
 // Title centered vertically.

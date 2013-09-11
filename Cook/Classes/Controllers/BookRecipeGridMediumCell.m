@@ -12,7 +12,7 @@
 
 @implementation BookRecipeGridMediumCell
 
-#define kTimeGap                30.0
+#define kTimeGap                29.0
 #define kAfterTimeGap           15.0
 
 - (void)updateTimeInterval {

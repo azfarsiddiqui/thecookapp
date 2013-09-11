@@ -39,7 +39,7 @@
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
 #define kTimeStatsGap           -5.0
-#define kTitleTimeGap           10.0
+#define kTitleTimeGap           9.0
 
 + (CGSize)imageSize {
     return kImageSize;
