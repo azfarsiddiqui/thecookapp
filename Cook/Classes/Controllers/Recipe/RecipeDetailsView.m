@@ -39,10 +39,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UILabel *pageLabel;
-@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIView *tagsView;
 @property (nonatomic, strong) UIView *storyDividerView;
-@property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UIView *contentDividerView;
 @property (nonatomic, strong) RecipeServesCookView *servesCookView;
 @property (nonatomic, strong) UIView *ingredientsDividerView;
@@ -527,7 +525,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [self addSubview:self.contentDividerView];
     }
     
-    CGFloat dividerGap = 30.0;
+    CGFloat dividerGap = (self.storyLabel.alpha == 0.0) ? 5.0 : 30.0;
+    CGFloat postDividerGap = (self.storyLabel.alpha == 0.0) ? 20.0 : 30.0;
     
     self.contentDividerView.frame = (CGRect){
         floorf((self.bounds.size.width - kDividerWidth) / 2.0),
@@ -536,7 +535,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.contentDividerView.frame.size.height
     };
     
-    [self updateLayoutOffsetVertical:dividerGap + self.contentDividerView.frame.size.height + dividerGap];
+    [self updateLayoutOffsetVertical:dividerGap + self.contentDividerView.frame.size.height + postDividerGap];
     
     // Mark this as the offset for content start, so that left/right columns can reference.
     self.contentOffset = self.layoutOffset;
@@ -563,7 +562,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         
         [self.servesCookView removeFromSuperview];
         self.servesCookView = nil;
-        
         
     }
     

@@ -19,6 +19,9 @@
 
 @interface RecipeDetailsView : UIView
 
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *storyLabel;
+
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate;
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode
                    delegate:(id<RecipeDetailsViewDelegate>)delegate;

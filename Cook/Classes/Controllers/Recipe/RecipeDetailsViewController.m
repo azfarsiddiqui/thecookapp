@@ -781,15 +781,17 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.contentImageView = contentImageView;
     
     // Set up a placeholder view so that it can back the whiteColor before blurredImage fades in.
-    self.placeholderHeaderView = [[UIView alloc] initWithFrame:(CGRect){
-        self.scrollView.bounds.origin.x,
-        self.scrollView.bounds.origin.y,
-        self.contentImageView.bounds.size.width,
-        [self headerHeight]
-    }];
-    self.placeholderHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    self.placeholderHeaderView.backgroundColor = [Theme recipeGridImageBackgroundColour];  // White colour to start off with then fade out.
-    [self.scrollView addSubview:self.placeholderHeaderView];
+    if (self.blur) {
+        self.placeholderHeaderView = [[UIView alloc] initWithFrame:(CGRect){
+            self.scrollView.bounds.origin.x,
+            self.scrollView.bounds.origin.y,
+            self.contentImageView.bounds.size.width,
+            [self headerHeight]
+        }];
+        self.placeholderHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+        self.placeholderHeaderView.backgroundColor = [Theme recipeGridImageBackgroundColour];  // White colour to start off with then fade out.
+        [self.scrollView addSubview:self.placeholderHeaderView];
+    }
     
     // Register a concurrent panGesture to drag panel up and down.
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -1258,17 +1260,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     label.text = text;
     [label sizeToFit];
     return label;
-}
-
-- (SnapViewport)startViewPort {
-    SnapViewport startViewPort = SnapViewportTop;
-    if (self.addMode) {
-        startViewPort = SnapViewportBottom;
-    } else if ([self.recipe hasPhotos]) {
-        startViewPort = SnapViewportBottom;
-    }
-    
-    return startViewPort;
 }
 
 - (void)toggleImage {
@@ -1890,7 +1881,26 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (CGFloat)headerHeight {
-    return 215.0;
+    CGFloat headerHeight = 220.0;
+//    return headerHeight;
+    
+    if ([self.recipeDetails hasStory]) {
+        CGFloat maxStoryHeight = 115.0;
+        headerHeight = self.recipeDetailsView.storyLabel.frame.origin.y + MIN(self.recipeDetailsView.storyLabel.frame.size.height, maxStoryHeight) + 15.0;
+    }
+    
+    return headerHeight;
+}
+
+- (SnapViewport)startViewPort {
+    SnapViewport startViewPort = SnapViewportTop;
+    if (self.addMode) {
+        startViewPort = SnapViewportBottom;
+    } else if ([self.recipe hasPhotos]) {
+        startViewPort = SnapViewportBottom;
+    }
+    
+    return startViewPort;
 }
 
 @end
