@@ -104,7 +104,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @implementation RecipeDetailsViewController
 
 #define kButtonInsets       UIEdgeInsetsMake(26.0, 10.0, 15.0, 12.0)
-#define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
+#define kEditButtonInsets   UIEdgeInsetsMake(14.0, -9.0, -17.0, -9.0)
 #define kSnapOffset         100.0
 #define kBounceOffset       10.0
 #define kContentTopOffset   80.0
