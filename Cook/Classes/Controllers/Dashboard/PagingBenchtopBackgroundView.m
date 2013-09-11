@@ -21,6 +21,14 @@
 
 @implementation PagingBenchtopBackgroundView
 
++ (CGFloat)minBlendAlpha {
+    return 0.3;
+}
+
++ (CGFloat)maxBlendAlpha {
+    return 0.7;
+}
+
 - (id)initWithFrame:(CGRect)frame pageWidth:(CGFloat)pageWidth {
     if (self = [super initWithFrame:frame]) {
         self.pageWidth = pageWidth;

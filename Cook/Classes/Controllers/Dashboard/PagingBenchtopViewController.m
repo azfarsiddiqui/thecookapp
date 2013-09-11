@@ -70,8 +70,6 @@
 #define kFollowSection  1
 #define kPagingRate     2.0
 #define kBlendPageWidth 1024.0
-#define kBlendMinAlpha  0.3
-#define kBlendMaxAlpha  0.45
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
@@ -1163,7 +1161,7 @@
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
-                                 self.pagingBenchtopView.alpha = kBlendMaxAlpha;
+                                 self.pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
                              }
                              completion:^(BOOL finished) {
                              }];
@@ -1239,7 +1237,7 @@
     }
     
     // Initialise as max alpha.
-    pagingBenchtopView.alpha = kBlendMaxAlpha;
+    pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
     
     return pagingBenchtopView;
 }
@@ -1301,8 +1299,8 @@
             CGFloat effectiveDistance = 300.0 / 2.0;
             CGFloat fadeAlpha = 1.0 - MIN(distance, effectiveDistance) / effectiveDistance;
 //            fadeAlpha = MAX(0.5, fadeAlpha);
-            fadeAlpha = MAX(kBlendMinAlpha, fadeAlpha);
-            fadeAlpha = MIN(fadeAlpha, kBlendMaxAlpha);
+            fadeAlpha = MAX([PagingBenchtopBackgroundView minBlendAlpha], fadeAlpha);
+            fadeAlpha = MIN(fadeAlpha, [PagingBenchtopBackgroundView maxBlendAlpha]);
 
 //            DLog(@"FADE ALPHA %f", fadeAlpha);
             self.pagingBenchtopView.alpha = fadeAlpha;

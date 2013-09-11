@@ -13,6 +13,9 @@
 @property (nonatomic, strong) UIColor *leftEdgeColour;
 @property (nonatomic, strong) UIColor *rightEdgeColour;
 
++ (CGFloat)minBlendAlpha;
++ (CGFloat)maxBlendAlpha;
+
 - (id)initWithFrame:(CGRect)frame pageWidth:(CGFloat)pageWidth;
 - (void)addColour:(UIColor *)colour;
 - (void)blend;

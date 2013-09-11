@@ -95,16 +95,16 @@
     [ViewHelper applyDraggyMotionEffectsToView:pagingBenchtopView];
     
     // Colours
-    pagingBenchtopView.leftEdgeColour = [UIColor orangeColor];
-    [pagingBenchtopView addColour:[CKBookCover colourForCover:@"Red"]];
-    [pagingBenchtopView addColour:[CKBookCover colourForCover:@"Blue"]];
-    [pagingBenchtopView addColour:[CKBookCover colourForCover:@"Green"]];
-    [pagingBenchtopView addColour:[CKBookCover colourForCover:@"Red"]];
-    pagingBenchtopView.rightEdgeColour = [UIColor orangeColor];
+    pagingBenchtopView.leftEdgeColour = [CKBookCover backdropColourForCover:@"Orange"];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Red"]];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Blue"]];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Green"]];
+    [pagingBenchtopView addColour:[CKBookCover backdropColourForCover:@"Red"]];
+    pagingBenchtopView.rightEdgeColour = [CKBookCover backdropColourForCover:@"Orange"];
     self.blendedView = pagingBenchtopView;
     
     [pagingBenchtopView blendWithCompletion:^{
-        pagingBenchtopView.alpha = 0.5;
+        pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
         [self.collectionView insertSubview:pagingBenchtopView atIndex:0];
         
 //        // Dark overlay over the benchtop.
