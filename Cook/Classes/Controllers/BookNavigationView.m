@@ -27,10 +27,8 @@
 
 @implementation BookNavigationView
 
-#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 0.0, 20.0 }
-#define kDarkContentInsets  (UIEdgeInsets){ 30.0, 20.0, 0.0, 0.0 }
-#define kButtonInsets       (UIEdgeInsets){ 28.0, 0.0, 0.0, 0.0 }
-#define kButtonGap          5.0
+#define kContentInsets      (UIEdgeInsets){ 20.0, 6.0, 0.0, 8.0 }
+#define kDarkContentInsets  (UIEdgeInsets){ 20.0, 6.0, 0.0, 8.0 }
 
 + (CGFloat)navigationHeight {
     return 74.0;
@@ -58,7 +56,7 @@
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = (CGRect){
         floorf((self.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-        kButtonInsets.top,
+        28.0,
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
@@ -128,7 +126,7 @@
         _homeButton = [ViewHelper buttonWithImage:[self homeImageForDark:NO]
                                           target:self selector:@selector(homeTapped:)];
         _homeButton.frame = (CGRect){
-            self.closeButton.frame.origin.x + self.closeButton.frame.size.width + kButtonGap,
+            self.closeButton.frame.origin.x + self.closeButton.frame.size.width + 2.0,
             self.closeButton.frame.origin.y,
             _homeButton.frame.size.width,
             _homeButton.frame.size.height
@@ -160,7 +158,7 @@
                                            target:self
                                          selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _editButton.frame = CGRectMake(self.addButton.frame.origin.x - kButtonGap - _editButton.frame.size.width,
+        _editButton.frame = CGRectMake(self.addButton.frame.origin.x - 11.0 - _editButton.frame.size.width,
                                        kContentInsets.top,
                                        _editButton.frame.size.width,
                                        _editButton.frame.size.height);
