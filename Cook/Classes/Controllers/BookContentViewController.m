@@ -77,8 +77,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    [self showIntroCard:([self.recipes count] == 0)];
+    [self showIntroCard];
 }
 
 - (void)loadData {
@@ -102,7 +101,7 @@
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
     
     // Disable any card.
-    [self showIntroCard:!editMode];
+    [self showIntroCard];
     
     self.editMode = editMode;
     self.collectionView.scrollEnabled = !editMode;
@@ -660,6 +659,10 @@
     [self updateContentTitleViewWithTitle:self.page];
     [self.editingHelper updateEditingView:self.contentTitleView animated:NO];
     [self.editingHelper unwrapEditingView:self.contentTitleView animated:YES];
+}
+
+- (void)showIntroCard {
+    [self showIntroCard:([self.recipes count] == 0 && !self.editMode)];
 }
 
 @end
