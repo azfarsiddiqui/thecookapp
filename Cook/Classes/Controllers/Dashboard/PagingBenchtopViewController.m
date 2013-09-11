@@ -561,12 +561,6 @@
     
     // Add motion effects on the scrollview.
     [ViewHelper applyMotionEffectsToView:self.backdropScrollView];
-    
-    // Toolbar blurring.
-//    UIToolbar *toolbarOverlay = [[UIToolbar alloc] initWithFrame:self.view.bounds];
-//    toolbarOverlay.userInteractionEnabled = NO;
-//    toolbarOverlay.translucent = YES;
-//    [self.view addSubview:toolbarOverlay];
 }
 
 - (void)initCollectionView {
