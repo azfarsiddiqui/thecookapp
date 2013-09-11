@@ -114,7 +114,6 @@
 }
 
 - (UIImage *)trackImageForIndex:(NSInteger)trackIndex {
-    DLog(@"Title: %@", ((FilterObject *)[self.filterArray objectAtIndex:trackIndex]).title);
     return ((FilterObject *)[self.filterArray objectAtIndex:trackIndex]).trackImage;
 }
 
@@ -144,7 +143,7 @@
     self.sliderNextState.image = [self imageForIconAtNotchIndex:selectedNotchIndex];
     self.sliderNextState.alpha = 0.0;
     self.sliderCurrentState.alpha = 1.0;
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.1
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
