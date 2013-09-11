@@ -71,7 +71,7 @@
                                   defaultInsets.top + 5.0,
                                   defaultInsets.left,
                                   defaultInsets.bottom + 5.0,
-                                  defaultInsets.right
+                                  defaultInsets.right + 5.0
                               } delegate:self white:NO];
     } else {
         [self.editingHelper unwrapEditingView:self.storyLabel];
@@ -341,7 +341,7 @@
 }
 
 - (NSString *)defaultEditPlaceholderText {
-    return @"ENTER YOUR BIO";
+    return @"YOUR BIO";
 }
 
 @end
