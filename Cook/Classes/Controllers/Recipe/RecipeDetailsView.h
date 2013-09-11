@@ -14,6 +14,7 @@
 
 - (void)recipeDetailsViewEditing:(BOOL)editing;
 - (void)recipeDetailsViewUpdated;
+- (BOOL)recipeDetailsViewAddMode;
 
 @end
 

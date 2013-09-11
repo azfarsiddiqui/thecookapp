@@ -56,6 +56,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
+@property (nonatomic, strong) UIView *addDetailsCardView;
 
 @end
 
@@ -309,6 +310,67 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                        updated:[self.recipeDetails methodUpdated]];
 }
 
+#pragma mark - Properties
+
+- (UIView *)addDetailsCardView {
+    if (!_addDetailsCardView) {
+        
+        CKEditingTextBoxView *storyBoxView = [self.editingHelper textBoxViewForEditingView:self.storyLabel];
+
+        UIImage *whiteBoxImage = [CKEditingTextBoxView textEditingBoxWhite:YES editMode:NO];
+        UIImageView *whiteBoxImageView = [[UIImageView alloc] initWithImage:whiteBoxImage];
+        whiteBoxImageView.frame = (CGRect){
+            storyBoxView.frame.origin.x,
+            self.contentDividerView.frame.origin.y + 3.0,
+            storyBoxView.frame.size.width,
+            280.0
+        };
+        
+        CGFloat chefHatLabelGap = 5.0;
+        UIImageView *chefHatImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_icon_chefhat.png"]];
+        CGRect chefHatFrame = chefHatImageView.frame;
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.numberOfLines = 0;
+        label.textAlignment = NSTextAlignmentJustified;
+        label.backgroundColor = [UIColor clearColor];
+        label.shadowOffset = CGSizeMake(0.0, 1.0);
+        label.shadowColor = [UIColor whiteColor];
+        label.userInteractionEnabled = NO;
+        
+        NSAttributedString *display = [self attributedTextForText:@"TYPE UP A RECIPE" lineSpacing:0.0
+                                                             font:[Theme storyFont] colour:[Theme storyColor]
+                                                    textAlignment:NSTextAlignmentCenter];
+        label.attributedText = display;
+        CGSize size = [label sizeThatFits:(CGSize){ 200.0, MAXFLOAT }];
+        CGRect labelFrame = label.frame;
+        labelFrame.size = size;
+        label.frame = labelFrame;
+        
+        // Position the elements.
+        CGFloat xOffset = -7.0;
+        CGFloat requiredHeight = chefHatFrame.size.height + chefHatLabelGap + labelFrame.size.height;
+        chefHatFrame.origin.x = floorf((whiteBoxImageView.bounds.size.width - chefHatFrame.size.width) / 2.0) + xOffset;
+        chefHatFrame.origin.y = floorf((whiteBoxImageView.bounds.size.height - requiredHeight) / 2.0);
+        labelFrame.origin.x = floorf((whiteBoxImageView.bounds.size.width - labelFrame.size.width) / 2.0) + xOffset;
+        labelFrame.origin.y = chefHatFrame.origin.y + chefHatFrame.size.height + chefHatLabelGap;
+        chefHatImageView.frame = chefHatFrame;
+        label.frame = labelFrame;
+        [whiteBoxImageView addSubview:chefHatImageView];
+        [whiteBoxImageView addSubview:label];
+        
+        // Register tap to dismiss.
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(detailsIntroDismissed:)];
+        whiteBoxImageView.userInteractionEnabled = YES;
+        [whiteBoxImageView addGestureRecognizer:tapGesture];
+        
+        // Position it below the divider.
+        _addDetailsCardView = whiteBoxImageView;
+    }
+    return _addDetailsCardView;
+}
+
+
 #pragma mark - Private methods
 
 - (void)layoutComponents {
@@ -439,7 +501,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSString *name = self.recipeDetails.name;
     
     if (![self.recipeDetails.name CK_containsText]) {
-        name = @"RECIPE TITLE";
+        name = @"TITLE";
     }
     
     self.titleLabel.text = [[name CK_whitespaceTrimmed] uppercaseString];
@@ -767,22 +829,46 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (NSMutableAttributedString *)attributedTextForText:(NSString *)text font:(UIFont *)font colour:(UIColor *)colour {
+    
     return [self attributedTextForText:text lineSpacing:8.0 font:font colour:colour];
+}
+
+- (NSMutableAttributedString *)attributedTextForText:(NSString *)text font:(UIFont *)font colour:(UIColor *)colour
+                                       textAlignment:(NSTextAlignment)textAlignment {
+    
+    return [self attributedTextForText:text lineSpacing:8.0 font:font colour:colour textAlignment:textAlignment];
 }
 
 - (NSMutableAttributedString *)attributedTextForText:(NSString *)text lineSpacing:(CGFloat)lineSpacing
                                                 font:(UIFont *)font colour:(UIColor *)colour {
+    
+    return [self attributedTextForText:text lineSpacing:lineSpacing font:font colour:colour
+                         textAlignment:NSTextAlignmentLeft];
+}
+
+- (NSMutableAttributedString *)attributedTextForText:(NSString *)text lineSpacing:(CGFloat)lineSpacing
+                                                font:(UIFont *)font colour:(UIColor *)colour
+                                       textAlignment:(NSTextAlignment)textAlignment {
+    
     text = [text length] > 0 ? text : @"";
-    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font lineSpacing:lineSpacing colour:colour];
+    NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font lineSpacing:lineSpacing colour:colour
+                                                           textAlignment:textAlignment];
     return [[NSMutableAttributedString alloc] initWithString:text attributes:paragraphAttributes];
 }
 
 - (NSDictionary *)paragraphAttributesForFont:(UIFont *)font lineSpacing:(CGFloat)lineSpacing colour:(UIColor *)colour {
+    
+    return [self paragraphAttributesForFont:font lineSpacing:lineSpacing colour:colour textAlignment:NSTextAlignmentLeft];
+}
+
+- (NSDictionary *)paragraphAttributesForFont:(UIFont *)font lineSpacing:(CGFloat)lineSpacing colour:(UIColor *)colour
+                               textAlignment:(NSTextAlignment)textAlignment {
+    
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
     paragraphStyle.lineSpacing = lineSpacing;
-    paragraphStyle.alignment = NSTextAlignmentLeft;
+    paragraphStyle.alignment = textAlignment;
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
             font, NSFontAttributeName,
@@ -844,6 +930,23 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                  }
                toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
                   padDirection:EditPadDirectionBottom];
+    
+    // Add mode, add
+    if ([self.delegate recipeDetailsViewAddMode] && self.editMode) {
+        
+        CKEditingTextBoxView *methodBoxView = [self.editingHelper textBoxViewForEditingView:self.methodLabel];
+        CKEditingTextBoxView *servesBoxView = [self.editingHelper textBoxViewForEditingView:self.servesCookView];
+        CKEditingTextBoxView *ingredientsBoxView = [self.editingHelper textBoxViewForEditingView:self.ingredientsView];
+        
+        self.servesCookView.alpha = 0.0;
+        servesBoxView.alpha = 0.0;
+        self.ingredientsView.alpha = 0.0;
+        ingredientsBoxView.alpha = 0.0;
+        self.methodLabel.alpha = 0.0;
+        methodBoxView.alpha = 0.0;
+        
+        [self addSubview:self.addDetailsCardView];
+    }
 }
 
 - (void)enableEditModeOnView:(UIView *)view editMode:(BOOL)editMode  {
@@ -970,6 +1073,29 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     UIEdgeInsets editInsets = UIEdgeInsetsZero;
     
     return editInsets;
+}
+
+- (void)detailsIntroDismissed:(UITapGestureRecognizer *)tapGesture {
+    CKEditingTextBoxView *methodBoxView = [self.editingHelper textBoxViewForEditingView:self.methodLabel];
+    CKEditingTextBoxView *servesBoxView = [self.editingHelper textBoxViewForEditingView:self.servesCookView];
+    CKEditingTextBoxView *ingredientsBoxView = [self.editingHelper textBoxViewForEditingView:self.ingredientsView];
+    
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.addDetailsCardView.alpha = 0.0;
+                         
+                         self.servesCookView.alpha = 1.0;
+                         servesBoxView.alpha = 1.0;
+                         self.ingredientsView.alpha = 1.0;
+                         ingredientsBoxView.alpha = 1.0;
+                         self.methodLabel.alpha = 1.0;
+                         methodBoxView.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.addDetailsCardView removeFromSuperview];
+                     }];
 }
 
 @end

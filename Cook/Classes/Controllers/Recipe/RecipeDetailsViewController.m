@@ -217,6 +217,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self updateRecipeDetailsView];
 }
 
+- (BOOL)recipeDetailsViewAddMode {
+    return self.addMode;
+}
+
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
