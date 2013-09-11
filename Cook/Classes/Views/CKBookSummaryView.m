@@ -29,27 +29,39 @@
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
-@property (nonatomic, strong) CKStatView *friendsStatView;
+@property (nonatomic, strong) CKStatView *pagesStatView;
 @property (nonatomic, strong) CKStatView *recipesStatView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
+@property (nonatomic, assign) BOOL storeMode;
 
 @end
 
 @implementation CKBookSummaryView
 
-#define kSummarySize        CGSizeMake(320.0, 460.0)
-#define kContentInsets      UIEdgeInsetsMake(70.0, 20.0, 20.0, 20.0)
-#define kProfileNameGap     20.0
-#define kInterStatsGap      30.0
-#define kNameStatsGap       0.0
-#define kStatsStoryGap      50.0
+#define kSummaryStoreSize   (CGSize) { 320.0, 445.0 }
+#define kSummarySize        (CGSize) { 320.0, 460.0 }
+#define kContentInsets      (UIEdgeInsets) { 0.0, 20.0, 0.0, 20.0 }
+#define kProfileNameGap     8.0
+#define kInterStatsGap      10.0
+#define kNameStatsGap       8.0
+#define kStatsStoryGap      34.0
+
++ (CGSize)sizeForStoreMode:(BOOL)storeMode {
+    return storeMode ? kSummaryStoreSize : kSummarySize;
+}
 
 - (id)initWithBook:(CKBook *)book {
-    if (self = [super initWithFrame:CGRectMake(0.0, 0.0, kSummarySize.width, kSummarySize.height)]) {
+    return [self initWithBook:book storeMode:NO];
+}
+
+- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode {
+    if (self = [super initWithFrame:(CGRect){ 0.0, 0.0, [CKBookSummaryView sizeForStoreMode:storeMode].width, [CKBookSummaryView sizeForStoreMode:storeMode].height }]) {
         self.book = book;
+        self.storeMode = storeMode;
         self.backgroundColor = [UIColor clearColor];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
+        
         [self initViews];
         [self loadData];
     }
@@ -226,12 +238,10 @@
     [self addSubview:nameLabel];
     self.nameLabel = nameLabel;
     
-    // Friends
-    if (!self.book.featured) {
-        CKStatView *friendsStatView = [[CKStatView alloc] initWithNumber:0 unit:@"FRIEND"];
-        [self addSubview:friendsStatView];
-        self.friendsStatView = friendsStatView;
-    }
+    // Pages
+    CKStatView *pagesStatView = [[CKStatView alloc] initWithNumber:[self.book.pages count] unit:@"PAGE"];
+    [self addSubview:pagesStatView];
+    self.pagesStatView = pagesStatView;
     
     // Recipes
     CKStatView *recipesStatView = [[CKStatView alloc] initWithNumber:0 unit:@"RECIPE"];
@@ -248,43 +258,53 @@
 - (void)updateStory:(NSString *)story {
     if (!self.storyLabel) {
         self.storyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        self.storyLabel.font = [Theme storeBookSummaryStoryFont];
-        self.storyLabel.backgroundColor = [UIColor clearColor];
-        self.storyLabel.textColor = [Theme storeBookSummaryStoryColour];
-        self.storyLabel.shadowColor = [UIColor blackColor];
-        self.storyLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        self.storyLabel.textAlignment = NSTextAlignmentCenter;
         self.storyLabel.numberOfLines = 0;
-        self.storyLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:self.storyLabel];
     }
     
-    UIEdgeInsets storyInsets = UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0);
-    self.storyLabel.text = story;
-    
-    CGSize availableSize = [self availableSize];
-    availableSize.width = availableSize.width - storyInsets.left - storyInsets.right;
-    availableSize.height = availableSize.height - self.recipesStatView.frame.origin.y - self.recipesStatView.frame.size.height - kStatsStoryGap;
-    CGSize storySize = [self.storyLabel sizeThatFits:availableSize];
-    self.storyLabel.frame = (CGRect) {
-        kContentInsets.left + storyInsets.left + floorf((availableSize.width - storySize.width) / 2.0),
-        self.recipesStatView.frame.origin.y + kStatsStoryGap,
-        storySize.width,
-        storySize.height
-    };
+    if ([story length] > 0) {
+        self.storyLabel.hidden = NO;
+        NSDictionary *paragraphAttributes = [self storyParagraphAttributes];
+        UIEdgeInsets storyInsets = UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0);
+        NSAttributedString *storyDisplay = [[NSAttributedString alloc] initWithString:story attributes:paragraphAttributes];
+        self.storyLabel.attributedText = storyDisplay;
+        
+        CGSize availableSize = [self availableSize];
+        availableSize.height -= self.storeMode ? 54.0 : 0.0;    // Minus the button height in store mode.
+        availableSize.width = availableSize.width - storyInsets.left - storyInsets.right;
+        availableSize.height = availableSize.height - self.recipesStatView.frame.origin.y - self.recipesStatView.frame.size.height - kStatsStoryGap;
+        
+        CGRect storyFrame = [story boundingRectWithSize:availableSize
+                                                options:NSStringDrawingUsesLineFragmentOrigin
+                                             attributes:paragraphAttributes
+                                                context:nil];
+        self.storyLabel.frame = (CGRect) {
+            kContentInsets.left + storyInsets.left + floorf((availableSize.width - storyFrame.size.width) / 2.0),
+            self.recipesStatView.frame.origin.y + kStatsStoryGap,
+            storyFrame.size.width,
+            storyFrame.size.height
+        };
+    } else {
+        self.storyLabel.hidden = YES;
+    }
 }
 
 - (void)updateStatViews {
-    CGFloat xOffset = self.friendsStatView ? kContentInsets.left : 0.0;
     CGSize availableSize = [self availableSize];
-    CGFloat totalWidth = self.friendsStatView.frame.size.width + kInterStatsGap + self.recipesStatView.frame.size.width;
-    CGRect friendsFrame = self.friendsStatView.frame;
+    CGFloat totalWidth = self.pagesStatView.frame.size.width + kInterStatsGap + self.recipesStatView.frame.size.width;
+    CGRect pagesFrame = self.pagesStatView.frame;
     CGRect recipesFrame = self.recipesStatView.frame;
-    friendsFrame.origin = CGPointMake(xOffset + floorf((availableSize.width - totalWidth) / 2.0),
-                                      self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameStatsGap);
-    recipesFrame.origin = CGPointMake(friendsFrame.origin.x + friendsFrame.size.width + kInterStatsGap,
-                                      self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameStatsGap);
-    self.friendsStatView.frame = friendsFrame;
+    
+    pagesFrame.origin = (CGPoint){
+        kContentInsets.left + floorf((availableSize.width - totalWidth) / 2.0),
+        self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameStatsGap
+    };
+    recipesFrame.origin = (CGPoint){
+        pagesFrame.origin.x + pagesFrame.size.width + kInterStatsGap,
+        pagesFrame.origin.y
+    };
+    
+    self.pagesStatView.frame = pagesFrame;
     self.recipesStatView.frame = recipesFrame;
 }
 
@@ -294,14 +314,6 @@
 }
 
 - (void)loadData {
-    
-    // Load the number of friends.
-    [self.book.user numFriendsCompletion:^(int numFriends) {
-        [self.friendsStatView updateNumber:numFriends];
-        [self updateStatViews];
-    } failure:^(NSError *error) {
-        // Ignore failure.
-    }];
     
     // Load the number of recipes.
     [self.book numRecipesSuccess:^(int numRecipes) {
@@ -342,6 +354,24 @@
 
 - (NSString *)defaultEditPlaceholderText {
     return @"YOUR BIO";
+}
+
+- (NSDictionary *)storyParagraphAttributes {
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraphStyle.lineSpacing = -10.0;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    
+    NSShadow *shadow = [NSShadow new];
+    shadow.shadowColor = [UIColor blackColor];
+    shadow.shadowOffset = CGSizeMake(0.0, -1.0);
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            [Theme storeBookSummaryStoryFont], NSFontAttributeName,
+            [Theme storeBookSummaryStoryColour], NSForegroundColorAttributeName,
+            shadow, NSShadowAttributeName,
+            paragraphStyle, NSParagraphStyleAttributeName,
+            nil];
 }
 
 @end

@@ -198,9 +198,9 @@
 
 - (void)initBookSummaryView {
     
-    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book];
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES];
     bookSummaryView.frame = CGRectMake(floorf((self.bookContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
-                                       kBookViewContentInsets.top - 5.0,
+                                       87,
                                        bookSummaryView.frame.size.width,
                                        bookSummaryView.frame.size.height);
     [self.bookContainerView addSubview:bookSummaryView];
@@ -259,7 +259,7 @@
         [self.book isFollowedByUser:self.currentUser
                             success:^(BOOL followed) {
                                 if (followed) {
-                                    [self updateAddButtonText:@"ALREADY ADDED" activity:NO enabled:NO];
+                                    [self updateAddButtonText:@"BOOK ON BENCH" activity:NO enabled:NO];
                                 } else {
                                     [self updateAddButtonText:buttonText activity:NO enabled:YES];
                                 }
@@ -284,7 +284,7 @@
                                           [self updateRequestButtonText:@"ALREADY FRIENDS" activity:NO enabled:NO];
                                       } else if (pendingAcceptance) {
                                           self.pendingAcceptance = pendingAcceptance;
-                                          [self updateRequestButtonText:@"ACCEPT FRIEND" activity:NO enabled:YES];
+                                          [self updateRequestButtonText:@"ADD FRIEND" activity:NO enabled:YES];
                                       } else if (alreadySent) {
                                           [self updateRequestButtonText:@"REQUESTED" activity:NO enabled:NO];
                                       } else {
@@ -321,36 +321,36 @@
 
 - (void)requestTapped:(id)sender {
     if (self.pendingAcceptance) {
-        [self updateRequestButtonText:@"Accepting Friend Request" activity:YES enabled:NO];
+        [self updateRequestButtonText:@"ACCEPTING" activity:YES enabled:NO];
     } else {
-        [self updateRequestButtonText:@"Sending Friend Request" activity:YES enabled:NO];
+        [self updateRequestButtonText:@"SENDING" activity:YES enabled:NO];
     }
     [self.currentUser requestFriend:self.book.user
                          completion:^{
                              if (self.pendingAcceptance) {
-                                 [self updateRequestButtonText:@"Friend Request Accepted" activity:NO enabled:NO];
+                                 [self updateRequestButtonText:@"ACCEPTED" activity:NO enabled:NO];
                              } else {
-                                 [self updateRequestButtonText:@"Friend Request Sent" activity:NO enabled:NO];
+                                 [self updateRequestButtonText:@"REQUESTED" activity:NO enabled:NO];
                              }
                          }
                             failure:^(NSError *error) {
-                                [self updateRequestButtonText:@"Unable to Send" activity:NO enabled:NO];
+                                [self updateRequestButtonText:@"UNABLE TO SEND" activity:NO enabled:NO];
                             }];
 }
 
 - (void)addTapped:(id)sender {
-    [self updateAddButtonText:@"Adding Book" activity:YES enabled:NO];
+    [self updateAddButtonText:@"ADD TO BENCH" activity:YES enabled:NO];
     
     // Weak reference so we don't have retain cycles.
     __weak typeof(self) weakSelf = self;
     [self.book addFollower:self.currentUser
                    success:^{
-                       [weakSelf updateAddButtonText:@"Book Added" activity:NO enabled:NO];
+                       [weakSelf updateAddButtonText:@"BOOK ON BENCH" activity:NO enabled:NO];
                        weakSelf.updated = YES;
                        [EventHelper postFollow:YES friends:NO];
                    }
                    failure:^(NSError *error) {
-                       [weakSelf updateAddButtonText:@"Unable to Add" activity:NO enabled:NO];
+                       [weakSelf updateAddButtonText:@"UNABLE TO ADD" activity:NO enabled:NO];
                    }];
 }
 

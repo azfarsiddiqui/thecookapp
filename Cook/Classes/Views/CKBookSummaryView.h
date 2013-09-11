@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSString *updatedStory;
 
 - (id)initWithBook:(CKBook *)book;
+- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode;
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
 
 @end
