@@ -40,7 +40,7 @@
     CGSize size = CGSizeZero;
     switch (gridType) {
         case BookContentGridTypeExtraSmall:
-            size = (CGSize){ kUnitWidth, 360.0 };
+            size = (CGSize){ kUnitWidth, 370.0 };
             break;
         case BookContentGridTypeSmall:
             size = (CGSize){ kUnitWidth, 480.0 };

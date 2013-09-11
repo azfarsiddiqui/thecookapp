@@ -33,7 +33,7 @@
     frame.origin.x = contentInsets.left + floorf((availableSize.width - size.width) / 2.0);
     
     if (self.imageView.hidden) {
-        frame.origin.y = contentInsets.top;
+        frame.origin.y = contentInsets.top + 20.0;
     } else {
         frame.origin.y = self.imageView.frame.origin.y + self.imageView.frame.size.height + contentInsets.top;
     }

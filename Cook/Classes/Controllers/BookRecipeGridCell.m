@@ -29,7 +29,7 @@
 #define kViewDebug              0
 #define kImageSize              (CGSize){316.0, 260.0}
 #define kBlockUnitHeight        140.0
-#define kContentInsets          (UIEdgeInsets){50.0, 40.0, 45.0, 40.0}
+#define kContentInsets          (UIEdgeInsets){42.0, 40.0, 51.0, 40.0}
 
 #define kTitleOffsetNoImage     45.0
 #define kTitleTopGap            45.0
@@ -39,7 +39,7 @@
 #define kStatsViewTopOffset     30.0
 #define kStoryTopOffset         30.0
 #define kTimeStatsGap           -5.0
-#define kTitleTimeGap           9.0
+#define kTitleTimeGap           7.0
 
 + (CGSize)imageSize {
     return kImageSize;
@@ -376,7 +376,7 @@
     storyLabel.textColor = [Theme recipeGridIngredientsColour];
     storyLabel.numberOfLines = 7;
     storyLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    storyLabel.textAlignment = NSTextAlignmentCenter;
+    storyLabel.textAlignment = NSTextAlignmentLeft;
     [self.contentView addSubview:storyLabel];
     self.storyLabel = storyLabel;
 }
@@ -388,7 +388,7 @@
     methodLabel.textColor = [Theme recipeGridIngredientsColour];
     methodLabel.numberOfLines = 7;
     methodLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    methodLabel.textAlignment = NSTextAlignmentCenter;
+    methodLabel.textAlignment = NSTextAlignmentLeft;
     [self.contentView addSubview:methodLabel];
     self.methodLabel = methodLabel;
 }

@@ -143,7 +143,7 @@
 }
 
 + (UIColor *)recipeGridIngredientsColour {
-    return [UIColor colorWithHexString:@"3A3A3A"];
+    return [UIColor colorWithHexString:@"505050"];
 }
 
 + (UIFont *)recipeGridTimeIntervalFont {
@@ -163,11 +163,11 @@
 }
 
 + (UIFont *)recipeGridStatFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:15.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:16.0];
 }
 
 + (UIColor *)recipeGridStatColour {
-    return [UIColor colorWithHexString:@"888888"];
+    return [UIColor colorWithHexString:@"A0A0A0"];
 }
 
 #pragma mark - Notifications
