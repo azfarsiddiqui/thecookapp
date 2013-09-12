@@ -40,7 +40,7 @@
 @property (nonatomic, strong) CIContext *filterContext;
 @property (nonatomic, strong) CKPhotoFilterSliderView *filterPickerView;
 @property UIDeviceOrientation currentOrientation;
-@property (nonatomic, strong) UIView *flashView;
+@property (nonatomic, strong) UIView *snapshotView;
 
 @end
 
@@ -142,6 +142,8 @@
     CGFloat cropHeight = chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
     chosenImage = [chosenImage imageCroppedToFitSize:CGSizeMake(cropWidth, cropHeight)]; //[ImageHelper scaledImage:chosenImage size:CGSizeMake(cropWidth, cropHeight)];
     self.selectedImage = chosenImage;
+    [self.snapshotView removeFromSuperview];
+    self.snapshotView = nil;
     [self updateImagePreview];
     [self updateButtons];
     [self.popoverViewController dismissPopoverAnimated:YES];
@@ -354,6 +356,9 @@
 - (void)snapTapped:(id)sender {
     [[self parentView] bringSubviewToFront:self.activityView];
     [self.activityView startAnimating];
+    self.snapshotView = [self.view snapshotViewAfterScreenUpdates:NO];
+    [self.view addSubview:self.snapshotView];
+    [self.view bringSubviewToFront:self.activityView];
     [self.cameraPickerViewController takePicture];
 }
 
@@ -659,8 +664,6 @@
 #pragma mark - CKPhotoFilterSliderView delegate methods
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex
 {
-    [self.activityView startAnimating];
-    [self.view bringSubviewToFront:self.activityView];
     [self.filterPickerView startFilterLoading];
     @autoreleasepool {
         UIImage *filteredImage = self.selectedImage;
@@ -693,7 +696,6 @@
         }
         self.previewImageView.image = filteredImage;
     }
-    [self.activityView stopAnimating];
     [self.filterPickerView stopFilterLoading];
 }
 

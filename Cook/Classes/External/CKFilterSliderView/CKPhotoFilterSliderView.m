@@ -13,7 +13,6 @@
 
 @property (nonatomic, strong) UIImage *selectedImage;
 @property (nonatomic, strong) UIImageView *sliderCurrentState;
-@property (nonatomic, strong) UIImageView *sliderNextState;
 
 @property (nonatomic, strong) NSMutableArray *filterArray;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
@@ -135,30 +134,23 @@
 
 - (void)initNotchIndex:(NSInteger)selectedNotchIndex {
     self.sliderCurrentState.alpha = 1.0;
-    self.sliderNextState.alpha = 0.0;
-    [self.currentNotchView addSubview:self.sliderNextState];
     [self.currentNotchView addSubview:self.sliderCurrentState];
     [self.currentNotchView addSubview:self.activityView];
 }
 
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {
     // Transitions from current slider icon to destination one
-//    self.sliderNextState.image = [self imageForIconAtNotchIndex:selectedNotchIndex];
-//    self.sliderNextState.alpha = 0.0;
-//    self.sliderCurrentState.alpha = 1.0;
-//    [UIView animateWithDuration:0.1
-//                          delay:0.0
-//                        options:UIViewAnimationOptionCurveEaseIn
-//                     animations:^{
-//                         self.sliderCurrentState.alpha = 0.0;
-//                         self.sliderNextState.alpha = 1.0;
-//                     }
-//                     completion:^(BOOL finished){
-                         self.sliderCurrentState.image = [self imageForIconAtNotchIndex:selectedNotchIndex];
-//                         self.sliderCurrentState.alpha = 1.0;
-//                         self.sliderNextState.alpha = 0.0;
+    self.sliderCurrentState.alpha = 0.0;
+    self.sliderCurrentState.image = [self imageForIconAtNotchIndex:selectedNotchIndex];
+    [UIView animateWithDuration:0.1
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.sliderCurrentState.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished){
                          [self.delegate notchSliderView:self selectedIndex:selectedNotchIndex];
-//                     }];
+                     }];
 }
 
 - (void)startFilterLoading
@@ -191,21 +183,9 @@
     }
     return _sliderCurrentState;
 }
-- (UIImageView *)sliderNextState {
-    if (!_sliderNextState) {
-        _sliderNextState = [[UIImageView alloc] initWithImage:[self imageForIconAtNotchIndex:0]];
-        _sliderNextState.frame = (CGRect){
-            floorf((self.currentNotchView.bounds.size.width - _sliderNextState.frame.size.width) / 2.0),
-            floorf((self.currentNotchView.bounds.size.height - _sliderNextState.frame.size.height) / 2.0),
-            _sliderNextState.frame.size.width,
-            _sliderNextState.frame.size.height
-        };
-    }
-    return _sliderNextState;
-}
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
-        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTinyDark];
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTinyDarkBlue];
         _activityView.hidesWhenStopped = YES;
         _activityView.frame = (CGRect){
             floorf((self.currentNotchView.bounds.size.width - _activityView.frame.size.width) / 2.0),
