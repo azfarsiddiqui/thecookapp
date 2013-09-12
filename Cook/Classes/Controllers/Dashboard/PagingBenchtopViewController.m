@@ -151,6 +151,9 @@
         return;
     }
     
+    // Make sure we're on the front page.
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    
     // Disable benchtop.
     [self.delegate panEnabledRequested:NO];
     [self enable:NO];
