@@ -175,12 +175,15 @@
             [[CKPhotoManager sharedInstance] addImage:self.updatedProfileImage user:self.book.user];
         }
         
-        // Update story label.
-        [self updateStory:self.updatedStory];
-        
         // Save story regardless user can choose to clear it.
-        self.book.story = self.updatedStory;
-        [self.book saveInBackground];
+        if (self.updatedStory) {
+            
+            [self updateStory:self.updatedStory];
+            
+            self.book.story = self.updatedStory;
+            [self.book saveInBackground];
+        }
+        
         
     } else {
         
