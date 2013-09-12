@@ -516,6 +516,18 @@
     return _ingredients;
 }
 
+- (NSInteger)numViews {
+    return [[self.parseObject objectForKey:kRecipeAttrNumViews] integerValue];
+}
+
+- (NSInteger)numLikes {
+    return [[self.parseObject objectForKey:kRecipeAttrNumLikes] integerValue];
+}
+
+- (NSInteger)numComments {
+    return [[self.parseObject objectForKey:kRecipeAttrNumComments] integerValue];
+}
+
 #pragma mark - Existence methods
 
 - (BOOL)hasPhotos {

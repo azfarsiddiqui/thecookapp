@@ -45,10 +45,7 @@
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
 @property (nonatomic, strong) NSMutableDictionary *contentControllerOffsets;
 @property (nonatomic, strong) NSMutableDictionary *pageHeaderViews;
-@property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipes;
-@property (nonatomic, strong) NSMutableDictionary *pageFeaturedRecipeIds;
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
-@property (nonatomic, strong) NSString *bookFeaturedRecipeId;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
@@ -208,12 +205,6 @@
     
     // Remove the recipes.
     [self.recipes removeObject:recipe];
-    
-    // Remove the recipe from the cached featured recipe if it is featured.
-    CKRecipe *featuredRecipe = [self featuredRecipeForPage:recipe.page];
-    if ([featuredRecipe.objectId isEqualToString:recipe.objectId]) {
-        [self.pageFeaturedRecipes removeObjectForKey:recipe.page];
-    }
     
     // Remember the recipe that was actioned.
     self.saveOrUpdatedRecipe = recipe;
@@ -392,7 +383,7 @@
 }
 
 - (CKRecipe *)featuredRecipeForBookContentViewControllerForPage:(NSString *)page {
-    return [self featuredRecipeForPage:page];
+    return [self coverRecipeForPage:page];
 }
 
 - (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page {
@@ -403,7 +394,7 @@
 #pragma mark - BookTitleViewControllerDelegate methods
 
 - (CKRecipe *)bookTitleFeaturedRecipeForPage:(NSString *)page {
-    return [self featuredRecipeForPage:page];
+    return [self coverRecipeForPage:page];
 }
 
 - (NSInteger)bookTitleNumRecipesForPage:(NSString *)page {
@@ -413,7 +404,6 @@
 
 - (void)bookTitleSelectedPage:(NSString *)page {
     [self scrollToPage:page animated:YES];
-//    [self fastForwardToPage:page];
 }
 
 - (void)bookTitleUpdatedOrderOfPages:(NSArray *)pages {
@@ -789,8 +779,6 @@
     [self.book fetchRecipesSuccess:^(NSArray *recipes, NSDate *lastAccessedDate, NSDictionary *pageFeaturedRecipes,
                                      NSString *bookFeaturedId) {
         
-        self.pageFeaturedRecipeIds = [NSMutableDictionary dictionaryWithDictionary:pageFeaturedRecipes];
-        self.bookFeaturedRecipeId = bookFeaturedId;
         self.bookLastAccessedDate = lastAccessedDate;
         [self processRecipes:recipes];
         
@@ -802,15 +790,12 @@
 
 - (void)processRecipes:(NSArray *)recipes {
     self.recipes = [NSMutableArray arrayWithArray:recipes];
-    
     [self loadRecipes];
 }
 
 - (void)loadRecipes {
     self.pageRecipes = [NSMutableDictionary dictionary];
     self.pagesContainingUpdatedRecipes = [NSMutableDictionary dictionary];
-    self.pageFeaturedRecipes = [NSMutableDictionary dictionary];
-    self.pageCoverRecipes = [NSMutableDictionary dictionary];
     self.pageHeaderViews = [NSMutableDictionary dictionary];
     
     // Keep a reference of pages.
@@ -820,6 +805,8 @@
     for (CKRecipe *recipe in self.recipes) {
         
         NSString *page = recipe.page;
+        
+        // Collect recipes into their corresponding pages.
         NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
         if (!pageRecipes) {
             pageRecipes = [NSMutableArray array];
@@ -835,6 +822,9 @@
             [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
         }
     }
+    
+    // Process rankings.
+    [self processRanks];
     
     // Initialise the categoryControllers
     self.contentControllers = [NSMutableDictionary dictionaryWithCapacity:[self.pages count]];
@@ -855,7 +845,6 @@
     
     // Load the hero recipe.
     if ([self.pages count] > 0) {
-        self.featuredRecipe = [self bookFeaturedRecipe];
         [self.titleViewController configureHeroRecipe:self.featuredRecipe];
     }
 }
@@ -958,68 +947,8 @@
     }];
 }
 
-- (CKRecipe *)featuredRecipeForPage:(NSString *)page {
-    CKRecipe *featuredRecipe = [self.pageFeaturedRecipes objectForKey:page];
-    if (!featuredRecipe) {
-        
-        NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
-        NSArray *recipesWithPhotos = [self recipesWithPhotos:pageRecipes];
-        if ([recipesWithPhotos count] > 0) {
-            featuredRecipe = [recipesWithPhotos firstObject];   // Most recently updated recipe with photo.
-        }
-        
-        // Set the featured recipe.
-        if (featuredRecipe) {
-            [self.pageFeaturedRecipes setObject:featuredRecipe forKey:page];
-        }
-    }
-    
-    return featuredRecipe;
-}
-
 - (CKRecipe *)coverRecipeForPage:(NSString *)page {
-    CKRecipe *coverRecipe = [self.pageCoverRecipes objectForKey:page];
-    
-    if (!coverRecipe) {
-        
-        // Get from the server-issued featured recipe.
-        NSString *pageFeaturedRecipeId = [self.pageFeaturedRecipeIds objectForKey:page];
-        NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
-        if ([pageFeaturedRecipeId length] > 0) {
-            coverRecipe = [pageRecipes detect:^BOOL(CKRecipe *recipe) {
-                return [recipe.objectId isEqualToString:pageFeaturedRecipeId];
-            }];
-        }
-        
-        // Set the featured recipe.
-        if (coverRecipe) {
-            [self.pageCoverRecipes setObject:coverRecipe forKey:page];
-        }
-    }
-    
-    return coverRecipe;
-}
-
-- (CKRecipe *)bookFeaturedRecipe {
-    CKRecipe *bookFeaturedRecipe = nil;
-    
-    if ([self.bookFeaturedRecipeId length] > 0) {
-        
-        // Get the server-issued book featured recipe.
-        bookFeaturedRecipe = [self.recipes detect:^BOOL(CKRecipe *recipe) {
-            return [recipe.objectId isEqualToString:self.bookFeaturedRecipeId];
-        }];
-        
-    }
-    
-    // Fallback to getting featured recipe for a random page.
-    if (!bookFeaturedRecipe) {
-        
-        NSString *page = [self.pages objectAtIndex:arc4random_uniform([self.pages count])];
-        bookFeaturedRecipe = [self featuredRecipeForPage:page];
-    }
-    
-    return bookFeaturedRecipe;
+    return [self.pageCoverRecipes objectForKey:page];
 }
 
 - (void)closeTapped:(id)sender {
@@ -1371,6 +1300,68 @@
                              [self.saveButton removeFromSuperview];
                          }
                      }];
+}
+
+- (void)processRanks {
+    self.pageCoverRecipes = [NSMutableDictionary dictionary];
+    
+    // Gather the highest ranked recipes for each page.
+    [self.pageRecipes each:^(NSString *page, NSArray *recipes) {
+        
+        if ([recipes count] > 0) {
+            
+            // Get the highest ranked recipe with photos, then fallback to without.
+            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page hasPhotos:YES];
+            if (!highestRankedRecipe) {
+                highestRankedRecipe = [self highestRankedRecipeForPage:page hasPhotos:NO];
+            }
+            [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
+            
+        }
+        
+    }];
+    
+    // Get the highest ranked recipe among the highest ranked recipes.
+    self.featuredRecipe = nil;
+    [self.pageCoverRecipes each:^(NSString *page, CKRecipe *recipe) {
+        
+        if (self.featuredRecipe) {
+            if ([self rankForRecipe:recipe] > [self rankForRecipe:self.featuredRecipe]) {
+                self.featuredRecipe = recipe;
+            }
+        } else {
+            self.featuredRecipe = recipe;
+        }
+        
+    }];
+    
+}
+
+- (CKRecipe *)highestRankedRecipeForPage:(NSString *)page hasPhotos:(BOOL)hasPhotos {
+    NSArray *recipes = [self.pageRecipes objectForKey:page];
+    if (hasPhotos) {
+        recipes = [recipes select:^BOOL(CKRecipe *recipe) {
+            return [recipe hasPhotos];
+        }];
+    }
+    
+    __block CKRecipe *highestRankedRecipe = nil;
+    [recipes each:^(CKRecipe *recipe) {
+        if (highestRankedRecipe) {
+            if ([self rankForRecipe:recipe] > [self rankForRecipe:highestRankedRecipe]) {
+                highestRankedRecipe = recipe;
+            }
+        } else {
+            highestRankedRecipe = recipe;
+        }
+        
+    }];
+    
+    return highestRankedRecipe;
+}
+
+- (CGFloat)rankForRecipe:(CKRecipe *)recipe {
+    return recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
 }
 
 @end
