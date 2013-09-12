@@ -26,6 +26,7 @@
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
+@property (nonatomic, strong) UIImageView *profileOverlay;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *storyLabel;
@@ -89,6 +90,7 @@
         [self.editingHelper unwrapEditingView:self.storyLabel];
     }
     
+    self.profileOverlay.alpha = editMode ? 0.0 : 1.0;
     [self.profilePhotoView enableEditMode:editMode animated:animated];
 }
 
@@ -211,7 +213,7 @@
     UIImage *placeholderImage = self.book.featured ? [UIImage imageNamed:@"cook_featured_profileimage.png"] : nil;
     self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.book.user
                                                              placeholder:placeholderImage
-                                                             profileSize:ProfileViewSizeLarge];
+                                                             profileSize:ProfileViewSizeLarge border:NO overlay:YES];
     self.profilePhotoView.frame = CGRectMake(floorf((self.bounds.size.width - self.profilePhotoView.frame.size.width) / 2.0),
                                              kContentInsets.top,
                                              self.profilePhotoView.frame.size.width,
@@ -220,8 +222,6 @@
         self.profilePhotoView.delegate = self;
     }
     [self addSubview:self.profilePhotoView];
-    
-    // Can edit?
     
     // User name
     NSString *name = [self.book.user.name uppercaseString];

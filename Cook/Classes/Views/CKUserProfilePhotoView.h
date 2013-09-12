@@ -38,6 +38,8 @@ typedef enum {
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize;
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
             border:(BOOL)border;
+- (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
+            border:(BOOL)border overlay:(BOOL)overlay;
 - (void)reloadProfilePhoto;
 - (void)loadProfilePhotoForUser:(CKUser *)user;
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;

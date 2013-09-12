@@ -18,6 +18,7 @@
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) UIView *borderView;
 @property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UIImageView *profileOverlay;
 @property (nonatomic, strong) UIImage *placeholderImage;
 @property (nonatomic, strong) UIButton *editButton;
 
@@ -87,6 +88,12 @@
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
             border:(BOOL)border {
     
+    return [self initWithUser:user placeholder:placeholderImage profileSize:profileSize border:border overlay:NO];
+}
+
+- (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize
+            border:(BOOL)border overlay:(BOOL)overlay {
+    
     if (self = [super initWithFrame:[CKUserProfilePhotoView frameForProfileSize:profileSize border:border]]) {
         self.placeholderImage = placeholderImage;
         self.profileSize = profileSize;
@@ -110,6 +117,19 @@
             [self applyBorderMask];
         }
         [self applyRoundProfileImageMask];
+        
+        // Apply overlay.
+        if (overlay) {
+            UIImageView *profileOverlay = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_library_profile_overlay.png"]];
+            profileOverlay.frame = (CGRect){
+                floorf((self.bounds.size.width - profileOverlay.frame.size.width) / 2.0),
+                floorf((self.bounds.size.height - profileOverlay.frame.size.height) / 2.0) + 4.0,
+                profileOverlay.frame.size.width,
+                profileOverlay.frame.size.height
+            };
+            [self addSubview:profileOverlay];
+            self.profileOverlay = profileOverlay;
+        }
         
         // Add edit.
         [self initEditButton];
@@ -157,11 +177,13 @@
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
+                             self.profileOverlay.alpha = editMode ? 0.0 : 1.0;
                              self.editButton.alpha = editMode ? 1.0 : 0.0;
                          }
                          completion:^(BOOL finished) {
                          }];
     } else {
+        self.profileOverlay.alpha = editMode ? 0.0 : 1.0;
         self.editButton.alpha = editMode ? 1.0 : 0.0;
     }
 }
@@ -232,7 +254,7 @@
 - (void)initEditButton {
     self.editButton.frame = (CGRect){
         floorf((self.bounds.size.width - self.editButton.frame.size.width) / 2.0),
-        floorf((self.bounds.size.height - self.editButton.frame.size.height) / 2.0),
+        floorf((self.bounds.size.height - self.editButton.frame.size.height) / 2.0) + 1.0,
         self.editButton.frame.size.width,
         self.editButton.frame.size.height
     };
