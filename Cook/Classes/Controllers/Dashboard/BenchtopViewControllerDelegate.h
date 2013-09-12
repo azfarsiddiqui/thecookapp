@@ -17,6 +17,8 @@
 - (void)panToBenchtopForSelf:(UIViewController *)viewController;
 - (NSInteger)currentBenchtopLevel;
 - (void)deleteModeToggled:(BOOL)deleteMode;
+- (BOOL)benchtopInLibrary;
+- (BOOL)benchtopInSettings;
 
 @optional
 - (void)benchtopFirstTimeLaunched;
