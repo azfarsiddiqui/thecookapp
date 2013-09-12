@@ -227,12 +227,16 @@
 #pragma mark - CKSaveableContent methods
 
 - (BOOL)contentSaveRequired {
-    return ![self.updatedPage CK_equalsIgnoreCase:self.page];
+    return [self.updatedPage CK_containsText] && ![self.updatedPage CK_equalsIgnoreCase:self.page];
 }
 
 - (void)contentPerformSave:(BOOL)save {
-    if (save && [self contentSaveRequired]) {
-        [self renamePage];
+    if (save) {
+        if ([self contentSaveRequired]) {
+            [self renamePage];
+        } else {
+            [self restorePage];
+        }
     } else {
         [self restorePage];
     }
@@ -261,13 +265,19 @@
 }
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
-    [self updateContentTitleViewWithTitle:value];
-    self.updatedPage = value;
-    [self.editingHelper updateEditingView:self.contentTitleView];
+    if ([value length] > 0) {
+        [self updateContentTitleViewWithTitle:value];
+        self.updatedPage = value;
+        [self.editingHelper updateEditingView:self.contentTitleView];
+    }
 }
 
 - (id)editViewControllerInitialValue {
-    return [self.page uppercaseString];
+    if (self.updatedPage) {
+        return [self.updatedPage uppercaseString];
+    } else {
+        return [self.page uppercaseString];
+    }
 }
 
 - (BOOL)editViewControllerCanSaveFor:(CKEditViewController *)editViewController {
@@ -617,6 +627,9 @@
                                                                                  [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
                                                                              }];
                                                                              
+                                                                             // Clear updatedPage state.
+                                                                             self.updatedPage = nil;
+                                                                             
                                                                          }];
                                                                          
                                                                      }];
@@ -626,6 +639,7 @@
                                                                      [weakSelf.progressOverlayViewController updateWithTitle:@"Unable to Rename" delay:1.5 completion:^{
                                                                          
                                                                          [ModalOverlayHelper hideModalOverlayForViewController:weakSelf.progressOverlayViewController completion:nil];
+                                                                         
                                                                          [self restorePage];
                                                                      }];
                                                                  }];
@@ -638,7 +652,7 @@
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES
                                                                                                           title:@"Page Name"
-                                                                                                 characterLimit:15];
+                                                                                                 characterLimit:14];
     editViewController.showTitle = YES;
     editViewController.forceUppercase = YES;
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
@@ -659,6 +673,9 @@
     [self updateContentTitleViewWithTitle:self.page];
     [self.editingHelper updateEditingView:self.contentTitleView animated:NO];
     [self.editingHelper unwrapEditingView:self.contentTitleView animated:YES];
+    
+    // Clear updatedPage state.
+    self.updatedPage = nil;
 }
 
 - (void)showIntroCard {

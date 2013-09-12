@@ -493,7 +493,7 @@
            failure:(ObjectFailureBlock)failure {
     
     DLog(@"page [%@] toPage [%@]", [page CK_containsText] ? @"YES" : @"NO", [toPage CK_containsText] ? @"YES" : @"NO");
-    if (![page CK_containsText] && ![toPage CK_containsText]) {
+    if (![page CK_containsText] || ![toPage CK_containsText]) {
         failure(nil);
         return;
     }
@@ -513,7 +513,7 @@
                                         success();
                                         
                                     } else {
-                                        DLog(@"Error deleting page: %@", [error localizedDescription]);
+                                        DLog(@"Error renaming page: %@", [error localizedDescription]);
                                         failure(error);
                                     }
                                 }];
