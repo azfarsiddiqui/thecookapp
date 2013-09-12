@@ -1103,6 +1103,9 @@
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
         
+        [self libraryIntroTapped];
+        [self settingsIntroTapped];
+        
         [self hideLoginViewCompletion:^{
             [self loadMyBook];
             [self loadFollowBooksReload:YES];
@@ -1418,11 +1421,16 @@
 }
 
 - (void)hideIntroViewsAsRequired {
-    if (self.libraryIntroView.superview && [self.delegate benchtopInLibrary]) {
+    if ([CKUser isLoggedIn]) {
         [self libraryIntroTapped];
-    }
-    if (self.settingsIntroView.superview && [self.delegate benchtopInSettings]) {
         [self settingsIntroTapped];
+    } else {
+        if (self.libraryIntroView.superview && [self.delegate benchtopInLibrary]) {
+            [self libraryIntroTapped];
+        }
+        if (self.settingsIntroView.superview && [self.delegate benchtopInSettings]) {
+            [self settingsIntroTapped];
+        }
     }
 }
 
