@@ -85,10 +85,12 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    UIEdgeInsets insets = (UIEdgeInsets) { 10.0, 5.0, 6.0, 12.0 };
+    UIEdgeInsets insets = (UIEdgeInsets) { 10.0, 10.0, 6.0, 10.0 };
     NSInteger numSections = [self.collectionView numberOfSections];
-    if (section == numSections - 1) {
-        insets.right = 5.0; // Ends with a 7pt.
+    if (section == 0) {
+        insets.left = 23.0;
+    } else if (section == numSections - 1) {
+        insets.right = 23.0;
     }
     return insets;
 }
