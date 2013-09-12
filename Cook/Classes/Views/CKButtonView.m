@@ -8,13 +8,14 @@
 
 #import "CKButtonView.h"
 #import "UIColor+Expanded.h"
+#import "CKActivityIndicatorView.h"
 
 @interface CKButtonView ()
 
 @property (nonatomic, strong) UIImage *backgroundImage;
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UIImageView *iconImageView;
-@property (nonatomic, strong) UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *textLabel;
 
 @end
@@ -70,7 +71,7 @@
     // Spinner on button.
     if (activity) {
         if (!self.activityView) {
-            self.activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+            self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTinyDark];
         }
         self.activityView.frame = CGRectMake(floorf((self.bounds.size.width - self.textLabel.frame.size.width - kActivityTextGap - self.activityView.frame.size.width) / 2.0) - 2.0,
                                              ceilf((self.bounds.size.height - self.activityView.frame.size.height) / 2) - 1.0,
