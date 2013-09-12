@@ -128,7 +128,7 @@
                                   contentInsets.left + 10.0,
                                   contentInsets.bottom + 7.0,
                                   contentInsets.right + 10.0
-                              } delegate:self white:YES editMode:YES animated:YES];
+                              } delegate:self white:YES editMode:YES onpress:NO animated:YES];
         
     } else {
         

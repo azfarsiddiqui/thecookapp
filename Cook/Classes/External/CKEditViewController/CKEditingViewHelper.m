@@ -148,7 +148,15 @@
                animated:(BOOL)animated {
     
     [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
-                     editMode:editMode animated:animated];
+                     editMode:editMode onpress:YES animated:animated];
+}
+
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
+                onpress:(BOOL)onpress animated:(BOOL)animated {
+    
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
+                     editMode:editMode onpress:onpress animated:animated];
 }
 
 - (BOOL)alreadyWrappedForEditingView:(UIView *)editingView {
@@ -233,6 +241,15 @@
                    delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
                    animated:(BOOL)animated {
     
+    [self decorateEditingView:editingView wrap:wrap contentInsets:contentInsets delegate:delegate white:white
+                     editMode:editMode onpress:YES animated:animated];
+    
+}
+
+- (void)decorateEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
+                   delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
+                    onpress:(BOOL)onpress animated:(BOOL)animated {
+    
     UIView *parentView = editingView.superview;
     
     if (wrap) {
@@ -247,6 +264,7 @@
                                                                                 contentInsets:contentInsets
                                                                                         white:white
                                                                                      editMode:editMode
+                                                                                      onpress:onpress
                                                                                      delegate:delegate];
         [parentView insertSubview:textBoxView belowSubview:editingView];
         

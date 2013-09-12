@@ -17,6 +17,7 @@
 @property (nonatomic, assign) CGPoint iconOffset;
 @property (nonatomic, assign) BOOL white;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL onpress;
 
 @end
 
@@ -90,6 +91,13 @@
 - (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
                  editMode:(BOOL)editMode delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
     
+    return [self initWithEditingView:editingView contentInsets:contentInsets white:white editMode:editMode onpress:YES
+                            delegate:delegate];
+}
+
+- (id)initWithEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets white:(BOOL)white
+                 editMode:(BOOL)editMode onpress:(BOOL)onpress delegate:(id<CKEditingTextBoxViewDelegate>)delegate {
+    
     if (self = [super initWithFrame:CGRectZero]) {
         
         self.editingView = editingView;
@@ -99,11 +107,12 @@
         self.userInteractionEnabled = YES;
         self.white = white;
         self.editMode = editMode;
+        self.onpress = onpress;
         self.iconOffset = CGPointMake(-32.0, -11.0);
         
         // Text box.
         UIButton *textEditImageView = [CKEditingTextBoxView buttonWithImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode]
-                                                              selectedImage:[CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode selected:YES]
+                                                              selectedImage:onpress ? [CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode selected:YES] : [CKEditingTextBoxView textEditingBoxWhite:white editMode:editMode]
                                                                      target:self
                                                                    selector:@selector(tapped:)];
         textEditImageView.userInteractionEnabled = YES;
@@ -145,11 +154,11 @@
     if (updated) {
         [CKEditingTextBoxView updateButton:self.textEditBoxImageView
                                      image:[CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode]
-                             selectedImage:[CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode selected:YES]];
+                             selectedImage:self.onpress ? [CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode selected:YES] : [CKEditingTextBoxView textEditingBoxWhite:!self.white editMode:self.editMode]];
     } else {
         [CKEditingTextBoxView updateButton:self.textEditBoxImageView
                                      image:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode]
-                             selectedImage:[CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode selected:YES]];
+                             selectedImage:self.onpress ? [CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode selected:YES] : [CKEditingTextBoxView textEditingBoxWhite:self.white editMode:self.editMode]];
     }
     
     // First set them to no auto-resize as we're gonna position/size them ourselves.
