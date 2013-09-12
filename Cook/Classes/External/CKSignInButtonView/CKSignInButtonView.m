@@ -29,7 +29,7 @@
 
 @implementation CKSignInButtonView
 
-#define kIconOffset 20.0
+#define kIconOffset 30.0
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
@@ -229,7 +229,7 @@
     if (!_activityView) {
         _activityView = [[CKActivityIndicatorView alloc] initWithStyle:[self activityViewStyle]];
         _activityView.hidesWhenStopped = YES;
-        _activityView.frame = CGRectMake(20.0,
+        _activityView.frame = CGRectMake(kIconOffset,
                                          floorf((self.button.bounds.size.height - _activityView.frame.size.height) / 2.0),
                                          _activityView.frame.size.width,
                                          _activityView.frame.size.height);
