@@ -24,8 +24,8 @@
 @implementation BookTitleView
 
 #define kTitleFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:50.0]
-#define kSubtitleFont   [UIFont fontWithName:@"BrandonGrotesque-Light" size:28.0]
-#define kLabelInsets    (UIEdgeInsets) { 38.0, 40.0, 25.0, 40.0 }
+#define kSubtitleFont   [UIFont fontWithName:@"BrandonGrotesque-Light" size:24.0]
+#define kLabelInsets    (UIEdgeInsets) { 44.0, 52.0, 31.0, 52.0 }
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [self initWithTitle:book.author subtitle:book.name]) {
@@ -97,7 +97,7 @@
     
     // Dark underlay.
     UIView *underlayView = [[UIView alloc] initWithFrame:CGRectZero];
-    underlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.42];
+    underlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     underlayView.frame = self.maskedLabel.frame;
     [self insertSubview:underlayView belowSubview:self.maskedLabel];
     
@@ -107,7 +107,7 @@
     darkDivider.backgroundColor = [UIColor colorWithHexString:@"888888"];
     darkDivider.frame = (CGRect){
         floorf((self.bounds.size.width - dividerWidth) / 2.0),
-        105.0,
+        114.0,
         dividerWidth,
         1.0
     };
@@ -135,7 +135,7 @@
     paragraphStyle.lineSpacing = 0.0;
     paragraphStyle.paragraphSpacing = 0.0;
 //    paragraphStyle.paragraphSpacingBefore = 6.0;
-    paragraphStyle.paragraphSpacingBefore = 1.0;
+    paragraphStyle.paragraphSpacingBefore = 9.0;
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
