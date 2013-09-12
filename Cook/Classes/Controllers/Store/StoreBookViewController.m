@@ -34,6 +34,7 @@
 @property (nonatomic, strong) CKBookSummaryView *bookSummaryView;
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
 @property (nonatomic, strong) CKButtonView *actionButtonView;
+@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, assign) BOOL pendingAcceptance;
 @property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, assign) BOOL animating;
@@ -150,6 +151,15 @@
     
 }
 
+#pragma mark - Properties
+
+- (UIButton *)closeButton {
+    if (!_closeButton) {
+        _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped)];
+    }
+    return _closeButton;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackground {
@@ -191,9 +201,8 @@
     [bookContainerView addSubview:overlayView];
     
     // Close button.
-    UIButton *closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_icon_close_white.png"] target:self selector:@selector(closeTapped)];
-    closeButton.frame = CGRectMake(10.0, 8.0, closeButton.frame.size.width, closeButton.frame.size.height);
-    [bookContainerView addSubview:closeButton];
+    self.closeButton.frame = CGRectMake(42.0, 35.0, self.closeButton.frame.size.width, self.closeButton.frame.size.height);
+    [bookContainerView addSubview:self.closeButton];
 }
 
 - (void)initBookSummaryView {
