@@ -258,6 +258,17 @@
     // Update positioning of the stat views.
     [self updateStatViews];
     
+    // Divider.
+    UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_selected_divider.png"]];
+    dividerView.frame = (CGRect) {
+        floorf((self.bounds.size.width - self.nameLabel.frame.size.width) / 2.0),
+        self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + (kNameStatsGap / 2.0),
+        self.nameLabel.frame.size.width,
+        1.0
+    };
+    [self addSubview:dividerView];
+    
+    
     // Book story.
     [self updateStory:self.book.story];
 }
