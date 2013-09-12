@@ -11,6 +11,7 @@
 typedef NS_ENUM(NSUInteger, CKActivityIndicatorViewStyle) {
     CKActivityIndicatorViewStyleTiny,
     CKActivityIndicatorViewStyleTinyDark,
+    CKActivityIndicatorViewStyleTinyDarkBlue,
     CKActivityIndicatorViewStyleSmall,
     CKActivityIndicatorViewStyleLarge
 };

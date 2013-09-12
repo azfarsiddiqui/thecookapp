@@ -100,6 +100,9 @@
         case CKActivityIndicatorViewStyleTinyDark:
             image = [UIImage imageNamed:@"cook_book_inner_loading_tiny_dark_outer.png"];
             break;
+        case CKActivityIndicatorViewStyleTinyDarkBlue:
+            image = [UIImage imageNamed:@"cook_book_inner_loading_tiny_dark_outer_blue.png"];
+            break;
         case CKActivityIndicatorViewStyleSmall:
             image = [UIImage imageNamed:@"cook_book_inner_loading_small_outer.png"];
             break;
@@ -120,6 +123,9 @@
             break;
         case CKActivityIndicatorViewStyleTinyDark:
             image = [UIImage imageNamed:@"cook_book_inner_loading_tiny_dark_inner.png"];
+            break;
+        case CKActivityIndicatorViewStyleTinyDarkBlue:
+            image = [UIImage imageNamed:@"cook_book_inner_loading_tiny_dark_inner_blue.png"];
             break;
         case CKActivityIndicatorViewStyleSmall:
             image = [UIImage imageNamed:@"cook_book_inner_loading_small_inner.png"];
