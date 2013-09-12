@@ -143,7 +143,7 @@
         _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:68.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:74.0]
                                                    text:@"WELCOME" textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-10.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
@@ -153,7 +153,7 @@
         [_welcomePageView addSubview:titleLabel];
         
         // HR
-        CGFloat hrWidth = titleLabel.frame.size.width;
+        CGFloat hrWidth = titleLabel.frame.size.width * 0.8;
         CGFloat dividerOffset = 0.0;
         UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
         dividerView.frame = (CGRect){
@@ -165,7 +165,7 @@
         [_welcomePageView addSubview:dividerView];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Gather your recipes, it's time to create\u2028your very own Cookbook for iPad.\u2028\u2028This is a beta build of Cook."
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Cook lets you create and share your\u2028very own cookbook for iPad."
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 24.0,
@@ -238,7 +238,7 @@
         [_collectPageView addSubview:titleLabel];
         
         // HR
-        CGFloat hrWidth = titleLabel.frame.size.width;
+        CGFloat hrWidth = titleLabel.frame.size.width * 0.6;
         CGFloat dividerOffset = 10.0;
         UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
         dividerView.frame = (CGRect){
@@ -595,7 +595,7 @@
                               delay:0.0
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
-                             pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
+                             pagingBenchtopView.alpha = 0.88;
                          }
                          completion:^(BOOL finished) {
                          }];
