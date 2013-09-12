@@ -259,11 +259,12 @@
     [self updateStatViews];
     
     // Divider.
+    CGFloat hrWidth = self.nameLabel.frame.size.width * 0.8;
     UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_library_selected_divider.png"]];
     dividerView.frame = (CGRect) {
-        floorf((self.bounds.size.width - self.nameLabel.frame.size.width) / 2.0),
-        self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + (kNameStatsGap / 2.0),
-        self.nameLabel.frame.size.width,
+        floorf((self.bounds.size.width - hrWidth) / 2.0),
+        self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + (kNameStatsGap / 2.0) - 1.0,
+        hrWidth,
         1.0
     };
     [self addSubview:dividerView];
