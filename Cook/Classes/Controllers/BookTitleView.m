@@ -25,7 +25,7 @@
 
 #define kTitleFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:50.0]
 #define kSubtitleFont   [UIFont fontWithName:@"BrandonGrotesque-Light" size:24.0]
-#define kLabelInsets    (UIEdgeInsets) { 44.0, 52.0, 31.0, 52.0 }
+#define kLabelInsets    (UIEdgeInsets) { 44.0, 62.0, 31.0, 62.0 }
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [self initWithTitle:book.author subtitle:book.name]) {
