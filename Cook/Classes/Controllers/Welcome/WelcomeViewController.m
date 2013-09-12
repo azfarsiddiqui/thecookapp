@@ -147,7 +147,7 @@
                                                    text:@"WELCOME" textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-10.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
-                                      120.0,
+                                      140.0,
                                       titleLabel.frame.size.width,
                                       titleLabel.frame.size.height);
         [_welcomePageView addSubview:titleLabel];
