@@ -70,12 +70,15 @@
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
+    
     if (editMode) {
         
         // If no data, then display placeholder text.
         if (![self.book.story CK_containsText]) {
             [self updateStory:[self defaultEditPlaceholderText]];
         }
+        
+        [self updateStoryEditMode:editMode];
         
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
 
@@ -85,8 +88,9 @@
                                   defaultInsets.left,
                                   defaultInsets.bottom + 5.0,
                                   defaultInsets.right + 5.0
-                              } delegate:self white:NO];
+                              } delegate:self white:YES];
     } else {
+        [self updateStoryEditMode:editMode];
         [self.editingHelper unwrapEditingView:self.storyLabel];
     }
     
@@ -101,7 +105,7 @@
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
-                                                                                                            white:NO
+                                                                                                            white:YES
                                                                                                             title:@"Story"
                                                                                                    characterLimit:500];
         editViewController.clearOnFocus = ![self.book.story CK_containsText];
@@ -360,6 +364,10 @@
 }
 
 - (NSDictionary *)storyParagraphAttributes {
+    return [self storyParagraphAttributesEditMode:NO];
+}
+
+- (NSDictionary *)storyParagraphAttributesEditMode:(BOOL)editMode {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.lineSpacing = -10.0;
@@ -367,14 +375,24 @@
     
     NSShadow *shadow = [NSShadow new];
     shadow.shadowColor = [UIColor blackColor];
-    shadow.shadowOffset = CGSizeMake(0.0, -1.0);
+    shadow.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, -1.0);
+    
+    UIColor *textColour = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryStoryColour];
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
             [Theme storeBookSummaryStoryFont], NSFontAttributeName,
-            [Theme storeBookSummaryStoryColour], NSForegroundColorAttributeName,
+            textColour, NSForegroundColorAttributeName,
             shadow, NSShadowAttributeName,
             paragraphStyle, NSParagraphStyleAttributeName,
             nil];
+}
+
+- (void)updateStoryEditMode:(BOOL)editMode {
+    if ([self.storyLabel.text length] > 0) {
+        NSAttributedString *storyDisplay = [[NSAttributedString alloc] initWithString:self.storyLabel.text
+                                                                           attributes:[self storyParagraphAttributesEditMode:editMode]];
+        self.storyLabel.attributedText = storyDisplay;
+    }
 }
 
 @end
