@@ -14,14 +14,22 @@
 #import "CKUserProfilePhotoView.h"
 #import "ThemeTabView.h"
 #import "ImageHelper.h"
+#import <MessageUI/MessageUI.h>
 
-@interface SettingsViewController ()
+@interface SettingsViewController () <MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, weak) id<SettingsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *loginLogoutButtonView;
-@property (nonatomic, strong) UISwitch *notificationsSwitch;
 @property (nonatomic, strong) UILabel *themeLabel;
+
+@property (nonatomic, strong) UIView *linkButtonContainerView;
+
+@property (nonatomic, strong) UIButton *aboutButton;
+@property (nonatomic, strong) UIButton *supportButton;
+@property (nonatomic, strong) UIButton *facebookButton;
+@property (nonatomic, strong) UIButton *twitterButton;
+
 @property (nonatomic, strong) ThemeTabView *themeTabView;
 
 @end
@@ -125,21 +133,6 @@
     return _loginLogoutButtonView;
 }
 
-- (UISwitch *)notificationsSwitch {
-    if (!_notificationsSwitch) {
-        _notificationsSwitch = [[UISwitch alloc] init];
-        _notificationsSwitch.tintColor = [UIColor greenColor];
-        _notificationsSwitch.on = YES;
-        _notificationsSwitch.frame = (CGRect){
-            280.0,
-            82.0,
-            _notificationsSwitch.frame.size.width,
-            _notificationsSwitch.frame.size.height
-        };
-    }
-    return _notificationsSwitch;
-}
-
 - (UILabel *)themeLabel {
     if (!_themeLabel) {
         _themeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -164,7 +157,7 @@
     if (!_themeTabView) {
         _themeTabView = [[ThemeTabView alloc] init];
         _themeTabView.frame = (CGRect){
-            407.0,
+            42.0,
             82.0,
             _themeTabView.frame.size.width,
             _themeTabView.frame.size.height
@@ -185,27 +178,172 @@
     [self.view addSubview:scrollView];
     self.scrollView = scrollView;
     
-    CGFloat offset = 0.0;
-    for (NSUInteger pageNumber = 0; pageNumber < kNumPages; pageNumber++) {
-        UIImageView *contentView = [[UIImageView alloc] initWithImage:
-                                    [UIImage imageNamed:[NSString stringWithFormat:@"cook_dash_settingsplaceholder%d.png", pageNumber + 1]]];
-        contentView.frame = CGRectMake(offset, 0.0, contentView.frame.size.width, contentView.frame.size.height);
-        [scrollView addSubview:contentView];
-        offset += contentView.frame.size.width;
-    }
-    
-    // Notifications switch
-    [self.scrollView addSubview:self.notificationsSwitch];
+    UIImageView *content1ImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_firstscreen_bg.png"]];
+    UIImageView *content2ImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_secondscreen_bg.png"]];
+    UIView *content1View = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, content1ImageView.frame.size.width, content1ImageView.frame.size.height)];
+    UIView *content2View = [[UIView alloc] initWithFrame:CGRectMake(content1ImageView.frame.size.width, 0.0, content2ImageView.frame.size.width, content2ImageView.frame.size.height)];
+    [content1View addSubview:content1ImageView];
+    [content2View addSubview:content2ImageView];
+    [scrollView addSubview:content1View];
+    [scrollView addSubview:content2View];
     
     // Theme
-    [self.scrollView addSubview:self.themeLabel];
-    [self.scrollView addSubview:self.themeTabView];
+    UIView *themeChooserContainerView = [UIView new];
+    themeChooserContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [themeChooserContainerView addSubview:self.themeLabel];
+    [themeChooserContainerView addSubview:self.themeTabView];
+    [content1View addSubview:themeChooserContainerView];
+    
+    // Link buttons
+    UIView *linkButtonContainerView = [UIView new];
+    linkButtonContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+
+    self.aboutButton = [UIButton new];
+    [self.aboutButton addTarget:self action:@selector(aboutPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.aboutButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_web"] forState:UIControlStateNormal];
+    [self.aboutButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_web_onpress"] forState:UIControlStateHighlighted];
+    self.aboutButton.translatesAutoresizingMaskIntoConstraints = NO;
+    UILabel *aboutLabel = [UILabel new];
+    aboutLabel.text = @"ABOUT";
+    aboutLabel.textAlignment = NSTextAlignmentCenter;
+    aboutLabel.backgroundColor = [UIColor clearColor];
+    aboutLabel.font = [Theme settingsProfileFont];
+    aboutLabel.textColor = [UIColor whiteColor];
+    aboutLabel.shadowColor = [UIColor blackColor];
+    aboutLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    aboutLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [linkButtonContainerView addSubview:self.aboutButton];
+    [linkButtonContainerView addSubview:aboutLabel];
+    
+    self.supportButton = [UIButton new];
+    [self.supportButton addTarget:self action:@selector(supportPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.supportButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_support"] forState:UIControlStateNormal];
+    [self.supportButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_support_onpress"] forState:UIControlStateHighlighted];
+    self.supportButton.translatesAutoresizingMaskIntoConstraints = NO;
+    UILabel *supportLabel = [UILabel new];
+    supportLabel.text = @"SUPPORT";
+    supportLabel.textAlignment = NSTextAlignmentCenter;
+    supportLabel.backgroundColor = [UIColor clearColor];
+    supportLabel.font = [Theme settingsProfileFont];
+    supportLabel.textColor = [UIColor whiteColor];
+    supportLabel.shadowColor = [UIColor blackColor];
+    supportLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    supportLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [linkButtonContainerView addSubview:supportLabel];
+    [linkButtonContainerView addSubview:self.supportButton];
+    
+    self.facebookButton = [UIButton new];
+    [self.facebookButton addTarget:self action:@selector(facebookPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.facebookButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_facebook"] forState:UIControlStateNormal];
+    [self.facebookButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_facebook_onpress"] forState:UIControlStateHighlighted];
+    self.facebookButton.translatesAutoresizingMaskIntoConstraints = NO;
+    UILabel *facebookLabel = [UILabel new];
+    facebookLabel.text = @"FACEBOOK";
+    facebookLabel.textAlignment = NSTextAlignmentCenter;
+    facebookLabel.backgroundColor = [UIColor clearColor];
+    facebookLabel.font = [Theme settingsProfileFont];
+    facebookLabel.textColor = [UIColor whiteColor];
+    facebookLabel.shadowColor = [UIColor blackColor];
+    facebookLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    facebookLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [linkButtonContainerView addSubview:facebookLabel];
+    [linkButtonContainerView addSubview:self.facebookButton];
+    
+    self.twitterButton = [UIButton new];
+    [self.twitterButton addTarget:self action:@selector(twitterPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.twitterButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_twitter"] forState:UIControlStateNormal];
+    [self.twitterButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_settings_icon_twitter_onpress"] forState:UIControlStateHighlighted];
+    self.twitterButton.translatesAutoresizingMaskIntoConstraints = NO;
+    UILabel *twitterLabel = [UILabel new];
+    twitterLabel.text = @"TWITTER";
+    twitterLabel.textAlignment = NSTextAlignmentCenter;
+    twitterLabel.backgroundColor = [UIColor clearColor];
+    twitterLabel.font = [Theme settingsProfileFont];
+    twitterLabel.textColor = [UIColor whiteColor];
+    twitterLabel.shadowColor = [UIColor blackColor];
+    twitterLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    twitterLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [linkButtonContainerView addSubview:twitterLabel];
+    [linkButtonContainerView addSubview:self.twitterButton];
+    
+    { //Setting up constraints to space link buttons
+        NSDictionary *metrics = @{@"height":@52.0, @"width":@52.0, @"labelWidth":@72, @"spacing":@20.0};
+        NSDictionary *views = @{@"about" : self.aboutButton,
+                                @"aboutLabel" : aboutLabel,
+                                @"support" : self.supportButton,
+                                @"supportLabel" : supportLabel,
+                                @"facebook" : self.facebookButton,
+                                @"facebookLabel" : facebookLabel,
+                                @"twitter" : self.twitterButton,
+                                @"twitterLabel" : twitterLabel};
+        NSString *buttonConstraints = @"|-40.0-[about(width)]-spacing-[support(about)]-spacing-[facebook(about)]-spacing-[twitter(about)]-(>=20)-|";
+        NSString *labelConstraints = @"|-30.0-[aboutLabel(labelWidth)][supportLabel(labelWidth)][facebookLabel(labelWidth)][twitterLabel(labelWidth)]";
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:labelConstraints options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-40-[about(height)]-5-[aboutLabel(16.0)]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+//        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[title(400)]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
+    }
+    [content1View addSubview:linkButtonContainerView];
+    { //Setting up constraints to space container views
+        NSDictionary *metrics = @{@"themeWidth":@258,
+                                  @"linkWidth":@345,
+                                  @"spacing":@2.0};
+        NSDictionary *views = @{@"theme" : themeChooserContainerView,
+                                @"links" : linkButtonContainerView};
+        NSString *containerConstraints = @"|-285.0-[theme(themeWidth)][links(linkWidth)]";
+        [content1View addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:containerConstraints
+                                                                                        options:NSLayoutFormatAlignAllCenterY
+                                                                                        metrics:metrics
+                                                                                          views:views]];
+        [content1View addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[theme]|"
+                                                                                        options:0
+                                                                                        metrics:metrics
+                                                                                          views:views]];
+        [content1View addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[links]|"
+                                                                             options:0
+                                                                             metrics:metrics
+                                                                               views:views]];
+    }
 }
 
 - (void)createLoginLogoutButton {
     [self.loginLogoutButtonView removeFromSuperview];
     _loginLogoutButtonView = nil;
     [self.scrollView addSubview:self.loginLogoutButtonView];
+}
+
+#pragma mark - Action handlers
+
+- (void)aboutPressed:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com/about"]];
+}
+
+- (void)supportPressed:(id)sender {
+    if ([MFMailComposeViewController canSendMail])
+    {
+        MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
+        NSString *shareBody = @"SUPPORT STUFF";
+        [mailDialog setSubject:@"Support for Cook"];
+        [mailDialog setMessageBody:shareBody isHTML:NO];
+        mailDialog.mailComposeDelegate = self;
+        [self presentViewController:mailDialog animated:YES completion:nil];
+    }
+    else
+        [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+- (void)facebookPressed:(id)sender {
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://"]])
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"fb://profile/275459582557565"]];
+    else
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://on.fb.me/13WDgDW"]];
+}
+
+- (void)twitterPressed:(id)sender {
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitter://"]])
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"twitter://user?screen_name=thecookapp"]];
+    else
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.twitter.com/thecookapp"]];
 }
 
 - (void)loginLogoutTapped:(id)sender {
@@ -230,6 +368,13 @@
 
 - (void)loggedOut:(NSNotification *)notification {
     [self createLoginLogoutButton];
+}
+
+#pragma mark - MFMailViewController delegate method
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    DLog(@"Support mail finished");
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
