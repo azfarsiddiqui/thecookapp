@@ -21,6 +21,5 @@
 - (id)initWithDelegate:(id<StoreTabViewDelegate>)delegate;
 - (void)selectFeatured;
 - (void)selectFriends;
-- (void)selectSuggested;
 
 @end

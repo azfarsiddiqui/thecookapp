@@ -41,6 +41,9 @@
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
                animated:(BOOL)animated;
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
+               delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
+                onpress:(BOOL)onpress animated:(BOOL)animated;
 
 // Checks wrappign.
 - (BOOL)alreadyWrappedForEditingView:(UIView *)editingView;

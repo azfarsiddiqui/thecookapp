@@ -327,7 +327,7 @@
 }
 
 - (void)setAuthor:(NSString *)author {
-    [self.parseObject setObject:author forKey:kBookAttrAuthor];
+    [self.parseObject setObject:[NSString CK_safeString:author] forKey:kBookAttrAuthor];
 }
 
 - (NSString *)author {
@@ -399,6 +399,45 @@
             failure(error);
         }
     }];
+}
+
+#pragma mark - Searches
+
++ (void)searchBooksByKeyword:(NSString *)keyword success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    DLog(@"keyword[%@]", keyword);
+   
+    NSString *searchTerm = [keyword CK_whitespaceTrimmed];
+    if ([searchTerm length] < 2) {
+        failure(nil);
+        return;
+    }
+    
+    CKUser *currentUser = [CKUser currentUser];
+    DLog(@"searching keyword[%@]", searchTerm);
+    [PFCloud callFunctionInBackground:@"searchBooks"
+                       withParameters:@{ @"keyword" : searchTerm }
+                                block:^(NSArray *parseBooks, NSError *error) {
+                                    
+                                    if (!error) {
+                                        if (currentUser) {
+                                            [self annotateFollowedBooks:parseBooks
+                                                                   user:currentUser
+                                                                success:^(NSArray *annotatedBooks) {
+                                                                    success(annotatedBooks);
+                                                                }
+                                                                failure:^(NSError *error) {
+                                                                    failure(error);
+                                                                }];
+                                        } else {
+                                            success([parseBooks collect:^id(PFObject *parseBook) {
+                                                return [[CKBook alloc] initWithParseObject:parseBook];
+                                            }]);
+                                        }
+                                    } else {
+                                        DLog(@"Error searching books: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
 }
 
 - (NSString *)userName {
@@ -493,7 +532,7 @@
            failure:(ObjectFailureBlock)failure {
     
     DLog(@"page [%@] toPage [%@]", [page CK_containsText] ? @"YES" : @"NO", [toPage CK_containsText] ? @"YES" : @"NO");
-    if (![page CK_containsText] && ![toPage CK_containsText]) {
+    if (![page CK_containsText] || ![toPage CK_containsText]) {
         failure(nil);
         return;
     }
@@ -513,7 +552,7 @@
                                         success();
                                         
                                     } else {
-                                        DLog(@"Error deleting page: %@", [error localizedDescription]);
+                                        DLog(@"Error renaming page: %@", [error localizedDescription]);
                                         failure(error);
                                     }
                                 }];

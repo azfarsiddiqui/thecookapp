@@ -17,6 +17,7 @@ typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, B
 
 typedef NS_ENUM(NSUInteger, DashTheme) {
     DashThemeReflect,
+    DashThemeOppose,
     DashThemeVivid,
     DashThemeBalance
 };

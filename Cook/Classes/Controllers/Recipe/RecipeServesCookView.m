@@ -107,7 +107,7 @@
         if (self.editMode ||self.recipeDetails.prepTimeInMinutes) {
             
             // Prep.
-            prepStatView = [self viewForStatText:@"Prep" statValue:[self textValueForStatNumber:self.recipeDetails.prepTimeInMinutes]];
+            prepStatView = [self viewForStatText:@"Prep" statValue:[self textValueForStatNumber:self.recipeDetails.prepTimeInMinutes formatted:YES ]];
             prepFrame = prepStatView.frame;
             prepFrame.origin.x = prepCookImageView.frame.origin.x + prepCookImageView.frame.size.width + kIconStatGap;
             
@@ -123,7 +123,7 @@
         if (self.editMode ||self.recipeDetails.cookingTimeInMinutes) {
             
             // Cook.
-            cookStatView = [self viewForStatText:@"Cook" statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes]];
+            cookStatView = [self viewForStatText:@"Cook" statValue:[self textValueForStatNumber:self.recipeDetails.cookingTimeInMinutes formatted:YES]];
             cookFrame = cookStatView.frame;
             
             if (!CGRectEqualToRect(prepFrame, CGRectZero)) {
@@ -238,7 +238,7 @@
 - (NSString *)textValueForStatNumber:(NSNumber *)statNumber formatted:(BOOL)formatted {
     NSString *statValue = nil;
     
-    if (!formatted) {
+    if (formatted) {
         if (!statNumber && self.editMode) {
             statValue = @"0";
         } else {

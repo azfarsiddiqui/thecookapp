@@ -146,6 +146,7 @@
 
 - (void)showActivity:(BOOL)show {
     if (show) {
+        [self.activityView removeFromSuperview];
         self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
         self.activityView.center = self.collectionView.center;
         [self.collectionView addSubview:self.activityView];

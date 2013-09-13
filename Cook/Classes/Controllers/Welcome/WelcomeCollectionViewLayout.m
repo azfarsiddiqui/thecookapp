@@ -237,7 +237,7 @@
     NSIndexPath *leftIndexPath = [NSIndexPath indexPathForItem:0 inSection:kWelcomeSection];
     CGSize leftSize = [self.dataSource sizeOfAdornmentForIndexPath:leftIndexPath];
     UICollectionViewLayoutAttributes *leftLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:leftIndexPath];
-    leftLayoutAttributes.frame = CGRectMake(pageOffset - kAdornmentOffset,
+    leftLayoutAttributes.frame = CGRectMake(pageOffset - kAdornmentOffset - 100.0,
                                             floorf((size.height - leftSize.height) / 2.0),
                                             leftSize.width,
                                             leftSize.height);
@@ -248,7 +248,7 @@
     NSIndexPath *rightIndexPath = [NSIndexPath indexPathForItem:1 inSection:kWelcomeSection];
     CGSize rightSize = [self.dataSource sizeOfAdornmentForIndexPath:rightIndexPath];
     UICollectionViewLayoutAttributes *rightLayoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:rightIndexPath];
-    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width + kAdornmentOffset,
+    rightLayoutAttributes.frame = CGRectMake(pageOffset + size.width - rightSize.width + kAdornmentOffset + 100.0,
                                              floorf((size.height - rightSize.height) / 2.0),
                                              rightSize.width,
                                              rightSize.height);

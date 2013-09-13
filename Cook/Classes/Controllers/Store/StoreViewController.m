@@ -9,22 +9,31 @@
 #import "StoreViewController.h"
 #import "FriendsStoreCollectionViewController.h"
 #import "FeaturedStoreCollectionViewController.h"
-#import "SuggestedStoreCollectionViewController.h"
+#import "SearchStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
 #import "EventHelper.h"
 #import "StoreTabView.h"
 #import "ImageHelper.h"
+#import "NSString+Utilities.h"
+#import "CKSearchFieldView.h"
+#import "ViewHelper.h"
 
-@interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate>
+@interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate,
+    CKSearchFieldViewDelegate>
 
 @property (nonatomic, strong) UIImageView *bottomShadowView;
 
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
-@property (nonatomic, strong) SuggestedStoreCollectionViewController *suggestedViewController;
 @property (nonatomic, strong) StoreCollectionViewController *currentStoreCollectionViewController;
 @property (nonatomic, strong) StoreTabView *storeTabView;
 @property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
+
+// Search
+@property (nonatomic, strong) CKSearchFieldView *searchFieldView;
+@property (nonatomic, strong) SearchStoreCollectionViewController *searchViewController;
+@property (nonatomic, strong) UIButton *searchBackButton;
+@property (nonatomic, assign) BOOL searchMode;
 
 @end
 
@@ -54,6 +63,7 @@
     
     [self initStores];
     [self initTabs];
+    [self initSearch];
 }
 
 - (void)enable:(BOOL)enable {
@@ -85,13 +95,47 @@
 }
 
 - (void)storeTabSelectedSuggested {
-    [self selectedStoreCollectionViewController:self.suggestedViewController];
+    [self selectedStoreCollectionViewController:self.searchViewController];
 }
 
 #pragma mark - StoreCollectionViewControllerDelegate methods
 
 - (void)storeCollectionViewControllerPanRequested:(BOOL)enabled {
     [self.delegate panEnabledRequested:enabled];
+}
+
+#pragma mark - CKSearchFieldViewDelegate methods
+
+- (BOOL)searchFieldShouldFocus {
+    return self.searchMode;
+}
+
+- (void)searchFieldViewSearchIconTapped {
+    [self enableSearchMode:!self.searchMode];
+}
+
+- (void)searchFieldViewSearchByText:(NSString *)text {
+    [self.searchViewController searchByKeyword:text];
+}
+
+- (void)searchFieldViewClearRequested {
+    [self.searchViewController unloadData];
+}
+
+#pragma mark - Properties
+
+- (CKSearchFieldView *)searchFieldView {
+    if (!_searchFieldView) {
+        _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:390.0 delegate:self];
+    }
+    return _searchFieldView;
+}
+
+- (UIButton *)searchBackButton {
+    if (!_searchBackButton) {
+        _searchBackButton = [ViewHelper backButtonLight:NO target:self selector:@selector(searchCloseTapped)];
+    }
+    return _searchBackButton;
 }
 
 #pragma mark - Private methods
@@ -150,13 +194,13 @@
     [self.storeCollectionViewControllers addObject:friendsViewController];
     
     // Suggested.
-    SuggestedStoreCollectionViewController *suggestedViewController = [[SuggestedStoreCollectionViewController alloc] initWithDelegate:self];
-    suggestedViewController.view.frame = featuredViewController.view.frame;
-    suggestedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-    suggestedViewController.view.hidden = YES;
-    [self.view addSubview:suggestedViewController.view];
-    self.suggestedViewController = suggestedViewController;
-    [self.storeCollectionViewControllers addObject:suggestedViewController];
+    SearchStoreCollectionViewController *searchViewController = [[SearchStoreCollectionViewController alloc] initWithDelegate:self];
+    searchViewController.view.frame = featuredViewController.view.frame;
+    searchViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    searchViewController.view.hidden = YES;
+    [self.view addSubview:searchViewController.view];
+    self.searchViewController = searchViewController;
+    [self.storeCollectionViewControllers addObject:searchViewController];
 }
 
 - (void)initTabs {
@@ -167,6 +211,27 @@
                                     storeTabView.frame.size.height);
     [self.view addSubview:storeTabView];
     self.storeTabView = storeTabView;
+}
+
+- (void)initSearch {
+    
+    self.searchBackButton.alpha = 0.0;
+    self.searchBackButton.frame = (CGRect){
+        20.0,
+        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchBackButton.frame.size.height) / 2.0),
+        self.searchBackButton.frame.size.width,
+        self.searchBackButton.frame.size.height
+    };
+    [self.view addSubview:self.searchBackButton];
+    
+    self.searchFieldView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
+        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchFieldView.frame.size.height) / 2.0),
+        self.searchFieldView.frame.size.width,
+        self.searchFieldView.frame.size.height
+    };
+    [self.view addSubview:self.searchFieldView];
+    self.searchFieldView.transform = CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
@@ -223,6 +288,41 @@
                          [storeCollectionViewController loadData];
                          self.currentStoreCollectionViewController = storeCollectionViewController;
                      }];
+}
+
+- (void)enableSearchMode:(BOOL)searchMode {
+    if (searchMode) {
+        self.searchViewController.view.alpha = 0.0;
+        self.searchViewController.view.hidden = NO;
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
+                         self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
+                         self.searchBackButton.alpha = searchMode ? 1.0 : 0.0;
+                         self.currentStoreCollectionViewController.view.alpha = searchMode ? 0.0 : 1.0;
+                         self.searchViewController.view.alpha = searchMode ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         self.searchMode = searchMode;
+                         [self.searchFieldView focus:searchMode];
+                         
+                         if (!searchMode) {
+                             self.searchViewController.view.hidden = YES;
+                         }
+                         
+                     }];
+}
+
+- (CGFloat)searchStartOffset {
+    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 80.0;
+}
+
+- (void)searchCloseTapped {
+    [self enableSearchMode:NO];
 }
 
 @end

@@ -167,6 +167,14 @@
 //    [self performIntroPan];
 }
 
+- (BOOL)benchtopInLibrary {
+    return (self.benchtopLevel == kStoreLevel);
+}
+
+- (BOOL)benchtopInSettings {
+    return (self.benchtopLevel == kSettingsLevel);
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {

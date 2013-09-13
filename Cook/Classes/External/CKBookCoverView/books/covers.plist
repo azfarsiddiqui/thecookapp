@@ -28,6 +28,8 @@
 			<string>Green</string>
 			<key>Balance</key>
 			<string>Orange</string>
+			<key>Oppose</key>
+			<string>Blue</string>
 		</dict>
 		<key>Orange</key>
 		<dict>
@@ -53,6 +55,8 @@
 			<string>Blue</string>
 			<key>Balance</key>
 			<string>Red</string>
+			<key>Oppose</key>
+			<string>Green</string>
 		</dict>
 		<key>Yellow</key>
 		<dict>
@@ -78,6 +82,8 @@
 			<string>Purple</string>
 			<key>Balance</key>
 			<string>Green</string>
+			<key>Oppose</key>
+			<string>Purple</string>
 		</dict>
 		<key>Green</key>
 		<dict>
@@ -103,6 +109,8 @@
 			<string>Red</string>
 			<key>Balance</key>
 			<string>Yellow</string>
+			<key>Oppose</key>
+			<string>Orange</string>
 		</dict>
 		<key>Blue</key>
 		<dict>
@@ -128,6 +136,8 @@
 			<string>Orange</string>
 			<key>Balance</key>
 			<string>Purple</string>
+			<key>Oppose</key>
+			<string>Red</string>
 		</dict>
 		<key>Purple</key>
 		<dict>
@@ -153,6 +163,8 @@
 			<string>Yellow</string>
 			<key>Balance</key>
 			<string>Blue</string>
+			<key>Oppose</key>
+			<string>Yellow</string>
 		</dict>
 		<key>Gray</key>
 		<dict>
@@ -178,6 +190,8 @@
 			<string>Gray</string>
 			<key>Balance</key>
 			<string>Gray</string>
+			<key>Oppose</key>
+			<string>Neutral</string>
 		</dict>
 		<key>Neutral</key>
 		<dict>
@@ -203,6 +217,8 @@
 			<string>Neutral</string>
 			<key>Balance</key>
 			<string>Neutral</string>
+			<key>Oppose</key>
+			<string>Gray</string>
 		</dict>
 	</dict>
 	<key>Illustrations</key>

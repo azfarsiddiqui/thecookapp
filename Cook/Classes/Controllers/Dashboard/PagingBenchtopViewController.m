@@ -54,9 +54,14 @@
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) NSString *preEditingBookName;
+@property (nonatomic, strong) NSString *preEditingAuthorName;
 
 @property (nonatomic, assign) CGPoint previousScrollPosition;
 @property (nonatomic, assign) BOOL forwardDirection;
+
+@property (nonatomic, strong) UIView *libraryIntroView;
+@property (nonatomic, strong) UIView *settingsIntroView;
 
 @end
 
@@ -214,6 +219,7 @@
         self.notificationView.alpha = enable ? 1.0 : 0.0;
         [self updateBenchtopLevelViewAnimated:NO];
     }
+    [self hideIntroViewsAsRequired];
 }
 
 - (void)bookWillOpen:(BOOL)open {
@@ -455,6 +461,8 @@
     BenchtopBookCoverViewCell *cell = [self myBookCell];
     self.myBook.illustration = self.illustrationViewController.illustration;
     self.myBook.cover = self.coverViewController.cover;
+    self.myBook.name = self.preEditingBookName;
+    self.myBook.author = self.preEditingAuthorName;
     [cell loadBook:self.myBook];
     
     // Reload the illustration cover.
@@ -482,6 +490,8 @@
     
     // Force reload my book with the selected illustration.
     BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.name = cell.bookCoverView.nameValue;
+    self.myBook.author = cell.bookCoverView.authorValue;
     self.myBook.cover = cover;
     [cell loadBook:self.myBook];
     
@@ -495,6 +505,8 @@
     
     // Force reload my book with the selected illustration.
     BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.name = cell.bookCoverView.nameValue;
+    self.myBook.author = cell.bookCoverView.authorValue;
     self.myBook.illustration = illustration;
     [cell loadBook:self.myBook];
 }
@@ -862,6 +874,7 @@
                     // First time launch.
                     if ([self.delegate respondsToSelector:@selector(benchtopFirstTimeLaunched)]) {
                         [self.delegate benchtopFirstTimeLaunched];
+                        [self flashIntros];
                     }
                     
                 }];
@@ -962,6 +975,10 @@
     BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
     [myBookCell enableEditMode:enable];
     
+    // Remember the original state of the book before editing.
+    self.preEditingAuthorName = myBookCell.bookCoverView.authorValue;
+    self.preEditingBookName = myBookCell.bookCoverView.nameValue;
+    
     CGFloat bounceOffset = 20.0;
     [UIView animateWithDuration:0.3
                           delay:0.0
@@ -1007,6 +1024,10 @@
                                                   self.animating = NO;
                                               }];
                          } else {
+                             
+                             // Clear the editing na
+                             self.preEditingAuthorName = nil;
+                             self.preEditingBookName = nil;
                              
                              self.animating = NO;
                              [self.coverViewController.view removeFromSuperview];
@@ -1097,6 +1118,9 @@
 - (void)loggedIn:(NSNotification *)notification {
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
+        
+        [self libraryIntroTapped];
+        [self settingsIntroTapped];
         
         [self hideLoginViewCompletion:^{
             [self loadMyBook];
@@ -1344,6 +1368,86 @@
     [ImageHelper blurredImageFromView:self.view completion:^(UIImage *blurredImage) {
         self.signupBlurImage = blurredImage;
     }];
+}
+
+- (void)flashIntros {
+    CGFloat shiftOffset = 15.0;
+    
+    self.libraryIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_library.png"]];
+    UITapGestureRecognizer *libraryTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryIntroTapped)];
+    [self.libraryIntroView addGestureRecognizer:libraryTapGesture];
+    self.libraryIntroView.userInteractionEnabled = NO;
+    self.libraryIntroView.alpha = 0.0;
+    self.libraryIntroView.transform = CGAffineTransformMakeTranslation(0.0, -shiftOffset);
+    CGRect libraryFrame = self.libraryIntroView.frame;
+    libraryFrame.origin.x = floorf((self.view.bounds.size.width - libraryFrame.size.width) / 2.0);
+    libraryFrame.origin.y = 0.0;
+    self.libraryIntroView.frame = libraryFrame;
+    [self.view addSubview:self.libraryIntroView];
+    
+    self.settingsIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_setup.png"]];
+    UITapGestureRecognizer *settingsTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(settingsIntroTapped)];
+    [self.settingsIntroView addGestureRecognizer:settingsTapGesture];
+    self.settingsIntroView.userInteractionEnabled = NO;
+    self.settingsIntroView.alpha = 0.0;
+    self.settingsIntroView.transform = CGAffineTransformMakeTranslation(0.0, shiftOffset);
+    CGRect settingsFrame = self.settingsIntroView.frame;
+    settingsFrame.origin.x = floorf((self.view.bounds.size.width - settingsFrame.size.width) / 2.0);
+    settingsFrame.origin.y = self.view.bounds.size.height - settingsFrame.size.height + 5.0;
+    self.settingsIntroView.frame = settingsFrame;
+    [self.view addSubview:self.settingsIntroView];
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.2
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.libraryIntroView.alpha = 1.0;
+                         self.libraryIntroView.transform = CGAffineTransformIdentity;
+                         self.settingsIntroView.alpha = 1.0;
+                         self.settingsIntroView.transform = CGAffineTransformIdentity;
+                     }
+                     completion:^(BOOL finished) {
+                         self.libraryIntroView.userInteractionEnabled = YES;
+                         self.settingsIntroView.userInteractionEnabled = YES;
+                     }];
+}
+
+- (void)libraryIntroTapped {
+    [self hideIntroView:self.libraryIntroView completion:^{
+        self.libraryIntroView = nil;
+    }];
+}
+
+- (void)settingsIntroTapped {
+    [self hideIntroView:self.settingsIntroView completion:^{
+        self.settingsIntroView = nil;
+    }];
+}
+
+- (void)hideIntroView:(UIView *)introView completion:(void (^)())completion {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         introView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [introView removeFromSuperview];
+                     }];
+}
+
+- (void)hideIntroViewsAsRequired {
+    if ([CKUser isLoggedIn]) {
+        [self libraryIntroTapped];
+        [self settingsIntroTapped];
+    } else {
+        if (self.libraryIntroView.superview && [self.delegate benchtopInLibrary]) {
+            [self libraryIntroTapped];
+        }
+        if (self.settingsIntroView.superview && [self.delegate benchtopInSettings]) {
+            [self settingsIntroTapped];
+        }
+    }
 }
 
 @end

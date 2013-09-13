@@ -23,7 +23,7 @@
 @implementation CKButtonView
 
 #define kIconOffset         20.0
-#define kTextFont           [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0]
+#define kTextFont           [UIFont fontWithName:@"BrandonGrotesque-Medium" size:13.0]
 #define kIconTextGap        5.0
 #define kActivityTextGap    10.0
 
@@ -61,7 +61,7 @@
     [textLabel sizeToFit];
     self.textLabel = textLabel;
     CGRect textFrame = self.textLabel.frame;
-    textFrame.origin.y = ceilf((self.bounds.size.height - textFrame.size.height) / 2.0);
+    textFrame.origin.y = ceilf((self.bounds.size.height - textFrame.size.height) / 2.0) - 1.0;
     
     // Icon
     [self.activityView stopAnimating];
@@ -73,10 +73,14 @@
         if (!self.activityView) {
             self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleTinyDark];
         }
-        self.activityView.frame = CGRectMake(floorf((self.bounds.size.width - self.textLabel.frame.size.width - kActivityTextGap - self.activityView.frame.size.width) / 2.0) - 2.0,
-                                             ceilf((self.bounds.size.height - self.activityView.frame.size.height) / 2) - 1.0,
-                                             self.activityView.frame.size.width,
-                                             self.activityView.frame.size.height);
+        
+        CGFloat requiredWidth = self.activityView.frame.size.width + kActivityTextGap + textFrame.size.width;
+        self.activityView.frame = (CGRect){
+            floorf((self.bounds.size.width - requiredWidth) / 2.0) - 4.0,
+            ceilf((self.bounds.size.height - self.activityView.frame.size.height) / 2) - 1.0,
+            self.activityView.frame.size.width,
+            self.activityView.frame.size.height
+        };
         [self.activityView startAnimating];
         [self addSubview:self.activityView];
         
@@ -87,10 +91,13 @@
         if (!self.iconImageView) {
             self.iconImageView = [[UIImageView alloc] initWithImage:icon];
         }
-        self.iconImageView.frame = CGRectMake(floorf((self.bounds.size.width - self.textLabel.frame.size.width - kIconTextGap - self.activityView.frame.size.width) / 2.0) - 5.0,
-                                              ceilf((self.bounds.size.height - self.iconImageView.frame.size.height) / 2),
-                                              self.iconImageView.frame.size.width,
-                                              self.iconImageView.frame.size.height);
+        CGFloat requiredWidth = self.iconImageView.frame.size.width + kIconTextGap + textFrame.size.width;
+        self.iconImageView.frame = (CGRect){
+            floorf((self.bounds.size.width - requiredWidth) / 2.0) - 4.0,
+            ceilf((self.bounds.size.height - self.iconImageView.frame.size.height) / 2) + 1.0,
+            self.iconImageView.frame.size.width,
+            self.iconImageView.frame.size.height
+        };
         self.iconImageView.alpha = [self iconAlphaForEnabled:enabled];
         [self addSubview:self.iconImageView];
         

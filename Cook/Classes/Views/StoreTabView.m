@@ -13,7 +13,6 @@
 @interface StoreTabView ()
 
 @property (nonatomic, assign) id<StoreTabViewDelegate> delegate;
-@property (nonatomic, strong) StoreUnitTabView *suggestedTabView;
 @property (nonatomic, strong) StoreUnitTabView *featuredTabView;
 @property (nonatomic, strong) StoreUnitTabView *friendsTabView;
 
@@ -34,9 +33,8 @@
 #define kHeight         105
 #define kMinTabHeight   83.0
 #define kMaxTabHeight   103.0
-#define kSuggestedTab   0
-#define kFeaturedTab    1
-#define kFriendsTab     2
+#define kFeaturedTab    0
+#define kFriendsTab     1
 
 - (id)initWithDelegate:(id<StoreTabViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -55,31 +53,15 @@
     [self selectTabAtIndex:kFriendsTab force:YES];
 }
 
-- (void)selectSuggested {
-    [self selectTabAtIndex:kSuggestedTab force:YES];
-}
-
 #pragma mark - Private methods
 
 - (void)initTabs {
     
     CGPoint offset = CGPointZero;
     
-    StoreUnitTabView *suggestedTabView = [[StoreUnitTabView alloc] initWithText:@"SUGGESTED"
-                                                                           icon:[UIImage imageNamed:@"cook_library_icons_suggested.png"]];
-    suggestedTabView.frame = (CGRect){
-        offset.x,
-        offset.y,
-        suggestedTabView.frame.size.width,
-        suggestedTabView.frame.size.height
-    };
-    [self addSubview:suggestedTabView];
-    self.suggestedTabView = suggestedTabView;
-    self.bounds = CGRectUnion(self.bounds, self.suggestedTabView.frame);
-    offset.x += self.suggestedTabView.frame.size.width;
-    
     StoreUnitTabView *featuredTabView = [[StoreUnitTabView alloc] initWithText:@"FEATURED"
-                                                                          icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]];
+                                                                          icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]
+                                                                       offIcon:[UIImage imageNamed:@"cook_library_icons_featured_off.png"]];
     featuredTabView.frame = (CGRect){
         offset.x,
         offset.y,
@@ -92,7 +74,8 @@
     offset.x += self.featuredTabView.frame.size.width;
     
     StoreUnitTabView *friendsTabView = [[StoreUnitTabView alloc] initWithText:@"FRIENDS"
-                                                                         icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]];
+                                                                         icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
+                                                                      offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]];
     friendsTabView.frame = (CGRect){
         offset.x,
         offset.y,
@@ -111,9 +94,7 @@
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
     CGPoint location = [tapGesture locationInView:self];
-    if (CGRectContainsPoint(self.suggestedTabView.frame, location)) {
-        [self selectSuggested];
-    } else if (CGRectContainsPoint(self.featuredTabView.frame, location)) {
+    if (CGRectContainsPoint(self.featuredTabView.frame, location)) {
         [self selectFeatured];
     } else if (CGRectContainsPoint(self.friendsTabView.frame, location)) {
         [self selectFriends];
@@ -127,9 +108,6 @@
             break;
         case kFriendsTab:
             [self.delegate storeTabSelectedFriends];
-            break;
-        case kSuggestedTab:
-            [self.delegate storeTabSelectedSuggested];
             break;
         default:
             break;
@@ -156,7 +134,6 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
-                         [self.suggestedTabView select:(tabIndex == kSuggestedTab)];
                          [self.featuredTabView select:(tabIndex == kFeaturedTab)];
                          [self.friendsTabView select:(tabIndex == kFriendsTab)];
                      }

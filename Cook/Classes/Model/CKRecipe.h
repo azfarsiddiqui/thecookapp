@@ -40,6 +40,10 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 
+@property (nonatomic, assign, readonly) NSInteger numViews;
+@property (nonatomic, assign, readonly) NSInteger numLikes;
+@property (nonatomic, assign, readonly) NSInteger numComments;
+
 // Max serves/prep/cook.
 + (NSInteger)maxServes;
 + (NSInteger)maxPrepTimeInMinutes;
