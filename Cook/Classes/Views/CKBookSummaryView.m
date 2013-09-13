@@ -71,14 +71,14 @@
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
     
+    [self updateStoryEditMode:editMode];
+    
     if (editMode) {
         
         // If no data, then display placeholder text.
         if (![self.book.story CK_containsText]) {
             [self updateStory:[self defaultEditPlaceholderText]];
         }
-        
-        [self updateStoryEditMode:editMode];
         
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
 
@@ -90,7 +90,6 @@
                                   defaultInsets.right + 5.0
                               } delegate:self white:YES];
     } else {
-        [self updateStoryEditMode:editMode];
         [self.editingHelper unwrapEditingView:self.storyLabel];
     }
     
@@ -139,6 +138,7 @@
     NSString *story = (NSString *)value;
     self.updatedStory = story;
     [self updateStory:[story CK_containsText] ? story : [self defaultEditPlaceholderText]];
+    [self updateStoryEditMode:YES];
     [self.editingHelper updateEditingView:editingView];
 }
 
@@ -187,7 +187,10 @@
             [self updateStory:self.updatedStory];
             
             self.book.story = self.updatedStory;
-            [self.book saveInBackground];
+            [self.book saveInBackground:^{
+            } failure:^(NSError *error) {
+                DLog(@"Unable to save story");
+            }];
         }
         
         
@@ -386,7 +389,7 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     NSShadow *shadow = [NSShadow new];
-    shadow.shadowColor = [UIColor blackColor];
+    shadow.shadowColor = editMode ? [UIColor clearColor] : [UIColor blackColor];
     shadow.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, -1.0);
     
     UIColor *textColour = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryStoryColour];
