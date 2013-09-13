@@ -401,6 +401,44 @@
     }];
 }
 
+#pragma mark - Searches
+
++ (void)searchBooksByKeyword:(NSString *)keyword success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    DLog(@"keyword[%@]", keyword);
+   
+    NSString *searchTerm = [keyword CK_whitespaceTrimmed];
+    if ([searchTerm length] < 2) {
+        failure(nil);
+        return;
+    }
+    
+    CKUser *currentUser = [CKUser currentUser];
+    DLog(@"searching keyword[%@]", searchTerm);
+    [PFCloud callFunctionInBackground:@"searchBooks"
+                       withParameters:@{ @"keyword" : searchTerm }
+                                block:^(NSArray *parseBooks, NSError *error) {
+                                    
+                                    if (!error) {
+                                        if (currentUser) {
+                                            [self annotateFollowedBooks:parseBooks
+                                                                   user:currentUser
+                                                                success:^(NSArray *annotatedBooks) {
+                                                                    success(annotatedBooks);
+                                                                }
+                                                                failure:^(NSError *error) {
+                                                                    failure(error);
+                                                                }];
+                                        } else {
+                                            success([parseBooks collect:^id(PFObject *parseBook) {
+                                                return [[CKBook alloc] initWithParseObject:parseBook];
+                                            }]);
+                                        }
+                                    } else {
+                                        DLog(@"Error searching books: %@", [error localizedDescription]);
+                                    }
+                                }];
+}
+
 - (NSString *)userName {
     NSString *author = [self.parseObject objectForKey:kBookAttrAuthor];
     if ([author length] > 0) {

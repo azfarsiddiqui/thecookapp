@@ -12,6 +12,7 @@
 @interface StoreUnitTabView ()
 
 @property (nonatomic, strong) UIImageView *iconImageView;
+@property (nonatomic, strong) UIImageView *offIconImageView;
 @property (nonatomic, strong) UIImageView *selectedTabImageView;
 @property (nonatomic, strong) NSString *text;
 @property (nonatomic, strong) UILabel *normalLabel;
@@ -26,10 +27,11 @@
 #define kTextSelectedOffsetFromBottom   48.0
 #define kIconTextGap                    6.0
 
-- (id)initWithText:(NSString *)text icon:(UIImage *)icon{
+- (id)initWithText:(NSString *)text icon:(UIImage *)icon offIcon:(UIImage *)offIcon {
     if (self = [super initWithFrame:CGRectZero]) {
         self.text = text;
         self.iconImageView = [[UIImageView alloc] initWithImage:icon];
+        self.offIconImageView = [[UIImageView alloc] initWithImage:offIcon];
         self.selectedTabImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_tab_selected.png"]];
         self.frame = (CGRect){ 0.0, 0.0, self.selectedTabImageView.frame.size.width, kHeight };
         self.backgroundColor = [UIColor clearColor];
@@ -44,13 +46,7 @@
     // Visibility.
     self.selectedTabImageView.alpha = select ? 1.0 : 0.0;
     self.iconImageView.alpha = select ? 1.0 : 0.0;
-    self.normalLabel.alpha = select ? 0.0 : 1.0;
-    self.selectedLabel.alpha = select ? 1.0 : 0.0;
-    
-    // Transforms.
-    self.normalLabel.transform = select ? CGAffineTransformMakeTranslation(0.0, 20.0) : CGAffineTransformIdentity;
-    self.iconImageView.transform = select ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -20.0);
-    self.selectedLabel.transform = select ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -20.0);
+    self.offIconImageView.alpha = select ? 0.0 : 1.0;
 }
 
 #pragma mark - Private
@@ -67,23 +63,6 @@
     self.selectedTabImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self addSubview:self.selectedTabImageView];
     
-    // Normal label.
-    UILabel *normalLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    normalLabel.backgroundColor = [UIColor clearColor];
-    normalLabel.font = [Theme storeTabFont];
-    normalLabel.textColor = [Theme storeTabTextColour];
-    normalLabel.text = self.text;
-    normalLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    [normalLabel sizeToFit];
-    normalLabel.frame = (CGRect){
-        floorf((self.bounds.size.width - normalLabel.frame.size.width) / 2.0),
-        self.bounds.size.height - kTextNormalOffsetFromBottom,
-        normalLabel.frame.size.width,
-        normalLabel.frame.size.height
-    };
-    [self addSubview:normalLabel];
-    self.normalLabel = normalLabel;
-
     // Selected label to be hidden to start off with.
     UILabel *selectedLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     selectedLabel.backgroundColor = [UIColor clearColor];
@@ -109,6 +88,10 @@
         self.iconImageView.frame.size.height
     };
     [self addSubview:self.iconImageView];
+    
+    // Off icon.
+    self.offIconImageView.frame = self.iconImageView.frame;
+    [self addSubview:self.offIconImageView];
     
     [self select:NO];
 }

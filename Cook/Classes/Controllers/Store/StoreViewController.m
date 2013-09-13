@@ -9,22 +9,25 @@
 #import "StoreViewController.h"
 #import "FriendsStoreCollectionViewController.h"
 #import "FeaturedStoreCollectionViewController.h"
-#import "SuggestedStoreCollectionViewController.h"
+#import "SearchStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
 #import "EventHelper.h"
 #import "StoreTabView.h"
 #import "ImageHelper.h"
+#import "CKTextFieldView.h"
+#import "NSString+Utilities.h"
 
-@interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate>
+@interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate, CKTextFieldViewDelegate>
 
 @property (nonatomic, strong) UIImageView *bottomShadowView;
 
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
-@property (nonatomic, strong) SuggestedStoreCollectionViewController *suggestedViewController;
+@property (nonatomic, strong) SearchStoreCollectionViewController *searchViewController;
 @property (nonatomic, strong) StoreCollectionViewController *currentStoreCollectionViewController;
 @property (nonatomic, strong) StoreTabView *storeTabView;
 @property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
+@property (nonatomic, strong) CKTextFieldView *searchFieldView;
 
 @end
 
@@ -54,6 +57,7 @@
     
     [self initStores];
     [self initTabs];
+    [self initSearch];
 }
 
 - (void)enable:(BOOL)enable {
@@ -85,13 +89,42 @@
 }
 
 - (void)storeTabSelectedSuggested {
-    [self selectedStoreCollectionViewController:self.suggestedViewController];
+    [self selectedStoreCollectionViewController:self.searchViewController];
 }
 
 #pragma mark - StoreCollectionViewControllerDelegate methods
 
 - (void)storeCollectionViewControllerPanRequested:(BOOL)enabled {
     [self.delegate panEnabledRequested:enabled];
+}
+
+#pragma mark - CKTextFieldViewDelegate methods
+
+- (NSString *)progressTextForTextFieldView:(CKTextFieldView *)textFieldView currentText:(NSString *)text {
+    return nil;
+}
+
+- (void)didEndForTextFieldView:(CKTextFieldView *)textFieldView {
+}
+
+- (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView {
+    NSString *keyword = [[textFieldView inputText] CK_whitespaceTrimmed];
+    if ([keyword length] < 2) {
+        return;
+    }
+    
+    [self.searchViewController searchByKeyword:keyword];
+}
+
+#pragma mark - Properties
+
+- (CKTextFieldView *)searchFieldView {
+    if (!_searchFieldView) {
+        _searchFieldView = [[CKTextFieldView alloc] initWithWidth:200.0 delegate:self placeholder:@"Search" autoCapitalise:YES];
+        _searchFieldView.textField.keyboardType = UIKeyboardTypeAlphabet;
+        _searchFieldView.textField.returnKeyType = UIReturnKeySearch;
+    }
+    return _searchFieldView;
 }
 
 #pragma mark - Private methods
@@ -150,13 +183,13 @@
     [self.storeCollectionViewControllers addObject:friendsViewController];
     
     // Suggested.
-    SuggestedStoreCollectionViewController *suggestedViewController = [[SuggestedStoreCollectionViewController alloc] initWithDelegate:self];
-    suggestedViewController.view.frame = featuredViewController.view.frame;
-    suggestedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-    suggestedViewController.view.hidden = YES;
-    [self.view addSubview:suggestedViewController.view];
-    self.suggestedViewController = suggestedViewController;
-    [self.storeCollectionViewControllers addObject:suggestedViewController];
+    SearchStoreCollectionViewController *searchViewController = [[SearchStoreCollectionViewController alloc] initWithDelegate:self];
+    searchViewController.view.frame = featuredViewController.view.frame;
+    searchViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    searchViewController.view.hidden = YES;
+    [self.view addSubview:searchViewController.view];
+    self.searchViewController = searchViewController;
+    [self.storeCollectionViewControllers addObject:searchViewController];
 }
 
 - (void)initTabs {
@@ -167,6 +200,17 @@
                                     storeTabView.frame.size.height);
     [self.view addSubview:storeTabView];
     self.storeTabView = storeTabView;
+}
+
+- (void)initSearch {
+//    self.searchFieldView.frame = (CGRect){
+//        floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
+//        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchFieldView.frame.size.height) / 2.0),
+//        self.searchFieldView.frame.size.width,
+//        self.searchFieldView.frame.size.height
+//    };
+//    [self.view addSubview:self.searchFieldView];
+//    self.searchFieldView.transform = CGAffineTransformMakeTranslation(0.0, 20.0);
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {

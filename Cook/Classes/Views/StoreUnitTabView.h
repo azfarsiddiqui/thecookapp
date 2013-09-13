@@ -12,7 +12,7 @@
 
 @interface StoreUnitTabView : UIView
 
-- (id)initWithText:(NSString *)text icon:(UIImage *)icon;
+- (id)initWithText:(NSString *)text icon:(UIImage *)icon offIcon:(UIImage *)offIcon;
 - (void)select:(BOOL)select;
 
 @end
