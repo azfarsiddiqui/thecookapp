@@ -247,29 +247,7 @@
     // Update the backdrop.
     if (scrollView == self.collectionView) {
         
-        // Keep track of direction of scroll.
-        self.forwardDirection = scrollView.contentOffset.x > self.previousScrollPosition.x;
-        self.previousScrollPosition = scrollView.contentOffset;
-        
-        if (scrollView.contentOffset.x < 0) {
-            
-            self.backdropScrollView.contentOffset = (CGPoint) {
-                self.collectionView.contentOffset.x - ((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
-                self.backdropScrollView.contentOffset.y
-            };
-            
-        } else  {
-            
-            self.backdropScrollView.contentOffset = (CGPoint) {
-//                (self.collectionView.bounds.size.width - kBlendPageWidth) + self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0),
-                self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0) - ((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
-                self.backdropScrollView.contentOffset.y
-            };
-//            DLog(@"backdrop contentOffset %@", NSStringFromCGPoint(self.backdropScrollView.contentOffset));
-
-        }
-        
-        [self processPagingFade];
+        [self synchronisePagingBenchtopView];
         
     } else if (scrollView == self.backdropScrollView) {
         
@@ -643,9 +621,17 @@
             // Delete mode when in Follow section.
             if (indexPath.section == kFollowSection) {
                 
-                // Scroll to center, then enable delete mode.
-                [self scrollToBookAtIndexPath:indexPath];
-                [self enableDeleteMode:YES indexPath:indexPath];
+                if ([self isCenterBookAtIndexPath:indexPath]) {
+                    
+                    // Enable delete only in the center.
+                    [self enableDeleteMode:YES indexPath:indexPath];
+                    
+                } else {
+                    
+                    // Else just scroll there.
+                    [self scrollToBookAtIndexPath:indexPath];
+                }
+                
             }
         }
     }
@@ -1052,6 +1038,7 @@
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section]]];
     } completion:^(BOOL finished) {
+        [self updatePagingBenchtopView];
     }];
     
     // Unfollow in the background, then inform listeners of the update.
@@ -1173,6 +1160,7 @@
         // Move it below the existing one.
         if (self.pagingBenchtopView) {
             [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
+
             [UIView animateWithDuration:0.3
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
@@ -1188,6 +1176,7 @@
             self.pagingBenchtopView = pagingBenchtopView;
             self.pagingBenchtopView.alpha = 0.0;
             [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundTextureView];
+            
             [UIView animateWithDuration:0.4
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
@@ -1458,6 +1447,32 @@
             [self settingsIntroTapped];
         }
     }
+}
+
+- (void)synchronisePagingBenchtopView {
+    
+    // Keep track of direction of scroll.
+    self.forwardDirection = self.collectionView.contentOffset.x > self.previousScrollPosition.x;
+    self.previousScrollPosition = self.collectionView.contentOffset;
+    
+    if (self.collectionView.contentOffset.x < 0) {
+        
+        self.backdropScrollView.contentOffset = (CGPoint) {
+            self.collectionView.contentOffset.x - ((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
+            self.backdropScrollView.contentOffset.y
+        };
+        
+    } else  {
+        
+        self.backdropScrollView.contentOffset = (CGPoint) {
+            self.collectionView.contentOffset.x * (kBlendPageWidth / 300.0) - ((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
+            self.backdropScrollView.contentOffset.y
+        };
+        
+    }
+    
+    [self processPagingFade];
+
 }
 
 @end
