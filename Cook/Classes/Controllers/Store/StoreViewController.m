@@ -232,6 +232,7 @@
     };
     [self.view addSubview:self.searchFieldView];
     self.searchFieldView.transform = CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
+    self.searchBackButton.transform = CGAffineTransformMakeTranslation(20.0, 0.0);
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
@@ -303,6 +304,7 @@
                          self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
                          self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
                          self.searchBackButton.alpha = searchMode ? 1.0 : 0.0;
+                         self.searchBackButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
                          self.currentStoreCollectionViewController.view.alpha = searchMode ? 0.0 : 1.0;
                          self.searchViewController.view.alpha = searchMode ? 1.0 : 0.0;
                      }
