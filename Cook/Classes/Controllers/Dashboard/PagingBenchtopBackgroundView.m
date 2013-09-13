@@ -22,7 +22,7 @@
 @implementation PagingBenchtopBackgroundView
 
 + (CGFloat)minBlendAlpha {
-    return 0.3;
+    return 0.58;
 }
 
 + (CGFloat)maxBlendAlpha {
