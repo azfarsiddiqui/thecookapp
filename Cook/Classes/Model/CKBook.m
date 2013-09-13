@@ -327,7 +327,7 @@
 }
 
 - (void)setAuthor:(NSString *)author {
-    [self.parseObject setObject:author forKey:kBookAttrAuthor];
+    [self.parseObject setObject:[NSString CK_safeString:author] forKey:kBookAttrAuthor];
 }
 
 - (NSString *)author {

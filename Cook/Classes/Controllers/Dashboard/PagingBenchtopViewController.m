@@ -54,6 +54,8 @@
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, strong) NSString *preEditingBookName;
+@property (nonatomic, strong) NSString *preEditingAuthorName;
 
 @property (nonatomic, assign) CGPoint previousScrollPosition;
 @property (nonatomic, assign) BOOL forwardDirection;
@@ -459,6 +461,8 @@
     BenchtopBookCoverViewCell *cell = [self myBookCell];
     self.myBook.illustration = self.illustrationViewController.illustration;
     self.myBook.cover = self.coverViewController.cover;
+    self.myBook.name = self.preEditingBookName;
+    self.myBook.author = self.preEditingAuthorName;
     [cell loadBook:self.myBook];
     
     // Reload the illustration cover.
@@ -486,6 +490,8 @@
     
     // Force reload my book with the selected illustration.
     BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.name = cell.bookCoverView.nameValue;
+    self.myBook.author = cell.bookCoverView.authorValue;
     self.myBook.cover = cover;
     [cell loadBook:self.myBook];
     
@@ -499,6 +505,8 @@
     
     // Force reload my book with the selected illustration.
     BenchtopBookCoverViewCell *cell = [self myBookCell];
+    self.myBook.name = cell.bookCoverView.nameValue;
+    self.myBook.author = cell.bookCoverView.authorValue;
     self.myBook.illustration = illustration;
     [cell loadBook:self.myBook];
 }
@@ -967,6 +975,10 @@
     BenchtopBookCoverViewCell *myBookCell = [self myBookCell];
     [myBookCell enableEditMode:enable];
     
+    // Remember the original state of the book before editing.
+    self.preEditingAuthorName = myBookCell.bookCoverView.authorValue;
+    self.preEditingBookName = myBookCell.bookCoverView.nameValue;
+    
     CGFloat bounceOffset = 20.0;
     [UIView animateWithDuration:0.3
                           delay:0.0
@@ -1012,6 +1024,10 @@
                                                   self.animating = NO;
                                               }];
                          } else {
+                             
+                             // Clear the editing na
+                             self.preEditingAuthorName = nil;
+                             self.preEditingBookName = nil;
                              
                              self.animating = NO;
                              [self.coverViewController.view removeFromSuperview];
