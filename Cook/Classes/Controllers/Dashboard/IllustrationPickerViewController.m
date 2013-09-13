@@ -90,7 +90,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     // Ignore if same was selected.
-    if (self.currentIndex == indexPath.row) {
+    if (self.currentIndex < 0 || self.currentIndex == indexPath.row) {
         return;
     }
     
@@ -105,6 +105,7 @@
     
     // Inform delegate of update.
     [self.delegate illustrationSelected:selectedIllustration];
+    
 }
 
 #pragma mark - UICollectionViewDataSource methods

@@ -135,7 +135,7 @@
         
         // Focus on first cell if it was the only empty single cell.
         if ([self.items count] == 1) {
-            CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            CKListCell *cell = [self listCellAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
             if ([cell isEmpty]) {
                 [cell setEditing:YES];
             }
@@ -440,7 +440,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         for (NSIndexPath *visibleIndexPath in [self.collectionView indexPathsForVisibleItems]) {
             
             // Unselect all others.
-            CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:visibleIndexPath];
+            CKListCell *cell = [self listCellAtIndexPath:visibleIndexPath];
             
             // Make sure the current one is selected.
             if ([visibleIndexPath isEqual:indexPath]) {
@@ -757,7 +757,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     // If save, replace the current edited values. This handles the case when save is tapped while the field in focus.
     if (save && self.editingIndexPath) {
-        CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:self.editingIndexPath];
+        CKListCell *cell = [self listCellAtIndexPath:self.editingIndexPath];
         id currentValue = [cell currentValue];
         [self.items replaceObjectAtIndex:self.editingIndexPath.item withObject:currentValue];
     }
@@ -915,7 +915,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                          completion:^(BOOL finished) {
                              
                              // Set editing on the new cell.
-                             CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+                             CKListCell *cell = [self listCellAtIndexPath:indexPath];
                              [self setEditing:YES cell:cell];
                              
                          }];
@@ -935,7 +935,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (!self.panningCell) {
         NSIndexPath *indexPath =  [self.collectionView indexPathForItemAtPoint:location];
         if (indexPath) {
-            CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            CKListCell *cell = [self listCellAtIndexPath:indexPath];
             self.panningCell = cell;
         }
     }
@@ -1126,12 +1126,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)deleteCellAtIndexPath:(NSIndexPath *)indexPath {
     DLog(@"Deleting item [%d] items %@", indexPath.item, self.items);
     
-    [self.items removeObjectAtIndex:indexPath.item];
-    [self.collectionView performBatchUpdates:^{
-        [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
-    } completion:^(BOOL finished) {
-        [self updateCellsState];
-    }];
+//    [self.items removeObjectAtIndex:indexPath.item];
+//    [self.collectionView performBatchUpdates:^{
+//        [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+//    } completion:^(BOOL finished) {
+//        [self updateCellsState];
+//    }];
 }
 
 - (void)createNewCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -1145,7 +1145,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         
     } completion:^(BOOL finished) {
         
-        CKListCell *cell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        CKListCell *cell = [self listCellAtIndexPath:indexPath];
         [cell setEditing:YES];
         
     }];
@@ -1187,8 +1187,24 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         // Add item after every resign?
         if (self.addItemAfterEach) {
             
-            // Add new cell if at last cell.
-            [self createNewCellAtIndexPath:nextIndexPath];
+            // Check if the insertion point already contains an empty slot.
+            if (nextIndexPath.item < [self.items count]) {
+                
+                CKListCell *currentCell = [self listCellAtIndexPath:nextIndexPath];
+                
+                // Only add if the cell after next is not empty.
+                if (currentCell && ![currentCell isEmpty]) {
+                    
+                    // Add new cell if at last cell.
+                    [self createNewCellAtIndexPath:nextIndexPath];
+                }
+                
+            } else {
+            
+                // Add new cell if at last cell.
+                [self createNewCellAtIndexPath:nextIndexPath];
+                
+            }
             
         } else {
             
@@ -1200,7 +1216,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
             } else {
                 
                 // Move to next cell.
-                CKListCell *nextCell = (CKListCell *)[self.collectionView cellForItemAtIndexPath:nextIndexPath];
+                CKListCell *nextCell = [self listCellAtIndexPath:nextIndexPath];
                 [nextCell setEditing:YES];
             }
             
@@ -1240,6 +1256,10 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     CGFloat xOffset = beforeFrame.size.width - frame.size.width;
     frame.origin.x += xOffset;
     self.swipeDeleteLabel.frame = frame;
+}
+
+- (CKListCell *)listCellAtIndexPath:(NSIndexPath *)indexPath {
+    return (CKListCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
 }
 
 // Fixes the missing action method when the keyboard is visible
