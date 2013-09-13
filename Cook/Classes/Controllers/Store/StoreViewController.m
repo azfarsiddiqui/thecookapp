@@ -14,20 +14,26 @@
 #import "EventHelper.h"
 #import "StoreTabView.h"
 #import "ImageHelper.h"
-#import "CKTextFieldView.h"
 #import "NSString+Utilities.h"
+#import "CKSearchFieldView.h"
+#import "ViewHelper.h"
 
-@interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate, CKTextFieldViewDelegate>
+@interface StoreViewController () <StoreTabViewDelegate, StoreCollectionViewControllerDelegate,
+    CKSearchFieldViewDelegate>
 
 @property (nonatomic, strong) UIImageView *bottomShadowView;
 
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
 @property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
-@property (nonatomic, strong) SearchStoreCollectionViewController *searchViewController;
 @property (nonatomic, strong) StoreCollectionViewController *currentStoreCollectionViewController;
 @property (nonatomic, strong) StoreTabView *storeTabView;
 @property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
-@property (nonatomic, strong) CKTextFieldView *searchFieldView;
+
+// Search
+@property (nonatomic, strong) CKSearchFieldView *searchFieldView;
+@property (nonatomic, strong) SearchStoreCollectionViewController *searchViewController;
+@property (nonatomic, strong) UIButton *searchCloseButton;
+@property (nonatomic, assign) BOOL searchMode;
 
 @end
 
@@ -98,33 +104,34 @@
     [self.delegate panEnabledRequested:enabled];
 }
 
-#pragma mark - CKTextFieldViewDelegate methods
+#pragma mark - CKSearchFieldViewDelegate methods
 
-- (NSString *)progressTextForTextFieldView:(CKTextFieldView *)textFieldView currentText:(NSString *)text {
-    return nil;
+- (BOOL)searchFieldShouldFocus {
+    return self.searchMode;
 }
 
-- (void)didEndForTextFieldView:(CKTextFieldView *)textFieldView {
+- (void)searchFieldViewSearchIconTapped {
+    [self enableSearchMode:!self.searchMode];
 }
 
-- (void)didReturnForTextFieldView:(CKTextFieldView *)textFieldView {
-    NSString *keyword = [[textFieldView inputText] CK_whitespaceTrimmed];
-    if ([keyword length] < 2) {
-        return;
-    }
-    
-    [self.searchViewController searchByKeyword:keyword];
+- (void)searchFieldViewSearchByText:(NSString *)text {
+    NSLog(@"Search text [%@]", text);
 }
 
 #pragma mark - Properties
 
-- (CKTextFieldView *)searchFieldView {
+- (CKSearchFieldView *)searchFieldView {
     if (!_searchFieldView) {
-        _searchFieldView = [[CKTextFieldView alloc] initWithWidth:200.0 delegate:self placeholder:@"Search" autoCapitalise:YES];
-        _searchFieldView.textField.keyboardType = UIKeyboardTypeAlphabet;
-        _searchFieldView.textField.returnKeyType = UIReturnKeySearch;
+        _searchFieldView = [[CKSearchFieldView alloc] initWithWidth:390.0 delegate:self];
     }
     return _searchFieldView;
+}
+
+- (UIButton *)searchCloseButton {
+    if (!_searchCloseButton) {
+        _searchCloseButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(searchCloseTapped)];
+    }
+    return _searchCloseButton;
 }
 
 #pragma mark - Private methods
@@ -203,14 +210,24 @@
 }
 
 - (void)initSearch {
-//    self.searchFieldView.frame = (CGRect){
-//        floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
-//        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchFieldView.frame.size.height) / 2.0),
-//        self.searchFieldView.frame.size.width,
-//        self.searchFieldView.frame.size.height
-//    };
-//    [self.view addSubview:self.searchFieldView];
-//    self.searchFieldView.transform = CGAffineTransformMakeTranslation(0.0, 20.0);
+    
+    self.searchCloseButton.alpha = 0.0;
+    self.searchCloseButton.frame = (CGRect){
+        20.0,
+        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchCloseButton.frame.size.height) / 2.0),
+        self.searchCloseButton.frame.size.width,
+        self.searchCloseButton.frame.size.height
+    };
+    [self.view addSubview:self.searchCloseButton];
+    
+    self.searchFieldView.frame = (CGRect){
+        floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
+        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchFieldView.frame.size.height) / 2.0),
+        self.searchFieldView.frame.size.width,
+        self.searchFieldView.frame.size.height
+    };
+    [self.view addSubview:self.searchFieldView];
+    self.searchFieldView.transform = CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
@@ -267,6 +284,29 @@
                          [storeCollectionViewController loadData];
                          self.currentStoreCollectionViewController = storeCollectionViewController;
                      }];
+}
+
+- (void)enableSearchMode:(BOOL)searchMode {
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
+                         self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
+                         self.searchCloseButton.alpha = searchMode ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         self.searchMode = searchMode;
+                         [self.searchFieldView focus:searchMode];
+                     }];
+}
+
+- (CGFloat)searchStartOffset {
+    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 80.0;
+}
+
+- (void)searchCloseTapped {
+    [self enableSearchMode:NO];
 }
 
 @end
