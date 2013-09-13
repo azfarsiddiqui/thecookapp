@@ -187,6 +187,32 @@
     [scrollView addSubview:content1View];
     [scrollView addSubview:content2View];
     
+    //Privacy and terms
+    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(40, 90, 138, 40)];
+    [termsButton setTitle:@"TERMS & CONDITIONS" forState:UIControlStateNormal];
+    termsButton.titleLabel.textAlignment = NSTextAlignmentLeft;
+    termsButton.backgroundColor = [UIColor clearColor];
+    termsButton.titleLabel.font = [Theme settingsProfileFont];
+    termsButton.titleLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
+    termsButton.titleLabel.shadowColor = [UIColor blackColor];
+    termsButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    [termsButton addTarget:self action:@selector(termsPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [content1View addSubview:termsButton];
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(185, 90, 54, 40)];
+    [privacyButton setTitle:@"PRIVACY" forState:UIControlStateNormal];
+    privacyButton.titleLabel.textAlignment = NSTextAlignmentLeft;
+    privacyButton.backgroundColor = [UIColor clearColor];
+    privacyButton.titleLabel.font = [Theme settingsProfileFont];
+    privacyButton.titleLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
+    privacyButton.titleLabel.shadowColor = [UIColor blackColor];
+    privacyButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    [privacyButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [content1View addSubview:privacyButton];
+    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(178, 98, 5, 15)];
+    dotLabel.text = @".";
+    dotLabel.textColor = [UIColor whiteColor];
+    [content1View addSubview:dotLabel];
+    
     // Theme
     UIView *themeChooserContainerView = [UIView new];
     themeChooserContainerView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -346,6 +372,14 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.twitter.com/thecookapp"]];
 }
 
+- (void)termsPressed:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com/terms"]];
+}
+
+- (void)privacyPressed:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com/privacy"]];
+}
+
 - (void)loginLogoutTapped:(id)sender {
     
     if ([CKUser isLoggedIn]) {
@@ -375,6 +409,18 @@
 {
     DLog(@"Support mail finished");
     [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+void drawStroke(CGContextRef context, CGFloat lineWidth, CGPoint startPoint, CGPoint endPoint, CGColorRef color) {
+    
+    CGContextSaveGState(context);
+    CGContextSetLineCap(context, kCGLineCapSquare);
+    CGContextSetStrokeColorWithColor(context, color);
+    CGContextSetLineWidth(context, lineWidth);
+    CGContextMoveToPoint(context, startPoint.x + 0.5, startPoint.y + 0.5);
+    CGContextAddLineToPoint(context, endPoint.x + 0.5, endPoint.y + 0.5);
+    CGContextStrokePath(context);
+    CGContextRestoreGState(context);
 }
 
 @end
