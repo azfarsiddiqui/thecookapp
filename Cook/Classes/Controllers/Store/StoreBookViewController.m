@@ -270,7 +270,9 @@
         [self.book isFollowedByUser:self.currentUser
                             success:^(BOOL followed) {
                                 if (followed) {
-                                    [self updateAddButtonText:@"BOOK ON BENCH" activity:NO enabled:NO];
+                                    [self updateButtonText:@"BOOK ON BENCH" activity:NO
+                                                      icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                   enabled:NO target:nil selector:nil];
                                 } else {
                                     [self updateAddButtonText:buttonText activity:NO enabled:YES];
                                 }
