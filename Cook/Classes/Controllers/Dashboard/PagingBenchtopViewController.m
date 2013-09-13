@@ -963,7 +963,6 @@
         
         // Illustration.
         IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
-        illustrationViewController.disabled = self.myBook.featured;
         illustrationViewController.view.frame = CGRectMake(0.0,
                                                            self.view.bounds.size.height,
                                                            self.view.bounds.size.width,

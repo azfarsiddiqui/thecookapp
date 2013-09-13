@@ -84,17 +84,13 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return !self.disabled;
+    return YES;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (self.disabled) {
-        return;
-    }
-    
     // Ignore if same was selected.
-    if (self.currentIndex == indexPath.row) {
+    if (self.currentIndex < 0 || self.currentIndex == indexPath.row) {
         return;
     }
     
@@ -109,6 +105,7 @@
     
     // Inform delegate of update.
     [self.delegate illustrationSelected:selectedIllustration];
+    
 }
 
 #pragma mark - UICollectionViewDataSource methods
