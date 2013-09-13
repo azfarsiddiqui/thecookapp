@@ -963,6 +963,7 @@
         
         // Illustration.
         IllustrationPickerViewController *illustrationViewController = [[IllustrationPickerViewController alloc] initWithIllustration:self.myBook.illustration cover:self.myBook.cover delegate:self];
+        illustrationViewController.disabled = self.myBook.featured;
         illustrationViewController.view.frame = CGRectMake(0.0,
                                                            self.view.bounds.size.height,
                                                            self.view.bounds.size.width,
@@ -1134,6 +1135,9 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    
+    // Make sure we're on the front page.
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
     
     // Reload benchtop.
     [self loadMyBook];

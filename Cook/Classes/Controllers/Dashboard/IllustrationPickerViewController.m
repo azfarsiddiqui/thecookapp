@@ -84,10 +84,14 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return !self.disabled;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.disabled) {
+        return;
+    }
     
     // Ignore if same was selected.
     if (self.currentIndex == indexPath.row) {

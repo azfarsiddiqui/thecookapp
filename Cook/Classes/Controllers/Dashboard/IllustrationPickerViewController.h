@@ -17,6 +17,7 @@
 @interface IllustrationPickerViewController : UICollectionViewController
 
 @property (nonatomic, strong) NSString *illustration;
+@property (nonatomic, assign) BOOL disabled;
 
 - (id)initWithIllustration:(NSString *)illustration cover:(NSString *)cover
                   delegate:(id<IllustrationPickerViewControllerDelegate>)delegate;
