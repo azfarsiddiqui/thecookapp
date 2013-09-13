@@ -27,6 +27,7 @@
 #import "CKEditingViewHelper.h"
 #import "CKTextFieldEditViewController.h"
 #import "CardViewHelper.h"
+#import "NSString+Utilities.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate>
@@ -362,12 +363,16 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (void)editViewControllerHeadlessUpdatedWithValue:(id)value {
     
     NSString *text = value;
-    [self.pages addObject:text];
-    [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
-    [self.delegate bookTitleAddedPage:text];
+    if ([text CK_containsText]) {
+        [self.pages addObject:text];
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
+        [self.delegate bookTitleAddedPage:text];
+        [self enableAddMode:NO];
+        [self showIntroCard:NO];
+    } else {
+        [self enableAddMode:NO];
+    }
     
-    [self enableAddMode:NO];
-    [self showIntroCard:NO];
 }
 
 - (id)editViewControllerInitialValue {
@@ -378,10 +383,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     BOOL canSave = YES;
     if ([editViewController headless]) {
         
-        NSString *text = [editViewController updatedValue];
+        NSString *text = [[editViewController updatedValue] CK_whitespaceTrimmed];
+        
         if ([self.pages detect:^BOOL(NSString *page) {
             return [[page uppercaseString] isEqualToString:[text uppercaseString]];
         }]) {
+            
+            // Existing page.
             canSave = NO;
             [editViewController updateTitle:@"PAGE ALREADY EXISTS" toast:YES];
         }
