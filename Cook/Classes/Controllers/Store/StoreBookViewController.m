@@ -179,10 +179,21 @@
     self.imageOverlayView = imageOverlayView;
     
     // Background imageView.
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:backgroundContainerView.bounds];
-    imageView.backgroundColor = [UIColor clearColor];
+    UIOffset motionOffset = [ViewHelper standardMotionOffset];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
+    imageView.frame = (CGRect) {
+        backgroundContainerView.bounds.origin.x - motionOffset.horizontal,
+        backgroundContainerView.bounds.origin.y - motionOffset.vertical,
+        backgroundContainerView.bounds.size.width + (motionOffset.horizontal * 2.0),
+        backgroundContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
+    };
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     [backgroundContainerView addSubview:imageView];
+    imageView.alpha = 0.0;
     self.imageView = imageView;
+    
+    // Motion effects.
+    [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
 }
 
 - (void)initBookView {
@@ -416,27 +427,33 @@
 }
 
 - (void)loadData {
+    if ([self.book hasCoverPhoto]) {
+        [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size name:@"profileCover"
+                                             progress:^(CGFloat progressRatio, NSString *name) {
+                                             } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                 [self loadImage:thumbImage];
+                                             } completion:^(UIImage *image, NSString *name) {
+                                                 [self loadImage:image];
+                                             }];
+    }
+}
+
+- (void)loadImage:(UIImage *)image {
     
-    [[CKPhotoManager sharedInstance] imageForParseFile:[self.book.user parseCoverPhotoFile]
-                                                  size:self.imageView.bounds.size name:@"profileCover"
-                                              progress:^(CGFloat progressRatio) {
-                                              } completion:^(UIImage *image, NSString *name) {
-                                                  
-                                                  // Set the image and prepare for fade-in.
-                                                  self.imageView.image = image;
-                                                  self.imageView.alpha = 0.0;
-                                                  
-                                                  // Fade it in.
-                                                  [UIView animateWithDuration:0.6
-                                                                        delay:0.0
-                                                                      options:UIViewAnimationOptionCurveEaseIn
-                                                                   animations:^{
-                                                                       self.imageView.alpha = 1.0;
-                                                                   }
-                                                                   completion:^(BOOL finished) {
-                                                                   }];
-                                                  
-                                              }];
+    self.imageView.image = image;
+    
+    if (self.imageView.alpha == 0.0) {
+        
+        // Fade it in.
+        [UIView animateWithDuration:0.6
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.imageView.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    }
 }
 
 - (CGFloat)storeScale {
