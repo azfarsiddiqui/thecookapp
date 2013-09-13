@@ -12,9 +12,11 @@
 #import "CKRecipe.h"
 #import "Theme.h"
 #import "NSString+Utilities.h"
+#import "CKBookCover.h"
 
 @interface GridRecipeStatsView ()
 
+@property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) NSMutableArray *iconViews;
 @property (nonatomic, strong) UIImageView *servesImageView;
 @property (nonatomic, strong) UIImageView *timeImageView;
@@ -28,7 +30,8 @@
 #define kIconLabelGap       -6.0
 #define kContentInsets      UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
 #define kUnitStatSize       CGSizeMake(60.0, 40.0)
-#define kContainerLabelTag  301
+#define kContainerIconTag   301
+#define kContainerLabelTag  302
 #define kStatGap            0.0
 
 - (id)initWithWidth:(CGFloat)width {
@@ -42,10 +45,11 @@
 - (void)configureRecipe:(CKRecipe *)recipe {
     [self reset];
     
+    self.recipe = recipe;
     [self configureValue:[NSString CK_stringOrNilForNumber:recipe.numServes] iconIndex:0];
     [self configureValue:[self prepCookTotalDisplayForPrepTime:recipe.prepTimeInMinutes cookTime:recipe.cookingTimeInMinutes] iconIndex:1];
-    [self configureValue:[NSString stringWithFormat:@"%d", 0] iconIndex:2];
-    [self configureValue:[NSString stringWithFormat:@"%d", recipe.likes] iconIndex:3];
+    [self configureValue:[NSString stringWithFormat:@"%d", recipe.numComments] iconIndex:2];
+    [self configureValue:[NSString stringWithFormat:@"%d", recipe.numLikes] iconIndex:3];
     
     [self layoutIconViews];
 }
@@ -67,6 +71,7 @@
     containerView.backgroundColor = [UIColor clearColor];
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:iconName]];
+    imageView.tag = kContainerIconTag;
     imageView.frame = (CGRect){
         floorf((containerView.bounds.size.width - imageView.frame.size.width) / 2.0),
         0.0,
@@ -98,6 +103,8 @@
 - (void)configureValue:(NSString *)value iconIndex:(NSInteger)iconIndex {
     UIView *iconContainerView = [self.iconViews objectAtIndex:iconIndex];
     if ([value length] > 0) {
+        
+        // Update label.
         UILabel *label = (UILabel *)[iconContainerView viewWithTag:kContainerLabelTag];
         label.text = value;
         [label sizeToFit];
@@ -110,6 +117,13 @@
     } else {
         iconContainerView.hidden = YES;
     }
+    
+    // Update likes icon, which is custom coloured.
+    if (iconIndex == 3) {
+        UIImageView *iconView = (UIImageView *)[iconContainerView viewWithTag:kContainerIconTag];
+        iconView.image = [self likesIcon];
+    }
+    
 }
 
 - (void)reset {
@@ -157,6 +171,10 @@
         totalDisplay = [NSString stringWithFormat:@"%d", totalTimeInMinutes];
     }
     return totalDisplay;
+}
+
+- (UIImage *)likesIcon {
+    return [CKBookCover likeImageForCover:self.recipe.book.cover selected:(self.recipe.numLikes > 0)];
 }
 
 @end

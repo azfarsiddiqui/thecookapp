@@ -58,6 +58,18 @@
     return [illustrations objectAtIndex:arc4random() % ([illustrations count] - 1)];
 }
 
++ (UIImage *)likeImageForCover:(NSString *)cover selected:(BOOL)selected {
+    if (selected) {
+        UIImage *colouredIcon = [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_small_likes_on" cover:cover selected:NO]];
+        if (!colouredIcon) {
+            colouredIcon = [UIImage imageNamed:@"cook_book_inner_icon_small_likes_on.png"];
+        }
+        return colouredIcon;
+    } else {
+        return [UIImage imageNamed:@"cook_book_inner_icon_small_likes_off.png"];
+    }
+}
+
 + (UIImage *)addCategoryImageForCover:(NSString *)cover selected:(BOOL)selected {
     return [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_category_add" cover:cover selected:selected]];
 }
