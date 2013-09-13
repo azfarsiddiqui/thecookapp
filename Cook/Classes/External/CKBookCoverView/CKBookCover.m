@@ -97,6 +97,7 @@
 + (UIColor *)themeBackdropColourForCover:(NSString *)cover {
     BOOL vivid = NO;
     BOOL balance = NO;
+    BOOL oppose = NO;
     switch ([CKUser currentTheme]) {
         case DashThemeVivid:
             vivid = YES;
@@ -104,17 +105,22 @@
         case DashThemeBalance:
             balance = YES;
             break;
+        case DashThemeOppose:
+            oppose = YES;
+            break;
         default:
             break;
     }
-    return [self backdropColourForCover:cover vivid:vivid balance:balance];
+    return [self backdropColourForCover:cover vivid:vivid balance:balance oppose:oppose];
 }
 
-+ (UIColor *)backdropColourForCover:(NSString *)cover vivid:(BOOL)vivid balance:(BOOL)balance {
++ (UIColor *)backdropColourForCover:(NSString *)cover vivid:(BOOL)vivid balance:(BOOL)balance oppose:(BOOL)oppose {
     if (vivid) {
         return [self backdropColourForCover:[[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Vivid", cover]]];
     } else if (balance) {
         return [self backdropColourForCover:[[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Balance", cover]]];
+    } else if (oppose) {
+        return [self backdropColourForCover:[[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.Oppose", cover]]];
     } else {
         return [self backdropColourForCover:cover];
     }
@@ -211,8 +217,12 @@
 }
 
 + (BookCoverLayout)layoutForIllustration:(NSString *)illustration {
-    return [self layoutForKey:[[CKBookCover settings] valueForKeyPath:
-                               [NSString stringWithFormat:@"Illustrations.%@.Layout", illustration]]];
+    if ([self imageExistsForIllustration:illustration]) {
+        return BookCoverLayoutMid;
+    } else {
+        return [self layoutForKey:[[CKBookCover settings] valueForKeyPath:
+                                   [NSString stringWithFormat:@"Illustrations.%@.Layout", illustration]]];
+    }
 }
 
 + (NSString *)grayCoverName {
@@ -294,6 +304,11 @@
     }
     [imageName appendFormat:@"_%@.png", [cover lowercaseString]];
     return imageName;
+}
+
++ (BOOL)imageExistsForIllustration:(NSString *)illustration {
+    NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
+    return (imageName == nil);
 }
 
 @end

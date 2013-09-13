@@ -46,7 +46,7 @@
 #pragma mark - Private methods
 
 - (void)initTabs {
-    self.options = @[@"REFLECT", @"VIVID", @"BALANCE"];
+    self.options = @[@"REFLECT", @"OPPOSE"];
     self.buttons = [NSMutableArray array];
     
     UIImage *backgroundImage = [self backgroundImage];
