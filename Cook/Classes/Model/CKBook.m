@@ -435,6 +435,7 @@
                                         }
                                     } else {
                                         DLog(@"Error searching books: %@", [error localizedDescription]);
+                                        failure(error);
                                     }
                                 }];
 }

@@ -13,6 +13,7 @@
 - (BOOL)searchFieldShouldFocus;
 - (void)searchFieldViewSearchIconTapped;
 - (void)searchFieldViewSearchByText:(NSString *)text;
+- (void)searchFieldViewClearRequested;
 
 @end
 

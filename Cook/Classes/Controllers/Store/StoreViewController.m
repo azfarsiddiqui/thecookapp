@@ -32,7 +32,7 @@
 // Search
 @property (nonatomic, strong) CKSearchFieldView *searchFieldView;
 @property (nonatomic, strong) SearchStoreCollectionViewController *searchViewController;
-@property (nonatomic, strong) UIButton *searchCloseButton;
+@property (nonatomic, strong) UIButton *searchBackButton;
 @property (nonatomic, assign) BOOL searchMode;
 
 @end
@@ -115,7 +115,11 @@
 }
 
 - (void)searchFieldViewSearchByText:(NSString *)text {
-    NSLog(@"Search text [%@]", text);
+    [self.searchViewController searchByKeyword:text];
+}
+
+- (void)searchFieldViewClearRequested {
+    [self.searchViewController unloadData];
 }
 
 #pragma mark - Properties
@@ -127,11 +131,11 @@
     return _searchFieldView;
 }
 
-- (UIButton *)searchCloseButton {
-    if (!_searchCloseButton) {
-        _searchCloseButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(searchCloseTapped)];
+- (UIButton *)searchBackButton {
+    if (!_searchBackButton) {
+        _searchBackButton = [ViewHelper backButtonLight:NO target:self selector:@selector(searchCloseTapped)];
     }
-    return _searchCloseButton;
+    return _searchBackButton;
 }
 
 #pragma mark - Private methods
@@ -211,14 +215,14 @@
 
 - (void)initSearch {
     
-    self.searchCloseButton.alpha = 0.0;
-    self.searchCloseButton.frame = (CGRect){
+    self.searchBackButton.alpha = 0.0;
+    self.searchBackButton.frame = (CGRect){
         20.0,
-        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchCloseButton.frame.size.height) / 2.0),
-        self.searchCloseButton.frame.size.width,
-        self.searchCloseButton.frame.size.height
+        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchBackButton.frame.size.height) / 2.0),
+        self.searchBackButton.frame.size.width,
+        self.searchBackButton.frame.size.height
     };
-    [self.view addSubview:self.searchCloseButton];
+    [self.view addSubview:self.searchBackButton];
     
     self.searchFieldView.frame = (CGRect){
         floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
@@ -287,17 +291,29 @@
 }
 
 - (void)enableSearchMode:(BOOL)searchMode {
+    if (searchMode) {
+        self.searchViewController.view.alpha = 0.0;
+        self.searchViewController.view.hidden = NO;
+    }
+    
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
                          self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
-                         self.searchCloseButton.alpha = searchMode ? 1.0 : 0.0;
+                         self.searchBackButton.alpha = searchMode ? 1.0 : 0.0;
+                         self.currentStoreCollectionViewController.view.alpha = searchMode ? 0.0 : 1.0;
+                         self.searchViewController.view.alpha = searchMode ? 1.0 : 0.0;
                      }
                      completion:^(BOOL finished) {
                          self.searchMode = searchMode;
                          [self.searchFieldView focus:searchMode];
+                         
+                         if (!searchMode) {
+                             self.searchViewController.view.hidden = YES;
+                         }
+                         
                      }];
 }
 

@@ -17,8 +17,19 @@
 @implementation SearchStoreCollectionViewController
 
 - (void)searchByKeyword:(NSString *)keyword {
+    DLog(@"keyword: %@", keyword);
     
+    [self unloadData];
+    [self showActivity:YES];
     
+    [CKBook searchBooksByKeyword:keyword
+                         success:^(NSArray *results) {
+                             [self loadBooks:results];
+                         }
+                         failure:^(NSError *error) {
+                             [self showNoBooksCard];
+                             [self showActivity:NO];
+                         }];
 }
 
 - (BOOL)addMode {

@@ -221,7 +221,10 @@
     if (self.addMode) {
         [self initAddButton];
     } else {
-        [self initFriendsButton];
+        
+        if (![self.book.user isEqual:self.currentUser]) {
+            [self initFriendsButton];
+        }
     }
 }
 

@@ -75,6 +75,11 @@
     return [self buttonWithImage:image target:target selector:selector];
 }
 
++ (UIButton *)backButtonLight:(BOOL)light target:(id)target selector:(SEL)selector {
+    UIImage *image = light ? [UIImage imageNamed:@"cook_book_inner_icon_back_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_back_dark.png"];
+    return [self buttonWithImage:image target:target selector:selector];
+}
+
 #pragma mark - Sizes
 
 + (CGSize)bookSize {

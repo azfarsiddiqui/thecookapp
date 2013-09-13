@@ -22,6 +22,7 @@
 + (void)updateButton:(UIButton *)button withImage:(UIImage *)image;
 + (void)updateButton:(UIButton *)button withImage:(UIImage *)image selectedImage:(UIImage *)selectedImage;
 + (UIButton *)closeButtonLight:(BOOL)light target:(id)target selector:(SEL)selector;
++ (UIButton *)backButtonLight:(BOOL)light target:(id)target selector:(SEL)selector;
 
 // Sizes.
 + (CGSize)bookSize;

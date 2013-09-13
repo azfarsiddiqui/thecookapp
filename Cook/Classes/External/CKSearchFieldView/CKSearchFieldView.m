@@ -20,6 +20,7 @@
 @property (nonatomic, assign) BOOL forceUppercase;
 @property (nonatomic, assign) NSInteger characterLimit;
 @property (nonatomic, assign) NSInteger minCharacterLimit;
+@property (nonatomic, strong) NSString *currentSearch;
 
 @end
 
@@ -72,8 +73,10 @@
 
 - (void)focus:(BOOL)focus {
     if (focus) {
+        self.textField.text = self.currentSearch;
         [self.textField becomeFirstResponder];
     } else {
+        self.textField.text = nil;
         [self.textField resignFirstResponder];
     }
 }
@@ -81,7 +84,6 @@
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-
     return [self.delegate searchFieldShouldFocus];
 }
 
@@ -96,6 +98,7 @@
     self.textField.text = text;
     if ([text length] >= self.minCharacterLimit) {
         [self.delegate searchFieldViewSearchByText:text];
+        [self.textField resignFirstResponder];
     }
     
     return YES;
@@ -124,6 +127,9 @@
         
         shouldChange = YES;
     }
+    
+    
+    self.currentSearch = self.textField.text;
     return shouldChange;
 }
 
@@ -160,10 +166,12 @@
 - (void)clearTapped {
     NSString *currentText = [self currentText];
     if ([currentText length] > 0) {
+        self.currentSearch = nil;
         self.textField.text = nil;
     } else {
-        [self focus:NO];
+        [self.textField resignFirstResponder];
     }
+    [self.delegate searchFieldViewClearRequested];
 }
 
 - (UIButton *)buttonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage target:(id)target
