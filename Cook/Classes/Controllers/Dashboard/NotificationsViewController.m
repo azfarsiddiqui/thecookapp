@@ -103,14 +103,23 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 referenceSizeForHeaderInSection:(NSInteger)section {
-    
     return [ModalOverlayHeaderView unitSize];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGSize cellSize = [NotificationCell unitSize];    
+    CGSize cellSize = CGSizeZero;
+    
+    if (self.notifications) {
+        return [NotificationCell unitSize];
+    } else {
+        return (CGSize){
+            self.collectionView.bounds.size.width,
+            515.0
+        };
+    }
+    
     return cellSize;
 }
 
