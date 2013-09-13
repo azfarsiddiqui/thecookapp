@@ -627,6 +627,7 @@
     notificationView.frame = CGRectMake(18.0, 33.0, notificationView.frame.size.width, notificationView.frame.size.height);
     [self.view addSubview:notificationView];
     self.notificationView = notificationView;
+    self.notificationView.hidden = ![CKUser isLoggedIn];
 }
 
 - (PagingCollectionViewLayout *)pagingLayout {
@@ -1130,10 +1131,16 @@
         // Clear the sign up image.
         self.signupBlurImage = nil;
         
+        // Show notification view.
+        self.notificationView.hidden = NO;
+        
     }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    
+    // Hide notification view.
+    self.notificationView.hidden = YES;
     
     // Make sure we're on the front page.
     [self.collectionView setContentOffset:CGPointZero animated:YES];
