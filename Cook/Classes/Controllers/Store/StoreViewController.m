@@ -273,6 +273,7 @@
 }
 
 - (void)showStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
+    self.currentStoreCollectionViewController = storeCollectionViewController;
     
     // Prep the selected one to be faded in.
     storeCollectionViewController.view.alpha = 0.0;
@@ -287,7 +288,6 @@
                      }
                      completion:^(BOOL finished) {
                          [storeCollectionViewController loadData];
-                         self.currentStoreCollectionViewController = storeCollectionViewController;
                      }];
 }
 
