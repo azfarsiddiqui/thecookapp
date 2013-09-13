@@ -318,7 +318,7 @@
 }
 
 - (CGFloat)searchStartOffset {
-    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 80.0;
+    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 75.0;
 }
 
 - (void)searchCloseTapped {
