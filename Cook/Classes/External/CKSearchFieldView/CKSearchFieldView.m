@@ -12,7 +12,6 @@
 @interface CKSearchFieldView () <UITextFieldDelegate>
 
 @property (nonatomic, weak) id<CKSearchFieldViewDelegate> delegate;
-@property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UIButton *searchButton;
 @property (nonatomic, strong) UIButton *closeButton;

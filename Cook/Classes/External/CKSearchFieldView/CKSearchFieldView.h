@@ -19,6 +19,8 @@
 
 @interface CKSearchFieldView : UIView
 
+@property (nonatomic, strong) UIImageView *backgroundView;
+
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKSearchFieldViewDelegate>)delegate;
 - (void)focus:(BOOL)focus;
 

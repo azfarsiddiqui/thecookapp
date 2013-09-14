@@ -230,7 +230,9 @@
         self.searchFieldView.frame.size.width,
         self.searchFieldView.frame.size.height
     };
+    self.searchFieldView.backgroundView.alpha = 0.0;
     [self.view addSubview:self.searchFieldView];
+    
     self.searchFieldView.transform = CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
     self.searchBackButton.transform = CGAffineTransformMakeTranslation(20.0, 0.0);
 }
@@ -302,6 +304,7 @@
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
+                         self.searchFieldView.backgroundView.alpha = searchMode ? 1.0 : 0.0;
                          self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
                          self.searchBackButton.alpha = searchMode ? 1.0 : 0.0;
                          self.searchBackButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
@@ -320,7 +323,7 @@
 }
 
 - (CGFloat)searchStartOffset {
-    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 75.0;
+    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 90.0;
 }
 
 - (void)searchCloseTapped {
