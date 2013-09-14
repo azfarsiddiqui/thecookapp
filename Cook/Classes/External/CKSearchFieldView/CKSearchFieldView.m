@@ -72,9 +72,11 @@
 
 - (void)focus:(BOOL)focus {
     if (focus) {
+        self.textField.placeholder = @"SEARCH BY NAME";
         self.textField.text = self.currentSearch;
         [self.textField becomeFirstResponder];
     } else {
+        self.textField.placeholder = nil;
         self.textField.text = nil;
         [self.textField resignFirstResponder];
     }
