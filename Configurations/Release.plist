@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>COOK_SHARE_BASE_URL</key>
-	<string>http://thecookapp.parseapp.com/recipes/</string>
+	<string>http://share.thecookapp.com/recipes/</string>
 </dict>
 </plist>
