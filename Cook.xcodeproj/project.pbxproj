@@ -524,7 +524,6 @@
 		76871BE417420DA40030BDE4 /* CKTextItemCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BDE17420DA40030BDE4 /* CKTextItemCollectionViewCell.m */; };
 		76871BE517420DA40030BDE4 /* CKTextItemsEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76871BE017420DA40030BDE4 /* CKTextItemsEditViewController.m */; };
 		76888D0A17CF250600904F15 /* RecipeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76888D0917CF250600904F15 /* RecipeImageView.m */; };
-		76888D0C17CF7CCD00904F15 /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76888D0B17CF7CCD00904F15 /* Reveal.framework */; };
 		76888D0F17CF7D5900904F15 /* BookTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76888D0E17CF7D5900904F15 /* BookTitleView.m */; };
 		7689A13F17BB135D0093C56F /* cook_book_inner_category_stack_one.png in Resources */ = {isa = PBXBuildFile; fileRef = 7689A13B17BB135D0093C56F /* cook_book_inner_category_stack_one.png */; };
 		7689A14017BB135D0093C56F /* cook_book_inner_category_stack_one@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7689A13C17BB135D0093C56F /* cook_book_inner_category_stack_one@2x.png */; };
@@ -1776,7 +1775,6 @@
 		76871BE017420DA40030BDE4 /* CKTextItemsEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextItemsEditViewController.m; sourceTree = "<group>"; };
 		76888D0817CF250600904F15 /* RecipeImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeImageView.h; sourceTree = "<group>"; };
 		76888D0917CF250600904F15 /* RecipeImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeImageView.m; sourceTree = "<group>"; };
-		76888D0B17CF7CCD00904F15 /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Reveal.framework; sourceTree = "<group>"; };
 		76888D0D17CF7D5900904F15 /* BookTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookTitleView.h; sourceTree = "<group>"; };
 		76888D0E17CF7D5900904F15 /* BookTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookTitleView.m; sourceTree = "<group>"; };
 		7689A13B17BB135D0093C56F /* cook_book_inner_category_stack_one.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_category_stack_one.png; sourceTree = "<group>"; };
@@ -2561,7 +2559,6 @@
 				76EE2CDD170AEAB80043D128 /* CoreImage.framework in Frameworks */,
 				7632F25117AF4CFA00E80952 /* Crashlytics.framework in Frameworks */,
 				76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */,
-				76888D0C17CF7CCD00904F15 /* Reveal.framework in Frameworks */,
 				763D2777166C293800A43DF9 /* CoreLocation.framework in Frameworks */,
 				895A2B901655BC9E0061E687 /* Accelerate.framework in Frameworks */,
 				895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */,
@@ -3997,7 +3994,6 @@
 			children = (
 				F6526BB917D1D575000DDD95 /* MessageUI.framework */,
 				F6526BB717D1C998000DDD95 /* Social.framework */,
-				76888D0B17CF7CCD00904F15 /* Reveal.framework */,
 				7632F25017AF4CFA00E80952 /* Crashlytics.framework */,
 				7602543F171191A100950571 /* AssetsLibrary.framework */,
 				76EE2CDE170AEADF0043D128 /* ImageIO.framework */,
@@ -5829,22 +5825,16 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
 					/Users/jtanang/Documents/workspace/xcode/Cook,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Cook/Classes/External/AviarySDK\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
-					"-framework",
-					Reveal,
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -5857,17 +5847,13 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
 					/Users/jtanang/Documents/workspace/xcode/Cook,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Cook/Cook-Prefix.pch";
 				INFOPLIST_FILE = "Cook/Cook-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Cook/Classes/External/AviarySDK\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
