@@ -1196,7 +1196,7 @@
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
-    NSInteger numPeekPages = 3;
+    NSInteger numPeekPages = 10;
     NSInteger currentPageIndex = [self currentPageIndex];
     
     BOOL customJump = (abs(currentPageIndex - pageIndex) > numPeekPages);
