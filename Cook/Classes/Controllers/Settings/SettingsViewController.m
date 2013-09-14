@@ -14,6 +14,7 @@
 #import "CKUserProfilePhotoView.h"
 #import "ThemeTabView.h"
 #import "ImageHelper.h"
+#import "UIDevice+Hardware.h"
 #import <MessageUI/MessageUI.h>
 
 @interface SettingsViewController () <MFMailComposeViewControllerDelegate>
@@ -208,6 +209,7 @@
     privacyButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [privacyButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:privacyButton];
+    
     UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(178, 98, 5, 15)];
     dotLabel.text = @".";
     dotLabel.textColor = [UIColor whiteColor];
@@ -348,8 +350,16 @@
     if ([MFMailComposeViewController canSendMail])
     {
         MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
-        NSString *shareBody = @"SUPPORT STUFF";
-        [mailDialog setSubject:@"Support for Cook"];
+        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+        NSString *appDisplayName = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+        NSString *majorVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+        NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
+        NSString *versionString = [NSString stringWithFormat:@"%@ v%@.%@",
+                appDisplayName, majorVersion, minorVersion];
+        
+        NSString *deviceString = [NSString stringWithFormat:@"%@ / %@ / iOS%@", [UIDevice currentDevice].model, [UIDevice currentDevice].platformString, [UIDevice currentDevice].systemVersion];
+        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n Sent from\n%@\n%@", versionString, deviceString];
+        [mailDialog setSubject:@"Cook Support"];
         [mailDialog setMessageBody:shareBody isHTML:NO];
         mailDialog.mailComposeDelegate = self;
         [self presentViewController:mailDialog animated:YES completion:nil];
@@ -409,18 +419,6 @@
 {
     DLog(@"Support mail finished");
     [controller dismissViewControllerAnimated:YES completion:nil];
-}
-
-void drawStroke(CGContextRef context, CGFloat lineWidth, CGPoint startPoint, CGPoint endPoint, CGColorRef color) {
-    
-    CGContextSaveGState(context);
-    CGContextSetLineCap(context, kCGLineCapSquare);
-    CGContextSetStrokeColorWithColor(context, color);
-    CGContextSetLineWidth(context, lineWidth);
-    CGContextMoveToPoint(context, startPoint.x + 0.5, startPoint.y + 0.5);
-    CGContextAddLineToPoint(context, endPoint.x + 0.5, endPoint.y + 0.5);
-    CGContextStrokePath(context);
-    CGContextRestoreGState(context);
 }
 
 @end
