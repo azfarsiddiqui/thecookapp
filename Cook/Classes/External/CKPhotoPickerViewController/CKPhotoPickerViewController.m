@@ -14,6 +14,7 @@
 #import "CKPhotoFilterSliderView.h"
 #import "ImageHelper.h"
 #import "CKActivityIndicatorView.h"
+#import "UIImage+Scale.h"
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate, CKNotchSliderViewDelegate>
@@ -39,8 +40,10 @@
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CIContext *filterContext;
 @property (nonatomic, strong) CKPhotoFilterSliderView *filterPickerView;
-@property UIDeviceOrientation currentOrientation;
+@property UIDeviceOrientation initialOrientation;
 @property (nonatomic, strong) UIView *snapshotView;
+@property UIImageOrientation correctedOrientation;
+
 
 @end
 
@@ -51,7 +54,7 @@
 #define kSquareCropHeight 500
 #define kSquareCropOrigin CGPointMake(260, 134)
 #define MAX_IMAGE_WIDTH 2048
-#define MAX_IMAGE_HEIGHT 1536
+#define MAX_IMAGE_HEIGHT 2048
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
@@ -84,7 +87,6 @@
     self.view.frame = [UIApplication sharedApplication].keyWindow.rootViewController.view.bounds;
     self.view.backgroundColor = [UIColor lightGrayColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.currentOrientation = [[UIDevice currentDevice] orientation];
     
     self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
     self.activityView.center = [self parentView].center;
@@ -100,26 +102,35 @@
 
 - (void)receivedRotate:(id)sender
 {
-    NSLog(@"receivedRotate");
-    UIDeviceOrientation interfaceOrientation = [[UIDevice currentDevice] orientation];
-    
-    if(interfaceOrientation != UIDeviceOrientationUnknown) {
-        NSLog(@"Rotated to: %i", interfaceOrientation);
-    } else {
-        NSLog(@"Unknown device orientation");
+    UIDeviceOrientation currentOrientation = [[UIDevice currentDevice] orientation];
+    double rotation = 0;
+    switch (currentOrientation) {
+        case UIDeviceOrientationFaceDown:
+        case UIDeviceOrientationFaceUp:
+        case UIDeviceOrientationUnknown:
+        return;
+        case UIDeviceOrientationPortrait:
+        rotation = self.initialOrientation == UIInterfaceOrientationLandscapeRight ? -M_PI_2 : M_PI_2;
+        break;
+        case UIDeviceOrientationPortraitUpsideDown:
+        rotation = self.initialOrientation == UIInterfaceOrientationLandscapeRight ? M_PI_2 : -M_PI_2;
+        break;
+        case UIDeviceOrientationLandscapeLeft:
+        rotation = 0;
+        self.initialOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        break;
+        case UIDeviceOrientationLandscapeRight:
+        rotation = 0;
+        self.initialOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        break;
     }
-}
+    CGAffineTransform transform = CGAffineTransformMakeRotation(rotation);
+    [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        [self.snapButton setTransform:transform];
+        [self.libraryButton setTransform:transform];
+        [self.toggleButton setTransform:transform];
+    } completion:nil];
 
-- (void)rotateButtonsToOrientation:(UIDeviceOrientation)deviceOrientation
-{
-//    switch (self.currentOrientation) {
-//        case UIDeviceOrientationPortrait:
-//            <#statements#>
-//            break;
-//            
-//        default:
-//            break;
-//    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -138,10 +149,23 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    CGFloat cropWidth = chosenImage.size.width > MAX_IMAGE_WIDTH ? MAX_IMAGE_WIDTH : chosenImage.size.width;
-    CGFloat cropHeight = chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
-    chosenImage = [chosenImage imageCroppedToFitSize:CGSizeMake(cropWidth, cropHeight)]; //[ImageHelper scaledImage:chosenImage size:CGSizeMake(cropWidth, cropHeight)];
-    self.selectedImage = chosenImage;
+    CGFloat imgFactor = chosenImage.size.height / chosenImage.size.width;
+    
+    CGFloat cropWidth = chosenImage.size.width;
+    CGFloat cropHeight = chosenImage.size.height;
+    //chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
+    if (cropWidth > MAX_IMAGE_WIDTH)
+    {
+        cropWidth = MAX_IMAGE_WIDTH;
+        cropHeight = MAX_IMAGE_WIDTH * imgFactor;
+    }
+    if (cropHeight > MAX_IMAGE_HEIGHT)
+    {
+        cropHeight = MAX_IMAGE_HEIGHT;
+        cropWidth = MAX_IMAGE_HEIGHT / imgFactor;
+    }
+    CGRect cropRect = CGRectMake(0, 0, cropWidth, cropHeight);
+    self.selectedImage = [chosenImage scaledCopyOfSize:cropRect.size orientation:[self adjustedOrientationofImage:chosenImage]]; //[chosenImage imageScaledToFitSize:cropRect.size];
     [self.snapshotView removeFromSuperview];
     self.snapshotView = nil;
     [self updateImagePreview];
@@ -536,14 +560,17 @@
     BOOL photoSelected = (self.selectedImage != nil);
     
     if (photoSelected) {
-        CGRect visibleFrame = parentView.bounds;
-        
+        CGFloat imgFactor = self.selectedImage.size.height / self.selectedImage.size.width;
+        CGRect visibleFrame = CGRectMake(0, 0, parentView.bounds.size.width, parentView.bounds.size.width * imgFactor);
+    
         UIImageView *previewImageView = [[UIImageView alloc] initWithFrame:visibleFrame];
         previewImageView.image = self.selectedImage;
         previewImageView.autoresizingMask = UIViewAutoresizingNone;
+        previewImageView.contentMode = UIViewContentModeScaleAspectFill;
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:parentView.bounds];
         scrollView.backgroundColor = [UIColor blackColor];
-        scrollView.contentSize = previewImageView.frame.size;
+        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.width * imgFactor);
+//        scrollView.contentMode = UIViewContentModeScaleAspectFit;
         scrollView.alwaysBounceHorizontal = YES;
         scrollView.alwaysBounceVertical = YES;
         scrollView.maximumZoomScale = 1.0;
@@ -557,7 +584,7 @@
             scrollView.contentInset = UIEdgeInsetsMake(kSquareCropOrigin.y, kSquareCropOrigin.x, kSquareCropOrigin.y, kSquareCropOrigin.x);
             scrollView.maximumZoomScale = 2.0;
         }
-        
+
         [scrollView addSubview:previewImageView];
         self.previewImageView = previewImageView;
         
@@ -600,6 +627,30 @@
                                                  orientation:sourceImage.imageOrientation];
     CGImageRelease(croppedImageRef);
     return croppedImage;
+}
+
+- (UIImageOrientation *)adjustedOrientationofImage:(UIImage *)image
+{
+    DLog(@"Image orientation is: %i", image.imageOrientation);
+    UIInterfaceOrientation appOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    UIDeviceOrientation currentOrientation = [UIDevice currentDevice].orientation;
+    if (appOrientation == UIInterfaceOrientationLandscapeLeft) {
+        if (currentOrientation == UIDeviceOrientationPortrait) {
+            return UIImageOrientationRight;
+        } else if (currentOrientation == UIDeviceOrientationPortraitUpsideDown) {
+            return UIImageOrientationLeft;
+        }
+    }
+    else if (appOrientation == UIInterfaceOrientationLandscapeRight) {
+        if (currentOrientation == UIDeviceOrientationPortrait) {
+            return UIImageOrientationRight;
+        } else if (currentOrientation == UIDeviceOrientationPortraitUpsideDown) {
+            return UIImageOrientationLeft;
+        }
+    }
+    
+    //else Normal orientation
+    return image.imageOrientation;
 }
 
 - (UIButton *)buttonWithImage:(UIImage *)image target:(id)target selector:(SEL)selector {

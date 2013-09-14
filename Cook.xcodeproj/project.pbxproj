@@ -1090,6 +1090,7 @@
 		F60C570E17E3CB2600912544 /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = F60C570D17E3CB2600912544 /* UIDevice+Hardware.m */; };
 		F60C571117E403C300912544 /* cook_dash_bg_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C570F17E403C300912544 /* cook_dash_bg_settings.png */; };
 		F60C571217E403C300912544 /* cook_dash_bg_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C571017E403C300912544 /* cook_dash_bg_settings@2x.png */; };
+		F60C571517E440ED00912544 /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = F60C571417E440ED00912544 /* UIImage+Scale.m */; };
 		F613C65217DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C63017DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto.png */; };
 		F613C65317DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C63117DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto@2x.png */; };
 		F613C65417DF4F7E00A5962A /* cook_customise_photo_filter_bg_cool.png in Resources */ = {isa = PBXBuildFile; fileRef = F613C63217DF4F7E00A5962A /* cook_customise_photo_filter_bg_cool.png */; };
@@ -2448,6 +2449,8 @@
 		F60C570D17E3CB2600912544 /* UIDevice+Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Hardware.m"; sourceTree = "<group>"; };
 		F60C570F17E403C300912544 /* cook_dash_bg_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_bg_settings.png; sourceTree = "<group>"; };
 		F60C571017E403C300912544 /* cook_dash_bg_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_bg_settings@2x.png"; sourceTree = "<group>"; };
+		F60C571317E440ED00912544 /* UIImage+Scale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Scale.h"; sourceTree = "<group>"; };
+		F60C571417E440ED00912544 /* UIImage+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Scale.m"; sourceTree = "<group>"; };
 		F613C63017DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_photo_filter_bg_auto.png; sourceTree = "<group>"; };
 		F613C63117DF4F7E00A5962A /* cook_customise_photo_filter_bg_auto@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_photo_filter_bg_auto@2x.png"; sourceTree = "<group>"; };
 		F613C63217DF4F7E00A5962A /* cook_customise_photo_filter_bg_cool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_photo_filter_bg_cool.png; sourceTree = "<group>"; };
@@ -2979,6 +2982,8 @@
 				766BFC211630DE990083EB0E /* UIColor+Expanded.m */,
 				F60C570C17E3CB2600912544 /* UIDevice+Hardware.h */,
 				F60C570D17E3CB2600912544 /* UIDevice+Hardware.m */,
+				F60C571317E440ED00912544 /* UIImage+Scale.h */,
+				F60C571417E440ED00912544 /* UIImage+Scale.m */,
 			);
 			name = Categories;
 			path = Cook/Classes/Categories;
@@ -5630,6 +5635,7 @@
 				76EF95D017363BF50033DBCE /* CKListCollectionViewCell.m in Sources */,
 				76EF95D117363BF50033DBCE /* CKListCollectionViewFlowLayout.m in Sources */,
 				76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */,
+				F60C571517E440ED00912544 /* UIImage+Scale.m in Sources */,
 				766D96F817D2E80000A9104E /* NotificationCell.m in Sources */,
 				76EC556117C3030D000DEA08 /* RecipeSocialCommentCell.m in Sources */,
 				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
