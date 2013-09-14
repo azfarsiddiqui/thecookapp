@@ -94,7 +94,7 @@
         CGFloat requiredWidth = self.iconImageView.frame.size.width + kIconTextGap + textFrame.size.width;
         self.iconImageView.frame = (CGRect){
             floorf((self.bounds.size.width - requiredWidth) / 2.0) - 4.0,
-            ceilf((self.bounds.size.height - self.iconImageView.frame.size.height) / 2) + 1.0,
+            ceilf((self.bounds.size.height - self.iconImageView.frame.size.height) / 2),
             self.iconImageView.frame.size.width,
             self.iconImageView.frame.size.height
         };
