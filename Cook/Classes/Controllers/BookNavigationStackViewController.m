@@ -124,7 +124,6 @@
     
     // Mark as just opened.
     self.justOpened = YES;
-    
     [self initBookOutlineView];
     [self initCollectionView];
     [self loadData];
@@ -403,6 +402,7 @@
 }
 
 - (void)bookTitleSelectedPage:(NSString *)page {
+    self.collectionView.userInteractionEnabled = NO;
     [self scrollToPage:page animated:YES];
 }
 
@@ -519,6 +519,11 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     self.fastForward = NO;
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    self.collectionView.userInteractionEnabled = YES;
 }
 
 #pragma mark - UICollectionViewDelegate methods
