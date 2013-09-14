@@ -29,6 +29,7 @@
 @property (nonatomic, strong) UIImageView *profileOverlay;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIImageView *dividerView;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) CKStatView *pagesStatView;
 @property (nonatomic, strong) CKStatView *recipesStatView;
@@ -72,6 +73,9 @@
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
     
     [self updateStoryEditMode:editMode];
+//    [self updateNameEditMode:editMode];
+    
+    self.dividerView.alpha = editMode ? 0.0 : 1.0;
     
     if (editMode) {
         
@@ -81,7 +85,8 @@
         }
         
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
-
+        
+        // Wrap story up.
         [self.editingHelper wrapEditingView:self.storyLabel
                               contentInsets:(UIEdgeInsets){
                                   defaultInsets.top + 5.0,
@@ -89,7 +94,18 @@
                                   defaultInsets.bottom + 5.0,
                                   defaultInsets.right + 5.0
                               } delegate:self white:YES];
+        
+//        // Wrap name up.
+//        [self.editingHelper wrapEditingView:self.nameLabel
+//                              contentInsets:(UIEdgeInsets){
+//                                  defaultInsets.top,
+//                                  defaultInsets.left,
+//                                  defaultInsets.bottom - 2.0,
+//                                  defaultInsets.right + 5.0
+//                              } delegate:self white:YES];
+        
     } else {
+        [self.editingHelper unwrapEditingView:self.nameLabel];
         [self.editingHelper unwrapEditingView:self.storyLabel];
     }
     
@@ -100,7 +116,9 @@
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    if (editingView == self.storyLabel) {
+    if (editingView == self.nameLabel) {
+        
+    } else if (editingView == self.storyLabel) {
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
@@ -135,11 +153,14 @@
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     DLog();
-    NSString *story = (NSString *)value;
-    self.updatedStory = story;
-    [self updateStory:[story CK_containsText] ? story : [self defaultEditPlaceholderText]];
-    [self updateStoryEditMode:YES];
-    [self.editingHelper updateEditingView:editingView];
+    
+    if (editingView == self.storyLabel) {
+        NSString *story = (NSString *)value;
+        self.updatedStory = story;
+        [self updateStory:[story CK_containsText] ? story : [self defaultEditPlaceholderText]];
+        [self updateStoryEditMode:YES];
+        [self.editingHelper updateEditingView:editingView];
+    }
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
@@ -237,7 +258,7 @@
     nameLabel.backgroundColor = [UIColor clearColor];
     nameLabel.textColor = [Theme storeBookSummaryNameColour];
     nameLabel.shadowColor = [UIColor blackColor];
-    nameLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+    nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
     nameLabel.text = name;
     nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     [nameLabel sizeToFit];
@@ -271,7 +292,7 @@
         1.0
     };
     [self addSubview:dividerView];
-    
+    self.dividerView = dividerView;
     
     // Book story.
     [self updateStory:self.book.story];
@@ -390,7 +411,7 @@
     
     NSShadow *shadow = [NSShadow new];
     shadow.shadowColor = editMode ? [UIColor clearColor] : [UIColor blackColor];
-    shadow.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, -1.0);
+    shadow.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, 1.0);
     
     UIColor *textColour = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryStoryColour];
     
@@ -408,6 +429,12 @@
                                                                            attributes:[self storyParagraphAttributesEditMode:editMode]];
         self.storyLabel.attributedText = storyDisplay;
     }
+}
+
+- (void)updateNameEditMode:(BOOL)editMode {
+    self.nameLabel.textColor = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryNameColour];
+    self.nameLabel.shadowColor = editMode ? [UIColor clearColor] : [UIColor blackColor];
+    self.nameLabel.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, 1.0);
 }
 
 @end

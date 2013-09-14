@@ -22,6 +22,7 @@
 
 @property (nonatomic, weak) id<CKBookSummaryViewDelegate> delegate;
 @property (nonatomic, strong) UIImage *updatedProfileImage;
+@property (nonatomic, strong) NSString *updatedName;
 @property (nonatomic, strong) NSString *updatedStory;
 
 - (id)initWithBook:(CKBook *)book;
