@@ -149,23 +149,7 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    CGFloat imgFactor = chosenImage.size.height / chosenImage.size.width;
-    
-    CGFloat cropWidth = chosenImage.size.width;
-    CGFloat cropHeight = chosenImage.size.height;
-    //chosenImage.size.height > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : chosenImage.size.height;
-    if (cropWidth > MAX_IMAGE_WIDTH)
-    {
-        cropWidth = MAX_IMAGE_WIDTH;
-        cropHeight = MAX_IMAGE_WIDTH * imgFactor;
-    }
-    if (cropHeight > MAX_IMAGE_HEIGHT)
-    {
-        cropHeight = MAX_IMAGE_HEIGHT;
-        cropWidth = MAX_IMAGE_HEIGHT / imgFactor;
-    }
-    CGRect cropRect = CGRectMake(0, 0, cropWidth, cropHeight);
-    self.selectedImage = [chosenImage scaledCopyOfSize:cropRect.size orientation:[self adjustedOrientationofImage:chosenImage]]; //[chosenImage imageScaledToFitSize:cropRect.size];
+    self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]]; //[chosenImage imageScaledToFitSize:cropRect.size];
     [self.snapshotView removeFromSuperview];
     self.snapshotView = nil;
     [self updateImagePreview];
@@ -175,6 +159,38 @@
     self.libraryPickerViewController = nil;
     [self removeImagePicker];
     [self.activityView stopAnimating];
+}
+
+- (CGSize)getResizeOfImageSize:(CGSize)imageSize {
+    CGFloat cropWidth = imageSize.width;
+    CGFloat cropHeight = imageSize.height;
+    CGFloat imgFactor = imageSize.height / imageSize.width;
+    if (cropWidth > cropHeight)
+    {
+        if (cropHeight > MAX_IMAGE_HEIGHT)
+        {
+            cropHeight = MAX_IMAGE_HEIGHT;
+            cropWidth = MAX_IMAGE_HEIGHT / imgFactor;
+        }
+        if (cropWidth > MAX_IMAGE_WIDTH)
+        {
+            cropWidth = MAX_IMAGE_WIDTH;
+            cropHeight = MAX_IMAGE_WIDTH * imgFactor;
+        }
+    }
+    else {
+        if (cropWidth > MAX_IMAGE_WIDTH)
+        {
+            cropWidth = MAX_IMAGE_WIDTH;
+            cropHeight = MAX_IMAGE_WIDTH * imgFactor;
+        }
+        if (cropHeight > MAX_IMAGE_HEIGHT)
+        {
+            cropHeight = MAX_IMAGE_HEIGHT;
+            cropWidth = MAX_IMAGE_HEIGHT / imgFactor;
+        }
+    }
+    return CGSizeMake(cropWidth, cropHeight);
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
