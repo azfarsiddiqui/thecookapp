@@ -577,7 +577,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES
                                                                                                           title:@"Page Name"
-                                                                                                 characterLimit:20];
+                                                                                                 characterLimit:14];
     editViewController.showTitle = YES;
     editViewController.forceUppercase = YES;
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
