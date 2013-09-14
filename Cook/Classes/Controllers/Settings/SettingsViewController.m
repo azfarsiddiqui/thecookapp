@@ -87,7 +87,7 @@
         CGFloat yOffset = 0.0;
         if (currentUser) {
             CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
-                                                                                 profileSize:ProfileViewSizeMini border:YES];
+                                                                                 profileSize:ProfileViewSizeSmall border:YES];
             photoView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
                 _loginLogoutButtonView.bounds.origin.y,
@@ -114,7 +114,7 @@
         profileLabel.autoresizingMask = UIViewAutoresizingNone;
         profileLabel.backgroundColor = [UIColor clearColor];
         profileLabel.font = [Theme settingsProfileFont];
-        profileLabel.textColor = [UIColor whiteColor];
+        profileLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         profileLabel.shadowColor = [UIColor blackColor];
         profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
         profileLabel.text = (currentUser == nil) ? @"SIGN IN" : @"LOGOUT";
@@ -139,7 +139,7 @@
         _themeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _themeLabel.backgroundColor = [UIColor clearColor];
         _themeLabel.font = [Theme settingsThemeFont];
-        _themeLabel.textColor = [UIColor whiteColor];
+        _themeLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         _themeLabel.shadowColor = [UIColor blackColor];
         _themeLabel.shadowOffset = CGSizeMake(0.0, -1.0);
         _themeLabel.text = @"DASH THEME";
@@ -189,28 +189,28 @@
     [scrollView addSubview:content2View];
     
     //Privacy and terms
-    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(40, 90, 138, 40)];
+    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(44, 90, 138, 40)];
     [termsButton setTitle:@"TERMS & CONDITIONS" forState:UIControlStateNormal];
     termsButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     termsButton.backgroundColor = [UIColor clearColor];
-    termsButton.titleLabel.font = [Theme settingsProfileFont];
-    termsButton.titleLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
+    termsButton.titleLabel.font = [Theme settingsThemeFont];
+    [termsButton setTitleColor:[UIColor colorWithWhite:1.000 alpha:0.700] forState:UIControlStateNormal];
     termsButton.titleLabel.shadowColor = [UIColor blackColor];
     termsButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [termsButton addTarget:self action:@selector(termsPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:termsButton];
-    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(185, 90, 54, 40)];
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(187, 90, 54, 40)];
     [privacyButton setTitle:@"PRIVACY" forState:UIControlStateNormal];
     privacyButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     privacyButton.backgroundColor = [UIColor clearColor];
-    privacyButton.titleLabel.font = [Theme settingsProfileFont];
-    privacyButton.titleLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
+    privacyButton.titleLabel.font = [Theme settingsThemeFont];
+    [privacyButton setTitleColor:[UIColor colorWithWhite:1.000 alpha:0.700] forState:UIControlStateNormal];
     privacyButton.titleLabel.shadowColor = [UIColor blackColor];
     privacyButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [privacyButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:privacyButton];
     
-    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(178, 98, 5, 15)];
+    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(180, 98, 5, 15)];
     dotLabel.text = @".";
     dotLabel.textColor = [UIColor whiteColor];
     [content1View addSubview:dotLabel];
@@ -236,7 +236,7 @@
     aboutLabel.textAlignment = NSTextAlignmentCenter;
     aboutLabel.backgroundColor = [UIColor clearColor];
     aboutLabel.font = [Theme settingsProfileFont];
-    aboutLabel.textColor = [UIColor whiteColor];
+    aboutLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     aboutLabel.shadowColor = [UIColor blackColor];
     aboutLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     aboutLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -253,7 +253,7 @@
     supportLabel.textAlignment = NSTextAlignmentCenter;
     supportLabel.backgroundColor = [UIColor clearColor];
     supportLabel.font = [Theme settingsProfileFont];
-    supportLabel.textColor = [UIColor whiteColor];
+    supportLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     supportLabel.shadowColor = [UIColor blackColor];
     supportLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     supportLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -270,7 +270,7 @@
     facebookLabel.textAlignment = NSTextAlignmentCenter;
     facebookLabel.backgroundColor = [UIColor clearColor];
     facebookLabel.font = [Theme settingsProfileFont];
-    facebookLabel.textColor = [UIColor whiteColor];
+    facebookLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     facebookLabel.shadowColor = [UIColor blackColor];
     facebookLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     facebookLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -287,7 +287,7 @@
     twitterLabel.textAlignment = NSTextAlignmentCenter;
     twitterLabel.backgroundColor = [UIColor clearColor];
     twitterLabel.font = [Theme settingsProfileFont];
-    twitterLabel.textColor = [UIColor whiteColor];
+    twitterLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     twitterLabel.shadowColor = [UIColor blackColor];
     twitterLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     twitterLabel.translatesAutoresizingMaskIntoConstraints = NO;

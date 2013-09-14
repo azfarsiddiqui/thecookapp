@@ -588,7 +588,7 @@
 }
 
 + (UIFont *)settingsThemeFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:13.0];
 }
 
 #pragma mark - Ingredients
