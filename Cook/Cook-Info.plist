@@ -52,18 +52,6 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>BebasNeue.otf</string>
-		<string>Neutra2Cond-Bold.otf</string>
-		<string>Neutra2Cond-Light.otf</string>
-		<string>Neutra2Cond-Medium.otf</string>
-		<string>Neutra2Cond-Thin.otf</string>
-		<string>Neutra2Cond-Titling.otf</string>
-		<string>Neutra2Display-Bold.otf</string>
-		<string>Neutra2Display-Inline.otf</string>
-		<string>Neutra2Display-Light.otf</string>
-		<string>Neutra2Display-Medium.otf</string>
-		<string>Neutra2Display-Thin.otf</string>
-		<string>Neutra2Display-Titling.otf</string>
 		<string>Brandon_bld_it.otf</string>
 		<string>Brandon_bld.otf</string>
 		<string>Brandon_blk_it.otf</string>

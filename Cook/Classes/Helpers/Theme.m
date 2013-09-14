@@ -21,18 +21,18 @@
 
 +(UIFont *)defaultFontWithSize:(CGFloat)size
 {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:size];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:size];
     
 }
 
 +(UIFont *)defaultLabelFont
 {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20];
 }
 
 +(UIFont*) defaultBoldFontWithSize:(CGFloat)size
 {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:size];
+    return [UIFont fontWithName:@"BrandonGrotesque-Bold" size:size];
 }
 
 #pragma mark - Common Styles
@@ -88,10 +88,6 @@
 
 + (UIColor *)storeTabSelectedTextColour {
     return [UIColor grayColor];
-}
-
-+ (UIFont *)storeBookActionButtonFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
 }
 
 + (UIColor *)storeBookActionButtonColour {
@@ -170,129 +166,7 @@
     return [UIColor colorWithHexString:@"A0A0A0"];
 }
 
-#pragma mark - Notifications
-
-+ (UIFont *)notificationsHeaderFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:36.0];
-}
-
-+ (UIColor *)notificationsHeaderColour {
-    return [UIColor darkGrayColor];
-}
-
-+ (UIFont *)notificationCellNameFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:20.0];
-}
-
-+ (UIColor *)notificationsCellNameColour {
-    return [UIColor darkGrayColor];
-}
-
-+ (UIFont *)notificationCellActionFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0];
-}
-
-+ (UIColor *)notificationsCellActionColour {
-    return [UIColor darkGrayColor];
-}
-
-+ (UIFont *)notificationCellTimeFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
-}
-
-+ (UIColor *)notificationsCellTimeColour {
-    return [UIColor lightGrayColor];
-}
-
 #pragma mark - Book contents/activities.
-
-+ (UIFont *)bookNavigationTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
-}
-
-+ (UIColor *)bookNavigationTitleColour {
-    return [UIColor colorWithHexString:@"888888"];
-}
-
-+ (UIFont *)bookProfileNameFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:40.0];
-}
-
-+ (UIColor *)bookContentsViewColour {
-    return [UIColor colorWithHexString:@"3885C4"];
-}
-
-+ (UIFont *)bookContentsTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:100.0];
-}
-
-+ (UIFont *)bookContentsTitleMinFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:90.0];
-}
-
-+ (UIColor *)bookContentsTitleColour {
-    return [UIColor blackColor];
-}
-
-+ (UIFont *)bookContentsNameFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:30.0];
-}
-
-+ (UIColor *)bookContentsNameColour {
-    return [UIColor blackColor];
-}
-
-+ (UIFont *)bookContentsItemFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:20.0];
-}
-
-+ (UIColor *)bookContentsItemColour {
-    return [UIColor whiteColor];
-}
-
-+ (UIFont *)bookActivityHeaderFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:80.0];
-}
-
-+ (UIColor *)bookActivityHeaderColour {
-    return [UIColor lightGrayColor];
-}
-
-+ (UIColor *)activityInfoViewColour {
-    return [UIColor colorWithHexString:@"3885C4"];
-}
-
-+ (UIColor *)activityActionColour {
-    return [UIColor whiteColor];
-}
-
-+ (UIFont *)activityActionFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0];
-}
-
-+ (UIColor *)activityTimeColour {
-    return [UIColor whiteColor];
-}
-
-+ (UIFont *)activityTimeFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:14.0];
-}
-
-+ (UIColor *)activityTitleColour {
-    return [UIColor whiteColor];
-}
-
-+ (UIFont *)activityTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:20.0];
-}
-
-+ (UIColor *)activityNameColour {
-    return [UIColor whiteColor];
-}
-
-+ (UIFont *)activityNameFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:16.0];
-}
 
 + (UIFont *)bookIndexFont {
     return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
@@ -408,11 +282,6 @@
     return [UIColor colorWithHexString:@"4e4e4e"];
 }
 
-+(UIFont*) categoryFont
-{
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:30.0f];
-}
-
 + (UIColor *)recipeViewBackgroundColour {
     return [UIColor colorWithHexString:@"F8F8F8"];
 }
@@ -430,7 +299,7 @@
 }
 
 + (UIFont *)privacyInfoFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Medium" size:12.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0];
 }
 
 + (UIColor *)progressSavingColour {
@@ -447,11 +316,6 @@
     return [UIColor colorWithHexString:@"E8E8E8"];
 }
 
-+ (UIFont *)cookServesPrepEditTitleFont {
-    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:50.0];
-}
-
-
 + (UIColor *)cookServesPrepEditTitleColor {
     return [UIColor whiteColor];
 }
@@ -464,21 +328,12 @@
     return [UIFont fontWithName:@"AvenirNext-Regular" size:24.0f];
 }
 
-+(UIFont *)categoryListFont {
-    return [UIFont fontWithName:@"Neutraface2Display-Bold" size:50.0];
-}
-
 +(UIColor *)categoryListSelectedColor {
     return [UIColor colorWithHexString:@"1b76b6"];
 }
 
-
 + (UIFont *) typeItUpFont {
     return [Theme defaultBoldFontWithSize:28.0f];
-}
-
-+ (UIFont *) orJustAddFont {
-   return [UIFont fontWithName:@"Neutraface2Display-Medium" size:20.0f];
 }
 
 + (UIFont *)editServesTitleFont {
@@ -598,23 +453,6 @@
 }
 
 #pragma mark - Book Cover
-+ (UIFont *)bookCoverEditableAuthorTextFont
-{
-   return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:80];
-}
-+ (UIFont *)bookCoverEditableCaptionTextFont
-{
-   return [UIFont fontWithName:@"Neutraface2Condensed-Bold" size:55];
-}
-+ (UIFont *)bookCoverEditableTitleTextFont
-{
-   return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:80];
-}
-
-+(UIFont *)bookCoverEditableFieldDescriptionFont
-{
-    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
-}
 
 + (UIFont *)bookCoverViewModeNameMaxFont {
     return [UIFont fontWithName:@"BrandonGrotesque-Light" size:56];
@@ -631,22 +469,6 @@
 +(UIFont *)bookCoverViewModeTitleFont
 {
     return [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14];
-}
-
-+(UIFont *)bookCoverViewModeCaptionFont
-{
-    return [UIFont fontWithName:@"Neutraface2Condensed-Medium" size:24];
-}
-
-#pragma mark - General reusable editable controls
-+ (UIFont *)textViewTitleFont
-{
-    return [UIFont fontWithName:@"Neutraface2Condensed-Titling" size:30];
-}
-
-+ (UIFont *)textEditableTextFont
-{
-    return [UIFont fontWithName:@"Neutraface2Condensed-Medium" size:55];
 }
 
 #pragma mark - Book navigation view.
