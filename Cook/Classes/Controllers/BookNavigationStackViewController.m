@@ -1183,7 +1183,7 @@
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self stackContentStartSection];
     
-    [self fastForwardToPage:page];
+    [self fastForwardToPageIndex:pageIndex];
     
 //    [self.collectionView setContentOffset:(CGPoint){
 //        pageIndex * self.collectionView.bounds.size.width,
@@ -1192,87 +1192,32 @@
 }
 
 - (void)scrollToHome {
-    [self scrollToHomeAnimated:YES];
-//    [self fastForwardToPage:kIndexSection];
+    [self fastForwardToPageIndex:kIndexSection];
 }
 
-- (void)fastForwardToPage:(NSString *)page {
-    NSInteger numPeekPages = 2;
-    NSInteger pageIndex = [self.pages indexOfObject:page];
-    pageIndex += [self stackContentStartSection];
+- (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
+    NSInteger numPeekPages = 3;
+    NSInteger currentPageIndex = [self currentPageIndex];
     
-//    self.fastForward = YES;
-    
-    BOOL customJump = (pageIndex > [self stackContentStartSection] + numPeekPages);
-    
-    // Animate to the next one
-//    if (customJump) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.collectionView setContentOffset:(CGPoint){
-//                ([self stackContentStartSection] + numPeekPages) * self.collectionView.bounds.size.width,
-//                self.collectionView.contentOffset.y
-//            } animated:YES];
-//        });
-//    }
+    BOOL customJump = (abs(currentPageIndex - pageIndex) > numPeekPages);
     
     // Then jump direct to the page before.
     if (customJump) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [self.collectionView setContentOffset:(CGPoint){
-                (pageIndex - numPeekPages) * self.collectionView.bounds.size.width,
-                self.collectionView.contentOffset.y
-            } animated:NO];
-        });
-    }
-    
-    // Then animate to the intended destination.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        
+        [self.collectionView setContentOffset:(CGPoint){
+            pageIndex * self.collectionView.bounds.size.width,
+            self.collectionView.contentOffset.y
+        } animated:NO];
+        
+    } else {
+        
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,
             self.collectionView.contentOffset.y
         } animated:YES];
-    });
-
+        
+    }
 }
-
-//- (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
-//    NSInteger numPeekPages = 2;
-//    NSInteger pageIndex = [self.pages indexOfObject:page];
-//    pageIndex += [self stackContentStartSection];
-//    
-//    //    self.fastForward = YES;
-//    
-//    BOOL customJump = (pageIndex > [self stackContentStartSection] + numPeekPages);
-//    
-//    // Animate to the next one
-//    //    if (customJump) {
-//    //        dispatch_async(dispatch_get_main_queue(), ^{
-//    //            [self.collectionView setContentOffset:(CGPoint){
-//    //                ([self stackContentStartSection] + numPeekPages) * self.collectionView.bounds.size.width,
-//    //                self.collectionView.contentOffset.y
-//    //            } animated:YES];
-//    //        });
-//    //    }
-//    
-//    // Then jump direct to the page before.
-//    if (customJump) {
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-//            [self.collectionView setContentOffset:(CGPoint){
-//                (pageIndex - numPeekPages) * self.collectionView.bounds.size.width,
-//                self.collectionView.contentOffset.y
-//            } animated:NO];
-//        });
-//    }
-//    
-//    // Then animate to the intended destination.
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-//        [self.collectionView setContentOffset:(CGPoint){
-//            pageIndex * self.collectionView.bounds.size.width,
-//            self.collectionView.contentOffset.y
-//        } animated:YES];
-//    });
-//    
-//}
 
 - (void)scrollToHomeAnimated:(BOOL)animated {
     [self.collectionView setContentOffset:(CGPoint){
@@ -1403,6 +1348,12 @@
 
 - (CGFloat)rankForRecipe:(CKRecipe *)recipe {
     return recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
+}
+
+- (NSInteger)currentPageIndex {
+    CGFloat pageSpan = self.collectionView.contentOffset.x;
+    NSInteger pageIndex = (pageSpan / self.collectionView.bounds.size.width);
+    return pageIndex;
 }
 
 @end
