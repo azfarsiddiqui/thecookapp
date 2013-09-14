@@ -408,10 +408,12 @@
 
 - (void)loggedIn:(NSNotification *)notification {
     [self createLoginLogoutButton];
+    [self.themeTabView reset];
 }
 
 - (void)loggedOut:(NSNotification *)notification {
     [self createLoginLogoutButton];
+    [self.themeTabView reset];
 }
 
 #pragma mark - MFMailViewController delegate method
