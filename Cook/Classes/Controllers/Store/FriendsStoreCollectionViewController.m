@@ -43,7 +43,7 @@
 }
 
 - (void)showNoBooksCard {
-    [ViewHelper showCardText:@"NO FRIENDS" subtitle:@"FIND PEOPLE YOU KNOW IN SUGGESTED"
+    [ViewHelper showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
                         view:self.collectionView show:YES center:self.collectionView.center];
 }
 
