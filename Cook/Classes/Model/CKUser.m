@@ -232,7 +232,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
     // CHeck profilePhoto first before falling back to FB photo.
     PFFile *profilePhoto = [self.parseUser objectForKey:kUserAttrProfilePhoto];
-    if (profilePhoto != nil && profilePhoto.getData.length > 0) {
+    if (profilePhoto != nil) {
         pictureUrl = [NSURL URLWithString:profilePhoto.url];
     } else if ([self.facebookId length] > 0) {
         pictureUrl = [NSURL URLWithString:

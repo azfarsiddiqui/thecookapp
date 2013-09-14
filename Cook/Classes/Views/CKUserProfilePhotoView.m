@@ -185,8 +185,9 @@
 - (void)loadProfileUrl:(NSURL *)profileUrl {
     if (profileUrl) {
         [[CKPhotoManager sharedInstance] imageForUrl:profileUrl size:[ImageHelper profileSize] name:@"profilePhoto"
-                                            progress:^(CGFloat progressRatio) {
-                                            } completion:^(UIImage *image, NSString *name) {
+                                            progress:^(CGFloat progressRatio) {}
+                                       isSynchronous:YES
+                                          completion:^(UIImage *image, NSString *name) {
                                                 [self loadProfileImage:image];
                                             }];
     }

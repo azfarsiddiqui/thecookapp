@@ -39,6 +39,10 @@
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
            progress:(void (^)(CGFloat progressRatio))progress
          completion:(void (^)(UIImage *image, NSString *name))completion;
+- (void)imageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
+           progress:(void (^)(CGFloat progressRatio))progress
+      isSynchronous:(BOOL)isSynchronous
+         completion:(void (^)(UIImage *image, NSString *name))completion;
 
 // Setup books, resizing etc.
 - (void)setupBooks;

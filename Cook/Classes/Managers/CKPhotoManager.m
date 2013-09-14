@@ -252,6 +252,13 @@
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
            progress:(void (^)(CGFloat progressRatio))progress
          completion:(void (^)(UIImage *image, NSString *name))completion {
+    [self imageForUrl:url size:size name:name progress:progress isSynchronous:NO completion:completion];
+}
+
+- (void)imageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
+           progress:(void (^)(CGFloat progressRatio))progress
+      isSynchronous:(BOOL)isSynchronous
+         completion:(void (^)(UIImage *image, NSString *name))completion {
     if (url) {
 
         __weak CKPhotoManager *weakSelf = self;
@@ -268,11 +275,13 @@
                 
                 // Otherwise download directly via URL.
                 [weakSelf downloadImageForUrl:url size:size name:name
-                                 progress:^(CGFloat progressRatio) {
-                                     progress(progressRatio);
-                                 } completion:^(UIImage *image, NSString *name) {
-                                     completion(image, name);
-                                 }];
+                                     progress:^(CGFloat progressRatio) {
+                                         progress(progressRatio);
+                                     }
+                                isSynchronous:isSynchronous
+                                   completion:^(UIImage *image, NSString *name) {
+                                       completion(image, name);
+                                   }];
             }
         }
 
@@ -720,6 +729,7 @@
 
 - (void)downloadImageForUrl:(NSURL *)url size:(CGSize)size name:(NSString *)name
                    progress:(void (^)(CGFloat progressRatio))progress
+              isSynchronous:(BOOL)isSynchronous
                  completion:(void (^)(UIImage *image, NSString *name))completion {
     
     // Generate a cache key for the given file and size combination.
@@ -732,8 +742,11 @@
     
     DLog(@"Downloading URL %@", url);
     
-    // Mark as in-progress transfer. Just set as zero progress for downloads until we need progress.
-    [self updateTransferProgress:@(0) cacheKey:cacheKey];
+    if (!isSynchronous)
+    {
+        // Mark as in-progress transfer. Just set as zero progress for downloads until we need progress.
+        [self updateTransferProgress:@(0) cacheKey:cacheKey];
+    }
     
     __weak CKPhotoManager *weakSelf = self;
     
@@ -752,8 +765,11 @@
                                                                      // Keep it in the cache.
                                                                      [weakSelf storeImage:imageToFit forKey:cacheKey];
                                                                      
-                                                                     // Mark as completed transfer.
-                                                                     [weakSelf.transferInProgress removeObjectForKey:cacheKey];
+                                                                     if (!isSynchronous)
+                                                                     {
+                                                                         // Mark as completed transfer.
+                                                                         [weakSelf.transferInProgress removeObjectForKey:cacheKey];
+                                                                     }
                                                                      
                                                                      // Callback on mainqueue.
                                                                      dispatch_async(dispatch_get_main_queue(), ^{

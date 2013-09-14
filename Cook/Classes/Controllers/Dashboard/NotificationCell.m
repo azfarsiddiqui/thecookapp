@@ -66,9 +66,6 @@
     
     CGSize availableSize = [self availableSize];
     
-    // Load profile photo.
-    [self.profileView loadProfilePhotoForUser:actionUser];
-    
     // Name label.
     self.nameLabel.hidden = NO;
     self.nameLabel.text = [actionUser.name uppercaseString];
