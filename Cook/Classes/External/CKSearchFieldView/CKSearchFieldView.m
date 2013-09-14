@@ -12,7 +12,6 @@
 @interface CKSearchFieldView () <UITextFieldDelegate>
 
 @property (nonatomic, weak) id<CKSearchFieldViewDelegate> delegate;
-@property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UIButton *searchButton;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -73,12 +72,19 @@
 
 - (void)focus:(BOOL)focus {
     if (focus) {
+        self.textField.placeholder = @"SEARCH BY NAME";
         self.textField.text = self.currentSearch;
         [self.textField becomeFirstResponder];
     } else {
+        self.textField.placeholder = nil;
         self.textField.text = nil;
         [self.textField resignFirstResponder];
     }
+}
+
+- (void)clearSearch {
+    self.currentSearch = nil;
+    self.textField.text = nil;
 }
 
 #pragma mark - UITextFieldDelegate methods

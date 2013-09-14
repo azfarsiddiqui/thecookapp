@@ -290,19 +290,6 @@
 		7667999317AA9FCE001C5E8D /* cook_book_inner_category_new@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7667998B17AA9FCE001C5E8D /* cook_book_inner_category_new@2x.png */; };
 		7667999417AA9FCE001C5E8D /* cook_book_inner_category_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7667998C17AA9FCE001C5E8D /* cook_book_inner_category_overlay.png */; };
 		7667999517AA9FCE001C5E8D /* cook_book_inner_category_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7667998D17AA9FCE001C5E8D /* cook_book_inner_category_overlay@2x.png */; };
-		766B0DD91664495E00A934FD /* BebasNeue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCC1664495E00A934FD /* BebasNeue.otf */; };
-		766B0DDA1664495E00A934FD /* Dharma Type Font License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */; };
-		766B0DDB1664495E00A934FD /* Neutra2Cond-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */; };
-		766B0DDC1664495E00A934FD /* Neutra2Cond-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DCF1664495E00A934FD /* Neutra2Cond-Light.otf */; };
-		766B0DDD1664495E00A934FD /* Neutra2Cond-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD01664495E00A934FD /* Neutra2Cond-Medium.otf */; };
-		766B0DDE1664495E00A934FD /* Neutra2Cond-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD11664495E00A934FD /* Neutra2Cond-Thin.otf */; };
-		766B0DDF1664495E00A934FD /* Neutra2Cond-Titling.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD21664495E00A934FD /* Neutra2Cond-Titling.otf */; };
-		766B0DE01664495E00A934FD /* Neutra2Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD31664495E00A934FD /* Neutra2Display-Bold.otf */; };
-		766B0DE11664495E00A934FD /* Neutra2Display-Inline.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD41664495E00A934FD /* Neutra2Display-Inline.otf */; };
-		766B0DE21664495E00A934FD /* Neutra2Display-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD51664495E00A934FD /* Neutra2Display-Light.otf */; };
-		766B0DE31664495E00A934FD /* Neutra2Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD61664495E00A934FD /* Neutra2Display-Medium.otf */; };
-		766B0DE41664495E00A934FD /* Neutra2Display-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */; };
-		766B0DE51664495E00A934FD /* Neutra2Display-Titling.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */; };
 		766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 766BFC211630DE990083EB0E /* UIColor+Expanded.m */; };
 		766D96F517D2E54700A9104E /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 766D96F417D2E54700A9104E /* NotificationsViewController.m */; };
 		766D96F817D2E80000A9104E /* NotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 766D96F717D2E80000A9104E /* NotificationCell.m */; };
@@ -734,6 +721,7 @@
 		76B3AEBC174B2BAA001B4661 /* cook_customise_colour_picker_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B3AEAA174B2BAA001B4661 /* cook_customise_colour_picker_red@2x.png */; };
 		76B3AEBD174B2BAA001B4661 /* cook_customise_colour_picker_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B3AEAB174B2BAA001B4661 /* cook_customise_colour_picker_yellow.png */; };
 		76B3AEBE174B2BAA001B4661 /* cook_customise_colour_picker_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B3AEAC174B2BAA001B4661 /* cook_customise_colour_picker_yellow@2x.png */; };
+		76B55CBB17E3EFE400965BD0 /* Application License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 76B55CBA17E3EFE400965BD0 /* Application License.txt */; };
 		76BE36DE171788D6000C0755 /* BookTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BE36DD171788D6000C0755 /* BookTitleViewController.m */; };
 		76BE37321717A8E9000C0755 /* CKEditingViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BE372A1717A8E9000C0755 /* CKEditingViewHelper.m */; };
 		76BE37361717A8E9000C0755 /* cook_customise_textbox_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 76BE37301717A8E9000C0755 /* cook_customise_textbox_white.png */; };
@@ -1513,19 +1501,6 @@
 		7667998B17AA9FCE001C5E8D /* cook_book_inner_category_new@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_category_new@2x.png"; sourceTree = "<group>"; };
 		7667998C17AA9FCE001C5E8D /* cook_book_inner_category_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_category_overlay.png; sourceTree = "<group>"; };
 		7667998D17AA9FCE001C5E8D /* cook_book_inner_category_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_category_overlay@2x.png"; sourceTree = "<group>"; };
-		766B0DCC1664495E00A934FD /* BebasNeue.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BebasNeue.otf; sourceTree = "<group>"; };
-		766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Dharma Type Font License.txt"; sourceTree = "<group>"; };
-		766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Bold.otf"; sourceTree = "<group>"; };
-		766B0DCF1664495E00A934FD /* Neutra2Cond-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Light.otf"; sourceTree = "<group>"; };
-		766B0DD01664495E00A934FD /* Neutra2Cond-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Medium.otf"; sourceTree = "<group>"; };
-		766B0DD11664495E00A934FD /* Neutra2Cond-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Thin.otf"; sourceTree = "<group>"; };
-		766B0DD21664495E00A934FD /* Neutra2Cond-Titling.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Cond-Titling.otf"; sourceTree = "<group>"; };
-		766B0DD31664495E00A934FD /* Neutra2Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Bold.otf"; sourceTree = "<group>"; };
-		766B0DD41664495E00A934FD /* Neutra2Display-Inline.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Inline.otf"; sourceTree = "<group>"; };
-		766B0DD51664495E00A934FD /* Neutra2Display-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Light.otf"; sourceTree = "<group>"; };
-		766B0DD61664495E00A934FD /* Neutra2Display-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Medium.otf"; sourceTree = "<group>"; };
-		766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Thin.otf"; sourceTree = "<group>"; };
-		766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Neutra2Display-Titling.otf"; sourceTree = "<group>"; };
 		766BFC201630DE990083EB0E /* UIColor+Expanded.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Expanded.h"; sourceTree = "<group>"; };
 		766BFC211630DE990083EB0E /* UIColor+Expanded.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Expanded.m"; sourceTree = "<group>"; };
 		766D96F317D2E54700A9104E /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = "<group>"; };
@@ -2005,6 +1980,7 @@
 		76B3AEAA174B2BAA001B4661 /* cook_customise_colour_picker_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_colour_picker_red@2x.png"; sourceTree = "<group>"; };
 		76B3AEAB174B2BAA001B4661 /* cook_customise_colour_picker_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_colour_picker_yellow.png; sourceTree = "<group>"; };
 		76B3AEAC174B2BAA001B4661 /* cook_customise_colour_picker_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_colour_picker_yellow@2x.png"; sourceTree = "<group>"; };
+		76B55CBA17E3EFE400965BD0 /* Application License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Application License.txt"; sourceTree = "<group>"; };
 		76BE36DC171788D6000C0755 /* BookTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookTitleViewController.h; sourceTree = "<group>"; };
 		76BE36DD171788D6000C0755 /* BookTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookTitleViewController.m; sourceTree = "<group>"; };
 		76BE37291717A8E9000C0755 /* CKEditingViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKEditingViewHelper.h; sourceTree = "<group>"; };
@@ -3039,19 +3015,7 @@
 		766B0DCB1664495E00A934FD /* fonts */ = {
 			isa = PBXGroup;
 			children = (
-				766B0DCC1664495E00A934FD /* BebasNeue.otf */,
-				766B0DCD1664495E00A934FD /* Dharma Type Font License.txt */,
-				766B0DCE1664495E00A934FD /* Neutra2Cond-Bold.otf */,
-				766B0DCF1664495E00A934FD /* Neutra2Cond-Light.otf */,
-				766B0DD01664495E00A934FD /* Neutra2Cond-Medium.otf */,
-				766B0DD11664495E00A934FD /* Neutra2Cond-Thin.otf */,
-				766B0DD21664495E00A934FD /* Neutra2Cond-Titling.otf */,
-				766B0DD31664495E00A934FD /* Neutra2Display-Bold.otf */,
-				766B0DD41664495E00A934FD /* Neutra2Display-Inline.otf */,
-				766B0DD51664495E00A934FD /* Neutra2Display-Light.otf */,
-				766B0DD61664495E00A934FD /* Neutra2Display-Medium.otf */,
-				766B0DD71664495E00A934FD /* Neutra2Display-Thin.otf */,
-				766B0DD81664495E00A934FD /* Neutra2Display-Titling.otf */,
+				76B55CBA17E3EFE400965BD0 /* Application License.txt */,
 				7614D5971744B7D400B16AC9 /* Brandon_bld_it.otf */,
 				7614D5981744B7D400B16AC9 /* Brandon_bld.otf */,
 				7614D5991744B7D400B16AC9 /* Brandon_blk_it.otf */,
@@ -4796,53 +4760,40 @@
 				763546B917941988007A9DF6 /* cook_book_inner_icon_like_dark@2x.png in Resources */,
 				7647856117A74F7600387A7B /* cook_edit_bg_neutral@2x.png in Resources */,
 				7664801A17E149ED00A690D6 /* cook_book_inner_icon_small_likes_on_neutral.png in Resources */,
-				766B0DD91664495E00A934FD /* BebasNeue.otf in Resources */,
 				F613C66C17DF4F7E00A5962A /* cook_customise_photo_filter_icon_text.png in Resources */,
 				766E43AF17DEDC0D006B2495 /* cook_book_inner_category_add_onpress_yellow.png in Resources */,
 				761951DA1793B8FD008AB495 /* cook_book_inner_titlebar@2x.png in Resources */,
 				768E74F117D605DD00502C19 /* cook_login_rightarrow_sm@2x.png in Resources */,
 				763546B417941988007A9DF6 /* cook_book_inner_icon_comment_light.png in Resources */,
 				76E9868717E2CEB700D9CAF3 /* cook_library_icons_search.png in Resources */,
-				766B0DDA1664495E00A934FD /* Dharma Type Font License.txt in Resources */,
 				7627E07217E0AE0100FD443D /* cook_book_Ingredientshint@2x.png in Resources */,
 				F60C56FB17E3309E00912544 /* cook_dash_settings_icon_login_onpress@2x.png in Resources */,
 				767EEA3B17BDBF62001E7D0B /* cook_login_friendsbooks_right@2x.png in Resources */,
 				766E43A017DEDC0D006B2495 /* cook_book_inner_category_add_neutral@2x.png in Resources */,
-				766B0DDB1664495E00A934FD /* Neutra2Cond-Bold.otf in Resources */,
 				76FC076F17C5D9F600ABF96F /* cook_customise_privacy_picker_onpress.png in Resources */,
 				76F5EE491782A3F1004AB119 /* cook_book_neutral@2x.png in Resources */,
 				F68E0EF817D2AE6600B56E7A /* cook_book_share_icon_imessage.png in Resources */,
 				766E43BF17DEDC0D006B2495 /* cook_book_inner_category_new_neutral.png in Resources */,
 				76EAAEEA1787B29E00158211 /* cook_book_burntorange.png in Resources */,
-				766B0DDC1664495E00A934FD /* Neutra2Cond-Light.otf in Resources */,
 				76D625DA17DCAE9A007E936A /* cook_intro_popover_topright.png in Resources */,
-				766B0DDD1664495E00A934FD /* Neutra2Cond-Medium.otf in Resources */,
-				766B0DDE1664495E00A934FD /* Neutra2Cond-Thin.otf in Resources */,
 				767EEA3017BDBF62001E7D0B /* cook_login_btn_bottom_right_onpress.png in Resources */,
 				762CB78C17B87A22000197E8 /* cook_book_inner_icon_small_likes_off@2x.png in Resources */,
-				766B0DDF1664495E00A934FD /* Neutra2Cond-Titling.otf in Resources */,
 				76462D301782FB9C002EA7D0 /* cook_library_icons_friends.png in Resources */,
 				7689A1A417BBDADF0093C56F /* cook_customise_photo_btn_cameratoggle_onpress@2x.png in Resources */,
 				7698ED6917D46332003898A4 /* cook_message_popover@2x.png in Resources */,
-				766B0DE01664495E00A934FD /* Neutra2Display-Bold.otf in Resources */,
 				766E43F317DEE456006B2495 /* cook_book_inner_category_add_onpress_gray.png in Resources */,
-				766B0DE11664495E00A934FD /* Neutra2Display-Inline.otf in Resources */,
 				7647853F17A697D800387A7B /* cook_customise_privacy_bg_middle@2x.png in Resources */,
-				766B0DE21664495E00A934FD /* Neutra2Display-Light.otf in Resources */,
 				76F5EE401782A3AD004AB119 /* cook_book_orange.png in Resources */,
 				766E431717C7129400F1044B /* cook_book_inner_loading_large_inner.png in Resources */,
-				766B0DE31664495E00A934FD /* Neutra2Display-Medium.otf in Resources */,
 				F60C56F617E3309E00912544 /* cook_dash_settings_icon_facebook_onpress.png in Resources */,
 				76FC07E417C6666400ABF96F /* cook_customise_textbox_white_onpress@2x.png in Resources */,
 				7647854717A697D800387A7B /* cook_customise_privacy_public@2x.png in Resources */,
-				766B0DE41664495E00A934FD /* Neutra2Display-Thin.otf in Resources */,
 				767EEA2C17BDBF62001E7D0B /* cook_login_btn_bottom_left_onpress.png in Resources */,
 				7698ED6317D44DB4003898A4 /* cook_customise_textbox_icon_swipedelete.png in Resources */,
 				766E431817C7129400F1044B /* cook_book_inner_loading_large_inner@2x.png in Resources */,
 				7676058117B3EB7000CA441B /* cook_book_recipe_icon_serves@2x.png in Resources */,
 				766E432E17DEC8FA006B2495 /* cook_book_edge_gray_right@2x.png in Resources */,
 				766E43A117DEDC0D006B2495 /* cook_book_inner_category_add_onpress_blue.png in Resources */,
-				766B0DE51664495E00A934FD /* Neutra2Display-Titling.otf in Resources */,
 				763546BD17941988007A9DF6 /* cook_book_inner_icon_share_light@2x.png in Resources */,
 				7647854617A697D800387A7B /* cook_customise_privacy_public.png in Resources */,
 				761951CB1793B8FD008AB495 /* cook_book_inner_icon_close_dark.png in Resources */,
@@ -4886,6 +4837,7 @@
 				766E43CC17DEDC0D006B2495 /* cook_book_inner_icon_add_gray@2x.png in Resources */,
 				76D625D017DCAE9A007E936A /* cook_intro_icon_library.png in Resources */,
 				762CB79317B87A22000197E8 /* cook_book_inner_icon_small_time.png in Resources */,
+				76B55CBB17E3EFE400965BD0 /* Application License.txt in Resources */,
 				766E43CA17DEDC0D006B2495 /* cook_book_inner_icon_add_blue@2x.png in Resources */,
 				76D625D517DCAE9A007E936A /* cook_intro_icon_title@2x.png in Resources */,
 				767EEA4217BDBF62001E7D0B /* cook_login_textfield.png in Resources */,

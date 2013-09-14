@@ -334,7 +334,7 @@
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
     self.editMode = editMode;
     
-    [self showIntroCard:!editMode];
+    [self showIntroCard:[self introRequired]];
     
     // Prep photo edit button to be transitioned in.
     if (self.editMode) {
@@ -397,7 +397,7 @@
 }
 
 - (BOOL)introRequired {
-    return (![self.book hasCoverPhoto] && ![self.book.user hasProfilePhoto]);
+    return (!self.editMode && ![self.book hasCoverPhoto] && ![self.book.user hasProfilePhoto]);
 }
 
 @end

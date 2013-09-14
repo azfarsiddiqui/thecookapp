@@ -50,7 +50,6 @@
 + (UIColor *)storeTabTextShadowColour;
 + (UIFont *)storeTabSelectedFont;
 + (UIColor *)storeTabSelectedTextColour;
-+ (UIFont *)storeBookActionButtonFont;
 + (UIColor *)storeBookActionButtonColour;
 + (UIColor *)storeBookActionButtonShadowColour;
 + (UIFont *)storeBookSummaryNameFont;
@@ -58,40 +57,9 @@
 + (UIFont *)storeBookSummaryStoryFont;
 + (UIColor *)storeBookSummaryStoryColour;
 
-#pragma mark - Notifications
-+ (UIFont *)notificationsHeaderFont;
-+ (UIColor *)notificationsHeaderColour;
-+ (UIFont *)notificationCellNameFont;
-+ (UIColor *)notificationsCellNameColour;
-+ (UIFont *)notificationCellActionFont;
-+ (UIColor *)notificationsCellActionColour;
-+ (UIFont *)notificationCellTimeFont;
-+ (UIColor *)notificationsCellTimeColour;
-
 #pragma mark - Book contents/activities.
+
 + (UIColor *)bookCoverInsideBackgroundColour;
-+ (UIFont *)bookNavigationTitleFont;
-+ (UIColor *)bookNavigationTitleColour;
-+ (UIFont *)bookProfileNameFont;
-+ (UIFont *)bookContentsTitleMinFont;
-+ (UIColor *)bookContentsViewColour;
-+ (UIFont *)bookContentsTitleFont;
-+ (UIColor *)bookContentsTitleColour;
-+ (UIFont *)bookContentsNameFont;
-+ (UIColor *)bookContentsNameColour;
-+ (UIFont *)bookContentsItemFont;
-+ (UIColor *)bookContentsItemColour;
-+ (UIFont *)bookActivityHeaderFont;
-+ (UIColor *)bookActivityHeaderColour;
-+ (UIColor *)activityInfoViewColour;
-+ (UIColor *)activityActionColour;
-+ (UIFont *)activityActionFont;
-+ (UIColor *)activityTimeColour;
-+ (UIFont *)activityTimeFont;
-+ (UIColor *)activityTitleColour;
-+ (UIFont *)activityTitleFont;
-+ (UIColor *)activityNameColour;
-+ (UIFont *)activityNameFont;
 + (UIFont *)bookIndexFont;
 + (UIColor *)bookIndexColour;
 + (UIFont *)bookIndexSubtitleFont;
@@ -120,7 +88,6 @@
 + (UIColor *) cookingTimeColor;
 + (UIFont *) servesFont;
 + (UIColor *) servesColor;
-+ (UIFont *) categoryFont;
 + (UIColor *) userNameColor;
 + (UIFont *) userNameFont;
 + (UIColor *)recipeViewBackgroundColour;
@@ -132,14 +99,12 @@
 + (UIFont *)progressSavingFont;
 
 #pragma mark - Recipe Editing
-+ (UIFont *) cookServesPrepEditTitleFont;
+
 + (UIColor *) cookServesPrepEditTitleColor;
 + (UIColor *) cookServesNumberColor;
 + (UIFont *) cookPrepPickerFont;
-+ (UIFont *) categoryListFont;
 + (UIColor *) categoryListSelectedColor;
 + (UIFont *) typeItUpFont;
-+ (UIFont *) orJustAddFont;
 
 + (UIFont *)editServesTitleFont;
 + (UIColor *)editServesTitleColour;
@@ -178,23 +143,15 @@
 + (UIFont *)settingsThemeFont;
 
 #pragma mark - Ingredients
+
 + (UIFont *)ingredientAccessoryViewButtonTextFont;
 
 #pragma mark - Book Cover
-+ (UIFont *)bookCoverEditableAuthorTextFont;
-+ (UIFont *)bookCoverEditableCaptionTextFont;
-+ (UIFont *)bookCoverEditableTitleTextFont;
-+ (UIFont *)bookCoverEditableFieldDescriptionFont;
 
 + (UIFont *)bookCoverViewModeTitleFont;
-+ (UIFont *)bookCoverViewModeCaptionFont;
 + (UIFont *)bookCoverViewModeNameMaxFont;
 + (UIFont *)bookCoverViewStoreModeNameMaxFont;
 + (UIFont *)bookCoverViewModeNameFontForSize:(CGFloat)fontSize;
-
-#pragma mark - General reusable editable controls
-+ (UIFont *)textEditableTextFont;
-+ (UIFont *)textViewTitleFont;
 
 #pragma mark - Book navigation view.
 + (UIFont *)navigationTitleFont;

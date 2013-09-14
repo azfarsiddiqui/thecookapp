@@ -365,6 +365,13 @@
 }
 
 - (void)panWithTranslation:(CGPoint)translation {
+    
+    // Cap the panning.
+    if (self.benchtopViewController.view.frame.origin.y >= [self.storeViewController visibleHeight] + 80.0
+        || self.benchtopViewController.view.frame.origin.y <= -(self.settingsViewController.view.frame.size.height * 2.0)) {
+        return;
+    }
+    
     CGFloat panOffset = ceilf(translation.y * kDragRatio);
     self.storeViewController.view.frame = [self frame:self.storeViewController.view.frame translatedOffset:panOffset];
     self.benchtopViewController.view.frame = [self frame:self.benchtopViewController.view.frame translatedOffset:panOffset];

@@ -48,6 +48,8 @@
 #define kShellBottomShadowHeight    48.0
 
 - (void)dealloc {
+    [EventHelper unregisterLogout:self];
+    [EventHelper unregisterFollowUpdated:self];
 }
 
 - (void)viewDidLoad {
@@ -64,6 +66,8 @@
     [self initStores];
     [self initTabs];
     [self initSearch];
+    
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 - (void)enable:(BOOL)enable {
@@ -230,7 +234,9 @@
         self.searchFieldView.frame.size.width,
         self.searchFieldView.frame.size.height
     };
+    self.searchFieldView.backgroundView.alpha = 0.0;
     [self.view addSubview:self.searchFieldView];
+    
     self.searchFieldView.transform = CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
     self.searchBackButton.transform = CGAffineTransformMakeTranslation(20.0, 0.0);
 }
@@ -302,6 +308,7 @@
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
+                         self.searchFieldView.backgroundView.alpha = searchMode ? 1.0 : 0.0;
                          self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
                          self.searchBackButton.alpha = searchMode ? 1.0 : 0.0;
                          self.searchBackButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
@@ -320,11 +327,22 @@
 }
 
 - (CGFloat)searchStartOffset {
-    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 75.0;
+    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 90.0;
 }
 
 - (void)searchCloseTapped {
     [self enableSearchMode:NO];
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    [self.featuredViewController unloadData];
+    [self.friendsViewController unloadData];
+    [self.searchViewController unloadData];
+    [self.searchFieldView clearSearch];
+    if (self.searchMode) {
+        [self enableSearchMode:NO];
+    }
+    self.currentStoreCollectionViewController = nil;
 }
 
 @end
