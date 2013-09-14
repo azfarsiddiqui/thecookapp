@@ -248,8 +248,8 @@
 - (void)storeBookViewControllerUpdatedBook:(CKBook *)book {
     book.followed = YES;
     NSUInteger updatedBookIndex = [self.books indexOfObject:book];
-    [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:updatedBookIndex
-                                                                                              inSection:0]]];
+    StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:updatedBookIndex inSection:0]];
+    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:updatedBookIndex] followed:book.followed];
 }
 
 #pragma mark - Private methods
