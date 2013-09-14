@@ -412,7 +412,8 @@
     if (orderChanged) {
         
         self.pages = [NSMutableArray arrayWithArray:pages];
-        
+        self.book.pages = pages;
+        [self.book saveWithImage:nil completion:nil failure:nil];
         // Now relayout the content pages.
         [[self currentLayout] setNeedsRelayout:YES];
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
