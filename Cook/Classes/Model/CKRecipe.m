@@ -557,6 +557,17 @@
     }
 }
 
+- (NSURL *)userPhotoUrl {
+    NSURL *pictureUrl = nil;
+    
+    PFFile *userPhotoFile = [self.parseObject objectForKey:kRecipeAttrUserPhoto];
+    if (userPhotoFile != nil && userPhotoFile.getData.length > 0) {
+        pictureUrl = [NSURL URLWithString:userPhotoFile.url];
+    }
+    
+    return pictureUrl;
+}
+
 #pragma mark - Private Methods
 
 - (NSArray *)assembleIngredients {

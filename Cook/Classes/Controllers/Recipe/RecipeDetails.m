@@ -36,6 +36,7 @@
         _prepTimeInMinutes = recipe.prepTimeInMinutes;
         _cookingTimeInMinutes = recipe.cookingTimeInMinutes;
         _privacy = recipe.privacy;
+        _userPhotoUrl = recipe.userPhotoUrl;
         
         _ingredients = [NSArray arrayWithArray:[recipe.ingredients collect:^id(Ingredient *ingredient) {
             return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];

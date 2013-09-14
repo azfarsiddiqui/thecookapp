@@ -421,8 +421,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateProfilePhoto {
     if (!self.profilePhotoView) {
-        CKUserProfilePhotoView *profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.recipeDetails.user
-                                                                                    profileSize:ProfileViewSizeSmall];
+        CKUserProfilePhotoView *profilePhotoView = nil;
+        if (self.recipeDetails.userPhotoUrl) {
+            profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeSmall];
+            [profilePhotoView loadProfileUrl:self.recipeDetails.userPhotoUrl];
+        } else {
+            profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.recipeDetails.user
+                                                                profileSize:ProfileViewSizeSmall];
+        }
         [self addSubview:profilePhotoView];
         self.profilePhotoView = profilePhotoView;
         

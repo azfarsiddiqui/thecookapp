@@ -1183,10 +1183,12 @@
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self stackContentStartSection];
     
-    [self.collectionView setContentOffset:(CGPoint){
-        pageIndex * self.collectionView.bounds.size.width,
-        self.collectionView.contentOffset.y
-    } animated:animated];
+    [self fastForwardToPage:page];
+    
+//    [self.collectionView setContentOffset:(CGPoint){
+//        pageIndex * self.collectionView.bounds.size.width,
+//        self.collectionView.contentOffset.y
+//    } animated:animated];
 }
 
 - (void)scrollToHome {
@@ -1215,7 +1217,7 @@
     
     // Then jump direct to the page before.
     if (customJump) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [self.collectionView setContentOffset:(CGPoint){
                 (pageIndex - numPeekPages) * self.collectionView.bounds.size.width,
                 self.collectionView.contentOffset.y
@@ -1224,7 +1226,7 @@
     }
     
     // Then animate to the intended destination.
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,
             self.collectionView.contentOffset.y
@@ -1232,6 +1234,45 @@
     });
 
 }
+
+//- (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
+//    NSInteger numPeekPages = 2;
+//    NSInteger pageIndex = [self.pages indexOfObject:page];
+//    pageIndex += [self stackContentStartSection];
+//    
+//    //    self.fastForward = YES;
+//    
+//    BOOL customJump = (pageIndex > [self stackContentStartSection] + numPeekPages);
+//    
+//    // Animate to the next one
+//    //    if (customJump) {
+//    //        dispatch_async(dispatch_get_main_queue(), ^{
+//    //            [self.collectionView setContentOffset:(CGPoint){
+//    //                ([self stackContentStartSection] + numPeekPages) * self.collectionView.bounds.size.width,
+//    //                self.collectionView.contentOffset.y
+//    //            } animated:YES];
+//    //        });
+//    //    }
+//    
+//    // Then jump direct to the page before.
+//    if (customJump) {
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+//            [self.collectionView setContentOffset:(CGPoint){
+//                (pageIndex - numPeekPages) * self.collectionView.bounds.size.width,
+//                self.collectionView.contentOffset.y
+//            } animated:NO];
+//        });
+//    }
+//    
+//    // Then animate to the intended destination.
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+//        [self.collectionView setContentOffset:(CGPoint){
+//            pageIndex * self.collectionView.bounds.size.width,
+//            self.collectionView.contentOffset.y
+//        } animated:YES];
+//    });
+//    
+//}
 
 - (void)scrollToHomeAnimated:(BOOL)animated {
     [self.collectionView setContentOffset:(CGPoint){

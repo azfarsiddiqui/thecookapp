@@ -27,7 +27,7 @@
 @property (nonatomic, strong) NSArray *ingredients;
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, assign) CKPrivacy privacy;
-
+@property (nonatomic, strong) NSURL *userPhotoUrl;
 @property (nonatomic, assign) BOOL saveRequired;
 
 + (NSInteger)maxPrepCookMinutes;

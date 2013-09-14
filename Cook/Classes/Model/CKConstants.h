@@ -97,6 +97,7 @@ extern NSString *const kRecipeAttrLocation;
 extern NSString *const kRecipeAttrNumViews;
 extern NSString *const kRecipeAttrNumLikes;
 extern NSString *const kRecipeAttrNumComments;
+extern NSString *const kRecipeAttrUserPhoto;
 
 #pragma mark - RecipeImage class
 
