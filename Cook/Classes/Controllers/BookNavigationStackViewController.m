@@ -1183,54 +1183,40 @@
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self stackContentStartSection];
     
-    [self.collectionView setContentOffset:(CGPoint){
-        pageIndex * self.collectionView.bounds.size.width,
-        self.collectionView.contentOffset.y
-    } animated:animated];
+    [self fastForwardToPageIndex:pageIndex];
+    
+//    [self.collectionView setContentOffset:(CGPoint){
+//        pageIndex * self.collectionView.bounds.size.width,
+//        self.collectionView.contentOffset.y
+//    } animated:animated];
 }
 
 - (void)scrollToHome {
-    [self scrollToHomeAnimated:YES];
-//    [self fastForwardToPage:kIndexSection];
+    [self fastForwardToPageIndex:kIndexSection];
 }
 
-- (void)fastForwardToPage:(NSString *)page {
-    NSInteger numPeekPages = 2;
-    NSInteger pageIndex = [self.pages indexOfObject:page];
-    pageIndex += [self stackContentStartSection];
+- (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
+    NSInteger numPeekPages = 10;
+    NSInteger currentPageIndex = [self currentPageIndex];
     
-//    self.fastForward = YES;
-    
-    BOOL customJump = (pageIndex > [self stackContentStartSection] + numPeekPages);
-    
-    // Animate to the next one
-//    if (customJump) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.collectionView setContentOffset:(CGPoint){
-//                ([self stackContentStartSection] + numPeekPages) * self.collectionView.bounds.size.width,
-//                self.collectionView.contentOffset.y
-//            } animated:YES];
-//        });
-//    }
+    BOOL customJump = (abs(currentPageIndex - pageIndex) > numPeekPages);
     
     // Then jump direct to the page before.
     if (customJump) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.collectionView setContentOffset:(CGPoint){
-                (pageIndex - numPeekPages) * self.collectionView.bounds.size.width,
-                self.collectionView.contentOffset.y
-            } animated:NO];
-        });
-    }
-    
-    // Then animate to the intended destination.
-    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [self.collectionView setContentOffset:(CGPoint){
+            pageIndex * self.collectionView.bounds.size.width,
+            self.collectionView.contentOffset.y
+        } animated:NO];
+        
+    } else {
+        
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,
             self.collectionView.contentOffset.y
         } animated:YES];
-    });
-
+        
+    }
 }
 
 - (void)scrollToHomeAnimated:(BOOL)animated {
@@ -1362,6 +1348,12 @@
 
 - (CGFloat)rankForRecipe:(CKRecipe *)recipe {
     return recipe.numViews + recipe.numComments + (recipe.numLikes * 2.0);
+}
+
+- (NSInteger)currentPageIndex {
+    CGFloat pageSpan = self.collectionView.contentOffset.x;
+    NSInteger pageIndex = (pageSpan / self.collectionView.bounds.size.width);
+    return pageIndex;
 }
 
 @end

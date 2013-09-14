@@ -94,4 +94,6 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 // Stats.
 - (void)incrementPageViewInBackground;
 
+- (NSURL *)userPhotoUrl;
+
 @end

@@ -144,13 +144,7 @@
 
 - (void)loadProfilePhotoForUser:(CKUser *)user {
     self.user = user;
-    
-    // Load profile photo if available.
-    [[CKPhotoManager sharedInstance] imageForUrl:[user profilePhotoUrl] size:[ImageHelper profileSize] name:@"profilePhoto"
-                                        progress:^(CGFloat progressRatio) {
-                                        } completion:^(UIImage *image, NSString *name) {
-                                            [self loadProfileImage:image];
-                                        }];
+    [self loadProfileUrl:[user profilePhotoUrl]];
 }
 
 - (void)reloadProfilePhoto {
@@ -185,6 +179,16 @@
     } else {
         self.profileOverlay.alpha = editMode ? 0.0 : 1.0;
         self.editButton.alpha = editMode ? 1.0 : 0.0;
+    }
+}
+
+- (void)loadProfileUrl:(NSURL *)profileUrl {
+    if (profileUrl) {
+        [[CKPhotoManager sharedInstance] imageForUrl:profileUrl size:[ImageHelper profileSize] name:@"profilePhoto"
+                                            progress:^(CGFloat progressRatio) {
+                                            } completion:^(UIImage *image, NSString *name) {
+                                                [self loadProfileImage:image];
+                                            }];
     }
 }
 

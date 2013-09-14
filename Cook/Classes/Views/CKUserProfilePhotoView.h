@@ -43,6 +43,7 @@ typedef enum {
 - (void)reloadProfilePhoto;
 - (void)loadProfilePhotoForUser:(CKUser *)user;
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
+- (void)loadProfileUrl:(NSURL *)profileUrl;
 - (void)loadProfileImage:(UIImage *)profileImage;
 
 @end

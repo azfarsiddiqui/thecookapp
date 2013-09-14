@@ -19,6 +19,7 @@
 #import "CKPhotoManager.h"
 #import "CKEditingViewHelper.h"
 #import "CKEditViewController.h"
+#import "CKTextFieldEditViewController.h"
 #import "CKTextViewEditViewController.h"
 
 @interface CKBookSummaryView () <CKPhotoPickerViewControllerDelegate, CKUserProfilePhotoViewDelegate,
@@ -29,6 +30,7 @@
 @property (nonatomic, strong) UIImageView *profileOverlay;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIImageView *dividerView;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) CKStatView *pagesStatView;
 @property (nonatomic, strong) CKStatView *recipesStatView;
@@ -72,6 +74,9 @@
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
     
     [self updateStoryEditMode:editMode];
+    [self updateNameEditMode:editMode];
+    
+    self.dividerView.alpha = editMode ? 0.0 : 1.0;
     
     if (editMode) {
         
@@ -81,7 +86,8 @@
         }
         
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
-
+        
+        // Wrap story up.
         [self.editingHelper wrapEditingView:self.storyLabel
                               contentInsets:(UIEdgeInsets){
                                   defaultInsets.top + 5.0,
@@ -89,7 +95,18 @@
                                   defaultInsets.bottom + 5.0,
                                   defaultInsets.right + 5.0
                               } delegate:self white:YES];
+        
+        // Wrap name up.
+        [self.editingHelper wrapEditingView:self.nameLabel
+                              contentInsets:(UIEdgeInsets){
+                                  defaultInsets.top,
+                                  defaultInsets.left,
+                                  defaultInsets.bottom - 2.0,
+                                  defaultInsets.right + 5.0
+                              } delegate:self white:YES];
+        
     } else {
+        [self.editingHelper unwrapEditingView:self.nameLabel];
         [self.editingHelper unwrapEditingView:self.storyLabel];
     }
     
@@ -100,7 +117,21 @@
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    if (editingView == self.storyLabel) {
+    if (editingView == self.nameLabel) {
+        
+        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
+                                                                                                           delegate:self
+                                                                                                      editingHelper:self.editingHelper
+                                                                                                              white:YES
+                                                                                                              title:@"Name"
+                                                                                                     characterLimit:20];
+        editViewController.forceUppercase = YES;
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        
+    } else if (editingView == self.storyLabel) {
+        
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
@@ -134,12 +165,25 @@
 }
 
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
-    DLog();
-    NSString *story = (NSString *)value;
-    self.updatedStory = story;
-    [self updateStory:[story CK_containsText] ? story : [self defaultEditPlaceholderText]];
-    [self updateStoryEditMode:YES];
-    [self.editingHelper updateEditingView:editingView];
+    
+    if (editingView == self.nameLabel) {
+    
+        NSString *name = (NSString *)value;
+        if ([name CK_containsText]) {
+            self.updatedName = name;
+            [self updateName:name];
+            [self updateNameEditMode:YES];
+            [self.editingHelper updateEditingView:editingView];
+        }
+
+    } else if (editingView == self.storyLabel) {
+        
+        NSString *story = (NSString *)value;
+        self.updatedStory = story;
+        [self updateStory:[story CK_containsText] ? story : [self defaultEditPlaceholderText]];
+        [self updateStoryEditMode:YES];
+        [self.editingHelper updateEditingView:editingView];
+    }
 }
 
 #pragma mark - CKPhotoPickerViewControllerDelegate methods
@@ -170,7 +214,7 @@
 #pragma mark - CKSaveableContent methods
 
 - (BOOL)contentSaveRequired {
-    return ((self.updatedProfileImage != nil) || ![self.updatedStory CK_equals:self.book.story]);
+    return ((self.updatedProfileImage != nil) || ![self.updatedStory CK_equals:self.book.story]  || ![self.updatedName CK_equals:self.book.user.name]);
 }
 
 - (void)contentPerformSave:(BOOL)save {
@@ -188,9 +232,23 @@
             
             self.book.story = self.updatedStory;
             [self.book saveInBackground:^{
+                // Ignore success.
             } failure:^(NSError *error) {
                 DLog(@"Unable to save story");
             }];
+        }
+        
+        // Save name.
+        if (self.updatedName) {
+            
+            [self updateName:self.updatedName];
+            self.book.user.name = self.updatedName;
+            [self.book.user saveInBackground:^{
+                // Ignore success.
+            } failure:^(NSError *error) {
+                DLog(@"Unable to save name");
+            }];
+            
         }
         
         
@@ -198,11 +256,17 @@
         
         // Clear any updated covers.
         self.updatedStory = nil;
+        self.updatedName = nil;
         
         // Restore user profile.
         if (self.updatedProfileImage) {
             [self.profilePhotoView reloadProfilePhoto];
             self.updatedProfileImage = nil;
+        }
+        
+        // Restore name.
+        if (![self.updatedName CK_equals:self.book.user.name]) {
+            [self updateName:self.book.user.name];
         }
         
         // Restore story.
@@ -232,21 +296,7 @@
     
     // User name
     NSString *name = [self.book.user.name uppercaseString];
-    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    nameLabel.font = [Theme storeBookSummaryNameFont];
-    nameLabel.backgroundColor = [UIColor clearColor];
-    nameLabel.textColor = [Theme storeBookSummaryNameColour];
-    nameLabel.shadowColor = [UIColor blackColor];
-    nameLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-    nameLabel.text = name;
-    nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    [nameLabel sizeToFit];
-    nameLabel.frame = CGRectMake(floorf((self.bounds.size.width - nameLabel.frame.size.width) / 2.0),
-                                 self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + kProfileNameGap,
-                                 nameLabel.frame.size.width,
-                                 nameLabel.frame.size.height);
-    [self addSubview:nameLabel];
-    self.nameLabel = nameLabel;
+    [self updateName:name];
     
     // Pages
     CKStatView *pagesStatView = [[CKStatView alloc] initWithNumber:[self.book.pages count] unit:@"PAGE"];
@@ -271,10 +321,39 @@
         1.0
     };
     [self addSubview:dividerView];
-    
+    self.dividerView = dividerView;
     
     // Book story.
     [self updateStory:self.book.story];
+}
+
+- (void)updateName:(NSString *)name {
+    if (!self.nameLabel) {
+        self.nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.nameLabel.font = [Theme storeBookSummaryNameFont];
+        self.nameLabel.backgroundColor = [UIColor clearColor];
+        self.nameLabel.textColor = [Theme storeBookSummaryNameColour];
+        self.nameLabel.shadowColor = [UIColor blackColor];
+        self.nameLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        self.nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        self.nameLabel.numberOfLines = 1;
+        [self addSubview:self.nameLabel];
+    }
+    
+    UIEdgeInsets nameInsets = UIEdgeInsetsMake(0.0, 20.0, 0.0, 20.0);
+    
+    CGSize availableSize = [self availableSize];
+    availableSize.width -= (nameInsets.left + nameInsets.right);
+    self.nameLabel.text = [name uppercaseString];
+    [self.nameLabel sizeToFit];
+    CGFloat requiredWidth = (self.nameLabel.frame.size.width > availableSize.width) ? availableSize.width : self.nameLabel.frame.size.width;
+    
+    self.nameLabel.frame = (CGRect){
+        floorf((self.bounds.size.width - requiredWidth) / 2.0),
+        self.profilePhotoView.frame.origin.y + self.profilePhotoView.frame.size.height + kProfileNameGap,
+        requiredWidth,
+        self.nameLabel.frame.size.height
+    };
 }
 
 - (void)updateStory:(NSString *)story {
@@ -390,7 +469,7 @@
     
     NSShadow *shadow = [NSShadow new];
     shadow.shadowColor = editMode ? [UIColor clearColor] : [UIColor blackColor];
-    shadow.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, -1.0);
+    shadow.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, 1.0);
     
     UIColor *textColour = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryStoryColour];
     
@@ -408,6 +487,12 @@
                                                                            attributes:[self storyParagraphAttributesEditMode:editMode]];
         self.storyLabel.attributedText = storyDisplay;
     }
+}
+
+- (void)updateNameEditMode:(BOOL)editMode {
+    self.nameLabel.textColor = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryNameColour];
+    self.nameLabel.shadowColor = editMode ? [UIColor clearColor] : [UIColor blackColor];
+    self.nameLabel.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, 1.0);
 }
 
 @end
