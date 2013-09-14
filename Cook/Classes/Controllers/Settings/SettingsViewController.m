@@ -14,6 +14,7 @@
 #import "CKUserProfilePhotoView.h"
 #import "ThemeTabView.h"
 #import "ImageHelper.h"
+#import "UIDevice+Hardware.h"
 #import <MessageUI/MessageUI.h>
 
 @interface SettingsViewController () <MFMailComposeViewControllerDelegate>
@@ -76,8 +77,8 @@
         CGSize size = (currentUser == nil) ? kLoginSize : kLogoutSize;
         
         _loginLogoutButtonView = [[UIView alloc] initWithFrame:(CGRect){
-            self.scrollView.bounds.size.width - size.width - 15.0,
-            floorf((self.scrollView.bounds.size.height - size.height) / 2.0),
+            self.scrollView.bounds.size.width - size.width - 24.0,
+            floorf((self.scrollView.bounds.size.height - size.height) / 2.0) - 3,
             size.width,
             size.height
         }];
@@ -86,7 +87,7 @@
         CGFloat yOffset = 0.0;
         if (currentUser) {
             CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
-                                                                                 profileSize:ProfileViewSizeMini border:YES];
+                                                                                 profileSize:ProfileViewSizeSmall border:NO];
             photoView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
                 _loginLogoutButtonView.bounds.origin.y,
@@ -94,33 +95,33 @@
                 photoView.frame.size.height
             };
             [_loginLogoutButtonView addSubview:photoView];
-            yOffset = photoView.frame.origin.y + photoView.frame.size.height + 15.0;
+            yOffset = photoView.frame.origin.y + photoView.frame.size.height + 16.0;
             
         } else {
             
-            UIImageView *loginImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_login.png"]];
+            UIImageView *loginImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_icon_login.png"]];
             loginImageView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - loginImageView.frame.size.width) / 2.0),
-                _loginLogoutButtonView.bounds.origin.y,
+                _loginLogoutButtonView.bounds.origin.y + 4,
                 loginImageView.frame.size.width,
                 loginImageView.frame.size.height
             };
             [_loginLogoutButtonView addSubview:loginImageView];
-            yOffset = loginImageView.frame.origin.y + loginImageView.frame.size.height + 8.0;
+            yOffset = loginImageView.frame.origin.y + loginImageView.frame.size.height + 14.0;
         }
         
         UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         profileLabel.autoresizingMask = UIViewAutoresizingNone;
         profileLabel.backgroundColor = [UIColor clearColor];
         profileLabel.font = [Theme settingsProfileFont];
-        profileLabel.textColor = [UIColor whiteColor];
+        profileLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         profileLabel.shadowColor = [UIColor blackColor];
         profileLabel.shadowOffset = CGSizeMake(0.0, -1.0);
         profileLabel.text = (currentUser == nil) ? @"SIGN IN" : @"LOGOUT";
         [profileLabel sizeToFit];
         profileLabel.frame = (CGRect){
             floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
-            yOffset,
+            yOffset - 11.0,
             profileLabel.frame.size.width,
             profileLabel.frame.size.height
         };
@@ -138,14 +139,14 @@
         _themeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _themeLabel.backgroundColor = [UIColor clearColor];
         _themeLabel.font = [Theme settingsThemeFont];
-        _themeLabel.textColor = [UIColor whiteColor];
+        _themeLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         _themeLabel.shadowColor = [UIColor blackColor];
         _themeLabel.shadowOffset = CGSizeMake(0.0, -1.0);
         _themeLabel.text = @"DASH THEME";
         [_themeLabel sizeToFit];
         _themeLabel.frame = (CGRect){
             self.themeTabView.frame.origin.x + floorf((self.themeTabView.frame.size.width - _themeLabel.frame.size.width) / 2.0),
-            self.themeTabView.frame.origin.y - _themeLabel.frame.size.height - 15.0,
+            self.themeTabView.frame.origin.y - _themeLabel.frame.size.height - 14.0,
             _themeLabel.frame.size.width,
             _themeLabel.frame.size.height
         };
@@ -158,7 +159,7 @@
         _themeTabView = [[ThemeTabView alloc] init];
         _themeTabView.frame = (CGRect){
             42.0,
-            82.0,
+            75.0,
             _themeTabView.frame.size.width,
             _themeTabView.frame.size.height
         };
@@ -188,27 +189,28 @@
     [scrollView addSubview:content2View];
     
     //Privacy and terms
-    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(40, 90, 138, 40)];
+    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(50, 85, 138, 40)];
     [termsButton setTitle:@"TERMS & CONDITIONS" forState:UIControlStateNormal];
     termsButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     termsButton.backgroundColor = [UIColor clearColor];
-    termsButton.titleLabel.font = [Theme settingsProfileFont];
-    termsButton.titleLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
+    termsButton.titleLabel.font = [Theme settingsThemeFont];
+    [termsButton setTitleColor:[UIColor colorWithWhite:1.000 alpha:0.700] forState:UIControlStateNormal];
     termsButton.titleLabel.shadowColor = [UIColor blackColor];
     termsButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [termsButton addTarget:self action:@selector(termsPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:termsButton];
-    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(185, 90, 54, 40)];
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(198, 85, 54, 40)];
     [privacyButton setTitle:@"PRIVACY" forState:UIControlStateNormal];
     privacyButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     privacyButton.backgroundColor = [UIColor clearColor];
-    privacyButton.titleLabel.font = [Theme settingsProfileFont];
-    privacyButton.titleLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
+    privacyButton.titleLabel.font = [Theme settingsThemeFont];
+    [privacyButton setTitleColor:[UIColor colorWithWhite:1.000 alpha:0.700] forState:UIControlStateNormal];
     privacyButton.titleLabel.shadowColor = [UIColor blackColor];
     privacyButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [privacyButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:privacyButton];
-    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(178, 98, 5, 15)];
+    
+    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(190, 93, 5, 15)];
     dotLabel.text = @".";
     dotLabel.textColor = [UIColor whiteColor];
     [content1View addSubview:dotLabel];
@@ -234,7 +236,7 @@
     aboutLabel.textAlignment = NSTextAlignmentCenter;
     aboutLabel.backgroundColor = [UIColor clearColor];
     aboutLabel.font = [Theme settingsProfileFont];
-    aboutLabel.textColor = [UIColor whiteColor];
+    aboutLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     aboutLabel.shadowColor = [UIColor blackColor];
     aboutLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     aboutLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -251,7 +253,7 @@
     supportLabel.textAlignment = NSTextAlignmentCenter;
     supportLabel.backgroundColor = [UIColor clearColor];
     supportLabel.font = [Theme settingsProfileFont];
-    supportLabel.textColor = [UIColor whiteColor];
+    supportLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     supportLabel.shadowColor = [UIColor blackColor];
     supportLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     supportLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -268,7 +270,7 @@
     facebookLabel.textAlignment = NSTextAlignmentCenter;
     facebookLabel.backgroundColor = [UIColor clearColor];
     facebookLabel.font = [Theme settingsProfileFont];
-    facebookLabel.textColor = [UIColor whiteColor];
+    facebookLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     facebookLabel.shadowColor = [UIColor blackColor];
     facebookLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     facebookLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -285,7 +287,7 @@
     twitterLabel.textAlignment = NSTextAlignmentCenter;
     twitterLabel.backgroundColor = [UIColor clearColor];
     twitterLabel.font = [Theme settingsProfileFont];
-    twitterLabel.textColor = [UIColor whiteColor];
+    twitterLabel.textColor = [UIColor colorWithWhite:1.000 alpha:0.700];
     twitterLabel.shadowColor = [UIColor blackColor];
     twitterLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     twitterLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -302,11 +304,11 @@
                                 @"facebookLabel" : facebookLabel,
                                 @"twitter" : self.twitterButton,
                                 @"twitterLabel" : twitterLabel};
-        NSString *buttonConstraints = @"|-40.0-[about(width)]-spacing-[support(about)]-spacing-[facebook(about)]-spacing-[twitter(about)]-(>=20)-|";
-        NSString *labelConstraints = @"|-30.0-[aboutLabel(labelWidth)][supportLabel(labelWidth)][facebookLabel(labelWidth)][twitterLabel(labelWidth)]";
-        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:labelConstraints options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-40-[about(height)]-5-[aboutLabel(16.0)]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        NSString *buttonConstraints = @"|-36.0-[about(width)]-spacing-[support(about)]-spacing-[facebook(about)]-spacing-[twitter(about)]-(>=20)-|";
+        NSString *labelConstraints = @"|-26.0-[aboutLabel(labelWidth)][supportLabel(labelWidth)][facebookLabel(labelWidth)][twitterLabel(labelWidth)]";
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:labelConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-40-[about(height)]-4-[aboutLabel(18.0)]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
 //        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[title(400)]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
     }
     [content1View addSubview:linkButtonContainerView];
@@ -341,15 +343,23 @@
 #pragma mark - Action handlers
 
 - (void)aboutPressed:(id)sender {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com/about"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com"]];
 }
 
 - (void)supportPressed:(id)sender {
     if ([MFMailComposeViewController canSendMail])
     {
         MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
-        NSString *shareBody = @"SUPPORT STUFF";
-        [mailDialog setSubject:@"Support for Cook"];
+        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+        NSString *appDisplayName = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+        NSString *majorVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+        NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
+        NSString *versionString = [NSString stringWithFormat:@"%@ v%@.%@",
+                appDisplayName, majorVersion, minorVersion];
+        
+        NSString *deviceString = [NSString stringWithFormat:@"%@ / %@ / iOS%@", [UIDevice currentDevice].model, [UIDevice currentDevice].platformString, [UIDevice currentDevice].systemVersion];
+        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n Sent from\n%@\n%@", versionString, deviceString];
+        [mailDialog setSubject:@"Cook Support"];
         [mailDialog setMessageBody:shareBody isHTML:NO];
         mailDialog.mailComposeDelegate = self;
         [self presentViewController:mailDialog animated:YES completion:nil];
@@ -409,18 +419,6 @@
 {
     DLog(@"Support mail finished");
     [controller dismissViewControllerAnimated:YES completion:nil];
-}
-
-void drawStroke(CGContextRef context, CGFloat lineWidth, CGPoint startPoint, CGPoint endPoint, CGColorRef color) {
-    
-    CGContextSaveGState(context);
-    CGContextSetLineCap(context, kCGLineCapSquare);
-    CGContextSetStrokeColorWithColor(context, color);
-    CGContextSetLineWidth(context, lineWidth);
-    CGContextMoveToPoint(context, startPoint.x + 0.5, startPoint.y + 0.5);
-    CGContextAddLineToPoint(context, endPoint.x + 0.5, endPoint.y + 0.5);
-    CGContextStrokePath(context);
-    CGContextRestoreGState(context);
 }
 
 @end

@@ -22,9 +22,9 @@
 @implementation ThemeTabView
 
 #define kFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12]
-#define kLeftEdgeInsets     (UIEdgeInsets){ 10.0, 20.0, 10.0, 10.0 }
+#define kLeftEdgeInsets     (UIEdgeInsets){ 10.0, 22.0, 10.0, 16.0 }
 #define kMidEdgeInsets      (UIEdgeInsets){ 10.0, 20.0, 10.0, 20.0 }
-#define kRightEdgeInsets    (UIEdgeInsets){ 10.0, 10.0, 10.0, 20.0 }
+#define kRightEdgeInsets    (UIEdgeInsets){ 10.0, 18.0, 10.0, 22.0 }
 
 - (id)init {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -64,8 +64,20 @@
         UIButton *button = [ViewHelper buttonWithImage:nil selectedImage:selectedImage target:self selector:@selector(optionTapped:)];
         button.titleLabel.font = kFont;
         [button setTitle:optionName forState:UIControlStateNormal];
+        button.titleLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+        if (optionIndex == 0) //Leftmost button compensate rounded edge
+        {
+            [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 23.0f, 0.0f, 10.0f)];
+        }
+        else if (optionIndex == [self.options count] -1) //Rightmost button compensate rounded edge
+        {
+            [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+            [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 23.0f)];
+        }
         [button sizeToFit];
         
+        DLog(@"%f", insets.left + button.frame.size.width + insets.right);
         button.frame = (CGRect){
             size.width,
             self.bounds.origin.y,
