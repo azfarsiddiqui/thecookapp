@@ -22,9 +22,9 @@
 @implementation ThemeTabView
 
 #define kFont               [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12]
-#define kLeftEdgeInsets     (UIEdgeInsets){ 10.0, 24.0, 10.0, 14.0 }
+#define kLeftEdgeInsets     (UIEdgeInsets){ 10.0, 22.0, 10.0, 16.0 }
 #define kMidEdgeInsets      (UIEdgeInsets){ 10.0, 20.0, 10.0, 20.0 }
-#define kRightEdgeInsets    (UIEdgeInsets){ 10.0, 18.0, 10.0, 24.0 }
+#define kRightEdgeInsets    (UIEdgeInsets){ 10.0, 18.0, 10.0, 22.0 }
 
 - (id)init {
     if (self = [super initWithFrame:CGRectZero]) {

@@ -95,19 +95,19 @@
                 photoView.frame.size.height
             };
             [_loginLogoutButtonView addSubview:photoView];
-            yOffset = photoView.frame.origin.y + photoView.frame.size.height + 15.0;
+            yOffset = photoView.frame.origin.y + photoView.frame.size.height + 16.0;
             
         } else {
             
-            UIImageView *loginImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_login.png"]];
+            UIImageView *loginImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_dash_settings_icon_login.png"]];
             loginImageView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - loginImageView.frame.size.width) / 2.0),
-                _loginLogoutButtonView.bounds.origin.y,
+                _loginLogoutButtonView.bounds.origin.y + 4,
                 loginImageView.frame.size.width,
                 loginImageView.frame.size.height
             };
             [_loginLogoutButtonView addSubview:loginImageView];
-            yOffset = loginImageView.frame.origin.y + loginImageView.frame.size.height + 8.0;
+            yOffset = loginImageView.frame.origin.y + loginImageView.frame.size.height + 14.0;
         }
         
         UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -121,7 +121,7 @@
         [profileLabel sizeToFit];
         profileLabel.frame = (CGRect){
             floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
-            yOffset - 9.0,
+            yOffset - 11.0,
             profileLabel.frame.size.width,
             profileLabel.frame.size.height
         };
@@ -146,7 +146,7 @@
         [_themeLabel sizeToFit];
         _themeLabel.frame = (CGRect){
             self.themeTabView.frame.origin.x + floorf((self.themeTabView.frame.size.width - _themeLabel.frame.size.width) / 2.0),
-            self.themeTabView.frame.origin.y - _themeLabel.frame.size.height - 9.0,
+            self.themeTabView.frame.origin.y - _themeLabel.frame.size.height - 14.0,
             _themeLabel.frame.size.width,
             _themeLabel.frame.size.height
         };
@@ -159,7 +159,7 @@
         _themeTabView = [[ThemeTabView alloc] init];
         _themeTabView.frame = (CGRect){
             42.0,
-            76.0,
+            75.0,
             _themeTabView.frame.size.width,
             _themeTabView.frame.size.height
         };
@@ -343,7 +343,7 @@
 #pragma mark - Action handlers
 
 - (void)aboutPressed:(id)sender {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com/about"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.thecookapp.com"]];
 }
 
 - (void)supportPressed:(id)sender {
