@@ -48,6 +48,8 @@
 #define kShellBottomShadowHeight    48.0
 
 - (void)dealloc {
+    [EventHelper unregisterLogout:self];
+    [EventHelper unregisterFollowUpdated:self];
 }
 
 - (void)viewDidLoad {
@@ -64,6 +66,8 @@
     [self initStores];
     [self initTabs];
     [self initSearch];
+    
+    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
 
 - (void)enable:(BOOL)enable {
@@ -328,6 +332,17 @@
 
 - (void)searchCloseTapped {
     [self enableSearchMode:NO];
+}
+
+- (void)loggedOut:(NSNotification *)notification {
+    [self.featuredViewController unloadData];
+    [self.friendsViewController unloadData];
+    [self.searchViewController unloadData];
+    [self.searchFieldView clearSearch];
+    if (self.searchMode) {
+        [self enableSearchMode:NO];
+    }
+    self.currentStoreCollectionViewController = nil;
 }
 
 @end

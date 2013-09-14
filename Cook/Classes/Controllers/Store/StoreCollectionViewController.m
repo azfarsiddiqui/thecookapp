@@ -36,7 +36,6 @@
 #define kStoreSection   0
 
 - (void)dealloc {
-    [EventHelper unregisterLogout:self];
     [EventHelper unregisterFollowUpdated:self];
 }
 
@@ -57,7 +56,6 @@
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[StoreBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     
-    [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
 }
 
@@ -243,10 +241,6 @@
 }
 
 #pragma mark - Private methods
-
-- (void)loggedOut:(NSNotification *)notification {
-    [self unloadData];
-}
 
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = [self.books objectAtIndex:indexPath.item];

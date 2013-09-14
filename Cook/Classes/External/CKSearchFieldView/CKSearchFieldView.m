@@ -80,6 +80,11 @@
     }
 }
 
+- (void)clearSearch {
+    self.currentSearch = nil;
+    self.textField.text = nil;
+}
+
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {

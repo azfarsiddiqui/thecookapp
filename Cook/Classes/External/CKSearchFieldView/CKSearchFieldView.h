@@ -23,5 +23,6 @@
 
 - (id)initWithWidth:(CGFloat)width delegate:(id<CKSearchFieldViewDelegate>)delegate;
 - (void)focus:(BOOL)focus;
+- (void)clearSearch;
 
 @end
