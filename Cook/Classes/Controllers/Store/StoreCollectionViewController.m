@@ -199,7 +199,7 @@
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(15.0, 60.0, 0.0, 0.0);
+    return UIEdgeInsetsMake(15.0, 60.0, 0.0, 60.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
