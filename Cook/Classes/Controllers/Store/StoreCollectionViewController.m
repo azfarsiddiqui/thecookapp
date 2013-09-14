@@ -27,6 +27,7 @@
 @property (nonatomic, strong) StoreBookViewController *storeBookViewController;
 @property (nonatomic, strong) UICollectionViewCell *selectedBookCell;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
+@property (nonatomic, strong) NSMutableArray *bookCoverImages;
 
 @end
 
@@ -82,6 +83,7 @@
     [self hideMessageCard];
     if ([self.books count] > 0) {
         [self.books removeAllObjects];
+        [self.bookCoverImages removeAllObjects];
         
         [self.collectionView performBatchUpdates:^{
             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -105,6 +107,16 @@
         
         BOOL reloadBooks = [self.books count] > 0;
         self.books = [NSMutableArray arrayWithArray:books];
+        self.bookCoverImages = [NSMutableArray arrayWithArray:[books collect:^id(CKBook *book) {
+            
+            CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithDelegate:nil];
+            [bookCoverView setCover:book.cover illustration:book.illustration];
+            [bookCoverView setName:book.name author:[book userName] editable:[book editable]];
+            UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView
+                                                          size:[StoreBookCoverViewCell cellSize]
+                                                        opaque:NO];
+            return snapshotImage;
+        }]];
         
         if (reloadBooks) {
             
@@ -207,7 +219,6 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    DLog(@"Books Count: %d", [self.books count]);
     return [self.books count];
 }
 
@@ -216,7 +227,8 @@
     StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
                                                                                                        forIndexPath:indexPath];
     cell.delegate = self;
-    [cell loadBook:[self.books objectAtIndex:indexPath.item]];
+    // [cell loadBook:[self.books objectAtIndex:indexPath.item]];
+    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:indexPath.item]];
     return cell;
 }
 

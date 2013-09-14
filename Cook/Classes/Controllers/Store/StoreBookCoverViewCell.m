@@ -40,6 +40,9 @@
     return self;
 }
 
+- (void)loadBookCoverImage:(UIImage *)bookCoverImage {
+    self.snapshotView.image = bookCoverImage;
+}
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
     return [[CKBookCoverView alloc] initWithStoreMode:YES delegate:delegate];
