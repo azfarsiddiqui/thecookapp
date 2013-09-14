@@ -40,8 +40,11 @@
     return self;
 }
 
-- (void)loadBookCoverImage:(UIImage *)bookCoverImage {
+- (void)loadBookCoverImage:(UIImage *)bookCoverImage followed:(BOOL)followed {
     self.snapshotView.image = bookCoverImage;
+    
+    // Followed indicator.
+    [self updateFollowedIcon:followed];
 }
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {

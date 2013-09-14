@@ -20,6 +20,6 @@
 @property (nonatomic, assign) id<StoreBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;
-- (void)loadBookCoverImage:(UIImage *)bookCoverImage;
+- (void)loadBookCoverImage:(UIImage *)bookCoverImage followed:(BOOL)followed;
 
 @end

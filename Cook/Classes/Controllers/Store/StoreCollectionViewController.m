@@ -227,8 +227,8 @@
     StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId
                                                                                                        forIndexPath:indexPath];
     cell.delegate = self;
-    // [cell loadBook:[self.books objectAtIndex:indexPath.item]];
-    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:indexPath.item]];
+    CKBook *book = [self.books objectAtIndex:indexPath.item];
+    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:indexPath.item] followed:book.followed];
     return cell;
 }
 
