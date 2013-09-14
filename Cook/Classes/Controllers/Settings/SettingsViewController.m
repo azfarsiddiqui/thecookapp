@@ -77,8 +77,8 @@
         CGSize size = (currentUser == nil) ? kLoginSize : kLogoutSize;
         
         _loginLogoutButtonView = [[UIView alloc] initWithFrame:(CGRect){
-            self.scrollView.bounds.size.width - size.width - 15.0,
-            floorf((self.scrollView.bounds.size.height - size.height) / 2.0),
+            self.scrollView.bounds.size.width - size.width - 24.0,
+            floorf((self.scrollView.bounds.size.height - size.height) / 2.0) - 3,
             size.width,
             size.height
         }];
@@ -87,7 +87,7 @@
         CGFloat yOffset = 0.0;
         if (currentUser) {
             CKUserProfilePhotoView *photoView = [[CKUserProfilePhotoView alloc] initWithUser:currentUser placeholder:NO
-                                                                                 profileSize:ProfileViewSizeSmall border:YES];
+                                                                                 profileSize:ProfileViewSizeSmall border:NO];
             photoView.frame = (CGRect){
                 floorf((_loginLogoutButtonView.bounds.size.width - photoView.frame.size.width) / 2.0),
                 _loginLogoutButtonView.bounds.origin.y,
@@ -121,7 +121,7 @@
         [profileLabel sizeToFit];
         profileLabel.frame = (CGRect){
             floorf((_loginLogoutButtonView.bounds.size.width - profileLabel.frame.size.width) / 2.0),
-            yOffset,
+            yOffset - 9.0,
             profileLabel.frame.size.width,
             profileLabel.frame.size.height
         };
@@ -146,7 +146,7 @@
         [_themeLabel sizeToFit];
         _themeLabel.frame = (CGRect){
             self.themeTabView.frame.origin.x + floorf((self.themeTabView.frame.size.width - _themeLabel.frame.size.width) / 2.0),
-            self.themeTabView.frame.origin.y - _themeLabel.frame.size.height - 15.0,
+            self.themeTabView.frame.origin.y - _themeLabel.frame.size.height - 9.0,
             _themeLabel.frame.size.width,
             _themeLabel.frame.size.height
         };
@@ -159,7 +159,7 @@
         _themeTabView = [[ThemeTabView alloc] init];
         _themeTabView.frame = (CGRect){
             42.0,
-            82.0,
+            76.0,
             _themeTabView.frame.size.width,
             _themeTabView.frame.size.height
         };
@@ -189,7 +189,7 @@
     [scrollView addSubview:content2View];
     
     //Privacy and terms
-    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(44, 90, 138, 40)];
+    UIButton *termsButton = [[UIButton alloc] initWithFrame:CGRectMake(50, 85, 138, 40)];
     [termsButton setTitle:@"TERMS & CONDITIONS" forState:UIControlStateNormal];
     termsButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     termsButton.backgroundColor = [UIColor clearColor];
@@ -199,7 +199,7 @@
     termsButton.titleLabel.shadowOffset = CGSizeMake(0.0, -1.0);
     [termsButton addTarget:self action:@selector(termsPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:termsButton];
-    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(187, 90, 54, 40)];
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(198, 85, 54, 40)];
     [privacyButton setTitle:@"PRIVACY" forState:UIControlStateNormal];
     privacyButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     privacyButton.backgroundColor = [UIColor clearColor];
@@ -210,7 +210,7 @@
     [privacyButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
     [content1View addSubview:privacyButton];
     
-    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(180, 98, 5, 15)];
+    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(190, 93, 5, 15)];
     dotLabel.text = @".";
     dotLabel.textColor = [UIColor whiteColor];
     [content1View addSubview:dotLabel];
@@ -304,11 +304,11 @@
                                 @"facebookLabel" : facebookLabel,
                                 @"twitter" : self.twitterButton,
                                 @"twitterLabel" : twitterLabel};
-        NSString *buttonConstraints = @"|-40.0-[about(width)]-spacing-[support(about)]-spacing-[facebook(about)]-spacing-[twitter(about)]-(>=20)-|";
-        NSString *labelConstraints = @"|-30.0-[aboutLabel(labelWidth)][supportLabel(labelWidth)][facebookLabel(labelWidth)][twitterLabel(labelWidth)]";
-        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:labelConstraints options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-40-[about(height)]-5-[aboutLabel(16.0)]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
+        NSString *buttonConstraints = @"|-36.0-[about(width)]-spacing-[support(about)]-spacing-[facebook(about)]-spacing-[twitter(about)]-(>=20)-|";
+        NSString *labelConstraints = @"|-26.0-[aboutLabel(labelWidth)][supportLabel(labelWidth)][facebookLabel(labelWidth)][twitterLabel(labelWidth)]";
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:buttonConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:labelConstraints options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
+        [linkButtonContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-40-[about(height)]-4-[aboutLabel(18.0)]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views]];
 //        [middleContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[title(400)]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
     }
     [content1View addSubview:linkButtonContainerView];
