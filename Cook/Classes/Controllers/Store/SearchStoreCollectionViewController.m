@@ -7,6 +7,7 @@
 //
 
 #import "SearchStoreCollectionViewController.h"
+#import "ViewHelper.h"
 #import "CKUser.h"
 #import "CKBook.h"
 
@@ -34,6 +35,11 @@
 
 - (BOOL)addMode {
     return NO;
+}
+
+- (void)showNoBooksCard {
+    [ViewHelper showCardText:@"NO RESULTS" subtitle:@"TRY SEARCHING FOR ANOTHER NAME"
+                        view:self.collectionView show:YES center:self.collectionView.center];
 }
 
 @end

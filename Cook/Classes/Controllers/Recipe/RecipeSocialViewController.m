@@ -18,6 +18,7 @@
 #import "NSString+Utilities.h"
 #import "RecipeSocialViewLayout.h"
 #import "MRCEnumerable.h"
+#import "CKActivityIndicatorView.h"
 
 @interface RecipeSocialViewController () <RecipeSocialCommentCellDelegate, CKEditViewControllerDelegate>
 
@@ -25,6 +26,7 @@
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *composeButton;
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
@@ -36,17 +38,19 @@
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKTextViewEditViewController *editViewController;
 @property (nonatomic, assign) BOOL saving;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
+@property (nonatomic, strong) UILabel *emptyCommentsLabel;
 
 @end
 
 @implementation RecipeSocialViewController
 
-#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kContentInsets      (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
 #define kUnderlayMaxAlpha   0.7
-#define kCommentsSection    0
-#define kHeaderHeight       100.0
 #define kHeaderCellId       @"HeaderCell"
 #define kCommentCellId      @"CommentCell"
+#define kActivityId         @"ActivityCell"
+#define kCommentsSection    0
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate {
     if (self = [super initWithCollectionViewLayout:[[RecipeSocialViewLayout alloc] init]]) {
@@ -66,10 +70,12 @@
     self.collectionView.bounces = YES;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.alwaysBounceVertical = YES;
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
     [self.collectionView registerClass:[RecipeSocialCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
     [self.collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
     
     [self.view addSubview:self.closeButton];
+    [self.view addSubview:self.composeButton];
     
     [self loadData];
 }
@@ -112,16 +118,6 @@
         [self.editViewController.view removeFromSuperview];
         self.editViewController = nil;
         
-        // Now unwrap it.
-        [self.editingHelper unwrapEditingView:self.editingView animated:YES];
-        
-        // Then insert another empty row below it.
-        if (self.saving) {
-            self.saving = NO;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [self insertAddCommentCell];
-            });
-        }
     }
 }
 
@@ -129,29 +125,46 @@
     [self.editViewController performEditing:NO];
 }
 
+- (void)editViewControllerEditRequested {
+}
+
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
+}
+
+- (void)editViewControllerHeadlessUpdatedWithValue:(id)value {
     
-    NSString *text = (NSString *)value;
+    NSString *text = value;
     if ([text CK_containsText]) {
         
         // Create a new comment.
         CKRecipeComment *comment = [CKRecipeComment recipeCommentForUser:self.currentUser recipe:self.recipe text:text];
         [self.comments addObject:comment];
         
+        if ([self.comments count] == 1) {
+            
+            [self.collectionView reloadData];
+            
+        } else {
+            
+            [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.comments count] - 1 inSection:0]]];
+            
+        }
+        
         // Saves the comment in the background.
         self.saving = YES;
         [comment saveInBackground];
         
-        // Configure the editingCell to display the created comment.
-        [self.editingCell configureWithComment:comment];
-        
-        // Remember the editingView for us to unwrap it later.
-        self.editingView = editingView;
-        
-        // Update editing box.
-        [self.editingHelper updateEditingView:editingView];
-        
     }
+    
+}
+
+- (id)editViewControllerInitialValue {
+    return nil;
+}
+
+- (BOOL)editViewControllerCanSaveFor:(CKEditViewController *)editViewController {
+    
+    return YES;
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -162,7 +175,12 @@
     CGSize unitSize = [RecipeSocialCommentCell unitSize];
     CGFloat sideGap = floorf((self.collectionView.bounds.size.width - unitSize.width) / 2.0);
     
-    return (UIEdgeInsets) { kContentInsets.top, sideGap, kContentInsets.bottom, sideGap };
+    return (UIEdgeInsets) {
+        kContentInsets.top,
+        sideGap,
+        kContentInsets.bottom,
+        sideGap
+    };
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -182,40 +200,41 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
 referenceSizeForHeaderInSection:(NSInteger)section {
     
-    CGSize headerSize = (CGSize) {
-        self.collectionView.bounds.size.width,
-        kHeaderHeight
-    };
-    return headerSize;
+    return [ModalOverlayHeaderView unitSize];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGSize cellSize = CGSizeZero;
-    if (indexPath.section == kCommentsSection) {
+    if (self.comments) {
         
-        if (indexPath.item < [self.comments count]) {
+        if ([self.comments count] > 0) {
             
             // Comment cell.
             CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-            cellSize = [RecipeSocialCommentCell sizeForComment:comment];
+            return [RecipeSocialCommentCell sizeForComment:comment];
             
         } else {
             
-            // Add cell.
-            cellSize = [RecipeSocialCommentCell unitSize];
-            
+            return (CGSize){
+                self.collectionView.bounds.size.width,
+                515.0
+            };
         }
+        
+    } else {
+        
+        return (CGSize){
+            self.collectionView.bounds.size.width,
+            515.0
+        };
     }
     
-    return cellSize;
 }
 
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -227,9 +246,18 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
-    if (section == kCommentsSection) {
-        numItems = [self.comments count];
-        numItems += 1;  // Post comment.
+    if (self.comments) {
+        
+        if ([self.comments count] > 0) {
+            numItems = [self.comments count];
+        } else {
+            numItems = 1;
+        }
+        
+    } else {
+        
+        // Activity.
+        numItems = 1;
     }
     
     return numItems;
@@ -238,19 +266,35 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    RecipeSocialCommentCell *cell = (RecipeSocialCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId forIndexPath:indexPath];
-    cell.editingHelper = self.editingHelper;
-    cell.delegate = self;
+    UICollectionViewCell *cell = nil;
     
-    if (indexPath.item < [self.comments count]) {
+    if (self.comments) {
         
-        CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-        [cell configureWithComment:comment];
+        if ([self.comments count] > 0) {
+            
+            RecipeSocialCommentCell *commentCell = (RecipeSocialCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
+                                                                                                                             forIndexPath:indexPath];
+            CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
+            [commentCell configureWithComment:comment];
+            cell = commentCell;
+            
+        } else {
+            
+            // No comments.
+            [self.activityView stopAnimating];
+            [self.activityView removeFromSuperview];
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+            self.emptyCommentsLabel.center = cell.contentView.center;
+            [cell.contentView addSubview:self.emptyCommentsLabel];
+            
+        }
         
     } else {
         
-        // Add cell for the current user.
-        [cell configureAsPostCommentCellForUser:self.currentUser loading:self.loading];
+        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+        self.activityView.center = cell.contentView.center;
+        [cell.contentView addSubview:self.activityView];
+        [self.activityView startAnimating];
         
     }
     
@@ -290,39 +334,86 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return _closeButton;
 }
 
+- (UIButton *)composeButton {
+    if (!_composeButton) {
+        _composeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
+                                              target:self
+                                            selector:@selector(composeTapped:)];
+        _composeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _composeButton.frame = (CGRect){
+            self.view.bounds.size.width - _composeButton.frame.size.width - kContentInsets.right,
+            kContentInsets.top,
+            _composeButton.frame.size.width,
+            _composeButton.frame.size.height
+        };
+    }
+    return _composeButton;
+}
+
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+    }
+    return _activityView;
+}
+
+- (UILabel *)emptyCommentsLabel {
+    if (!_emptyCommentsLabel) {
+        _emptyCommentsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _emptyCommentsLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+        _emptyCommentsLabel.textColor = [UIColor whiteColor];
+        _emptyCommentsLabel.text = @"NO COMMENTS";
+        [_emptyCommentsLabel sizeToFit];
+    }
+    return _emptyCommentsLabel;
+}
+
 #pragma mark - Private methods
 
 - (void)loadData {
-    self.comments = [NSMutableArray array];
     self.loading = YES;
     
     [self.recipe commentsWithCompletion:^(NSArray *comments){
         DLog(@"Loaded [%d] comments", [comments count]);
         
         self.loading = NO;
-        [self.comments addObjectsFromArray:comments];
+        self.comments = [NSMutableArray arrayWithArray:comments];
         
         NSArray *indexPathsToInsert = [comments collectWithIndex:^id(CKRecipeComment *comment, NSUInteger commentIndex) {
             return [NSIndexPath indexPathForItem:commentIndex inSection:kCommentsSection];
         }];
-        [self.collectionView performBatchUpdates:^{
-            
-            // Insert comments.
-            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-            
-        } completion:^(BOOL finished) {
-            
-            // Reload the comments post field.
-            [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[comments count] inSection:kCommentsSection]]];
-            
-        }];
+        
+        if ([indexPathsToInsert count] > 0) {
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kCommentsSection]]];
+                [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+            } completion:^(BOOL finished) {
+            }];
+        } else {
+            [self.collectionView reloadData];
+        }
         
     } failure:^(NSError *error) {
+        DLog(@"Unable to load comments");
     }];
 }
 
 - (void)closeTapped:(id)sender {
     [self.delegate recipeSocialViewControllerCloseRequested];
+}
+
+- (void)composeTapped:(id)sender {
+    CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:nil
+                                                                                                     delegate:self
+                                                                                                editingHelper:self.editingHelper
+                                                                                                        white:YES
+                                                                                                        title:@"Comment"
+                                                                                               characterLimit:500];
+    editViewController.clearOnFocus = YES;
+    editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+    [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
+    self.editViewController = editViewController;
+    
 }
 
 - (void)insertAddCommentCell {

@@ -15,7 +15,6 @@
 
 @property (nonatomic, strong) NSArray *options;
 @property (nonatomic, strong) NSMutableArray *buttons;
-@property (nonatomic, strong) CKUser *currentUser;
 
 @end
 
@@ -29,18 +28,13 @@
 - (id)init {
     if (self = [super initWithFrame:CGRectZero]) {
         [self initTabs];
-        [self selectOptionAtIndex:self.currentUser.theme];
+        [self selectOptionAtIndex:[CKUser currentTheme] inform:NO];
     }
     return self;
 }
 
-#pragma mark - Properties
-
-- (CKUser *)currentUser {
-    if (!_currentUser) {
-        _currentUser = [CKUser currentUser];
-    }
-    return _currentUser;
+- (void)reset {
+    [self selectOptionAtIndex:[CKUser currentTheme] inform:NO];
 }
 
 #pragma mark - Private methods
@@ -147,6 +141,10 @@
 }
 
 - (void)selectOptionAtIndex:(NSInteger)optionIndex {
+    [self selectOptionAtIndex:optionIndex inform:YES];
+}
+
+- (void)selectOptionAtIndex:(NSInteger)optionIndex inform:(BOOL)inform {
     
     // Change state of the option.
     for (NSInteger buttonIndex = 0; buttonIndex < [self.buttons count]; buttonIndex++) {
@@ -158,15 +156,18 @@
         }
     }
     
-    if (self.currentUser) {
-        [self.currentUser setTheme:optionIndex];
-        [self.currentUser saveInBackground];
+    CKUser *currentUser = [CKUser currentUser];
+    if (currentUser) {
+        [currentUser setTheme:optionIndex];
+        [currentUser saveInBackground];
     } else {
         [CKUser setGuestTheme:optionIndex];
     }
     
     // Post theme change.
-    [EventHelper postThemeChange];
+    if (inform) {
+        [EventHelper postThemeChange];
+    }
 }
 
 @end

@@ -305,41 +305,45 @@
     [self initActionButtonWithSelector:@selector(requestTapped:)];
     [self updateRequestButtonText:friendRequestText activity:YES enabled:NO];
     
-    [self.currentUser checkIsFriendsWithUser:self.book.user
-                                  completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
-                                      if (alreadyConnected) {
-                                          [self updateButtonText:@"ALREADY FRIENDS" activity:NO
-                                                            icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
-                                                         enabled:NO target:nil selector:nil];
-                                      } else if (pendingAcceptance) {
-                                          self.pendingAcceptance = pendingAcceptance;
-                                          [self updateButtonText:@"ADD FRIEND" activity:NO
-                                                            icon:[UIImage imageNamed:@"cook_dash_library_selected_bg_icon_addfriend.png"]
-                                                         enabled:YES target:nil selector:nil];
-                                          
-                                          self.actionButtonCaptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-                                          self.actionButtonCaptionLabel.font = kActionCaptionFont;
-                                          self.actionButtonCaptionLabel.textColor = [UIColor whiteColor];
-                                          self.actionButtonCaptionLabel.text = [[NSString stringWithFormat:@"%@ WANTS TO BE FRIENDS", [self.book.user friendlyName]] uppercaseString];
-                                          [self.actionButtonCaptionLabel sizeToFit];
-                                          self.actionButtonCaptionLabel.frame = (CGRect){
-                                              floorf((self.bookSummaryView.bounds.size.width - self.actionButtonCaptionLabel.frame.size.width) / 2.0),
-                                              self.actionButtonView.frame.origin.y + self.actionButtonView.frame.size.height,
-                                              self.actionButtonCaptionLabel.frame.size.width,
-                                              self.actionButtonCaptionLabel.frame.size.height
-                                          };
-                                          [self.bookSummaryView addSubview:self.actionButtonCaptionLabel];
-                                          
-                                      } else if (alreadySent) {
-                                          [self updateButtonText:@"REQUESTED" activity:NO
-                                                            icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
-                                                         enabled:NO target:nil selector:nil];
-                                      } else {
-                                          [self updateRequestButtonText:friendRequestText activity:NO enabled:YES];
-                                      }
-                                  } failure:^(NSError *error) {
-                                      [self updateRequestButtonText:friendRequestText activity:NO enabled:NO];
-                                  }];
+    if (self.currentUser) {
+        [self.currentUser checkIsFriendsWithUser:self.book.user
+                                      completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
+                                          if (alreadyConnected) {
+                                              [self updateButtonText:@"ALREADY FRIENDS" activity:NO
+                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                             enabled:NO target:nil selector:nil];
+                                          } else if (pendingAcceptance) {
+                                              self.pendingAcceptance = pendingAcceptance;
+                                              [self updateButtonText:@"ADD FRIEND" activity:NO
+                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_bg_icon_addfriend.png"]
+                                                             enabled:YES target:nil selector:nil];
+                                              
+                                              self.actionButtonCaptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+                                              self.actionButtonCaptionLabel.font = kActionCaptionFont;
+                                              self.actionButtonCaptionLabel.textColor = [UIColor whiteColor];
+                                              self.actionButtonCaptionLabel.text = [[NSString stringWithFormat:@"%@ WANTS TO BE FRIENDS", [self.book.user friendlyName]] uppercaseString];
+                                              [self.actionButtonCaptionLabel sizeToFit];
+                                              self.actionButtonCaptionLabel.frame = (CGRect){
+                                                  floorf((self.bookSummaryView.bounds.size.width - self.actionButtonCaptionLabel.frame.size.width) / 2.0),
+                                                  self.actionButtonView.frame.origin.y + self.actionButtonView.frame.size.height,
+                                                  self.actionButtonCaptionLabel.frame.size.width,
+                                                  self.actionButtonCaptionLabel.frame.size.height
+                                              };
+                                              [self.bookSummaryView addSubview:self.actionButtonCaptionLabel];
+                                              
+                                          } else if (alreadySent) {
+                                              [self updateButtonText:@"REQUESTED" activity:NO
+                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                             enabled:NO target:nil selector:nil];
+                                          } else {
+                                              [self updateRequestButtonText:friendRequestText activity:NO enabled:YES];
+                                          }
+                                      } failure:^(NSError *error) {
+                                          [self updateRequestButtonText:friendRequestText activity:NO enabled:NO];
+                                      }];
+    } else {
+        [self updateButtonText:@"PLEASE SIGN IN" activity:NO icon:nil enabled:NO target:nil selector:nil];
+    }
 }
 
 - (void)initActionButtonWithSelector:(SEL)selector {

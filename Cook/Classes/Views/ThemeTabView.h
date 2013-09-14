@@ -10,4 +10,6 @@
 
 @interface ThemeTabView : UIView
 
+- (void)reset;
+
 @end

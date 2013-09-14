@@ -25,6 +25,8 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSMutableArray *notifications;
 @property (nonatomic, strong) NSMutableDictionary *notificationActionsInProgress;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
+@property (nonatomic, strong) UILabel *emptyCommentsLabel;
 
 @end
 
@@ -109,24 +111,34 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGSize cellSize = CGSizeZero;
-    
     if (self.notifications) {
-        return [NotificationCell unitSize];
+        
+        if ([self.notifications count] > 0) {
+            
+            return [NotificationCell unitSize];
+            
+        } else {
+            
+            return (CGSize){
+                self.collectionView.bounds.size.width,
+                515.0
+            };
+        }
+        
     } else {
+        
         return (CGSize){
             self.collectionView.bounds.size.width,
             515.0
         };
     }
+
     
-    return cellSize;
 }
 
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -139,8 +151,16 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
     if (self.notifications) {
-        numItems = [self.notifications count];
+        
+        if ([self.notifications count] > 0) {
+            numItems = [self.notifications count];
+        } else {
+            numItems = 1;
+        }
+
     } else {
+        
+        // Activity.
         numItems = 1;
     }
     
@@ -151,13 +171,29 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = nil;
+    
     if (self.notifications) {
-        NotificationCell *notificationCell = (NotificationCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
-                                                                                                                forIndexPath:indexPath];
-        notificationCell.delegate = self;
-        CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
-        [notificationCell configureNotification:notification];
-        cell = notificationCell;
+        
+        if ([self.notifications count] > 0) {
+            
+            NotificationCell *notificationCell = (NotificationCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
+                                                                                                                    forIndexPath:indexPath];
+            notificationCell.delegate = self;
+            CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
+            [notificationCell configureNotification:notification];
+            cell = notificationCell;
+            
+        } else {
+            
+            // No comments.
+            [self.activityView stopAnimating];
+            [self.activityView removeFromSuperview];
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+            self.emptyCommentsLabel.center = cell.contentView.center;
+            [cell.contentView addSubview:self.emptyCommentsLabel];
+            
+        }
+
     } else {
         
         cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
@@ -167,6 +203,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         [activityView startAnimating];
         
     }
+    
     return cell;
 }
 
@@ -201,6 +238,24 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return _closeButton;
 }
 
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+    }
+    return _activityView;
+}
+
+- (UILabel *)emptyCommentsLabel {
+    if (!_emptyCommentsLabel) {
+        _emptyCommentsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _emptyCommentsLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:18.0];
+        _emptyCommentsLabel.textColor = [UIColor whiteColor];
+        _emptyCommentsLabel.text = @"NO NOTIFICATIONS";
+        [_emptyCommentsLabel sizeToFit];
+    }
+    return _emptyCommentsLabel;
+}
+
 #pragma mark - Private methods
 
 - (void)loadData {
@@ -221,11 +276,16 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             
         }];
         
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
-            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-        } completion:^(BOOL finished) {
-        }];
+        if ([indexPathsToInsert count] > 0) {
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+                [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+            } completion:^(BOOL finished) {
+            }];
+        } else {
+            [self.collectionView reloadData];
+        }
+
         
     } failure:^(NSError *error) {
         DLog(@"Unable to load notifications");
