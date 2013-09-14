@@ -100,6 +100,10 @@
 }
 
 - (void)configurePages:(NSArray *)pages {
+    
+    // Make sure view is available when this is invoked.
+    self.view.hidden = NO;
+    
     [self.activityView stopAnimating];
     [self.activityView removeFromSuperview];
     
@@ -142,6 +146,10 @@
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
+    
+    // Make sure view is available when this is invoked.
+    self.view.hidden = NO;
+    
     if ([recipe hasPhotos]) {
         
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageView.bounds.size
