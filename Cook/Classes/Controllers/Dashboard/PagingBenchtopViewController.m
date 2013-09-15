@@ -894,7 +894,12 @@
         
         if (reload) {
             [[self pagingLayout] markLayoutDirty];
-            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+            
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+            } completion:^(BOOL finished) {
+                [self updatePagingBenchtopView];
+            }];
         } else {
             [[self pagingLayout] markLayoutDirty];
             [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
