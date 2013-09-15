@@ -410,7 +410,9 @@
     __weak typeof(self) weakSelf = self;
     [self.book addFollower:self.currentUser
                    success:^{
-                       [weakSelf updateAddButtonText:@"BOOK ON BENCH" activity:NO enabled:NO];
+                       [weakSelf updateButtonText:@"BOOK ON BENCH" activity:NO
+                                             icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                          enabled:NO target:nil selector:nil];
                        weakSelf.updated = YES;
                        [EventHelper postFollow:YES friends:NO];
                    }
