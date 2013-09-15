@@ -1039,6 +1039,7 @@
         [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section]]];
     } completion:^(BOOL finished) {
         [self updatePagingBenchtopView];
+        
     }];
     
     // Unfollow in the background, then inform listeners of the update.
@@ -1175,6 +1176,7 @@
                              completion:^(BOOL finished) {
                                  [self.pagingBenchtopView removeFromSuperview];
                                  self.pagingBenchtopView = pagingBenchtopView;
+                                 [self synchronisePagingBenchtopView];
                              }];
             
         } else {
@@ -1189,6 +1191,9 @@
                                  self.pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
                              }
                              completion:^(BOOL finished) {
+                                 
+                                 [self synchronisePagingBenchtopView];
+                                 
                              }];
         }
         
