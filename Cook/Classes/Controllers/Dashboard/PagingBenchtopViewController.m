@@ -461,7 +461,6 @@
     
     [cell loadBook:self.myBook];
     [self enableEditMode:NO];
-    [self updatePagingBenchtopView];
 }
 
 - (void)coverPickerSelected:(NSString *)cover {
