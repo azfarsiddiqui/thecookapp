@@ -308,6 +308,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                toDisplayAsSize:(CGSize){ kMaxRightWidth, kMaxMethodHeight }
                   padDirection:EditPadDirectionBottom
                        updated:[self.recipeDetails methodUpdated]];
+    
+    [self updateAddDetailsCardView];
 }
 
 #pragma mark - Properties
@@ -607,6 +609,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Mark this as the offset for content start, so that left/right columns can reference.
     self.contentOffset = self.layoutOffset;
+}
+
+- (void)updateAddDetailsCardView {
+    CGRect cardFrame = self.addDetailsCardView.frame;
+    cardFrame.origin.y = self.contentDividerView.frame.origin.y + 3.0;
+    self.addDetailsCardView.frame = cardFrame;
 }
 
 - (void)updateServesCook {
