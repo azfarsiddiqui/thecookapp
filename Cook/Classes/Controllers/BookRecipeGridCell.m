@@ -17,6 +17,8 @@
 #import "CKActivityIndicatorView.h"
 #import "TTTTimeIntervalFormatter.h"
 #import "ViewHelper.h"
+#import "EventHelper.h"
+#import "CKPhotoManager.h"
 
 @interface BookRecipeGridCell ()
 
@@ -45,6 +47,10 @@
     return kImageSize;
 }
 
+- (void)dealloc {
+    [EventHelper unregisterPhotoLoading:self];
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self initBackground];
@@ -59,12 +65,17 @@
         // Past dates formatting.
         self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
         [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
+        
+        // Register photo loading events.
+        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
     }
     return self;
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
+    
+    self.recipe = nil;
     
     // Nil the image and stop spinning.
     self.imageView.image = nil;
@@ -82,45 +93,12 @@
     [self updateStory];
     [self updateMethod];
     [self updateStats];
-}
-
-- (void)configureImage:(UIImage *)image {
-    if (image) {
-        [self.activityView stopAnimating];
-    }
     
-    if (image) {
-        
-        // Fade image in if there were no prior images.
-        if (!self.imageView.image) {
-            self.imageView.alpha = 0.0;
-            self.imageView.image = image;
-            [UIView animateWithDuration:0.2
-                                  delay:0.0
-                                options:UIViewAnimationCurveEaseIn
-                             animations:^{
-                                 self.imageView.alpha = 1.0;
-                                 self.topRoundedMaskImageView.alpha = 1.0;
-                                 self.bottomShadowImageView.alpha = 1.0;
-                             }
-                             completion:^(BOOL finished)  {
-                             }];
-            
-        } else {
-            
-            // Otherwise change image straight away.
-            self.imageView.image = image;
-            self.topRoundedMaskImageView.alpha = 1.0;
-            self.bottomShadowImageView.alpha = 1.0;
-        }
-        
-    } else {
-        
-        // Clear it straight away if none.
-        self.imageView.image = nil;
-        self.topRoundedMaskImageView.alpha = 0.0;
-        self.bottomShadowImageView.alpha = 0.0;
+    CGSize imageSize = [BookRecipeGridCell imageSize];
+    if ([recipe hasPhotos]) {
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize];
     }
+
 }
 
 - (void)updateImageView {
@@ -429,6 +407,56 @@
 - (UIImage *)backgroundImageForSelected:(BOOL)selected {
     return [[UIImage imageNamed:@"cook_book_inner_grid_cell.png"]
             resizableImageWithCapInsets:(UIEdgeInsets){ 8.0, 11.0, 12.0, 11.0 }];
+}
+
+- (void)configureImage:(UIImage *)image {
+    if (image) {
+        [self.activityView stopAnimating];
+    }
+    
+    if (image) {
+        
+        // Fade image in if there were no prior images.
+        if (!self.imageView.image) {
+            self.imageView.alpha = 0.0;
+            self.imageView.image = image;
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationCurveEaseIn
+                             animations:^{
+                                 self.imageView.alpha = 1.0;
+                                 self.topRoundedMaskImageView.alpha = 1.0;
+                                 self.bottomShadowImageView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished)  {
+                             }];
+            
+        } else {
+            
+            // Otherwise change image straight away.
+            self.imageView.image = image;
+            self.topRoundedMaskImageView.alpha = 1.0;
+            self.bottomShadowImageView.alpha = 1.0;
+        }
+        
+    } else {
+        
+        // Clear it straight away if none.
+        self.imageView.image = nil;
+        self.topRoundedMaskImageView.alpha = 0.0;
+        self.bottomShadowImageView.alpha = 0.0;
+    }
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
+    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
+    
+    if ([recipePhotoName isEqualToString:name] && thumb) {
+        UIImage *image = [EventHelper imageForPhotoLoading:notification];
+        [self configureImage:image];
+    }
 }
 
 @end

@@ -65,4 +65,12 @@
 + (NSInteger)userNotificationsCountForNotification:(NSNotification *)notification;
 + (void)unregisterUserNotifications:(id)observer;
 
+// Image loading events.
++ (void)registerPhotoLoading:(id)observer selector:(SEL)selector;
++ (void)postPhotoLoadingImage:(UIImage *)image name:(NSString *)name thumb:(BOOL)thumb;
++ (UIImage *)imageForPhotoLoading:(NSNotification *)notification;
++ (NSString *)nameForPhotoLoading:(NSNotification *)notification;
++ (BOOL)thumbForPhotoLoading:(NSNotification *)notification;
++ (void)unregisterPhotoLoading:(id)observer;
+
 @end

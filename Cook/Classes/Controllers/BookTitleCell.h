@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @class CKBook;
+@class CKRecipe;
 
 @interface BookTitleCell : UICollectionViewCell
 
 + (CGSize)cellSize;
 
 - (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes book:(CKBook *)book;
-- (void)configureImage:(UIImage *)image;
 - (void)configureAsAddCellForBook:(CKBook *)book;
+- (void)configureCoverRecipe:(CKRecipe *)recipe;
 
 @end

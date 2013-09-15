@@ -12,20 +12,30 @@
 #import "ImageHelper.h"
 #import "ViewHelper.h"
 #import "CKBook.h"
+#import "CKRecipe.h"
 #import "CKBookCover.h"
+#import "EventHelper.h"
+#import "CKPhotoManager.h"
 
 @interface BookContentImageView ()
 
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *vignetteOverlayView;
 @property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, assign) BOOL fullImageLoaded;
 
 @end
 
 @implementation BookContentImageView
 
 #define kForceVisibleOffset         1.0
+
+- (void)dealloc {
+    [EventHelper unregisterPhotoLoading:self];
+}
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -46,6 +56,8 @@
         self.containerView.clipsToBounds = YES; // Clipped so that imageView doesn't leak out out.
         [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
         
+        // Register photo loading events.
+        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
     }
     return self;
 }
@@ -54,10 +66,26 @@
     [super prepareForReuse];
     self.imageView.image = nil;
     self.blurredImageView.image = nil;
+    self.recipe = nil;
+    self.book = nil;
+    self.fullImageLoaded = NO;
 }
 
 - (void)applyOffset:(CGFloat)offset {
     [self applyOffset:offset distance:200.0 view:self.blurredImageView];
+}
+
+- (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book {
+    self.recipe = recipe;
+    self.book = book;
+    
+    if ([recipe hasPhotos]) {
+        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset]];
+    } else {
+        [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover]
+                 placeholder:YES book:book];
+    }
+
 }
 
 - (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder book:(CKBook *)book {
@@ -144,6 +172,22 @@
         self.bounds.size.width - (kForceVisibleOffset * 2.0),
         self.bounds.size.height
     };
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
+    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
+    
+    if ([recipePhotoName isEqualToString:name]) {
+        
+        // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
+        if (!self.fullImageLoaded) {
+            UIImage *image = [EventHelper imageForPhotoLoading:notification];
+            [self configureImage:image placeholder:notification book:self.book];
+            self.fullImageLoaded = !thumb;
+        }
+    }
 }
 
 @end

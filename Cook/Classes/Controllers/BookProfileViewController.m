@@ -36,6 +36,8 @@
 // Edited content.
 @property (nonatomic, strong) UIImage *updatedBookCoverPhoto;
 
+@property (nonatomic, assign) BOOL fullImageLoaded;
+
 @end
 
 @implementation BookProfileViewController
@@ -43,6 +45,10 @@
 #define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
 #define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kAvailableWidth     624.0
+
+- (void)dealloc {
+    [EventHelper unregisterPhotoLoading:self];
+}
 
 - (id)initWithBook:(CKBook *)book {
     if (self = [super init]) {
@@ -56,6 +62,9 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor lightGrayColor];
+    
+    // Register photo loading events.
+    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -296,13 +305,7 @@
 
 - (void)loadData {
     if ([self.book hasCoverPhoto]) {
-        [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size name:@"profileCover"
-                                             progress:^(CGFloat progressRatio, NSString *name) {
-                                             } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                                 [self loadImage:thumbImage placeholder:NO];
-                                             } completion:^(UIImage *image, NSString *name) {
-                                                 [self loadImage:image placeholder:NO];
-                                             }];
+        [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size];
     } else {
         UIImage *bookCoverImage = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
         [self loadImage:bookCoverImage placeholder:YES];
@@ -398,6 +401,22 @@
 
 - (BOOL)introRequired {
     return (!self.editMode && ![self.book hasCoverPhoto] && ![self.book.user hasProfilePhoto]);
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
+    NSString *bookPhotoName = [[CKPhotoManager sharedInstance] photoNameForBook:self.book];
+    
+    if ([bookPhotoName isEqualToString:name]) {
+        
+        // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
+        if (!self.fullImageLoaded) {
+            UIImage *image = [EventHelper imageForPhotoLoading:notification];
+            [self loadImage:image placeholder:NO];
+            self.fullImageLoaded = !thumb;
+        }
+    }
 }
 
 @end

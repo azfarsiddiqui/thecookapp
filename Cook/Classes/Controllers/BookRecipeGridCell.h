@@ -33,7 +33,6 @@
 
 + (CGSize)imageSize;
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book;
-- (void)configureImage:(UIImage *)image;
 
 - (void)updateImageView;
 - (void)updateStats;

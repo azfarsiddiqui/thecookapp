@@ -11,9 +11,13 @@
 #import "Theme.h"
 #import "CKBook.h"
 #import "CKBookCover.h"
+#import "CKRecipe.h"
+#import "EventHelper.h"
+#import "CKPhotoManager.h"
 
 @interface BookTitleCell ()
 
+@property (nonatomic, strong) CKRecipe *coverRecipe;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *imageOverlayView;
 @property (nonatomic, strong) UIImageView *stackImageView;
@@ -36,6 +40,10 @@
     return (CGSize) { 256.0, 192.0 };
 }
 
+- (void)dealloc {
+    [EventHelper unregisterPhotoLoading:self];
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self.contentView addSubview:self.imageView];
@@ -46,8 +54,17 @@
         [self.contentView addSubview:self.titleLabel];
         [self.contentView addSubview:self.subtitleLabel];
         [self.contentView addSubview:self.newIndicatorView];
+        
+        // Register photo loading events.
+        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
     }
     return self;
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.coverRecipe = nil;
+    self.imageView.image = nil;
 }
 
 - (void)configurePage:(NSString *)page numRecipes:(NSInteger)numRecipes containNewRecipes:(BOOL)newRecipes
@@ -83,14 +100,13 @@
     self.newIndicatorView.hidden = !newRecipes;
 }
 
-- (void)configureImage:(UIImage *)image {
-    self.imageView.hidden = NO;
-    self.imageOverlayView.hidden = NO;
-    if (!image) {
-        self.imageView.hidden = YES;
-        self.blankOverlayView.hidden = NO;
+- (void)configureCoverRecipe:(CKRecipe *)recipe {
+    self.coverRecipe = recipe;
+    
+    CGSize imageSize = [BookTitleCell cellSize];
+    if ([recipe hasPhotos]) {
+        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize];
     }
-    [ImageHelper configureImageView:self.imageView image:image];
 }
 
 - (void)configureAsAddCellForBook:(CKBook *)book {
@@ -216,6 +232,27 @@
         self.stackImageView.hidden = NO;
     } else {
         self.stackImageView.hidden = YES;
+    }
+}
+
+- (void)configureImage:(UIImage *)image {
+    self.imageView.hidden = NO;
+    self.imageOverlayView.hidden = NO;
+    if (!image) {
+        self.imageView.hidden = YES;
+        self.blankOverlayView.hidden = NO;
+    }
+    [ImageHelper configureImageView:self.imageView image:image];
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
+    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.coverRecipe];
+    
+    if ([recipePhotoName isEqualToString:name] && thumb) {
+        UIImage *image = [EventHelper imageForPhotoLoading:notification];
+        [self configureImage:image];
     }
 }
 

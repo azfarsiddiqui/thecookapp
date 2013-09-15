@@ -44,6 +44,11 @@
       isSynchronous:(BOOL)isSynchronous
          completion:(void (^)(UIImage *image, NSString *name))completion;
 
+// Event-based photo loading.
+- (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
+- (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
+- (void)imageForBook:(CKBook *)book size:(CGSize)size;
+
 // Setup books, resizing etc.
 - (void)setupBooks;
 
@@ -57,5 +62,9 @@
 - (void)addImage:(UIImage *)image recipe:(CKRecipe *)recipe;
 - (void)addImage:(UIImage *)image book:(CKBook *)book;
 - (void)addImage:(UIImage *)image user:(CKUser *)user;
+
+// Photo names.
+- (NSString *)photoNameForRecipe:(CKRecipe *)recipe;
+- (NSString *)photoNameForBook:(CKBook *)book;
 
 @end

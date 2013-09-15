@@ -28,13 +28,14 @@
 #import "CKTextFieldEditViewController.h"
 #import "CardViewHelper.h"
 #import "NSString+Utilities.h"
+#import "EventHelper.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
-@property (nonatomic, assign) BOOL titleImageLoaded;
+@property (nonatomic, assign) BOOL fullImageLoaded;
 @property (nonatomic, assign) BOOL snapshot;
 @property (nonatomic, strong) CKRecipe *heroRecipe;
 @property (nonatomic, weak) id<BookTitleViewControllerDelegate> delegate;
@@ -68,6 +69,10 @@
 #define kHeaderHeight           420.0
 #define kHeaderCellGap          135.0
 
+- (void)dealloc {
+    [EventHelper unregisterPhotoLoading:self];
+}
+
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
     
     return [self initWithBook:book snapshot:NO delegate:delegate];
@@ -97,6 +102,9 @@
     }
     
     [self addCloseButtonLight:YES];
+    
+    // Register photo loading events.
+    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
 }
 
 - (void)configurePages:(NSArray *)pages {
@@ -146,25 +154,14 @@
 }
 
 - (void)configureHeroRecipe:(CKRecipe *)recipe {
+    self.fullImageLoaded = NO;
+    self.heroRecipe = recipe;
     
     // Make sure view is available when this is invoked.
     self.view.hidden = NO;
     
     if ([recipe hasPhotos]) {
-        
-        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageView.bounds.size
-                                                   name:recipe.objectId
-                                               progress:^(CGFloat progressRatio, NSString *name) {
-                                                   // Ignore progress.
-                                               } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                                   if ([name isEqualToString:recipe.objectId]) {
-                                                       [self configureHeroRecipeImage:thumbImage];
-                                                   }
-                                               } completion:^(UIImage *image, NSString *name) {
-                                                   if ([name isEqualToString:recipe.objectId]) {
-                                                       [self configureHeroRecipeImage:image];
-                                                   }
-                                               }];
+        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageView.bounds.size];
     }
 }
 
@@ -287,7 +284,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         
         // Load featured recipe for the category.
         CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForPage:page];
-        [self configureImageForTitleCell:cell recipe:featuredRecipe indexPath:indexPath];
+        [cell configureCoverRecipe:featuredRecipe];
         
     } else {
         
@@ -305,7 +302,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         supplementaryView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                     withReuseIdentifier:kHeaderId forIndexPath:indexPath];
-//        supplementaryView.backgroundColor = [UIColor greenColor];
         
         if (![supplementaryView viewWithTag:kTitleHeaderTag]) {
             self.bookTitleView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
@@ -511,23 +507,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [activityView startAnimating];
 }
 
-- (void)configureImageForTitleCell:(BookTitleCell *)titleCell recipe:(CKRecipe *)recipe
-                         indexPath:(NSIndexPath *)indexPath {
-    
-    if ([recipe hasPhotos]) {
-        CGSize imageSize = [BookTitleCell cellSize];
-        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize name:recipe.page
-                                                    progress:^(CGFloat progressRatio, NSString *name) {
-                                                    } completion:^(UIImage *thumbImage, NSString *name) {
-                                                        if ([recipe.page isEqualToString:name]) {
-                                                            [titleCell configureImage:thumbImage];
-                                                        }
-                                                    }];
-    } else {
-        [titleCell configureImage:nil];
-    }
-}
-
 - (void)addPage {
     [self enableAddMode:YES];
     [self performAddPageWithName:nil];
@@ -539,11 +518,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)configureHeroRecipeImage:(UIImage *)image {
-    if (self.titleImageLoaded) {
-        return;
-    }
-    self.titleImageLoaded = YES;
-    
     [ImageHelper configureImageView:self.imageView image:image];
     self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     
@@ -592,5 +566,23 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
 }
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
+    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
+    
+    if ([recipePhotoName isEqualToString:name]) {
+        
+        // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
+        if (!self.fullImageLoaded) {
+            UIImage *image = [EventHelper imageForPhotoLoading:notification];
+            [self configureHeroRecipeImage:image];
+            self.fullImageLoaded = !thumb;
+        }
+        
+    }
+}
+
 
 @end

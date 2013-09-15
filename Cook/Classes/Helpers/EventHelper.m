@@ -31,6 +31,10 @@
 #define kBoolLightStatusBar         @"CKStatusBarLight"
 #define kEventUserNotifications     @"CKUserNotifications"
 #define kUserNotificationsCount     @"CKUserNotificationsCount"
+#define kEventPhotoLoading          @"CKPhotoLoading"
+#define kNamePhotoLoading           @"CKNamePhotoLoading"
+#define kImagePhotoLoading          @"CKImagePhotoLoading"
+#define kThumbPhotoLoading          @"CKThumbPhotoLoading"
 
 #pragma mark - Login successful event
 
@@ -240,6 +244,36 @@
 
 + (void)unregisterUserNotifications:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventUserNotifications];
+}
+
+#pragma mark Image loading events.
+
++ (void)registerPhotoLoading:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventPhotoLoading];
+}
+
++ (void)postPhotoLoadingImage:(UIImage *)image name:(NSString *)name thumb:(BOOL)thumb {
+    [EventHelper postEvent:kEventPhotoLoading withUserInfo:@{
+                                                             kImagePhotoLoading : image,
+                                                             kNamePhotoLoading : name,
+                                                             kThumbPhotoLoading : @(thumb)
+                                                             }];
+}
+
++ (UIImage *)imageForPhotoLoading:(NSNotification *)notification {
+    return [[notification userInfo] objectForKey:kImagePhotoLoading];
+}
+
++ (NSString *)nameForPhotoLoading:(NSNotification *)notification {
+    return [[notification userInfo] objectForKey:kNamePhotoLoading];
+}
+
++ (BOOL)thumbForPhotoLoading:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kThumbPhotoLoading] boolValue];
+}
+
++ (void)unregisterPhotoLoading:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventPhotoLoading];
 }
 
 #pragma mark - Private

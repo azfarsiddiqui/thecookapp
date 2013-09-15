@@ -965,8 +965,10 @@
                           indexPath:(NSIndexPath *)indexPath {
     DLog(@"Content Image for %d", indexPath.section);
     
-    if ([recipe hasPhotos]) {
+    [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
+                          placeholder:YES book:self.book];
     
+    if ([recipe hasPhotos]) {
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[contentHeaderView imageSizeWithMotionOffset]
                                                    name:recipe.objectId
                                                progress:^(CGFloat progressRatio, NSString *name) {
@@ -979,10 +981,6 @@
                                                        [contentHeaderView configureImage:image placeholder:NO book:self.book];
                                                    }
                                                }];
-        
-    } else {
-        [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
-                              placeholder:YES book:self.book];
     }
 }
 
@@ -1018,7 +1016,8 @@
     
     // Load featured recipe image.
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
-    [self configureImageForHeaderView:categoryHeaderView recipe:coverRecipe indexPath:indexPath];
+    [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
+//    [self configureImageForHeaderView:categoryHeaderView recipe:coverRecipe indexPath:indexPath];
     
     // Keep track of category views keyed on page name.
     [self.pageHeaderViews setObject:categoryHeaderView forKey:page];

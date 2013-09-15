@@ -331,9 +331,6 @@
     
     [recipeCell configureRecipe:recipe book:self.book];
     
-    // Configure image.
-    [self configureImageForRecipeCell:recipeCell recipe:recipe indexPath:indexPath];
-    
     return recipeCell;
 }
 
@@ -445,25 +442,6 @@
                                                    self.imageView.image = image;
                                                }
                                            }];
-}
-
-- (void)configureImageForRecipeCell:(BookRecipeGridCell *)recipeCell recipe:(CKRecipe *)recipe
-                          indexPath:(NSIndexPath *)indexPath {
-    
-    if ([recipe hasPhotos]) {
-        CGSize imageSize = [BookRecipeGridCell imageSize];
-        
-        
-        [[CKPhotoManager sharedInstance] thumbImageForRecipe:recipe size:imageSize name:recipe.objectId
-                                                    progress:^(CGFloat progressRatio, NSString *name) {
-                                                    } completion:^(UIImage *thumbImage, NSString *name) {
-                                                        if ([name isEqualToString:recipe.objectId]) {
-                                                            [recipeCell configureImage:thumbImage];
-                                                        }
-                                                    }];
-    } else {
-        [recipeCell configureImage:nil];
-    }
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {
