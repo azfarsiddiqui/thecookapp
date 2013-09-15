@@ -733,7 +733,7 @@
         if (image) {
             
             // Return in-transfer image.
-            DLog(@">>>>> Found in-transfer image for name [%@]", name);
+//            DLog(@">>>>> Found in-transfer image for name [%@]", name);
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             dispatch_async(queue, ^{
                 
@@ -752,7 +752,7 @@
         } else {
             
             // Didn't find in-transfer image, returning none.
-            DLog(@"No in-transfer image, returning nil");
+//            DLog(@"No in-transfer image, returning nil");
             completion(nil, name);
         }
         
