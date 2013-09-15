@@ -225,10 +225,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             CGSize commentSize = CGSizeZero;
             if ([comment persisted]) {
                 if ([self.commentsCachedSizes objectForKey:comment.objectId]) {
-                    DLog(@"**** CACHED SIZE");
                     commentSize = [[self.commentsCachedSizes objectForKey:comment.objectId] CGSizeValue];
                 } else {
-                    DLog(@"**** CALC SIZE");
                     commentSize = [RecipeSocialCommentCell sizeForComment:comment];
                     [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:commentSize] forKey:comment.objectId];
                 }
