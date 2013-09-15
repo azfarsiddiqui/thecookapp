@@ -1159,12 +1159,17 @@
         
         // Move it below the existing one.
         if (self.pagingBenchtopView) {
+            
+            // Magic blend numbers to achieve as best blending as possible between the two.
+            pagingBenchtopView.alpha = 0.4;
+            self.pagingBenchtopView.alpha = 0.5;
             [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
 
             [UIView animateWithDuration:0.3
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
+                                 pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
                                  self.pagingBenchtopView.alpha = 0.0;
                              }
                              completion:^(BOOL finished) {
@@ -1224,6 +1229,7 @@
         if (section == kMyBookSection) {
             
             if (self.myBook) {
+//                pagingBenchtopView.leftEdgeColour = [CKBookCover themeBackdropColourForCover:self.myBook.cover];
                 [pagingBenchtopView addColour:[CKBookCover themeBackdropColourForCover:self.myBook.cover]];
             }
             
@@ -1248,6 +1254,11 @@
                     // [pagingBenchtopView addColour:[UIColor colorWithRed:red green:green blue:blue alpha:0.1]];
                     
                     [pagingBenchtopView addColour:bookColour];
+                    
+                } else if (followIndex == (numFollowBooks - 1)) {
+                    
+//                    pagingBenchtopView.rightEdgeColour = bookColour;
+                    
                 }
                 
                 [pagingBenchtopView addColour:bookColour];
