@@ -41,6 +41,9 @@
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
 
+// Height caching.
+@property (nonatomic, strong) NSMutableDictionary *commentsCachedSizes;
+
 @end
 
 @implementation RecipeSocialViewController
@@ -58,6 +61,7 @@
         self.recipe = recipe;
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
+        self.commentsCachedSizes = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -216,7 +220,26 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             
             // Comment cell.
             CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-            return [RecipeSocialCommentCell sizeForComment:comment];
+            
+            // Get cached size if available, and only if they have been persisted.
+            CGSize commentSize = CGSizeZero;
+            if ([comment persisted]) {
+                if ([self.commentsCachedSizes objectForKey:comment.objectId]) {
+                    DLog(@"**** CACHED SIZE");
+                    commentSize = [[self.commentsCachedSizes objectForKey:comment.objectId] CGSizeValue];
+                } else {
+                    DLog(@"**** CALC SIZE");
+                    commentSize = [RecipeSocialCommentCell sizeForComment:comment];
+                    [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:commentSize] forKey:comment.objectId];
+                }
+            } else {
+                
+                // Newly added comment, just recalculate the height, won't impact overall performance I hope.
+                commentSize = [RecipeSocialCommentCell sizeForComment:comment];
+                
+            }
+            
+            return commentSize;
             
         } else {
             

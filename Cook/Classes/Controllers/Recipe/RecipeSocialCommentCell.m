@@ -12,10 +12,12 @@
 #import "Theme.h"
 #import "CKRecipeComment.h"
 #import "CKEditingTextBoxView.h"
+#import "DateHelper.h"
 
 @interface RecipeSocialCommentCell () <CKEditingTextBoxViewDelegate>
 
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *commentLabel;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
@@ -24,11 +26,12 @@
 
 @implementation RecipeSocialCommentCell
 
-#define kWidth              600.0
-#define kProfileCommentGap  30.0
-#define kNameCommentGap     10.0
-#define kContentInsets      (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
-#define kTextBoxInsets      (UIEdgeInsets){ 30.0, 28.0, 22.0, 40.0 }
+#define kWidth                  600.0
+#define kProfileCommentGap      30.0
+#define kNameCommentGap         10.0
+#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kTextBoxInsets          (UIEdgeInsets){ 30.0, 28.0, 22.0, 40.0 }
+#define kCommentTimeGap         3.0
 
 + (CGSize)sizeForComment:(CKRecipeComment *)comment {
     CGSize size = (CGSize){ kWidth, 0.0 };
@@ -53,6 +56,18 @@
                                                      context:nil];
     size.height += commentFrame.size.height;
     
+    // Comment/Time Gap.
+    size.height += kCommentTimeGap;
+    
+    // Time.
+    NSDate *createdDateTime = comment.createdDateTime ? comment.createdDateTime : [NSDate date];
+    NSString *timeDisplay = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:createdDateTime] uppercaseString];
+    CGRect timeFrame = [timeDisplay boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:@{ NSFontAttributeName : [Theme overlayTimeFont] }
+                                                 context:nil];
+    size.height += timeFrame.size.height;
+    
     size.height += kContentInsets.bottom;
     return size;
 }
@@ -68,6 +83,7 @@
         [self.contentView addSubview:self.profileView];
         [self.contentView addSubview:self.nameLabel];
         [self.contentView addSubview:self.commentLabel];
+        [self.contentView addSubview:self.timeLabel];
         [self.contentView addSubview:self.dividerView];
     }
     return self;
@@ -107,6 +123,17 @@
         self.profileView.frame.origin.x + self.profileView.frame.size.width + kProfileCommentGap,
         self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameCommentGap,
         availableSize.width,
+        size.height
+    };
+    
+    // Time.
+    NSDate *createdDateTime = comment.createdDateTime ? comment.createdDateTime : [NSDate date];
+    self.timeLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:createdDateTime] uppercaseString];
+    size = [self.timeLabel sizeThatFits:availableSize];
+    self.timeLabel.frame = (CGRect){
+        self.nameLabel.frame.origin.x,
+        self.commentLabel.frame.origin.y + self.commentLabel.frame.size.height + kCommentTimeGap,
+        size.width,
         size.height
     };
     
@@ -205,6 +232,20 @@
         _commentLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     }
     return _commentLabel;
+}
+
+- (UILabel *)timeLabel {
+    if (!_timeLabel) {
+        _timeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _timeLabel.backgroundColor = [UIColor clearColor];
+        _timeLabel.font = [Theme overlayTimeFont];
+        _timeLabel.textColor = [Theme overlayTimeColour];
+        _timeLabel.shadowOffset = (CGSize){ 0.0, 1.0 };
+        _timeLabel.shadowColor = [UIColor blackColor];
+        _timeLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        _timeLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    }
+    return _timeLabel;
 }
 
 - (UIView *)dividerView {
