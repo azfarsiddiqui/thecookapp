@@ -29,6 +29,7 @@
 #import "CardViewHelper.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
+#import "CKProgressView.h"
 
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate>
@@ -46,6 +47,7 @@
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) BookTitleView *bookTitleView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
+@property (nonatomic, strong) CKProgressView *progressView;
 
 // Editing.
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
@@ -71,6 +73,7 @@
 
 - (void)dealloc {
     [EventHelper unregisterPhotoLoading:self];
+    [EventHelper unregisterPhotoLoadingProgress:self];
 }
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookTitleViewControllerDelegate>)delegate {
@@ -105,6 +108,7 @@
     
     // Register photo loading events.
     [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+    [EventHelper registerPhotoLoadingProgress:self selector:@selector(photoLoadingProgress:)];
 }
 
 - (void)configurePages:(NSArray *)pages {
@@ -161,6 +165,17 @@
     self.view.hidden = NO;
     
     if ([recipe hasPhotos]) {
+        
+        // Add progress.
+        self.progressView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - self.progressView.frame.size.width) / 2.0),
+            20.0,
+            self.progressView.frame.size.width,
+            self.progressView.frame.size.height
+        };
+        [self.view addSubview:self.progressView];
+        [self.progressView setProgress:0.1 animated:YES];
+        
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:self.imageView.bounds.size];
     }
 }
@@ -411,6 +426,14 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return _bookTitleView;
 }
 
+- (CKProgressView *)progressView {
+    if (!_progressView) {
+        _progressView = [[CKProgressView alloc] initWithWidth:300.0];
+        _progressView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    }
+    return _progressView;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackgroundView {
@@ -518,6 +541,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)configureHeroRecipeImage:(UIImage *)image {
+    self.progressView.hidden = self.fullImageLoaded;
+    
     [ImageHelper configureImageView:self.imageView image:image];
     self.topShadowView.image = [ViewHelper topShadowImageSubtle:NO];
     
@@ -577,10 +602,20 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
         if (!self.fullImageLoaded) {
             UIImage *image = [EventHelper imageForPhotoLoading:notification];
-            [self configureHeroRecipeImage:image];
             self.fullImageLoaded = !thumb;
+            [self configureHeroRecipeImage:image];
         }
         
+    }
+}
+
+- (void)photoLoadingProgress:(NSNotification *)notification {
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.heroRecipe];
+    
+    if ([recipePhotoName isEqualToString:name]) {
+        CGFloat progress = [EventHelper progressForPhotoLoading:notification];
+        [self.progressView setProgress:progress animated:YES];
     }
 }
 

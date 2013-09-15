@@ -226,7 +226,7 @@
                 
                 // Otherwise download from Parse in an operation.
                 NSBlockOperation *imageDownloadOperation = [NSBlockOperation blockOperationWithBlock:^{
-                    [weakSelf downloadImageForParseFile:parseFile size:size name:name
+                    [weakSelf downloadImageForParseFile:parseFile size:size name:name thumb:thumb
                                                progress:^(CGFloat progressRatio) {
                                                    progress(progressRatio);
                                                }
@@ -793,6 +793,13 @@
                          progress:(void (^)(CGFloat progressRatio))progress
                        completion:(void (^)(UIImage *image, NSString *name))completion {
     
+    [self downloadImageForParseFile:parseFile size:size name:name thumb:NO progress:progress completion:completion];
+}
+
+- (void)downloadImageForParseFile:(PFFile *)parseFile size:(CGSize)size name:(NSString *)name thumb:(BOOL)thumb
+                         progress:(void (^)(CGFloat progressRatio))progress
+                       completion:(void (^)(UIImage *image, NSString *name))completion {
+    
     // Generate a cache key for the given file and size combination.
     NSString *cacheKey = [self cacheKeyForParseFile:parseFile size:size];
     
@@ -845,7 +852,12 @@
         
     } progressBlock:^(int progressPercentage) {
         if (progressPercentage % 10 == 0) {
-            DLog(@"CacheKey[%@] Progress[%d]", cacheKey, progressPercentage);
+            
+            // Report progress only for thumb.
+            if (!thumb) {
+                [EventHelper postPhotoLoadingProgress:(progressPercentage / 100.0) name:name];
+            }
+            // DLog(@"CacheKey[%@] Progress[%d]", cacheKey, progressPercentage);
         }
         
         // Update the transfer progress.

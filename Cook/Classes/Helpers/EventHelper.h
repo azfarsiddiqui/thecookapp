@@ -73,4 +73,9 @@
 + (BOOL)thumbForPhotoLoading:(NSNotification *)notification;
 + (void)unregisterPhotoLoading:(id)observer;
 
++ (void)registerPhotoLoadingProgress:(id)observer selector:(SEL)selector;
++ (void)postPhotoLoadingProgress:(CGFloat)progress name:(NSString *)name;
++ (CGFloat)progressForPhotoLoading:(NSNotification *)notification;
++ (void)unregisterPhotoLoadingProgress:(id)observer;
+
 @end

@@ -35,6 +35,8 @@
 #define kNamePhotoLoading           @"CKNamePhotoLoading"
 #define kImagePhotoLoading          @"CKImagePhotoLoading"
 #define kThumbPhotoLoading          @"CKThumbPhotoLoading"
+#define kEventPhotoLoadingProgress  @"CKEventPhotoLoadingProgress"
+#define kProgressPhotoLoading       @"CKProgressPhotoLoading"
 
 #pragma mark - Login successful event
 
@@ -274,6 +276,25 @@
 
 + (void)unregisterPhotoLoading:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventPhotoLoading];
+}
+
++ (void)registerPhotoLoadingProgress:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventPhotoLoadingProgress];
+}
+
++ (void)postPhotoLoadingProgress:(CGFloat)progress name:(NSString *)name {
+    [EventHelper postEvent:kEventPhotoLoadingProgress withUserInfo:@{
+                                                                     kProgressPhotoLoading : @(progress),
+                                                                     kNamePhotoLoading : name
+                                                                     }];
+}
+
++ (CGFloat)progressForPhotoLoading:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kProgressPhotoLoading] floatValue];
+}
+
++ (void)unregisterPhotoLoadingProgress:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventPhotoLoadingProgress];
 }
 
 #pragma mark - Private
