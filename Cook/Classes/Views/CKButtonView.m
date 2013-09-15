@@ -90,6 +90,8 @@
         
         if (!self.iconImageView) {
             self.iconImageView = [[UIImageView alloc] initWithImage:icon];
+        } else {
+            self.iconImageView.image = icon;
         }
         CGFloat requiredWidth = self.iconImageView.frame.size.width + kIconTextGap + textFrame.size.width;
         self.iconImageView.frame = (CGRect){
