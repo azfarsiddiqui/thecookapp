@@ -642,12 +642,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
             
             // Grab the facebook ids of friends.
             NSArray *friendIds = [[jsonDictionary objectForKey:@"data"] collect:^id(NSDictionary<FBGraphUser> *friendData) {
-                return friendData.id;
+                return [friendData objectForKey:@"id"];
             }];
             
             // Save the username
             currentUser.name = [NSString CK_safeString:userData.name defaultString:kUserAttrDefaultNameValue];
-            currentUser.facebookId = userData.id;
+            currentUser.facebookId = [userData objectForKey:@"id"];
             currentUser.firstName = userData.first_name;
             currentUser.lastName = userData.last_name;
             
