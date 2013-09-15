@@ -117,13 +117,6 @@
     } else {
         iconContainerView.hidden = YES;
     }
-    
-    // Update likes icon, which is custom coloured.
-    if (iconIndex == 3) {
-        UIImageView *iconView = (UIImageView *)[iconContainerView viewWithTag:kContainerIconTag];
-        iconView.image = [self likesIcon];
-    }
-    
 }
 
 - (void)reset {
