@@ -427,7 +427,7 @@
         toggleLevel = kBenchtopLevel;
     }
     
-    DLog("Snap to Level: %d", toggleLevel);
+//    DLog("Snap to Level: %d", toggleLevel);
     [self snapToLevel:toggleLevel];
 }
 
@@ -588,7 +588,7 @@
                            self.storeViewController.view.frame.size.height);
     }
     
-    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
+//    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
     return frame;
 }
 
@@ -609,7 +609,7 @@
                            self.view.bounds.size.height);
     }
     
-    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
+//    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
     return frame;
 }
 
@@ -633,7 +633,7 @@
                            self.settingsViewController.view.frame.size.height);
     }
     
-    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
+//    DLog(@"level [%d] %@", level, NSStringFromCGRect(frame));
     return frame;
 }
 
@@ -847,7 +847,7 @@
 }
 
 - (void)enable:(BOOL)enable {
-    DLog(@"enable: %@", enable ? @"YES" : @"NO");
+//    DLog(@"enable: %@", enable ? @"YES" : @"NO");
     self.panEnabled = enable;
 
     // Enable/disable benchtop
