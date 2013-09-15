@@ -32,7 +32,7 @@
 
 @implementation NotificationsViewController
 
-#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 50.0, 20.0 }
+#define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
 #define kUnderlayMaxAlpha       0.7
 #define kHeaderCellId           @"HeaderCell"
 #define kCellId                 @"NotificationCell"
