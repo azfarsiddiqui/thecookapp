@@ -1064,7 +1064,7 @@
     BOOL isFriendsBook = [book isThisMyFriendsBook];
     [book removeFollower:currentUser
                  success:^{
-                     [EventHelper postFollow:NO friends:isFriendsBook];
+                     [EventHelper postFollow:NO book:book];
                  } failure:^(NSError *error) {
                      DLog(@"Unable to unfollow.");
                  }];
@@ -1116,9 +1116,24 @@
 }
 
 - (void)followUpdated:(NSNotification *)notification {
+    
+    CKBook *book = [EventHelper bookFollowForNotification:notification];
     BOOL follow = [EventHelper followForNotification:notification];
     if (follow) {
-        [self loadFollowBooksReload:YES];
+        
+        if (![self.followBooks detect:^BOOL(CKBook *existingBook) {
+            return [book.objectId isEqualToString:existingBook.objectId];
+        }]) {
+            
+            [[self pagingLayout] markLayoutDirty];
+            
+            [self.followBooks addObject:book];
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.followBooks count] - 1 inSection:kFollowSection]]];
+            } completion:^(BOOL finished) {
+                [self updatePagingBenchtopView];
+            }];
+        }
     }
 }
 

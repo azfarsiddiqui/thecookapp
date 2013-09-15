@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CKRecipe.h"
+#import "CKBook.h"
 
 @interface EventHelper : NSObject
 
@@ -38,10 +39,10 @@
 + (BOOL)editModeSaveForNotification:(NSNotification *)notification;
 
 + (void)registerFollowUpdated:(id)observer selector:(SEL)selector;
-+ (void)postFollow:(BOOL)follow friends:(BOOL)friends;
++ (void)postFollow:(BOOL)follow book:(CKBook *)book;
 + (void)unregisterFollowUpdated:(id)observer;
 + (BOOL)followForNotification:(NSNotification *)notification;
-+ (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification;
++ (CKBook *)bookFollowForNotification:(NSNotification *)notification;
 
 + (void)registerLiked:(id)observer selector:(SEL)selector;
 + (void)postLiked:(BOOL)liked recipe:(CKRecipe *)recipe;
@@ -72,12 +73,12 @@
 + (NSString *)nameForPhotoLoading:(NSNotification *)notification;
 + (BOOL)thumbForPhotoLoading:(NSNotification *)notification;
 + (void)unregisterPhotoLoading:(id)observer;
-
 + (void)registerPhotoLoadingProgress:(id)observer selector:(SEL)selector;
 + (void)postPhotoLoadingProgress:(CGFloat)progress name:(NSString *)name;
 + (CGFloat)progressForPhotoLoading:(NSNotification *)notification;
 + (void)unregisterPhotoLoadingProgress:(id)observer;
 
+// Background fetch.
 + (void)registerBackgroundFetch:(id)observer selector:(SEL)selector;
 + (void)postBackgroundFetch;
 + (void)unregisterBackgroundFetch:(id)observer;

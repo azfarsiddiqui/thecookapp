@@ -418,7 +418,8 @@
                                              icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
                                           enabled:NO target:nil selector:nil];
                        weakSelf.updated = YES;
-                       [EventHelper postFollow:YES friends:NO];
+                       
+                       [EventHelper postFollow:YES book:weakSelf.book];
                        
                        // Automatically close.
                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{

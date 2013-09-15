@@ -21,7 +21,7 @@
 #define kBoolEditModeSave           @"CKBoolEditModeSave"
 #define kEventFollowUpdated         @"CKEventFollowUpdated"
 #define kBoolFollow                 @"CKBoolFollow"
-#define kBoolFriendsFollow          @"CKBoolFriends"
+#define kBookFollow                 @"CKBookFollow"
 #define kEventLogout                @"CKEventLogout"
 #define kEventLike                  @"CKEventLike"
 #define kBoolLike                   @"CKBoolLike"
@@ -148,11 +148,11 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventFollowUpdated];
 }
 
-+ (void)postFollow:(BOOL)follow friends:(BOOL)friends {
++ (void)postFollow:(BOOL)follow book:(CKBook *)book {
     [EventHelper postEvent:kEventFollowUpdated
               withUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                             [NSNumber numberWithBool:follow], kBoolFollow,
-                            [NSNumber numberWithBool:friends], kBoolFriendsFollow,
+                            book, kBookFollow,
                             nil]];
 }
 
@@ -164,8 +164,8 @@
     return [[[notification userInfo] valueForKey:kBoolFollow] boolValue];
 }
 
-+ (BOOL)friendsBookFollowUpdatedForNotification:(NSNotification *)notification {
-    return [[[notification userInfo] valueForKey:kBoolFriendsFollow] boolValue];
++ (CKBook *)bookFollowForNotification:(NSNotification *)notification {
+    return [[notification userInfo] valueForKey:kBookFollow];
 }
 
 #pragma mark - Likes
@@ -297,6 +297,8 @@
 + (void)unregisterPhotoLoadingProgress:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventPhotoLoadingProgress];
 }
+
+#pragma mark - Background fetch.
 
 + (void)registerBackgroundFetch:(id)observer selector:(SEL)selector {
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventBackgroundFetch];

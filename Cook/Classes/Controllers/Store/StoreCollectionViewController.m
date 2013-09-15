@@ -255,7 +255,7 @@
 #pragma mark - Private methods
 
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
-    CKBook *book = [self.books objectAtIndex:indexPath.item];
+    __block CKBook *book = [self.books objectAtIndex:indexPath.item];
     CKUser *currentUser = [CKUser currentUser];
     
     // Remove the book immediately. 
@@ -269,7 +269,7 @@
     BOOL isFriendsBook = [book isThisMyFriendsBook];
     [book addFollower:currentUser
               success:^{
-                  [EventHelper postFollow:YES friends:isFriendsBook];
+                  [EventHelper postFollow:YES book:book];
              } failure:^(NSError *error) {
                  DLog(@"Unable to follow.");
              }];
@@ -283,9 +283,10 @@
 
 - (void)followUpdated:(NSNotification *)notification {
     BOOL follow = [EventHelper followForNotification:notification];
-    BOOL friendsBook = [EventHelper friendsBookFollowUpdatedForNotification:notification];
-    if (!follow && [self updateForFriendsBook:friendsBook]) {
-        [self loadData];
+    if (!follow) {
+        [self unloadDataCompletion:^{
+            [self loadData];
+        }];
     }
 }
 
