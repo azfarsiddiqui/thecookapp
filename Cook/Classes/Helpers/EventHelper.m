@@ -37,6 +37,7 @@
 #define kThumbPhotoLoading          @"CKThumbPhotoLoading"
 #define kEventPhotoLoadingProgress  @"CKEventPhotoLoadingProgress"
 #define kProgressPhotoLoading       @"CKProgressPhotoLoading"
+#define kEventBackgroundFetch       @"CKEventBackgroundFetch"
 
 #pragma mark - Login successful event
 
@@ -295,6 +296,18 @@
 
 + (void)unregisterPhotoLoadingProgress:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventPhotoLoadingProgress];
+}
+
++ (void)registerBackgroundFetch:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventBackgroundFetch];
+}
+
++ (void)postBackgroundFetch {
+    [EventHelper postEvent:kEventBackgroundFetch];
+}
+
++ (void)unregisterBackgroundFetch:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventBackgroundFetch];
 }
 
 #pragma mark - Private

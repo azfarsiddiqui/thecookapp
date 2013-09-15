@@ -9,12 +9,16 @@
 #import "AppDelegate.h"
 #import "RootViewController.h"
 #import "CKServerManager.h"
+#import "EventHelper.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [[CKServerManager sharedInstance] startWithLaunchOptions:launchOptions];
+    
+    // Hourly fetch.
+    [application setMinimumBackgroundFetchInterval:3600];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [[RootViewController alloc] init];
@@ -46,6 +50,13 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[CKServerManager sharedInstance] handlePushWithUserInfo:userInfo];
+}
+
+- (void)application:(UIApplication *)application
+    performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    DLog();
+    [EventHelper postBackgroundFetch];
+    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 @end

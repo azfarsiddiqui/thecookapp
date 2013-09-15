@@ -81,6 +81,8 @@
     [EventHelper unregisterLoginSucessful:self];
     [EventHelper unregisterLogout:self];
     [EventHelper unregisterThemeChange:self];
+    [EventHelper unregisterBackgroundFetch:self];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification
                                                   object:[UIApplication sharedApplication]];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification
@@ -116,6 +118,7 @@
     [EventHelper registerLoginSucessful:self selector:@selector(loggedIn:)];
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
     [EventHelper registerThemeChange:self selector:@selector(themeChanged:)];
+    [EventHelper registerBackgroundFetch:self selector:@selector(backgroundFetch:)];
     
     // Register for notification that app did enter background
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -359,6 +362,7 @@
     if ([CKUser isLoggedIn]) {
         [self showNotificationsOverlay:YES];
     }
+    
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -902,7 +906,17 @@
             }];
         } else {
             [[self pagingLayout] markLayoutDirty];
-            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+            
+            NSInteger existingNumFollows = [self.collectionView numberOfItemsInSection:kFollowSection];
+            if (existingNumFollows > 0) {
+                [self.collectionView performBatchUpdates:^{
+                    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kFollowSection]];
+                } completion:^(BOOL finished) {
+                    [self updatePagingBenchtopView];
+                }];
+            } else {
+                [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+            }
         }
         
         // Sample a snapshot.
@@ -1144,6 +1158,11 @@
 
 - (void)themeChanged:(NSNotification *)notification {
     [self updatePagingBenchtopView];
+}
+
+- (void)backgroundFetch:(NSNotification *)notification {
+    DLog();
+    [self loadBenchtop:YES];
 }
 
 - (void)updatePagingBenchtopView {

@@ -4565,6 +4565,15 @@
 				CLASSPREFIX = "";
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Cook Apps Pty Ltd";
+				TargetAttributes = {
+					76ED273C1612DC180012E479 = {
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
+				};
 			};
 			buildConfigurationList = 76ED27371612DC180012E479 /* Build configuration list for PBXProject "Cook" */;
 			compatibilityVersion = "Xcode 3.2";

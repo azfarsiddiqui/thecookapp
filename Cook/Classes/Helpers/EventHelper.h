@@ -78,4 +78,8 @@
 + (CGFloat)progressForPhotoLoading:(NSNotification *)notification;
 + (void)unregisterPhotoLoadingProgress:(id)observer;
 
++ (void)registerBackgroundFetch:(id)observer selector:(SEL)selector;
++ (void)postBackgroundFetch;
++ (void)unregisterBackgroundFetch:(id)observer;
+
 @end
