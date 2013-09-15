@@ -19,5 +19,6 @@
 @interface RecipeSocialViewController : UICollectionViewController
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate;
+- (NSInteger)currentNumComments;
 
 @end

@@ -72,6 +72,10 @@
                    numLikes:self.numLikes];
 }
 
+- (void)updateNumComments:(NSInteger)numComments {
+    [self updateNumComments:numComments numLikes:self.numLikes];
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)messageIconView {

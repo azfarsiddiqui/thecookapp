@@ -80,6 +80,10 @@
     [self loadData];
 }
 
+- (NSInteger)currentNumComments {
+    return [self.comments count];
+}
+
 #pragma mark - RecipeSocialCommentCellDelegate methods
 
 - (void)recipeSocialCommentCellEditForCell:(RecipeSocialCommentCell *)commentCell editingView:(UIView *)editingView {
