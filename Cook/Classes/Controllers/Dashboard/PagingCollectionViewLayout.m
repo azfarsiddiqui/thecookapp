@@ -237,44 +237,6 @@
     return targetContentOffset;
 }
 
-- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    UICollectionViewLayoutAttributes *finalAttributes = nil;
-    
-    // Custom deleted item.
-    if ([self.deletedIndexPaths containsObject:itemIndexPath]) {
-        
-        if (itemIndexPath.section == kMyBookSection) {
-            
-            // Deleted my book fades away.
-            finalAttributes = [self layoutAttributesForMyBook];
-            finalAttributes.alpha = 0.0;
-            finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, kBookDeleteScaleFactor, kBookDeleteScaleFactor, 0.0);
-            finalAttributes.transform3D = CATransform3DTranslate(finalAttributes.transform3D, 0.0, finalAttributes.frame.size.height, 0.0);
-            
-        } else if (itemIndexPath.section == kFollowSection) {
-            
-            // Deleted follow book fades away.
-            finalAttributes = [self layoutAttributesForFollowBookAtIndex:itemIndexPath.item];
-            
-            if (self.editMode) {
-                
-                // Parting books to the side.
-                finalAttributes.alpha = 0.0;
-                finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, 1.0, 1.0, 0.0);
-                finalAttributes.transform3D = CATransform3DTranslate(CATransform3DIdentity, 62.0, 0.0, 0.0);;
-                
-            } else {
-                finalAttributes.alpha = 0.0;
-                finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, kBookDeleteScaleFactor, kBookDeleteScaleFactor, 0.0);
-                finalAttributes.transform3D = CATransform3DTranslate(finalAttributes.transform3D, 0.0, finalAttributes.frame.size.height, 0.0);
-            }
-            
-        }
-    }
-
-    return finalAttributes;
-}
-
 #pragma mark - Properties
 
 #pragma mark - Private methods
