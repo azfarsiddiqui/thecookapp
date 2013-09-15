@@ -46,7 +46,7 @@
         self.delegate = delegate;
         self.backgroundColor = [UIColor clearColor];
         
-        [self updateNumComments:0 numLikes:0];
+        [self updateNumComments:recipe.numComments numLikes:recipe.numLikes];
         
         // Register tap.
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
@@ -56,7 +56,7 @@
         [EventHelper registerLiked:self selector:@selector(likedNotification:)];
         
         // Load data.
-        [self loadData];
+        // [self loadData];
 
     }
     return self;
