@@ -698,7 +698,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     imageScrollView.contentSize = imageScrollView.bounds.size;
     imageScrollView.alwaysBounceHorizontal = YES;
     imageScrollView.alwaysBounceVertical = YES;
-    imageScrollView.maximumZoomScale = 2.0;
+    imageScrollView.maximumZoomScale = 1.0; // 1 to start off with, then toggled to 2 in fullscreen mode.
     imageScrollView.minimumZoomScale = 1.0;
     imageScrollView.bouncesZoom = YES;   // Allow more than zoom scale but bounces back.
     imageScrollView.delegate = self;
@@ -1309,6 +1309,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          }
                          completion:^(BOOL finished)  {
                              self.animating = NO;
+                             
+                             // Zoomable only in fullscreen mode.
+                             self.imageScrollView.maximumZoomScale = fullscreen ? 2.0 : 1.0;
                          }];
     }];
 }
