@@ -1183,6 +1183,7 @@
             self.pagingBenchtopView = pagingBenchtopView;
             self.pagingBenchtopView.alpha = 0.0;
             [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundTextureView];
+            [self synchronisePagingBenchtopView];
             
             [UIView animateWithDuration:0.4
                                   delay:0.0
@@ -1192,7 +1193,6 @@
                              }
                              completion:^(BOOL finished) {
                                  
-                                 [self synchronisePagingBenchtopView];
                                  
                              }];
         }
@@ -1351,12 +1351,14 @@
         self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
         [ModalOverlayHelper showModalOverlayForViewController:self.notificationsViewController show:YES
                                                     animation:^{
-                                                        [self enable:NO animated:YES];
+                                                        self.notificationView.alpha = 0.0;
+                                                        self.benchtopLevelView.alpha = 0.0;
                                                     } completion:nil];
     } else {
         [ModalOverlayHelper hideModalOverlayForViewController:self.notificationsViewController
                                                     animation:^{
-                                                        [self enable:YES animated:NO];
+                                                        self.notificationView.alpha = 1.0;
+                                                        self.benchtopLevelView.alpha = 1.0;
                                                     } completion:^{
                                                         self.notificationsViewController = nil;
                                                     }];
