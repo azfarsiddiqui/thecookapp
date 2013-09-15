@@ -152,10 +152,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // Squirt a page view for visitors.
-    if ([self.recipe isUserRecipeAuthor:self.currentUser]) {
-        [self.recipe incrementPageViewInBackground];
-    }
+    // Squirt a page view for visitors. Server handles user differentiation.
+    [self.recipe incrementPageViewInBackground];
 }
 
 #pragma mark - BookModalViewController methods

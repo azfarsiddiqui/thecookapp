@@ -550,8 +550,15 @@
 
 - (void)incrementPageViewInBackground {
     if ([self persisted]) {
-        [self.parseObject incrementKey:kRecipeAttrNumViews];
-        [self.parseObject saveEventually];
+        [PFCloud callFunctionInBackground:@"logPageView"
+                           withParameters:@{ @"recipeId" : self.objectId }
+                                    block:^(id result, NSError *error) {
+                                        if (!error) {
+                                            DLog(@"Logged page view for recipe");
+                                        } else {
+                                            DLog(@"Error logging pageView: %@", [error localizedDescription]);
+                                        }
+                                    }];
     }
 }
 
