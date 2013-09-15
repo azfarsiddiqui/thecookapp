@@ -134,10 +134,8 @@
             // Now go ahead and save the recipe.
             [self saveInBackground:^{
                 
-                // If we have an image, now go ahead and upload it via CKServerManager.
-                if (image) {
-                    [[CKPhotoManager sharedInstance] addImage:image recipe:self];
-                }
+                // Go ahead and upload it via CKServerManager.
+                [[CKPhotoManager sharedInstance] addImage:image recipe:self];
                 
                 // 100% progress and return.
                 progress(endProgress * 100);
@@ -531,7 +529,7 @@
 #pragma mark - Existence methods
 
 - (BOOL)hasPhotos {
-    return (self.recipeImage.imageFile != nil);
+    return (self.recipeImage.imageFile != nil || [self.recipeImage.imageUuid CK_containsText]);
 }
 
 - (BOOL)hasTitle {
