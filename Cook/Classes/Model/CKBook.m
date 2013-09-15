@@ -613,6 +613,33 @@
 
 #pragma mark - CKModel
 
+- (void)saveInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    [self.parseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            
+            // If it is my own book, refresh the cache by forcing an own book load.
+            if ([self isOwner]) {
+                
+                // Pre-cache
+                PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
+                [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+                [query whereKey:kUserModelForeignKeyName equalTo:self.user.parseObject];
+                [query includeKey:kUserModelForeignKeyName];
+                [query findObjectsInBackgroundWithBlock:^(NSArray *parseResults, NSError *error) {
+                    
+                    // Ignore, only for pre-caching purposes.
+                    DLog(@"Pre-cached own book.");
+                }];
+            }
+            
+            success();
+            
+        } else {
+            failure(error);
+        }
+    }];
+}
+
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
     [descriptionProperties setValue:[NSString CK_safeString:self.cover] forKey:kBookAttrCover];
