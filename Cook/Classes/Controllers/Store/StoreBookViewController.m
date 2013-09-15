@@ -241,6 +241,10 @@
 
 - (void)closeTapped {
     
+    if (self.animating) {
+        return;
+    }
+    
     self.animating = YES;
     CGFloat scale = [self storeScale];
     
@@ -415,6 +419,12 @@
                                           enabled:NO target:nil selector:nil];
                        weakSelf.updated = YES;
                        [EventHelper postFollow:YES friends:NO];
+                       
+                       // Automatically close.
+                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                           [weakSelf closeTapped];
+                       });
+
                    }
                    failure:^(NSError *error) {
                        [weakSelf updateAddButtonText:@"UNABLE TO ADD" activity:NO enabled:NO];
