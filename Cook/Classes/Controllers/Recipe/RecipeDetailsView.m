@@ -206,7 +206,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
                                                                                                             title:@"Story"
-                                                                                                   characterLimit:500];
+                                                                                                   characterLimit:1000];
         editViewController.clearOnFocus = ![self.recipeDetails hasStory];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
