@@ -48,7 +48,7 @@
 			<key>Hex</key>
 			<string>DF5329</string>
 			<key>BackdropHex</key>
-			<string>FC7300</string>
+			<string>FF7800</string>
 			<key>TextHex</key>
 			<string>fca85a</string>
 			<key>Vivid</key>
@@ -75,7 +75,7 @@
 			<key>Hex</key>
 			<string>FBB437</string>
 			<key>BackdropHex</key>
-			<string>FFB505</string>
+			<string>FFCC00</string>
 			<key>TextHex</key>
 			<string>ffbe26</string>
 			<key>Vivid</key>
@@ -102,7 +102,7 @@
 			<key>Hex</key>
 			<string>3E9D3E</string>
 			<key>BackdropHex</key>
-			<string>6FBE0A</string>
+			<string>55CB14</string>
 			<key>TextHex</key>
 			<string>90cf42</string>
 			<key>Vivid</key>
