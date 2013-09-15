@@ -354,7 +354,7 @@
     storyLabel.textColor = [Theme recipeGridIngredientsColour];
     storyLabel.numberOfLines = 7;
     storyLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    storyLabel.textAlignment = NSTextAlignmentLeft;
+    storyLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:storyLabel];
     self.storyLabel = storyLabel;
 }
@@ -366,7 +366,7 @@
     methodLabel.textColor = [Theme recipeGridIngredientsColour];
     methodLabel.numberOfLines = 7;
     methodLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    methodLabel.textAlignment = NSTextAlignmentLeft;
+    methodLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:methodLabel];
     self.methodLabel = methodLabel;
 }
