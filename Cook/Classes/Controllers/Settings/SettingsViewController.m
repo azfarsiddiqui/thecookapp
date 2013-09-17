@@ -352,13 +352,14 @@
         MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
         NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
         NSString *appDisplayName = [infoDictionary objectForKey:@"CFBundleDisplayName"];
-        NSString *majorVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
         NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
-        NSString *versionString = [NSString stringWithFormat:@"%@ v%@.%@",
-                appDisplayName, majorVersion, minorVersion];
+        NSString *versionString = [NSString stringWithFormat:@"%@ v%@",
+                appDisplayName, minorVersion];
         
         NSString *deviceString = [NSString stringWithFormat:@"%@ / %@ / iOS%@", [UIDevice currentDevice].model, [UIDevice currentDevice].platformString, [UIDevice currentDevice].systemVersion];
-        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n Sent from\n%@\n%@", versionString, deviceString];
+        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@\n%@", versionString, deviceString];
+        
+        [mailDialog setToRecipients:@[@"support@thecookapp.com"]];
         [mailDialog setSubject:@"Cook Support"];
         [mailDialog setMessageBody:shareBody isHTML:NO];
         mailDialog.mailComposeDelegate = self;
