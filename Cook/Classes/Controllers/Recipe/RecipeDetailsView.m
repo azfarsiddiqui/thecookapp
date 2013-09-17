@@ -946,20 +946,25 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                   padDirection:EditPadDirectionBottom];
     
     // Add mode, add
-    if ([self.delegate recipeDetailsViewAddMode] && self.editMode) {
+    if ([self.delegate recipeDetailsViewAddMode]) {
         
-        CKEditingTextBoxView *methodBoxView = [self.editingHelper textBoxViewForEditingView:self.methodLabel];
-        CKEditingTextBoxView *servesBoxView = [self.editingHelper textBoxViewForEditingView:self.servesCookView];
-        CKEditingTextBoxView *ingredientsBoxView = [self.editingHelper textBoxViewForEditingView:self.ingredientsView];
+        if (self.editMode) {
+            CKEditingTextBoxView *methodBoxView = [self.editingHelper textBoxViewForEditingView:self.methodLabel];
+            CKEditingTextBoxView *servesBoxView = [self.editingHelper textBoxViewForEditingView:self.servesCookView];
+            CKEditingTextBoxView *ingredientsBoxView = [self.editingHelper textBoxViewForEditingView:self.ingredientsView];
+            
+            self.servesCookView.alpha = 0.0;
+            servesBoxView.alpha = 0.0;
+            self.ingredientsView.alpha = 0.0;
+            ingredientsBoxView.alpha = 0.0;
+            self.methodLabel.alpha = 0.0;
+            methodBoxView.alpha = 0.0;
+            
+            [self addSubview:self.addDetailsCardView];
+        } else {
+            [self.addDetailsCardView removeFromSuperview];
+        }
         
-        self.servesCookView.alpha = 0.0;
-        servesBoxView.alpha = 0.0;
-        self.ingredientsView.alpha = 0.0;
-        ingredientsBoxView.alpha = 0.0;
-        self.methodLabel.alpha = 0.0;
-        methodBoxView.alpha = 0.0;
-        
-        [self addSubview:self.addDetailsCardView];
     }
 }
 
