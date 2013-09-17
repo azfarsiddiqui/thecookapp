@@ -12,6 +12,7 @@
 #import "ImageHelper.h"
 #import "CKRecipeImage.h"
 #import "CKPhotoManager.h"
+#import "AppHelper.h"
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 
@@ -46,8 +47,7 @@
 - (void)startWithLaunchOptions:(NSDictionary *)launchOptions {
     
     // Set up Parse
-    [Parse setApplicationId:@"36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS"
-                  clientKey:@"c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN"];
+    [Parse setApplicationId:[AppHelper configValueForKey:@"PARSE_APP_ID"] clientKey:[AppHelper configValueForKey:@"PARSE_CLIENT_KEY"]];
     
     // Set up Parse analytics.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];

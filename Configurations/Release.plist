@@ -4,5 +4,9 @@
 <dict>
 	<key>COOK_SHARE_BASE_URL</key>
 	<string>http://share.thecookapp.com/recipes/</string>
+	<key>PARSE_APP_ID</key>
+	<string>36DsRqQPcsSgInjBmAiUYDHFtxkFqlxHnoli69VS</string>
+	<key>PARSE_CLIENT_KEY</key>
+	<string>c4J2TvKqYVh7m7pfZRasve4HuySArVSDxpAOXmMN</string>
 </dict>
 </plist>
