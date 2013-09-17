@@ -600,9 +600,14 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         
         // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
         if (!self.fullImageLoaded) {
-            UIImage *image = [EventHelper imageForPhotoLoading:notification];
-            self.fullImageLoaded = !thumb;
-            [self configureHeroRecipeImage:image];
+            
+            if ([EventHelper hasImageForPhotoLoading:notification]) {
+                UIImage *image = [EventHelper imageForPhotoLoading:notification];
+                self.fullImageLoaded = !thumb;
+                [self configureHeroRecipeImage:image];
+            } else {
+                self.progressView.hidden = YES;
+            }
         }
         
     }

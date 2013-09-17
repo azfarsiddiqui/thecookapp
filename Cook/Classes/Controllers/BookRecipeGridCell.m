@@ -410,9 +410,7 @@
 }
 
 - (void)configureImage:(UIImage *)image {
-    if (image) {
-        [self.activityView stopAnimating];
-    }
+    [self.activityView stopAnimating];
     
     if (image) {
         
@@ -454,8 +452,12 @@
     NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.recipe];
     
     if ([recipePhotoName isEqualToString:name] && thumb) {
-        UIImage *image = [EventHelper imageForPhotoLoading:notification];
-        [self configureImage:image];
+        if ([EventHelper hasImageForPhotoLoading:notification]) {
+            UIImage *image = [EventHelper imageForPhotoLoading:notification];
+            [self configureImage:image];
+        } else {
+            [self configureImage:nil];
+        }
     }
 }
 

@@ -69,6 +69,7 @@
 // Image loading events.
 + (void)registerPhotoLoading:(id)observer selector:(SEL)selector;
 + (void)postPhotoLoadingImage:(UIImage *)image name:(NSString *)name thumb:(BOOL)thumb;
++ (BOOL)hasImageForPhotoLoading:(NSNotification *)notification;
 + (UIImage *)imageForPhotoLoading:(NSNotification *)notification;
 + (NSString *)nameForPhotoLoading:(NSNotification *)notification;
 + (BOOL)thumbForPhotoLoading:(NSNotification *)notification;

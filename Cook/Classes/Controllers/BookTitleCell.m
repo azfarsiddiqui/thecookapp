@@ -251,8 +251,10 @@
     NSString *recipePhotoName = [[CKPhotoManager sharedInstance] photoNameForRecipe:self.coverRecipe];
     
     if ([recipePhotoName isEqualToString:name] && thumb) {
-        UIImage *image = [EventHelper imageForPhotoLoading:notification];
-        [self configureImage:image];
+        if ([EventHelper hasImageForPhotoLoading:notification]) {
+            UIImage *image = [EventHelper imageForPhotoLoading:notification];
+            [self configureImage:image];
+        }
     }
 }
 

@@ -182,9 +182,11 @@
         
         // If full image is not loaded yet, then keep setting it until it has been flagged as fully loaded.
         if (!self.fullImageLoaded) {
-            UIImage *image = [EventHelper imageForPhotoLoading:notification];
-            [self configureImage:image placeholder:notification book:self.book];
-            self.fullImageLoaded = !thumb;
+            if ([EventHelper hasImageForPhotoLoading:notification]) {
+                UIImage *image = [EventHelper imageForPhotoLoading:notification];
+                [self configureImage:image placeholder:notification book:self.book];
+                self.fullImageLoaded = !thumb;
+            }
         }
     }
 }

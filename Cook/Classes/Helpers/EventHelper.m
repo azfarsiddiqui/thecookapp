@@ -256,11 +256,18 @@
 }
 
 + (void)postPhotoLoadingImage:(UIImage *)image name:(NSString *)name thumb:(BOOL)thumb {
+    
+    // Pass NSNull image if nil so that this doesn't crash when not loaded. A case might be when a user was trying to
+    // load an image that doesn't yet have an image.
     [EventHelper postEvent:kEventPhotoLoading withUserInfo:@{
-                                                             kImagePhotoLoading : image,
+                                                             kImagePhotoLoading : (image == nil) ? [NSNull null] : image,
                                                              kNamePhotoLoading : name,
                                                              kThumbPhotoLoading : @(thumb)
                                                              }];
+}
+
++ (BOOL)hasImageForPhotoLoading:(NSNotification *)notification {
+    return ([[[notification userInfo] objectForKey:kImagePhotoLoading] isKindOfClass:[UIImage class]]);
 }
 
 + (UIImage *)imageForPhotoLoading:(NSNotification *)notification {
