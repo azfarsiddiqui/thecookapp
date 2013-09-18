@@ -214,12 +214,10 @@
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             self.notificationView.alpha = enable ? 1.0 : 0.0;
                          } completion:^(BOOL finished) {
                              [self updatePagingBenchtopView];
                          }];
     } else {
-        self.notificationView.alpha = enable ? 1.0 : 0.0;
         [self updateBenchtopLevelViewAnimated:NO];
     }
     [self hideIntroViewsAsRequired];
@@ -1061,7 +1059,6 @@
     }];
     
     // Unfollow in the background, then inform listeners of the update.
-    BOOL isFriendsBook = [book isThisMyFriendsBook];
     [book removeFollower:currentUser
                  success:^{
                      [EventHelper postFollow:NO book:book];
