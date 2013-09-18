@@ -378,6 +378,42 @@
     
     NSString *photoName = [self photoNameForBook:book];
     
+    // Check the in-transfer image area to see if we have the book cover image there first.
+    UIImage *bookCoverImage = [self cachedImageForKey:photoName];
+    if (bookCoverImage) {
+        DLog(@"Found in-transfer image, using it instead.");
+        
+        // Check if we have the cached image of that size.
+        NSString *cacheKey = [self cacheKeyForName:photoName size:size];
+        UIImage *cachedImage = [self cachedImageForKey:cacheKey];
+        if (cachedImage) {
+            [EventHelper postPhotoLoadingImage:cachedImage name:photoName thumb:NO];
+        } else {
+            
+            // Go ahead and process on a separate queue.
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_async(queue, ^{
+                
+                @autoreleasepool {
+                    
+                    UIImage *imageToFit = [ImageHelper croppedImage:bookCoverImage size:size];
+                    
+                    // Keep it in the cache.
+                    [self storeImage:imageToFit forKey:cacheKey];
+                    
+                    // Callback on mainqueue.
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [EventHelper postPhotoLoadingImage:imageToFit name:photoName thumb:NO];
+                    });
+                }
+                
+            });
+        }
+        
+        // By pass the rest.
+        return;
+    }
+    
     __weak CKPhotoManager *weakSelf = self;
     PFFile *fullsizeFile = book.coverPhotoFile;
     if (fullsizeFile) {
@@ -552,6 +588,10 @@
 
 - (void)addImage:(UIImage *)image book:(CKBook *)book {
     
+    // Store the image locally while it is being uploaded.
+    NSString *photoName = [self photoNameForBook:book];
+    [self storeImage:image forKey:photoName];
+    
     // Request a background execution task to allow us to finish uploading the photo even if the app is backgrounded
     __block UIBackgroundTaskIdentifier *backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
@@ -588,11 +628,17 @@
                         
                         DLog(@"Book fullsize cover uploaded successfully.");
                         
+                        // Remove from stored image.
+                        [self removeImageForKey:photoName];
+                        
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
                         
                     } failure:^(NSError *error) {
 
+                        // Remove from stored image.
+                        [self removeImageForKey:photoName];
+                        
                         // End background task.
                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
                     }];
@@ -601,6 +647,9 @@
                     
                     DLog(@"Fullsize image error %@", [error localizedDescription]);
                     
+                    // Remove from stored image.
+                    [self removeImageForKey:photoName];
+                    
                     // End background task.
                     [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
                 }
@@ -608,6 +657,9 @@
             }];
             
         } else {
+            
+            // Remove from stored image.
+            [self removeImageForKey:photoName];
             
             DLog(@"Thumbnail image error %@", [error localizedDescription]);
             
