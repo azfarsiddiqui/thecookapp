@@ -747,7 +747,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSString *method = self.recipeDetails.method;
     
     if (![self.recipeDetails.method CK_containsText]) {
-        method = @"METHOD";
+        method = @"METHOD OR STEPS";
     }
     
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
