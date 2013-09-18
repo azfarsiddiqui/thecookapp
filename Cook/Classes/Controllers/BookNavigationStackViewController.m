@@ -782,9 +782,10 @@
     DLog();
     
     // Fetch all recipes for the book, and categorise them.
-    [self.book fetchRecipesSuccess:^(NSArray *recipes, NSDate *lastAccessedDate, NSDictionary *pageFeaturedRecipes,
-                                     NSString *bookFeaturedId) {
-        
+    [self.book fetchRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSDate *lastAccessedDate) {
+        if (parseBook) {
+            self.book = [CKBook bookWithParseObject:parseBook];
+        }
         self.bookLastAccessedDate = lastAccessedDate;
         [self processRecipes:recipes];
         
@@ -1031,7 +1032,7 @@
                                                                                           forIndexPath:indexPath];
     BookNavigationView *navigationView = (BookNavigationView *)headerView;
     navigationView.delegate = self;
-    [navigationView setTitle:self.book.author editable:[self.book isOwner] book:self.book];
+    [navigationView setTitle:[self.book author] editable:[self.book isOwner] book:self.book];
     [navigationView setDark:NO];
     self.bookNavigationView = navigationView;
     

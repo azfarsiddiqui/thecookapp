@@ -13,7 +13,7 @@
 @class CKBook;
 @class CKCategory;
 
-typedef void(^BookRecipesSuccessBlock)(NSArray *recipes, NSDate *bookLastAccessedDate, NSDictionary *pageFeaturedRecipes, NSString *bookFeaturedRecipeId);
+typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSDate *bookLastAccessedDate);
 typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 
 @interface CKBook : CKModel
@@ -64,6 +64,7 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 // Parse operations
 + (PFObject *)createParseBookForParseUser:(PFUser *)parseUser;
 + (PFObject *)createParseBook;
++ (CKBook *)bookWithParseObject:(PFObject *)parseObject;
 
 - (id)initWithParseBook:(PFObject *)parseBook user:(CKUser *)user;
 - (NSString *)userName;

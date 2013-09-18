@@ -280,6 +280,10 @@
 
 #pragma mark - Instance
 
++ (CKBook *)bookWithParseObject:(PFObject *)parseObject {
+    return [[CKBook alloc] initWithParseObject:parseObject];
+}
+
 - (id)initWithParseObject:(PFObject *)parseObject {
     if (self = [super initWithParseObject:parseObject]) {
         PFUser *parseUser = [parseObject objectForKey:kUserModelForeignKeyName];
@@ -369,17 +373,16 @@
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
                                         
+                                        PFObject *parseBook = [recipeResults objectForKey:@"book"];
                                         NSArray *parseRecipes = [recipeResults objectForKey:@"recipes"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
-                                        NSDictionary *pageFeaturedRecipes = [recipeResults objectForKey:@"pageFeatured"];
-                                        NSString *bookFeaturedRecipeId = [recipeResults objectForKey:@"bookFeatured"];
                                         
                                         // Wrap the recipes in our model.
                                         NSArray *recipes = [parseRecipes collect:^id(PFObject *parseRecipe) {
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
                                         }];
                                         
-                                        success(recipes, accessDate, pageFeaturedRecipes, bookFeaturedRecipeId);
+                                        success(parseBook, recipes, accessDate);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);
