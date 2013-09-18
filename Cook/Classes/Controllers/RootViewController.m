@@ -753,9 +753,6 @@
         return;
     }
     
-    // Disable panning.
-    self.panEnabled = NO;
-    
     // Prepare the dimView
     self.modalOverlayView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.modalOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -781,8 +778,6 @@
     
     // Book scale/translate transform.
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
-    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(0.0, 50.0);
-//    CGAffineTransform bookTransform = CGAffineTransformConcat(scaleTransform, translateTransform);
     CGAffineTransform bookTransform = scaleTransform;
     
     [UIView animateWithDuration:0.4
@@ -834,11 +829,6 @@
                          [modalViewController.view removeFromSuperview];
                          self.bookModalViewController = nil;
                          
-                         // Inform book navigation it is about to become inactive.
-                         // [self.bookNavigationViewController setActive:YES];
-                         
-                         // Re-enable panning.
-                         self.panEnabled = YES;
                      }];
 }
 
