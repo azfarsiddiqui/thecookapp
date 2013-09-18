@@ -73,9 +73,6 @@
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
     
-    [self updateStoryEditMode:editMode];
-    [self updateNameEditMode:editMode];
-    
     self.dividerView.alpha = editMode ? 0.0 : 1.0;
     
     if (editMode) {
@@ -85,8 +82,10 @@
             [self updateStory:[self defaultEditPlaceholderText]];
         }
         
-        UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
+        [self updateStoryEditMode:editMode];
+        [self updateNameEditMode:editMode];
         
+        UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
         // Wrap story up.
         [self.editingHelper wrapEditingView:self.storyLabel
                               contentInsets:(UIEdgeInsets){
@@ -106,6 +105,8 @@
                               } delegate:self white:YES];
         
     } else {
+        [self updateStoryEditMode:editMode];
+        [self updateNameEditMode:editMode];
         [self.editingHelper unwrapEditingView:self.nameLabel];
         [self.editingHelper unwrapEditingView:self.storyLabel];
     }
