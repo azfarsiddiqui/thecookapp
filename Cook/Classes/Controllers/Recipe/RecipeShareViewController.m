@@ -11,6 +11,7 @@
 #import "CKRecipe.h"
 #import "CKUser.h"
 #import "AppHelper.h"
+#import "NSString+Utilities.h"
 
 #import <FacebookSDK/FacebookSDK.h>
 #import <Social/Social.h>
@@ -35,8 +36,8 @@
 
 #define kUnderlayMaxAlpha   0.7
 #define kContentInsets      (UIEdgeInsets){ 20.0, 10.0, 20.0, 20.0 }
-#define SHARE_TITLE @"Check out this recipe"
-#define SHARE_DESCRIPTION @"Shared from Cook"
+#define SHARE_TITLE         @"Check out this recipe"
+#define SHARE_DESCRIPTION   @"Shared from Cook"
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeShareViewControllerDelegate>)delegate {
     if (self = [super  init]) {
@@ -216,7 +217,7 @@
 
 - (void)mailShareTapped:(id)sender {
     if ([MFMailComposeViewController canSendMail])
-        [self shareMail];
+        [self shareEmail];
     else
         [[[UIAlertView alloc] initWithTitle:@"Mail" message:@"Please set up a mail account in Settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
@@ -236,7 +237,9 @@
     shareParams.link = self.shareURL;
     if ([FBDialogs canPresentOSIntegratedShareDialogWithSession:nil])
     { //Present OS dialog
-        [FBDialogs presentOSIntegratedShareDialogModallyFrom:self initialText:SHARE_TITLE image:nil url:self.shareURL handler:^(FBOSIntegratedShareDialogResult result, NSError *error) {
+        [FBDialogs presentOSIntegratedShareDialogModallyFrom:self initialText:[self shareTextWithURL:NO] image:nil
+                                                         url:self.shareURL
+                                                     handler:^(FBOSIntegratedShareDialogResult result, NSError *error) {
             if (error) {
                 [self errorWithType:CKShareFacebook error:error];
             } else {
@@ -246,7 +249,8 @@
     }
     else if ([FBDialogs canPresentShareDialogWithParams:shareParams])
     { //Present dialog in Facebook app
-        [FBDialogs presentShareDialogWithLink:self.shareURL handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+        [FBDialogs presentShareDialogWithLink:self.shareURL name:[self shareTextWithURL:NO]
+                                      handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
             if (error) {
                 [self errorWithType:CKShareFacebook error:error];
             } else {
@@ -256,9 +260,10 @@
     }
     else
     { //Present web dialog
-        NSDictionary *webParameters = @{@"name" : SHARE_TITLE,
-                                        @"description" : SHARE_DESCRIPTION,
-                                        @"link" : self.shareURL.absoluteString};
+        NSDictionary *webParameters = @{
+                                        @"name" : [self shareTextWithURL:NO],
+                                        @"link" : [self.shareURL absoluteString]
+                                        };
         [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:webParameters handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
             if (error) {
                 [self errorWithType:CKShareFacebook error:error];
@@ -273,6 +278,7 @@
 {
     SLComposeViewController *twitterComposeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
     [twitterComposeController addURL:self.shareURL];
+    [twitterComposeController setInitialText:[self shareTextWithURL:YES showTwitter:YES]];
     [twitterComposeController setCompletionHandler:^(SLComposeViewControllerResult result){
         if (result == SLComposeViewControllerResultCancelled)
         {
@@ -287,12 +293,11 @@
     [self presentViewController:twitterComposeController animated:YES completion:nil];
 }
 
-- (void)shareMail
+- (void)shareEmail
 {
     MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
-    NSString *shareBody = [NSString stringWithFormat:@"%@ %@", SHARE_DESCRIPTION, self.shareURL.absoluteString];
-    [mailDialog setSubject:SHARE_TITLE];
-    [mailDialog setMessageBody:shareBody isHTML:NO];
+    [mailDialog setSubject:[NSString stringWithFormat:@"%@ shared a recipe from Cook", [self.currentUser friendlyName]]];
+    [mailDialog setMessageBody:[self shareText] isHTML:NO];
     mailDialog.mailComposeDelegate = self;
     [self presentViewController:mailDialog animated:YES completion:nil];
 }
@@ -300,7 +305,7 @@
 - (void)shareMessage
 {
     MFMessageComposeViewController *messageDialog = [[MFMessageComposeViewController alloc] init];
-    [messageDialog setBody:[NSString stringWithFormat:@"%@ %@", SHARE_DESCRIPTION, self.shareURL.absoluteString]];
+    [messageDialog setBody:[NSString stringWithFormat:@"%@ %@", [self shareText], self.shareURL.absoluteString]];
     messageDialog.messageComposeDelegate = self;
     [self presentViewController:messageDialog animated:YES completion:nil];
 }
@@ -382,6 +387,29 @@
             break;
     }
     [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (NSString *)shareText {
+    return [self shareTextWithURL:YES];
+}
+
+- (NSString *)shareTextWithURL:(BOOL)showUrl {
+    return [self shareTextWithURL:showUrl showTwitter:NO];
+}
+
+- (NSString *)shareTextWithURL:(BOOL)showUrl showTwitter:(BOOL)showTwitter {
+    NSMutableString *shareText = [NSMutableString stringWithString:@"Check out my recipe"];
+    if ([self.recipe.name CK_containsText]) {
+        [shareText appendFormat:@" %@", self.recipe.name];
+    }
+    if (showTwitter) {
+        [shareText appendString:@" (via @thecookapp)"];
+    }
+    if (showUrl) {
+        [shareText appendFormat:@": \n%@", [self.shareURL absoluteString]];
+    }
+    
+    return shareText;
 }
 
 @end
