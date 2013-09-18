@@ -48,7 +48,6 @@
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
-@property (nonatomic, assign) BOOL fastForward;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
@@ -413,7 +412,8 @@
         
         self.pages = [NSMutableArray arrayWithArray:pages];
         self.book.pages = pages;
-        [self.book saveWithImage:nil completion:nil failure:nil];
+        [self.book saveInBackground];
+        
         // Now relayout the content pages.
         [[self currentLayout] setNeedsRelayout:YES];
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
@@ -519,7 +519,6 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    self.fastForward = NO;
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
@@ -882,12 +881,7 @@
     NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
-    // Skip content if we're fast forwarding.
-    if (self.fastForward) {
-        [self clearFastForwardContentForPage:page cell:(BookContentCell *)categoryCell];
-    } else {
-        [self loadContentForPage:page cell:(BookContentCell *)categoryCell];
-    }
+    [self loadContentForPage:page cell:(BookContentCell *)categoryCell];
     
     return categoryCell;
 }
@@ -897,7 +891,6 @@
     // Load or create categoryController.
     BookContentViewController *categoryController = [self.contentControllers objectForKey:page];
     if (!categoryController) {
-        DLog(@"Create page VC for [%@]", page);
         categoryController = [[BookContentViewController alloc] initWithBook:self.book page:page delegate:self];
         categoryController.bookPageDelegate = self;
         
