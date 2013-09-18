@@ -59,6 +59,7 @@
 @implementation BookTitleViewController
 
 #define kCellId                 @"BookTitleCellId"
+#define kAddCellId              @"BookTitleAddCellId"
 #define kHeaderId               @"BookTitleHeaderId"
 #define kIndexWidth             240.0
 #define kImageIndexGap          10.0
@@ -290,23 +291,29 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    BookTitleCell *cell = (BookTitleCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
+    UICollectionViewCell *cell = nil;
+    
     if (indexPath.item < [self.pages count]) {
         
+        BookTitleCell *titleCell = (BookTitleCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCellId
+                                                                                                   forIndexPath:indexPath];
         NSString *page = [self.pages objectAtIndex:indexPath.item];
-        [cell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page]
+        [titleCell configurePage:page numRecipes:[self.delegate bookTitleNumRecipesForPage:page]
           containNewRecipes:[self.delegate bookTitleIsNewForPage:page] book:self.book];
         
         // Load featured recipe for the category.
         CKRecipe *featuredRecipe = [self.delegate bookTitleFeaturedRecipeForPage:page];
-        [cell configureCoverRecipe:featuredRecipe];
+        [titleCell configureCoverRecipe:featuredRecipe];
+        cell = titleCell;
         
     } else {
         
         // Add cell.
-        [cell configureAsAddCellForBook:self.book];
+        BookTitleCell *titleCell = (BookTitleCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kAddCellId
+                                                                                                   forIndexPath:indexPath];
+        [titleCell configureAsAddCellForBook:self.book];
+        cell = titleCell;
     }
-    
     
     return cell;
 }
@@ -509,6 +516,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     self.collectionView = collectionView;
     
     [collectionView registerClass:[BookTitleCell class] forCellWithReuseIdentifier:kCellId];
+    [collectionView registerClass:[BookTitleCell class] forCellWithReuseIdentifier:kAddCellId];
     [collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
               withReuseIdentifier:kHeaderId];
     
