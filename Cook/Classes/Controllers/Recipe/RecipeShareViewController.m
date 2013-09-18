@@ -35,7 +35,7 @@
 @implementation RecipeShareViewController
 
 #define kUnderlayMaxAlpha   0.7
-#define kContentInsets      (UIEdgeInsets){ 20.0, 10.0, 20.0, 20.0 }
+#define kContentInsets      (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
 #define SHARE_TITLE         @"Check out this recipe"
 #define SHARE_DESCRIPTION   @"Shared from Cook"
 

@@ -35,7 +35,7 @@
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = (CGRect){
         floorf((self.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-        floorf((self.bounds.size.height - self.titleLabel.frame.size.height) / 2.0),
+        floorf((self.bounds.size.height - self.titleLabel.frame.size.height) / 2.0) + 3.0,
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
