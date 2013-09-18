@@ -377,74 +377,44 @@
 - (void)imageForBook:(CKBook *)book size:(CGSize)size {
     
     NSString *photoName = [self photoNameForBook:book];
-    
-    // Check the in-transfer image area to see if we have the book cover image there first.
-    UIImage *bookCoverImage = [self cachedImageForKey:photoName];
-    if (bookCoverImage) {
-        DLog(@"Found in-transfer image, using it instead.");
-        
-        // Check if we have the cached image of that size.
-        NSString *cacheKey = [self cacheKeyForName:photoName size:size];
-        UIImage *cachedImage = [self cachedImageForKey:cacheKey];
-        if (cachedImage) {
-            [EventHelper postPhotoLoadingImage:cachedImage name:photoName thumb:NO];
-        } else {
-            
-            // Go ahead and process on a separate queue.
-            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_async(queue, ^{
-                
-                @autoreleasepool {
-                    
-                    UIImage *imageToFit = [ImageHelper croppedImage:bookCoverImage size:size];
-                    
-                    // Keep it in the cache.
-                    [self storeImage:imageToFit forKey:cacheKey];
-                    
-                    // Callback on mainqueue.
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [EventHelper postPhotoLoadingImage:imageToFit name:photoName thumb:NO];
-                    });
-                }
-                
-            });
-        }
-        
-        // By pass the rest.
-        return;
-    }
-    
-    __weak CKPhotoManager *weakSelf = self;
-    PFFile *fullsizeFile = book.coverPhotoFile;
-    if (fullsizeFile) {
-        
-        // Check if a fullsized file was cached, then just return that immediately and bypass thumbnail processing.
-        UIImage *cachedFullsizeImage = [self cachedImageForParseFile:fullsizeFile size:size];
-        if (cachedFullsizeImage) {
-            [EventHelper postPhotoLoadingImage:cachedFullsizeImage name:photoName thumb:NO];
-        } else {
-            
-            // Get the fullsize image with progress reporting.
-            [weakSelf imageForParseFile:fullsizeFile size:size name:photoName
-                               progress:^(CGFloat progressRatio) {
-                                   // Ignore progress for event-based loading.
-                               } completion:^(UIImage *image, NSString *name) {
-                                   [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
-                               }];
-            
-            // Get the thumbnail.
-            [weakSelf imageForParseFile:book.coverPhotoThumbFile size:[ImageHelper thumbSize] name:photoName
-                               progress:^(CGFloat progressRatio) {
-                                   // Ignore progress for event-based loading.
-                               } completion:^(UIImage *image, NSString *name) {
-                                   [EventHelper postPhotoLoadingImage:image name:name thumb:YES];
-                               }];
-        }
-        
-    } else {
-        [EventHelper postPhotoLoadingImage:nil name:photoName thumb:NO];
-    }
-    
+    [self checkInTransferImageForName:photoName size:size
+                           completion:^(UIImage *image, NSString *name){
+                               [EventHelper postPhotoLoadingImage:image name:photoName thumb:NO];
+                               
+                           } otherwiseHandler:^{
+                               
+                               __weak CKPhotoManager *weakSelf = self;
+                               PFFile *fullsizeFile = book.coverPhotoFile;
+                               if (fullsizeFile) {
+                                   
+                                   // Check if a fullsized file was cached, then just return that immediately and bypass thumbnail processing.
+                                   UIImage *cachedFullsizeImage = [self cachedImageForParseFile:fullsizeFile size:size];
+                                   if (cachedFullsizeImage) {
+                                       [EventHelper postPhotoLoadingImage:cachedFullsizeImage name:photoName thumb:NO];
+                                   } else {
+                                       
+                                       // Get the fullsize image with progress reporting.
+                                       [weakSelf imageForParseFile:fullsizeFile size:size name:photoName
+                                                          progress:^(CGFloat progressRatio) {
+                                                              // Ignore progress for event-based loading.
+                                                          } completion:^(UIImage *image, NSString *name) {
+                                                              [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
+                                                          }];
+                                       
+                                       // Get the thumbnail.
+                                       [weakSelf imageForParseFile:book.coverPhotoThumbFile size:[ImageHelper thumbSize] name:photoName
+                                                          progress:^(CGFloat progressRatio) {
+                                                              // Ignore progress for event-based loading.
+                                                          } completion:^(UIImage *image, NSString *name) {
+                                                              [EventHelper postPhotoLoadingImage:image name:name thumb:YES];
+                                                          }];
+                                   }
+                                   
+                               } else {
+                                   [EventHelper postPhotoLoadingImage:nil name:photoName thumb:NO];
+                               }
+                               
+                           }];
 }
 
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size {
@@ -803,6 +773,60 @@
 }
 
 #pragma mark - Private methods
+
+- (void)inTransferImageForName:(NSString *)name size:(CGSize)size completion:(void (^)(UIImage *image, NSString *name))completion {
+    
+    // Check the in-transfer image area to see if we have the image there first.
+    UIImage *inTransferImage = [self cachedImageForKey:name];
+    if (inTransferImage) {
+        DLog(@"Found in-transfer image, using it instead.");
+        
+        // Check if we have the cached image of that size.
+        NSString *cacheKey = [self cacheKeyForName:name size:size];
+        UIImage *cachedImage = [self cachedImageForKey:cacheKey];
+        if (cachedImage) {
+            completion(cachedImage, name);
+        } else {
+            
+            // Go ahead and process on a separate queue.
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_async(queue, ^{
+                
+                @autoreleasepool {
+                    
+                    // Crop the image to the required size.
+                    UIImage *imageToFit = [ImageHelper croppedImage:inTransferImage size:size];
+                    
+                    // Keep it in the cache.
+                    [self storeImage:imageToFit forKey:cacheKey];
+                    
+                    // Callback on mainqueue.
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(imageToFit, name);
+                    });
+                }
+                
+            });
+        }
+    } else {
+        completion(nil, name);
+    }
+}
+
+- (void)checkInTransferImageForName:(NSString *)name size:(CGSize)size
+                         completion:(void (^)(UIImage *image, NSString *name))completion
+                   otherwiseHandler:(void (^)())otherwiseHandler {
+    
+    [self inTransferImageForName:name size:size completion:^(UIImage *image, NSString *name) {
+        if (image) {
+            DLog(@"Found in-transfer image with name [%@]", name);
+            completion(image, name);
+        } else {
+            otherwiseHandler();
+        }
+        
+    }];
+}
 
 - (void)inTransferImageForRecipeImage:(CKRecipeImage *)recipeImage size:(CGSize)size name:(NSString *)name
                            completion:(void (^)(UIImage *image, NSString *name))completion {

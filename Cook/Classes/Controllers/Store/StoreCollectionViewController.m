@@ -255,7 +255,7 @@
 #pragma mark - Private methods
 
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
-    __block CKBook *book = [self.books objectAtIndex:indexPath.item];
+    CKBook *book = [self.books objectAtIndex:indexPath.item];
     CKUser *currentUser = [CKUser currentUser];
     
     // Remove the book immediately. 
@@ -266,10 +266,10 @@
     }];
     
     // Then follow in the background.
-    BOOL isFriendsBook = [book isThisMyFriendsBook];
+    __weak CKBook *weakBook = book;
     [book addFollower:currentUser
               success:^{
-                  [EventHelper postFollow:YES book:book];
+                  [EventHelper postFollow:YES book:weakBook];
              } failure:^(NSError *error) {
                  DLog(@"Unable to follow.");
              }];

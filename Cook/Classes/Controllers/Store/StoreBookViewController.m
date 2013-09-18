@@ -41,6 +41,7 @@
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL updated;
 @property (nonatomic, assign) CGPoint originPoint;
+@property (nonatomic, assign) BOOL fullImageLoaded;
 
 @end
 
@@ -54,6 +55,10 @@
 #define kNameStoryGap           20.0
 #define kBookSummaryGap         20.0
 #define kActionCaptionFont      [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0]
+
+- (void)dealloc {
+    [EventHelper unregisterPhotoLoading:self];
+}
 
 - (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -75,6 +80,8 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDismissed:)];
     [self.view addGestureRecognizer:tapGesture];
     
+    // Register photo loading events.
+    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
 }
 
 - (void)transitionFromPoint:(CGPoint)point {
@@ -445,13 +452,7 @@
 
 - (void)loadData {
     if ([self.book hasCoverPhoto]) {
-        [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size name:@"profileCover"
-                                             progress:^(CGFloat progressRatio, NSString *name) {
-                                             } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                                 [self loadImage:thumbImage];
-                                             } completion:^(UIImage *image, NSString *name) {
-                                                 [self loadImage:image];
-                                             }];
+        [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size];
     }
 }
 
@@ -478,6 +479,23 @@
     CGSize size = [CKBookCover coverImageSize];
     CGFloat scale = storeSize.width / size.width;
     return scale;
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *photoName = [[CKPhotoManager sharedInstance] photoNameForBook:self.book];
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    BOOL thumb = [EventHelper thumbForPhotoLoading:notification];
+    if ([photoName isEqualToString:name]) {
+        
+        // If full image is not loaded yet, then set and keep waiting for it.
+        if (!self.fullImageLoaded) {
+            if ([EventHelper hasImageForPhotoLoading:notification]) {
+                UIImage *image = [EventHelper imageForPhotoLoading:notification];
+                [self loadImage:image];
+                self.fullImageLoaded = !thumb;
+            }
+        }
+    }
 }
 
 @end
