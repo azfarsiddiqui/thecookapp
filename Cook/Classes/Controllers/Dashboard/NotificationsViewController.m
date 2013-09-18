@@ -197,10 +197,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         
         cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-        CKActivityIndicatorView *activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
-        activityView.center = cell.contentView.center;
-        [cell.contentView addSubview:activityView];
-        [activityView startAnimating];
+        self.activityView.center = cell.contentView.center;
+        [cell.contentView addSubview:self.activityView];
+        [self.activityView startAnimating];
         
     }
     
