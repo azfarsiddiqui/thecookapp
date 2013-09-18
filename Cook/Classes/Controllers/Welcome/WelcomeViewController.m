@@ -655,9 +655,9 @@
     paragraphStyle.alignment = textAlignment;
     
     NSShadow *shadow = [NSShadow new];
-    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.2];
+    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.15];
     shadow.shadowOffset = CGSizeMake(0.0, 1.0);
-    shadow.shadowBlurRadius = 3.0;
+    shadow.shadowBlurRadius = 1.0;
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
             font, NSFontAttributeName,
