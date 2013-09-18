@@ -100,11 +100,11 @@
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated completion:(void (^)())completion {
     
-    // Disable any card.
-    [self showIntroCard];
-    
     self.editMode = editMode;
     self.collectionView.scrollEnabled = !editMode;
+    
+    // Disable any card.
+    [self showIntroCard];
     
     if (editMode) {
         
@@ -193,7 +193,7 @@
                                                         view:self.view
                                                       anchor:CardViewAnchorTopRight
                                                       center:(CGPoint){
-                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0) - 12.0,
+                                                          self.view.bounds.size.width - floorf(cardSize.width / 2.0) - 1.0,
                                                           floorf(cardSize.height / 2.0) + 70.0
                                                       }];
     } else {
