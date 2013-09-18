@@ -11,6 +11,7 @@
 #import "ViewHelper.h"
 #import "ImageHelper.h"
 #import "CKPhotoManager.h"
+#import "EventHelper.h"
 
 @interface CKUserProfilePhotoView ()
 
@@ -21,6 +22,7 @@
 @property (nonatomic, strong) UIImageView *profileOverlay;
 @property (nonatomic, strong) UIImage *placeholderImage;
 @property (nonatomic, strong) UIButton *editButton;
+@property (nonatomic, strong) NSURL *profilePhotoUrl;
 
 @end
 
@@ -63,6 +65,10 @@
 
 + (CGSize)sizeAfterAddingBorderToSize:(CGSize)size {
     return CGSizeMake(kBorder + size.width + kBorder, kBorder + size.height + kBorder);
+}
+
+- (void)dealloc {
+    [EventHelper unregisterPhotoLoading:self];
 }
 
 - (id)initWithProfileSize:(ProfileViewSize)profileSize {
@@ -134,10 +140,14 @@
         // Add edit.
         [self initEditButton];
         
+        // Register photo loading events.
+        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+        
         // Load photo if user was given.
         if (user) {
             [self loadProfilePhotoForUser:user];
         }
+        
     }
     return self;
 }
@@ -183,13 +193,9 @@
 }
 
 - (void)loadProfileUrl:(NSURL *)profileUrl {
+    self.profilePhotoUrl = profileUrl;
     if (profileUrl) {
-        [[CKPhotoManager sharedInstance] imageForUrl:profileUrl size:[ImageHelper profileSize] name:@"profilePhoto"
-                                            progress:^(CGFloat progressRatio) {}
-                                       isSynchronous:YES
-                                          completion:^(UIImage *image, NSString *name) {
-                                                [self loadProfileImage:image];
-                                            }];
+        [[CKPhotoManager sharedInstance] imageForUrl:profileUrl size:[ImageHelper profileSize]];
     }
 }
 
@@ -265,6 +271,16 @@
     };
     [self addSubview:self.editButton];
     self.editButton.alpha = 0.0;
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *name = [EventHelper nameForPhotoLoading:notification];
+    if ([[self.profilePhotoUrl absoluteString] isEqualToString:name]) {
+        if ([EventHelper hasImageForPhotoLoading:notification]) {
+            UIImage *image = [EventHelper imageForPhotoLoading:notification];
+            [self loadProfileImage:image];
+        }
+    }
 }
 
 @end

@@ -411,6 +411,35 @@
     
 }
 
+- (void)imageForUrl:(NSURL *)url size:(CGSize)size {
+    if (url) {
+        
+        NSString *name = [url absoluteString];
+        __weak CKPhotoManager *weakSelf = self;
+        @autoreleasepool {
+            
+            // Get cached image for the persisted parseFile.
+            UIImage *image = [weakSelf cachedImageForName:name size:size];
+            if (image) {
+                [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
+            } else {
+                
+                // Otherwise download directly via URL.
+                [weakSelf downloadImageForUrl:url size:size name:name
+                                     progress:^(CGFloat progressRatio) {
+                                     }
+                                isSynchronous:NO
+                                   completion:^(UIImage *image, NSString *name) {
+                                       [EventHelper postPhotoLoadingImage:image name:name thumb:NO];
+                                   }];
+            }
+        }
+        
+    } else {
+        [EventHelper postPhotoLoadingImage:nil name:nil thumb:NO];
+    }
+}
+
 #pragma mark - Image uploads.
 
 - (void)addImage:(UIImage *)image recipe:(CKRecipe *)recipe {

@@ -261,7 +261,7 @@
     // load an image that doesn't yet have an image.
     [EventHelper postEvent:kEventPhotoLoading withUserInfo:@{
                                                              kImagePhotoLoading : (image == nil) ? [NSNull null] : image,
-                                                             kNamePhotoLoading : name,
+                                                             kNamePhotoLoading : (name == nil) ? @"" : name,
                                                              kThumbPhotoLoading : @(thumb)
                                                              }];
 }

@@ -48,6 +48,7 @@
 - (void)thumbImageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
 - (void)imageForRecipe:(CKRecipe *)recipe size:(CGSize)size;
 - (void)imageForBook:(CKBook *)book size:(CGSize)size;
+- (void)imageForUrl:(NSURL *)url size:(CGSize)size;
 
 // Setup books, resizing etc.
 - (void)setupBooks;
