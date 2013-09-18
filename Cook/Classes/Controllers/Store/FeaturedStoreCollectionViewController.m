@@ -9,6 +9,7 @@
 #import "FeaturedStoreCollectionViewController.h"
 #import "CKBook.h"
 #import "MRCEnumerable.h"
+#import "ViewHelper.h"
 
 @interface FeaturedStoreCollectionViewController ()
 
@@ -38,6 +39,11 @@
 
 - (BOOL)addMode {
     return YES;
+}
+
+- (void)showNoBooksCard {
+    [ViewHelper showCardText:@"NO FEATURED BOOKS" subtitle:@"PLEASE CHECK BACK SOON"
+                        view:self.collectionView show:YES center:self.collectionView.center];
 }
 
 @end
