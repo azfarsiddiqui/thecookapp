@@ -759,7 +759,7 @@
     } else {
         
         // Return no image.
-        DLog(@"No image, returning nil");
+//        DLog(@"No image, returning nil");
         completion(nil, name);
     }
     
