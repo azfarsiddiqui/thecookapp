@@ -28,7 +28,7 @@
 
 #define kWidth                  600.0
 #define kProfileCommentGap      30.0
-#define kNameCommentGap         10.0
+#define kNameCommentGap         1.0
 #define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
 #define kTextBoxInsets          (UIEdgeInsets){ 30.0, 28.0, 22.0, 40.0 }
 #define kCommentTimeGap         3.0
@@ -47,7 +47,7 @@
     size.height += nameFrame.size.height;
     
     // Name/Comment Gap.
-    size.height += kProfileCommentGap;
+    size.height += kNameCommentGap;
     
     // Comment.
     CGRect commentFrame = [comment.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
@@ -55,9 +55,6 @@
                                                   attributes:@{ NSFontAttributeName : [Theme recipeCommentFont] }
                                                      context:nil];
     size.height += commentFrame.size.height;
-    
-    // Comment/Time Gap.
-    size.height += kCommentTimeGap;
     
     // Time.
     NSDate *createdDateTime = comment.createdDateTime ? comment.createdDateTime : [NSDate date];
@@ -131,8 +128,8 @@
     self.timeLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:createdDateTime] uppercaseString];
     size = [self.timeLabel sizeThatFits:availableSize];
     self.timeLabel.frame = (CGRect){
-        self.nameLabel.frame.origin.x,
-        self.commentLabel.frame.origin.y + self.commentLabel.frame.size.height + kCommentTimeGap,
+        self.contentView.bounds.size.width - size.width,
+        self.nameLabel.frame.origin.y + 5.0,
         size.width,
         size.height
     };
