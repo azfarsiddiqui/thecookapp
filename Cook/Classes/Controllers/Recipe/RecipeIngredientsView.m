@@ -167,7 +167,7 @@
 - (NSString *)ingredientAsString:(Ingredient *)ingredient {
     NSMutableString *ingredientString = [NSMutableString stringWithString:[NSString CK_safeString:ingredient.name]];
     if ([ingredient.measurement length] > 0) {
-        [ingredientString insertString:[NSString stringWithFormat:@"%@ ", ingredient.measurement] atIndex:0];
+        [ingredientString insertString:[NSString stringWithFormat:@"%@  ", ingredient.measurement] atIndex:0];
     }
     return ingredientString;
 }
