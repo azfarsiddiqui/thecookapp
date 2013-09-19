@@ -14,6 +14,7 @@ NSString *const kModelAttrName                  = @"name";
 NSString *const kModelObjectId                  = @"objectId";
 NSString *const kModelAttrCreatedAt             = @"createdAt";
 NSString *const kModelAttrUpdatedAt             = @"updatedAt";
+NSString *const kModelAttrModelUpdatedAt        = @"modelUpdatedAt";
 
 #pragma mark - User class
 

@@ -98,6 +98,10 @@
     return self.parseObject.updatedAt;
 }
 
+- (NSDate *)modelUpdatedDateTime {
+    return [self.parseObject objectForKey:kModelAttrModelUpdatedAt];
+}
+
 #pragma mark - Wrapper getters/setters
 
 - (void)setName:(NSString *)name {

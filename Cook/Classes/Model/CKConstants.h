@@ -14,6 +14,7 @@ extern NSString *const kModelAttrName;
 extern NSString *const kModelObjectId;
 extern NSString *const kModelAttrCreatedAt;
 extern NSString *const kModelAttrUpdatedAt;
+extern NSString *const kModelAttrModelUpdatedAt;
 
 #pragma mark - User class
 
