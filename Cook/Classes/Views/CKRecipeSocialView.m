@@ -12,6 +12,7 @@
 #import "CKUser.h"
 #import "EventHelper.h"
 #import "CKSocialManager.h"
+#import "DataHelper.h"
 
 @interface CKRecipeSocialView ()
 
@@ -139,7 +140,7 @@
     requiredWidth += self.messageIconView.frame.size.width + kIconStatGap;
     
     // Update comments label.
-    self.commentsLabel.text = [NSString stringWithFormat:@"%d", numComments];
+    self.commentsLabel.text = [DataHelper friendlyDisplayForCount:numComments];
     [self.commentsLabel sizeToFit];
     self.commentsLabel.frame = (CGRect){
         self.messageIconView.frame.origin.x + self.messageIconView.frame.size.width + kIconStatGap,
@@ -161,7 +162,7 @@
     requiredWidth += kIconStatGap;
     
     // Update likes label.
-    self.likeLabel.text = [NSString stringWithFormat:@"%d", numLikes];
+    self.likeLabel.text = [DataHelper friendlyDisplayForCount:numLikes];
     [self.likeLabel sizeToFit];
     self.likeLabel.frame = (CGRect){
         self.likeIconView.frame.origin.x + self.likeIconView.frame.size.width + kIconStatGap,

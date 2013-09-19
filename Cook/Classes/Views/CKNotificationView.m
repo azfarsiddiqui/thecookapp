@@ -12,6 +12,7 @@
 #import "EventHelper.h"
 #import "Theme.h"
 #import "ViewHelper.h"
+#import "DataHelper.h"
 
 @interface CKNotificationView ()
 
@@ -121,7 +122,7 @@
     if (hasNotifications) {
         
         // Update the label.
-        self.badgeLabel.text = [NSString stringWithFormat:@"%d", self.badgeCount];
+        self.badgeLabel.text = [DataHelper friendlyDisplayForCount:self.badgeCount];
         [self.badgeLabel sizeToFit];
         self.badgeLabel.frame = (CGRect){
             floorf((self.bounds.size.width - self.badgeLabel.frame.size.width) / 2.0),
@@ -143,21 +144,10 @@
                              animations:^{
                                  self.offButtonIcon.alpha = 0.0;
                                  self.onButtonIcon.alpha = 1.0;
-//                                 self.onButtonIcon.transform = CGAffineTransformMakeScale(1.1, 1.1);
                                  self.badgeLabel.alpha = 1.0;
                              }
                              completion:^(BOOL finished) {
                                  self.offButtonIcon.hidden = YES;
-                                 
-                                 [UIView animateWithDuration:0.3
-                                                       delay:0.0
-                                                     options:UIViewAnimationOptionCurveEaseIn
-                                                  animations:^{
-//                                                      self.onButtonIcon.transform = CGAffineTransformIdentity;
-                                                  }
-                                                  completion:^(BOOL finished) {
-                                                  }];
-
                              }];
         }
         
