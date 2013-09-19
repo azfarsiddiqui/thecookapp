@@ -44,12 +44,6 @@
 + (BOOL)followForNotification:(NSNotification *)notification;
 + (CKBook *)bookFollowForNotification:(NSNotification *)notification;
 
-+ (void)registerLiked:(id)observer selector:(SEL)selector;
-+ (void)postLiked:(BOOL)liked recipe:(CKRecipe *)recipe;
-+ (void)unregisterLiked:(id)observer;
-+ (BOOL)likedForNotification:(NSNotification *)notification;
-+ (CKRecipe *)recipeForNotification:(NSNotification *)notification;
-
 + (void)registerThemeChange:(id)observer selector:(SEL)selector;
 + (void)postThemeChange;
 + (void)unregisterThemeChange:(id)observer;
@@ -83,5 +77,16 @@
 + (void)registerBackgroundFetch:(id)observer selector:(SEL)selector;
 + (void)postBackgroundFetch;
 + (void)unregisterBackgroundFetch:(id)observer;
+
+// Social stuff.
++ (void)registerSocialUpdates:(id)observer selector:(SEL)selector;
++ (void)postSocialUpdatesNumLikes:(NSInteger)numLikes recipe:(CKRecipe *)recipe;
++ (void)postSocialUpdatesNumComments:(NSInteger)numComments recipe:(CKRecipe *)recipe;
++ (void)unregisterSocialUpdates:(id)observer;
++ (BOOL)socialUpdatesHasNumLikes:(NSNotification *)notification;
++ (BOOL)socialUpdatesHasNumComments:(NSNotification *)notification;
++ (NSInteger)numLikesForNotification:(NSNotification *)notification;
++ (NSInteger)numCommentsForNotification:(NSNotification *)notification;
++ (CKRecipe *)socialUpdatesRecipeForNotification:(NSNotification *)notification;
 
 @end

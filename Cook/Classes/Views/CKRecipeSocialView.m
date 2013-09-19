@@ -11,6 +11,7 @@
 #import "ViewHelper.h"
 #import "CKUser.h"
 #import "EventHelper.h"
+#import "CKSocialManager.h"
 
 @interface CKRecipeSocialView ()
 
@@ -35,7 +36,7 @@
 #define kFont           [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
 
 - (void)dealloc {
-    [EventHelper unregisterLiked:self];
+    [EventHelper unregisterSocialUpdates:self];
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<CKRecipeSocialViewDelegate>)delegate {
@@ -46,18 +47,16 @@
         self.delegate = delegate;
         self.backgroundColor = [UIColor clearColor];
         
-        [self updateNumComments:recipe.numComments numLikes:recipe.numLikes];
+        [self updateNumComments:[[CKSocialManager sharedInstance] numCommentsForRecipe:recipe]
+                       numLikes:[[CKSocialManager sharedInstance] numLikesForRecipe:recipe]];
         
         // Register tap.
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
         [self addGestureRecognizer:tapGesture];
         
         // Listen for like events.
-        [EventHelper registerLiked:self selector:@selector(likedNotification:)];
+        [EventHelper registerSocialUpdates:self selector:@selector(socialUpdates:)];
         
-        // Load data.
-        // [self loadData];
-
     }
     return self;
 }
@@ -70,10 +69,6 @@
 - (void)incrementComments:(BOOL)increment {
     [self updateNumComments:(increment ? self.numComments + 1 : self.numComments - 1)
                    numLikes:self.numLikes];
-}
-
-- (void)updateNumComments:(NSInteger)numComments {
-    [self updateNumComments:numComments numLikes:self.numLikes];
 }
 
 #pragma mark - Properties
@@ -183,32 +178,28 @@
     [self.delegate recipeSocialViewUpdated:self];
 }
 
-- (void)loadData {
-    DLog();
-    
-    // Load the number of likes.
-    [self.recipe numLikesWithCompletion:^(int numLikes) {
-        [self updateNumComments:self.numComments numLikes:numLikes];
-    } failure:^(NSError *error) {
-    }];
-    
-    // Load the numner of comments.
-    [self.recipe numCommentsWithCompletion:^(int numComments) {
-        [self updateNumComments:numComments numLikes:self.numLikes];
-    } failure:^(NSError *error) {
-    }];
-    
-}
-
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
     [self.delegate recipeSocialViewTapped];
 }
 
-- (void)likedNotification:(NSNotification *)notification {
-    CKRecipe *recipe = [EventHelper recipeForNotification:notification];
-    BOOL liked = [EventHelper likedForNotification:notification];
-    if ([recipe.objectId isEqualToString:self.recipe.objectId]) {
-        [self incrementLike:liked];
+- (void)socialUpdates:(NSNotification *)notification {
+    CKRecipe *recipe = [EventHelper socialUpdatesRecipeForNotification:notification];
+    
+    // Ignore unrelated recipe.
+    if (![recipe.objectId isEqualToString:recipe.objectId]) {
+        return;
+    }
+    
+    // Likes updated?
+    if ([EventHelper socialUpdatesHasNumLikes:notification]) {
+        NSInteger numLikes = [EventHelper numLikesForNotification:notification];
+        [self updateNumComments:self.numComments numLikes:numLikes];
+    }
+    
+    // Comments updated?
+    if ([EventHelper socialUpdatesHasNumComments:notification]) {
+        NSInteger numComments = [EventHelper numCommentsForNotification:notification];
+        [self updateNumComments:numComments numLikes:self.numLikes];
     }
 }
 

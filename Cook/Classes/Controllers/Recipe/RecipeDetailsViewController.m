@@ -262,9 +262,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #pragma mark - RecipeSocialViewControllerDelegate methods
 
 - (void)recipeSocialViewControllerCloseRequested {
-    
-    // Tell stats view to update with latest from comments VC.
-    [self.socialView updateNumComments:[self.socialViewController currentNumComments]];
     [self showSocialOverlay:NO];
 }
 

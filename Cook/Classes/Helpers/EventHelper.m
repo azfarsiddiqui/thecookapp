@@ -23,9 +23,6 @@
 #define kBoolFollow                 @"CKBoolFollow"
 #define kBookFollow                 @"CKBookFollow"
 #define kEventLogout                @"CKEventLogout"
-#define kEventLike                  @"CKEventLike"
-#define kBoolLike                   @"CKBoolLike"
-#define kRecipeLike                 @"CKRecipeLike"
 #define kEventThemeChange           @"CKThemeChange"
 #define kEventStatusBarChange       @"CKStatusBarChange"
 #define kBoolLightStatusBar         @"CKStatusBarLight"
@@ -38,6 +35,10 @@
 #define kEventPhotoLoadingProgress  @"CKEventPhotoLoadingProgress"
 #define kProgressPhotoLoading       @"CKProgressPhotoLoading"
 #define kEventBackgroundFetch       @"CKEventBackgroundFetch"
+#define kEventSocialUpdates         @"CKEventSocialUpdates"
+#define kRecipeSocialUpdates        @"CKRecipeSocialUpdates"
+#define kNumLikesSocialUpdates      @"CKNumLikesSocialUpdates"
+#define kNumCommentsSocialUpdates   @"CKNumCommentsSocialUpdates"
 
 #pragma mark - Login successful event
 
@@ -168,29 +169,6 @@
     return [[notification userInfo] valueForKey:kBookFollow];
 }
 
-#pragma mark - Likes
-
-+ (void)registerLiked:(id)observer selector:(SEL)selector {
-    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventLike];
-}
-
-+ (void)postLiked:(BOOL)liked recipe:(CKRecipe *)recipe {
-    [EventHelper postEvent:kEventLike
-              withUserInfo:@{ kBoolLike : @(liked), kRecipeLike : recipe }];
-}
-
-+ (void)unregisterLiked:(id)observer {
-    [EventHelper unregisterObserver:observer toEventName:kEventLike];
-}
-
-+ (BOOL)likedForNotification:(NSNotification *)notification {
-    return [[[notification userInfo] valueForKey:kBoolLike] boolValue];
-}
-
-+ (CKRecipe *)recipeForNotification:(NSNotification *)notification {
-    return [[notification userInfo] valueForKey:kRecipeLike];
-}
-
 #pragma mark - Theme change
 
 + (void)registerThemeChange:(id)observer selector:(SEL)selector {
@@ -317,6 +295,56 @@
 
 + (void)unregisterBackgroundFetch:(id)observer {
     [EventHelper unregisterObserver:observer toEventName:kEventBackgroundFetch];
+}
+
+#pragma mark - Social stuff.
+
++ (void)registerSocialUpdates:(id)observer selector:(SEL)selector {
+    [EventHelper registerObserver:observer withSelector:selector toEventName:kEventSocialUpdates];
+}
+
++ (void)postSocialUpdatesNumLikes:(NSInteger)numLikes recipe:(CKRecipe *)recipe {
+    if (recipe == nil || ![recipe persisted]) {
+        return;
+    }
+    [EventHelper postEvent:kEventSocialUpdates withUserInfo:@{
+                                                              kRecipeSocialUpdates : recipe,
+                                                              kNumLikesSocialUpdates : @(numLikes)
+                                                              }];
+}
+
++ (void)postSocialUpdatesNumComments:(NSInteger)numComments recipe:(CKRecipe *)recipe {
+    if (recipe == nil || ![recipe persisted]) {
+        return;
+    }
+    [EventHelper postEvent:kEventSocialUpdates withUserInfo:@{
+                                                              kRecipeSocialUpdates : recipe,
+                                                              kNumCommentsSocialUpdates : @(numComments)
+                                                              }];
+}
+
++ (void)unregisterSocialUpdates:(id)observer {
+    [EventHelper unregisterObserver:observer toEventName:kEventSocialUpdates];
+}
+
++ (BOOL)socialUpdatesHasNumLikes:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kNumLikesSocialUpdates] isKindOfClass:[NSNumber class]];
+}
+
++ (BOOL)socialUpdatesHasNumComments:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kNumCommentsSocialUpdates] isKindOfClass:[NSNumber class]];
+}
+
++ (NSInteger)numLikesForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kNumLikesSocialUpdates] integerValue];
+}
+
++ (NSInteger)numCommentsForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kNumCommentsSocialUpdates] integerValue];
+}
+
++ (CKRecipe *)socialUpdatesRecipeForNotification:(NSNotification *)notification {
+    return [[notification userInfo] objectForKey:kRecipeSocialUpdates];
 }
 
 #pragma mark - Private

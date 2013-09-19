@@ -27,6 +27,7 @@
 #import "BookNavigationHelper.h"
 #import "NSString+Utilities.h"
 #import "CardViewHelper.h"
+#import "EventHelper.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
@@ -55,6 +56,10 @@
 #define kRecipeCellId       @"RecipeCellId"
 #define kContentHeaderId    @"ContentHeaderId"
 
+- (void)dealloc {
+    [EventHelper unregisterSocialUpdates:self];
+}
+
 - (id)initWithBook:(CKBook *)book page:(NSString *)page delegate:(id<BookContentViewControllerDelegate>)delegate {
     
     if (self = [super init]) {
@@ -73,6 +78,8 @@
     [self initCollectionView];
     [self initOverlay];
     [self loadData];
+    
+    [EventHelper registerSocialUpdates:self selector:@selector(socialUpdates:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -658,6 +665,36 @@
 
 - (void)showIntroCard {
     [self showIntroCard:([self.recipes count] == 0 && !self.editMode)];
+}
+
+- (void)socialUpdates:(NSNotification *)notification {
+    CKRecipe *recipe = [EventHelper socialUpdatesRecipeForNotification:notification];
+    
+    // Ignore non-related page recipe updates.
+    if (![recipe.page isEqualToString:self.page]) {
+        return;
+    }
+    
+    // Likes updated?
+    if ([EventHelper socialUpdatesHasNumLikes:notification]) {
+        NSInteger numLikes = [EventHelper numLikesForNotification:notification];
+        DLog(@"^^^^^^^^^^^^^^^^^^^^^^^ receivedNumLikes: %d", numLikes);
+    }
+    
+    // Comments updated?
+    if ([EventHelper socialUpdatesHasNumComments:notification]) {
+        NSInteger numComments = [EventHelper numCommentsForNotification:notification];
+        DLog(@"^^^^^^^^^^^^^^^^^^^^^^^ receivedNumComments: %d", numComments);
+    }
+    
+    // Look for the recipe index.
+    NSInteger recipeIndex = [self.recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
+        return [existingRecipe.objectId isEqualToString:recipe.objectId];
+    }];
+    if (recipeIndex != -1) {
+        [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:recipeIndex inSection:0]]];
+    }
+    
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "CKRecipe.h"
 #import "CKUser.h"
 #import "EventHelper.h"
+#import "CKSocialManager.h"
 
 @interface CKLikeView ()
 
@@ -28,7 +29,6 @@
 }
 
 - (void)dealloc {
-    [EventHelper unregisterLiked:self];
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
@@ -43,10 +43,9 @@
         
         self.likeButton = [ViewHelper buttonWithImage:[CKLikeView buttonImageForOn:NO dark:dark] target:self selector:@selector(tapped:)];
         self.likeButton.userInteractionEnabled = NO;
+        self.likeButton.enabled = NO;
         self.frame = self.likeButton.frame;
         [self addSubview:self.likeButton];
-        
-        [EventHelper registerLiked:self selector:@selector(likedNotification:)];
         
         [self loadData];
     }
@@ -62,9 +61,11 @@
                   completion:^(BOOL liked) {
                       self.liked = liked;
                       self.likeButton.userInteractionEnabled = YES;
+                      self.likeButton.enabled = YES;
                       [self updateButtonWithLiked:liked];
                   } failure:^(NSError *error) {
                       self.likeButton.userInteractionEnabled = NO;
+                      self.likeButton.enabled = NO;
                   }];
     
 }
@@ -79,7 +80,9 @@
     // Tentative liked state and disable interaction.
     [self updateButtonWithLiked:like];
     self.likeButton.userInteractionEnabled = NO;
-    [EventHelper postLiked:like recipe:self.recipe];
+    
+    // Update likes straight away.
+    [[CKSocialManager sharedInstance] like:like recipe:self.recipe];
     
     // Like via the server.
     [self.recipe like:like
@@ -87,14 +90,17 @@
            completion:^{
                self.liked = like;
                self.likeButton.userInteractionEnabled = YES;
-               
+               self.likeButton.enabled = YES;
            } failure:^(NSError *error) {
                
                // Revert the liked state.
                self.liked = !like;
                self.likeButton.userInteractionEnabled = YES;
+               self.likeButton.enabled = YES;
                [self updateButtonWithLiked:self.liked];
-               [EventHelper postLiked:like recipe:self.recipe];
+               
+               // Rollback likes
+               [[CKSocialManager sharedInstance] like:self.liked recipe:self.recipe];
            }];
 }
 
@@ -109,17 +115,6 @@
 
 - (void)updateButtonWithLiked:(BOOL)liked {
     [self.likeButton setBackgroundImage:[CKLikeView buttonImageForOn:liked dark:self.dark] forState:UIControlStateNormal];
-}
-
-- (void)likedNotification:(NSNotification *)notification {
-    if ([notification object] != self) {
-        CKRecipe *recipe = [EventHelper recipeForNotification:notification];
-        if ([recipe.objectId isEqualToString:self.recipe.objectId]) {
-            BOOL liked = [EventHelper likedForNotification:notification];
-            self.liked = liked;
-            [self updateButtonWithLiked:self.liked];
-        }
-    }
 }
 
 @end

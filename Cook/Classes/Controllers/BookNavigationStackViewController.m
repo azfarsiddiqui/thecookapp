@@ -27,6 +27,7 @@
 #import "BookContentCell.h"
 #import "CKPhotoManager.h"
 #import "CardViewHelper.h"
+#import "CKSocialManager.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -804,6 +805,9 @@
     self.pagesContainingUpdatedRecipes = [NSMutableDictionary dictionary];
     self.pageHeaderViews = [NSMutableDictionary dictionary];
     
+    // Reset social manager.
+    [[CKSocialManager sharedInstance] reset];
+    
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
     
@@ -819,6 +823,9 @@
             [self.pageRecipes setObject:pageRecipes forKey:page];
         }
         [pageRecipes addObject:recipe];
+        
+        // Update social cache.
+        [[CKSocialManager sharedInstance] configureRecipe:recipe];
         
         // Is this a new recipe?
         if (self.bookLastAccessedDate

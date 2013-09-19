@@ -13,6 +13,7 @@
 #import "Theme.h"
 #import "NSString+Utilities.h"
 #import "CKBookCover.h"
+#import "CKSocialManager.h"
 
 @interface GridRecipeStatsView ()
 
@@ -45,11 +46,13 @@
 - (void)configureRecipe:(CKRecipe *)recipe {
     [self reset];
     
+    DLog(@"******** CONFIGURING RECIPE");
+    
     self.recipe = recipe;
     [self configureValue:[NSString CK_stringOrNilForNumber:recipe.numServes] iconIndex:0];
     [self configureValue:[self prepCookTotalDisplayForPrepTime:recipe.prepTimeInMinutes cookTime:recipe.cookingTimeInMinutes] iconIndex:1];
-    [self configureValue:[NSString stringWithFormat:@"%d", recipe.numComments] iconIndex:2];
-    [self configureValue:[NSString stringWithFormat:@"%d", recipe.numLikes] iconIndex:3];
+    [self configureValue:[NSString stringWithFormat:@"%d", [[CKSocialManager sharedInstance] numCommentsForRecipe:recipe]] iconIndex:2];
+    [self configureValue:[NSString stringWithFormat:@"%d", [[CKSocialManager sharedInstance] numLikesForRecipe:recipe]] iconIndex:3];
     
     [self layoutIconViews];
 }

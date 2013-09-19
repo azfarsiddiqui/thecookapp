@@ -19,6 +19,8 @@
 #import "RecipeSocialViewLayout.h"
 #import "MRCEnumerable.h"
 #import "CKActivityIndicatorView.h"
+#import "EventHelper.h"
+#import "CKSocialManager.h"
 
 @interface RecipeSocialViewController () <RecipeSocialCommentCellDelegate, CKEditViewControllerDelegate>
 
@@ -404,6 +406,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.loading = NO;
         self.comments = [NSMutableArray arrayWithArray:comments];
         
+        // Inform listeners of current comments
+        [[CKSocialManager sharedInstance] updateRecipe:self.recipe numComments:[comments count]];
+        
         NSArray *indexPathsToInsert = [comments collectWithIndex:^id(CKRecipeComment *comment, NSUInteger commentIndex) {
             return [NSIndexPath indexPathForItem:commentIndex inSection:kCommentsSection];
         }];
@@ -424,6 +429,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)closeTapped:(id)sender {
+    
+    // Inform listeners of current comments
+    [[CKSocialManager sharedInstance] updateRecipe:self.recipe numComments:[self.comments count]];
+    
     [self.delegate recipeSocialViewControllerCloseRequested];
 }
 
