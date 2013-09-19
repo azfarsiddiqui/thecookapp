@@ -9,7 +9,7 @@
 #import "FeaturedStoreCollectionViewController.h"
 #import "CKBook.h"
 #import "MRCEnumerable.h"
-#import "ViewHelper.h"
+#import "CardViewHelper.h"
 
 @interface FeaturedStoreCollectionViewController ()
 
@@ -42,8 +42,8 @@
 }
 
 - (void)showNoBooksCard {
-    [ViewHelper showCardText:@"NO FEATURED BOOKS" subtitle:@"PLEASE CHECK BACK SOON"
-                        view:self.collectionView show:YES center:self.collectionView.center];
+    [[CardViewHelper sharedInstance] showCardText:@"NO FEATURED BOOKS" subtitle:@"PLEASE CHECK BACK SOON"
+                                             view:self.collectionView show:YES center:self.collectionView.center];
 }
 
 @end

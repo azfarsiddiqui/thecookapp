@@ -8,6 +8,7 @@
 
 #import "CardViewHelper.h"
 #import "UIColor+Expanded.h"
+#import "Theme.h"
 
 @interface CardViewHelper ()
 
@@ -28,6 +29,7 @@
 #define kSubtitleFont       [UIFont fontWithName:@"BrandonGrotesque-Medium" size:13.0]
 #define kTitleColour        [UIColor colorWithHexString:@"555555"]
 #define kSubtitleColour     [UIColor colorWithHexString:@"555555"]
+#define kCardTag            1911
 
 + (CardViewHelper *)sharedInstance {
     static dispatch_once_t pred;
@@ -111,6 +113,133 @@
     // Forget about manually dismissed cards.
     [self.cardsDismissed removeAllObjects];
 }
+
+#pragma mark - Connection messages
+
+- (UIView *)messageCardViewWithText:(NSString *)text subtitle:(NSString *)subtitle {
+    UIEdgeInsets contentInsets = (UIEdgeInsets) { 25.0, 30.0, 20.0, 30.0 };
+    CGFloat titleSubtitleGap = 0.0;
+    
+    UIImage *cardImage = [[UIImage imageNamed:@"cook_message_popover.png"]
+                          resizableImageWithCapInsets:(UIEdgeInsets){ 13.0, 12.0, 13.0, 12.0 }];
+    
+    // Title label.
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.backgroundColor = [UIColor clearColor];
+    label.font = [Theme cardViewTitleFont];
+    label.textColor = [Theme cardViewTitleColour];
+    label.text = text;
+    [label sizeToFit];
+    CGRect labelFrame = label.frame;
+    
+    // Subtitle label.
+    UILabel *subtitleLabel = nil;
+    CGRect subtitleFrame = CGRectZero;
+    if ([subtitle length] > 0) {
+        subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        subtitleLabel.backgroundColor = [UIColor clearColor];
+        subtitleLabel.font = [Theme cardViewSubtitleFont];
+        subtitleLabel.textColor = [Theme cardViewSubtitleColour];
+        subtitleLabel.text = subtitle;
+        [subtitleLabel sizeToFit];
+        subtitleFrame = subtitleLabel.frame;
+        subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;
+    }
+    
+    // Combined frame.
+    CGRect cardFrame = CGRectUnion(labelFrame, subtitleFrame);
+    UIImageView *cardImageView = [[UIImageView alloc] initWithImage:cardImage];
+    cardImageView.userInteractionEnabled = YES;
+    cardFrame.size.width += contentInsets.left + contentInsets.right;
+    cardFrame.size.height += contentInsets.top + contentInsets.bottom;
+    cardImageView.frame = cardFrame;
+    
+    // Position labels.
+    labelFrame.origin.x = floorf((cardImageView.bounds.size.width - labelFrame.size.width) / 2.0);
+    labelFrame.origin.y = contentInsets.top;
+    subtitleFrame.origin.x = floorf((cardImageView.bounds.size.width - subtitleFrame.size.width) / 2.0);
+    subtitleFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + titleSubtitleGap;
+    label.frame = labelFrame;
+    [cardImageView addSubview:label];
+    if (subtitleLabel) {
+        subtitleLabel.frame = subtitleFrame;
+        [cardImageView addSubview:subtitleLabel];
+    }
+    
+    // Register tap to dismiss.
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(altMessageCardTapped:)];
+    [cardImageView addGestureRecognizer:tapGesture];
+    
+    return cardImageView;
+}
+
+- (void)hideNoConnectionCardInView:(UIView *)view {
+    [self showNoConnectionCard:NO view:view center:CGPointZero];
+}
+
+- (void)showNoConnectionCard:(BOOL)show view:(UIView *)view center:(CGPoint)center {
+    [self showCardText:@"CANNOT CONNECT" subtitle:@"CHECK YOUR WI-FI OR CELLULAR DATA" view:view show:show center:center];
+}
+
+- (void)showCardText:(NSString *)text subtitle:(NSString *)subtitle view:(UIView *)view show:(BOOL)show
+              center:(CGPoint)center {
+    
+    // Check for existing card.
+    UIView *cardView = [view viewWithTag:kCardTag];
+    BOOL alreadyVisible = (cardView != nil);
+    
+    if (show) {
+        
+        // Remove any existing one straigh away.
+        [cardView removeFromSuperview];
+        
+        // Create a new card with the given text.
+        cardView = [self messageCardViewWithText:text subtitle:subtitle];
+        cardView.tag = kCardTag;
+        cardView.center = center;
+        
+        // Straight replace.
+        if (alreadyVisible) {
+            [view addSubview:cardView];
+        } else {
+            cardView.alpha = 0.0;
+            [view addSubview:cardView];
+            
+            // Fade it in.
+            [UIView animateWithDuration:0.4
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 cardView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+        }
+        
+    } else {
+        
+        // Fade it out if there was something there.
+        if (alreadyVisible) {
+            
+            // Fade it out then remove.
+            [UIView animateWithDuration:0.1
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 cardView.alpha = 0.0;
+                             }
+                             completion:^(BOOL finished) {
+                                 [cardView removeFromSuperview];
+                             }];
+        }
+        
+    }
+}
+
+- (void)hideCardInView:(UIView *)view {
+    [self showCardText:nil subtitle:nil view:view show:NO center:CGPointZero];
+}
+
 
 #pragma mark - Private methods
 
@@ -272,6 +401,12 @@
     if (tagToDismiss) {
         [self.cardsDismissed setObject:@YES forKey:tagToDismiss];
         [self hideCardViewWithTag:tagToDismiss];
+    }
+}
+
+- (void)altMessageCardTapped:(UITapGestureRecognizer *)tapGesture {
+    if (tapGesture.view.superview) {
+        [self hideCardInView:tapGesture.view.superview];
     }
 }
 

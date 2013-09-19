@@ -26,6 +26,7 @@
 #import "ModalOverlayHelper.h"
 #import "NotificationsViewController.h"
 #import "CKServerManager.h"
+#import "CardViewHelper.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -821,6 +822,9 @@
                                      // No need to reblend, as layoutDidGenerate will trigger it.
                                  }];
                              }
+                          
+                             // Hide any no connection messages.
+                             [[CardViewHelper sharedInstance] hideNoConnectionCardInView:self.view];
                              
                          }
                          failure:^(NSError *error) {
@@ -828,7 +832,7 @@
                              
                              // No connection?
                              if ([[CKServerManager sharedInstance] noConnectionError:error]) {
-                                 [ViewHelper showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+                                 [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
                              }
                              
                          }];
@@ -869,6 +873,9 @@
 
             }
             
+            // Hide any no connection messages.
+            [[CardViewHelper sharedInstance] hideNoConnectionCardInView:self.view];
+            
             // Sample a snapshot.
             [self snapshotBenchtop];
             
@@ -876,7 +883,7 @@
             
             // No connection?
             if ([[CKServerManager sharedInstance] noConnectionError:error]) {
-                [ViewHelper showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+                [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
             }
         }];
         
@@ -925,7 +932,7 @@
         
         // No connection?
         if ([[CKServerManager sharedInstance] noConnectionError:error]) {
-            [ViewHelper showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
+            [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.view center:[self noConnectionCardCenter]];
         }
     }];
 

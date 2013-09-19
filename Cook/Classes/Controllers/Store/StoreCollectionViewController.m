@@ -18,6 +18,7 @@
 #import "CKActivityIndicatorView.h"
 #import "CKServerManager.h"
 #import "ViewHelper.h"
+#import "CardViewHelper.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
     StoreBookViewControllerDelegate>
@@ -170,7 +171,7 @@
 
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error {
     if ([[CKServerManager sharedInstance] noConnectionError:error]) {
-        [ViewHelper showNoConnectionCard:YES view:self.collectionView center:self.collectionView.center];
+        [[CardViewHelper sharedInstance] showNoConnectionCard:YES view:self.collectionView center:self.collectionView.center];
         [self showActivity:NO];
     }
 }
@@ -180,7 +181,7 @@
 }
 
 - (void)hideMessageCard {
-    [ViewHelper hideCardInView:self.collectionView];
+    [[CardViewHelper sharedInstance] hideCardInView:self.collectionView];
 }
 
 #pragma mark - UICollectionViewDelegate methods

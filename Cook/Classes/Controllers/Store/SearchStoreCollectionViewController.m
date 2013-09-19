@@ -7,9 +7,9 @@
 //
 
 #import "SearchStoreCollectionViewController.h"
-#import "ViewHelper.h"
 #import "CKUser.h"
 #import "CKBook.h"
+#import "CardViewHelper.h"
 
 @interface SearchStoreCollectionViewController ()
 
@@ -38,7 +38,7 @@
 }
 
 - (void)showNoBooksCard {
-    [ViewHelper showCardText:@"NO RESULTS" subtitle:@"TRY SEARCHING FOR ANOTHER NAME"
+    [[CardViewHelper sharedInstance] showCardText:@"NO RESULTS" subtitle:@"TRY SEARCHING FOR ANOTHER NAME"
                         view:self.collectionView show:YES center:self.collectionView.center];
 }
 

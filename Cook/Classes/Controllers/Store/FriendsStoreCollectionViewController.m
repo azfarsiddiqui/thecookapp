@@ -10,7 +10,7 @@
 #import "CKBook.h"
 #import "CKUser.h"
 #import "EventHelper.h"
-#import "ViewHelper.h"
+#import "CardViewHelper.h"
 
 @interface FriendsStoreCollectionViewController ()
 
@@ -43,8 +43,8 @@
 }
 
 - (void)showNoBooksCard {
-    [ViewHelper showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
-                        view:self.collectionView show:YES center:self.collectionView.center];
+    [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
+                                             view:self.collectionView show:YES center:self.collectionView.center];
 }
 
 @end

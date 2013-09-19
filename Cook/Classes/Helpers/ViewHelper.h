@@ -61,14 +61,6 @@
 // Rounded corners.
 + (void)applyRoundedCornersToView:(UIView *)view corners:(UIRectCorner)corners size:(CGSize)size;
 
-// Connection messages
-+ (UIView *)messageCardViewWithText:(NSString *)text subtitle:(NSString *)subtitle;
-+ (void)hideNoConnectionCardInView:(UIView *)view;
-+ (void)showNoConnectionCard:(BOOL)show view:(UIView *)view center:(CGPoint)center;
-+ (void)showCardText:(NSString *)text subtitle:(NSString *)subtitle view:(UIView *)view show:(BOOL)show
-              center:(CGPoint)center;
-+ (void)hideCardInView:(UIView *)view;
-
 // Attributed String
 + (NSDictionary *)paragraphAttributesForFont:(UIFont *)font textColour:(UIColor *)textColour
                                textAlignment:(NSTextAlignment)textAlignment lineSpacing:(CGFloat)lineSpacing
