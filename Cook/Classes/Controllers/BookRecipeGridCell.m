@@ -157,8 +157,10 @@
 }
 
 - (void)updateTimeInterval {
+    
+    NSDate *updatedTime = self.recipe.modelUpdatedDateTime ? self.recipe.modelUpdatedDateTime : self.recipe.createdDateTime;
     self.timeIntervalLabel.text = [[self.timeIntervalFormatter stringForTimeIntervalFromDate:[NSDate date]
-                                                                                      toDate:self.recipe.updatedDateTime] uppercaseString];
+                                                                                      toDate:updatedTime] uppercaseString];
     [self.timeIntervalLabel sizeToFit];
     self.timeIntervalLabel.frame = (CGRect){
         floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),
