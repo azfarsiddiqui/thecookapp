@@ -745,7 +745,7 @@
     NSString *email = [self.forgotEmailView inputText];
     [CKUser requestPasswordResetForEmail:email completion:^{
         
-        [self.forgotButton setText:@"SENT, PLEASE CHECK YOUR EMAIL" done:YES activity:NO animated:NO enabled:NO];
+        [self.forgotButton setText:@"PLEASE CHECK YOUR EMAIL" done:YES activity:NO animated:NO enabled:NO];
         [self.forgotEmailView focusTextFieldView:NO];
         
     } failure:^(NSError *error) {
