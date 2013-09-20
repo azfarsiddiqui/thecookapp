@@ -54,11 +54,7 @@
     NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textView.text = currentText;
     CGFloat requiredTextViewHeight = [self requiredTextViewHeight];
-//    requiredTextViewHeight = [self heightForText:currentText];
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
-    
-    NSLog(@"*** requiredTextViewHeight %f", requiredTextViewHeight);
-    NSLog(@"*** minHeight              %f", minHeight);
     
     // TextView positioning.
     self.textView.frame = (CGRect){
@@ -69,7 +65,7 @@
     };
     
     // Set contentSize to be same as bounds.
-    self.textView.contentSize = self.textView.bounds.size;
+    [self updateContentSize];
     
     return self.textView;
 }
@@ -145,7 +141,7 @@
         self.sandboxTextView.text = @"A";
         CGRect sandboxUsedRect = [self.sandboxTextView.layoutManager usedRectForTextContainer:self.sandboxTextView.textContainer];
         _minHeight = ceilf(sandboxUsedRect.size.height * self.numLines);
-        NSLog(@"minHeight [%f]", _minHeight);
+//        NSLog(@"minHeight [%f]", _minHeight);
     }
     return _minHeight;
 }
@@ -184,7 +180,10 @@
     if (appear) {
         
         // Focus on text field.
-        [self.textView becomeFirstResponder];
+        CGFloat requiredHeight = [self requiredTextViewHeight];
+        if (requiredHeight < [self defaultKeyboardFrame].origin.y) {
+            [self.textView becomeFirstResponder];
+        }
         
         // Add title/limit labels.
         self.titleLabel.alpha = 0.0;
@@ -214,8 +213,9 @@
     
     // Update the scrollView to be above the keyboard area.
     self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, keyboardFrame.size.height, 0.0 };
-    NSLog(@"contentInset %@", NSStringFromUIEdgeInsets(self.scrollView.contentInset));
+//    NSLog(@"contentInset %@", NSStringFromUIEdgeInsets(self.scrollView.contentInset));
     
+    [self scrollToCursorIfRequired];
 }
 
 #pragma mark - Private methods
@@ -226,8 +226,6 @@
     if (![self contentScrollable]) {
         return;
     }
-    
-//    NSLog(@"updateContentSize");
     
     // TextView adjustments.
     UIEdgeInsets textViewAdjustments = kTextViewAdjustments;
@@ -243,23 +241,22 @@
 
     // Updates the surrounding textboxes.
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-    CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
-    CGRect proposedTargetTextBoxFrame = [targetTextBoxView updatedFrameForProposedEditingViewFrame:textViewFrame];
-    targetTextBoxView.frame = proposedTargetTextBoxFrame;
-    sourceTextBoxView.frame = proposedTargetTextBoxFrame;
+    CGRect proposedTargetTextBoxFrame = CGRectZero;
+    if (targetTextBoxView) {
+        CKEditingTextBoxView *sourceTextBoxView = [self sourceEditTextBoxView];
+        proposedTargetTextBoxFrame = [targetTextBoxView updatedFrameForProposedEditingViewFrame:textViewFrame];
+        targetTextBoxView.frame = proposedTargetTextBoxFrame;
+        sourceTextBoxView.frame = proposedTargetTextBoxFrame;
+    }
     
     // Figure out the required contentSize of main scrollView. The contentInsets is relative to the targetEditView, so
     // we have to take into account the textBox's contentInsets.
     UIEdgeInsets contentInsets = [self contentInsets];
     CGFloat requiredContentHeight = (contentInsets.top - targetTextBoxView.contentInsets.top) + proposedTargetTextBoxFrame.size.height + (contentInsets.bottom - targetTextBoxView.contentInsets.bottom);
-//    NSLog(@"requiredContentHeight [%f]", requiredContentHeight);
-//    NSLog(@"self.scrollView.contentSize.height [%f]", self.scrollView.contentSize.height);
-//    NSLog(@"self.scrollView.bounds.size.height [%f]", self.scrollView.bounds.size.height);
     self.scrollView.contentSize = (CGSize) {
         self.scrollView.contentSize.width,
         ceilf(MAX(self.scrollView.bounds.size.height, requiredContentHeight))
     };
-//    NSLog(@"self.scrollView.contentSize.height2 [%f]", self.scrollView.contentSize.height);
     
     // See if the caret is out of view?
     [self scrollToCursorIfRequired];
@@ -280,7 +277,8 @@
         
         CGRect cursorFrame = [self.textView caretRectForPosition:self.textView.selectedTextRange.start];
         CGRect cursorFrameToScrollView = [self.scrollView convertRect:cursorFrame fromView:self.textView];
-        if (CGRectIntersectsRect(cursorFrameToScrollView, noGoFrame)) {
+        CGRect scrollFrame = [self.view convertRect:cursorFrameToScrollView fromView:self.scrollView];
+        if (CGRectIntersectsRect(scrollFrame, noGoFrame)) {
             
             CGRect visibleFrame = [self currentVisibleFrame];
             CGPoint scrollToPoint = (CGPoint){
@@ -292,9 +290,6 @@
             [self.scrollView setContentOffset:scrollToPoint
                                      animated:YES];
         }
-        
-        //        NSLog(@"cursorFrame %@", NSStringFromCGRect(cursorFrame));
-        //        NSLog(@"cursorFrameToScrollView %@", NSStringFromCGRect(cursorFrameToScrollView));
     }
 }
 
