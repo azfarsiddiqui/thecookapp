@@ -61,9 +61,6 @@
 
 - (NSUInteger)numCommentsForRecipe:(CKRecipe *)recipe {
     
-    DLog(@"numComments: %d", recipe.numComments);
-    DLog(@"numLikes   : %d", recipe.numLikes);
-    
     if (recipe == nil || ![recipe persisted]) {
         return 0;
     } else if ([self.recipeNumComments objectForKey:recipe.objectId]) {
@@ -86,7 +83,6 @@
 #pragma mark - Private methods
 
 - (void)updateRecipe:(CKRecipe *)recipe numComments:(NSUInteger)numComments broadcast:(BOOL)broadcast {
-    DLog(@"+++++ numComments: %d", numComments);
     if (recipe != nil && [recipe persisted]) {
         [self.recipeNumComments setObject:@(numComments) forKey:recipe.objectId];
         
@@ -97,7 +93,6 @@
 }
 
 - (void)updateRecipe:(CKRecipe *)recipe numLikes:(NSUInteger)numLikes broadcast:(BOOL)broadcast {
-    DLog(@"+++++ numLikes: %d", numLikes);
     if (recipe != nil && [recipe persisted]) {
         [self.recipeNumLikes setObject:@(numLikes) forKey:recipe.objectId];
         
@@ -106,6 +101,5 @@
         }
     }
 }
-
 
 @end
