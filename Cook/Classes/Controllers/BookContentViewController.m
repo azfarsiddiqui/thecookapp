@@ -115,9 +115,6 @@
     
     if (editMode) {
         
-        // Scroll to top.
-        [self.collectionView setContentOffset:CGPointZero animated:YES];
-        
         // Prep delete button to be faded in.
         self.deleteButton.alpha = 0.0;
         if (animated) {
@@ -142,17 +139,12 @@
         [self.editingHelper unwrapEditingView:self.contentTitleView animated:YES];
     }
     
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
     if (animated) {
-        
         [UIView animateWithDuration:0.25
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             
-                             // Hide all visible cells.
-                             for (UICollectionViewCell *cell in [self.collectionView visibleCells]) {
-                                 cell.alpha = editMode ? 0.0 : 1.0;
-                             }
                              
                              // Enable edit mode on content title.
                              [self.contentTitleView enableEditMode:editMode animated:NO];
@@ -163,18 +155,18 @@
                              
                          }
                          completion:^(BOOL finished)  {
-                             
                              if (completion != nil) {
                                  completion();
                              }
                          }];
     } else {
+        
+        // Enable edit mode on content title.
         [self.contentTitleView enableEditMode:editMode animated:NO];
+        
+        // Slide up/down the delete button.
         self.deleteButton.alpha = editMode ? 1.0 : 0.0;
         
-        if (!self.editMode) {
-            [self.bookPageDelegate bookPageViewController:self editModeRequested:NO];
-        }
         if (completion != nil) {
             completion();
         }
@@ -311,8 +303,14 @@
 
 #pragma mark - UICollectionViewDelegate methods
 
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    return !self.editMode;
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self showRecipeAtIndexPath:indexPath];
+    if (!self.editMode) {
+        [self showRecipeAtIndexPath:indexPath];
+    }
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -675,18 +673,6 @@
         return;
     }
     
-    // Likes updated?
-    if ([EventHelper socialUpdatesHasNumLikes:notification]) {
-        NSInteger numLikes = [EventHelper numLikesForNotification:notification];
-        DLog(@"^^^^^^^^^^^^^^^^^^^^^^^ receivedNumLikes: %d", numLikes);
-    }
-    
-    // Comments updated?
-    if ([EventHelper socialUpdatesHasNumComments:notification]) {
-        NSInteger numComments = [EventHelper numCommentsForNotification:notification];
-        DLog(@"^^^^^^^^^^^^^^^^^^^^^^^ receivedNumComments: %d", numComments);
-    }
-    
     // Look for the recipe index.
     NSInteger recipeIndex = [self.recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
@@ -695,6 +681,12 @@
         [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:recipeIndex inSection:0]]];
     }
     
+}
+
+- (NSArray *)allIndexPaths {
+    return [self.recipes collectWithIndex:^id(CKRecipe *recipe, NSUInteger recipeIndex) {
+        return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
+    }];
 }
 
 @end
