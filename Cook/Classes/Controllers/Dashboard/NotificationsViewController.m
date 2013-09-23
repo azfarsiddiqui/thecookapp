@@ -19,7 +19,8 @@
 #import "NSString+Utilities.h"
 #import "CKUser.h"
 
-@interface NotificationsViewController () <NotificationCellDelegate>
+@interface NotificationsViewController () <NotificationCellDelegate, UICollectionViewDataSource,
+    UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, weak) id<NotificationsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -27,6 +28,7 @@
 @property (nonatomic, strong) NSMutableDictionary *notificationActionsInProgress;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
+@property (nonatomic, strong) UICollectionView *collectionView;
 
 @end
 
@@ -40,7 +42,7 @@
 #define kNotificationsSection   0
 
 - (id)initWithDelegate:(id<NotificationsViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[NotificationsFlowLayout alloc] init]]) {
+    if (self = [super init]) {
         self.delegate = delegate;
         self.notificationActionsInProgress = [NSMutableDictionary dictionary];
     }
@@ -49,18 +51,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor clearColor];
-    self.collectionView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
-    self.collectionView.bounces = YES;
-    self.collectionView.showsVerticalScrollIndicator = NO;
-    self.collectionView.alwaysBounceVertical = YES;
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
-    [self.collectionView registerClass:[NotificationCell class] forCellWithReuseIdentifier:kCellId];
-    [self.collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                   withReuseIdentifier:kHeaderCellId];
-    
+    [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
-    
     [self loadData];
 }
 
@@ -253,6 +245,25 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         [_emptyCommentsLabel sizeToFit];
     }
     return _emptyCommentsLabel;
+}
+
+- (UICollectionView *)collectionView {
+    if (!_collectionView) {
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
+                                             collectionViewLayout:[[NotificationsFlowLayout alloc] init]];
+        _collectionView.bounces = YES;
+        _collectionView.backgroundColor = [UIColor clearColor];
+        _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.alwaysBounceVertical = YES;
+        _collectionView.delegate = self;
+        _collectionView.dataSource = self;
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
+        [_collectionView registerClass:[NotificationCell class] forCellWithReuseIdentifier:kCellId];
+        [_collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:kHeaderCellId];
+    }
+    return _collectionView;
 }
 
 #pragma mark - Private methods

@@ -21,9 +21,12 @@
 #import "CKActivityIndicatorView.h"
 #import "EventHelper.h"
 #import "CKSocialManager.h"
+#import "OverlayViewController.h"
 
-@interface RecipeSocialViewController () <RecipeSocialCommentCellDelegate, CKEditViewControllerDelegate>
+@interface RecipeSocialViewController () <RecipeSocialCommentCellDelegate, CKEditViewControllerDelegate,
+    UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
@@ -58,7 +61,7 @@
 #define kCommentsSection    0
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[RecipeSocialViewLayout alloc] init]]) {
+    if (self = [super init]) {
         self.currentUser = [CKUser currentUser];
         self.recipe = recipe;
         self.delegate = delegate;
@@ -71,18 +74,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor clearColor];
-    self.collectionView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:kUnderlayMaxAlpha];
-    self.collectionView.bounces = YES;
-    self.collectionView.showsVerticalScrollIndicator = NO;
-    self.collectionView.alwaysBounceVertical = YES;
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
-    [self.collectionView registerClass:[RecipeSocialCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
-    [self.collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
-    
+    [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
     [self.view addSubview:self.composeButton];
-    
     [self loadData];
 }
 
@@ -393,6 +387,24 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         [_emptyCommentsLabel sizeToFit];
     }
     return _emptyCommentsLabel;
+}
+
+- (UICollectionView *)collectionView {
+    if (!_collectionView) {
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
+                                             collectionViewLayout:[[RecipeSocialViewLayout alloc] init]];
+        _collectionView.bounces = YES;
+        _collectionView.backgroundColor = [UIColor clearColor];
+        _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.alwaysBounceVertical = YES;
+        _collectionView.delegate = self;
+        _collectionView.dataSource = self;
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
+        [_collectionView registerClass:[RecipeSocialCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
+        [_collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
+    }
+    return _collectionView;
 }
 
 #pragma mark - Private methods
