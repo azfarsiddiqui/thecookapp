@@ -43,6 +43,7 @@
 @property UIDeviceOrientation initialOrientation;
 @property (nonatomic, strong) UIView *snapshotView;
 @property UIDeviceOrientation currentOrientation;
+@property UIImagePickerControllerSourceType imageSourceType;
 
 
 @end
@@ -149,7 +150,8 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]]; //[chosenImage imageScaledToFitSize:cropRect.size];
+    self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
+    self.imageSourceType = picker.sourceType;
     [self.snapshotView removeFromSuperview];
     self.snapshotView = nil;
     [self updateImagePreview];
@@ -456,7 +458,7 @@
     UIImage *visibleImage = [self cropImage:self.previewImageView.image atRect:visibleRect scale:scale];
     
     // Save to photo album.
-    if (self.cameraPickerViewController.sourceType == UIImagePickerControllerSourceTypeCamera && self.saveToPhotoAlbum) {
+    if (self.imageSourceType == UIImagePickerControllerSourceTypeCamera && self.saveToPhotoAlbum) {
         
         // Check status
         ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
