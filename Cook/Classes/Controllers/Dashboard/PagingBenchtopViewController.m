@@ -1405,7 +1405,6 @@
                                                         self.notificationsViewController = nil;
                                                     }];
     }
-    
 }
 
 - (CGPoint)noConnectionCardCenter {
