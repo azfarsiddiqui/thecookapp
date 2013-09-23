@@ -278,7 +278,7 @@
 {
     SLComposeViewController *twitterComposeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
     [twitterComposeController addURL:self.shareURL];
-    [twitterComposeController setInitialText:[self shareTextWithURL:YES showTwitter:YES]];
+    [twitterComposeController setInitialText:[self shareTextWithURL:NO showTwitter:YES]];
     [twitterComposeController setCompletionHandler:^(SLComposeViewControllerResult result){
         if (result == SLComposeViewControllerResultCancelled)
         {
