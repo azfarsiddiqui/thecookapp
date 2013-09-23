@@ -7,6 +7,7 @@
 //
 
 #import "RecipeSocialViewLayout.h"
+#import "MRCEnumerable.h"
 
 @interface RecipeSocialViewLayout ()
 
@@ -31,7 +32,15 @@
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
+    NSMutableArray *layoutAttributes = [[super layoutAttributesForElementsInRect:rect] mutableCopy];
+    
+    // Make sure the header row is always there as flow layout will discard it after scrolling off bounds.
+    if (![layoutAttributes detect:^BOOL(UICollectionViewLayoutAttributes *attributes){
+        return [attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader];
+    }]) {
+        [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]]];
+    }
     
     [self applyPagingEffects:layoutAttributes];
     

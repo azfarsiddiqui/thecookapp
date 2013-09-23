@@ -26,7 +26,7 @@
     [super viewDidLoad];
     
     // Snapshot the benchtop to improve performance (flatten views) on this VC.
-    UIView *snapshotView = [[[AppHelper sharedInstance] rootView] snapshotViewAfterScreenUpdates:NO];
+    UIView *snapshotView = [[[AppHelper sharedInstance] rootView] snapshotViewAfterScreenUpdates:YES];
     [self.view addSubview:snapshotView];
 
     // Overlay view.
