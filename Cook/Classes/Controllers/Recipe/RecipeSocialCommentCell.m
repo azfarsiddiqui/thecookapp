@@ -101,7 +101,11 @@
     // Name label.
     self.nameLabel.hidden = NO;
     self.nameLabel.text = user.name;
-    CGSize size = [self.nameLabel sizeThatFits:availableSize];
+    CGRect nameFrame = [user.name boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:@{ NSFontAttributeName : [Theme recipeCommenterFont] }
+                                               context:nil];
+    CGSize size = nameFrame.size;
     self.nameLabel.frame = (CGRect){
         self.profileView.frame.origin.x + self.profileView.frame.size.width + kProfileCommentGap,
         kContentInsets.top,
@@ -110,12 +114,12 @@
     };
     
     // Comment.
-    availableSize = (CGSize) {
-        availableSize.width,
-        availableSize.height - self.nameLabel.frame.size.height - kNameCommentGap
-    };
     self.commentLabel.text = comment.text;
-    size = [self.commentLabel sizeThatFits:availableSize];
+    CGRect commentFrame = [comment.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
+                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:@{ NSFontAttributeName : [Theme recipeCommentFont] }
+                                                     context:nil];
+    size = commentFrame.size;
     self.commentLabel.frame = (CGRect){
         self.profileView.frame.origin.x + self.profileView.frame.size.width + kProfileCommentGap,
         self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameCommentGap,
@@ -126,7 +130,11 @@
     // Time.
     NSDate *createdDateTime = comment.createdDateTime ? comment.createdDateTime : [NSDate date];
     self.timeLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:createdDateTime] uppercaseString];
-    size = [self.timeLabel sizeThatFits:availableSize];
+    CGRect timeFrame = [self.timeLabel.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
+                                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                                      attributes:@{ NSFontAttributeName : [Theme overlayTimeFont] }
+                                                         context:nil];
+    size = timeFrame.size;
     self.timeLabel.frame = (CGRect){
         self.contentView.bounds.size.width - size.width,
         self.nameLabel.frame.origin.y + 5.0,
