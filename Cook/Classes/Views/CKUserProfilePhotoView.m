@@ -195,7 +195,16 @@
 - (void)loadProfileUrl:(NSURL *)profileUrl {
     self.profilePhotoUrl = profileUrl;
     if (profileUrl) {
-        [[CKPhotoManager sharedInstance] imageForUrl:profileUrl size:[ImageHelper profileSize]];
+        [[CKPhotoManager sharedInstance] imageForUrl:profileUrl
+                                                size:[ImageHelper profileSize]
+                                                name:[profileUrl absoluteString]
+                                            progress:^(CGFloat progress){}
+                                       isSynchronous:YES
+                                          completion:^(UIImage *image, NSString *name) {
+                                              if ([name isEqualToString:[profileUrl absoluteString]]) {
+                                                  self.profileImageView.image = image;
+                                              }
+                                          }];
     }
 }
 
