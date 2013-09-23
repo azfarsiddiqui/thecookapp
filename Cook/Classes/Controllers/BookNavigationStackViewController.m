@@ -490,13 +490,9 @@
         
     }
     
-    // Left book edge always on the left.
+    // Left/right edges.
     [self applyLeftBookEdgeOutline];
-    
-    // Right book edge only after it has been opened.
-    if ([self numberOfSectionsInCollectionView:self.collectionView] >= [self stackContentStartSection]) {
-        [self applyRightBookEdgeOutline];
-    }
+    [self applyRightBookEdgeOutline];
 }
 
 - (BookPagingStackLayoutType)stackPagingLayoutType {
@@ -510,6 +506,17 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    // Cap the scroll point.
+    CGRect scrollBounds = scrollView.bounds;
+    if (scrollView.contentOffset.x <= self.leftOutlineView.frame.origin.x) {
+        scrollBounds.origin.x = self.leftOutlineView.frame.origin.x;
+        scrollView.bounds = scrollBounds;
+    } else if (scrollView.contentSize.width > 0.0 && scrollView.contentOffset.x >= scrollView.contentSize.width - scrollBounds.size.width + self.rightOutlineView.frame.size.width) {
+        scrollBounds.origin.x = self.rightOutlineView.frame.origin.x + self.rightOutlineView.frame.size.width - scrollBounds.size.width;
+        scrollView.bounds = scrollBounds;
+    }
+    
     [self updateStatusBar];
     [self updatePageOverlays];
 }
@@ -522,15 +529,13 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 }
 
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     self.collectionView.userInteractionEnabled = YES;
 }
 
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -645,7 +650,7 @@
 - (UIView *)leftOutlineView {
     if (!_leftOutlineView) {
         
-        // Dashboard.
+        // Dashboard left snapsthot.
         _leftOutlineView = [self.benchtopSnapshotView resizableSnapshotViewFromRect:(CGRect) {
             0.0,
             0.0,
@@ -673,7 +678,7 @@
 - (UIView *)rightOutlineView {
     if (!_rightOutlineView) {
         
-        // Dashboard.
+        // Dashboard right snapshot.
         _rightOutlineView = [self.benchtopSnapshotView resizableSnapshotViewFromRect:(CGRect) {
             self.benchtopSnapshotView.frame.size.width - kBookOutlineSnapshotWidth,
             0.0,
@@ -690,7 +695,7 @@
         } afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
         
         CGRect rightBookFrame = rightBookEdgeView.frame;
-        rightBookFrame.origin.x = rightBookFrame.origin.x;
+        rightBookFrame.origin.x = self.collectionView.contentSize.width;
         rightBookEdgeView.frame = rightBookFrame;
         [_rightOutlineView addSubview:rightBookEdgeView];
 

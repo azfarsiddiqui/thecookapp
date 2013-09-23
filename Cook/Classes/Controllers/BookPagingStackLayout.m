@@ -147,8 +147,6 @@
     // Apply transform for paging.
     [self applyPagingEffects:layoutAttributes];
     
-    [self debugLayout:layoutAttributes];
-    
     return layoutAttributes;
 }
 
@@ -452,21 +450,6 @@
             self.collectionView.bounds.size.width,
             [BookNavigationView navigationHeight]
         };
-    }
-}
-
-- (void)debugLayout:(NSArray *)layoutAttributes {
-    if (kLayoutDebug) {
-        NSLog(@"***************************************");
-        NSLog(@"***************************************");
-        NSLog(@"***************************************");
-        for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-            NSLog(@"indexPath[%d,%d] zIndex[%d] type[%@]", attributes.indexPath.section, attributes.indexPath.item,
-                  attributes.zIndex, [self stringTypeForElementCategory:attributes.representedElementCategory]);
-        }
-        NSLog(@"***************************************");
-        NSLog(@"***************************************");
-        NSLog(@"***************************************");
     }
 }
 
