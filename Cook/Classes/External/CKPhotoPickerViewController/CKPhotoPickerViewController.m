@@ -42,7 +42,7 @@
 @property (nonatomic, strong) CKPhotoFilterSliderView *filterPickerView;
 @property UIDeviceOrientation initialOrientation;
 @property (nonatomic, strong) UIView *snapshotView;
-@property UIImageOrientation correctedOrientation;
+@property UIDeviceOrientation currentOrientation;
 
 
 @end
@@ -102,9 +102,9 @@
 
 - (void)receivedRotate:(id)sender
 {
-    UIDeviceOrientation currentOrientation = [[UIDevice currentDevice] orientation];
+    self.currentOrientation = [[UIDevice currentDevice] orientation];
     double rotation = 0;
-    switch (currentOrientation) {
+    switch (self.currentOrientation) {
         case UIDeviceOrientationFaceDown:
         case UIDeviceOrientationFaceUp:
         case UIDeviceOrientationUnknown:
@@ -649,18 +649,17 @@
 {
     DLog(@"Image orientation is: %i", image.imageOrientation);
     UIInterfaceOrientation appOrientation = [UIApplication sharedApplication].statusBarOrientation;
-    UIDeviceOrientation currentOrientation = [UIDevice currentDevice].orientation;
     if (appOrientation == UIInterfaceOrientationLandscapeLeft) {
-        if (currentOrientation == UIDeviceOrientationPortrait) {
+        if (self.currentOrientation == UIDeviceOrientationPortrait) {
             return UIImageOrientationRight;
-        } else if (currentOrientation == UIDeviceOrientationPortraitUpsideDown) {
+        } else if (self.currentOrientation == UIDeviceOrientationPortraitUpsideDown) {
             return UIImageOrientationLeft;
         }
     }
     else if (appOrientation == UIInterfaceOrientationLandscapeRight) {
-        if (currentOrientation == UIDeviceOrientationPortrait) {
+        if (self.currentOrientation == UIDeviceOrientationPortrait) {
             return UIImageOrientationRight;
-        } else if (currentOrientation == UIDeviceOrientationPortraitUpsideDown) {
+        } else if (self.currentOrientation == UIDeviceOrientationPortraitUpsideDown) {
             return UIImageOrientationLeft;
         }
     }
