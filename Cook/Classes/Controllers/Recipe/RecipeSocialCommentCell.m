@@ -90,7 +90,8 @@
     [self.editingHelper unwrapEditingView:self.commentLabel];
 }
 
-- (void)configureWithComment:(CKRecipeComment *)comment {
+- (void)configureWithComment:(CKRecipeComment *)comment commentIndex:(NSUInteger)commentIndex
+                 numComments:(NSUInteger)numComments {
     
     CGSize availableSize = [self availableCommentSize];
     
@@ -143,13 +144,17 @@
     };
     
     // Divider.
-    self.dividerView.hidden = NO;
-    self.dividerView.frame = (CGRect){
-        self.contentView.bounds.origin.x,
-        self.contentView.bounds.size.height - self.dividerView.frame.size.height,
-        self.contentView.bounds.size.width,
-        self.dividerView.frame.size.height
-    };
+    if (commentIndex == numComments - 1) {
+        self.dividerView.hidden = YES;
+    } else {
+        self.dividerView.hidden = NO;
+        self.dividerView.frame = (CGRect){
+            self.contentView.bounds.origin.x,
+            self.contentView.bounds.size.height - self.dividerView.frame.size.height,
+            self.contentView.bounds.size.width,
+            self.dividerView.frame.size.height
+        };
+    }
     
 }
 

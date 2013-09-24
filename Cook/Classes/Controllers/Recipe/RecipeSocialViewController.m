@@ -296,7 +296,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             RecipeSocialCommentCell *commentCell = (RecipeSocialCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
                                                                                                                              forIndexPath:indexPath];
             CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-            [commentCell configureWithComment:comment];
+            [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
             cell = commentCell;
             
         } else {
