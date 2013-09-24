@@ -49,6 +49,7 @@
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
+@property (nonatomic, assign) BOOL fastForward;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
@@ -166,7 +167,13 @@
         self.bookBindingView.frame = self.bookOutlineView.frame;
         [self.view addSubview:self.bookBindingView];
     }
-    self.bookBindingView.alpha = alpha;
+    
+    if (alpha == 0) {
+        [self.bookBindingView removeFromSuperview];
+        self.bookBindingView = nil;
+    } else {
+        self.bookBindingView.alpha = alpha;
+    }
 }
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
@@ -531,6 +538,7 @@
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     self.collectionView.userInteractionEnabled = YES;
+    self.fastForward = NO;
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -1196,11 +1204,6 @@
     pageIndex += [self stackContentStartSection];
     
     [self fastForwardToPageIndex:pageIndex];
-    
-//    [self.collectionView setContentOffset:(CGPoint){
-//        pageIndex * self.collectionView.bounds.size.width,
-//        self.collectionView.contentOffset.y
-//    } animated:animated];
 }
 
 - (void)scrollToHome {
@@ -1211,15 +1214,18 @@
     NSInteger numPeekPages = 10;
     NSInteger currentPageIndex = [self currentPageIndex];
     
-    BOOL customJump = (abs(currentPageIndex - pageIndex) > numPeekPages);
+    self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
     
-    // Then jump direct to the page before.
-    if (customJump) {
+    // Fast forward to the intended page.
+    if (self.fastForward) {
         
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,
             self.collectionView.contentOffset.y
         } animated:NO];
+        
+        // Re-enable interaction that was disabled in bookTitleSelectedPage.
+        self.collectionView.userInteractionEnabled = YES;
         
     } else {
         
