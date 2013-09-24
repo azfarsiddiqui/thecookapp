@@ -594,6 +594,7 @@
 		7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */; };
 		7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */; };
 		7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C74F17782A3B00A5CA5C /* PagingScrollView.m */; };
+		769880CB17F16AAC00D1E760 /* RecipeSocialLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */; };
 		7698ED4D17D362D9003898A4 /* NotificationsFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7698ED4C17D362D9003898A4 /* NotificationsFlowLayout.m */; };
 		7698ED5017D37368003898A4 /* DateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7698ED4F17D37368003898A4 /* DateHelper.m */; };
 		7698ED6117D44DB4003898A4 /* cook_customise_textbox_icon_pulladd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7698ED5D17D44DB4003898A4 /* cook_customise_textbox_icon_pulladd.png */; };
@@ -1870,6 +1871,8 @@
 		7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingCollectionViewLayout.m; sourceTree = "<group>"; };
 		7692C74E17782A3B00A5CA5C /* PagingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingScrollView.h; sourceTree = "<group>"; };
 		7692C74F17782A3B00A5CA5C /* PagingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingScrollView.m; sourceTree = "<group>"; };
+		769880C917F16AAC00D1E760 /* RecipeSocialLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialLayout.h; sourceTree = "<group>"; };
+		769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialLayout.m; sourceTree = "<group>"; };
 		7698ED4B17D362D9003898A4 /* NotificationsFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsFlowLayout.h; sourceTree = "<group>"; };
 		7698ED4C17D362D9003898A4 /* NotificationsFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsFlowLayout.m; sourceTree = "<group>"; };
 		7698ED4E17D37368003898A4 /* DateHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateHelper.h; sourceTree = "<group>"; };
@@ -3314,6 +3317,8 @@
 				769D22E217B4AC980048C572 /* RecipeIngredientsView.m */,
 				763AE0661716DD0500E0922D /* RecipeSocialViewController.h */,
 				763AE0671716DD0500E0922D /* RecipeSocialViewController.m */,
+				769880C917F16AAC00D1E760 /* RecipeSocialLayout.h */,
+				769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */,
 				76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */,
 				76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */,
 				76EC555F17C3030D000DEA08 /* RecipeSocialCommentCell.h */,
@@ -5689,6 +5694,7 @@
 				76FA241F16D1D4AC00DDC439 /* GridRecipeStatsView.m in Sources */,
 				76D0A3C717C9B34500B046F8 /* CKPhotoManager.m in Sources */,
 				76C7AE0716D5B55A00690A76 /* CKActivity.m in Sources */,
+				769880CB17F16AAC00D1E760 /* RecipeSocialLayout.m in Sources */,
 				76D6E7EA16D5EEE8007B1851 /* ImageHelper.m in Sources */,
 				7643B8C916D7037B001A2452 /* TTTAddressFormatter.m in Sources */,
 				7643B8CA16D7037B001A2452 /* TTTArrayFormatter.m in Sources */,
