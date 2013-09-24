@@ -22,16 +22,16 @@
 #import "EventHelper.h"
 #import "CKSocialManager.h"
 #import "OverlayViewController.h"
+#import "RecipeCommentBoxFooterView.h"
 
-@interface RecipeSocialViewController () <RecipeSocialCommentCellDelegate, CKEditViewControllerDelegate,
-    UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface RecipeSocialViewController () <CKEditViewControllerDelegate,
+    RecipeCommentBoxFooterViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
-@property (nonatomic, strong) UIButton *composeButton;
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
@@ -56,6 +56,7 @@
 #define kContentInsets      (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
 #define kUnderlayMaxAlpha   0.7
 #define kHeaderCellId       @"HeaderCell"
+#define kFooterCellId       @"FooterCell"
 #define kCommentCellId      @"CommentCell"
 #define kActivityId         @"ActivityCell"
 #define kCommentsSection    0
@@ -76,7 +77,6 @@
     
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
-    [self.view addSubview:self.composeButton];
     [self loadData];
 }
 
@@ -84,29 +84,10 @@
     return [self.comments count];
 }
 
-#pragma mark - RecipeSocialCommentCellDelegate methods
+#pragma mark - RecipeCommentBoxFooterViewDelegate methods
 
-- (void)recipeSocialCommentCellEditForCell:(RecipeSocialCommentCell *)commentCell editingView:(UIView *)editingView {
-    
-    // No posting if it was loading.
-    if (self.loading) {
-        return;
-    }
-    
-    // Remember the editing cell.
-    self.editingCell = commentCell;
-    
-    // Configure a text view for editing.
-    CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
-                                                                                                     delegate:self
-                                                                                                editingHelper:self.editingHelper
-                                                                                                        white:YES
-                                                                                                        title:@"Comment"
-                                                                                               characterLimit:500];
-    editViewController.clearOnFocus = YES;
-    editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
-    [editViewController performEditing:YES];
-    self.editViewController = editViewController;
+- (void)recipeCommentBoxFooterViewCommentRequested {
+    [self showCommentBox];
 }
 
 #pragma mark - CKEditViewControllerDelegate methods
@@ -205,6 +186,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 referenceSizeForHeaderInSection:(NSInteger)section {
     
     return [ModalOverlayHeaderView unitSize];
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
+referenceSizeForFooterInSection:(NSInteger)section {
+    
+    return [RecipeCommentBoxFooterView unitSize];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
@@ -328,10 +315,19 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     UICollectionReusableView *supplementaryView = nil;
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        
         ModalOverlayHeaderView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                      withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
         [headerView configureTitle:@"COMMENTS"];
         supplementaryView = headerView;
+        
+    } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        
+        RecipeCommentBoxFooterView *footerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kFooterCellId forIndexPath:indexPath];
+        footerView.delegate = self;
+        [footerView configureUser:self.currentUser];
+        supplementaryView = footerView;
+        
     }
     
     return supplementaryView;
@@ -353,22 +349,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         };
     }
     return _closeButton;
-}
-
-- (UIButton *)composeButton {
-    if (!_composeButton) {
-        _composeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
-                                              target:self
-                                            selector:@selector(composeTapped:)];
-        _composeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _composeButton.frame = (CGRect){
-            self.view.bounds.size.width - _composeButton.frame.size.width - kContentInsets.right,
-            kContentInsets.top,
-            _composeButton.frame.size.width,
-            _composeButton.frame.size.height
-        };
-    }
-    return _composeButton;
 }
 
 - (CKActivityIndicatorView *)activityView {
@@ -403,6 +383,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
         [_collectionView registerClass:[RecipeSocialCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
         [_collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
+        [_collectionView registerClass:[RecipeCommentBoxFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kFooterCellId];
     }
     return _collectionView;
 }
@@ -448,7 +429,15 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate recipeSocialViewControllerCloseRequested];
 }
 
-- (void)composeTapped:(id)sender {
+- (void)insertAddCommentCell {
+    NSIndexPath *addIndexPath = [NSIndexPath indexPathForItem:[self.comments count] inSection:kCommentsSection];
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView insertItemsAtIndexPaths:@[addIndexPath]];
+    } completion:^(BOOL finished) {
+    }];
+}
+
+- (void)showCommentBox {
     CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:nil
                                                                                                      delegate:self
                                                                                                 editingHelper:self.editingHelper
@@ -459,15 +448,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
-    
-}
-
-- (void)insertAddCommentCell {
-    NSIndexPath *addIndexPath = [NSIndexPath indexPathForItem:[self.comments count] inSection:kCommentsSection];
-    [self.collectionView performBatchUpdates:^{
-        [self.collectionView insertItemsAtIndexPaths:@[addIndexPath]];
-    } completion:^(BOOL finished) {
-    }];
 }
 
 @end

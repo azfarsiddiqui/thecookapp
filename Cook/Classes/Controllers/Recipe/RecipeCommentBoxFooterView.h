@@ -8,6 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKUser;
+
+@protocol RecipeCommentBoxFooterViewDelegate <NSObject>
+
+- (void)recipeCommentBoxFooterViewCommentRequested;
+
+@end
+
 @interface RecipeCommentBoxFooterView : UICollectionReusableView
+
+@property (nonatomic, weak) id<RecipeCommentBoxFooterViewDelegate> delegate;
+
++ (CGSize)unitSize;
+- (void)configureUser:(CKUser *)user;
 
 @end

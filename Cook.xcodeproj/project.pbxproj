@@ -137,6 +137,7 @@
 		76324F0E165343DE007D1EBF /* UIImage+ProportionalFill.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0A165343DE007D1EBF /* UIImage+ProportionalFill.m */; };
 		76324F0F165343DE007D1EBF /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 76324F0C165343DE007D1EBF /* UIImage+Tint.m */; };
 		7632F25117AF4CFA00E80952 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7632F25017AF4CFA00E80952 /* Crashlytics.framework */; };
+		76332A6217F12B520081F88F /* RecipeCommentBoxFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76332A6117F12B520081F88F /* RecipeCommentBoxFooterView.m */; };
 		7634612E17B9C3C000876AE9 /* BookContentGridLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7634612D17B9C3C000876AE9 /* BookContentGridLayout.m */; };
 		763546B017941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A217941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png */; };
 		763546B117941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 763546A317941988007A9DF6 /* cook_book_inner_darkenphoto_strip@2x.png */; };
@@ -1330,6 +1331,8 @@
 		76324F0B165343DE007D1EBF /* UIImage+Tint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Tint.h"; sourceTree = "<group>"; };
 		76324F0C165343DE007D1EBF /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		7632F25017AF4CFA00E80952 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		76332A6017F12B520081F88F /* RecipeCommentBoxFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeCommentBoxFooterView.h; sourceTree = "<group>"; };
+		76332A6117F12B520081F88F /* RecipeCommentBoxFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeCommentBoxFooterView.m; sourceTree = "<group>"; };
 		7634612C17B9C3C000876AE9 /* BookContentGridLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookContentGridLayout.h; sourceTree = "<group>"; };
 		7634612D17B9C3C000876AE9 /* BookContentGridLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookContentGridLayout.m; sourceTree = "<group>"; };
 		763546A217941988007A9DF6 /* cook_book_inner_darkenphoto_strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_darkenphoto_strip.png; sourceTree = "<group>"; };
@@ -3315,6 +3318,8 @@
 				76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */,
 				76EC555F17C3030D000DEA08 /* RecipeSocialCommentCell.h */,
 				76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */,
+				76332A6017F12B520081F88F /* RecipeCommentBoxFooterView.h */,
+				76332A6117F12B520081F88F /* RecipeCommentBoxFooterView.m */,
 				76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */,
 				76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */,
 				F6526BB217D15E01000DDD95 /* RecipeShareViewController.h */,
@@ -5783,6 +5788,7 @@
 				76091F45175069C400018E6E /* CKPagingView.m in Sources */,
 				76091F4B17506A9600018E6E /* CKEditViewController.m in Sources */,
 				76558EBF17BFD19D00644036 /* IngredientsKeyboardAccessoryCell.m in Sources */,
+				76332A6217F12B520081F88F /* RecipeCommentBoxFooterView.m in Sources */,
 				76BF1FFC1753263A000F0798 /* CKTextFieldView.m in Sources */,
 				76BF202617544140000F0798 /* WelcomeViewController.m in Sources */,
 				76FC076817C590DD00ABF96F /* CKOffsetMotionEffect.m in Sources */,

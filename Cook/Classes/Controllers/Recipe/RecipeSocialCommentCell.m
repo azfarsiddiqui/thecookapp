@@ -11,7 +11,6 @@
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
 #import "CKRecipeComment.h"
-#import "CKEditingTextBoxView.h"
 #import "DateHelper.h"
 
 @interface RecipeSocialCommentCell () <CKEditingTextBoxViewDelegate>
@@ -29,7 +28,7 @@
 #define kWidth                  600.0
 #define kProfileCommentGap      30.0
 #define kNameCommentGap         1.0
-#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 20.0, 20.0 }
+#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 10.0, 20.0 }
 #define kTextBoxInsets          (UIEdgeInsets){ 30.0, 28.0, 22.0, 40.0 }
 #define kCommentTimeGap         3.0
 
@@ -180,24 +179,10 @@
         size.height
     };
     
-    // Wrap it in a box.
-    if (![self.editingHelper alreadyWrappedForEditingView:self.commentLabel]) {
-        [self.editingHelper wrapEditingView:self.commentLabel contentInsets:kTextBoxInsets delegate:self white:NO editMode:NO];
-    }
 }
 
 - (NSString *)currentComment {
     return self.commentLabel.text;
-}
-
-#pragma mark - CKEditingTextBoxViewDelegate methods
-
-- (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    [self.delegate recipeSocialCommentCellEditForCell:self editingView:editingView];
-}
-
-- (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
-    // This triggers update via the editVC delegate.
 }
 
 #pragma mark - Properties

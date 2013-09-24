@@ -13,16 +13,9 @@
 @class CKRecipeComment;
 @class RecipeSocialCommentCell;
 
-@protocol RecipeSocialCommentCellDelegate <NSObject>
-
-- (void)recipeSocialCommentCellEditForCell:(RecipeSocialCommentCell *)commentCell editingView:(UIView *)editingView;
-
-@end
-
 @interface RecipeSocialCommentCell : UICollectionViewCell
 
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
-@property (nonatomic, weak) id<RecipeSocialCommentCellDelegate> delegate;
 
 + (CGSize)sizeForComment:(CKRecipeComment *)comment;
 + (CGSize)unitSize;
