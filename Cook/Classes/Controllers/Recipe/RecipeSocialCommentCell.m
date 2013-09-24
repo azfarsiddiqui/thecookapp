@@ -13,7 +13,7 @@
 #import "CKRecipeComment.h"
 #import "DateHelper.h"
 
-@interface RecipeSocialCommentCell () <CKEditingTextBoxViewDelegate>
+@interface RecipeSocialCommentCell () 
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
@@ -83,10 +83,6 @@
         [self.contentView addSubview:self.dividerView];
     }
     return self;
-}
-
-- (void)prepareForReuse {
-    [self.editingHelper unwrapEditingView:self.commentLabel];
 }
 
 - (void)configureWithComment:(CKRecipeComment *)comment commentIndex:(NSUInteger)commentIndex

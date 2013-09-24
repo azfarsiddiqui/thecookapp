@@ -15,8 +15,6 @@
 
 @interface RecipeSocialCommentCell : UICollectionViewCell
 
-@property (nonatomic, strong) CKEditingViewHelper *editingHelper;
-
 + (CGSize)sizeForComment:(CKRecipeComment *)comment;
 + (CGSize)unitSize;
 

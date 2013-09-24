@@ -429,14 +429,6 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self.delegate recipeSocialViewControllerCloseRequested];
 }
 
-- (void)insertAddCommentCell {
-    NSIndexPath *addIndexPath = [NSIndexPath indexPathForItem:[self.comments count] inSection:kCommentsSection];
-    [self.collectionView performBatchUpdates:^{
-        [self.collectionView insertItemsAtIndexPaths:@[addIndexPath]];
-    } completion:^(BOOL finished) {
-    }];
-}
-
 - (void)showCommentBox {
     CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:nil
                                                                                                      delegate:self
