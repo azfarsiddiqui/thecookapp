@@ -80,11 +80,13 @@
 }
 
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize {
-    return [self initWithUser:user placeholder:nil profileSize:profileSize];
+    return [self initWithUser:user placeholder:[UIImage imageNamed:@"cook_default_profile.png"] profileSize:profileSize];
 }
 
 - (id)initWithUser:(CKUser *)user profileSize:(ProfileViewSize)profileSize border:(BOOL)border {
-    return [self initWithUser:user placeholder:nil profileSize:profileSize border:border];
+    
+    return [self initWithUser:user placeholder:[UIImage imageNamed:@"cook_default_profile.png"] profileSize:profileSize
+                       border:border];
 }
 
 - (id)initWithUser:(CKUser *)user placeholder:(UIImage *)placeholderImage profileSize:(ProfileViewSize)profileSize {
