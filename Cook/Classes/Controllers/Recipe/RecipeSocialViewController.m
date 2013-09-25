@@ -282,15 +282,15 @@ referenceSizeForFooterInSection:(NSInteger)section {
         
         if ([self.comments count] > 0) {
             
-            // Comment cell.
-            CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-            
             // Get cached size if available, and only if they have been persisted.
             CGSize commentSize = CGSizeZero;
             
             if ([self.commentsCachedSizes objectForKey:@(indexPath.item)]) {
                 commentSize = [[self.commentsCachedSizes objectForKey:@(indexPath.item)] CGSizeValue];
             } else {
+                
+                // Comment cell.
+                CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
                 
                 // Calculate the size.
                 commentSize = [RecipeSocialCommentCell sizeForComment:comment];
