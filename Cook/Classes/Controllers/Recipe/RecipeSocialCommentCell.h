@@ -13,7 +13,20 @@
 @class CKRecipeComment;
 @class RecipeSocialCommentCell;
 
+@protocol RecipeSocialCommentCellDelegate <NSObject>
+
+- (void)recipeSocialCommentCellCacheNameFrame:(CGRect)nameFrame commentIndex:(NSUInteger)commentIndex;
+- (void)recipeSocialCommentCellCacheTimeFrame:(CGRect)timeFrame commentIndex:(NSUInteger)commentIndex;
+- (void)recipeSocialCommentCellCacheCommentFrame:(CGRect)commentFrame commentIndex:(NSUInteger)commentIndex;
+- (CGRect)recipeSocialCommentCellCachedNameFrameForCommentIndex:(NSUInteger)commentIndex;
+- (CGRect)recipeSocialCommentCellCachedTimeFrameForCommentIndex:(NSUInteger)commentIndex;
+- (CGRect)recipeSocialCommentCellCachedCommentFrameForCommentIndex:(NSUInteger)commentIndex;
+
+@end
+
 @interface RecipeSocialCommentCell : UICollectionViewCell
+
+@property (nonatomic, weak) id<RecipeSocialCommentCellDelegate> delegate;
 
 + (CGSize)sizeForComment:(CKRecipeComment *)comment;
 + (CGSize)unitSize;

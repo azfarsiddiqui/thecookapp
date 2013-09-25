@@ -14,6 +14,9 @@
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
 
+@property (nonatomic, strong) UICollectionViewLayoutAttributes *commentsHeaderAttributes;
+@property (nonatomic, strong) UICollectionViewLayoutAttributes *commentsFooterAttributes;
+
 @end
 
 @implementation RecipeSocialViewLayout
@@ -27,6 +30,16 @@
 
 #pragma mark - UICollectionViewFlowLayout methods
 
+- (void)prepareLayout {
+    [super prepareLayout];
+    
+    // Cache header/footer
+    self.commentsHeaderAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    self.commentsFooterAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+}
+
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
     return YES;
 }
@@ -38,16 +51,14 @@
     if (![layoutAttributes detect:^BOOL(UICollectionViewLayoutAttributes *attributes){
         return [attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader];
     }]) {
-        [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]]];
+        [layoutAttributes addObject:self.commentsHeaderAttributes];
     }
     
     // Make sure the footer row is always there as flow layout will discard it after scrolling off bounds.
     if (![layoutAttributes detect:^BOOL(UICollectionViewLayoutAttributes *attributes){
         return [attributes.representedElementKind isEqualToString:UICollectionElementKindSectionFooter];
     }]) {
-        [layoutAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter
-                                                                         atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]]];
+        [layoutAttributes addObject:self.commentsFooterAttributes];
     }
     
     [self applyPagingEffects:layoutAttributes];
@@ -105,14 +116,12 @@
     if (!attributes.representedElementKind) {
         
         // Fade at top of header.
-        UICollectionViewLayoutAttributes *headerAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                                  atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        UICollectionViewLayoutAttributes *headerAttributes = self.commentsHeaderAttributes;
         CGRect proposedHeaderFrame = [self adjustedFrameForHeaderFrame:headerAttributes.frame];
         CGFloat topFadeOffset = proposedHeaderFrame.origin.y + proposedHeaderFrame.size.height;
         
         // Fade at bottom of footer.
-        UICollectionViewLayoutAttributes *footerAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter
-                                                                                                  atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        UICollectionViewLayoutAttributes *footerAttributes = self.commentsFooterAttributes;
         CGRect proposedFooterFrame = [self adjustedFrameForFooterFrame:footerAttributes.frame];
         CGFloat bottomFadeOffset = proposedFooterFrame.origin.y;
         
@@ -123,7 +132,7 @@
             CGFloat distance = topFadeOffset - frame.origin.y;
             attributes.alpha = 1.0 - (distance / effectiveDistance);
         } else if (frame.origin.y + frame.size.height > bottomFadeOffset) {
-            CGFloat effectiveDistance = 50.0;
+            CGFloat effectiveDistance = 70.0;
             CGFloat distance = (frame.origin.y + frame.size.height) - bottomFadeOffset;
             attributes.alpha = 1.0 - (distance / effectiveDistance);
         }

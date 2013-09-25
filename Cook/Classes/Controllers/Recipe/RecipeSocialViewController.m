@@ -24,7 +24,7 @@
 #import "OverlayViewController.h"
 #import "RecipeCommentBoxFooterView.h"
 
-@interface RecipeSocialViewController () <CKEditViewControllerDelegate,
+@interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -32,6 +32,7 @@
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *likeButton;
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
@@ -46,8 +47,9 @@
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
 
-// Height caching.
+// Size caching.
 @property (nonatomic, strong) NSMutableDictionary *commentsCachedSizes;
+@property (nonatomic, strong) NSMutableDictionary *commentLayoutInfo;
 
 @end
 
@@ -60,6 +62,9 @@
 #define kCommentCellId      @"CommentCell"
 #define kActivityId         @"ActivityCell"
 #define kCommentsSection    0
+#define kNameFrame          @"nameFrame"
+#define kTimeFrame          @"timeFrame"
+#define kCommentFrame       @"commentFrame"
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate {
     if (self = [super init]) {
@@ -68,6 +73,7 @@
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.commentsCachedSizes = [NSMutableDictionary dictionary];
+        self.commentLayoutInfo = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -77,6 +83,11 @@
     
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
+    
+    // Like button disabled before data is loaded.
+    self.likeButton.enabled = NO;
+    [self.view addSubview:self.likeButton];
+    
     [self loadData];
 }
 
@@ -88,6 +99,71 @@
 
 - (void)recipeCommentBoxFooterViewCommentRequested {
     [self showCommentBox];
+}
+
+#pragma mark - RecipeSocialCommentCellDelegate methods
+
+- (void)recipeSocialCommentCellCacheNameFrame:(CGRect)nameFrame commentIndex:(NSUInteger)commentIndex {
+    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
+        
+        NSMutableDictionary *info = [self.commentLayoutInfo objectForKey:@(commentIndex)];
+        [info setObject:[NSValue valueWithCGRect:nameFrame] forKey:kNameFrame];
+        
+    } else {
+        
+        NSMutableDictionary *info = [@{ kNameFrame : [NSValue valueWithCGRect:nameFrame]} mutableCopy];
+        [self.commentLayoutInfo setObject:info forKey:@(commentIndex)];
+    }
+}
+
+- (void)recipeSocialCommentCellCacheTimeFrame:(CGRect)timeFrame commentIndex:(NSUInteger)commentIndex {
+    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
+        
+        NSMutableDictionary *info = [self.commentLayoutInfo objectForKey:@(commentIndex)];
+        [info setObject:[NSValue valueWithCGRect:timeFrame] forKey:kTimeFrame];
+        
+    } else {
+        
+        NSMutableDictionary *info = [@{ kTimeFrame : [NSValue valueWithCGRect:timeFrame]} mutableCopy];
+        [self.commentLayoutInfo setObject:info forKey:@(commentIndex)];
+    }
+}
+
+- (void)recipeSocialCommentCellCacheCommentFrame:(CGRect)commentFrame commentIndex:(NSUInteger)commentIndex {
+    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
+        
+        NSMutableDictionary *info = [self.commentLayoutInfo objectForKey:@(commentIndex)];
+        [info setObject:[NSValue valueWithCGRect:commentFrame] forKey:kCommentFrame];
+        
+    } else {
+        
+        NSMutableDictionary *info = [@{ kCommentFrame : [NSValue valueWithCGRect:commentFrame]} mutableCopy];
+        [self.commentLayoutInfo setObject:info forKey:@(commentIndex)];
+    }
+}
+
+- (CGRect)recipeSocialCommentCellCachedNameFrameForCommentIndex:(NSUInteger)commentIndex {
+    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
+        return [[[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kNameFrame] CGRectValue];
+    } else {
+        return CGRectZero;
+    }
+}
+
+- (CGRect)recipeSocialCommentCellCachedTimeFrameForCommentIndex:(NSUInteger)commentIndex {
+    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
+        return [[[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kTimeFrame] CGRectValue];
+    } else {
+        return CGRectZero;
+    }
+}
+
+- (CGRect)recipeSocialCommentCellCachedCommentFrameForCommentIndex:(NSUInteger)commentIndex {
+    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
+        return [[[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kCommentFrame] CGRectValue];
+    } else {
+        return CGRectZero;
+    }
 }
 
 #pragma mark - CKEditViewControllerDelegate methods
@@ -131,7 +207,12 @@
             
         } else {
             
-            [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.comments count] - 1 inSection:0]]];
+            NSIndexPath *indexPathToInsert = [NSIndexPath indexPathForItem:[self.comments count] - 1 inSection:kCommentsSection];
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView insertItemsAtIndexPaths:@[indexPathToInsert]];
+                [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:indexPathToInsert.item - 1 inSection:kCommentsSection]]];
+            } completion:^(BOOL finished) {
+            }];
             
         }
         
@@ -206,20 +287,16 @@ referenceSizeForFooterInSection:(NSInteger)section {
             
             // Get cached size if available, and only if they have been persisted.
             CGSize commentSize = CGSizeZero;
-            if ([comment persisted]) {
-                if ([self.commentsCachedSizes objectForKey:comment.objectId]) {
-                    commentSize = [[self.commentsCachedSizes objectForKey:comment.objectId] CGSizeValue];
-                } else {
-                    commentSize = [RecipeSocialCommentCell sizeForComment:comment];
-                    [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:commentSize] forKey:comment.objectId];
-                }
+            
+            if ([self.commentsCachedSizes objectForKey:@(indexPath.item)]) {
+                commentSize = [[self.commentsCachedSizes objectForKey:@(indexPath.item)] CGSizeValue];
             } else {
                 
-                // Newly added comment, just recalculate the height, won't impact overall performance I hope.
+                // Calculate the size.
                 commentSize = [RecipeSocialCommentCell sizeForComment:comment];
-                
+                [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:commentSize] forKey:@(indexPath.item)];
             }
-            
+                
             return commentSize;
             
         } else {
@@ -282,8 +359,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
             
             RecipeSocialCommentCell *commentCell = (RecipeSocialCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
                                                                                                                              forIndexPath:indexPath];
+            commentCell.delegate = self;
             CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
             [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
+            
             cell = commentCell;
             
         } else {
@@ -351,6 +430,22 @@ referenceSizeForFooterInSection:(NSInteger)section {
     return _closeButton;
 }
 
+- (UIButton *)likeButton {
+    if (!_likeButton) {
+        _likeButton = [ViewHelper buttonWithImage:[self likeButtonImageForOn:NO dark:YES]
+                                            target:self
+                                          selector:@selector(likeTapped:)];
+        _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _likeButton.frame = (CGRect){
+            self.collectionView.bounds.size.width - _likeButton.frame.size.width - kContentInsets.right,
+            kContentInsets.top,
+            _likeButton.frame.size.width,
+            _likeButton.frame.size.height
+        };
+    }
+    return _likeButton;
+}
+
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
         _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
@@ -416,6 +511,9 @@ referenceSizeForFooterInSection:(NSInteger)section {
             [self.collectionView reloadData];
         }
         
+        // Enable the like button.
+        self.likeButton.enabled = YES;
+        
     } failure:^(NSError *error) {
         DLog(@"Unable to load comments");
     }];
@@ -429,6 +527,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self.delegate recipeSocialViewControllerCloseRequested];
 }
 
+- (void)likeTapped:(id)sender {
+    DLog();
+}
+
 - (void)showCommentBox {
     CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:nil
                                                                                                      delegate:self
@@ -440,6 +542,15 @@ referenceSizeForFooterInSection:(NSInteger)section {
     editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
+}
+
+- (UIImage *)likeButtonImageForOn:(BOOL)on dark:(BOOL)dark {
+    NSMutableString *imageName = [NSMutableString stringWithFormat:@"cook_book_inner_icon_like_%@", dark ? @"dark" : @"light"];
+    if (on) {
+        [imageName appendString:@"_on"];
+    }
+    [imageName appendString:@".png"];
+    return [UIImage imageNamed:imageName];
 }
 
 @end
