@@ -857,13 +857,18 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [[CKPhotoManager sharedInstance] imageForRecipe:self.recipe size:self.imageView.bounds.size name:@"RecipePhoto"
                                                progress:^(CGFloat progressRatio, NSString *name) {
                                                } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
+                                                   
                                                    [self loadImageViewWithPhoto:thumbImage placeholder:NO];
+                                                   
                                                } completion:^(UIImage *image, NSString *name) {
+                                                   
                                                    [self loadImageViewWithPhoto:image placeholder:NO];
                                                    
                                                    // Stop spinner.
                                                    [self.activityView stopAnimating];
                                                }];
+    } else {
+        [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
     }
     
 }
@@ -891,6 +896,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                      completion:^(BOOL finished)  {
                          [self.placeholderHeaderView removeFromSuperview];
                          self.placeholderHeaderView = nil;
+                         
+                         // Inform delegate fullscreen has been loaded.
+                         [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+                         
                      }];
 }
 
@@ -1428,23 +1437,24 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         [self hideButtons];
         self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
-        self.socialViewController.view.frame = self.view.bounds;
-        self.socialViewController.view.alpha = 0.0;
-        [self.view addSubview:self.socialViewController.view];
+    } else {
+        self.view.hidden = NO;
     }
-    [UIView animateWithDuration:show? 0.3 : 0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.socialViewController.view.alpha = show ? 1.0 : 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         if (!show) {
-                             [self.socialViewController.view removeFromSuperview];
-                             self.socialViewController = nil;
-                             [self updateButtons];
-                         }
-                     }];
+    [ModalOverlayHelper showModalOverlayForViewController:self.socialViewController
+                                                     show:show
+                                                animation:^{
+                                                    
+                                                    // In-flight animation.
+                                                    
+                                                } completion:^{
+                                                    
+                                                    if (show) {
+                                                        self.view.hidden = YES;
+                                                    } else {
+                                                        self.socialViewController = nil;
+                                                        [self updateButtons];
+                                                    }
+                                                }];
 }
 
 - (void)closeTapped:(id)sender {

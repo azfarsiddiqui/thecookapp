@@ -305,7 +305,17 @@
 #pragma mark - BookModalViewControllerDelegate methods
 
 - (void)closeRequestedForBookModalViewController:(UIViewController *)viewController {
-    [self hideModalViewController:viewController];
+    [self hideViewsFromModal:NO];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self hideModalViewController:viewController];
+    });
+}
+
+- (void)fullScreenLoadedForBookModalViewController:(UIViewController *)viewController {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self hideViewsFromModal:YES];
+    });
 }
 
 #pragma mark - SettingsViewControllerDelegate methods
@@ -796,6 +806,7 @@
                          modalViewController.view.transform = CGAffineTransformIdentity;
                  }
                  completion:^(BOOL finished)  {
+                     
                         [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
                                                   withObject:[NSNumber numberWithBool:YES]];
                  }];
@@ -915,9 +926,7 @@
 
 - (void)loadSampleRecipe {
     
-    // cFmMoF95S2 NASI GORENG
-    // bafbyvhtSj VATAPA
-    [CKRecipe recipeForObjectId:@"bafbyvhtSj"
+    [CKRecipe recipeForObjectId:@"qC9Dhevs7E"
                         success:^(CKRecipe *recipe){
                             [self viewRecipe:recipe];
                         }
@@ -994,6 +1003,12 @@
     UIAttachmentBehavior *spring = [[UIAttachmentBehavior alloc] initWithItem:self.benchtopViewController.view offsetFromCenter:(UIOffset){0.0, 20.0} attachedToAnchor:self.view.center];
     [animator addBehavior:spring];
     self.benchtopViewController.view.center = (CGPoint){ self.benchtopViewController.view.center.x, self.benchtopViewController.view.center.y + 20.0 };
+}
+
+- (void)hideViewsFromModal:(BOOL)hide {
+    self.panEnabled = !hide;
+    self.storeViewController.view.hidden = hide;
+    self.settingsViewController.view.hidden = hide;
 }
 
 @end

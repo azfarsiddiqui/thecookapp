@@ -25,18 +25,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    self.view.backgroundColor = [UIColor clearColor];
-    self.view.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
+    self.view.backgroundColor = [UIColor clearColor];
+//    self.view.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
     
     // Snapshot the benchtop to improve performance (flatten views) on this VC.
-//    UIView *snapshotView = [[[AppHelper sharedInstance] rootView] snapshotViewAfterScreenUpdates:YES];
-//    [self.view addSubview:snapshotView];
+    UIView *snapshotView = [[[AppHelper sharedInstance] rootView] snapshotViewAfterScreenUpdates:YES];
+    [self.view addSubview:snapshotView];
 
     // Overlay view.
-//    UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-//    overlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
-//    overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-//    [self.view addSubview:overlayView];
+    UIView *overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    overlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
+    overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:overlayView];
 }
 
 @end
