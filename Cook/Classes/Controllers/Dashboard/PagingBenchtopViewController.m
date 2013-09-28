@@ -151,6 +151,7 @@
         [self.collectionView reloadData];
     }
     
+    [self.delegate benchtopLoaded];
 }
 
 - (void)showLoginViewSignUp:(BOOL)signUp {

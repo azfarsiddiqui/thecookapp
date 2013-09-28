@@ -11,6 +11,7 @@
 
 @protocol BenchtopViewControllerDelegate <NSObject>
 
+- (void)benchtopLoaded;
 - (void)openBookRequestedForBook:(CKBook *)book centerPoint:(CGPoint)centerPoint;
 - (void)editBookRequested:(BOOL)editMode;
 - (void)panEnabledRequested:(BOOL)enable;

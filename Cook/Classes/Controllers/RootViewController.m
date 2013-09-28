@@ -46,6 +46,7 @@
 @property (nonatomic, strong) UIView *modalOverlayView;
 @property (nonatomic, strong) UIView *benchtopOverlayView;  // Darker overlay to dim the benchtop between levels.
 @property (nonatomic, strong) UIImageView *defaultImageView;
+@property (nonatomic, strong) UIView *snapshotView;
 
 @end
 
@@ -98,8 +99,6 @@
 - (void)didReceiveMemoryWarning {
     DLog();
     [super didReceiveMemoryWarning];
-    [self.defaultImageView removeFromSuperview];
-    self.defaultImageView = nil;
 }
 
 - (BOOL)shouldAutorotate {
@@ -175,6 +174,11 @@
     return (self.benchtopLevel == kSettingsLevel);
 }
 
+- (void)benchtopLoaded {
+    [self.defaultImageView removeFromSuperview];
+    self.defaultImageView = nil;
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
@@ -235,7 +239,7 @@
                          }
                          completion:^(BOOL finished) {
                              
-                             // Hide the bookCoverVC.
+                             // Hide unused views.
                              self.bookCoverViewController.view.hidden = YES;
                              
                              // Inform benchtop of didOpen.
@@ -701,7 +705,6 @@
     // Settings on Level 0
     self.settingsViewController.view.frame = [self settingsFrameForLevel:self.benchtopLevel];
     [self.view addSubview:self.settingsViewController.view];
-    
 }
 
 - (void)enableEditMode:(BOOL)enable {
@@ -1006,8 +1009,17 @@
 }
 
 - (void)hideViewsFromModal:(BOOL)hide {
+    if (hide) {
+        if (!self.snapshotView.superview) {
+            self.snapshotView = [self.benchtopViewController.view snapshotViewAfterScreenUpdates:NO];
+            [self.view insertSubview:self.snapshotView belowSubview:self.bookNavigationViewController.view];
+        }
+    } else {
+        [self.snapshotView removeFromSuperview];
+    }
     self.panEnabled = !hide;
     self.storeViewController.view.hidden = hide;
+    self.benchtopViewController.view.hidden = hide;
     self.settingsViewController.view.hidden = hide;
 }
 
