@@ -1444,8 +1444,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                      show:show
                                                 animation:^{
                                                     
-                                                    // In-flight animation.
-                                                    
                                                 } completion:^{
                                                     
                                                     if (show) {
@@ -1472,7 +1470,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          self.topShadowView.alpha = 0.0;
-                         self.imageView.alpha = 0.0;
+                         self.imageScrollView.alpha = 0.0;
                      }
                      completion:^(BOOL finished)  {
                          [self.modalDelegate closeRequestedForBookModalViewController:self];
