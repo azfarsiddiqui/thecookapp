@@ -25,6 +25,7 @@
 @property (nonatomic, strong) CKPagingView *pagingView;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, strong) UIImageView *borderImageView;
 
 // Pages
 @property (nonatomic, strong) UIView *welcomePageView;
@@ -586,6 +587,7 @@
         self.view.bounds.size.height - kBorderInsets.top - kBorderInsets.bottom
     };
     [self.view insertSubview:borderImageView aboveSubview:self.backdropScrollView];
+    self.borderImageView = borderImageView;
     
     // Start blending.
     pagingBenchtopView.alpha = 0.0;
@@ -683,6 +685,8 @@
                               delay:0.3
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
+                             self.borderImageView.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                             self.borderImageView.alpha = 0.0;
                              self.signUpPageView.transform = transform;
                              self.signUpPageView.alpha = 0.0;
                              self.pagingView.alpha = 0.0;
