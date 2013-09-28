@@ -26,6 +26,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor clearColor];
+//    self.view.backgroundColor = [UIColor blackColor];
 //    self.view.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
     
     // Snapshot the benchtop to improve performance (flatten views) on this VC.

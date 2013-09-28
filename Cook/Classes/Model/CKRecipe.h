@@ -18,6 +18,8 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 
 @class CKRecipeImage;
 
+typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes);
+
 @interface CKRecipe : CKModel
 
 @property(nonatomic, strong) CKBook *book;
@@ -74,6 +76,7 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 - (void)comment:(NSString *)comment user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)numCommentsWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)commentsWithCompletion:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)commentsLikesWithCompletion:(RecipeCommentsLikesSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 - (void)setImage:(UIImage *)image;
 - (PFFile *)imageFile;

@@ -12,12 +12,15 @@
 
 @protocol RecipeSocialLayoutDelegate <NSObject>
 
+- (void)recipeSocialLayoutDidFinish;
 - (CKRecipeComment *)recipeSocialLayoutCommentAtIndex:(NSUInteger)commentIndex;
+- (BOOL)recipeSocialLayoutIsLoading;
 
 @end
 
 @interface RecipeSocialLayout : UICollectionViewLayout
 
 - (id)initWithDelegate:(id<RecipeSocialLayoutDelegate>)delegate;
+- (void)setNeedsRelayout:(BOOL)relayout;
 
 @end

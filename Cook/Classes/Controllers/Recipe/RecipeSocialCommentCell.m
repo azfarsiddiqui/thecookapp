@@ -75,7 +75,6 @@
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
-        self.contentView.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.profileView];
         [self.contentView addSubview:self.nameLabel];
         [self.contentView addSubview:self.commentLabel];
@@ -195,7 +194,6 @@
         availableSize.width,
         size.height
     };
-    
 }
 
 - (NSString *)currentComment {

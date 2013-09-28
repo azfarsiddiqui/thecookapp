@@ -96,8 +96,8 @@
                   failure:(ObjectFailureBlock)failure {
     
     PFQuery *query = [PFQuery queryWithClassName:kRecipeModelName];
-    [query setCachePolicy:kPFCachePolicyCacheOnly];
-//    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+//    [query setCachePolicy:kPFCachePolicyCacheOnly];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
     [query includeKey:kRecipeAttrRecipePhotos];
     [query includeKey:kBookModelForeignKeyName];
     [query includeKey:[NSString stringWithFormat:@"%@.%@", kBookModelForeignKeyName, kUserModelForeignKeyName]];
@@ -306,6 +306,44 @@
             failure(error);
         }
     }];
+}
+
+- (void)commentsLikesWithCompletion:(RecipeCommentsLikesSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    [PFCloud callFunctionInBackground:@"recipeCommentsLikes"
+                       withParameters:@{ @"recipeId" : self.objectId }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        
+                                        NSMutableArray *comments = [NSMutableArray array];
+                                        NSMutableArray *likes = [NSMutableArray array];
+                                        
+                                        if (results && [results isKindOfClass:[NSDictionary class]]) {
+                                            
+                                            // Grab and wrap the comments in our model.
+                                            NSArray *parseComments = [results objectForKey:@"comments"];
+                                            if (parseComments && [parseComments isKindOfClass:[NSArray class]]) {
+                                                [comments addObjectsFromArray:[parseComments collect:^id(PFObject *parseComment) {
+                                                    return [[CKRecipeComment alloc] initWithParseObject:parseComment];
+                                                }]];
+                                            }
+                                            
+                                            // Grab and wrap the likes in our model.
+                                            NSArray *parseLikes = [results objectForKey:@"likes"];
+                                            if (parseLikes && [parseLikes isKindOfClass:[NSArray class]]) {
+                                                [likes addObjectsFromArray:[parseLikes collect:^id(PFObject *parseLike) {
+                                                    return [[CKRecipeLike alloc] initWithParseObject:parseLike];
+                                                }]];
+                                            }
+                                            
+                                        }
+                                        
+                                        success(comments, likes);
+                                        
+                                    } else {
+                                        DLog(@"Error loading comments and likes: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
 }
 
 #pragma mark - other public

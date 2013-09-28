@@ -16,16 +16,17 @@
 #import "CKTextViewEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "NSString+Utilities.h"
-#import "RecipeSocialViewLayout.h"
+#import "RecipeSocialLayout.h"
 #import "MRCEnumerable.h"
 #import "CKActivityIndicatorView.h"
 #import "EventHelper.h"
 #import "CKSocialManager.h"
 #import "OverlayViewController.h"
 #import "RecipeCommentBoxFooterView.h"
+#import "CKUserProfilePhotoView.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
-    RecipeCommentBoxFooterViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+    RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) CKRecipe *recipe;
@@ -36,6 +37,7 @@
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
+@property (nonatomic, strong) NSMutableArray *likes;
 @property (nonatomic, assign) BOOL loading;
 
 // Posting comments.
@@ -98,7 +100,11 @@
 #pragma mark - RecipeCommentBoxFooterViewDelegate methods
 
 - (void)recipeCommentBoxFooterViewCommentRequested {
-    [self showCommentBox];
+    
+    // Only allow commenting after it has finished loading.
+    if (!self.loading) {
+        [self showCommentBox];
+    }
 }
 
 #pragma mark - RecipeSocialCommentCellDelegate methods
@@ -164,6 +170,20 @@
     } else {
         return CGRectZero;
     }
+}
+
+#pragma mark - RecipeSocialLayoutDelegate methods
+
+- (void)recipeSocialLayoutDidFinish {
+    DLog();
+}
+
+- (CKRecipeComment *)recipeSocialLayoutCommentAtIndex:(NSUInteger)commentIndex {
+    return [self.comments objectAtIndex:commentIndex];
+}
+
+- (BOOL)recipeSocialLayoutIsLoading {
+    return self.loading;
 }
 
 #pragma mark - CKEditViewControllerDelegate methods
@@ -233,90 +253,6 @@
     return YES;
 }
 
-#pragma mark - UICollectionViewDelegateFlowLayout methods
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-        insetForSectionAtIndex:(NSInteger)section {
-    
-    CGSize unitSize = [RecipeSocialCommentCell unitSize];
-    CGFloat sideGap = floorf((self.collectionView.bounds.size.width - unitSize.width) / 2.0);
-    
-    return (UIEdgeInsets) {
-        kContentInsets.top,
-        sideGap,
-        kContentInsets.bottom,
-        sideGap
-    };
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    
-    // Between columns in the same row.
-    return 0.0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    
-    // Between rows in the same column.
-    return 20.0;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-referenceSizeForHeaderInSection:(NSInteger)section {
-    
-    return [ModalOverlayHeaderView unitSize];
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
-referenceSizeForFooterInSection:(NSInteger)section {
-    
-    return [RecipeCommentBoxFooterView unitSize];
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (self.comments) {
-        
-        if ([self.comments count] > 0) {
-            
-            // Get cached size if available, and only if they have been persisted.
-            CGSize commentSize = CGSizeZero;
-            
-            if ([self.commentsCachedSizes objectForKey:@(indexPath.item)]) {
-                commentSize = [[self.commentsCachedSizes objectForKey:@(indexPath.item)] CGSizeValue];
-            } else {
-                
-                // Comment cell.
-                CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-                
-                // Calculate the size.
-                commentSize = [RecipeSocialCommentCell sizeForComment:comment];
-                [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:commentSize] forKey:@(indexPath.item)];
-            }
-                
-            return commentSize;
-            
-        } else {
-            
-            return (CGSize){
-                self.collectionView.bounds.size.width,
-                515.0
-            };
-        }
-        
-    } else {
-        
-        return (CGSize){
-            self.collectionView.bounds.size.width,
-            515.0
-        };
-    }
-    
-}
-
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -353,7 +289,14 @@ referenceSizeForFooterInSection:(NSInteger)section {
     
     UICollectionViewCell *cell = nil;
     
-    if (self.comments) {
+    if (self.loading) {
+        
+        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+        self.activityView.center = cell.contentView.center;
+        [cell.contentView addSubview:self.activityView];
+        [self.activityView startAnimating];
+        
+    } else {
         
         if ([self.comments count] > 0) {
             
@@ -375,13 +318,6 @@ referenceSizeForFooterInSection:(NSInteger)section {
             [cell.contentView addSubview:self.emptyCommentsLabel];
             
         }
-        
-    } else {
-        
-        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-        self.activityView.center = cell.contentView.center;
-        [cell.contentView addSubview:self.activityView];
-        [self.activityView startAnimating];
         
     }
     
@@ -467,7 +403,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
-                                             collectionViewLayout:[[RecipeSocialViewLayout alloc] init]];
+                                             collectionViewLayout:[[RecipeSocialLayout alloc] initWithDelegate:self]];
         _collectionView.bounces = YES;
         _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.showsVerticalScrollIndicator = NO;
@@ -488,11 +424,15 @@ referenceSizeForFooterInSection:(NSInteger)section {
 - (void)loadData {
     self.loading = YES;
     
-    [self.recipe commentsWithCompletion:^(NSArray *comments){
+    [self.recipe commentsLikesWithCompletion:^(NSArray *comments, NSArray *likes) {
         DLog(@"Loaded [%d] comments", [comments count]);
         
+        [[self currentLayout] setNeedsRelayout:YES];
         self.loading = NO;
         self.comments = [NSMutableArray arrayWithArray:comments];
+        
+        // Pre-cache comment sizes.
+        [self cacheCommentSizes];
         
         // Inform listeners of current comments
         [[CKSocialManager sharedInstance] updateRecipe:self.recipe numComments:[comments count]];
@@ -515,7 +455,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
         self.likeButton.enabled = YES;
         
     } failure:^(NSError *error) {
+        
+        // TODO Message.
         DLog(@"Unable to load comments");
+        [self.activityView stopAnimating];
     }];
 }
 
@@ -551,6 +494,17 @@ referenceSizeForFooterInSection:(NSInteger)section {
     }
     [imageName appendString:@".png"];
     return [UIImage imageNamed:imageName];
+}
+
+- (void)cacheCommentSizes {
+    [self.comments eachWithIndex:^(CKRecipeComment *comment, NSUInteger commentIndex) {
+        CGSize size = [RecipeSocialCommentCell sizeForComment:comment];
+        [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:size] forKey:@(commentIndex)];
+    }];
+}
+
+- (RecipeSocialLayout *)currentLayout {
+    return (RecipeSocialLayout *)self.collectionView.collectionViewLayout;
 }
 
 @end
