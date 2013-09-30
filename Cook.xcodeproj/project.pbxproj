@@ -901,6 +901,7 @@
 		76E0B9601791205D00AD70E3 /* BookCategoryLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */; };
 		76E1E8A616FA8C3600031B28 /* cook_book_update_header_shadow_bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E1E8A416FA8C3600031B28 /* cook_book_update_header_shadow_bottom.png */; };
 		76E1E8A716FA8C3600031B28 /* cook_book_update_header_shadow_bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E1E8A516FA8C3600031B28 /* cook_book_update_header_shadow_bottom@2x.png */; };
+		76E9394217F70C20005E7F81 /* RecipeLikeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E9394117F70C20005E7F81 /* RecipeLikeCell.m */; };
 		76E985D517E2B25D00D9CAF3 /* SearchStoreCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E985D417E2B25D00D9CAF3 /* SearchStoreCollectionViewController.m */; };
 		76E9861A17E2B90B00D9CAF3 /* cook_library_icons_suggested_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E9861817E2B90B00D9CAF3 /* cook_library_icons_suggested_off@2x.png */; };
 		76E9861D17E2B91E00D9CAF3 /* cook_library_icons_featured_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E9861B17E2B91E00D9CAF3 /* cook_library_icons_featured_off.png */; };
@@ -953,7 +954,7 @@
 		76EBE63F179549C10099E2CB /* cook_book_inner_icon_like_dark_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE637179549C10099E2CB /* cook_book_inner_icon_like_dark_on@2x.png */; };
 		76EBE640179549C10099E2CB /* cook_book_inner_icon_like_light_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE638179549C10099E2CB /* cook_book_inner_icon_like_light_on.png */; };
 		76EBE641179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */; };
-		76EC556117C3030D000DEA08 /* RecipeSocialCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */; };
+		76EC556117C3030D000DEA08 /* RecipeCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556017C3030D000DEA08 /* RecipeCommentCell.m */; };
 		76EC556417C3069C000DEA08 /* ModalOverlayHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */; };
 		76EC556717C33322000DEA08 /* RecipeSocialViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
@@ -2237,6 +2238,8 @@
 		76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCategoryLayout.m; sourceTree = "<group>"; };
 		76E1E8A416FA8C3600031B28 /* cook_book_update_header_shadow_bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_update_header_shadow_bottom.png; sourceTree = "<group>"; };
 		76E1E8A516FA8C3600031B28 /* cook_book_update_header_shadow_bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_update_header_shadow_bottom@2x.png"; sourceTree = "<group>"; };
+		76E9394017F70C20005E7F81 /* RecipeLikeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeLikeCell.h; sourceTree = "<group>"; };
+		76E9394117F70C20005E7F81 /* RecipeLikeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeLikeCell.m; sourceTree = "<group>"; };
 		76E985D317E2B25D00D9CAF3 /* SearchStoreCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchStoreCollectionViewController.h; sourceTree = "<group>"; };
 		76E985D417E2B25D00D9CAF3 /* SearchStoreCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchStoreCollectionViewController.m; sourceTree = "<group>"; };
 		76E9861817E2B90B00D9CAF3 /* cook_library_icons_suggested_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_icons_suggested_off@2x.png"; sourceTree = "<group>"; };
@@ -2294,8 +2297,8 @@
 		76EBE637179549C10099E2CB /* cook_book_inner_icon_like_dark_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_like_dark_on@2x.png"; sourceTree = "<group>"; };
 		76EBE638179549C10099E2CB /* cook_book_inner_icon_like_light_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_icon_like_light_on.png; sourceTree = "<group>"; };
 		76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_icon_like_light_on@2x.png"; sourceTree = "<group>"; };
-		76EC555F17C3030D000DEA08 /* RecipeSocialCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialCommentCell.h; sourceTree = "<group>"; };
-		76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialCommentCell.m; sourceTree = "<group>"; };
+		76EC555F17C3030D000DEA08 /* RecipeCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeCommentCell.h; sourceTree = "<group>"; };
+		76EC556017C3030D000DEA08 /* RecipeCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeCommentCell.m; sourceTree = "<group>"; };
 		76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalOverlayHeaderView.h; sourceTree = "<group>"; };
 		76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModalOverlayHeaderView.m; sourceTree = "<group>"; };
 		76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialViewLayout.h; sourceTree = "<group>"; };
@@ -3321,8 +3324,10 @@
 				769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */,
 				76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */,
 				76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */,
-				76EC555F17C3030D000DEA08 /* RecipeSocialCommentCell.h */,
-				76EC556017C3030D000DEA08 /* RecipeSocialCommentCell.m */,
+				76EC555F17C3030D000DEA08 /* RecipeCommentCell.h */,
+				76EC556017C3030D000DEA08 /* RecipeCommentCell.m */,
+				76E9394017F70C20005E7F81 /* RecipeLikeCell.h */,
+				76E9394117F70C20005E7F81 /* RecipeLikeCell.m */,
 				76332A6017F12B520081F88F /* RecipeCommentBoxFooterView.h */,
 				76332A6117F12B520081F88F /* RecipeCommentBoxFooterView.m */,
 				76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */,
@@ -5641,6 +5646,7 @@
 				766BFC221630DF210083EB0E /* UIColor+Expanded.m in Sources */,
 				76E0B9601791205D00AD70E3 /* BookCategoryLayout.m in Sources */,
 				76C99D74163A12DD00788679 /* SettingsViewController.m in Sources */,
+				76E9394217F70C20005E7F81 /* RecipeLikeCell.m in Sources */,
 				7692260216474D4600752128 /* IllustrationPickerViewController.m in Sources */,
 				7676057317B3E1F300CA441B /* RecipeDetailsView.m in Sources */,
 				769226051647863A00752128 /* IllustrationBookCell.m in Sources */,
@@ -5767,7 +5773,7 @@
 				76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */,
 				F60C571517E440ED00912544 /* UIImage+Scale.m in Sources */,
 				766D96F817D2E80000A9104E /* NotificationCell.m in Sources */,
-				76EC556117C3030D000DEA08 /* RecipeSocialCommentCell.m in Sources */,
+				76EC556117C3030D000DEA08 /* RecipeCommentCell.m in Sources */,
 				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,
 				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,

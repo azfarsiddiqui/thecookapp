@@ -685,7 +685,6 @@
                               delay:0.3
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             self.borderImageView.transform = CGAffineTransformMakeScale(1.1, 1.1);
                              self.borderImageView.alpha = 0.0;
                              self.signUpPageView.transform = transform;
                              self.signUpPageView.alpha = 0.0;

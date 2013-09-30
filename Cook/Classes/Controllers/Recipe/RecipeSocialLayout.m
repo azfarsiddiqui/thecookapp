@@ -9,7 +9,9 @@
 #import "RecipeSocialLayout.h"
 #import "ModalOverlayHeaderView.h"
 #import "RecipeCommentBoxFooterView.h"
-#import "RecipeSocialCommentCell.h"
+#import "RecipeCommentCell.h"
+#import "ViewHelper.h"
+#import "CKUserProfilePhotoView.h"
 
 @interface RecipeSocialLayout ()
 
@@ -31,8 +33,9 @@
 
 @implementation RecipeSocialLayout
 
-#define kContentInsets      (UIEdgeInsets){ 0.0, 15.0, 50.0, 15.0 }
+#define kContentInsets      (UIEdgeInsets){ 0.0, 15.0, 50.0, 25.0 }
 #define kRowGap             0.0
+#define kLikeRowGap         10.0
 #define kCommentWidth       600.0
 
 - (id)initWithDelegate:(id<RecipeSocialLayoutDelegate>)delegate {
@@ -126,16 +129,18 @@
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSMutableArray* layoutAttributes = [NSMutableArray array];
     
-    // Header cells.
-    for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
-        [layoutAttributes addObject:attributes];
-    }
+    // Always contain all supplementary view.
+    NSMutableArray* layoutAttributes = [NSMutableArray arrayWithArray:self.supplementaryLayoutAttributes];
     
     // Item cells.
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
-        [layoutAttributes addObject:attributes];
+        
+        if (attributes.indexPath.section == 0 && CGRectContainsRect([ViewHelper visibleFrameForCollectionView:self.collectionView], attributes.frame)) {
+            [layoutAttributes addObject:attributes];
+        } else {
+            [layoutAttributes addObject:attributes];
+        }
     }
     
     [self applyPagingEffects:layoutAttributes];
@@ -156,12 +161,19 @@
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
     
-    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
-        attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-        attributes.transform3D = CATransform3DMakeTranslation(0.0, -20.0, 0.0);
+    if (itemIndexPath.section == 0) {
+        
+        // Comments slide down and fades in.
+        if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
+            attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+            attributes.transform3D = CATransform3DMakeTranslation(0.0, -20.0, 0.0);
+            attributes.alpha = 0.0;
+        } else {
+            attributes.alpha = 1.0;
+        }
+        
+    } else if (itemIndexPath.section == 1) {
         attributes.alpha = 0.0;
-    } else {
-        attributes.alpha = 1.0;
     }
     
     return attributes;
@@ -170,11 +182,17 @@
 #pragma mark - Private methods
 
 - (void)buildLayout {
-    self.commentsSize = [NSMutableDictionary dictionary];
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.supplementaryLayoutAttributes = [NSMutableArray array];
     self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
+    
+    [self buildCommentsLayout];
+    [self buildLikesLayout];
+}
+
+- (void)buildCommentsLayout {
+    self.commentsSize = [NSMutableDictionary dictionary];
     
     // Init the vertical offset.
     CGFloat yOffset = kContentInsets.top;
@@ -252,9 +270,43 @@
     [self.indexPathSupplementaryAttributes setObject:commentsFooterAttributes forKey:commentsFooterIndexPath];
 }
 
+- (void)buildLikesLayout {
+    
+    // Init the vertical offset.
+    CGFloat yOffset = [ModalOverlayHeaderView unitSize].height;
+    
+    if (![self.delegate recipeSocialLayoutIsLoading]) {
+        
+        CGSize unitSize = [CKUserProfilePhotoView sizeForProfileSize:ProfileViewSizeMini];
+        
+        NSInteger numLikes = [self.collectionView numberOfItemsInSection:1];
+        for (NSInteger likeIndex = 0; likeIndex < numLikes; likeIndex++) {
+            NSIndexPath *likeIndexPath = [NSIndexPath indexPathForItem:likeIndex inSection:1];
+            UICollectionViewLayoutAttributes *likeAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:likeIndexPath];
+            likeAttributes.frame = (CGRect){
+                self.collectionView.bounds.size.width - kContentInsets.right - unitSize.width,
+                yOffset,
+                unitSize.width,
+                unitSize.height
+            };
+            
+            [self.itemsLayoutAttributes addObject:likeAttributes];
+            [self.indexPathItemAttributes setObject:likeAttributes forKey:likeIndexPath];
+            
+            yOffset += likeAttributes.frame.size.height;
+            
+            // Row gap.
+            if (likeIndex != numLikes - 1) {
+                yOffset += kLikeRowGap;
+            }
+        }
+    }
+    
+}
+
 - (CGSize)sizeForComment:(CKRecipeComment *)comment commentIndex:(NSInteger)commentIndex {
     if (![self.commentsSize objectForKey:@(commentIndex)]) {
-        CGSize size = [RecipeSocialCommentCell sizeForComment:comment];
+        CGSize size = [RecipeCommentCell sizeForComment:comment];
         [self.commentsSize setObject:[NSValue valueWithCGSize:size] forKey:@(commentIndex)];
     }
     return [[self.commentsSize objectForKey:@(commentIndex)] CGSizeValue];
@@ -262,13 +314,14 @@
 
 - (void)applyPagingEffects:(NSArray *)layoutAttributes {
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        [self applyStickyHeaderFooterEffects:attributes];
-        [self applyFadingEffects:attributes];
-        [self applyOrdering:attributes];
+        [self applyStickyHeaderFooter:attributes];
+        [self applyCommentsFading:attributes];
+        [self applyCommentsOrdering:attributes];
+        [self applyStickyLikes:attributes];
     }
 }
 
-- (void)applyStickyHeaderFooterEffects:(UICollectionViewLayoutAttributes *)attributes {
+- (void)applyStickyHeaderFooter:(UICollectionViewLayoutAttributes *)attributes {
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame];
     } else if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionFooter]) {
@@ -276,22 +329,23 @@
     }
 }
 
-- (void)applyFadingEffects:(UICollectionViewLayoutAttributes *)attributes {
-    if (!attributes.representedElementKind) {
+- (void)applyCommentsFading:(UICollectionViewLayoutAttributes *)attributes {
+    if (!attributes.representedElementKind && attributes.indexPath.section == 0) {
         
         CGFloat topFadeOffset = self.collectionView.contentOffset.y + 100.0;
         CGFloat bottomFadeOffset = self.collectionView.contentOffset.y + self.collectionView.bounds.size.height - 100.0;
+        CGFloat minAlpha = 0.3;
         
         CGRect frame = attributes.frame;
         
         if (frame.origin.y <= topFadeOffset) {
             CGFloat effectiveDistance = 100.0;
             CGFloat distance = MIN(topFadeOffset - frame.origin.y, effectiveDistance);
-            attributes.alpha = 1.0 - (distance / effectiveDistance);
+            attributes.alpha = MAX(minAlpha, 1.0 - (distance / effectiveDistance));
         } else if (frame.origin.y + frame.size.height >= bottomFadeOffset) {
             CGFloat effectiveDistance = 70.0;
             CGFloat distance = MIN((frame.origin.y + frame.size.height) - bottomFadeOffset, effectiveDistance);
-            attributes.alpha = 1.0 - (distance / effectiveDistance);
+            attributes.alpha = MAX(minAlpha, 1.0 - (distance / effectiveDistance));
         } else {
             attributes.alpha = 1.0;
         }
@@ -299,9 +353,15 @@
     
 }
 
-- (void)applyOrdering:(UICollectionViewLayoutAttributes *)attributes {
-    if (!attributes.representedElementKind) {
+- (void)applyCommentsOrdering:(UICollectionViewLayoutAttributes *)attributes {
+    if (!attributes.representedElementKind && attributes.indexPath.section == 0) {
         attributes.zIndex = (attributes.indexPath.item + 1) * -1;
+    }
+}
+
+- (void)applyStickyLikes:(UICollectionViewLayoutAttributes *)attributes {
+    if (!attributes.representedElementKind && attributes.indexPath.section == 1) {
+        attributes.transform3D = CATransform3DMakeTranslation(0.0, self.collectionView.contentOffset.y, 0.0);
     }
 }
 

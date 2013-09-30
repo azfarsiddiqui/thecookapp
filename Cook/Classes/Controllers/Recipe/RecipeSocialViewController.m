@@ -12,7 +12,7 @@
 #import "CKUser.h"
 #import "CKRecipeComment.h"
 #import "ModalOverlayHeaderView.h"
-#import "RecipeSocialCommentCell.h"
+#import "RecipeCommentCell.h"
 #import "CKTextViewEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "NSString+Utilities.h"
@@ -24,6 +24,7 @@
 #import "OverlayViewController.h"
 #import "RecipeCommentBoxFooterView.h"
 #import "CKUserProfilePhotoView.h"
+#import "RecipeLikeCell.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -41,7 +42,7 @@
 @property (nonatomic, assign) BOOL loading;
 
 // Posting comments.
-@property (nonatomic, strong) RecipeSocialCommentCell *editingCell;
+@property (nonatomic, strong) RecipeCommentCell *editingCell;
 @property (nonatomic, strong) UIView *editingView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKTextViewEditViewController *editViewController;
@@ -63,7 +64,9 @@
 #define kFooterCellId       @"FooterCell"
 #define kCommentCellId      @"CommentCell"
 #define kActivityId         @"ActivityCell"
+#define kLikeCellId         @"LikeCell"
 #define kCommentsSection    0
+#define kLikesSection       1
 #define kNameFrame          @"nameFrame"
 #define kTimeFrame          @"timeFrame"
 #define kCommentFrame       @"commentFrame"
@@ -261,24 +264,27 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
-    if (self.comments) {
+    if (self.loading) {
         
-        if ([self.comments count] > 0) {
-            numItems = [self.comments count];
-        } else {
+        // Activity.
+        if (section == kCommentsSection) {
             numItems = 1;
         }
         
     } else {
         
-        // Activity.
-        numItems = 1;
+        // Comments and Likes.
+        if (section == kCommentsSection) {
+            numItems = [self.comments count];
+        } else if (section == kLikesSection) {
+            numItems = [self.likes count];
+        }
     }
     
     return numItems;
@@ -298,25 +304,35 @@
         
     } else {
         
-        if ([self.comments count] > 0) {
+        if (indexPath.section == kCommentsSection) {
             
-            RecipeSocialCommentCell *commentCell = (RecipeSocialCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
-                                                                                                                             forIndexPath:indexPath];
-            commentCell.delegate = self;
-            CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-            [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
+            if ([self.comments count] > 0) {
+                
+                RecipeCommentCell *commentCell = (RecipeCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
+                                                                                                                                 forIndexPath:indexPath];
+                commentCell.delegate = self;
+                CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
+                [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
+                
+                cell = commentCell;
+                
+            } else {
+                
+                // No comments.
+                [self.activityView stopAnimating];
+                [self.activityView removeFromSuperview];
+                cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+                self.emptyCommentsLabel.center = cell.contentView.center;
+                [cell.contentView addSubview:self.emptyCommentsLabel];
+                
+            }
             
-            cell = commentCell;
+        } else if (indexPath.section == kLikesSection) {
             
-        } else {
-            
-            // No comments.
-            [self.activityView stopAnimating];
-            [self.activityView removeFromSuperview];
-            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-            self.emptyCommentsLabel.center = cell.contentView.center;
-            [cell.contentView addSubview:self.emptyCommentsLabel];
-            
+            RecipeLikeCell *likeCell = (RecipeLikeCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kLikeCellId forIndexPath:indexPath];
+            CKRecipeLike *like = [self.likes objectAtIndex:indexPath.item];
+            [likeCell configureLike:like];
+            cell = likeCell;
         }
         
     }
@@ -412,7 +428,8 @@
         _collectionView.dataSource = self;
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
-        [_collectionView registerClass:[RecipeSocialCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
+        [_collectionView registerClass:[RecipeCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
+        [_collectionView registerClass:[RecipeLikeCell class] forCellWithReuseIdentifier:kLikeCellId];
         [_collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
         [_collectionView registerClass:[RecipeCommentBoxFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kFooterCellId];
     }
@@ -430,21 +447,29 @@
         [[self currentLayout] setNeedsRelayout:YES];
         self.loading = NO;
         self.comments = [NSMutableArray arrayWithArray:comments];
-        
+        self.likes = [NSMutableArray arrayWithArray:likes];
+
         // Pre-cache comment sizes.
         [self cacheCommentSizes];
         
         // Inform listeners of current comments
         [[CKSocialManager sharedInstance] updateRecipe:self.recipe numComments:[comments count]];
         
+        // Comments to insert.
         NSArray *indexPathsToInsert = [comments collectWithIndex:^id(CKRecipeComment *comment, NSUInteger commentIndex) {
             return [NSIndexPath indexPathForItem:commentIndex inSection:kCommentsSection];
+        }];
+        
+        // Likes to insert.
+        NSArray *likesIndexPathsToInsert = [likes collectWithIndex:^id(CKRecipeLike *like, NSUInteger likeIndex) {
+            return [NSIndexPath indexPathForItem:likeIndex inSection:kLikesSection];
         }];
         
         if ([indexPathsToInsert count] > 0) {
             [self.collectionView performBatchUpdates:^{
                 [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kCommentsSection]]];
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
+                [self.collectionView insertItemsAtIndexPaths:likesIndexPathsToInsert];
             } completion:^(BOOL finished) {
             }];
         } else {
@@ -498,7 +523,7 @@
 
 - (void)cacheCommentSizes {
     [self.comments eachWithIndex:^(CKRecipeComment *comment, NSUInteger commentIndex) {
-        CGSize size = [RecipeSocialCommentCell sizeForComment:comment];
+        CGSize size = [RecipeCommentCell sizeForComment:comment];
         [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:size] forKey:@(commentIndex)];
     }];
 }

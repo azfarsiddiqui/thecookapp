@@ -13,6 +13,8 @@
 
 @interface CKRecipeLike : CKModel
 
+@property (nonatomic, strong) CKUser *user;
+
 + (CKRecipeLike *)recipeLikeForUser:(CKUser *)user recipe:(CKRecipe *)recipe;
 
 @end

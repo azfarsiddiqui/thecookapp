@@ -20,5 +20,14 @@
     return [[CKRecipeLike alloc] initWithParseObject:parseRecipeLike];;
 }
 
+#pragma mark - Properties
+
+- (CKUser *)user {
+    if (!_user) {
+        _user = [CKUser userWithParseUser:[self.parseObject objectForKey:kUserModelForeignKeyName]];
+    }
+    return _user;
+}
+
 @end
 

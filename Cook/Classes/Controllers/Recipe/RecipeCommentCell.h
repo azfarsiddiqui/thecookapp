@@ -11,7 +11,7 @@
 
 @class CKUser;
 @class CKRecipeComment;
-@class RecipeSocialCommentCell;
+@class RecipeCommentCell;
 
 @protocol RecipeSocialCommentCellDelegate <NSObject>
 
@@ -24,7 +24,7 @@
 
 @end
 
-@interface RecipeSocialCommentCell : UICollectionViewCell
+@interface RecipeCommentCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<RecipeSocialCommentCellDelegate> delegate;
 
@@ -33,6 +33,5 @@
 
 - (void)configureWithComment:(CKRecipeComment *)comment commentIndex:(NSUInteger)commentIndex
                  numComments:(NSUInteger)numComments;
-- (void)configureAsPostCommentCellForUser:(CKUser *)user loading:(BOOL)loading;
 
 @end

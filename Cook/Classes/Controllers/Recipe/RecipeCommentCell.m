@@ -6,14 +6,14 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "RecipeSocialCommentCell.h"
+#import "RecipeCommentCell.h"
 #import "CKUser.h"
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
 #import "CKRecipeComment.h"
 #import "DateHelper.h"
 
-@interface RecipeSocialCommentCell () 
+@interface RecipeCommentCell () 
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
@@ -23,7 +23,7 @@
 
 @end
 
-@implementation RecipeSocialCommentCell
+@implementation RecipeCommentCell
 
 #define kWidth                  600.0
 #define kProfileCommentGap      30.0
@@ -171,29 +171,6 @@
         };
     }
     
-}
-
-- (void)configureAsPostCommentCellForUser:(CKUser *)user loading:(BOOL)loading {
-    
-    // Load current user's profile.
-    [self.profileView loadProfilePhotoForUser:user];
-    
-    // Placeholder for commenting.
-    self.commentLabel.text = loading ? @"Loading comments..." : @"Your Comment";
-    
-    // Hide the name and divider.
-    self.nameLabel.hidden = YES;
-    self.dividerView.hidden = YES;
-    
-    //  Reposition the box to be centered.
-    CGSize availableSize = [self availableCommentSize];
-    CGSize size = [self.commentLabel sizeThatFits:availableSize];
-    self.commentLabel.frame = (CGRect){
-        self.profileView.frame.origin.x + self.profileView.frame.size.width + kProfileCommentGap,
-        kContentInsets.top + floorf((availableSize.height - size.height) / 2.0),
-        availableSize.width,
-        size.height
-    };
 }
 
 - (NSString *)currentComment {

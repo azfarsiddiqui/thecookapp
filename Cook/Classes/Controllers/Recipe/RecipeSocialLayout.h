@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class CKRecipeComment;
+@class CKRecipeLike;
 
 @protocol RecipeSocialLayoutDelegate <NSObject>
 
