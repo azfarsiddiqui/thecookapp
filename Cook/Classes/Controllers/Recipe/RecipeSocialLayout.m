@@ -18,6 +18,7 @@
 @property (nonatomic, weak) id<RecipeSocialLayoutDelegate> delegate;
 
 @property (nonatomic, assign) BOOL layoutCompleted;
+@property (nonatomic, assign) CGSize cachedContentSize;
 
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
@@ -46,6 +47,7 @@
 }
 
 - (void)setNeedsRelayout:(BOOL)relayout {
+    self.cachedContentSize = CGSizeZero;
     self.layoutCompleted = !relayout;
 }
 
@@ -56,6 +58,11 @@
 }
 
 - (CGSize)collectionViewContentSize {
+    if (!CGSizeEqualToSize(self.cachedContentSize, CGSizeZero)) {
+        return self.cachedContentSize;
+    }
+    
+    DLog();
     CGFloat requiredHeight = 0.0;
     
     // Top inset.
@@ -89,10 +96,11 @@
     // Bottom inset.
     requiredHeight += kContentInsets.bottom;
     
-    return (CGSize){
+    self.cachedContentSize = (CGSize){
         self.collectionView.bounds.size.width,
         MAX(requiredHeight, self.collectionView.bounds.size.height)
     };
+    return self.cachedContentSize;
 }
 
 - (void)prepareLayout {
@@ -130,20 +138,33 @@
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     
-    // Always contain all supplementary view.
+    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+    CGPoint contentOffset = self.collectionView.contentOffset;
+    CGRect bounds = self.collectionView.bounds;
+    
+    // Always contain all supplementary views and effects.
     NSMutableArray* layoutAttributes = [NSMutableArray arrayWithArray:self.supplementaryLayoutAttributes];
+    for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
+        [self applyStickyHeaderFooter:attributes contentOffset:contentOffset bounds:bounds];
+    }
     
     // Item cells.
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
-        
-        if (attributes.indexPath.section == 0 && CGRectContainsRect([ViewHelper visibleFrameForCollectionView:self.collectionView], attributes.frame)) {
-            [layoutAttributes addObject:attributes];
+        if (attributes.indexPath.section == 0) {
+            
+            // Comments.
+            if (CGRectContainsRect(visibleFrame, attributes.frame)) {
+                [self applyCommentsFading:attributes contentOffset:contentOffset bounds:bounds];
+                [layoutAttributes addObject:attributes];
+            }
+            
         } else {
+            
+            // Likes
+            [self applyStickyLikes:attributes contentOffset:contentOffset bounds:bounds];
             [layoutAttributes addObject:attributes];
         }
     }
-    
-    [self applyPagingEffects:layoutAttributes];
     
     return layoutAttributes;
 }
@@ -243,6 +264,7 @@
                 kCommentWidth,
                 size.height
             };
+            commentAttributes.zIndex = (commentIndex + 1) * -1;
             
             [self.itemsLayoutAttributes addObject:commentAttributes];
             [self.indexPathItemAttributes setObject:commentAttributes forKey:commentIndexPath];
@@ -311,28 +333,22 @@
     return [[self.commentsSize objectForKey:@(commentIndex)] CGSizeValue];
 }
 
-- (void)applyPagingEffects:(NSArray *)layoutAttributes {
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        [self applyStickyHeaderFooter:attributes];
-        [self applyCommentsFading:attributes];
-        [self applyCommentsOrdering:attributes];
-        [self applyStickyLikes:attributes];
-    }
-}
-
-- (void)applyStickyHeaderFooter:(UICollectionViewLayoutAttributes *)attributes {
+- (void)applyStickyHeaderFooter:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
+                         bounds:(CGRect)bounds {
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-        attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame];
+        attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
     } else if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionFooter]) {
-        attributes.frame = [self adjustedFrameForFooterFrame:attributes.frame];
+        attributes.frame = [self adjustedFrameForFooterFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
     }
 }
 
-- (void)applyCommentsFading:(UICollectionViewLayoutAttributes *)attributes {
-    if (!attributes.representedElementKind && attributes.indexPath.section == 0) {
+- (void)applyCommentsFading:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
+                     bounds:(CGRect)bounds {
+    
+    if (!attributes.representedElementKind) {
         
-        CGFloat topFadeOffset = self.collectionView.contentOffset.y + 100.0;
-        CGFloat bottomFadeOffset = self.collectionView.contentOffset.y + self.collectionView.bounds.size.height - 100.0;
+        CGFloat topFadeOffset = contentOffset.y + 100.0;
+        CGFloat bottomFadeOffset = contentOffset.y + bounds.size.height - 100.0;
         CGFloat minAlpha = 0.3;
         
         CGRect frame = attributes.frame;
@@ -349,36 +365,28 @@
             attributes.alpha = 1.0;
         }
     }
-    
 }
 
-- (void)applyCommentsOrdering:(UICollectionViewLayoutAttributes *)attributes {
-    if (!attributes.representedElementKind && attributes.indexPath.section == 0) {
-        attributes.zIndex = (attributes.indexPath.item + 1) * -1;
-    }
+- (void)applyStickyLikes:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
+                  bounds:(CGRect)bounds {
+    attributes.transform3D = CATransform3DMakeTranslation(0.0, contentOffset.y, 0.0);
 }
 
-- (void)applyStickyLikes:(UICollectionViewLayoutAttributes *)attributes {
-    if (!attributes.representedElementKind && attributes.indexPath.section == 1) {
-        attributes.transform3D = CATransform3DMakeTranslation(0.0, self.collectionView.contentOffset.y, 0.0);
-    }
-}
-
-- (CGRect)adjustedFrameForHeaderFrame:(CGRect)frame {
+- (CGRect)adjustedFrameForHeaderFrame:(CGRect)frame contentOffset:(CGPoint)contentOffset
+                               bounds:(CGRect)bounds {
     CGRect adjustedFrame = frame;
-    CGPoint currentOffset = self.collectionView.contentOffset;
-    if (currentOffset.y > 0) {
-        adjustedFrame.origin.y = currentOffset.y;
+    if (contentOffset.y > 0) {
+        adjustedFrame.origin.y = contentOffset.y;
     } else {
         adjustedFrame.origin.y = 0.0;
     }
     return adjustedFrame;
 }
 
-- (CGRect)adjustedFrameForFooterFrame:(CGRect)frame {
+- (CGRect)adjustedFrameForFooterFrame:(CGRect)frame contentOffset:(CGPoint)contentOffset
+                               bounds:(CGRect)bounds {
     CGRect adjustedFrame = frame;
-    CGPoint currentOffset = self.collectionView.contentOffset;
-    adjustedFrame.origin.y = currentOffset.y + self.collectionView.bounds.size.height - frame.size.height;
+    adjustedFrame.origin.y = contentOffset.y + bounds.size.height - frame.size.height;
     return adjustedFrame;
 }
 @end

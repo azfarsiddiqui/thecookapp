@@ -91,7 +91,7 @@
     
     // Load profile photo.
     CKUser *user = comment.user;
-    [self.profileView loadProfilePhotoForUser:user];
+//    [self.profileView loadProfilePhotoForUser:user];
     
     // Name label.
     self.nameLabel.hidden = NO;
