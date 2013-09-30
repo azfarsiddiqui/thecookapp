@@ -34,8 +34,8 @@
 @implementation RecipeSocialLayout
 
 #define kContentInsets      (UIEdgeInsets){ 0.0, 15.0, 50.0, 25.0 }
+#define kLikeInsets         (UIEdgeInsets){ 90.0, 0.0, 10.0, 25.0 }
 #define kRowGap             0.0
-#define kLikeRowGap         10.0
 #define kCommentWidth       600.0
 
 - (id)initWithDelegate:(id<RecipeSocialLayoutDelegate>)delegate {
@@ -273,7 +273,7 @@
 - (void)buildLikesLayout {
     
     // Init the vertical offset.
-    CGFloat yOffset = [ModalOverlayHeaderView unitSize].height;
+    CGFloat yOffset = kLikeInsets.top;
     
     if (![self.delegate recipeSocialLayoutIsLoading]) {
         
@@ -284,7 +284,7 @@
             NSIndexPath *likeIndexPath = [NSIndexPath indexPathForItem:likeIndex inSection:1];
             UICollectionViewLayoutAttributes *likeAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:likeIndexPath];
             likeAttributes.frame = (CGRect){
-                self.collectionView.bounds.size.width - kContentInsets.right - unitSize.width,
+                self.collectionView.bounds.size.width - kLikeInsets.right - unitSize.width,
                 yOffset,
                 unitSize.width,
                 unitSize.height
@@ -297,11 +297,10 @@
             
             // Row gap.
             if (likeIndex != numLikes - 1) {
-                yOffset += kLikeRowGap;
+                yOffset += kLikeInsets.bottom;
             }
         }
     }
-    
 }
 
 - (CGSize)sizeForComment:(CKRecipeComment *)comment commentIndex:(NSInteger)commentIndex {
