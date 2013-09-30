@@ -999,7 +999,9 @@
     // Go ahead and download the file with progress updates.
     [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:0
                                                          progress:^(NSUInteger receivedSize, long long expectedSize) {
-                                                             progress(receivedSize / expectedSize);
+                                                             if (expectedSize > 0) {
+                                                                 progress(receivedSize / expectedSize);
+                                                             }
                                                          } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
                                                              
                                                              if (!error) {
