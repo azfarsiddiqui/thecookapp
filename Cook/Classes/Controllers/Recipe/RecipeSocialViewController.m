@@ -27,6 +27,7 @@
 #import "RecipeLikeCell.h"
 #import "DateHelper.h"
 #import "CKLikeView.h"
+#import "CKRecipeLike.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -37,6 +38,7 @@
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKLikeView *likeButton;
+@property (nonatomic, strong) NSMutableArray *likeViews;
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
@@ -468,7 +470,12 @@
                 [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kCommentsSection]]];
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
             } completion:^(BOOL finished) {
+                
             }];
+            
+            // Load the likes.
+            [self showLikes:YES];
+            
         } else {
             [self.collectionView reloadData];
         }
@@ -523,6 +530,49 @@
 
 - (RecipeSocialLayout *)currentLayout {
     return (RecipeSocialLayout *)self.collectionView.collectionViewLayout;
+}
+
+- (void)showLikes:(BOOL)show {
+    
+    CGFloat yOffset = 90.0;
+    CGFloat rowGap = 20.0;
+    CGFloat minScale = 0.8;
+    
+    self.likeViews = [NSMutableArray arrayWithCapacity:[self.likes count]];
+    for (CKRecipeLike *like in self.likes) {
+        
+        // Like photo.
+        CKUserProfilePhotoView *likePhoto = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMini];
+        CGRect frame = likePhoto.frame;
+        frame.origin = (CGPoint){
+            self.view.bounds.size.width - kContentInsets.right - frame.size.width - 7.0,
+            yOffset
+        };
+        likePhoto.frame = frame;
+        [likePhoto loadProfilePhotoForUser:like.user];
+        
+        // Prep for transition.
+        likePhoto.alpha = 0.0;
+        likePhoto.transform = CGAffineTransformMakeScale(minScale, minScale);
+        [self.view addSubview:likePhoto];
+        
+        [self.likeViews addObject:likePhoto];
+        yOffset += likePhoto.frame.size.height + rowGap;
+    }
+
+    // Fade it in with some animation.
+    [self.likeViews eachWithIndex:^(CKUserProfilePhotoView *likePhotoView, NSUInteger photoIndex) {
+        [UIView animateWithDuration:0.2
+                              delay:photoIndex * 0.08    // Each popping in at descending rate.
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             likePhotoView.alpha = 1.0;
+                             likePhotoView.transform = CGAffineTransformIdentity;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    }];
+    
 }
 
 @end
