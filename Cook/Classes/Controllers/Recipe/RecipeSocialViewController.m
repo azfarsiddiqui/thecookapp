@@ -97,8 +97,8 @@
     [super viewDidLoad];
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:self.collectionView];
     [self.view addSubview:self.likesCollectionView];
+    [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
     
     // Like button disabled before data is loaded.
@@ -426,11 +426,17 @@
                                              collectionViewLayout:[[RecipeSocialLayout alloc] initWithDelegate:self]];
         _collectionView.bounces = YES;
         _collectionView.backgroundColor = [UIColor clearColor];
-        _collectionView.showsVerticalScrollIndicator = YES;
+        _collectionView.showsVerticalScrollIndicator = NO;
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
-        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+        _collectionView.frame = (CGRect){
+            self.view.bounds.origin.x,
+            self.view.bounds.origin.y,
+            self.view.bounds.size.width - (self.view.bounds.size.width - self.likesCollectionView.frame.origin.x),
+            self.view.bounds.size.height
+        };
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
         [_collectionView registerClass:[RecipeCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
         [_collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
