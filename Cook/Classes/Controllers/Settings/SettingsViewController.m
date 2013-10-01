@@ -351,13 +351,14 @@
     {
         MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
         NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-        NSString *appDisplayName = [infoDictionary objectForKey:@"CFBundleDisplayName"];
         NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
-        NSString *versionString = [NSString stringWithFormat:@"%@ v%@",
-                appDisplayName, minorVersion];
+        NSString *versionString = [NSString stringWithFormat:@"Version: %@", minorVersion];
+        
+        CKUser *currentUser = [CKUser currentUser];
+        NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : @"None"];
         
         NSString *deviceString = [NSString stringWithFormat:@"%@ / %@ / iOS%@", [UIDevice currentDevice].model, [UIDevice currentDevice].platformString, [UIDevice currentDevice].systemVersion];
-        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@\n%@", versionString, deviceString];
+        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@\n%@\n%@", userDisplay, versionString, deviceString];
         
         [mailDialog setToRecipients:@[@"support@thecookapp.com"]];
         [mailDialog setSubject:@"Cook Feedback"];
