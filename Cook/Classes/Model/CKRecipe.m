@@ -358,6 +358,10 @@
     }
 }
 
+- (BOOL)isOwner {
+    return [self isUserRecipeAuthor:[CKUser currentUser]];
+}
+
 - (BOOL)isUserRecipeAuthor:(CKUser *)user {
     return  [self.user isEqual:user];
 }

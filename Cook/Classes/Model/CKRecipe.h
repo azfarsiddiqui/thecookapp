@@ -80,6 +80,7 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 
 - (void)setImage:(UIImage *)image;
 - (PFFile *)imageFile;
+- (BOOL)isOwner;
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
 - (BOOL)shareable;
 

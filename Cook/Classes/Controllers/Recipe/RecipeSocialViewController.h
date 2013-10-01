@@ -10,10 +10,14 @@
 #import "OverlayViewController.h"
 
 @class CKRecipe;
+@class CKLikeView;
 
 @protocol RecipeSocialViewControllerDelegate <NSObject>
 
 - (void)recipeSocialViewControllerCloseRequested;
+
+@optional
+- (CKLikeView *)recipeSocialViewControllerLikeView;
 
 @end
 

@@ -13,6 +13,7 @@
 
 @protocol RecipeSocialLayoutDelegate <NSObject>
 
+- (BOOL)recipeSocialLayoutAllowCommenting;
 - (void)recipeSocialLayoutDidFinish;
 - (CKRecipeComment *)recipeSocialLayoutCommentAtIndex:(NSUInteger)commentIndex;
 - (BOOL)recipeSocialLayoutIsLoading;

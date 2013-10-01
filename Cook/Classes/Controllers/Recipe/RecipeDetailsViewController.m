@@ -265,6 +265,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self showSocialOverlay:NO];
 }
 
+- (CKLikeView *)recipeSocialViewControllerLikeView {
+    return self.likeButton;
+}
+
 #pragma mark - RecipeShareViewControllerDelegate methods
 
 - (void)recipeShareViewControllerCloseRequested {
@@ -1437,6 +1441,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         [self hideButtons];
         self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
+        
     } else {
         self.view.hidden = NO;
     }
@@ -1449,6 +1454,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                     if (show) {
                                                         self.view.hidden = YES;
                                                     } else {
+                                                        
+                                                        // Reattach the like view which was adopted by Social.
+                                                        self.likeButton.alpha = 0.0;
+                                                        [self.view addSubview:self.likeButton];
+                                                        
                                                         self.socialViewController = nil;
                                                         [self updateButtons];
                                                     }

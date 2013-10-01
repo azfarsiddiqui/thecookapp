@@ -18,6 +18,7 @@
 @property (nonatomic, weak) id<RecipeSocialLayoutDelegate> delegate;
 
 @property (nonatomic, assign) BOOL layoutCompleted;
+@property (nonatomic, assign) BOOL allowCommenting;
 @property (nonatomic, assign) CGSize cachedContentSize;
 
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
@@ -90,8 +91,10 @@
         }
     }
     
-    // Footer.
-    requiredHeight += [RecipeCommentBoxFooterView unitSize].height;
+    // Comment box footer.
+    if (self.allowCommenting) {
+        requiredHeight += [RecipeCommentBoxFooterView unitSize].height;
+    }
     
     // Bottom inset.
     requiredHeight += kContentInsets.bottom;
@@ -143,7 +146,11 @@
     CGRect bounds = self.collectionView.bounds;
     
     // Always contain all supplementary views and effects.
-    NSMutableArray* layoutAttributes = [NSMutableArray arrayWithArray:@[self.commentsHeaderAttributes, self.commentsFooterAttributes]];
+    
+    NSMutableArray* layoutAttributes = [NSMutableArray arrayWithObject:self.commentsHeaderAttributes];
+    if (self.allowCommenting) {
+        [layoutAttributes addObject:self.commentsFooterAttributes];
+    }
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         [self applyStickyHeaderFooter:attributes contentOffset:contentOffset bounds:bounds];
     }
@@ -152,7 +159,7 @@
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
         
         // Comments.
-        if (CGRectContainsRect(visibleFrame, attributes.frame)) {
+        if (CGRectIntersectsRect(visibleFrame, attributes.frame)) {
             [self applyCommentsFading:attributes contentOffset:contentOffset bounds:bounds];
             [layoutAttributes addObject:attributes];
         }
@@ -193,6 +200,7 @@
 #pragma mark - Private methods
 
 - (void)buildLayout {
+    self.allowCommenting = [self.delegate recipeSocialLayoutAllowCommenting];
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
     self.commentsHeaderAttributes = nil;
@@ -268,16 +276,18 @@
     }
     
     // Footer layout.
-    NSIndexPath *commentsFooterIndexPath = [NSIndexPath indexPathForItem:1 inSection:0];
-    UICollectionViewLayoutAttributes *commentsFooterAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter
-                                                                                                                                withIndexPath:commentsFooterIndexPath];
-    commentsFooterAttributes.frame = (CGRect){
-        bounds.origin.x,
-        yOffset,
-        bounds.size.width,
-        [ModalOverlayHeaderView unitSize].height
-    };
-    self.commentsFooterAttributes = commentsFooterAttributes;
+    if (self.allowCommenting) {
+        NSIndexPath *commentsFooterIndexPath = [NSIndexPath indexPathForItem:1 inSection:0];
+        UICollectionViewLayoutAttributes *commentsFooterAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                                                                                                                                    withIndexPath:commentsFooterIndexPath];
+        commentsFooterAttributes.frame = (CGRect){
+            bounds.origin.x,
+            yOffset,
+            bounds.size.width,
+            [ModalOverlayHeaderView unitSize].height
+        };
+        self.commentsFooterAttributes = commentsFooterAttributes;
+    }
 }
 
 - (CGSize)sizeForComment:(CKRecipeComment *)comment commentIndex:(NSInteger)commentIndex {
@@ -304,6 +314,9 @@
         
         CGFloat topFadeOffset = contentOffset.y + 100.0;
         CGFloat bottomFadeOffset = contentOffset.y + bounds.size.height - 100.0;
+        if (!self.allowCommenting) {
+            bottomFadeOffset += 30;
+        }
         CGFloat minAlpha = 0.3;
         
         CGRect frame = attributes.frame;

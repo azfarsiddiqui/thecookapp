@@ -26,6 +26,7 @@
 #import "CKUserProfilePhotoView.h"
 #import "RecipeLikeCell.h"
 #import "DateHelper.h"
+#import "CKLikeView.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -35,7 +36,7 @@
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
-@property (nonatomic, strong) UIButton *likeButton;
+@property (nonatomic, strong) CKLikeView *likeButton;
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
@@ -62,6 +63,7 @@
 @implementation RecipeSocialViewController
 
 #define kContentInsets      (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+#define kButtonInsets       UIEdgeInsetsMake(26.0, 10.0, 15.0, 12.0)
 #define kUnderlayMaxAlpha   0.7
 #define kHeaderCellId       @"HeaderCell"
 #define kFooterCellId       @"FooterCell"
@@ -90,12 +92,33 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
     
     // Like button disabled before data is loaded.
-    self.likeButton.enabled = NO;
-    [self.view addSubview:self.likeButton];
+    if (![self.recipe isOwner]) {
+        if ([self.delegate respondsToSelector:@selector(recipeSocialViewControllerLikeView)]) {
+            self.likeButton = [self.delegate recipeSocialViewControllerLikeView];
+            
+            // Detach it from a shared like view.
+            [self.likeButton removeFromSuperview];
+            self.likeButton.alpha = 1.0;
+            
+        } else {
+            self.likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
+            self.likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        }
+        
+        // Reposition it.
+        self.likeButton.frame = (CGRect){
+            self.view.frame.size.width - kButtonInsets.right - self.likeButton.frame.size.width,
+            kButtonInsets.top,
+            self.likeButton.frame.size.width,
+            self.likeButton.frame.size.height};
+        
+        [self.view addSubview:self.likeButton];
+    }
     
     [self loadData];
 }
@@ -190,6 +213,10 @@
 
 - (BOOL)recipeSocialLayoutIsLoading {
     return self.loading;
+}
+
+- (BOOL)recipeSocialLayoutAllowCommenting {
+    return (self.currentUser != nil);
 }
 
 #pragma mark - CKEditViewControllerDelegate methods
@@ -374,22 +401,6 @@
     return _closeButton;
 }
 
-- (UIButton *)likeButton {
-    if (!_likeButton) {
-        _likeButton = [ViewHelper buttonWithImage:[self likeButtonImageForOn:NO dark:YES]
-                                            target:self
-                                          selector:@selector(likeTapped:)];
-        _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _likeButton.frame = (CGRect){
-            self.collectionView.bounds.size.width - _likeButton.frame.size.width - kContentInsets.right,
-            kContentInsets.top,
-            _likeButton.frame.size.width,
-            _likeButton.frame.size.height
-        };
-    }
-    return _likeButton;
-}
-
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
         _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
@@ -462,9 +473,6 @@
             [self.collectionView reloadData];
         }
         
-        // Enable the like button.
-        self.likeButton.enabled = YES;
-        
     } failure:^(NSError *error) {
         
         // No comments.
@@ -482,10 +490,6 @@
     [[CKSocialManager sharedInstance] updateRecipe:self.recipe numComments:[self.comments count]];
     
     [self.delegate recipeSocialViewControllerCloseRequested];
-}
-
-- (void)likeTapped:(id)sender {
-    DLog();
 }
 
 - (void)showCommentBox {
