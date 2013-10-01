@@ -677,6 +677,7 @@
 		76A9178217BCE0F300CB8E9A /* cook_btns_photo_okay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A9177C17BCE0F300CB8E9A /* cook_btns_photo_okay@2x.png */; };
 		76A9179117BCEA1000CB8E9A /* cook_btns_remove_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A9178F17BCEA1000CB8E9A /* cook_btns_remove_onpress.png */; };
 		76A9179217BCEA1000CB8E9A /* cook_btns_remove_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A9179017BCEA1000CB8E9A /* cook_btns_remove_onpress@2x.png */; };
+		76B1436117FAF5F7000656D3 /* RecipeSocialLikeLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B1436017FAF5F7000656D3 /* RecipeSocialLikeLayout.m */; };
 		76B23948174DF44300BEEF94 /* cook_btns_cancel_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B2393C174DF44300BEEF94 /* cook_btns_cancel_onpress.png */; };
 		76B23949174DF44300BEEF94 /* cook_btns_cancel_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B2393D174DF44300BEEF94 /* cook_btns_cancel_onpress@2x.png */; };
 		76B2394A174DF44300BEEF94 /* cook_btns_cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 76B2393E174DF44300BEEF94 /* cook_btns_cancel.png */; };
@@ -956,7 +957,6 @@
 		76EBE641179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE639179549C10099E2CB /* cook_book_inner_icon_like_light_on@2x.png */; };
 		76EC556117C3030D000DEA08 /* RecipeCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556017C3030D000DEA08 /* RecipeCommentCell.m */; };
 		76EC556417C3069C000DEA08 /* ModalOverlayHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */; };
-		76EC556717C33322000DEA08 /* RecipeSocialViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */; };
 		76ED27421612DC180012E479 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27411612DC180012E479 /* UIKit.framework */; };
 		76ED27441612DC180012E479 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27431612DC180012E479 /* Foundation.framework */; };
 		76ED27461612DC180012E479 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76ED27451612DC180012E479 /* CoreGraphics.framework */; };
@@ -1970,6 +1970,8 @@
 		76A9177C17BCE0F300CB8E9A /* cook_btns_photo_okay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btns_photo_okay@2x.png"; sourceTree = "<group>"; };
 		76A9178F17BCEA1000CB8E9A /* cook_btns_remove_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btns_remove_onpress.png; sourceTree = "<group>"; };
 		76A9179017BCEA1000CB8E9A /* cook_btns_remove_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btns_remove_onpress@2x.png"; sourceTree = "<group>"; };
+		76B1435F17FAF5F7000656D3 /* RecipeSocialLikeLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialLikeLayout.h; sourceTree = "<group>"; };
+		76B1436017FAF5F7000656D3 /* RecipeSocialLikeLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialLikeLayout.m; sourceTree = "<group>"; };
 		76B2393C174DF44300BEEF94 /* cook_btns_cancel_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btns_cancel_onpress.png; sourceTree = "<group>"; };
 		76B2393D174DF44300BEEF94 /* cook_btns_cancel_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btns_cancel_onpress@2x.png"; sourceTree = "<group>"; };
 		76B2393E174DF44300BEEF94 /* cook_btns_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btns_cancel.png; sourceTree = "<group>"; };
@@ -2301,8 +2303,6 @@
 		76EC556017C3030D000DEA08 /* RecipeCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeCommentCell.m; sourceTree = "<group>"; };
 		76EC556217C3069C000DEA08 /* ModalOverlayHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalOverlayHeaderView.h; sourceTree = "<group>"; };
 		76EC556317C3069C000DEA08 /* ModalOverlayHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModalOverlayHeaderView.m; sourceTree = "<group>"; };
-		76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeSocialViewLayout.h; sourceTree = "<group>"; };
-		76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeSocialViewLayout.m; sourceTree = "<group>"; };
 		76ED273D1612DC180012E479 /* Cook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76ED27411612DC180012E479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		76ED27431612DC180012E479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -3320,10 +3320,10 @@
 				769D22E217B4AC980048C572 /* RecipeIngredientsView.m */,
 				763AE0661716DD0500E0922D /* RecipeSocialViewController.h */,
 				763AE0671716DD0500E0922D /* RecipeSocialViewController.m */,
+				76B1435F17FAF5F7000656D3 /* RecipeSocialLikeLayout.h */,
+				76B1436017FAF5F7000656D3 /* RecipeSocialLikeLayout.m */,
 				769880C917F16AAC00D1E760 /* RecipeSocialLayout.h */,
 				769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */,
-				76EC556517C33322000DEA08 /* RecipeSocialViewLayout.h */,
-				76EC556617C33322000DEA08 /* RecipeSocialViewLayout.m */,
 				76EC555F17C3030D000DEA08 /* RecipeCommentCell.h */,
 				76EC556017C3030D000DEA08 /* RecipeCommentCell.m */,
 				76E9394017F70C20005E7F81 /* RecipeLikeCell.h */,
@@ -5676,8 +5676,8 @@
 				76510711165F256D0077B551 /* StoreFlowLayout.m in Sources */,
 				76510714165F31180077B551 /* StoreBookCoverViewCell.m in Sources */,
 				89A906F9166460DD0056E4CF /* Theme.m in Sources */,
-				76EC556717C33322000DEA08 /* RecipeSocialViewLayout.m in Sources */,
 				76381C9516683E9500404FB1 /* RootViewController.m in Sources */,
+				76B1436117FAF5F7000656D3 /* RecipeSocialLikeLayout.m in Sources */,
 				76381C981668418C00404FB1 /* BenchtopBookCoverViewCell.m in Sources */,
 				7635A2CE17A9F2A0002F30F2 /* IngredientListEditViewController.m in Sources */,
 				76381CA716685A7500404FB1 /* FeaturedStoreCollectionViewController.m in Sources */,

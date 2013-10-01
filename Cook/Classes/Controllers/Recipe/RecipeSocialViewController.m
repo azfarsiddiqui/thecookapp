@@ -28,11 +28,13 @@
 #import "DateHelper.h"
 #import "CKLikeView.h"
 #import "CKRecipeLike.h"
+#import "RecipeSocialLikeLayout.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UICollectionView *likesCollectionView;
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
@@ -65,7 +67,7 @@
 @implementation RecipeSocialViewController
 
 #define kContentInsets      (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
-#define kButtonInsets       UIEdgeInsetsMake(26.0, 10.0, 15.0, 12.0)
+#define kButtonInsets       (UIEdgeInsets){ 26.0, 10.0, 15.0, 12.0 }
 #define kUnderlayMaxAlpha   0.7
 #define kHeaderCellId       @"HeaderCell"
 #define kFooterCellId       @"FooterCell"
@@ -96,6 +98,7 @@
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.collectionView];
+    [self.view addSubview:self.likesCollectionView];
     [self.view addSubview:self.closeButton];
     
     // Like button disabled before data is loaded.
@@ -299,21 +302,28 @@
     return 1;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
     
-    if (self.loading) {
-        
-        // Activity.
-        if (section == kCommentsSection) {
-            numItems = 1;
+    if (collectionView == self.collectionView) {
+        if (self.loading) {
+            
+            // Activity.
+            if (section == kCommentsSection) {
+                numItems = 1;
+            }
+            
+        } else {
+            
+            // Comments.
+            numItems = [self.comments count];
+            
         }
         
     } else {
         
-        // Comments.
-        numItems = [self.comments count];
-
+        // Likes
+        numItems = [self.likes count];
     }
     
     return numItems;
@@ -323,39 +333,10 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = nil;
-    
-    if (self.loading) {
-        
-        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-        if (!self.activityView.superview) {
-            self.activityView.center = cell.contentView.center;
-            [cell.contentView addSubview:self.activityView];
-            [self.activityView startAnimating];
-        }
-        
+    if (collectionView == self.collectionView) {
+        cell = [self commentCellAtIndexPath:indexPath];
     } else {
-        
-        if ([self.comments count] > 0) {
-            
-            RecipeCommentCell *commentCell = (RecipeCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
-                                                                                                                             forIndexPath:indexPath];
-            commentCell.delegate = self;
-            CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-            [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
-            
-            cell = commentCell;
-            
-        } else {
-            
-            // No comments.
-            [self.activityView stopAnimating];
-            [self.activityView removeFromSuperview];
-            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-            self.emptyCommentsLabel.center = cell.contentView.center;
-            [cell.contentView addSubview:self.emptyCommentsLabel];
-            
-        }
-        
+        cell = [self likeCellAtIndexPath:indexPath];
     }
     
     return cell;
@@ -383,6 +364,24 @@
     }
     
     return supplementaryView;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout methods
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [CKUserProfilePhotoView sizeForProfileSize:ProfileViewSizeMini];
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+        insetForSectionAtIndex:(NSInteger)section {
+    
+    return (UIEdgeInsets) { 0.0, 0.0, 0.0, 0.0 };
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    
+    return 15.0;
 }
 
 #pragma mark - Properties
@@ -427,18 +426,41 @@
                                              collectionViewLayout:[[RecipeSocialLayout alloc] initWithDelegate:self]];
         _collectionView.bounces = YES;
         _collectionView.backgroundColor = [UIColor clearColor];
-        _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.showsVerticalScrollIndicator = YES;
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kActivityId];
         [_collectionView registerClass:[RecipeCommentCell class] forCellWithReuseIdentifier:kCommentCellId];
-        [_collectionView registerClass:[RecipeLikeCell class] forCellWithReuseIdentifier:kLikeCellId];
         [_collectionView registerClass:[ModalOverlayHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderCellId];
         [_collectionView registerClass:[RecipeCommentBoxFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kFooterCellId];
     }
     return _collectionView;
+}
+
+- (UICollectionView *)likesCollectionView {
+    if (!_likesCollectionView) {
+        CGSize size = [CKUserProfilePhotoView sizeForProfileSize:ProfileViewSizeMini];
+        
+        _likesCollectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
+                                                  collectionViewLayout:[[RecipeSocialLikeLayout alloc] init]];
+        _likesCollectionView.scrollEnabled = NO;
+        _likesCollectionView.backgroundColor = [UIColor clearColor];
+        _likesCollectionView.showsVerticalScrollIndicator = NO;
+        _likesCollectionView.alwaysBounceVertical = NO;
+        _likesCollectionView.delegate = self;
+        _likesCollectionView.dataSource = self;
+        _likesCollectionView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin;
+        _likesCollectionView.frame = (CGRect){
+            self.view.bounds.size.width - size.width - kContentInsets.right - 7.0,
+            80.0,
+            size.width,
+            self.view.bounds.size.height
+        };
+        [_likesCollectionView registerClass:[RecipeLikeCell class] forCellWithReuseIdentifier:kLikeCellId];
+    }
+    return _likesCollectionView;
 }
 
 #pragma mark - Private methods
@@ -460,24 +482,30 @@
         // Inform listeners of current comments
         [[CKSocialManager sharedInstance] updateRecipe:self.recipe numComments:[comments count]];
         
-        // Comments to insert.
+        // Insert comments.
         NSArray *indexPathsToInsert = [comments collectWithIndex:^id(CKRecipeComment *comment, NSUInteger commentIndex) {
             return [NSIndexPath indexPathForItem:commentIndex inSection:kCommentsSection];
         }];
-        
         if ([indexPathsToInsert count] > 0) {
             [self.collectionView performBatchUpdates:^{
                 [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kCommentsSection]]];
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
             } completion:^(BOOL finished) {
-                
             }];
-            
-            // Load the likes.
-            [self showLikes:YES];
             
         } else {
             [self.collectionView reloadData];
+        }
+        
+        // Insert likes.
+        NSArray *likesIndexPathsToInsert = [likes collectWithIndex:^id(CKRecipeLike *like, NSUInteger likeIndex) {
+            return [NSIndexPath indexPathForItem:likeIndex inSection:0];
+        }];
+        if ([likesIndexPathsToInsert count] > 0) {
+            [self.likesCollectionView performBatchUpdates:^{
+                [self.likesCollectionView insertItemsAtIndexPaths:likesIndexPathsToInsert];
+            } completion:^(BOOL finished) {
+            }];
         }
         
     } failure:^(NSError *error) {
@@ -573,6 +601,53 @@
                          }];
     }];
     
+}
+
+- (UICollectionViewCell *)likeCellAtIndexPath:(NSIndexPath *)indexPath {
+    RecipeLikeCell *likeCell = (RecipeLikeCell *)[self.likesCollectionView dequeueReusableCellWithReuseIdentifier:kLikeCellId
+                                                                                                     forIndexPath:indexPath];
+    CKRecipeLike *like = [self.likes objectAtIndex:indexPath.item];
+    [likeCell configureLike:like];
+    return likeCell;
+}
+
+- (UICollectionViewCell *)commentCellAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = nil;
+    
+    if (self.loading) {
+        
+        cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+        if (!self.activityView.superview) {
+            self.activityView.center = cell.contentView.center;
+            [cell.contentView addSubview:self.activityView];
+            [self.activityView startAnimating];
+        }
+        
+    } else {
+        
+        if ([self.comments count] > 0) {
+            
+            RecipeCommentCell *commentCell = (RecipeCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
+                                                                                                                 forIndexPath:indexPath];
+            commentCell.delegate = self;
+            CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
+            [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
+            
+            cell = commentCell;
+            
+        } else {
+            
+            // No comments.
+            [self.activityView stopAnimating];
+            [self.activityView removeFromSuperview];
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+            self.emptyCommentsLabel.center = cell.contentView.center;
+            [cell.contentView addSubview:self.emptyCommentsLabel];
+            
+        }
+        
+    }
+    return cell;
 }
 
 @end
