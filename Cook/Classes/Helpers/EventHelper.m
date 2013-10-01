@@ -39,6 +39,7 @@
 #define kRecipeSocialUpdates        @"CKRecipeSocialUpdates"
 #define kNumLikesSocialUpdates      @"CKNumLikesSocialUpdates"
 #define kNumCommentsSocialUpdates   @"CKNumCommentsSocialUpdates"
+#define kLikedSocialUpdates         @"CKLikedSocialUpdates"
 
 #pragma mark - Login successful event
 
@@ -303,13 +304,14 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventSocialUpdates];
 }
 
-+ (void)postSocialUpdatesNumLikes:(NSInteger)numLikes recipe:(CKRecipe *)recipe {
++ (void)postSocialUpdatesNumLikes:(NSInteger)numLikes liked:(BOOL)liked recipe:(CKRecipe *)recipe {
     if (recipe == nil || ![recipe persisted]) {
         return;
     }
     [EventHelper postEvent:kEventSocialUpdates withUserInfo:@{
                                                               kRecipeSocialUpdates : recipe,
-                                                              kNumLikesSocialUpdates : @(numLikes)
+                                                              kNumLikesSocialUpdates : @(numLikes),
+                                                              kLikedSocialUpdates : @(liked)
                                                               }];
 }
 
@@ -333,6 +335,10 @@
 
 + (BOOL)socialUpdatesHasNumComments:(NSNotification *)notification {
     return [[[notification userInfo] objectForKey:kNumCommentsSocialUpdates] isKindOfClass:[NSNumber class]];
+}
+
++ (BOOL)socialUpdatesLiked:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kLikedSocialUpdates] boolValue];
 }
 
 + (NSInteger)numLikesForNotification:(NSNotification *)notification {

@@ -80,11 +80,12 @@
 
 // Social stuff.
 + (void)registerSocialUpdates:(id)observer selector:(SEL)selector;
-+ (void)postSocialUpdatesNumLikes:(NSInteger)numLikes recipe:(CKRecipe *)recipe;
++ (void)postSocialUpdatesNumLikes:(NSInteger)numLikes liked:(BOOL)liked recipe:(CKRecipe *)recipe;
 + (void)postSocialUpdatesNumComments:(NSInteger)numComments recipe:(CKRecipe *)recipe;
 + (void)unregisterSocialUpdates:(id)observer;
 + (BOOL)socialUpdatesHasNumLikes:(NSNotification *)notification;
 + (BOOL)socialUpdatesHasNumComments:(NSNotification *)notification;
++ (BOOL)socialUpdatesLiked:(NSNotification *)notification;
 + (NSInteger)numLikesForNotification:(NSNotification *)notification;
 + (NSInteger)numCommentsForNotification:(NSNotification *)notification;
 + (CKRecipe *)socialUpdatesRecipeForNotification:(NSNotification *)notification;

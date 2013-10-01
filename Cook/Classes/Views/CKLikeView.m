@@ -28,9 +28,6 @@
     return [self buttonImageForOn:NO dark:NO].size;
 }
 
-- (void)dealloc {
-}
-
 - (id)initWithRecipe:(CKRecipe *)recipe {
     return [self initWithRecipe:recipe darkMode:NO];
 }

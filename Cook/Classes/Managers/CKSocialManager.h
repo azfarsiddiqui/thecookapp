@@ -16,7 +16,7 @@
 - (void)reset;
 - (void)configureRecipe:(CKRecipe *)recipe;
 - (void)updateRecipe:(CKRecipe *)recipe numComments:(NSUInteger)numComments;
-- (void)updateRecipe:(CKRecipe *)recipe numLikes:(NSUInteger)numLikes;
+- (void)updateRecipe:(CKRecipe *)recipe numLikes:(NSUInteger)numLikes liked:(BOOL)liked;
 - (void)like:(BOOL)like recipe:(CKRecipe *)recipe;
 - (NSUInteger)numCommentsForRecipe:(CKRecipe *)recipe;
 - (NSUInteger)numLikesForRecipe:(CKRecipe *)recipe;

@@ -43,20 +43,20 @@
 
 - (void)configureRecipe:(CKRecipe *)recipe {
     [self updateRecipe:recipe numComments:recipe.numComments broadcast:NO];
-    [self updateRecipe:recipe numLikes:recipe.numLikes broadcast:NO];
+    [self updateRecipe:recipe numLikes:recipe.numLikes liked:NO broadcast:NO];
 }
 
 - (void)updateRecipe:(CKRecipe *)recipe numComments:(NSUInteger)numComments {
     [self updateRecipe:recipe numComments:numComments broadcast:YES];
 }
 
-- (void)updateRecipe:(CKRecipe *)recipe numLikes:(NSUInteger)numLikes {
-    [self updateRecipe:recipe numLikes:numLikes broadcast:YES];
+- (void)updateRecipe:(CKRecipe *)recipe numLikes:(NSUInteger)numLikes liked:(BOOL)liked {
+    [self updateRecipe:recipe numLikes:numLikes liked:liked broadcast:YES];
 }
 
 - (void)like:(BOOL)like recipe:(CKRecipe *)recipe {
     NSInteger likes = [self numLikesForRecipe:recipe];
-    [self updateRecipe:recipe numLikes:like ? (likes + 1) : (likes - 1)];
+    [self updateRecipe:recipe numLikes:like ? (likes + 1) : (likes - 1) liked:like];
 }
 
 - (NSUInteger)numCommentsForRecipe:(CKRecipe *)recipe {
@@ -92,12 +92,12 @@
     }
 }
 
-- (void)updateRecipe:(CKRecipe *)recipe numLikes:(NSUInteger)numLikes broadcast:(BOOL)broadcast {
+- (void)updateRecipe:(CKRecipe *)recipe numLikes:(NSUInteger)numLikes liked:(BOOL)liked broadcast:(BOOL)broadcast {
     if (recipe != nil && [recipe persisted]) {
         [self.recipeNumLikes setObject:@(numLikes) forKey:recipe.objectId];
         
         if (broadcast) {
-            [EventHelper postSocialUpdatesNumLikes:numLikes recipe:recipe];
+            [EventHelper postSocialUpdatesNumLikes:numLikes liked:liked recipe:recipe];
         }
     }
 }

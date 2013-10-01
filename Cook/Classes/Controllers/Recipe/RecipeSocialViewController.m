@@ -79,6 +79,10 @@
 #define kTimeFrame          @"timeFrame"
 #define kCommentFrame       @"commentFrame"
 
+- (void)dealloc {
+    [EventHelper unregisterSocialUpdates:self];
+}
+
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.currentUser = [CKUser currentUser];
@@ -126,6 +130,9 @@
     }
     
     [self loadData];
+    
+    // Listen for like events.
+    [EventHelper registerSocialUpdates:self selector:@selector(socialUpdates:)];
 }
 
 - (NSInteger)currentNumComments {
@@ -255,9 +262,15 @@
     NSString *text = value;
     if ([text CK_containsText]) {
         
+        // Update current date so that elapsed time can be ahead of it.
+        self.currentDate = [NSDate date];
+        
         // Create a new comment.
         CKRecipeComment *comment = [CKRecipeComment recipeCommentForUser:self.currentUser recipe:self.recipe text:text];
         [self.comments addObject:comment];
+        
+        // Requires relayout.
+        [[self currentLayout] setNeedsRelayout:YES];
         
         if ([self.comments count] == 1) {
             
@@ -654,6 +667,51 @@
         
     }
     return cell;
+}
+
+- (void)socialUpdates:(NSNotification *)notification {
+    CKRecipe *recipe = [EventHelper socialUpdatesRecipeForNotification:notification];
+    
+    // Ignore unrelated recipe.
+    if (![recipe.objectId isEqualToString:recipe.objectId]) {
+        return;
+    }
+    
+    // Likes updated?
+    if ([EventHelper socialUpdatesHasNumLikes:notification]) {
+        BOOL liked = [EventHelper socialUpdatesLiked:notification];
+        if (liked) {
+            
+            // Create a recipe like object for UI updates.
+            CKRecipeLike *like = [CKRecipeLike recipeLikeForUser:self.currentUser recipe:self.recipe];
+            [self.likes insertObject:like atIndex:0];
+            
+            [self.likesCollectionView performBatchUpdates:^{
+                [self.likesCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+            } completion:^(BOOL finished) {
+            }];
+            
+        } else {
+            
+            // Search for existing like.
+            NSInteger likeIndex = [self.likes findIndexWithBlock:^BOOL(CKRecipeLike *like) {
+                return [like.user.objectId isEqualToString:self.currentUser.objectId];
+            }];
+            
+            if (likeIndex != -1) {
+                
+                [self.likes removeObjectAtIndex:likeIndex];
+                [self.likesCollectionView performBatchUpdates:^{
+                    [self.likesCollectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:likeIndex inSection:0]]];
+                } completion:^(BOOL finished) {
+                }];
+                
+            }
+            
+            
+        }
+    }
+    
 }
 
 @end
