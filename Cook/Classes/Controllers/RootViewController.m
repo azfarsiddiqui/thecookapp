@@ -929,7 +929,9 @@
 
 - (void)loadSampleRecipe {
     
-    [CKRecipe recipeForObjectId:@"qC9Dhevs7E"
+    // qC9Dhevs7E - Dev Jeremy's pizza.
+    // yVyEcZFboc - Prod Chicken adobo
+    [CKRecipe recipeForObjectId:@"yVyEcZFboc"
                         success:^(CKRecipe *recipe){
                             [self viewRecipe:recipe];
                         }
