@@ -91,20 +91,23 @@
     
     // Load profile photo.
     CKUser *user = comment.user;
-//    [self.profileView loadProfilePhotoForUser:user];
+    [self.profileView loadProfilePhotoForUser:user];
     
     // Name label.
     self.nameLabel.hidden = NO;
     self.nameLabel.text = user.name;
     
     // Cached or calculate frame.
-    CGRect nameFrame = [self.delegate recipeSocialCommentCellCachedNameFrameForCommentIndex:commentIndex];
-    if (CGRectEqualToRect(nameFrame, CGRectZero)) {
+    NSValue *nameFrameValue = [self.delegate recipeSocialCommentCellNameFrameValueForCommentIndex:commentIndex];
+    CGRect nameFrame;
+    if (!nameFrameValue) {
         nameFrame = [user.name boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
                                             options:NSStringDrawingUsesLineFragmentOrigin
                                          attributes:@{ NSFontAttributeName : [Theme recipeCommenterFont] }
                                             context:nil];
         [self.delegate recipeSocialCommentCellCacheNameFrame:nameFrame commentIndex:commentIndex];
+    } else {
+        nameFrame = [nameFrameValue CGRectValue];
     }
     
     CGSize size = nameFrame.size;
@@ -119,13 +122,16 @@
     self.commentLabel.text = comment.text;
     
     // Cached or calculate frame.
-    CGRect commentFrame = [self.delegate recipeSocialCommentCellCachedCommentFrameForCommentIndex:commentIndex];
-    if (CGRectEqualToRect(commentFrame, CGRectZero)) {
+    NSValue *commentFrameValue = [self.delegate recipeSocialCommentCellCommentFrameValueForCommentIndex:commentIndex];
+    CGRect commentFrame;
+    if (!commentFrameValue) {
         commentFrame = [comment.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
                                                   options:NSStringDrawingUsesLineFragmentOrigin
                                                attributes:@{ NSFontAttributeName : [Theme recipeCommentFont] }
                                                   context:nil];
         [self.delegate recipeSocialCommentCellCacheCommentFrame:commentFrame commentIndex:commentIndex];
+    } else {
+        commentFrame = [commentFrameValue CGRectValue];
     }
     
     size = commentFrame.size;
@@ -137,17 +143,20 @@
     };
     
     // Time.
-    NSDate *createdDateTime = comment.createdDateTime ? comment.createdDateTime : [NSDate date];
-    self.timeLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:createdDateTime] uppercaseString];
+    NSString *timeDisplay = [self.delegate recipeSocialCommentCellTimeDisplayForCommentIndex:commentIndex];
+    self.timeLabel.text = timeDisplay;
     
     // Cached or calculate frame.
-    CGRect timeFrame = [self.delegate recipeSocialCommentCellCachedTimeFrameForCommentIndex:commentIndex];
-    if (CGRectEqualToRect(timeFrame, CGRectZero)) {
-        timeFrame = [self.timeLabel.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
-                                                      options:NSStringDrawingUsesLineFragmentOrigin
-                                                   attributes:@{ NSFontAttributeName : [Theme overlayTimeFont] }
-                                                      context:nil];
+    NSValue *timeFrameValue = [self.delegate recipeSocialCommentCellTimeFrameValueForCommentIndex:commentIndex];
+    CGRect timeFrame;
+    if (!timeFrameValue) {
+        timeFrame = [timeDisplay boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
+                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                           attributes:@{ NSFontAttributeName : [Theme overlayTimeFont] }
+                                              context:nil];
         [self.delegate recipeSocialCommentCellCacheTimeFrame:timeFrame commentIndex:commentIndex];
+    } else {
+        timeFrame = [timeFrameValue CGRectValue];
     }
 
     size = timeFrame.size;

@@ -12,6 +12,7 @@
 
 + (DateHelper *)sharedInstance;
 - (NSString *)relativeDateTimeDisplayForDate:(NSDate *)date;
+- (NSString *)relativeDateTimeDisplayForDate:(NSDate *)date fromDate:(NSDate *)fromDate;
 - (NSString *)formattedDurationDisplayForMinutes:(NSInteger)minutes;
 
 @end

@@ -15,12 +15,13 @@
 
 @protocol RecipeSocialCommentCellDelegate <NSObject>
 
+- (NSValue *)recipeSocialCommentCellNameFrameValueForCommentIndex:(NSUInteger)commentIndex;
+- (NSValue *)recipeSocialCommentCellTimeFrameValueForCommentIndex:(NSUInteger)commentIndex;
+- (NSValue *)recipeSocialCommentCellCommentFrameValueForCommentIndex:(NSUInteger)commentIndex;
 - (void)recipeSocialCommentCellCacheNameFrame:(CGRect)nameFrame commentIndex:(NSUInteger)commentIndex;
 - (void)recipeSocialCommentCellCacheTimeFrame:(CGRect)timeFrame commentIndex:(NSUInteger)commentIndex;
 - (void)recipeSocialCommentCellCacheCommentFrame:(CGRect)commentFrame commentIndex:(NSUInteger)commentIndex;
-- (CGRect)recipeSocialCommentCellCachedNameFrameForCommentIndex:(NSUInteger)commentIndex;
-- (CGRect)recipeSocialCommentCellCachedTimeFrameForCommentIndex:(NSUInteger)commentIndex;
-- (CGRect)recipeSocialCommentCellCachedCommentFrameForCommentIndex:(NSUInteger)commentIndex;
+- (NSString *)recipeSocialCommentCellTimeDisplayForCommentIndex:(NSUInteger)commentIndex;
 
 @end
 

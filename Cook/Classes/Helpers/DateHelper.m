@@ -37,7 +37,11 @@
 }
 
 - (NSString *)relativeDateTimeDisplayForDate:(NSDate *)date {
-    return [self.timeIntervalFormatter stringForTimeIntervalFromDate:[NSDate date] toDate:date];
+    return [self relativeDateTimeDisplayForDate:date fromDate:[NSDate date]];
+}
+
+- (NSString *)relativeDateTimeDisplayForDate:(NSDate *)date fromDate:(NSDate *)fromDate {
+    return [self.timeIntervalFormatter stringForTimeIntervalFromDate:fromDate toDate:date];
 }
 
 - (NSString *)formattedDurationDisplayForMinutes:(NSInteger)minutes {

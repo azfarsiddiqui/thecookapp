@@ -22,8 +22,9 @@
 
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
-@property (nonatomic, strong) NSMutableDictionary *indexPathSupplementaryAttributes;
-@property (nonatomic, strong) NSMutableArray *supplementaryLayoutAttributes;
+
+@property (nonatomic, strong) UICollectionViewLayoutAttributes *commentsHeaderAttributes;
+@property (nonatomic, strong) UICollectionViewLayoutAttributes *commentsFooterAttributes;
 
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
@@ -143,8 +144,8 @@
     CGRect bounds = self.collectionView.bounds;
     
     // Always contain all supplementary views and effects.
-    NSMutableArray* layoutAttributes = [NSMutableArray arrayWithArray:self.supplementaryLayoutAttributes];
-    for (UICollectionViewLayoutAttributes *attributes in self.supplementaryLayoutAttributes) {
+    NSMutableArray* layoutAttributes = [NSMutableArray arrayWithArray:@[self.commentsHeaderAttributes, self.commentsFooterAttributes]];
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
         [self applyStickyHeaderFooter:attributes contentOffset:contentOffset bounds:bounds];
     }
     
@@ -175,8 +176,11 @@
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind
                                                                      atIndexPath:(NSIndexPath *)indexPath {
-    
-    return [self.indexPathSupplementaryAttributes objectForKey:indexPath];
+    if (indexPath.section == 0) {
+        return self.commentsHeaderAttributes;
+    } else {
+        return self.commentsFooterAttributes;
+    }
 }
 
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
@@ -205,14 +209,15 @@
 - (void)buildLayout {
     self.itemsLayoutAttributes = [NSMutableArray array];
     self.indexPathItemAttributes = [NSMutableDictionary dictionary];
-    self.supplementaryLayoutAttributes = [NSMutableArray array];
-    self.indexPathSupplementaryAttributes = [NSMutableDictionary dictionary];
+    self.commentsHeaderAttributes = nil;
+    self.commentsFooterAttributes = nil;
     
-    [self buildCommentsLayout];
-    [self buildLikesLayout];
+    CGRect bounds = self.collectionView.bounds;
+    [self buildCommentsLayoutWithBounds:bounds];
+    [self buildLikesLayoutWithBounds:bounds];
 }
 
-- (void)buildCommentsLayout {
+- (void)buildCommentsLayoutWithBounds:(CGRect)bounds {
     self.commentsSize = [NSMutableDictionary dictionary];
     
     // Init the vertical offset.
@@ -223,14 +228,13 @@
     UICollectionViewLayoutAttributes *commentsHeaderAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                                 withIndexPath:commentsHeaderIndexPath];
     commentsHeaderAttributes.frame = (CGRect){
-        self.collectionView.bounds.origin.x,
+        bounds.origin.x,
         yOffset,
-        self.collectionView.bounds.size.width,
+        bounds.size.width,
         [ModalOverlayHeaderView unitSize].height
     };
     yOffset += commentsHeaderAttributes.frame.size.height;
-    [self.supplementaryLayoutAttributes addObject:commentsHeaderAttributes];
-    [self.indexPathSupplementaryAttributes setObject:commentsHeaderAttributes forKey:commentsHeaderIndexPath];
+    self.commentsHeaderAttributes = commentsHeaderAttributes;
     
     if ([self.delegate recipeSocialLayoutIsLoading]) {
         
@@ -238,10 +242,10 @@
         NSIndexPath *activityIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
         UICollectionViewLayoutAttributes *activityAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:activityIndexPath];
         activityAttributes.frame = (CGRect){
-            floorf((self.collectionView.bounds.size.width - kCommentWidth) / 2.0),
+            floorf((bounds.size.width - kCommentWidth) / 2.0),
             yOffset,
             kCommentWidth,
-            self.collectionView.bounds.size.height - [ModalOverlayHeaderView unitSize].height - yOffset
+            bounds.size.height - [ModalOverlayHeaderView unitSize].height - yOffset
         };
         [self.itemsLayoutAttributes addObject:activityAttributes];
         [self.indexPathItemAttributes setObject:activityAttributes forKey:activityIndexPath];
@@ -259,7 +263,7 @@
             CKRecipeComment *comment = [self.delegate recipeSocialLayoutCommentAtIndex:commentIndex];
             CGSize size = [self sizeForComment:comment commentIndex:commentIndex];
             commentAttributes.frame = (CGRect){
-                floorf((self.collectionView.bounds.size.width - kCommentWidth) / 2.0),
+                floorf((bounds.size.width - kCommentWidth) / 2.0),
                 yOffset,
                 kCommentWidth,
                 size.height
@@ -283,16 +287,15 @@
     UICollectionViewLayoutAttributes *commentsFooterAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter
                                                                                                                                 withIndexPath:commentsFooterIndexPath];
     commentsFooterAttributes.frame = (CGRect){
-        self.collectionView.bounds.origin.x,
+        bounds.origin.x,
         yOffset,
-        self.collectionView.bounds.size.width,
+        bounds.size.width,
         [ModalOverlayHeaderView unitSize].height
     };
-    [self.supplementaryLayoutAttributes addObject:commentsFooterAttributes];
-    [self.indexPathSupplementaryAttributes setObject:commentsFooterAttributes forKey:commentsFooterIndexPath];
+    self.commentsFooterAttributes = commentsFooterAttributes;
 }
 
-- (void)buildLikesLayout {
+- (void)buildLikesLayoutWithBounds:(CGRect)bounds {
     
     // Init the vertical offset.
     CGFloat yOffset = kLikeInsets.top;

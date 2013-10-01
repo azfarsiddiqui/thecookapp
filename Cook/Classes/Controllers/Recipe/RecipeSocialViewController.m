@@ -25,6 +25,7 @@
 #import "RecipeCommentBoxFooterView.h"
 #import "CKUserProfilePhotoView.h"
 #import "RecipeLikeCell.h"
+#import "DateHelper.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -51,8 +52,10 @@
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
 
 // Size caching.
+@property (nonatomic, strong) NSDate *currentDate;
 @property (nonatomic, strong) NSMutableDictionary *commentsCachedSizes;
 @property (nonatomic, strong) NSMutableDictionary *commentLayoutInfo;
+@property (nonatomic, strong) NSMutableDictionary *commentTimeDisplays;
 
 @end
 
@@ -79,6 +82,8 @@
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.commentsCachedSizes = [NSMutableDictionary dictionary];
         self.commentLayoutInfo = [NSMutableDictionary dictionary];
+        self.commentTimeDisplays = [NSMutableDictionary dictionary];
+        self.currentDate = [NSDate date];
     }
     return self;
 }
@@ -111,6 +116,18 @@
 }
 
 #pragma mark - RecipeSocialCommentCellDelegate methods
+
+- (NSValue *)recipeSocialCommentCellNameFrameValueForCommentIndex:(NSUInteger)commentIndex {
+    return [[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kNameFrame];
+}
+
+- (NSValue *)recipeSocialCommentCellTimeFrameValueForCommentIndex:(NSUInteger)commentIndex {
+    return [[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kTimeFrame];
+}
+
+- (NSValue *)recipeSocialCommentCellCommentFrameValueForCommentIndex:(NSUInteger)commentIndex {
+    return [[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kCommentFrame];
+}
 
 - (void)recipeSocialCommentCellCacheNameFrame:(CGRect)nameFrame commentIndex:(NSUInteger)commentIndex {
     if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
@@ -151,28 +168,15 @@
     }
 }
 
-- (CGRect)recipeSocialCommentCellCachedNameFrameForCommentIndex:(NSUInteger)commentIndex {
-    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
-        return [[[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kNameFrame] CGRectValue];
-    } else {
-        return CGRectZero;
+- (NSString *)recipeSocialCommentCellTimeDisplayForCommentIndex:(NSUInteger)commentIndex {
+    CKRecipeComment *comment = [self.comments objectAtIndex:commentIndex];
+    NSString *timeDisplay = [self.commentTimeDisplays objectForKey:@(commentIndex)];
+    if (!timeDisplay) {
+        timeDisplay = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:comment.createdDateTime
+                                                                          fromDate:self.currentDate] uppercaseString];
+        [self.commentTimeDisplays setObject:timeDisplay forKey:@(commentIndex)];
     }
-}
-
-- (CGRect)recipeSocialCommentCellCachedTimeFrameForCommentIndex:(NSUInteger)commentIndex {
-    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
-        return [[[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kTimeFrame] CGRectValue];
-    } else {
-        return CGRectZero;
-    }
-}
-
-- (CGRect)recipeSocialCommentCellCachedCommentFrameForCommentIndex:(NSUInteger)commentIndex {
-    if ([self.commentLayoutInfo objectForKey:@(commentIndex)]) {
-        return [[[self.commentLayoutInfo objectForKey:@(commentIndex)] objectForKey:kCommentFrame] CGRectValue];
-    } else {
-        return CGRectZero;
-    }
+    return timeDisplay;
 }
 
 #pragma mark - RecipeSocialLayoutDelegate methods
