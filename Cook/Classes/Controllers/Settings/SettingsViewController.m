@@ -358,7 +358,7 @@
         NSString *userDisplay = [NSString stringWithFormat:@"Cook ID: %@", (currentUser != nil) ? currentUser.objectId : @"None"];
         
         NSString *deviceString = [NSString stringWithFormat:@"%@ / %@ / iOS%@", [UIDevice currentDevice].model, [UIDevice currentDevice].platformString, [UIDevice currentDevice].systemVersion];
-        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@\n%@\n%@", userDisplay, versionString, deviceString];
+        NSString *shareBody = [NSString stringWithFormat:@"\n\n\n\n--\n%@ / %@\n%@", versionString, userDisplay, deviceString];
         
         [mailDialog setToRecipients:@[@"support@thecookapp.com"]];
         [mailDialog setSubject:@"Cook Feedback"];
