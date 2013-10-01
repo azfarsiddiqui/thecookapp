@@ -69,7 +69,6 @@
 #define kActivityId         @"ActivityCell"
 #define kLikeCellId         @"LikeCell"
 #define kCommentsSection    0
-#define kLikesSection       1
 #define kNameFrame          @"nameFrame"
 #define kTimeFrame          @"timeFrame"
 #define kCommentFrame       @"commentFrame"
@@ -268,7 +267,7 @@
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
@@ -283,12 +282,9 @@
         
     } else {
         
-        // Comments and Likes.
-        if (section == kCommentsSection) {
-            numItems = [self.comments count];
-        } else if (section == kLikesSection) {
-            numItems = [self.likes count];
-        }
+        // Comments.
+        numItems = [self.comments count];
+
     }
     
     return numItems;
@@ -302,41 +298,33 @@
     if (self.loading) {
         
         cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-        self.activityView.center = cell.contentView.center;
-        [cell.contentView addSubview:self.activityView];
-        [self.activityView startAnimating];
+        if (!self.activityView.superview) {
+            self.activityView.center = cell.contentView.center;
+            [cell.contentView addSubview:self.activityView];
+            [self.activityView startAnimating];
+        }
         
     } else {
         
-        if (indexPath.section == kCommentsSection) {
+        if ([self.comments count] > 0) {
             
-            if ([self.comments count] > 0) {
-                
-                RecipeCommentCell *commentCell = (RecipeCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
-                                                                                                                                 forIndexPath:indexPath];
-                commentCell.delegate = self;
-                CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
-                [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
-                
-                cell = commentCell;
-                
-            } else {
-                
-                // No comments.
-                [self.activityView stopAnimating];
-                [self.activityView removeFromSuperview];
-                cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-                self.emptyCommentsLabel.center = cell.contentView.center;
-                [cell.contentView addSubview:self.emptyCommentsLabel];
-                
-            }
+            RecipeCommentCell *commentCell = (RecipeCommentCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kCommentCellId
+                                                                                                                             forIndexPath:indexPath];
+            commentCell.delegate = self;
+            CKRecipeComment *comment = [self.comments objectAtIndex:indexPath.item];
+            [commentCell configureWithComment:comment commentIndex:indexPath.item numComments:[self.comments count]];
             
-        } else if (indexPath.section == kLikesSection) {
+            cell = commentCell;
             
-            RecipeLikeCell *likeCell = (RecipeLikeCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:kLikeCellId forIndexPath:indexPath];
-            CKRecipeLike *like = [self.likes objectAtIndex:indexPath.item];
-            [likeCell configureLike:like];
-            cell = likeCell;
+        } else {
+            
+            // No comments.
+            [self.activityView stopAnimating];
+            [self.activityView removeFromSuperview];
+            cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
+            self.emptyCommentsLabel.center = cell.contentView.center;
+            [cell.contentView addSubview:self.emptyCommentsLabel];
+            
         }
         
     }
@@ -464,16 +452,10 @@
             return [NSIndexPath indexPathForItem:commentIndex inSection:kCommentsSection];
         }];
         
-        // Likes to insert.
-        NSArray *likesIndexPathsToInsert = [likes collectWithIndex:^id(CKRecipeLike *like, NSUInteger likeIndex) {
-            return [NSIndexPath indexPathForItem:likeIndex inSection:kLikesSection];
-        }];
-        
         if ([indexPathsToInsert count] > 0) {
             [self.collectionView performBatchUpdates:^{
                 [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kCommentsSection]]];
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-                [self.collectionView insertItemsAtIndexPaths:likesIndexPathsToInsert];
             } completion:^(BOOL finished) {
             }];
         } else {
@@ -485,9 +467,12 @@
         
     } failure:^(NSError *error) {
         
-        // TODO Message.
-        DLog(@"Unable to load comments");
+        // No comments.
         [self.activityView stopAnimating];
+        UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        self.emptyCommentsLabel.center = cell.contentView.center;
+        [cell.contentView addSubview:self.emptyCommentsLabel];
+
     }];
 }
 

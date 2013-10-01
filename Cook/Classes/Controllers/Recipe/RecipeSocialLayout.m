@@ -79,7 +79,6 @@
         for (NSInteger itemIndex = 0; itemIndex < numItems; itemIndex++) {
             
             // Calculate the height of the comment if not cached.
-            
             CKRecipeComment *comment = [self.delegate recipeSocialLayoutCommentAtIndex:itemIndex];
             CGSize size =  [self sizeForComment:comment commentIndex:itemIndex];
             requiredHeight += size.height;
@@ -151,20 +150,13 @@
     
     // Item cells.
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
-        if (attributes.indexPath.section == 0) {
-            
-            // Comments.
-            if (CGRectContainsRect(visibleFrame, attributes.frame)) {
-                [self applyCommentsFading:attributes contentOffset:contentOffset bounds:bounds];
-                [layoutAttributes addObject:attributes];
-            }
-            
-        } else {
-            
-            // Likes
-            [self applyStickyLikes:attributes contentOffset:contentOffset bounds:bounds];
+        
+        // Comments.
+        if (CGRectContainsRect(visibleFrame, attributes.frame)) {
+            [self applyCommentsFading:attributes contentOffset:contentOffset bounds:bounds];
             [layoutAttributes addObject:attributes];
         }
+        
     }
     
     return layoutAttributes;
@@ -186,19 +178,13 @@
 - (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
     
-    if (itemIndexPath.section == 0) {
-        
-        // Comments slide down and fades in.
-        if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
-            attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-            attributes.transform3D = CATransform3DMakeTranslation(0.0, -20.0, 0.0);
-            attributes.alpha = 0.0;
-        } else {
-            attributes.alpha = 1.0;
-        }
-        
-    } else if (itemIndexPath.section == 1) {
+    // Comments slide down and fades in.
+    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
+        attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+        attributes.transform3D = CATransform3DMakeTranslation(0.0, -20.0, 0.0);
         attributes.alpha = 0.0;
+    } else {
+        attributes.alpha = 1.0;
     }
     
     return attributes;
@@ -214,7 +200,6 @@
     
     CGRect bounds = self.collectionView.bounds;
     [self buildCommentsLayoutWithBounds:bounds];
-    [self buildLikesLayoutWithBounds:bounds];
 }
 
 - (void)buildCommentsLayoutWithBounds:(CGRect)bounds {
@@ -295,39 +280,6 @@
     self.commentsFooterAttributes = commentsFooterAttributes;
 }
 
-- (void)buildLikesLayoutWithBounds:(CGRect)bounds {
-    
-    // Init the vertical offset.
-    CGFloat yOffset = kLikeInsets.top;
-    
-    if (![self.delegate recipeSocialLayoutIsLoading]) {
-        
-        CGSize unitSize = [CKUserProfilePhotoView sizeForProfileSize:ProfileViewSizeMini];
-        
-        NSInteger numLikes = [self.collectionView numberOfItemsInSection:1];
-        for (NSInteger likeIndex = 0; likeIndex < numLikes; likeIndex++) {
-            NSIndexPath *likeIndexPath = [NSIndexPath indexPathForItem:likeIndex inSection:1];
-            UICollectionViewLayoutAttributes *likeAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:likeIndexPath];
-            likeAttributes.frame = (CGRect){
-                self.collectionView.bounds.size.width - kLikeInsets.right - unitSize.width,
-                yOffset,
-                unitSize.width,
-                unitSize.height
-            };
-            
-            [self.itemsLayoutAttributes addObject:likeAttributes];
-            [self.indexPathItemAttributes setObject:likeAttributes forKey:likeIndexPath];
-            
-            yOffset += likeAttributes.frame.size.height;
-            
-            // Row gap.
-            if (likeIndex != numLikes - 1) {
-                yOffset += kLikeInsets.bottom;
-            }
-        }
-    }
-}
-
 - (CGSize)sizeForComment:(CKRecipeComment *)comment commentIndex:(NSInteger)commentIndex {
     if (![self.commentsSize objectForKey:@(commentIndex)]) {
         CGSize size = [RecipeCommentCell sizeForComment:comment];
@@ -370,11 +322,6 @@
     }
 }
 
-- (void)applyStickyLikes:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
-                  bounds:(CGRect)bounds {
-    attributes.transform3D = CATransform3DMakeTranslation(0.0, contentOffset.y, 0.0);
-}
-
 - (CGRect)adjustedFrameForHeaderFrame:(CGRect)frame contentOffset:(CGPoint)contentOffset
                                bounds:(CGRect)bounds {
     CGRect adjustedFrame = frame;
@@ -392,4 +339,5 @@
     adjustedFrame.origin.y = contentOffset.y + bounds.size.height - frame.size.height;
     return adjustedFrame;
 }
+
 @end
