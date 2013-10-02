@@ -269,6 +269,10 @@
         CKRecipeComment *comment = [CKRecipeComment recipeCommentForUser:self.currentUser recipe:self.recipe text:text];
         [self.comments addObject:comment];
         
+        // Cache the comment size.
+        CGSize size = [RecipeCommentCell sizeForComment:comment];
+        [self.commentsCachedSizes setObject:[NSValue valueWithCGSize:size] forKey:@([self.comments count] - 1)];
+        
         // Requires relayout.
         [[self currentLayout] setNeedsRelayout:YES];
         
@@ -283,6 +287,13 @@
                 [self.collectionView insertItemsAtIndexPaths:@[indexPathToInsert]];
                 [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:indexPathToInsert.item - 1 inSection:kCommentsSection]]];
             } completion:^(BOOL finished) {
+                
+                // Scroll right to the bottom.
+                [self.collectionView setContentOffset:(CGPoint){
+                    self.collectionView.bounds.origin.x,
+                    self.collectionView.contentSize.height - self.collectionView.bounds.size.height
+                } animated:YES];
+
             }];
             
         }
@@ -506,10 +517,19 @@
             return [NSIndexPath indexPathForItem:commentIndex inSection:kCommentsSection];
         }];
         if ([indexPathsToInsert count] > 0) {
+            
+            // Remove spinner and add the comment cells.
             [self.collectionView performBatchUpdates:^{
                 [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kCommentsSection]]];
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
             } completion:^(BOOL finished) {
+                
+//                // Scroll right to the bottom.
+//                [self.collectionView setContentOffset:(CGPoint){
+//                    self.collectionView.bounds.origin.x,
+//                    self.collectionView.contentSize.height - self.collectionView.bounds.size.height
+//                } animated:YES];
+                
             }];
             
         } else {

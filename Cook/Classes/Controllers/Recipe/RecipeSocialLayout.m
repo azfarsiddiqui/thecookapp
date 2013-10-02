@@ -188,7 +188,7 @@
     // Comments slide down and fades in.
     if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
         attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-        attributes.transform3D = CATransform3DMakeTranslation(0.0, -20.0, 0.0);
+//        attributes.transform3D = CATransform3DMakeTranslation(0.0, -20.0, 0.0);
         attributes.alpha = 0.0;
     } else {
         attributes.alpha = 1.0;
@@ -314,7 +314,10 @@
         
         CGFloat topFadeOffset = contentOffset.y + 100.0;
         CGFloat bottomFadeOffset = contentOffset.y + bounds.size.height - 100.0;
-        CGFloat minAlpha = 0.3;
+        if (!self.allowCommenting) {
+            bottomFadeOffset = contentOffset.y + bounds.size.height;
+        }
+        CGFloat minAlpha = 0.0;
         
         CGRect frame = attributes.frame;
         
@@ -322,7 +325,7 @@
             CGFloat effectiveDistance = 100.0;
             CGFloat distance = MIN(topFadeOffset - frame.origin.y, effectiveDistance);
             attributes.alpha = MAX(minAlpha, 1.0 - (distance / effectiveDistance));
-        } else if (self.allowCommenting && frame.origin.y + frame.size.height >= bottomFadeOffset) {
+        } else if (frame.origin.y + frame.size.height >= bottomFadeOffset) {
             CGFloat effectiveDistance = 70.0;
             CGFloat distance = MIN((frame.origin.y + frame.size.height) - bottomFadeOffset, effectiveDistance);
             attributes.alpha = MAX(minAlpha, 1.0 - (distance / effectiveDistance));
