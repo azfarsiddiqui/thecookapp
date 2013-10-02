@@ -231,6 +231,10 @@
     return (self.currentUser != nil);
 }
 
+- (UIEdgeInsets)recipeSocialLayoutContentInsets {
+    return (UIEdgeInsets) { 0.0, (self.view.bounds.size.width - self.likesCollectionView.frame.origin.x), 0.0, 0.0 };
+}
+
 #pragma mark - CKEditViewControllerDelegate methods
 
 - (void)editViewControllerWillAppear:(BOOL)appear {
@@ -454,7 +458,7 @@
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
-        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
         _collectionView.frame = (CGRect){
             self.view.bounds.origin.x,
             self.view.bounds.origin.y,

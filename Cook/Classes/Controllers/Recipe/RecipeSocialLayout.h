@@ -17,6 +17,7 @@
 - (void)recipeSocialLayoutDidFinish;
 - (CKRecipeComment *)recipeSocialLayoutCommentAtIndex:(NSUInteger)commentIndex;
 - (BOOL)recipeSocialLayoutIsLoading;
+- (UIEdgeInsets)recipeSocialLayoutContentInsets;
 
 @end
 

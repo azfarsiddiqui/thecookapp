@@ -213,17 +213,20 @@
 - (void)buildCommentsLayoutWithBounds:(CGRect)bounds {
     self.commentsSize = [NSMutableDictionary dictionary];
     
+    // Outer content insets.
+    UIEdgeInsets insets = [self.delegate recipeSocialLayoutContentInsets];
+    
     // Init the vertical offset.
-    CGFloat yOffset = kContentInsets.top;
+    CGFloat yOffset = kContentInsets.top + insets.top;
     
     // Header layout.
     NSIndexPath *commentsHeaderIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
     UICollectionViewLayoutAttributes *commentsHeaderAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                                 withIndexPath:commentsHeaderIndexPath];
     commentsHeaderAttributes.frame = (CGRect){
-        bounds.origin.x,
+        insets.left + bounds.origin.x,
         yOffset,
-        bounds.size.width,
+        bounds.size.width - insets.left,
         [ModalOverlayHeaderView unitSize].height
     };
     yOffset += commentsHeaderAttributes.frame.size.height;
@@ -235,7 +238,7 @@
         NSIndexPath *activityIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
         UICollectionViewLayoutAttributes *activityAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:activityIndexPath];
         activityAttributes.frame = (CGRect){
-            floorf((bounds.size.width - kCommentWidth) / 2.0),
+            insets.left + floorf((bounds.size.width - insets.left - kCommentWidth) / 2.0),
             yOffset,
             kCommentWidth,
             bounds.size.height - [ModalOverlayHeaderView unitSize].height - yOffset
@@ -256,7 +259,7 @@
             CKRecipeComment *comment = [self.delegate recipeSocialLayoutCommentAtIndex:commentIndex];
             CGSize size = [self sizeForComment:comment commentIndex:commentIndex];
             commentAttributes.frame = (CGRect){
-                floorf((bounds.size.width - kCommentWidth) / 2.0),
+                insets.left + floorf((bounds.size.width - insets.left - kCommentWidth) / 2.0),
                 yOffset,
                 kCommentWidth,
                 size.height
@@ -281,9 +284,9 @@
         UICollectionViewLayoutAttributes *commentsFooterAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter
                                                                                                                                     withIndexPath:commentsFooterIndexPath];
         commentsFooterAttributes.frame = (CGRect){
-            bounds.origin.x,
+            insets.left + bounds.origin.x,
             yOffset,
-            bounds.size.width,
+            bounds.size.width - insets.left,
             [ModalOverlayHeaderView unitSize].height
         };
         self.commentsFooterAttributes = commentsFooterAttributes;
