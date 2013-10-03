@@ -137,6 +137,14 @@
                                          completion(cachedFullsizeImage, name);
                                      } else {
                                          
+                                         // Get the thumbnail.
+                                         [weakSelf thumbImageForRecipe:recipe size:[ImageHelper thumbSize] name:name
+                                                              progress:^(CGFloat progressRatio, NSString *name) {
+                                                                  // No reporting of progress for thumbnail.
+                                                              } completion:^(UIImage *thumbImage, NSString *name) {
+                                                                  thumbCompletion(thumbImage, name);
+                                                              }];
+                                         
                                          // Get the fullsize image with progress reporting.
                                          [weakSelf imageForRecipe:recipe size:size name:name
                                                          progress:^(CGFloat progressRatio, NSString *name) {
@@ -146,13 +154,6 @@
                                                            completion(image, name);
                                                        }];
                                          
-                                         // Get the thumbnail.
-                                         [weakSelf thumbImageForRecipe:recipe size:[ImageHelper thumbSize] name:name
-                                                              progress:^(CGFloat progressRatio, NSString *name) {
-                                                                  // No reporting of progress for thumbnail.
-                                                              } completion:^(UIImage *thumbImage, NSString *name) {
-                                                                  thumbCompletion(thumbImage, name);
-                                                              }];
                                      }
                                      
                                  } else {
