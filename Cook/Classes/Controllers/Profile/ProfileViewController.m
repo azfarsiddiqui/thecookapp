@@ -12,12 +12,15 @@
 #import "EventHelper.h"
 #import "AppHelper.h"
 #import "ViewHelper.h"
+#import "CKActivityIndicatorView.h"
 
 @interface ProfileViewController ()
 
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
+@property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @end
 
@@ -39,9 +42,40 @@
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     [self initBackground];
     
-    [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
-    
-    [self loadData];
+    self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
+    if (self.cookNavigationController) {
+        self.backButton.alpha = 0.0;
+    }
+}
+
+#pragma mark - CKNavigationControllerSupport methods
+
+- (void)cookNavigationControllerViewWillAppear:(NSNumber *)boolNumber {
+    if (![boolNumber boolValue]) {
+        [self.activityView stopAnimating];
+    }
+}
+
+- (void)cookNavigationControllerViewAppearing:(NSNumber *)boolNumber {
+    self.backButton.alpha = [boolNumber boolValue] ? 1.0 : 0.0;
+}
+
+- (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
+    if ([boolNumber boolValue]) {
+        [self loadData];
+    }
+}
+
+#pragma mark - Properties
+
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+        _activityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+        _activityView.center = self.view.center;
+        _activityView.hidesWhenStopped = YES;
+    }
+    return _activityView;
 }
 
 #pragma mark - Private methods
@@ -72,10 +106,14 @@
 }
 
 - (void)loadData {
+    [self.activityView startAnimating];
+    [self.view addSubview:self.activityView];
     
+    // Register photo loading events.
+    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
 }
 
-- (void)closeTapped:(id)sender {
+- (void)backTapped:(id)sender {
     [self.cookNavigationController popViewControllerAnimated:YES];
 }
 

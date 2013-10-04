@@ -14,6 +14,9 @@
 
 @optional
 - (void)setCookNavigationController:(CKNavigationController *)cookNavigationController;
+- (void)cookNavigationControllerViewWillAppear:(NSNumber *)boolNumber;
+- (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber;
+- (void)cookNavigationControllerViewAppearing:(NSNumber *)boolNumber;
 
 @end
 
@@ -22,5 +25,7 @@
 - (id)initWithRootViewController:(UIViewController *)viewController;
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated;
+- (UIViewController *)topViewController;
+- (BOOL)isTopViewController:(UIViewController *)viewController;
 
 @end

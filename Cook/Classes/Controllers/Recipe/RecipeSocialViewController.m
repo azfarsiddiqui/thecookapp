@@ -40,6 +40,7 @@
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, weak) id<RecipeSocialViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) NSMutableArray *likeViews;
@@ -95,6 +96,7 @@
         self.commentLayoutInfo = [NSMutableDictionary dictionary];
         self.commentTimeDisplays = [NSMutableDictionary dictionary];
         self.currentDate = [NSDate date];
+        self.loading = YES;
     }
     return self;
 }
@@ -105,7 +107,6 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.likesCollectionView];
     [self.view addSubview:self.collectionView];
-    [self.view addSubview:self.closeButton];
     
     // Like button disabled before data is loaded.
     if (![self.recipe isOwner]) {
@@ -131,14 +132,45 @@
         [self.view addSubview:self.likeButton];
     }
     
-    [self loadData];
+    if (self.cookNavigationController) {
+        self.collectionView.alpha = 0.0;
+        self.likesCollectionView.alpha = 0.0;
+        
+        if ([self.cookNavigationController isTopViewController:self]) {
+            self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+        } else {
+            self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
+        }
+    } else {
+        self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+        [self loadData];
+    }
     
-    // Listen for like events.
-    [EventHelper registerSocialUpdates:self selector:@selector(socialUpdates:)];
 }
 
 - (NSInteger)currentNumComments {
     return [self.comments count];
+}
+
+#pragma mark - CKNavigationControllerSupport methods
+
+- (void)cookNavigationControllerViewWillAppear:(NSNumber *)boolNumber {
+    if (![boolNumber boolValue]) {
+        [self.activityView stopAnimating];
+    }
+}
+
+- (void)cookNavigationControllerViewAppearing:(NSNumber *)boolNumber {
+    BOOL appear = [boolNumber boolValue];
+    self.backButton.alpha = appear ? 1.0 : 0.0;
+    self.collectionView.alpha = appear ? 1.0 : 0.0;
+    self.likesCollectionView.alpha = appear ? 1.0 : 0.0;
+}
+
+- (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
+    if ([boolNumber boolValue]) {
+        [self loadData];
+    }
 }
 
 #pragma mark - RecipeCommentBoxFooterViewDelegate methods
@@ -417,22 +449,6 @@
 
 #pragma mark - Properties
 
-- (UIButton *)closeButton {
-    if (!_closeButton) {
-        _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"]
-                                            target:self
-                                          selector:@selector(closeTapped:)];
-        _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _closeButton.frame = (CGRect){
-            kContentInsets.left,
-            kContentInsets.top,
-            _closeButton.frame.size.width,
-            _closeButton.frame.size.height
-        };
-    }
-    return _closeButton;
-}
-
 - (CKActivityIndicatorView *)activityView {
     if (!_activityView) {
         _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
@@ -503,7 +519,6 @@
 #pragma mark - Private methods
 
 - (void)loadData {
-    self.loading = YES;
     
     [self.recipe commentsLikesWithCompletion:^(NSArray *comments, NSArray *likes) {
         DLog(@"Loaded [%d] comments", [comments count]);
@@ -531,12 +546,6 @@
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
             } completion:^(BOOL finished) {
                 
-//                // Scroll right to the bottom.
-//                [self.collectionView setContentOffset:(CGPoint){
-//                    self.collectionView.bounds.origin.x,
-//                    self.collectionView.contentSize.height - self.collectionView.bounds.size.height
-//                } animated:YES];
-                
             }];
             
         } else {
@@ -563,6 +572,14 @@
         [cell.contentView addSubview:self.emptyCommentsLabel];
 
     }];
+    
+    // Listen for like events.
+    [EventHelper registerSocialUpdates:self selector:@selector(socialUpdates:)];
+
+}
+
+- (void)backTapped:(id)sender {
+    [self.cookNavigationController popViewControllerAnimated:YES];
 }
 
 - (void)closeTapped:(id)sender {

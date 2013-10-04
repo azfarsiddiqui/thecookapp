@@ -66,6 +66,11 @@
         viewController.view.transform = CGAffineTransformMakeTranslation(self.view.bounds.size.width, 0.0);
         [self.view addSubview:viewController.view];
         
+        // Inform view will appear.
+        if ([viewController respondsToSelector:@selector(cookNavigationControllerViewWillAppear:)]) {
+            [viewController performSelector:@selector(cookNavigationControllerViewWillAppear:) withObject:@(YES)];
+        }
+        
         [UIView animateWithDuration:0.3
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
@@ -76,6 +81,12 @@
                              
                              // Slide incoming from the right.
                              viewController.view.transform = CGAffineTransformIdentity;
+                             
+                             // Inform view appearing animating.
+                             if ([viewController respondsToSelector:@selector(cookNavigationControllerViewAppearing:)]) {
+                                 [viewController performSelector:@selector(cookNavigationControllerViewAppearing:) withObject:@(YES)];
+                             }
+                             
                          }
                          completion:^(BOOL finished) {
                              
@@ -84,6 +95,11 @@
                              
                              // Add to list of pushed controllers.
                              [self.viewControllers addObject:viewController];
+                             
+                             // Inform view didAppear.
+                             if ([viewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
+                                 [viewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(YES)];
+                             }
                              
                              self.animating = NO;
                              
@@ -101,6 +117,10 @@
         // Add to list of pushed controllers.
         [self.viewControllers addObject:viewController];
         
+        // Inform view didAppear.
+        if ([viewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
+            [viewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(YES)];
+        }
     }
 }
 
@@ -120,6 +140,11 @@
         // Unhide previous view controller be slid back in.
         previousViewController.view.hidden = NO;
 
+        // Inform view will disappear.
+        if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewWillAppear:)]) {
+            [poppedViewController performSelector:@selector(cookNavigationControllerViewWillAppear:) withObject:@(NO)];
+        }
+        
         [UIView animateWithDuration:0.3
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
@@ -130,8 +155,19 @@
                              
                              // Slide incoming from the left.
                              previousViewController.view.transform = CGAffineTransformIdentity;
+                             
+                             // Inform view disappear animating.
+                             if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewAppearing:)]) {
+                                 [poppedViewController performSelector:@selector(cookNavigationControllerViewAppearing:) withObject:@(NO)];
+                             }
+                             
                          }
                          completion:^(BOOL finished) {
+                             
+                             // Inform view didAppear.
+                             if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
+                                 [poppedViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(NO)];
+                             }
                              
                              // Remove the poppedViewController's view.
                              [poppedViewController.view removeFromSuperview];
@@ -144,6 +180,11 @@
                          }];
         
     } else {
+        
+        // Inform view didAppear.
+        if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
+            [poppedViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(NO)];
+        }
         
         // Remove the poppedViewController's view.
         [poppedViewController.view removeFromSuperview];
@@ -162,6 +203,14 @@
 
 - (UIViewController *)currentViewController {
     return [self.viewControllers lastObject];
+}
+
+- (UIViewController *)topViewController {
+    return [self.viewControllers firstObject];
+}
+
+- (BOOL)isTopViewController:(UIViewController *)viewController {
+    return (viewController == [self topViewController]);
 }
 
 #pragma mark - Private methods

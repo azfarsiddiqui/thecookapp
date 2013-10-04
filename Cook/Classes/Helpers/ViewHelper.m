@@ -80,7 +80,20 @@
     return [self buttonWithImage:image target:target selector:selector];
 }
 
-+ (void)addCloseButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector {
++ (UIButton *)addBackButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector {
+    UIButton *backButton = [ViewHelper backButtonLight:light target:target selector:selector];
+    backButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    backButton.frame = (CGRect){
+        kContentInsets.left,
+        kContentInsets.top,
+        backButton.frame.size.width,
+        backButton.frame.size.height
+    };
+    [view addSubview:backButton];
+    return backButton;
+}
+
++ (UIButton *)addCloseButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector {
     UIButton *closeButton = [ViewHelper closeButtonLight:light target:target selector:selector];
     closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
     closeButton.frame = (CGRect){
@@ -90,6 +103,7 @@
         closeButton.frame.size.height
     };
     [view addSubview:closeButton];
+    return closeButton;
 }
 
 #pragma mark - Sizes
