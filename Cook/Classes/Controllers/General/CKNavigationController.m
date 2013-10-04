@@ -20,12 +20,10 @@
 - (id)initWithRootViewController:(UIViewController *)viewController {
     if (self = [super init]) {
         
-        if (!viewController || ![viewController conformsToProtocol:@protocol(CKNavigationControllerSupport)]) {
-            return nil;
-        }
-        
         // Sets myself on the viewController so it can call push/pops.
-        [viewController performSelector:@selector(setCookNavigationController:) withObject:self];
+        if ([viewController conformsToProtocol:@protocol(CKNavigationControllerSupport)]) {
+            [viewController performSelector:@selector(setCookNavigationController:) withObject:self];
+        }
         
         self.viewControllers = [NSMutableArray arrayWithObject:viewController];
     }
@@ -43,7 +41,7 @@
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if (!viewController || ![viewController conformsToProtocol:@protocol(CKNavigationControllerSupport)]) {
+    if (!viewController) {
         return;
     }
     
@@ -52,7 +50,9 @@
     }
     
     // Sets myself on the viewController so it can call push/pops.
-    [viewController performSelector:@selector(setCookNavigationController:) withObject:self];
+    if ([viewController conformsToProtocol:@protocol(CKNavigationControllerSupport)]) {
+        [viewController performSelector:@selector(setCookNavigationController:) withObject:self];
+    }
     
     // Get current viewController.
     UIViewController *currentViewController = [self currentViewController];

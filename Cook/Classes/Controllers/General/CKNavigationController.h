@@ -12,6 +12,7 @@
 
 @protocol CKNavigationControllerSupport
 
+@optional
 - (void)setCookNavigationController:(CKNavigationController *)cookNavigationController;
 
 @end

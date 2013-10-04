@@ -17,6 +17,8 @@
 
 @implementation ViewHelper
 
+#define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+
 + (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector {
     return [CKEditingViewHelper okayButtonWithTarget:target selector:selector];
 }
@@ -76,6 +78,18 @@
 + (UIButton *)backButtonLight:(BOOL)light target:(id)target selector:(SEL)selector {
     UIImage *image = light ? [UIImage imageNamed:@"cook_book_inner_icon_back_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_back_dark.png"];
     return [self buttonWithImage:image target:target selector:selector];
+}
+
++ (void)addCloseButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector {
+    UIButton *closeButton = [ViewHelper closeButtonLight:light target:target selector:selector];
+    closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    closeButton.frame = (CGRect){
+        kContentInsets.left,
+        kContentInsets.top,
+        closeButton.frame.size.width,
+        closeButton.frame.size.height
+    };
+    [view addSubview:closeButton];
 }
 
 #pragma mark - Sizes

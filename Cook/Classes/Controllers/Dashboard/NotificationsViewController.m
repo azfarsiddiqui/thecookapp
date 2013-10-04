@@ -19,6 +19,7 @@
 #import "NSString+Utilities.h"
 #import "CKUser.h"
 #import "RecipeSocialViewController.h"
+#import "ProfileViewController.h"
 
 @interface NotificationsViewController () <NotificationCellDelegate, UICollectionViewDataSource,
     UICollectionViewDelegateFlowLayout, RecipeSocialViewControllerDelegate>
@@ -146,17 +147,18 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
     if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
         || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
-        
-        DLog(@"Profile Screen");
+
+        CKUser *user = notification.actionUser;
+        if (user) {
+            ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithUser:user];
+            [self.cookNavigationController pushViewController:profileViewController animated:YES];
+        }
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
                || [notificationName isEqualToString:kUserNotificationTypeLike]) {
         
         CKRecipe *recipe = notification.recipe;
         if (recipe) {
-            
-            DLog();
-            
             RecipeSocialViewController *recipeSocialViewController = [[RecipeSocialViewController alloc] initWithRecipe:recipe delegate:self];
             [self.cookNavigationController pushViewController:recipeSocialViewController animated:YES];
         }
