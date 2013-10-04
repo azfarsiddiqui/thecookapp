@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "OverlayViewController.h"
+#import "CKNavigationController.h"
 
 @class CKRecipe;
 @class CKLikeView;
@@ -21,7 +22,7 @@
 
 @end
 
-@interface RecipeSocialViewController : OverlayViewController
+@interface RecipeSocialViewController : OverlayViewController <CKNavigationControllerSupport>
 
 - (id)initWithRecipe:(CKRecipe *)recipe delegate:(id<RecipeSocialViewControllerDelegate>)delegate;
 - (NSInteger)currentNumComments;

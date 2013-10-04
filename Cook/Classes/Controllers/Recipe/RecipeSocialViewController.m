@@ -33,6 +33,8 @@
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
+@property (nonatomic, strong) CKNavigationController *cookNavigationController;
+
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UICollectionView *likesCollectionView;
 @property (nonatomic, strong) CKRecipe *recipe;
@@ -407,7 +409,8 @@
     return (UIEdgeInsets) { 0.0, 0.0, 0.0, 0.0 };
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+    minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     return 15.0;
 }

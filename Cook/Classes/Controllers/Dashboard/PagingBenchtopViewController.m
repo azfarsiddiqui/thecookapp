@@ -27,6 +27,7 @@
 #import "NotificationsViewController.h"
 #import "CKServerManager.h"
 #import "CardViewHelper.h"
+#import "CKNavigationController.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -48,6 +49,7 @@
 @property (nonatomic, strong) IllustrationPickerViewController *illustrationViewController;
 @property (nonatomic, strong) SignupViewController *signUpViewController;
 @property (nonatomic, strong) NotificationsViewController *notificationsViewController;
+@property (nonatomic, strong) CKNavigationController *cookNavigationController;
 
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
@@ -1392,18 +1394,20 @@
     [self.delegate panEnabledRequested:!show];
     if (show) {
         self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
-        [ModalOverlayHelper showModalOverlayForViewController:self.notificationsViewController show:YES
+        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.notificationsViewController];
+        [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController show:YES
                                                     animation:^{
                                                         self.notificationView.alpha = 0.0;
                                                         self.benchtopLevelView.alpha = 0.0;
                                                     } completion:nil];
     } else {
-        [ModalOverlayHelper hideModalOverlayForViewController:self.notificationsViewController
+        [ModalOverlayHelper hideModalOverlayForViewController:self.cookNavigationController
                                                     animation:^{
                                                         self.notificationView.alpha = 1.0;
                                                         self.benchtopLevelView.alpha = 1.0;
                                                     } completion:^{
                                                         self.notificationsViewController = nil;
+                                                        self.cookNavigationController = nil;
                                                     }];
     }
 }

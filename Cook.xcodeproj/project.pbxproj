@@ -648,6 +648,7 @@
 		76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A28E98177A8C7400C98F8B /* UIImage+ImageEffects.m */; };
 		76A368EA1783BD6400E5092F /* cook_dash_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A368E81783BD6400E5092F /* cook_dash_overlay.png */; };
 		76A368EB1783BD6400E5092F /* cook_dash_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A368E91783BD6400E5092F /* cook_dash_overlay@2x.png */; };
+		76A3955F17FE7D0200DF249A /* CKNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A3955E17FE7D0200DF249A /* CKNavigationController.m */; };
 		76A7D42A16E4234100118749 /* cook_book_pagedivider_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D42616E4234100118749 /* cook_book_pagedivider_left.png */; };
 		76A7D42B16E4234100118749 /* cook_book_pagedivider_left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D42716E4234100118749 /* cook_book_pagedivider_left@2x.png */; };
 		76A7D42C16E4234100118749 /* cook_book_pagedivider_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A7D42816E4234100118749 /* cook_book_pagedivider_right.png */; };
@@ -1938,6 +1939,8 @@
 		76A28E98177A8C7400C98F8B /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		76A368E81783BD6400E5092F /* cook_dash_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_overlay.png; sourceTree = "<group>"; };
 		76A368E91783BD6400E5092F /* cook_dash_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_dash_overlay@2x.png"; sourceTree = "<group>"; };
+		76A3955D17FE7D0200DF249A /* CKNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKNavigationController.h; sourceTree = "<group>"; };
+		76A3955E17FE7D0200DF249A /* CKNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKNavigationController.m; sourceTree = "<group>"; };
 		76A7D42616E4234100118749 /* cook_book_pagedivider_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_pagedivider_left.png; sourceTree = "<group>"; };
 		76A7D42716E4234100118749 /* cook_book_pagedivider_left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_pagedivider_left@2x.png"; sourceTree = "<group>"; };
 		76A7D42816E4234100118749 /* cook_book_pagedivider_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_pagedivider_right.png; sourceTree = "<group>"; };
@@ -2702,6 +2705,8 @@
 				7614D6B317DAE216001CF052 /* ProgressOverlayViewController.m */,
 				760BB11F17EFFE2700F2FD05 /* OverlayViewController.h */,
 				760BB12017EFFE2700F2FD05 /* OverlayViewController.m */,
+				76A3955D17FE7D0200DF249A /* CKNavigationController.h */,
+				76A3955E17FE7D0200DF249A /* CKNavigationController.m */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -5738,6 +5743,7 @@
 				76EBE63117952C110099E2CB /* CKLikeView.m in Sources */,
 				7614D6B417DAE216001CF052 /* ProgressOverlayViewController.m in Sources */,
 				76EE2CD8170AE7A30043D128 /* SDWebImageManager.m in Sources */,
+				76A3955F17FE7D0200DF249A /* CKNavigationController.m in Sources */,
 				76EE2CD9170AE7A30043D128 /* SDWebImagePrefetcher.m in Sources */,
 				76EE2CDA170AE7A30043D128 /* UIButton+WebCache.m in Sources */,
 				76EA65F417A639D10093B9D9 /* CKImageDecorationView.m in Sources */,
