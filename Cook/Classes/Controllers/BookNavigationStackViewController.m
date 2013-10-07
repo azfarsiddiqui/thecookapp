@@ -410,7 +410,12 @@
 
 - (void)bookTitleSelectedPage:(NSString *)page {
     self.collectionView.userInteractionEnabled = NO;
-    [self scrollToPage:page animated:YES];
+    // Dirty dirty hack to stop double tap bug. Delay allows only latest tap to be read
+    double delayInSeconds = 0.1;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self scrollToPage:page animated:YES];
+    });
 }
 
 - (void)bookTitleUpdatedOrderOfPages:(NSArray *)pages {
@@ -1215,10 +1220,8 @@
     NSInteger currentPageIndex = [self currentPageIndex];
     
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
-    
     // Fast forward to the intended page.
     if (self.fastForward) {
-        
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,
             self.collectionView.contentOffset.y
@@ -1228,12 +1231,10 @@
         self.collectionView.userInteractionEnabled = YES;
         
     } else {
-        
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,
             self.collectionView.contentOffset.y
         } animated:YES];
-        
     }
 }
 
