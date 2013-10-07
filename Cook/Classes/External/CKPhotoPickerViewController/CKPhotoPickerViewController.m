@@ -15,6 +15,7 @@
 #import "ImageHelper.h"
 #import "CKActivityIndicatorView.h"
 #import "UIImage+Scale.h"
+#import "UIDevice+Hardware.h"
 
 @interface CKPhotoPickerViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
     UIPopoverControllerDelegate, UIScrollViewDelegate, CKNotchSliderViewDelegate>
@@ -56,6 +57,11 @@
 #define kSquareCropOrigin CGPointMake(260, 134)
 #define MAX_IMAGE_WIDTH 2048
 #define MAX_IMAGE_HEIGHT 2048
+
+#define bytesPerMB 1048576.0f
+#define bytesPerPixel 4.0f
+#define pixelsPerMB ( bytesPerMB / bytesPerPixel ) // 262144 pixels, for 4 bytes per pixel.
+#define destTotalPixels kDestImageSizeMB * pixelsPerMB
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate {
     return [self initWithDelegate:delegate saveToPhotoAlbum:YES];
@@ -150,17 +156,35 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
     self.imageSourceType = picker.sourceType;
-    [self.snapshotView removeFromSuperview];
-    self.snapshotView = nil;
-    [self updateImagePreview];
-    [self updateButtons];
-    [self.popoverViewController dismissPopoverAnimated:YES];
-    self.popoverViewController = nil;
-    self.libraryPickerViewController = nil;
-    [self removeImagePicker];
-    [self.activityView stopAnimating];
+    [self.activityView startAnimating];
+    
+    //Check to see if image size is crash prone
+    CGFloat totalPixels = chosenImage.size.width * chosenImage.size.height;
+    CGFloat totalMB = totalPixels / pixelsPerMB;
+    DLog (@"Free memory: %f, Image Memory: %f", ([[UIDevice currentDevice] userMemory]/bytesPerMB)/4, totalMB);
+    if (totalMB > ([[UIDevice currentDevice] userMemory]/bytesPerMB)/4)
+    {
+        UIAlertView *sizeAlert = [[UIAlertView alloc] initWithTitle:@"Memory Warning" message:@"Your image may be too large" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [sizeAlert show];
+    }
+    else
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self updateImagePreview];
+                [self updateButtons];
+                [self.activityView stopAnimating];
+            });
+        });
+        [self.snapshotView removeFromSuperview];
+        self.snapshotView = nil;
+        [self.popoverViewController dismissPopoverAnimated:YES];
+        self.popoverViewController = nil;
+        self.libraryPickerViewController = nil;
+        [self removeImagePicker];
+    }
 }
 
 - (CGSize)getResizeOfImageSize:(CGSize)imageSize {
@@ -647,7 +671,7 @@
     return croppedImage;
 }
 
-- (UIImageOrientation *)adjustedOrientationofImage:(UIImage *)image
+- (UIImageOrientation)adjustedOrientationofImage:(UIImage *)image
 {
     DLog(@"Image orientation is: %i", image.imageOrientation);
     UIInterfaceOrientation appOrientation = [UIApplication sharedApplication].statusBarOrientation;
@@ -736,8 +760,8 @@
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex
 {
     [self.filterPickerView startFilterLoading];
+    UIImage *filteredImage = self.selectedImage;
     @autoreleasepool {
-        UIImage *filteredImage = self.selectedImage;
         switch (notchIndex) {
             case CKPhotoFilterTypeNone:
                 break;
@@ -879,6 +903,10 @@
     }
     
     return finalImage;
+}
+
+- (void)didReceiveMemoryWarning{
+    DLog(@"Got memroy warning in Photo");
 }
 
 
