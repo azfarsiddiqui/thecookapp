@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "CKNavigationController.h"
+#import "OverlayViewController.h"
 
 @class CKUser;
 
-@interface ProfileViewController : UIViewController <CKNavigationControllerSupport>
+@interface ProfileViewController : OverlayViewController <CKNavigationControllerSupport>
 
 - (id)initWithUser:(CKUser *)user;
 

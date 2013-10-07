@@ -15,6 +15,7 @@
 
 @optional
 - (void)bookSummaryViewEditing:(BOOL)editing;
+- (void)bookSummaryViewBookFollowed;
 
 @end
 
@@ -27,6 +28,7 @@
 
 - (id)initWithBook:(CKBook *)book;
 - (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode;
+- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode addMode:(BOOL)addMode;
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated;
 
 @end
