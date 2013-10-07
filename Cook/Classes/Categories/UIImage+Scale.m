@@ -93,9 +93,10 @@
         
     }
     
-    UIGraphicsBeginImageContext(bounds.size);
+    UIGraphicsBeginImageContextWithOptions(bounds.size, YES, 0.f);
     
     CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetInterpolationQuality(context, kCGInterpolationLow);
     
     if (orient == UIImageOrientationRight || orient == UIImageOrientationLeft) {
         CGContextScaleCTM(context, -scaleRatio, scaleRatio);
@@ -108,10 +109,12 @@
     
     CGContextConcatCTM(context, transform);
     
-    CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, width, height), imgRef);
-    UIImage *imageCopy = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
+    UIImage *imageCopy;
+    @autoreleasepool {
+        CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, width, height), imgRef);
+        imageCopy = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
     return imageCopy;
 }
 
