@@ -17,6 +17,8 @@
 
 @implementation ViewHelper
 
+#define kContentInsets          (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
+
 + (UIButton *)okButtonWithTarget:(id)target selector:(SEL)selector {
     return [CKEditingViewHelper okayButtonWithTarget:target selector:selector];
 }
@@ -76,6 +78,32 @@
 + (UIButton *)backButtonLight:(BOOL)light target:(id)target selector:(SEL)selector {
     UIImage *image = light ? [UIImage imageNamed:@"cook_book_inner_icon_back_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_back_dark.png"];
     return [self buttonWithImage:image target:target selector:selector];
+}
+
++ (UIButton *)addBackButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector {
+    UIButton *backButton = [ViewHelper backButtonLight:light target:target selector:selector];
+    backButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    backButton.frame = (CGRect){
+        kContentInsets.left,
+        kContentInsets.top,
+        backButton.frame.size.width,
+        backButton.frame.size.height
+    };
+    [view addSubview:backButton];
+    return backButton;
+}
+
++ (UIButton *)addCloseButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector {
+    UIButton *closeButton = [ViewHelper closeButtonLight:light target:target selector:selector];
+    closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+    closeButton.frame = (CGRect){
+        kContentInsets.left,
+        kContentInsets.top,
+        closeButton.frame.size.width,
+        closeButton.frame.size.height
+    };
+    [view addSubview:closeButton];
+    return closeButton;
 }
 
 #pragma mark - Sizes

@@ -52,6 +52,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 + (BOOL)invalidCredentialsForSignInError:(NSError *)error;
 + (void)setGuestTheme:(DashTheme)theme;
 + (DashTheme)currentTheme;
++ (NSURL *)defaultBlankProfileUrl;
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;

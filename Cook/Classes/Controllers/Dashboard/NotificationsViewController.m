@@ -18,9 +18,11 @@
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
 #import "CKUser.h"
+#import "RecipeSocialViewController.h"
+#import "ProfileViewController.h"
 
 @interface NotificationsViewController () <NotificationCellDelegate, UICollectionViewDataSource,
-    UICollectionViewDelegateFlowLayout>
+    UICollectionViewDelegateFlowLayout, RecipeSocialViewControllerDelegate>
 
 @property (nonatomic, weak) id<NotificationsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -29,6 +31,8 @@
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
 @property (nonatomic, strong) UICollectionView *collectionView;
+
+@property (nonatomic, strong) CKNavigationController *cookNavigationController;
 
 @end
 
@@ -64,6 +68,13 @@
 
 - (BOOL)notificationCellInProgress:(NotificationCell *)notificationCell {
     return [self notificationActionInProgressForNotification:notificationCell.notification];
+}
+
+#pragma mark - RecipeSocialViewControllerDelegate methods
+
+- (void)recipeSocialViewControllerCloseRequested {
+    DLog();
+    [self.cookNavigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -124,13 +135,35 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             515.0
         };
     }
-
     
 }
 
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    CKUserNotification *notification = [self.notifications objectAtIndex:indexPath.item];
+    NSString *notificationName = notification.name;
+
+    if ([notificationName isEqualToString:kUserNotificationTypeFriendRequest]
+        || [notificationName isEqualToString:kUserNotificationTypeFriendAccept]) {
+
+        CKUser *user = notification.actionUser;
+        if (user) {
+            ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithUser:user];
+            [self.cookNavigationController pushViewController:profileViewController animated:YES];
+        }
+        
+    } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
+               || [notificationName isEqualToString:kUserNotificationTypeLike]) {
+        
+        CKRecipe *recipe = notification.recipe;
+        if (recipe) {
+            RecipeSocialViewController *recipeSocialViewController = [[RecipeSocialViewController alloc] initWithRecipe:recipe delegate:self];
+            [self.cookNavigationController pushViewController:recipeSocialViewController animated:YES];
+        }
+    }
+
 }
 
 #pragma mark - UICollectionViewDataSource methods

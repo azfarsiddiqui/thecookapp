@@ -188,6 +188,15 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }
 }
 
++ (NSURL *)defaultBlankProfileUrl {
+    static dispatch_once_t pred;
+    static NSURL *sharedProfileUrl = nil;
+    dispatch_once(&pred, ^{
+        sharedProfileUrl = [[NSBundle mainBundle] URLForResource:@"cook_default_profile" withExtension:@"png"];
+    });
+    return sharedProfileUrl;
+}
+
 #pragma mark - CKModel 
 
 - (NSString *)objectId {
@@ -238,7 +247,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
         pictureUrl = [NSURL URLWithString:
                       [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", self.facebookId]];
     } else {
-        pictureUrl = [[NSBundle mainBundle] URLForResource:@"cook_default_profile" withExtension:@"png"];
+        pictureUrl = [CKUser defaultBlankProfileUrl];
     }
     return pictureUrl;
 }

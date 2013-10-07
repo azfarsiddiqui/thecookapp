@@ -51,11 +51,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, weak) id<BookModalViewControllerDelegate> modalDelegate;
 
-// Blurring artifacts.
-@property (nonatomic, assign) BOOL blur;
-@property (nonatomic, strong) UIImageView *blurredImageView;
-@property (nonatomic, strong) CALayer *blurredMaskLayer;
-
 // Content and panning related.
 @property (nonatomic, strong) UIScrollView *imageScrollView;
 @property (nonatomic, strong) RecipeImageView *imageView;
@@ -120,7 +115,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
         self.recipe = recipe;
         self.book = recipe.book;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
-        self.blur = NO;
         self.currentUser = [CKUser currentUser];
     }
     return self;
@@ -718,20 +712,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.topShadowView.alpha = 0.0;
     [self.view insertSubview:self.topShadowView aboveSubview:self.imageView];
     
-    if (self.blur) {
-        UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:imageView.bounds];
-        blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        [self.imageView addSubview:blurredImageView];
-        self.blurredImageView = blurredImageView;
-        
-        // Setting up mask
-        self.blurredMaskLayer = [CALayer layer];
-        self.blurredMaskLayer.frame = CGRectZero;
-        self.blurredMaskLayer.backgroundColor = [UIColor blackColor].CGColor;
-        self.blurredImageView.layer.mask = self.blurredMaskLayer;
-
-    }
-    
     // Photo button to be hidden for editMode.
     CGRect photoButtonFrame = self.photoButtonView.frame;
     photoButtonFrame.origin = (CGPoint){
@@ -786,19 +766,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self.view insertSubview:contentImageView belowSubview:self.scrollView];
     self.contentImageView = contentImageView;
     
-    // Set up a placeholder view so that it can back the whiteColor before blurredImage fades in.
-    if (self.blur) {
-        self.placeholderHeaderView = [[UIView alloc] initWithFrame:(CGRect){
-            self.scrollView.bounds.origin.x,
-            self.scrollView.bounds.origin.y,
-            self.contentImageView.bounds.size.width,
-            [self headerHeight]
-        }];
-        self.placeholderHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-        self.placeholderHeaderView.backgroundColor = [Theme recipeGridImageBackgroundColour];  // White colour to start off with then fade out.
-        [self.scrollView addSubview:self.placeholderHeaderView];
-    }
-    
     // Register a concurrent panGesture to drag panel up and down.
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
     panGestureRecognizer.delegate = self;
@@ -838,9 +805,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     CGRect contentBackgroundFrame = self.contentImageView.frame;
     contentBackgroundFrame.origin.y = contentFrame.origin.y + kContentImageOffset.vertical;
     self.contentImageView.frame = contentBackgroundFrame;
-    
-    // Dynamic blur.
-    [self performDynamicBlur];
 }
 
 - (void)loadData {
@@ -886,9 +850,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.imageView.placeholder = placeholder;
     self.topShadowView.image = [ViewHelper topShadowImageSubtle:placeholder];
     
-    if (self.blur) {
-        self.blurredImageView.image = [ImageHelper blurredRecipeImage:image];
-    }
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -955,15 +916,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                 options:[self animationCurveFromViewport:currentViewport toViewport:viewport]
                              animations:^{
                                  
-                                 // Make an explicit CA transaction that synchronises with UIView animation.
-                                 if (self.blur) {
-                                     [CATransaction begin];
-                                     [CATransaction setAnimationDuration:bounceDuration];
-                                     [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
-                                     self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:bounceFrame];
-                                     [CATransaction commit];
-                                 }
-                                 
                                  self.scrollView.frame = bounceFrame;
                                  [self updateDependentViews];
                                  
@@ -976,15 +928,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                        delay:0.0
                                                      options:UIViewAnimationOptionCurveEaseIn
                                                   animations:^{
-                                                      
-                                                      // Bounce back
-                                                      if (self.blur) {
-                                                          [CATransaction begin];
-                                                          [CATransaction setAnimationDuration:0.1];
-                                                          [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-                                                          self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
-                                                          [CATransaction commit];
-                                                      }
                                                       
                                                       self.scrollView.frame = frame;
                                                       [self updateDependentViews];
@@ -1009,15 +952,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                   delay:0.0
                                 options:[self animationCurveFromViewport:currentViewport toViewport:viewport]
                              animations:^{
-                                 
-                                 // Make an explicit CA transaction that synchronises with UIView animation.
-                                 if (self.blur) {
-                                     [CATransaction begin];
-                                     [CATransaction setAnimationDuration:duration];
-                                     [CATransaction setAnimationTimingFunction:[self timingFunctionFromViewport:currentViewport toViewport:viewport]];
-                                     self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:frame];
-                                     [CATransaction commit];
-                                 }
                                  
                                  self.scrollView.frame = frame;
                                  [self updateDependentViews];
@@ -1443,7 +1377,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
         
     } else {
-        self.view.hidden = NO;
+        self.view.userInteractionEnabled = YES;
+        self.scrollView.userInteractionEnabled = YES;
+        self.imageScrollView.userInteractionEnabled = YES;
     }
     [ModalOverlayHelper showModalOverlayForViewController:self.socialViewController
                                                      show:show
@@ -1452,7 +1388,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                 } completion:^{
                                                     
                                                     if (show) {
-                                                        self.view.hidden = YES;
+                                                        self.view.userInteractionEnabled = NO;
+                                                        self.scrollView.userInteractionEnabled = NO;
+                                                        self.imageScrollView.userInteractionEnabled = NO;
                                                     } else {
                                                         
                                                         // Reattach the like view which was adopted by Social.
@@ -1825,42 +1763,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                        completion();
                                                    }
                                                }];
-}
-
-- (void)performDynamicBlur {
-    [self performDynamicBlurInsideTransaction:NO];
-}
-
-- (void)performDynamicBlurInsideTransaction:(BOOL)insideTransaction {
-    [self performDynamicBlurInsideTransaction:insideTransaction proposedScrollViewBounds:self.scrollView.bounds];
-}
-
-- (void)performDynamicBlurInsideTransaction:(BOOL)insideTransaction proposedScrollViewBounds:(CGRect)scrollViewBounds {
-    if (self.blur) {
-        
-        // From Fun with Masks: https://github.com/evanwdavis/Fun-with-Masks
-        // Without the CATransaction the mask's frame setting is actually slighty animated, appearing to give it a delay as we scroll around.
-        // This disables implicit animation.
-        if (!insideTransaction) {
-            [CATransaction begin];
-            [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-        }
-        self.blurredMaskLayer.frame = [self blurredFrameForProposedScrollViewBounds:scrollViewBounds];
-        if (!insideTransaction) {
-            [CATransaction commit];
-        }
-    }
-}
-
-- (CGRect)blurredFrameForProposedScrollViewBounds:(CGRect)bounds {
-    CGRect headerFrame = (CGRect){
-        bounds.origin.x,
-        bounds.origin.y,
-        bounds.size.width,
-        [self headerHeight]
-    };
-    CGRect headerFrameRootView = [self.scrollView convertRect:headerFrame toView:self.view];
-    return [self.view convertRect:headerFrameRootView toView:self.imageView];
 }
 
 - (CGRect)zoomFrameForScale:(float)scale withCenter:(CGPoint)center {
