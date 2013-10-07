@@ -777,7 +777,7 @@
     if (currentUser) {
         
         // Load logged-in user's book.
-        [CKBook fetchBookForUser:currentUser
+        [CKBook dashboardBookForUser:currentUser
                          success:^(CKBook *book) {
                              
                              // Could be called again via cache, or reloaded via login.
@@ -842,7 +842,7 @@
     } else {
         
         // Load login book.
-        [CKBook fetchGuestBookSuccess:^(CKBook *guestBook) {
+        [CKBook dashboardGuestBookSuccess:^(CKBook *guestBook) {
             
             if (self.myBook) {
                 self.myBook = guestBook;
@@ -900,7 +900,7 @@
 
 - (void)loadFollowBooksReload:(BOOL)reload {
     
-    [CKBook fetchFollowBooksSuccess:^(NSArray *followBooks) {
+    [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks) {
         self.followBooks = [NSMutableArray arrayWithArray:followBooks];
         NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
         

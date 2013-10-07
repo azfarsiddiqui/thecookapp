@@ -37,9 +37,10 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @property (nonatomic, strong) PFFile *coverPhotoThumbFile;
 
 // Fetches
-+ (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-+ (void)fetchGuestBookSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
-+ (void)fetchFollowBooksSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)dashboardBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)dashboardGuestBookSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)dashboardFollowBooksSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)fetchRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 

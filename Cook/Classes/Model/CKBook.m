@@ -19,7 +19,21 @@
 
 @implementation CKBook
 
-+ (void)fetchBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
+    [query setCachePolicy:kPFCachePolicyNetworkElseCache];
+    [query whereKey:kUserModelForeignKeyName equalTo:user.parseObject];
+    [query includeKey:kUserModelForeignKeyName];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseBook, NSError *error) {
+        if (!error) {
+            success([CKBook bookWithParseObject:parseBook]);
+        } else {
+            failure(error);
+        }
+    }];
+}
+
++ (void)dashboardBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     PFQuery *query = [PFQuery queryWithClassName:kBookModelName];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
@@ -69,7 +83,7 @@
 
 }
 
-+ (void)fetchGuestBookSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)dashboardGuestBookSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     // This creates it locally and not persisted, may be extended for network fetch.
     PFObject *parseBook = [PFObject objectWithClassName:kBookModelName];
@@ -84,7 +98,7 @@
     success(guestBook);
 }
 
-+ (void)fetchFollowBooksSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)dashboardFollowBooksSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"followBooks"
                        withParameters:@{}

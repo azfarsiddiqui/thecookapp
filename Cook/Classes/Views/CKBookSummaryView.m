@@ -17,26 +17,33 @@
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
 #import "CKPhotoManager.h"
+#import "EventHelper.h"
 #import "CKEditingViewHelper.h"
 #import "CKEditViewController.h"
 #import "CKTextFieldEditViewController.h"
 #import "CKTextViewEditViewController.h"
+#import "CKButtonView.h"
 
 @interface CKBookSummaryView () <CKPhotoPickerViewControllerDelegate, CKUserProfilePhotoViewDelegate,
     CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
 @property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKUser *currentUser;
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UIImageView *profileOverlay;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIImageView *dividerView;
 @property (nonatomic, strong) UILabel *storyLabel;
+@property (nonatomic, strong) UILabel *actionButtonCaptionLabel;
+@property (nonatomic, strong) CKButtonView *actionButtonView;
 @property (nonatomic, strong) CKStatView *pagesStatView;
 @property (nonatomic, strong) CKStatView *recipesStatView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, assign) BOOL storeMode;
+@property (nonatomic, assign) BOOL addMode;
+@property (nonatomic, assign) BOOL pendingAcceptance;
 
 @end
 
@@ -49,6 +56,7 @@
 #define kInterStatsGap      10.0
 #define kNameStatsGap       8.0
 #define kStatsStoryGap      34.0
+#define kActionCaptionFont  [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0]
 
 + (CGSize)sizeForStoreMode:(BOOL)storeMode {
     return storeMode ? kSummaryStoreSize : kSummarySize;
@@ -59,11 +67,17 @@
 }
 
 - (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode {
+    return [self initWithBook:book storeMode:NO addMode:NO];
+}
+
+- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode addMode:(BOOL)addMode {
     if (self = [super initWithFrame:(CGRect){ 0.0, 0.0, [CKBookSummaryView sizeForStoreMode:storeMode].width, [CKBookSummaryView sizeForStoreMode:storeMode].height }]) {
         self.book = book;
         self.storeMode = storeMode;
+        self.addMode = addMode;
         self.backgroundColor = [UIColor clearColor];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
+        self.currentUser = [CKUser currentUser];
         
         [self initViews];
         [self loadData];
@@ -326,6 +340,17 @@
     
     // Book story.
     [self updateStory:self.book.story];
+    
+    // Action button.
+    if (self.addMode) {
+        [self initAddButton];
+    } else {
+        
+        if (![self.book.user isEqual:self.currentUser]) {
+            [self initFriendsButton];
+        }
+    }
+
 }
 
 - (void)updateName:(NSString *)name {
@@ -494,6 +519,158 @@
     self.nameLabel.textColor = editMode ? [Theme editPhotoColour] : [Theme storeBookSummaryNameColour];
     self.nameLabel.shadowColor = editMode ? [UIColor clearColor] : [UIColor blackColor];
     self.nameLabel.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, 1.0);
+}
+
+- (void)initAddButton {
+    NSString *buttonText = @"ADD TO BENCH";
+    [self initActionButtonWithSelector:@selector(addTapped:)];
+    [self updateAddButtonText:buttonText activity:YES enabled:NO];
+    
+    if (self.currentUser) {
+        [self.book isFollowedByUser:self.currentUser
+                            success:^(BOOL followed) {
+                                if (followed) {
+                                    [self updateButtonText:@"BOOK ON BENCH" activity:NO
+                                                      icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                   enabled:NO target:nil selector:nil];
+                                } else {
+                                    [self updateAddButtonText:buttonText activity:NO enabled:YES];
+                                }
+                            }
+                            failure:^(NSError *error) {
+                                [self updateAddButtonText:buttonText activity:NO enabled:NO];
+                            }];
+    } else {
+        [self updateButtonText:@"PLEASE SIGN IN" activity:NO icon:nil enabled:NO target:nil selector:nil];
+    }
+}
+
+- (void)initFriendsButton {
+    NSString *friendRequestText = @"ADD FRIEND";
+    
+    [self initActionButtonWithSelector:@selector(requestTapped:)];
+    [self updateRequestButtonText:friendRequestText activity:YES enabled:NO];
+    
+    if (self.currentUser) {
+        [self.currentUser checkIsFriendsWithUser:self.book.user
+                                      completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
+                                          if (alreadyConnected) {
+                                              [self updateButtonText:@"ALREADY FRIENDS" activity:NO
+                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                             enabled:NO target:nil selector:nil];
+                                          } else if (pendingAcceptance) {
+                                              self.pendingAcceptance = pendingAcceptance;
+                                              [self updateButtonText:@"ADD FRIEND" activity:NO
+                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_bg_icon_addfriend.png"]
+                                                             enabled:YES target:nil selector:nil];
+                                              
+                                              self.actionButtonCaptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+                                              self.actionButtonCaptionLabel.font = kActionCaptionFont;
+                                              self.actionButtonCaptionLabel.textColor = [UIColor whiteColor];
+                                              self.actionButtonCaptionLabel.text = [[NSString stringWithFormat:@"%@ WANTS TO BE FRIENDS", [self.book.user friendlyName]] uppercaseString];
+                                              [self.actionButtonCaptionLabel sizeToFit];
+                                              self.actionButtonCaptionLabel.frame = (CGRect){
+                                                  floorf((self.bounds.size.width - self.actionButtonCaptionLabel.frame.size.width) / 2.0),
+                                                  self.actionButtonView.frame.origin.y + self.actionButtonView.frame.size.height,
+                                                  self.actionButtonCaptionLabel.frame.size.width,
+                                                  self.actionButtonCaptionLabel.frame.size.height
+                                              };
+                                              [self addSubview:self.actionButtonCaptionLabel];
+                                              
+                                          } else if (alreadySent) {
+                                              [self updateButtonText:@"REQUESTED" activity:NO
+                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                             enabled:NO target:nil selector:nil];
+                                          } else {
+                                              [self updateRequestButtonText:friendRequestText activity:NO enabled:YES];
+                                          }
+                                      } failure:^(NSError *error) {
+                                          [self updateRequestButtonText:friendRequestText activity:NO enabled:NO];
+                                      }];
+    } else {
+        [self updateButtonText:@"PLEASE SIGN IN" activity:NO icon:nil enabled:NO target:nil selector:nil];
+    }
+}
+
+- (void)initActionButtonWithSelector:(SEL)selector {
+    CKButtonView *actionButtonView = [[CKButtonView alloc] initWithTarget:self action:selector];
+    actionButtonView.frame = CGRectMake(floorf((self.bounds.size.width - actionButtonView.frame.size.width) / 2.0),
+                                        self.bounds.size.height - actionButtonView.frame.size.height,
+                                        actionButtonView.frame.size.width,
+                                        actionButtonView.frame.size.height);
+    [self addSubview:actionButtonView];
+    self.actionButtonView = actionButtonView;
+}
+
+- (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
+    
+    [self updateAddButtonText:text activity:activity enabled:enabled target:nil selector:nil];
+}
+
+- (void)updateAddButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled target:(id)target selector:(SEL)selector {
+    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_selected_icon_addtodash.png"];
+    [self updateButtonText:text activity:activity icon:iconImage enabled:enabled target:target selector:selector];
+}
+
+- (void)updateRequestButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
+    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_selected_bg_icon_addfriend.png"];
+    [self updateButtonText:text activity:activity icon:iconImage enabled:enabled target:nil selector:nil];
+}
+
+- (void)updateButtonText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)iconImage enabled:(BOOL)enabled
+                  target:(id)target selector:(SEL)selector {
+    
+    [self.actionButtonView setText:[text uppercaseString] activity:activity icon:iconImage enabled:enabled
+                            target:target selector:selector];
+}
+
+- (void)requestTapped:(id)sender {
+    [self.actionButtonCaptionLabel removeFromSuperview];
+    
+    if (self.pendingAcceptance) {
+        [self updateRequestButtonText:@"ACCEPTING" activity:YES enabled:NO];
+    } else {
+        [self updateRequestButtonText:@"SENDING" activity:YES enabled:NO];
+    }
+    [self.currentUser requestFriend:self.book.user
+                         completion:^{
+                             if (self.pendingAcceptance) {
+                                 [self updateButtonText:@"ACCEPTED" activity:NO
+                                                   icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                enabled:NO target:nil selector:nil];
+                             } else {
+                                 [self updateButtonText:@"REQUESTED" activity:NO
+                                                   icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                enabled:NO target:nil selector:nil];
+                             }
+                         }
+                            failure:^(NSError *error) {
+                                [self updateButtonText:@"UNABLE TO SEND" activity:NO icon:nil enabled:NO target:nil selector:nil];
+                            }];
+}
+
+- (void)addTapped:(id)sender {
+    [self updateAddButtonText:@"ADD TO BENCH" activity:YES enabled:NO];
+    
+    // Weak reference so we don't have retain cycles.
+    __weak typeof(self) weakSelf = self;
+    [self.book addFollower:self.currentUser
+                   success:^{
+                       [weakSelf updateButtonText:@"BOOK ON BENCH" activity:NO
+                                             icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                          enabled:NO target:nil selector:nil];
+                       
+                       [EventHelper postFollow:YES book:weakSelf.book];
+                       
+                       // Inform delegate that book has been followed/updated.
+                       if ([weakSelf.delegate respondsToSelector:@selector(bookSummaryViewBookFollowed)]) {
+                           [weakSelf.delegate bookSummaryViewBookFollowed];
+                       }
+                       
+                   }
+                   failure:^(NSError *error) {
+                       [weakSelf updateAddButtonText:@"UNABLE TO ADD" activity:NO enabled:NO];
+                   }];
 }
 
 @end
