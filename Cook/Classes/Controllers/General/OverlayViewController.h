@@ -10,4 +10,9 @@
 
 @interface OverlayViewController : UIViewController
 
+@property (nonatomic, strong) UILabel *statusMessageLabel;
+
+- (void)clearStatusMessage;
+- (void)displayStatusMessage:(NSString *)statusMessage;
+
 @end
