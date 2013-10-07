@@ -170,6 +170,12 @@
     }
     else
     {
+        [self.snapshotView removeFromSuperview];
+        self.snapshotView = nil;
+        [self.popoverViewController dismissPopoverAnimated:YES];
+        self.popoverViewController = nil;
+        self.libraryPickerViewController = nil;
+        [self removeImagePicker];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -178,12 +184,6 @@
                 [self.activityView stopAnimating];
             });
         });
-        [self.snapshotView removeFromSuperview];
-        self.snapshotView = nil;
-        [self.popoverViewController dismissPopoverAnimated:YES];
-        self.popoverViewController = nil;
-        self.libraryPickerViewController = nil;
-        [self removeImagePicker];
     }
 }
 
