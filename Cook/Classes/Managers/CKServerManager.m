@@ -74,6 +74,10 @@
     // Resets the badge.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
+        
+        // Inform received notification.
+        [EventHelper postUserNotifications:currentInstallation.badge];
+        
         currentInstallation.badge = 0;
         [currentInstallation saveEventually];
     }

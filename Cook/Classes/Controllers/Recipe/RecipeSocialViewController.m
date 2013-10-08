@@ -247,8 +247,10 @@
     CKRecipeComment *comment = [self.comments objectAtIndex:commentIndex];
     NSString *timeDisplay = [self.commentTimeDisplays objectForKey:@(commentIndex)];
     if (!timeDisplay) {
-        timeDisplay = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:comment.createdDateTime
-                                                                          fromDate:self.currentDate] uppercaseString];
+        
+        // Handle nil createdDateTime as it could be from a newly created message.
+        NSDate *date = comment.createdDateTime ? comment.createdDateTime : [NSDate date];
+        timeDisplay = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:date fromDate:self.currentDate] uppercaseString];
         [self.commentTimeDisplays setObject:timeDisplay forKey:@(commentIndex)];
     }
     return timeDisplay;
