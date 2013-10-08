@@ -413,7 +413,8 @@
     } else {
         cell = [self likeCellAtIndexPath:indexPath];
     }
-    
+    cell.layer.shouldRasterize = YES;
+    cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
     return cell;
 }
 
