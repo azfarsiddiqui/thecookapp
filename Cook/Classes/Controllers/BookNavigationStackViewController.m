@@ -502,7 +502,7 @@
         [self peekTheBook];
         
         //analytics
-        NSDictionary *dimensions = @{@"isOwnBook" : [NSNumber numberWithBool:([CKUser currentUser].objectId == self.user.objectId)]};
+        NSDictionary *dimensions = @{@"isOwnBook" : [NSString stringWithFormat:@"%i",([CKUser currentUser].objectId == self.user.objectId)]};
         [AnalyticsHelper trackEventName:@"Book opened" params:dimensions];
     }
     
