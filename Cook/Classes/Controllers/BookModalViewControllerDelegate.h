@@ -11,6 +11,8 @@
 @protocol BookModalViewControllerDelegate <NSObject>
 
 - (void)closeRequestedForBookModalViewController:(UIViewController *)viewController;
+
+@optional
 - (void)fullScreenLoadedForBookModalViewController:(UIViewController *)viewController;
 
 @end

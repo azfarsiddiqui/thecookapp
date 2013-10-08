@@ -14,6 +14,8 @@
 
 @interface RecipeDetailsViewController : UIViewController <BookModalViewController>
 
+@property (nonatomic, assign) BOOL hideNavigation;
+
 - (id)initWithRecipe:(CKRecipe *)recipe;
 - (id)initWithBook:(CKBook *)book page:(NSString *)page;
 

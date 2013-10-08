@@ -563,7 +563,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (CKLikeView *)likeButton {
-    if (![self.book isOwner] && !_likeButton) {
+    if (![self.recipe isOwner] && !_likeButton) {
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
@@ -863,7 +863,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.placeholderHeaderView = nil;
                          
                          // Inform delegate fullscreen has been loaded.
-                         [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)]) {
+                             [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+                         }
                          
                      }];
 }
@@ -1259,7 +1261,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (BOOL)canEditRecipe {
-    return ([self.book isOwner]);
+    return ([self.recipe isOwner]);
 }
 
 - (void)updateButtons {
@@ -1271,6 +1273,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)updateButtonsWithAlpha:(CGFloat)alpha {
+    
+    // Hide navigation buttons.
+    if (self.hideNavigation) {
+        return;
+    }
+    
     if (self.editMode) {
         
         // Prep photo edit button to be transitioned in.

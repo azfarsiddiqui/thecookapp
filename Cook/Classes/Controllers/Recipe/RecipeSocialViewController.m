@@ -170,6 +170,11 @@
 - (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
     if ([boolNumber boolValue]) {
         [self loadData];
+        
+        // Only show context if this was nested.
+        if (![self.cookNavigationController isTopViewController:self]) {
+            [self showContextWithRecipe:self.recipe];
+        }
     }
 }
 
