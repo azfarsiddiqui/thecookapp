@@ -23,6 +23,9 @@
 - (void)recipeSocialCommentCellCacheCommentFrame:(CGRect)commentFrame commentIndex:(NSUInteger)commentIndex;
 - (NSString *)recipeSocialCommentCellTimeDisplayForCommentIndex:(NSUInteger)commentIndex;
 
+@optional
+- (void)recipeSocialCommentCellProfileRequestedForUser:(CKUser *)user;
+
 @end
 
 @interface RecipeCommentCell : UICollectionViewCell

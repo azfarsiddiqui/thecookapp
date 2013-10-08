@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UIImage *placeholderImage;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) NSURL *profilePhotoUrl;
+@property (nonatomic, assign) BOOL editMode;
 
 @end
 
@@ -142,6 +143,10 @@
         // Add edit.
         [self initEditButton];
         
+        // Register taps.
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileTapped:)];
+        [self addGestureRecognizer:tapGesture];
+        
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
         
@@ -168,6 +173,7 @@
 }
 
 - (void)enableEditMode:(BOOL)editMode animated:(BOOL)animated {
+    self.editMode = editMode;
     
     // Edit mode only in Large mode.
     if (self.profileSize != ProfileViewSizeLarge) {
@@ -291,6 +297,16 @@
             UIImage *image = [EventHelper imageForPhotoLoading:notification];
             [self loadProfileImage:image];
         }
+    }
+}
+
+- (void)profileTapped:(UITapGestureRecognizer *)tapGesture {
+    if (self.editMode) {
+        return;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(userProfilePhotoViewTappedForUser:)]) {
+        [self.delegate userProfilePhotoViewTappedForUser:self.user];
     }
 }
 

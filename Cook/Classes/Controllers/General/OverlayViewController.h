@@ -8,11 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKRecipe;
+
 @interface OverlayViewController : UIViewController
 
 @property (nonatomic, strong) UILabel *statusMessageLabel;
 
 - (void)clearStatusMessage;
 - (void)displayStatusMessage:(NSString *)statusMessage;
+- (void)showContextWithRecipe:(CKRecipe *)recipe;
+- (void)showContextModalViewController:(UIViewController *)viewController;
 
 @end

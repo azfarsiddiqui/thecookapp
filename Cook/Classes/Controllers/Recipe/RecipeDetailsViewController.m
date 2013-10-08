@@ -34,6 +34,7 @@
 #import "ModalOverlayHelper.h"
 #import "ProgressOverlayViewController.h"
 #import "AnalyticsHelper.h"
+#import "CKNavigationController.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -90,6 +91,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
 
 // Social layer.
+@property (nonatomic, strong) CKNavigationController *cookNavigationController;
 @property (nonatomic, strong) RecipeSocialViewController *socialViewController;
 
 // Share layer.
@@ -564,7 +566,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (CKLikeView *)likeButton {
-    if (![self.book isOwner] && !_likeButton) {
+    if (![self.recipe isOwner] && !_likeButton) {
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
@@ -864,7 +866,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.placeholderHeaderView = nil;
                          
                          // Inform delegate fullscreen has been loaded.
-                         [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)]) {
+                             [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+                         }
                          
                      }];
 }
@@ -1260,7 +1264,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (BOOL)canEditRecipe {
-    return ([self.book isOwner]);
+    return ([self.recipe isOwner]);
 }
 
 - (void)updateButtons {
@@ -1272,6 +1276,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)updateButtonsWithAlpha:(CGFloat)alpha {
+    
+    // Hide navigation buttons.
+    if (self.hideNavigation) {
+        return;
+    }
+    
     if (self.editMode) {
         
         // Prep photo edit button to be transitioned in.
@@ -1376,13 +1386,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         [self hideButtons];
         self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
+        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.socialViewController];
         
     } else {
         self.view.userInteractionEnabled = YES;
         self.scrollView.userInteractionEnabled = YES;
         self.imageScrollView.userInteractionEnabled = YES;
     }
-    [ModalOverlayHelper showModalOverlayForViewController:self.socialViewController
+    [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController
                                                      show:show
                                                 animation:^{
                                                     
@@ -1399,6 +1410,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                         [self.view addSubview:self.likeButton];
                                                         
                                                         self.socialViewController = nil;
+                                                        self.cookNavigationController = nil;
+                                                        
                                                         [self updateButtons];
                                                     }
                                                 }];

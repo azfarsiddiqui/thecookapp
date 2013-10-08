@@ -10,11 +10,13 @@
 
 @class CKUserNotification;
 @class NotificationCell;
+@class CKUser;
 
 @protocol NotificationCellDelegate <NSObject>
 
 - (void)notificationCell:(NotificationCell *)notificationCell acceptFriendRequest:(BOOL)accept;
 - (BOOL)notificationCellInProgress:(NotificationCell *)notificationCell;
+- (void)notificationCellProfileRequestedForUser:(CKUser *)user;
 
 @end
 

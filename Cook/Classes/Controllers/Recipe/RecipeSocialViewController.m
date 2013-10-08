@@ -30,6 +30,7 @@
 #import "CKRecipeLike.h"
 #import "RecipeSocialLikeLayout.h"
 #import "AnalyticsHelper.h"
+#import "ProfileViewController.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -171,6 +172,11 @@
 - (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
     if ([boolNumber boolValue]) {
         [self loadData];
+        
+        // Only show context if this was nested.
+        if (![self.cookNavigationController isTopViewController:self]) {
+            [self showContextWithRecipe:self.recipe];
+        }
     }
 }
 
@@ -246,6 +252,12 @@
         [self.commentTimeDisplays setObject:timeDisplay forKey:@(commentIndex)];
     }
     return timeDisplay;
+}
+
+- (void)recipeSocialCommentCellProfileRequestedForUser:(CKUser *)user {
+    if (self.cookNavigationController && user) {
+        [self.cookNavigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+    }
 }
 
 #pragma mark - RecipeSocialLayoutDelegate methods

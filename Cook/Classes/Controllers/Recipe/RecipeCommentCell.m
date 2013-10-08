@@ -13,7 +13,7 @@
 #import "CKRecipeComment.h"
 #import "DateHelper.h"
 
-@interface RecipeCommentCell () 
+@interface RecipeCommentCell () <CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
@@ -186,12 +186,21 @@
     return self.commentLabel.text;
 }
 
+#pragma mark - CKUserProfilePhotoViewDelegate methods
+
+- (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
+    if ([self.delegate respondsToSelector:@selector(recipeSocialCommentCellProfileRequestedForUser:)]) {
+        [self.delegate recipeSocialCommentCellProfileRequestedForUser:user];
+    }
+}
+
 #pragma mark - Properties
 
 - (CKUserProfilePhotoView *)profileView {
     if (!_profileView) {
         _profileView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium];
         _profileView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _profileView.delegate = self;
         _profileView.frame = (CGRect){
             kContentInsets.left,
             kContentInsets.top,
