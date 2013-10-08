@@ -566,7 +566,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (CKLikeView *)likeButton {
-    if (![self.recipe isOwner] && !_likeButton) {
+    if (!self.hideLikeButton && ![self.recipe isOwner] && !_likeButton) {
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,

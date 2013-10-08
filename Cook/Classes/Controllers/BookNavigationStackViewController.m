@@ -42,6 +42,7 @@
 @property (nonatomic, assign) id<BookNavigationViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *recipes;
+@property (nonatomic, strong) NSMutableArray *likedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pagesContainingUpdatedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
@@ -72,6 +73,11 @@
 @property (nonatomic, strong) BookTitleViewController *titleViewController;
 @property (nonatomic, strong) BookPageViewController *currentEditViewController;
 
+// Likes
+@property (nonatomic, strong) CKRecipe *featuredLikedRecipe;
+@property (nonatomic, assign) BOOL enableLikes;
+
+// Update execution block.
 @property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
 
 @end
@@ -104,6 +110,7 @@
         self.profileViewController.bookPageDelegate = self;
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
         self.titleViewController.bookPageDelegate = self;
+        self.enableLikes = YES;
         
         // Forget about dismissed states.
         [[CardViewHelper sharedInstance] clearDismissedStates];
@@ -360,13 +367,13 @@
 }
 
 - (void)bookNavigationViewAddTapped {
-    if ([self.book isOwner]) {
+    if ([self.book isOwner] && ![self onLikesPage]) {
         [self showAddView:YES];
     }
 }
 
 - (void)bookNavigationViewEditTapped {
-    if ([self.book isOwner]) {
+    if ([self.book isOwner] && ![self onLikesPage]) {
         
         [self enableEditMode:YES];
 
@@ -563,7 +570,6 @@
     numSections += 1;                       // Profile page.
     numSections += 1;                       // Index page.
     numSections += [self.pages count];      // Content pages.
-    
     return numSections;
 }
 
@@ -804,12 +810,13 @@
     DLog();
     
     // Fetch all recipes for the book, and categorise them.
-    [self.book fetchRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSDate *lastAccessedDate) {
+    [self.book fetchRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes,
+                                     NSDate *lastAccessedDate) {
         if (parseBook) {
             self.book = [CKBook bookWithParseObject:parseBook];
         }
         self.bookLastAccessedDate = lastAccessedDate;
-        [self processRecipes:recipes];
+        [self processRecipes:recipes likedRecipes:likedRecipes];
         
     } failure:^(NSError *error) {
         
@@ -817,8 +824,9 @@
     }];
 }
 
-- (void)processRecipes:(NSArray *)recipes {
+- (void)processRecipes:(NSArray *)recipes likedRecipes:(NSArray *)likedRecipes {
     self.recipes = [NSMutableArray arrayWithArray:recipes];
+    self.likedRecipes = [NSMutableArray arrayWithArray:likedRecipes];
     [self loadRecipes];
 }
 
@@ -857,6 +865,13 @@
             // Mark the page as new.
             [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
         }
+    }
+    
+    // Add likes if we have at least one page.
+    if (self.enableLikes && [self.book isOwner] && [self.pages count] > 0) {
+        NSString *likesPageName = [self resolveLikesPageName];
+        [self.pages addObject:likesPageName];
+        [self.pageRecipes setObject:self.likedRecipes forKey:likesPageName];
     }
     
     // Process rankings.
@@ -1041,7 +1056,6 @@
     // Load featured recipe image.
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
     [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
-//    [self configureImageForHeaderView:categoryHeaderView recipe:coverRecipe indexPath:indexPath];
     
     // Keep track of category views keyed on page name.
     [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
@@ -1332,22 +1346,27 @@
     
     // Get the highest ranked recipe among the highest ranked recipes.
     self.featuredRecipe = nil;
+    NSString *likesPageName = [self resolveLikesPageName];
     [self.pageCoverRecipes each:^(NSString *page, CKRecipe *recipe) {
-        
-        if (self.featuredRecipe) {
-            if ([self rankForRecipe:recipe] > [self rankForRecipe:self.featuredRecipe]) {
+        if (![page isEqualToString:likesPageName]) {
+            if (self.featuredRecipe) {
+                if ([self rankForRecipe:recipe] > [self rankForRecipe:self.featuredRecipe]) {
+                    self.featuredRecipe = recipe;
+                }
+            } else {
                 self.featuredRecipe = recipe;
             }
-        } else {
-            self.featuredRecipe = recipe;
         }
-        
     }];
     
 }
 
 - (CKRecipe *)highestRankedRecipeForPage:(NSString *)page hasPhotos:(BOOL)hasPhotos {
     NSArray *recipes = [self.pageRecipes objectForKey:page];
+    return [self highestRankedRecipeForRecipes:recipes hasPhotos:hasPhotos];
+}
+
+- (CKRecipe *)highestRankedRecipeForRecipes:(NSArray *)recipes hasPhotos:(BOOL)hasPhotos {
     if (hasPhotos) {
         recipes = [recipes select:^BOOL(CKRecipe *recipe) {
             return [recipe hasPhotos];
@@ -1365,7 +1384,6 @@
         }
         
     }];
-    
     return highestRankedRecipe;
 }
 
@@ -1377,6 +1395,35 @@
     CGFloat pageSpan = self.collectionView.contentOffset.x;
     NSInteger pageIndex = (pageSpan / self.collectionView.bounds.size.width);
     return pageIndex;
+}
+
+- (NSString *)resolveLikesPageName {
+    NSString *resolvedLikePageName = nil;
+    
+    for (NSString *likePageName in [self potentialLikesPageNames]) {
+        if (![self.pages containsObject:likePageName]) {
+            resolvedLikePageName = likePageName;
+            break;
+        }
+    }
+    
+    return resolvedLikePageName;
+}
+
+- (NSArray *)potentialLikesPageNames {
+    return @[@"LIKES", @"LIKED", @"COOK LIKES", @"COOK LIKED"];
+}
+
+- (BOOL)onLikesPage {
+    BOOL likesPage = NO;
+    
+    NSInteger currentPageIndex = [self currentPageIndex];
+    NSInteger pageIndex = [self.pages count] + [self stackContentStartSection] - 1;
+    if (self.enableLikes && [self.book isOwner] && [self.pages count] > 1 && currentPageIndex == pageIndex) {
+        likesPage = YES;
+    }
+    
+    return likesPage;
 }
 
 @end
