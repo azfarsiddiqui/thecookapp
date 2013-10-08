@@ -16,6 +16,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
+#import "AnalyticsHelper.h"
 
 @interface RecipeShareViewController () <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate>
 
@@ -337,23 +338,33 @@
 - (void)successWithType:(CKShareType)shareType
 {
     NSString *successString;
+    NSString *socialString;
     switch (shareType) {
         case CKShareFacebook:
             successString = @"Success in posting to Facebook";
+            socialString = @"Facebook";
             break;
         case CKShareTwitter:
             successString = @"Success in posting to Twitter";
+            socialString = @"Twitter";
             break;
         case CKShareMail:
             successString = @"Success in posting to Mail";
+            socialString = @"Mail";
             break;
         case CKShareMessage:
             successString = @"Success in posting to Message";
+            socialString = @"iMessage";
             break;
         default:
             successString = @"Success";
+            socialString = @"";
             break;
     }
+    
+    // Analytics
+    NSDictionary *dimensions = @{@"socialType" : socialString};
+    [AnalyticsHelper trackEventName:@"Social Share" params:dimensions];
     DLog(@"%@", successString);
 }
 

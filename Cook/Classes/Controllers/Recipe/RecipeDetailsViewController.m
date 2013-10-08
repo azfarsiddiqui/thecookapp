@@ -33,6 +33,7 @@
 #import "RecipeImageView.h"
 #import "ModalOverlayHelper.h"
 #import "ProgressOverlayViewController.h"
+#import "AnalyticsHelper.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -1480,7 +1481,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)saveRecipe {
-    
     DLog(@"saveRequired: %@", [NSString CK_stringForBoolean:self.recipeDetails.saveRequired]);
     if (self.recipeDetails.saveRequired) {
         
@@ -1580,6 +1580,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                                                            
                                                                                        }];
                                                                                    }];
+                        //Analytics
+                        NSDictionary *dimensions = @{@"isImage" : [NSString stringWithFormat:@"%@", self.recipeDetails.image ? @YES : @NO],
+                                                     @"privacy" : [NSString stringWithFormat:@"%i", self.recipeDetails.privacy]};
+                        [AnalyticsHelper trackEventName:@"Recipe Saved" params:dimensions];
                     } failure:^(NSError *error) {
                            
                            // Run failure.

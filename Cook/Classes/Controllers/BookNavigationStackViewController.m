@@ -28,6 +28,7 @@
 #import "CKPhotoManager.h"
 #import "CardViewHelper.h"
 #import "CKSocialManager.h"
+#import "AnalyticsHelper.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -500,6 +501,9 @@
         // Start on page 1.
         [self peekTheBook];
         
+        //analytics
+        NSDictionary *dimensions = @{@"isOwnBook" : [NSNumber numberWithBool:([CKUser currentUser].objectId == self.user.objectId)]};
+        [AnalyticsHelper trackEventName:@"Book opened" params:dimensions];
     }
     
     // Left/right edges.

@@ -29,6 +29,7 @@
 #import "CKLikeView.h"
 #import "CKRecipeLike.h"
 #import "RecipeSocialLikeLayout.h"
+#import "AnalyticsHelper.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -339,7 +340,7 @@
         // Saves the comment in the background.
         self.saving = YES;
         [comment saveInBackground];
-        
+        [AnalyticsHelper trackEventName:@"Commented" params:nil];
     }
     
 }

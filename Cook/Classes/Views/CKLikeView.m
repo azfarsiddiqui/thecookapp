@@ -12,6 +12,7 @@
 #import "CKUser.h"
 #import "EventHelper.h"
 #import "CKSocialManager.h"
+#import "AnalyticsHelper.h"
 
 @interface CKLikeView ()
 
@@ -88,6 +89,7 @@
                self.liked = like;
                self.likeButton.userInteractionEnabled = YES;
                self.likeButton.enabled = YES;
+               [AnalyticsHelper trackEventName:@"Liked" params:nil];
            } failure:^(NSError *error) {
                
                // Revert the liked state.
