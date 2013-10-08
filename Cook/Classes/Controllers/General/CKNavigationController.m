@@ -38,6 +38,17 @@
     UIViewController *rootViewController = [self.viewControllers firstObject];
     rootViewController.view.frame = self.view.bounds;
     [self.view addSubview:rootViewController.view];
+    
+    // Inform view didAppear on all lifecycle events.
+    if ([rootViewController respondsToSelector:@selector(cookNavigationControllerViewWillAppear:)]) {
+        [rootViewController performSelector:@selector(cookNavigationControllerViewWillAppear:) withObject:@(YES)];
+    }
+    if ([rootViewController respondsToSelector:@selector(cookNavigationControllerViewAppearing:)]) {
+        [rootViewController performSelector:@selector(cookNavigationControllerViewAppearing:) withObject:@(YES)];
+    }
+    if ([rootViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
+        [rootViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(YES)];
+    }
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {

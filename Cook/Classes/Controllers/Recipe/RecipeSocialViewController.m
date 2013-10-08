@@ -29,6 +29,7 @@
 #import "CKLikeView.h"
 #import "CKRecipeLike.h"
 #import "RecipeSocialLikeLayout.h"
+#import "ProfileViewController.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
     RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
@@ -250,6 +251,12 @@
         [self.commentTimeDisplays setObject:timeDisplay forKey:@(commentIndex)];
     }
     return timeDisplay;
+}
+
+- (void)recipeSocialCommentCellProfileRequestedForUser:(CKUser *)user {
+    if (self.cookNavigationController && user) {
+        [self.cookNavigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+    }
 }
 
 #pragma mark - RecipeSocialLayoutDelegate methods

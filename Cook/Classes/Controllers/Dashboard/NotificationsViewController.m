@@ -70,6 +70,10 @@
     return [self notificationActionInProgressForNotification:notificationCell.notification];
 }
 
+- (void)notificationCellProfileRequestedForUser:(CKUser *)user {
+    [self showProfileForUser:user];
+}
+
 #pragma mark - RecipeSocialViewControllerDelegate methods
 
 - (void)recipeSocialViewControllerCloseRequested {
@@ -150,8 +154,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
         CKUser *user = notification.actionUser;
         if (user) {
-            ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithUser:user];
-            [self.cookNavigationController pushViewController:profileViewController animated:YES];
+            [self showProfileForUser:user];
         }
         
     } else if ([notificationName isEqualToString:kUserNotificationTypeComment]
@@ -436,6 +439,15 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return [visibleCells detect:^BOOL(NotificationCell *notificationCell) {
         return [notificationCell.notification.objectId isEqualToString:notification.objectId];
     }];
+}
+
+- (void)showProfileForUser:(CKUser *)user {
+    if (!user) {
+        return;
+    }
+    ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithUser:user];
+    [self.cookNavigationController pushViewController:profileViewController animated:YES];
+
 }
 
 @end

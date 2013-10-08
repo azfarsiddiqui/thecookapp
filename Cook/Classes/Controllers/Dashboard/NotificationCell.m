@@ -16,7 +16,7 @@
 #import "ViewHelper.h"
 #import "CKActivityIndicatorView.h"
 
-@interface NotificationCell ()
+@interface NotificationCell () <CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
 @property (nonatomic, strong) UILabel *nameLabel;
@@ -142,12 +142,19 @@
     }
 }
 
+#pragma mark - CKUserProfilePhotoViewDelegate methods
+
+- (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
+    [self.delegate notificationCellProfileRequestedForUser:user];
+}
+
 #pragma mark - Properties
 
 - (CKUserProfilePhotoView *)profileView {
     if (!_profileView) {
         _profileView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMedium];
         _profileView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _profileView.delegate = self;
         _profileView.frame = (CGRect){
             kContentInsets.left,
             kContentInsets.top + 5.0,
