@@ -320,7 +320,8 @@
 }
 
 - (CGFloat)requiredTextViewHeight {
-    CGFloat requiredHeight = [self.textView.layoutManager usedRectForTextContainer:self.textView.textContainer].size.height;
+    CGFloat requiredHeight = [self.textView.text boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName : self.textView.font} context:nil].size.height;
+    
     requiredHeight += (kTextViewAdjustments.top + kTextViewAdjustments.bottom);
     return requiredHeight;
 }
