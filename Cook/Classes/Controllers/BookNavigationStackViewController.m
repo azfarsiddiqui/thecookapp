@@ -406,6 +406,10 @@
     [contentHeaderView applyOffset:offset];
 }
 
+- (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page {
+    return (![page isEqualToString:self.likesPageName]);
+}
+
 #pragma mark - BookTitleViewControllerDelegate methods
 
 - (CKRecipe *)bookTitleFeaturedRecipeForPage:(NSString *)page {
@@ -433,7 +437,11 @@
     if (orderChanged) {
         
         self.pages = [NSMutableArray arrayWithArray:pages];
-        self.book.pages = pages;
+        if ([self.pages containsObject:self.likesPageName]) {
+            self.book.pages = [self.pages subarrayWithRange:(NSRange){ 0, [self.pages count] - 1 }];
+        } else {
+            self.book.pages = pages;
+        }
         [self.book saveInBackground];
         
         // Now relayout the content pages.
@@ -446,17 +454,7 @@
 }
 
 - (void)bookTitleAddedPage:(NSString *)page {
-    
-    [self.pages addObject:page];
-    [self.pageRecipes setObject:[NSMutableArray array] forKey:page];
-    self.book.pages = self.pages;
-    
-    // Mark layout needs to be re-generated.
-    [[self currentLayout] setNeedsRelayout:YES];
-    [self.collectionView reloadData];
-    
-    // Save the book in the background.
-    [self.book saveInBackground];
+    [self addPage:page];
 }
 
 - (BOOL)bookTitleIsNewForPage:(NSString *)page {
@@ -467,6 +465,10 @@
         return ([self.pagesContainingUpdatedRecipes objectForKey:page] != nil);
     }
     
+}
+
+- (BOOL)bookTitleHasLikes {
+    return ([self.likesPageName length] > 0);
 }
 
 #pragma mark - BookPagingStackLayoutDelegate methods
@@ -547,15 +549,18 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
+        [self updateNavBar];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self updateNavBar];
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     self.collectionView.userInteractionEnabled = YES;
     self.fastForward = NO;
+    [self updateNavBar];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -1249,6 +1254,8 @@
         // Re-enable interaction that was disabled in bookTitleSelectedPage.
         self.collectionView.userInteractionEnabled = YES;
         
+        [self updateNavBar];
+        
     } else {
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,
@@ -1424,6 +1431,34 @@
     }
     
     return likesPage;
+}
+
+- (void)updateNavBar {
+    [self.bookNavigationView enableAddAndEdit:![self onLikesPage]];
+}
+
+- (void)addPage:(NSString *)page {
+    
+    if ([self.pages containsObject:self.likesPageName]) {
+        
+        // Excludes the likes page.
+        [self.pages insertObject:page atIndex:[self.pages count] - 1];
+        self.book.pages = [self.pages subarrayWithRange:(NSRange){ 0, [self.pages count] - 1 }];
+        
+    } else {
+        
+        [self.pages addObject:page];
+        self.book.pages = self.pages;
+    }
+    
+    [self.pageRecipes setObject:[NSMutableArray array] forKey:page];
+    
+    // Mark layout needs to be re-generated.
+    [[self currentLayout] setNeedsRelayout:YES];
+    [self.collectionView reloadData];
+    
+    // Save the book in the background.
+    [self.book saveInBackground];
 }
 
 @end

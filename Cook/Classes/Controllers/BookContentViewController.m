@@ -533,7 +533,7 @@
         }
     }
     
-    DLog(@"recipe[%@] gridType[%d]", recipe.name, gridType);
+//    DLog(@"recipe[%@] gridType[%d]", recipe.name, gridType);
 
     return gridType;
 }
@@ -662,7 +662,8 @@
 }
 
 - (void)showIntroCard {
-    [self showIntroCard:([self.recipes count] == 0 && !self.editMode)];
+    [self showIntroCard:([self.delegate bookContentViewControllerAddSupportedForPage:self.page]
+                         && [self.recipes count] == 0 && !self.editMode)];
 }
 
 - (void)socialUpdates:(NSNotification *)notification {

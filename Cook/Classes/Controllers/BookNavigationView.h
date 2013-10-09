@@ -30,5 +30,6 @@
 - (void)setTitle:(NSString *)title editable:(BOOL)editable book:(CKBook *)book;
 - (void)setDark:(BOOL)dark;
 - (void)setHomeAlpha:(CGFloat)homeAlpha;
+- (void)enableAddAndEdit:(BOOL)enable;
 
 @end

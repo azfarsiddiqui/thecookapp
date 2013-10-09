@@ -749,12 +749,6 @@
 
 - (void)viewRecipe:(CKRecipe *)recipe {
     RecipeDetailsViewController *recipeViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
-    
-    // Hide like button if the recipe to be viewed doesn't belong in the book, i.e. likes. Need another way someday.
-    if (![recipe.book.objectId isEqualToString:self.selectedBook.objectId]) {
-        recipeViewController.hideLikeButton = YES;
-    }
-    
     [self showModalViewController:recipeViewController];
 }
 

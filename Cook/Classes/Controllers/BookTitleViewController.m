@@ -344,12 +344,28 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 #pragma mark - UICollectionViewDataSource_Draggable methods
 
 - (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
-    return ([self.book isOwner] && indexPath.item < [self.pages count]);
+    if ([self.book isOwner]) {
+        if ([self.delegate bookTitleHasLikes]) {
+            return (indexPath.item < [self.pages count] - 1);
+        } else {
+            return (indexPath.item < [self.pages count]);
+        }
+    } else {
+        return NO;
+    }
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
-    return ([self.book isOwner] && toIndexPath.item < [self.pages count]);
+    if ([self.book isOwner]) {
+        if ([self.delegate bookTitleHasLikes]) {
+            return (toIndexPath.item < [self.pages count] - 1);
+        } else {
+            return (toIndexPath.item < [self.pages count]);
+        }
+    } else {
+        return NO;
+    }
 }
 
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath
@@ -390,11 +406,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     NSString *text = value;
     if ([text CK_containsText]) {
-        [self.pages addObject:text];
-        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
-        [self.delegate bookTitleAddedPage:text];
-        [self enableAddMode:NO];
-        [self showIntroCard:NO];
+        [self addPageWithName:text];
     } else {
         [self enableAddMode:NO];
     }
@@ -631,5 +643,17 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     }
 }
 
+- (void)addPageWithName:(NSString *)page {
+    if ([self.delegate bookTitleHasLikes]) {
+        [self.pages insertObject:page atIndex:[self.pages count] - 1];
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 2 inSection:0]]];
+    } else {
+        [self.pages addObject:page];
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.pages count] - 1 inSection:0]]];
+    }
+    [self.delegate bookTitleAddedPage:page];
+    [self enableAddMode:NO];
+    [self showIntroCard:NO];
+}
 
 @end
