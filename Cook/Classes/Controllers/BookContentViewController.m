@@ -555,6 +555,10 @@
 }
 
 - (void)deletePage {
+    
+    // Inform delegate to exit. edit mode.
+    [self.bookPageDelegate bookPageViewController:self editModeRequested:NO];
+    
     self.progressOverlayViewController = [[ProgressOverlayViewController alloc] initWithTitle:@"DELETING"];
     [ModalOverlayHelper showModalOverlayForViewController:self.progressOverlayViewController
                                                      show:YES
