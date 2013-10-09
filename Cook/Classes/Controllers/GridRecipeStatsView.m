@@ -15,6 +15,8 @@
 #import "CKBookCover.h"
 #import "CKSocialManager.h"
 #import "DataHelper.h"
+#import "DateHelper.h"
+#import "RecipeDetails.h"
 
 @interface GridRecipeStatsView ()
 
@@ -48,7 +50,7 @@
     [self reset];
     
     self.recipe = recipe;
-    [self configureValue:[NSString CK_stringOrNilForNumber:recipe.numServes] iconIndex:0];
+    [self configureValue:[self servesDisplayForPrepTime:recipe.numServes] iconIndex:0];
     [self configureValue:[self prepCookTotalDisplayForPrepTime:recipe.prepTimeInMinutes cookTime:recipe.cookingTimeInMinutes] iconIndex:1];
     [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numCommentsForRecipe:recipe]] iconIndex:2];
     [self configureValue:[DataHelper friendlyDisplayForCount:[[CKSocialManager sharedInstance] numLikesForRecipe:recipe]] iconIndex:3];
@@ -163,9 +165,21 @@
     NSInteger totalTimeInMinutes = 0;
     if (prepTime || cookTime) {
         totalTimeInMinutes = [prepTime integerValue] + [cookTime integerValue];
-        totalDisplay = [NSString stringWithFormat:@"%d", totalTimeInMinutes];
+        if (totalTimeInMinutes >= [RecipeDetails maxPrepCookMinutes]) {
+            totalDisplay = [NSString stringWithFormat:@"%@+", [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:[RecipeDetails maxPrepCookMinutes]]];
+        } else {
+            totalDisplay = [[DateHelper sharedInstance] formattedDurationDisplayForMinutes:totalTimeInMinutes];
+        }
     }
     return totalDisplay;
+}
+
+- (NSString *)servesDisplayForPrepTime:(NSNumber *)serves {
+    NSString *servesDisplay = [NSString CK_stringOrNilForNumber:serves];
+    if (serves && [serves integerValue] > [RecipeDetails maxServes]) {
+        servesDisplay = [NSString stringWithFormat:@"%d+", [RecipeDetails maxServes]];
+    }
+    return servesDisplay;
 }
 
 - (UIImage *)likesIcon {

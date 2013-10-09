@@ -21,6 +21,10 @@
     return 480.0;
 }
 
++ (NSInteger)maxServes {
+    return 10;
+}
+
 - (id)initWithRecipe:(CKRecipe *)recipe {
     if (self = [super init]) {
         self.originalRecipe = recipe;

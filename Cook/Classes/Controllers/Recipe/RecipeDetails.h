@@ -31,6 +31,7 @@
 @property (nonatomic, assign) BOOL saveRequired;
 
 + (NSInteger)maxPrepCookMinutes;
++ (NSInteger)maxServes;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
 - (void)updateToRecipe:(CKRecipe *)recipe;

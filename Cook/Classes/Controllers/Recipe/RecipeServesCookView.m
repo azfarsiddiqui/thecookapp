@@ -68,7 +68,7 @@
 - (void)updateServes {
     if (self.editMode || self.recipeDetails.numServes) {
         UIImageView *servesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_icon_serves.png"]];
-        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[self textValueForStatNumber:self.recipeDetails.numServes]];
+        UIView *servesStatView = [self viewForStatText:@"Serves" statValue:[self servesTextValueForStatNumber:self.recipeDetails.numServes]];
         CGRect servesFrame = servesStatView.frame;
         CGRect imageFrame = servesImageView.frame;
         servesFrame.origin.x = servesImageView.frame.origin.x + servesImageView.frame.size.width + kIconStatGap;
@@ -229,6 +229,18 @@
     
     // Ugh.
     return @"0000";
+}
+
+- (NSString *)servesTextValueForStatNumber:(NSNumber *)statNumber {
+    NSString *statValue = [NSString CK_stringOrNilForNumber:statNumber];
+    if (!statValue && self.editMode) {
+        statValue = @"0";
+    } else {
+        if ([statNumber integerValue] > [RecipeDetails maxServes]) {
+            statValue = [NSString stringWithFormat:@"%d+", [RecipeDetails maxServes]];
+        }
+    }
+    return statValue;
 }
 
 - (NSString *)textValueForStatNumber:(NSNumber *)statNumber {
