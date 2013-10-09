@@ -76,6 +76,7 @@
 // Likes
 @property (nonatomic, strong) CKRecipe *featuredLikedRecipe;
 @property (nonatomic, assign) BOOL enableLikes;
+@property (nonatomic, strong) NSString *likesPageName;
 
 // Update execution block.
 @property (copy) BookNavigationUpdatedBlock bookUpdatedBlock;
@@ -869,9 +870,9 @@
     
     // Add likes if we have at least one page.
     if (self.enableLikes && [self.book isOwner] && [self.pages count] > 0) {
-        NSString *likesPageName = [self resolveLikesPageName];
-        [self.pages addObject:likesPageName];
-        [self.pageRecipes setObject:self.likedRecipes forKey:likesPageName];
+        self.likesPageName = [self resolveLikesPageName];
+        [self.pages addObject:self.likesPageName];
+        [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
     }
     
     // Process rankings.
@@ -1346,9 +1347,8 @@
     
     // Get the highest ranked recipe among the highest ranked recipes.
     self.featuredRecipe = nil;
-    NSString *likesPageName = [self resolveLikesPageName];
     [self.pageCoverRecipes each:^(NSString *page, CKRecipe *recipe) {
-        if (![page isEqualToString:likesPageName]) {
+        if (![page isEqualToString:self.likesPageName]) {
             if (self.featuredRecipe) {
                 if ([self rankForRecipe:recipe] > [self rankForRecipe:self.featuredRecipe]) {
                     self.featuredRecipe = recipe;
