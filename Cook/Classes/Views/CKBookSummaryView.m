@@ -343,15 +343,15 @@
     [self updateStory:self.book.story];
     
     // Action button.
-    if (self.addMode) {
-        [self initAddButton];
-    } else {
-        
-        if (![self.book.user isEqual:self.currentUser]) {
-            [self initFriendsButton];
+    if (self.storeMode) {
+        if (self.addMode) {
+            [self initAddButton];
+        } else {
+            if (![self.book.user isEqual:self.currentUser]) {
+                [self initFriendsButton];
+            }
         }
     }
-
 }
 
 - (void)updateName:(NSString *)name {
