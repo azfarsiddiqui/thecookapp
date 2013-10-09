@@ -138,7 +138,7 @@
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:YES
-                                                                                                              title:@"Name"
+                                                                                                              title:nil
                                                                                                      characterLimit:20];
         editViewController.forceUppercase = YES;
         editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
@@ -151,9 +151,10 @@
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
-                                                                                                            title:@"Story"
+                                                                                                            title:nil
                                                                                                    characterLimit:500];
         editViewController.clearOnFocus = ![self.book.story CK_containsText];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
