@@ -56,7 +56,18 @@
 
 - (void)like:(BOOL)like recipe:(CKRecipe *)recipe {
     NSInteger likes = [self numLikesForRecipe:recipe];
-    [self updateRecipe:recipe numLikes:like ? (likes + 1) : (likes - 1) liked:like];
+    if (like)
+    {
+        likes = likes + 1;
+    }
+    else
+    {
+        if (likes - 1 < 0) //Prevent negative likes
+            likes = 0;
+        else
+            likes = likes - 1;
+    }
+    [self updateRecipe:recipe numLikes:likes liked:like];
 }
 
 - (NSUInteger)numCommentsForRecipe:(CKRecipe *)recipe {
