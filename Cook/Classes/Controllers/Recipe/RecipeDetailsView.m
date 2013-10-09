@@ -85,7 +85,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.recipeDetails = recipeDetails;
         self.delegate = delegate;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
-        
         self.backgroundColor = [UIColor clearColor];
         
         // Pre-layout updates.
@@ -431,6 +430,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             profilePhotoView = [[CKUserProfilePhotoView alloc] initWithUser:self.recipeDetails.user
                                                                 profileSize:ProfileViewSizeSmall];
         }
+        profilePhotoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         [self addSubview:profilePhotoView];
         self.profilePhotoView = profilePhotoView;
         
@@ -442,6 +442,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         pageLabel.backgroundColor = [UIColor clearColor];
         pageLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         pageLabel.shadowColor = [UIColor whiteColor];
+        pageLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         pageLabel.hidden = YES;
         [self addSubview:pageLabel];
         self.pageLabel  = pageLabel;
@@ -486,6 +487,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.titleLabel.textColor = [Theme recipeNameColor];
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.titleLabel.backgroundColor = [UIColor clearColor];
+        self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         self.titleLabel.shadowColor = [UIColor whiteColor];
         self.titleLabel.alpha = 0.0;
@@ -542,6 +544,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.storyLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         self.storyLabel.shadowColor = [UIColor whiteColor];
         self.storyLabel.userInteractionEnabled = NO;
+        self.storyLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.storyLabel.alpha = 0.0;
         [self addSubview:self.storyLabel];
         
@@ -592,6 +595,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateContentDivider {
     if (!self.contentDividerView) {
         self.contentDividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_recipe_divider_tile.png"]];
+        self.contentDividerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         [self addSubview:self.contentDividerView];
     }
     
@@ -673,6 +677,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
                                                                              book:self.recipeDetails.originalRecipe.book
                                                                          maxWidth:kMaxLeftWidth];
+        self.ingredientsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.ingredientsView.userInteractionEnabled = NO;
         self.ingredientsView.alpha = 1.0;
         [self addSubview:self.ingredientsView];
@@ -728,6 +733,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.methodLabel.backgroundColor = [UIColor clearColor];
         self.methodLabel.userInteractionEnabled = NO;
         self.methodLabel.alpha = 0.0;
+        self.methodLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         [self addSubview:self.methodLabel];
         [self updateMethodFrame];
     }
@@ -772,6 +778,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         }
         
         frame = (CGRectUnion(frame, subview.frame));
+        frame.size.width = kWidth;
         frame.size.height += kContentInsets.bottom;
     }
     self.frame = frame;
@@ -824,6 +831,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     [preStoryDividerView addSubview:leftDividerView];
     [preStoryDividerView addSubview:rightDividerView];
+    
+    preStoryDividerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+
     return preStoryDividerView;
 }
 
