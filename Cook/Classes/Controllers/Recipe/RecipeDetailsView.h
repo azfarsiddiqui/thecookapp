@@ -20,7 +20,7 @@
 
 @interface RecipeDetailsView : UIView
 
-@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UITextView *titleTextView;
 @property (nonatomic, strong) UILabel *storyLabel;
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate;
