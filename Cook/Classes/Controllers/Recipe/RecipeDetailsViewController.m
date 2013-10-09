@@ -97,6 +97,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 // Share layer.
 @property (nonatomic, strong) RecipeShareViewController *shareViewController;
 
+// Alerts
+@property (nonatomic, strong) UIAlertView *cancelAlert;
+@property (nonatomic, strong) UIAlertView *deleteAlert;
+
 @end
 
 @implementation RecipeDetailsViewController
@@ -497,12 +501,20 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    
-    // OK Button tapped.
-    if (buttonIndex == 1) {
+    // OK Button tapped on delete.
+    if (buttonIndex == 1 && alertView == self.deleteAlert) {
         [self deleteRecipe];
     }
-    
+    //Yes hit on cancel
+    else if (buttonIndex == 1 && alertView == self.cancelAlert)
+    {
+        if (self.addMode) {
+            [self closeRecipeView];
+        } else {
+            [self initRecipeDetails];
+            [self enableEditMode:NO];
+        }
+    }
 }
 
 #pragma mark - KVO methods
@@ -1483,12 +1495,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)cancelTapped:(id)sender {
-    if (self.addMode) {
-        [self closeRecipeView];
-    } else {
-        [self initRecipeDetails];
-        [self enableEditMode:NO];
-    }
+    self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Cancel without Saving?" message:nil delegate:self
+                                        cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    [self.cancelAlert show];
 }
 
 - (void)saveTapped:(id)sender {
@@ -1496,9 +1505,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)deleteTapped:(id)sender {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Recipe?" message:nil delegate:self
+    self.deleteAlert = [[UIAlertView alloc] initWithTitle:@"Delete Recipe?" message:nil delegate:self
                                               cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-    [alertView show];
+    [self.deleteAlert show];
 }
 
 - (void)saveRecipe {
