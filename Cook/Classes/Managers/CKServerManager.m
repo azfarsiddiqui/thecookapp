@@ -22,8 +22,6 @@
 
 @implementation CKServerManager
 
-#define kBoolLoginSuccessful        @"CKBoolLoginSuccessful"
-
 + (CKServerManager *)sharedInstance {
     static dispatch_once_t pred;
     static CKServerManager *sharedInstance = nil;
@@ -145,10 +143,12 @@
 #pragma mark - Private methods
 
 - (void)loggedIn:(NSNotification *)notification {
-    BOOL isSuccess = [[notification.userInfo objectForKey:kBoolLoginSuccessful] boolValue];
+    BOOL isSuccess = [EventHelper loginSuccessfulForNotification:notification];
+    
     // Register for push.
-    if (isSuccess)
+    if (isSuccess) {
         [self registerForPush];
+    }
 }
 
 - (void)loggedOut:(NSNotification *)notification {
