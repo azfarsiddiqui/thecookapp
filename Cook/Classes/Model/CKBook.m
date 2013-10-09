@@ -382,13 +382,14 @@
 
 - (void)fetchRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    [PFCloud callFunctionInBackground:@"bookRecipes"
+    [PFCloud callFunctionInBackground:@"bookRecipesWithLikes"
                        withParameters:@{ @"bookId": self.objectId }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
                                         
                                         PFObject *parseBook = [recipeResults objectForKey:@"book"];
                                         NSArray *parseRecipes = [recipeResults objectForKey:@"recipes"];
+                                        NSArray *parseLikes = [recipeResults objectForKey:@"likes"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
                                         
                                         // Wrap the recipes in our model.
@@ -396,7 +397,12 @@
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:self.user book:self];
                                         }];
                                         
-                                        success(parseBook, recipes, accessDate);
+                                        // Wrap the liked recipes in our model.
+                                        NSArray *likedRecipes = [parseLikes collect:^id(PFObject *parseRecipe) {
+                                            return [CKRecipe recipeForParseRecipe:parseRecipe user:nil book:nil];
+                                        }];
+                                        
+                                        success(parseBook, recipes, likedRecipes, accessDate);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);

@@ -20,12 +20,23 @@
 
 @end
 
+@protocol CKNavigationControllerDelegate <NSObject>
+
+@optional
+- (void)cookNavigationControllerCloseRequested;
+
+@end
+
 @interface CKNavigationController : UIViewController
 
+@property (nonatomic, weak) id<CKNavigationControllerDelegate> delegate;
+
 - (id)initWithRootViewController:(UIViewController *)viewController;
+- (id)initWithRootViewController:(UIViewController *)viewController delegate:(id<CKNavigationControllerDelegate>)delegate;
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated;
 - (UIViewController *)topViewController;
 - (BOOL)isTopViewController:(UIViewController *)viewController;
+- (BOOL)isTop;
 
 @end

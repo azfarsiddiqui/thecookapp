@@ -73,13 +73,17 @@
         recipe.recipeImage = [CKRecipeImage recipeImageForParseRecipeImage:[photos objectAtIndex:0]];
     }
     
-    recipe.user = user;
+    if (user) {
+        recipe.user = user;
+    }
     return recipe;
 }
 
 + (CKRecipe *)recipeForParseRecipe:(PFObject *)parseRecipe user:(CKUser *)user book:(CKBook *)book {
     CKRecipe *recipe = [self recipeForParseRecipe:parseRecipe user:user];
-    recipe.book = book;
+    if (book) {
+        recipe.book = book;
+    }
     return recipe;
 }
 

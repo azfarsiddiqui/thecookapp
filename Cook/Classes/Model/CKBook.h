@@ -13,7 +13,7 @@
 @class CKBook;
 @class CKCategory;
 
-typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSDate *bookLastAccessedDate);
+typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSDate *bookLastAccessedDate);
 typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 
 @interface CKBook : CKModel
