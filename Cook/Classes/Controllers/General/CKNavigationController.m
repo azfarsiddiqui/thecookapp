@@ -18,6 +18,10 @@
 @implementation CKNavigationController
 
 - (id)initWithRootViewController:(UIViewController *)viewController {
+    return [self initWithRootViewController:viewController delegate:nil];
+}
+
+- (id)initWithRootViewController:(UIViewController *)viewController delegate:(id<CKNavigationControllerDelegate>)delegate {
     if (self = [super init]) {
         
         // Sets myself on the viewController so it can call push/pops.
@@ -26,6 +30,8 @@
         }
         
         self.viewControllers = [NSMutableArray arrayWithObject:viewController];
+        
+        self.delegate = delegate;
     }
     return self;
 }
@@ -49,6 +55,12 @@
     if ([rootViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
         [rootViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(YES)];
     }
+    
+    // Register left screen edge for shortcut to home.
+    UIScreenEdgePanGestureRecognizer *leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
+                                                                                                          action:@selector(screenEdgePanned:)];
+    leftEdgeGesture.edges = UIRectEdgeLeft;
+    [self.view addGestureRecognizer:leftEdgeGesture];
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -224,6 +236,10 @@
     return (viewController == [self topViewController]);
 }
 
+- (BOOL)isTop {
+    return [self isTopViewController:[self currentViewController]];
+}
+
 #pragma mark - Private methods
 
 - (UIViewController *)previousViewController {
@@ -234,6 +250,20 @@
     }
     
     return viewController;
+}
+
+- (void)screenEdgePanned:(UIScreenEdgePanGestureRecognizer *)edgeGesture {
+    
+    // If detected, then close the recipe.
+    if (edgeGesture.state == UIGestureRecognizerStateBegan) {
+        if ([self isTop]) {
+            if ([self.delegate respondsToSelector:@selector(cookNavigationControllerCloseRequested)]) {
+                [self.delegate cookNavigationControllerCloseRequested];
+            }
+        } else {
+            [self popViewControllerAnimated:YES];
+        }
+    }
 }
 
 @end

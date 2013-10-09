@@ -32,7 +32,8 @@
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
     BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
-    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate>
+    CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate,
+    CKNavigationControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundTextureView;
 @property (nonatomic, strong) PagingBenchtopBackgroundView *pagingBenchtopView;
@@ -344,6 +345,14 @@
         
     }
     
+}
+
+#pragma mark - CKNavigationControllerDelegate methods
+
+- (void)cookNavigationControllerCloseRequested {
+    if (self.notificationsViewController) {
+        [self showNotificationsOverlay:NO];
+    }
 }
 
 #pragma mark - CKPagingCollectionViewLayoutDelegate methods
@@ -1394,7 +1403,8 @@
     [self.delegate panEnabledRequested:!show];
     if (show) {
         self.notificationsViewController = [[NotificationsViewController alloc] initWithDelegate:self];
-        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.notificationsViewController];
+        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.notificationsViewController
+                                                                                          delegate:self];
         [ModalOverlayHelper showModalOverlayForViewController:self.cookNavigationController show:YES
                                                     animation:^{
                                                         self.notificationView.alpha = 0.0;

@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate,
-    RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate>
+    RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate, CKNavigationControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
@@ -151,6 +151,14 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     
     // Squirt a page view for visitors. Server handles user differentiation.
     [self.recipe incrementPageViewInBackground];
+}
+
+#pragma mark - CKNavigationControllerDelegate methods
+
+- (void)cookNavigationControllerCloseRequested {
+    if (self.socialViewController) {
+        [self showSocialOverlay:NO];
+    }
 }
 
 #pragma mark - BookModalViewController methods
@@ -1386,8 +1394,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         [self hideButtons];
         self.socialViewController = [[RecipeSocialViewController alloc] initWithRecipe:self.recipe delegate:self];
-        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.socialViewController];
-        
+        self.cookNavigationController = [[CKNavigationController alloc] initWithRootViewController:self.socialViewController
+                                                                                          delegate:self];        
     } else {
         self.view.userInteractionEnabled = YES;
         self.scrollView.userInteractionEnabled = YES;
