@@ -172,16 +172,16 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 #pragma mark - CKEditingTextBoxViewDelegate methods
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
-    if (editingView == self.titleLabel) {
+    if (editingView == self.titleTextView) {
         CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:YES
                                                                                                               title:nil
-                                                                                                     characterLimit:24];
+                                                                                                     characterLimit:35];
         editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
         editViewController.forceUppercase = YES;
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:40.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
@@ -271,7 +271,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)editViewControllerUpdateEditView:(UIView *)editingView value:(id)value {
     
     // Transfer updated values to the recipe details transfer object.
-    if (editingView == self.titleLabel) {
+    if (editingView == self.titleTextView) {
         self.recipeDetails.name = value;
     } else if (editingView == self.pageLabel) {
         self.recipeDetails.page = value;
@@ -289,7 +289,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self layoutComponents];
     
     // Update wrapping
-    [self updateEditModeOnView:self.titleLabel
+    [self updateEditModeOnView:self.titleTextView
                toDisplayAsSize:(CGSize){ [self availableSize].width, 0.0 }
                        updated:[self.recipeDetails nameUpdated]];
     [self updateEditModeOnView:self.pageLabel
@@ -483,27 +483,28 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateTitle {
-    if (!self.titleLabel) {
-        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        self.titleLabel.font = [Theme recipeNameFont];
-        self.titleLabel.textColor = [Theme recipeNameColor];
-        self.titleLabel.textAlignment = NSTextAlignmentCenter;
-        self.titleLabel.backgroundColor = [UIColor clearColor];
-        self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        self.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        self.titleLabel.shadowColor = [UIColor whiteColor];
-        self.titleLabel.alpha = 0.0;
+    if (!self.titleTextView) {
+        self.titleTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+        self.titleTextView.editable = NO;
+        self.titleTextView.scrollEnabled = NO;
+        self.titleTextView.userInteractionEnabled = NO;
+        self.titleTextView.font = [Theme recipeNameFont];
+        self.titleTextView.textColor = [Theme recipeNameColor];
+        self.titleTextView.textAlignment = NSTextAlignmentCenter;
+        self.titleTextView.backgroundColor = [UIColor clearColor];
+        self.titleTextView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        self.titleTextView.alpha = 0.0;
         [self updateTitleFrame];
-        [self addSubview:self.titleLabel];
+        [self addSubview:self.titleTextView];
     }
     
     // Display if not-blank or in editMode.
     if ([self.recipeDetails.name CK_containsText] || self.editMode) {
-        self.titleLabel.alpha = 1.0;
+        self.titleTextView.alpha = 1.0;
         [self updateTitleFrame];
-        [self updateLayoutOffsetVertical:self.titleLabel.frame.size.height];
+        [self updateLayoutOffsetVertical:self.titleTextView.frame.size.height];
     } else {
-        self.titleLabel.alpha = 0.0;
+        self.titleTextView.alpha = 0.0;
         [self updateTitleFrame];
     }
 
@@ -516,9 +517,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         name = @"TITLE";
     }
     
-    self.titleLabel.text = [[name CK_whitespaceTrimmed] uppercaseString];
-    CGSize size = [self.titleLabel sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
-    self.titleLabel.frame = (CGRect){
+    NSString *title = [[name CK_whitespaceTrimmed] uppercaseString];
+    self.titleTextView.attributedText = [self attributedTextForText:title lineSpacing:-15.0
+                                                            font:[Theme recipeNameFont]
+                                                          colour:[Theme recipeNameColor]
+                                                   textAlignment:NSTextAlignmentCenter shadowColour:[UIColor whiteColor]
+                                                    shadowOffset:(CGSize){ 0.0, 1.0 }];
+    CGSize size = [self.titleTextView sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
+    self.titleTextView.frame = (CGRect){
         floorf((kWidth - size.width) / 2.0),
         self.layoutOffset.y,
         size.width,
@@ -744,7 +750,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     if ([self.recipeDetails.method CK_containsText] || self.editMode) {
         self.methodLabel.alpha = 1.0;
         [self updateMethodFrame];
-        [self updateLayoutOffsetVertical:self.titleLabel.frame.size.height];
+        [self updateLayoutOffsetVertical:self.titleTextView.frame.size.height];
     } else {
         self.methodLabel.alpha = 0.0;
         [self updateMethodFrame];
@@ -876,9 +882,19 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                 font:(UIFont *)font colour:(UIColor *)colour
                                        textAlignment:(NSTextAlignment)textAlignment {
     
+    return [self attributedTextForText:text lineSpacing:lineSpacing font:font colour:colour
+                         textAlignment:textAlignment shadowColour:nil shadowOffset:CGSizeZero];
+}
+
+- (NSMutableAttributedString *)attributedTextForText:(NSString *)text lineSpacing:(CGFloat)lineSpacing
+                                                font:(UIFont *)font colour:(UIColor *)colour
+                                       textAlignment:(NSTextAlignment)textAlignment shadowColour:(UIColor *)shadowColour
+                                        shadowOffset:(CGSize)shadowOffset {
+    
     text = [text length] > 0 ? text : @"";
     NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:font lineSpacing:lineSpacing colour:colour
-                                                           textAlignment:textAlignment];
+                                                           textAlignment:textAlignment shadowColour:shadowColour
+                                                            shadowOffset:shadowOffset];
     return [[NSMutableAttributedString alloc] initWithString:text attributes:paragraphAttributes];
 }
 
@@ -890,17 +906,32 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (NSDictionary *)paragraphAttributesForFont:(UIFont *)font lineSpacing:(CGFloat)lineSpacing colour:(UIColor *)colour
                                textAlignment:(NSTextAlignment)textAlignment {
     
+    return [self paragraphAttributesForFont:font lineSpacing:lineSpacing colour:colour textAlignment:textAlignment
+                               shadowColour:nil shadowOffset:CGSizeZero];
+}
+
+- (NSDictionary *)paragraphAttributesForFont:(UIFont *)font lineSpacing:(CGFloat)lineSpacing colour:(UIColor *)colour
+                               textAlignment:(NSTextAlignment)textAlignment shadowColour:(UIColor *)shadowColour
+                                shadowOffset:(CGSize)shadowOffset {
+    
     NSLineBreakMode lineBreakMode = NSLineBreakByWordWrapping;
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = lineBreakMode;
     paragraphStyle.lineSpacing = lineSpacing;
     paragraphStyle.alignment = textAlignment;
     
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            font, NSFontAttributeName,
-            colour, NSForegroundColorAttributeName,
-            paragraphStyle, NSParagraphStyleAttributeName,
-            nil];
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                       font, NSFontAttributeName,
+                                       colour, NSForegroundColorAttributeName,
+                                       paragraphStyle, NSParagraphStyleAttributeName,
+                                       nil];
+    if (shadowColour) {
+        NSShadow *shadow = [NSShadow new];
+        shadow.shadowColor = [UIColor whiteColor];
+        shadow.shadowOffset = CGSizeMake(0.0, 1.0);
+        [attributes setObject:shadow forKey:NSShadowAttributeName];
+    }
+    return attributes;
 }
 
 - (void)enableFieldsForEditMode:(BOOL)editMode {
@@ -909,7 +940,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     UIEdgeInsets defaultEditInsets = [CKEditingViewHelper contentInsetsForEditMode:YES];
     
     // Title.
-    [self enableEditModeOnView:self.titleLabel editMode:editMode
+    [self enableEditModeOnView:self.titleTextView editMode:editMode
                toDisplayAsSize:(CGSize){
                    [self availableSize].width, 0.0
                }];
