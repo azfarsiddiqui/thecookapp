@@ -177,7 +177,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                            delegate:self
                                                                                                       editingHelper:self.editingHelper
                                                                                                               white:YES
-                                                                                                              title:@"Name"
+                                                                                                              title:nil
                                                                                                      characterLimit:35];
         editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
         editViewController.forceUppercase = YES;
@@ -204,9 +204,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
-                                                                                                            title:@"Story"
+                                                                                                            title:nil
                                                                                                    characterLimit:1000];
         editViewController.clearOnFocus = ![self.recipeDetails hasStory];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
@@ -217,8 +218,9 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                          delegate:self
                                                                                                     editingHelper:self.editingHelper
                                                                                                             white:YES
-                                                                                                            title:@"Method"];
+                                                                                                            title:nil];
         editViewController.clearOnFocus = ![self.recipeDetails hasMethod];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
@@ -239,7 +241,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                                  delegate:self
                                                                                                                     items:self.recipeDetails.ingredients
                                                                                                             editingHelper:self.editingHelper white:YES
-                                                                                                                    title:@"Ingredients"];
+                                                                                                                    title:nil];
         editViewController.canAddItems = YES;
         editViewController.canDeleteItems = YES;
         editViewController.canReorderItems = YES;

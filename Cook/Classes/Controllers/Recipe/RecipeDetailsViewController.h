@@ -12,7 +12,7 @@
 @class CKRecipe;
 @class CKBook;
 
-@interface RecipeDetailsViewController : UIViewController <BookModalViewController>
+@interface RecipeDetailsViewController : UIViewController <BookModalViewController, UIAlertViewDelegate>
 
 @property (nonatomic, assign) BOOL hideNavigation;
 @property (nonatomic, assign) BOOL hideLikeButton;

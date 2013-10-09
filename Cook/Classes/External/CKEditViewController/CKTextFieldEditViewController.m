@@ -66,7 +66,7 @@
 
 - (void)targetTextEditingViewDidAppear:(BOOL)appear {
     [super targetTextEditingViewDidAppear:appear];
-    
+    self.showTitle = YES;
     if (appear) {
         
         // Focus on text field.
@@ -123,6 +123,16 @@
         
     } else {
         shouldChange = YES;
+    }
+    
+    //If trying to paste in content over char limit, cut off and apply
+    if ([newString length] > self.characterLimit && !isBackspace) {
+        textField.text = [newString substringToIndex:self.characterLimit];
+        if (self.forceUppercase) textField.text = [textField.text uppercaseString];
+        [self updateTitle:@"CHARACTER LIMIT EXCEEDED" toast:YES];
+        
+        [self updateInfoLabels];
+        return NO;
     }
     
     return shouldChange;
