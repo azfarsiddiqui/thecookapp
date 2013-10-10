@@ -39,6 +39,30 @@
     return self;
 }
 
+- (BOOL)isEqual:(id)object {
+    BOOL equals = NO;
+    if ([object isKindOfClass:[PagingBenchtopBackgroundView class]]) {
+        PagingBenchtopBackgroundView *otherView = (PagingBenchtopBackgroundView *)object;
+        
+        if (CGSizeEqualToSize(self.frame.size, otherView.frame.size)
+            && [self.colours count] == [otherView.colours count]) {
+            
+            // Assume to be YES until proven.
+            equals = YES;
+            
+            for (NSUInteger colourIndex = 0; colourIndex < [self.colours count]; colourIndex++) {
+                UIColor *colour = [self.colours objectAtIndex:colourIndex];
+                UIColor *otherColour = [otherView.colours objectAtIndex:colourIndex];
+                if (![colour isEqual:otherColour]) {
+                    equals = NO;
+                    break;
+                }
+            }
+        }
+    }
+    return equals;
+}
+
 - (void)addColour:(UIColor *)colour {
     [self.colours addObject:colour];
 }
