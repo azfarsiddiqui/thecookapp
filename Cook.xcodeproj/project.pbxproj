@@ -2129,6 +2129,7 @@
 		76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_timedial_dial@2x.png"; sourceTree = "<group>"; };
 		76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServesAndTimeEditViewController.h; sourceTree = "<group>"; };
 		76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServesAndTimeEditViewController.m; sourceTree = "<group>"; };
+		76C5162D18063AAA006766C2 /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "/Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
 		76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_textbox.png; sourceTree = "<group>"; };
 		76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox@2x.png"; sourceTree = "<group>"; };
 		76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise.png; sourceTree = "<group>"; };
@@ -2586,7 +2587,6 @@
 		F68E0EED17D2AE6600B56E7A /* cook_book_share_icon_twitter_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_twitter_onpress@2x.png"; sourceTree = "<group>"; };
 		F68E0EEE17D2AE6600B56E7A /* cook_book_share_icon_unlocked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_unlocked.png; sourceTree = "<group>"; };
 		F68E0EEF17D2AE6600B56E7A /* cook_book_share_icon_unlocked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_unlocked@2x.png"; sourceTree = "<group>"; };
-		F6B29B4B180384D00056513F /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "../../../../../Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
 		F6B29B4D1803AB360056513F /* AnalyticsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsHelper.h; sourceTree = "<group>"; };
 		F6B29B4E1803AB360056513F /* AnalyticsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalyticsHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4065,7 +4065,7 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F6B29B4B180384D00056513F /* Reveal.framework */,
+				76C5162D18063AAA006766C2 /* Reveal.framework */,
 				F6526BB917D1D575000DDD95 /* MessageUI.framework */,
 				F6526BB717D1C998000DDD95 /* Social.framework */,
 				7632F25017AF4CFA00E80952 /* Crashlytics.framework */,
@@ -5912,6 +5912,8 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-framework",
+					Reveal,
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -6045,6 +6047,8 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-framework",
+					Reveal,
 				);
 				WRAPPER_EXTENSION = app;
 			};
