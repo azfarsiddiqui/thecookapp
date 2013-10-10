@@ -1274,9 +1274,8 @@
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
     
     PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
-        self.backdropScrollView.bounds.origin.x,
-        self.backdropScrollView.bounds.origin.y,
-//        self.collectionView.bounds.size.width * (numMyBook + 1 + numFollowBooks),
+        0.0,
+        0.0,
         kBlendPageWidth * (numMyBook + 1 + numFollowBooks),
         self.backgroundTextureView.frame.size.height
     } pageWidth:kBlendPageWidth];
