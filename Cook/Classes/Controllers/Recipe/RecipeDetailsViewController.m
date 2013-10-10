@@ -506,7 +506,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self deleteRecipe];
     }
     //Yes hit on cancel
-    else if (buttonIndex == 1 && alertView == self.cancelAlert)
+    else if (buttonIndex == 0 && alertView == self.cancelAlert)
     {
         if (self.addMode) {
             [self closeRecipeView];
@@ -514,6 +514,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             [self initRecipeDetails];
             [self enableEditMode:NO];
         }
+    }
+    else if (buttonIndex == 1 && alertView == self.cancelAlert)
+    {
+        [self saveRecipe];
     }
 }
 
@@ -1495,8 +1499,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)cancelTapped:(id)sender {
-    self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Cancel without Saving?" message:nil delegate:self
-                                        cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    if (self.addMode) {
+        self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Recipe?" message:nil delegate:self
+                                            cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+    } else {
+        self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Changes?" message:nil delegate:self
+                                            cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+    }
     [self.cancelAlert show];
 }
 
@@ -1506,7 +1515,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)deleteTapped:(id)sender {
     self.deleteAlert = [[UIAlertView alloc] initWithTitle:@"Delete Recipe?" message:nil delegate:self
-                                              cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                                              cancelButtonTitle:@"No" otherButtonTitles:@"Delete", nil];
     [self.deleteAlert show];
 }
 
