@@ -35,7 +35,7 @@
         
         // Behaviour parameters.
         self.forceUppercase = YES;
-        self.characterLimit = 20;
+        self.characterLimit = 30;
         self.minCharacterLimit = 2;
         
         // Background and self frame.
