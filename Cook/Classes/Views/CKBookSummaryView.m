@@ -23,6 +23,7 @@
 #import "CKTextFieldEditViewController.h"
 #import "CKTextViewEditViewController.h"
 #import "CKButtonView.h"
+#import "AnalyticsHelper.h"
 
 @interface CKBookSummaryView () <CKPhotoPickerViewControllerDelegate, CKUserProfilePhotoViewDelegate,
     CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
@@ -657,6 +658,7 @@
     __weak typeof(self) weakSelf = self;
     [self.book addFollower:self.currentUser
                    success:^{
+                       [AnalyticsHelper trackEventName:@"Added to Bench" params:nil];
                        [weakSelf updateButtonText:@"BOOK ON BENCH" activity:NO
                                              icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
                                           enabled:NO target:nil selector:nil];
