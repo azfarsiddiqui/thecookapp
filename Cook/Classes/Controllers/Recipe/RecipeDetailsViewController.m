@@ -1330,6 +1330,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
         self.likeButton.alpha = 0.0;
+        self.activityView.alpha = 0.0;
         [self.view addSubview:self.closeButton];
         [self.view addSubview:self.socialView];
         [self.view addSubview:self.editButton];
@@ -1349,6 +1350,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.shareButton.alpha = self.editMode ? 0.0 : alpha;
                          self.likeButton.alpha = self.editMode ? 0.0 : alpha;
                          self.privacyView.alpha = self.editMode ? alpha : 0.0;
+                         self.activityView.alpha = self.editMode ? 0.0 : alpha;
                          
                          // Photo icon and textBox fade in/out
                          self.photoButtonView.alpha = self.editMode ? [self currentAlphaForPhotoButtonView] : 0.0;
