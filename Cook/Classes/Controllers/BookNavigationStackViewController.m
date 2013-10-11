@@ -58,6 +58,9 @@
 
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
+// Jump to cell
+@property NSInteger destinationIndex;
+
 // Edit mode.
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
@@ -558,9 +561,23 @@
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    
     self.collectionView.userInteractionEnabled = YES;
+    [self activateVisibleCells];
     self.fastForward = NO;
     [self updateNavBar];
+}
+
+- (void)activateVisibleCells
+{
+    for (BookContentCell *contentCell in self.collectionView.visibleCells)
+    {
+        if ([contentCell isKindOfClass:[BookContentCell class]] && self.destinationIndex == [self currentPageIndex])
+        {
+            DLog(@"Cell index: %i", [self.collectionView indexPathForCell:contentCell].section);
+            [contentCell.contentViewController loadPageContent];
+        }
+    }
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -1240,22 +1257,18 @@
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
-    NSInteger numPeekPages = 10;
+    self.destinationIndex = pageIndex;
+    NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
-    
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
     // Fast forward to the intended page.
-    if (self.fastForward) {
-        [self.collectionView setContentOffset:(CGPoint){
-            pageIndex * self.collectionView.bounds.size.width,
-            self.collectionView.contentOffset.y
-        } animated:NO];
+    if (self.fastForward && pageIndex > currentPageIndex) {
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - 2] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
         
-        // Re-enable interaction that was disabled in bookTitleSelectedPage.
-        self.collectionView.userInteractionEnabled = YES;
-        
-        [self updateNavBar];
-        
+    } else if (self.fastForward && pageIndex < currentPageIndex) {
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex + 2] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     } else {
         [self.collectionView setContentOffset:(CGPoint){
             pageIndex * self.collectionView.bounds.size.width,

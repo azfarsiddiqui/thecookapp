@@ -67,6 +67,7 @@
         self.book = book;
         self.page = page;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
+        self.isFastForward = NO;//YES; TODO: Temp move back to get things working
     }
     return self;
 }
@@ -78,18 +79,28 @@
     [self initCollectionView];
     [self initOverlay];
     [self loadData];
-    
     [EventHelper registerSocialUpdates:self selector:@selector(socialUpdates:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self showIntroCard];
+    self.isFastForward = NO;//YES; TODO: Temp move back to get things working
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    self.recipes = nil;
+//    [self.collectionView reloadData];
 }
 
 - (void)loadData {
     self.recipes = [NSMutableArray arrayWithArray:[self.delegate recipesForBookContentViewControllerForPage:self.page]];
     [self.collectionView reloadData];
+}
+
+- (void)loadPageContent {
+    [self showIntroCard];
+    self.isFastForward = NO;
+
 }
 
 - (CGPoint)currentScrollOffset {
@@ -321,7 +332,8 @@
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger numItems = 0;
-    numItems = [self.recipes count];
+    if (!self.isFastForward) //Don't load recipes if fast forward
+        numItems = [self.recipes count];
     return numItems;
 }
 
@@ -431,22 +443,6 @@
     overlayView.alpha = 0.0;    // Start off clear.
     [self.view addSubview:overlayView];
     self.overlayView = overlayView;
-}
-
-- (void)loadFeaturedRecipe {
-    CKRecipe *featuredRecipe = [self.delegate featuredRecipeForBookContentViewControllerForPage:self.page];
-    NSString *loadingName = [NSString stringWithFormat:@"%@_FeaturedRecipe", self.page];
-    
-    [[CKPhotoManager sharedInstance] imageForRecipe:featuredRecipe size:self.imageView.bounds.size name:loadingName
-                                           progress:^(CGFloat progressRatio, NSString *name) {
-                                               DLog(@"image progress[%f]", progressRatio);
-                                           } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                               self.imageView.image = thumbImage;
-                                           } completion:^(UIImage *image, NSString *name) {
-                                               if ([name isEqualToString:loadingName]) {
-                                                   self.imageView.image = image;
-                                               }
-                                           }];
 }
 
 - (void)showRecipeAtIndexPath:(NSIndexPath *)indexPath {

@@ -23,8 +23,11 @@
 
 @interface BookContentViewController : BookPageViewController
 
+@property BOOL isFastForward;
+
 - (id)initWithBook:(CKBook *)book page:(NSString *)page delegate:(id<BookContentViewControllerDelegate>)delegate;
 - (void)loadData;
+- (void)loadPageContent;
 - (CGPoint)currentScrollOffset;
 - (void)setScrollOffset:(CGPoint)scrollOffset;
 - (void)applyOverlayAlpha:(CGFloat)alpha;

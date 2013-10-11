@@ -94,9 +94,9 @@
         self.vignetteOverlayView.hidden = NO;
         
         UIColor *tintColour = [[CKBookCover backdropColourForCover:book.cover] colorWithAlphaComponent:0.58];
-        [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
-            self.blurredImageView.image = blurredImage;
-        }];
+//        [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
+//            self.blurredImageView.image = blurredImage;
+//        }];
         
     } else {
         self.imageView.image = nil;
