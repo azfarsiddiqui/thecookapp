@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @class CKNavigationController;
+@class CKRecipe;
+@class CKBook;
 
 @protocol CKNavigationControllerSupport
 
@@ -38,5 +40,9 @@
 - (UIViewController *)topViewController;
 - (BOOL)isTopViewController:(UIViewController *)viewController;
 - (BOOL)isTop;
+
+- (void)showContextWithRecipe:(CKRecipe *)recipe;
+- (void)showContextWithBook:(CKBook *)book;
+- (void)hideContext;
 
 @end

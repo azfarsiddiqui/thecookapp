@@ -105,6 +105,9 @@
 #pragma mark - StoreCollectionViewControllerDelegate methods
 
 - (void)storeCollectionViewControllerPanRequested:(BOOL)enabled {
+    if (!enabled) {
+        [self.searchFieldView resignFirstResponder];
+    }
     [self.delegate panEnabledRequested:enabled];
 }
 

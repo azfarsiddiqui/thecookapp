@@ -11,6 +11,7 @@
 		7600973017A0E8C2001DFC9F /* CKListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7600972E17A0E8C2001DFC9F /* CKListCell.m */; };
 		76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */; };
 		76025440171191A100950571 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7602543F171191A100950571 /* AssetsLibrary.framework */; };
+		7603DB6D1807A90A00D011AB /* BookCoverPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7603DB6C1807A90A00D011AB /* BookCoverPhotoViewController.m */; };
 		760534E717E953EF00EBC54F /* DebugDev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 760534E517E953EF00EBC54F /* DebugDev.plist */; };
 		760534E817E953EF00EBC54F /* ReleaseDev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 760534E617E953EF00EBC54F /* ReleaseDev.plist */; };
 		760534EF17E974FA00EBC54F /* cook_intro_icon_share.png in Resources */ = {isa = PBXBuildFile; fileRef = 760534ED17E974FA00EBC54F /* cook_intro_icon_share.png */; };
@@ -1195,6 +1196,8 @@
 		76025410170EFDAD00950571 /* CKPhotoPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPhotoPickerViewController.h; sourceTree = "<group>"; };
 		76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPhotoPickerViewController.m; sourceTree = "<group>"; };
 		7602543F171191A100950571 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		7603DB6B1807A90A00D011AB /* BookCoverPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCoverPhotoViewController.h; sourceTree = "<group>"; };
+		7603DB6C1807A90A00D011AB /* BookCoverPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCoverPhotoViewController.m; sourceTree = "<group>"; };
 		760534E517E953EF00EBC54F /* DebugDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DebugDev.plist; sourceTree = "<group>"; };
 		760534E617E953EF00EBC54F /* ReleaseDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ReleaseDev.plist; sourceTree = "<group>"; };
 		760534ED17E974FA00EBC54F /* cook_intro_icon_share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_intro_icon_share.png; sourceTree = "<group>"; };
@@ -2129,6 +2132,7 @@
 		76C3BB8F173B73F0004F6444 /* cook_edit_timedial_dial@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_timedial_dial@2x.png"; sourceTree = "<group>"; };
 		76C3BB95173B795D004F6444 /* ServesAndTimeEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServesAndTimeEditViewController.h; sourceTree = "<group>"; };
 		76C3BB96173B795D004F6444 /* ServesAndTimeEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServesAndTimeEditViewController.m; sourceTree = "<group>"; };
+		76C5162D18063AAA006766C2 /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "/Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
 		76C6CDC7164B3EC3006001BD /* cook_customise_textbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_textbox.png; sourceTree = "<group>"; };
 		76C6CDC8164B3EC3006001BD /* cook_customise_textbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_textbox@2x.png"; sourceTree = "<group>"; };
 		76C6CDC9164B3EC3006001BD /* cook_dash_icons_customise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_dash_icons_customise.png; sourceTree = "<group>"; };
@@ -2586,7 +2590,6 @@
 		F68E0EED17D2AE6600B56E7A /* cook_book_share_icon_twitter_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_twitter_onpress@2x.png"; sourceTree = "<group>"; };
 		F68E0EEE17D2AE6600B56E7A /* cook_book_share_icon_unlocked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_unlocked.png; sourceTree = "<group>"; };
 		F68E0EEF17D2AE6600B56E7A /* cook_book_share_icon_unlocked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_unlocked@2x.png"; sourceTree = "<group>"; };
-		F6B29B4B180384D00056513F /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "../../../../../Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
 		F6B29B4D1803AB360056513F /* AnalyticsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsHelper.h; sourceTree = "<group>"; };
 		F6B29B4E1803AB360056513F /* AnalyticsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalyticsHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3380,6 +3383,8 @@
 			children = (
 				76A3956117FE9F8700DF249A /* ProfileViewController.h */,
 				76A3956217FE9F8700DF249A /* ProfileViewController.m */,
+				7603DB6B1807A90A00D011AB /* BookCoverPhotoViewController.h */,
+				7603DB6C1807A90A00D011AB /* BookCoverPhotoViewController.m */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -4065,7 +4070,7 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F6B29B4B180384D00056513F /* Reveal.framework */,
+				76C5162D18063AAA006766C2 /* Reveal.framework */,
 				F6526BB917D1D575000DDD95 /* MessageUI.framework */,
 				F6526BB717D1C998000DDD95 /* Social.framework */,
 				7632F25017AF4CFA00E80952 /* Crashlytics.framework */,
@@ -5769,6 +5774,7 @@
 				76EE2CDA170AE7A30043D128 /* UIButton+WebCache.m in Sources */,
 				76EA65F417A639D10093B9D9 /* CKImageDecorationView.m in Sources */,
 				767EEA5717BE5E59001E7D0B /* DashboardTutorialViewController.m in Sources */,
+				7603DB6D1807A90A00D011AB /* BookCoverPhotoViewController.m in Sources */,
 				7647853B17A697D800387A7B /* CKPrivacySliderView.m in Sources */,
 				76EBE62E179522210099E2CB /* BookSocialViewController.m in Sources */,
 				7619515A179382C3008AB495 /* BookProfileHeaderView.m in Sources */,
@@ -5912,6 +5918,8 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-framework",
+					Reveal,
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -6045,6 +6053,8 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-framework",
+					Reveal,
 				);
 				WRAPPER_EXTENSION = app;
 			};

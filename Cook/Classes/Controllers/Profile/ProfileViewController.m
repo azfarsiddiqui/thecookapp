@@ -51,12 +51,15 @@
     self.view.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     
-    [self initBackground];
+    if (self.loadBookCoverPhoto) {
+        [self initBackground];
+    }
     
     self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
     if (self.cookNavigationController) {
         self.backButton.alpha = 0.0;
     }
+    [self.view addSubview:self.summaryContainerView];
     
     // Register photo loading events.
     [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
@@ -67,17 +70,16 @@
 - (void)cookNavigationControllerViewWillAppear:(NSNumber *)boolNumber {
     if (![boolNumber boolValue]) {
         [self.activityView stopAnimating];
+        [self.cookNavigationController hideContext];
     }
 }
 
 - (void)cookNavigationControllerViewAppearing:(NSNumber *)boolNumber {
-    
     if (![boolNumber boolValue]) {
         self.backButton.alpha = 0.0;
         self.summaryContainerView.alpha = 0.0;
         self.imageView.alpha = 0.0;
     }
-    
 }
 
 - (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
@@ -93,6 +95,8 @@
                          }
                          completion:^(BOOL finished) {
                          }];
+    } else {
+        [self.cookNavigationController hideContext];
     }
 }
 
@@ -123,15 +127,6 @@
         UIImageView *overlayView = [[UIImageView alloc] initWithFrame:_summaryContainerView.bounds];
         overlayView.image = overlayImage;
         [_summaryContainerView addSubview:overlayView];
-        
-        // Book summary view.
-        CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES addMode:NO];
-        bookSummaryView.frame = CGRectMake(floorf((self.summaryContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
-                                           87,
-                                           bookSummaryView.frame.size.width,
-                                           bookSummaryView.frame.size.height);
-        [self.summaryContainerView addSubview:bookSummaryView];
-        
     }
     return _summaryContainerView;
 }
@@ -181,9 +176,14 @@
 - (void)displayBook {
     [self.activityView stopAnimating];
     
-    // Fade the box in.
-    self.summaryContainerView.alpha = 0.0;
-    [self.view addSubview:self.summaryContainerView];
+    // Book summary view.
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES addMode:NO];
+    bookSummaryView.frame = CGRectMake(floorf((self.summaryContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
+                                       87,
+                                       bookSummaryView.frame.size.width,
+                                       bookSummaryView.frame.size.height);
+    bookSummaryView.alpha = 0.0;
+    [self.summaryContainerView addSubview:bookSummaryView];
     
     // Book cover.
     CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
@@ -199,16 +199,26 @@
         bookCoverView.frame.size.width,
         bookCoverView.frame.size.height
     };
+    bookCoverView.alpha = 0.0;
     [self.summaryContainerView addSubview:bookCoverView];
     
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         self.summaryContainerView.alpha = 1.0;
+                         bookCoverView.alpha = 1.0;
+                         bookSummaryView.alpha = 1.0;
                      }
                      completion:^(BOOL finished) {
-                         [self loadBookCoverPhoto];
+                         if (self.loadBookCoverPhoto) {
+                             [self loadBookCoverPhotoImage];
+                         } else {
+                             
+                             // Onload load context if we are still attached.
+                             if (self.view.superview) {
+                                 [self.cookNavigationController showContextWithBook:self.book];
+                             }
+                         }
                      }];
 }
 
@@ -216,7 +226,7 @@
     [self.cookNavigationController popViewControllerAnimated:YES];
 }
 
-- (void)loadBookCoverPhoto {
+- (void)loadBookCoverPhotoImage {
     if ([self.book hasCoverPhoto]) {
         DLog(@"Loading book cover photo");
         [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size];
@@ -255,6 +265,5 @@
                          }];
     }
 }
-
 
 @end

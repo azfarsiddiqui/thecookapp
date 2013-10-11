@@ -7,11 +7,14 @@
 //
 
 #import "CKNavigationController.h"
+#import "RecipeDetailsViewController.h"
+#import "BookCoverPhotoViewController.h"
 
 @interface CKNavigationController ()
 
 @property (nonatomic, strong) NSMutableArray *viewControllers;
 @property (nonatomic, assign) BOOL animating;
+@property (nonatomic, strong) UIViewController *contextModalViewController;
 
 @end
 
@@ -240,6 +243,34 @@
     return [self isTopViewController:[self currentViewController]];
 }
 
+- (void)showContextWithRecipe:(CKRecipe *)recipe {
+    RecipeDetailsViewController *recipeDetailsViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
+    recipeDetailsViewController.hideNavigation = YES;
+    [self showContextModalViewController:recipeDetailsViewController];
+}
+
+- (void)showContextWithBook:(CKBook *)book {
+    BookCoverPhotoViewController *bookCoverPhotoViewController = [[BookCoverPhotoViewController alloc] initWithBook:book];
+    [self showContextModalViewController:bookCoverPhotoViewController];
+}
+
+- (void)hideContext {
+    [self.contextModalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
+                                          withObject:[NSNumber numberWithBool:NO]];
+    [self.contextModalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                                          withObject:[NSNumber numberWithBool:NO]];
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.contextModalViewController.view.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished)  {
+                         [self.contextModalViewController.view removeFromSuperview];
+                         self.contextModalViewController = nil;
+                     }];
+}
+
 #pragma mark - Private methods
 
 - (UIViewController *)previousViewController {
@@ -264,6 +295,42 @@
             [self popViewControllerAnimated:YES];
         }
     }
+}
+
+- (void)showContextModalViewController:(UIViewController *)modalViewController {
+    self.contextModalViewController = modalViewController;
+    
+    // Add overlay view so we can splice in under an overlay.
+    self.view.backgroundColor = [UIColor clearColor];
+    
+    // Modal view controller has to be a UIViewController and confirms to BookModalViewControllerDelegate
+    if (![modalViewController conformsToProtocol:@protocol(BookModalViewController)]) {
+        DLog(@"Must conform to BookModalViewController protocol.");
+        return;
+    }
+    
+    // Prepare the modalVC to be transitioned.
+    modalViewController.view.frame = self.view.bounds;
+    modalViewController.view.alpha = 0.0;
+    [self.view insertSubview:modalViewController.view atIndex:0];
+    
+    // Sets the modal view delegate for close callbacks.
+    [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
+    
+    // Inform will appear.
+    [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
+                              withObject:[NSNumber numberWithBool:YES]];
+    
+    [UIView animateWithDuration:0.4
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         modalViewController.view.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished)  {
+                         [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                                                   withObject:[NSNumber numberWithBool:YES]];
+                     }];
 }
 
 @end

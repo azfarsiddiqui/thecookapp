@@ -1202,57 +1202,61 @@
     // Create a new blended benchtop with the current layout.
     PagingBenchtopBackgroundView *pagingBenchtopView = [self createPagingBenchtopBackgroundView];
     
-    // Blend it and update the benchtop.
-    [pagingBenchtopView blendWithCompletion:^{
+    if ([self.pagingBenchtopView isEqual:pagingBenchtopView]) {
+        [self synchronisePagingBenchtopView];
+    } else {
         
-        // Updates contentSize to new blended benchtop.
-        self.backdropScrollView.contentSize = pagingBenchtopView.frame.size;
-        self.backdropScrollView.contentOffset = (CGPoint){
-            -((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
-            0.0
-        };
-        
-        // Move it below the existing one.
-        if (self.pagingBenchtopView) {
+        // Blend it and update the benchtop.
+        [pagingBenchtopView blendWithCompletion:^{
             
-            // Magic blend numbers to achieve as best blending as possible between the two.
-            pagingBenchtopView.alpha = 0.4;
-            self.pagingBenchtopView.alpha = 0.5;
-            [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
-
-            [UIView animateWithDuration:0.3
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
-                                 self.pagingBenchtopView.alpha = 0.0;
-                             }
-                             completion:^(BOOL finished) {
-                                 [self.pagingBenchtopView removeFromSuperview];
-                                 self.pagingBenchtopView = pagingBenchtopView;
-                                 [self synchronisePagingBenchtopView];
-                             }];
+            // Updates contentSize to new blended benchtop.
+            self.backdropScrollView.contentSize = pagingBenchtopView.frame.size;
+            self.backdropScrollView.contentOffset = (CGPoint){
+                -((self.collectionView.bounds.size.width - kBlendPageWidth) / 2.0),
+                0.0
+            };
             
-        } else {
-            self.pagingBenchtopView = pagingBenchtopView;
-            self.pagingBenchtopView.alpha = 0.0;
-            [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundTextureView];
-            [self synchronisePagingBenchtopView];
+            // Move it below the existing one.
+            if (self.pagingBenchtopView) {
+                
+                // Magic blend numbers to achieve as best blending as possible between the two.
+                pagingBenchtopView.alpha = 0.4;
+                self.pagingBenchtopView.alpha = 0.5;
+                [self.backdropScrollView insertSubview:pagingBenchtopView belowSubview:self.pagingBenchtopView];
+                
+                [UIView animateWithDuration:0.3
+                                      delay:0.0
+                                    options:UIViewAnimationOptionCurveEaseIn
+                                 animations:^{
+                                     pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
+                                     self.pagingBenchtopView.alpha = 0.0;
+                                 }
+                                 completion:^(BOOL finished) {
+                                     [self.pagingBenchtopView removeFromSuperview];
+                                     self.pagingBenchtopView = pagingBenchtopView;
+                                     [self synchronisePagingBenchtopView];
+                                 }];
+                
+            } else {
+                self.pagingBenchtopView = pagingBenchtopView;
+                self.pagingBenchtopView.alpha = 0.0;
+                [self.backdropScrollView insertSubview:self.pagingBenchtopView belowSubview:self.backgroundTextureView];
+                [self synchronisePagingBenchtopView];
+                
+                [UIView animateWithDuration:0.4
+                                      delay:0.0
+                                    options:UIViewAnimationOptionCurveEaseIn
+                                 animations:^{
+                                     self.pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
+                                 }
+                                 completion:^(BOOL finished) {
+                                     
+                                     
+                                 }];
+            }
             
-            [UIView animateWithDuration:0.4
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 self.pagingBenchtopView.alpha = [PagingBenchtopBackgroundView maxBlendAlpha];
-                             }
-                             completion:^(BOOL finished) {
-                                 
-                                 
-                             }];
-        }
-        
-    }];
-    
+        }];
+    }
 }
 
 - (void)clearPagingBenchtopView {
@@ -1274,9 +1278,8 @@
     NSInteger numFollowBooks = [self.collectionView numberOfItemsInSection:kFollowSection];
     
     PagingBenchtopBackgroundView *pagingBenchtopView = [[PagingBenchtopBackgroundView alloc] initWithFrame:(CGRect){
-        self.backdropScrollView.bounds.origin.x,
-        self.backdropScrollView.bounds.origin.y,
-//        self.collectionView.bounds.size.width * (numMyBook + 1 + numFollowBooks),
+        0.0,
+        0.0,
         kBlendPageWidth * (numMyBook + 1 + numFollowBooks),
         self.backgroundTextureView.frame.size.height
     } pageWidth:kBlendPageWidth];

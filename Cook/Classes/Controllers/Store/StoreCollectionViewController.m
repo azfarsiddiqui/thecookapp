@@ -55,7 +55,6 @@
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.alwaysBounceHorizontal = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
-    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.collectionView registerClass:[StoreBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
@@ -187,7 +186,7 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     [self showBookAtIndexPath:indexPath];
 }
 

@@ -35,7 +35,7 @@
         
         // Behaviour parameters.
         self.forceUppercase = YES;
-        self.characterLimit = 20;
+        self.characterLimit = 30;
         self.minCharacterLimit = 2;
         
         // Background and self frame.
@@ -85,6 +85,14 @@
 - (void)clearSearch {
     self.currentSearch = nil;
     self.textField.text = nil;
+}
+
+- (BOOL)becomeFirstResponder {
+    return [self.textField becomeFirstResponder];
+}
+
+- (BOOL)resignFirstResponder {
+    return [self.textField resignFirstResponder];
 }
 
 #pragma mark - UITextFieldDelegate methods
