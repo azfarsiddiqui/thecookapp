@@ -155,6 +155,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     
     // Squirt a page view for visitors. Server handles user differentiation.
     [self.recipe incrementPageViewInBackground];
+    
+    NSDictionary *dimensions = @{@"isOwner" : [NSString stringWithFormat:@"%i", ([[CKUser currentUser].objectId isEqualToString:self.recipe.user.objectId])]};
+    [AnalyticsHelper trackEventName:@"Viewed recipe" params:dimensions];
 }
 
 #pragma mark - CKNavigationControllerDelegate methods
