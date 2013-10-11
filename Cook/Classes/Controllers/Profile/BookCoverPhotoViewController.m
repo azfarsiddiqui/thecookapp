@@ -86,7 +86,6 @@
 
 - (void)loadData {
     if ([self.book hasCoverPhoto]) {
-        DLog(@"Loading book cover photo");
         [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size];
     }
 }

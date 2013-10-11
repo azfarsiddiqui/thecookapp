@@ -178,6 +178,8 @@
         if (![self.cookNavigationController isTopViewController:self]) {
             [self.cookNavigationController showContextWithRecipe:self.recipe];
         }
+    } else {
+        [self.cookNavigationController hideContext];
     }
 }
 

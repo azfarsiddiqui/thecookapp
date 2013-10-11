@@ -95,6 +95,8 @@
                          }
                          completion:^(BOOL finished) {
                          }];
+    } else {
+        [self.cookNavigationController hideContext];
     }
 }
 
@@ -211,7 +213,11 @@
                          if (self.loadBookCoverPhoto) {
                              [self loadBookCoverPhotoImage];
                          } else {
-                             [self.cookNavigationController showContextWithBook:self.book];
+                             
+                             // Onload load context if we are still attached.
+                             if (self.view.superview) {
+                                 [self.cookNavigationController showContextWithBook:self.book];
+                             }
                          }
                      }];
 }

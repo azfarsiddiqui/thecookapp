@@ -257,6 +257,8 @@
 - (void)hideContext {
     [self.contextModalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
                                           withObject:[NSNumber numberWithBool:NO]];
+    [self.contextModalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
+                                          withObject:[NSNumber numberWithBool:NO]];
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
@@ -264,8 +266,8 @@
                          self.contextModalViewController.view.alpha = 0.0;
                      }
                      completion:^(BOOL finished)  {
-                         [self.contextModalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
-                                                               withObject:[NSNumber numberWithBool:NO]];
+                         [self.contextModalViewController.view removeFromSuperview];
+                         self.contextModalViewController = nil;
                      }];
 }
 
