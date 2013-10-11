@@ -16,7 +16,5 @@
 
 - (void)clearStatusMessage;
 - (void)displayStatusMessage:(NSString *)statusMessage;
-- (void)showContextWithRecipe:(CKRecipe *)recipe;
-- (void)showContextModalViewController:(UIViewController *)viewController;
 
 @end

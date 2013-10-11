@@ -159,6 +159,7 @@
 - (void)cookNavigationControllerViewWillAppear:(NSNumber *)boolNumber {
     if (![boolNumber boolValue]) {
         [self.activityView stopAnimating];
+        [self.cookNavigationController hideContext];
     }
 }
 
@@ -175,7 +176,7 @@
         
         // Only show context if this was nested.
         if (![self.cookNavigationController isTopViewController:self]) {
-            [self showContextWithRecipe:self.recipe];
+            [self.cookNavigationController showContextWithRecipe:self.recipe];
         }
     }
 }

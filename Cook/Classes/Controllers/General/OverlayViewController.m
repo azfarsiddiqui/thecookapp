@@ -14,8 +14,6 @@
 
 @interface OverlayViewController ()
 
-@property (nonatomic, strong) UIView *overlayView;
-
 @end
 
 @implementation OverlayViewController
@@ -51,53 +49,6 @@
     }
 }
 
-- (void)showContextWithRecipe:(CKRecipe *)recipe {
-    
-    // Recipe Details.
-    RecipeDetailsViewController *recipeDetailsViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
-    recipeDetailsViewController.hideNavigation = YES;
-    [self showContextModalViewController:recipeDetailsViewController];
-}
-
-- (void)showContextModalViewController:(UIViewController *)modalViewController {
-    
-    // Add overlay view so we can splice in under an overlay.
-    self.view.backgroundColor = [UIColor clearColor];
-    [self.view insertSubview:self.overlayView atIndex:0];
-    
-    // Modal view controller has to be a UIViewController and confirms to BookModalViewControllerDelegate
-    if (![modalViewController conformsToProtocol:@protocol(BookModalViewController)]) {
-        DLog(@"Must conform to BookModalViewController protocol.");
-        return;
-    }
-    
-    // Prepare the modalVC to be transitioned.
-    modalViewController.view.frame = self.view.bounds;
-    modalViewController.view.transform = CGAffineTransformMakeTranslation(0.0, self.view.bounds.size.height);
-    [self.view insertSubview:modalViewController.view belowSubview:self.overlayView];
-    
-    // Sets the modal view delegate for close callbacks.
-    [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
-    
-    // Inform will appear.
-    [modalViewController performSelector:@selector(bookModalViewControllerWillAppear:)
-                              withObject:[NSNumber numberWithBool:YES]];
-    
-    [UIView animateWithDuration:0.4
-                          delay:0.0
-                        options:UIViewAnimationCurveEaseIn
-                     animations:^{
-                         
-                         // Slide up the modal.
-                         modalViewController.view.transform = CGAffineTransformIdentity;
-                     }
-                     completion:^(BOOL finished)  {
-                         
-                         [modalViewController performSelector:@selector(bookModalViewControllerDidAppear:)
-                                                   withObject:[NSNumber numberWithBool:YES]];
-                     }];
-}
-
 #pragma mark - Properties
 
 - (UILabel *)statusMessageLabel {
@@ -108,15 +59,6 @@
         _statusMessageLabel.textColor = [UIColor whiteColor];
     }
     return _statusMessageLabel;
-}
-
-- (UIView *)overlayView {
-    if (!_overlayView) {
-        _overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
-        _overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        _overlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
-    }
-    return _overlayView;
 }
 
 @end

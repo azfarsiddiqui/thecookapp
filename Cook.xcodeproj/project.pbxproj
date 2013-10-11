@@ -11,6 +11,7 @@
 		7600973017A0E8C2001DFC9F /* CKListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7600972E17A0E8C2001DFC9F /* CKListCell.m */; };
 		76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */; };
 		76025440171191A100950571 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7602543F171191A100950571 /* AssetsLibrary.framework */; };
+		7603DB6D1807A90A00D011AB /* BookCoverPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7603DB6C1807A90A00D011AB /* BookCoverPhotoViewController.m */; };
 		760534E717E953EF00EBC54F /* DebugDev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 760534E517E953EF00EBC54F /* DebugDev.plist */; };
 		760534E817E953EF00EBC54F /* ReleaseDev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 760534E617E953EF00EBC54F /* ReleaseDev.plist */; };
 		760534EF17E974FA00EBC54F /* cook_intro_icon_share.png in Resources */ = {isa = PBXBuildFile; fileRef = 760534ED17E974FA00EBC54F /* cook_intro_icon_share.png */; };
@@ -1195,6 +1196,8 @@
 		76025410170EFDAD00950571 /* CKPhotoPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPhotoPickerViewController.h; sourceTree = "<group>"; };
 		76025411170EFDAD00950571 /* CKPhotoPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPhotoPickerViewController.m; sourceTree = "<group>"; };
 		7602543F171191A100950571 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		7603DB6B1807A90A00D011AB /* BookCoverPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookCoverPhotoViewController.h; sourceTree = "<group>"; };
+		7603DB6C1807A90A00D011AB /* BookCoverPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookCoverPhotoViewController.m; sourceTree = "<group>"; };
 		760534E517E953EF00EBC54F /* DebugDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DebugDev.plist; sourceTree = "<group>"; };
 		760534E617E953EF00EBC54F /* ReleaseDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ReleaseDev.plist; sourceTree = "<group>"; };
 		760534ED17E974FA00EBC54F /* cook_intro_icon_share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_intro_icon_share.png; sourceTree = "<group>"; };
@@ -3380,6 +3383,8 @@
 			children = (
 				76A3956117FE9F8700DF249A /* ProfileViewController.h */,
 				76A3956217FE9F8700DF249A /* ProfileViewController.m */,
+				7603DB6B1807A90A00D011AB /* BookCoverPhotoViewController.h */,
+				7603DB6C1807A90A00D011AB /* BookCoverPhotoViewController.m */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -5769,6 +5774,7 @@
 				76EE2CDA170AE7A30043D128 /* UIButton+WebCache.m in Sources */,
 				76EA65F417A639D10093B9D9 /* CKImageDecorationView.m in Sources */,
 				767EEA5717BE5E59001E7D0B /* DashboardTutorialViewController.m in Sources */,
+				7603DB6D1807A90A00D011AB /* BookCoverPhotoViewController.m in Sources */,
 				7647853B17A697D800387A7B /* CKPrivacySliderView.m in Sources */,
 				76EBE62E179522210099E2CB /* BookSocialViewController.m in Sources */,
 				7619515A179382C3008AB495 /* BookProfileHeaderView.m in Sources */,
