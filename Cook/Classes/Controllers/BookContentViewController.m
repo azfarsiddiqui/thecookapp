@@ -282,7 +282,7 @@
     }
 }
 
-- (id)editViewControllerInitialValue {
+- (id)editViewControllerInitialValueForEditView:(UIView *)editingView {
     if (self.updatedPage) {
         return [self.updatedPage uppercaseString];
     } else {

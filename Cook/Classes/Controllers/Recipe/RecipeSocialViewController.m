@@ -362,7 +362,7 @@
     
 }
 
-- (id)editViewControllerInitialValue {
+- (id)editViewControllerInitialValueForEditView:(UIView *)editingView {
     return nil;
 }
 
