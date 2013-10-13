@@ -317,6 +317,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     [self updateAddDetailsCardView];
 }
 
+- (id)editViewControllerInitialValueForEditView:(UIView *)editingView {
+    NSString *initialValue = nil;
+    if (editingView == self.titleTextView) {
+        initialValue = [self.recipeDetails.name CK_lineBreakFormattedString];
+    } else if (editingView == self.storyLabel) {
+        initialValue = [self.recipeDetails.story CK_lineBreakFormattedString];
+    } else if (editingView == self.methodLabel) {
+        initialValue = [self.recipeDetails.method CK_lineBreakFormattedString];
+    }
+    return initialValue;
+}
+
 #pragma mark - Properties
 
 - (UIView *)addDetailsCardView {
@@ -515,14 +527,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateTitleFrame {
-    NSString *name = self.recipeDetails.name;
-    
-    if (![self.recipeDetails.name CK_containsText]) {
-        name = @"TITLE";
-    }
-    
-    NSString *title = [NSMutableString stringWithString:[name CK_whitespaceTrimmed]];
-    title = [title stringByReplacingOccurrencesOfString:@"\n" withString:[DataHelper lineBreakString]];
+    NSString *title = [self currentTitleValue];
     self.titleTextView.attributedText = [self attributedTextForText:title lineSpacing:-15.0
                                                             font:[Theme recipeNameFont]
                                                           colour:[Theme recipeNameColor]
@@ -535,6 +540,16 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         size.width,
         size.height
     };
+}
+
+- (NSString *)currentTitleValue {
+    NSString *name = self.recipeDetails.name;
+    
+    if (![self.recipeDetails.name CK_containsText]) {
+        name = @"TITLE";
+    }
+    
+    return [[name CK_lineBreakFormattedString] uppercaseString];
 }
 
 - (void)updateStory {
