@@ -521,7 +521,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         name = @"TITLE";
     }
     
-    NSString *title = [NSMutableString stringWithString:[[name CK_whitespaceTrimmed] uppercaseString]];
+    NSString *title = [NSMutableString stringWithString:[name CK_whitespaceTrimmed]];
     title = [title stringByReplacingOccurrencesOfString:@"\n" withString:[DataHelper lineBreakString]];
     self.titleTextView.attributedText = [self attributedTextForText:title lineSpacing:-15.0
                                                             font:[Theme recipeNameFont]
