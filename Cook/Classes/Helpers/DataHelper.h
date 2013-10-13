@@ -10,6 +10,7 @@
 
 @interface DataHelper : NSObject
 
++ (NSString *)lineBreakString;
 + (NSString *)friendlyDisplayForCount:(NSUInteger)count;
 
 @end

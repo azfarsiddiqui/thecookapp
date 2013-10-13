@@ -10,6 +10,10 @@
 
 @implementation DataHelper
 
++ (NSString *)lineBreakString {
+    return @"\u2028";
+}
+
 + (NSString *)friendlyDisplayForCount:(NSUInteger)count {
     NSMutableString *display = [NSMutableString string];
     

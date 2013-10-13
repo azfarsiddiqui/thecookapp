@@ -22,6 +22,7 @@
 #import "CKEditingTextBoxView.h"
 #import "Ingredient.h"
 #import "CKBook.h"
+#import "DataHelper.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -173,15 +174,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
     if (editingView == self.titleTextView) {
-        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
-                                                                                                           delegate:self
-                                                                                                      editingHelper:self.editingHelper
-                                                                                                              white:YES
-                                                                                                              title:nil
-                                                                                                     characterLimit:35];
+        
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+                                                                                                         delegate:self
+                                                                                                    editingHelper:self.editingHelper
+                                                                                                            white:YES
+                                                                                                            title:nil
+                                                                                                   characterLimit:40];
+        editViewController.textAlignment = NSTextAlignmentCenter;
+        editViewController.numLines = 2;
         editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
-        editViewController.forceUppercase = YES;
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:40.0];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
@@ -517,7 +521,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         name = @"TITLE";
     }
     
-    NSString *title = [[name CK_whitespaceTrimmed] uppercaseString];
+    NSString *title = [NSMutableString stringWithString:[[name CK_whitespaceTrimmed] uppercaseString]];
+    title = [title stringByReplacingOccurrencesOfString:@"\n" withString:[DataHelper lineBreakString]];
     self.titleTextView.attributedText = [self attributedTextForText:title lineSpacing:-15.0
                                                             font:[Theme recipeNameFont]
                                                           colour:[Theme recipeNameColor]

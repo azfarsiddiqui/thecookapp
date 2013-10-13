@@ -11,6 +11,7 @@
 #import "CKBook.h"
 #import "CKUserProfilePhotoView.h"
 #import "Theme.h"
+#import "DataHelper.h"
 
 @interface BookTitleView ()
 
@@ -77,7 +78,7 @@
     self.maskedLabel = maskedLabel;
     
     NSDictionary *paragraphAttributes = [self paragraphAttributesForFont:kTitleFont];
-    NSString *display = [NSString stringWithFormat:@"%@\u2028%@", self.title, self.subtitle];
+    NSString *display = [NSString stringWithFormat:@"%@%@%@", self.title, [DataHelper lineBreakString], self.subtitle];
     
     NSMutableAttributedString *titleDisplay = [[NSMutableAttributedString alloc] initWithString:display attributes:paragraphAttributes];
     if ([self.subtitle length] > 0) {

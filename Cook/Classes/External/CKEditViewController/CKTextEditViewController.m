@@ -31,6 +31,7 @@
         self.characterLimit = characterLimit;
         self.textLimited = (characterLimit < NSUIntegerMax);
         self.font = [UIFont boldSystemFontOfSize:70.0];
+        self.textAlignment = NSTextAlignmentNatural;
     }
     return self;
 }

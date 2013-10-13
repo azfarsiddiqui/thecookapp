@@ -15,6 +15,7 @@
 #import "PagingBenchtopBackgroundView.h"
 #import "CKBookCover.h"
 #import "ImageHelper.h"
+#import "DataHelper.h"
 
 @interface WelcomeViewController () <WelcomeCollectionViewLayoutDataSource>
 
@@ -166,7 +167,7 @@
         [_welcomePageView addSubview:dividerView];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Cook lets you create and share your\u2028very own cookbook for iPad."
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Cook lets you create and share your%@very own cookbook for iPad.", [DataHelper lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 24.0,
@@ -188,7 +189,8 @@
 
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
-                                                   text:@"YOUR\u2028COOKBOOK" textAlignment:NSTextAlignmentLeft
+                                                   text:[NSString stringWithFormat:@"YOUR%@COOKBOOK", [DataHelper lineBreakString]]
+                                          textAlignment:NSTextAlignmentLeft
                                           availableSize:size paragraphBefore:-10.0];
         titleLabel.frame = CGRectMake(0.0,
                                       50.0,
@@ -209,7 +211,7 @@
         [_createPageView addSubview:dividerView];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Customize the cover of your book\u2028then add your family recipes, the\u2028meals you've cooked lately, tips,\u2028tricks, anything food related!"
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Customize the cover of your book%@then add your family recipes, the%@meals you've cooked lately, tips,%@tricks, anything food related!", [DataHelper lineBreakString], [DataHelper lineBreakString], [DataHelper lineBreakString]]
                                                      textAlignment:NSTextAlignmentLeft availableSize:size];
         subtitleLabel.frame = CGRectMake(0.0,
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
@@ -230,7 +232,8 @@
         
         // Title
         UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
-                                                   text:@"SHARE YOUR\u2028RECIPES" textAlignment:NSTextAlignmentCenter
+                                                   text:[NSString stringWithFormat:@"SHARE YOUR%@RECIPES", [DataHelper lineBreakString]]
+                                          textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-14.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
                                       70.0,
@@ -251,7 +254,7 @@
         [_collectPageView addSubview:dividerView];
         
         // Subtitle
-        UILabel *subtitleLabel = [self createSubtitleLabelWithText:@"Check out your friends' books and\u2028keep the best on your bench. Share\u2028your recipes on Facebook or Twitter\u2028or keep them all to yourself."
+        UILabel *subtitleLabel = [self createSubtitleLabelWithText:[NSString stringWithFormat:@"Check out your friends' books and%@keep the best on your bench. Share%@your recipes on Facebook or Twitter%@or keep them all to yourself.", [DataHelper lineBreakString], [DataHelper lineBreakString], [DataHelper lineBreakString]]
                                                      textAlignment:NSTextAlignmentCenter availableSize:size];
         subtitleLabel.frame = CGRectMake(floorf((size.width - subtitleLabel.frame.size.width) / 2.0),
                                          titleLabel.frame.origin.y + titleLabel.frame.size.height + 40.0,
