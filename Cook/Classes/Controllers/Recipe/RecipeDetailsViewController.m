@@ -1505,13 +1505,28 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)cancelTapped:(id)sender {
     if (self.addMode) {
-        self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Recipe?" message:nil delegate:self
-                                            cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        
+        if ([self.recipeDetails saveRequired]) {
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Recipe?" message:nil delegate:self
+                                                cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        } else {
+            [self closeRecipeView];
+        }
+        
     } else {
-        self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Changes?" message:nil delegate:self
-                                            cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        if ([self.recipeDetails saveRequired]) {
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Changes?" message:nil delegate:self
+                                                cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        } else {
+            [self initRecipeDetails];
+            [self enableEditMode:NO];
+        }
     }
-    [self.cancelAlert show];
+    
+    if (self.cancelAlert) {
+        [self.cancelAlert show];
+    }
+
 }
 
 - (void)saveTapped:(id)sender {
