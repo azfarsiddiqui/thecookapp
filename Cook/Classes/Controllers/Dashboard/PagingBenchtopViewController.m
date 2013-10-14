@@ -1157,9 +1157,6 @@
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
         
-        [self libraryIntroTapped];
-        [self settingsIntroTapped];
-        
         [self hideLoginViewCompletion:^{
             [self loadMyBook];
             [self loadFollowBooksReload:YES];
@@ -1447,7 +1444,7 @@
 }
 
 - (void)flashIntros {
-    CGFloat shiftOffset = 15.0;
+    CGFloat shiftOffset = 0.0;
     
     self.libraryIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_library.png"]];
     UITapGestureRecognizer *libraryTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryIntroTapped)];
@@ -1489,15 +1486,15 @@
 }
 
 - (void)libraryIntroTapped {
-    [self hideIntroView:self.libraryIntroView completion:^{
-        self.libraryIntroView = nil;
-    }];
+    if ([self.delegate respondsToSelector:@selector(benchtopPeekRequestedForStore)]) {
+        [self.delegate benchtopPeekRequestedForStore];
+    }
 }
 
 - (void)settingsIntroTapped {
-    [self hideIntroView:self.settingsIntroView completion:^{
-        self.settingsIntroView = nil;
-    }];
+    if ([self.delegate respondsToSelector:@selector(benchtopPeekRequestedForSettings)]) {
+        [self.delegate benchtopPeekRequestedForSettings];
+    }
 }
 
 - (void)hideIntroView:(UIView *)introView completion:(void (^)())completion {
@@ -1513,16 +1510,17 @@
 }
 
 - (void)hideIntroViewsAsRequired {
-    if ([CKUser isLoggedIn]) {
-        [self libraryIntroTapped];
-        [self settingsIntroTapped];
-    } else {
-        if (self.libraryIntroView.superview && [self.delegate benchtopInLibrary]) {
-            [self libraryIntroTapped];
-        }
-        if (self.settingsIntroView.superview && [self.delegate benchtopInSettings]) {
-            [self settingsIntroTapped];
-        }
+    
+    if (self.libraryIntroView.superview && [self.delegate benchtopInLibrary]) {
+        [ViewHelper removeViewWithAnimation:self.libraryIntroView completion:^{
+            self.libraryIntroView = nil;
+        }];
+    }
+    
+    if (self.settingsIntroView.superview && [self.delegate benchtopInSettings]) {
+        [ViewHelper removeViewWithAnimation:self.settingsIntroView completion:^{
+            self.settingsIntroView = nil;
+        }];
     }
 }
 

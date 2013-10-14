@@ -179,6 +179,14 @@
     self.defaultImageView = nil;
 }
 
+- (void)benchtopPeekRequestedForStore {
+    [self peekDashByOffset:30.0];
+}
+
+- (void)benchtopPeekRequestedForSettings {
+    [self peekDashByOffset:-30.0];
+}
+
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
@@ -1023,6 +1031,27 @@
     self.storeViewController.view.hidden = hide;
     self.benchtopViewController.view.hidden = hide;
     self.settingsViewController.view.hidden = hide;
+}
+
+- (void)peekDashByOffset:(CGFloat)offset {
+    CGRect storeFrame = self.storeViewController.view.frame;
+    CGRect dashFrame = self.benchtopViewController.view.frame;
+    CGRect settingsFrame = self.settingsViewController.view.frame;
+    storeFrame.origin.y += offset;
+    dashFrame.origin.y += offset;
+    settingsFrame.origin.x += offset;
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationCurveEaseIn
+                     animations:^{
+                         self.storeViewController.view.frame = storeFrame;
+                         self.benchtopViewController.view.frame = dashFrame;
+                         self.settingsViewController.view.frame = settingsFrame;
+                     }
+                     completion:^(BOOL finished) {
+                         [self snapIfRequired];
+                     }];
+
 }
 
 @end

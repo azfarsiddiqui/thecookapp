@@ -294,4 +294,21 @@
              };
 }
 
+#pragma mark - View effects
+
++ (void)removeViewWithAnimation:(UIView *)view completion:(void (^)())completion {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         view.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [view removeFromSuperview];
+                         if (completion != nil) {
+                             completion();
+                         }
+                     }];
+}
+
 @end

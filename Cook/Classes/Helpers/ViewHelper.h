@@ -68,4 +68,7 @@
                                textAlignment:(NSTextAlignment)textAlignment lineSpacing:(CGFloat)lineSpacing
                                lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
+// View effects.
++ (void)removeViewWithAnimation:(UIView *)view completion:(void (^)())completion;
+
 @end
