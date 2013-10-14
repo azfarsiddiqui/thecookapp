@@ -58,6 +58,7 @@
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL transitional;
 @property (nonatomic, strong) NSString *preEditingBookName;
 @property (nonatomic, strong) NSString *preEditingAuthorName;
 
@@ -360,9 +361,8 @@
 - (void)pagingLayoutDidUpdate {
     
     // Update blurring backdrop only in non-edit mode.
-    if (!self.editMode) {
+    if (!self.editMode || !self.transitional) {
         [self updatePagingBenchtopView];
-        
     }
 }
 
@@ -785,7 +785,6 @@
 - (void)loadMyBook {
     
     CKUser *currentUser = [CKUser currentUser];
-    DLog(@"CURRENT USER: %@", currentUser);
     if (currentUser) {
         
         [CKBook dashboardBookForUser:currentUser
@@ -815,14 +814,13 @@
                                      // Set to nil to delete it first.
                                      self.myBook = nil;
                                      [[self pagingLayout] markLayoutDirty];
+                                     [self clearPagingBenchtopView];
+                                     self.transitional = YES;
                                      
                                      // Delete the item.
                                      [self.collectionView performBatchUpdates:^{
                                          [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                      } completion:^(BOOL finished) {
-                                         
-                                         // Clear blended view.
-                                         [self clearPagingBenchtopView];
                                          
                                          // Reset the book.
                                          self.myBook = book;
@@ -831,10 +829,26 @@
                                          // If we have sign in page, then hide it and perform insertion animation.
                                          if (self.signUpViewController) {
                                              [self hideLoginViewCompletion:^{
+                                                 
                                                  [self.collectionView performBatchUpdates:^{
                                                      [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                                  } completion:^(BOOL finished) {
-                                                     [self updatePagingBenchtopView];
+                                                     
+                                                     NSArray *followIndexPaths = [self.followBooks collectWithIndex:^id(CKBook *book, NSUInteger bookIndex){
+                                                         return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+                                                     }];
+                                                     [self.followBooks removeAllObjects];
+                                                     [[self pagingLayout] markLayoutDirty];
+                                                     
+                                                     [self.collectionView performBatchUpdates:^{
+                                                         [self.collectionView deleteItemsAtIndexPaths:followIndexPaths];
+                                                     } completion:^(BOOL finished) {
+                                                         
+                                                         self.transitional = NO;
+                                                         [self loadFollowBooks];
+                                                     }];
+                                                     
+                                                     
                                                  }];
                                              }];
                                          } else {
@@ -1189,7 +1203,6 @@
     if (success) {
         
         [self loadMyBook];
-        [self loadFollowBooksReload:YES];
         
         // Clear the sign up image.
         self.signupBlurImage = nil;
