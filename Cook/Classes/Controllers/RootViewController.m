@@ -421,7 +421,7 @@
     
 }
 
-- (void)snapIfRequired {
+- (NSUInteger)targetSnapLevel {
     NSUInteger toggleLevel = self.benchtopLevel;
     
     if (self.benchtopLevel == kStoreLevel
@@ -449,8 +449,11 @@
         toggleLevel = kBenchtopLevel;
     }
     
-//    DLog("Snap to Level: %d", toggleLevel);
-    [self snapToLevel:toggleLevel];
+    return toggleLevel;
+}
+
+- (void)snapIfRequired {
+    [self snapToLevel:[self targetSnapLevel]];
 }
 
 - (void)snapToLevel:(NSUInteger)benchtopLevel {
@@ -511,7 +514,9 @@
                                                   // Black status bar only in store mode.
                                                   [self updateStatusBarLight:(benchtopLevel != kStoreLevel)];
 
-                                                  completion();
+                                                  if (completion != nil) {
+                                                      completion();
+                                                  }
                                               }];
                          } else {
                              self.benchtopLevel = benchtopLevel;
@@ -519,6 +524,9 @@
                              // Black status bar only in store mode.
                              [self updateStatusBarLight:(benchtopLevel != kStoreLevel)];
                              
+                             if (completion != nil) {
+                                 completion();
+                             }
                          }
                          
                      }];
@@ -1037,9 +1045,21 @@
     CGRect storeFrame = self.storeViewController.view.frame;
     CGRect dashFrame = self.benchtopViewController.view.frame;
     CGRect settingsFrame = self.settingsViewController.view.frame;
+    CGRect storeBounceFrame = storeFrame;
+    CGRect dashBounceFrame = dashFrame;
+    CGRect settingsBounceFrame = settingsFrame;
+    
+    // First peek.
     storeFrame.origin.y += offset;
     dashFrame.origin.y += offset;
     settingsFrame.origin.x += offset;
+    
+    // Second compensate.
+    CGFloat bounceOffset = -0.3 * offset;
+    storeBounceFrame.origin.y += bounceOffset;
+    dashBounceFrame.origin.y += bounceOffset;
+    settingsBounceFrame.origin.x += bounceOffset;
+    
     [UIView animateWithDuration:0.2
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
@@ -1049,7 +1069,17 @@
                          self.settingsViewController.view.frame = settingsFrame;
                      }
                      completion:^(BOOL finished) {
-                         [self snapIfRequired];
+                         [UIView animateWithDuration:0.2
+                                               delay:0.0
+                                             options:UIViewAnimationCurveEaseOut
+                                          animations:^{
+                                              self.storeViewController.view.frame = storeBounceFrame;
+                                              self.benchtopViewController.view.frame = dashBounceFrame;
+                                              self.settingsViewController.view.frame = settingsBounceFrame;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              [self snapIfRequired];
+                                          }];
                      }];
 
 }
