@@ -94,6 +94,7 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 - (BOOL)hasStory;
 - (BOOL)hasMethod;
 - (BOOL)hasIngredients;
+- (BOOL)hasTags;
 
 // Stats.
 - (void)incrementPageViewInBackground;

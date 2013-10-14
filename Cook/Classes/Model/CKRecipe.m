@@ -18,6 +18,7 @@
 #import "CKRecipeLike.h"
 #import "CKRecipeComment.h"
 #import "CKPhotoManager.h"
+#import "CKRecipeTag.h"
 
 @interface CKRecipe ()
 
@@ -31,7 +32,7 @@
 @synthesize ingredients = _ingredients;
 
 #define kIngredientDelimiter    @"::"
-
+//kRecipeAttrTags
 + (NSInteger)maxServes {
     return 10;
 }
@@ -452,11 +453,21 @@
 }
 
 - (NSArray *)tags {
-    return [self.parseObject objectForKey:kRecipeAttrTags];
+    NSArray *tags = [self.parseObject objectForKey:kRecipeAttrTags];
+    NSMutableArray *tagArray = [NSMutableArray new];
+    [tags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        CKRecipeTag *recipeTag = [[CKRecipeTag alloc] initWithParseObject:obj];
+        [tagArray addObject:recipeTag];
+    }];
+    return tagArray;
 }
 
 - (void)setTags:(NSArray *)tags {
-    [self.parseObject setObject:tags forKey:kRecipeAttrTags];
+    NSMutableArray *returnArray = [NSMutableArray new];
+    [tags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [returnArray addObject:((CKRecipeTag *)obj).parseObject];
+    }];
+    [self.parseObject setObject:returnArray forKey:kRecipeAttrTags];
 }
 
 - (NSInteger)categoryIndex {
@@ -592,6 +603,10 @@
 
 - (BOOL)hasIngredients {
     return ([self.ingredients count] > 0);
+}
+
+- (BOOL)hasTags {
+    return ([self.tags count] > 0);
 }
 
 - (void)incrementPageViewInBackground {

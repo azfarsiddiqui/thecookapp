@@ -1186,6 +1186,7 @@
 		F68E0F0117D2AE6600B56E7A /* cook_book_share_icon_unlocked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EEF17D2AE6600B56E7A /* cook_book_share_icon_unlocked@2x.png */; };
 		F6B29B4F1803AB360056513F /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B29B4E1803AB360056513F /* AnalyticsHelper.m */; };
 		F6B29B501803B7300056513F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB917D1D575000DDD95 /* MessageUI.framework */; };
+		F6BC0EE2180B5B4000B0F506 /* CKRecipeTag.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2592,6 +2593,8 @@
 		F68E0EEF17D2AE6600B56E7A /* cook_book_share_icon_unlocked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_unlocked@2x.png"; sourceTree = "<group>"; };
 		F6B29B4D1803AB360056513F /* AnalyticsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsHelper.h; sourceTree = "<group>"; };
 		F6B29B4E1803AB360056513F /* AnalyticsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalyticsHelper.m; sourceTree = "<group>"; };
+		F6BC0EE0180B5B4000B0F506 /* CKRecipeTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeTag.h; sourceTree = "<group>"; };
+		F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeTag.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4220,6 +4223,8 @@
 				76F6448D16F1522A00F86223 /* CKUserNotification.m */,
 				76F6449E16F18DB500F86223 /* CKUserFriend.h */,
 				76F6449F16F18DB500F86223 /* CKUserFriend.m */,
+				F6BC0EE0180B5B4000B0F506 /* CKRecipeTag.h */,
+				F6BC0EE1180B5B4000B0F506 /* CKRecipeTag.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -5665,6 +5670,7 @@
 				89622194161EA6610023EC30 /* NSArray+Utilities.m in Sources */,
 				89622195161EA6610023EC30 /* NSDictionary+Enumerable.m in Sources */,
 				76D625DE17DD513C007E936A /* CardViewHelper.m in Sources */,
+				F6BC0EE2180B5B4000B0F506 /* CKRecipeTag.m in Sources */,
 				89622196161EA6610023EC30 /* NSSet+Enumerable.m in Sources */,
 				7635A2D117A9F390002F30F2 /* IngredientListCell.m in Sources */,
 				76E985D517E2B25D00D9CAF3 /* SearchStoreCollectionViewController.m in Sources */,
