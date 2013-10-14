@@ -49,6 +49,10 @@
     [self.parseObject saveEventually];
 }
 
+- (void)deleteEventually {
+    [self.parseObject deleteEventually];
+}
+
 - (void)saveInBackground {
     [self saveInBackground:^{
         // Ignore success.

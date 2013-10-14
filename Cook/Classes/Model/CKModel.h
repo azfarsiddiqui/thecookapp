@@ -41,6 +41,7 @@ typedef void(^ProgressBlock)(int percentDone);
 
 - (id)initWithParseObject:(PFObject *)parseObject;
 - (void)saveEventually;
+- (void)deleteEventually;
 - (void)saveInBackground;
 - (void)saveInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)deleteInBackground:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
