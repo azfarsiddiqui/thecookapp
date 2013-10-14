@@ -133,9 +133,13 @@
 - (void)loggedIn:(NSNotification *)notification {
     BOOL isSuccess = [EventHelper loginSuccessfulForNotification:notification];
     
-    // Register for push.
     if (isSuccess) {
+        
+        // Register for push.
         [self registerForPush];
+        
+        // Identifier the user.
+        [Crashlytics setUserIdentifier:[PFUser currentUser].objectId];
     }
 }
 
@@ -146,6 +150,8 @@
     [currentInstallation removeObjectForKey:kUserModelForeignKeyName];
     [currentInstallation saveInBackground];
     
+    // Remove crash identification.
+    [Crashlytics setUserIdentifier:nil];
 }
 
 @end
