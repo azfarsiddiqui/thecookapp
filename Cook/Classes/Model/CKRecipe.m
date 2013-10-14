@@ -535,6 +535,8 @@
 - (void)setGeoLocation:(CKLocation *)geoLocation {
     if ([geoLocation persisted]) {
         [self.parseObject setObject:geoLocation.parseObject forKey:kRecipeAttrGeoLocation];
+    } else {
+        [self.parseObject removeObjectForKey:kRecipeAttrGeoLocation];
     }
 }
 

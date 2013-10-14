@@ -13,7 +13,7 @@
 typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPrivate,
     CKPrivacyFriends,
-    CKPrivacyGlobal
+    CKPrivacyPublic
 };
 
 @class CKRecipeImage;
