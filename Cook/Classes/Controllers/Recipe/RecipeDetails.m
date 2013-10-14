@@ -174,6 +174,10 @@
     }
 }
 
+- (void)setLocation:(CKLocation *)location {
+    _location = location;
+}
+
 #pragma mark - Private methods
 
 - (BOOL)ingredientsChangedForIngredients:(NSArray *)ingredients {

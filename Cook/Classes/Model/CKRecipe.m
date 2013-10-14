@@ -18,6 +18,7 @@
 #import "CKRecipeLike.h"
 #import "CKRecipeComment.h"
 #import "CKPhotoManager.h"
+#import "CKLocation.h"
 
 @interface CKRecipe ()
 
@@ -375,14 +376,9 @@
 }
 
 - (void)clearLocation {
-    [self.parseObject removeObjectForKey:kRecipeAttrLocation];
-}
-
-- (void)setLocation:(CLLocation *)location {
-    if (location) {
-        PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:location.coordinate.latitude
-                                                      longitude:location.coordinate.longitude];
-        [self.parseObject setObject:geoPoint forKey:kRecipeAttrLocation];
+    PFObject *parseLocation = [self.parseObject objectForKey:kRecipeAttrGeoLocation];
+    if (parseLocation) {
+        [parseLocation deleteInBackground];
     }
 }
 
@@ -534,6 +530,17 @@
         }
     }
     return _recipeImage;
+}
+
+- (void)setGeoLocation:(CKLocation *)geoLocation {
+    if ([geoLocation persisted]) {
+        [self.parseObject setObject:geoLocation.parseObject forKey:kRecipeAttrGeoLocation];
+    }
+}
+
+- (CKLocation *)geoLocation {
+    PFObject *parseLocationObject = [self.parseObject objectForKey:kRecipeAttrGeoLocation];
+    return (parseLocationObject != nil) ? [[CKLocation alloc] initWithParseObject:parseLocationObject] :  nil;
 }
 
 - (void)setIngredients:(NSArray *)ingredients {

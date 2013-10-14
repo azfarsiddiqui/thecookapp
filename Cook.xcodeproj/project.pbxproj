@@ -621,6 +621,8 @@
 		769BFDF4177B170E00332B5D /* cook_dash_shelves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 769BFDF2177B170E00332B5D /* cook_dash_shelves@2x.png */; };
 		769D22E017B49AC50048C572 /* RecipeServesCookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769D22DF17B49AC50048C572 /* RecipeServesCookView.m */; };
 		769D22E317B4AC980048C572 /* RecipeIngredientsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769D22E217B4AC980048C572 /* RecipeIngredientsView.m */; };
+		769FE3F4180B920E00B3DBB2 /* CKLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 769FE3F3180B920E00B3DBB2 /* CKLocationManager.m */; };
+		769FE3F7180B99BB00B3DBB2 /* CKLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 769FE3F6180B99BB00B3DBB2 /* CKLocation.m */; };
 		76A0E48217B4B82F0027F927 /* RecipeDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A0E48117B4B82F0027F927 /* RecipeDetails.m */; };
 		76A10AAC17CB017F0051751F /* cook_book_inner_loading_tiny_outer@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A10AA417CB017F0051751F /* cook_book_inner_loading_tiny_outer@2x.png */; };
 		76A10AAD17CB017F0051751F /* cook_book_inner_loading_tiny_outer.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A10AA517CB017F0051751F /* cook_book_inner_loading_tiny_outer.png */; };
@@ -1910,6 +1912,10 @@
 		769D22DF17B49AC50048C572 /* RecipeServesCookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeServesCookView.m; sourceTree = "<group>"; };
 		769D22E117B4AC980048C572 /* RecipeIngredientsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeIngredientsView.h; sourceTree = "<group>"; };
 		769D22E217B4AC980048C572 /* RecipeIngredientsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeIngredientsView.m; sourceTree = "<group>"; };
+		769FE3F2180B920E00B3DBB2 /* CKLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKLocationManager.h; sourceTree = "<group>"; };
+		769FE3F3180B920E00B3DBB2 /* CKLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKLocationManager.m; sourceTree = "<group>"; };
+		769FE3F5180B99BB00B3DBB2 /* CKLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKLocation.h; sourceTree = "<group>"; };
+		769FE3F6180B99BB00B3DBB2 /* CKLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKLocation.m; sourceTree = "<group>"; };
 		76A0E48017B4B82F0027F927 /* RecipeDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeDetails.h; sourceTree = "<group>"; };
 		76A0E48117B4B82F0027F927 /* RecipeDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecipeDetails.m; sourceTree = "<group>"; };
 		76A10AA417CB017F0051751F /* cook_book_inner_loading_tiny_outer@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_loading_tiny_outer@2x.png"; sourceTree = "<group>"; };
@@ -4148,6 +4154,8 @@
 				76D0A3C617C9B34500B046F8 /* CKPhotoManager.m */,
 				764923B917E9E1FD00C4E347 /* CKSocialManager.h */,
 				764923BA17E9E1FD00C4E347 /* CKSocialManager.m */,
+				769FE3F2180B920E00B3DBB2 /* CKLocationManager.h */,
+				769FE3F3180B920E00B3DBB2 /* CKLocationManager.m */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -4220,6 +4228,8 @@
 				76F6448D16F1522A00F86223 /* CKUserNotification.m */,
 				76F6449E16F18DB500F86223 /* CKUserFriend.h */,
 				76F6449F16F18DB500F86223 /* CKUserFriend.m */,
+				769FE3F5180B99BB00B3DBB2 /* CKLocation.h */,
+				769FE3F6180B99BB00B3DBB2 /* CKLocation.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -5644,6 +5654,7 @@
 				76ED274E1612DC180012E479 /* main.m in Sources */,
 				764F4D05179CE85A00821221 /* LSCollectionViewLayoutHelper.m in Sources */,
 				76ED27521612DC180012E479 /* AppDelegate.m in Sources */,
+				769FE3F7180B99BB00B3DBB2 /* CKLocation.m in Sources */,
 				76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */,
 				7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */,
 				7634612E17B9C3C000876AE9 /* BookContentGridLayout.m in Sources */,
@@ -5805,6 +5816,7 @@
 				76EF95D017363BF50033DBCE /* CKListCollectionViewCell.m in Sources */,
 				76EF95D117363BF50033DBCE /* CKListCollectionViewFlowLayout.m in Sources */,
 				76EF95D217363BF50033DBCE /* CKListCollectionViewLayout.m in Sources */,
+				769FE3F4180B920E00B3DBB2 /* CKLocationManager.m in Sources */,
 				F60C571517E440ED00912544 /* UIImage+Scale.m in Sources */,
 				766D96F817D2E80000A9104E /* NotificationCell.m in Sources */,
 				76EC556117C3030D000DEA08 /* RecipeCommentCell.m in Sources */,

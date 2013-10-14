@@ -13,22 +13,27 @@
 
 @property (nonatomic, strong) UIImageView *sliderPrivateIconView;
 @property (nonatomic, strong) UIImageView *sliderFriendsIconView;
-@property (nonatomic, strong) UIImageView *sliderGlobalIconView;
+@property (nonatomic, strong) UIImageView *sliderPublicIconView;
 @property (nonatomic, strong) UILabel *infoPrivateLabel;
 @property (nonatomic, strong) UILabel *infoFriendsLabel;
+@property (nonatomic, strong) UILabel *infoPublicLabel;
 
 @end
 
 @implementation CKPrivacySliderView
 
 - (id)initWithDelegate:(id<CKPrivacySliderViewDelegate>)delegate {
-    if (self = [super initWithNumNotches:2 delegate:delegate]) {
+    if (self = [super initWithNumNotches:3 delegate:delegate]) {
     }
     return self;
 }
 
 - (UIImage *)imageForLeftTrack {
     return [UIImage imageNamed:@"cook_customise_privacy_bg_left.png"];
+}
+
+- (UIImage *)imageForMiddleTrack {
+    return [UIImage imageNamed:@"cook_customise_privacy_bg_middle.png"];
 }
 
 - (UIImage *)imageForRightTrack {
@@ -42,14 +47,16 @@
 - (void)initNotchIndex:(NSInteger)selectedNotchIndex {
     self.sliderPrivateIconView.alpha = 1.0;
     self.sliderFriendsIconView.alpha = 0.0;
-    self.sliderGlobalIconView.alpha = 0.0;
+    self.sliderPublicIconView.alpha = 0.0;
     [self.currentNotchView addSubview:self.sliderPrivateIconView];
     [self.currentNotchView addSubview:self.sliderFriendsIconView];
-    [self.currentNotchView addSubview:self.sliderGlobalIconView];
+    [self.currentNotchView addSubview:self.sliderPublicIconView];
     
+    // TODO Find a place for these.
     // Info label floats in the middle.
-    [self insertSubview:self.infoPrivateLabel belowSubview:self.currentNotchView];
-    [self insertSubview:self.infoFriendsLabel belowSubview:self.currentNotchView];
+//    [self insertSubview:self.infoPrivateLabel belowSubview:self.currentNotchView];
+//    [self insertSubview:self.infoFriendsLabel belowSubview:self.currentNotchView];
+//    [self insertSubview:self.infoPublicLabel belowSubview:self.currentNotchView];
 }
 
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {
@@ -78,8 +85,6 @@
         CGFloat intersectionRatio = MIN(1.0, trackIntersection.size.width / sliderFrame.size.width);
         [self sliderIconViewForIndex:trackIndex].alpha = intersectionRatio;
         [self infoLabelForIndex:trackIndex].alpha = intersectionRatio;
-        
-        DLog(@"INTERSECTION WIDTH: %f", trackIntersection.size.width);
     }
 
 }
@@ -117,17 +122,17 @@
     return _sliderFriendsIconView;
 }
 
-- (UIImageView *)sliderGlobalIconView {
-    if (!_sliderGlobalIconView) {
-        _sliderGlobalIconView = [[UIImageView alloc] initWithImage:[self imageForIconAtNotchIndex:2]];
-        _sliderGlobalIconView.frame = (CGRect){
-            floorf((self.currentNotchView.bounds.size.width - _sliderGlobalIconView.frame.size.width) / 2.0),
-            floorf((self.currentNotchView.bounds.size.height - _sliderGlobalIconView.frame.size.height) / 2.0),
-            _sliderGlobalIconView.frame.size.width,
-            _sliderGlobalIconView.frame.size.height
+- (UIImageView *)sliderPublicIconView {
+    if (!_sliderPublicIconView) {
+        _sliderPublicIconView = [[UIImageView alloc] initWithImage:[self imageForIconAtNotchIndex:2]];
+        _sliderPublicIconView.frame = (CGRect){
+            floorf((self.currentNotchView.bounds.size.width - _sliderPublicIconView.frame.size.width) / 2.0),
+            floorf((self.currentNotchView.bounds.size.height - _sliderPublicIconView.frame.size.height) / 2.0),
+            _sliderPublicIconView.frame.size.width,
+            _sliderPublicIconView.frame.size.height
         };
     }
-    return _sliderGlobalIconView;
+    return _sliderPublicIconView;
 }
 
 - (UILabel *)infoPrivateLabel {
@@ -144,6 +149,13 @@
     return _infoFriendsLabel;
 }
 
+- (UILabel *)infoPublicLabel {
+    if (!_infoFriendsLabel) {
+        _infoFriendsLabel = [self infoLabelForText:[self infoForNotchIndex:2]];
+    }
+    return _infoFriendsLabel;
+}
+
 #pragma mark - Private methods
 
 - (UIImageView *)sliderIconViewForIndex:(NSInteger)notchIndex {
@@ -156,7 +168,7 @@
             sliderIconView = self.sliderFriendsIconView;
             break;
         case 2:
-            sliderIconView = self.sliderGlobalIconView;
+            sliderIconView = self.sliderPublicIconView;
             break;
         default:
             break;
@@ -191,6 +203,9 @@
         case 1:
             infoLabel = self.infoFriendsLabel;
             break;
+        case 2:
+            infoLabel = self.infoPublicLabel;
+            break;
         default:
             break;
     }
@@ -207,7 +222,7 @@
             [privacyDelegate privacySelectedFriendsForSliderView:self];
             break;
         case 2:
-            [privacyDelegate privacySelectedGlobalForSliderView:self];
+            [privacyDelegate privacySelectedPublicForSliderView:self];
             break;
         default:
             break;
@@ -222,6 +237,9 @@
             break;
         case 1:
             info = @"FRIENDS";
+            break;
+        case 2:
+            info = @"PUBLIC";
             break;
         default:
             break;

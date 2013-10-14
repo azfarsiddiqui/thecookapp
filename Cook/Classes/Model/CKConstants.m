@@ -96,6 +96,7 @@ NSString *const kRecipeAttrCookingTimeInMinutes = @"cookingTimeMins";
 NSString *const kRecipeAttrPrepTimeInMinutes    = @"prepTimeMins";
 NSString *const kRecipeAttrPrivacy              = @"privacy";
 NSString *const kRecipeAttrLocation             = @"location";
+NSString *const kRecipeAttrGeoLocation          = @"geoLocation";
 NSString *const kRecipeAttrNumViews             = @"numViews";
 NSString *const kRecipeAttrNumLikes             = @"numLikes";
 NSString *const kRecipeAttrNumComments          = @"numComments";
@@ -110,6 +111,19 @@ NSString *const kRecipeImageAttrThumbImageFile  = @"thumbImageFile";
 NSString *const kRecipeImageAttrImageUUID       = @"imageUuid";
 NSString *const kRecipeImageAttrThumnImageUUID  = @"thumbImageUuid";
 NSString *const kRecipeImageAttrImageName       = @"imageName";
+
+#pragma mark - Location class
+
+NSString *const kLocationModelName               = @"Location";
+NSString *const kLocationModelForeignKeyName     = @"geoLocation";
+NSString *const kLocationGeoPoint                = @"geoPoint";
+NSString *const kLocationCountryCode             = @"countryCode";
+NSString *const kLocationCountry                 = @"country";
+NSString *const kLocationPostalCode              = @"postalCode";
+NSString *const kLocationAdministrativeArea      = @"adminCode";
+NSString *const kLocationSubAdministrativeArea   = @"subAdminCode";
+NSString *const kLocationLocality                = @"locality";
+NSString *const kLocationSubLocality             = @"subLocality";
 
 #pragma mark - Category class
 

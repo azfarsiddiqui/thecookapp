@@ -10,11 +10,13 @@
 #import "CKRecipe.h"
 
 @class CKUser;
+@class CKLocation;
 
 @interface RecipeDetails : NSObject
 
 @property (nonatomic, strong) CKRecipe *originalRecipe;
 @property (nonatomic, strong) CKUser *user;
+@property (nonatomic, strong) CKLocation *location;
 @property (nonatomic, copy) NSString *page;
 @property (nonatomic, strong) NSArray *availablePages;
 @property (nonatomic, copy) NSString *name;

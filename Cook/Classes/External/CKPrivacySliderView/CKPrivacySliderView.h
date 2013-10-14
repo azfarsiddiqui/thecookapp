@@ -12,7 +12,7 @@
 
 - (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView;
 - (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView;
-- (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView;
+- (void)privacySelectedPublicForSliderView:(CKNotchSliderView *)sliderView;
 
 @end
 

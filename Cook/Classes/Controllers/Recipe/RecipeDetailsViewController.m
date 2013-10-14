@@ -27,7 +27,7 @@
 #import "UIImage+ProportionalFill.h"
 #import "NSString+Utilities.h"
 #import "BookNavigationHelper.h"
-#import "CKServerManager.h"
+#import "CKLocationManager.h"
 #import "CKPhotoManager.h"
 #import "CKActivityIndicatorView.h"
 #import "RecipeImageView.h"
@@ -35,6 +35,7 @@
 #import "ProgressOverlayViewController.h"
 #import "AnalyticsHelper.h"
 #import "CKNavigationController.h"
+#import "CKLocation.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -89,6 +90,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
+@property (nonatomic, strong) CKLocation *location;
 
 // Social layer.
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
@@ -317,7 +319,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self updateShareButton];
 }
 
-- (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
+- (void)privacySelectedPublicForSliderView:(CKNotchSliderView *)sliderView {
     
     // Locating is in progress.
     if (self.locatingInProgress) {
@@ -328,9 +330,11 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     // Disable save button until location is obtained.
     self.saveButton.enabled = NO;
     
-    [[CKServerManager sharedInstance] requestForCurrentLocation:^(double latitude, double longitude){
+    [[CKLocationManager sharedInstance] requestForCurrentLocation:^(CKLocation *location) {
+        self.location = location;
+        DLog(@"Got location %@", location);
+        
         self.recipeDetails.privacy = CKPrivacyGlobal;
-        [self.recipe setLocation:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
         self.saveButton.enabled = YES;
         self.locatingInProgress = NO;
     } failure:^(NSError *error) {

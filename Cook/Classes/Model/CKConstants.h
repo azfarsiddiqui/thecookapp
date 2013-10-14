@@ -95,6 +95,7 @@ extern NSString *const kRecipeAttrPrepTimeInMinutes;
 extern NSString *const kRecipeAttrRecipeViewImageContentOffset;
 extern NSString *const kRecipeAttrPrivacy;
 extern NSString *const kRecipeAttrLocation;
+extern NSString *const kRecipeAttrGeoLocation;
 extern NSString *const kRecipeAttrNumViews;
 extern NSString *const kRecipeAttrNumLikes;
 extern NSString *const kRecipeAttrNumComments;
@@ -109,6 +110,19 @@ extern NSString *const kRecipeImageAttrThumbImageFile;
 extern NSString *const kRecipeImageAttrImageUUID;
 extern NSString *const kRecipeImageAttrThumnImageUUID;
 extern NSString *const kRecipeImageAttrImageName;
+
+#pragma mark - Location class
+
+extern NSString *const kLocationModelName;
+extern NSString *const kLocationModelForeignKeyName;
+extern NSString *const kLocationGeoPoint;
+extern NSString *const kLocationCountryCode;
+extern NSString *const kLocationCountry;
+extern NSString *const kLocationPostalCode;
+extern NSString *const kLocationAdministrativeArea;
+extern NSString *const kLocationSubAdministrativeArea;
+extern NSString *const kLocationLocality;
+extern NSString *const kLocationSubLocality;
 
 #pragma mark - Category class
 
