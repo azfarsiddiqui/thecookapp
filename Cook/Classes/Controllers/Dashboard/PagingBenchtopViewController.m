@@ -434,7 +434,9 @@
 
 - (void)signupViewControllerDismissRequested {
     [self hideLoginViewCompletion:^{
-        // Nothing.
+        
+        // Update benchtop snapshot.
+        [self snapshotBenchtop];
     }];
 }
 
@@ -783,9 +785,9 @@
 - (void)loadMyBook {
     
     CKUser *currentUser = [CKUser currentUser];
+    DLog(@"CURRENT USER: %@", currentUser);
     if (currentUser) {
         
-        // Load logged-in user's book.
         [CKBook dashboardBookForUser:currentUser
                          success:^(CKBook *book) {
                              
@@ -810,15 +812,44 @@
                                      
                                  } else {
                                      
-                                     // Just reload the book.
-                                     self.myBook = book;
+                                     // Set to nil to delete it first.
+                                     self.myBook = nil;
+                                     [[self pagingLayout] markLayoutDirty];
                                      
-                                     // Reload the book then update blended benchtop.
+                                     // Delete the item.
                                      [self.collectionView performBatchUpdates:^{
-                                         [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                         [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                      } completion:^(BOOL finished) {
-                                         [self updatePagingBenchtopView];
+                                         
+                                         // Clear blended view.
+                                         [self clearPagingBenchtopView];
+                                         
+                                         // Reset the book.
+                                         self.myBook = book;
+                                         [[self pagingLayout] markLayoutDirty];
+                                         
+                                         // If we have sign in page, then hide it and perform insertion animation.
+                                         if (self.signUpViewController) {
+                                             [self hideLoginViewCompletion:^{
+                                                 [self.collectionView performBatchUpdates:^{
+                                                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                                 } completion:^(BOOL finished) {
+                                                     [self updatePagingBenchtopView];
+                                                 }];
+                                             }];
+                                         } else {
+                                             
+                                             // Just insert it.
+                                             [self.collectionView performBatchUpdates:^{
+                                                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                             } completion:^(BOOL finished) {
+                                                 [self updatePagingBenchtopView];
+                                             }];
+
+                                         }
+                                         
                                      }];
+                                     
                                      
                                  }
                                  
@@ -1157,10 +1188,8 @@
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
         
-        [self hideLoginViewCompletion:^{
-            [self loadMyBook];
-            [self loadFollowBooksReload:YES];
-        }];
+        [self loadMyBook];
+        [self loadFollowBooksReload:YES];
         
         // Clear the sign up image.
         self.signupBlurImage = nil;
@@ -1182,6 +1211,9 @@
     // Reload benchtop.
     [self loadMyBook];
     [self loadFollowBooksReload:YES];
+    
+    // Add intros.
+    [self flashIntros];
 }
 
 - (void)themeChanged:(NSNotification *)notification {
