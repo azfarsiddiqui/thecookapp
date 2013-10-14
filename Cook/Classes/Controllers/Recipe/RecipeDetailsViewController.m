@@ -866,7 +866,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                    [self.activityView stopAnimating];
                                                }];
     } else {
-        [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+        
+        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)]) {
+            [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+        }
     }
     
 }
