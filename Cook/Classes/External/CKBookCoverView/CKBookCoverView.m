@@ -383,8 +383,8 @@
             UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]
                                                  selectedImage:[UIImage imageNamed:@"cook_dash_icons_customise_onpress.png"]
                                                         target:self selector:@selector(editTapped:)];
-            editButton.frame = CGRectMake(self.bounds.size.width - editButton.frame.size.width + 5.0,
-                                          self.bounds.origin.y - 7.0,
+            editButton.frame = CGRectMake(self.bounds.size.width - editButton.frame.size.width,
+                                          self.bounds.origin.y,
                                           editButton.frame.size.width,
                                           editButton.frame.size.height);
             [self addSubview:editButton];
