@@ -36,6 +36,9 @@
     return [[CKLocation alloc] initWithParseObject:parseLocation];
 }
 
+#pragma mark - Properties
+
+
 #pragma mark - CKModel
 
 - (NSDictionary *)descriptionProperties {
@@ -49,6 +52,28 @@
     [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationLocality]] forKey:kLocationLocality];
     [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationSubLocality]] forKey:kLocationSubLocality];
     return descriptionProperties;
+}
+
+#pragma mark - NSObject
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    } else if (object == nil || ![object isKindOfClass:[CKLocation class]]) {
+        return NO;
+    } else {
+        CLLocation *location = [self locationFromGeoPoint:[self.parseObject objectForKey:kLocationGeoPoint]];
+        CLLocation *otherLocation = [self locationFromGeoPoint:[((CKLocation *)object).parseObject objectForKey:kLocationGeoPoint]];
+        return ([location distanceFromLocation:otherLocation] < 10.0);
+    }
+}
+
+- (CLLocation *)locationFromGeoPoint:(PFGeoPoint *)geoPoint {
+    if (geoPoint) {
+        return [[CLLocation alloc] initWithLatitude:geoPoint.latitude longitude:geoPoint.longitude];
+    } else {
+        return nil;
+    }
 }
 
 @end
