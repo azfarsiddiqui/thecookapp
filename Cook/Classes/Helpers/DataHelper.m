@@ -7,6 +7,7 @@
 //
 
 #import "DataHelper.h"
+#import "NSString+Utilities.h"
 
 @implementation DataHelper
 

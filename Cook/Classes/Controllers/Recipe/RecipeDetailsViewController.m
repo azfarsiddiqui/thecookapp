@@ -27,7 +27,7 @@
 #import "UIImage+ProportionalFill.h"
 #import "NSString+Utilities.h"
 #import "BookNavigationHelper.h"
-#import "CKServerManager.h"
+#import "CKLocationManager.h"
 #import "CKPhotoManager.h"
 #import "CKActivityIndicatorView.h"
 #import "RecipeImageView.h"
@@ -35,6 +35,7 @@
 #import "ProgressOverlayViewController.h"
 #import "AnalyticsHelper.h"
 #import "CKNavigationController.h"
+#import "CKLocation.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -89,6 +90,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
+@property (nonatomic, strong) CKLocation *location;
 
 // Social layer.
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
@@ -306,18 +308,20 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 - (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
     self.recipeDetails.privacy = CKPrivacyPrivate;
-    self.saveButton.enabled = YES;
+    self.recipeDetails.location = nil;
+    self.location = nil;
     [self updateShareButton];
 }
 
 - (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
     [self.recipe clearLocation];
     self.recipeDetails.privacy = CKPrivacyFriends;
-    self.saveButton.enabled = YES;
+    self.recipeDetails.location = nil;
+    self.location = nil;
     [self updateShareButton];
 }
 
-- (void)privacySelectedGlobalForSliderView:(CKNotchSliderView *)sliderView {
+- (void)privacySelectedPublicForSliderView:(CKNotchSliderView *)sliderView {
     
     // Locating is in progress.
     if (self.locatingInProgress) {
@@ -325,16 +329,24 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     }
     self.locatingInProgress = YES;
     
-    // Disable save button until location is obtained.
-    self.saveButton.enabled = NO;
+    // Set it to public.
+    self.recipeDetails.privacy = CKPrivacyPublic;
     
-    [[CKServerManager sharedInstance] requestForCurrentLocation:^(double latitude, double longitude){
-        self.recipeDetails.privacy = CKPrivacyGlobal;
-        [self.recipe setLocation:[[CLLocation alloc] initWithLatitude:latitude longitude:longitude]];
-        self.saveButton.enabled = YES;
+    [[CKLocationManager sharedInstance] requestForCurrentLocation:^(CKLocation *location) {
+        
+        // Remember the location that was returned.
+        self.location = location;
+        DLog(@"Got location %@", location);
+        
+        // Do we still want this to be public, user might have slid away while it is being located.
+        if (sliderView.currentNotchIndex == CKPrivacyPublic) {
+            self.recipeDetails.location = location;
+        }
+        
         self.locatingInProgress = NO;
     } failure:^(NSError *error) {
-        self.saveButton.enabled = YES;
+        
+        DLog(@"Unable to get location %@", [error localizedDescription]);
         self.locatingInProgress = NO;
     }];
     
@@ -866,7 +878,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                    [self.activityView stopAnimating];
                                                }];
     } else {
-        [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+        
+        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)]) {
+            [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
+        }
     }
     
 }
@@ -1505,13 +1520,28 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)cancelTapped:(id)sender {
     if (self.addMode) {
-        self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Recipe?" message:nil delegate:self
-                                            cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        
+        if ([self.recipeDetails saveRequired]) {
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Recipe?" message:nil delegate:self
+                                                cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        } else {
+            [self closeRecipeView];
+        }
+        
     } else {
-        self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Changes?" message:nil delegate:self
-                                            cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        if ([self.recipeDetails saveRequired]) {
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Changes?" message:nil delegate:self
+                                                cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+        } else {
+            [self initRecipeDetails];
+            [self enableEditMode:NO];
+        }
     }
-    [self.cancelAlert show];
+    
+    if (self.cancelAlert) {
+        [self.cancelAlert show];
+    }
+
 }
 
 - (void)saveTapped:(id)sender {
@@ -1534,19 +1564,77 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Enable save mode to hide all buttons and show black overlay.
         [self enableSaveMode:YES];
         
-        // Save off the recipe that span 0.1 and 0.9 progress, with the remaining 0.1 for laying out the book.
-        [self saveRecipeWithImageStartProgress:0.1
-                                   endProgress:0.9
-                                    completion:^{
-                                        [self enableSaveMode:NO];
-                                        [self enableEditMode:NO];
-                                        self.addMode = NO;
-                                    }
-                                       failure:^(NSError *error) {
-                                           [self enableSaveMode:NO];
-                                           [self enableEditMode:NO];
-                                           self.addMode = NO;
-                                       }];
+        // If privacy was public and there was a location set in this session.
+        if (self.recipeDetails.privacy == CKPrivacyPublic && self.location != nil) {
+            
+            // Save location first.
+            [self.location saveInBackground:^{
+                
+                // Set the geoLocation.
+                self.recipe.geoLocation = self.location;
+                
+                // Update progress for saving location.
+                [self.saveOverlayViewController updateProgress:0.1 animated:YES];
+                
+                // Save off the recipe that span 0.2 and 0.9 progress, with the remaining 0.1 for laying out the book.
+                [self saveRecipeWithImageStartProgress:0.2
+                                           endProgress:0.9
+                                            completion:^{
+                                                [self enableSaveMode:NO];
+                                                [self enableEditMode:NO];
+                                                self.addMode = NO;
+                                            }
+                                               failure:^(NSError *error) {
+                                                   [self enableSaveMode:NO];
+                                                   [self enableEditMode:NO];
+                                                   self.addMode = NO;
+                                               }];
+
+            } failure:^(NSError *error) {
+                
+                DLog(@"Unable to save location, saving the recipe.");
+                
+                // Save off the recipe that span 0.1 and 0.9 progress, with the remaining 0.1 for laying out the book.
+                [self saveRecipeWithImageStartProgress:0.1
+                                           endProgress:0.9
+                                            completion:^{
+                                                [self enableSaveMode:NO];
+                                                [self enableEditMode:NO];
+                                                self.addMode = NO;
+                                            }
+                                               failure:^(NSError *error) {
+                                                   [self enableSaveMode:NO];
+                                                   [self enableEditMode:NO];
+                                                   self.addMode = NO;
+                                               }];
+            }];
+
+        } else {
+            
+            if (self.recipe.privacy != CKPrivacyPublic && self.recipe.geoLocation != nil) {
+                CKLocation *existingLocation = self.recipe.geoLocation;
+                
+                // Clear the location from the recipe.
+                self.recipe.geoLocation = nil;
+                
+                // Delete this location eventually.
+                [existingLocation deleteEventually];
+            }
+            
+            // Save off the recipe that span 0.1 and 0.9 progress, with the remaining 0.1 for laying out the book.
+            [self saveRecipeWithImageStartProgress:0.1
+                                       endProgress:0.9
+                                        completion:^{
+                                            [self enableSaveMode:NO];
+                                            [self enableEditMode:NO];
+                                            self.addMode = NO;
+                                        }
+                                           failure:^(NSError *error) {
+                                               [self enableSaveMode:NO];
+                                               [self enableEditMode:NO];
+                                               self.addMode = NO;
+                                           }];
+        }
         
     } else {
         

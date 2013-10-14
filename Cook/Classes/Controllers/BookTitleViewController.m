@@ -413,7 +413,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
 }
 
-- (id)editViewControllerInitialValue {
+- (id)editViewControllerInitialValueForEditView:(UIView *)editingView {
     return self.editingPageName;
 }
 

@@ -58,6 +58,7 @@
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL editMode;
+@property (nonatomic, assign) BOOL transitional;
 @property (nonatomic, strong) NSString *preEditingBookName;
 @property (nonatomic, strong) NSString *preEditingAuthorName;
 
@@ -360,9 +361,8 @@
 - (void)pagingLayoutDidUpdate {
     
     // Update blurring backdrop only in non-edit mode.
-    if (!self.editMode) {
+    if (!self.editMode || !self.transitional) {
         [self updatePagingBenchtopView];
-        
     }
 }
 
@@ -434,7 +434,9 @@
 
 - (void)signupViewControllerDismissRequested {
     [self hideLoginViewCompletion:^{
-        // Nothing.
+        
+        // Update benchtop snapshot.
+        [self snapshotBenchtop];
     }];
 }
 
@@ -785,7 +787,6 @@
     CKUser *currentUser = [CKUser currentUser];
     if (currentUser) {
         
-        // Load logged-in user's book.
         [CKBook dashboardBookForUser:currentUser
                          success:^(CKBook *book) {
                              
@@ -810,15 +811,59 @@
                                      
                                  } else {
                                      
-                                     // Just reload the book.
-                                     self.myBook = book;
+                                     // Set to nil to delete it first.
+                                     self.myBook = nil;
+                                     [[self pagingLayout] markLayoutDirty];
+                                     [self clearPagingBenchtopView];
+                                     self.transitional = YES;
                                      
-                                     // Reload the book then update blended benchtop.
+                                     // Delete the item.
                                      [self.collectionView performBatchUpdates:^{
-                                         [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                         [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
                                      } completion:^(BOOL finished) {
-                                         [self updatePagingBenchtopView];
+                                         
+                                         // Reset the book.
+                                         self.myBook = book;
+                                         [[self pagingLayout] markLayoutDirty];
+                                         
+                                         // If we have sign in page, then hide it and perform insertion animation.
+                                         if (self.signUpViewController) {
+                                             [self hideLoginViewCompletion:^{
+                                                 
+                                                 [self.collectionView performBatchUpdates:^{
+                                                     [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                                 } completion:^(BOOL finished) {
+                                                     
+                                                     NSArray *followIndexPaths = [self.followBooks collectWithIndex:^id(CKBook *book, NSUInteger bookIndex){
+                                                         return [NSIndexPath indexPathForItem:bookIndex inSection:kFollowSection];
+                                                     }];
+                                                     [self.followBooks removeAllObjects];
+                                                     [[self pagingLayout] markLayoutDirty];
+                                                     
+                                                     [self.collectionView performBatchUpdates:^{
+                                                         [self.collectionView deleteItemsAtIndexPaths:followIndexPaths];
+                                                     } completion:^(BOOL finished) {
+                                                         
+                                                         self.transitional = NO;
+                                                         [self loadFollowBooks];
+                                                     }];
+                                                     
+                                                     
+                                                 }];
+                                             }];
+                                         } else {
+                                             
+                                             // Just insert it.
+                                             [self.collectionView performBatchUpdates:^{
+                                                 [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:kMyBookSection]]];
+                                             } completion:^(BOOL finished) {
+                                                 [self updatePagingBenchtopView];
+                                             }];
+
+                                         }
+                                         
                                      }];
+                                     
                                      
                                  }
                                  
@@ -1157,13 +1202,7 @@
     BOOL success = [EventHelper loginSuccessfulForNotification:notification];
     if (success) {
         
-        [self libraryIntroTapped];
-        [self settingsIntroTapped];
-        
-        [self hideLoginViewCompletion:^{
-            [self loadMyBook];
-            [self loadFollowBooksReload:YES];
-        }];
+        [self loadMyBook];
         
         // Clear the sign up image.
         self.signupBlurImage = nil;
@@ -1185,6 +1224,9 @@
     // Reload benchtop.
     [self loadMyBook];
     [self loadFollowBooksReload:YES];
+    
+    // Add intros.
+    [self flashIntros];
 }
 
 - (void)themeChanged:(NSNotification *)notification {
@@ -1447,7 +1489,7 @@
 }
 
 - (void)flashIntros {
-    CGFloat shiftOffset = 15.0;
+    CGFloat shiftOffset = 0.0;
     
     self.libraryIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_library.png"]];
     UITapGestureRecognizer *libraryTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryIntroTapped)];
@@ -1489,15 +1531,15 @@
 }
 
 - (void)libraryIntroTapped {
-    [self hideIntroView:self.libraryIntroView completion:^{
-        self.libraryIntroView = nil;
-    }];
+    if ([self.delegate respondsToSelector:@selector(benchtopPeekRequestedForStore)]) {
+        [self.delegate benchtopPeekRequestedForStore];
+    }
 }
 
 - (void)settingsIntroTapped {
-    [self hideIntroView:self.settingsIntroView completion:^{
-        self.settingsIntroView = nil;
-    }];
+    if ([self.delegate respondsToSelector:@selector(benchtopPeekRequestedForSettings)]) {
+        [self.delegate benchtopPeekRequestedForSettings];
+    }
 }
 
 - (void)hideIntroView:(UIView *)introView completion:(void (^)())completion {
@@ -1513,16 +1555,17 @@
 }
 
 - (void)hideIntroViewsAsRequired {
-    if ([CKUser isLoggedIn]) {
-        [self libraryIntroTapped];
-        [self settingsIntroTapped];
-    } else {
-        if (self.libraryIntroView.superview && [self.delegate benchtopInLibrary]) {
-            [self libraryIntroTapped];
-        }
-        if (self.settingsIntroView.superview && [self.delegate benchtopInSettings]) {
-            [self settingsIntroTapped];
-        }
+    
+    if (self.libraryIntroView.superview && [self.delegate benchtopInLibrary]) {
+        [ViewHelper removeViewWithAnimation:self.libraryIntroView completion:^{
+            self.libraryIntroView = nil;
+        }];
+    }
+    
+    if (self.settingsIntroView.superview && [self.delegate benchtopInSettings]) {
+        [ViewHelper removeViewWithAnimation:self.settingsIntroView completion:^{
+            self.settingsIntroView = nil;
+        }];
     }
 }
 

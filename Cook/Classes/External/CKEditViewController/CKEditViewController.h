@@ -23,7 +23,7 @@
 - (void)editViewControllerDidCreated;
 - (BOOL)editViewControllerCanSaveFor:(CKEditViewController *)editViewController;
 - (void)editViewControllerHeadlessUpdatedWithValue:(id)value;
-- (id)editViewControllerInitialValue;
+- (id)editViewControllerInitialValueForEditView:(UIView *)editingView;
 
 @end
 

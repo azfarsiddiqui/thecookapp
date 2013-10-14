@@ -26,6 +26,10 @@
     return (number != nil) ? [number stringValue] : nil;
 }
 
++ (NSString *)CK_lineBreakString {
+    return @"\u2028";
+}
+
 - (BOOL)CK_equalsIgnoreCase:(NSString *)string {
     return ([self localizedCaseInsensitiveCompare:string] == NSOrderedSame);
 }
@@ -61,7 +65,13 @@
     return truncatedString;
 }
 
-- (NSInteger)wordCount {
+- (NSString *)CK_lineBreakFormattedString {
+    NSString *sanitisedString = [self CK_whitespaceTrimmed];
+    sanitisedString = [sanitisedString stringByReplacingOccurrencesOfString:@"\n" withString:[NSString CK_lineBreakString]];
+    return sanitisedString;
+}
+
+- (NSInteger)CK_wordCount {
     return [[self componentsSeparatedByString:@" "] count];
 }
 

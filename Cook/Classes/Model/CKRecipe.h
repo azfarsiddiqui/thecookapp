@@ -13,10 +13,11 @@
 typedef NS_ENUM(NSUInteger, CKPrivacy) {
     CKPrivacyPrivate,
     CKPrivacyFriends,
-    CKPrivacyGlobal
+    CKPrivacyPublic
 };
 
 @class CKRecipeImage;
+@class CKLocation;
 
 typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes);
 
@@ -39,6 +40,7 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 @property (nonatomic, strong) NSArray *ingredients;
 
 @property (nonatomic, assign) CKPrivacy privacy;
+@property(nonatomic, strong) CKLocation *geoLocation;
 
 @property(nonatomic, strong) CKRecipeImage *recipeImage;
 
@@ -84,9 +86,8 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
 - (BOOL)shareable;
 
-// Geopoint
+// Clear location.
 - (void)clearLocation;
-- (void)setLocation:(CLLocation *)location;
 
 // Data existence methods
 - (BOOL)hasPhotos;

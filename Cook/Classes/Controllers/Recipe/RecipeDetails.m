@@ -10,6 +10,7 @@
 #import "Ingredient.h"
 #import "MRCEnumerable.h"
 #import "NSString+Utilities.h"
+#import "CKLocation.h"
 
 @interface RecipeDetails ()
 
@@ -171,6 +172,30 @@
     _privacy = privacy;
     if (self.originalRecipe.privacy != privacy) {
         self.saveRequired = YES;
+    }
+}
+
+- (void)setLocation:(CKLocation *)location {
+    _location = location;
+    
+    if (location != nil) {
+        if (self.originalRecipe.geoLocation != nil && ![self.originalRecipe.geoLocation isEqual:location]) {
+            
+            // Overwrite location.
+            self.saveRequired = YES;
+            
+        } else if (self.originalRecipe.geoLocation == nil) {
+            
+            // Set location.
+            self.saveRequired = YES;
+        }
+    } else {
+        
+        if (self.originalRecipe.geoLocation != nil) {
+            
+            // Clear location.
+            self.saveRequired = YES;
+        }
     }
 }
 

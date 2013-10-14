@@ -22,6 +22,7 @@
 #import "CKEditingTextBoxView.h"
 #import "Ingredient.h"
 #import "CKBook.h"
+#import "DataHelper.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -173,15 +174,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)editingTextBoxViewTappedForEditingView:(UIView *)editingView {
     if (editingView == self.titleTextView) {
-        CKTextFieldEditViewController *editViewController = [[CKTextFieldEditViewController alloc] initWithEditView:editingView
-                                                                                                           delegate:self
-                                                                                                      editingHelper:self.editingHelper
-                                                                                                              white:YES
-                                                                                                              title:nil
-                                                                                                     characterLimit:35];
+        
+        CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
+                                                                                                         delegate:self
+                                                                                                    editingHelper:self.editingHelper
+                                                                                                            white:YES
+                                                                                                            title:nil
+                                                                                                   characterLimit:40];
+        editViewController.textAlignment = NSTextAlignmentCenter;
+        editViewController.numLines = 2;
         editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
-        editViewController.forceUppercase = YES;
-        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:40.0];
+        editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
+        editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
@@ -311,6 +315,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                        updated:[self.recipeDetails methodUpdated]];
     
     [self updateAddDetailsCardView];
+}
+
+- (id)editViewControllerInitialValueForEditView:(UIView *)editingView {
+    NSString *initialValue = nil;
+    if (editingView == self.titleTextView) {
+        initialValue = [self.recipeDetails.name CK_lineBreakFormattedString];
+    } else if (editingView == self.storyLabel) {
+        initialValue = [self.recipeDetails.story CK_lineBreakFormattedString];
+    } else if (editingView == self.methodLabel) {
+        initialValue = [self.recipeDetails.method CK_lineBreakFormattedString];
+    }
+    return initialValue;
 }
 
 #pragma mark - Properties
@@ -511,13 +527,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 }
 
 - (void)updateTitleFrame {
-    NSString *name = self.recipeDetails.name;
-    
-    if (![self.recipeDetails.name CK_containsText]) {
-        name = @"TITLE";
-    }
-    
-    NSString *title = [[name CK_whitespaceTrimmed] uppercaseString];
+    NSString *title = [self currentTitleValue];
     self.titleTextView.attributedText = [self attributedTextForText:title lineSpacing:-15.0
                                                             font:[Theme recipeNameFont]
                                                           colour:[Theme recipeNameColor]
@@ -530,6 +540,16 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         size.width,
         size.height
     };
+}
+
+- (NSString *)currentTitleValue {
+    NSString *name = self.recipeDetails.name;
+    
+    if (![self.recipeDetails.name CK_containsText]) {
+        name = @"TITLE";
+    }
+    
+    return [[name CK_lineBreakFormattedString] uppercaseString];
 }
 
 - (void)updateStory {

@@ -102,8 +102,8 @@
 - (NSString *)currentTextValue {
     NSString *textValue = nil;
     
-    if ([self.delegate respondsToSelector:@selector(editViewControllerInitialValue)]) {
-        textValue = [self.delegate editViewControllerInitialValue];
+    if ([self.delegate respondsToSelector:@selector(editViewControllerInitialValueForEditView:)]) {
+        textValue = [self.delegate editViewControllerInitialValueForEditView:self.sourceEditView];
     } else {
         if ([self.sourceEditView isKindOfClass:[UILabel class]]) {
             textValue = ((UILabel *)self.sourceEditView).text;

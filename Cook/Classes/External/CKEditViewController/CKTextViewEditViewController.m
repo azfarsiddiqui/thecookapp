@@ -21,7 +21,7 @@
 @implementation CKTextViewEditViewController
 
 #define kTextViewMinHeight      232.0
-#define kTextViewWidth          800.0
+#define kTextViewWidth          780.0
 #define kKeyboardDefaultFrame   CGRectMake(0.0, 396.0, 1024.0, 352.0)
 #define kTextViewAdjustments    UIEdgeInsetsMake(0.0, 0.0, 20.0, 0.0)
 
@@ -307,7 +307,7 @@
     textView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
     textView.font = self.textViewFont;
     textView.textColor = [self editingTextColour];
-    textView.textAlignment = NSTextAlignmentLeft;
+    textView.textAlignment = self.textAlignment;
     textView.delegate = self;
     textView.showsHorizontalScrollIndicator = NO;
     textView.showsVerticalScrollIndicator = NO;

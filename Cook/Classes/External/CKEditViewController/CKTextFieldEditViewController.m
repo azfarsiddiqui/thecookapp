@@ -20,6 +20,15 @@
 
 #define kTitleLimitGap          12.0
 
+- (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
+         editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white title:(NSString *)title
+        characterLimit:(NSUInteger)characterLimit {
+    
+    if (self = [super initWithEditView:editView delegate:delegate editingHelper:editingHelper white:white title:title characterLimit:characterLimit]) {
+        self.textAlignment = NSTextAlignmentCenter;
+    }
+    return self;
+}
 - (UIView *)createTargetEditView {
     
     CGSize size = CGSizeMake(800.0, 90.0);
@@ -31,7 +40,7 @@
     textField.font = self.font;
     textField.textColor = [self editingTextColour];
     textField.backgroundColor = [UIColor clearColor];
-    textField.textAlignment = NSTextAlignmentCenter;
+    textField.textAlignment = self.textAlignment;
     textField.delegate = self;
     textField.text = self.clearOnFocus ? @"" : [self currentTextValue];
     self.textField = textField;

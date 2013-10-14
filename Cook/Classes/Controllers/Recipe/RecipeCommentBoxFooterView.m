@@ -38,7 +38,7 @@
         
         // Wrap it in editing wrapper.
         self.editingHelper = [[CKEditingViewHelper alloc] init];
-        [self.editingHelper wrapEditingView:self.commentLabel contentInsets:kTextBoxInsets delegate:self white:NO editMode:NO];
+        [self.editingHelper wrapEditingView:self.commentLabel contentInsets:kTextBoxInsets delegate:self white:YES editMode:NO];
         
     }
     return self;
@@ -75,10 +75,10 @@
         _commentLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _commentLabel.backgroundColor = [UIColor clearColor];
         _commentLabel.font = [Theme recipeCommentFont];
-        _commentLabel.textColor = [Theme recipeCommentColour];
+        _commentLabel.textColor = [UIColor blackColor];
         _commentLabel.text = @"Your Comment";
-        _commentLabel.shadowOffset = (CGSize){ 0.0, 1.0 };
-        _commentLabel.shadowColor = [UIColor blackColor];
+        _commentLabel.shadowOffset = (CGSize){ 0.0, -1.0 };
+        _commentLabel.shadowColor = [UIColor whiteColor];
         _commentLabel.userInteractionEnabled = NO;
         _commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _commentLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;

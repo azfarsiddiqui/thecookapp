@@ -92,18 +92,6 @@
     return [PFFacebookUtils handleOpenURL:url];
 }
 
-- (void)requestForCurrentLocation:(void(^)(double latitude, double longitude))completion
-                          failure:(void(^)(NSError *error))failure {
-    [PFGeoPoint geoPointForCurrentLocationInBackground:^(PFGeoPoint *geoPoint, NSError *error) {
-        if (!error) {
-            DLog(@"Got current location %@", geoPoint);
-            completion(geoPoint.latitude, geoPoint.longitude);
-        } else {
-            DLog(@"Unable to get current location [%@]", [error localizedDescription]);
-        }
-    }];
-}
-
 #pragma mark - Push notifications
 
 - (void)registerForPush {

@@ -23,5 +23,7 @@
 
 @optional
 - (void)benchtopFirstTimeLaunched;
+- (void)benchtopPeekRequestedForStore;
+- (void)benchtopPeekRequestedForSettings;
 
 @end
