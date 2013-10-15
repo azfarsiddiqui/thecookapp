@@ -110,8 +110,8 @@
         self.bookCoverImages = [NSMutableArray arrayWithArray:[books collect:^id(CKBook *book) {
             
             CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithDelegate:nil];
-            [bookCoverView setCover:book.cover illustration:book.illustration];
-            [bookCoverView setName:book.name author:[book userName] editable:[book editable]];
+            [bookCoverView loadBook:book editable:NO];
+            
             UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView
                                                           size:[StoreBookCoverViewCell cellSize]
                                                         opaque:NO];

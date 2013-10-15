@@ -60,8 +60,7 @@
 }
 
 - (void)loadBook:(CKBook *)book {
-    [self.bookCoverView setCover:book.cover illustration:book.illustration];
-    [self.bookCoverView setName:book.name author:[book userName] editable:NO];
+    [self.bookCoverView loadBook:book editable:NO];
     
     UIImage *snapshotImage = [ViewHelper imageWithView:self.bookCoverView
                                                   size:self.contentView.bounds.size

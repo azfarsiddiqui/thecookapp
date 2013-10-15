@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class CKBook;
+
 @protocol CKBookCoverViewDelegate <NSObject>
 
 - (void)bookCoverViewEditRequested;
@@ -28,6 +30,8 @@
 
 - (id)initWithDelegate:(id<CKBookCoverViewDelegate>)delegate;
 - (id)initWithStoreMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate;
+- (void)loadBook:(CKBook *)book;
+- (void)loadBook:(CKBook *)book editable:(BOOL)editable;
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration;
 - (void)setName:(NSString *)name author:(NSString *)author editable:(BOOL)editable;
 - (void)enableEditMode:(BOOL)enable animated:(BOOL)animated;
