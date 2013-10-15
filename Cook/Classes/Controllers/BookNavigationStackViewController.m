@@ -554,17 +554,14 @@
     if (!decelerate) {
         [self updateNavBar];
     }
-    
-//    if (!self.fastForward)
-//    {
-        NSIndexPath *destinationPath = [[self.collectionView indexPathsForVisibleItems] lastObject];
-    self.destinationIndexes = @[[NSNumber numberWithInt:destinationPath.section]];
-    [self.collectionView reloadData];
-//    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateNavBar];
+    NSIndexPath *destinationPath = [[self.collectionView indexPathsForVisibleItems] lastObject];
+    self.destinationIndexes = @[[NSNumber numberWithInt:destinationPath.section]];
+    [self activateVisibleCells];
+    [self.collectionView reloadData];
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -577,7 +574,8 @@
 
 - (void)activateVisibleCells
 {
-    for (BookContentCell *contentCell in self.collectionView.visibleCells)
+    NSIndexPath *activeIndex = [NSIndexPath indexPathForItem:0 inSection:[self currentPageIndex]];
+    BookContentCell *contentCell = (BookContentCell *)[self.collectionView cellForItemAtIndexPath:activeIndex];
     {
         if ([contentCell isKindOfClass:[BookContentCell class]] && [self.destinationIndexes containsObject:[NSNumber numberWithInt:[self currentPageIndex]]])
         {
@@ -673,7 +671,7 @@
         
         // Remove reference to BookContentVC and remember its vertical scroll offset.
         NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
-        if (pageIndex < [self.pages count]) {
+        if (pageIndex < [self.pages count] && indexPath.section != [self currentPageIndex]) {
             NSString *page = [self.pages objectAtIndex:pageIndex];
             
             BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];

@@ -31,7 +31,9 @@
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
-
+{
+    BOOL _isFastForward;
+}
 @property (nonatomic, weak) id<BookContentViewControllerDelegate> delegate;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *overlayView;
@@ -67,7 +69,7 @@
         self.book = book;
         self.page = page;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
-        self.isFastForward = NO;//YES; TODO: Temp move back to get things working
+        self.isFastForward = YES;
     }
     return self;
 }
@@ -84,12 +86,12 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    self.isFastForward = NO;//YES; TODO: Temp move back to get things working
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     self.recipes = nil;
-//    [self.collectionView reloadData];
+    self.isFastForward = YES;
 }
 
 - (void)loadData {
@@ -100,7 +102,9 @@
 - (void)loadPageContent {
     [self showIntroCard];
     self.isFastForward = NO;
-
+    
+    [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+    [self.collectionView reloadData];
 }
 
 - (CGPoint)currentScrollOffset {
@@ -347,7 +351,10 @@
     BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
     
     [recipeCell configureRecipe:recipe book:self.book];
-    
+    recipeCell.alpha = 0.0;
+    [UIView animateWithDuration:0.4 animations:^{
+        recipeCell.alpha = 1.0;
+    }];
     return recipeCell;
 }
 
