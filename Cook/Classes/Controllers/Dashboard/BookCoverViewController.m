@@ -65,8 +65,8 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     
     CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
-    [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
-    [bookCoverView setName:self.book.name author:[self.book userName] editable:NO];
+    [bookCoverView loadBook:self.book editable:NO];
+
     self.bookCoverView = bookCoverView;
 }
 

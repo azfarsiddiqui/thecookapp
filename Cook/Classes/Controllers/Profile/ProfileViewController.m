@@ -187,8 +187,7 @@
     
     // Book cover.
     CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
-    [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
-    [bookCoverView setName:self.book.name author:[self.book userName] editable:NO];
+    [bookCoverView loadBook:self.book editable:NO];
     
     // Position of book cover is center of screen but projected onto the book container view.
     CGPoint adjustedCenter = [self.view convertPoint:self.view.center toView:self.summaryContainerView];

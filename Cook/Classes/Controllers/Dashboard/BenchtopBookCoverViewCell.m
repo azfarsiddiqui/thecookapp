@@ -93,8 +93,7 @@
 - (void)loadBook:(CKBook *)book {
     
     // Update cover.
-    [self.bookCoverView setCover:book.cover illustration:book.illustration];
-    [self.bookCoverView setName:book.name author:[book userName] editable:[book editable]];
+    [self.bookCoverView loadBook:book];
     
     // Reset delete mode.
     [self enableDeleteMode:NO];

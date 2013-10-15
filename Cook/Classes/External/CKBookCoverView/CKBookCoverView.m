@@ -8,6 +8,7 @@
 
 #import "CKBookCoverView.h"
 #import "CKBookCover.h"
+#import "CKBook.h"
 #import "Theme.h"
 #import "CKTextFieldEditViewController.h"
 #import "CKEditingViewHelper.h"
@@ -67,6 +68,15 @@
         
     }
     return self;
+}
+
+- (void)loadBook:(CKBook *)book {
+    [self loadBook:book editable:[book editable]];
+}
+
+- (void)loadBook:(CKBook *)book editable:(BOOL)editable {
+    [self setCover:book.cover illustration:book.illustration];
+    [self setName:book.name author:[book userName] editable:editable];
 }
 
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration {

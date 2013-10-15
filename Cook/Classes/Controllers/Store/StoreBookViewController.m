@@ -93,15 +93,15 @@
         size.width,
         size.height
     };
+    
     CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
     bookCoverView.frame = bookFrame;
     bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
-    [bookCoverView setCover:self.book.cover illustration:self.book.illustration];
+    [bookCoverView loadBook:self.book editable:NO];
     
+    // Featured book uses the author as the name.
     if (self.book.featured) {
         [bookCoverView setName:self.book.name author:[NSString CK_safeString:self.book.author defaultString:@""] editable:NO];
-    } else {
-        [bookCoverView setName:self.book.name author:[self.book userName] editable:[self.book editable]];
     }
     
     [self.view addSubview:bookCoverView];
