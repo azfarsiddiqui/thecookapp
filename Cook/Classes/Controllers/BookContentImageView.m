@@ -58,6 +58,7 @@
         
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+        self.isFullLoad = NO;
     }
     return self;
 }
@@ -93,10 +94,13 @@
         self.imageView.image = image;
         self.vignetteOverlayView.hidden = NO;
         
-        UIColor *tintColour = [[CKBookCover backdropColourForCover:book.cover] colorWithAlphaComponent:0.58];
-        [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
-            self.blurredImageView.image = blurredImage;
-        }];
+        if (self.isFullLoad)
+        {
+            UIColor *tintColour = [[CKBookCover backdropColourForCover:book.cover] colorWithAlphaComponent:0.58];
+            [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
+                self.blurredImageView.image = blurredImage;
+            }];
+        }
         
     } else {
         self.imageView.image = nil;

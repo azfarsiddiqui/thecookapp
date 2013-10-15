@@ -59,7 +59,7 @@
 @property (nonatomic, strong) BookNavigationView *bookNavigationView;
 
 // Jump to cell
-@property NSInteger destinationIndex;
+@property NSArray *destinationIndexes;
 
 // Edit mode.
 @property (nonatomic, strong) UIButton *cancelButton;
@@ -554,6 +554,13 @@
     if (!decelerate) {
         [self updateNavBar];
     }
+    
+//    if (!self.fastForward)
+//    {
+        NSIndexPath *destinationPath = [[self.collectionView indexPathsForVisibleItems] lastObject];
+    self.destinationIndexes = @[[NSNumber numberWithInt:destinationPath.section]];
+    [self.collectionView reloadData];
+//    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -572,7 +579,7 @@
 {
     for (BookContentCell *contentCell in self.collectionView.visibleCells)
     {
-        if ([contentCell isKindOfClass:[BookContentCell class]] && self.destinationIndex == [self currentPageIndex])
+        if ([contentCell isKindOfClass:[BookContentCell class]] && [self.destinationIndexes containsObject:[NSNumber numberWithInt:[self currentPageIndex]]])
         {
             DLog(@"Cell index: %i", [self.collectionView indexPathForCell:contentCell].section);
             [contentCell.contentViewController loadPageContent];
@@ -1027,9 +1034,13 @@
                           indexPath:(NSIndexPath *)indexPath {
     DLog(@"Content Image for %d", indexPath.section);
     
+    //Only do a full load if the panel is the final destination
+    if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:indexPath.row]])
+    {
+        contentHeaderView.isFullLoad = YES;
+    }
     [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
                           placeholder:YES book:self.book];
-    
     if ([recipe hasPhotos]) {
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[contentHeaderView imageSizeWithMotionOffset]
                                                    name:recipe.objectId
@@ -1078,6 +1089,13 @@
     
     // Load featured recipe image.
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
+    
+    //Only do a full load if the panel is the final destination
+    DLog(@"Index path is: %i", indexPath.row);
+    if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:indexPath.section]])
+    {
+        categoryHeaderView.isFullLoad = YES;
+    }
     [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
     
     // Keep track of category views keyed on page name.
@@ -1257,7 +1275,7 @@
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
-    self.destinationIndex = pageIndex;
+    self.destinationIndexes = @[[NSNumber numberWithInt:pageIndex]];
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
