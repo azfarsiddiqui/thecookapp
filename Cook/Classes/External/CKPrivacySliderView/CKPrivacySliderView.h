@@ -19,5 +19,6 @@
 @interface CKPrivacySliderView : CKNotchSliderView
 
 - (id)initWithDelegate:(id<CKPrivacySliderViewDelegate>)delegate;
+- (void)toastMessage:(NSString *)message;
 
 @end

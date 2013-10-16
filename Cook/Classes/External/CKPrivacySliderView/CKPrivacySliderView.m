@@ -8,6 +8,7 @@
 
 #import "CKPrivacySliderView.h"
 #import "Theme.h"
+#import "CKEditingTextBoxView.h"
 
 @interface CKPrivacySliderView () <CKNotchSliderViewDelegate>
 
@@ -17,10 +18,16 @@
 @property (nonatomic, strong) UILabel *infoPrivateLabel;
 @property (nonatomic, strong) UILabel *infoFriendsLabel;
 @property (nonatomic, strong) UILabel *infoPublicLabel;
+@property (nonatomic, strong) UIView *toastView;
+@property (nonatomic, strong) UILabel *toastLabel;
 
 @end
 
 @implementation CKPrivacySliderView
+
+#define kToastFont      [UIFont fontWithName:@"AvenirNext-Regular" size:12.0]
+#define kToastColour    [UIColor colorWithHexString:@"333333"]
+#define kToastInsets    (UIEdgeInsets){ 20.0, 28.0, 11.0, 35.0 }
 
 - (id)initWithDelegate:(id<CKPrivacySliderViewDelegate>)delegate {
     if (self = [super initWithNumNotches:3 delegate:delegate]) {
@@ -89,6 +96,52 @@
     [self updateNotchSliderWithFrame:self.currentNotchView.frame];
 }
 
+- (void)toastMessage:(NSString *)message {
+    
+    // Cancel any previous hideToast.
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideToast) object:nil];
+    
+    // Update the toast label.
+    [self.toastLabel removeFromSuperview];
+    self.toastLabel.text = message;
+    [self.toastLabel sizeToFit];
+    self.toastLabel.frame = (CGRect){
+        kToastInsets.left,
+        kToastInsets.top,
+        self.toastLabel.frame.size.width,
+        self.toastLabel.frame.size.height
+    };
+    
+    CGSize toastSize = (CGSize) {
+        kToastInsets.left + self.toastLabel.frame.size.width + kToastInsets.right,
+        kToastInsets.top + self.toastLabel.frame.size.height + kToastInsets.bottom
+    };
+    self.toastView.frame = (CGRect){
+//        floorf((self.bounds.size.width - toastSize.width) / 2.0),
+        self.currentNotchView.center.x - floorf(toastSize.width / 2.0),
+        self.bounds.size.height - 34.0,
+        toastSize.width,
+        toastSize.height
+    };
+    
+    if (!self.toastView.superview) {
+        [self insertSubview:self.toastView belowSubview:self.currentNotchView];
+    }
+    [self.toastView addSubview:self.toastLabel];
+    
+    self.toastView.alpha = 0.0;
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.toastView.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished) {
+                         [self performSelector:@selector(hideToast) withObject:nil afterDelay:1.5];
+                     }];
+    
+}
+
 #pragma mark - Properties
 
 - (UIImageView *)sliderPrivateIconView {
@@ -142,6 +195,26 @@
         _infoFriendsLabel = [self infoLabelForText:[self infoForNotchIndex:1]];
     }
     return _infoFriendsLabel;
+}
+
+- (UIView *)toastView {
+    if (!_toastView) {
+        _toastView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:YES]];
+        _toastView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    }
+    return _toastView;
+}
+
+- (UILabel *)toastLabel {
+    if (!_toastLabel) {
+        _toastLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _toastLabel.font = kToastFont;
+        _toastLabel.textColor = kToastColour;
+        _toastLabel.textAlignment = NSTextAlignmentCenter;
+        _toastLabel.backgroundColor = [UIColor clearColor];
+        _toastLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    }
+    return _toastLabel;
 }
 
 - (UILabel *)infoPublicLabel {
@@ -209,6 +282,9 @@
 
 - (void)selectedPrivacyAtNotchIndex:(NSInteger)notchIndex {
     id<CKPrivacySliderViewDelegate> privacyDelegate = (id<CKPrivacySliderViewDelegate>)self.delegate;
+    
+    [self toastMessage:[self infoForNotchIndex:notchIndex]];
+    
     switch (notchIndex) {
         case 0:
             [privacyDelegate privacySelectedPrivateForSliderView:self];
@@ -258,6 +334,16 @@
         label.frame.size.height
     };
     return label;
+}
+
+- (void)hideToast {
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.toastView.alpha = 0.0;
+                     } completion:^(BOOL finished) {
+                     }];
 }
 
 @end
