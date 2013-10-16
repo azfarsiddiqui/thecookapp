@@ -58,7 +58,6 @@
         
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
-        self.isFullLoad = NO;
     }
     return self;
 }
@@ -110,6 +109,12 @@
 
 - (CGSize)imageSizeWithMotionOffset {
     return self.imageView.frame.size;
+}
+
+- (void)reloadWithBook:(CKBook *)book
+{
+    self.isFullLoad = YES;
+    [self configureImage:self.imageView.image placeholder:NO book:book];
 }
 
 #pragma mark - Properties

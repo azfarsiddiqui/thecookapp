@@ -69,7 +69,6 @@
         self.book = book;
         self.page = page;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
-        self.isFastForward = YES;
     }
     return self;
 }
@@ -91,7 +90,6 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     self.recipes = nil;
-    self.isFastForward = YES;
 }
 
 - (void)loadData {
@@ -351,10 +349,12 @@
     BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
     
     [recipeCell configureRecipe:recipe book:self.book];
-    recipeCell.alpha = 0.0;
-    [UIView animateWithDuration:0.4 animations:^{
-        recipeCell.alpha = 1.0;
-    }];
+    
+//    recipeCell.alpha = 0.0;
+//    [UIView animateWithDuration:0.2*indexPath.row animations:^{
+//        recipeCell.alpha = 1.0;
+//    }];
+    
     return recipeCell;
 }
 

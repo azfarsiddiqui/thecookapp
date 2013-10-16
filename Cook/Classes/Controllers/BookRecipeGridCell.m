@@ -417,27 +417,27 @@
     if (image) {
         
         // Fade image in if there were no prior images.
-        if (!self.imageView.image) {
-            self.imageView.alpha = 0.0;
-            self.imageView.image = image;
-            [UIView animateWithDuration:0.2
-                                  delay:0.0
-                                options:UIViewAnimationCurveEaseIn
-                             animations:^{
-                                 self.imageView.alpha = 1.0;
-                                 self.topRoundedMaskImageView.alpha = 1.0;
-                                 self.bottomShadowImageView.alpha = 1.0;
-                             }
-                             completion:^(BOOL finished)  {
-                             }];
-            
-        } else {
-            
+//        if (!self.imageView.image) {
+//            self.imageView.alpha = 0.0;
+//            self.imageView.image = image;
+//            [UIView animateWithDuration:0.2
+//                                  delay:0.0
+//                                options:UIViewAnimationCurveEaseIn
+//                             animations:^{
+//                                 self.imageView.alpha = 1.0;
+//                                 self.topRoundedMaskImageView.alpha = 1.0;
+//                                 self.bottomShadowImageView.alpha = 1.0;
+//                             }
+//                             completion:^(BOOL finished)  {
+//                             }];
+//            
+//        } else {
+        
             // Otherwise change image straight away.
-            self.imageView.image = image;
-            self.topRoundedMaskImageView.alpha = 1.0;
-            self.bottomShadowImageView.alpha = 1.0;
-        }
+        self.imageView.image = image;
+        self.topRoundedMaskImageView.alpha = 1.0;
+        self.bottomShadowImageView.alpha = 1.0;
+//        }
         
     } else {
         
