@@ -32,6 +32,8 @@
 - (id)initWithStoreMode:(BOOL)storeMode delegate:(id<CKBookCoverViewDelegate>)delegate;
 - (void)loadBook:(CKBook *)book;
 - (void)loadBook:(CKBook *)book editable:(BOOL)editable;
+- (void)loadBook:(CKBook *)book editable:(BOOL)editable loadRemoteIllustration:(BOOL)loadRemoteIllustration;
+- (void)loadRemoteIllustrationImage:(UIImage *)illustrationImage;
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration;
 - (void)setName:(NSString *)name author:(NSString *)author editable:(BOOL)editable;
 - (void)enableEditMode:(BOOL)enable animated:(BOOL)animated;

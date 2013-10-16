@@ -616,10 +616,11 @@
 }
 
 - (void)setCoverPhotoFile:(PFFile *)coverPhotoFile {
-    if (!coverPhotoFile) {
-        return;
+    if (coverPhotoFile) {
+        [self.parseObject setObject:coverPhotoFile forKey:kBookAttrCoverPhoto];
+    } else {
+        [self.parseObject removeObjectForKey:kBookAttrCoverPhoto];
     }
-    [self.parseObject setObject:coverPhotoFile forKey:kBookAttrCoverPhoto];
 }
 
 - (PFFile *)coverPhotoFile {
@@ -627,11 +628,27 @@
 }
 
 - (void)setCoverPhotoThumbFile:(PFFile *)coverPhotoThumbFile {
-    [self.parseObject setObject:coverPhotoThumbFile forKey:kBookAttrCoverPhotoThumb];
+    if (coverPhotoThumbFile) {
+        [self.parseObject setObject:coverPhotoThumbFile forKey:kBookAttrCoverPhotoThumb];
+    } else {
+        [self.parseObject removeObjectForKey:kBookAttrCoverPhotoThumb];
+    }
 }
 
 - (PFFile *)coverPhotoThumbFile {
     return [self.parseObject objectForKey:kBookAttrCoverPhotoThumb];
+}
+
+- (void)setIllustrationImageFile:(PFFile *)illustrationImageFile {
+    if (illustrationImageFile) {
+        [self.parseObject setObject:illustrationImageFile forKey:kBookAttrIllustrationImage];
+    } else {
+        [self.parseObject removeObjectForKey:kBookAttrIllustrationImage];
+    }
+}
+
+- (PFFile *)illustrationImageFile {
+    return [self.parseObject objectForKey:kBookAttrIllustrationImage];
 }
 
 #pragma mark - CKModel

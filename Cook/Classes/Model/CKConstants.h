@@ -65,6 +65,7 @@ extern NSString *const kBookAttrCover;
 extern NSString *const kBookAttrCoverPhoto;
 extern NSString *const kBookAttrCoverPhotoThumb;
 extern NSString *const kBookAttrIllustration;
+extern NSString *const kBookAttrIllustrationImage;
 extern NSString *const kBookAttrCaption;
 extern NSString *const kBookAttrNumRecipes;
 extern NSString *const kBookAttrPages;

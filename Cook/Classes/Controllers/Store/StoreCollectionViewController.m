@@ -19,6 +19,7 @@
 #import "CKServerManager.h"
 #import "ViewHelper.h"
 #import "CardViewHelper.h"
+#import "CKPhotoManager.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
     StoreBookViewControllerDelegate>
@@ -29,6 +30,7 @@
 @property (nonatomic, strong) UICollectionViewCell *selectedBookCell;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) NSMutableArray *bookCoverImages;
+@property (nonatomic, strong) NSMutableArray *bookCovers;
 
 @end
 
@@ -39,6 +41,7 @@
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
+    [EventHelper unregisterPhotoLoading:self];
 }
 
 - (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate {
@@ -58,6 +61,7 @@
     [self.collectionView registerClass:[StoreBookCoverViewCell class] forCellWithReuseIdentifier:kCellId];
     
     [EventHelper registerFollowUpdated:self selector:@selector(followUpdated:)];
+    [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -84,6 +88,7 @@
     if ([self.books count] > 0) {
         [self.books removeAllObjects];
         [self.bookCoverImages removeAllObjects];
+        [self.bookCovers removeAllObjects];
         
         [self.collectionView performBatchUpdates:^{
             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -107,14 +112,17 @@
         
         BOOL reloadBooks = [self.books count] > 0;
         self.books = [NSMutableArray arrayWithArray:books];
-        self.bookCoverImages = [NSMutableArray arrayWithArray:[books collect:^id(CKBook *book) {
-            
+        
+        // Gather book covers.
+        self.bookCovers = [NSMutableArray arrayWithArray:[books collect:^id(CKBook *book) {
             CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] initWithDelegate:nil];
-            [bookCoverView loadBook:book editable:NO];
-            
-            UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView
-                                                          size:[StoreBookCoverViewCell cellSize]
-                                                        opaque:NO];
+            [bookCoverView loadBook:book editable:NO loadRemoteIllustration:NO];
+            return bookCoverView;
+        }]];
+        
+        // Gather current bookCoverImages.
+        self.bookCoverImages = [NSMutableArray arrayWithArray:[self.bookCovers collect:^id(CKBookCoverView *bookCoverView) {
+            UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView size:[StoreBookCoverViewCell cellSize] opaque:NO];
             return snapshotImage;
         }]];
         
@@ -131,7 +139,6 @@
             
             [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
         }
-        
         
     } else {
         
@@ -229,6 +236,9 @@
     cell.delegate = self;
     CKBook *book = [self.books objectAtIndex:indexPath.item];
     [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:indexPath.item] followed:book.followed];
+    
+    [self loadRemoteIllustrationAtIndex:indexPath.item];
+    
     return cell;
 }
 
@@ -317,6 +327,50 @@
     self.storeBookViewController = nil;
     self.selectedBookCell.hidden = NO;
     [self.delegate storeCollectionViewControllerPanRequested:YES];
+}
+
+- (void)loadRemoteIllustrationAtIndex:(NSUInteger)bookIndex {
+    CKBook *book = [self.books objectAtIndex:bookIndex];
+    if (book.illustrationImageFile) {
+        
+        // Load the full image remotely.
+        [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:book.illustrationImageFile.url]
+                                                size:[BenchtopBookCoverViewCell cellSize]];
+    }
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    NSString *receivedPhotoName = [EventHelper nameForPhotoLoading:notification];
+    
+    if ([EventHelper hasImageForPhotoLoading:notification]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            // Find the matching book index.
+            NSInteger bookIndex = [self.books findIndexWithBlock:^BOOL(CKBook *book) {
+                return [receivedPhotoName isEqualToString:[book.illustrationImageFile.url lowercaseString]];
+            }];
+            
+            if (bookIndex != -1) {
+                CKBook *book = [self.books objectAtIndex:bookIndex];
+                NSString *photoName = [book.illustrationImageFile.url lowercaseString];
+                if ([photoName isEqualToString:receivedPhotoName]) {
+                    
+                    // Load the book cover image.
+                    UIImage *image = [EventHelper imageForPhotoLoading:notification];
+                    CKBookCoverView *bookCoverView = [self.bookCovers objectAtIndex:bookIndex];
+                    [bookCoverView loadRemoteIllustrationImage:image];
+                    
+                    // Snapshot it.
+                    UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView size:[StoreBookCoverViewCell cellSize] opaque:NO];
+                    
+                    StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:bookIndex inSection:0]];
+                    [cell loadBookCoverImage:snapshotImage followed:book.followed];
+                }
+            }
+            
+        });
+    }
+    
 }
 
 @end

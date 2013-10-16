@@ -421,7 +421,7 @@
 - (void)imageForUrl:(NSURL *)url size:(CGSize)size {
     if (url) {
         
-        NSString *name = [url absoluteString];
+        NSString *name = [[url absoluteString] lowercaseString];
         __weak CKPhotoManager *weakSelf = self;
         @autoreleasepool {
             
@@ -756,7 +756,11 @@
 }
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey {
-    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey];
+    [self storeImage:image forKey:cacheKey png:NO];
+}
+
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png {
+    [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey png:png toDisk:YES];
 }
 
 - (void)removeImageForKey:(NSString *)cacheKey {
@@ -1012,7 +1016,7 @@
                                                                      UIImage *imageToFit = [ImageHelper croppedImage:image size:size];
                                                                      
                                                                      // Keep it in the cache.
-                                                                     [weakSelf storeImage:imageToFit forKey:cacheKey];
+                                                                     [weakSelf storeImage:imageToFit forKey:cacheKey png:YES];
                                                                      
                                                                      if (!isSynchronous)
                                                                      {

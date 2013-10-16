@@ -57,6 +57,7 @@
 - (BOOL)imageCachedForKey:(NSString *)cacheKey;
 - (UIImage *)cachedImageForKey:(NSString *)cacheKey;
 - (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)cacheKey png:(BOOL)png;
 - (void)removeImageForKey:(NSString *)cacheKey;
 
 // Image uploads, including thumbnail generation.

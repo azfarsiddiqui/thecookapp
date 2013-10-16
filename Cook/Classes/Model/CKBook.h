@@ -36,6 +36,9 @@ typedef void(^BenchtopBooksSuccessBlock)(CKBook *myBook, NSArray *friendsBooks);
 @property (nonatomic, strong) PFFile *coverPhotoFile;
 @property (nonatomic, strong) PFFile *coverPhotoThumbFile;
 
+// Custom Illustration image.
+@property (nonatomic, strong) PFFile *illustrationImageFile;
+
 // Fetches
 + (void)bookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)dashboardBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
