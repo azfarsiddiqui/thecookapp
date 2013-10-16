@@ -51,12 +51,7 @@
     [self.currentNotchView addSubview:self.sliderPrivateIconView];
     [self.currentNotchView addSubview:self.sliderFriendsIconView];
     [self.currentNotchView addSubview:self.sliderPublicIconView];
-    
-    // TODO Find a place for these.
-    // Info label floats in the middle.
-//    [self insertSubview:self.infoPrivateLabel belowSubview:self.currentNotchView];
-//    [self insertSubview:self.infoFriendsLabel belowSubview:self.currentNotchView];
-//    [self insertSubview:self.infoPublicLabel belowSubview:self.currentNotchView];
+    [super initNotchIndex:selectedNotchIndex];
 }
 
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {

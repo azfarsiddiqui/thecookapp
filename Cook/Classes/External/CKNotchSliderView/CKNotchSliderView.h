@@ -28,6 +28,7 @@
 - (id)initWithNumNotches:(NSInteger)numNotches delegate:(id<CKNotchSliderViewDelegate>)delegate;
 - (void)selectNotch:(NSInteger)notch;
 - (void)selectNotch:(NSInteger)notch animated:(BOOL)animated;
+- (void)selectNotch:(NSInteger)notch animated:(BOOL)animated informDelegate:(BOOL)informDelegate;
 - (UIImage *)imageForLeftTrack;
 - (UIImage *)imageForMiddleTrack;
 - (UIImage *)imageForRightTrack;
