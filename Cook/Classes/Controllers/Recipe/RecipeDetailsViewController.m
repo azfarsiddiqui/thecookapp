@@ -90,7 +90,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPhotoPickerViewController *photoPickerViewController;
 @property (nonatomic, strong) ProgressOverlayViewController *saveOverlayViewController;
-@property (nonatomic, strong) CKLocation *location;
 
 // Social layer.
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
@@ -307,21 +306,21 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #pragma mark - CKPrivacySliderViewDelegate methods
 
 - (void)privacySelectedPrivateForSliderView:(CKNotchSliderView *)sliderView {
+    DLog(@"Selected Private Policy");
     self.recipeDetails.privacy = CKPrivacyPrivate;
     self.recipeDetails.location = nil;
-    self.location = nil;
     [self updateShareButton];
 }
 
 - (void)privacySelectedFriendsForSliderView:(CKNotchSliderView *)sliderView {
-    [self.recipe clearLocation];
+    DLog(@"Selected Friends Privacy");
     self.recipeDetails.privacy = CKPrivacyFriends;
     self.recipeDetails.location = nil;
-    self.location = nil;
     [self updateShareButton];
 }
 
 - (void)privacySelectedPublicForSliderView:(CKNotchSliderView *)sliderView {
+    DLog(@"Selected Public Privacy");
     
     // Locating is in progress.
     if (self.locatingInProgress) {
@@ -335,7 +334,6 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [[CKLocationManager sharedInstance] requestForCurrentLocation:^(CKLocation *location) {
         
         // Remember the location that was returned.
-        self.location = location;
         DLog(@"Got location %@", location);
         
         // Do we still want this to be public, user might have slid away while it is being located.
@@ -1396,7 +1394,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self.likeButton removeFromSuperview];
                              
                              // Select the privacy level.
-                             [self.privacyView selectNotch:self.recipeDetails.privacy animated:YES];
+                             [self.privacyView selectNotch:self.recipeDetails.privacy animated:YES informDelegate:NO];
                              
                          } else {
                              self.photoButtonView.hidden = YES;
@@ -1556,7 +1554,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)saveRecipe {
     DLog(@"saveRequired: %@", [NSString CK_stringForBoolean:self.recipeDetails.saveRequired]);
+    
     if (self.recipeDetails.saveRequired) {
+        
+        // Get any existing location from the original recipe.
+        CKLocation *existingLocation = self.recipeDetails.originalRecipe.geoLocation;
         
         // Transfer updated values to the current recipe.
         [self.recipeDetails updateToRecipe:self.recipe];
@@ -1564,77 +1566,26 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         // Enable save mode to hide all buttons and show black overlay.
         [self enableSaveMode:YES];
         
-        // If privacy was public and there was a location set in this session.
-        if (self.recipeDetails.privacy == CKPrivacyPublic && self.location != nil) {
+        // If there was an existing geoLocation, delete it. A new location will be set if needed.
+        if (existingLocation != nil) {
             
-            // Save location first.
-            [self.location saveInBackground:^{
-                
-                // Set the geoLocation.
-                self.recipe.geoLocation = self.location;
-                
-                // Update progress for saving location.
-                [self.saveOverlayViewController updateProgress:0.1 animated:YES];
-                
-                // Save off the recipe that span 0.2 and 0.9 progress, with the remaining 0.1 for laying out the book.
-                [self saveRecipeWithImageStartProgress:0.2
-                                           endProgress:0.9
-                                            completion:^{
-                                                [self enableSaveMode:NO];
-                                                [self enableEditMode:NO];
-                                                self.addMode = NO;
-                                            }
-                                               failure:^(NSError *error) {
-                                                   [self enableSaveMode:NO];
-                                                   [self enableEditMode:NO];
-                                                   self.addMode = NO;
-                                               }];
-
-            } failure:^(NSError *error) {
-                
-                DLog(@"Unable to save location, saving the recipe.");
-                
-                // Save off the recipe that span 0.1 and 0.9 progress, with the remaining 0.1 for laying out the book.
-                [self saveRecipeWithImageStartProgress:0.1
-                                           endProgress:0.9
-                                            completion:^{
-                                                [self enableSaveMode:NO];
-                                                [self enableEditMode:NO];
-                                                self.addMode = NO;
-                                            }
-                                               failure:^(NSError *error) {
-                                                   [self enableSaveMode:NO];
-                                                   [self enableEditMode:NO];
-                                                   self.addMode = NO;
-                                               }];
-            }];
-
-        } else {
-            
-            if (self.recipe.privacy != CKPrivacyPublic && self.recipe.geoLocation != nil) {
-                CKLocation *existingLocation = self.recipe.geoLocation;
-                
-                // Clear the location from the recipe.
-                self.recipe.geoLocation = nil;
-                
-                // Delete this location eventually.
-                [existingLocation deleteEventually];
-            }
-            
-            // Save off the recipe that span 0.1 and 0.9 progress, with the remaining 0.1 for laying out the book.
-            [self saveRecipeWithImageStartProgress:0.1
-                                       endProgress:0.9
-                                        completion:^{
-                                            [self enableSaveMode:NO];
-                                            [self enableEditMode:NO];
-                                            self.addMode = NO;
-                                        }
-                                           failure:^(NSError *error) {
-                                               [self enableSaveMode:NO];
-                                               [self enableEditMode:NO];
-                                               self.addMode = NO;
-                                           }];
+            // Delete this location eventually.
+            [existingLocation deleteEventually];
         }
+        
+        // Save off the recipe that span 0.1 and 0.9 progress, with the remaining 0.1 for laying out the book.
+        [self saveRecipeWithImageStartProgress:0.1
+                                   endProgress:0.9
+                                    completion:^{
+                                        [self enableSaveMode:NO];
+                                        [self enableEditMode:NO];
+                                        self.addMode = NO;
+                                    }
+                                       failure:^(NSError *error) {
+                                           [self enableSaveMode:NO];
+                                           [self enableEditMode:NO];
+                                           self.addMode = NO;
+                                       }];
         
     } else {
         
@@ -1729,12 +1680,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)initRecipeDetails {
     
-    // TODO testing missing data.
-//    self.recipe.story = nil;
-//    self.recipe.name = nil;
-//    self.recipe.method = nil;
-//    self.recipe.ingredients = nil;
-    
     // Create transfer object to display/edit.
     self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe];
     
@@ -1753,6 +1698,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)enableEditMode:(BOOL)enable {
+    
     if (!self.addMode && ([self.recipe hasMethod] || [self.recipe hasIngredients]) && self.currentViewport != SnapViewportTop) {
         
         // Snap to top first.

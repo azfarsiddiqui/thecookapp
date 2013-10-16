@@ -42,6 +42,7 @@
         _cookingTimeInMinutes = recipe.cookingTimeInMinutes;
         _privacy = recipe.privacy;
         _userPhotoUrl = recipe.userPhotoUrl;
+        _location = recipe.geoLocation;
         
         _ingredients = [NSArray arrayWithArray:[recipe.ingredients collect:^id(Ingredient *ingredient) {
             return [Ingredient ingredientwithName:ingredient.name measurement:ingredient.measurement];
@@ -60,6 +61,10 @@
     recipe.cookingTimeInMinutes = self.cookingTimeInMinutes;
     recipe.ingredients = self.ingredients;
     recipe.privacy = self.privacy;
+    recipe.geoLocation = self.location;
+    
+    // Re-assign original recipe.
+    self.originalRecipe = recipe;
 }
 
 - (BOOL)pageUpdated {
@@ -197,6 +202,7 @@
             self.saveRequired = YES;
         }
     }
+    
 }
 
 #pragma mark - Private methods
