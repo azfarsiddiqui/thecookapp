@@ -376,13 +376,6 @@
     return ([self isUserRecipeAuthor:[CKUser currentUser]] && ([self privacy] != CKPrivacyPrivate));
 }
 
-- (void)clearLocation {
-    PFObject *parseLocation = [self.parseObject objectForKey:kRecipeAttrGeoLocation];
-    if (parseLocation) {
-        [parseLocation deleteInBackground];
-    }
-}
-
 #pragma mark - CKModel methods
 
 - (NSDictionary *)descriptionProperties {
@@ -544,7 +537,7 @@
 }
 
 - (void)setGeoLocation:(CKLocation *)geoLocation {
-    if ([geoLocation persisted]) {
+    if (geoLocation) {
         [self.parseObject setObject:geoLocation.parseObject forKey:kRecipeAttrGeoLocation];
     } else {
         [self.parseObject removeObjectForKey:kRecipeAttrGeoLocation];

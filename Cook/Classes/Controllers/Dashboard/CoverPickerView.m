@@ -114,7 +114,7 @@
     
     // Select the given cover.
     NSUInteger selectedIndex = [self.availableCovers indexOfObject:self.cover];
-    [self selectCoverAtIndex:selectedIndex informDelegate:NO];
+    [self selectCoverAtIndex:selectedIndex informDelegate:NO animated:NO];
 }
 
 - (void)coverTapped:(UITapGestureRecognizer *)gesture {
@@ -132,26 +132,41 @@
 }
 
 - (void)selectCoverAtIndex:(NSUInteger)coverIndex informDelegate:(BOOL)informDelegate {
-    self.animating = YES;
+    [self selectCoverAtIndex:coverIndex informDelegate:YES animated:YES];
+}
+
+- (void)selectCoverAtIndex:(NSUInteger)coverIndex informDelegate:(BOOL)informDelegate animated:(BOOL)animated {
     self.selectedCoverIndex = coverIndex;
     
     UIImageView *coverImageView = [self.coverViews objectAtIndex:coverIndex];
     NSString *selectedCover = [self.availableCovers objectAtIndex:coverIndex];
-    [UIView animateWithDuration:0.2
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseOut
-                     animations:^{
-                         self.sliderView.center = CGPointMake(coverImageView.center.x, kSliderOffset.y);
-                     }
-                     completion:^(BOOL finished) {
-                         self.animating = NO;
-                         
-                         // Change content colour after arriving there.
-                         [self changeSliderContentAtIndex:coverIndex];
-                         if (informDelegate) {
-                             [self.delegate coverPickerSelected:selectedCover];
+    
+    if (animated) {
+        self.animating = YES;
+        [UIView animateWithDuration:0.2
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^{
+                             self.sliderView.center = CGPointMake(coverImageView.center.x, kSliderOffset.y);
                          }
-                     }];
+                         completion:^(BOOL finished) {
+                             self.animating = NO;
+                             
+                             // Change content colour after arriving there.
+                             [self changeSliderContentAtIndex:coverIndex];
+                             if (informDelegate) {
+                                 [self.delegate coverPickerSelected:selectedCover];
+                             }
+                         }];
+    } else {
+        
+        // Change content colour after moving there.
+        self.sliderView.center = CGPointMake(coverImageView.center.x, kSliderOffset.y);
+        [self changeSliderContentAtIndex:coverIndex];
+        if (informDelegate) {
+            [self.delegate coverPickerSelected:selectedCover];
+        }
+    }
 }
 
 - (UIImage *)imageForCover:(NSString *)cover {

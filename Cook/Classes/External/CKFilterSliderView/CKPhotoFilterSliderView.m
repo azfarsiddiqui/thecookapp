@@ -136,6 +136,7 @@
     self.sliderCurrentState.alpha = 1.0;
     [self.currentNotchView addSubview:self.sliderCurrentState];
     [self.currentNotchView addSubview:self.activityView];
+    [super initNotchIndex:selectedNotchIndex];
 }
 
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {

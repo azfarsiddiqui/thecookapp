@@ -239,7 +239,7 @@
         [bookNavigationViewController updateBinderAlpha:1.0];
         
         [UIView animateWithDuration:0.3
-                              delay:0.1
+                              delay:0.0
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
                              bookNavigationViewController.view.transform = CGAffineTransformIdentity;

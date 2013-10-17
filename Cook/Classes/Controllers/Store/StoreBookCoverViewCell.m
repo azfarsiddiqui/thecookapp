@@ -33,6 +33,8 @@
         
         // Snapshot view.
         UIImageView *snapshotView = [[UIImageView alloc] initWithImage:nil];
+        snapshotView.autoresizingMask = UIViewAutoresizingNone;
+        snapshotView.contentMode = UIViewContentModeCenter;
         snapshotView.frame = self.contentView.bounds;
         [self.contentView addSubview:snapshotView];
         self.snapshotView = snapshotView;
@@ -57,20 +59,6 @@
 
 - (UIOffset)shadowOffset {
     return (UIOffset) { 0.0, 5.0 };
-}
-
-- (void)loadBook:(CKBook *)book {
-    [self.bookCoverView loadBook:book editable:NO];
-    
-    UIImage *snapshotImage = [ViewHelper imageWithView:self.bookCoverView
-                                                  size:self.contentView.bounds.size
-                                                opaque:NO];
-    self.snapshotView.image = snapshotImage;
-    
-    // Followed indicator.
-    [self updateFollowedIcon:book.followed];
-    
-    [self enableDeleteMode:NO];
 }
 
 #pragma mark - Private methods

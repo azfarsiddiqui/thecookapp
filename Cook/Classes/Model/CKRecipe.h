@@ -86,9 +86,6 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
 - (BOOL)shareable;
 
-// Clear location.
-- (void)clearLocation;
-
 // Data existence methods
 - (BOOL)hasPhotos;
 - (BOOL)hasTitle;

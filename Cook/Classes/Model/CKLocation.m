@@ -43,14 +43,16 @@
 
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kModelAttrName]] forKey:kModelAttrName];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationCountryCode]] forKey:kLocationCountryCode];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationCountry]] forKey:kLocationCountry];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationPostalCode]] forKey:kLocationPostalCode];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationAdministrativeArea]] forKey:kLocationAdministrativeArea];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationSubAdministrativeArea]] forKey:kLocationSubAdministrativeArea];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationLocality]] forKey:kLocationLocality];
-    [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationSubLocality]] forKey:kLocationSubLocality];
+    if ([self.parseObject isDataAvailable]) {
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kModelAttrName]] forKey:kModelAttrName];
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationCountryCode]] forKey:kLocationCountryCode];
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationCountry]] forKey:kLocationCountry];
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationPostalCode]] forKey:kLocationPostalCode];
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationAdministrativeArea]] forKey:kLocationAdministrativeArea];
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationSubAdministrativeArea]] forKey:kLocationSubAdministrativeArea];
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationLocality]] forKey:kLocationLocality];
+        [descriptionProperties setValue:[NSString CK_safeString:[self.parseObject objectForKey:kLocationSubLocality]] forKey:kLocationSubLocality];
+    }
     return descriptionProperties;
 }
 
@@ -59,12 +61,20 @@
 - (BOOL)isEqual:(id)object {
     if (self == object) {
         return YES;
-    } else if (object == nil || ![object isKindOfClass:[CKLocation class]]) {
+    } else if (object == nil || ![object isKindOfClass:[CKLocation class]]
+               || ![((CKLocation *)object).parseObject isDataAvailable]
+               || ![self.parseObject isDataAvailable]) {
         return NO;
     } else {
-        CLLocation *location = [self locationFromGeoPoint:[self.parseObject objectForKey:kLocationGeoPoint]];
-        CLLocation *otherLocation = [self locationFromGeoPoint:[((CKLocation *)object).parseObject objectForKey:kLocationGeoPoint]];
-        return ([location distanceFromLocation:otherLocation] < 10.0);
+        PFGeoPoint *geoPoint = [self.parseObject objectForKey:kLocationGeoPoint];
+        PFGeoPoint *otherGeoPoint = [((CKLocation *)object).parseObject objectForKey:kLocationGeoPoint];
+        if (geoPoint && otherGeoPoint) {
+            CLLocation *location = [self locationFromGeoPoint:geoPoint];
+            CLLocation *otherLocation = [self locationFromGeoPoint:otherGeoPoint];
+            return ([location distanceFromLocation:otherLocation] < 10.0);
+        } else {
+            return NO;
+        }
     }
 }
 

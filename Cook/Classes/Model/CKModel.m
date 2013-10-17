@@ -82,16 +82,41 @@
     }];
 }
 
+- (void)fetchIfNeededCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    if (![self.parseObject isDataAvailable]) {
+        [self.parseObject fetchIfNeededInBackgroundWithBlock:^(PFObject *parseObject, NSError *error) {
+            
+            if (!error) {
+                self.parseObject = parseObject;
+                success();
+            } else {
+                failure(error);
+            }
+        }];
+        
+    } else {
+        success();
+    }
+}
+
 - (NSDictionary *)descriptionProperties {
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionary];
     [descriptionProperties setValue:[NSString CK_safeString:self.parseObject.objectId] forKey:@"objectId"];
-    [descriptionProperties setValue:[NSString CK_safeString:self.name] forKey:@"name"];
     [descriptionProperties setValue:[NSString CK_stringForBoolean:[self persisted]] forKey:@"persisted"];
+    if ([self.parseObject isDataAvailable]) {
+        [descriptionProperties setValue:[NSString CK_safeString:self.name] forKey:@"name"];
+    } else {
+        [descriptionProperties setValue:[NSString CK_stringForBoolean:NO] forKey:@"dataAvailable"];
+    }
     return descriptionProperties;
 }
 
 - (BOOL)persisted {
     return (self.parseObject.objectId != nil && [self.parseObject.objectId length] > 0);
+}
+
+- (BOOL)dataAvailable {
+    return [self.parseObject isDataAvailable];
 }
 
 - (NSDate *)createdDateTime {

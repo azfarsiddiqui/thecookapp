@@ -23,7 +23,7 @@
         self.delegate = delegate;
         self.numNotches = numNotches;
         [self initTrack];
-        [self selectNotch:0 animated:NO informDelegate:NO];
+        [self initNotchIndex:0];
     }
     return self;
 }
@@ -53,8 +53,6 @@
                          completion:^(BOOL finished) {
                              if (informDelegate) {
                                  [self selectedNotchIndex:notch];
-                             } else {
-                                 [self initNotchIndex:notch];
                              }
                              self.animating = NO;
                          }];
@@ -62,8 +60,6 @@
         [self slideToNotchIndex:notch animated:animated];
         if (informDelegate) {
             [self selectedNotchIndex:notch];
-        } else {
-            [self initNotchIndex:notch];
         }
         self.animating = NO;
     }
@@ -90,7 +86,8 @@
 }
          
 - (void)initNotchIndex:(NSInteger)selectedNotchIndex {
-    // Initialise anything at notch index, usually on startup.
+    self.currentNotchIndex = selectedNotchIndex;
+    [self slideToNotchIndex:selectedNotchIndex animated:NO];
 }
 
 - (void)selectedNotchIndex:(NSInteger)selectedNotchIndex {

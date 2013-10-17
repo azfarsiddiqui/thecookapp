@@ -15,6 +15,9 @@
 #import "NSString+Utilities.h"
 #import "ViewHelper.h"
 #import "ImageHelper.h"
+#import "CKPhotoManager.h"
+#import "EventHelper.h"
+#import "CKActivityIndicatorView.h"
 
 @interface CKBookCoverView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
@@ -27,6 +30,8 @@
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL storeMode;
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
@@ -37,6 +42,12 @@
 
 #define kOverlayDebug   0
 #define kShadowColour   [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+
+- (void)dealloc {
+    if (!self.storeMode) {
+        [EventHelper unregisterPhotoLoading:self];
+    }
+}
 
 - (id)init {
     return [self initWithDelegate:nil];
@@ -66,6 +77,11 @@
         [self addSubview:illustrationImageView];
         self.illustrationImageView = illustrationImageView;
         
+        // Register photo loading events only for non-store mode, as store will handle remote covers loading in order
+        // to do resizing.
+        if (!self.storeMode) {
+            [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+        }
     }
     return self;
 }
@@ -75,8 +91,54 @@
 }
 
 - (void)loadBook:(CKBook *)book editable:(BOOL)editable {
-    [self setCover:book.cover illustration:book.illustration];
+    [self loadBook:book editable:editable loadRemoteIllustration:YES];
+}
+
+- (void)loadBook:(CKBook *)book editable:(BOOL)editable loadRemoteIllustration:(BOOL)loadRemoteIllustration {
+    self.book = book;
+    
+    if (book.illustrationImageFile) {
+        
+        if (loadRemoteIllustration) {
+            
+            // Load an empty illustration.
+            [self setCover:book.cover illustration:nil];
+            
+            // Start spinner.
+            if (!self.activityView) {
+                self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+                self.activityView.frame = (CGRect){
+                    floorf((self.illustrationImageView.bounds.size.width - self.activityView.frame.size.width) / 2.0),
+                    self.illustrationImageView.frame.size.height - self.activityView.frame.size.height - 80.0,
+                    self.activityView.frame.size.width,
+                    self.activityView.frame.size.height
+                };
+            }
+            [self.illustrationImageView addSubview:self.activityView];
+            [self.activityView startAnimating];
+            
+            // Load the image remotely.
+            [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:self.book.illustrationImageFile.url]
+                                                    size:self.illustrationImageView.frame.size];
+            
+        } else {
+            
+            // Load an empty illustration.
+            [self setCover:book.cover illustration:nil];
+            
+        }
+        
+    } else {
+        [self.activityView stopAnimating];
+        [self.activityView removeFromSuperview];
+        [self setCover:book.cover illustration:book.illustration];
+    }
+    
     [self setName:book.name author:[book userName] editable:editable];
+}
+
+- (void)loadRemoteIllustrationImage:(UIImage *)illustrationImage {
+    self.illustrationImageView.image = illustrationImage;
 }
 
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration {
@@ -604,6 +666,27 @@
 
 - (UIFont *)captionFont {
     return [Theme bookCoverViewModeTitleFont];
+}
+
+- (void)photoLoadingReceived:(NSNotification *)notification {
+    
+    if (self.book.illustrationImageFile) {
+        
+        NSString *receivedPhotoName = [EventHelper nameForPhotoLoading:notification];
+        NSString *photoName = [self.book.illustrationImageFile.url lowercaseString];
+        
+        if ([photoName isEqualToString:receivedPhotoName]) {
+            
+            if ([EventHelper hasImageForPhotoLoading:notification]) {
+                UIImage *image = [EventHelper imageForPhotoLoading:notification];
+                self.illustrationImageView.image = image;
+                
+                // Stop spinner.
+                [self.activityView stopAnimating];
+                [self.activityView removeFromSuperview];
+            }
+        }
+    }
 }
 
 @end
