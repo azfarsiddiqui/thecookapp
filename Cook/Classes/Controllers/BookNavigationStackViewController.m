@@ -115,7 +115,7 @@
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
         self.titleViewController.bookPageDelegate = self;
         self.enableLikes = YES;
-        
+        self.destinationIndexes = @[@2]; //Start with first page
         // Forget about dismissed states.
         [[CardViewHelper sharedInstance] clearDismissedStates];
         
@@ -131,7 +131,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.view.userInteractionEnabled = YES; // To block touches filtering down.
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
@@ -558,10 +557,17 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateNavBar];
-    NSIndexPath *destinationPath = [[self.collectionView indexPathsForVisibleItems] lastObject];
-    self.destinationIndexes = @[[NSNumber numberWithInt:destinationPath.section]];
-    [self activateVisibleCells];
-    [self.collectionView reloadData];
+    
+    //Tell cells and headers to load content now
+    if ([self.collectionView numberOfSections] > 2)
+    {
+        self.destinationIndexes = @[[NSNumber numberWithInt:[self currentPageIndex] -1], [NSNumber numberWithInt:[self currentPageIndex]], [NSNumber numberWithInt:[self currentPageIndex]+1]];
+        [self activateVisibleCells];
+        NSInteger *pageIndex = [self currentPageIndex]-2 > 0 ? [self currentPageIndex]-2 : 0;
+        NSString *page = [self.pages objectAtIndex:pageIndex];
+        BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
+        [headerView reloadWithBook:self.book];
+    }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -579,7 +585,6 @@
     {
         if ([contentCell isKindOfClass:[BookContentCell class]] && [self.destinationIndexes containsObject:[NSNumber numberWithInt:[self currentPageIndex]]])
         {
-            DLog(@"Cell index: %i", [self.collectionView indexPathForCell:contentCell].section);
             [contentCell.contentViewController loadPageContent];
         }
     }
@@ -671,7 +676,7 @@
         
         // Remove reference to BookContentVC and remember its vertical scroll offset.
         NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
-        if (pageIndex < [self.pages count] && indexPath.section != [self currentPageIndex]) {
+        if (pageIndex < [self.pages count]) {
             NSString *page = [self.pages objectAtIndex:pageIndex];
             
             BookContentViewController *contentViewController = [self.contentControllers objectForKey:page];
@@ -954,12 +959,12 @@
     NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
-    [self loadContentForPage:page cell:(BookContentCell *)categoryCell];
+    [self loadContentForPage:page cell:(BookContentCell *)categoryCell indexPath:indexPath];
     
     return categoryCell;
 }
 
-- (void)loadContentForPage:(NSString *)page cell:(BookContentCell *)cell {
+- (void)loadContentForPage:(NSString *)page cell:(BookContentCell *)cell indexPath:(NSIndexPath *)indexPath {
     
     // Load or create categoryController.
     BookContentViewController *categoryController = [self.contentControllers objectForKey:page];
@@ -972,6 +977,14 @@
         
     } else {
         DLog(@"Reusing page VC for [%@]", page);
+    }
+    if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:indexPath.section]])
+    {
+        categoryController.isFastForward = NO;
+    }
+    else
+    {
+        categoryController.isFastForward = YES;
     }
     
     // Add the contentVC to the cell.
@@ -1028,33 +1041,6 @@
     [self closeBook];
 }
 
-- (void)configureImageForHeaderView:(BookContentImageView *)contentHeaderView recipe:(CKRecipe *)recipe
-                          indexPath:(NSIndexPath *)indexPath {
-    DLog(@"Content Image for %d", indexPath.section);
-    
-    //Only do a full load if the panel is the final destination
-    if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:indexPath.row]])
-    {
-        contentHeaderView.isFullLoad = YES;
-    }
-    [contentHeaderView configureImage:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
-                          placeholder:YES book:self.book];
-    if ([recipe hasPhotos]) {
-        [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[contentHeaderView imageSizeWithMotionOffset]
-                                                   name:recipe.objectId
-                                               progress:^(CGFloat progressRatio, NSString *name) {
-                                               } thumbCompletion:^(UIImage *thumbImage, NSString *name) {
-                                                   if ([name isEqualToString:recipe.objectId]) {
-                                                       [contentHeaderView configureImage:thumbImage placeholder:NO book:self.book];
-                                                   }
-                                               } completion:^(UIImage *image, NSString *name) {
-                                                   if ([name isEqualToString:recipe.objectId]) {
-                                                       [contentHeaderView configureImage:image placeholder:NO book:self.book];
-                                                   }
-                                               }];
-    }
-}
-
 - (void)showRecipe:(CKRecipe *)recipe {
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
@@ -1089,16 +1075,18 @@
     CKRecipe *coverRecipe = [self coverRecipeForPage:page];
     
     //Only do a full load if the panel is the final destination
-    DLog(@"Index path is: %i", indexPath.row);
     if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:indexPath.section]])
     {
         categoryHeaderView.isFullLoad = YES;
+    }
+    else
+    {
+        categoryHeaderView.isFullLoad = NO;
     }
     [categoryHeaderView configureFeaturedRecipe:coverRecipe book:self.book];
     
     // Keep track of category views keyed on page name.
     [self.pageHeaderViews setObject:categoryHeaderView forKey:page];
-    
     return headerView;
 }
 
@@ -1261,7 +1249,6 @@
 }
 
 - (void)scrollToPage:(NSString *)page animated:(BOOL)animated {
-    DLog(@"page [%@]", page);
     NSInteger pageIndex = [self.pages indexOfObject:page];
     pageIndex += [self stackContentStartSection];
     
@@ -1274,6 +1261,7 @@
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
     self.destinationIndexes = @[[NSNumber numberWithInt:pageIndex]];
+    [self.contentControllerOffsets removeAllObjects]; //Clear offsets when fast forwarding
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
@@ -1429,7 +1417,7 @@
 
 - (NSInteger)currentPageIndex {
     CGFloat pageSpan = self.collectionView.contentOffset.x;
-    NSInteger pageIndex = (pageSpan / self.collectionView.bounds.size.width);
+    NSInteger pageIndex = ceil(pageSpan / self.collectionView.bounds.size.width);
     return pageIndex;
 }
 

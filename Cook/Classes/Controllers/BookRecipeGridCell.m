@@ -438,7 +438,7 @@
             self.topRoundedMaskImageView.alpha = 1.0;
             self.bottomShadowImageView.alpha = 1.0;
         }
-        
+    
     } else {
         
         // Clear it straight away if none.

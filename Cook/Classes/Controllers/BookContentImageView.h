@@ -19,5 +19,6 @@
 - (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)applyOffset:(CGFloat)offset;
 - (CGSize)imageSizeWithMotionOffset;
+- (void)reloadWithBook:(CKBook *)book;
 
 @end
