@@ -36,6 +36,8 @@
 #import "AnalyticsHelper.h"
 #import "CKNavigationController.h"
 #import "CKLocation.h"
+#import "AddRecipeViewController.h"
+#import "CKBookManager.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
     SnapViewportTop,
@@ -46,7 +48,8 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @interface RecipeDetailsViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate,
     CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate,
-    RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate, CKNavigationControllerDelegate>
+    RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate, CKNavigationControllerDelegate,
+    AddRecipeViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
@@ -98,6 +101,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 
 // Share layer.
 @property (nonatomic, strong) RecipeShareViewController *shareViewController;
+
+// Add layer.
+@property (nonatomic, strong) AddRecipeViewController *addRecipeViewController;
 
 // Alerts
 @property (nonatomic, strong) UIAlertView *cancelAlert;
@@ -160,6 +166,14 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     
     NSDictionary *dimensions = @{@"isOwner" : [NSString stringWithFormat:@"%i", ([[CKUser currentUser].objectId isEqualToString:self.recipe.user.objectId])]};
     [AnalyticsHelper trackEventName:@"Viewed recipe" params:dimensions];
+}
+
+#pragma mark - AddRecipeViewControllerDelegate methods
+
+- (void)addRecipeViewControllerCloseRequested{
+    if (self.addRecipeViewController) {
+        [self showAddOverlay:NO];
+    }
 }
 
 #pragma mark - CKNavigationControllerDelegate methods
@@ -1365,6 +1379,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
         self.likeButton.alpha = 0.0;
+        self.addButton.alpha = 0.0;
         self.activityView.alpha = 0.0;
         [self.view addSubview:self.closeButton];
         [self.view addSubview:self.socialView];
@@ -1436,6 +1451,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.editButton.transform = transform;
     self.shareButton.transform = transform;
     self.likeButton.transform = transform;
+    self.addButton.transform = transform;
     self.privacyView.transform = transform;
     self.cancelButton.transform = transform;
     self.saveButton.transform = transform;
@@ -1477,6 +1493,33 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                 }];
 }
 
+- (void)showAddOverlay:(BOOL)show {
+    if (show) {
+        [self hideButtons];
+        CKBook *myBook = [[CKBookManager sharedInstance] myCurrentBook];
+        self.addRecipeViewController = [[AddRecipeViewController alloc] initWithBook:myBook delegate:self];
+    } else {
+        self.view.userInteractionEnabled = YES;
+        self.scrollView.userInteractionEnabled = YES;
+        self.imageScrollView.userInteractionEnabled = YES;
+    }
+    [ModalOverlayHelper showModalOverlayForViewController:self.addRecipeViewController
+                                                     show:show
+                                                animation:^{
+                                                    
+                                                } completion:^{
+                                                    
+                                                    if (show) {
+                                                        self.view.userInteractionEnabled = NO;
+                                                        self.scrollView.userInteractionEnabled = NO;
+                                                        self.imageScrollView.userInteractionEnabled = NO;
+                                                    } else {
+                                                        self.addRecipeViewController = nil;
+                                                        [self updateButtons];
+                                                    }
+                                                }];
+}
+
 - (void)closeTapped:(id)sender {
     [self closeRecipeView];
 }
@@ -1504,7 +1547,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)addTapped:(id)sender {
-    DLog(@"***** ADD TAPPED *****");
+    [self showAddOverlay:YES];
 }
 
 - (void)shareTapped:(id)sender {

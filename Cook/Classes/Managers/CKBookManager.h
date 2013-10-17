@@ -18,6 +18,11 @@ typedef void(^BookManagerRecipesFailureBlock)(NSError *error);
 
 + (instancetype)sharedInstance;
 
+// Hang onto my book references.
+- (CKBook *)myCurrentBook;
+- (void)holdMyCurrentBook:(CKBook *)book;
+
+// To handle loading/processing of recipes within a book.
 - (void)recipesForBook:(CKBook *)book success:(BookManagerRecipesSuccessBlock)success
                failure:(BookManagerRecipesFailureBlock)failure;
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(void (^)())completion;

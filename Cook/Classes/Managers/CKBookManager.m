@@ -15,6 +15,7 @@
 
 @interface CKBookManager ()
 
+@property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableDictionary *bookContents;
 
 @end
@@ -44,6 +45,18 @@
     }
     return self;
 }
+
+#pragma mark - Hang on to my book.
+
+- (CKBook *)myCurrentBook {
+    return self.myBook;
+}
+
+- (void)holdMyCurrentBook:(CKBook *)book {
+    self.myBook = book;
+}
+
+#pragma mark - TODO Complete loading/processing of recipes for a book.
 
 - (void)recipesForBook:(CKBook *)book success:(BookManagerRecipesSuccessBlock)success
                failure:(BookManagerRecipesFailureBlock)failure {

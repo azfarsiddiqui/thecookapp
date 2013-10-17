@@ -28,6 +28,7 @@
 #import "CKServerManager.h"
 #import "CardViewHelper.h"
 #import "CKNavigationController.h"
+#import "CKBookManager.h"
 
 @interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
@@ -206,6 +207,23 @@
                      }];
 }
 
+// Updates the book on the dash with the one that got refreshed via book loading.
+- (void)refreshBook:(CKBook *)book {
+    
+    if ([book.objectId isEqualToString:self.myBook.objectId]) {
+        DLog(@"Refreshed my book [%@]", book.objectId);
+        self.myBook = book;
+    } else {
+        NSInteger followBookIndex = [self.followBooks findIndexWithBlock:^BOOL(CKBook *followBook) {
+            return [followBook.objectId isEqualToString:book.objectId];
+        }];
+        if (followBookIndex != -1) {
+            DLog(@"Refreshed follow book [%@]", book.objectId);
+            [self.followBooks replaceObjectAtIndex:followBookIndex withObject:book];
+        }
+    }
+    
+}
 
 #pragma mark - PagingBenchtopViewController methods
 
@@ -530,6 +548,14 @@
         _vignetteView = [[UIImageView alloc] initWithImage:[ImageHelper imageFromDiskNamed:@"cook_dash_background_vignette" type:@"png"]];
     }
     return _vignetteView;
+}
+
+// Overriden to hold the same reference in CKBookManager.
+- (void)setMyBook:(CKBook *)myBook {
+    _myBook = myBook;
+    if (myBook) {
+        [[CKBookManager sharedInstance] holdMyCurrentBook:myBook];
+    }
 }
 
 #pragma mark - Private methods

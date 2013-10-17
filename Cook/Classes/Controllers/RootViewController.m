@@ -304,6 +304,10 @@
     [self addRecipeForBook:self.selectedBook page:page];
 }
 
+- (void)bookNavigationControllerRefreshedBook:(CKBook *)book {
+    [self.benchtopViewController refreshBook:book];
+}
+
 - (UIView *)bookNavigationSnapshot {
     return [self.benchtopViewController.view snapshotViewAfterScreenUpdates:YES];
 }

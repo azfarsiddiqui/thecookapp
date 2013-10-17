@@ -846,7 +846,12 @@
     [self.book fetchRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes,
                                      NSDate *lastAccessedDate) {
         if (parseBook) {
-            self.book = [CKBook bookWithParseObject:parseBook];
+            CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
+            self.book = refreshedBook;
+            
+            // Refresh the book on the dash as it could be stale, e.g. pages.
+            [self.delegate bookNavigationControllerRefreshedBook:refreshedBook];
+            
         }
         self.bookLastAccessedDate = lastAccessedDate;
         [self processRecipes:recipes likedRecipes:likedRecipes];

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "BenchtopViewControllerDelegate.h"
 
+@class CKBook;
+
 @interface PagingBenchtopViewController : UIViewController
 
 @property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
@@ -20,5 +22,6 @@
 - (void)bookDidOpen:(BOOL)open;
 - (void)showLoginViewSignUp:(BOOL)signUp;
 - (void)hideLoginViewCompletion:(void (^)())completion;
+- (void)refreshBook:(CKBook *)book;
 
 @end

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class CKRecipe;
+@class CKBook;
 
 @protocol BookNavigationViewControllerDelegate <NSObject>
 
@@ -16,6 +17,7 @@
 - (void)bookNavigationControllerCloseRequestedWithBinder;
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe;
 - (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page;
+- (void)bookNavigationControllerRefreshedBook:(CKBook *)book;
 - (UIView *)bookNavigationSnapshot;
 
 @end
