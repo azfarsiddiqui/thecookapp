@@ -101,8 +101,11 @@
     [self showIntroCard];
     self.isFastForward = NO;
     
-    [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
-    [self.collectionView reloadData];
+    if ([self.collectionView numberOfItemsInSection:0] < [self.recipes count])
+    {
+        [((BookContentGridLayout *)self.collectionView.collectionViewLayout) setNeedsRelayout:YES];
+        [self.collectionView reloadData];
+    }
 }
 
 - (CGPoint)currentScrollOffset {

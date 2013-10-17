@@ -116,7 +116,6 @@
         self.titleViewController.bookPageDelegate = self;
         self.enableLikes = YES;
         self.destinationIndexes = @[@2]; //Start with first page
-        
         // Forget about dismissed states.
         [[CardViewHelper sharedInstance] clearDismissedStates];
         
@@ -132,7 +131,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.view.userInteractionEnabled = YES; // To block touches filtering down.
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
