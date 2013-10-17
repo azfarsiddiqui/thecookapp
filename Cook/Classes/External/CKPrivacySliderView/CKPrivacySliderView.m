@@ -27,7 +27,7 @@
 
 #define kToastFont      [UIFont fontWithName:@"AvenirNext-Regular" size:12.0]
 #define kToastColour    [UIColor colorWithHexString:@"333333"]
-#define kToastInsets    (UIEdgeInsets){ 20.0, 28.0, 11.0, 35.0 }
+#define kToastInsets    (UIEdgeInsets){ 21.0, 28.0, 10.0, 38.0 }
 
 - (id)initWithDelegate:(id<CKPrivacySliderViewDelegate>)delegate {
     if (self = [super initWithNumNotches:3 delegate:delegate]) {
@@ -116,13 +116,18 @@
         kToastInsets.left + self.toastLabel.frame.size.width + kToastInsets.right,
         kToastInsets.top + self.toastLabel.frame.size.height + kToastInsets.bottom
     };
-    self.toastView.frame = (CGRect){
-//        floorf((self.bounds.size.width - toastSize.width) / 2.0),
+    
+    CGRect toastFrame = self.toastView.frame;
+    toastFrame = (CGRect){
         self.currentNotchView.center.x - floorf(toastSize.width / 2.0),
         self.bounds.size.height - 34.0,
         toastSize.width,
         toastSize.height
     };
+    
+    CGFloat xAdjustment = abs(kToastInsets.left - kToastInsets.right);
+    toastFrame.origin.x += (xAdjustment * (kToastInsets.left < kToastInsets.right ? 1.0 : -1.0));
+    self.toastView.frame = toastFrame;
     
     if (!self.toastView.superview) {
         [self insertSubview:self.toastView belowSubview:self.currentNotchView];
