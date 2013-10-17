@@ -75,6 +75,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIButton *shareButton;
+@property (nonatomic, strong) UIButton *addButton;
 @property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
@@ -579,7 +580,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (UIButton *)shareButton {
     if (!_shareButton && [self.recipe isUserRecipeAuthor:self.currentUser]) {
         
-        BOOL shareable = [self shareable];
+        BOOL shareable = [self.recipe isShareable];
         UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
         _shareButton = [ViewHelper buttonWithImage:shareImage
                                             target:shareable ?  self : nil
@@ -612,6 +613,20 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                        _likeButton.frame.size.height);
     }
     return _likeButton;
+}
+
+- (UIButton *)addButton {
+    if (!_addButton && ![self.recipe isOwner] && [self.recipe isPublic]) {
+        _addButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_add_light.png"]
+                                          target:self
+                                        selector:@selector(addTapped:)];
+        _addButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _addButton.frame = CGRectMake(self.likeButton.frame.origin.x - kIconGap - _addButton.frame.size.width,
+                                      kButtonInsets.top,
+                                      _addButton.frame.size.width,
+                                      _addButton.frame.size.height);
+    }
+    return _addButton;
 }
 
 - (UIButton *)cancelButton {
@@ -1356,6 +1371,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         [self.view addSubview:self.editButton];
         [self.view addSubview:self.shareButton];
         [self.view addSubview:self.likeButton];
+        [self.view addSubview:self.addButton];
     }
     
     [UIView animateWithDuration:0.4
@@ -1369,6 +1385,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.editButton.alpha = self.editMode ? 0.0 : alpha;
                          self.shareButton.alpha = self.editMode ? 0.0 : alpha;
                          self.likeButton.alpha = self.editMode ? 0.0 : alpha;
+                         self.addButton.alpha = self.editMode ? 0.0 : alpha;
                          self.privacyView.alpha = self.editMode ? alpha : 0.0;
                          self.activityView.alpha = self.editMode ? 0.0 : alpha;
                          
@@ -1391,6 +1408,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self.socialView removeFromSuperview];
                              [self.editButton removeFromSuperview];
                              [self.shareButton removeFromSuperview];
+                             [self.addButton removeFromSuperview];
                              [self.likeButton removeFromSuperview];
                              
                              // Select the privacy level.
@@ -1485,8 +1503,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self enableEditMode];
 }
 
+- (void)addTapped:(id)sender {
+    DLog(@"***** ADD TAPPED *****");
+}
+
 - (void)shareTapped:(id)sender {
-    if (![self shareable]) {
+    if (![self.recipe isShareable]) {
         return;
     }
     
@@ -1872,7 +1894,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)updateShareButton {
     if (self.shareButton) {
-        BOOL shareable = [self shareable];
+        BOOL shareable = [self.recipe isShareable];
         UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
         [self.shareButton setBackgroundImage:shareImage forState:UIControlStateNormal];
         if (shareable && [[self.shareButton actionsForTarget:self forControlEvent:UIControlEventTouchUpInside] count] == 0) {
@@ -1881,10 +1903,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             [self.shareButton removeTarget:self action:@selector(shareTapped:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
-}
-
-- (BOOL)shareable {
-    return ([self.recipe isUserRecipeAuthor:self.currentUser] && (self.recipeDetails.privacy != CKPrivacyPrivate));
 }
 
 - (CGFloat)headerHeight {

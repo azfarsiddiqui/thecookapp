@@ -83,8 +83,9 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 - (void)setImage:(UIImage *)image;
 - (PFFile *)imageFile;
 - (BOOL)isOwner;
+- (BOOL)isPublic;
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
-- (BOOL)shareable;
+- (BOOL)isShareable;
 
 // Data existence methods
 - (BOOL)hasPhotos;

@@ -368,12 +368,16 @@
     return [self isUserRecipeAuthor:[CKUser currentUser]];
 }
 
+- (BOOL)isPublic {
+    return ([self privacy] == CKPrivacyPublic);
+}
+
 - (BOOL)isUserRecipeAuthor:(CKUser *)user {
     return  [self.user isEqual:user];
 }
 
-- (BOOL)shareable {
-    return ([self isUserRecipeAuthor:[CKUser currentUser]] && ([self privacy] != CKPrivacyPrivate));
+- (BOOL)isShareable {
+    return ([self isOwner] || [self isPublic]);
 }
 
 #pragma mark - CKModel methods
