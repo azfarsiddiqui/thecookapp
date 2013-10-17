@@ -183,6 +183,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                                                                                                    characterLimit:40];
         editViewController.textAlignment = NSTextAlignmentCenter;
         editViewController.numLines = 2;
+        editViewController.forceUppercase = YES;
         editViewController.clearOnFocus = ![self.recipeDetails hasTitle];
         editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
         editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
