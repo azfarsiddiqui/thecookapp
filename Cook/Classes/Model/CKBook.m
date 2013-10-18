@@ -382,7 +382,7 @@
 
 - (void)fetchRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    [PFCloud callFunctionInBackground:@"bookRecipesWithLikes"
+    [PFCloud callFunctionInBackground:@"bookRecipes_v1_1"
                        withParameters:@{ @"bookId": self.objectId }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
