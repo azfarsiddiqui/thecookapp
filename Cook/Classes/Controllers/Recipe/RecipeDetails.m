@@ -27,12 +27,17 @@
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
+    return [self initWithRecipe:recipe book:recipe.book];
+}
+
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
+        self.book = book;
         self.originalRecipe = recipe;
         
         // Copy to the instance vars, bypassing the setters which will be used for update checking.
         _page = recipe.page;
-        _availablePages = recipe.book.pages;
+        _availablePages = book.pages;
         _user = recipe.user;
         _name = recipe.name;
         _story = recipe.story;

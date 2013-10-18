@@ -126,9 +126,13 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
+    return [self initWithRecipe:recipe book:recipe.book];
+}
+
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
         self.recipe = recipe;
-        self.book = recipe.book;
+        self.book = book;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.currentUser = [CKUser currentUser];
     }
@@ -896,7 +900,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)loadPhoto {
     
     // Load placeholder first.
-    [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.recipe.book.cover]
+    [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
                      placeholder:YES];
     
     if ([self.recipe hasPhotos]) {
@@ -1759,7 +1763,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)initRecipeDetails {
     
     // Create transfer object to display/edit.
-    self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe];
+    self.recipeDetails = [[RecipeDetails alloc] initWithRecipe:self.recipe book:self.book];
     
     // Create a new RecipeDetailsView everytime, getting rid of the last one if it exists.
     [self.recipeDetailsView removeFromSuperview];

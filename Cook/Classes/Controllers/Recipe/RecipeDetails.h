@@ -11,10 +11,12 @@
 
 @class CKUser;
 @class CKLocation;
+@class CKBook;
 
 @interface RecipeDetails : NSObject
 
 @property (nonatomic, strong) CKRecipe *originalRecipe;
+@property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKLocation *location;
 @property (nonatomic, copy) NSString *page;
@@ -36,6 +38,7 @@
 + (NSInteger)maxServes;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)updateToRecipe:(CKRecipe *)recipe;
 
 - (BOOL)pageUpdated;

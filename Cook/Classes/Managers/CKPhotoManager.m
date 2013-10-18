@@ -770,7 +770,7 @@
 #pragma mark - Retrieval methods
 
 - (NSString *)photoNameForRecipe:(CKRecipe *)recipe {
-    return [NSString stringWithFormat:@"%@_recipe_%@", [self photoNameForBook:recipe.book], recipe.objectId];
+    return [NSString stringWithFormat:@"recipe_%@", recipe.objectId];
 }
 
 - (NSString *)photoNameForBook:(CKBook *)book {

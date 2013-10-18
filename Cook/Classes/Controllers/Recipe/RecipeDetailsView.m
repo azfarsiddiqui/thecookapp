@@ -704,7 +704,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Add ingredients view once, then update thereafter.
     if (!self.ingredientsView) {
         self.ingredientsView = [[RecipeIngredientsView alloc] initWithIngredients:self.recipeDetails.ingredients
-                                                                             book:self.recipeDetails.originalRecipe.book
+                                                                             book:self.recipeDetails.book
                                                                          maxWidth:kMaxLeftWidth];
         self.ingredientsView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         self.ingredientsView.userInteractionEnabled = NO;

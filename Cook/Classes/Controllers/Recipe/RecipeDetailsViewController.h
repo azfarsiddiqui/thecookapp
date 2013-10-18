@@ -17,6 +17,7 @@
 @property (nonatomic, assign) BOOL hideNavigation;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (id)initWithBook:(CKBook *)book page:(NSString *)page;
 
 @end
