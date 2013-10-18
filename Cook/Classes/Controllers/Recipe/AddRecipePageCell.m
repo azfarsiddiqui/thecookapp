@@ -28,13 +28,16 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        
         self.layer.shouldRasterize = YES;
         self.layer.rasterizationScale = [UIScreen mainScreen].scale;
         self.backgroundView = self.backgroundOverlayView;
         [self.contentView addSubview:self.pageLabel];
     }
     return self;
+}
+
+- (void)setSelected:(BOOL)selected {
+    self.backgroundView = selected ? self.backgroundOverlayHighlightedView : self.backgroundOverlayView;
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

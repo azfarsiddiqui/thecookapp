@@ -21,14 +21,17 @@
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
 @property (nonatomic, strong) UICollectionViewLayoutAttributes *headerAttributes;
 
+@property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
+@property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
+
 @end
 
 @implementation AddRecipeLayout
 
 #define kContentInsets      (UIEdgeInsets){ 0.0, 15.0, 50.0, 15.0 }
 #define kMaxItemsPerRow     3
-#define kRowGap             30.0
-#define kColGap             30.0
+#define kRowGap             10.0
+#define kColGap             20.0
 
 - (id)initWithDelegate:(id<AddRecipeLayoutDelegate>)delegate {
     if (self = [super init]) {
@@ -94,6 +97,22 @@
     [self.delegate addRecipeLayoutDidFinish];
 }
 
+- (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
+    [super prepareForCollectionViewUpdates:updateItems];
+    
+    self.insertedIndexPaths = [NSMutableArray array];
+    self.deletedIndexPaths = [NSMutableArray array];
+    
+    for (UICollectionViewUpdateItem *updateItem in updateItems) {
+        if (updateItem.updateAction == UICollectionUpdateActionInsert) {
+            [self.insertedIndexPaths addObject:updateItem.indexPathAfterUpdate];
+        }
+        else if (updateItem.updateAction == UICollectionUpdateActionDelete) {
+            [self.deletedIndexPaths addObject:updateItem.indexPathBeforeUpdate];
+        }
+    }
+}
+
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
@@ -129,6 +148,19 @@
     return self.headerAttributes;
 }
 
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
+    
+    // Cells slide up and fade in.
+    if ([self.insertedIndexPaths containsObject:itemIndexPath]) {
+        attributes = [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+        attributes.transform3D = CATransform3DMakeTranslation(0.0, 20.0, 0.0);
+        attributes.alpha = 0.0;
+    }
+    
+    return attributes;
+}
+
 #pragma mark - Private methods
 
 - (void)buildLayout {
@@ -142,27 +174,24 @@
 
 - (void)buildPagesLayoutWithBounds:(CGRect)bounds {
     
-    // Init the vertical offset.
-    CGFloat yOffset = kContentInsets.top;
+    CGSize headerSize = [ModalOverlayHeaderView unitSize];
+    CGSize requiredSizeForCells = [self requiredSizeForCells];
+    
+    CGFloat topOffset = kContentInsets.top;
+    CGFloat yOffset = floorf((self.collectionView.bounds.size.height - requiredSizeForCells.height) / 2.0) - headerSize.height;
+    yOffset = MAX(topOffset, yOffset);
     
     // Header layout.
     NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-    self.headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                                                                withIndexPath:headerIndexPath];
+    self.headerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:headerIndexPath];
     self.headerAttributes.frame = (CGRect){
         bounds.origin.x,
         yOffset,
         bounds.size.width,
-        [ModalOverlayHeaderView unitSize].height
+        headerSize.height
     };
     yOffset += self.headerAttributes.frame.size.height;
     self.headerAttributes = self.headerAttributes;
-    
-    // Center the block of cells.
-    CGSize requiredSizeForCells = [self requiredSizeForCells];
-    if (requiredSizeForCells.height < self.collectionView.bounds.size.height - self.headerAttributes.frame.size.height) {
-        yOffset = floorf((self.collectionView.bounds.size.height - requiredSizeForCells.height) / 2.0);
-    }
     
     // Pages layout.
     CGFloat sideOffset = floorf((self.collectionView.bounds.size.width - requiredSizeForCells.width) / 2.0);
@@ -186,7 +215,7 @@
         if (colIndex == kMaxItemsPerRow - 1) {
             colIndex = 0;
             xOffset = sideOffset;
-            yOffset += kRowGap;
+            yOffset += cellSize.height + kRowGap;
         } else {
             colIndex += 1;
             xOffset += cellSize.width + kColGap;
@@ -194,7 +223,6 @@
         
         [self.itemsLayoutAttributes addObject:attributes];
         [self.indexPathItemAttributes setObject:attributes forKey:indexPath];
-        
     }
 }
 

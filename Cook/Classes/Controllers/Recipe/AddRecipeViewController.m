@@ -12,6 +12,7 @@
 #import "ModalOverlayHeaderView.h"
 #import "AddRecipePageCell.h"
 #import "ViewHelper.h"
+#import "MRCEnumerable.h"
 
 @interface AddRecipeViewController () <UICollectionViewDataSource, UICollectionViewDelegate, AddRecipeLayoutDelegate>
 
@@ -21,6 +22,7 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UILabel *noPagesLabel;
+@property (nonatomic, assign) BOOL loaded;
 
 @end
 
@@ -40,9 +42,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
-    
+    self.collectionView.alpha = 0.0;
     [self.view addSubview:self.collectionView];
     self.closeButton = [ViewHelper addCloseButtonToView:self.view light:NO target:self selector:@selector(closeTapped:)];
+    self.loaded = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self loadData];
 }
 
 #pragma mark - AddRecipeLayoutDelegate methods
@@ -54,6 +62,7 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    DLog();
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -63,7 +72,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.book.pages count];
+    return self.loaded ? [self.book.pages count] : 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -122,6 +131,20 @@
 
 - (void)closeTapped:(id)sender {
     [self.delegate addRecipeViewControllerCloseRequested];
+}
+
+- (void)loadData {
+    self.collectionView.alpha = 0.0;
+    self.collectionView.transform = CGAffineTransformMakeTranslation(0.0, 30.0);
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.collectionView.alpha = 1.0;
+                         self.collectionView.transform = CGAffineTransformIdentity;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 @end
