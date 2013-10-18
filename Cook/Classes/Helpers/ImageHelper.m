@@ -115,6 +115,39 @@
     return cropped;
 }
 
+#pragma mark - Blending and merging.
+
++ (UIImage *)mergeImage:(UIImage *)image overImage:(UIImage *)secondImage {
+    
+    // get size of the first image
+    CGImageRef firstImageRef = image.CGImage;
+    CGFloat firstWidth = CGImageGetWidth(firstImageRef);
+    CGFloat firstHeight = CGImageGetHeight(firstImageRef);
+    
+    // get size of the second image
+    CGImageRef secondImageRef = secondImage.CGImage;
+    CGFloat secondWidth = CGImageGetWidth(secondImageRef);
+    CGFloat secondHeight = CGImageGetHeight(secondImageRef);
+    
+    // build merged size
+    CGSize mergedSize = CGSizeMake(MAX(firstWidth, secondWidth), MAX(firstHeight, secondHeight));
+    
+    // capture image context ref
+    UIGraphicsBeginImageContextWithOptions(mergedSize, NO, 0.0);
+    
+    //Draw images onto the context
+    [image drawInRect:CGRectMake(0, 0, firstWidth, firstHeight)];
+    [secondImage drawInRect:CGRectMake(0, 0, secondWidth, secondHeight)];
+    
+    // assign context to new UIImage
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    // end context
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
+
 #pragma mark - Blurring 
 
 + (UIImage *)blurredImage:(UIImage *)image {

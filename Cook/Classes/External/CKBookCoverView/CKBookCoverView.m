@@ -169,9 +169,14 @@
 }
 
 - (void)enableEditMode:(BOOL)enable animated:(BOOL)animated {
-    
     self.editMode = enable;
     self.editButton.hidden = enable;
+    if (!enable) {
+        [self.editButton setBackgroundImage:[CKBookCover editButtonUnderlayImageForCover:self.book.cover]
+                                   forState:UIControlStateNormal];
+        [self.editButton setBackgroundImage:[CKBookCover editButtonUnderlayOnPressImageForCover:self.book.cover]
+                                   forState:UIControlStateHighlighted];
+    }
     
     if (enable) {
         [self.editingHelper wrapEditingView:self.nameTextView
@@ -452,11 +457,11 @@
     self.editable = editable;
     if (editable) {
         if (!self.editButton) {
-            UIButton *editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]
-                                                 selectedImage:[UIImage imageNamed:@"cook_dash_icons_customise_onpress.png"]
+            UIButton *editButton = [ViewHelper buttonWithImage:[CKBookCover editButtonUnderlayImageForCover:self.book.cover]
+                                                 selectedImage:[CKBookCover editButtonUnderlayOnPressImageForCover:self.book.cover]
                                                         target:self selector:@selector(editTapped:)];
-            editButton.frame = CGRectMake(self.bounds.size.width - editButton.frame.size.width,
-                                          self.bounds.origin.y,
+            editButton.frame = CGRectMake(self.bounds.size.width - editButton.frame.size.width + 1.0,
+                                          self.bounds.origin.y - 2.0,
                                           editButton.frame.size.width,
                                           editButton.frame.size.height);
             [self addSubview:editButton];

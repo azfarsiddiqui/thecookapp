@@ -55,7 +55,6 @@ typedef enum {
 + (UIImage *)mediumImageForCover:(NSString *)cover;
 + (UIImage *)mediumImageForIllustration:(NSString *)illustration;
 
-
 // CKBookCoverView construction sizes.
 + (CGSize)coverImageSize;
 + (CGSize)coverShadowSize;
@@ -67,6 +66,8 @@ typedef enum {
 + (UIImage *)storeOverlayImage;
 + (UIImage *)illustrationPickerOverlayImage;
 + (UIImage *)placeholderCoverImage;
++ (UIImage *)editButtonUnderlayImageForCover:(NSString *)cover;
++ (UIImage *)editButtonUnderlayOnPressImageForCover:(NSString *)cover;
 
 + (BookCoverLayout)layoutForIllustration:(NSString *)illustration;
 

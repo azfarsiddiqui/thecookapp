@@ -31,6 +31,9 @@
 + (UIImage *)thumbImageForImage:(UIImage *)image;
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame;
 
+// Image merge/blending.
++ (UIImage *)mergeImage:(UIImage *)image overImage:(UIImage *)image;
+
 // Blurring
 + (UIImage *)blurredImage:(UIImage *)image;
 + (UIImage *)blurredOverlayImage:(UIImage *)image;

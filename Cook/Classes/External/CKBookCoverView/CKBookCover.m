@@ -285,6 +285,16 @@
     return [UIImage imageNamed:[[CKBookCover settings] valueForKeyPath:@"Covers.Gray.Image"]];
 }
 
++ (UIImage *)editButtonUnderlayImageForCover:(NSString *)cover {
+    UIImage *underlayImage = [UIImage imageNamed:[NSString stringWithFormat:@"cook_dash_icons_customise_%@.png", [cover lowercaseString]]];
+    return [ImageHelper mergeImage:underlayImage overImage:[UIImage imageNamed:@"cook_dash_icons_customise.png"]];
+}
+
++ (UIImage *)editButtonUnderlayOnPressImageForCover:(NSString *)cover {
+    UIImage *underlayImage = [UIImage imageNamed:[NSString stringWithFormat:@"cook_dash_icons_customise_%@.png", [cover lowercaseString]]];
+    return [ImageHelper mergeImage:underlayImage overImage:[UIImage imageNamed:@"cook_dash_icons_customise_onpress.png"]];
+}
+
 #pragma mark - Private
 
 + (NSDictionary *)settings {
