@@ -122,7 +122,7 @@
     // Always contain all supplementary views and effects.
     NSMutableArray* layoutAttributes = [NSMutableArray arrayWithObject:self.headerAttributes];
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-//        [self applyStickyHeaderFooter:attributes contentOffset:contentOffset bounds:bounds];
+        [self applyStickyHeaderFooter:attributes contentOffset:contentOffset bounds:bounds];
     }
     
     // Item cells.
@@ -130,7 +130,7 @@
         
         // Comments.
         if (CGRectIntersectsRect(visibleFrame, attributes.frame)) {
-//            [self applyCommentsFading:attributes contentOffset:contentOffset bounds:bounds];
+            [self applyCellsFading:attributes contentOffset:contentOffset bounds:bounds];
             [layoutAttributes addObject:attributes];
         }
         
@@ -249,5 +249,45 @@
     }
     return requiredSize;
 }
+
+- (void)applyStickyHeaderFooter:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
+                         bounds:(CGRect)bounds {
+    if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+        attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
+    }
+}
+
+- (void)applyCellsFading:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
+                        bounds:(CGRect)bounds {
+    
+    if (!attributes.representedElementKind) {
+        
+        CGFloat topFadeOffset = contentOffset.y + 100.0;
+        CGFloat minAlpha = 0.3;
+        
+        CGRect frame = attributes.frame;
+        
+        if (frame.origin.y <= topFadeOffset) {
+            CGFloat effectiveDistance = 100.0;
+            CGFloat distance = MIN(topFadeOffset - frame.origin.y, effectiveDistance);
+            attributes.alpha = MAX(minAlpha, 1.0 - (distance / effectiveDistance));
+        } else {
+            attributes.alpha = 1.0;
+        }
+    }
+}
+
+
+- (CGRect)adjustedFrameForHeaderFrame:(CGRect)frame contentOffset:(CGPoint)contentOffset
+                               bounds:(CGRect)bounds {
+    CGRect adjustedFrame = frame;
+    if (contentOffset.y > 0) {
+        adjustedFrame.origin.y = contentOffset.y;
+    } else {
+        adjustedFrame.origin.y = 0.0;
+    }
+    return adjustedFrame;
+}
+
 
 @end
