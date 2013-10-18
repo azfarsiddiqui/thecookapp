@@ -372,6 +372,10 @@
     return ([self privacy] == CKPrivacyPublic);
 }
 
+- (BOOL)isPrivate {
+    return ([self privacy] == CKPrivacyPrivate);
+}
+
 - (BOOL)isUserRecipeAuthor:(CKUser *)user {
     return  [self.user isEqual:user];
 }

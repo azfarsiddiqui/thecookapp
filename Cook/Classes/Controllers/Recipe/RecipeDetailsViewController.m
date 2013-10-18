@@ -592,39 +592,44 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (UIButton *)shareButton {
-    if (!_shareButton && [self.recipe isUserRecipeAuthor:self.currentUser]) {
+    if (!_shareButton && [self.recipe isShareable]) {
         
-        BOOL shareable = [self.recipe isShareable];
-        UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
+        BOOL private = [self.recipe isPrivate];
+        UIImage *shareImage = private ? [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"];
         _shareButton = [ViewHelper buttonWithImage:shareImage
-                                            target:shareable ?  self : nil
-                                          selector:shareable ? @selector(shareTapped:) : nil];
+                                            target:private ?  nil : self
+                                          selector:private ? nil : @selector(shareTapped:)];
         _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _shareButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _shareButton.frame.size.width,
+                                        kButtonInsets.top,
+                                        _shareButton.frame.size.width,
+                                        _shareButton.frame.size.height);
         
-        if (self.likeButton) {
-            _shareButton.frame = CGRectMake(self.likeButton.frame.origin.x - kIconGap - _shareButton.frame.size.width,
-                                            kButtonInsets.top,
-                                            _shareButton.frame.size.width,
-                                            _shareButton.frame.size.height);
-        } else {
-            _shareButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _shareButton.frame.size.width,
-                                            kButtonInsets.top,
-                                            _shareButton.frame.size.width,
-                                            _shareButton.frame.size.height);
-            
-        }
     }
     return _shareButton;
 }
 
 - (CKLikeView *)likeButton {
-    if (!self.hideLikeButton && ![self.recipe isOwner] && !_likeButton) {
+    if (!_likeButton && ![self.recipe isOwner]) {
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
-                                       kButtonInsets.top,
-                                       _likeButton.frame.size.width,
-                                       _likeButton.frame.size.height);
+        
+        if (self.addButton) {
+            _likeButton.frame = CGRectMake(self.addButton.frame.origin.x - kIconGap - _likeButton.frame.size.width,
+                                           kButtonInsets.top,
+                                           _likeButton.frame.size.width,
+                                           _likeButton.frame.size.height);
+        } else if (self.shareButton) {
+            _likeButton.frame = CGRectMake(self.addButton.frame.origin.x - kIconGap - _likeButton.frame.size.width,
+                                           kButtonInsets.top,
+                                           _likeButton.frame.size.width,
+                                           _likeButton.frame.size.height);
+        } else {
+            _likeButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _likeButton.frame.size.width,
+                                           kButtonInsets.top,
+                                           _likeButton.frame.size.width,
+                                           _likeButton.frame.size.height);
+        }
     }
     return _likeButton;
 }
@@ -635,10 +640,18 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                           target:self
                                         selector:@selector(addTapped:)];
         _addButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-        _addButton.frame = CGRectMake(self.likeButton.frame.origin.x - kIconGap - _addButton.frame.size.width,
-                                      kButtonInsets.top,
-                                      _addButton.frame.size.width,
-                                      _addButton.frame.size.height);
+        
+        if (self.shareButton) {
+            _addButton.frame = CGRectMake(self.shareButton.frame.origin.x - kIconGap - _addButton.frame.size.width,
+                                          kButtonInsets.top,
+                                          _addButton.frame.size.width,
+                                          _addButton.frame.size.height);
+        } else {
+            _addButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _addButton.frame.size.width,
+                                          kButtonInsets.top,
+                                          _addButton.frame.size.width,
+                                          _addButton.frame.size.height);
+        }
     }
     return _addButton;
 }

@@ -84,6 +84,7 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 - (PFFile *)imageFile;
 - (BOOL)isOwner;
 - (BOOL)isPublic;
+- (BOOL)isPrivate;
 - (BOOL)isUserRecipeAuthor:(CKUser*)user;
 - (BOOL)isShareable;
 

@@ -15,7 +15,6 @@
 @interface RecipeDetailsViewController : UIViewController <BookModalViewController, UIAlertViewDelegate>
 
 @property (nonatomic, assign) BOOL hideNavigation;
-@property (nonatomic, assign) BOOL hideLikeButton;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
 - (id)initWithBook:(CKBook *)book page:(NSString *)page;
