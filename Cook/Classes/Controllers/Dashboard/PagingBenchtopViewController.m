@@ -771,6 +771,8 @@
                          // Fade the icons away.
                          self.notificationView.alpha = enable ? 0.0 : 1.0;
                          self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
+                         self.libraryIntroView.alpha = enable ? 0.0 : 1.0;
+                         self.settingsIntroView.alpha = enable ? 0.0 : 1.0;
                          
                      }
                      completion:^(BOOL finished) {
@@ -1092,6 +1094,10 @@
                          // Hide the icons.
                          self.notificationView.alpha = enable ? 0.0 : 1.0;
                          self.benchtopLevelView.alpha = enable ? 0.0 : 1.0;
+                         
+                         // Hide the intro views.
+                         self.libraryIntroView.alpha = enable ? 0.0 : 1.0;
+                         self.settingsIntroView.alpha = enable ? 0.0 : 1.0;
                          
                          // Slide down the cover picker.
                          self.coverViewController.view.transform = enable ? CGAffineTransformMakeTranslation(0.0, self.coverViewController.view.frame.size.height) : CGAffineTransformIdentity;
@@ -1436,6 +1442,8 @@
                      animations:^{
                          self.notificationView.alpha = show ? 1.0 : 0.0;
                          self.benchtopLevelView.alpha = show ? 1.0 : 0.0;
+                         self.libraryIntroView.alpha = show ? 0.0 : 1.0;
+                         self.settingsIntroView.alpha = show ? 0.0 : 1.0;
                          cell.shadowView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.7, 0.7);
                          
                          // Fade in/out cells.
@@ -1480,12 +1488,16 @@
                                                     animation:^{
                                                         self.notificationView.alpha = 0.0;
                                                         self.benchtopLevelView.alpha = 0.0;
+                                                        self.libraryIntroView.alpha = 0.0;
+                                                        self.settingsIntroView.alpha = 0.0;
                                                     } completion:nil];
     } else {
         [ModalOverlayHelper hideModalOverlayForViewController:self.cookNavigationController
                                                     animation:^{
                                                         self.notificationView.alpha = 1.0;
                                                         self.benchtopLevelView.alpha = 1.0;
+                                                        self.libraryIntroView.alpha = 1.0;
+                                                        self.settingsIntroView.alpha = 1.0;
                                                     } completion:^{
                                                         self.notificationsViewController = nil;
                                                         self.cookNavigationController = nil;
