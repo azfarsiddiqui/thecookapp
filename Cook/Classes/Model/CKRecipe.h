@@ -20,6 +20,7 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 @class CKLocation;
 
 typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes);
+typedef void(^RecipeCheckPinnedSuccessBlock)(BOOL pinned, NSString *page);
 
 @interface CKRecipe : CKModel
 
@@ -73,6 +74,11 @@ typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes
 - (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)numLikesWithCompletion:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
+// Pins
+- (void)pinnedToBook:(CKBook *)book completion:(RecipeCheckPinnedSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)pinToBook:(CKBook *)book page:(NSString *)page completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)unpinnedFromBook:(CKBook *)book completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 // Comments
 - (void)comment:(NSString *)comment user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

@@ -1510,7 +1510,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         [self hideButtons];
         CKBook *myBook = [[CKBookManager sharedInstance] myCurrentBook];
-        self.addRecipeViewController = [[AddRecipeViewController alloc] initWithBook:myBook delegate:self];
+        self.addRecipeViewController = [[AddRecipeViewController alloc] initWithRecipe:self.recipe book:myBook delegate:self];
     } else {
         self.view.userInteractionEnabled = YES;
         self.scrollView.userInteractionEnabled = YES;

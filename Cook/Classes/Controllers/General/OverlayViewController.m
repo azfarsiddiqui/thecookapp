@@ -11,12 +11,17 @@
 #import "AppHelper.h"
 #import "RecipeDetailsViewController.h"
 #import "BookModalViewController.h"
+#import "CKProgressView.h"
+#import "CKActivityIndicatorView.h"
 
 @interface OverlayViewController ()
 
 @end
 
 @implementation OverlayViewController
+
+#define kStatusActivityGap  10.0
+#define kStatusProgressGap  10.0
 
 - (id)init {
     if (self = [super init]) {
@@ -31,10 +36,18 @@
 }
 
 - (void)clearStatusMessage {
+    [self.overlayActivityView stopAnimating];
+    [self.progressView removeFromSuperview];
     [self.statusMessageLabel removeFromSuperview];
 }
 
 - (void)displayStatusMessage:(NSString *)statusMessage {
+    [self displayStatusMessage:statusMessage activity:NO];
+}
+
+- (void)displayStatusMessage:(NSString *)statusMessage activity:(BOOL)activity {
+    
+    // Status message.
     self.statusMessageLabel.text = statusMessage;
     [self.statusMessageLabel sizeToFit];
     self.statusMessageLabel.frame = (CGRect){
@@ -47,6 +60,58 @@
     if (!self.statusMessageLabel.superview) {
         [self.view addSubview:self.statusMessageLabel];
     }
+    
+    // Spinner.
+    if (activity) {
+        if (![self.overlayActivityView isAnimating]) {
+            if (!self.overlayActivityView.superview) {
+                [self.view addSubview:self.overlayActivityView];
+            }
+            [self.overlayActivityView startAnimating];
+        }
+        
+        // Reposition the status message.
+        CGRect statusFrame = self.statusMessageLabel.frame;
+        statusFrame.origin.y = self.overlayActivityView.frame.origin.y - statusFrame.size.height - kStatusActivityGap;
+        self.statusMessageLabel.frame = statusFrame;
+        
+    } else {
+        [self.overlayActivityView stopAnimating];
+    }
+    
+}
+
+- (void)showProgress:(CGFloat)progress {
+    
+    // No spinner while in progress.
+    [self.overlayActivityView stopAnimating];
+    
+    if (!self.progressView.superview) {
+        [self.view addSubview:self.progressView];
+    }
+    
+    // Reposition the status message.
+    CGRect statusFrame = self.statusMessageLabel.frame;
+    statusFrame.origin.y = self.progressView.frame.origin.y - statusFrame.size.height - kStatusProgressGap;
+    self.statusMessageLabel.frame = statusFrame;
+
+    [self.progressView setProgress:progress animated:YES];
+}
+
+- (void)showProgress:(CGFloat)progress delay:(NSTimeInterval)delay completion:(void (^)())completion {
+    
+    // No spinner while in progress.
+    [self.overlayActivityView stopAnimating];
+    
+    if (!self.progressView.superview) {
+        [self.view addSubview:self.progressView];
+    }
+    
+   [self.progressView setProgress:progress delay:delay completion:completion];
+}
+
+- (void)hideProgress {
+    [self.progressView removeFromSuperview];
 }
 
 #pragma mark - Properties
@@ -59,6 +124,28 @@
         _statusMessageLabel.textColor = [UIColor whiteColor];
     }
     return _statusMessageLabel;
+}
+
+- (CKActivityIndicatorView *)overlayActivityView {
+    if (!_overlayActivityView) {
+        _overlayActivityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+        _overlayActivityView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+        _overlayActivityView.center = self.view.center;
+    }
+    return _overlayActivityView;
+}
+
+- (CKProgressView *)progressView {
+    if (!_progressView) {
+        _progressView = [[CKProgressView alloc] initWithWidth:300.0];
+        _progressView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+        _progressView.frame = (CGRect){
+            floorf((self.view.bounds.size.width - _progressView.frame.size.width) / 2.0),
+            floorf((self.view.bounds.size.height - _progressView.frame.size.height) / 2.0) - 13.0,
+            _progressView.frame.size.width,
+            _progressView.frame.size.height};
+    }
+    return _progressView;
 }
 
 @end

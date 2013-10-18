@@ -268,6 +268,63 @@
     }
 }
 
+#pragma mark - Pins
+
+- (void)pinnedToBook:(CKBook *)book completion:(RecipeCheckPinnedSuccessBlock)success
+             failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"recipeIsPinnedToBook"
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        
+                                        BOOL pinned = [[results objectForKey:@"pinned"] boolValue];
+                                        NSString *page = nil;
+                                        if (pinned) {
+                                            page = [results objectForKey:@"page"];
+                                        }
+                                        DLog(@"Recipe[%@] pinned[%@] page[%@]", self.objectId,
+                                             [NSString CK_stringForBoolean:pinned], page);
+                                        success(pinned, page);
+                                        
+                                    } else {
+                                        DLog(@"Error pinning recipe: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
+- (void)pinToBook:(CKBook *)book page:(NSString *)page completion:(ObjectSuccessBlock)success
+          failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"pinRecipeToBook"
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        DLog(@"Pinned recipe[%@] to book[%@]", self.objectId, book.objectId);
+                                        success();
+                                    } else {
+                                        DLog(@"Error pinning recipe: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
+- (void)unpinnedFromBook:(CKBook *)book completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"unpinRecipeFromBook"
+                       withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        DLog(@"Unpinned recipe[%@] from book[%@]", self.objectId, book.objectId);
+                                        success();
+                                    } else {
+                                        DLog(@"Error pinning recipe: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
 #pragma mark - Comments
 
 - (void)comment:(NSString *)comment user:(CKUser *)user completion:(ObjectSuccessBlock)success

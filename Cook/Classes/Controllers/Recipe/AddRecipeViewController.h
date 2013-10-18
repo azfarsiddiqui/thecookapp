@@ -10,6 +10,7 @@
 #import "OverlayViewController.h"
 
 @class CKBook;
+@class CKRecipe;
 
 @protocol AddRecipeViewControllerDelegate <NSObject>
 
@@ -19,6 +20,6 @@
 
 @interface AddRecipeViewController : OverlayViewController
 
-- (id)initWithBook:(CKBook *)book delegate:(id<AddRecipeViewControllerDelegate>)delegate;
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book delegate:(id<AddRecipeViewControllerDelegate>)delegate;
 
 @end

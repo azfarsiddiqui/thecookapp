@@ -122,7 +122,7 @@
     // Always contain all supplementary views and effects.
     NSMutableArray* layoutAttributes = [NSMutableArray arrayWithObject:self.headerAttributes];
     for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        [self applyStickyHeaderFooter:attributes contentOffset:contentOffset bounds:bounds];
+        [self applyStickyHeader:attributes contentOffset:contentOffset bounds:bounds];
     }
     
     // Item cells.
@@ -179,7 +179,12 @@
     
     CGFloat topOffset = kContentInsets.top;
     CGFloat yOffset = floorf((self.collectionView.bounds.size.height - requiredSizeForCells.height) / 2.0) - headerSize.height;
-    yOffset = MAX(topOffset, yOffset);
+    NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
+    if (numItems > 0) {
+        yOffset = MAX(topOffset, yOffset);
+    } else {
+        yOffset = floorf((self.collectionView.bounds.size.height - headerSize.height) / 2.0) - headerSize.height;
+    }
     
     // Header layout.
     NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
@@ -195,7 +200,6 @@
     
     // Pages layout.
     CGFloat sideOffset = floorf((self.collectionView.bounds.size.width - requiredSizeForCells.width) / 2.0);
-    NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
     CGSize cellSize = [AddRecipePageCell cellSize];
     
     CGFloat xOffset = sideOffset;
@@ -250,8 +254,8 @@
     return requiredSize;
 }
 
-- (void)applyStickyHeaderFooter:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
-                         bounds:(CGRect)bounds {
+- (void)applyStickyHeader:(UICollectionViewLayoutAttributes *)attributes contentOffset:(CGPoint)contentOffset
+                   bounds:(CGRect)bounds {
     if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         attributes.frame = [self adjustedFrameForHeaderFrame:attributes.frame contentOffset:contentOffset bounds:bounds];
     }
