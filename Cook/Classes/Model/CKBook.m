@@ -403,6 +403,7 @@
                                         PFObject *parseBook = [recipeResults objectForKey:@"book"];
                                         NSArray *parseRecipes = [recipeResults objectForKey:@"recipes"];
                                         NSArray *parseLikes = [recipeResults objectForKey:@"likes"];
+                                        NSArray *parsePins = [recipeResults objectForKey:@"pins"];
                                         NSDate *accessDate = [recipeResults objectForKey:@"accessDate"];
                                         
                                         // Wrap the recipes in our model.
@@ -413,6 +414,12 @@
                                         // Wrap the liked recipes in our model.
                                         NSArray *likedRecipes = [parseLikes collect:^id(PFObject *parseRecipe) {
                                             return [CKRecipe recipeForParseRecipe:parseRecipe user:nil book:nil];
+                                        }];
+                                        
+                                        // Wrap the pinned recipes in our model.
+                                        NSArray *pinnedRecipes = [parsePins collect:^id(PFObject *parsePin) {
+                                            PFObject *parsePinnedRecipe = [parsePin objectForKey:kRecipeModelForeignKeyName];
+                                            return [CKRecipe recipeForParseRecipe:parsePinnedRecipe user:nil book:nil];
                                         }];
                                         
                                         success(parseBook, recipes, likedRecipes, accessDate);
