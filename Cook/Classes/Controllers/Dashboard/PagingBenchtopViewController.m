@@ -55,6 +55,7 @@
 
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
+@property (nonatomic, strong) NSDictionary *followBookUpdates;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
@@ -256,9 +257,11 @@
 - (void)bookDidOpen:(BOOL)open {
     
     // Restore the bookCover.
+    BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     if (!open) {
-        BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
         cell.bookCoverView.hidden = NO;
+    } else {
+        [cell.bookCoverView clearUpdates];
     }
     
     // Enable panning based on book opened or not.
@@ -336,7 +339,7 @@
         
     } else if (indexPath.section == kFollowSection) {
         CKBook *book = [self.followBooks objectAtIndex:indexPath.item];
-        [cell loadBook:book];
+        [cell loadBook:book updates:[self updatesForBook:book]];
     }
     
     return cell;
@@ -982,8 +985,10 @@
 
 - (void)loadFollowBooksReload:(BOOL)reload {
     
-    [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks) {
+    [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks, NSDictionary *followBookUpdates) {
         self.followBooks = [NSMutableArray arrayWithArray:followBooks];
+        self.followBookUpdates = followBookUpdates;
+        
         NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
         
         if (reload) {
@@ -1266,7 +1271,6 @@
 }
 
 - (void)backgroundFetch:(NSNotification *)notification {
-    DLog();
     [self loadBenchtop:YES];
 }
 
@@ -1631,6 +1635,10 @@
     
     [self processPagingFade];
 
+}
+
+- (NSInteger)updatesForBook:(CKBook *)book {
+    return [[self.followBookUpdates objectForKey:book.objectId] integerValue];
 }
 
 @end

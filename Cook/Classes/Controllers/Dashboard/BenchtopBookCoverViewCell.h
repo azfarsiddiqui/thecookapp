@@ -35,6 +35,7 @@
 - (UIImage *)shadowImage;
 - (UIOffset)shadowOffset;
 - (void)loadBook:(CKBook *)book;
+- (void)loadBook:(CKBook *)book updates:(NSInteger)updates;
 - (void)enableDeleteMode:(BOOL)enable;
 - (void)enableEditMode:(BOOL)enable;
 

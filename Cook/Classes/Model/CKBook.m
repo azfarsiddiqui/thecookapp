@@ -98,17 +98,30 @@
     success(guestBook);
 }
 
-+ (void)dashboardFollowBooksSuccess:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    [PFCloud callFunctionInBackground:@"followBooks"
+//    [PFCloud callFunctionInBackground:@"followBooks"
+//                       withParameters:@{}
+//                                block:^(NSArray *books, NSError *error) {
+//                                    if (!error) {
+//                                        success([CKBook booksFromParseBooks:books]);
+//                                    } else {
+//                                        DLog(@"Error loading follow books: %@", [error localizedDescription]);
+//                                    }
+//                                }];
+    [PFCloud callFunctionInBackground:@"followBooks_v1_1"
                        withParameters:@{}
-                                block:^(NSArray *books, NSError *error) {
+                                block:^(NSDictionary *results, NSError *error) {
+                                    NSArray *books = [results objectForKey:@"books"];
+                                    NSDictionary *bookUpdates = [results objectForKey:@"updates"];
+                                    DLog(@"Book Updates: %@", bookUpdates);
                                     if (!error) {
-                                        success([CKBook booksFromParseBooks:books]);
+                                        success([CKBook booksFromParseBooks:books], bookUpdates);
                                     } else {
                                         DLog(@"Error loading follow books: %@", [error localizedDescription]);
                                     }
                                 }];
+
 }
 
 + (void)createBookForUser:(CKUser *)user succeess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {

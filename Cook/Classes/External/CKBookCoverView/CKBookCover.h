@@ -68,6 +68,7 @@ typedef enum {
 + (UIImage *)placeholderCoverImage;
 + (UIImage *)editButtonUnderlayImageForCover:(NSString *)cover;
 + (UIImage *)editButtonUnderlayOnPressImageForCover:(NSString *)cover;
++ (UIImage *)updatesIconImageForCover:(NSString *)cover;
 
 + (BookCoverLayout)layoutForIllustration:(NSString *)illustration;
 

@@ -91,9 +91,13 @@
 }
 
 - (void)loadBook:(CKBook *)book {
+    [self loadBook:book updates:0];
+}
+
+- (void)loadBook:(CKBook *)book updates:(NSInteger)updates {
     
     // Update cover.
-    [self.bookCoverView loadBook:book];
+    [self.bookCoverView loadBook:book update:updates];
     
     // Reset delete mode.
     [self enableDeleteMode:NO];

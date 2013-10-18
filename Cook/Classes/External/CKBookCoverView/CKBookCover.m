@@ -295,6 +295,10 @@
     return [ImageHelper mergeImage:underlayImage overImage:[UIImage imageNamed:@"cook_dash_icons_customise_onpress.png"]];
 }
 
++ (UIImage *)updatesIconImageForCover:(NSString *)cover {
+    return [UIImage imageNamed:[NSString stringWithFormat:@"cook_dash_book_notifications_%@.png", [cover lowercaseString]]];
+}
+
 #pragma mark - Private
 
 + (NSDictionary *)settings {

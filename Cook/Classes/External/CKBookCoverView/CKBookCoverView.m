@@ -32,6 +32,8 @@
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
+@property (nonatomic, strong) UIImageView *updatesIcon;
+@property (nonatomic, strong) UILabel *updatesLabel;
 
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
@@ -90,11 +92,21 @@
     [self loadBook:book editable:[book editable]];
 }
 
+- (void)loadBook:(CKBook *)book update:(NSInteger)updates {
+    [self loadBook:book editable:[book editable] loadRemoteIllustration:NO updates:updates];
+}
+
 - (void)loadBook:(CKBook *)book editable:(BOOL)editable {
     [self loadBook:book editable:editable loadRemoteIllustration:YES];
 }
 
-- (void)loadBook:(CKBook *)book editable:(BOOL)editable loadRemoteIllustration:(BOOL)loadRemoteIllustration {
+- (void)loadBook:(CKBook *)book editable:(BOOL)editable loadRemoteIllustration:(BOOL)loadRemoteIllustrations {
+    [self loadBook:book editable:editable loadRemoteIllustration:loadRemoteIllustrations updates:0];
+}
+
+- (void)loadBook:(CKBook *)book editable:(BOOL)editable loadRemoteIllustration:(BOOL)loadRemoteIllustration
+         updates:(NSInteger)updates {
+    
     self.book = book;
     
     if (book.illustrationImageFile) {
@@ -135,6 +147,7 @@
     }
     
     [self setName:book.name author:[book userName] editable:editable];
+    [self loadUpdates:updates];
 }
 
 - (void)loadRemoteIllustrationImage:(UIImage *)illustrationImage {
@@ -189,6 +202,10 @@
         [self.editingHelper unwrapEditingView:self.nameTextView];
         [self.editingHelper unwrapEditingView:self.authorTextView];
     }
+}
+
+- (void)clearUpdates {
+    [self.updatesIcon removeFromSuperview];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -282,6 +299,28 @@
         [self addSubview:_contentOverlay];
     }
     return _contentOverlay;
+}
+
+- (UIImageView *)updatesIcon {
+    if (!_updatesIcon) {
+        _updatesIcon = [[UIImageView alloc] initWithImage:[CKBookCover updatesIconImageForCover:self.book.cover]];
+        _updatesIcon.frame = (CGRect){
+            self.bounds.size.width - _updatesIcon.frame.size.width + 30.0,
+            self.bounds.origin.y - 28.0,
+            _updatesIcon.frame.size.width,
+            _updatesIcon.frame.size.height
+        };
+    }
+    return _updatesIcon;
+}
+
+- (UILabel *)updatesLabel {
+    if (!_updatesLabel) {
+        _updatesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:25.0];
+        _updatesLabel.textColor = [UIColor whiteColor];
+    }
+    return _updatesLabel;
 }
 
 #pragma mark - Private methods
@@ -691,6 +730,29 @@
                 [self.activityView removeFromSuperview];
             }
         }
+    }
+}
+
+- (void)loadUpdates:(NSInteger)updates {
+    if (updates > 0) {
+        if (!self.updatesIcon.superview) {
+            [self addSubview:self.updatesIcon];
+        }
+        if (!self.updatesLabel.superview) {
+            self.updatesLabel.center = self.updatesIcon.center;
+            [self.updatesIcon addSubview:self.updatesLabel];
+        }
+        self.updatesLabel.text = [NSString stringWithFormat:@"%d", updates];
+        [self.updatesLabel sizeToFit];
+        self.updatesLabel.frame = (CGRect){
+            floorf((self.updatesIcon.bounds.size.width - self.updatesLabel.frame.size.width) / 2.0),
+            floorf((self.updatesIcon.bounds.size.height - self.updatesLabel.frame.size.height) / 2.0) - 3.0,
+            self.updatesLabel.frame.size.width,
+            self.updatesLabel.frame.size.height
+        };
+        
+    } else {
+        [self clearUpdates];
     }
 }
 
