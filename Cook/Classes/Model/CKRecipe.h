@@ -89,9 +89,9 @@ typedef void(^RecipeCheckPinnedSuccessBlock)(BOOL pinned, NSString *page);
 - (void)setImage:(UIImage *)image;
 - (PFFile *)imageFile;
 - (BOOL)isOwner;
+- (BOOL)isOwner:(CKUser*)user;
 - (BOOL)isPublic;
 - (BOOL)isPrivate;
-- (BOOL)isUserRecipeAuthor:(CKUser*)user;
 - (BOOL)isShareable;
 
 // Data existence methods

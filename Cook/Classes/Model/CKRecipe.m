@@ -422,7 +422,11 @@
 }
 
 - (BOOL)isOwner {
-    return [self isUserRecipeAuthor:[CKUser currentUser]];
+    return [self isOwner:[CKUser currentUser]];
+}
+
+- (BOOL)isOwner:(CKUser *)user {
+    return  [self.user isEqual:user];
 }
 
 - (BOOL)isPublic {
@@ -431,10 +435,6 @@
 
 - (BOOL)isPrivate {
     return ([self privacy] == CKPrivacyPrivate);
-}
-
-- (BOOL)isUserRecipeAuthor:(CKUser *)user {
-    return  [self.user isEqual:user];
 }
 
 - (BOOL)isShareable {

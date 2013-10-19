@@ -9,6 +9,7 @@
 #import "BookNavigationStackViewController.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
+#import "CKRecipePin.h"
 #import "CKUser.h"
 #import "CKServerManager.h"
 #import "BookPagingStackLayout.h"
@@ -43,6 +44,7 @@
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, strong) NSMutableArray *recipes;
 @property (nonatomic, strong) NSMutableArray *likedRecipes;
+@property (nonatomic, strong) NSMutableArray *recipePins;
 @property (nonatomic, strong) NSMutableDictionary *pageRecipes;
 @property (nonatomic, strong) NSMutableDictionary *pagesContainingUpdatedRecipes;
 @property (nonatomic, strong) NSMutableDictionary *contentControllers;
@@ -396,7 +398,8 @@
 #pragma mark - BookContentViewControllerDelegate methods
 
 - (NSArray *)recipesForBookContentViewControllerForPage:(NSString *)page {
-    return [self.pageRecipes objectForKey:page];
+    NSArray *pageRecipes = [self.pageRecipes objectForKey:page];
+    return pageRecipes;
 }
 
 - (CKRecipe *)featuredRecipeForBookContentViewControllerForPage:(NSString *)page {
@@ -843,8 +846,9 @@
     DLog();
     
     // Fetch all recipes for the book, and categorise them.
-    [self.book fetchRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes,
-                                     NSDate *lastAccessedDate) {
+    [self.book bookRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
+                                    
+                                    NSDate *lastAccessedDate) {
         if (parseBook) {
             CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
             self.book = refreshedBook;
@@ -854,7 +858,8 @@
             
         }
         self.bookLastAccessedDate = lastAccessedDate;
-        [self processRecipes:recipes likedRecipes:likedRecipes];
+        
+        [self processRecipes:recipes likedRecipes:likedRecipes recipePins:recipePins];
         
     } failure:^(NSError *error) {
         
@@ -862,9 +867,10 @@
     }];
 }
 
-- (void)processRecipes:(NSArray *)recipes likedRecipes:(NSArray *)likedRecipes {
+- (void)processRecipes:(NSArray *)recipes likedRecipes:(NSArray *)likedRecipes recipePins:(NSArray *)recipePins {
     self.recipes = [NSMutableArray arrayWithArray:recipes];
     self.likedRecipes = [NSMutableArray arrayWithArray:likedRecipes];
+    self.recipePins = [NSMutableArray arrayWithArray:recipePins];
     [self loadRecipes];
 }
 
@@ -897,7 +903,6 @@
         
         // Is this a new recipe?
         if (self.bookLastAccessedDate
-            && recipe.modelUpdatedDateTime
             && ([recipe.modelUpdatedDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
             
             // Mark the page as new.
@@ -911,6 +916,9 @@
         [self.pages addObject:self.likesPageName];
         [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
     }
+    
+    // Process pins.
+    [self processPins];
     
     // Process rankings.
     [self processRanks];
@@ -1355,6 +1363,49 @@
                      }];
 }
 
+// Process each RecipePin and splice each recipe into the appropriate pages.
+- (void)processPins {
+    if ([self.recipePins count] > 0) {
+        for (CKRecipePin *recipePin in self.recipePins) {
+            
+            NSString *page = recipePin.page;
+            CKRecipe *pinnedRecipe = recipePin.recipe;
+            NSDate *pinnedDate = recipePin.createdDateTime;
+            
+            // Only process for book pages.
+            if ([self.pages containsObject:page]) {
+
+                NSMutableArray *pageRecipes = [self.pageRecipes objectForKey:page];
+                
+                if (!pageRecipes) {
+                    pageRecipes = [NSMutableArray array];
+                    [pageRecipes addObject:pinnedRecipe];
+                    [self.pageRecipes setObject:pageRecipes forKey:page];
+
+                } else {
+                    
+                    // Splice the pinnedRecipes based on their pinnedDate.
+                    BOOL added = NO;
+                    [pageRecipes enumerateObjectsUsingBlock:^(CKRecipe *recipe, NSUInteger recipeIndex, BOOL *stop) {
+                        
+                        // If the pinnedRecipe is newer than the current recipe, then splice it in.
+                        if ([pinnedDate compare:recipe.modelUpdatedDateTime] == NSOrderedDescending) {
+                            [pageRecipes insertObject:pinnedRecipe atIndex:recipeIndex];
+                            stop = YES;
+                        }
+                    }];
+                    
+                    // Still not added, then add to the end.
+                    if (!added) {
+                        [pageRecipes addObject:pinnedRecipe];
+                    }
+                }
+            }
+            
+        }
+    }
+}
+
 - (void)processRanks {
     self.pageCoverRecipes = [NSMutableDictionary dictionary];
     
@@ -1363,10 +1414,12 @@
         
         if ([recipes count] > 0) {
             
-            // Get the highest ranked recipe with photos, then fallback to without.
-            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page hasPhotos:YES];
+            // Get the highest ranked recipe.
+            CKRecipe *highestRankedRecipe = [self highestRankedRecipeForPage:page excludePins:YES];
+            
+            // If none found, then include pins.
             if (!highestRankedRecipe) {
-                highestRankedRecipe = [self highestRankedRecipeForPage:page hasPhotos:NO];
+                highestRankedRecipe = [self highestRankedRecipeForPage:page excludePins:NO];
             }
             [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
             
@@ -1390,15 +1443,17 @@
     
 }
 
-- (CKRecipe *)highestRankedRecipeForPage:(NSString *)page hasPhotos:(BOOL)hasPhotos {
+- (CKRecipe *)highestRankedRecipeForPage:(NSString *)page excludePins:(BOOL)excludePins {
     NSArray *recipes = [self.pageRecipes objectForKey:page];
-    return [self highestRankedRecipeForRecipes:recipes hasPhotos:hasPhotos];
+    return [self highestRankedRecipeForRecipes:recipes excludePins:excludePins];
 }
 
-- (CKRecipe *)highestRankedRecipeForRecipes:(NSArray *)recipes hasPhotos:(BOOL)hasPhotos {
-    if (hasPhotos) {
+- (CKRecipe *)highestRankedRecipeForRecipes:(NSArray *)recipes excludePins:(BOOL)excludePins {
+    
+    // Exclude pins if specified.
+    if (excludePins) {
         recipes = [recipes select:^BOOL(CKRecipe *recipe) {
-            return [recipe hasPhotos];
+            return [recipe isOwner:self.user];
         }];
     }
     

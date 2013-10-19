@@ -38,6 +38,10 @@
     return pfObject;
 }
 
++ (instancetype)modelWithParseObject:(PFObject *)parseObject {
+    return [[self alloc] initWithParseObject:parseObject];
+}
+
 - (id)initWithParseObject:(PFObject *)parseObject {
     if (self = [super init]) {
         self.parseObject = parseObject;
@@ -128,7 +132,11 @@
 }
 
 - (NSDate *)modelUpdatedDateTime {
-    return [self.parseObject objectForKey:kModelAttrModelUpdatedAt];
+    NSDate *modelUpdated = [self.parseObject objectForKey:kModelAttrModelUpdatedAt];
+    if (!modelUpdated) {
+        modelUpdated = self.updatedDateTime;
+    }
+    return modelUpdated;
 }
 
 #pragma mark - Wrapper getters/setters

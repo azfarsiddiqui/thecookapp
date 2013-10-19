@@ -13,7 +13,8 @@
 @class CKBook;
 @class CKCategory;
 
-typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSDate *bookLastAccessedDate);
+typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
+                                       NSDate *bookLastAccessedDate);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
 
 @interface CKBook : CKModel
@@ -44,7 +45,8 @@ typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *follo
 + (void)dashboardBookForUser:(CKUser *)user success:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)dashboardGuestBookSuccess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)dashboardFollowBooksSuccess:(FollowBooksSuccessBlock)success failure:(ObjectFailureBlock)failure;
-- (void)fetchRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
+- (void)bookRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)numRecipesSuccess:(NumObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 // Searches

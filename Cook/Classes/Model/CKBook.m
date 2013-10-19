@@ -8,6 +8,7 @@
 
 #import "CKBook.h"
 #import "CKRecipe.h"
+#import "CKRecipePin.h"
 #import "NSString+Utilities.h"
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
@@ -393,7 +394,7 @@
     return [[self.parseObject objectForKey:kBookAttrFeatured] boolValue];
 }
 
-- (void)fetchRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
+- (void)bookRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"bookRecipes_v1_1"
                        withParameters:@{ @"bookId": self.objectId }
@@ -417,12 +418,11 @@
                                         }];
                                         
                                         // Wrap the pinned recipes in our model.
-                                        NSArray *pinnedRecipes = [parsePins collect:^id(PFObject *parsePin) {
-                                            PFObject *parsePinnedRecipe = [parsePin objectForKey:kRecipeModelForeignKeyName];
-                                            return [CKRecipe recipeForParseRecipe:parsePinnedRecipe user:nil book:nil];
+                                        NSArray *recipePins = [parsePins collect:^id(PFObject *parsePin) {
+                                            return [CKRecipePin modelWithParseObject:parsePin];
                                         }];
                                         
-                                        success(parseBook, recipes, likedRecipes, accessDate);
+                                        success(parseBook, recipes, likedRecipes, recipePins, accessDate);
                                         
                                     } else {
                                         DLog(@"Error loading recipes: %@", [error localizedDescription]);

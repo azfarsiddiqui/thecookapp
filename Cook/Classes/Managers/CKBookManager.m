@@ -62,7 +62,8 @@
                failure:(BookManagerRecipesFailureBlock)failure {
     
     // Fetch all recipes for the book, and categorise them.
-    [book fetchRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSDate *lastAccessedDate) {
+    [book bookRecipesSuccess:^(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
+                               NSDate *lastAccessedDate) {
         
         CKBook *refreshedBook = [CKBook bookWithParseObject:parseBook];
         [self processRecipes:recipes likedRecipes:likedRecipes lastAccessedDate:lastAccessedDate book:refreshedBook];
@@ -156,7 +157,6 @@
         
         // Is this a new recipe?
         if (lastAccessedDate
-            && recipe.modelUpdatedDateTime
             && ([recipe.modelUpdatedDateTime compare:lastAccessedDate] == NSOrderedDescending)) {
             
             // Mark the page as new.

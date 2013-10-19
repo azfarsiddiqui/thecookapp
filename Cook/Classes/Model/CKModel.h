@@ -38,6 +38,7 @@ typedef void(^ProgressBlock)(int percentDone);
 //default security - read/write by current user, read by public
 + (PFObject *)objectWithDefaultSecurityWithClassName:(NSString *)parseClassName;
 + (PFObject *)objectWithDefaultSecurityForUser:(PFUser *)parseUser className:(NSString *)parseClassName;
++ (instancetype)modelWithParseObject:(PFObject *)parseObject;
 
 - (id)initWithParseObject:(PFObject *)parseObject;
 - (void)saveEventually;
