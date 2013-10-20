@@ -825,47 +825,44 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (!show && self.collectionView.contentOffset.y != 0) {
         [self.collectionView setContentOffset:CGPointZero animated:YES];
     }
-    
     self.itemsLoaded = show;
     
     // There is at least one item - the empty cell.
     NSInteger numItems = [self.items count];
     
     // Items to animate is everything below the initial placeholder.
-    NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems];
+    __block NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems];
     for (NSInteger itemIndex = 1; itemIndex < numItems; itemIndex++) {
         if (itemIndex > 0 && itemIndex < [self.items count])
             [itemsToAnimate addObject:[NSIndexPath indexPathForItem:itemIndex inSection:0]];
     }
-    
-    // Perform the insert/delete animation
-    [self.collectionView performBatchUpdates:^{
-        if (show) {
+    //If delete, just reload. Workaround for http://openradar.appspot.com/12954582 on UICollectionViews
+    if (!show)
+    {
+        [self.collectionView reloadData];
+        [self itemsDidShow:show];
+    }
+    else
+    {
+        // Perform the insert animation
+        [self.collectionView performBatchUpdates:^{
             [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
             if ([itemsToAnimate count] > 0) {
                 [self.collectionView insertItemsAtIndexPaths:itemsToAnimate];
             }
-        } else {
-            //Prevent crash if # of cells is updated before this is called
-            if ([itemsToAnimate count] > [self.collectionView numberOfItemsInSection:0])
-                [self.collectionView reloadData];
-            if ([itemsToAnimate count] > 0) {
-                [self.collectionView deleteItemsAtIndexPaths:itemsToAnimate];
-            }
-        }
-    } completion:^(BOOL finished) {
-        
-        if (show && self.selectedIndexNumber) {
+        } completion:^(BOOL finished) {
             
-            NSInteger selectedIndex = [self.selectedIndexNumber integerValue];
-            [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]
-                                              animated:YES scrollPosition:UICollectionViewScrollPositionNone];
-        }
-        
-        // Lifecycle events.
-        [self itemsDidShow:show];
-    }];
-    
+            if (show && self.selectedIndexNumber) {
+                
+                NSInteger selectedIndex = [self.selectedIndexNumber integerValue];
+                [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:selectedIndex inSection:0]
+                                                  animated:YES scrollPosition:UICollectionViewScrollPositionNone];
+            }
+            
+            // Lifecycle events.
+            [self itemsDidShow:show];
+        }];
+    }
 }
 
 - (CKListLayout *)currentLayout {
