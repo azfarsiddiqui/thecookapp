@@ -219,6 +219,15 @@
     return [UIFont fontWithName:@"AvenirNext-Regular" size:17.0];
 }
 
++ (UIFont *)tagsFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:20];
+}
+
++ (UIColor *)tagsNameColor
+{
+    return [UIColor colorWithHexString:@"333333"];
+}
+
 + (UIFont *)recipeNameFont {
     return [UIFont fontWithName:@"BrandonGrotesque-Light" size:52];
 }

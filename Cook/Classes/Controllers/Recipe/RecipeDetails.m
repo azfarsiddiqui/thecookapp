@@ -11,6 +11,7 @@
 #import "MRCEnumerable.h"
 #import "NSString+Utilities.h"
 #import "CKLocation.h"
+#import "CKRecipeTag.h"
 
 @interface RecipeDetails ()
 
@@ -41,6 +42,7 @@
         _user = recipe.user;
         _name = recipe.name;
         _story = recipe.story;
+        _tags = recipe.tags;
         _method = recipe.method;
         _numServes = recipe.numServes;
         _prepTimeInMinutes = recipe.prepTimeInMinutes;
@@ -59,6 +61,7 @@
 - (void)updateToRecipe:(CKRecipe *)recipe {
     recipe.page = self.page;
     recipe.name = self.name;
+    recipe.tags = self.tags;
     recipe.story = self.story;
     recipe.method = self.method;
     recipe.numServes = self.numServes;
@@ -78,6 +81,10 @@
 
 - (BOOL)nameUpdated {
     return ![self.originalRecipe.name CK_equals:self.name];
+}
+
+- (BOOL)tagsUpdated {
+    return [self tagsChangedForTags:self.tags];
 }
 
 - (BOOL)storyUpdated {
@@ -133,6 +140,14 @@
 - (void)setStory:(NSString *)story {
     _story = story;
     if (![self.originalRecipe.story CK_equals:story]) {
+        self.saveRequired = YES;
+    }
+}
+
+- (void)setTags:(NSArray *)tags {
+    _tags = tags;
+    BOOL tagsChanged = [self tagsChangedForTags:tags];
+    if (tagsChanged) {
         self.saveRequired = YES;
     }
 }
@@ -235,6 +250,20 @@
     }
     
     return ingredientsChanged;
+}
+
+- (BOOL)tagsChangedForTags:(NSArray *)tags {
+    __block BOOL tagsChanged = NO;
+    
+    if ([self.originalRecipe.tags count] != [tags count]) {
+        tagsChanged = YES;
+    } else {
+        [self.originalRecipe.tags enumerateObjectsUsingBlock:^(CKRecipeTag *obj, NSUInteger idx, BOOL *stop) {
+            if (obj.objectId != ((CKRecipeTag *)[tags objectAtIndex:idx]).objectId)
+                tagsChanged = YES;
+        }];
+    }
+    return tagsChanged;
 }
 
 @end

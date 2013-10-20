@@ -19,10 +19,12 @@
 #import "ServesAndTimeEditViewController.h"
 #import "IngredientListEditViewController.h"
 #import "PageListEditViewController.h"
+#import "TagListEditViewController.h"
 #import "CKEditingTextBoxView.h"
 #import "Ingredient.h"
 #import "CKBook.h"
 #import "DataHelper.h"
+#import "CKRecipeTag.h"
 
 typedef NS_ENUM(NSUInteger, EditPadDirection) {
     EditPadDirectionLeft,
@@ -40,7 +42,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) UILabel *pageLabel;
-@property (nonatomic, strong) UIView *tagsView;
 @property (nonatomic, strong) UIView *storyDividerView;
 @property (nonatomic, strong) UIView *contentDividerView;
 @property (nonatomic, strong) RecipeServesCookView *servesCookView;
@@ -107,7 +108,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)enableEditMode:(BOOL)editMode {
     DLog();
-    
     // If already animating something, then ignore.
     if (self.animating) {
         return;
@@ -127,11 +127,14 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     // Hide the pageLabel/textBox.
     CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
+    CKEditingTextBoxView *tagsTextBoxView = [self.editingHelper textBoxViewForEditingView:self.tagsLabel];
     if (editMode) {
         self.pageLabel.hidden = NO;
         self.pageLabel.alpha = 0.0;
         pageTextBoxView.hidden = NO;
         pageTextBoxView.alpha = 0.0;
+        tagsTextBoxView.hidden = NO;
+        tagsTextBoxView.alpha = 0.0;
     }
     
     [UIView animateWithDuration:0.2
@@ -143,6 +146,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                          self.profilePhotoView.alpha = editMode ? 0.0 : 1.0;
                          self.pageLabel.alpha = editMode ? 1.0 : 0.0;
                          pageTextBoxView.alpha = editMode ? 1.0 : 0.0;
+//                         self.tagsLabel.alpha = editMode ? 1.0 : 0.0;
+                         tagsTextBoxView.alpha = editMode ? 1.0 : 0.0;
                          
                          // Fade the divider lines.
 //                         self.contentDividerView.alpha = editMode ? 0.0 : 1.0;
@@ -154,6 +159,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                          if (!editMode) {
                              self.pageLabel.hidden = YES;
                              pageTextBoxView.hidden = YES;
+                             tagsTextBoxView.hidden = YES;
                          }
                          
                          self.animating = NO;
@@ -203,6 +209,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         [editViewController performEditing:YES];
         self.editViewController = editViewController;
         
+    } else if (editingView == self.tagsLabel) {
+        TagListEditViewController *editViewController = [[TagListEditViewController alloc] initWithEditView:self.tagsLabel delegate:self allItems:nil selectedItems:self.recipeDetails.tags editingHelper:self.editingHelper];
+        editViewController.canAddItems = NO;
+        editViewController.canDeleteItems = NO;
+        editViewController.canReorderItems = NO;
+        [editViewController performEditing:YES];
+        self.editViewController = editViewController;
+        [CKRecipeTag tagListWithSuccess:^(NSArray *tags) {
+            [editViewController updateCellsWithTagArray:tags];
+      } failure:^(NSError *error) {
+          DLog(@"%@", error.description);
+      }];
     } else if (editingView == self.storyLabel) {
         
         CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:editingView
@@ -282,6 +300,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         self.recipeDetails.page = value;
     } else if (editingView == self.storyLabel) {
         self.recipeDetails.story = value;
+    } else if (editingView == self.tagsLabel) {
+        self.recipeDetails.tags = value;
     } else if (editingView == self.servesCookView) {
         // The Serves Cook View handles updating of it.
     } else if (editingView == self.methodLabel) {
@@ -299,6 +319,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
                        updated:[self.recipeDetails nameUpdated]];
     [self updateEditModeOnView:self.pageLabel
                        updated:[self.recipeDetails pageUpdated]];
+    [self updateEditModeOnView:self.tagsLabel
+                       updated:[self.recipeDetails tagsUpdated]];
     [self updateEditModeOnView:self.storyLabel
                toDisplayAsSize:(CGSize){ kWidth, 0.0 }
                        updated:[self.recipeDetails storyUpdated]];
@@ -432,6 +454,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     [self updateProfilePhoto];
     [self updateTitle];
+    [self updateTags];
     [self updateStory];
     [self updateContentDivider];
     [self updateServesCook];
@@ -473,11 +496,10 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
             defaultInsets.left,
             defaultInsets.bottom,
             defaultInsets.right - 2.0
-        } delegate:self white:YES editMode:NO];
-        CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:pageLabel];
-        pageTextBoxView.hidden = YES;
+        } delegate:self white:YES iconImage:[UIImage imageNamed:@"cook_customise_icon_page"]];
+        
+        //- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white iconImage:(UIImage *)iconImage
     }
-    
     // Update photo.
     self.profilePhotoView.frame = (CGRect){
         self.layoutOffset.x + floor(([self availableSize].width - self.profilePhotoView.frame.size.width) / 2.0),
@@ -553,6 +575,98 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     return [[name CK_lineBreakFormattedString] uppercaseString];
 }
 
+- (void)updateTags
+{
+    if (!self.tagsLabel) {
+//        self.tagsView.alpha = 0.0;
+        self.tagsLabel = [[UILabel alloc] init];
+        self.tagsLabel.font = [Theme tagsFont];
+        self.tagsLabel.textColor = [Theme tagsNameColor];
+        self.tagsLabel.numberOfLines = 1;
+        self.tagsLabel.textAlignment = NSTextAlignmentCenter;
+        self.tagsLabel.backgroundColor = [UIColor clearColor];
+        self.tagsLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        self.tagsLabel.shadowColor = [UIColor whiteColor];
+        self.tagsLabel.userInteractionEnabled = NO;
+        [self addSubview:self.tagsLabel];
+//        [self addSubview:self.tagsView];
+        
+//        //Setting up constraints
+//        {
+//            self.tagsView.translatesAutoresizingMaskIntoConstraints = NO;
+//            self.tagsLabel.translatesAutoresizingMaskIntoConstraints = NO;
+//            NSDictionary *metrics = @{@"iconOffset":@40};
+//            NSDictionary *views = @{@"tagsLabel" : self.tagsLabel, @"titleTextView" : self.titleTextView};
+//            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(>=20)-[tagsLabel]-(>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+//            [self addConstraint:[NSLayoutConstraint constraintWithItem:self.tagsLabel
+//                                                             attribute:NSLayoutAttributeCenterX
+//                                                             relatedBy:NSLayoutRelationEqual
+//                                                                toItem:self
+//                                                             attribute:NSLayoutAttributeCenterX
+//                                                            multiplier:1.f constant:0.f]];
+//            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[titleTextView]-(5)-[tagsLabel]" options:0 metrics:metrics views:views]];
+//            NSString *tagsConstraintString = @"|-iconOffset-[tagsLabel]-|";
+//            [self.tagsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:tagsConstraintString options:0 metrics:metrics views:views]];
+//            [self.tagsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[tagsLabel]-|" options:0 metrics:metrics views:views]];
+//        }
+        
+        UIEdgeInsets  defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
+        [self.editingHelper wrapEditingView:self.tagsLabel contentInsets:(UIEdgeInsets){
+            defaultInsets.top + 8.0,
+            defaultInsets.left,
+            defaultInsets.bottom + 4.0,
+            defaultInsets.right - 2.0
+        } delegate:self white:YES iconImage:[UIImage imageNamed:@"cook_customise_icon_tag"]];
+    }
+    
+    if ([self.recipeDetails.tags count] > 0 || self.editMode) {
+        self.tagsLabel.alpha = 1.0;
+        [self updateTagsFrame];
+        [self updateLayoutOffsetVertical:self.tagsLabel.frame.size.height + 25];
+    } else {
+        [self updateTagsFrame];
+    }
+    [self.editingHelper updateEditingView:self.tagsLabel];
+    CKEditingTextBoxView *tagsTextBoxView = [self.editingHelper textBoxViewForEditingView:self.tagsLabel];
+    tagsTextBoxView.hidden = !self.editMode;
+}
+
+- (void)updateTagsFrame {
+    NSMutableString *tagsString = [NSMutableString new];
+    if ([self.recipeDetails.tags count] > 0)
+    {
+        for (CKRecipeTag *tag in self.recipeDetails.tags)
+        {
+            if (tag.objectId)
+            {
+                //Append spaces and tag name
+                if ([tagsString length] > 0)
+                    [tagsString appendString:@"   "];
+                [tagsString appendString:[tag displayName]];
+            }
+        }
+    }
+    else if (self.editMode)
+    {
+        tagsString = [NSMutableString stringWithString:@"ENTER TAGS"];
+    }
+    else
+    {
+        tagsString = [NSMutableString stringWithString:@""];
+    }
+    NSAttributedString *tagsDisplay = [self attributedTextForText:tagsString font:[Theme tagsFont] colour:[Theme tagsNameColor]];
+    self.tagsLabel.attributedText = tagsDisplay;
+    self.tagsLabel.numberOfLines = 1;
+    
+    CGSize size = [self.tagsLabel sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
+    self.tagsLabel.frame = (CGRect){
+        floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0) : 0,
+        self.layoutOffset.y + 20,
+        size.width > kWidth ? kWidth : size.width,
+        size.height
+    };
+}
+
 - (void)updateStory {
     CGFloat dividerStoryGap = 5.0;
     
@@ -602,7 +716,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     
     CGFloat dividerStoryGap = 5.0;
-    
     self.storyDividerView.frame = (CGRect){
         floorf((self.bounds.size.width - self.storyDividerView.frame.size.width) / 2.0),
         self.layoutOffset.y,

@@ -22,6 +22,7 @@
 
 @property (nonatomic, weak) id<CKListCellDelegate> delegate;
 @property (nonatomic, strong) UITextField *textField;
+@property (nonatomic, strong) UIImageView *boxImageView;
 @property (nonatomic, assign) BOOL allowSelection;
 @property (nonatomic, assign) BOOL allowReorder;
 @property (nonatomic, assign) BOOL editMode;

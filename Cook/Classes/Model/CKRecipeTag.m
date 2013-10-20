@@ -37,21 +37,27 @@
 
 - (NSString *)displayName
 {
-    NSString *languageCode = [[NSLocale preferredLanguages] objectAtIndex:0]; //Current user's language code
-    //Grab dictionary of localised names and try to resolve with current language
-    NSString *localisedDictString = [self.parseObject objectForKey:kRecipeTagDisplayNames];
-    NSData *stringData = [localisedDictString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:stringData options:NSJSONReadingMutableContainers error:nil];
-    
-    //Grab localised string, otherwise, use EN ver
-    NSString *localisedString = [JSON valueForKey:languageCode];
-    if (!localisedString)
-    {
-        localisedString = [JSON valueForKey:DEFAULT_LANGUAGE];
-    }
-    return localisedString;
+        NSString *languageCode = [[NSLocale preferredLanguages] objectAtIndex:0]; //Current user's language code
+        //Grab dictionary of localised names and try to resolve with current language
+        NSString *localisedDictString = [self.parseObject objectForKey:kRecipeTagDisplayNames];
+        if (!localisedDictString)
+            return @"";
+        NSData *stringData = [localisedDictString dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:stringData options:NSJSONReadingMutableContainers error:nil];
+        
+        //Grab localised string, otherwise, use EN ver
+        NSString *localisedString = [JSON valueForKey:languageCode];
+        if (!localisedString)
+        {
+            localisedString = [JSON valueForKey:DEFAULT_LANGUAGE];
+        }
+        return [localisedString uppercaseString];
 }
 
+- (BOOL)isEqual:(CKRecipeTag *)object
+{
+    return [self.objectId isEqualToString:object.objectId];
+}
 
 
 @end

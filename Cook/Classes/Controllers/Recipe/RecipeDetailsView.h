@@ -22,6 +22,7 @@
 
 @property (nonatomic, strong) UITextView *titleTextView;
 @property (nonatomic, strong) UILabel *storyLabel;
+@property (nonatomic, strong) UILabel *tagsLabel;
 
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails delegate:(id<RecipeDetailsViewDelegate>)delegate;
 - (id)initWithRecipeDetails:(RecipeDetails *)recipeDetails editMode:(BOOL)editMode

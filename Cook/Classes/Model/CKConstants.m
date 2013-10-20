@@ -148,7 +148,7 @@ NSString *const kRecipePinPage                  = @"page";
 #pragma mark - RecipeTag class
 
 NSString *const kRecipeTagModelName             = @"RecipeTag";
-NSString *const kRecipeTagDisplayNames          = @"RecipeTagDisplay";
+NSString *const kRecipeTagDisplayNames          = @"displayNames";
 
 #pragma mark - Activity class
 

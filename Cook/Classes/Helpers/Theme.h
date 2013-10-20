@@ -74,6 +74,8 @@
 + (UIColor *)ingredientsListMeasurementColor;
 + (UIColor *) storyColor;
 + (UIFont *) storyFont;
++ (UIFont *)tagsFont;
++ (UIColor *)tagsNameColor;
 + (UIFont *) recipeNameFont;
 + (UIColor *) recipeNameColor;
 + (UIFont *)pageNameFont;

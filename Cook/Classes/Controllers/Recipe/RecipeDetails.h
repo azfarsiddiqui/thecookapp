@@ -43,6 +43,7 @@
 
 - (BOOL)pageUpdated;
 - (BOOL)nameUpdated;
+- (BOOL)tagsUpdated;
 - (BOOL)storyUpdated;
 - (BOOL)methodUpdated;
 - (BOOL)servesPrepUpdated;

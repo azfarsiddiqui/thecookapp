@@ -14,6 +14,7 @@
 #import "MRCEnumerable.h"
 #import "LSCollectionViewHelper.h"
 #import "UIColor+Expanded.h"
+#import "CKListHeaderView.h"
 
 @interface CKListEditViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UICollectionViewDataSource_Draggable, CKListCellDelegate, UIGestureRecognizerDelegate>
@@ -40,6 +41,7 @@
 
 #define kEditButtonInsets               UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kCellId                         @"ListItemCellId"
+#define kHeaderId                       @"ListItemHeaderId"
 #define kPlaceholderSize                CGSizeMake(750.0, 70.0)
 #define kPullActivatedOffset            150.0
 #define kLabelOffset                    10.0
@@ -79,6 +81,7 @@
         self.canDeleteItems = YES;
         self.allowSelection = YES;
         self.addItemAfterEach = YES;
+        self.allowMultipleSelection = NO;
     }
     return self;
 }
@@ -270,7 +273,7 @@
 }
 
 - (BOOL)showTitleLabel {
-    return NO;
+    return YES;
 }
 
 - (BOOL)showSaveIcon {
@@ -381,6 +384,15 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     return cell;
 }
+
+//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+//{
+//    CKListHeaderView *headerView = (CKListHeaderView *)[collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderId forIndexPath:indexPath];
+//    self.titleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:36.0];
+//    self.titleLabel.frame = CGRectMake(0, 10, headerView.frame.size.width, self.titleLabel.frame.size.height);
+//    [self.titleLabel sizeToFit];
+//    return headerView;
+//}
 
 #pragma mark - UIScrollViewDelegate methods
 
@@ -593,6 +605,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (!_collectionView) {
         
         UICollectionViewFlowLayout *layout = [[CKListLayout alloc] init];
+//        [layout setHeaderReferenceSize:CGSizeMake(self.view.bounds.size.width,40)];
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         _collectionView.draggable = YES;
         _collectionView.backgroundColor = [UIColor clearColor];
@@ -603,7 +616,9 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         _collectionView.showsVerticalScrollIndicator = NO;
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.alwaysBounceHorizontal = NO;
+        _collectionView.allowsMultipleSelection = self.allowMultipleSelection;
         [_collectionView registerClass:[self classForListCell] forCellWithReuseIdentifier:kCellId];
+//        [_collectionView registerClass:[CKListHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderId];
         
         // Register pan to delete for cells.
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -819,7 +834,8 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     // Items to animate is everything below the initial placeholder.
     NSMutableArray *itemsToAnimate = [NSMutableArray arrayWithCapacity:numItems];
     for (NSInteger itemIndex = 1; itemIndex < numItems; itemIndex++) {
-        [itemsToAnimate addObject:[NSIndexPath indexPathForItem:itemIndex inSection:0]];
+        if (itemIndex > 0 && itemIndex < [self.items count])
+            [itemsToAnimate addObject:[NSIndexPath indexPathForItem:itemIndex inSection:0]];
     }
     
     // Perform the insert/delete animation
@@ -830,6 +846,9 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
                 [self.collectionView insertItemsAtIndexPaths:itemsToAnimate];
             }
         } else {
+            //Prevent crash if # of cells is updated before this is called
+            if ([itemsToAnimate count] > [self.collectionView numberOfItemsInSection:0])
+                [self.collectionView reloadData];
             if ([itemsToAnimate count] > 0) {
                 [self.collectionView deleteItemsAtIndexPaths:itemsToAnimate];
             }

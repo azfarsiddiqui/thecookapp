@@ -12,7 +12,6 @@
 
 @interface CKListCell ()
 
-@property (nonatomic, strong) UIImageView *boxImageView;
 @property (nonatomic, strong) UIView *reorderView;
 @property (nonatomic, assign) BOOL cancelled;
 @property (nonatomic, assign) BOOL empty;

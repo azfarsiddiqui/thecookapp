@@ -33,7 +33,7 @@
 @synthesize ingredients = _ingredients;
 
 #define kIngredientDelimiter    @"::"
-//kRecipeAttrTags
+
 + (NSInteger)maxServes {
     return 10;
 }

@@ -143,12 +143,18 @@
                      editMode:editMode animated:YES];
 }
 
+- (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white iconImage:(UIImage *)iconImage
+{
+    [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
+                     editMode:NO iconImage:iconImage onpress:YES animated:YES];
+}
+
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
                delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
                animated:(BOOL)animated {
     
     [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
-                     editMode:editMode onpress:YES animated:animated];
+                     editMode:editMode iconImage:nil onpress:YES animated:animated];
 }
 
 - (void)wrapEditingView:(UIView *)editingView contentInsets:(UIEdgeInsets)contentInsets
@@ -156,7 +162,7 @@
                 onpress:(BOOL)onpress animated:(BOOL)animated {
     
     [self decorateEditingView:editingView wrap:YES contentInsets:contentInsets delegate:delegate white:white
-                     editMode:editMode onpress:onpress animated:animated];
+                     editMode:editMode iconImage:nil onpress:onpress animated:animated];
 }
 
 - (BOOL)alreadyWrappedForEditingView:(UIView *)editingView {
@@ -242,13 +248,13 @@
                    animated:(BOOL)animated {
     
     [self decorateEditingView:editingView wrap:wrap contentInsets:contentInsets delegate:delegate white:white
-                     editMode:editMode onpress:YES animated:animated];
+                     editMode:editMode iconImage:nil onpress:YES animated:animated];
     
 }
 
 - (void)decorateEditingView:(UIView *)editingView wrap:(BOOL)wrap contentInsets:(UIEdgeInsets)contentInsets
                    delegate:(id<CKEditingTextBoxViewDelegate>)delegate white:(BOOL)white editMode:(BOOL)editMode
-                    onpress:(BOOL)onpress animated:(BOOL)animated {
+                  iconImage:(UIImage *)iconImage onpress:(BOOL)onpress animated:(BOOL)animated {
     
     UIView *parentView = editingView.superview;
     
@@ -259,13 +265,28 @@
             return;
         }
         
+        UIEdgeInsets resolvedInsets = contentInsets;
+        //If icon image, add space to insets to account for image
+        if (iconImage)
+        {
+            resolvedInsets = UIEdgeInsetsMake(contentInsets.top, contentInsets.left + iconImage.size.width, contentInsets.bottom, contentInsets.right);
+        }
+        
         // Add a textbox.
         CKEditingTextBoxView *textBoxView = [[CKEditingTextBoxView alloc] initWithEditingView:editingView
-                                                                                contentInsets:contentInsets
+                                                                                contentInsets:resolvedInsets
                                                                                         white:white
                                                                                      editMode:editMode
                                                                                       onpress:onpress
                                                                                      delegate:delegate];
+        //Add icon image if exists to left of text
+        if (iconImage)
+        {
+            UIImageView *iconImageView = [[UIImageView alloc] initWithImage:iconImage];
+            iconImageView.frame = CGRectMake(contentInsets.left - 5, contentInsets.top, iconImageView.frame.size.width, iconImageView.frame.size.height);
+            [textBoxView addSubview:iconImageView];
+        }
+        
         [parentView insertSubview:textBoxView belowSubview:editingView];
         
         // Keep a reference to the textbox.

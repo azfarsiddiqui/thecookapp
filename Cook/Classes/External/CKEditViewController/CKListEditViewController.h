@@ -24,6 +24,7 @@
 @property (nonatomic, assign) BOOL canAddItems;
 @property (nonatomic, assign) BOOL canDeleteItems;
 @property (nonatomic, assign) BOOL addItemAfterEach;
+@property (nonatomic, assign) BOOL allowMultipleSelection;
 
 - (id)initWithEditView:(UIView *)editView delegate:(id<CKEditViewControllerDelegate>)delegate
                  items:(NSArray *)items editingHelper:(CKEditingViewHelper *)editingHelper white:(BOOL)white
