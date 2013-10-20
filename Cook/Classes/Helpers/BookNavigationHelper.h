@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class CKRecipe;
+@class CKRecipePin;
 @class BookNavigationStackViewController;
 
 typedef void(^BookNavigationUpdatedBlock)();
@@ -21,6 +22,7 @@ typedef void(^BookNavigationUpdatedBlock)();
 
 - (void)updateBookNavigationWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateBookNavigationWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateBookNavigationWithUnpinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateBookNavigationWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateBookNavigationWithRenamedPage:(NSString *)page fromPage:(NSString *)fromPage completion:(BookNavigationUpdatedBlock)completion;
 
