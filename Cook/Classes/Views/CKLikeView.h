@@ -12,9 +12,12 @@
 
 @interface CKLikeView : UIView
 
+@property (nonatomic, assign) BOOL enabled;
+
 + (CGSize)likeSize;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
 - (id)initWithRecipe:(CKRecipe *)recipe darkMode:(BOOL)dark;
+- (void)markAsLiked:(BOOL)liked;
 
 @end

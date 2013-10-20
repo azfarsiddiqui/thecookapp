@@ -18,9 +18,11 @@ typedef NS_ENUM(NSUInteger, CKPrivacy) {
 
 @class CKRecipeImage;
 @class CKLocation;
+@class CKRecipePin;
 
 typedef void(^RecipeCommentsLikesSuccessBlock)(NSArray *comments, NSArray *likes);
 typedef void(^RecipeCheckPinnedSuccessBlock)(BOOL pinned, NSString *page);
+typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
 
 @interface CKRecipe : CKModel
 
@@ -70,6 +72,9 @@ typedef void(^RecipeCheckPinnedSuccessBlock)(BOOL pinned, NSString *page);
              progress:(ProgressBlock)progress completion:(ObjectSuccessBlock)success
               failure:(ObjectFailureBlock)failure;
 
+// Stats.
+- (void)infoAndViewedWithCompletion:(RecipeInfoSuccessBlock)success failure:(ObjectFailureBlock)failure;
+
 // Likes
 - (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)likedByUser:(CKUser *)user completion:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
@@ -77,7 +82,7 @@ typedef void(^RecipeCheckPinnedSuccessBlock)(BOOL pinned, NSString *page);
 
 // Pins
 - (void)pinnedToBook:(CKBook *)book completion:(RecipeCheckPinnedSuccessBlock)success failure:(ObjectFailureBlock)failure;
-- (void)pinToBook:(CKBook *)book page:(NSString *)page completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)pinToBook:(CKBook *)book page:(NSString *)page completion:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)unpinnedFromBook:(CKBook *)book completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 
 // Comments
@@ -101,9 +106,6 @@ typedef void(^RecipeCheckPinnedSuccessBlock)(BOOL pinned, NSString *page);
 - (BOOL)hasMethod;
 - (BOOL)hasIngredients;
 - (BOOL)hasTags;
-
-// Stats.
-- (void)incrementPageViewInBackground;
 
 - (NSURL *)userPhotoUrl;
 

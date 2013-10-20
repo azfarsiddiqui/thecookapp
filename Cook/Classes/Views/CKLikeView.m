@@ -44,10 +44,22 @@
         self.likeButton.enabled = NO;
         self.frame = self.likeButton.frame;
         [self addSubview:self.likeButton];
-        
-        [self loadData];
     }
     return self;
+}
+
+- (BOOL)enabled {
+    return self.likeButton.enabled;
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    self.likeButton.enabled = enabled;
+    self.likeButton.userInteractionEnabled = enabled;
+}
+
+- (void)markAsLiked:(BOOL)liked {
+    self.liked = liked;
+    [self updateButtonWithLiked:self.liked];
 }
 
 #pragma mark - Private methods

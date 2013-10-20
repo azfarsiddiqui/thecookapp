@@ -1,12 +1,12 @@
 //
-//  AddRecipeViewController.m
+//  PinRecipeViewController.m
 //  Cook
 //
 //  Created by Jeff Tan-Ang on 17/10/13.
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "AddRecipeViewController.h"
+#import "PinRecipeViewController.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "AddRecipeLayout.h"
@@ -15,11 +15,11 @@
 #import "ViewHelper.h"
 #import "MRCEnumerable.h"
 
-@interface AddRecipeViewController () <UICollectionViewDataSource, UICollectionViewDelegate, AddRecipeLayoutDelegate>
+@interface PinRecipeViewController () <UICollectionViewDataSource, UICollectionViewDelegate, AddRecipeLayoutDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, weak) id<AddRecipeViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<PinRecipeViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -30,16 +30,17 @@
 
 @end
 
-@implementation AddRecipeViewController
+@implementation PinRecipeViewController
 
 #define kHeaderCellId   @"HeaderId"
 #define kCellId         @"CellId"
 
-- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book delegate:(id<AddRecipeViewControllerDelegate>)delegate {
+- (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book delegate:(id<PinRecipeViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.recipe = recipe;
         self.book = book;
         self.delegate = delegate;
+        self.loaded = YES;
     }
     return self;
 }
@@ -88,19 +89,21 @@
                      }
                      completion:^(BOOL finished) {
                          
-                         [self displayStatusMessage:@"ADDING TO PAGE"];
-                         [self showProgress:0.1];
+                         [self showProgress:0.1 message:@"ADDING TO PAGE"];
                          
                          // Pin the recipe via network.
                          [self.recipe pinToBook:self.book
                                            page:page
-                                     completion:^{
+                                     completion:^(CKRecipePin *recipePin) {
                                          
                                          self.pinning = NO;
                                          
+                                         // Update RecipeDetailsVC.
+                                         [self.delegate pinRecipeViewControllerPinnedWithRecipePin:recipePin];
+                                         
                                          // Complete progress then close.
                                          [self showProgress:1.0 delay:1.0 completion:^{
-                                             [self.delegate addRecipeViewControllerCloseRequested];
+                                             [self.delegate pinRecipeViewControllerCloseRequested];
                                          }];
                                          
                                      } failure:^(NSError *error) {
@@ -188,47 +191,22 @@
 }
 
 - (void)closeTapped:(id)sender {
-    [self.delegate addRecipeViewControllerCloseRequested];
+    [self.delegate pinRecipeViewControllerCloseRequested];
 }
 
 - (void)loadData {
-    [self displayStatusMessage:@"LOADING PAGES" activity:YES];
-    
-    [self.recipe pinnedToBook:self.book
-                   completion:^(BOOL pinned, NSString *pinnedPage){
-                       
-                       [self clearStatusMessage];
-                       
-                       // Fade the pages in.
-                       self.collectionView.alpha = 0.0;
-                       self.collectionView.transform = CGAffineTransformMakeTranslation(0.0, 30.0);
-                       [UIView animateWithDuration:0.3
-                                             delay:0.0
-                                           options:UIViewAnimationOptionCurveEaseIn
-                                        animations:^{
-                                            self.collectionView.alpha = 1.0;
-                                            self.collectionView.transform = CGAffineTransformIdentity;
-                                        }
-                                        completion:^(BOOL finished) {
-                                            
-                                            // If pinned, then select the box.
-                                            if (pinned) {
-                                                NSInteger pinnedIndex = [self.book.pages findIndexWithBlock:^BOOL(NSString *page) {
-                                                    return [page isEqualToString:pinnedPage];
-                                                }];
-                                                
-                                                if (pinnedIndex != -1) {
-                                                    self.selectedNumber = @(pinnedIndex);
-                                                    UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:pinnedIndex inSection:0]];
-                                                    cell.selected = YES;
-                                                }
-                                            }
-                                            
-                                        }];
-                       
-                   } failure:^(NSError *error) {
-                       [self displayStatusMessage:@"UNABLE TO LOAD"];
-                   }];
+    // Fade the pages in.
+    self.collectionView.alpha = 0.0;
+    self.collectionView.transform = CGAffineTransformMakeTranslation(0.0, 30.0);
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.collectionView.alpha = 1.0;
+                         self.collectionView.transform = CGAffineTransformIdentity;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
 
 @end

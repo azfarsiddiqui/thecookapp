@@ -8,6 +8,7 @@
 
 #import "CKRecipe.h"
 #import "CKBook.h"
+#import "CKRecipePin.h"
 #import "CKRecipeImage.h"
 #import "Ingredient.h"
 #import "CKConstants.h"
@@ -174,6 +175,35 @@
     
 }
 
+#pragma mark - Info and viewed by user.
+
+// Stats.
+- (void)infoAndViewedWithCompletion:(RecipeInfoSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"recipeInfo"
+                       withParameters:@{ @"recipeId" : self.objectId }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    if (!error) {
+                                        
+                                        BOOL liked = [[results objectForKey:@"liked"] boolValue];
+                                        
+                                        PFObject *parseRecipePin = [results objectForKey:@"recipePin"];
+                                        CKRecipePin *recipePin = nil;
+                                        if (parseRecipePin) {
+                                            PFObject *parseRecipe = [parseRecipePin objectForKey:kRecipeModelForeignKeyName];
+                                            recipePin = [[CKRecipePin alloc] initWithParseObject:parseRecipePin];
+                                            recipePin.recipe = [[CKRecipe alloc] initWithParseObject:
+                                                                [PFObject objectWithoutDataWithClassName:kRecipeModelName objectId:parseRecipe.objectId]];
+                                        }
+                                        success(liked, recipePin);
+                                        
+                                    } else {
+                                        DLog(@"Error getting info recipe: %@", [error localizedDescription]);
+                                        failure(error);
+                                    }
+                                }];
+}
+
 #pragma mark - Likes
 
 - (void)like:(BOOL)like user:(CKUser *)user completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -294,15 +324,22 @@
                                 }];
 }
 
-- (void)pinToBook:(CKBook *)book page:(NSString *)page completion:(ObjectSuccessBlock)success
+- (void)pinToBook:(CKBook *)book page:(NSString *)page completion:(GetObjectSuccessBlock)success
           failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"pinRecipeToBook"
                        withParameters:@{ @"recipeId" : self.objectId, @"bookId" : book.objectId, @"page" : page }
                                 block:^(NSDictionary *results, NSError *error) {
                                     if (!error) {
+                                        
+                                        PFObject *parseRecipePin = [results objectForKey:@"recipePin"];
+                                        CKRecipePin *recipePin = nil;
+                                        if (parseRecipePin) {
+                                            recipePin = [[CKRecipePin alloc] initWithParseObject:parseRecipePin];
+                                        }
+
                                         DLog(@"Pinned recipe[%@] to book[%@]", self.objectId, book.objectId);
-                                        success();
+                                        success(recipePin);
                                     } else {
                                         DLog(@"Error pinning recipe: %@", [error localizedDescription]);
                                         failure(error);
@@ -674,20 +711,6 @@
 
 - (BOOL)hasTags {
     return ([self.tags count] > 0);
-}
-
-- (void)incrementPageViewInBackground {
-    if ([self persisted]) {
-        [PFCloud callFunctionInBackground:@"logPageView"
-                           withParameters:@{ @"recipeId" : self.objectId }
-                                    block:^(id result, NSError *error) {
-                                        if (!error) {
-                                            DLog(@"Logged page view for recipe");
-                                        } else {
-                                            DLog(@"Error logging pageView: %@", [error localizedDescription]);
-                                        }
-                                    }];
-    }
 }
 
 - (NSURL *)userPhotoUrl {

@@ -13,6 +13,7 @@
 #import "BookModalViewController.h"
 #import "CKProgressView.h"
 #import "CKActivityIndicatorView.h"
+#import "Theme.h"
 
 @interface OverlayViewController ()
 
@@ -81,20 +82,31 @@
     
 }
 
-- (void)showProgress:(CGFloat)progress {
+#pragma mark - Progress
+
+- (void)showProgress:(CGFloat)progress message:(NSString *)message {
     
     // No spinner while in progress.
     [self.overlayActivityView stopAnimating];
     
+    // Add progress view.
     if (!self.progressView.superview) {
         [self.view addSubview:self.progressView];
     }
     
-    // Reposition the status message.
-    CGRect statusFrame = self.statusMessageLabel.frame;
-    statusFrame.origin.y = self.progressView.frame.origin.y - statusFrame.size.height - kStatusProgressGap;
-    self.statusMessageLabel.frame = statusFrame;
-
+    // Progress message.
+    self.progressLabel.text = message;
+    [self.progressLabel sizeToFit];
+    self.progressLabel.frame = (CGRect){
+        floorf((self.view.bounds.size.width - self.progressLabel.frame.size.width) / 2.0),
+        self.progressView.frame.origin.y - self.progressLabel.frame.size.height + 13.0,
+        self.progressLabel.frame.size.width,
+        self.progressLabel.frame.size.height
+    };
+    if (!self.progressLabel.superview) {
+        [self.view addSubview:self.progressLabel];
+    }
+   
     [self.progressView setProgress:progress animated:YES];
 }
 
@@ -124,6 +136,25 @@
         _statusMessageLabel.textColor = [UIColor whiteColor];
     }
     return _statusMessageLabel;
+}
+
+- (UILabel *)progressLabel {
+    if (!_progressLabel) {
+        _progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _progressLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+        _progressLabel.backgroundColor = [UIColor clearColor];
+        _progressLabel.text = [self.title uppercaseString];
+        _progressLabel.font = [Theme progressSavingFont];
+        _progressLabel.textColor = [Theme progressSavingColour];
+        [_progressLabel sizeToFit];
+        _progressLabel.frame = (CGRect){
+            floorf((self.view.bounds.size.width - _progressLabel.frame.size.width) / 2.0),
+            self.progressView.frame.origin.y - _progressLabel.frame.size.height + 13.0,
+            _progressLabel.frame.size.width,
+            _progressLabel.frame.size.height
+        };
+    }
+    return _progressLabel;
 }
 
 - (CKActivityIndicatorView *)overlayActivityView {

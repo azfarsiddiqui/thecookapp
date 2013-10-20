@@ -12,6 +12,7 @@
 
 @class CKBook;
 @class CKRecipe;
+@class CKRecipePin;
 
 @interface BookNavigationStackViewController : UICollectionViewController
 
@@ -21,6 +22,7 @@
 
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateWithDeletedRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion;
+- (void)updateWithUnpinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion;
 - (void)updateWithRenamedPage:(NSString *)page fromPage:(NSString *)fromPage
                    completion:(BookNavigationUpdatedBlock)completion;

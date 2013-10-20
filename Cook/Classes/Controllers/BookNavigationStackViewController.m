@@ -235,6 +235,21 @@
     [self loadRecipes];
 }
 
+- (void)updateWithUnpinnedRecipe:(CKRecipePin *)recipePin completion:(BookNavigationUpdatedBlock)completion {
+    DLog(@"Updating layout with unpinned recipe [%@]", recipePin.recipe.objectId);
+    
+    // Remove references to the pinned recipe.
+    self.recipePins = [NSMutableArray arrayWithArray:[self.recipePins reject:^BOOL(CKRecipePin *existingRecipePin) {
+        return [recipePin.objectId isEqualToString:existingRecipePin.objectId];
+    }]];
+    
+    // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
+    self.bookUpdatedBlock = completion;
+    
+    // Load recipes to rebuild the layout.
+    [self loadRecipes];
+}
+
 - (void)updateWithDeletedPage:(NSString *)page completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with deleted page [%@]", page);
     

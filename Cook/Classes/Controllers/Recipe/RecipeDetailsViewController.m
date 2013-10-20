@@ -8,6 +8,7 @@
 
 #import "RecipeDetailsViewController.h"
 #import "CKRecipe.h"
+#import "CKRecipePin.h"
 #import "RecipeDetails.h"
 #import "RecipeDetailsView.h"
 #import "ViewHelper.h"
@@ -36,7 +37,7 @@
 #import "AnalyticsHelper.h"
 #import "CKNavigationController.h"
 #import "CKLocation.h"
-#import "AddRecipeViewController.h"
+#import "PinRecipeViewController.h"
 #import "CKBookManager.h"
 
 typedef NS_ENUM(NSUInteger, SnapViewport) {
@@ -49,7 +50,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     CKRecipeSocialViewDelegate, RecipeSocialViewControllerDelegate, RecipeDetailsViewDelegate,
     CKEditingTextBoxViewDelegate, CKPhotoPickerViewControllerDelegate, CKPrivacySliderViewDelegate,
     RecipeImageViewDelegate, UIAlertViewDelegate, RecipeShareViewControllerDelegate, CKNavigationControllerDelegate,
-    AddRecipeViewControllerDelegate>
+    PinRecipeViewControllerDelegate>
 
 @property (nonatomic, strong) CKRecipe *recipe;
 @property (nonatomic, strong) CKUser *currentUser;
@@ -78,7 +79,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIButton *shareButton;
-@property (nonatomic, strong) UIButton *addButton;
+@property (nonatomic, strong) UIButton *pinButton;
 @property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) CKRecipeSocialView *socialView;
 
@@ -103,11 +104,16 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, strong) RecipeShareViewController *shareViewController;
 
 // Add layer.
-@property (nonatomic, strong) AddRecipeViewController *addRecipeViewController;
+@property (nonatomic, strong) PinRecipeViewController *pinRecipeViewController;
 
 // Alerts
 @property (nonatomic, strong) UIAlertView *cancelAlert;
 @property (nonatomic, strong) UIAlertView *deleteAlert;
+@property (nonatomic, strong) UIAlertView *pinAlert;
+
+// Stats
+@property (nonatomic, assign) BOOL liked;
+@property (nonatomic, strong) CKRecipePin *recipePin;
 
 @end
 
@@ -165,19 +171,21 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // Squirt a page view for visitors. Server handles user differentiation.
-    [self.recipe incrementPageViewInBackground];
-    
     NSDictionary *dimensions = @{@"isOwner" : [NSString stringWithFormat:@"%i", ([[CKUser currentUser].objectId isEqualToString:self.recipe.user.objectId])]};
     [AnalyticsHelper trackEventName:@"Viewed recipe" params:dimensions];
 }
 
-#pragma mark - AddRecipeViewControllerDelegate methods
+#pragma mark - PinRecipeViewControllerDelegate methods
 
-- (void)addRecipeViewControllerCloseRequested{
-    if (self.addRecipeViewController) {
+- (void)pinRecipeViewControllerCloseRequested{
+    if (self.pinRecipeViewController) {
         [self showAddOverlay:NO];
     }
+}
+
+- (void)pinRecipeViewControllerPinnedWithRecipePin:(CKRecipePin *)recipePin {
+    self.recipePin = recipePin;
+    [self updatePinnedButton];
 }
 
 #pragma mark - CKNavigationControllerDelegate methods
@@ -533,24 +541,42 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    // OK Button tapped on delete.
-    if (buttonIndex == 1 && alertView == self.deleteAlert) {
+    
+    if (alertView == self.deleteAlert && buttonIndex == 1) {
+        
+        // OK Button tapped on delete.
         [self deleteRecipe];
-    }
-    //Yes hit on cancel
-    else if (buttonIndex == 0 && alertView == self.cancelAlert)
-    {
-        if (self.addMode) {
-            [self closeRecipeView];
-        } else {
-            [self initRecipeDetails];
-            [self enableEditMode:NO];
+        
+    } else if (alertView == self.cancelAlert) {
+        
+        if (buttonIndex == 0) {
+            
+            // Yes button tapped on cancel.
+            if (self.addMode) {
+                [self closeRecipeView];
+            } else {
+                [self initRecipeDetails];
+                [self enableEditMode:NO];
+            }
+            
+        } else if (buttonIndex == 1) {
+            
+            // OK save it.
+            [self saveRecipe];
+            
         }
+        
+    } else if (alertView == self.pinAlert && buttonIndex == 1) {
+        
+        // OK Button tapped on remove pin.
+        [self deletePin];
+        
     }
-    else if (buttonIndex == 1 && alertView == self.cancelAlert)
-    {
-        [self saveRecipe];
-    }
+        
+    // Clear alerts.
+    self.pinAlert = nil;
+    self.cancelAlert = nil;
+    self.deleteAlert = nil;
 }
 
 #pragma mark - KVO methods
@@ -618,13 +644,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         _likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         _likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         
-        if (self.addButton) {
-            _likeButton.frame = CGRectMake(self.addButton.frame.origin.x - kIconGap - _likeButton.frame.size.width,
+        if (self.pinButton) {
+            _likeButton.frame = CGRectMake(self.pinButton.frame.origin.x - kIconGap - _likeButton.frame.size.width,
                                            kButtonInsets.top,
                                            _likeButton.frame.size.width,
                                            _likeButton.frame.size.height);
         } else if (self.shareButton) {
-            _likeButton.frame = CGRectMake(self.addButton.frame.origin.x - kIconGap - _likeButton.frame.size.width,
+            _likeButton.frame = CGRectMake(self.pinButton.frame.origin.x - kIconGap - _likeButton.frame.size.width,
                                            kButtonInsets.top,
                                            _likeButton.frame.size.width,
                                            _likeButton.frame.size.height);
@@ -638,26 +664,26 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return _likeButton;
 }
 
-- (UIButton *)addButton {
-    if (!_addButton && ![self.recipe isOwner] && [self.recipe isPublic]) {
-        _addButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_add_light.png"]
+- (UIButton *)pinButton {
+    if (!_pinButton && ![self.recipe isOwner] && [self.recipe isPublic]) {
+        _pinButton = [ViewHelper buttonWithImage:[self imageForPinned:NO]
                                           target:self
-                                        selector:@selector(addTapped:)];
-        _addButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+                                        selector:@selector(pinTapped:)];
+        _pinButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         
         if (self.shareButton) {
-            _addButton.frame = CGRectMake(self.shareButton.frame.origin.x - kIconGap - _addButton.frame.size.width,
+            _pinButton.frame = CGRectMake(self.shareButton.frame.origin.x - kIconGap - _pinButton.frame.size.width,
                                           kButtonInsets.top,
-                                          _addButton.frame.size.width,
-                                          _addButton.frame.size.height);
+                                          _pinButton.frame.size.width,
+                                          _pinButton.frame.size.height);
         } else {
-            _addButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _addButton.frame.size.width,
+            _pinButton.frame = CGRectMake(self.view.frame.size.width - kButtonInsets.right - _pinButton.frame.size.width,
                                           kButtonInsets.top,
-                                          _addButton.frame.size.width,
-                                          _addButton.frame.size.height);
+                                          _pinButton.frame.size.width,
+                                          _pinButton.frame.size.height);
         }
     }
-    return _addButton;
+    return _pinButton;
 }
 
 - (UIButton *)cancelButton {
@@ -895,6 +921,25 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)loadData {
     [self loadPhoto];
+    
+    // Get stats and log pageView.
+    self.pinButton.enabled = NO;
+    self.likeButton.enabled = NO;
+    
+    [self.recipe infoAndViewedWithCompletion:^(BOOL liked, CKRecipePin *recipePin) {
+        self.liked = liked;
+        self.recipePin = recipePin;
+        DLog(@"Recipe liked[%@] pinned[%@]", [NSString CK_stringForBoolean:self.liked], [NSString CK_stringForBoolean:(self.recipePin != nil)])
+        
+        [self updatePinnedButton];
+        [self.likeButton markAsLiked:self.liked];
+        
+        self.pinButton.enabled = YES;
+        self.likeButton.enabled = YES;
+        
+    } failure:^(NSError *error) {
+        // Ignore error.
+    }];
 }
 
 - (void)loadPhoto {
@@ -1396,14 +1441,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         self.editButton.alpha = 0.0;
         self.shareButton.alpha = 0.0;
         self.likeButton.alpha = 0.0;
-        self.addButton.alpha = 0.0;
+        self.pinButton.alpha = 0.0;
         self.activityView.alpha = 0.0;
         [self.view addSubview:self.closeButton];
         [self.view addSubview:self.socialView];
         [self.view addSubview:self.editButton];
         [self.view addSubview:self.shareButton];
         [self.view addSubview:self.likeButton];
-        [self.view addSubview:self.addButton];
+        [self.view addSubview:self.pinButton];
     }
     
     [UIView animateWithDuration:0.4
@@ -1417,7 +1462,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.editButton.alpha = self.editMode ? 0.0 : alpha;
                          self.shareButton.alpha = self.editMode ? 0.0 : alpha;
                          self.likeButton.alpha = self.editMode ? 0.0 : alpha;
-                         self.addButton.alpha = self.editMode ? 0.0 : alpha;
+                         self.pinButton.alpha = self.editMode ? 0.0 : alpha;
                          self.privacyView.alpha = self.editMode ? alpha : 0.0;
                          self.activityView.alpha = self.editMode ? 0.0 : alpha;
                          
@@ -1440,7 +1485,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              [self.socialView removeFromSuperview];
                              [self.editButton removeFromSuperview];
                              [self.shareButton removeFromSuperview];
-                             [self.addButton removeFromSuperview];
+                             [self.pinButton removeFromSuperview];
                              [self.likeButton removeFromSuperview];
                              
                              // Select the privacy level.
@@ -1468,7 +1513,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.editButton.transform = transform;
     self.shareButton.transform = transform;
     self.likeButton.transform = transform;
-    self.addButton.transform = transform;
+    self.pinButton.transform = transform;
     self.privacyView.transform = transform;
     self.cancelButton.transform = transform;
     self.saveButton.transform = transform;
@@ -1514,13 +1559,13 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         [self hideButtons];
         CKBook *myBook = [[CKBookManager sharedInstance] myCurrentBook];
-        self.addRecipeViewController = [[AddRecipeViewController alloc] initWithRecipe:self.recipe book:myBook delegate:self];
+        self.pinRecipeViewController = [[PinRecipeViewController alloc] initWithRecipe:self.recipe book:myBook delegate:self];
     } else {
         self.view.userInteractionEnabled = YES;
         self.scrollView.userInteractionEnabled = YES;
         self.imageScrollView.userInteractionEnabled = YES;
     }
-    [ModalOverlayHelper showModalOverlayForViewController:self.addRecipeViewController
+    [ModalOverlayHelper showModalOverlayForViewController:self.pinRecipeViewController
                                                      show:show
                                                 animation:^{
                                                     
@@ -1531,7 +1576,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                         self.scrollView.userInteractionEnabled = NO;
                                                         self.imageScrollView.userInteractionEnabled = NO;
                                                     } else {
-                                                        self.addRecipeViewController = nil;
+                                                        self.pinRecipeViewController = nil;
                                                         [self updateButtons];
                                                     }
                                                 }];
@@ -1563,8 +1608,21 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     [self enableEditMode];
 }
 
-- (void)addTapped:(id)sender {
-    [self showAddOverlay:YES];
+- (void)pinTapped:(id)sender {
+    if (self.recipePin) {
+        if ([self.book isOwner]) {
+            self.pinAlert = [[UIAlertView alloc] initWithTitle:@"Remove Recipe?" message:nil delegate:self
+                                             cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
+        } else {
+            self.pinAlert = [[UIAlertView alloc] initWithTitle:@"Remove Recipe?"
+                                                       message:[NSString stringWithFormat:@"Already Added to Page \"%@\"", self.recipePin.page]
+                                                      delegate:self
+                                             cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
+        }
+        [self.pinAlert show];
+    } else {
+        [self showAddOverlay:YES];
+    }
 }
 
 - (void)shareTapped:(id)sender {
@@ -1715,6 +1773,59 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }];
     
 }
+    
+- (void)deletePin {
+    if (!self.recipePin) {
+        return;
+    }
+    
+    // Enable unpin mode to hide all buttons and show black overlay.
+    [self enableUnpinMode:YES completion:^{
+        
+        [self.saveOverlayViewController updateProgress:0.1];
+        
+        // Deletes in the background.
+        [self.recipePin deleteInBackground:^{
+            
+            [self.saveOverlayViewController updateProgress:0.9];
+            
+            if ([self.book isOwner]) {
+                // Ask the opened book to relayout.
+                [[BookNavigationHelper sharedInstance] updateBookNavigationWithUnpinnedRecipe:self.recipePin
+                                                                                   completion:^{
+                                                                                       
+                                                                                       __weak RecipeDetailsViewController *weakSelf = self;
+                                                                                       [weakSelf.saveOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
+                                                                                           [weakSelf enableUnpinMode:NO completion:^{
+                                                                                               [weakSelf closeRecipeView];
+                                                                                               
+                                                                                           }];
+                                                                                       }];
+                                                                                   }];
+            } else {
+                
+                __weak RecipeDetailsViewController *weakSelf = self;
+                [weakSelf.saveOverlayViewController updateProgress:1.0 delay:0.5 completion:^{
+                    [weakSelf enableUnpinMode:NO completion:^{
+                        
+                        // Just nil it and update button.
+                        weakSelf.recipePin = nil;
+                        [weakSelf updatePinnedButton];
+                        
+                    }];
+                }];
+                
+            }
+            
+        } failure:^(NSError *error) {
+            DLog(@"Error [%@]", [error localizedDescription]);
+            [self enableSaveMode:NO];
+            [self enableEditMode:NO];
+        }];
+        
+    }];
+    
+}
 
 - (void)saveRecipeWithImageStartProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress {
     [self saveRecipeWithImageStartProgress:startProgress endProgress:endProgress completion:nil failure:nil];
@@ -1835,6 +1946,19 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     // Fade in/out the overlay.
     [self showProgressOverlayView:deleteMode title:@"DELETING" completion:completion];
+}
+
+- (void)enableUnpinMode:(BOOL)unpin completion:(void (^)())completion {
+    
+    // Hide all buttons.
+    if (unpin) {
+        [self hideButtons];
+    } else {
+        [self updateButtonsWithAlpha:1.0];
+    }
+    
+    // Fade in/out the overlay.
+    [self showProgressOverlayView:unpin title:@"REMOVING" completion:completion];
 }
 
 - (void)updateRecipeDetailsView {
@@ -1988,6 +2112,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
     
     return startViewPort;
+}
+
+- (void)updatePinnedButton {
+    [self.pinButton setBackgroundImage:[self imageForPinned:(self.recipePin != nil)] forState:UIControlStateNormal];
+}
+
+- (UIImage *)imageForPinned:(BOOL)pinned {
+    return pinned ? [UIImage imageNamed:@"cook_book_inner_icon_minus_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_add_light.png"];
 }
 
 @end
