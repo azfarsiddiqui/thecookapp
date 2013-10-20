@@ -103,10 +103,22 @@
     }
     
     //If trying to paste in content over char limit, cut off and apply
-    if ([newString length] > self.characterLimit && !isBackspace) {
+    if (([newString length] > self.characterLimit && !isBackspace)) {
         textView.text = [newString substringToIndex:self.characterLimit];
         [self updateTitle:@"CHARACTER LIMIT EXCEEDED" toast:YES];
         [self updateContentSize];
+        [self updateInfoLabels];
+        return NO;
+    }
+    //If trying to add in text with too many lines, reject
+    CGFloat requiredHeight = [newString boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName : self.textView.font} context:nil].size.height;
+    if ([text isEqualToString:@"\n"])
+    {
+        requiredHeight += self.textView.font.pointSize;
+    }
+    if (self.maxHeight && self.numLines > 0 && !isBackspace && requiredHeight > self.maxHeight)
+    {
+        [self updateTitle:@"LINE LIMIT EXCEEDED" toast:YES];
         [self updateInfoLabels];
         return NO;
     }

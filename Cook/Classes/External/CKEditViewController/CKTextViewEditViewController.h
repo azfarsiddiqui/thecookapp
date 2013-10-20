@@ -12,6 +12,7 @@
 
 @property (nonatomic, assign) NSInteger numLines;
 @property (nonatomic, strong) UIFont *textViewFont;
+@property (nonatomic, assign) CGFloat maxHeight;
 
 - (BOOL)contentScrollable;
 
