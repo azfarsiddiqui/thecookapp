@@ -69,6 +69,7 @@
 
 @property (nonatomic, strong) UIView *libraryIntroView;
 @property (nonatomic, strong) UIView *settingsIntroView;
+@property (nonatomic ,strong) UIView *updateIntroView;
 
 @end
 
@@ -82,6 +83,8 @@
 #define kFollowSection  1
 #define kPagingRate     2.0
 #define kBlendPageWidth 1024.0
+#define kHasSeenUpdateIntro @"HasSeen1.1"
+#define kContentInsets  (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
@@ -914,7 +917,13 @@
                                      // No need to reblend, as layoutDidGenerate will trigger it.
                                  }];
                              }
-                          
+                             
+                             //Show intro screen for update if haven't seen it
+                             if (![[NSUserDefaults standardUserDefaults] objectForKey:kHasSeenUpdateIntro])
+                             {
+                                 [self flashUpdateIntro];
+                             }
+         
                              // Hide any no connection messages.
                              [[CardViewHelper sharedInstance] hideNoConnectionCardInView:self.view];
                              
@@ -1580,6 +1589,52 @@
                      }];
 }
 
+- (void)flashUpdateIntro {
+    if (!self.updateIntroView.superview)
+    {
+        self.updateIntroView = [[UIView alloc] initWithFrame:self.view.frame];
+        self.updateIntroView.alpha = 0.0;
+        
+        // Blurred imageView to be hidden to start off with.
+        UIImageView *blurredImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        blurredImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        [self snapshotBenchtop];
+        if (self.signupBlurImage) {
+            blurredImageView.image = self.signupBlurImage;
+        } else {
+           blurredImageView.image = [ImageHelper blurredImageFromView:self.view];
+        }
+        blurredImageView.userInteractionEnabled = NO;
+        [self.updateIntroView addSubview:blurredImageView];
+        
+        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_draft"]];
+        introImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        introImageView.userInteractionEnabled = NO;
+        [self.updateIntroView addSubview:introImageView];
+        
+        UIButton *closeButton = [ViewHelper closeButtonLight:NO target:self selector:@selector(updateIntroTapped)];
+        closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        closeButton.frame = (CGRect){
+            kContentInsets.left,
+            kContentInsets.top,
+            closeButton.frame.size.width,
+            closeButton.frame.size.height
+        };
+        [self.updateIntroView addSubview:closeButton];
+        
+        [self.view addSubview:self.updateIntroView];
+        
+        [UIView animateWithDuration:0.4
+                              delay:0.0
+                            options:UIViewAnimationCurveEaseIn
+                         animations:^{
+                             self.updateIntroView.alpha = 1.0;
+                         } completion:^(BOOL finished) {
+                             [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
+                         }];
+    }
+}
+
 - (void)libraryIntroTapped {
     if ([self.delegate respondsToSelector:@selector(benchtopPeekRequestedForStore)]) {
         [self.delegate benchtopPeekRequestedForStore];
@@ -1590,6 +1645,14 @@
     if ([self.delegate respondsToSelector:@selector(benchtopPeekRequestedForSettings)]) {
         [self.delegate benchtopPeekRequestedForSettings];
     }
+}
+
+- (void)updateIntroTapped {
+    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationCurveEaseOut animations:^{
+        self.updateIntroView.alpha = 0.0;
+    } completion:^(BOOL finished) {
+        [self.updateIntroView removeFromSuperview];
+    }];
 }
 
 - (void)hideIntroView:(UIView *)introView completion:(void (^)())completion {
