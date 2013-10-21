@@ -153,7 +153,7 @@
         
         ModalOverlayHeaderView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                      withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
-        [headerView configureTitle:@"ADD TO PAGE"];
+        [headerView configureTitle:@"ADD TO BOOK"];
         supplementaryView = headerView;
     }
     
