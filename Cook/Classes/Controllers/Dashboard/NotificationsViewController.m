@@ -267,6 +267,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return _closeButton;
 }
 
+- (CKActivityIndicatorView *)activityView {
+    if (!_activityView) {
+        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
+    }
+    return _activityView;
+}
+
 - (UILabel *)emptyCommentsLabel {
     if (!_emptyCommentsLabel) {
         _emptyCommentsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
