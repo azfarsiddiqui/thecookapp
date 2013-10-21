@@ -1396,6 +1396,7 @@
 // Process each RecipePin and splice each recipe into the appropriate pages.
 - (void)processPins {
     if ([self.recipePins count] > 0) {
+        
         for (CKRecipePin *recipePin in self.recipePins) {
             
             NSString *page = recipePin.page;
@@ -1425,7 +1426,7 @@
                         if ([pinnedDate compare:recipeUpdatedDate] == NSOrderedDescending) {
                             [updatedPageRecipes insertObject:pinnedRecipe atIndex:recipeIndex];
                             added = YES;
-                            stop = YES;
+                            *stop = YES;
                         }
                     }];
                     
