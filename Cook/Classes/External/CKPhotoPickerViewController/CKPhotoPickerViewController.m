@@ -633,7 +633,7 @@
         // Reset slider to 'None'
         if (self.showFilters)
         {
-            [self.filterPickerView selectNotch:0];
+            [self.filterPickerView selectNotch:1];
             [self.filterPickerView stopFilterLoading];
         }
     }
