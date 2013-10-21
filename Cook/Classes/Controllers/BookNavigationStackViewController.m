@@ -918,7 +918,7 @@
         
         // Is this a new recipe?
         if (self.bookLastAccessedDate
-            && ([recipe.modelUpdatedDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
+            && ([recipe.createdDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
             
             // Mark the page as new.
             [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
