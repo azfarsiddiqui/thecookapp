@@ -276,6 +276,7 @@
         backgroundContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
     };
     imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
     [backgroundContainerView addSubview:imageView];
     imageView.alpha = 0.0;
     self.imageView = imageView;
