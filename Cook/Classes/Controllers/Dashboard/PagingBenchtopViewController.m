@@ -1607,7 +1607,7 @@
         blurredImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:blurredImageView];
         
-        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_draft"]];
+        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_11"]];
         introImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         introImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:introImageView];
