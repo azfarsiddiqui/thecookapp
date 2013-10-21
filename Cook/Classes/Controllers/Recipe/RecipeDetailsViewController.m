@@ -115,6 +115,9 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) BOOL liked;
 @property (nonatomic, strong) CKRecipePin *recipePin;
 
+// Close flag, to prevent hiding of things when view should be closed
+@property (nonatomic, assign) BOOL isClosed;
+
 @end
 
 @implementation RecipeDetailsViewController
@@ -155,7 +158,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
-    
+    self.isClosed = NO;
     [self initImageView];
     [self initScrollView];
     [self initRecipeDetails];
@@ -970,7 +973,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                                }];
     } else {
         
-        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)]) {
+        if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)] && !self.isClosed) {
             [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
         }
     }
@@ -999,7 +1002,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                          self.placeholderHeaderView = nil;
                          
                          // Inform delegate fullscreen has been loaded.
-                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)]) {
+                         if ([self.modalDelegate respondsToSelector:@selector(fullScreenLoadedForBookModalViewController:)] && !self.isClosed) {
                              [self.modalDelegate fullScreenLoadedForBookModalViewController:self];
                          }
                          
@@ -1589,6 +1592,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)closeRecipeView {
+    self.isClosed = YES;
     [self hideButtons];
     [self fadeOutBackgroundImageThenClose];
 }
