@@ -283,7 +283,7 @@
         if (iconImage)
         {
             UIImageView *iconImageView = [[UIImageView alloc] initWithImage:iconImage];
-            iconImageView.frame = CGRectMake(contentInsets.left - 5, contentInsets.top, iconImageView.frame.size.width, iconImageView.frame.size.height);
+            iconImageView.frame = CGRectMake(contentInsets.left - 5, contentInsets.top + 2, iconImageView.frame.size.width, iconImageView.frame.size.height);
             [textBoxView addSubview:iconImageView];
         }
         
