@@ -926,20 +926,22 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     self.pinButton.enabled = NO;
     self.likeButton.enabled = NO;
     
-    [self.recipe infoAndViewedWithCompletion:^(BOOL liked, CKRecipePin *recipePin) {
-        self.liked = liked;
-        self.recipePin = recipePin;
-        DLog(@"Recipe liked[%@] pinned[%@]", [NSString CK_stringForBoolean:self.liked], [NSString CK_stringForBoolean:(self.recipePin != nil)])
-        
-        [self updatePinnedButton];
-        [self.likeButton markAsLiked:self.liked];
-        
-        self.pinButton.enabled = YES;
-        self.likeButton.enabled = YES;
-        
-    } failure:^(NSError *error) {
-        // Ignore error.
-    }];
+    if ([self.recipe persisted]) {
+        [self.recipe infoAndViewedWithCompletion:^(BOOL liked, CKRecipePin *recipePin) {
+            self.liked = liked;
+            self.recipePin = recipePin;
+            DLog(@"Recipe liked[%@] pinned[%@]", [NSString CK_stringForBoolean:self.liked], [NSString CK_stringForBoolean:(self.recipePin != nil)])
+            
+            [self updatePinnedButton];
+            [self.likeButton markAsLiked:self.liked];
+            
+            self.pinButton.enabled = YES;
+            self.likeButton.enabled = YES;
+            
+        } failure:^(NSError *error) {
+            // Ignore error.
+        }];
+    }
 }
 
 - (void)loadPhoto {
@@ -1615,7 +1617,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                              cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
         } else {
             self.pinAlert = [[UIAlertView alloc] initWithTitle:@"Remove Recipe?"
-                                                       message:[NSString stringWithFormat:@"Already Added to Page \"%@\"", self.recipePin.page]
+                                                       message:[NSString stringWithFormat:@"Already Added to %@", [self.recipePin.page uppercaseString]]
                                                       delegate:self
                                              cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
         }

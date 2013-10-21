@@ -45,7 +45,7 @@
 }
 
 - (void)configurePage:(NSString *)page {
-    self.pageLabel.text = page;
+    self.pageLabel.text = [page uppercaseString];
     CGSize labelSize = (CGSize){ self.contentView.bounds.size.width - kLabelInsets.left - kLabelInsets.right,
         self.contentView.bounds.size.height - kLabelInsets.top - kLabelInsets.bottom };
     CGSize size = [self.pageLabel sizeThatFits:labelSize];

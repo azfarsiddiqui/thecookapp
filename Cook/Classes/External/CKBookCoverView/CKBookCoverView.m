@@ -735,6 +735,10 @@
 
 - (void)loadUpdates:(NSInteger)updates {
     if (updates > 0) {
+        
+        // Update with book colour.
+        self.updatesIcon.image = [CKBookCover updatesIconImageForCover:self.book.cover];
+        
         if (!self.updatesIcon.superview) {
             [self addSubview:self.updatesIcon];
         }

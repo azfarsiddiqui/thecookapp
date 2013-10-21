@@ -933,7 +933,7 @@
         
         // Is this a new recipe?
         if (self.bookLastAccessedDate
-            && ([recipe.modelUpdatedDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
+            && ([recipe.createdDateTime compare:self.bookLastAccessedDate] == NSOrderedDescending)) {
             
             // Mark the page as new.
             [self.pagesContainingUpdatedRecipes setObject:@YES forKey:page];
@@ -1415,20 +1415,27 @@
                 } else {
                     
                     // Splice the pinnedRecipes based on their pinnedDate.
-                    BOOL added = NO;
+                    __block BOOL added = NO;
+                    
+                    NSMutableArray *updatedPageRecipes = [NSMutableArray arrayWithArray:pageRecipes];
                     [pageRecipes enumerateObjectsUsingBlock:^(CKRecipe *recipe, NSUInteger recipeIndex, BOOL *stop) {
                         
                         // If the pinnedRecipe is newer than the current recipe, then splice it in.
-                        if ([pinnedDate compare:recipe.modelUpdatedDateTime] == NSOrderedDescending) {
-                            [pageRecipes insertObject:pinnedRecipe atIndex:recipeIndex];
+                        NSDate *recipeUpdatedDate = recipe.modelUpdatedDateTime;
+                        if ([pinnedDate compare:recipeUpdatedDate] == NSOrderedDescending) {
+                            [updatedPageRecipes insertObject:pinnedRecipe atIndex:recipeIndex];
+                            added = YES;
                             stop = YES;
                         }
                     }];
                     
                     // Still not added, then add to the end.
                     if (!added) {
-                        [pageRecipes addObject:pinnedRecipe];
+                        [updatedPageRecipes addObject:pinnedRecipe];
                     }
+                    
+                    // Update page recipes.
+                    [self.pageRecipes setObject:updatedPageRecipes forKey:page];
                 }
             }
             

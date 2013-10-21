@@ -86,8 +86,8 @@
 }
 
 - (void)enableAddAndEdit:(BOOL)enable {
-    self.editButton.alpha = enable ? 1.0 : 0.3;
-    self.addButton.alpha = enable ? 1.0 : 0.3;
+    self.editButton.alpha = enable ? 1.0 : 0.0;
+    self.addButton.alpha = enable ? 1.0 : 0.0;
 }
 
 #pragma mark - Properties
