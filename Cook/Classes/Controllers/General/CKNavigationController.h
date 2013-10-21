@@ -45,4 +45,6 @@
 - (void)showContextWithBook:(CKBook *)book;
 - (void)hideContext;
 
+- (void)loadBackgroundImage:(UIImage *)backgroundImage;
+
 @end

@@ -206,7 +206,11 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 }
 
 - (void)bookModalViewControllerWillAppear:(NSNumber *)appearNumber {
-    [EventHelper postStatusBarChangeForLight:[appearNumber boolValue]];
+    
+    // TODO Refactor and move this status bar light post to somewhere else. Notifications do not need this.
+    if (!self.disableStatusBarUpdate) {
+        [EventHelper postStatusBarChangeForLight:[appearNumber boolValue]];
+    }
 }
 
 - (void)bookModalViewControllerDidAppear:(NSNumber *)appearNumber {

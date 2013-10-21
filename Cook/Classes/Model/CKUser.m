@@ -478,6 +478,25 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }];
 }
 
+- (void)userInfoCompletion:(UserInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure {
+    [PFCloud callFunctionInBackground:@"userInfo"
+                       withParameters:@{ @"userId" : self.objectId }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    
+                                    NSUInteger friendCount = [[results objectForKey:@"friendCount"] unsignedIntegerValue];
+                                    NSUInteger followCount = [[results objectForKey:@"followCount"] unsignedIntegerValue];
+                                    NSUInteger recipeCount = [[results objectForKey:@"recipeCount"] unsignedIntegerValue];
+                                    BOOL areFriends = [[results objectForKey:@"areFriends"] boolValue];
+                                    
+                                    if (!error) {
+                                        completion(friendCount, followCount, recipeCount, areFriends);
+                                    } else {
+                                        DLog(@"Error loading user info: %@", [error localizedDescription]);
+                                    }
+                                }];
+
+}
+
 - (PFFile *)parseCoverPhotoFile {
     return [self.parseUser objectForKey:kUserAttrCoverPhoto];
 }

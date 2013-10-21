@@ -9,9 +9,11 @@
 #import "CKNavigationController.h"
 #import "RecipeDetailsViewController.h"
 #import "BookCoverPhotoViewController.h"
+#import "ViewHelper.h"
 
 @interface CKNavigationController ()
 
+@property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) NSMutableArray *viewControllers;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, strong) UIViewController *contextModalViewController;
@@ -246,6 +248,7 @@
 - (void)showContextWithRecipe:(CKRecipe *)recipe {
     RecipeDetailsViewController *recipeDetailsViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
     recipeDetailsViewController.hideNavigation = YES;
+    recipeDetailsViewController.disableStatusBarUpdate = YES;
     [self showContextModalViewController:recipeDetailsViewController];
 }
 
@@ -269,6 +272,42 @@
                          [self.contextModalViewController.view removeFromSuperview];
                          self.contextModalViewController = nil;
                      }];
+}
+
+#pragma mark - Background image with motion effects.
+
+- (void)loadBackgroundImage:(UIImage *)backgroundImage {
+    if (!self.backgroundImageView) {
+        
+        // Background imageView.
+        UIOffset motionOffset = [ViewHelper standardMotionOffset];
+        self.backgroundImageView = [[UIImageView alloc] initWithImage:nil];
+        self.backgroundImageView.frame = (CGRect) {
+            self.view.bounds.origin.x - motionOffset.horizontal,
+            self.view.bounds.origin.y - motionOffset.vertical,
+            self.view.bounds.size.width + (motionOffset.horizontal * 2.0),
+            self.view.bounds.size.height + (motionOffset.vertical * 2.0)
+        };
+        self.backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        [self.view addSubview:self.backgroundImageView];
+        [self.view sendSubviewToBack:self.backgroundImageView];
+    }
+    
+    if (self.backgroundImageView.image) {
+        self.backgroundImageView.image = backgroundImage;
+    } else {
+        // Fade it in.
+        self.backgroundImageView.alpha = 0.0;
+        self.backgroundImageView.image = backgroundImage;
+        [UIView animateWithDuration:0.6
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.backgroundImageView.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+    }
 }
 
 #pragma mark - Private methods

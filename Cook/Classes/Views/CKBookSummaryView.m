@@ -38,8 +38,8 @@
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *actionButtonCaptionLabel;
 @property (nonatomic, strong) CKButtonView *actionButtonView;
-@property (nonatomic, strong) CKStatView *pagesStatView;
-@property (nonatomic, strong) CKStatView *recipesStatView;
+@property (nonatomic, strong) CKStatView *followersStatView;
+@property (nonatomic, strong) CKStatView *numRecipesStatView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, assign) BOOL storeMode;
@@ -57,7 +57,7 @@
 #define kInterStatsGap      10.0
 #define kNameStatsGap       8.0
 #define kStatsStoryGap      34.0
-#define kActionCaptionFont  [UIFont fontWithName:@"BrandonGrotesque-Medium" size:12.0]
+#define kActionCaptionFont  [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0]
 
 + (CGSize)sizeForStoreMode:(BOOL)storeMode {
     return storeMode ? kSummaryStoreSize : kSummarySize;
@@ -316,14 +316,14 @@
     [self updateName:name];
     
     // Pages
-    CKStatView *pagesStatView = [[CKStatView alloc] initWithNumber:[self.book.pages count] unit:@"PAGE"];
+    CKStatView *pagesStatView = [[CKStatView alloc] initWithNumber:0 unit:@"FOLLOWER"];
     [self addSubview:pagesStatView];
-    self.pagesStatView = pagesStatView;
+    self.followersStatView = pagesStatView;
     
     // Recipes
     CKStatView *recipesStatView = [[CKStatView alloc] initWithNumber:0 unit:@"RECIPE"];
     [self addSubview:recipesStatView];
-    self.recipesStatView = recipesStatView;
+    self.numRecipesStatView = recipesStatView;
     
     // Update positioning of the stat views.
     [self updateStatViews];
@@ -344,14 +344,8 @@
     [self updateStory:self.book.story];
     
     // Action button.
-    if (self.storeMode) {
-        if (self.addMode) {
-            [self initAddButton];
-        } else {
-            if (![self.book.user isEqual:self.currentUser]) {
-                [self initFriendsButton];
-            }
-        }
+    if (![self.book.user isEqual:self.currentUser]) {
+        [self initFriendsButton];
     }
 }
 
@@ -401,7 +395,7 @@
         CGSize availableSize = [self availableSize];
         availableSize.height -= self.storeMode ? 54.0 : 0.0;    // Minus the button height in store mode.
         availableSize.width = availableSize.width - storyInsets.left - storyInsets.right;
-        availableSize.height = availableSize.height - self.recipesStatView.frame.origin.y - self.recipesStatView.frame.size.height - kStatsStoryGap;
+        availableSize.height = availableSize.height - self.numRecipesStatView.frame.origin.y - self.numRecipesStatView.frame.size.height - kStatsStoryGap;
         
         CGRect storyFrame = [story boundingRectWithSize:availableSize
                                                 options:NSStringDrawingUsesLineFragmentOrigin
@@ -409,7 +403,7 @@
                                                 context:nil];
         self.storyLabel.frame = (CGRect) {
             kContentInsets.left + storyInsets.left + floorf((availableSize.width - storyFrame.size.width) / 2.0),
-            self.recipesStatView.frame.origin.y + kStatsStoryGap,
+            self.numRecipesStatView.frame.origin.y + kStatsStoryGap,
             storyFrame.size.width,
             storyFrame.size.height
         };
@@ -420,9 +414,9 @@
 
 - (void)updateStatViews {
     CGSize availableSize = [self availableSize];
-    CGFloat totalWidth = self.pagesStatView.frame.size.width + kInterStatsGap + self.recipesStatView.frame.size.width;
-    CGRect pagesFrame = self.pagesStatView.frame;
-    CGRect recipesFrame = self.recipesStatView.frame;
+    CGFloat totalWidth = self.followersStatView.frame.size.width + kInterStatsGap + self.numRecipesStatView.frame.size.width;
+    CGRect pagesFrame = self.followersStatView.frame;
+    CGRect recipesFrame = self.numRecipesStatView.frame;
     
     pagesFrame.origin = (CGPoint){
         kContentInsets.left + floorf((availableSize.width - totalWidth) / 2.0),
@@ -433,8 +427,8 @@
         pagesFrame.origin.y
     };
     
-    self.pagesStatView.frame = pagesFrame;
-    self.recipesStatView.frame = recipesFrame;
+    self.followersStatView.frame = pagesFrame;
+    self.numRecipesStatView.frame = recipesFrame;
 }
 
 - (CGSize)availableSize {
@@ -444,13 +438,42 @@
 
 - (void)loadData {
     
-    // Load the number of recipes.
-    [self.book numRecipesSuccess:^(int numRecipes) {
-        [self.recipesStatView updateNumber:numRecipes];
+    // Load the book info stats.
+    [self.book bookInfoCompletion:^(NSUInteger followCount, BOOL areFriends, NSUInteger recipeCount, BOOL followed) {
+        
+        [self.followersStatView updateNumber:followCount];
+        [self.numRecipesStatView updateNumber:recipeCount];
         [self updateStatViews];
+        
+        if (followed) {
+            
+            // Inform delegate of book is followed.
+            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsFollowed)]) {
+                [self.delegate bookSummaryViewBookIsFollowed];
+            }
+            
+        } else if (recipeCount > 0) {
+            
+            // Inform delegate that book is available to download.
+            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsDownloadable)]) {
+                [self.delegate bookSummaryViewBookIsDownloadable];
+            }
+            
+        } else {
+            
+            // Inform delegate of book is private
+            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
+                
+                // Private if not friends and no public recipes.
+                [self.delegate bookSummaryViewBookIsPrivate];
+            }
+            
+        }
+        
     } failure:^(NSError *error) {
         // Ignore failure.
     }];
+    
 }
 
 - (void)showPhotoPicker:(BOOL)show {
@@ -557,13 +580,13 @@
         [self.currentUser checkIsFriendsWithUser:self.book.user
                                       completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
                                           if (alreadyConnected) {
-                                              [self updateButtonText:@"ALREADY FRIENDS" activity:NO
-                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                              [self updateButtonText:@"FRIENDS" activity:NO
+                                                                icon:nil
                                                              enabled:NO target:nil selector:nil];
                                           } else if (pendingAcceptance) {
                                               self.pendingAcceptance = pendingAcceptance;
                                               [self updateButtonText:@"ADD FRIEND" activity:NO
-                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_bg_icon_addfriend.png"]
+                                                                icon:nil
                                                              enabled:YES target:nil selector:nil];
                                               
                                               self.actionButtonCaptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -581,7 +604,7 @@
                                               
                                           } else if (alreadySent) {
                                               [self updateButtonText:@"REQUESTED" activity:NO
-                                                                icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                                icon:nil
                                                              enabled:NO target:nil selector:nil];
                                           } else {
                                               [self updateRequestButtonText:friendRequestText activity:NO enabled:YES];
@@ -615,8 +638,7 @@
 }
 
 - (void)updateRequestButtonText:(NSString *)text activity:(BOOL)activity enabled:(BOOL)enabled {
-    UIImage *iconImage = [UIImage imageNamed:@"cook_dash_library_selected_bg_icon_addfriend.png"];
-    [self updateButtonText:text activity:activity icon:iconImage enabled:enabled target:nil selector:nil];
+    [self updateButtonText:text activity:activity icon:nil enabled:enabled target:nil selector:nil];
 }
 
 - (void)updateButtonText:(NSString *)text activity:(BOOL)activity icon:(UIImage *)iconImage enabled:(BOOL)enabled
@@ -638,11 +660,11 @@
                          completion:^{
                              if (self.pendingAcceptance) {
                                  [self updateButtonText:@"ACCEPTED" activity:NO
-                                                   icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                   icon:nil
                                                 enabled:NO target:nil selector:nil];
                              } else {
                                  [self updateButtonText:@"REQUESTED" activity:NO
-                                                   icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
+                                                   icon:nil
                                                 enabled:NO target:nil selector:nil];
                              }
                          }

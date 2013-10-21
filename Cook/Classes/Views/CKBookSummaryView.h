@@ -16,6 +16,9 @@
 @optional
 - (void)bookSummaryViewEditing:(BOOL)editing;
 - (void)bookSummaryViewBookFollowed;
+- (void)bookSummaryViewBookIsFollowed;
+- (void)bookSummaryViewBookIsPrivate;
+- (void)bookSummaryViewBookIsDownloadable;
 
 @end
 
