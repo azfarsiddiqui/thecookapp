@@ -1446,8 +1446,8 @@
                      animations:^{
                          self.notificationView.alpha = show ? 1.0 : 0.0;
                          self.benchtopLevelView.alpha = show ? 1.0 : 0.0;
-                         self.libraryIntroView.alpha = show ? 0.0 : 1.0;
-                         self.settingsIntroView.alpha = show ? 0.0 : 1.0;
+                         self.libraryIntroView.alpha = show ? 1.0 : 0.0;
+                         self.settingsIntroView.alpha = show ? 1.0 : 0.0;
                          cell.shadowView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeScale(0.7, 0.7);
                          
                          // Fade in/out cells.
@@ -1533,29 +1533,34 @@
 - (void)flashIntros {
     CGFloat shiftOffset = 0.0;
     
-    self.libraryIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_library.png"]];
-    UITapGestureRecognizer *libraryTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryIntroTapped)];
-    [self.libraryIntroView addGestureRecognizer:libraryTapGesture];
-    self.libraryIntroView.userInteractionEnabled = NO;
-    self.libraryIntroView.alpha = 0.0;
-    self.libraryIntroView.transform = CGAffineTransformMakeTranslation(0.0, -shiftOffset);
-    CGRect libraryFrame = self.libraryIntroView.frame;
-    libraryFrame.origin.x = floorf((self.view.bounds.size.width - libraryFrame.size.width) / 2.0);
-    libraryFrame.origin.y = 0.0;
-    self.libraryIntroView.frame = libraryFrame;
-    [self.view addSubview:self.libraryIntroView];
+    if (!self.libraryIntroView.superview) {
+        self.libraryIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_library.png"]];
+        UITapGestureRecognizer *libraryTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryIntroTapped)];
+        [self.libraryIntroView addGestureRecognizer:libraryTapGesture];
+        self.libraryIntroView.userInteractionEnabled = NO;
+        self.libraryIntroView.alpha = 0.0;
+        self.libraryIntroView.transform = CGAffineTransformMakeTranslation(0.0, -shiftOffset);
+        CGRect libraryFrame = self.libraryIntroView.frame;
+        libraryFrame.origin.x = floorf((self.view.bounds.size.width - libraryFrame.size.width) / 2.0);
+        libraryFrame.origin.y = 0.0;
+        self.libraryIntroView.frame = libraryFrame;
+        [self.view addSubview:self.libraryIntroView];
+    }
     
-    self.settingsIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_setup.png"]];
-    UITapGestureRecognizer *settingsTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(settingsIntroTapped)];
-    [self.settingsIntroView addGestureRecognizer:settingsTapGesture];
-    self.settingsIntroView.userInteractionEnabled = NO;
-    self.settingsIntroView.alpha = 0.0;
-    self.settingsIntroView.transform = CGAffineTransformMakeTranslation(0.0, shiftOffset);
-    CGRect settingsFrame = self.settingsIntroView.frame;
-    settingsFrame.origin.x = floorf((self.view.bounds.size.width - settingsFrame.size.width) / 2.0);
-    settingsFrame.origin.y = self.view.bounds.size.height - settingsFrame.size.height + 5.0;
-    self.settingsIntroView.frame = settingsFrame;
-    [self.view addSubview:self.settingsIntroView];
+    if (!self.settingsIntroView.superview) {
+        self.settingsIntroView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_intro_popover_setup.png"]];
+        UITapGestureRecognizer *settingsTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(settingsIntroTapped)];
+        [self.settingsIntroView addGestureRecognizer:settingsTapGesture];
+        self.settingsIntroView.userInteractionEnabled = NO;
+        self.settingsIntroView.alpha = 0.0;
+        self.settingsIntroView.transform = CGAffineTransformMakeTranslation(0.0, shiftOffset);
+        CGRect settingsFrame = self.settingsIntroView.frame;
+        settingsFrame.origin.x = floorf((self.view.bounds.size.width - settingsFrame.size.width) / 2.0);
+        settingsFrame.origin.y = self.view.bounds.size.height - settingsFrame.size.height + 5.0;
+        self.settingsIntroView.frame = settingsFrame;
+        [self.view addSubview:self.settingsIntroView];
+        
+    }
     
     [UIView animateWithDuration:0.3
                           delay:0.2
