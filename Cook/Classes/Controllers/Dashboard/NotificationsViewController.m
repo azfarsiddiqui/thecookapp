@@ -28,7 +28,6 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSMutableArray *notifications;
 @property (nonatomic, strong) NSMutableDictionary *notificationActionsInProgress;
-@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
 @property (nonatomic, strong) UICollectionView *collectionView;
 
@@ -214,8 +213,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         } else {
             
             // No comments.
-            [self.activityView stopAnimating];
-            [self.activityView removeFromSuperview];
+            [self.overlayActivityView stopAnimating];
+            [self.overlayActivityView removeFromSuperview];
             cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
             self.emptyCommentsLabel.center = cell.contentView.center;
             [cell.contentView addSubview:self.emptyCommentsLabel];
@@ -225,9 +224,9 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         
         cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kActivityId forIndexPath:indexPath];
-        self.activityView.center = cell.contentView.center;
-        [cell.contentView addSubview:self.activityView];
-        [self.activityView startAnimating];
+        self.overlayActivityView.center = cell.contentView.center;
+        [cell.contentView addSubview:self.overlayActivityView];
+        [self.overlayActivityView startAnimating];
         
     }
     
@@ -265,13 +264,6 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         };
     }
     return _closeButton;
-}
-
-- (CKActivityIndicatorView *)activityView {
-    if (!_activityView) {
-        _activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
-    }
-    return _activityView;
 }
 
 - (UILabel *)emptyCommentsLabel {
