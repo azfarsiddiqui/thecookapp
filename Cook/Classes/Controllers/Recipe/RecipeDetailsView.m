@@ -455,7 +455,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     [self updateProfilePhoto];
     [self updateTitle];
-    [self updateTags];
+//    [self updateTags]; Disabling Tags for 1.1 release
     [self updateStory];
     [self updateContentDivider];
     [self updateServesCook];
@@ -493,7 +493,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         // Wrap it immediately as it's only visible in edit mode.
         UIEdgeInsets defaultInsets = [CKEditingViewHelper contentInsetsForEditMode:NO];
         [self.editingHelper wrapEditingView:self.pageLabel contentInsets:(UIEdgeInsets){
-            defaultInsets.top + 3.0,
+            defaultInsets.top + 6.0,
             defaultInsets.left,
             defaultInsets.bottom,
             defaultInsets.right - 2.0
@@ -504,7 +504,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Update photo.
     self.profilePhotoView.frame = (CGRect){
         self.layoutOffset.x + floor(([self availableSize].width - self.profilePhotoView.frame.size.width) / 2.0),
-        self.bounds.origin.y + self.layoutOffset.y,
+        self.bounds.origin.y + self.layoutOffset.y - 3,
         self.profilePhotoView.frame.size.width,
         self.profilePhotoView.frame.size.height
     };
@@ -513,7 +513,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     self.pageLabel.text = [self.recipeDetails.page uppercaseString];
     [self.pageLabel sizeToFit];
     self.pageLabel.center = self.profilePhotoView.center;
-    self.pageLabel.frame = CGRectIntegral(self.pageLabel.frame);
+    CGRect pageLabelSize = CGRectIntegral(self.pageLabel.frame);
+    self.pageLabel.frame = CGRectMake(pageLabelSize.origin.x, pageLabelSize.origin.y, pageLabelSize.size.width, pageLabelSize.size.height + 6);
     [self.editingHelper updateEditingView:self.pageLabel];
     CKEditingTextBoxView *pageTextBoxView = [self.editingHelper textBoxViewForEditingView:self.pageLabel];
     pageTextBoxView.hidden = !self.editMode;
@@ -579,7 +580,6 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 - (void)updateTags
 {
     if (!self.tagsLabel) {
-//        self.tagsView.alpha = 0.0;
         self.tagsLabel = [[UILabel alloc] init];
         self.tagsLabel.font = [Theme tagsFont];
         self.tagsLabel.textColor = [Theme tagsNameColor];
