@@ -1615,7 +1615,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                                              cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
         } else {
             self.pinAlert = [[UIAlertView alloc] initWithTitle:@"Remove Recipe?"
-                                                       message:[NSString stringWithFormat:@"Already Added to %@", self.recipePin.page]
+                                                       message:[NSString stringWithFormat:@"Already Added to %@", [self.recipePin.page uppercaseString]]
                                                       delegate:self
                                              cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
         }
