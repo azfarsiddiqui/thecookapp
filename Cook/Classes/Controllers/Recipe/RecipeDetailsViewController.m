@@ -552,21 +552,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
     } else if (alertView == self.cancelAlert) {
         
-        if (buttonIndex == 0) {
-            
-            // Yes button tapped on cancel.
+        if (buttonIndex == 1) {
+            //Close tapped
             if (self.addMode) {
                 [self closeRecipeView];
             } else {
                 [self initRecipeDetails];
                 [self enableEditMode:NO];
             }
-            
-        } else if (buttonIndex == 1) {
-            
-            // OK save it.
-            [self saveRecipe];
-            
         }
         
     } else if (alertView == self.pinAlert && buttonIndex == 1) {
@@ -1667,16 +1660,16 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (self.addMode) {
         
         if ([self.recipeDetails saveRequired]) {
-            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Recipe?" message:nil delegate:self
-                                                cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
+                                                cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
         } else {
             [self closeRecipeView];
         }
         
     } else {
         if ([self.recipeDetails saveRequired]) {
-            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Save Changes?" message:nil delegate:self
-                                                cancelButtonTitle:@"No" otherButtonTitles:@"Save", nil];
+            self.cancelAlert = [[UIAlertView alloc] initWithTitle:@"Close without Saving?" message:nil delegate:self
+                                                cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
         } else {
             [self initRecipeDetails];
             [self enableEditMode:NO];
