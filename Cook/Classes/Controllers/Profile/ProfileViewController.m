@@ -15,9 +15,10 @@
 #import "CKActivityIndicatorView.h"
 #import "CKBookSummaryView.h"
 #import "CKPhotoManager.h"
-#import "CKBookCoverView.h"
+#import "CKStoreBookCoverView.h"
+#import "AnalyticsHelper.h"
 
-@interface ProfileViewController ()
+@interface ProfileViewController () <CKStoreBookCoverViewDelegate, CKBookSummaryViewDelegate>
 
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKBook *book;
@@ -27,6 +28,7 @@
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, assign) BOOL fullImageLoaded;
+@property (nonatomic, strong) CKStoreBookCoverView *bookCoverView;
 
 @end
 
@@ -50,11 +52,6 @@
 - (void)viewDidLoad {
     self.view.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
-    
-    if (self.loadBookCoverPhoto) {
-        [self initBackground];
-    }
-    
     self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
     if (self.cookNavigationController) {
         self.backButton.alpha = 0.0;
@@ -63,6 +60,30 @@
     
     // Register photo loading events.
     [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+}
+
+#pragma mark - CKBookSummaryViewDelegate methods
+
+- (void)bookSummaryViewBookIsFollowed {
+    [self.bookCoverView showFollowed];
+}
+
+- (void)bookSummaryViewBookIsPrivate {
+    [self.bookCoverView showPrivate];
+}
+
+- (void)bookSummaryViewBookIsDownloadable {
+    [self.bookCoverView showDownloadable];
+}
+
+#pragma mark - CKStoreBookCoverViewDelegate methods
+
+- (BOOL)storeBookCoverViewFeaturedMode {
+    return NO;
+}
+
+- (void)storeBookCoverViewAddRequested {
+    [self followTapped];
 }
 
 #pragma mark - CKNavigationControllerSupport methods
@@ -178,6 +199,7 @@
     
     // Book summary view.
     CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES featuredMode:NO];
+    bookSummaryView.delegate = self;
     bookSummaryView.frame = CGRectMake(floorf((self.summaryContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
                                        87,
                                        bookSummaryView.frame.size.width,
@@ -186,38 +208,35 @@
     [self.summaryContainerView addSubview:bookSummaryView];
     
     // Book cover.
-    CKBookCoverView *bookCoverView = [[CKBookCoverView alloc] init];
-    [bookCoverView loadBook:self.book editable:NO];
+    self.bookCoverView = [[CKStoreBookCoverView alloc] init];
+    self.bookCoverView.storeDelegate = self;
+    [self.bookCoverView loadBook:self.book editable:NO];
+    
+    // Loading.
+    [self.bookCoverView showActionButton:YES animated:YES];
+    [self.bookCoverView showLoading:YES];
     
     // Position of book cover is center of screen but projected onto the book container view.
     CGPoint adjustedCenter = [self.view convertPoint:self.view.center toView:self.summaryContainerView];
     
-    bookCoverView.frame = (CGRect){
+    self.bookCoverView.frame = (CGRect){
         self.summaryContainerView.bounds.origin.x + kBookViewContentInsets.left,
-        adjustedCenter.y - floorf(bookCoverView.frame.size.height / 2.0),
-        bookCoverView.frame.size.width,
-        bookCoverView.frame.size.height
+        adjustedCenter.y - floorf(self.bookCoverView.frame.size.height / 2.0),
+        self.bookCoverView.frame.size.width,
+        self.bookCoverView.frame.size.height
     };
-    bookCoverView.alpha = 0.0;
-    [self.summaryContainerView addSubview:bookCoverView];
+    self.bookCoverView.alpha = 0.0;
+    [self.summaryContainerView addSubview:self.bookCoverView];
     
     [UIView animateWithDuration:0.4
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-                         bookCoverView.alpha = 1.0;
+                         self.bookCoverView.alpha = 1.0;
                          bookSummaryView.alpha = 1.0;
                      }
                      completion:^(BOOL finished) {
-                         if (self.loadBookCoverPhoto) {
-                             [self loadBookCoverPhotoImage];
-                         } else {
-                             
-                             // Onload load context if we are still attached.
-                             if (self.view.superview) {
-                                 [self.cookNavigationController showContextWithBook:self.book];
-                             }
-                         }
+                         [self loadBookCoverPhotoImage];
                      }];
 }
 
@@ -228,7 +247,13 @@
 - (void)loadBookCoverPhotoImage {
     if ([self.book hasCoverPhoto]) {
         DLog(@"Loading book cover photo");
-        [[CKPhotoManager sharedInstance] imageForBook:self.book size:self.imageView.bounds.size];
+        
+        CGSize size = self.imageView.bounds.size;
+        if (self.cookNavigationController) {
+            size = self.cookNavigationController.backgroundImageView.frame.size;
+        }
+        
+        [[CKPhotoManager sharedInstance] imageForBook:self.book size:size];
     }
 }
 
@@ -250,19 +275,50 @@
 }
 
 - (void)loadImage:(UIImage *)image {
-    self.imageView.image = image;
-    if (self.imageView.alpha == 0.0) {
-        
-        // Fade it in.
-        [UIView animateWithDuration:0.6
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.imageView.alpha = 1.0;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
+    if (self.cookNavigationController) {
+        [self.cookNavigationController loadBackgroundImage:image animation:^{
+            self.view.backgroundColor = [UIColor clearColor];
+        }];
+    } else {
+        self.imageView.image = image;
+        if (self.imageView.alpha == 0.0) {
+            
+            // Fade it in.
+            [UIView animateWithDuration:0.6
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.imageView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {
+                             }];
+        }
     }
 }
+
+- (void)followTapped {
+    
+    CKUser *currentUser = [CKUser currentUser];
+    if (currentUser) {
+        
+        // Spin.
+        [self.bookCoverView showLoading:YES];
+        
+        // Weak reference so we don't have retain cycles.
+        __weak typeof(self) weakSelf = self;
+        [self.book addFollower:currentUser
+                       success:^{
+                           [AnalyticsHelper trackEventName:@"Added to Bench" params:nil];
+                           [weakSelf.bookCoverView showFollowed];
+                           [EventHelper postFollow:YES book:weakSelf.book];
+                       }
+                       failure:^(NSError *error) {
+                           [weakSelf.bookCoverView showLoading:NO];
+                           [weakSelf.bookCoverView showAdd];
+                           [weakSelf.bookCoverView enable:NO interactable:NO];
+                       }];
+    }
+}
+
 
 @end

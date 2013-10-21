@@ -13,7 +13,6 @@
 
 @interface CKNavigationController ()
 
-@property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) NSMutableArray *viewControllers;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, strong) UIViewController *contextModalViewController;
@@ -267,16 +266,22 @@
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
                          self.contextModalViewController.view.alpha = 0.0;
+                         self.backgroundImageView.alpha = 0.0;
                      }
                      completion:^(BOOL finished)  {
                          [self.contextModalViewController.view removeFromSuperview];
                          self.contextModalViewController = nil;
+                         self.backgroundImageView = nil;
                      }];
 }
 
 #pragma mark - Background image with motion effects.
 
 - (void)loadBackgroundImage:(UIImage *)backgroundImage {
+    [self loadBackgroundImage:backgroundImage animation:^{}];
+}
+
+- (void)loadBackgroundImage:(UIImage *)backgroundImage animation:(void (^)())animation {
     if (!self.backgroundImageView) {
         
         // Background imageView.
@@ -304,6 +309,7 @@
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              self.backgroundImageView.alpha = 1.0;
+                             animation();
                          }
                          completion:^(BOOL finished) {
                          }];

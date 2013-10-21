@@ -50,14 +50,15 @@
 
 @implementation CKBookSummaryView
 
-#define kSummaryStoreSize   (CGSize) { 320.0, 445.0 }
-#define kSummarySize        (CGSize) { 320.0, 460.0 }
-#define kContentInsets      (UIEdgeInsets) { 0.0, 20.0, 0.0, 20.0 }
-#define kProfileNameGap     8.0
-#define kInterStatsGap      10.0
-#define kNameStatsGap       8.0
-#define kStatsStoryGap      34.0
-#define kActionCaptionFont  [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0]
+#define kSummaryStoreSize       (CGSize) { 320.0, 445.0 }
+#define kSummarySize            (CGSize) { 320.0, 460.0 }
+#define kContentInsets          (UIEdgeInsets) { 0.0, 20.0, 0.0, 20.0 }
+#define kProfileNameGap         8.0
+#define kInterStatsGap          10.0
+#define kNameStatsGap           8.0
+#define kStatsStoryGap          34.0
+#define kActionCaptionFont      [UIFont fontWithName:@"BrandonGrotesque-Medium" size:14.0]
+#define kActionSubCaptionFont  [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12.0]
 
 + (CGSize)sizeForStoreMode:(BOOL)storeMode {
     return storeMode ? kSummaryStoreSize : kSummarySize;
@@ -452,6 +453,13 @@
                 [self.delegate bookSummaryViewBookIsFollowed];
             }
             
+        } else if (self.featuredMode) {
+            
+            // Inform delegate that feature book is always available to download.
+            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsDownloadable)]) {
+                [self.delegate bookSummaryViewBookIsDownloadable];
+            }
+            
         } else if (recipeCount > 0) {
             
             // Inform delegate that book is available to download.
@@ -590,7 +598,7 @@
                                                              enabled:YES target:nil selector:nil];
                                               
                                               self.actionButtonCaptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-                                              self.actionButtonCaptionLabel.font = kActionCaptionFont;
+                                              self.actionButtonCaptionLabel.font = kActionSubCaptionFont;
                                               self.actionButtonCaptionLabel.textColor = [UIColor whiteColor];
                                               self.actionButtonCaptionLabel.text = [[NSString stringWithFormat:@"%@ WANTS TO BE FRIENDS", [self.book.user friendlyName]] uppercaseString];
                                               [self.actionButtonCaptionLabel sizeToFit];

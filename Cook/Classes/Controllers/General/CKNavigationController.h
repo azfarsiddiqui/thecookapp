@@ -32,6 +32,7 @@
 @interface CKNavigationController : UIViewController
 
 @property (nonatomic, weak) id<CKNavigationControllerDelegate> delegate;
+@property (nonatomic, strong) UIImageView *backgroundImageView;
 
 - (id)initWithRootViewController:(UIViewController *)viewController;
 - (id)initWithRootViewController:(UIViewController *)viewController delegate:(id<CKNavigationControllerDelegate>)delegate;
@@ -46,5 +47,6 @@
 - (void)hideContext;
 
 - (void)loadBackgroundImage:(UIImage *)backgroundImage;
+- (void)loadBackgroundImage:(UIImage *)backgroundImage animation:(void (^)())animation;
 
 @end

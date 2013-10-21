@@ -14,8 +14,6 @@
 
 @interface ProfileViewController : OverlayViewController <CKNavigationControllerSupport>
 
-@property (nonatomic, assign) BOOL loadBookCoverPhoto;
-
 - (id)initWithUser:(CKUser *)user;
 
 @end
