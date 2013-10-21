@@ -94,6 +94,7 @@
                 photoView.frame.size.width,
                 photoView.frame.size.height
             };
+            photoView.userInteractionEnabled = NO;
             [_loginLogoutButtonView addSubview:photoView];
             yOffset = photoView.frame.origin.y + photoView.frame.size.height + 16.0;
             
@@ -106,8 +107,8 @@
                 loginImageView.frame.size.width,
                 loginImageView.frame.size.height
             };
-            [_loginLogoutButtonView addSubview:loginImageView];
             yOffset = loginImageView.frame.origin.y + loginImageView.frame.size.height + 14.0;
+            [_loginLogoutButtonView addSubview:loginImageView];
         }
         
         UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -129,7 +130,7 @@
 
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loginLogoutTapped:)];
         [_loginLogoutButtonView addGestureRecognizer:tapGesture];
-        
+        _loginLogoutButtonView.userInteractionEnabled = YES;
     }
     return _loginLogoutButtonView;
 }
