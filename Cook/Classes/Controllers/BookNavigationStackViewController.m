@@ -567,6 +567,20 @@
     [self updatePageOverlays];
 }
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    // Tells all cells to load content, don't need to worry about performance with manual scrolling
+    if ([self.collectionView numberOfSections] > 2 && [self currentPageIndex] < [self.collectionView numberOfSections])
+    {
+        NSMutableArray *destinationArray = [NSMutableArray new];
+        for (int i = 2; i < [self.collectionView numberOfSections]; i++)
+        {
+            [destinationArray addObject:[NSNumber numberWithInt:i]];
+        }
+        self.destinationIndexes = destinationArray;
+        [self activateVisibleCells];
+    }
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         [self updateNavBar];
@@ -576,11 +590,9 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateNavBar];
     
-    //Tell cells and headers to load content now
-    if ([self.collectionView numberOfSections] > 2)
+    //Tell headers images to load content now
+    if ([self.collectionView numberOfSections] > 2 && [self currentPageIndex] < [self.collectionView numberOfSections])
     {
-        self.destinationIndexes = @[[NSNumber numberWithInt:[self currentPageIndex] -1], [NSNumber numberWithInt:[self currentPageIndex]], [NSNumber numberWithInt:[self currentPageIndex]+1]];
-        [self activateVisibleCells];
         NSInteger *pageIndex = [self currentPageIndex]-2 > 0 ? [self currentPageIndex]-2 : 0;
         NSString *page = [self.pages objectAtIndex:pageIndex];
         BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
@@ -598,12 +610,15 @@
 
 - (void)activateVisibleCells
 {
-    NSIndexPath *activeIndex = [NSIndexPath indexPathForItem:0 inSection:[self currentPageIndex]];
-    BookContentCell *contentCell = (BookContentCell *)[self.collectionView cellForItemAtIndexPath:activeIndex];
+    if ([self currentPageIndex] < [self.collectionView numberOfSections])
     {
-        if ([contentCell isKindOfClass:[BookContentCell class]] && [self.destinationIndexes containsObject:[NSNumber numberWithInt:[self currentPageIndex]]])
+        NSIndexPath *activeIndex = [NSIndexPath indexPathForItem:0 inSection:[self currentPageIndex]];
+        BookContentCell *contentCell = (BookContentCell *)[self.collectionView cellForItemAtIndexPath:activeIndex];
         {
-            [contentCell.contentViewController loadPageContent];
+            if ([contentCell isKindOfClass:[BookContentCell class]] && [self.destinationIndexes containsObject:[NSNumber numberWithInt:[self currentPageIndex]]])
+            {
+                [contentCell.contentViewController loadPageContent];
+            }
         }
     }
 }
