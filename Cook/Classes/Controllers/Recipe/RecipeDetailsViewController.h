@@ -15,6 +15,7 @@
 @interface RecipeDetailsViewController : UIViewController <BookModalViewController, UIAlertViewDelegate>
 
 @property (nonatomic, assign) BOOL hideNavigation;
+@property (nonatomic, assign) BOOL disableStatusBarUpdate;
 
 - (id)initWithRecipe:(CKRecipe *)recipe;
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book;

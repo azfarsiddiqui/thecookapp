@@ -248,6 +248,7 @@
 - (void)showContextWithRecipe:(CKRecipe *)recipe {
     RecipeDetailsViewController *recipeDetailsViewController = [[RecipeDetailsViewController alloc] initWithRecipe:recipe];
     recipeDetailsViewController.hideNavigation = YES;
+    recipeDetailsViewController.disableStatusBarUpdate = YES;
     [self showContextModalViewController:recipeDetailsViewController];
 }
 

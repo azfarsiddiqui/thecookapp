@@ -1508,6 +1508,7 @@
                                                         self.settingsIntroView.alpha = 0.0;
                                                     } completion:nil];
     } else {
+        
         [ModalOverlayHelper hideModalOverlayForViewController:self.cookNavigationController
                                                     animation:^{
                                                         self.notificationView.alpha = 1.0;
