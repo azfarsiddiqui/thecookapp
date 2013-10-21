@@ -266,6 +266,10 @@
     
     // Enable panning based on book opened or not.
     [self.delegate panEnabledRequested:!open];
+    
+    // Reenable cells in dashboard to prevent wierd device lock->missing cells issue
+    cell.bookCoverView.hidden = NO;
+    [self showBookCell:cell show:YES];
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -1436,7 +1440,6 @@
 }
 
 - (void)showBookCell:(BenchtopBookCoverViewCell *)cell show:(BOOL)show {
-    
     // Get a reference to all the visible cells.
     NSArray *visibleCells = [self.collectionView visibleCells];
     
