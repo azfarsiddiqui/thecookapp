@@ -122,6 +122,11 @@
         [self updateInfoLabels];
         return NO;
     }
+    if (shouldChangeText && self.forceUppercase)
+    {
+        textView.text = [newString uppercaseString];
+        shouldChangeText = NO;
+    }
     
     return shouldChangeText;
 }
@@ -324,7 +329,6 @@
     textView.showsHorizontalScrollIndicator = NO;
     textView.showsVerticalScrollIndicator = NO;
     textView.backgroundColor = [UIColor clearColor];
-    
     // iOS7-b2 scrollEnabled causes characters to be left over after deleting from line below.
     textView.scrollEnabled = NO;
     textView.panGestureRecognizer.enabled = NO;
