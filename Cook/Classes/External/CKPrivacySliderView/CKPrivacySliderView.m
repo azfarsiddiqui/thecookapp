@@ -25,9 +25,9 @@
 
 @implementation CKPrivacySliderView
 
-#define kToastFont      [UIFont fontWithName:@"AvenirNext-Regular" size:12.0]
-#define kToastColour    [UIColor colorWithHexString:@"333333"]
-#define kToastInsets    (UIEdgeInsets){ 21.0, 28.0, 10.0, 38.0 }
+#define kToastFont      [UIFont fontWithName:@"BrandonGrotesque-Regular" size:12.0]
+#define kToastColour    [UIColor colorWithHexString:@"269ce0"]
+#define kToastInsets    (UIEdgeInsets){ 17.0, 22.0, 27.0, 22.0 }
 
 - (id)initWithDelegate:(id<CKPrivacySliderViewDelegate>)delegate {
     if (self = [super initWithNumNotches:3 delegate:delegate]) {
@@ -101,32 +101,23 @@
     // Cancel any previous hideToast.
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideToast) object:nil];
     
+    CGSize availableSize = (CGSize){ self.toastView.bounds.size.width - kToastInsets.left - kToastInsets.right,
+        self.toastView.bounds.size.height - kToastInsets.top - kToastInsets.bottom };
+    
     // Update the toast label.
     [self.toastLabel removeFromSuperview];
-    self.toastLabel.text = message;
+    self.toastLabel.text = [message uppercaseString];
     [self.toastLabel sizeToFit];
     self.toastLabel.frame = (CGRect){
-        kToastInsets.left,
-        kToastInsets.top,
+        kToastInsets.left + floorf((availableSize.width - self.toastLabel.frame.size.width) / 2.0),
+        kToastInsets.top + floorf((availableSize.height - self.toastLabel.frame.size.height) / 2.0) + 1.0,
         self.toastLabel.frame.size.width,
         self.toastLabel.frame.size.height
     };
     
-    CGSize toastSize = (CGSize) {
-        kToastInsets.left + self.toastLabel.frame.size.width + kToastInsets.right,
-        kToastInsets.top + self.toastLabel.frame.size.height + kToastInsets.bottom
-    };
-    
     CGRect toastFrame = self.toastView.frame;
-    toastFrame = (CGRect){
-        self.currentNotchView.center.x - floorf(toastSize.width / 2.0),
-        self.bounds.size.height - 34.0,
-        toastSize.width,
-        toastSize.height
-    };
-    
-    CGFloat xAdjustment = abs(kToastInsets.left - kToastInsets.right);
-    toastFrame.origin.x += (xAdjustment * (kToastInsets.left < kToastInsets.right ? 1.0 : -1.0));
+    toastFrame.origin.x = self.currentNotchView.center.x - floorf(toastFrame.size.width / 2.0);
+    toastFrame.origin.y = self.bounds.size.height - 32.0;
     self.toastView.frame = toastFrame;
     
     if (!self.toastView.superview) {
@@ -204,8 +195,7 @@
 
 - (UIView *)toastView {
     if (!_toastView) {
-        _toastView = [[UIImageView alloc] initWithImage:[CKEditingTextBoxView textEditingBoxWhite:YES]];
-        _toastView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        _toastView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_customise_privacy_label.png"]];
     }
     return _toastView;
 }
