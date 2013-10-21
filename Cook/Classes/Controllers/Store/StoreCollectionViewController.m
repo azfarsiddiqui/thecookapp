@@ -157,7 +157,7 @@
     return NO;
 }
 
-- (BOOL)addMode {
+- (BOOL)featuredMode {
     return NO;
 }
 
@@ -315,7 +315,7 @@
     [self.delegate storeCollectionViewControllerPanRequested:NO];
     
     StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book
-                                                                                             addMode:[self addMode]
+                                                                                             featuredMode:[self featuredMode]
                                                                                             delegate:self];
     [rootView addSubview:storeBookViewController.view];
     [storeBookViewController transitionFromPoint:pointAtRootView];

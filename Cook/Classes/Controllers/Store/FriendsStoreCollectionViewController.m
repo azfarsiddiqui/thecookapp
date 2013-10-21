@@ -38,8 +38,8 @@
                          }];
 }
 
-- (BOOL)addMode {
-    return YES;
+- (BOOL)featuredMode {
+    return NO;
 }
 
 - (void)showNoBooksCard {

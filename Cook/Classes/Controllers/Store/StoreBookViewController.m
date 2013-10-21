@@ -35,7 +35,7 @@
 @property (nonatomic, strong) CKBookSummaryView *bookSummaryView;
 @property (nonatomic, strong) CKBookCoverView *bookCoverView;
 @property (nonatomic, strong) UIButton *closeButton;
-@property (nonatomic, assign) BOOL addMode;
+@property (nonatomic, assign) BOOL featuredMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL updated;
 @property (nonatomic, assign) CGPoint originPoint;
@@ -59,10 +59,10 @@
     [EventHelper unregisterPhotoLoading:self];
 }
 
-- (id)initWithBook:(CKBook *)book addMode:(BOOL)addMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
+- (id)initWithBook:(CKBook *)book featuredMode:(BOOL)featuredMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
-        self.addMode = addMode;
+        self.featuredMode = featuredMode;
         self.delegate = delegate;
     }
     return self;
@@ -309,7 +309,7 @@
 
 - (void)initBookSummaryView {
     
-    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES addMode:self.addMode];
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES featuredMode:self.featuredMode];
     bookSummaryView.delegate = self;
     bookSummaryView.frame = CGRectMake(floorf((self.bookContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
                                        87,

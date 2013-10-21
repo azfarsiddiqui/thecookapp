@@ -177,7 +177,7 @@
     [self.activityView stopAnimating];
     
     // Book summary view.
-    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES addMode:NO];
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES featuredMode:NO];
     bookSummaryView.frame = CGRectMake(floorf((self.summaryContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
                                        87,
                                        bookSummaryView.frame.size.width,

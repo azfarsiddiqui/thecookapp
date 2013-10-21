@@ -29,7 +29,7 @@
 - (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;
-- (BOOL)addMode;
+- (BOOL)featuredMode;
 - (void)showActivity:(BOOL)show;
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error;
 - (void)showNoBooksCard;
