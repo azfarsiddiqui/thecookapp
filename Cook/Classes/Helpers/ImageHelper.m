@@ -121,13 +121,13 @@
     
     // get size of the first image
     CGImageRef firstImageRef = image.CGImage;
-    CGFloat firstWidth = CGImageGetWidth(firstImageRef);
-    CGFloat firstHeight = CGImageGetHeight(firstImageRef);
+    CGFloat firstWidth = CGImageGetWidth(firstImageRef)/image.scale;
+    CGFloat firstHeight = CGImageGetHeight(firstImageRef)/image.scale;
     
     // get size of the second image
     CGImageRef secondImageRef = secondImage.CGImage;
-    CGFloat secondWidth = CGImageGetWidth(secondImageRef);
-    CGFloat secondHeight = CGImageGetHeight(secondImageRef);
+    CGFloat secondWidth = CGImageGetWidth(secondImageRef)/secondImage.scale;
+    CGFloat secondHeight = CGImageGetHeight(secondImageRef)/secondImage.scale;
     
     // build merged size
     CGSize mergedSize = CGSizeMake(MAX(firstWidth, secondWidth), MAX(firstHeight, secondHeight));
