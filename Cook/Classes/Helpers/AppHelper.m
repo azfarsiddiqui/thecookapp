@@ -15,7 +15,7 @@
 
 @implementation AppHelper
 
-#define kExistingVersion    @"COOK_EXISTING_VERSION"
+#define kCookInstalledVersion   @"CKInstalledVersion"
 
 + (AppHelper *)sharedInstance {
     static dispatch_once_t pred;
@@ -26,25 +26,31 @@
     return sharedInstance;
 }
 
-- (BOOL)newInstall {
+- (BOOL)isNewUpdate {
     BOOL newInstall = NO;
     NSString *currentVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-    NSString *existingVersion = [[NSUserDefaults standardUserDefaults] objectForKey:kExistingVersion];
+    NSString *existingVersion = [[NSUserDefaults standardUserDefaults] objectForKey:kCookInstalledVersion];
     if (existingVersion) {
         if ([[currentVersion stringByReplacingOccurrencesOfString:@"." withString:@""] integerValue] > [[existingVersion stringByReplacingOccurrencesOfString:@"." withString:@""] integerValue]) {
             newInstall = YES;
         }
-        
     } else {
         newInstall = YES;
     }
     
-    if (newInstall) {
-        [[NSUserDefaults standardUserDefaults] setObject:currentVersion forKey:kExistingVersion];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
     return newInstall;
+}
+
+- (void)maskAsNewUpdate:(BOOL)update {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (update) {
+            NSString *currentVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+            [[NSUserDefaults standardUserDefaults] setObject:currentVersion forKey:kCookInstalledVersion];
+        } else {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kCookInstalledVersion];
+        }
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    });
 }
 
 - (UIView *)rootView {

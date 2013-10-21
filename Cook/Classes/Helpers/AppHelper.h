@@ -12,7 +12,9 @@
 
 + (AppHelper *)sharedInstance;
 
-- (BOOL)newInstall;
+- (BOOL)isNewUpdate;
+- (void)maskAsNewUpdate:(BOOL)update;
+
 - (UIView *)rootView;
 
 // Provides a landscape frame which can be tricky to obtain in pre-rotation situations.
