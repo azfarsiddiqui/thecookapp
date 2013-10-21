@@ -472,6 +472,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     };
     imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     imageView.backgroundColor = [Theme categoryHeaderBackgroundColour];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
     [imageContainerView addSubview:imageView];
     self.imageView = imageView;
     

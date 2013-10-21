@@ -262,6 +262,7 @@
         imageContainerView.bounds.size.width + (motionOffset.horizontal * 2.0),
         imageContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
     };
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
     imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     [imageContainerView addSubview:imageView];
     self.imageView = imageView;
