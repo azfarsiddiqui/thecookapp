@@ -28,7 +28,7 @@
 #define kWidth                  600.0
 #define kProfileCommentGap      30.0
 #define kNameCommentGap         1.0
-#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 10.0, 20.0 }
+#define kContentInsets          (UIEdgeInsets){ 20.0, 20.0, 30.0, 20.0 }
 #define kTextBoxInsets          (UIEdgeInsets){ 30.0, 28.0, 22.0, 40.0 }
 #define kCommentTimeGap         3.0
 
@@ -37,10 +37,11 @@
     size.height += kContentInsets.top;
     
     CKUser *user = comment.user;
+    CGSize availableSize = [RecipeCommentCell availableCommentSize];
     
     // Name.
-    CGRect nameFrame = [user.name boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
-                                               options:NSStringDrawingUsesLineFragmentOrigin
+    CGRect nameFrame = [user.name boundingRectWithSize:(CGSize){ availableSize.width, MAXFLOAT }
+                                               options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                             attributes:@{ NSFontAttributeName : [Theme recipeCommenterFont] }
                                                context:nil];
     size.height += nameFrame.size.height;
@@ -49,20 +50,11 @@
     size.height += kNameCommentGap;
     
     // Comment.
-    CGRect commentFrame = [comment.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
-                                                     options:NSStringDrawingUsesLineFragmentOrigin
+    CGRect commentFrame = [comment.text boundingRectWithSize:(CGSize){ availableSize.width, MAXFLOAT }
+                                                     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                   attributes:@{ NSFontAttributeName : [Theme recipeCommentFont] }
                                                      context:nil];
     size.height += commentFrame.size.height;
-    
-    // Time.
-    NSDate *createdDateTime = comment.createdDateTime ? comment.createdDateTime : [NSDate date];
-    NSString *timeDisplay = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:createdDateTime] uppercaseString];
-    CGRect timeFrame = [timeDisplay boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
-                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                              attributes:@{ NSFontAttributeName : [Theme overlayTimeFont] }
-                                                 context:nil];
-    size.height += timeFrame.size.height;
     
     size.height += kContentInsets.bottom;
     return size;
@@ -87,7 +79,7 @@
 - (void)configureWithComment:(CKRecipeComment *)comment commentIndex:(NSUInteger)commentIndex
                  numComments:(NSUInteger)numComments {
     
-    CGSize availableSize = [self availableCommentSize];
+    CGSize availableSize = [RecipeCommentCell availableCommentSize];
     
     // Load profile photo.
     CKUser *user = comment.user;
@@ -101,8 +93,8 @@
     NSValue *nameFrameValue = [self.delegate recipeSocialCommentCellNameFrameValueForCommentIndex:commentIndex];
     CGRect nameFrame;
     if (!nameFrameValue) {
-        nameFrame = [user.name boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
-                                            options:NSStringDrawingUsesLineFragmentOrigin
+        nameFrame = [user.name boundingRectWithSize:(CGSize){ availableSize.width, MAXFLOAT }
+                                            options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                          attributes:@{ NSFontAttributeName : [Theme recipeCommenterFont] }
                                             context:nil];
         [self.delegate recipeSocialCommentCellCacheNameFrame:nameFrame commentIndex:commentIndex];
@@ -125,8 +117,8 @@
     NSValue *commentFrameValue = [self.delegate recipeSocialCommentCellCommentFrameValueForCommentIndex:commentIndex];
     CGRect commentFrame;
     if (!commentFrameValue) {
-        commentFrame = [comment.text boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
-                                                  options:NSStringDrawingUsesLineFragmentOrigin
+        commentFrame = [comment.text boundingRectWithSize:(CGSize){ availableSize.width, MAXFLOAT }
+                                                  options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                                attributes:@{ NSFontAttributeName : [Theme recipeCommentFont] }
                                                   context:nil];
         [self.delegate recipeSocialCommentCellCacheCommentFrame:commentFrame commentIndex:commentIndex];
@@ -150,8 +142,8 @@
     NSValue *timeFrameValue = [self.delegate recipeSocialCommentCellTimeFrameValueForCommentIndex:commentIndex];
     CGRect timeFrame;
     if (!timeFrameValue) {
-        timeFrame = [timeDisplay boundingRectWithSize:(CGSize){ kWidth, MAXFLOAT }
-                                              options:NSStringDrawingUsesLineFragmentOrigin
+        timeFrame = [timeDisplay boundingRectWithSize:(CGSize){ availableSize.width, MAXFLOAT }
+                                              options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                            attributes:@{ NSFontAttributeName : [Theme overlayTimeFont] }
                                               context:nil];
         [self.delegate recipeSocialCommentCellCacheTimeFrame:timeFrame commentIndex:commentIndex];
@@ -262,12 +254,12 @@
     return _dividerView;
 }
 
-#pragma mark - Privaet methods
+#pragma mark - Private methods
 
-- (CGSize)availableCommentSize {
++ (CGSize)availableCommentSize {
     return (CGSize){
-        self.contentView.bounds.size.width - kContentInsets.left - self.profileView.frame.size.width - kProfileCommentGap - kContentInsets.right,
-        self.contentView.bounds.size.height - kContentInsets.top - kContentInsets.bottom
+        kWidth - kContentInsets.left - [CKUserProfilePhotoView sizeForProfileSize:ProfileViewSizeMedium].width - kProfileCommentGap - kContentInsets.right,
+        kWidth - kContentInsets.top - kContentInsets.bottom
     };
 }
 

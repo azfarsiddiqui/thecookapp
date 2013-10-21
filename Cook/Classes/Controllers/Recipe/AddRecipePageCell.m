@@ -19,7 +19,7 @@
 @implementation AddRecipePageCell
 
 #define kPageFont       [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0]
-#define kPageColour     [UIColor blackColor]
+#define kPageColour     [UIColor whiteColor]
 #define kLabelInsets    (UIEdgeInsets){ 97.0, 33.0, 81.0, 33.0 }
 
 + (CGSize)cellSize {
