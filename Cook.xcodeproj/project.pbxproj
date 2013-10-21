@@ -233,6 +233,7 @@
 		7647856917A74F7600387A7B /* cook_edit_bg_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7647855917A74F7600387A7B /* cook_edit_bg_yellow@2x.png */; };
 		7647856C17A759BF00387A7B /* cook_book_inner_page_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 7647856A17A759BF00387A7B /* cook_book_inner_page_overlay.png */; };
 		7647856D17A759BF00387A7B /* cook_book_inner_page_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7647856B17A759BF00387A7B /* cook_book_inner_page_overlay@2x.png */; };
+		7648FF27181564DA00E36041 /* CKStoreBookCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7648FF26181564DA00E36041 /* CKStoreBookCoverView.m */; };
 		764923BB17E9E1FD00C4E347 /* CKSocialManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 764923BA17E9E1FD00C4E347 /* CKSocialManager.m */; };
 		7649240217EB247700C4E347 /* DataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7649240017EB247700C4E347 /* DataHelper.m */; };
 		76492D65166DCC5F0042CF92 /* CoverPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76492D64166DCC5F0042CF92 /* CoverPickerView.m */; };
@@ -1537,6 +1538,8 @@
 		7647855917A74F7600387A7B /* cook_edit_bg_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_edit_bg_yellow@2x.png"; sourceTree = "<group>"; };
 		7647856A17A759BF00387A7B /* cook_book_inner_page_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_page_overlay.png; sourceTree = "<group>"; };
 		7647856B17A759BF00387A7B /* cook_book_inner_page_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_page_overlay@2x.png"; sourceTree = "<group>"; };
+		7648FF25181564DA00E36041 /* CKStoreBookCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKStoreBookCoverView.h; sourceTree = "<group>"; };
+		7648FF26181564DA00E36041 /* CKStoreBookCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKStoreBookCoverView.m; sourceTree = "<group>"; };
 		764923B917E9E1FD00C4E347 /* CKSocialManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKSocialManager.h; sourceTree = "<group>"; };
 		764923BA17E9E1FD00C4E347 /* CKSocialManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKSocialManager.m; sourceTree = "<group>"; };
 		7649240017EB247700C4E347 /* DataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataHelper.m; sourceTree = "<group>"; };
@@ -3951,6 +3954,8 @@
 				76BEE731165DEE600065B97B /* CKBookCover.m */,
 				76BEE732165DEE600065B97B /* CKBookCoverView.h */,
 				76BEE733165DEE600065B97B /* CKBookCoverView.m */,
+				7648FF25181564DA00E36041 /* CKStoreBookCoverView.h */,
+				7648FF26181564DA00E36041 /* CKStoreBookCoverView.m */,
 			);
 			path = CKBookCoverView;
 			sourceTree = "<group>";
@@ -6148,6 +6153,7 @@
 				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,
 				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,
+				7648FF27181564DA00E36041 /* CKStoreBookCoverView.m in Sources */,
 				76735C8B17BA12000027CA3B /* BookRecipeGridCell.m in Sources */,
 				763E00F817AD357200CCA412 /* PageListEditViewController.m in Sources */,
 				76462D3A17830054002EA7D0 /* StoreUnitTabView.m in Sources */,

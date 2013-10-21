@@ -24,8 +24,9 @@
 #import "CKPhotoManager.h"
 #import "CKActivityIndicatorView.h"
 #import "AnalyticsHelper.h"
+#import "CKStoreBookCoverView.h"
 
-@interface StoreBookViewController () <CKBookCoverViewDelegate, CKBookSummaryViewDelegate>
+@interface StoreBookViewController () <CKBookCoverViewDelegate, CKBookSummaryViewDelegate, CKStoreBookCoverViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, assign) id<StoreBookViewControllerDelegate> delegate;
@@ -33,15 +34,13 @@
 @property (nonatomic, strong) UIView *imageOverlayView;
 @property (nonatomic, strong) UIView *bookContainerView;
 @property (nonatomic, strong) CKBookSummaryView *bookSummaryView;
-@property (nonatomic, strong) CKBookCoverView *bookCoverView;
+@property (nonatomic, strong) CKStoreBookCoverView *bookCoverView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, assign) BOOL featuredMode;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL updated;
 @property (nonatomic, assign) CGPoint originPoint;
 @property (nonatomic, assign) BOOL fullImageLoaded;
-@property (nonatomic, strong) UIButton *bookActionButton;
-@property (nonatomic, strong) CKActivityIndicatorView *bookActionActivityView;
 
 @end
 
@@ -98,7 +97,8 @@
         size.height
     };
     
-    self.bookCoverView = [[CKBookCoverView alloc] init];
+    self.bookCoverView = [[CKStoreBookCoverView alloc] init];
+    self.bookCoverView.storeDelegate = self;
     self.bookCoverView.frame = bookFrame;
     self.bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
     [self.bookCoverView loadBook:self.book editable:NO];
@@ -133,40 +133,14 @@
                                           }
                                           completion:^(BOOL finished) {
                                               
-                                              // Fade in the action button.
-                                              CGRect actionButtonFrame = self.bookActionButton.frame;
-                                              actionButtonFrame.origin = (CGPoint) {
-                                                  floorf((self.bookCoverView.bounds.size.width - actionButtonFrame.size.width) / 2.0),
-                                                  floorf((self.bookCoverView.bounds.size.height - actionButtonFrame.size.height) / 2.0)
-                                              };
-                                              self.bookActionButton.frame = actionButtonFrame;
-                                              self.bookActionButton.alpha = 0.0;
-                                              self.bookActionButton.enabled = NO;
-                                              self.bookActionButton.userInteractionEnabled = NO;
-                                              [self.bookCoverView addSubview:self.bookActionButton];
+                                              self.animating = NO;
                                               
-                                              // Start spinner.
-                                              CGRect actionActivityFrame = self.bookActionActivityView.frame;
-                                              actionActivityFrame.origin = (CGPoint) {
-                                                  floorf((self.bookActionButton.bounds.size.width - actionActivityFrame.size.width) / 2.0),
-                                                  floorf((self.bookActionButton.bounds.size.height - actionActivityFrame.size.height) / 2.0) - 5.0
-                                              };
-                                              self.bookActionActivityView.frame = actionActivityFrame;
-                                              [self.bookActionButton addSubview:self.bookActionActivityView];
-                                              [self.bookActionActivityView startAnimating];
+                                              if (![self.book isOwner]) {
+                                                  [self.bookCoverView showActionButton:YES animated:NO];
+                                                  [self.bookCoverView showLoading:YES];
+                                              }
                                               
-                                              [UIView animateWithDuration:0.3
-                                                                    delay:0.0
-                                                                  options:UIViewAnimationCurveEaseIn
-                                                               animations:^{
-                                                                   self.bookActionButton.alpha = 1.0;
-                                                               }
-                                                               completion:^(BOOL finished) {
-                                                                   
-                                                                   self.animating = NO;
-                                                                   [self loadData];
-                                                                   
-                                                               }];
+                                              [self loadData];
                                           }];
                          
                      }];
@@ -198,26 +172,26 @@
 }
 
 - (void)bookSummaryViewBookIsFollowed {
-    [self.bookActionActivityView stopAnimating];
-    [self.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_added.png"] forState:UIControlStateNormal];
-    self.bookActionButton.userInteractionEnabled = NO;
-    self.bookActionButton.enabled = YES;
+    [self.bookCoverView showFollowed];
 }
 
 - (void)bookSummaryViewBookIsPrivate {
-    [self.bookActionActivityView stopAnimating];
-    [self.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_private.png"] forState:UIControlStateNormal];
-    self.bookActionButton.userInteractionEnabled = NO;
-    self.bookActionButton.enabled = YES;
+    [self.bookCoverView showPrivate];
 }
 
 - (void)bookSummaryViewBookIsDownloadable {
-    [self.bookActionActivityView stopAnimating];
-    [self.bookActionButton addTarget:self action:@selector(followTapped:) forControlEvents:UIControlEventTouchUpInside];
-    self.bookActionButton.userInteractionEnabled = YES;
-    self.bookActionButton.enabled = YES;
+    [self.bookCoverView showDownloadable];
 }
 
+#pragma mark - CKStoreBookCoverViewDelegate methods
+
+- (BOOL)storeBookCoverViewFeaturedMode {
+    return self.featuredMode;
+}
+
+- (void)storeBookCoverViewAddRequested {
+    [self followTapped];
+}
 
 #pragma mark - CKBookCoverViewDelegate methods
 
@@ -232,22 +206,6 @@
         _closeButton = [ViewHelper closeButtonLight:YES target:self selector:@selector(closeTapped)];
     }
     return _closeButton;
-}
-
-- (UIButton *)bookActionButton {
-    if (!_bookActionButton && ![self.book isOwner]) {
-        _bookActionButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash.png"]
-                                          selectedImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash_onpress.png"]
-                                                 target:nil selector:nil];
-    }
-    return _bookActionButton;
-}
-
-- (CKActivityIndicatorView *)bookActionActivityView {
-    if (!_bookActionActivityView) {
-        _bookActionActivityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
-    }
-    return _bookActionActivityView;
 }
 
 #pragma mark - Private methods
@@ -333,7 +291,7 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseOut
                      animations:^{
-                         self.bookActionButton.alpha = 0.0;
+                         [self.bookCoverView showActionButton:NO animated:NO];
                          self.bookContainerView.alpha = 0.0;
                          self.imageView.alpha = 0.0;
                          self.imageOverlayView.alpha = 0.0;
@@ -419,15 +377,13 @@
     }
 }
 
-- (void)followTapped:(id)sender {
+- (void)followTapped {
     
     CKUser *currentUser = [CKUser currentUser];
     if (currentUser) {
         
         // Spin.
-        [self.bookActionActivityView startAnimating];
-        self.bookActionButton.userInteractionEnabled = NO;
-        self.bookActionButton.enabled = NO;
+        [self.bookCoverView showLoading:YES];
         
         // Weak reference so we don't have retain cycles.
         __weak typeof(self) weakSelf = self;
@@ -439,11 +395,9 @@
                            [weakSelf bookSummaryViewBookFollowed];
                        }
                        failure:^(NSError *error) {
-                           [weakSelf.bookActionActivityView stopAnimating];
-                           [weakSelf.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash.png"]
-                                                                forState:UIControlStateNormal];
-                           weakSelf.bookActionButton.userInteractionEnabled = NO;
-                           weakSelf.bookActionButton.enabled = NO;
+                           [weakSelf.bookCoverView showLoading:NO];
+                           [weakSelf.bookCoverView showAdd];
+                           [weakSelf.bookCoverView enable:NO interactable:NO];
                        }];
     }
 }

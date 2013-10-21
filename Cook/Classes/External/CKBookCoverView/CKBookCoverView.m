@@ -30,7 +30,6 @@
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL storeMode;
-@property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UIImageView *updatesIcon;
 @property (nonatomic, strong) UILabel *updatesLabel;
