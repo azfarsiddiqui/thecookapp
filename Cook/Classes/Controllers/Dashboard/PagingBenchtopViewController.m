@@ -1631,6 +1631,7 @@
                          animations:^{
                              self.updateIntroView.alpha = 1.0;
                          } completion:^(BOOL finished) {
+                             [self.delegate panEnabledRequested:NO];
                              [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
                          }];
     }
@@ -1652,6 +1653,7 @@
     [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationCurveEaseOut animations:^{
         self.updateIntroView.alpha = 0.0;
     } completion:^(BOOL finished) {
+        [self.delegate panEnabledRequested:YES];
         [self.updateIntroView removeFromSuperview];
     }];
 }
