@@ -640,14 +640,14 @@
 
 - (void)setGeoLocation:(CKLocation *)geoLocation {
     if (geoLocation) {
-        [self.parseObject setObject:geoLocation.parseObject forKey:kRecipeAttrGeoLocation];
+        [self.parseObject setObject:geoLocation.parseObject forKey:kLocationModelForeignKeyName];
     } else {
-        [self.parseObject removeObjectForKey:kRecipeAttrGeoLocation];
+        [self.parseObject removeObjectForKey:kLocationModelForeignKeyName];
     }
 }
 
 - (CKLocation *)geoLocation {
-    PFObject *parseLocationObject = [self.parseObject objectForKey:kRecipeAttrGeoLocation];
+    PFObject *parseLocationObject = [self.parseObject objectForKey:kLocationModelForeignKeyName];
     return (parseLocationObject != nil) ? [[CKLocation alloc] initWithParseObject:parseLocationObject] :  nil;
 }
 
