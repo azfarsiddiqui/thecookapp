@@ -43,7 +43,7 @@
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, assign) BOOL storeMode;
-@property (nonatomic, assign) BOOL addMode;
+@property (nonatomic, assign) BOOL featuredMode;
 @property (nonatomic, assign) BOOL pendingAcceptance;
 
 @end
@@ -68,14 +68,14 @@
 }
 
 - (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode {
-    return [self initWithBook:book storeMode:NO addMode:NO];
+    return [self initWithBook:book storeMode:NO featuredMode:NO];
 }
 
-- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode addMode:(BOOL)addMode {
+- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode featuredMode:(BOOL)featuredMode {
     if (self = [super initWithFrame:(CGRect){ 0.0, 0.0, [CKBookSummaryView sizeForStoreMode:storeMode].width, [CKBookSummaryView sizeForStoreMode:storeMode].height }]) {
         self.book = book;
         self.storeMode = storeMode;
-        self.addMode = addMode;
+        self.featuredMode = featuredMode;
         self.backgroundColor = [UIColor clearColor];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.currentUser = [CKUser currentUser];
@@ -344,7 +344,7 @@
     [self updateStory:self.book.story];
     
     // Action button.
-    if (![self.book.user isEqual:self.currentUser]) {
+    if (!self.featuredMode && ![self.book.user isEqual:self.currentUser]) {
         [self initFriendsButton];
     }
 }

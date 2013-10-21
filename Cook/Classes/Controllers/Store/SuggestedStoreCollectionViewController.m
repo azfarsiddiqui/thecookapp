@@ -36,7 +36,7 @@
                          }];
 }
 
-- (BOOL)addMode {
+- (BOOL)featuredMode {
     return NO;
 }
 
