@@ -140,6 +140,7 @@
 
 + (UIColor *)textColourForCover:(NSString *)cover {
     NSString *hexValue = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Covers.%@.TextHex", cover]];
+    hexValue = ([hexValue length] > 0) ? hexValue : @"333333";
     return [UIColor colorWithHexString:hexValue];
 }
 
