@@ -14,6 +14,7 @@
 
 typedef void(^LoginSuccessBlock)(CKUser *user);
 typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance);
+typedef void(^UserInfoSuccessBlock)(NSUInteger friendCount, NSUInteger followCount, NSUInteger recipeCount, BOOL areFriends);
 
 typedef NS_ENUM(NSUInteger, DashTheme) {
     DashThemeReflect,
@@ -64,6 +65,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 - (void)requestFriend:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)ignoreFriendRequestFrom:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)saveCoverPhoto:(UIImage *)coverPhoto completion:(ObjectSuccessBlock)completion;
+- (void)userInfoCompletion:(UserInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 - (PFFile *)parseCoverPhotoFile;
 - (BOOL)hasProfilePhoto;
 - (NSString *)friendlyName;

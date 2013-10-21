@@ -53,7 +53,7 @@
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     textLabel.backgroundColor = [UIColor clearColor];
-    textLabel.textColor = [UIColor colorWithHexString:@"333333"];
+    textLabel.textColor = [UIColor whiteColor];
     textLabel.text = text;
     textLabel.font = buttonFont;
     textLabel.alpha = [self textAlphaForEnabled:enabled];
@@ -141,7 +141,8 @@
 }
 
 - (CGFloat)textAlphaForEnabled:(BOOL)enabled {
-    return enabled ? 1.0 : 0.5;
+//    return 1.0;
+    return enabled ? 1.0 : 0.7;
 }
 
 - (CGFloat)iconAlphaForEnabled:(BOOL)enabled {

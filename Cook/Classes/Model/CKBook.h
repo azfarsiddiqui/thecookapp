@@ -16,6 +16,7 @@
 typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
                                        NSDate *bookLastAccessedDate);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
+typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, NSUInteger recipeCount, BOOL followed);
 
 @interface CKBook : CKModel
 
@@ -63,6 +64,7 @@ typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *follo
 - (void)isFollowedByUser:(CKUser *)user success:(BoolObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)deletePage:(NSString *)page success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)renamePage:(NSString *)page toPage:(NSString *)toPage success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
+- (void)bookInfoCompletion:(BookInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure;
 
 // Saves.
 - (void)saveWithImage:(UIImage *)image completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

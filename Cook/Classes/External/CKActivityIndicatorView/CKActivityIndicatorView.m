@@ -25,6 +25,7 @@
     if (self = [super init]) {
         self.style = style;
         self.currentTransform = CGAffineTransformIdentity;
+        self.userInteractionEnabled = NO;
         
         UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[self backgroundImageForStyle:style]];
         self.frame = backgroundView.frame;

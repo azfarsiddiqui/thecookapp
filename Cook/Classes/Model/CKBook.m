@@ -601,6 +601,25 @@
                                 }];
 }
 
+- (void)bookInfoCompletion:(BookInfoSuccessBlock)completion failure:(ObjectFailureBlock)failure; {
+    [PFCloud callFunctionInBackground:@"bookInfo"
+                       withParameters:@{ @"bookId" : self.objectId, @"userId" : self.user.objectId }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    
+                                    NSUInteger followCount = [[results objectForKey:@"followCount"] unsignedIntegerValue];
+                                    BOOL areFriends = [[results objectForKey:@"friends"] boolValue];
+                                    NSUInteger recipeCount = [[results objectForKey:@"recipeCount"] unsignedIntegerValue];
+                                    BOOL followed = [[results objectForKey:@"followed"] boolValue];
+                                    
+                                    if (!error) {
+                                        completion(followCount, areFriends, recipeCount, followed);
+                                    } else {
+                                        DLog(@"Error loading book info: %@", [error localizedDescription]);
+                                    }
+                                }];
+    
+}
+
 - (void)saveWithImage:(UIImage *)image completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     if (image) {
         DLog(@"Saving book with image.");
