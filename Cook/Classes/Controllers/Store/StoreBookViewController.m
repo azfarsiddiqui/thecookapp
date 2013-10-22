@@ -109,7 +109,7 @@
     }
     
     [self.view addSubview:self.bookCoverView];
-    
+    [EventHelper postStatusBarChangeForLight:YES];
     // Move the book to the center of the screen.
     [UIView animateWithDuration:0.2
                           delay:0.0
@@ -285,7 +285,7 @@
     
     self.animating = YES;
     CGFloat scale = [self storeScale];
-    
+    [EventHelper postStatusBarChangeForLight:NO];
     // Transition book back to shelf.
     [UIView animateWithDuration:0.2
                           delay:0.0
