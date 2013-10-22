@@ -55,7 +55,7 @@
 
 @property (nonatomic, strong) CKBook *myBook;
 @property (nonatomic, strong) NSMutableArray *followBooks;
-@property (nonatomic, strong) NSDictionary *followBookUpdates;
+@property (nonatomic, strong) NSMutableDictionary *followBookUpdates;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, assign) BOOL deleteMode;
 @property (nonatomic, assign) BOOL animating;
@@ -264,6 +264,7 @@
     if (!open) {
         cell.bookCoverView.hidden = NO;
     } else {
+        [self clearUpdatesForBook:cell.bookCoverView.book];
         [cell.bookCoverView clearUpdates];
     }
     
@@ -1000,7 +1001,7 @@
     
     [CKBook dashboardFollowBooksSuccess:^(NSArray *followBooks, NSDictionary *followBookUpdates) {
         self.followBooks = [NSMutableArray arrayWithArray:followBooks];
-        self.followBookUpdates = followBookUpdates;
+        self.followBookUpdates = [NSMutableDictionary dictionaryWithDictionary:followBookUpdates];
         
         NSArray *indexPathsToInsert = [self indexPathsForFollowBooks];
         
@@ -1711,6 +1712,10 @@
 
 - (NSInteger)updatesForBook:(CKBook *)book {
     return [[self.followBookUpdates objectForKey:book.objectId] integerValue];
+}
+
+- (void)clearUpdatesForBook:(CKBook *)book {
+    [self.followBookUpdates removeObjectForKey:book.objectId];
 }
 
 @end
