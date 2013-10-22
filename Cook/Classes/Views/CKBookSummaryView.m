@@ -362,7 +362,7 @@
     [self updateStory:self.book.story];
     
     // Action button.
-    if (!self.featuredMode && ![self.book.user isEqual:self.currentUser]) {
+    if (self.storeMode && !self.featuredMode && ![self.book.user isEqual:self.currentUser]) {
         [self initFriendsButton];
     }
 }
