@@ -261,6 +261,11 @@
         return [recipe.page CK_equalsIgnoreCase:page];
     }]];
     
+    // Remove references to the pinned recipe.
+    self.recipePins = [NSMutableArray arrayWithArray:[self.recipePins reject:^BOOL(CKRecipePin *existingRecipePin) {
+        return [existingRecipePin.page isEqualToString:page];
+    }]];
+    
     // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
     self.bookUpdatedBlock = completion;
     
@@ -282,6 +287,17 @@
     DLog(@"Renaming [%d] recipes to [%@]", [recipesToRename count], page);
     [recipesToRename each:^(CKRecipe *recipe) {
         recipe.page = page;
+    }];
+    
+    // Rename the page in existing pins..
+    NSArray *pinnedRecipesToRename = [self.recipePins select:^BOOL(CKRecipePin *recipePin) {
+        return [recipePin.page CK_equalsIgnoreCase:fromPage];
+    }];
+    
+    // Renaming the recipe pins locally, as server-side has already occured.
+    DLog(@"Renaming [%d] recipePins to [%@]", [pinnedRecipesToRename count], page);
+    [pinnedRecipesToRename each:^(CKRecipePin *recipePin) {
+        recipePin.page = page;
     }];
     
     // Remember the recipe that was actioned.
