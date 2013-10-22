@@ -306,7 +306,7 @@
 - (void)shareMessage
 {
     MFMessageComposeViewController *messageDialog = [[MFMessageComposeViewController alloc] init];
-    [messageDialog setBody:[NSString stringWithFormat:@"%@ %@", [self shareText], self.shareURL.absoluteString]];
+    [messageDialog setBody:[self shareText]];
     messageDialog.messageComposeDelegate = self;
     [self presentViewController:messageDialog animated:YES completion:nil];
 }
