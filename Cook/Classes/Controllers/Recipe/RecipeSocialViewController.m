@@ -52,6 +52,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, strong) NSMutableArray *comments;
 @property (nonatomic, strong) NSMutableArray *likes;
 @property (nonatomic, assign) BOOL loading;
+@property (nonatomic, assign) BOOL dataLoaded;
 
 // Posting comments.
 @property (nonatomic, strong) RecipeCommentCell *editingCell;
@@ -107,6 +108,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor clearColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.likesCollectionView];
     [self.view addSubview:self.collectionView];
@@ -188,6 +190,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 - (void)cookNavigationControllerViewDidAppear:(NSNumber *)boolNumber {
     if ([boolNumber boolValue]) {
+        
         [self loadData];
         
         // Only show context if this was nested.
@@ -562,6 +565,9 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 #pragma mark - Private methods
 
 - (void)loadData {
+    if (self.dataLoaded) {
+        return;
+    }
     
     [self.recipe commentsLikesWithCompletion:^(NSArray *comments, NSArray *likes) {
         DLog(@"Loaded [%d] comments", [comments count]);
@@ -605,6 +611,8 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
             } completion:^(BOOL finished) {
             }];
         }
+        
+        self.dataLoaded = YES;
         
     } failure:^(NSError *error) {
         

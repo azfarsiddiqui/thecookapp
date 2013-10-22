@@ -22,13 +22,13 @@
 
 @property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) CKBook *book;
-@property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *summaryContainerView;
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, assign) BOOL fullImageLoaded;
 @property (nonatomic, strong) CKStoreBookCoverView *bookCoverView;
+@property (nonatomic, assign) BOOL dataLoaded;
 
 @end
 
@@ -50,7 +50,8 @@
 }
 
 - (void)viewDidLoad {
-    self.view.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
+    self.view.backgroundColor = [UIColor clearColor];
+    
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
     self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
     if (self.cookNavigationController) {
@@ -99,7 +100,6 @@
     if (![boolNumber boolValue]) {
         self.backButton.alpha = 0.0;
         self.summaryContainerView.alpha = 0.0;
-        self.imageView.alpha = 0.0;
     }
 }
 
@@ -154,38 +154,18 @@
 
 #pragma mark - Private methods
 
-- (void)initBackground {
-    
-    // Background container view.
-    UIView *backgroundContainerView = [[UIView alloc] initWithFrame:self.view.bounds];
-    backgroundContainerView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:backgroundContainerView];
-    
-    // Background imageView.
-    UIOffset motionOffset = [ViewHelper standardMotionOffset];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:nil];
-    imageView.frame = (CGRect) {
-        backgroundContainerView.bounds.origin.x - motionOffset.horizontal,
-        backgroundContainerView.bounds.origin.y - motionOffset.vertical,
-        backgroundContainerView.bounds.size.width + (motionOffset.horizontal * 2.0),
-        backgroundContainerView.bounds.size.height + (motionOffset.vertical * 2.0)
-    };
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    [backgroundContainerView addSubview:imageView];
-    imageView.alpha = 0.0;
-    self.imageView = imageView;
-    
-    // Motion effects.
-    [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
-}
-
 - (void)loadData {
+    if (self.dataLoaded) {
+        return;
+    }
+    
     [self.activityView startAnimating];
     [self.view addSubview:self.activityView];
     
     [CKBook bookForUser:self.user
                 success:^(CKBook *book){
                     self.book = book;
+                    self.dataLoaded = YES;
                     [self displayBook];
                 }
                 failure:^(NSError *error){
@@ -248,12 +228,11 @@
     if ([self.book hasCoverPhoto]) {
         DLog(@"Loading book cover photo");
         
-        CGSize size = self.imageView.bounds.size;
         if (self.cookNavigationController) {
-            size = self.cookNavigationController.backgroundImageView.frame.size;
+            CGSize size = self.cookNavigationController.backgroundImageView.bounds.size;
+            [[CKPhotoManager sharedInstance] imageForBook:self.book size:size];
         }
         
-        [[CKPhotoManager sharedInstance] imageForBook:self.book size:size];
     }
 }
 
@@ -276,23 +255,7 @@
 
 - (void)loadImage:(UIImage *)image {
     if (self.cookNavigationController) {
-        [self.cookNavigationController loadBackgroundImage:image animation:^{
-            self.view.backgroundColor = [UIColor clearColor];
-        }];
-    } else {
-        self.imageView.image = image;
-        if (self.imageView.alpha == 0.0) {
-            
-            // Fade it in.
-            [UIView animateWithDuration:0.6
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 self.imageView.alpha = 1.0;
-                             }
-                             completion:^(BOOL finished) {
-                             }];
-        }
+        [self.cookNavigationController loadBackgroundImage:image];
     }
 }
 
