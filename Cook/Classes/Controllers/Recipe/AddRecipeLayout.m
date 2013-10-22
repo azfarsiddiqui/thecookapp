@@ -235,7 +235,12 @@
     NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
     if (numItems > 0) {
         
-        NSInteger numRows = (numItems / kMaxItemsPerRow) + 1;
+        NSInteger numRows = 0;
+        if (numItems % kMaxItemsPerRow == 0) {
+            numRows = (numItems / kMaxItemsPerRow);
+        } else {
+            numRows = (numItems / kMaxItemsPerRow) + 1;
+        }
         
         // Width.
         NSInteger numCols = kMaxItemsPerRow;

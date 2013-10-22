@@ -24,4 +24,8 @@
     return [self.parseObject objectForKey:kRecipePinPage];
 }
 
+- (void)setPage:(NSString *)page {
+    [self.parseObject setObject:page forKey:kRecipePinPage];
+}
+
 @end
