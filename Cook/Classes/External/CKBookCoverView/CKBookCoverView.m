@@ -304,8 +304,8 @@
     if (!_updatesIcon) {
         _updatesIcon = [[UIImageView alloc] initWithImage:[CKBookCover updatesIconImageForCover:self.book.cover]];
         _updatesIcon.frame = (CGRect){
-            self.bounds.size.width - _updatesIcon.frame.size.width + 30.0,
-            self.bounds.origin.y - 28.0,
+            self.bounds.size.width - _updatesIcon.frame.size.width + 26.0,
+            self.bounds.origin.y - 32.0,
             _updatesIcon.frame.size.width,
             _updatesIcon.frame.size.height
         };
