@@ -1039,7 +1039,6 @@
     } else {
         [self.snapshotView removeFromSuperview];
     }
-    self.panEnabled = !hide;
     self.storeViewController.view.hidden = hide;
     self.benchtopViewController.view.hidden = hide;
     self.settingsViewController.view.hidden = hide;
