@@ -512,7 +512,8 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     // Update page.
     self.pageLabel.text = [self.recipeDetails.page uppercaseString];
     [self.pageLabel sizeToFit];
-    self.pageLabel.center = self.profilePhotoView.center;
+    UIImage *pageIconImage = [UIImage imageNamed:@"cook_customise_icon_page"];
+    self.pageLabel.center = CGPointMake(self.profilePhotoView.center.x + pageIconImage.size.width/2, self.profilePhotoView.center.y);
     CGRect pageLabelSize = CGRectIntegral(self.pageLabel.frame);
     self.pageLabel.frame = CGRectMake(pageLabelSize.origin.x, pageLabelSize.origin.y, pageLabelSize.size.width, pageLabelSize.size.height + 6);
     [self.editingHelper updateEditingView:self.pageLabel];
