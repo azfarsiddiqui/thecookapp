@@ -24,7 +24,7 @@
 - (void)showLoading:(BOOL)loading;
 - (void)showAdd;
 - (void)showFollowed;
-- (void)showPrivate;
+- (void)showLocked;
 - (void)showDownloadable;
 - (void)enable:(BOOL)enable interactable:(BOOL)interactable;
 

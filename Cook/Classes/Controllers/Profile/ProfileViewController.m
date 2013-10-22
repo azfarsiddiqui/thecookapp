@@ -69,7 +69,7 @@
 }
 
 - (void)bookSummaryViewBookIsPrivate {
-    [self.bookCoverView showPrivate];
+    [self.bookCoverView showLocked];
 }
 
 - (void)bookSummaryViewBookIsDownloadable {

@@ -463,7 +463,15 @@
         [self.numRecipesStatView updateNumber:recipeCount];
         [self updateStatViews];
         
-        if (followed) {
+        if (![self.currentUser isSignedIn]) {
+        
+            // Inform delegate of book is locked for non-signed in users.
+            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
+                
+                [self.delegate bookSummaryViewBookIsPrivate];
+            }
+            
+        } else if (followed) {
             
             // Inform delegate of book is followed.
             if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsFollowed)]) {
@@ -496,7 +504,13 @@
         }
         
     } failure:^(NSError *error) {
-        // Ignore failure.
+        
+        // Inform delegate of book is locked for non-signed in users.
+        if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
+            
+            [self.delegate bookSummaryViewBookIsPrivate];
+        }
+
     }];
     
 }
