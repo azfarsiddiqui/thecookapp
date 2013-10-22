@@ -84,7 +84,7 @@
             CGRect actionActivityFrame = self.bookActionActivityView.frame;
             actionActivityFrame.origin = (CGPoint) {
                 floorf((self.bookActionButton.bounds.size.width - actionActivityFrame.size.width) / 2.0),
-                floorf((self.bookActionButton.bounds.size.height - actionActivityFrame.size.height) / 2.0) - 5.0
+                floorf((self.bookActionButton.bounds.size.height - actionActivityFrame.size.height) / 2.0) - 8.0
             };
             self.bookActionActivityView.frame = actionActivityFrame;
             [self.bookActionButton addSubview:self.bookActionActivityView];
@@ -137,8 +137,7 @@
 
 - (UIButton *)bookActionButton {
     if (!_bookActionButton && ![self.book isOwner]) {
-        _bookActionButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash.png"]
-                                          selectedImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash_onpress.png"]
+        _bookActionButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_blank.png"]
                                                  target:self selector:@selector(actionButtonTapped:)];
         CGRect actionButtonFrame = _bookActionButton.frame;
         actionButtonFrame.origin = (CGPoint) {
