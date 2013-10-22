@@ -16,7 +16,7 @@
 @property (nonatomic, strong) UIButton *bookActionButton;
 @property (nonatomic, strong) CKActivityIndicatorView *bookActionActivityView;
 @property (nonatomic, assign) BOOL followed;
-@property (nonatomic, assign) BOOL private;
+@property (nonatomic, assign) BOOL locked;
 @property (nonatomic, assign) BOOL animating;
 
 @end
@@ -84,7 +84,7 @@
             CGRect actionActivityFrame = self.bookActionActivityView.frame;
             actionActivityFrame.origin = (CGPoint) {
                 floorf((self.bookActionButton.bounds.size.width - actionActivityFrame.size.width) / 2.0),
-                floorf((self.bookActionButton.bounds.size.height - actionActivityFrame.size.height) / 2.0) - 5.0
+                floorf((self.bookActionButton.bounds.size.height - actionActivityFrame.size.height) / 2.0) - 8.0
             };
             self.bookActionActivityView.frame = actionActivityFrame;
             [self.bookActionButton addSubview:self.bookActionActivityView];
@@ -98,7 +98,7 @@
 
 - (void)showAdd {
     self.followed = NO;
-    self.private = NO;
+    self.locked = NO;
     [self.bookActionActivityView stopAnimating];
     [self updateActionButtonImage];
     [self enable:YES interactable:YES];
@@ -106,15 +106,15 @@
 
 - (void)showFollowed {
     self.followed = YES;
-    self.private = NO;
+    self.locked = NO;
     [self.bookActionActivityView stopAnimating];
     [self updateActionButtonImage];
     [self enable:YES interactable:NO];
 }
 
-- (void)showPrivate {
+- (void)showLocked {
     self.followed = NO;
-    self.private = YES;
+    self.locked = YES;
     [self.bookActionActivityView stopAnimating];
     [self updateActionButtonImage];
     [self enable:YES interactable:NO];
@@ -122,7 +122,7 @@
 
 - (void)showDownloadable {
     self.followed = NO;
-    self.private = NO;
+    self.locked = NO;
     [self.bookActionActivityView stopAnimating];
     [self updateActionButtonImage];
     [self enable:YES interactable:YES];
@@ -137,8 +137,7 @@
 
 - (UIButton *)bookActionButton {
     if (!_bookActionButton && ![self.book isOwner]) {
-        _bookActionButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash.png"]
-                                          selectedImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_addtodash_onpress.png"]
+        _bookActionButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_blank.png"]
                                                  target:self selector:@selector(actionButtonTapped:)];
         CGRect actionButtonFrame = _bookActionButton.frame;
         actionButtonFrame.origin = (CGPoint) {
@@ -162,7 +161,7 @@
         [self.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_added.png"]
                                          forState:UIControlStateNormal];
         [self.bookActionButton setBackgroundImage:nil forState:UIControlStateHighlighted];
-    } else if (self.private) {
+    } else if (self.locked) {
         [self.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_private.png"]
                                          forState:UIControlStateNormal];
         [self.bookActionButton setBackgroundImage:nil forState:UIControlStateHighlighted];

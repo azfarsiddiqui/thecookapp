@@ -362,7 +362,7 @@
     [self updateStory:self.book.story];
     
     // Action button.
-    if (!self.featuredMode && ![self.book.user isEqual:self.currentUser]) {
+    if (self.storeMode && !self.featuredMode && ![self.book.user isEqual:self.currentUser]) {
         [self initFriendsButton];
     }
 }
@@ -463,7 +463,15 @@
         [self.numRecipesStatView updateNumber:recipeCount];
         [self updateStatViews];
         
-        if (followed) {
+        if (![self.currentUser isSignedIn]) {
+        
+            // Inform delegate of book is locked for non-signed in users.
+            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
+                
+                [self.delegate bookSummaryViewBookIsPrivate];
+            }
+            
+        } else if (followed) {
             
             // Inform delegate of book is followed.
             if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsFollowed)]) {
@@ -477,7 +485,7 @@
                 [self.delegate bookSummaryViewBookIsDownloadable];
             }
             
-        } else if (recipeCount > 0) {
+        } else if (recipeCount > 0 || areFriends) {
             
             // Inform delegate that book is available to download.
             if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsDownloadable)]) {
@@ -496,7 +504,13 @@
         }
         
     } failure:^(NSError *error) {
-        // Ignore failure.
+        
+        // Inform delegate of book is locked for non-signed in users.
+        if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
+            
+            [self.delegate bookSummaryViewBookIsPrivate];
+        }
+
     }];
     
 }
