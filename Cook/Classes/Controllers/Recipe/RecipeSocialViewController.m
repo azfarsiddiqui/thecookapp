@@ -73,7 +73,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 @implementation RecipeSocialViewController
 
 #define kContentInsets      (UIEdgeInsets){ 30.0, 15.0, 50.0, 15.0 }
-#define kButtonInsets       (UIEdgeInsets){ 26.0, 10.0, 15.0, 12.0 }
+#define kButtonInsets       (UIEdgeInsets){ 30.0, 10.0, 15.0, 12.0 }
 #define kUnderlayMaxAlpha   0.7
 #define kHeaderCellId       @"HeaderCell"
 #define kFooterCellId       @"FooterCell"
@@ -550,7 +550,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         _likesCollectionView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin;
         _likesCollectionView.frame = (CGRect){
             self.view.bounds.size.width - size.width - kContentInsets.right - 7.0,
-            80.0,
+            84.0,
             size.width,
             self.view.bounds.size.height
         };
