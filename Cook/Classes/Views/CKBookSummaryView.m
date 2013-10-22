@@ -26,7 +26,7 @@
 #import "AnalyticsHelper.h"
 
 @interface CKBookSummaryView () <CKPhotoPickerViewControllerDelegate, CKUserProfilePhotoViewDelegate,
-    CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
+    CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) CKUser *currentUser;
@@ -42,6 +42,7 @@
 @property (nonatomic, strong) CKStatView *numRecipesStatView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
+@property (nonatomic, strong) UIAlertView *friendRequestAlert;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, assign) BOOL featuredMode;
 @property (nonatomic, assign) BOOL pendingAcceptance;
@@ -293,6 +294,22 @@
         }
     }
 }
+
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if (alertView == self.friendRequestAlert && buttonIndex == 1) {
+        
+        // Send Button tapped on delete.
+        [self sendFriendRequest];
+        
+    }
+    
+    // Clear alerts.
+    self.friendRequestAlert = nil;
+}
+
 
 #pragma mark - Private methods
 
@@ -659,26 +676,11 @@
 - (void)requestTapped:(id)sender {
     [self.actionButtonCaptionLabel removeFromSuperview];
     
-    if (self.pendingAcceptance) {
-        [self updateRequestButtonText:@"ACCEPTING" activity:YES enabled:NO];
-    } else {
-        [self updateRequestButtonText:@"SENDING" activity:YES enabled:NO];
-    }
-    [self.currentUser requestFriend:self.book.user
-                         completion:^{
-                             if (self.pendingAcceptance) {
-                                 [self updateButtonText:@"ACCEPTED" activity:NO
-                                                   icon:nil
-                                                enabled:NO target:nil selector:nil];
-                             } else {
-                                 [self updateButtonText:@"REQUESTED" activity:NO
-                                                   icon:nil
-                                                enabled:NO target:nil selector:nil];
-                             }
-                         }
-                            failure:^(NSError *error) {
-                                [self updateButtonText:@"UNABLE TO SEND" activity:NO icon:nil enabled:NO target:nil selector:nil];
-                            }];
+    self.friendRequestAlert = [[UIAlertView alloc] initWithTitle:@"Add Friend"
+                                                         message:[NSString stringWithFormat:@"Send %@ a friend request?", [self.book.user friendlyName]]
+                                                        delegate:self cancelButtonTitle:@"Cancel"
+                                               otherButtonTitles:@"Send", nil];
+    [self.friendRequestAlert show];
 }
 
 - (void)addTapped:(id)sender {
@@ -704,6 +706,29 @@
                    failure:^(NSError *error) {
                        [weakSelf updateAddButtonText:@"UNABLE TO ADD" activity:NO enabled:NO];
                    }];
+}
+
+- (void)sendFriendRequest {
+    if (self.pendingAcceptance) {
+        [self updateRequestButtonText:@"ACCEPTING" activity:YES enabled:NO];
+    } else {
+        [self updateRequestButtonText:@"SENDING" activity:YES enabled:NO];
+    }
+    [self.currentUser requestFriend:self.book.user
+                         completion:^{
+                             if (self.pendingAcceptance) {
+                                 [self updateButtonText:@"ACCEPTED" activity:NO
+                                                   icon:nil
+                                                enabled:NO target:nil selector:nil];
+                             } else {
+                                 [self updateButtonText:@"REQUESTED" activity:NO
+                                                   icon:nil
+                                                enabled:NO target:nil selector:nil];
+                             }
+                         }
+                            failure:^(NSError *error) {
+                                [self updateButtonText:@"UNABLE TO SEND" activity:NO icon:nil enabled:NO target:nil selector:nil];
+                            }];
 }
 
 @end
