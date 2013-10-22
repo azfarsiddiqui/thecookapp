@@ -33,7 +33,8 @@
 #import "ProfileViewController.h"
 
 @interface RecipeSocialViewController () <CKEditViewControllerDelegate, RecipeSocialCommentCellDelegate,
-    RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+    RecipeCommentBoxFooterViewDelegate, RecipeSocialLayoutDelegate, RecipeSocialLikeCellDelegate,
+UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) CKNavigationController *cookNavigationController;
 
@@ -275,6 +276,14 @@
 }
 
 - (void)recipeSocialCommentCellProfileRequestedForUser:(CKUser *)user {
+    if (self.cookNavigationController && user) {
+        [self.cookNavigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+    }
+}
+
+#pragma mark - RecipeSocialLikeCellDelegate methods
+
+- (void)recipeSocialLikeCellProfileRequestedForUser:(CKUser *)user {
     if (self.cookNavigationController && user) {
         [self.cookNavigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
     }
@@ -704,6 +713,7 @@
 - (UICollectionViewCell *)likeCellAtIndexPath:(NSIndexPath *)indexPath {
     RecipeLikeCell *likeCell = (RecipeLikeCell *)[self.likesCollectionView dequeueReusableCellWithReuseIdentifier:kLikeCellId
                                                                                                      forIndexPath:indexPath];
+    likeCell.delegate = self;
     CKRecipeLike *like = [self.likes objectAtIndex:indexPath.item];
     [likeCell configureLike:like];
     return likeCell;

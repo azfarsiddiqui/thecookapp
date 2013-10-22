@@ -10,7 +10,7 @@
 #import "CKUserProfilePhotoView.h"
 #import "CKRecipeLike.h"
 
-@interface RecipeLikeCell ()
+@interface RecipeLikeCell () <CKUserProfilePhotoViewDelegate>
 
 @property (nonatomic, strong) CKUserProfilePhotoView *profileView;
 
@@ -35,8 +35,17 @@
     if (!_profileView) {
         _profileView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeMini];
         _profileView.frame = self.contentView.bounds;
+        _profileView.delegate = self;
     }
     return _profileView;
+}
+
+#pragma mark - CKUserProfilePhotoViewDelegate methods
+
+- (void)userProfilePhotoViewTappedForUser:(CKUser *)user {
+    if ([self.delegate respondsToSelector:@selector(recipeSocialLikeCellProfileRequestedForUser:)]) {
+        [self.delegate recipeSocialLikeCellProfileRequestedForUser:user];
+    }
 }
 
 @end

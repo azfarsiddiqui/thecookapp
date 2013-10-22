@@ -9,8 +9,17 @@
 #import <UIKit/UIKit.h>
 
 @class CKRecipeLike;
+@class CKUser;
+
+@protocol RecipeSocialLikeCellDelegate <NSObject>
+
+- (void)recipeSocialLikeCellProfileRequestedForUser:(CKUser *)user;
+
+@end
 
 @interface RecipeLikeCell : UICollectionViewCell
+
+@property (nonatomic, weak) id<RecipeSocialLikeCellDelegate> delegate;
 
 - (void)configureLike:(CKRecipeLike *)like;
 
