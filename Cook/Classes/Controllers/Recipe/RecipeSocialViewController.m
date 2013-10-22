@@ -133,6 +133,21 @@
         
         [self.view addSubview:self.likeButton];
     }
+    else if (self.recipe.numLikes > 0)
+    {
+        self.likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
+        self.likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+        
+        // Reposition it.
+        self.likeButton.frame = (CGRect){
+            self.view.frame.size.width - kButtonInsets.right - self.likeButton.frame.size.width,
+            kButtonInsets.top,
+            self.likeButton.frame.size.width,
+            self.likeButton.frame.size.height};
+        self.likeButton.enabled = NO;
+        [self.likeButton markAsLiked:YES];
+        [self.view addSubview:self.likeButton];
+    }
     
     if (self.cookNavigationController) {
         self.collectionView.alpha = 0.0;
