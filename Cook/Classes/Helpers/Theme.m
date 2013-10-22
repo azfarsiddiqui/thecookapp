@@ -424,7 +424,7 @@
 }
 
 + (UIFont *)bookSocialTitleFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:32.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:34.0];
 }
 
 + (UIColor *)bookSocialTitleColour {
