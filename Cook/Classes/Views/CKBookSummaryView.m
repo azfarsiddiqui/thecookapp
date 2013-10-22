@@ -477,7 +477,7 @@
                 [self.delegate bookSummaryViewBookIsDownloadable];
             }
             
-        } else if (recipeCount > 0) {
+        } else if (recipeCount > 0 || areFriends) {
             
             // Inform delegate that book is available to download.
             if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsDownloadable)]) {
