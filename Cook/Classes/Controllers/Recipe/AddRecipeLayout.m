@@ -23,6 +23,7 @@
 
 @property (nonatomic, strong) NSMutableArray *insertedIndexPaths;
 @property (nonatomic, strong) NSMutableArray *deletedIndexPaths;
+@property (nonatomic, assign) CGFloat topAnchorOffset;
 
 @end
 
@@ -121,16 +122,16 @@
     
     // Always contain all supplementary views and effects.
     NSMutableArray* layoutAttributes = [NSMutableArray arrayWithObject:self.headerAttributes];
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
-        [self applyStickyHeader:attributes contentOffset:contentOffset bounds:bounds];
-    }
+//    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+//        [self applyStickyHeader:attributes contentOffset:contentOffset bounds:bounds];
+//    }
     
     // Item cells.
     for (UICollectionViewLayoutAttributes *attributes in self.itemsLayoutAttributes) {
         
         // Comments.
         if (CGRectIntersectsRect(visibleFrame, attributes.frame)) {
-            [self applyCellsFading:attributes contentOffset:contentOffset bounds:bounds];
+//            [self applyCellsFading:attributes contentOffset:contentOffset bounds:bounds];
             [layoutAttributes addObject:attributes];
         }
         
@@ -176,15 +177,13 @@
     
     CGSize headerSize = [ModalOverlayHeaderView unitSize];
     CGSize requiredSizeForCells = [self requiredSizeForCells];
+    CGFloat requiredHeight = headerSize.height + requiredSizeForCells.height;
+    NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
     
     CGFloat topOffset = kContentInsets.top;
-    CGFloat yOffset = floorf((self.collectionView.bounds.size.height - requiredSizeForCells.height) / 2.0) - headerSize.height;
-    NSInteger numItems = [self.collectionView numberOfItemsInSection:0];
-    if (numItems > 0) {
-        yOffset = MAX(topOffset, yOffset);
-    } else {
-        yOffset = floorf((self.collectionView.bounds.size.height - headerSize.height) / 2.0) - headerSize.height;
-    }
+    CGFloat yOffset = floorf((self.collectionView.bounds.size.height - requiredHeight) / 2.0);
+    yOffset = MAX(topOffset, yOffset);
+    self.topAnchorOffset = yOffset;
     
     // Header layout.
     NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
@@ -285,10 +284,8 @@
 - (CGRect)adjustedFrameForHeaderFrame:(CGRect)frame contentOffset:(CGPoint)contentOffset
                                bounds:(CGRect)bounds {
     CGRect adjustedFrame = frame;
-    if (contentOffset.y > 0) {
+    if (contentOffset.y > frame.origin.y) {
         adjustedFrame.origin.y = contentOffset.y;
-    } else {
-        adjustedFrame.origin.y = 0.0;
     }
     return adjustedFrame;
 }
