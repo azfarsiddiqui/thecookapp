@@ -18,6 +18,7 @@
 
 - (void)loadBenchtop:(BOOL)load;
 - (void)enable:(BOOL)enable;
+- (void)bookAboutToClose;
 - (void)bookWillOpen:(BOOL)open;
 - (void)bookDidOpen:(BOOL)open;
 - (void)showLoginViewSignUp:(BOOL)signUp;

@@ -190,7 +190,6 @@
 #pragma mark - BookCoverViewControllerDelegate methods
 
 - (void)bookCoverViewWillOpen:(BOOL)open {
-    
     // Disable panning on book open.
     self.panEnabled = !open;
     
@@ -293,6 +292,7 @@
 }
 
 - (void)bookNavigationControllerCloseRequestedWithBinder {
+    [self.benchtopViewController bookAboutToClose];
     [self performCloseBookAnimationWithBinder:YES];
 }
 

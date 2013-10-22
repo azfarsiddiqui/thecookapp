@@ -111,7 +111,7 @@
     shareTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     shareTitleLabel.textAlignment = NSTextAlignmentCenter;
     shareTitleLabel.text = @"SHARE RECIPE";
-    shareTitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:38.0];
+    shareTitleLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Light" size:40.0];
     shareTitleLabel.textColor = [UIColor whiteColor];
     [middleContentView addSubview:shareTitleLabel];
     
