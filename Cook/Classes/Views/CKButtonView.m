@@ -23,7 +23,7 @@
 @implementation CKButtonView
 
 #define kIconOffset         20.0
-#define kTextFont           [UIFont fontWithName:@"BrandonGrotesque-Medium" size:13.0]
+#define kTextFont           [UIFont fontWithName:@"BrandonGrotesque-Regular" size:14.0]
 #define kIconTextGap        5.0
 #define kActivityTextGap    10.0
 
