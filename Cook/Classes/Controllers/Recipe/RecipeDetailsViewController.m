@@ -1387,6 +1387,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
                              self.editButton.alpha = fullscreen ? 0.0 : 1.0;
                              self.shareButton.alpha = fullscreen ? 0.0 : 1.0;
                              self.likeButton.alpha = fullscreen ? 0.0 : 1.0;
+                             self.pinButton.alpha = fullscreen ? 0.0 : 1.0;
                          }
                          completion:^(BOOL finished)  {
                              self.animating = NO;
