@@ -316,8 +316,10 @@
 - (UILabel *)updatesLabel {
     if (!_updatesLabel) {
         _updatesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:25.0];
+        _updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:28.0];
         _updatesLabel.textColor = [UIColor whiteColor];
+        _updatesLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+        _updatesLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.05];
     }
     return _updatesLabel;
 }
