@@ -251,6 +251,16 @@
     [self hideIntroViewsAsRequired];
 }
 
+- (void)bookAboutToClose
+{
+    //Hide cells right before close animation so they can fade in nicely
+    //Part of the workaround for wierd device lock->missing cells issue
+    NSArray *visibleCells = [self.collectionView visibleCells];
+    [visibleCells each:^(UICollectionViewCell *cell) {
+        cell.alpha = 0.0;
+    }];
+}
+
 - (void)bookWillOpen:(BOOL)open {
     BenchtopBookCoverViewCell *cell = [self bookCellAtIndexPath:self.selectedIndexPath];
     cell.bookCoverView.hidden = YES;
@@ -266,14 +276,14 @@
     } else {
         [self clearUpdatesForBook:cell.bookCoverView.book];
         [cell.bookCoverView clearUpdates];
+        
+        // Reenable cells in dashboard to prevent wierd device lock->missing cells issue
+        cell.bookCoverView.hidden = NO;
+        [self showBookCell:cell show:YES];
     }
     
     // Enable panning based on book opened or not.
     [self.delegate panEnabledRequested:!open];
-    
-    // Reenable cells in dashboard to prevent wierd device lock->missing cells issue
-    cell.bookCoverView.hidden = NO;
-    [self showBookCell:cell show:YES];
 }
 
 #pragma mark - UIScrollViewDelegate methods
