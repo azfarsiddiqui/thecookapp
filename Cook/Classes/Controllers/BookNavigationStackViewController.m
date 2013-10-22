@@ -243,6 +243,9 @@
         return [recipePin.objectId isEqualToString:existingRecipePin.objectId];
     }]];
     
+    // Remember the page.
+    self.self.saveOrUpdatedPage = recipePin.page;
+    
     // Remember the block, which will be invoked in the prepareLayoutDidFinish method after layout completes.
     self.bookUpdatedBlock = completion;
     
@@ -507,7 +510,9 @@
             
         } else if (self.saveOrUpdatedPage != nil) {
         
-            // Do nothing, stay at the page.
+            // Get the index of the page within the book.
+            NSString *page = self.saveOrUpdatedPage;
+            [self scrollToPage:page animated:NO];
         
         } else {
             
