@@ -14,7 +14,6 @@
 #import "NotificationsFlowLayout.h"
 #import "MRCEnumerable.h"
 #import "CKActivityIndicatorView.h"
-#import "ModalOverlayHelper.h"
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
 #import "CKUser.h"
@@ -54,6 +53,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.closeButton];
     [self loadData];

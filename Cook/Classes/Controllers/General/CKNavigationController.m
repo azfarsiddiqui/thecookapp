@@ -9,13 +9,16 @@
 #import "CKNavigationController.h"
 #import "RecipeDetailsViewController.h"
 #import "BookCoverPhotoViewController.h"
+#import "ModalOverlayHelper.h"
 #import "ViewHelper.h"
 
 @interface CKNavigationController ()
 
+@property (nonatomic, strong) UIView *underlayView;
 @property (nonatomic, strong) NSMutableArray *viewControllers;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, strong) UIViewController *contextModalViewController;
+@property (nonatomic, strong) UIView *backgroundImageTopShadowView;
 
 @end
 
@@ -44,6 +47,9 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    
+    // Underlay view.
+    [self.view addSubview:self.underlayView];
     
     UIViewController *rootViewController = [self.viewControllers firstObject];
     rootViewController.view.frame = self.view.bounds;
@@ -167,9 +173,12 @@
         // Unhide previous view controller be slid back in.
         previousViewController.view.hidden = NO;
 
-        // Inform view will disappear.
+        // Inform viewControllers of popping.
         if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewWillAppear:)]) {
             [poppedViewController performSelector:@selector(cookNavigationControllerViewWillAppear:) withObject:@(NO)];
+        }
+        if ([previousViewController respondsToSelector:@selector(cookNavigationControllerViewWillAppear:)]) {
+            [previousViewController performSelector:@selector(cookNavigationControllerViewWillAppear:) withObject:@(YES)];
         }
         
         [UIView animateWithDuration:0.3
@@ -187,13 +196,20 @@
                              if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewAppearing:)]) {
                                  [poppedViewController performSelector:@selector(cookNavigationControllerViewAppearing:) withObject:@(NO)];
                              }
+                             if ([previousViewController respondsToSelector:@selector(cookNavigationControllerViewAppearing:)]) {
+                                 [previousViewController performSelector:@selector(cookNavigationControllerViewAppearing:) withObject:@(YES)];
+                             }
+                             
                              
                          }
                          completion:^(BOOL finished) {
                              
-                             // Inform view didAppear.
+                             // Inform view didAppear NO.
                              if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
                                  [poppedViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(NO)];
+                             }
+                             if ([previousViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
+                                 [previousViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(YES)];
                              }
                              
                              // Remove the poppedViewController's view.
@@ -208,9 +224,12 @@
         
     } else {
         
-        // Inform view didAppear.
+        // Inform view didAppear NO.
         if ([poppedViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
             [poppedViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(NO)];
+        }
+        if ([previousViewController respondsToSelector:@selector(cookNavigationControllerViewDidAppear:)]) {
+            [previousViewController performSelector:@selector(cookNavigationControllerViewDidAppear:) withObject:@(YES)];
         }
         
         // Remove the poppedViewController's view.
@@ -271,7 +290,9 @@
                      completion:^(BOOL finished)  {
                          [self.contextModalViewController.view removeFromSuperview];
                          self.contextModalViewController = nil;
-                         self.backgroundImageView = nil;
+                         
+                         self.backgroundImageView.image = nil;
+                         [self.backgroundImageView removeFromSuperview];
                      }];
 }
 
@@ -282,25 +303,26 @@
 }
 
 - (void)loadBackgroundImage:(UIImage *)backgroundImage animation:(void (^)())animation {
-    if (!self.backgroundImageView) {
+    
+    if (!self.backgroundImageView.superview) {
+        self.backgroundImageView.alpha = 0.0;
+        [self.view insertSubview:self.backgroundImageView aboveSubview:self.underlayView];
         
-        // Background imageView.
-        UIOffset motionOffset = [ViewHelper standardMotionOffset];
-        self.backgroundImageView = [[UIImageView alloc] initWithImage:nil];
-        self.backgroundImageView.frame = (CGRect) {
-            self.view.bounds.origin.x - motionOffset.horizontal,
-            self.view.bounds.origin.y - motionOffset.vertical,
-            self.view.bounds.size.width + (motionOffset.horizontal * 2.0),
-            self.view.bounds.size.height + (motionOffset.vertical * 2.0)
-        };
-        self.backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-        [self.view addSubview:self.backgroundImageView];
-        [self.view sendSubviewToBack:self.backgroundImageView];
+    }
+    
+    if (!self.backgroundImageTopShadowView) {
+        self.backgroundImageTopShadowView = [ViewHelper topShadowViewForView:self.backgroundImageView];
+        [self.backgroundImageView addSubview:self.backgroundImageTopShadowView];
     }
     
     if (self.backgroundImageView.image) {
+        
+        // Just replace over the top if there was a prior image (thumbnail).
+        self.backgroundImageView.alpha = 1.0;
         self.backgroundImageView.image = backgroundImage;
+        
     } else {
+        
         // Fade it in.
         self.backgroundImageView.alpha = 0.0;
         self.backgroundImageView.image = backgroundImage;
@@ -314,6 +336,33 @@
                          completion:^(BOOL finished) {
                          }];
     }
+}
+
+#pragma mark - Properties
+
+- (UIView *)underlayView {
+    if (!_underlayView) {
+        _underlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        _underlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        _underlayView.backgroundColor = [ModalOverlayHelper modalOverlayBackgroundColour];
+    }
+    return _underlayView;
+}
+
+- (UIImageView *)backgroundImageView {
+    if (!_backgroundImageView) {
+        UIOffset motionOffset = [ViewHelper standardMotionOffset];
+        _backgroundImageView = [[UIImageView alloc] initWithImage:nil];
+        _backgroundImageView.frame = (CGRect) {
+            self.view.bounds.origin.x - motionOffset.horizontal,
+            self.view.bounds.origin.y - motionOffset.vertical,
+            self.view.bounds.size.width + (motionOffset.horizontal * 2.0),
+            self.view.bounds.size.height + (motionOffset.vertical * 2.0)
+        };
+        _backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    }
+    return _backgroundImageView;
 }
 
 #pragma mark - Private methods
@@ -357,7 +406,7 @@
     // Prepare the modalVC to be transitioned.
     modalViewController.view.frame = self.view.bounds;
     modalViewController.view.alpha = 0.0;
-    [self.view insertSubview:modalViewController.view atIndex:0];
+    [self.view insertSubview:modalViewController.view belowSubview:self.underlayView];
     
     // Sets the modal view delegate for close callbacks.
     [modalViewController performSelector:@selector(setModalViewControllerDelegate:) withObject:self];
