@@ -149,7 +149,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
             kButtonInsets.top,
             self.likeButton.frame.size.width,
             self.likeButton.frame.size.height};
-        self.likeButton.enabled = NO;
+        self.likeButton.userInteractionEnabled = NO;
         [self.likeButton markAsLiked:YES];
         [self.view addSubview:self.likeButton];
     }
