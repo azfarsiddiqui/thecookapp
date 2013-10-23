@@ -397,7 +397,7 @@
 - (void)bookRecipesSuccess:(BookRecipesSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"bookRecipes_v1_1"
-                       withParameters:@{ @"bookId": self.objectId }
+                       withParameters:@{ @"bookId": self.objectId, @"userId": self.user.objectId }
                                 block:^(NSDictionary *recipeResults, NSError *error) {
                                     if (!error) {
                                         
