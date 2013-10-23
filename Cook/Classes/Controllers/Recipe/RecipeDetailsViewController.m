@@ -1906,8 +1906,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         }];
         
     } else {
-        [self enableEditModeWithoutInformingRecipeDetailsView:enable];
-        [self.recipeDetailsView enableEditMode:enable];
+        [self snapToViewport:SnapViewportBottom completion:^{
+            [self enableEditModeWithoutInformingRecipeDetailsView:enable];
+            [self.recipeDetailsView enableEditMode:enable];
+        }];
     }
 }
 
