@@ -117,6 +117,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
+    CGSize unitSize = [NotificationCell unitSize];
     if (self.notifications) {
         
         if ([self.notifications count] > 0) {
@@ -126,7 +127,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         } else {
             
             return (CGSize){
-                self.collectionView.bounds.size.width,
+                unitSize.width,
                 515.0
             };
         }
@@ -134,7 +135,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         
         return (CGSize){
-            self.collectionView.bounds.size.width,
+            unitSize.width,
             515.0
         };
     }
