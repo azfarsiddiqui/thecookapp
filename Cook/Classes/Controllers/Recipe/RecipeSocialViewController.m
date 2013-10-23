@@ -659,7 +659,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
     editViewController.clearOnFocus = YES;
     editViewController.showTitle = YES;
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
-    editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
+    editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:34.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];
     self.editViewController = editViewController;
 }

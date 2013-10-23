@@ -120,4 +120,10 @@
     [self doSave];
 }
 
+//Set font of title label with something controllable
+- (UIFont *)textFontWithSize:(CGFloat)size
+{
+    return self.textViewFont;
+}
+
 @end
