@@ -89,6 +89,9 @@
             self.bookActionActivityView.frame = actionActivityFrame;
             [self.bookActionButton addSubview:self.bookActionActivityView];
         }
+        
+        [self.bookActionButton setBackgroundImage:[UIImage imageNamed:@"cook_dash_library_selected_btn_blank.png"]
+                                         forState:UIControlStateNormal];
         [self.bookActionActivityView startAnimating];
     } else {
         [self.bookActionActivityView stopAnimating];

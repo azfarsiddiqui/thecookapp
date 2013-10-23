@@ -13,6 +13,7 @@
 @class GridRecipeStatsView;
 @class RecipeIngredientsView;
 @class CKActivityIndicatorView;
+@class CKUserProfilePhotoView;
 
 @interface BookRecipeGridCell : UICollectionViewCell
 
@@ -21,6 +22,7 @@
 
 @property (nonatomic, strong) UIImageView *cellBackgroundImageView;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) CKUserProfilePhotoView *profilePhotoView;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UIImageView *topRoundedMaskImageView;
 @property (nonatomic, strong) UIImageView *bottomShadowImageView;
@@ -37,6 +39,7 @@
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own;
 
 - (void)updateImageView;
+- (void)updateProfilePhoto;
 - (void)updateStats;
 - (void)updateTitle;
 - (void)updateTimeInterval;

@@ -42,10 +42,21 @@
 @property (nonatomic, strong) CKStatView *numRecipesStatView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
-@property (nonatomic, strong) UIAlertView *friendRequestAlert;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, assign) BOOL featuredMode;
 @property (nonatomic, assign) BOOL pendingAcceptance;
+
+@property (nonatomic, strong) UIAlertView *friendRequestAlert;
+@property (nonatomic, strong) UIAlertView *unfriendAlert;
+
+// Data loaded from the server.
+@property (nonatomic, assign) BOOL areFriends;
+@property (nonatomic, assign) BOOL followed;
+@property (nonatomic, assign) NSUInteger followCount;
+@property (nonatomic, assign) NSUInteger recipeCount;
+@property (nonatomic, assign) NSUInteger privateRecipesCount;
+@property (nonatomic, assign) NSUInteger friendsRecipesCount;
+@property (nonatomic, assign) NSUInteger publicRecipesCount;
 
 @end
 
@@ -301,13 +312,18 @@
     
     if (alertView == self.friendRequestAlert && buttonIndex == 1) {
         
-        // Send Button tapped on delete.
+        // Send Button tapped on send.
         [self sendFriendRequest];
         
+    } else if (alertView == self.unfriendAlert && buttonIndex == 1) {
+        
+        // Send button tapped on unfriend.
+        [self sendUnfriendRequest];
     }
     
     // Clear alerts.
     self.friendRequestAlert = nil;
+    self.unfriendAlert = nil;
 }
 
 
@@ -457,57 +473,24 @@
 - (void)loadData {
     
     // Load the book info stats.
-    [self.book bookInfoCompletion:^(NSUInteger followCount, BOOL areFriends, NSUInteger recipeCount, BOOL followed) {
+    [self.book bookInfoCompletion:^(NSUInteger followCount, BOOL areFriends, BOOL followed, NSUInteger recipeCount,
+                                    NSUInteger privateRecipesCount, NSUInteger friendsRecipesCount,
+                                    NSUInteger publicRecipesCount) {
         
-        [self.followersStatView updateNumber:followCount];
-        [self.numRecipesStatView updateNumber:recipeCount];
-        [self updateStatViews];
+        self.followCount = followCount;
+        self.areFriends = areFriends;
+        self.followed = followed;
+        self.recipeCount = recipeCount;
+        self.privateRecipesCount = privateRecipesCount;
+        self.friendsRecipesCount = friendsRecipesCount;
+        self.publicRecipesCount = publicRecipesCount;
         
-        if (![self.currentUser isSignedIn]) {
-        
-            // Inform delegate of book is locked for non-signed in users.
-            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
-                
-                [self.delegate bookSummaryViewBookIsPrivate];
-            }
-            
-        } else if (followed) {
-            
-            // Inform delegate of book is followed.
-            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsFollowed)]) {
-                [self.delegate bookSummaryViewBookIsFollowed];
-            }
-            
-        } else if (self.featuredMode) {
-            
-            // Inform delegate that feature book is always available to download.
-            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsDownloadable)]) {
-                [self.delegate bookSummaryViewBookIsDownloadable];
-            }
-            
-        } else if (recipeCount > 0 || areFriends) {
-            
-            // Inform delegate that book is available to download.
-            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsDownloadable)]) {
-                [self.delegate bookSummaryViewBookIsDownloadable];
-            }
-            
-        } else {
-            
-            // Inform delegate of book is private
-            if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
-                
-                // Private if not friends and no public recipes.
-                [self.delegate bookSummaryViewBookIsPrivate];
-            }
-            
-        }
+        [self updateViews];
         
     } failure:^(NSError *error) {
         
         // Inform delegate of book is locked for non-signed in users.
         if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
-            
             [self.delegate bookSummaryViewBookIsPrivate];
         }
 
@@ -618,10 +601,13 @@
     if (self.currentUser) {
         [self.currentUser checkIsFriendsWithUser:self.book.user
                                       completion:^(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance) {
+                                          
                                           if (alreadyConnected) {
+                                              
                                               [self updateButtonText:@"FRIENDS" activity:NO
                                                                 icon:nil
-                                                             enabled:NO target:nil selector:nil];
+                                                             enabled:YES target:self selector:@selector(unfriendTapped:)];
+                                              
                                           } else if (pendingAcceptance) {
                                               self.pendingAcceptance = pendingAcceptance;
                                               [self updateButtonText:@"ADD FRIEND" activity:NO
@@ -690,11 +676,24 @@
 - (void)requestTapped:(id)sender {
     [self.actionButtonCaptionLabel removeFromSuperview];
     
-    self.friendRequestAlert = [[UIAlertView alloc] initWithTitle:@"Add Friend"
-                                                         message:[NSString stringWithFormat:@"Send %@ a friend request?", [self.book.user friendlyName]]
-                                                        delegate:self cancelButtonTitle:@"Cancel"
-                                               otherButtonTitles:@"Send", nil];
-    [self.friendRequestAlert show];
+    if (self.pendingAcceptance) {
+        [self sendFriendRequest];
+    } else {
+        self.friendRequestAlert = [[UIAlertView alloc] initWithTitle:@"Send Friend Request?"
+                                                             message:nil
+                                                            delegate:self
+                                                   cancelButtonTitle:@"Cancel"
+                                                   otherButtonTitles:@"Send", nil];
+        [self.friendRequestAlert show];
+    }
+}
+
+- (void)unfriendTapped:(id)sender {
+    [self.actionButtonCaptionLabel removeFromSuperview];
+    self.unfriendAlert = [[UIAlertView alloc] initWithTitle:@"Remove Friend?" message:nil delegate:self
+                                          cancelButtonTitle:@"Cancel"
+                                          otherButtonTitles:@"Remove", nil];
+    [self.unfriendAlert show];
 }
 
 - (void)addTapped:(id)sender {
@@ -731,7 +730,12 @@
     [self.currentUser requestFriend:self.book.user
                          completion:^{
                              if (self.pendingAcceptance) {
-                                 [self updateButtonText:@"ACCEPTED" activity:NO
+                                 
+                                 // Mark as friends now.
+                                 self.areFriends = YES;
+                                 [self updateViews];
+                                 
+                                 [self updateButtonText:@"FRIENDS" activity:NO
                                                    icon:nil
                                                 enabled:NO target:nil selector:nil];
                              } else {
@@ -743,6 +747,83 @@
                             failure:^(NSError *error) {
                                 [self updateButtonText:@"UNABLE TO SEND" activity:NO icon:nil enabled:NO target:nil selector:nil];
                             }];
+}
+
+- (void)sendUnfriendRequest {
+    [self updateRequestButtonText:@"REMOVING" activity:YES enabled:NO];
+    [self.currentUser ignoreRemoveFriendRequestFrom:self.book.user
+                                         completion:^{
+                                             
+                                             // Mark as not friends anymore.
+                                             self.areFriends = NO;
+                                             [self updateViews];
+                                             
+                                             [self updateButtonText:@"ADD FRIEND" activity:NO
+                                                               icon:nil
+                                                            enabled:YES target:self selector:@selector(requestTapped:)];
+                                             
+                                         } failure:^(NSError *error) {
+                                             
+                                             [self updateButtonText:@"UNABLE TO REMOVE"
+                                                           activity:NO icon:nil enabled:NO target:nil selector:nil];
+                                         }];
+}
+
+- (void)updateViews {
+    
+    [self.followersStatView updateNumber:self.followCount];
+    [self.numRecipesStatView updateNumber:[self currentRecipeCount]];
+    
+    [self updateStatViews];
+    
+    if (![self.currentUser isSignedIn]) {
+        
+        // Inform delegate of book is locked for non-signed in users.
+        if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
+            [self.delegate bookSummaryViewBookIsPrivate];
+        }
+        
+    } else if (self.followed) {
+        
+        // Book is followed.
+        if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsFollowed)]) {
+            [self.delegate bookSummaryViewBookIsFollowed];
+        }
+        
+    } else if (self.featuredMode || self.areFriends || self.publicRecipesCount > 0) {
+        
+        // Feature and friends' books are always available to download. So are books that have more than zero public
+        // recipes.
+        if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsDownloadable)]) {
+            [self.delegate bookSummaryViewBookIsDownloadable];
+        }
+        
+    } else {
+        
+        // Inform delegate of book is private
+        if ([self.delegate respondsToSelector:@selector(bookSummaryViewBookIsPrivate)]) {
+            
+            // Private if not friends and no public recipes.
+            [self.delegate bookSummaryViewBookIsPrivate];
+        }
+        
+    }
+}
+
+- (NSUInteger)currentRecipeCount {
+    NSUInteger currentRecipeCount = 0;
+    
+    if ([self.book isOwner]) {
+        currentRecipeCount = self.recipeCount;
+    } else {
+        if (self.featuredMode || self.areFriends) {
+            currentRecipeCount = self.friendsRecipesCount + self.publicRecipesCount;
+        } else {
+            currentRecipeCount = self.publicRecipesCount;
+        }
+    }
+    
+    return currentRecipeCount;
 }
 
 @end

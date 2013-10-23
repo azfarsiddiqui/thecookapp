@@ -16,7 +16,9 @@
 typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
                                        NSDate *bookLastAccessedDate);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
-typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, NSUInteger recipeCount, BOOL followed);
+typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, BOOL followed, NSUInteger recipeCount,
+                                    NSUInteger privateRecipesCount, NSUInteger friendsRecipesCount,
+                                    NSUInteger publicRecipesCount);
 
 @interface CKBook : CKModel
 
