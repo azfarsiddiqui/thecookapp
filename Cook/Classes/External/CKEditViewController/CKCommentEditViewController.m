@@ -121,7 +121,7 @@
 }
 
 //Set font of title label with something controllable
-- (UIFont *)textFontWithSize:(CGFloat)size
+- (UIFont *)titleFont
 {
     return self.textViewFont;
 }

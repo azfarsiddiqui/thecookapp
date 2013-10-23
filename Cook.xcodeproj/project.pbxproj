@@ -1325,7 +1325,7 @@
 		F6F5933A1817F6F600998795 /* cook_book_inner_category_blank_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F593361817F6F600998795 /* cook_book_inner_category_blank_onpress@2x.png */; };
 		F6F5933B1817F6F600998795 /* cook_book_inner_category_overlay_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F593371817F6F600998795 /* cook_book_inner_category_overlay_onpress.png */; };
 		F6F5933C1817F6F600998795 /* cook_book_inner_category_overlay_onpress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6F593381817F6F600998795 /* cook_book_inner_category_overlay_onpress@2x.png */; };
-		F6F5933F181887CA00998795 /* CKPageTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6F5933E181887CA00998795 /* CKPageTitleViewController.m */; };
+		F6F5933F181887CA00998795 /* CKPageTitleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6F5933E181887CA00998795 /* CKPageTitleEditViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2888,8 +2888,8 @@
 		F6F593361817F6F600998795 /* cook_book_inner_category_blank_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_category_blank_onpress@2x.png"; sourceTree = "<group>"; };
 		F6F593371817F6F600998795 /* cook_book_inner_category_overlay_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_inner_category_overlay_onpress.png; sourceTree = "<group>"; };
 		F6F593381817F6F600998795 /* cook_book_inner_category_overlay_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_inner_category_overlay_onpress@2x.png"; sourceTree = "<group>"; };
-		F6F5933D181887CA00998795 /* CKPageTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPageTitleViewController.h; sourceTree = "<group>"; };
-		F6F5933E181887CA00998795 /* CKPageTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPageTitleViewController.m; sourceTree = "<group>"; };
+		F6F5933D181887CA00998795 /* CKPageTitleEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPageTitleEditViewController.h; sourceTree = "<group>"; };
+		F6F5933E181887CA00998795 /* CKPageTitleEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPageTitleEditViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4088,8 +4088,8 @@
 				F652ECC31813731C00D73AF9 /* CKListHeaderView.m */,
 				F686ED471817787600746A49 /* CKCommentEditViewController.h */,
 				F686ED481817787600746A49 /* CKCommentEditViewController.m */,
-				F6F5933D181887CA00998795 /* CKPageTitleViewController.h */,
-				F6F5933E181887CA00998795 /* CKPageTitleViewController.m */,
+				F6F5933D181887CA00998795 /* CKPageTitleEditViewController.h */,
+				F6F5933E181887CA00998795 /* CKPageTitleEditViewController.m */,
 			);
 			path = CKEditViewController;
 			sourceTree = "<group>";
@@ -6400,7 +6400,7 @@
 				769FE3F4180B920E00B3DBB2 /* CKLocationManager.m in Sources */,
 				F60C571517E440ED00912544 /* UIImage+Scale.m in Sources */,
 				766D96F817D2E80000A9104E /* NotificationCell.m in Sources */,
-				F6F5933F181887CA00998795 /* CKPageTitleViewController.m in Sources */,
+				F6F5933F181887CA00998795 /* CKPageTitleEditViewController.m in Sources */,
 				76EC556117C3030D000DEA08 /* RecipeCommentCell.m in Sources */,
 				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,

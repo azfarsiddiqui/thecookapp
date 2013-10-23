@@ -205,8 +205,8 @@
     [self.delegate editViewControllerDismissRequested];
 }
 
-- (UIFont *)textFontWithSize:(CGFloat)size {
-    return [self.font fontWithSize:size];
+- (UIFont *)titleFont {
+    return [self.font fontWithSize:30.0];
 }
 
 - (void)updateTitle:(NSString *)title {
@@ -299,7 +299,7 @@
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.text = [self.editTitle uppercaseString];
-        _titleLabel.font = [self textFontWithSize:30.0];
+        _titleLabel.font = [self titleFont];
         _titleLabel.textColor = [self titleColour];
         [_titleLabel sizeToFit];
         _titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - _titleLabel.frame.size.width) / 2.0),

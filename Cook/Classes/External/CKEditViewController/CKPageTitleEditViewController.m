@@ -6,17 +6,17 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "CKPageTitleViewController.h"
+#import "CKPageTitleEditViewController.h"
 #import "CKEditingViewHelper.h"
 
-@interface CKPageTitleViewController ()
+@interface CKPageTitleEditViewController ()
 
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIButton *cancelButton;
 
 @end
 
-@implementation CKPageTitleViewController
+@implementation CKPageTitleEditViewController
 
 #define kEditButtonInsets       UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 
@@ -120,9 +120,8 @@
 }
 
 //Set font of title label with something controllable
-- (UIFont *)textFontWithSize:(CGFloat)size
-{
-    return self.font;
+- (UIFont *)titleFont {
+    return [self.font fontWithSize:38.0];
 }
 
 @end

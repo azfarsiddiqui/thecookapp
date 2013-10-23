@@ -26,7 +26,7 @@
 #import "CKEditViewController.h"
 #import "CKEditingViewHelper.h"
 //#import "CKTextFieldEditViewController.h"
-#import "CKPageTitleViewController.h"
+#import "CKPageTitleEditViewController.h"
 #import "CardViewHelper.h"
 #import "NSString+Utilities.h"
 #import "EventHelper.h"
@@ -52,7 +52,7 @@
 
 // Editing.
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
-@property (nonatomic, strong) CKPageTitleViewController *editViewController;
+@property (nonatomic, strong) CKPageTitleEditViewController *editViewController;
 @property (nonatomic, strong) NSString *editingPageName;
 
 @end
@@ -599,7 +599,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 }
 
 - (void)performAddPageWithName:(NSString *)name {
-    CKPageTitleViewController *editViewController = [[CKPageTitleViewController alloc] initWithEditView:nil
+    CKPageTitleEditViewController *editViewController = [[CKPageTitleEditViewController alloc] initWithEditView:nil
                                                                                                        delegate:self
                                                                                                   editingHelper:self.editingHelper
                                                                                                           white:YES

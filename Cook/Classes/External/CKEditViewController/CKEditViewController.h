@@ -69,7 +69,7 @@
 - (BOOL)showSaveIcon;
 - (BOOL)headless;
 - (void)dismissEditView;
-- (UIFont *)textFontWithSize:(CGFloat)size;
+- (UIFont *)titleFont;
 - (void)updateTitle:(NSString *)title;
 - (void)updateTitle:(NSString *)title toast:(BOOL)toast;
 - (void)doSave;

@@ -8,6 +8,6 @@
 
 #import "CKTextFieldEditViewController.h"
 
-@interface CKPageTitleViewController : CKTextFieldEditViewController
+@interface CKPageTitleEditViewController : CKTextFieldEditViewController
 
 @end
