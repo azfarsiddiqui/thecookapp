@@ -61,18 +61,6 @@
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
-    [super drawRect:rect];
-    if (self.highlighted) {
-        self.imageOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_overlay_onpress.png"];
-        self.blankOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_blank_onpress.png"];
-    }
-    else {
-        self.imageOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_overlay.png"];
-        self.blankOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_blank.png"];
-    }
-}
-
 - (void)prepareForReuse {
     [super prepareForReuse];
     self.coverRecipe = nil;
@@ -135,7 +123,14 @@
 
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
-    [self setNeedsDisplay];
+    if (highlighted) {
+        self.imageOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_overlay_onpress.png"];
+        self.blankOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_blank_onpress.png"];
+    }
+    else {
+        self.imageOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_overlay.png"];
+        self.blankOverlayView.image = [UIImage imageNamed:@"cook_book_inner_category_blank.png"];
+    }
 }
 
 #pragma mark - Properties
