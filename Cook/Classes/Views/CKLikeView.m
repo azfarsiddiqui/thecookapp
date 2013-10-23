@@ -27,7 +27,7 @@
 @implementation CKLikeView
 
 + (CGSize)likeSize {
-    return [self buttonImageForOn:NO dark:NO].size;
+    return [self buttonImageForOn:NO dark:NO onpress:NO].size;
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
@@ -40,7 +40,10 @@
         self.dark = dark;
         self.backgroundColor = [UIColor clearColor];
         
-        self.likeButton = [ViewHelper buttonWithImage:[CKLikeView buttonImageForOn:NO dark:dark] target:self selector:@selector(tapped:)];
+        self.likeButton = [ViewHelper buttonWithImage:[CKLikeView buttonImageForOn:NO dark:dark onpress:NO]
+                                        selectedImage:[CKLikeView buttonImageForOn:NO dark:dark onpress:YES]
+                                               target:self
+                                             selector:@selector(tapped:)];
         self.likeButton.userInteractionEnabled = NO;
         self.likeButton.enabled = NO;
         self.currentUser = [CKUser currentUser];
@@ -124,17 +127,21 @@
            }];
 }
 
-+ (UIImage *)buttonImageForOn:(BOOL)on dark:(BOOL)dark {
++ (UIImage *)buttonImageForOn:(BOOL)on dark:(BOOL)dark onpress:(BOOL)onpress {
     NSMutableString *imageName = [NSMutableString stringWithFormat:@"cook_book_inner_icon_like_%@", dark ? @"dark" : @"light"];
     if (on) {
         [imageName appendString:@"_on"];
+    }
+    if (onpress) {
+        [imageName appendString:@"_onpress"];
     }
     [imageName appendString:@".png"];
     return [UIImage imageNamed:imageName];
 }
 
 - (void)updateButtonWithLiked:(BOOL)liked {
-    [self.likeButton setBackgroundImage:[CKLikeView buttonImageForOn:liked dark:self.dark] forState:UIControlStateNormal];
+    [self.likeButton setBackgroundImage:[CKLikeView buttonImageForOn:liked dark:self.dark onpress:NO] forState:UIControlStateNormal];
+    [self.likeButton setBackgroundImage:[CKLikeView buttonImageForOn:liked dark:self.dark onpress:YES] forState:UIControlStateHighlighted];
 }
 
 @end
