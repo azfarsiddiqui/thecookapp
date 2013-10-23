@@ -297,6 +297,7 @@
 }
 
 - (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe {
+    [self.benchtopViewController showVisibleBooks:NO];
     [self viewRecipe:recipe];
 }
 
@@ -310,6 +311,11 @@
 
 - (UIView *)bookNavigationSnapshot {
     return [self.benchtopViewController.view snapshotViewAfterScreenUpdates:YES];
+}
+
+- (void)bookNavigationWillPeekDash:(BOOL)isPeek
+{
+    [self.benchtopViewController showVisibleBooks:!isPeek];
 }
 
 #pragma mark - DashboardTutorialViewControllerDelegate methods
@@ -863,6 +869,8 @@
                          [modalViewController.view removeFromSuperview];
                          self.bookModalViewController = nil;
                          
+                         [self.benchtopViewController showVisibleBooks:YES];
+                         
                      }];
 }
 
@@ -1036,6 +1044,7 @@
             self.snapshotView = [self.benchtopViewController.view snapshotViewAfterScreenUpdates:NO];
             [self.view insertSubview:self.snapshotView belowSubview:self.bookNavigationViewController.view];
         }
+        
     } else {
         [self.snapshotView removeFromSuperview];
     }

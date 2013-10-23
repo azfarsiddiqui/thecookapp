@@ -1193,6 +1193,9 @@
 }
 
 - (void)pinched:(UIPinchGestureRecognizer *)pinchGesture {
+    if (pinchGesture.state == UIGestureRecognizerStateBegan) {
+        [self.delegate bookNavigationWillPeekDash:YES];
+    }
     
     if (pinchGesture.state == UIGestureRecognizerStateBegan
         || pinchGesture.state == UIGestureRecognizerStateChanged) {
@@ -1243,6 +1246,7 @@
 
 - (void)pinchClose:(BOOL)close {
     if (close) {
+//        [self.delegate bookNavigationWillPeekDash:NO];
         [self closeBookWithPinch:YES];
     } else {
         [UIView animateWithDuration:0.15
@@ -1255,6 +1259,7 @@
                          completion:^(BOOL finished) {
                              [self.bookBindingView removeFromSuperview];
                              self.bookBindingView = nil;
+                             [self.delegate bookNavigationWillPeekDash:NO];
                          }];
     }
 }
