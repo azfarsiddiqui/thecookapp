@@ -1020,7 +1020,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)snapToViewport:(SnapViewport)viewport animated:(BOOL)animated completion:(void (^)())completion {
-    NSLog(@"snapToViewport [%d] fromViewport[%d]", viewport, self.currentViewport);
+//    NSLog(@"snapToViewport [%d] fromViewport[%d]", viewport, self.currentViewport);
     
     // Set the required offset for the given viewport.
     CGRect frame = self.scrollView.frame;
@@ -1188,7 +1188,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         duration = 0.25;
     }
     
-    NSLog(@"duration %f", duration);
+//    NSLog(@"duration %f", duration);
     return duration;
 }
 
