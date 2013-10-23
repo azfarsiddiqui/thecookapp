@@ -65,6 +65,7 @@
     [self.profileView loadProfilePhotoForUser:actionUser];
     
     CGSize availableSize = [self availableSize];
+    availableSize.width = availableSize.width - self.profileView.frame.size.width - kProfileNameGap;
     
     // Name label.
     self.nameLabel.hidden = NO;
@@ -73,7 +74,7 @@
     self.nameLabel.frame = (CGRect){
         self.profileView.frame.origin.x + self.profileView.frame.size.width + kProfileNameGap,
         kContentInsets.top,
-        size.width,
+        MIN(size.width, availableSize.width),
         size.height
     };
     
@@ -83,7 +84,7 @@
     self.notificationLabel.frame = (CGRect){
         self.nameLabel.frame.origin.x,
         self.nameLabel.frame.origin.y + self.nameLabel.frame.size.height + kNameNotificationGap,
-        size.width,
+        MIN(size.width, availableSize.width),
         size.height
     };
     

@@ -53,7 +53,7 @@
     self.view.backgroundColor = [UIColor clearColor];
     
     self.view.frame = [[AppHelper sharedInstance] fullScreenFrame];
-    self.backButton = [ViewHelper addBackButtonToView:self.view light:NO target:self selector:@selector(backTapped:)];
+    self.backButton = [ViewHelper addBackButtonToView:self.view light:YES target:self selector:@selector(backTapped:)];
     if (self.cookNavigationController) {
         self.backButton.alpha = 0.0;
     }

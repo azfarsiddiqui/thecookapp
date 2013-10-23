@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UIImageView *bottomShadowImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *timeIntervalLabel;
+@property (nonatomic, strong) UIImageView *privacyIconView;
 @property (nonatomic, strong) UILabel *storyLabel;
 @property (nonatomic, strong) UILabel *methodLabel;
 @property (nonatomic, strong) RecipeIngredientsView *ingredientsView;
@@ -33,6 +34,7 @@
 
 + (CGSize)imageSize;
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book;
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own;
 
 - (void)updateImageView;
 - (void)updateStats;
@@ -41,6 +43,7 @@
 - (void)updateStory;
 - (void)updateMethod;
 - (void)updateIngredients;
+- (void)updatePrivacyIcon;
 
 - (UIEdgeInsets)contentInsets;
 - (CGSize)availableSize;

@@ -776,6 +776,12 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 }
 
 - (void)socialUpdates:(NSNotification *)notification {
+    
+    // Ignore if data is not loaded.
+    if (!self.dataLoaded) {
+        return;
+    }
+    
     CKRecipe *recipe = [EventHelper socialUpdatesRecipeForNotification:notification];
     
     // Ignore unrelated recipe.

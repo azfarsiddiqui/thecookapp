@@ -61,6 +61,7 @@
         [self initMethodLabel];
         [self initStatsView];
         [self initTimeIntervalLabel];
+        [self initPrivacyIcon];
         
         // Past dates formatting.
         self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
@@ -83,8 +84,13 @@
 }
 
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book {
+    [self configureRecipe:recipe book:book own:NO];
+}
+
+- (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own {
     self.recipe = recipe;
     self.book = book;
+    self.privacyIconView.hidden = !own;
     
     [self updateImageView];
     [self updateTitle];
@@ -93,6 +99,7 @@
     [self updateStory];
     [self updateMethod];
     [self updateStats];
+    [self updatePrivacyIcon];
     
     CGSize imageSize = [BookRecipeGridCell imageSize];
     if ([recipe hasPhotos]) {
@@ -168,7 +175,17 @@
         self.timeIntervalLabel.frame.size.width,
         self.timeIntervalLabel.frame.size.height
     };
+    
+}
 
+- (void)updatePrivacyIcon {
+    self.privacyIconView.image = [self privacyIconImage];
+    self.privacyIconView.frame = (CGRect) {
+        self.timeIntervalLabel.frame.origin.x + self.timeIntervalLabel.frame.size.width + 5.0,
+        floorf(self.timeIntervalLabel.center.y - (self.privacyIconView.frame.size.height / 2.0)) - 1.0,
+        self.privacyIconView.frame.size.width,
+        self.privacyIconView.frame.size.height
+    };
 }
 
 - (void)updateStats {
@@ -398,6 +415,11 @@
     self.timeIntervalLabel = timeIntervalLabel;
 }
 
+- (void)initPrivacyIcon {
+    self.privacyIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_inner_icon_small_secret.png"]];
+    [self.contentView addSubview:self.privacyIconView];
+}
+
 - (UIColor *)backgroundColorOrDebug {
     if (kViewDebug) {
         return [UIColor colorWithRed:0 green:255 blue:0 alpha:0.5];
@@ -461,6 +483,24 @@
             [self configureImage:nil];
         }
     }
+}
+
+- (UIImage *)privacyIconImage {
+    UIImage *privacyIcon = nil;
+    switch (self.recipe.privacy) {
+        case CKPrivacyPrivate:
+            privacyIcon = [UIImage imageNamed:@"cook_book_inner_icon_small_secret.png"];
+            break;
+        case CKPrivacyFriends:
+            privacyIcon = [UIImage imageNamed:@"cook_book_inner_icon_small_friends.png"];
+            break;
+        case CKPrivacyPublic:
+            privacyIcon = [UIImage imageNamed:@"cook_book_inner_icon_small_public.png"];
+            break;
+        default:
+            break;
+    }
+    return privacyIcon;
 }
 
 @end
