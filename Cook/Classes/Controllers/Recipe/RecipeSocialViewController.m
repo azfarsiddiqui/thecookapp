@@ -120,9 +120,16 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         if ([self.delegate respondsToSelector:@selector(recipeSocialViewControllerLikeView)]) {
             self.likeButton = [self.delegate recipeSocialViewControllerLikeView];
             
-            // Detach it from a shared like view.
-            [self.likeButton removeFromSuperview];
-            self.likeButton.alpha = 1.0;
+            if (self.likeButton) {
+                
+                // Detach it from a shared like view.
+                [self.likeButton removeFromSuperview];
+                self.likeButton.alpha = 1.0;
+                
+            } else {
+                self.likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
+                self.likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+            }
             
         } else {
             self.likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
@@ -137,9 +144,9 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
             self.likeButton.frame.size.height};
         
         [self.view addSubview:self.likeButton];
-    }
-    else if (self.recipe.numLikes > 0)
-    {
+        
+    } else  {
+        
         self.likeButton = [[CKLikeView alloc] initWithRecipe:self.recipe];
         self.likeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
         
