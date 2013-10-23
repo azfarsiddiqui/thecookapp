@@ -176,6 +176,7 @@
 - (UIButton *)editButton {
     if (!_editButton && [self canEditBook]) {
         _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
+                                    selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light_onpress"]
                                            target:self
                                          selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;

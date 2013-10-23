@@ -596,6 +596,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (UIButton *)closeButton {
     if (!_closeButton) {
         _closeButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_back_light.png"]
+                                     selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_back_light_onpress.png"]
                                             target:self
                                           selector:@selector(closeTapped:)];
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -610,6 +611,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (UIButton *)editButton {
     if (!_editButton && [self canEditRecipe]) {
         _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light.png"]
+                                    selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_light_onpress.png"]
                                            target:self
                                          selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -626,7 +628,9 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         
         BOOL private = [self.recipe isPrivate];
         UIImage *shareImage = private ? [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"];
+        UIImage *shareImageSelected = private ? [UIImage imageNamed:@"cook_book_inner_icon_secret_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_share_light_onpress.png"];
         _shareButton = [ViewHelper buttonWithImage:shareImage
+                                     selectedImage:shareImageSelected
                                             target:private ?  nil : self
                                           selector:private ? nil : @selector(shareTapped:)];
         _shareButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -667,6 +671,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (UIButton *)pinButton {
     if (!_pinButton && ![self.recipe isOwner] && [self.recipe isPublic]) {
         _pinButton = [ViewHelper buttonWithImage:[self imageForPinned:NO]
+                                   selectedImage:[self imageForPinnedOnpress:NO]
                                           target:self
                                         selector:@selector(pinTapped:)];
         _pinButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -2088,6 +2093,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         BOOL shareable = [self.recipe isShareable];
         UIImage *shareImage = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light.png"];
         [self.shareButton setBackgroundImage:shareImage forState:UIControlStateNormal];
+        UIImage *shareImageSelected = shareable ? [UIImage imageNamed:@"cook_book_inner_icon_share_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_secret_light_onpress.png"];
+        [self.shareButton setBackgroundImage:shareImageSelected forState:UIControlStateHighlighted];
         if (shareable && [[self.shareButton actionsForTarget:self forControlEvent:UIControlEventTouchUpInside] count] == 0) {
             [self.shareButton addTarget:self action:@selector(shareTapped:) forControlEvents:UIControlEventTouchUpInside];
         } else if (!shareable && [[self.shareButton actionsForTarget:self forControlEvent:UIControlEventTouchUpInside] count] > 0) {
@@ -2123,10 +2130,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)updatePinnedButton {
     [self.pinButton setBackgroundImage:[self imageForPinned:(self.recipePin != nil)] forState:UIControlStateNormal];
+    [self.pinButton setBackgroundImage:[self imageForPinnedOnpress:(self.recipePin != nil)] forState:UIControlStateHighlighted];
 }
 
 - (UIImage *)imageForPinned:(BOOL)pinned {
     return pinned ? [UIImage imageNamed:@"cook_book_inner_icon_minus_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_add_light.png"];
+}
+- (UIImage *)imageForPinnedOnpress:(BOOL)pinned {
+    return pinned ? [UIImage imageNamed:@"cook_book_inner_icon_minus_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_add_light_onpress.png"];
 }
 
 @end

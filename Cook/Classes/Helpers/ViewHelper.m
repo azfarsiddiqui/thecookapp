@@ -72,12 +72,14 @@
 
 + (UIButton *)closeButtonLight:(BOOL)light target:(id)target selector:(SEL)selector {
     UIImage *image = light ? [UIImage imageNamed:@"cook_book_inner_icon_close_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_close_dark.png"];
-    return [self buttonWithImage:image target:target selector:selector];
+    UIImage *imageSelected = light ? [UIImage imageNamed:@"cook_book_inner_icon_close_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_close_dark_onpress.png"];
+    return [self buttonWithImage:image selectedImage:imageSelected target:target selector:selector];
 }
 
 + (UIButton *)backButtonLight:(BOOL)light target:(id)target selector:(SEL)selector {
     UIImage *image = light ? [UIImage imageNamed:@"cook_book_inner_icon_back_light.png"] : [UIImage imageNamed:@"cook_book_inner_icon_back_dark.png"];
-    return [self buttonWithImage:image target:target selector:selector];
+    UIImage *imageSelected = light ? [UIImage imageNamed:@"cook_book_inner_icon_back_light_onpress.png"] : [UIImage imageNamed:@"cook_book_inner_icon_back_dark_onpress.png"];
+    return [self buttonWithImage:image selectedImage:imageSelected target:target selector:selector];
 }
 
 + (UIButton *)addBackButtonToView:(UIView *)view light:(BOOL)light target:(id)target selector:(SEL)selector {

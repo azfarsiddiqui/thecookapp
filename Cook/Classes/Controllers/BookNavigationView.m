@@ -69,8 +69,8 @@
 
 - (void)setDark:(BOOL)dark {
     self.backgroundImageView.image = [self backgroundImageForDark:dark];
-    [ViewHelper updateButton:self.homeButton withImage:[self homeImageForDark:dark]];
-    [ViewHelper updateButton:self.closeButton withImage:[self closeImageForDark:dark]];
+    [ViewHelper updateButton:self.homeButton withImage:[self homeImageForDark:dark] selectedImage:[self homeImageForDarkSelected:dark]];
+    [ViewHelper updateButton:self.closeButton withImage:[self closeImageForDark:dark] selectedImage:[self closeImageForDarkSelected:dark]];
     
     // Update button insets.
     CGRect homeButtonFrame = self.homeButton.frame;
@@ -114,7 +114,9 @@
     if (!_closeButton) {
         UIEdgeInsets insets = [self contentInsetsForDark:NO];
         _closeButton = [ViewHelper buttonWithImage:[self closeImageForDark:NO]
-                                          target:self selector:@selector(closeTapped:)];
+                                     selectedImage:[self closeImageForDarkSelected:NO]
+                                          target:self
+                                          selector:@selector(closeTapped:)];
         _closeButton.frame = (CGRect){
             insets.left,
             insets.top,
@@ -129,7 +131,9 @@
 - (UIButton *)homeButton {
     if (!_homeButton) {
         _homeButton = [ViewHelper buttonWithImage:[self homeImageForDark:NO]
-                                          target:self selector:@selector(homeTapped:)];
+                                    selectedImage:[self homeImageForDarkSelected:NO]
+                                           target:self
+                                         selector:@selector(homeTapped:)];
         _homeButton.frame = (CGRect){
             self.closeButton.frame.origin.x + self.closeButton.frame.size.width + 2.0,
             self.closeButton.frame.origin.y,
@@ -160,6 +164,7 @@
 - (UIButton *)editButton {
     if (!_editButton && self.editable) {
         _editButton = [ViewHelper buttonWithImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_dark.png"]
+                       selectedImage:[UIImage imageNamed:@"cook_book_inner_icon_edit_dark_onpress.png"]
                                            target:self
                                          selector:@selector(editTapped:)];
         _editButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -206,11 +211,27 @@
     }
 }
 
+- (UIImage *)closeImageForDarkSelected:(BOOL)dark {
+    if (dark) {
+        return [UIImage imageNamed:@"cook_book_inner_icon_close_light_onpress.png"];
+    } else {
+        return [UIImage imageNamed:@"cook_book_inner_icon_close_dark_onpress.png"];
+    }
+}
+
 - (UIImage *)homeImageForDark:(BOOL)dark {
     if (dark) {
         return [UIImage imageNamed:@"cook_book_inner_icon_home_light.png"];
     } else {
         return [UIImage imageNamed:@"cook_book_inner_icon_home_dark.png"];
+    }
+}
+
+- (UIImage *)homeImageForDarkSelected:(BOOL)dark {
+    if (dark) {
+        return [UIImage imageNamed:@"cook_book_inner_icon_home_light_onpress.png"];
+    } else {
+        return [UIImage imageNamed:@"cook_book_inner_icon_home_dark_onpress.png"];
     }
 }
 
