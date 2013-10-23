@@ -255,10 +255,7 @@
 {
     //Hide cells right before close animation so they can fade in nicely
     //Part of the workaround for wierd device lock->missing cells issue
-    NSArray *visibleCells = [self.collectionView visibleCells];
-    [visibleCells each:^(UICollectionViewCell *cell) {
-        cell.alpha = 0.0;
-    }];
+    [self showVisibleBooks:NO];
 }
 
 - (void)bookWillOpen:(BOOL)open {
@@ -284,6 +281,14 @@
     
     // Enable panning based on book opened or not.
     [self.delegate panEnabledRequested:!open];
+}
+
+- (void)showVisibleBooks:(BOOL)show
+{
+    NSArray *visibleCells = [self.collectionView visibleCells];
+    [visibleCells each:^(UICollectionViewCell *cell) {
+        cell.alpha = show ? 1.0 : 0.0;
+    }];
 }
 
 #pragma mark - UIScrollViewDelegate methods

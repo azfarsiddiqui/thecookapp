@@ -285,55 +285,7 @@
 
 // Note that editingView is actually the targetEditingView (e.g.UITextField)
 - (void)editingTextBoxViewSaveTappedForEditingView:(UIView *)editingView {
-    
-    BOOL canSave = YES;
-    if ([self.delegate respondsToSelector:@selector(editViewControllerCanSaveFor:)]) {
-        canSave = [self.delegate editViewControllerCanSaveFor:self];
-    }
-    
-    // Return if cannot save.
-    if (!canSave) {
-        return;
-    }
-    
-    if ([self.headlessNumber boolValue]) {
-        
-        if ([self.delegate respondsToSelector:@selector(editViewControllerHeadlessUpdatedWithValue:)]) {
-            [self.delegate editViewControllerHeadlessUpdatedWithValue:[self updatedValue]];
-        }
-        
-    } else {
-        
-        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
-        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
-        
-        // Re-attach to source parentView to update its wrapping.
-        [originalTextBoxView removeFromSuperview];
-        originalTextBoxView.frame = self.startTextBoxSourceFrame;
-        [self.sourceEditView.superview insertSubview:originalTextBoxView belowSubview:self.sourceEditView];
-        
-        // Tell original editingView to update with new value.
-        [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedValue]];
-        
-        // Update the start textbox frame.
-        self.startTextBoxSourceFrame = originalTextBoxView.frame;
-        
-        // Get the originalTextBoxView's frame relative to the fullscreen view.
-        CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
-        self.startTextBoxFullScreenFrame = sourceOnFullScreenFrame;
-        
-        // Now re-attach to the fullscreen view.
-        [originalTextBoxView removeFromSuperview];
-        originalTextBoxView.frame = targetTextBoxView.frame;
-        [self.view insertSubview:originalTextBoxView belowSubview:targetTextBoxView];
-        
-        // Ensure that source is still hidden before transitioning back.
-        self.sourceEditView.hidden = YES;
-        
-    }
-    
-    // Transition back.
-    [self performEditing:NO];
+    [self doSave];
 }
 
 #pragma mark - Lazy getters.
@@ -417,6 +369,57 @@
     
     duration = 0.25;
     return duration;
+}
+
+- (void)doSave {
+    BOOL canSave = YES;
+    if ([self.delegate respondsToSelector:@selector(editViewControllerCanSaveFor:)]) {
+        canSave = [self.delegate editViewControllerCanSaveFor:self];
+    }
+    
+    // Return if cannot save.
+    if (!canSave) {
+        return;
+    }
+    
+    if ([self.headlessNumber boolValue]) {
+        
+        if ([self.delegate respondsToSelector:@selector(editViewControllerHeadlessUpdatedWithValue:)]) {
+            [self.delegate editViewControllerHeadlessUpdatedWithValue:[self updatedValue]];
+        }
+        
+    } else {
+        
+        CKEditingTextBoxView *originalTextBoxView = [self sourceEditTextBoxView];
+        CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
+        
+        // Re-attach to source parentView to update its wrapping.
+        [originalTextBoxView removeFromSuperview];
+        originalTextBoxView.frame = self.startTextBoxSourceFrame;
+        [self.sourceEditView.superview insertSubview:originalTextBoxView belowSubview:self.sourceEditView];
+        
+        // Tell original editingView to update with new value.
+        [self.delegate editViewControllerUpdateEditView:self.sourceEditView value:[self updatedValue]];
+        
+        // Update the start textbox frame.
+        self.startTextBoxSourceFrame = originalTextBoxView.frame;
+        
+        // Get the originalTextBoxView's frame relative to the fullscreen view.
+        CGRect sourceOnFullScreenFrame = [originalTextBoxView.superview convertRect:originalTextBoxView.frame toView:self.view];
+        self.startTextBoxFullScreenFrame = sourceOnFullScreenFrame;
+        
+        // Now re-attach to the fullscreen view.
+        [originalTextBoxView removeFromSuperview];
+        originalTextBoxView.frame = targetTextBoxView.frame;
+        [self.view insertSubview:originalTextBoxView belowSubview:targetTextBoxView];
+        
+        // Ensure that source is still hidden before transitioning back.
+        self.sourceEditView.hidden = YES;
+        
+    }
+    
+    // Transition back.
+    [self performEditing:NO];
 }
 
 - (void)doStandardEditing:(BOOL)editing {

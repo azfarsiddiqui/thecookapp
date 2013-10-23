@@ -19,5 +19,6 @@
 - (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page;
 - (void)bookNavigationControllerRefreshedBook:(CKBook *)book;
 - (UIView *)bookNavigationSnapshot;
+- (void)bookNavigationWillPeekDash:(BOOL)isPeek;
 
 @end

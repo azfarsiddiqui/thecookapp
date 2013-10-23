@@ -336,7 +336,17 @@
 }
 
 - (CGFloat)requiredTextViewHeight {
-    CGFloat requiredHeight = [self.textView.text boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName : self.textView.font} context:nil].size.height;
+    
+    NSDictionary *attributeDict;
+    if (self.textView.font)
+        attributeDict = @{NSFontAttributeName : self.textView.font};
+    else
+        attributeDict = @{NSFontAttributeName : [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0]};
+    CGRect cRect = [self.textView.text boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX)
+                                                    options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                 attributes:attributeDict
+                                                    context:nil];
+    CGFloat requiredHeight = cRect.size.height;
     
     requiredHeight += (kTextViewAdjustments.top + kTextViewAdjustments.bottom);
     return requiredHeight;
