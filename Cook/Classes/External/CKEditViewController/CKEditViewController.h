@@ -72,6 +72,7 @@
 - (UIFont *)textFontWithSize:(CGFloat)size;
 - (void)updateTitle:(NSString *)title;
 - (void)updateTitle:(NSString *)title toast:(BOOL)toast;
+- (void)doSave;
 
 // Lifecycle events.
 - (void)targetTextEditingViewDidCreated;

@@ -13,7 +13,8 @@
 #import "CKRecipeComment.h"
 #import "ModalOverlayHeaderView.h"
 #import "RecipeCommentCell.h"
-#import "CKTextViewEditViewController.h"
+//#import "CKTextViewEditViewController.h"
+#import "CKCommentEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "NSString+Utilities.h"
 #import "RecipeSocialLayout.h"
@@ -47,6 +48,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) CKLikeView *likeButton;
 @property (nonatomic, strong) NSMutableArray *likeViews;
+@property (nonatomic, strong) ModalOverlayHeaderView *headerView;
 
 // Data
 @property (nonatomic, strong) NSMutableArray *comments;
@@ -58,7 +60,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, strong) RecipeCommentCell *editingCell;
 @property (nonatomic, strong) UIView *editingView;
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
-@property (nonatomic, strong) CKTextViewEditViewController *editViewController;
+@property (nonatomic, strong) CKCommentEditViewController *editViewController;
 @property (nonatomic, assign) BOOL saving;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UILabel *emptyCommentsLabel;
@@ -317,6 +319,9 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 #pragma mark - CKEditViewControllerDelegate methods
 
 - (void)editViewControllerWillAppear:(BOOL)appear {
+    [UIView animateWithDuration:0.2 animations:^{
+        self.headerView.alpha = 0.0;
+    }];
 }
 
 - (void)editViewControllerDidAppear:(BOOL)appear {
@@ -326,12 +331,14 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
         // Remove the editVC.
         [self.editViewController.view removeFromSuperview];
         self.editViewController = nil;
-        
     }
 }
 
 - (void)editViewControllerDismissRequested {
     [self.editViewController performEditing:NO];
+    [UIView animateWithDuration:0.2 animations:^{
+        self.headerView.alpha = 1.0;
+    }];
 }
 
 - (void)editViewControllerEditRequested {
@@ -461,6 +468,7 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
                                                                                      withReuseIdentifier:kHeaderCellId forIndexPath:indexPath];
         [headerView configureTitle:@"COMMENTS"];
         supplementaryView = headerView;
+        self.headerView = headerView;
         
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
         
@@ -642,13 +650,14 @@ UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 }
 
 - (void)showCommentBox {
-    CKTextViewEditViewController *editViewController = [[CKTextViewEditViewController alloc] initWithEditView:nil
+    CKCommentEditViewController *editViewController = [[CKCommentEditViewController alloc] initWithEditView:nil
                                                                                                      delegate:self
                                                                                                 editingHelper:self.editingHelper
                                                                                                         white:YES
-                                                                                                        title:nil
+                                                                                                        title:@"ADD COMMENT"
                                                                                                characterLimit:500];
     editViewController.clearOnFocus = YES;
+    editViewController.showTitle = YES;
     editViewController.font = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:48.0];
     editViewController.textViewFont = [UIFont fontWithName:@"BrandonGrotesque-Regular" size:30.0];
     [editViewController performEditing:YES headless:YES transformOffset:(UIOffset){ 0.0, 20.0 }];

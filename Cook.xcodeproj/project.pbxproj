@@ -1239,6 +1239,7 @@
 		F652ECC41813731C00D73AF9 /* CKListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F652ECC31813731C00D73AF9 /* CKListHeaderView.m */; };
 		F652ECCF1816051600D73AF9 /* cook_updatescreen_11.png in Resources */ = {isa = PBXBuildFile; fileRef = F652ECCD1816051600D73AF9 /* cook_updatescreen_11.png */; };
 		F652ECD01816051600D73AF9 /* cook_updatescreen_11@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F652ECCE1816051600D73AF9 /* cook_updatescreen_11@2x.png */; };
+		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
 		F68E0EF117D2AE6600B56E7A /* cook_book_share_icon_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */; };
 		F68E0EF217D2AE6600B56E7A /* cook_book_share_icon_email_onpress.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EE017D2AE6600B56E7A /* cook_book_share_icon_email_onpress.png */; };
@@ -2738,6 +2739,8 @@
 		F652ECC31813731C00D73AF9 /* CKListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListHeaderView.m; sourceTree = "<group>"; };
 		F652ECCD1816051600D73AF9 /* cook_updatescreen_11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_updatescreen_11.png; sourceTree = "<group>"; };
 		F652ECCE1816051600D73AF9 /* cook_updatescreen_11@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_updatescreen_11@2x.png"; sourceTree = "<group>"; };
+		F686ED471817787600746A49 /* CKCommentEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCommentEditViewController.h; sourceTree = "<group>"; };
+		F686ED481817787600746A49 /* CKCommentEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKCommentEditViewController.m; sourceTree = "<group>"; };
 		F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_email.png; sourceTree = "<group>"; };
 		F68E0EDF17D2AE6600B56E7A /* cook_book_share_icon_email@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_share_icon_email@2x.png"; sourceTree = "<group>"; };
 		F68E0EE017D2AE6600B56E7A /* cook_book_share_icon_email_onpress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_share_icon_email_onpress.png; sourceTree = "<group>"; };
@@ -3906,6 +3909,8 @@
 				76BE372D1717A8E9000C0755 /* Resources */,
 				F652ECC21813731C00D73AF9 /* CKListHeaderView.h */,
 				F652ECC31813731C00D73AF9 /* CKListHeaderView.m */,
+				F686ED471817787600746A49 /* CKCommentEditViewController.h */,
+				F686ED481817787600746A49 /* CKCommentEditViewController.m */,
 			);
 			path = CKEditViewController;
 			sourceTree = "<group>";
@@ -6117,6 +6122,7 @@
 				76708FEC1813FE480065DE51 /* UserViewController.m in Sources */,
 				7614D6B417DAE216001CF052 /* ProgressOverlayViewController.m in Sources */,
 				76EE2CD8170AE7A30043D128 /* SDWebImageManager.m in Sources */,
+				F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */,
 				76A3955F17FE7D0200DF249A /* CKNavigationController.m in Sources */,
 				76EE2CD9170AE7A30043D128 /* SDWebImagePrefetcher.m in Sources */,
 				76EE2CDA170AE7A30043D128 /* UIButton+WebCache.m in Sources */,
