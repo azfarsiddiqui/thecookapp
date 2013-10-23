@@ -137,6 +137,9 @@
 }
 
 - (void)updateButtonWithTarget:(id)target selector:(SEL)selector {
+    
+    // Remove any existing targets.
+    [self.button removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
 }
 

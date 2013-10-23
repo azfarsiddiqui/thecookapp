@@ -608,11 +608,15 @@
                                     
                                     NSUInteger followCount = [[results objectForKey:@"followCount"] unsignedIntegerValue];
                                     BOOL areFriends = [[results objectForKey:@"friends"] boolValue];
-                                    NSUInteger recipeCount = [[results objectForKey:@"recipeCount"] unsignedIntegerValue];
                                     BOOL followed = [[results objectForKey:@"followed"] boolValue];
+                                    NSUInteger recipeCount = [[results objectForKey:@"recipeCount"] unsignedIntegerValue];
+                                    NSUInteger privateRecipesCount = [[results objectForKey:@"privateRecipesCount"] unsignedIntegerValue];
+                                    NSUInteger friendsRecipesCount = [[results objectForKey:@"friendsRecipesCount"] unsignedIntegerValue];
+                                    NSUInteger publicRecipesCount = [[results objectForKey:@"publicRecipesCount"] unsignedIntegerValue];
                                     
                                     if (!error) {
-                                        completion(followCount, areFriends, recipeCount, followed);
+                                        completion(followCount, areFriends, followed, recipeCount, privateRecipesCount,
+                                                   friendsRecipesCount, publicRecipesCount);
                                     } else {
                                         DLog(@"Error loading book info: %@", [error localizedDescription]);
                                     }

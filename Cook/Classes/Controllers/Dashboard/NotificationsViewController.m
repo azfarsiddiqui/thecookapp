@@ -397,7 +397,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     } else {
         
         // Ignore friend request.
-        [user ignoreFriendRequestFrom:actionUser completion:^{
+        [user ignoreRemoveFriendRequestFrom:actionUser completion:^{
             
             // Get the cell to refresh.
             NotificationCell *cell = [self notificationCellForNotification:notificationCell.notification];

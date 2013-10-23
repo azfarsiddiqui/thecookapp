@@ -409,7 +409,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
 }
 
-- (void)ignoreFriendRequestFrom:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
+- (void)ignoreRemoveFriendRequestFrom:(CKUser *)friendUser completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     // Existing request for me?
     PFQuery *requestorFriendRequestQuery = [PFQuery queryWithClassName:kUserFriendModelName];
