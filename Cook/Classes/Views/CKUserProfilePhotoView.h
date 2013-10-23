@@ -11,6 +11,7 @@
 @class CKUser;
 
 typedef enum {
+    ProfileViewSizeTiny,
 	ProfileViewSizeMini,
 	ProfileViewSizeSmall,
 	ProfileViewSizeMedium,

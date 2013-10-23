@@ -19,10 +19,12 @@
 #import "ViewHelper.h"
 #import "EventHelper.h"
 #import "CKPhotoManager.h"
+#import "CKUserProfilePhotoView.h"
 
 @interface BookRecipeGridCell ()
 
 @property (nonatomic, strong) TTTTimeIntervalFormatter *timeIntervalFormatter;
+@property (nonatomic, assign) BOOL ownBook;
 
 @end
 
@@ -42,6 +44,7 @@
 #define kStoryTopOffset         30.0
 #define kTimeStatsGap           -5.0
 #define kTitleTimeGap           7.0
+#define kTimePrivacyGap         5.0
 
 + (CGSize)imageSize {
     return kImageSize;
@@ -55,6 +58,7 @@
     if (self = [super initWithFrame:frame]) {
         [self initBackground];
         [self initImageView];
+//        [self initProfilePhoto];
         [self initTitleLabel];
         [self initIngredientsView];
         [self initStoryLabel];
@@ -90,9 +94,10 @@
 - (void)configureRecipe:(CKRecipe *)recipe book:(CKBook *)book own:(BOOL)own {
     self.recipe = recipe;
     self.book = book;
-    self.privacyIconView.hidden = !own;
+    self.ownBook = own;
     
     [self updateImageView];
+//    [self updateProfilePhoto];
     [self updateTitle];
     [self updateTimeInterval];
     [self updateIngredients];
@@ -116,6 +121,17 @@
     } else {
         self.activityView.hidden = YES;
         self.imageView.hidden = YES;
+    }
+}
+
+- (void)updateProfilePhoto {
+    
+    // Show photo only if book user and recipe user is not the same.
+    if (![self.book.user.objectId isEqualToString:self.recipe.user.objectId]) {
+        self.profilePhotoView.hidden = NO;
+        [self.profilePhotoView loadProfilePhotoForUser:self.recipe.user];
+    } else {
+        self.profilePhotoView.hidden = YES;
     }
 }
 
@@ -179,13 +195,26 @@
 }
 
 - (void)updatePrivacyIcon {
-    self.privacyIconView.image = [self privacyIconImage];
-    self.privacyIconView.frame = (CGRect) {
-        self.timeIntervalLabel.frame.origin.x + self.timeIntervalLabel.frame.size.width + 5.0,
-        floorf(self.timeIntervalLabel.center.y - (self.privacyIconView.frame.size.height / 2.0)) - 1.0,
-        self.privacyIconView.frame.size.width,
-        self.privacyIconView.frame.size.height
-    };
+    
+    if (self.ownBook) {
+        CGFloat requiredWidth = self.timeIntervalLabel.frame.size.width + kTimePrivacyGap + self.privacyIconView.frame.size.width;
+        
+        // Adjust tiem as a block with privacy icon.
+        CGRect timeFrame = self.timeIntervalLabel.frame;
+        timeFrame.origin.x = floorf((self.contentView.bounds.size.width - requiredWidth) / 2.0);
+        self.timeIntervalLabel.frame = timeFrame;
+        
+        self.privacyIconView.hidden = NO;
+        self.privacyIconView.image = [self privacyIconImage];
+        CGRect privacyFrame = self.privacyIconView.frame;
+        privacyFrame.origin = (CGPoint){
+            self.timeIntervalLabel.frame.origin.x + self.timeIntervalLabel.frame.size.width + kTimePrivacyGap,
+            floorf(self.timeIntervalLabel.center.y - (self.privacyIconView.frame.size.height / 2.0)) - 1.0,
+        };
+        self.privacyIconView.frame = privacyFrame;
+    } else {
+        self.privacyIconView.hidden = YES;
+    }
 }
 
 - (void)updateStats {
@@ -342,6 +371,14 @@
     };
     self.bottomShadowImageView.alpha = 0.0;   // Clear to start off with.
     [self.imageView addSubview:self.bottomShadowImageView];
+}
+
+- (void)initProfilePhoto {
+    self.profilePhotoView = [[CKUserProfilePhotoView alloc] initWithProfileSize:ProfileViewSizeTiny];
+    CGRect frame = self.profilePhotoView.frame;
+    frame.origin = (CGPoint){ 5.0, 5.0 };
+    self.profilePhotoView.frame = frame;
+    [self.contentView addSubview:self.profilePhotoView];
 }
 
 - (void)initTitleLabel {
