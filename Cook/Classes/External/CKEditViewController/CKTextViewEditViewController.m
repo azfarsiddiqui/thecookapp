@@ -111,7 +111,14 @@
         return NO;
     }
     //If trying to add in text with too many lines, reject
-    CGFloat requiredHeight = [newString boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName : self.textView.font} context:nil].size.height;
+    NSDictionary *fontAttributes;
+    if (self.textViewFont)
+    {
+        fontAttributes = @{NSFontAttributeName : self.textViewFont};
+    } else {
+        fontAttributes = @{NSFontAttributeName : [UIFont fontWithName:@"BrandonGrotesque-Regular" size:40.0]};
+    }
+    CGFloat requiredHeight = [newString boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:fontAttributes context:nil].size.height;
     if ([text isEqualToString:@"\n"])
     {
         requiredHeight += self.textView.font.pointSize;
