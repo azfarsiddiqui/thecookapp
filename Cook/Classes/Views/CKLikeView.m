@@ -20,6 +20,7 @@
 @property (nonatomic, assign) BOOL dark;
 @property (nonatomic, assign) BOOL liked;
 @property (nonatomic, strong) UIButton *likeButton;
+@property (nonatomic, strong) CKUser *currentUser;
 
 @end
 
@@ -42,6 +43,7 @@
         self.likeButton = [ViewHelper buttonWithImage:[CKLikeView buttonImageForOn:NO dark:dark] target:self selector:@selector(tapped:)];
         self.likeButton.userInteractionEnabled = NO;
         self.likeButton.enabled = NO;
+        self.currentUser = [CKUser currentUser];
         self.frame = self.likeButton.frame;
         [self addSubview:self.likeButton];
     }
@@ -65,6 +67,9 @@
 #pragma mark - Private methods
 
 - (void)loadData {
+    if (!self.currentUser) {
+        return;
+    }
     
     // Load if the current user has liked it.
     [self.recipe likedByUser:[CKUser currentUser]
@@ -82,6 +87,10 @@
 
 
 - (void)tapped:(id)sender {
+    if (!self.currentUser) {
+        return;
+    }
+    
     [self like:!self.liked];
 }
 
