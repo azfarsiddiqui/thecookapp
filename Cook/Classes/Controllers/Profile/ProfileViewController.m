@@ -38,10 +38,6 @@
 #define kBookViewSize           (CGSize){ 840.0, 614.0 }
 #define kBookSummaryGap         20.0
 
-- (void)dealloc {
-    [EventHelper unregisterPhotoLoading:self];
-}
-
 - (id)initWithUser:(CKUser *)user {
     if (self = [super init]) {
         self.user = user;
@@ -107,6 +103,9 @@
     if ([boolNumber boolValue]) {
         [self loadData];
         
+        // Register photo loading events.
+        [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
+        
         // Fade in the back button.
         [UIView animateWithDuration:0.25
                               delay:0.0
@@ -117,6 +116,10 @@
                          completion:^(BOOL finished) {
                          }];
     } else {
+        
+        // Register photo loading events.
+        [EventHelper unregisterPhotoLoading:self];
+        
         [self.cookNavigationController hideContext];
     }
 }
