@@ -51,6 +51,8 @@
 @property (nonatomic, strong) ProgressOverlayViewController *progressOverlayViewController;
 @property (nonatomic, strong) NSString *updatedPage;
 
+@property (nonatomic, assign) BOOL ownBook;
+
 @end
 
 @implementation BookContentViewController
@@ -67,6 +69,7 @@
     if (self = [super init]) {
         self.delegate = delegate;
         self.book = book;
+        self.ownBook = [book isOwner];
         self.page = page;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
     }
@@ -351,7 +354,7 @@
     
     BookRecipeGridCell *recipeCell = (BookRecipeGridCell *)[self.collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
     
-    [recipeCell configureRecipe:recipe book:self.book];
+    [recipeCell configureRecipe:recipe book:self.book own:self.ownBook];
     
 //    recipeCell.alpha = 0.0;
 //    [UIView animateWithDuration:0.2*indexPath.row animations:^{
