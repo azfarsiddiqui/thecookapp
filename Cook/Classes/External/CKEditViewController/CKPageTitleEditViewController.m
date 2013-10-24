@@ -42,6 +42,12 @@
     }
 }
 
+#pragma mark - CKTextFieldEditViewController methods
+
+- (CGFloat)textFieldTopOffset {
+    return 185.0;
+}
+
 #pragma mark - Getters
 
 - (UIButton *)cancelButton {
@@ -122,6 +128,10 @@
 //Set font of title label with something controllable
 - (UIFont *)titleFont {
     return [self.font fontWithSize:38.0];
+}
+
+- (UIOffset)titleOffsetAdjustments {
+    return (UIOffset) { 0.0, 10.0 };
 }
 
 @end

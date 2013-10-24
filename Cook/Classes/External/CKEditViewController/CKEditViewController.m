@@ -170,12 +170,13 @@
 }
 
 - (void)updateInfoLabels {
+    UIOffset titleOffset = [self titleOffsetAdjustments];
     CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
     self.titleLabel.text = [self.titleLabel.text uppercaseString];
     [self.titleLabel sizeToFit];
     self.titleLabel.frame = (CGRect){
-        floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0),
-        targetTextBoxView.frame.origin.y - self.titleLabel.frame.size.height + 5.0,
+        floorf((self.view.bounds.size.width - self.titleLabel.frame.size.width) / 2.0) + titleOffset.horizontal,
+        targetTextBoxView.frame.origin.y - self.titleLabel.frame.size.height + titleOffset.vertical,
         self.titleLabel.frame.size.width,
         self.titleLabel.frame.size.height
     };
@@ -207,6 +208,10 @@
 
 - (UIFont *)titleFont {
     return [self.font fontWithSize:30.0];
+}
+
+- (UIOffset)titleOffsetAdjustments {
+    return (UIOffset) { 0.0, 5.0 };
 }
 
 - (void)updateTitle:(NSString *)title {
@@ -296,14 +301,16 @@
         // Get a reference to the target textbox for relative positioning.
         CKEditingTextBoxView *targetTextBoxView = [self targetEditTextBoxView];
         
+        UIOffset titleOffset = [self titleOffsetAdjustments];
+        
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.text = [self.editTitle uppercaseString];
         _titleLabel.font = [self titleFont];
         _titleLabel.textColor = [self titleColour];
         [_titleLabel sizeToFit];
-        _titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - _titleLabel.frame.size.width) / 2.0),
-                                       targetTextBoxView.frame.origin.y - _titleLabel.frame.size.height + 5.0,
+        _titleLabel.frame = CGRectMake(floorf((self.view.bounds.size.width - _titleLabel.frame.size.width) / 2.0) + titleOffset.horizontal,
+                                       targetTextBoxView.frame.origin.y - _titleLabel.frame.size.height + titleOffset.vertical,
                                        _titleLabel.frame.size.width,
                                        _titleLabel.frame.size.height);
     }
