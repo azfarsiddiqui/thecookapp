@@ -35,7 +35,7 @@
     CGSize size = CGSizeMake(800.0, 90.0);
     CGFloat singleLineHeight = [self singleLineHeight];
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(floorf((self.view.bounds.size.width - size.width) / 2.0),
-                                                                           160.0,
+                                                                           [self textFieldTopOffset],
                                                                            size.width,
                                                                            singleLineHeight)];
     textField.font = self.font;
@@ -50,6 +50,12 @@
 
 - (id)updatedValue {
     return self.textField.text;
+}
+
+#pragma mark - CKTextFieldEditViewController methods
+
+- (CGFloat)textFieldTopOffset {
+    return 160.0;
 }
 
 #pragma mark - Lifecycle events

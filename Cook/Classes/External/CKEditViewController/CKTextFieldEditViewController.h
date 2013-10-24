@@ -10,4 +10,6 @@
 
 @interface CKTextFieldEditViewController : CKTextEditViewController
 
+- (CGFloat)textFieldTopOffset;
+
 @end

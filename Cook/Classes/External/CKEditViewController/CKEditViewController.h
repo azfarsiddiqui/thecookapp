@@ -70,6 +70,7 @@
 - (BOOL)headless;
 - (void)dismissEditView;
 - (UIFont *)titleFont;
+- (UIOffset)titleOffsetAdjustments;
 - (void)updateTitle:(NSString *)title;
 - (void)updateTitle:(NSString *)title toast:(BOOL)toast;
 - (void)doSave;
