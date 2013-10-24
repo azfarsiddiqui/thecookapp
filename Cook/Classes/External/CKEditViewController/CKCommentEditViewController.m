@@ -28,7 +28,6 @@
 
 - (void)targetTextEditingViewWillAppear:(BOOL)appear {
     [super targetTextEditingViewWillAppear:appear];
-    
     if (appear) {
         [self showButtons:YES animated:YES completion:nil];
     } else {
@@ -41,6 +40,12 @@
         }];
         
     }
+}
+
+//Set font of title label with something controllable
+- (UIFont *)titleFont
+{
+    return self.textViewFont;
 }
 
 #pragma mark - Getters
@@ -118,12 +123,6 @@
 
 - (void)saveTapped:(id)sender {
     [self doSave];
-}
-
-//Set font of title label with something controllable
-- (UIFont *)titleFont
-{
-    return self.textViewFont;
 }
 
 @end
