@@ -155,6 +155,9 @@
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    [self removeImagePicker];
+    [self.popoverViewController dismissPopoverAnimated:YES];
+    self.popoverViewController = nil;
     UIImage *chosenImage = [info objectForKey:UIImagePickerControllerOriginalImage];
     self.imageSourceType = picker.sourceType;
     [self.activityView startAnimating];
@@ -172,10 +175,8 @@
     {
         [self.snapshotView removeFromSuperview];
         self.snapshotView = nil;
-        [self.popoverViewController dismissPopoverAnimated:YES];
-        self.popoverViewController = nil;
         self.libraryPickerViewController = nil;
-        [self removeImagePicker];
+        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             self.selectedImage = [chosenImage scaledCopyOfSize:[self getResizeOfImageSize:chosenImage.size] orientation:[self adjustedOrientationofImage:chosenImage]];
             dispatch_async(dispatch_get_main_queue(), ^{
