@@ -620,6 +620,7 @@
         scrollView.minimumZoomScale = 1.0;
         scrollView.delegate = self;
         scrollView.alpha = 0.0;
+        scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
         [parentView addSubview:scrollView];
         self.previewScrollView = scrollView;
         
