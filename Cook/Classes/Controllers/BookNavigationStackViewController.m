@@ -962,7 +962,7 @@
     }
     
     // Add likes if we have at least one page.
-    if (self.enableLikes && [self.book isOwner] && [self.pages count] > 0) {
+    if (self.enableLikes && [self.book isOwner]) {
         self.likesPageName = [self resolveLikesPageName];
         [self.pages addObject:self.likesPageName];
         [self.pageRecipes setObject:self.likedRecipes forKey:self.likesPageName];
