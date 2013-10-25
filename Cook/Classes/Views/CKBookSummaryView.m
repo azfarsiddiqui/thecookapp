@@ -568,30 +568,6 @@
     self.nameLabel.shadowOffset = editMode ? CGSizeZero : CGSizeMake(0.0, 1.0);
 }
 
-- (void)initAddButton {
-    NSString *buttonText = @"ADD TO BENCH";
-    [self initActionButtonWithSelector:@selector(addTapped:)];
-    [self updateAddButtonText:buttonText activity:YES enabled:NO];
-    
-    if (self.currentUser) {
-        [self.book isFollowedByUser:self.currentUser
-                            success:^(BOOL followed) {
-                                if (followed) {
-                                    [self updateButtonText:@"BOOK ON BENCH" activity:NO
-                                                      icon:[UIImage imageNamed:@"cook_dash_library_selected_icon_added.png"]
-                                                   enabled:NO target:nil selector:nil];
-                                } else {
-                                    [self updateAddButtonText:buttonText activity:NO enabled:YES];
-                                }
-                            }
-                            failure:^(NSError *error) {
-                                [self updateAddButtonText:buttonText activity:NO enabled:NO];
-                            }];
-    } else {
-        [self updateButtonText:@"PLEASE SIGN IN" activity:NO icon:nil enabled:NO target:nil selector:nil];
-    }
-}
-
 - (void)initFriendsButton {
     NSString *friendRequestText = @"ADD FRIEND";
     
@@ -638,7 +614,7 @@
                                           [self updateRequestButtonText:friendRequestText activity:NO enabled:NO];
                                       }];
     } else {
-        [self updateButtonText:@"PLEASE SIGN IN" activity:NO icon:nil enabled:NO target:nil selector:nil];
+        self.actionButtonView.hidden = YES;
     }
 }
 
