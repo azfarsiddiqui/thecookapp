@@ -18,19 +18,19 @@
         [display appendFormat:@"%d", count];
     } else if (count < 1000000) {
         if ((count % 1000) == 0) {
-            [display appendFormat:@"%dK", (count / 1000)];
+            [display appendFormat:@"%dk", (count / 1000)];
         } else {
-            [display appendFormat:@"%.fK", (count / 1000.0)];
+            [display appendFormat:@"%.1fk", (count / 1000.0)];
         }
     } else {
         if ((count % 1000000) == 0) {
             [display appendFormat:@"%dM", (count / 1000000)];
         } else {
-            [display appendFormat:@"%.fM", (count / 1000000.0)];
+            [display appendFormat:@"%.1fM", (count / 1000000.0)];
         }
     }
     
-    return display;
+    return [display stringByReplacingOccurrencesOfString:@".0" withString:@""];
 }
 
 @end
