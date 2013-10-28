@@ -35,6 +35,7 @@
 
 // Edited content.
 @property (nonatomic, strong) UIImage *updatedBookCoverPhoto;
+//@property (nonatomic, strong) UIImage *originalImage;
 
 @property (nonatomic, assign) BOOL fullImageLoaded;
 
@@ -45,6 +46,7 @@
 #define kButtonInsets       UIEdgeInsetsMake(22.0, 10.0, 15.0, 20.0)
 #define kEditButtonInsets   UIEdgeInsetsMake(20.0, 5.0, 0.0, 5.0)
 #define kAvailableWidth     624.0
+#define kTempBookImageKey   @"TEMP_BOOK_IMAGE"
 
 - (void)dealloc {
     [EventHelper unregisterPhotoLoading:self];
@@ -115,6 +117,8 @@
         if (self.updatedBookCoverPhoto) {
             [self.book saveWithImage:self.updatedBookCoverPhoto
                           completion:^{
+                              //Store temp image in cache during editing
+                              [[CKPhotoManager sharedInstance] storeImage:self.updatedBookCoverPhoto forKey:kTempBookImageKey];
                               DLog(@"Saved book.");
                           } failure:^(NSError *error) {
                               // Ignore returns.
@@ -126,6 +130,8 @@
         }
         
     } else {
+        //Load original image back here
+        [self loadImage:[[CKPhotoManager sharedInstance] cachedImageForKey:kTempBookImageKey] placeholder:NO];
         
         // Clear any updated covers.
         self.updatedBookCoverPhoto = nil;
@@ -416,6 +422,10 @@
         if (!self.fullImageLoaded) {
             if ([EventHelper hasImageForPhotoLoading:notification]) {
                 UIImage *image = [EventHelper imageForPhotoLoading:notification];
+                
+                //Store temp image in cache during editing
+                [[CKPhotoManager sharedInstance] storeImage:image forKey:kTempBookImageKey];
+                
                 [self loadImage:image placeholder:NO];
                 self.fullImageLoaded = !thumb;
             }
