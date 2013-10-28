@@ -74,10 +74,6 @@
     return _saveButton;
 }
 
-- (UIOffset)titleOffsetAdjustments {
-    return (UIOffset) { -5.0, 5.0 };
-}
-
 #pragma mark - Private methods
 
 - (void)showButtons:(BOOL)show animated:(BOOL)animated completion:(void (^)())completion
