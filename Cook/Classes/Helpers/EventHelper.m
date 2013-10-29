@@ -25,6 +25,7 @@
 #define kEventLogout                @"CKEventLogout"
 #define kEventThemeChange           @"CKThemeChange"
 #define kEventStatusBarChange       @"CKStatusBarChange"
+#define kBoolHideStatusBar          @"CKStatusBarHide"
 #define kBoolLightStatusBar         @"CKStatusBarLight"
 #define kEventUserNotifications     @"CKUserNotifications"
 #define kUserNotificationsCount     @"CKUserNotificationsCount"
@@ -190,12 +191,20 @@
     [EventHelper registerObserver:observer withSelector:selector toEventName:kEventStatusBarChange];
 }
 
-+ (void)postStatusBarChangeUpdate {
-    [EventHelper postEvent:kEventStatusBarChange];
-}
-
 + (void)postStatusBarChangeForLight:(BOOL)light {
     [EventHelper postEvent:kEventStatusBarChange withUserInfo:@{kBoolLightStatusBar : @(light)}];
+}
+
++ (void)postStatusBarHide:(BOOL)hide {
+    [EventHelper postEvent:kEventStatusBarChange withUserInfo:@{kBoolHideStatusBar : @(hide)}];
+}
+
++ (BOOL)shouldHideStatusBarForNotification:(NSNotification *)notification {
+    return ([[notification userInfo] objectForKey:kBoolHideStatusBar] != nil);
+}
+
++ (BOOL)hideStatusBarForNotification:(NSNotification *)notification {
+    return [[[notification userInfo] objectForKey:kBoolHideStatusBar] boolValue];
 }
 
 + (BOOL)lightStatusBarChangeUpdateOnly:(NSNotification *)notification {

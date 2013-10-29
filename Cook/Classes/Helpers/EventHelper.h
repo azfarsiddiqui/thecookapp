@@ -48,9 +48,12 @@
 + (void)postThemeChange;
 + (void)unregisterThemeChange:(id)observer;
 
+// Status bar.
 + (void)registerStatusBarChange:(id)observer selector:(SEL)selector;
-+ (void)postStatusBarChangeUpdate;
 + (void)postStatusBarChangeForLight:(BOOL)light;
++ (void)postStatusBarHide:(BOOL)hide;
++ (BOOL)shouldHideStatusBarForNotification:(NSNotification *)notification;
++ (BOOL)hideStatusBarForNotification:(NSNotification *)notification;
 + (BOOL)lightStatusBarChangeUpdateOnly:(NSNotification *)notification;
 + (BOOL)lightStatusBarChangeForNotification:(NSNotification *)notification;
 + (void)unregisterStatusBarChange:(id)observer;

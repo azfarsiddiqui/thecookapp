@@ -39,6 +39,7 @@
 @property (nonatomic, strong) UIViewController *bookModalViewController;
 @property (nonatomic, assign) BOOL storeMode;
 @property (nonatomic, assign) BOOL lightStatusBar;
+@property (nonatomic, assign) BOOL hideStatusBar;
 @property (nonatomic, strong) CKBook *selectedBook;
 @property (nonatomic, assign) CGFloat benchtopHideOffset;   // Keeps track of default benchtop offset.
 @property (nonatomic, assign) BOOL panEnabled;
@@ -116,6 +117,10 @@
 // Need this here so subsequent VC's use it.
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return self.lightStatusBar ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return self.hideStatusBar;
 }
 
 #pragma mark - WelcomeViewControllerDelegate methods
@@ -887,11 +892,19 @@
 }
 
 - (void)statusBarChanged:(NSNotification *)notification {
-    if ([EventHelper lightStatusBarChangeUpdateOnly:notification]) {
-        [self updateStatusBarLight:self.lightStatusBar];
+    
+    if ([EventHelper shouldHideStatusBarForNotification:notification]) {
+        
+        [self updateStatusBarHidden:[EventHelper hideStatusBarForNotification:notification]];
+        
     } else {
-        [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
+        if ([EventHelper lightStatusBarChangeUpdateOnly:notification]) {
+            [self updateStatusBarLight:self.lightStatusBar];
+        } else {
+            [self updateStatusBarLight:[EventHelper lightStatusBarChangeForNotification:notification]];
+        }
     }
+    
 }
 
 - (void)loggedOut:(NSNotification *)notification {
@@ -903,6 +916,14 @@
         return;
     }
     self.lightStatusBar = light;
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)updateStatusBarHidden:(BOOL)hide {
+    if (self.hideStatusBar == hide) {
+        return;
+    }
+    self.hideStatusBar = hide;
     [self setNeedsStatusBarAppearanceUpdate];
 }
 

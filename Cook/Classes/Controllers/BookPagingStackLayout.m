@@ -344,8 +344,11 @@
             
             attributes.transform3D = CATransform3DMakeTranslation(requiredTranslation, 0.0, 0.0);
         }
-        
     }
+    
+    // Set the alpha of the navigation view.
+    attributes.alpha = [self.delegate alphaForBookNavigationView];
+
 }
 
 - (CGFloat)shiftedTranslationForAttributes:(UICollectionViewLayoutAttributes *)attributes {
