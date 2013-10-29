@@ -25,7 +25,6 @@
 @interface BookProfileViewController () <CKPhotoPickerViewControllerDelegate, CKEditingTextBoxViewDelegate,
     CKBookSummaryViewDelegate>
 
-@property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *topShadowView;
 @property (nonatomic, strong) UIView *photoButtonView;

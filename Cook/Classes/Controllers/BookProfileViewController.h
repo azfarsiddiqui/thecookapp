@@ -15,6 +15,7 @@
 @interface BookProfileViewController : BookPageViewController
 
 @property (nonatomic, strong) CKBookSummaryView *summaryView;
+@property (nonatomic, strong) CKBook *book;
 
 - (id)initWithBook:(CKBook *)book;
 

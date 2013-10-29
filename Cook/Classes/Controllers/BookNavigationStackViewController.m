@@ -907,6 +907,9 @@
             // Refresh the book on the dash as it could be stale, e.g. pages.
             [self.delegate bookNavigationControllerRefreshedBook:refreshedBook];
             
+            //Refresh books in profile viewcontroller as well
+            self.profileViewController.book = refreshedBook;
+            self.titleViewController.book = refreshedBook;
         }
         self.bookLastAccessedDate = lastAccessedDate;
         

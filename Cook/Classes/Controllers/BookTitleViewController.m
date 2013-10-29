@@ -35,7 +35,6 @@
 @interface BookTitleViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource_Draggable,
     CKEditViewControllerDelegate>
 
-@property (nonatomic, strong) CKBook *book;
 @property (nonatomic, strong) NSMutableArray *pages;
 @property (nonatomic, assign) BOOL fullImageLoaded;
 @property (nonatomic, assign) BOOL snapshot;
