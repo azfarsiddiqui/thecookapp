@@ -1139,7 +1139,6 @@
     
     // Always show status bar when viewing recipe.
     [self fadeNavigationBarWithAlpha:1.0];
-    
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 

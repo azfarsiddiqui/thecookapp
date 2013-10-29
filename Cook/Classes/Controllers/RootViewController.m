@@ -13,6 +13,7 @@
 #import "BookCoverViewController.h"
 #import "BookNavigationViewControllerDelegate.h"
 #import "CKBook.h"
+#import "CKUser.h"
 #import "SettingsViewController.h"
 #import "BookModalViewController.h"
 #import "WelcomeViewController.h"
@@ -312,6 +313,12 @@
 
 - (void)bookNavigationControllerRefreshedBook:(CKBook *)book {
     [self.benchtopViewController refreshBook:book];
+    
+    //Refresh book if selected book is own book
+    if ([self.selectedBook.user.objectId isEqual:[CKUser currentUser].objectId])
+    {
+        self.selectedBook = book;
+    }
 }
 
 - (UIView *)bookNavigationSnapshot {
