@@ -81,10 +81,6 @@
     self.closeButton.frame = closeButtonFrame;
 }
 
-- (void)setHomeAlpha:(CGFloat)homeAlpha {
-    self.homeButton.alpha = homeAlpha;
-}
-
 - (void)enableAddAndEdit:(BOOL)enable {
     self.editButton.alpha = enable ? 1.0 : 0.0;
     self.addButton.alpha = enable ? 1.0 : 0.0;

@@ -19,6 +19,7 @@ typedef enum {
 - (void)stackPagingLayoutDidFinish;
 - (BookPagingStackLayoutType)stackPagingLayoutType;
 - (NSInteger)stackContentStartSection;
+- (CGFloat)alphaForBookNavigationView;
 
 @end
 

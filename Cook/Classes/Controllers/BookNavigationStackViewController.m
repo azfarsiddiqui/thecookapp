@@ -53,7 +53,9 @@
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
+@property (nonatomic, assign) BOOL hideStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
+@property (nonatomic, assign) BOOL navBarAnimating;
 @property (nonatomic, strong) UIView *bookOutlineView;
 @property (nonatomic, strong) UIView *bookBindingView;
 @property (nonatomic, strong) NSDate *bookLastAccessedDate;
@@ -155,6 +157,7 @@
 }
 
 - (void)setActive:(BOOL)active {
+    DLog();
     [UIView animateWithDuration:0.3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -310,7 +313,7 @@
     [self loadRecipes];
 }
 
-- (void)updateStatusBar {
+- (void)updateStatusBarBetweenPages {
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     if (visibleFrame.origin.x < (self.collectionView.bounds.size.width * 2.0) - floorf(self.collectionView.bounds.size.width / 2.0)) {
         if (!self.lightStatusBar) {
@@ -325,7 +328,11 @@
     }
 }
 
-- (void)updatePageOverlays {
+- (void)updatePagingContent {
+    
+    // Restore navbar on any side-scroll.
+    [self fadeNavigationBarWithAlpha:1.0];
+    
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     BookPagingStackLayout *layout = [self currentLayout];
     
@@ -338,20 +345,21 @@
         
         NSSortDescriptor *pageSorter = [[NSSortDescriptor alloc] initWithKey:@"section" ascending:YES];
         pageIndexPaths = [pageIndexPaths sortedArrayUsingDescriptors:@[pageSorter]];
-        NSIndexPath *topIndexPath = [pageIndexPaths firstObject];
-        NSInteger topPageIndex = topIndexPath.section - [self stackContentStartSection];
+        NSIndexPath *firstIndexPath = [pageIndexPaths firstObject];
         
-        // See if there's a next page.
+        // See if there's a next page, only going to the right, then apply overlay adjustments.
+        NSInteger topPageIndex = firstIndexPath.section - [self stackContentStartSection];
         NSInteger nextPageIndex = topPageIndex + 1;
         if (nextPageIndex < [self.pages count]) {
             
-            CGFloat currentPageOffset = [layout pageOffsetForIndexPath:topIndexPath];
+            // Calculate the required alpha for the content overlay.
+            CGFloat currentPageOffset = [layout pageOffsetForIndexPath:firstIndexPath];
             NSString *nextPage = [self.pages objectAtIndex:nextPageIndex];
-            
             CGFloat distance = ABS(visibleFrame.origin.x - currentPageOffset);
             CGFloat overlayAlpha = 1.0 - (distance / visibleFrame.size.width);
-//            DLog(@"PAGE [%@] distance[%f] overlay [%f]", nextPage, distance, overlayAlpha);
+            // DLog(@"PAGE [%@] distance[%f] overlay [%f]", nextPage, distance, overlayAlpha);
             
+            // Get the next page and apply the appropriate paging effects.
             BookContentViewController *pageViewController = [self.contentControllers objectForKey:nextPage];
             if (pageViewController) {
                 [pageViewController applyOverlayAlpha:overlayAlpha];
@@ -359,6 +367,21 @@
         }
     }
     
+}
+
+- (void)capEdgeScrollPoints {
+    
+    // Cap the scroll point.
+    CGRect scrollBounds = self.collectionView.bounds;
+    if (self.collectionView.contentOffset.x <= self.leftOutlineView.frame.origin.x) {
+        scrollBounds.origin.x = self.leftOutlineView.frame.origin.x;
+        self.collectionView.bounds = scrollBounds;
+    } else if (self.collectionView.contentSize.width > 0.0
+               && self.collectionView.contentOffset.x >= self.collectionView.contentSize.width - scrollBounds.size.width + self.rightOutlineView.frame.size.width) {
+        scrollBounds.origin.x = self.rightOutlineView.frame.origin.x + self.rightOutlineView.frame.size.width - scrollBounds.size.width;
+        self.collectionView.bounds = scrollBounds;
+    }
+
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -440,9 +463,18 @@
     return [self coverRecipeForPage:page];
 }
 
-- (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page {
+- (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page
+                              distanceTravelled:(CGFloat)distance {
+   
+    // Apply blurring/tinting offset to content image.
     BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
     [contentHeaderView applyOffset:offset];
+    
+    BOOL fadeTrigger = ABS(distance) > 10.0;
+    BOOL scrollingDown = (distance > 0.0);
+    if (fadeTrigger) {
+        [self fadeNavigationBarWithAlpha:scrollingDown ? 0.0 : 1.0];
+    }
 }
 
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page {
@@ -570,22 +602,16 @@
     return kIndexSection + 1;
 }
 
+- (CGFloat)alphaForBookNavigationView {
+    return self.bookNavigationView ? self.bookNavigationView.alpha : 1.0;
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    // Cap the scroll point.
-    CGRect scrollBounds = scrollView.bounds;
-    if (scrollView.contentOffset.x <= self.leftOutlineView.frame.origin.x) {
-        scrollBounds.origin.x = self.leftOutlineView.frame.origin.x;
-        scrollView.bounds = scrollBounds;
-    } else if (scrollView.contentSize.width > 0.0 && scrollView.contentOffset.x >= scrollView.contentSize.width - scrollBounds.size.width + self.rightOutlineView.frame.size.width) {
-        scrollBounds.origin.x = self.rightOutlineView.frame.origin.x + self.rightOutlineView.frame.size.width - scrollBounds.size.width;
-        scrollView.bounds = scrollBounds;
-    }
-    
-    [self updateStatusBar];
-    [self updatePageOverlays];
+    [self capEdgeScrollPoints];
+    [self updateStatusBarBetweenPages];
+    [self updatePagingContent];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -604,12 +630,12 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
-        [self updateNavBar];
+        [self updateNavigationButtons];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self updateNavBar];
+    [self updateNavigationButtons];
     
     //Tell headers images to load content now
     if ([self.collectionView numberOfSections] > 2 && [self currentPageIndex] < [self.collectionView numberOfSections])
@@ -626,7 +652,7 @@
     self.collectionView.userInteractionEnabled = YES;
     [self activateVisibleCells];
     self.fastForward = NO;
-    [self updateNavBar];
+    [self updateNavigationButtons];
 }
 
 - (void)activateVisibleCells
@@ -739,6 +765,7 @@
                 // Remember its current offset so we can restore later.
                 [self.contentControllerOffsets setObject:[NSValue valueWithCGPoint:[contentViewController currentScrollOffset]]
                                                   forKey:page];
+                
                 [self.contentControllers removeObjectForKey:page];
                 contentViewController = nil;
             }
@@ -1109,6 +1136,10 @@
 }
 
 - (void)showRecipe:(CKRecipe *)recipe {
+    
+    // Always show status bar when viewing recipe.
+    [self fadeNavigationBarWithAlpha:1.0];
+    
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
@@ -1337,6 +1368,7 @@
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
+    
     // Fast forward to the intended page.
     if (self.fastForward && pageIndex > currentPageIndex) {
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - 2] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
@@ -1361,7 +1393,11 @@
 }
 
 - (void)peekTheBook {
-    [self scrollToHomeAnimated:NO];
+    
+    // Start at home without making delegate callbacks, which has side effects on scrollViewDidScroll.
+    CGRect bounds = self.collectionView.bounds;
+    bounds.origin.x = kIndexSection * self.collectionView.bounds.size.width;
+    self.collectionView.bounds = bounds;
 }
 
 - (void)cancelTapped:(id)sender {
@@ -1389,6 +1425,7 @@
 }
 
 - (void)updateButtonsWithAlpha:(CGFloat)alpha {
+    DLog();
     if (self.editMode && !self.cancelButton.superview && !self.saveButton.superview) {
         self.cancelButton.alpha = 0.0;
         self.saveButton.alpha = 0.0;
@@ -1577,7 +1614,7 @@
     return likesPage;
 }
 
-- (void)updateNavBar {
+- (void)updateNavigationButtons {
     [self.bookNavigationView enableAddAndEdit:![self onLikesPage]];
 }
 
@@ -1603,6 +1640,44 @@
     
     // Save the book in the background.
     [self.book saveInBackground];
+}
+
+- (CGFloat)alphaForBookNavigationViewWithOffset:(CGFloat)offset {
+    CGFloat alpha = 1.0;
+    if (offset > 0.0) {
+        alpha = 1.0 - MIN(1.0, offset / 200.0);
+    }
+    return alpha;
+}
+
+- (void)fadeNavigationBarWithAlpha:(CGFloat)alpha {
+    if (!self.navBarAnimating && self.bookNavigationView.alpha != alpha) {
+        self.navBarAnimating = YES;
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.bookNavigationView.alpha = alpha;
+                         }
+                         completion:^(BOOL finished) {
+                             self.navBarAnimating = NO;
+                             [self updateStatusBarFromContentScroll];
+                         }];
+    }
+}
+
+- (void)updateStatusBarFromContentScroll {
+    if (self.bookNavigationView.alpha < 0.1) {
+        if (!self.hideStatusBar) {
+            self.hideStatusBar = YES;
+            [EventHelper postStatusBarHide:YES];
+        }
+    } else {
+        if (self.hideStatusBar) {
+            self.hideStatusBar = NO;
+            [EventHelper postStatusBarHide:NO];
+        }
+    }
 }
 
 @end

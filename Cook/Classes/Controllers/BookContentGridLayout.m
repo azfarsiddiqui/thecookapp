@@ -127,7 +127,6 @@
     
     // Cache the contentSize and inform layout finished.
     self.contentSize = contentSize;
-    [self.delegate bookContentGridLayoutDidFinish];
     
     return contentSize;
 }
