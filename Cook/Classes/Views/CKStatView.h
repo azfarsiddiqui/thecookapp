@@ -10,7 +10,7 @@
 
 @interface CKStatView : UIView
 
-- (id)initWithNumber:(NSUInteger)number unit:(NSString *)unit;
+- (id)initWithUnit:(NSString *)unit;
 - (void)updateNumber:(NSUInteger)number;
 
 @end
