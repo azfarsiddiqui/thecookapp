@@ -463,36 +463,17 @@
     return [self coverRecipeForPage:page];
 }
 
-- (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page scrollingDown:(BOOL)scrollingDown {
+- (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page
+                              distanceTravelled:(CGFloat)distance {
    
     // Apply blurring/tinting offset to content image.
     BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
     [contentHeaderView applyOffset:offset];
     
-    // Apply fading of navigation header.
-    CGFloat requiredAlpha = [self alphaForBookNavigationViewWithOffset:offset];
-    CGFloat deltaAlpha = ABS(self.bookNavigationView.alpha - requiredAlpha);
-    
-    // If we have a big delta, then we should fade it in via animation when it's scrolling down. This is so that it
-    // stays on screen if u scroll up.
-    if (deltaAlpha > 0.5) {
-        if (scrollingDown) {
-            [self fadeNavigationBarWithAlpha:requiredAlpha];
-        }
-    } else {
-        
-        if (!scrollingDown) {
-            
-            // Ensure that the navigation bar doesn't flash if it's scrolling up from total visibility.
-            self.bookNavigationView.alpha = MAX(requiredAlpha, self.bookNavigationView.alpha);
-            [self updateStatusBarFromContentScroll];
-            
-        } else {
-            
-            // Continuous scroll as user scrolls down.
-            self.bookNavigationView.alpha = requiredAlpha;
-            [self updateStatusBarFromContentScroll];
-        }
+    BOOL fadeTrigger = ABS(distance) > 10.0;
+    BOOL scrollingDown = (distance > 0.0);
+    if (fadeTrigger) {
+        [self fadeNavigationBarWithAlpha:scrollingDown ? 0.0 : 1.0];
     }
 }
 
@@ -628,7 +609,6 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    DLog();
     [self capEdgeScrollPoints];
     [self updateStatusBarBetweenPages];
     [self updatePagingContent];
@@ -1153,6 +1133,10 @@
 }
 
 - (void)showRecipe:(CKRecipe *)recipe {
+    
+    // Always show status bar when viewing recipe.
+    [self fadeNavigationBarWithAlpha:1.0];
+    
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 

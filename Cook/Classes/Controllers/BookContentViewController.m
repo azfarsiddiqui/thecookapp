@@ -54,7 +54,7 @@
 @property (nonatomic, assign) BOOL ownBook;
 
 // To keep track of scroll direction.
-@property (nonatomic, assign) CGPoint currentContentOffset;
+@property (nonatomic, assign) CGPoint startContentOffset;
 
 @end
 
@@ -319,6 +319,11 @@
 
 #pragma mark - UIScrollViewDelegate methods
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    // Track the current begin scroll position.
+    self.startContentOffset = scrollView.contentOffset;
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self applyScrollingEffectsOnCategoryView];
 }
@@ -470,12 +475,8 @@
 - (void)applyScrollingEffectsOnCategoryView {
     
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    
-    // Determine scroll direction.
-    BOOL scrollingDown = visibleFrame.origin.y > self.currentContentOffset.y;
-    self.currentContentOffset = self.collectionView.contentOffset;
-    
-    [self.delegate bookContentViewControllerScrolledOffset:visibleFrame.origin.y page:self.page scrollingDown:scrollingDown];
+    [self.delegate bookContentViewControllerScrolledOffset:visibleFrame.origin.y page:self.page
+                                         distanceTravelled:(self.collectionView.contentOffset.y - self.startContentOffset.y)];
 }
 
 - (BookContentGridType)gridTypeForRecipe:(CKRecipe *)recipe {

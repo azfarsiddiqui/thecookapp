@@ -16,7 +16,7 @@
 
 - (NSArray *)recipesForBookContentViewControllerForPage:(NSString *)page;
 - (CKRecipe *)featuredRecipeForBookContentViewControllerForPage:(NSString *)page;
-- (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page scrollingDown:(BOOL)scrollingDown;
+- (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page distanceTravelled:(CGFloat)distance;
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page;
 
 @end
