@@ -13,7 +13,6 @@
 #import "CKRecipeComment.h"
 #import "ModalOverlayHeaderView.h"
 #import "RecipeCommentCell.h"
-//#import "CKTextViewEditViewController.h"
 #import "CKCommentEditViewController.h"
 #import "CKEditingViewHelper.h"
 #import "NSString+Utilities.h"
