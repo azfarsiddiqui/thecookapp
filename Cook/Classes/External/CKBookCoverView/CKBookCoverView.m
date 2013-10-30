@@ -116,7 +116,7 @@
             
             // Load the image remotely.
             [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:self.book.illustrationImageFile.url]
-                                                    size:self.illustrationImageView.frame.size];
+                                                    size:self.illustrationImageView.bounds.size];
             
         } else {
             

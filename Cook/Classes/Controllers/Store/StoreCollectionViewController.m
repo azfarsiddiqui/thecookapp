@@ -20,6 +20,7 @@
 #import "ViewHelper.h"
 #import "CardViewHelper.h"
 #import "CKPhotoManager.h"
+#import "CKBookCover.h"
 
 @interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
     StoreBookViewControllerDelegate>
@@ -335,7 +336,7 @@
         
         // Load the full image remotely.
         [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:book.illustrationImageFile.url]
-                                                size:[BenchtopBookCoverViewCell cellSize]];
+                                                size:[CKBookCover coverImageSize]];
     }
 }
 
