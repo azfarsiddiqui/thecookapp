@@ -1650,7 +1650,7 @@
 }
 
 - (void)fadeNavigationBarWithAlpha:(CGFloat)alpha {
-    if (!self.navBarAnimating && self.bookNavigationView.alpha != alpha) {
+    if (self.bookNavigationView && self.bookNavigationView.alpha != alpha && !self.navBarAnimating) {
         self.navBarAnimating = YES;
         [UIView animateWithDuration:0.3
                               delay:0.0
