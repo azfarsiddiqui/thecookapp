@@ -354,7 +354,7 @@
 }
 
 + (UIFont *)editServesFont {
-    return [UIFont fontWithName:@"AvenirNext-Regular" size:36.0];
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:42.0];
 }
 
 + (UIColor *)editServesColour {
