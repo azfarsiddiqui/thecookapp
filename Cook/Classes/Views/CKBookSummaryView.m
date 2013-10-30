@@ -350,12 +350,12 @@
     [self updateName:name];
     
     // Pages
-    CKStatView *pagesStatView = [[CKStatView alloc] initWithNumber:0 unit:@"FOLLOWER"];
+    CKStatView *pagesStatView = [[CKStatView alloc] initWithUnit:@"FOLLOWER"];
     [self addSubview:pagesStatView];
     self.followersStatView = pagesStatView;
     
     // Recipes
-    CKStatView *recipesStatView = [[CKStatView alloc] initWithNumber:0 unit:@"RECIPE"];
+    CKStatView *recipesStatView = [[CKStatView alloc] initWithUnit:@"RECIPE"];
     [self addSubview:recipesStatView];
     self.numRecipesStatView = recipesStatView;
     

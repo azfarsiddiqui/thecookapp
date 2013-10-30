@@ -12,7 +12,7 @@
 @interface CKStatView ()
 
 @property (nonatomic, strong) NSString *unit;
-@property (nonatomic, assign) NSUInteger number;
+@property (nonatomic, assign) NSNumber *number;
 @property (nonatomic, strong) UILabel *numberLabel;
 @property (nonatomic, strong) UILabel *unitLabel;
 
@@ -25,14 +25,15 @@
 #define kContentInsets  UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
 #define kNumberUnitGap  5.0
 
-- (id)initWithNumber:(NSUInteger)number unit:(NSString *)unit {
+
+
+- (id)initWithUnit:(NSString *)unit {
     if (self = [super initWithFrame:CGRectZero]) {
         
-        self.number = number;
         self.unit = unit;
         
         // Number.
-        NSString *numberString = [NSString stringWithFormat:@"%d", number];
+        NSString *numberString = @"-";
         UILabel *numberLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         numberLabel.font = kNumberFont;
         numberLabel.backgroundColor = [UIColor clearColor];
@@ -73,7 +74,7 @@
 }
 
 - (void)updateNumber:(NSUInteger)number {
-    self.number = number;
+    self.number = @(number);
     self.numberLabel.text = [NSString stringWithFormat:@"%d", number];
     [self.numberLabel sizeToFit];
     self.numberLabel.frame = CGRectMake(kContentInsets.left,
@@ -94,7 +95,7 @@
 
 - (NSString *)numberAdjustedUnit {
     NSMutableString *display = [NSMutableString stringWithString:self.unit];
-    if (self.number != 1) {
+    if ([self.number unsignedIntegerValue] != 1) {
         [display appendString:@"S"];
     }
     return display;

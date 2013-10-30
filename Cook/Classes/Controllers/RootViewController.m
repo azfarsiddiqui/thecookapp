@@ -220,6 +220,9 @@
         
         // Always light status bar when book closed.
         [self updateStatusBarLight:YES];
+        
+        // Always have status bar after closing book.
+        [self updateStatusBarHidden:NO];
     }
     
     // Pass on event to the benchtop to hide the book.
