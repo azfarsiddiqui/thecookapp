@@ -142,10 +142,13 @@
         
         NSString *title = [self.recipe.name uppercaseString];
         UIColor *textColour = [CKBookCover textColourForCover:self.book.cover];
+        self.titleLabel.numberOfLines = 2;
         NSDictionary *textAttributes = [ViewHelper paragraphAttributesForFont:[Theme recipeGridTitleFont]
                                                                    textColour:textColour textAlignment:NSTextAlignmentCenter
-                                                                  lineSpacing:0.0 lineBreakMode:NSLineBreakByWordWrapping];
+                                                                  lineSpacing:0.0 lineBreakMode:NSLineBreakByTruncatingTail];
         NSAttributedString *textDisplay = [[NSAttributedString alloc] initWithString:title attributes:textAttributes];
+//        CGFloat requiredHeight = [textDisplay boundingRectWithSize:CGSizeMake(self.titleLabel.frame.size.width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) context:nil].size.height;
+        
         
         // Book specific text colour.
         self.titleLabel.attributedText = textDisplay;
