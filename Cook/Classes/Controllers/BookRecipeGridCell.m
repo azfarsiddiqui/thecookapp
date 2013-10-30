@@ -212,6 +212,7 @@
             floorf(self.timeIntervalLabel.center.y - (self.privacyIconView.frame.size.height / 2.0)) - 1.0,
         };
         self.privacyIconView.frame = privacyFrame;
+        self.privacyIconView.hidden = self.timeIntervalLabel.hidden;
     } else {
         self.privacyIconView.hidden = YES;
     }
