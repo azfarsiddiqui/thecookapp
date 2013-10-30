@@ -10,7 +10,7 @@
 #import "ViewHelper.h"
 #import "BookSocialLayout.h"
 #import "BookSocialHeaderView.h"
-#import "BookSupplementaryContainerView.h"
+#import "CKSupplementaryContainerView.h"
 #import "BookCommentView.h"
 #import "CKLikeView.h"
 #import "CKRecipe.h"
@@ -93,13 +93,13 @@
         
     } else if (indexPath.section == [BookSocialLayout commentsSection] && indexPath.item == 1) {
         
-        BookSupplementaryContainerView *bookFooterView = (BookSupplementaryContainerView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialCommentBoxKind] withReuseIdentifier:kCommentFooterId forIndexPath:indexPath];
+        CKSupplementaryContainerView *bookFooterView = (CKSupplementaryContainerView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[CKSupplementaryContainerView bookSocialCommentBoxKind] withReuseIdentifier:kCommentFooterId forIndexPath:indexPath];
         [bookFooterView configureContentView:self.commentView];
         headerView = bookFooterView;
     
     } else if (indexPath.section == [BookSocialLayout likesSection]) {
         
-        BookSupplementaryContainerView *bookHeaderView = (BookSupplementaryContainerView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind] withReuseIdentifier:kLikeHeaderId forIndexPath:indexPath];
+        CKSupplementaryContainerView *bookHeaderView = (CKSupplementaryContainerView *)[self.collectionView dequeueReusableSupplementaryViewOfKind:[CKSupplementaryContainerView bookSocialLikeKind] withReuseIdentifier:kLikeHeaderId forIndexPath:indexPath];
         [bookHeaderView configureContentView:self.likeView];
         headerView = bookHeaderView;
     }
@@ -165,9 +165,9 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kCommentCellId];
     [self.collectionView registerClass:[BookSocialHeaderView class] forSupplementaryViewOfKind:[BookSocialHeaderView bookSocialHeaderKind]
                    withReuseIdentifier:kCommentHeaderId];
-    [self.collectionView registerClass:[BookSupplementaryContainerView class] forSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialCommentBoxKind]
+    [self.collectionView registerClass:[CKSupplementaryContainerView class] forSupplementaryViewOfKind:[CKSupplementaryContainerView bookSocialCommentBoxKind]
                    withReuseIdentifier:kCommentFooterId];
-    [self.collectionView registerClass:[BookSupplementaryContainerView class] forSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind]
+    [self.collectionView registerClass:[CKSupplementaryContainerView class] forSupplementaryViewOfKind:[CKSupplementaryContainerView bookSocialLikeKind]
                    withReuseIdentifier:kLikeHeaderId];
 }
 

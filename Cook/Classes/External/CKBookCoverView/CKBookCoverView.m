@@ -30,7 +30,6 @@
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL storeMode;
-@property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) UIImageView *updatesIcon;
 @property (nonatomic, strong) UILabel *updatesLabel;
 
@@ -92,7 +91,7 @@
 }
 
 - (void)loadBook:(CKBook *)book update:(NSInteger)updates {
-    [self loadBook:book editable:[book editable] loadRemoteIllustration:NO updates:updates];
+    [self loadBook:book editable:[book editable] loadRemoteIllustration:YES updates:updates];
 }
 
 - (void)loadBook:(CKBook *)book editable:(BOOL)editable {
@@ -115,19 +114,6 @@
             // Load an empty illustration.
             [self setCover:book.cover illustration:nil];
             
-            // Start spinner.
-            if (!self.activityView) {
-                self.activityView = [[CKActivityIndicatorView alloc] initWithStyle:CKActivityIndicatorViewStyleSmall];
-                self.activityView.frame = (CGRect){
-                    floorf((self.illustrationImageView.bounds.size.width - self.activityView.frame.size.width) / 2.0),
-                    self.illustrationImageView.frame.size.height - self.activityView.frame.size.height - 80.0,
-                    self.activityView.frame.size.width,
-                    self.activityView.frame.size.height
-                };
-            }
-            [self.illustrationImageView addSubview:self.activityView];
-            [self.activityView startAnimating];
-            
             // Load the image remotely.
             [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:self.book.illustrationImageFile.url]
                                                     size:self.illustrationImageView.frame.size];
@@ -140,8 +126,6 @@
         }
         
     } else {
-        [self.activityView stopAnimating];
-        [self.activityView removeFromSuperview];
         [self setCover:book.cover illustration:book.illustration];
     }
     
@@ -155,7 +139,9 @@
 
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration {
     [self setLayout:[CKBookCover layoutForIllustration:illustration]];
-    self.illustrationImageView.image = [CKBookCover imageForIllustration:illustration];
+    if (illustration) {
+        self.illustrationImageView.image = [CKBookCover imageForIllustration:illustration];
+    }
     self.backgroundImageView.image = [CKBookCover imageForCover:cover];
 }
 
@@ -725,10 +711,6 @@
             if ([EventHelper hasImageForPhotoLoading:notification]) {
                 UIImage *image = [EventHelper imageForPhotoLoading:notification];
                 self.illustrationImageView.image = image;
-                
-                // Stop spinner.
-                [self.activityView stopAnimating];
-                [self.activityView removeFromSuperview];
             }
         }
     }

@@ -6,15 +6,15 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookSupplementaryContainerView.h"
+#import "CKSupplementaryContainerView.h"
 
-@interface BookSupplementaryContainerView ()
+@interface CKSupplementaryContainerView ()
 
 @property (nonatomic, strong) UIView *contentView;
 
 @end
 
-@implementation BookSupplementaryContainerView
+@implementation CKSupplementaryContainerView
 
 + (NSString *)bookSocialLikeKind {
     return @"BookSocialLikeKind";
