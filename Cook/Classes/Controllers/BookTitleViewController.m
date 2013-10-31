@@ -49,6 +49,10 @@
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) CKProgressView *progressView;
 
+// Directional arrows.
+@property (nonatomic, strong) UIImageView *leftArrowImageView;
+@property (nonatomic, strong) UIImageView *rightArrowImageView;
+
 // Editing.
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKPageTitleEditViewController *editViewController;
@@ -68,7 +72,7 @@
 #define kTitleAnimateOffset     50.0
 #define kTitleHeaderTag         460
 #define kStartUpOffset          75.0
-
+#define kArrowAnimationDuration 0.3
 #define kHeaderHeight           420.0
 #define kHeaderCellGap          135.0
 
@@ -141,6 +145,7 @@
             [pageIndexPaths addObject:[NSIndexPath indexPathForItem:[pageIndexPaths count] inSection:0]];
         }
         
+        // Load title cells.
         [self.collectionView performBatchUpdates:^{
             [self.collectionView insertItemsAtIndexPaths:pageIndexPaths];
         } completion:^(BOOL finished){
@@ -153,6 +158,10 @@
                              }
                              completion:^(BOOL finished){
                                  [self showIntroCard:([pages count] == 0)];
+                                 
+                                 // Open ze gates.
+                                 [self openGates];
+                                 
                              }];
         }];
     }
@@ -453,6 +462,24 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     return _progressView;
 }
 
+- (UIImageView *)leftArrowImageView {
+    if (!_leftArrowImageView) {
+        _leftArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_title_arrow_left_fr1.png"] ];
+        _leftArrowImageView.animationDuration = kArrowAnimationDuration;
+        _leftArrowImageView.animationRepeatCount = 1;
+    }
+    return _leftArrowImageView;
+}
+
+- (UIImageView *)rightArrowImageView {
+    if (!_rightArrowImageView) {
+        _rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_title_arrow_right_fr1.png"] ];
+        _rightArrowImageView.animationDuration = kArrowAnimationDuration;
+        _rightArrowImageView.animationRepeatCount = 1;
+    }
+    return _rightArrowImageView;
+}
+
 #pragma mark - Private methods
 
 - (void)initBackgroundView {
@@ -488,16 +515,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     // Motion effects.
     [ViewHelper applyDraggyMotionEffectsToView:self.imageView];
     
-    UIImage *borderImage = [[UIImage imageNamed:@"cook_book_inner_title_border.png"] resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
-    UIImageView *borderImageView = [[UIImageView alloc] initWithImage:borderImage];
-    borderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
-    borderImageView.frame = (CGRect){
-        kBorderInsets.left,
-        kBorderInsets.top,
-        self.view.bounds.size.width - kBorderInsets.left - kBorderInsets.right,
-        self.view.bounds.size.height - kBorderInsets.top - kBorderInsets.bottom
-    };
-    [self.view addSubview:borderImageView];
+    // Borders.
+    [self initBorders];
     
     // Binder
     if (self.snapshot) {
@@ -654,6 +673,75 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     [self.delegate bookTitleAddedPage:page];
     [self enableAddMode:NO];
     [self showIntroCard:NO];
+}
+
+- (void)initBorders {
+    
+    // Left animation arrow.
+    self.leftArrowImageView.frame = (CGRect){
+        kBorderInsets.left - 1.0,
+        floorf((self.view.bounds.size.height - self.leftArrowImageView.frame.size.height) / 2.0),
+        self.leftArrowImageView.frame.size.width,
+        self.leftArrowImageView.frame.size.height
+    };
+    self.leftArrowImageView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [self.view addSubview:self.leftArrowImageView];
+    
+    // Right animation arrow.
+    self.rightArrowImageView.frame = (CGRect){
+        self.view.bounds.size.width - kBorderInsets.right - self.rightArrowImageView.frame.size.width + 1.0,
+        floorf((self.view.bounds.size.height - self.rightArrowImageView.frame.size.height) / 2.0) - 2.0,
+        self.rightArrowImageView.frame.size.width,
+        self.rightArrowImageView.frame.size.height
+    };
+    self.rightArrowImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    [self.view addSubview:self.rightArrowImageView];
+    
+    UIImage *topBorderImage = [[UIImage imageNamed:@"cook_book_inner_title_border_top.png"]
+                               resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
+    UIImageView *topBorderImageView = [[UIImageView alloc] initWithImage:topBorderImage];
+    topBorderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight;
+    topBorderImageView.frame = (CGRect){
+        kBorderInsets.left,
+        kBorderInsets.top,
+        self.view.bounds.size.width - kBorderInsets.left - kBorderInsets.right,
+        floorf(self.view.bounds.size.height / 2.0) - kBorderInsets.top - 30.0
+    };
+    [self.view addSubview:topBorderImageView];
+    
+    UIImage *bottomBorderImage = [[UIImage imageNamed:@"cook_book_inner_title_border_bottom.png"]
+                                  resizableImageWithCapInsets:(UIEdgeInsets){14.0, 18.0, 14.0, 18.0 }];
+    UIImageView *bottomBorderImageView = [[UIImageView alloc] initWithImage:bottomBorderImage];
+    bottomBorderImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
+    bottomBorderImageView.frame = (CGRect){
+        kBorderInsets.left,
+        floorf(self.view.bounds.size.height / 2.0) - kBorderInsets.bottom + 40.0,
+        self.view.bounds.size.width - kBorderInsets.left - kBorderInsets.right,
+        floorf(self.view.bounds.size.height / 2.0) - kBorderInsets.bottom - 40.0,
+    };
+    [self.view addSubview:bottomBorderImageView];
+}
+
+- (NSArray *)animationImagesWithBaseName:(NSString *)baseName frameCount:(NSUInteger)frameCount {
+    NSMutableArray *animationImages = [NSMutableArray arrayWithCapacity:frameCount];
+    for (NSUInteger frameIndex = 1; frameIndex <= frameCount; frameIndex++) {
+        UIImage *frameImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@%d.png", baseName, frameIndex]];
+        [animationImages addObject:frameImage];
+    }
+    return animationImages;
+}
+
+- (void)openGates {
+    if (![self.leftArrowImageView isAnimating]) {
+        self.leftArrowImageView.animationImages = [self animationImagesWithBaseName:@"cook_title_arrow_left_fr" frameCount:3];
+        self.leftArrowImageView.image = [self.leftArrowImageView.animationImages lastObject];
+        [self.leftArrowImageView startAnimating];
+    }
+    if (![self.rightArrowImageView isAnimating]) {
+        self.rightArrowImageView.animationImages = [self animationImagesWithBaseName:@"cook_title_arrow_right_fr" frameCount:3];
+        self.rightArrowImageView.image = [self.rightArrowImageView.animationImages lastObject];
+        [self.rightArrowImageView startAnimating];
+    }
 }
 
 @end
