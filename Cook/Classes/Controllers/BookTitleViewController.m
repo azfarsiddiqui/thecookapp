@@ -689,8 +689,8 @@ referenceSizeForHeaderInSection:(NSInteger)section {
     
     // Right animation arrow.
     self.rightArrowImageView.frame = (CGRect){
-        self.view.bounds.size.width - kBorderInsets.right - self.rightArrowImageView.frame.size.width + 1.0,
-        floorf((self.view.bounds.size.height - self.rightArrowImageView.frame.size.height) / 2.0) - 2.0,
+        self.view.bounds.size.width - kBorderInsets.right - self.rightArrowImageView.frame.size.width - 1.0,
+        floorf((self.view.bounds.size.height - self.rightArrowImageView.frame.size.height) / 2.0),
         self.rightArrowImageView.frame.size.width,
         self.rightArrowImageView.frame.size.height
     };
