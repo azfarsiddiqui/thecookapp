@@ -110,19 +110,17 @@
     
     if (book.illustrationImageFile) {
         
+        // Load a blank illustration.
+        [self setCover:book.cover illustration:[CKBookCover blankFeaturedIllustrationImageName]];
+        
         if (loadRemoteIllustration) {
             
-            // Load an empty illustration.
+            // Load a illustration.
             [self setCover:book.cover illustration:nil];
             
             // Load the image remotely.
             [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:self.book.illustrationImageFile.url]
                                                     size:self.illustrationImageView.bounds.size];
-            
-        } else {
-            
-            // Load an empty illustration.
-            [self setCover:book.cover illustration:nil];
             
         }
         
