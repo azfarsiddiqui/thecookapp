@@ -24,7 +24,7 @@
 }
 
 + (NSInteger)maxServes {
-    return 10;
+    return 12;
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {

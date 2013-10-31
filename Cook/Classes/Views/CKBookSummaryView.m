@@ -798,7 +798,6 @@
             currentRecipeCount = self.publicRecipesCount;
         }
     }
-    
     return currentRecipeCount;
 }
 

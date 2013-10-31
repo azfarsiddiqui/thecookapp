@@ -117,7 +117,7 @@
 
 - (CKNotchSliderView *)servesSlider {
     if (!_servesSlider) {
-        _servesSlider = [[CKNotchSliderView alloc] initWithNumNotches:7 delegate:self];
+        _servesSlider = [[CKNotchSliderView alloc] initWithNumNotches:10 delegate:self];
     }
     return _servesSlider;
 }
@@ -187,14 +187,14 @@
 #pragma mark - CKNotchSliderViewDelegate methods
 
 - (void)notchSliderView:(CKNotchSliderView *)sliderView selectedIndex:(NSInteger)notchIndex {
-    NSInteger serves = notchIndex * kUnitServes;
+    NSInteger serves = [self numServesForIndex:notchIndex];
     
     // Nil out if num serves was zero.
     self.recipeDetails.numServes = (serves == 0) ? nil : [NSNumber numberWithInteger:serves];
     
     NSMutableString *servesDisplay = [NSMutableString stringWithString:@""];
     if (serves > [CKRecipe maxServes]) {
-        [servesDisplay appendFormat:@"%d+", (notchIndex - 1) * kUnitServes];
+        [servesDisplay appendFormat:@"%d+", [CKRecipe maxServes]];
     } else {
         [servesDisplay appendFormat:@"%d", serves];
     }
@@ -236,6 +236,46 @@
 }
 
 #pragma mark - Private methods
+
+- (NSInteger)numServesForIndex:(NSInteger)notchIndex {
+    NSInteger serves = notchIndex * kUnitServes;
+    switch (notchIndex) {
+        case 0:
+            serves = 0;
+            break;
+        case 1:
+            serves = 1;
+            break;
+        case 2:
+            serves = 2;
+            break;
+        case 3:
+            serves = 3;
+            break;
+        case 4:
+            serves = 4;
+            break;
+        case 5:
+            serves = 6;
+            break;
+        case 6:
+            serves = 8;
+            break;
+        case 7:
+            serves = 10;
+            break;
+        case 8:
+            serves = 12;
+            break;
+        case 9:
+            serves = 14;
+            break;
+        default:
+            serves = 0;
+            break;
+    }
+    return serves;
+}
 
 - (void)initServes {
     CGFloat requiredWidth = self.servesTitleLabel.frame.size.width + kTitleLabelGap + self.servesLabel.frame.size.width;
@@ -327,10 +367,23 @@
 
 - (NSInteger)servesIndex {
     NSInteger numServes = [self.recipeDetails.numServes integerValue];
-    if (numServes % kUnitServes != 0) {
-        numServes += 1;
+    NSInteger notchIndex = 0;
+    if (numServes < 6)
+    {
+        notchIndex = numServes;
+    } else if (numServes >= 6 && numServes < 8) {
+        notchIndex = 5;
+    } else if (numServes >= 8 && numServes < 10) {
+        notchIndex = 6;
+    } else if (numServes >= 10 && numServes < [CKRecipe maxServes]) {
+        notchIndex = 7;
+    } else if (numServes == [CKRecipe maxServes]) {
+        notchIndex = 8;
+    } else {
+        //Set to max index
+        notchIndex = self.servesSlider.numNotches - 1;
     }
-    return (numServes / kUnitServes);
+    return notchIndex;
 }
 
 - (NSInteger)prepIndex {

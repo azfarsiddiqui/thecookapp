@@ -36,7 +36,7 @@
 #define kIngredientDelimiter    @"::"
 
 + (NSInteger)maxServes {
-    return 10;
+    return 12;
 }
 
 + (NSInteger)maxPrepTimeInMinutes {
