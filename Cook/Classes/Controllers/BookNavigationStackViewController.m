@@ -1608,7 +1608,9 @@
     
     NSInteger currentPageIndex = [self currentPageIndex];
     NSInteger pageIndex = [self.pages count] + [self stackContentStartSection] - 1;
-    if (self.enableLikes && [self.book isOwner] && [self.pages count] > 1 && currentPageIndex == pageIndex) {
+    if (self.enableLikes && [self.book isOwner] && currentPageIndex == pageIndex) {
+        
+        // Likes page if it's the last page of my own book.
         likesPage = YES;
     }
     
