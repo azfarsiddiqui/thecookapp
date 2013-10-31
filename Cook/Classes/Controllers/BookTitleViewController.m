@@ -737,11 +737,16 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         self.leftArrowImageView.image = [self.leftArrowImageView.animationImages lastObject];
         [self.leftArrowImageView startAnimating];
     }
-    if (![self.rightArrowImageView isAnimating]) {
+    
+    if (![self.rightArrowImageView isAnimating] && [self hasPages]) {
         self.rightArrowImageView.animationImages = [self animationImagesWithBaseName:@"cook_title_arrow_right_fr" frameCount:3];
         self.rightArrowImageView.image = [self.rightArrowImageView.animationImages lastObject];
         [self.rightArrowImageView startAnimating];
     }
+}
+
+- (BOOL)hasPages {
+    return [self.collectionView numberOfItemsInSection:0];
 }
 
 @end
