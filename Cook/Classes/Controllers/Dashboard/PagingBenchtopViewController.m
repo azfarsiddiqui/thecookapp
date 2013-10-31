@@ -344,7 +344,7 @@
         default:
             break;
     }
-    DLog(@"numItems [%d]", numItems);
+//    DLog(@"numItems [%d]", numItems);
     return numItems;
 }
 

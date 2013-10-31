@@ -55,6 +55,7 @@
 
 // To keep track of scroll direction.
 @property (nonatomic, assign) CGPoint startContentOffset;
+@property (nonatomic, assign) BOOL disableInformScrollOffset;
 
 @end
 
@@ -120,7 +121,12 @@
 }
 
 - (void)setScrollOffset:(CGPoint)scrollOffset {
+    
+    // This is to disable informing delegate of scrolling to the required offset as this is resetting content. Purpose
+    // is so that the navigation bar doesn't react to this scroll.
+    self.disableInformScrollOffset = YES;
     [self.collectionView setContentOffset:scrollOffset animated:NO];
+    self.disableInformScrollOffset = NO;
 }
 
 - (void)applyOverlayAlpha:(CGFloat)alpha {
@@ -474,9 +480,11 @@
 
 - (void)applyScrollingEffectsOnCategoryView {
     
-    CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    [self.delegate bookContentViewControllerScrolledOffset:visibleFrame.origin.y page:self.page
-                                         distanceTravelled:(self.collectionView.contentOffset.y - self.startContentOffset.y)];
+    if (!self.disableInformScrollOffset) {
+        CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
+        [self.delegate bookContentViewControllerScrolledOffset:visibleFrame.origin.y page:self.page
+                                             distanceTravelled:(self.collectionView.contentOffset.y - self.startContentOffset.y)];
+    }
 }
 
 - (BookContentGridType)gridTypeForRecipe:(CKRecipe *)recipe {

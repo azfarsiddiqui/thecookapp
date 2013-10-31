@@ -71,7 +71,6 @@
         }
         [button sizeToFit];
         
-        DLog(@"%f", insets.left + button.frame.size.width + insets.right);
         button.frame = (CGRect){
             size.width,
             self.bounds.origin.y,

@@ -30,6 +30,7 @@
 #import "CardViewHelper.h"
 #import "CKSocialManager.h"
 #import "AnalyticsHelper.h"
+#import "CKSupplementaryContainerView.h"
 
 @interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
@@ -53,7 +54,6 @@
 @property (nonatomic, strong) NSMutableDictionary *pageCoverRecipes;
 @property (nonatomic, assign) BOOL justOpened;
 @property (nonatomic, assign) BOOL lightStatusBar;
-@property (nonatomic, assign) BOOL hideStatusBar;
 @property (nonatomic, assign) BOOL fastForward;
 @property (nonatomic, assign) BOOL navBarAnimating;
 @property (nonatomic, strong) UIView *bookOutlineView;
@@ -330,9 +330,6 @@
 
 - (void)updatePagingContent {
     
-    // Restore navbar on any side-scroll.
-    [self fadeNavigationBarWithAlpha:1.0];
-    
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     BookPagingStackLayout *layout = [self currentLayout];
     
@@ -473,7 +470,7 @@
     BOOL fadeTrigger = ABS(distance) > 10.0;
     BOOL scrollingDown = (distance > 0.0);
     if (fadeTrigger) {
-        [self fadeNavigationBarWithAlpha:scrollingDown ? 0.0 : 1.0];
+        [self showNavigationView:scrollingDown ? NO : YES slide:YES];
     }
 }
 
@@ -612,6 +609,9 @@
     [self capEdgeScrollPoints];
     [self updateStatusBarBetweenPages];
     [self updatePagingContent];
+    
+    // Restore navbar on any side-scroll.
+    [self showNavigationView:YES slide:NO];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -912,7 +912,7 @@
     // Headers
     [self.collectionView registerClass:[BookProfileHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kProfileHeaderId];
     [self.collectionView registerClass:[BookContentImageView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
-    [self.collectionView registerClass:[BookNavigationView class] forSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind] withReuseIdentifier:kNavigationHeaderId];
+    [self.collectionView registerClass:[CKSupplementaryContainerView class] forSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind] withReuseIdentifier:kNavigationHeaderId];
     
     // Profile, Index, Category.
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
@@ -1138,7 +1138,7 @@
 - (void)showRecipe:(CKRecipe *)recipe {
     
     // Always show status bar when viewing recipe.
-    [self fadeNavigationBarWithAlpha:1.0];
+    [self showNavigationView:YES slide:NO];
     [self.delegate bookNavigationControllerRecipeRequested:recipe];
 }
 
@@ -1191,12 +1191,14 @@
     UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind]
                                                                                    withReuseIdentifier:kNavigationHeaderId
                                                                                           forIndexPath:indexPath];
-    BookNavigationView *navigationView = (BookNavigationView *)headerView;
-    navigationView.delegate = self;
-    [navigationView setTitle:[self.book author] editable:[self.book isOwner] book:self.book];
-    [navigationView setDark:NO];
-    self.bookNavigationView = navigationView;
-    
+    CKSupplementaryContainerView *containerView = (CKSupplementaryContainerView *)headerView;
+    if (!self.bookNavigationView) {
+        self.bookNavigationView = [[BookNavigationView alloc] initWithFrame:containerView.bounds];
+        self.bookNavigationView.delegate = self;
+        [self.bookNavigationView setTitle:[self.book author] editable:[self.book isOwner] book:self.book];
+        [self.bookNavigationView setDark:NO];
+    }
+    [containerView configureContentView:self.bookNavigationView];
     return headerView;
 }
 
@@ -1649,33 +1651,37 @@
     return alpha;
 }
 
-- (void)fadeNavigationBarWithAlpha:(CGFloat)alpha {
-    if (self.bookNavigationView && self.bookNavigationView.alpha != alpha && !self.navBarAnimating) {
+- (void)showNavigationView:(BOOL)show slide:(BOOL)slide {
+    if (self.bookNavigationView && self.bookNavigationView.hidden == show && !self.navBarAnimating) {
+        DLog();
         self.navBarAnimating = YES;
-        [UIView animateWithDuration:0.3
+        
+        if (show) {
+            self.bookNavigationView.hidden = NO;
+        }
+        
+        if (!slide) {
+            self.bookNavigationView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.bookNavigationView.frame.size.height);
+        }
+        
+        // Inform status bar hide.
+        [EventHelper postStatusBarHide:!show];
+        
+        [UIView animateWithDuration:0.25
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             self.bookNavigationView.alpha = alpha;
+                             self.bookNavigationView.alpha = show ? 1.0 : 0.0;
+                             if (slide) {
+                                 self.bookNavigationView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.bookNavigationView.frame.size.height);
+                             }
                          }
                          completion:^(BOOL finished) {
                              self.navBarAnimating = NO;
-                             [self updateStatusBarFromContentScroll];
+                             if (!show) {
+                                 self.bookNavigationView.hidden = YES;
+                             }
                          }];
-    }
-}
-
-- (void)updateStatusBarFromContentScroll {
-    if (self.bookNavigationView.alpha < 0.1) {
-        if (!self.hideStatusBar) {
-            self.hideStatusBar = YES;
-            [EventHelper postStatusBarHide:YES];
-        }
-    } else {
-        if (self.hideStatusBar) {
-            self.hideStatusBar = NO;
-            [EventHelper postStatusBarHide:NO];
-        }
     }
 }
 

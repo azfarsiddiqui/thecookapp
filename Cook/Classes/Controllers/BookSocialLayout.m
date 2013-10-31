@@ -8,7 +8,7 @@
 
 #import "BookSocialLayout.h"
 #import "BookSocialHeaderView.h"
-#import "BookSupplementaryContainerView.h"
+#import "CKSupplementaryContainerView.h"
 #import "CKLikeView.h"
 #import "ViewHelper.h"
 
@@ -136,7 +136,7 @@
     
     // Comments footer header.
     NSIndexPath *footerIndexPath = [NSIndexPath indexPathForItem:1 inSection:[BookSocialLayout commentsSection]];
-    UICollectionViewLayoutAttributes *footerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialCommentBoxKind] withIndexPath:footerIndexPath];
+    UICollectionViewLayoutAttributes *footerAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[CKSupplementaryContainerView bookSocialCommentBoxKind] withIndexPath:footerIndexPath];
     footerAttributes.frame = (CGRect){
         kCommentSideOffset,
         self.collectionView.bounds.size.height - kContentInsets.bottom - kCommentFooterHeight,
@@ -152,7 +152,7 @@
     // Likes header.
     CGSize headerSize = [CKLikeView likeSize];
     NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:[BookSocialLayout likesSection]];
-    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[BookSupplementaryContainerView bookSocialLikeKind] withIndexPath:headerIndexPath];
+    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:[CKSupplementaryContainerView bookSocialLikeKind] withIndexPath:headerIndexPath];
     attributes.frame = (CGRect){
         self.collectionView.bounds.size.width - kContentInsets.right - headerSize.width,
         kContentInsets.top,
@@ -175,9 +175,9 @@
         // Fade the title header.
         if ([attributes.representedElementKind isEqualToString:[BookSocialHeaderView bookSocialHeaderKind]]) {
             [self applyScrollingEffects:attributes];
-        } else if ([attributes.representedElementKind isEqualToString:[BookSupplementaryContainerView bookSocialCommentBoxKind]]) {
+        } else if ([attributes.representedElementKind isEqualToString:[CKSupplementaryContainerView bookSocialCommentBoxKind]]) {
             [self applyStaticEffects:attributes offset:self.collectionView.bounds.size.height - kContentInsets.bottom - kCommentFooterHeight];
-        } else if ([attributes.representedElementKind isEqualToString:[BookSupplementaryContainerView bookSocialLikeKind]]) {
+        } else if ([attributes.representedElementKind isEqualToString:[CKSupplementaryContainerView bookSocialLikeKind]]) {
             [self applyStaticEffects:attributes offset:kContentInsets.top];
         }
         

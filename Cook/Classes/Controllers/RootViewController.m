@@ -120,6 +120,10 @@
     return self.lightStatusBar ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
 }
 
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationFade;
+}
+
 - (BOOL)prefersStatusBarHidden {
     return self.hideStatusBar;
 }
