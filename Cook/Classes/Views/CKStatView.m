@@ -57,7 +57,7 @@
         unitLabel.textColor = [UIColor whiteColor];
         unitLabel.shadowColor = [UIColor blackColor];
         unitLabel.shadowOffset = CGSizeMake(0.0, -1.0);
-        unitLabel.text = [self numberAdjustedUnit];
+        unitLabel.text = [self numberAdjustedUnitForNumber:self.number];
         unitLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [unitLabel sizeToFit];
         unitLabel.frame = CGRectMake(numberLabel.frame.origin.x + numberLabel.frame.size.width + kNumberUnitGap,
@@ -74,14 +74,14 @@
 }
 
 - (void)updateNumber:(NSUInteger)number {
-    self.number = @(number);
+    self.number = [NSNumber numberWithInteger:number];
     self.numberLabel.text = [NSString stringWithFormat:@"%d", number];
     [self.numberLabel sizeToFit];
     self.numberLabel.frame = CGRectMake(kContentInsets.left,
                                         self.numberLabel.frame.origin.y,
                                         self.numberLabel.frame.size.width,
                                         self.numberLabel.frame.size.height);
-    self.unitLabel.text = [self numberAdjustedUnit];
+    self.unitLabel.text = [self numberAdjustedUnitForNumber:[NSNumber numberWithInteger:number]];
     [self.unitLabel sizeToFit];
     self.unitLabel.frame = CGRectMake(self.numberLabel.frame.origin.x + self.numberLabel.frame.size.width + kNumberUnitGap,
                                       self.unitLabel.frame.origin.y,
@@ -93,9 +93,9 @@
 
 #pragma mark - Private methods
 
-- (NSString *)numberAdjustedUnit {
+- (NSString *)numberAdjustedUnitForNumber:(NSNumber *)num {
     NSMutableString *display = [NSMutableString stringWithString:self.unit];
-    if ([self.number unsignedIntegerValue] != 1) {
+    if ([num unsignedIntegerValue] != 1) {
         [display appendString:@"S"];
     }
     return display;
