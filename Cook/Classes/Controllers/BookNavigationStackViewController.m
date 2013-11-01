@@ -1672,9 +1672,9 @@
         // Inform status bar hide.
         [EventHelper postStatusBarHide:!show];
         
-        [UIView animateWithDuration:0.4
+        [UIView animateWithDuration:show ? 0.3 : 0.4
                               delay:0.0
-                            options:UIViewAnimationOptionCurveEaseOut
+                            options:show ? UIViewAnimationCurveEaseIn : UIViewAnimationOptionCurveEaseOut
                          animations:^{
                              if (slide) {
                                  self.bookNavigationView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.bookNavigationView.frame.size.height);
