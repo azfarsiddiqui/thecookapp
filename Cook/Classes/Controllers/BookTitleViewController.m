@@ -717,7 +717,7 @@ referenceSizeForHeaderInSection:(NSInteger)section {
         kBorderInsets.left,
         floorf(self.view.bounds.size.height / 2.0) - kBorderInsets.bottom + 40.0,
         self.view.bounds.size.width - kBorderInsets.left - kBorderInsets.right,
-        floorf(self.view.bounds.size.height / 2.0) - kBorderInsets.bottom - 40.0,
+        floorf(self.view.bounds.size.height / 2.0) - kBorderInsets.bottom - 28.0,
     };
     [self.view addSubview:bottomBorderImageView];
 }
