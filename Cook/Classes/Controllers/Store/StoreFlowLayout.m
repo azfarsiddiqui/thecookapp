@@ -64,7 +64,7 @@
             translateOffset += itemIndexPath.item * (initialAttributes.frame.size.width * 2.0);
             
             CATransform3D translateTransform = CATransform3DTranslate(initialAttributes.transform3D, translateOffset, 0.0, 0.0);
-            CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kStoreBookInsertScale, kStoreBookInsertScale, 0.0);
+//            CATransform3D scaleTransform = CATransform3DScale(initialAttributes.transform3D, kStoreBookInsertScale, kStoreBookInsertScale, 0.0);
             // initialAttributes.transform3D = CATransform3DConcat(scaleTransform, translateTransform);
             initialAttributes.transform3D = translateTransform;
             initialAttributes.alpha = 1.0;

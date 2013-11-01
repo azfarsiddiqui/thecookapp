@@ -202,8 +202,24 @@
 
 - (void)facebookShareTapped:(id)sender {
     DLog(@"Share URL: %@", self.shareURL);
-    // Check active FBSession here, if not, do login and grab token
-    [self shareFacebook];
+
+    //Login and attach Facebook credentials to account. If successful, do share
+    CKUser *currentUser = [CKUser currentUser];
+    if (!currentUser.facebookId)
+    {
+        [CKUser attachFacebookToCurrentUserWithSuccess:^{
+            [self shareFacebook];
+        } failure:^(NSError *error) {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                message:@"There was an error in signing into Facebook"
+                                                               delegate:self
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        }];
+    }
+    else
+        [self shareFacebook];
 }
 
 - (void)twitterShareTapped:(id)sender {

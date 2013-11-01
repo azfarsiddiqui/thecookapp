@@ -808,7 +808,7 @@
             // Return CKBook model objects.
             NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
                 CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
-                book.followed = [objectIds containsObject:book.objectId];
+                book.status = [objectIds containsObject:book.objectId] ? kBookStatusFollowed : kBookStatusNone;
                 return book;
             }];
             

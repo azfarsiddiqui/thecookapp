@@ -486,6 +486,10 @@
     return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:20.0];
 }
 
++ (UIFont *)suggestFacebookFont {
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:22.0];
+}
+
 #pragma mark - Card messages
 
 + (UIFont *)cardViewTitleFont {

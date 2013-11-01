@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "StoreBookCoverViewCell.h"
 
 @class CKBook;
 
@@ -16,7 +17,10 @@
 
 @end
 
-@interface StoreCollectionViewController : UICollectionViewController
+@interface StoreCollectionViewController : UICollectionViewController <StoreBookCoverViewCellDelegate>
+
+#define kCellId         @"StoreBookCellId"
+#define kStoreSection   0
 
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, strong) NSMutableArray *books;
@@ -34,5 +38,11 @@
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error;
 - (void)showNoBooksCard;
 - (void)hideMessageCard;
+
+//Subclass accessed methods and properties
+@property (nonatomic, strong) UICollectionViewCell *selectedBookCell;
+
+- (void)loadRemoteIllustrationAtIndex:(NSUInteger)bookIndex;
+- (void)showBook:(CKBook *)book atIndexPath:(NSIndexPath *)indexPath;
 
 @end

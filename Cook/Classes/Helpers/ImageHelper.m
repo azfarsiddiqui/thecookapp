@@ -227,6 +227,20 @@
     });
 }
 
+#pragma mark - Stretching
+
++ (UIImage *)stretchableXImageWithName:(NSString *)imageName
+{
+    UIImage *stretchImage = [UIImage imageNamed:imageName];
+    return [stretchImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, stretchImage.size.width/2, 0, stretchImage.size.width/2)];
+}
+
++ (UIImage *)stretchableYImageWithName:(NSString *)imageName
+{
+    UIImage *stretchImage = [UIImage imageNamed:imageName];
+    return [stretchImage resizableImageWithCapInsets:UIEdgeInsetsMake(stretchImage.size.height/2, 0, stretchImage.size.height/2, 0)];
+}
+
 #pragma mark - Private
 
 + (UIImage *)coreImageBlurWithImage:(UIImage *)image {

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BenchtopBookCoverViewCell.h"
+#import "CKBook.h"
 
 @protocol StoreBookCoverViewCellDelegate <BenchtopBookCoverViewCellDelegate>
 
@@ -20,6 +21,6 @@
 @property (nonatomic, assign) id<StoreBookCoverViewCellDelegate> delegate;
 
 + (CGSize)cellSize;
-- (void)loadBookCoverImage:(UIImage *)bookCoverImage followed:(BOOL)followed;
+- (void)loadBookCoverImage:(UIImage *)bookCoverImage status:(BookStatus)bookStatus;
 
 @end

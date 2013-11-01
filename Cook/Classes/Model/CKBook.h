@@ -20,6 +20,12 @@ typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, BOO
                                     NSUInteger privateRecipesCount, NSUInteger friendsRecipesCount,
                                     NSUInteger publicRecipesCount);
 
+typedef enum {
+    kBookStatusFollowed = 0,
+    kBookStatusFBSuggested,
+    kBookStatusNone
+} BookStatus;
+
 @interface CKBook : CKModel
 
 @property (nonatomic, strong) CKUser *user;
@@ -33,7 +39,7 @@ typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, BOO
 @property (nonatomic, strong) NSArray *pages;
 @property (nonatomic, strong) NSArray *currentCategories;
 @property (nonatomic, assign) BOOL featured;
-@property (nonatomic, assign) BOOL followed;
+@property (nonatomic, assign) BookStatus status;
 @property (nonatomic, assign) BOOL guest;
 
 // Cover photos.

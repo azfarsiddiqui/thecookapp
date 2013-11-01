@@ -31,6 +31,10 @@
 + (UIImage *)thumbImageForImage:(UIImage *)image;
 + (UIImage *)slicedImage:(UIImage *)image frame:(CGRect)frame;
 
+//Image stretching
++ (UIImage *)stretchableXImageWithName:(NSString *)imageName;
++ (UIImage *)stretchableYImageWithName:(NSString *)imageName;
+
 // Image merge/blending.
 + (UIImage *)mergeImage:(UIImage *)image overImage:(UIImage *)image;
 

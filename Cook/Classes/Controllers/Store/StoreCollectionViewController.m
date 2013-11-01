@@ -7,14 +7,13 @@
 //
 
 #import "StoreCollectionViewController.h"
+#import "StoreBookViewController.h"
 #import "StoreFlowLayout.h"
-#import "StoreBookCoverViewCell.h"
 #import "CKBook.h"
 #import "CKBookCoverView.h"
 #import "EventHelper.h"
 #import "AppHelper.h"
 #import "MRCEnumerable.h"
-#import "StoreBookViewController.h"
 #import "CKActivityIndicatorView.h"
 #import "CKServerManager.h"
 #import "ViewHelper.h"
@@ -22,23 +21,18 @@
 #import "CKPhotoManager.h"
 #import "CKBookCover.h"
 
-@interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookCoverViewCellDelegate,
-    StoreBookViewControllerDelegate>
+@interface StoreCollectionViewController () <UIActionSheetDelegate, StoreBookViewControllerDelegate>
 
-@property (nonatomic, assign) id<StoreCollectionViewControllerDelegate> delegate;
 @property (nonatomic, strong) UIView *emptyBanner;
-@property (nonatomic, strong) StoreBookViewController *storeBookViewController;
-@property (nonatomic, strong) UICollectionViewCell *selectedBookCell;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 @property (nonatomic, strong) NSMutableArray *bookCoverImages;
 @property (nonatomic, strong) NSMutableArray *bookCovers;
+@property (nonatomic, strong) StoreBookViewController *storeBookViewController;
+@property (nonatomic, assign) id<StoreCollectionViewControllerDelegate> delegate;
 
 @end
 
 @implementation StoreCollectionViewController
-
-#define kCellId         @"StoreBookCellId"
-#define kStoreSection   0
 
 - (void)dealloc {
     [EventHelper unregisterFollowUpdated:self];
@@ -91,13 +85,10 @@
         [self.bookCoverImages removeAllObjects];
         [self.bookCovers removeAllObjects];
         
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
-        } completion:^(BOOL finished){
-            if (completion != nil) {
-                completion();
-            }
-        }];
+        [self.collectionView reloadData];
+        if (completion != nil) {
+            completion();
+        }
     }
 }
 
@@ -142,16 +133,18 @@
         }
         
     } else {
-        
-        // Show no books card.
-        [self showNoBooksCard];
-        
+        if ([CKUser currentUser].facebookId)
+        {
+            // Show no books card if already logged into Facebook and theres nothing left.
+            [self showNoBooksCard];
+        }
     }
     
 }
 
 - (void)reloadBooks {
-    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kStoreSection]];
+    [self.collectionView reloadData];
+//    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kStoreSection]];
 }
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
@@ -190,8 +183,8 @@
 #pragma mark - UICollectionViewDelegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    [self showBookAtIndexPath:indexPath];
+    CKBook *book = [self.books objectAtIndex:indexPath.row];
+    [self showBook:book atIndexPath:indexPath];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout methods
@@ -232,7 +225,7 @@
                                                                                                        forIndexPath:indexPath];
     cell.delegate = self;
     CKBook *book = [self.books objectAtIndex:indexPath.item];
-    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:indexPath.item] followed:book.followed];
+    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:indexPath.item] status:book.status];
     
     [self loadRemoteIllustrationAtIndex:indexPath.item];
     
@@ -253,19 +246,35 @@
 }
 
 - (void)storeBookViewControllerUpdatedBook:(CKBook *)book {
-    book.followed = YES;
+    book.status = kBookStatusFollowed;
     NSUInteger updatedBookIndex = [self.books indexOfObject:book];
-    StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:updatedBookIndex inSection:0]];
-    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:updatedBookIndex] followed:book.followed];
+    StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:updatedBookIndex inSection:kStoreSection]];
+    [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:updatedBookIndex] status:book.status];
+}
+
+#pragma mark - Subclass used methods
+
+- (void)loadRemoteIllustrationAtIndex:(NSUInteger)bookIndex {
+    CKBook *book = [self.books objectAtIndex:bookIndex];
+    if (book.illustrationImageFile) {
+        
+        // Load the full image remotely.
+        [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:book.illustrationImageFile.url]
+                                                size:[CKBookCover coverImageSize]];
+    }
 }
 
 #pragma mark - Private methods
+
+- (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
+    DLog();
+}
 
 - (void)followBookAtIndexPath:(NSIndexPath *)indexPath {
     CKBook *book = [self.books objectAtIndex:indexPath.item];
     CKUser *currentUser = [CKUser currentUser];
     
-    // Remove the book immediately. 
+    // Remove the book immediately.
     [self.books removeObjectAtIndex:indexPath.item];
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
@@ -277,16 +286,10 @@
     [book addFollower:currentUser
               success:^{
                   [EventHelper postFollow:YES book:weakBook];
-             } failure:^(NSError *error) {
-                 DLog(@"Unable to follow.");
-             }];
+              } failure:^(NSError *error) {
+                  DLog(@"Unable to follow.");
+              }];
 }
-
-- (void)openBookAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
-}
-
-#pragma mark - Private methods
 
 - (void)followUpdated:(NSNotification *)notification {
     BOOL follow = [EventHelper followForNotification:notification];
@@ -297,7 +300,7 @@
     }
 }
 
-- (void)showBookAtIndexPath:(NSIndexPath *)indexPath {
+- (void)showBook:(CKBook *)book atIndexPath:(NSIndexPath *)indexPath {
     UIView *rootView = [[AppHelper sharedInstance] rootView];
     
     // Remember the cell to transition from.
@@ -308,7 +311,6 @@
     // Determine the point to transition from.
     CGPoint pointAtRootView = [self.collectionView convertPoint:cell.center toView:rootView];
     
-    CKBook *book = [self.books objectAtIndex:indexPath.row];
     [self.delegate storeCollectionViewControllerPanRequested:NO];
     
     StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book delegate:self];
@@ -322,16 +324,6 @@
     self.storeBookViewController = nil;
     self.selectedBookCell.hidden = NO;
     [self.delegate storeCollectionViewControllerPanRequested:YES];
-}
-
-- (void)loadRemoteIllustrationAtIndex:(NSUInteger)bookIndex {
-    CKBook *book = [self.books objectAtIndex:bookIndex];
-    if (book.illustrationImageFile) {
-        
-        // Load the full image remotely.
-        [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:book.illustrationImageFile.url]
-                                                size:[CKBookCover coverImageSize]];
-    }
 }
 
 - (void)photoLoadingReceived:(NSNotification *)notification {
@@ -359,13 +351,17 @@
                     UIImage *snapshotImage = [ViewHelper imageWithView:bookCoverView size:[StoreBookCoverViewCell cellSize] opaque:NO];
                     
                     StoreBookCoverViewCell *cell = (StoreBookCoverViewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:bookIndex inSection:0]];
-                    [cell loadBookCoverImage:snapshotImage followed:book.followed];
+                    [cell loadBookCoverImage:snapshotImage status:book.status];
                 }
             }
             
         });
     }
     
+}
+
+- (BOOL)featuredMode {
+    return NO;
 }
 
 @end

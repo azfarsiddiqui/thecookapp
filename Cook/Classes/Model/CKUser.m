@@ -82,9 +82,51 @@ static ObjectFailureBlock loginFailureBlock = nil;
              }];
         }
     }];
-    
 }
 
++ (void)attachFacebookToCurrentUserWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
+{
+    CKUser *currentUser = [CKUser currentUser];
+    if (![currentUser isSignedIn]) {
+        failure([CKModel errorWithMessage:[NSString stringWithFormat:@"User %@ not signed in", currentUser]]);
+        return;
+    }
+    
+    // Copies and saves the completion blocks.
+    loginSuccessfulBlock = [success copy];
+    loginFailureBlock = [failure copy];
+    
+    // Go ahead and link this user via Facebook.
+    DLog(@"Linking user with facebook %@", self);
+    [PFFacebookUtils linkUser:currentUser.parseUser permissions:@[@"user_friends"] block:^(BOOL succeeded, NSError *error) {
+        if (!succeeded) {
+            if (!error) {
+                loginFailureBlock([CKModel errorWithCode:kCKLoginCancelledErrorCode
+                                                 message:[NSString stringWithFormat:@"User %@ cancelled signin", currentUser]]);
+            } else {
+                loginFailureBlock(error);
+            }
+            loginFailureBlock = nil;
+            loginSuccessfulBlock = nil;
+            
+        } else {
+            
+            // Update user details and friends.
+            [[FBRequest requestForMe] startWithCompletionHandler:
+             ^(FBRequestConnection *connection,
+               NSDictionary<FBGraphUser> *userData,
+               NSError *error) {
+                 if (error) {
+                     loginFailureBlock(error);
+                     loginFailureBlock = nil;
+                     loginSuccessfulBlock = nil;
+                 } else {
+                     [CKUser populateUserDetailsFromFacebookData:userData];
+                 }
+             }];
+        }
+    }];
+}
 
 + (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
     [PFUser logOut];
@@ -588,75 +630,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
 + (void)populateUserDetailsFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
     CKUser *currentUser = [CKUser currentUser];
     DLog(@"Logged in user %@", currentUser);
-    if (currentUser.admin) {
-        [CKUser handleAdminLoginFromFacebookData:userData];
-    } else {
-        [CKUser handleUserLoginFromFacebookData:userData];
-    }
-}
-
-+ (void)handleAdminLoginFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
-    DLog(@"Logged in as admin");
-    
-    CKUser *currentUser = [CKUser currentUser];
-    
-    // Admin books query.
-    PFQuery *adminBookQuery = [PFQuery queryWithClassName:kBookModelName];
-    [adminBookQuery whereKey:kUserModelForeignKeyName equalTo:currentUser.parseUser];
-    [adminBookQuery findObjectsInBackgroundWithBlock:^(NSArray *books, NSError *error) {
-        if (!error) {
-            
-            // Admin follow.
-            PFQuery *adminFollowQuery = [PFQuery queryWithClassName:kBookFollowModelName];
-            [adminFollowQuery whereKey:kUserModelForeignKeyName equalTo:currentUser.parseUser];
-            [adminFollowQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error) {
-                
-                // Existing admin follow ids to find which admin books to follow.
-                NSArray *adminFollowIds = [parseFollows collect:^id(PFObject *parseFollow) {
-                    PFObject *adminFollowBook = [parseFollow objectForKey:kBookModelForeignKeyName];
-                    return adminFollowBook.objectId;
-                }];
-               
-                // Figure out new admin books to follow.
-                NSArray *adminBooksToFollow = [books select:^BOOL(PFObject *parseBook) {
-                    return (![adminFollowIds containsObject:parseBook.objectId]);
-                }];
-                
-                // Prepare admin follows to create.
-                NSMutableArray *objectsToUpdate = [NSMutableArray arrayWithCapacity:[adminBooksToFollow count]];
-                for (PFObject *adminBook in adminBooksToFollow) {
-                    
-                    // Create suggested follow of my book for my friends.
-                    PFObject *adminBookFollow = [self objectWithDefaultSecurityWithClassName:kBookFollowModelName];
-                    [adminBookFollow setObject:currentUser.parseUser forKey:kUserModelForeignKeyName];
-                    [adminBookFollow setObject:adminBook forKey:kBookModelForeignKeyName];
-                    [adminBookFollow setObject:[NSNumber numberWithBool:YES] forKey:kBookFollowAttrAdmin];
-                    [objectsToUpdate addObject:adminBookFollow];
-                }
-                
-                // Save it off.
-                [PFObject saveAllInBackground:objectsToUpdate block:^(BOOL succeeded, NSError *error) {
-                    if (!error) {
-                        loginSuccessfulBlock();
-                        loginSuccessfulBlock = nil;
-                        loginFailureBlock = nil;
-                    } else {
-                        loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
-                                                         message:[NSString stringWithFormat:@"Unable to process admin follow books for %@", currentUser]]);
-                        loginFailureBlock = nil;
-                        loginSuccessfulBlock = nil;
-                    }
-                }];
-                
-            }];
-            
-        } else {
-            loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
-                                             message:[NSString stringWithFormat:@"Unable to process admin follow books for %@", currentUser]]);
-            loginFailureBlock = nil;
-            loginSuccessfulBlock = nil;
-        }
-    }];
+    [CKUser handleUserLoginFromFacebookData:userData];
 }
 
 + (void)handleUserLoginFromFacebookData:(NSDictionary<FBGraphUser> *)userData {

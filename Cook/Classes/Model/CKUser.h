@@ -40,6 +40,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 + (CKUser *)currentUser;
 + (BOOL)isLoggedIn;
 + (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)attachFacebookToCurrentUserWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)registerWithEmail:(NSString *)email name:(NSString *)name password:(NSString *)password
                completion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
