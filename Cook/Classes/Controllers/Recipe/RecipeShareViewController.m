@@ -410,7 +410,8 @@
 }
 
 - (NSString *)shareTextWithURL:(BOOL)showUrl showTwitter:(BOOL)showTwitter {
-    NSMutableString *shareText = [NSMutableString stringWithString:@"Check out my recipe"];
+    NSMutableString *shareText = [NSMutableString stringWithFormat:@"Check out %@ recipe",
+                                  [self.recipe isOwner] ? @"my" : @"this"];
     if ([self.recipe.name CK_containsText]) {
         [shareText appendFormat:@" %@", self.recipe.name];
     }
