@@ -58,6 +58,10 @@
     return [illustrations objectAtIndex:arc4random() % ([illustrations count] - 1)];
 }
 
++ (NSString *)blankFeaturedIllustrationImageName {
+    return @"cook_book_graphic_featured_blank.png";
+}
+
 + (UIImage *)likeImageForCover:(NSString *)cover selected:(BOOL)selected {
     if (selected) {
         UIImage *colouredIcon = [UIImage imageNamed:[self imageNameForBaseName:@"cook_book_inner_icon_small_likes_on" cover:cover selected:NO]];

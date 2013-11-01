@@ -58,10 +58,10 @@
     [EventHelper unregisterPhotoLoading:self];
 }
 
-- (id)initWithBook:(CKBook *)book featuredMode:(BOOL)featuredMode delegate:(id<StoreBookViewControllerDelegate>)delegate {
+- (id)initWithBook:(CKBook *)book delegate:(id<StoreBookViewControllerDelegate>)delegate {
     if (self = [super init]) {
         self.book = book;
-        self.featuredMode = featuredMode;
+        self.featuredMode = book.featured;
         self.delegate = delegate;
     }
     return self;
@@ -102,11 +102,6 @@
     self.bookCoverView.frame = bookFrame;
     self.bookCoverView.transform = CGAffineTransformMakeScale(scale, scale);
     [self.bookCoverView loadBook:self.book editable:NO];
-    
-    // Featured book uses the author as the name.
-    if (self.book.featured) {
-        [self.bookCoverView setName:self.book.name author:[NSString CK_safeString:self.book.author defaultString:@""] editable:NO];
-    }
     
     [self.view addSubview:self.bookCoverView];
     [EventHelper postStatusBarChangeForLight:YES];
@@ -184,10 +179,6 @@
 }
 
 #pragma mark - CKStoreBookCoverViewDelegate methods
-
-- (BOOL)storeBookCoverViewFeaturedMode {
-    return self.featuredMode;
-}
 
 - (void)storeBookCoverViewAddRequested {
     [self followTapped];
@@ -267,7 +258,7 @@
 
 - (void)initBookSummaryView {
     
-    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES featuredMode:self.featuredMode];
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES];
     bookSummaryView.delegate = self;
     bookSummaryView.frame = CGRectMake(floorf((self.bookContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
                                        87,

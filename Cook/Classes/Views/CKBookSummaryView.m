@@ -43,7 +43,6 @@
 @property (nonatomic, strong) CKEditingViewHelper *editingHelper;
 @property (nonatomic, strong) CKEditViewController *editViewController;
 @property (nonatomic, assign) BOOL storeMode;
-@property (nonatomic, assign) BOOL featuredMode;
 @property (nonatomic, assign) BOOL pendingAcceptance;
 
 @property (nonatomic, strong) UIAlertView *friendRequestAlert;
@@ -81,14 +80,9 @@
 }
 
 - (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode {
-    return [self initWithBook:book storeMode:NO featuredMode:NO];
-}
-
-- (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode featuredMode:(BOOL)featuredMode {
     if (self = [super initWithFrame:(CGRect){ 0.0, 0.0, [CKBookSummaryView sizeForStoreMode:storeMode].width, [CKBookSummaryView sizeForStoreMode:storeMode].height }]) {
         self.book = book;
         self.storeMode = storeMode;
-        self.featuredMode = featuredMode;
         self.backgroundColor = [UIColor clearColor];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.currentUser = [CKUser currentUser];
@@ -378,7 +372,7 @@
     [self updateStory:self.book.story];
     
     // Action button.
-    if (self.storeMode && !self.featuredMode && ![self.book.user isEqual:self.currentUser]) {
+    if (self.storeMode && !self.book.featured && ![self.book.user isEqual:self.currentUser]) {
         [self initFriendsButton];
     }
 }
@@ -766,7 +760,7 @@
             [self.delegate bookSummaryViewBookIsFollowed];
         }
         
-    } else if (self.featuredMode || self.areFriends || self.publicRecipesCount > 0) {
+    } else if (self.book.featured || self.areFriends || self.publicRecipesCount > 0) {
         
         // Feature and friends' books are always available to download. So are books that have more than zero public
         // recipes.
@@ -792,7 +786,7 @@
     if ([self.book isOwner]) {
         currentRecipeCount = self.recipeCount;
     } else {
-        if (self.featuredMode || self.areFriends) {
+        if (self.book.featured || self.areFriends) {
             currentRecipeCount = self.friendsRecipesCount + self.publicRecipesCount;
         } else {
             currentRecipeCount = self.publicRecipesCount;

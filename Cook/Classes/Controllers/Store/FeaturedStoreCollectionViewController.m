@@ -37,10 +37,6 @@
                          }];
 }
 
-- (BOOL)featuredMode {
-    return YES;
-}
-
 - (void)showNoBooksCard {
     [[CardViewHelper sharedInstance] showCardText:@"NO FEATURED BOOKS" subtitle:@"PLEASE CHECK BACK SOON"
                                              view:self.collectionView show:YES center:self.collectionView.center];

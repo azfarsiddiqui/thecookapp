@@ -158,10 +158,6 @@
     return NO;
 }
 
-- (BOOL)featuredMode {
-    return NO;
-}
-
 - (void)showActivity:(BOOL)show {
     if (show) {
         [self.activityView removeFromSuperview];
@@ -315,9 +311,7 @@
     CKBook *book = [self.books objectAtIndex:indexPath.row];
     [self.delegate storeCollectionViewControllerPanRequested:NO];
     
-    StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book
-                                                                                             featuredMode:[self featuredMode]
-                                                                                            delegate:self];
+    StoreBookViewController *storeBookViewController = [[StoreBookViewController alloc] initWithBook:book delegate:self];
     [rootView addSubview:storeBookViewController.view];
     [storeBookViewController transitionFromPoint:pointAtRootView];
     self.storeBookViewController = storeBookViewController;

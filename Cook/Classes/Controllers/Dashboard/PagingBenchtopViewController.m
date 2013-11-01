@@ -692,7 +692,9 @@
                 if ([self isCenterBookAtIndexPath:indexPath]) {
                     
                     // Enable delete only in the center.
-                    [self enableDeleteMode:YES indexPath:indexPath];
+                    if ([CKUser isLoggedIn]) {
+                        [self enableDeleteMode:YES indexPath:indexPath];
+                    }
                     
                 } else {
                     

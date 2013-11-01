@@ -727,6 +727,7 @@
     NSMutableDictionary *descriptionProperties = [NSMutableDictionary dictionaryWithDictionary:[super descriptionProperties]];
     [descriptionProperties setValue:[NSString CK_safeString:self.cover] forKey:kBookAttrCover];
     [descriptionProperties setValue:[NSString CK_safeString:self.illustration] forKey:kBookAttrIllustration];
+    [descriptionProperties setValue:[NSString CK_stringForBoolean:self.featured] forKey:kBookAttrFeatured];
     return descriptionProperties;
 }
 

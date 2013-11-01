@@ -18,6 +18,7 @@
 #import "CKPhotoManager.h"
 #import "EventHelper.h"
 #import "CKActivityIndicatorView.h"
+#import "DataHelper.h"
 
 @interface CKBookCoverView () <CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate>
 
@@ -109,19 +110,17 @@
     
     if (book.illustrationImageFile) {
         
+        // Load a blank illustration.
+        [self setCover:book.cover illustration:[CKBookCover blankFeaturedIllustrationImageName]];
+        
         if (loadRemoteIllustration) {
             
-            // Load an empty illustration.
+            // Load a illustration.
             [self setCover:book.cover illustration:nil];
             
             // Load the image remotely.
             [[CKPhotoManager sharedInstance] imageForUrl:[NSURL URLWithString:self.book.illustrationImageFile.url]
                                                     size:self.illustrationImageView.bounds.size];
-            
-        } else {
-            
-            // Load an empty illustration.
-            [self setCover:book.cover illustration:nil];
             
         }
         
@@ -129,7 +128,7 @@
         [self setCover:book.cover illustration:book.illustration];
     }
     
-    [self setName:book.name author:[book userName] editable:editable];
+    [self setName:book.name author:[book userName] editable:editable];    
     [self loadUpdates:updates];
 }
 
@@ -302,7 +301,7 @@
 - (UILabel *)updatesLabel {
     if (!_updatesLabel) {
         _updatesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Bold" size:28.0];
+        _updatesLabel.font = [UIFont fontWithName:@"BrandonGrotesque-Medium" size:28.0];
         _updatesLabel.textColor = [UIColor whiteColor];
         _updatesLabel.shadowOffset = CGSizeMake(0.0, 1.0);
         _updatesLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.05];
@@ -729,7 +728,8 @@
             self.updatesLabel.center = self.updatesIcon.center;
             [self.updatesIcon addSubview:self.updatesLabel];
         }
-        self.updatesLabel.text = [NSString stringWithFormat:@"%d", updates];
+        
+        self.updatesLabel.text = [DataHelper friendlyDisplayForCount:updates];
         [self.updatesLabel sizeToFit];
         self.updatesLabel.frame = (CGRect){
             floorf((self.updatesIcon.bounds.size.width - self.updatesLabel.frame.size.width) / 2.0),

@@ -75,10 +75,6 @@
 
 #pragma mark - CKStoreBookCoverViewDelegate methods
 
-- (BOOL)storeBookCoverViewFeaturedMode {
-    return NO;
-}
-
 - (void)storeBookCoverViewAddRequested {
     [self followTapped];
 }
@@ -181,7 +177,7 @@
     [self.activityView stopAnimating];
     
     // Book summary view.
-    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES featuredMode:NO];
+    CKBookSummaryView *bookSummaryView = [[CKBookSummaryView alloc] initWithBook:self.book storeMode:YES];
     bookSummaryView.delegate = self;
     bookSummaryView.frame = CGRectMake(floorf((self.summaryContainerView.bounds.size.width) / 2.0) + kBookSummaryGap,
                                        87,

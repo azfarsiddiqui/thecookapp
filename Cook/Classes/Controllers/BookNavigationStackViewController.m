@@ -1608,7 +1608,9 @@
     
     NSInteger currentPageIndex = [self currentPageIndex];
     NSInteger pageIndex = [self.pages count] + [self stackContentStartSection] - 1;
-    if (self.enableLikes && [self.book isOwner] && [self.pages count] > 1 && currentPageIndex == pageIndex) {
+    if (self.enableLikes && [self.book isOwner] && currentPageIndex == pageIndex) {
+        
+        // Likes page if it's the last page of my own book.
         likesPage = YES;
     }
     
@@ -1658,22 +1660,26 @@
         
         if (show) {
             self.bookNavigationView.hidden = NO;
+            self.bookNavigationView.alpha = 0.0;
         }
         
         if (!slide) {
             self.bookNavigationView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.bookNavigationView.frame.size.height);
+        } else {
+            self.bookNavigationView.alpha = 1.0;
         }
         
         // Inform status bar hide.
         [EventHelper postStatusBarHide:!show];
         
-        [UIView animateWithDuration:0.25
+        [UIView animateWithDuration:0.4
                               delay:0.0
-                            options:UIViewAnimationOptionCurveEaseIn
+                            options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
-                             self.bookNavigationView.alpha = show ? 1.0 : 0.0;
                              if (slide) {
                                  self.bookNavigationView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.bookNavigationView.frame.size.height);
+                             } else {
+                                 self.bookNavigationView.alpha = show ? 1.0 : 0.0;
                              }
                          }
                          completion:^(BOOL finished) {
