@@ -18,9 +18,9 @@
         [display appendFormat:@"%d", count];
     } else if (count < 1000000) {
         if ((count % 1000) == 0) {
-            [display appendFormat:@"%dk", (count / 1000)];
+            [display appendFormat:@"%dK", (count / 1000)];
         } else {
-            [display appendFormat:@"%.1fk", (count / 1000.0)];
+            [display appendFormat:@"%.1fK", (count / 1000.0)];
         }
     } else {
         if ((count % 1000000) == 0) {
