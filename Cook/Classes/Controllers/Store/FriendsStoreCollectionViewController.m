@@ -38,10 +38,6 @@
                          }];
 }
 
-- (BOOL)featuredMode {
-    return NO;
-}
-
 - (void)showNoBooksCard {
     [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
                                              view:self.collectionView show:YES center:self.collectionView.center];

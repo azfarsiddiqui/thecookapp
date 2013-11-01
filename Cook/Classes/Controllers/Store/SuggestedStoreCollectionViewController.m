@@ -36,10 +36,6 @@
                          }];
 }
 
-- (BOOL)featuredMode {
-    return NO;
-}
-
 - (void)showNoBooksCard {
     [[CardViewHelper sharedInstance] showCardText:@"NO SUGGESTIONS" subtitle:@"MORE WAYS TO FIND FRIENDS SOON"
                                              view:self.collectionView show:YES center:self.collectionView.center];

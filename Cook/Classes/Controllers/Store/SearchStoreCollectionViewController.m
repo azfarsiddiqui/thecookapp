@@ -34,10 +34,6 @@
                          }];
 }
 
-- (BOOL)featuredMode {
-    return NO;
-}
-
 - (void)showNoBooksCard {
     [[CardViewHelper sharedInstance] showCardText:@"NO RESULTS" subtitle:@"TRY SEARCHING FOR ANOTHER NAME"
                         view:self.collectionView show:YES center:self.collectionView.center];

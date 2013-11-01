@@ -11,7 +11,6 @@
 @protocol CKStoreBookCoverViewDelegate <NSObject>
 
 @optional
-- (BOOL)storeBookCoverViewFeaturedMode;
 - (void)storeBookCoverViewAddRequested;
 
 @end
