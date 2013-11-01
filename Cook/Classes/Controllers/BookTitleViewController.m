@@ -733,13 +733,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
 - (void)openGates {
     if (![self.leftArrowImageView isAnimating]) {
-        self.leftArrowImageView.animationImages = [self animationImagesWithBaseName:@"cook_title_arrow_left_fr" frameCount:3];
+        self.leftArrowImageView.animationImages = [self animationImagesWithBaseName:@"cook_title_arrow_left_fr" frameCount:9];
         self.leftArrowImageView.image = [self.leftArrowImageView.animationImages lastObject];
         [self.leftArrowImageView startAnimating];
     }
     
     if (![self.rightArrowImageView isAnimating] && [self hasPages]) {
-        self.rightArrowImageView.animationImages = [self animationImagesWithBaseName:@"cook_title_arrow_right_fr" frameCount:3];
+        self.rightArrowImageView.animationImages = [self animationImagesWithBaseName:@"cook_title_arrow_right_fr" frameCount:9];
         self.rightArrowImageView.image = [self.rightArrowImageView.animationImages lastObject];
         [self.rightArrowImageView startAnimating];
     }
