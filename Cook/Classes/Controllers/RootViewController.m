@@ -227,6 +227,11 @@
         
         // Always have status bar after closing book.
         [self updateStatusBarHidden:NO];
+        
+    } else {
+        self.bookNavigationViewController = [[BookNavigationStackViewController alloc] initWithBook:self.selectedBook
+                                                                                           delegate:self];
+        self.bookNavigationViewController.view.hidden = NO;
     }
     
     // Pass on event to the benchtop to hide the book.
@@ -237,25 +242,23 @@
     if (open) {
         
         // Create book navigation.
-        BookNavigationStackViewController *bookNavigationViewController = [[BookNavigationStackViewController alloc] initWithBook:self.selectedBook
-                                                                                                                         delegate:self];
-        bookNavigationViewController.view.frame = self.view.bounds;
-        [self.view addSubview:bookNavigationViewController.view];
-        self.bookNavigationViewController = bookNavigationViewController;
+        self.bookNavigationViewController.view.frame = self.view.bounds;
+        [self.view addSubview:self.bookNavigationViewController.view];
+        self.bookNavigationViewController = self.bookNavigationViewController;
         
         // Inform the helper that coordinates book navigation and any updated recipes.
-        [BookNavigationHelper sharedInstance].bookNavigationViewController = bookNavigationViewController;
+        [BookNavigationHelper sharedInstance].bookNavigationViewController = self.bookNavigationViewController;
         
         // Scale it up the rest of the way to fullscreen.
-        bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
-        [bookNavigationViewController updateBinderAlpha:1.0];
+        self.bookNavigationViewController.view.transform = CGAffineTransformMakeScale(kBookScaleTransform, kBookScaleTransform);
+        [self.bookNavigationViewController updateBinderAlpha:1.0];
         
         [UIView animateWithDuration:0.3
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
-                             bookNavigationViewController.view.transform = CGAffineTransformIdentity;
-                             [bookNavigationViewController updateBinderAlpha:0.0];
+                             self.bookNavigationViewController.view.transform = CGAffineTransformIdentity;
+                             [self.bookNavigationViewController updateBinderAlpha:0.0];
                          }
                          completion:^(BOOL finished) {
                              
