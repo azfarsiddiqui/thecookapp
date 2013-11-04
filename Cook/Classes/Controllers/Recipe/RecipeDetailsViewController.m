@@ -1695,8 +1695,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (self.recipeDetails.saveRequired) {
         
         // If name or page is updated.
-        if ([self.recipeDetails nameUpdated] || [self.recipeDetails pageUpdated]) {
-            self.recipe.recipeUpdatedDateTime = nil;
+        if (!self.addMode && ([self.recipeDetails nameUpdated] || [self.recipeDetails pageUpdated])) {
+            self.recipe.recipeUpdatedDateTime = [NSDate date];
         }
         
         // Get any existing location from the original recipe.

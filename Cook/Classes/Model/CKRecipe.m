@@ -688,7 +688,11 @@
 }
 
 - (void)setRecipeUpdatedDateTime:(NSDate *)recipeUpdatedDateTime {
-    [self.parseObject setObject:[NSDate date] forKey:kRecipeAttrUpdatedAt];
+    if (recipeUpdatedDateTime) {
+        [self.parseObject setObject:recipeUpdatedDateTime forKey:kRecipeAttrUpdatedAt];
+    } else {
+        [self.parseObject removeObjectForKey:kRecipeAttrUpdatedAt];
+    }
 }
 
 - (NSDate *)recipeUpdatedDateTime {
