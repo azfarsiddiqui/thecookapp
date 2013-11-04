@@ -15,7 +15,6 @@
 
 @property BOOL isFullLoad;
 
-- (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder book:(CKBook *)book;
 - (void)configureFeaturedRecipe:(CKRecipe *)recipe book:(CKBook *)book;
 - (void)applyOffset:(CGFloat)offset;
 - (CGSize)imageSizeWithMotionOffset;

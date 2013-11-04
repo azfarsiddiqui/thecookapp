@@ -16,6 +16,7 @@
 #import "CKBookCover.h"
 #import "EventHelper.h"
 #import "CKPhotoManager.h"
+#import "NSString+Utilities.h"
 
 @interface BookContentImageView ()
 
@@ -82,39 +83,18 @@
     if ([recipe hasPhotos]) {
         [[CKPhotoManager sharedInstance] imageForRecipe:recipe size:[self imageSizeWithMotionOffset]];
     } else {
-        [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover]
-                 placeholder:YES book:book];
+        [self configureImage:[CKBookCover recipeEditBackgroundImageForCover:book.cover] book:book];
     }
 
-}
-
-- (void)configureImage:(UIImage *)image placeholder:(BOOL)placeholder book:(CKBook *)book {
-    if (image) {
-        self.imageView.image = image;
-        self.vignetteOverlayView.hidden = NO;
-        
-        if (self.isFullLoad)
-        {
-            UIColor *tintColour = [[CKBookCover backdropColourForCover:book.cover] colorWithAlphaComponent:0.58];
-            [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
-                self.blurredImageView.image = blurredImage;
-            }];
-        }
-        
-    } else {
-        self.imageView.image = nil;
-        self.vignetteOverlayView.hidden = YES;
-    }
 }
 
 - (CGSize)imageSizeWithMotionOffset {
     return self.imageView.frame.size;
 }
 
-- (void)reloadWithBook:(CKBook *)book
-{
+- (void)reloadWithBook:(CKBook *)book {
     self.isFullLoad = YES;
-    [self configureImage:self.imageView.image placeholder:NO book:book];
+    [self configureImage:self.imageView.image book:book];
 }
 
 #pragma mark - Properties
@@ -193,10 +173,29 @@
         if (!self.fullImageLoaded) {
             if ([EventHelper hasImageForPhotoLoading:notification]) {
                 UIImage *image = [EventHelper imageForPhotoLoading:notification];
-                [self configureImage:image placeholder:notification book:self.book];
+                [self configureImage:image book:self.book];
                 self.fullImageLoaded = !thumb;
             }
         }
+    }
+}
+
+- (void)configureImage:(UIImage *)image book:(CKBook *)book {
+    if (image) {
+        self.imageView.image = image;
+        self.vignetteOverlayView.hidden = NO;
+        
+        if (self.isFullLoad) {
+            UIColor *tintColour = [[CKBookCover backdropColourForCover:book.cover] colorWithAlphaComponent:0.58];
+            [ImageHelper blurredImage:image tintColour:tintColour radius:10.0 completion:^(UIImage *blurredImage) {
+                self.blurredImageView.image = blurredImage;
+            }];
+        }
+        
+    } else {
+        self.imageView.image = nil;
+        self.blurredImageView.image = nil;
+        self.vignetteOverlayView.hidden = YES;
     }
 }
 

@@ -119,7 +119,8 @@
         self.titleViewController = [[BookTitleViewController alloc] initWithBook:book delegate:self];
         self.titleViewController.bookPageDelegate = self;
         self.enableLikes = YES;
-        self.destinationIndexes = @[@2]; //Start with first page
+        self.destinationIndexes = @[@([self contentStartSection])]; //Start with first page
+        
         // Forget about dismissed states.
         [[CardViewHelper sharedInstance] clearDismissedStates];
         
@@ -335,7 +336,7 @@
     
     NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
     NSArray *pageIndexPaths = [visibleIndexPaths select:^BOOL(NSIndexPath *indexPath) {
-        return (indexPath.section >= [self stackContentStartSection] - 1);
+        return (indexPath.section >= [self contentStartSection] - 1);
     }];
     
     if ([pageIndexPaths count] > 0) {
@@ -345,7 +346,7 @@
         NSIndexPath *firstIndexPath = [pageIndexPaths firstObject];
         
         // See if there's a next page, only going to the right, then apply overlay adjustments.
-        NSInteger topPageIndex = firstIndexPath.section - [self stackContentStartSection];
+        NSInteger topPageIndex = firstIndexPath.section - [self contentStartSection];
         NSInteger nextPageIndex = topPageIndex + 1;
         if (nextPageIndex < [self.pages count]) {
             
@@ -515,7 +516,7 @@
         // Now relayout the content pages.
         [[self currentLayout] setNeedsRelayout:YES];
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
-            [self stackContentStartSection], [self.pages count]
+            [self contentStartSection], [self.pages count]
         }]];
         
     }
@@ -596,7 +597,7 @@
 }
 
 - (NSInteger)stackContentStartSection {
-    return kIndexSection + 1;
+    return [self contentStartSection];
 }
 
 - (CGFloat)alphaForBookNavigationView {
@@ -615,6 +616,7 @@
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
     // Tells all cells to load content, don't need to worry about performance with manual scrolling
     if ([self.collectionView numberOfSections] > 2 && [self currentPageIndex] < [self.collectionView numberOfSections])
     {
@@ -624,7 +626,11 @@
             [destinationArray addObject:[NSNumber numberWithInt:i]];
         }
         self.destinationIndexes = destinationArray;
-        [self activateVisibleCells];
+        
+//
+//  TODO G - Do we need this?
+//        [self activatePageContent];
+//
     }
 }
 
@@ -640,7 +646,7 @@
     //Tell headers images to load content now
     if ([self.collectionView numberOfSections] > 2 && [self currentPageIndex] < [self.collectionView numberOfSections])
     {
-        NSInteger *pageIndex = [self currentPageIndex]-2 > 0 ? [self currentPageIndex]-2 : 0;
+        NSInteger *pageIndex = [self currentPageIndex]-2 >= 0 ? [self currentPageIndex]-2 : 0;
         NSString *page = [self.pages objectAtIndex:pageIndex];
         BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
         [headerView reloadWithBook:self.book];
@@ -649,23 +655,30 @@
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     
-    self.collectionView.userInteractionEnabled = YES;
-    [self activateVisibleCells];
-    self.fastForward = NO;
+    // Re-activate the content for the resulting content page after a scrolling animation there.
+    [self activatePageContent];
+    
     [self updateNavigationButtons];
+    
+    self.collectionView.userInteractionEnabled = YES;
+    self.fastForward = NO;
 }
 
-- (void)activateVisibleCells
-{
-    if ([self currentPageIndex] < [self.collectionView numberOfSections])
-    {
-        NSIndexPath *activeIndex = [NSIndexPath indexPathForItem:0 inSection:[self currentPageIndex]];
+- (void)activatePageContent {
+    NSInteger currentPageIndex = [self currentPageIndex];
+    
+    // Load the current page content.
+    if (currentPageIndex >= [self contentStartSection] && currentPageIndex < [self.collectionView numberOfSections]) {
+        
+        NSIndexPath *activeIndex = [NSIndexPath indexPathForItem:0 inSection:currentPageIndex];
         BookContentCell *contentCell = (BookContentCell *)[self.collectionView cellForItemAtIndexPath:activeIndex];
-        {
-            if ([contentCell isKindOfClass:[BookContentCell class]] && [self.destinationIndexes containsObject:[NSNumber numberWithInt:[self currentPageIndex]]])
-            {
-                [contentCell.contentViewController loadPageContent];
-            }
+        if ([self.destinationIndexes containsObject:[NSNumber numberWithInt:currentPageIndex]]) {
+            [contentCell.contentViewController loadPageContent];
+            
+            NSString *page = [self.pages objectAtIndex:currentPageIndex - [self contentStartSection]];
+            BookContentImageView *headerView = [self.pageHeaderViews objectForKey:page];
+            [headerView reloadWithBook:self.book];
+            
         }
     }
 }
@@ -702,7 +715,7 @@
         
         if (indexPath.section == kProfileSection) {
             headerView = [self profileHeaderViewAtIndexPath:indexPath];
-        } else if (indexPath.section >= [self stackContentStartSection]) {
+        } else if (indexPath.section >= [self contentStartSection]) {
             headerView = [self contentHeaderViewAtIndexPath:indexPath];
         }
         
@@ -735,11 +748,11 @@
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view
       forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section >= [self stackContentStartSection]) {
+    if (indexPath.section >= [self contentStartSection]) {
         
         // Remove a reference to the content image view.
         if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-            NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+            NSInteger pageIndex = indexPath.section - [self contentStartSection];
             if (pageIndex < [self.pages count]) {
                 NSString *page = [self.pages objectAtIndex:pageIndex];
                 [self.pageHeaderViews removeObjectForKey:page];
@@ -752,10 +765,10 @@
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
     forItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section >= [self stackContentStartSection]) {
+    if (indexPath.section >= [self contentStartSection]) {
         
         // Remove reference to BookContentVC and remember its vertical scroll offset.
-        NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+        NSInteger pageIndex = indexPath.section - [self contentStartSection];
         if (pageIndex < [self.pages count]) {
             NSString *page = [self.pages objectAtIndex:pageIndex];
             
@@ -1055,7 +1068,7 @@
 - (UICollectionViewCell *)contentCellAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *categoryCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kContentCellId
                                                                                         forIndexPath:indexPath];
-    NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+    NSInteger pageIndex = indexPath.section - [self contentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
     [self loadContentForPage:page cell:(BookContentCell *)categoryCell indexPath:indexPath];
@@ -1108,9 +1121,9 @@
         
         // This only returns cells not supplementary/decoration views.
         for (NSIndexPath *indexPath in visibleIndexPaths) {
-            if (indexPath.section >= [self stackContentStartSection]) {
+            if (indexPath.section >= [self contentStartSection]) {
                 
-                NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+                NSInteger pageIndex = indexPath.section - [self contentStartSection];
                 
                 // Look for an indexPath that equals the visibleFrame, i.e. current category page in view.
                 CGFloat pageOffset = [layout pageOffsetForIndexPath:indexPath];
@@ -1166,7 +1179,7 @@
                                                                                           forIndexPath:indexPath];
     BookContentImageView *categoryHeaderView = (BookContentImageView *)headerView;
     
-    NSInteger pageIndex = indexPath.section - [self stackContentStartSection];
+    NSInteger pageIndex = indexPath.section - [self contentStartSection];
     NSString *page = [self.pages objectAtIndex:pageIndex];
     
     // Get the corresponding categoryVC to retrieve current scroll offset.
@@ -1310,7 +1323,7 @@
     // If we're past the category pages, then this shortcuts back to home.
     if (edgeGesture.state == UIGestureRecognizerStateBegan) {
         self.collectionView.panGestureRecognizer.enabled = NO;
-        if (visibleFrame.origin.x >= ([self stackContentStartSection] * self.collectionView.bounds.size.width)) {
+        if (visibleFrame.origin.x >= ([self contentStartSection] * self.collectionView.bounds.size.width)) {
             [self scrollToHome];
         }
     } else {
@@ -1359,7 +1372,7 @@
 
 - (void)scrollToPage:(NSString *)page animated:(BOOL)animated {
     NSInteger pageIndex = [self.pages indexOfObject:page];
-    pageIndex += [self stackContentStartSection];
+    pageIndex += [self contentStartSection];
     
     [self fastForwardToPageIndex:pageIndex];
 }
@@ -1369,25 +1382,39 @@
 }
 
 - (void)fastForwardToPageIndex:(NSUInteger)pageIndex {
-    self.destinationIndexes = @[[NSNumber numberWithInt:pageIndex]];
+    self.destinationIndexes = @[@(pageIndex)];
     [self.contentControllerOffsets removeAllObjects]; //Clear offsets when fast forwarding
     NSInteger numPeekPages = 3;
     NSInteger currentPageIndex = [self currentPageIndex];
     self.fastForward = (abs(currentPageIndex - pageIndex) > numPeekPages);
     
+    // Clear offset at target page.
+    if (pageIndex >= [self contentStartSection]) {
+        NSString *page = [self.pages objectAtIndex:pageIndex - [self contentStartSection]];
+        BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
+        [contentHeaderView applyOffset:0.0];
+    }
+    
     // Fast forward to the intended page.
     if (self.fastForward && pageIndex > currentPageIndex) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - 2] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex - [self contentStartSection]]
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:NO];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:YES];
         
     } else if (self.fastForward && pageIndex < currentPageIndex) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex + 2] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex + [self contentStartSection]]
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:NO];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:YES];
     } else {
-        [self.collectionView setContentOffset:(CGPoint){
-            pageIndex * self.collectionView.bounds.size.width,
-            self.collectionView.contentOffset.y
-        } animated:YES];
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:pageIndex]
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:YES];
     }
 }
 
@@ -1531,7 +1558,11 @@
             if (!highestRankedRecipe) {
                 highestRankedRecipe = [self highestRankedRecipeForPage:page excludePins:NO];
             }
-            [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
+            
+            // Set only if found.
+            if (highestRankedRecipe) {
+                [self.pageCoverRecipes setObject:highestRankedRecipe forKey:page];
+            }
             
         }
         
@@ -1616,7 +1647,7 @@
     BOOL likesPage = NO;
     
     NSInteger currentPageIndex = [self currentPageIndex];
-    NSInteger pageIndex = [self.pages count] + [self stackContentStartSection] - 1;
+    NSInteger pageIndex = [self.pages count] + [self contentStartSection] - 1;
     if (self.enableLikes && [self.book isOwner] && currentPageIndex == pageIndex) {
         
         // Likes page if it's the last page of my own book.
@@ -1698,6 +1729,10 @@
                              }
                          }];
     }
+}
+
+- (NSInteger)contentStartSection {
+    return kIndexSection + 1;
 }
 
 @end
