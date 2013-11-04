@@ -20,10 +20,10 @@
 #import "EventHelper.h"
 #import "CKPhotoManager.h"
 #import "CKUserProfilePhotoView.h"
+#import "DateHelper.h"
 
 @interface BookRecipeGridCell ()
 
-@property (nonatomic, strong) TTTTimeIntervalFormatter *timeIntervalFormatter;
 @property (nonatomic, assign) BOOL ownBook;
 
 @end
@@ -66,10 +66,6 @@
         [self initStatsView];
         [self initTimeIntervalLabel];
         [self initPrivacyIcon];
-        
-        // Past dates formatting.
-        self.timeIntervalFormatter = [[TTTTimeIntervalFormatter alloc] init];
-        [self.timeIntervalFormatter setUsesIdiomaticDeicticExpressions:NO];
         
         // Register photo loading events.
         [EventHelper registerPhotoLoading:self selector:@selector(photoLoadingReceived:)];
@@ -184,9 +180,8 @@
 
 - (void)updateTimeInterval {
     
-    NSDate *updatedTime = self.recipe.modelUpdatedDateTime;
-    self.timeIntervalLabel.text = [[self.timeIntervalFormatter stringForTimeIntervalFromDate:[NSDate date]
-                                                                                      toDate:updatedTime] uppercaseString];
+    NSDate *updatedTime = self.recipe.recipeUpdatedDateTime;
+    self.timeIntervalLabel.text = [[[DateHelper sharedInstance] relativeDateTimeDisplayForDate:updatedTime] uppercaseString];
     [self.timeIntervalLabel sizeToFit];
     self.timeIntervalLabel.frame = (CGRect){
         floorf((self.contentView.bounds.size.width - self.timeIntervalLabel.frame.size.width) / 2.0),

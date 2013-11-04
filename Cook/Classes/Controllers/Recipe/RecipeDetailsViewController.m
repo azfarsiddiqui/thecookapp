@@ -1694,6 +1694,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     if (self.recipeDetails.saveRequired) {
         
+        // If name or page is updated.
+        if ([self.recipeDetails nameUpdated] || [self.recipeDetails pageUpdated]) {
+            self.recipe.recipeUpdatedDateTime = nil;
+        }
+        
         // Get any existing location from the original recipe.
         CKLocation *existingLocation = self.recipeDetails.originalRecipe.geoLocation;
         

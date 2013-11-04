@@ -687,6 +687,18 @@
     return [[self.parseObject objectForKey:kRecipeAttrNumComments] integerValue];
 }
 
+- (void)setRecipeUpdatedDateTime:(NSDate *)recipeUpdatedDateTime {
+    [self.parseObject setObject:[NSDate date] forKey:kRecipeAttrUpdatedAt];
+}
+
+- (NSDate *)recipeUpdatedDateTime {
+    NSDate *recipeUpdatedDateTime = [self.parseObject objectForKey:kRecipeAttrUpdatedAt];
+    if (!recipeUpdatedDateTime) {
+        recipeUpdatedDateTime = self.createdDateTime;
+    }
+    return recipeUpdatedDateTime;
+}
+
 #pragma mark - Existence methods
 
 - (BOOL)hasPhotos {

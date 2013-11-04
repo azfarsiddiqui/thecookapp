@@ -26,30 +26,26 @@ typedef void(^RecipeInfoSuccessBlock)(BOOL liked, CKRecipePin *recipePin);
 
 @interface CKRecipe : CKModel
 
-@property(nonatomic, strong) CKBook *book;
-@property(nonatomic, strong) CKUser *user;
-
+@property (nonatomic, strong) CKBook *book;
+@property (nonatomic, strong) CKUser *user;
 @property (nonatomic, strong) NSString *page;
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, strong) NSString *story;
 @property (nonatomic, strong) NSString *method;
-
 @property (nonatomic, assign) NSNumber *numServes;
 @property (nonatomic, assign) NSNumber *prepTimeInMinutes;
 @property (nonatomic, assign) NSNumber *cookingTimeInMinutes;
-
 @property (nonatomic, assign, readonly) NSUInteger likes;
 @property (nonatomic, assign) CGPoint recipeViewImageContentOffset;
 @property (nonatomic, strong) NSArray *ingredients;
-
 @property (nonatomic, assign) CKPrivacy privacy;
-@property(nonatomic, strong) CKLocation *geoLocation;
-
-@property(nonatomic, strong) CKRecipeImage *recipeImage;
-
+@property (nonatomic, strong) CKLocation *geoLocation;
+@property (nonatomic, strong) CKRecipeImage *recipeImage;
 @property (nonatomic, assign, readonly) NSInteger numViews;
 @property (nonatomic, assign, readonly) NSInteger numLikes;
 @property (nonatomic, assign, readonly) NSInteger numComments;
+@property (nonatomic, strong) NSDate *recipeUpdatedDateTime;
+
 
 // Max serves/prep/cook.
 + (NSInteger)maxServes;

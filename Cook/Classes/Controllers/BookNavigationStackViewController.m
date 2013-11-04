@@ -195,19 +195,19 @@
 - (void)updateWithRecipe:(CKRecipe *)recipe completion:(BookNavigationUpdatedBlock)completion {
     DLog(@"Updating layout with recipe [%@][%@]", recipe.name, recipe.page);
     
-    // Check if this was a new recipe, in which case add it to the front of recipes list
-    CKRecipe *foundRecipe = [self.recipes detect:^BOOL(CKRecipe *existingRecipe) {
+    // Check if this was a new/updated recipe.
+    NSInteger foundIndex = [self.recipes findIndexWithBlock:^BOOL(CKRecipe *existingRecipe) {
         return [existingRecipe.objectId isEqualToString:recipe.objectId];
     }];
-    if (!foundRecipe) {
+    
+    if (foundIndex != -1) {
         
-        // Add to the list of recipes.
-        [self.recipes insertObject:recipe atIndex:0];
+        // Replace the recipe if it's only been updated.
+        [self.recipes replaceObjectAtIndex:foundIndex withObject:recipe];
         
     } else {
         
-        // Swap it around.
-        [self.recipes removeObject:foundRecipe];
+        // Add to the front of the list if this was a new recipe.
         [self.recipes insertObject:recipe atIndex:0];
         
     }
@@ -965,6 +965,11 @@
     
     // Keep a reference of pages.
     self.pages = [NSMutableArray arrayWithArray:self.book.pages];
+    
+    // Sort it here.
+    [self.recipes sortUsingComparator:^NSComparisonResult(CKRecipe *recipe, CKRecipe *recipe2) {
+        return [recipe2.recipeUpdatedDateTime compare:recipe.recipeUpdatedDateTime];
+    }];
     
     // Loop through and gather recipes for each page.
     for (CKRecipe *recipe in self.recipes) {
