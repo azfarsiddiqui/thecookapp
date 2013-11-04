@@ -1567,8 +1567,11 @@
         }];
     }
     
+    // Further filter recipes with photos.
+    NSArray *recipesWithPhotos = [self recipesWithPhotos:recipes];
+    
     __block CKRecipe *highestRankedRecipe = nil;
-    [recipes each:^(CKRecipe *recipe) {
+    [recipesWithPhotos each:^(CKRecipe *recipe) {
         if (highestRankedRecipe) {
             if ([self rankForRecipe:recipe] > [self rankForRecipe:highestRankedRecipe]) {
                 highestRankedRecipe = recipe;
@@ -1578,6 +1581,7 @@
         }
         
     }];
+    
     return highestRankedRecipe;
 }
 
