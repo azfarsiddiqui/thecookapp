@@ -467,16 +467,14 @@
     // Apply blurring/tinting offset to content image.
     BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
     [contentHeaderView applyOffset:offset];
-    
-    BOOL fadeTrigger = ABS(distance) > 10.0;
-    BOOL scrollingDown = (distance > 0.0);
-    if (fadeTrigger) {
-        [self showNavigationView:scrollingDown ? NO : YES slide:YES];
-    }
 }
 
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page {
     return (![page isEqualToString:self.likesPageName]);
+}
+
+- (void)bookContentViewControllerShowNavigationView:(BOOL)show {
+    [self showNavigationView:show slide:YES];
 }
 
 #pragma mark - BookTitleViewControllerDelegate methods
@@ -1695,7 +1693,6 @@
 
 - (void)showNavigationView:(BOOL)show slide:(BOOL)slide {
     if (self.bookNavigationView && self.bookNavigationView.hidden == show && !self.navBarAnimating) {
-        DLog();
         self.navBarAnimating = YES;
         
         if (show) {

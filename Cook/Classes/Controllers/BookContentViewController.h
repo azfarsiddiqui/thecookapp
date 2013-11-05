@@ -18,6 +18,7 @@
 - (CKRecipe *)featuredRecipeForBookContentViewControllerForPage:(NSString *)page;
 - (void)bookContentViewControllerScrolledOffset:(CGFloat)offset page:(NSString *)page distanceTravelled:(CGFloat)distance;
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page;
+- (void)bookContentViewControllerShowNavigationView:(BOOL)show;
 
 @end
 

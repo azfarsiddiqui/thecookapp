@@ -28,12 +28,15 @@
 #import "NSString+Utilities.h"
 #import "CardViewHelper.h"
 #import "EventHelper.h"
+#import "BookNavigationView.h"
 
 @interface BookContentViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
-    BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate>
-{
+    BookContentGridLayoutDelegate, CKEditingTextBoxViewDelegate, CKEditViewControllerDelegate, UIAlertViewDelegate,
+    UIGestureRecognizerDelegate> {
+        
     BOOL _isFastForward;
 }
+
 @property (nonatomic, weak) id<BookContentViewControllerDelegate> delegate;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *overlayView;
@@ -326,12 +329,23 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
     // Track the current begin scroll position.
     self.startContentOffset = scrollView.contentOffset;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self applyScrollingEffectsOnCategoryView];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        [self showOrHideNavigationViewWithContentOffset];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self showOrHideNavigationViewWithContentOffset];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -407,6 +421,19 @@
     
 }
 
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)panGestureRecognizer {
+    
+    CGPoint translation = [panGestureRecognizer translationInView:self.view];
+    return fabs(translation.y) > fabs(translation.x);
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
 #pragma mark - Properties
 
 - (BookContentTitleView *)contentTitleView {
@@ -462,6 +489,10 @@
             forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeExtraSmall]];
     
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
+    
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    panGesture.delegate = self;
+    [self.view addGestureRecognizer:panGesture];
 }
 
 - (void)initOverlay {
@@ -720,6 +751,33 @@
     return [self.recipes collectWithIndex:^id(CKRecipe *recipe, NSUInteger recipeIndex) {
         return [NSIndexPath indexPathForItem:recipeIndex inSection:0];
     }];
+}
+
+- (void)panned:(UIPanGestureRecognizer *)panGesture {
+    CGPoint translation = [panGesture translationInView:self.view];
+    if (panGesture.state == UIGestureRecognizerStateBegan || panGesture.state == UIGestureRecognizerStateChanged) {
+        [self showOrHideNavigationViewWithTranslation:translation];
+    }
+}
+
+- (void)showOrHideNavigationViewWithTranslation:(CGPoint)translation {
+    if (self.disableInformScrollOffset || translation.y == 0) {
+        return;
+    }
+    BOOL scrollingDown = (translation.y < 0);
+    [self.delegate bookContentViewControllerShowNavigationView:!scrollingDown];
+}
+
+- (void)showOrHideNavigationViewWithContentOffset {
+    if (self.disableInformScrollOffset) {
+        return;
+    }
+    
+    // If content offset is half way down the current page.
+    CGFloat showOffset = floorf(self.view.bounds.size.height / 2.0);
+    if (self.collectionView.contentOffset.y <= showOffset) {
+        [self.delegate bookContentViewControllerShowNavigationView:YES];
+    }
 }
 
 @end
