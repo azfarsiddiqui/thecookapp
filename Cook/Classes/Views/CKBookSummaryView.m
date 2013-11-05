@@ -781,18 +781,7 @@
 }
 
 - (NSUInteger)currentRecipeCount {
-    NSUInteger currentRecipeCount = 0;
-    
-    if ([self.book isOwner]) {
-        currentRecipeCount = self.recipeCount;
-    } else {
-        if (self.book.featured || self.areFriends) {
-            currentRecipeCount = self.friendsRecipesCount + self.publicRecipesCount;
-        } else {
-            currentRecipeCount = self.publicRecipesCount;
-        }
-    }
-    return currentRecipeCount;
+    return self.recipeCount;
 }
 
 @end
