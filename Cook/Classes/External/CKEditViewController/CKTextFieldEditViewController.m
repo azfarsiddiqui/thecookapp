@@ -145,7 +145,6 @@
     if ([newString length] > self.characterLimit && !isBackspace) {
         textField.text = [newString substringToIndex:self.characterLimit];
         if (self.forceUppercase) textField.text = [textField.text uppercaseString];
-        [self updateTitle:@"CHARACTER LIMIT EXCEEDED" toast:YES];
         
         [self updateInfoLabels];
         return NO;

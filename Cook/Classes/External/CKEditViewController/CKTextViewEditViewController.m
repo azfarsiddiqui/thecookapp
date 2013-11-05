@@ -105,7 +105,6 @@
     //If trying to paste in content over char limit, cut off and apply
     if (([newString length] > self.characterLimit && !isBackspace)) {
         textView.text = [newString substringToIndex:self.characterLimit];
-        [self updateTitle:@"CHARACTER LIMIT EXCEEDED" toast:YES];
         [self updateContentSize];
         [self updateInfoLabels];
         return NO;
@@ -125,7 +124,6 @@
     }
     if (self.maxHeight && self.numLines > 0 && !isBackspace && requiredHeight > self.maxHeight)
     {
-        [self updateTitle:@"LINE LIMIT EXCEEDED" toast:YES];
         [self updateInfoLabels];
         return NO;
     }
