@@ -59,6 +59,9 @@
 - (BOOL)hasIngredients;
 - (BOOL)multilineTitle;
 
+- (NSInteger)maxStoryLines;
+- (NSInteger)maxMethodLines;
+
 - (CGRect)centeredFrameBetweenView:(UIView *)fromView andView:(UIView *)toView forView:(UIView *)forView;
 
 @end

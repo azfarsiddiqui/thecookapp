@@ -30,6 +30,7 @@
     CGRect frame = self.titleLabel.frame;
     CGSize availableSize = [self availableSize];
     CGSize size = [self.titleLabel sizeThatFits:availableSize];
+    
     frame.origin.x = contentInsets.left + floorf((availableSize.width - size.width) / 2.0);
     
     if (self.imageView.hidden) {
@@ -79,6 +80,9 @@
 
 - (void)updateStory {
     
+    // Reset the number of lines.
+    self.storyLabel.numberOfLines = [self maxStoryLines];
+    
     // DONE
     if ([self hasPhotos] && [self hasTitle] && [self hasStory]) {
         
@@ -127,6 +131,9 @@
 }
 
 - (void)updateMethod {
+    
+    // Reset the number of lines.
+    self.methodLabel.numberOfLines = [self maxMethodLines];
     
     // DONE
     if ([self hasPhotos] && [self hasTitle] && ![self hasStory] && [self hasMethod]) {

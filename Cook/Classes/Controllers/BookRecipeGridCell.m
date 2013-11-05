@@ -272,6 +272,14 @@
     };
 }
 
+- (NSInteger)maxStoryLines {
+    return 7;
+}
+
+- (NSInteger)maxMethodLines {
+    return 7;
+}
+
 #pragma mark - UICollectionViewCell methods
 
 - (void)setSelected:(BOOL)selected {
