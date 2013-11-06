@@ -6,14 +6,14 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookPagingStackLayout.h"
+#import "BookNavigationLayout.h"
 #import "BookNavigationView.h"
 #import "BookProfileHeaderView.h"
 #import "ViewHelper.h"
 
-@interface BookPagingStackLayout ()
+@interface BookNavigationLayout ()
 
-@property (nonatomic, weak) id<BookPagingStackLayoutDelegate> delegate;
+@property (nonatomic, weak) id<BookNavigationLayoutDelegate> delegate;
 @property (nonatomic, assign) BOOL layoutCompleted;
 @property (nonatomic, strong) NSMutableArray *itemsLayoutAttributes;
 @property (nonatomic, strong) NSMutableDictionary *indexPathItemAttributes;
@@ -26,7 +26,7 @@
 
 @end
 
-@implementation BookPagingStackLayout
+@implementation BookNavigationLayout
 
 #define kShiftOffset                400.0
 #define kHeaderShiftOffset          200.0
@@ -38,11 +38,11 @@
 #define kPageNavigationtKind        @"PageNavigationtKind"
 #define kLayoutDebug                0
 
-+ (NSString *)bookPagingNavigationElementKind {
++ (NSString *)bookNavigationLayoutElementKind {
     return kPageNavigationtKind;
 }
 
-- (id)initWithDelegate:(id<BookPagingStackLayoutDelegate>)delegate {
+- (id)initWithDelegate:(id<BookNavigationLayoutDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
     }
@@ -87,7 +87,7 @@
     self.layoutCompleted = YES;
     
     // Inform end of layout prep.
-    [self.delegate stackPagingLayoutDidFinish];
+    [self.delegate bookNavigationLayoutDidFinish];
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
@@ -117,7 +117,7 @@
             
             // Light nav only in category sections.
             NSInteger numSections = [self.collectionView numberOfSections];
-            if (numSections > [self.delegate stackContentStartSection]) {
+            if (numSections > [self.delegate bookNavigationLayoutContentStartSection]) {
                 [layoutAttributes addObject:attributes];
             }
             
@@ -139,7 +139,7 @@
     // Decoration cells.
     for (UICollectionViewLayoutAttributes *attributes in self.decorationLayoutAttributes) {
         NSInteger numSections = [self.collectionView numberOfSections];
-        if (numSections > [self.delegate stackContentStartSection]) {
+        if (numSections > [self.delegate bookNavigationLayoutContentStartSection]) {
             [layoutAttributes addObject:attributes];
         }
     }
@@ -204,7 +204,7 @@
     
     // One header per recipe category.
     NSInteger numSections = [self.collectionView numberOfSections];
-    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
+    NSInteger categoryStartSection = [self.delegate bookNavigationLayoutContentStartSection];
     for (NSInteger sectionIndex = categoryStartSection; sectionIndex < numSections; sectionIndex++) {
         
         // Category header.
@@ -253,7 +253,7 @@
     UICollectionViewLayoutAttributes *homeAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]];
     
     // White content nav header.
-    NSInteger categoryStartSection = [self.delegate stackContentStartSection];
+    NSInteger categoryStartSection = [self.delegate bookNavigationLayoutContentStartSection];
     NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
     
     UICollectionViewLayoutAttributes *navigationAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kPageNavigationtKind withIndexPath:navigationIndexPath];
@@ -315,11 +315,11 @@
     
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
     NSIndexPath *navigationIndexPath = attributes.indexPath;
-    if (navigationIndexPath.section >= [self.delegate stackContentStartSection]) {
+    if (navigationIndexPath.section >= [self.delegate bookNavigationLayoutContentStartSection]) {
         
         CGFloat offset =  kShiftOffset;
         CGRect navigationFrame = [self navigationFrameForDark:NO];
-        NSInteger categoryStartSection = [self.delegate stackContentStartSection];
+        NSInteger categoryStartSection = [self.delegate bookNavigationLayoutContentStartSection];
         CGFloat startOffset = categoryStartSection * self.collectionView.bounds.size.width;
         CGSize contentSize = [self collectionViewContentSize];
         
@@ -445,7 +445,7 @@
             [BookNavigationView darkNavigationHeight]
         };
     } else {
-        NSInteger categoryStartSection = [self.delegate stackContentStartSection];
+        NSInteger categoryStartSection = [self.delegate bookNavigationLayoutContentStartSection];
         NSIndexPath *navigationIndexPath = [NSIndexPath indexPathForItem:0 inSection:categoryStartSection];
         return (CGRect){
             [self pageOffsetForIndexPath:navigationIndexPath],

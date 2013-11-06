@@ -10,13 +10,13 @@
 
 @class CKRecipe;
 @class CKRecipePin;
-@class BookNavigationStackViewController;
+@class BookNavigationViewController;
 
 typedef void(^BookNavigationUpdatedBlock)();
 
 @interface BookNavigationHelper : NSObject
 
-@property (nonatomic, strong) BookNavigationStackViewController *bookNavigationViewController;
+@property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 
 + (BookNavigationHelper *)sharedInstance;
 

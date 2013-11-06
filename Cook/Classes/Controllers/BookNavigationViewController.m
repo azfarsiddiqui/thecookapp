@@ -6,13 +6,13 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "BookNavigationStackViewController.h"
+#import "BookNavigationViewController.h"
 #import "CKBook.h"
 #import "CKRecipe.h"
 #import "CKRecipePin.h"
 #import "CKUser.h"
 #import "CKServerManager.h"
-#import "BookPagingStackLayout.h"
+#import "BookNavigationLayout.h"
 #import "BookProfileViewController.h"
 #import "BookTitleViewController.h"
 #import "BookHeaderView.h"
@@ -32,7 +32,7 @@
 #import "AnalyticsHelper.h"
 #import "CKSupplementaryContainerView.h"
 
-@interface BookNavigationStackViewController () <BookPagingStackLayoutDelegate, BookTitleViewControllerDelegate,
+@interface BookNavigationViewController () <BookNavigationLayoutDelegate, BookTitleViewControllerDelegate,
     BookContentViewControllerDelegate, BookNavigationViewDelegate, BookPageViewControllerDelegate,
     UIGestureRecognizerDelegate>
 
@@ -90,7 +90,7 @@
 
 @end
 
-@implementation BookNavigationStackViewController
+@implementation BookNavigationViewController
 
 #define kCellId                     @"CellId"
 #define kProfileSection             0
@@ -110,7 +110,7 @@
 #define kProfileSectionTag          951
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate {
-    if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
+    if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDelegate:self]]) {
         self.delegate = delegate;
         self.book = book;
         self.user = book.user;
@@ -129,7 +129,7 @@
 }
 
 - (id)init {
-    if (self = [super initWithCollectionViewLayout:[[BookPagingStackLayout alloc] initWithDelegate:self]]) {
+    if (self = [super initWithCollectionViewLayout:[[BookNavigationLayout alloc] initWithDelegate:self]]) {
     }
     return self;
 }
@@ -332,7 +332,7 @@
 - (void)updatePagingContent {
     
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    BookPagingStackLayout *layout = [self currentLayout];
+    BookNavigationLayout *layout = [self currentLayout];
     
     NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
     NSArray *pageIndexPaths = [visibleIndexPaths select:^BOOL(NSIndexPath *indexPath) {
@@ -540,7 +540,7 @@
 
 #pragma mark - BookPagingStackLayoutDelegate methods
 
-- (void)stackPagingLayoutDidFinish {
+- (void)bookNavigationLayoutDidFinish {
     DLog();
     
     if (self.bookUpdatedBlock != nil) {
@@ -590,11 +590,11 @@
     [self applyRightBookEdgeOutline];
 }
 
-- (BookPagingStackLayoutType)stackPagingLayoutType {
-    return BookPagingStackLayoutTypeSlideOneWay;
+- (BookNavigationLayoutType)bookNavigationLayoutType {
+    return BookNavigationLayoutTypeSlideOneWay;
 }
 
-- (NSInteger)stackContentStartSection {
+- (NSInteger)bookNavigationLayoutContentStartSection {
     return [self contentStartSection];
 }
 
@@ -717,7 +717,7 @@
             headerView = [self contentHeaderViewAtIndexPath:indexPath];
         }
         
-    } else if ([kind isEqualToString:[BookPagingStackLayout bookPagingNavigationElementKind]]) {
+    } else if ([kind isEqualToString:[BookNavigationLayout bookNavigationLayoutElementKind]]) {
         
         headerView = [self navigationHeaderViewAtIndexPath:indexPath];
         
@@ -923,7 +923,7 @@
     // Headers
     [self.collectionView registerClass:[BookProfileHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kProfileHeaderId];
     [self.collectionView registerClass:[BookContentImageView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
-    [self.collectionView registerClass:[CKSupplementaryContainerView class] forSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind] withReuseIdentifier:kNavigationHeaderId];
+    [self.collectionView registerClass:[CKSupplementaryContainerView class] forSupplementaryViewOfKind:[BookNavigationLayout bookNavigationLayoutElementKind] withReuseIdentifier:kNavigationHeaderId];
     
     // Profile, Index, Category.
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kProfileCellId];
@@ -1112,7 +1112,7 @@
 - (NSString *)currentPage {
     NSString *page = nil;
     CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
-    BookPagingStackLayout *layout = [self currentLayout];
+    BookNavigationLayout *layout = [self currentLayout];
     
     NSArray *visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
     if ([visibleIndexPaths count] > 0) {
@@ -1204,7 +1204,7 @@
 }
 
 - (UICollectionReusableView *)navigationHeaderViewAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:[BookPagingStackLayout bookPagingNavigationElementKind]
+    UICollectionReusableView *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:[BookNavigationLayout bookNavigationLayoutElementKind]
                                                                                    withReuseIdentifier:kNavigationHeaderId
                                                                                           forIndexPath:indexPath];
     CKSupplementaryContainerView *containerView = (CKSupplementaryContainerView *)headerView;
@@ -1352,8 +1352,8 @@
     return orderChanged;
 }
 
-- (BookPagingStackLayout *)currentLayout {
-    return (BookPagingStackLayout *)self.collectionView.collectionViewLayout;
+- (BookNavigationLayout *)currentLayout {
+    return (BookNavigationLayout *)self.collectionView.collectionViewLayout;
 }
 
 - (void)closeBook {

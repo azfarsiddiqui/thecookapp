@@ -686,7 +686,7 @@
 		768E750117D612C500502C19 /* cook_btns_ignore@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 768E74F917D612C500502C19 /* cook_btns_ignore@2x.png */; };
 		7692260216474D4600752128 /* IllustrationPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692260116474D4600752128 /* IllustrationPickerViewController.m */; };
 		769226051647863A00752128 /* IllustrationBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 769226041647863A00752128 /* IllustrationBookCell.m */; };
-		7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */; };
+		7692C749177807A200A5CA5C /* BenchtopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C746177807A200A5CA5C /* BenchtopViewController.m */; };
 		7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */; };
 		7692C75017782A3B00A5CA5C /* PagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7692C74F17782A3B00A5CA5C /* PagingScrollView.m */; };
 		769880CB17F16AAC00D1E760 /* RecipeSocialLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 769880CA17F16AAC00D1E760 /* RecipeSocialLayout.m */; };
@@ -1018,8 +1018,8 @@
 		76DEF053164A285E00B7DB9C /* CoverPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DEF052164A285D00B7DB9C /* CoverPickerCell.m */; };
 		76DEF058164A37BB00B7DB9C /* cook_customise_btns_cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF054164A37BB00B7DB9C /* cook_customise_btns_cancel.png */; };
 		76DEF059164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */; };
-		76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */; };
-		76E0B95717903B8E00AD70E3 /* BookPagingStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */; };
+		76E0B95417903B7600AD70E3 /* BookNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95317903B7600AD70E3 /* BookNavigationViewController.m */; };
+		76E0B95717903B8E00AD70E3 /* BookNavigationLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95617903B8E00AD70E3 /* BookNavigationLayout.m */; };
 		76E0B95A179045FD00AD70E3 /* BookHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B959179045FD00AD70E3 /* BookHeaderView.m */; };
 		76E0B95D17911FE100AD70E3 /* BookContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95C17911FE100AD70E3 /* BookContentViewController.m */; };
 		76E0B9601791205D00AD70E3 /* BookCategoryLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E0B95F1791205D00AD70E3 /* BookCategoryLayout.m */; };
@@ -2168,8 +2168,8 @@
 		7692260116474D4600752128 /* IllustrationPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationPickerViewController.m; sourceTree = "<group>"; };
 		769226031647863900752128 /* IllustrationBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllustrationBookCell.h; sourceTree = "<group>"; };
 		769226041647863A00752128 /* IllustrationBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IllustrationBookCell.m; sourceTree = "<group>"; };
-		7692C745177807A200A5CA5C /* PagingBenchtopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingBenchtopViewController.h; sourceTree = "<group>"; };
-		7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingBenchtopViewController.m; sourceTree = "<group>"; };
+		7692C745177807A200A5CA5C /* BenchtopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BenchtopViewController.h; sourceTree = "<group>"; };
+		7692C746177807A200A5CA5C /* BenchtopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BenchtopViewController.m; sourceTree = "<group>"; };
 		7692C747177807A200A5CA5C /* PagingCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingCollectionViewLayout.h; sourceTree = "<group>"; };
 		7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingCollectionViewLayout.m; sourceTree = "<group>"; };
 		7692C74E17782A3B00A5CA5C /* PagingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingScrollView.h; sourceTree = "<group>"; };
@@ -2294,7 +2294,6 @@
 		76B23945174DF44300BEEF94 /* cook_btns_okay_onpress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btns_okay_onpress@2x.png"; sourceTree = "<group>"; };
 		76B23946174DF44300BEEF94 /* cook_btns_okay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btns_okay.png; sourceTree = "<group>"; };
 		76B23947174DF44300BEEF94 /* cook_btns_okay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btns_okay@2x.png"; sourceTree = "<group>"; };
-		76B258B717AB407200291878 /* BookNavigationViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationViewControllerDelegate.h; sourceTree = "<group>"; };
 		76B3AE20174B2727001B4661 /* cook_book_edge_overlay_bind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_edge_overlay_bind.png; sourceTree = "<group>"; };
 		76B3AE21174B2727001B4661 /* cook_book_edge_overlay_bind@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_book_edge_overlay_bind@2x.png"; sourceTree = "<group>"; };
 		76B3AE22174B2727001B4661 /* cook_book_edge_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_edge_overlay.png; sourceTree = "<group>"; };
@@ -2562,10 +2561,10 @@
 		76DEF052164A285D00B7DB9C /* CoverPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPickerCell.m; sourceTree = "<group>"; };
 		76DEF054164A37BB00B7DB9C /* cook_customise_btns_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_btns_cancel.png; sourceTree = "<group>"; };
 		76DEF055164A37BB00B7DB9C /* cook_customise_btns_cancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_btns_cancel@2x.png"; sourceTree = "<group>"; };
-		76E0B95217903B7600AD70E3 /* BookNavigationStackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationStackViewController.h; sourceTree = "<group>"; };
-		76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationStackViewController.m; sourceTree = "<group>"; };
-		76E0B95517903B8E00AD70E3 /* BookPagingStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookPagingStackLayout.h; sourceTree = "<group>"; };
-		76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookPagingStackLayout.m; sourceTree = "<group>"; };
+		76E0B95217903B7600AD70E3 /* BookNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationViewController.h; sourceTree = "<group>"; };
+		76E0B95317903B7600AD70E3 /* BookNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationViewController.m; sourceTree = "<group>"; };
+		76E0B95517903B8E00AD70E3 /* BookNavigationLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookNavigationLayout.h; sourceTree = "<group>"; };
+		76E0B95617903B8E00AD70E3 /* BookNavigationLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookNavigationLayout.m; sourceTree = "<group>"; };
 		76E0B958179045FD00AD70E3 /* BookHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookHeaderView.h; sourceTree = "<group>"; };
 		76E0B959179045FD00AD70E3 /* BookHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookHeaderView.m; sourceTree = "<group>"; };
 		76E0B95B17911FE100AD70E3 /* BookContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookContentViewController.h; sourceTree = "<group>"; };
@@ -3451,8 +3450,8 @@
 		76520459161A80CB00EE253C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				7692C745177807A200A5CA5C /* PagingBenchtopViewController.h */,
-				7692C746177807A200A5CA5C /* PagingBenchtopViewController.m */,
+				7692C745177807A200A5CA5C /* BenchtopViewController.h */,
+				7692C746177807A200A5CA5C /* BenchtopViewController.m */,
 				7692C747177807A200A5CA5C /* PagingCollectionViewLayout.h */,
 				7692C748177807A200A5CA5C /* PagingCollectionViewLayout.m */,
 				7692C74E17782A3B00A5CA5C /* PagingScrollView.h */,
@@ -4915,11 +4914,10 @@
 			isa = PBXGroup;
 			children = (
 				768EC2F717D1A13F00F323D7 /* CKSaveableContent.h */,
-				76E0B95217903B7600AD70E3 /* BookNavigationStackViewController.h */,
-				76E0B95317903B7600AD70E3 /* BookNavigationStackViewController.m */,
-				76E0B95517903B8E00AD70E3 /* BookPagingStackLayout.h */,
-				76E0B95617903B8E00AD70E3 /* BookPagingStackLayout.m */,
-				76B258B717AB407200291878 /* BookNavigationViewControllerDelegate.h */,
+				76E0B95217903B7600AD70E3 /* BookNavigationViewController.h */,
+				76E0B95317903B7600AD70E3 /* BookNavigationViewController.m */,
+				76E0B95517903B8E00AD70E3 /* BookNavigationLayout.h */,
+				76E0B95617903B8E00AD70E3 /* BookNavigationLayout.m */,
 				761951AD1793AEF5008AB495 /* BookPageViewController.h */,
 				761951AE1793AEF5008AB495 /* BookPageViewController.m */,
 				76E0B958179045FD00AD70E3 /* BookHeaderView.h */,
@@ -6514,7 +6512,7 @@
 				892282B61671933D002FE936 /* CKRecipeLike.m in Sources */,
 				7649240217EB247700C4E347 /* DataHelper.m in Sources */,
 				76D2BF7017B90A3700BA46A1 /* UIImage+MultiFormat.m in Sources */,
-				76E0B95417903B7600AD70E3 /* BookNavigationStackViewController.m in Sources */,
+				76E0B95417903B7600AD70E3 /* BookNavigationViewController.m in Sources */,
 				7600972D17A0E8B7001DFC9F /* CKListLayout.m in Sources */,
 				76A28E99177A8C7400C98F8B /* UIImage+ImageEffects.m in Sources */,
 				764E46F516C871EB00DD168F /* BookCategoryView.m in Sources */,
@@ -6581,7 +6579,7 @@
 				76EE2CDB170AE7A30043D128 /* UIImageView+WebCache.m in Sources */,
 				76819813170BCC840091F91F /* CKBookSummaryView.m in Sources */,
 				764F4D0A179CECF500821221 /* BookTitleCell.m in Sources */,
-				76E0B95717903B8E00AD70E3 /* BookPagingStackLayout.m in Sources */,
+				76E0B95717903B8E00AD70E3 /* BookNavigationLayout.m in Sources */,
 				768E735E170BD5440063CF49 /* CKStatView.m in Sources */,
 				76025412170EFDAD00950571 /* CKPhotoPickerViewController.m in Sources */,
 				769AA77417CC855B00B73718 /* CKBlueSignInButtonView.m in Sources */,
@@ -6649,7 +6647,7 @@
 				7612E8BB17570EAA0010780D /* CKTextFieldViewHelper.m in Sources */,
 				76F98EA117977BB500AC2B9C /* BookCommentView.m in Sources */,
 				76C8FAF91796737700488A80 /* BookSocialHeaderView.m in Sources */,
-				7692C749177807A200A5CA5C /* PagingBenchtopViewController.m in Sources */,
+				7692C749177807A200A5CA5C /* BenchtopViewController.m in Sources */,
 				7698ED5017D37368003898A4 /* DateHelper.m in Sources */,
 				7692C74A177807A200A5CA5C /* PagingCollectionViewLayout.m in Sources */,
 				7680103717A92A370065B2C6 /* ThemeTabView.m in Sources */,

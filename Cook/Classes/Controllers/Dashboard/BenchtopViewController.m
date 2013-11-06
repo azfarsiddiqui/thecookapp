@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Cook Apps Pty Ltd. All rights reserved.
 //
 
-#import "PagingBenchtopViewController.h"
+#import "BenchtopViewController.h"
 #import "PagingCollectionViewLayout.h"
 #import "BenchtopBookCoverViewCell.h"
 #import "SignUpBookCoverViewCell.h"
@@ -30,7 +30,7 @@
 #import "CKNavigationController.h"
 #import "CKBookManager.h"
 
-@interface PagingBenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
+@interface BenchtopViewController () <UICollectionViewDataSource, UICollectionViewDelegate,
     UIGestureRecognizerDelegate, PagingCollectionViewLayoutDelegate, CKNotificationViewDelegate,
     BenchtopBookCoverViewCellDelegate, SignUpBookCoverViewCellDelegate, SignupViewControllerDelegate,
     CoverPickerViewControllerDelegate, IllustrationPickerViewControllerDelegate, NotificationsViewControllerDelegate,
@@ -73,7 +73,7 @@
 
 @end
 
-@implementation PagingBenchtopViewController
+@implementation BenchtopViewController
 
 #define kCellId         @"CellId"
 #define kSignUpCellId   @"SignUpCellId"

@@ -7,11 +7,10 @@
 //
 
 #import "RootViewController.h"
-#import "PagingBenchtopViewController.h"
+#import "BenchtopViewController.h"
 #import "StoreViewController.h"
 #import "BenchtopViewControllerDelegate.h"
 #import "BookCoverViewController.h"
-#import "BookNavigationViewControllerDelegate.h"
 #import "CKBook.h"
 #import "CKUser.h"
 #import "SettingsViewController.h"
@@ -20,7 +19,7 @@
 #import "EventHelper.h"
 #import "RecipeDetailsViewController.h"
 #import "BookNavigationHelper.h"
-#import "BookNavigationStackViewController.h"
+#import "BookNavigationViewController.h"
 #import "BookTitleViewController.h"
 #import "DashboardTutorialViewController.h"
 #import "ImageHelper.h"
@@ -29,12 +28,12 @@
     UIGestureRecognizerDelegate, BookNavigationViewControllerDelegate, DashboardTutorialViewControllerDelegate,
     SettingsViewControllerDelegate>
 
-@property (nonatomic, strong) PagingBenchtopViewController *benchtopViewController;
+@property (nonatomic, strong) BenchtopViewController *benchtopViewController;
 @property (nonatomic, strong) StoreViewController *storeViewController;
 @property (nonatomic, strong) SettingsViewController *settingsViewController;
 @property (nonatomic, strong) WelcomeViewController *welcomeViewController;
 @property (nonatomic, strong) BookCoverViewController *bookCoverViewController;
-@property (nonatomic, strong) BookNavigationStackViewController *bookNavigationViewController;
+@property (nonatomic, strong) BookNavigationViewController *bookNavigationViewController;
 @property (nonatomic, strong) BookTitleViewController *snapshotBookTitleViewController;
 @property (nonatomic, strong) DashboardTutorialViewController *tutorialViewController;
 @property (nonatomic, strong) UIViewController *bookModalViewController;
@@ -229,7 +228,7 @@
         [self updateStatusBarHidden:NO];
         
     } else {
-        self.bookNavigationViewController = [[BookNavigationStackViewController alloc] initWithBook:self.selectedBook
+        self.bookNavigationViewController = [[BookNavigationViewController alloc] initWithBook:self.selectedBook
                                                                                            delegate:self];
         self.bookNavigationViewController.view.hidden = NO;
     }
@@ -780,9 +779,9 @@
     return _storeViewController;
 }
 
-- (PagingBenchtopViewController *)benchtopViewController {
+- (BenchtopViewController *)benchtopViewController {
     if (_benchtopViewController == nil) {
-        _benchtopViewController = [[PagingBenchtopViewController alloc] init];
+        _benchtopViewController = [[BenchtopViewController alloc] init];
         _benchtopViewController.delegate = self;
     }
     return _benchtopViewController;

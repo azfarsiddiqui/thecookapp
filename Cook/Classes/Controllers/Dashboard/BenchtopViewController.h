@@ -11,7 +11,7 @@
 
 @class CKBook;
 
-@interface PagingBenchtopViewController : UIViewController
+@interface BenchtopViewController : UIViewController
 
 @property (nonatomic, assign) id<BenchtopViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL allowDelete;

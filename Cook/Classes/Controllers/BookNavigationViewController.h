@@ -7,14 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BookNavigationViewControllerDelegate.h"
 #import "BookNavigationHelper.h"
 
 @class CKBook;
 @class CKRecipe;
 @class CKRecipePin;
 
-@interface BookNavigationStackViewController : UICollectionViewController
+@protocol BookNavigationViewControllerDelegate <NSObject>
+
+- (void)bookNavigationControllerCloseRequested;
+- (void)bookNavigationControllerCloseRequestedWithBinder;
+- (void)bookNavigationControllerRecipeRequested:(CKRecipe *)recipe;
+- (void)bookNavigationControllerAddRecipeRequestedForPage:(NSString *)page;
+- (void)bookNavigationControllerRefreshedBook:(CKBook *)book;
+- (UIView *)bookNavigationSnapshot;
+- (void)bookNavigationWillPeekDash:(BOOL)isPeek;
+
+@end
+
+@interface BookNavigationViewController : UICollectionViewController
 
 - (id)initWithBook:(CKBook *)book delegate:(id<BookNavigationViewControllerDelegate>)delegate;
 - (void)setActive:(BOOL)active;

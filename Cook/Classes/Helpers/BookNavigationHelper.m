@@ -9,7 +9,7 @@
 #import "BookNavigationHelper.h"
 #import "CKRecipe.h"
 #import "CKRecipePin.h"
-#import "BookNavigationStackViewController.h"
+#import "BookNavigationViewController.h"
 
 @implementation BookNavigationHelper
 
