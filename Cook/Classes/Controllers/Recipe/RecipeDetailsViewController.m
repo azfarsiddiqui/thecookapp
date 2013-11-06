@@ -933,8 +933,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             [self updatePinnedButton];
             [self.likeButton markAsLiked:self.liked];
             
-            self.pinButton.enabled = YES;
-            self.likeButton.enabled = YES;
+            self.pinButton.enabled = self.currentUser ? YES : NO;
+            self.likeButton.enabled = self.currentUser ? YES : NO;
             
         } failure:^(NSError *error) {
             // Ignore error.
@@ -1614,6 +1614,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)pinTapped:(id)sender {
+    if (!self.currentUser) {
+        return;
+    }
+    
     if (self.recipePin) {
         if ([self.book isOwner]) {
             self.pinAlert = [[UIAlertView alloc] initWithTitle:@"Remove Recipe?" message:nil delegate:self
