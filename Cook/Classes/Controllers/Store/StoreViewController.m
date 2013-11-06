@@ -284,6 +284,10 @@
 - (void)showStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
     self.currentStoreCollectionViewController = storeCollectionViewController;
     
+    if (self.searchMode) {
+        return;
+    }
+    
     // Prep the selected one to be faded in.
     storeCollectionViewController.view.alpha = 0.0;
     storeCollectionViewController.view.hidden = NO;
