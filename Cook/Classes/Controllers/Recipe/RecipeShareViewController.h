@@ -20,6 +20,7 @@ typedef enum {
 @protocol RecipeShareViewControllerDelegate <NSObject>
 
 - (void)recipeShareViewControllerCloseRequested;
+- (UIImage *)recipeShareViewControllerImageRequested;
 
 @end
 

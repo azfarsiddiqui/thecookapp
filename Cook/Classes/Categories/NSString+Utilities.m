@@ -75,4 +75,8 @@
     return [[self componentsSeparatedByString:@" "] count];
 }
 
+- (NSString *)CK_mixedCase {
+    return [self capitalizedStringWithLocale:nil];
+}
+
 @end

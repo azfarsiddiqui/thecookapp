@@ -24,5 +24,6 @@
 - (NSString *)CK_truncatedStringToLength:(NSInteger)length;
 - (NSString *)CK_lineBreakFormattedString;
 - (NSInteger)CK_wordCount;
+- (NSString *)CK_mixedCase;
 
 @end

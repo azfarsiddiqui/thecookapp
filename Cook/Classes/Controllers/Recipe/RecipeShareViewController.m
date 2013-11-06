@@ -12,7 +12,7 @@
 #import "CKUser.h"
 #import "AppHelper.h"
 #import "NSString+Utilities.h"
-
+#import "NSString+Utilities.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
@@ -297,6 +297,13 @@
     SLComposeViewController *twitterComposeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
     [twitterComposeController addURL:self.shareURL];
     [twitterComposeController setInitialText:[self shareTextWithURL:NO showTwitter:YES]];
+    
+    // Do we have an image to attach?
+    UIImage *image = [self.delegate recipeShareViewControllerImageRequested];
+    if (image) {
+        [twitterComposeController addImage:image];
+    }
+    
     [twitterComposeController setCompletionHandler:^(SLComposeViewControllerResult result){
         if (result == SLComposeViewControllerResultCancelled)
         {
@@ -426,16 +433,17 @@
 }
 
 - (NSString *)shareTextWithURL:(BOOL)showUrl showTwitter:(BOOL)showTwitter {
-    NSMutableString *shareText = [NSMutableString stringWithFormat:@"Check out %@ recipe",
-                                  [self.recipe isOwner] ? @"my" : @"this"];
+    NSMutableString *shareText = [NSMutableString new];
     if ([self.recipe.name CK_containsText]) {
-        [shareText appendFormat:@" %@", self.recipe.name];
+        [shareText appendString:[self.recipe.name CK_mixedCase]];
+    } else {
+        [shareText appendFormat:@"Check out %@ recipe", [self.recipe isOwner] ? @"my" : @"this"];
     }
     if (showTwitter) {
-        [shareText appendString:@" (via @thecookapp)"];
+        [shareText appendString:@" via @thecookapp"];
     }
     if (showUrl) {
-        [shareText appendFormat:@": \n%@", [self.shareURL absoluteString]];
+        [shareText appendFormat:@"\n%@", [self.shareURL absoluteString]];
     }
     
     return shareText;

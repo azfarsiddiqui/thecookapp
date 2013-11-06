@@ -322,6 +322,14 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [self showShareOverlay:NO];
 }
 
+- (UIImage *)recipeShareViewControllerImageRequested {
+    UIImage *image = nil;
+    if ([self.recipe hasPhotos]) {
+        image = self.imageView.image;
+    }
+    return image;
+}
+
 #pragma mark - CKRecipeSocialViewDelegate methods
 
 - (void)recipeSocialViewTapped {
