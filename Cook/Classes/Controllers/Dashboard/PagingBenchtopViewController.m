@@ -83,7 +83,7 @@
 #define kFollowSection  1
 #define kPagingRate     2.0
 #define kBlendPageWidth 1024.0
-#define kHasSeenUpdateIntro @"HasSeen1.1"
+#define kHasSeenUpdateIntro @"HasSeen1.2"
 #define kContentInsets  (UIEdgeInsets){ 30.0, 25.0, 50.0, 15.0 }
 
 - (void)dealloc {
@@ -1626,7 +1626,7 @@
         blurredImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:blurredImageView];
         
-        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_11"]];
+        UIImageView *introImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_updatescreen_12"]];
         introImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         introImageView.userInteractionEnabled = NO;
         [self.updateIntroView addSubview:introImageView];
