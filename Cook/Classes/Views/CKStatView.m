@@ -8,6 +8,7 @@
 
 #import "CKStatView.h"
 #import "Theme.h"
+#import "DataHelper.h"
 
 @interface CKStatView ()
 
@@ -75,7 +76,7 @@
 
 - (void)updateNumber:(NSUInteger)number {
     self.number = [NSNumber numberWithInteger:number];
-    self.numberLabel.text = [NSString stringWithFormat:@"%d", number];
+    self.numberLabel.text = [DataHelper friendlyDisplayForCount:number];
     [self.numberLabel sizeToFit];
     self.numberLabel.frame = CGRectMake(kContentInsets.left,
                                         self.numberLabel.frame.origin.y,
