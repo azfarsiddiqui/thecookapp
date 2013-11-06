@@ -321,7 +321,15 @@
 - (void)shareEmail
 {
     MFMailComposeViewController *mailDialog = [[MFMailComposeViewController alloc] init];
-    [mailDialog setSubject:[NSString stringWithFormat:@"%@ shared a recipe from Cook", [self.currentUser friendlyName]]];
+    
+    NSMutableString *subject = [NSMutableString new];
+    if (self.currentUser) {
+        [subject appendFormat:@"%@ shared a recipe from Cook", [self.currentUser friendlyName]];
+    } else {
+        [subject appendString:@"A recipe from Cook"];
+    }
+    
+    [mailDialog setSubject:subject];
     [mailDialog setMessageBody:[self shareText] isHTML:NO];
     mailDialog.mailComposeDelegate = self;
     [self presentViewController:mailDialog animated:YES completion:nil];
