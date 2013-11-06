@@ -52,7 +52,7 @@
     
     // Initial TextView height taking into account containing text.
     NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
-    self.textView.text = currentText;
+    self.textView.text = [currentText uppercaseString];
     CGFloat requiredTextViewHeight = [self requiredTextViewHeight];
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
     
@@ -96,40 +96,45 @@
     NSString *newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     BOOL isBackspace = [newString length] < [textView.text length];
     
+    // Disallow text entry if it's over limit and NOT backspace.
     if ([textView.text length] >= self.characterLimit && !isBackspace) {
-        
-        // Disallow text entry if it's over limit and NOT backspace.
         shouldChangeText = NO;
     }
     
-    //If trying to paste in content over char limit, cut off and apply
+    // If trying to paste in content over char limit, cut off and apply
     if (([newString length] > self.characterLimit && !isBackspace)) {
         textView.text = [newString substringToIndex:self.characterLimit];
         [self updateContentSize];
         [self updateInfoLabels];
         return NO;
     }
-    //If trying to add in text with too many lines, reject
-    NSDictionary *fontAttributes;
-    if (self.textViewFont)
-    {
-        fontAttributes = @{NSFontAttributeName : self.textViewFont};
-    } else {
-        fontAttributes = @{NSFontAttributeName : [UIFont fontWithName:@"BrandonGrotesque-Regular" size:40.0]};
+    
+    // Number of lines check.
+    CGFloat requiredHeight = [newString boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX)
+                                                     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                  attributes:@{ NSFontAttributeName : self.textViewFont }
+                                                     context:nil].size.height;
+    
+    // Only add the extra height if it was ended in newline character, to add to the requredHeight.
+    if ([text isEqualToString:@"\n"] && [newString hasSuffix:text]) {
+        DLog(@"+= [%f]", self.textViewFont.pointSize);
+        requiredHeight += self.textViewFont.pointSize;
     }
-    CGFloat requiredHeight = [newString boundingRectWithSize:CGSizeMake(self.textView.frame.size.width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:fontAttributes context:nil].size.height;
-    if ([text isEqualToString:@"\n"])
-    {
-        requiredHeight += self.textView.font.pointSize;
-    }
-    if (self.maxHeight && self.numLines > 0 && !isBackspace && requiredHeight > self.maxHeight)
-    {
+    if (self.maxHeight && self.numLines > 0 && !isBackspace && requiredHeight > self.maxHeight) {
         [self updateInfoLabels];
         return NO;
     }
-    if (shouldChangeText && self.forceUppercase)
-    {
-        textView.text = [newString uppercaseString];
+    
+    // Force uppercase here by replacing the entry into uppercase.
+    if (shouldChangeText && self.forceUppercase) {
+        
+        UITextPosition *beginning = textView.beginningOfDocument;
+        UITextPosition *start = [textView positionFromPosition:beginning offset:range.location];
+        UITextPosition *end = [textView positionFromPosition:start offset:range.length];
+        UITextRange *textRange = [textView textRangeFromPosition:start toPosition:end];
+        
+        // replace the text in the range with the upper case version of the replacement string
+        [textView replaceRange:textRange withText:[text uppercaseString]];
         shouldChangeText = NO;
     }
     
@@ -244,9 +249,10 @@
     
     // Update the scrollView to be above the keyboard area.
     self.scrollView.contentInset = (UIEdgeInsets) { 0.0, 0.0, keyboardFrame.size.height, 0.0 };
-//    NSLog(@"contentInset %@", NSStringFromUIEdgeInsets(self.scrollView.contentInset));
     
-    [self scrollToCursorIfRequired];
+    if (appear) {
+        [self scrollToCursorIfRequired];
+    }
 }
 
 #pragma mark - Private methods
@@ -330,6 +336,9 @@
     textView.font = self.textViewFont;
     textView.textColor = [self editingTextColour];
     textView.textAlignment = self.textAlignment;
+    if (self.forceUppercase) {
+        textView.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
+    }
     textView.delegate = self;
     textView.showsHorizontalScrollIndicator = NO;
     textView.showsVerticalScrollIndicator = NO;
