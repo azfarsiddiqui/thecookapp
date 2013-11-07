@@ -429,12 +429,12 @@
                                                 options:NSStringDrawingUsesLineFragmentOrigin
                                              attributes:paragraphAttributes
                                                 context:nil];
-        self.storyLabel.frame = (CGRect) {
+        self.storyLabel.frame = CGRectIntegral((CGRect) {
             kContentInsets.left + storyInsets.left + floorf((availableSize.width - storyFrame.size.width) / 2.0),
             self.numRecipesStatView.frame.origin.y + kStatsStoryGap,
             storyFrame.size.width,
             storyFrame.size.height
-        };
+        });
     } else {
         self.storyLabel.hidden = YES;
     }

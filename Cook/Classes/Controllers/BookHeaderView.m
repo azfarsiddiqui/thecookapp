@@ -74,12 +74,12 @@
     }
     
     // Anchor the frame at the bottom
-    self.maskedLabel.frame = (CGRect){
+    self.maskedLabel.frame = CGRectIntegral((CGRect){
         floor((self.bounds.size.width - size.width) / 2.0),
         self.bounds.size.height - size.height,
         size.width,
         size.height
-    };
+    });
     self.underlayView.frame = self.maskedLabel.frame;
 }
 

@@ -65,7 +65,7 @@
     }
     
     // Update myself and my dependent views.
-    self.maskedLabel.frame = (CGRect){ 0.0, 0.0, size.width, size.height };
+    self.maskedLabel.frame = CGRectIntegral((CGRect){ 0.0, 0.0, size.width, size.height });
     self.underlayView.frame = self.maskedLabel.frame;
     self.frame = self.maskedLabel.frame;
     

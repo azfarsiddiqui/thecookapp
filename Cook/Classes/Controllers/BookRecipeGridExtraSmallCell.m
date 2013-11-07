@@ -26,12 +26,12 @@
         UIEdgeInsets contentInsets = [self contentInsets];
         CGSize availableSize = [self availableSize];
         CGSize size = [self.titleLabel sizeThatFits:[self availableSize]];
-        self.titleLabel.frame = (CGRect){
+        self.titleLabel.frame = CGRectIntegral((CGRect){
             contentInsets.left + floorf((availableSize.width - size.width) / 2.0),
             floorf((self.statsView.frame.origin.y - size.height) / 2.0),
             size.width,
             size.height
-        };
+        });
         
     } else {
         self.titleLabel.hidden = YES;

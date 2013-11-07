@@ -388,7 +388,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
         CGSize size = [label sizeThatFits:(CGSize){ 200.0, MAXFLOAT }];
         CGRect labelFrame = label.frame;
         labelFrame.size = size;
-        label.frame = labelFrame;
+        label.frame = CGRectIntegral(labelFrame);
         
         // Position the elements.
         CGFloat xOffset = -7.0;
@@ -557,15 +557,18 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     self.titleTextView.attributedText = [self attributedTextForText:title lineSpacing:-15.0
                                                             font:[Theme recipeNameFont]
                                                           colour:[Theme recipeNameColor]
-                                                   textAlignment:NSTextAlignmentCenter shadowColour:[UIColor whiteColor]
+                                                   textAlignment:NSTextAlignmentCenter
+                                                    shadowColour:[UIColor whiteColor]
                                                     shadowOffset:(CGSize){ 0.0, 1.0 }];
     CGSize size = [self.titleTextView sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
-    self.titleTextView.frame = (CGRect){
-        floorf((kWidth - size.width) / 2.0),
+    
+    // Must round so that fractional frames do not truncate text on retina devices.
+    self.titleTextView.frame = CGRectIntegral((CGRect){
+        (kWidth - size.width) / 2.0,
         self.layoutOffset.y,
         size.width,
         size.height
-    };
+    });
 }
 
 - (NSString *)currentTitleValue {
@@ -661,12 +664,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     self.tagsLabel.numberOfLines = 1;
     
     CGSize size = [self.tagsLabel sizeThatFits:(CGSize){ kWidth, MAXFLOAT }];
-    self.tagsLabel.frame = (CGRect){
+    self.tagsLabel.frame = CGRectIntegral((CGRect){
         floorf((kWidth - size.width) / 2.0) > 0 ? floorf((kWidth - size.width) / 2.0) : 0,
         self.layoutOffset.y + 20,
         size.width > kWidth ? kWidth : size.width,
         size.height
-    };
+    });
 }
 
 - (void)updateStory {
@@ -728,12 +731,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSAttributedString *storyDisplay = [self attributedTextForText:story font:[Theme storyFont] colour:[Theme storyColor]];
     self.storyLabel.attributedText = storyDisplay;
     CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
-    self.storyLabel.frame = (CGRect){
+    self.storyLabel.frame = CGRectIntegral((CGRect){
         floorf((self.bounds.size.width - size.width) / 2.0),
         self.storyDividerView.frame.origin.y + self.storyDividerView.frame.size.height + dividerStoryGap,
         size.width,
         size.height
-    };
+    });
 }
 
 - (void)updateContentDivider {
@@ -903,12 +906,12 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
     self.methodLabel.attributedText = methodDisplay;
     CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
-    self.methodLabel.frame = (CGRect){
+    self.methodLabel.frame = CGRectIntegral((CGRect){
         self.bounds.size.width - kMaxRightWidth,
         self.contentOffset.y,
         size.width,
         size.height
-    };
+    });
 }
 
 

@@ -339,7 +339,7 @@
             break;
     }
     
-    return frame;
+    return CGRectIntegral(frame);
 }
 
 - (CGRect)nameFrame {
@@ -361,7 +361,7 @@
         default:
             break;
     }
-    return frame;
+    return CGRectIntegral(frame);
 }
 
 #pragma mark - Text alignments

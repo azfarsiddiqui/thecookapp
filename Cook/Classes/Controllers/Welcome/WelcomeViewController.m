@@ -641,7 +641,7 @@
     label.numberOfLines = 0;
     label.lineBreakMode = NSLineBreakByWordWrapping;
     CGSize size = [label sizeThatFits:availableSize];
-    label.frame = CGRectMake(0.0, 0.0, size.width, size.height);
+    label.frame = CGRectIntegral(CGRectMake(0.0, 0.0, size.width, size.height));
     
     return label;
 }

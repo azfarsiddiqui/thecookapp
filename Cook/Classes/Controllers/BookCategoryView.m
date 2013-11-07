@@ -85,10 +85,10 @@
     }
     
     // Set the frame in motion.
-    self.maskedLabel.frame = CGRectMake(floorf((self.bounds.size.width - size.width) / 2.0),
-                                        floorf((self.bounds.size.height - size.height) / 2.0),
-                                        size.width,
-                                        size.height);
+    self.maskedLabel.frame = CGRectIntegral(CGRectMake(floorf((self.bounds.size.width - size.width) / 2.0),
+                                                       floorf((self.bounds.size.height - size.height) / 2.0),
+                                                       size.width,
+                                                       size.height));
     self.overlayView.frame = self.maskedLabel.frame;
 }
 

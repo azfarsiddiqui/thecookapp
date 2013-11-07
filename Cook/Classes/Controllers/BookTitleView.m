@@ -94,7 +94,7 @@
     size.width += kLabelInsets.left + kLabelInsets.right;
     size.height += kLabelInsets.top + kLabelInsets.bottom;
     
-    self.maskedLabel.frame = (CGRect){ 0.0, 0.0, size.width, size.height };
+    self.maskedLabel.frame = CGRectIntegral((CGRect){ 0.0, 0.0, size.width, size.height });
     self.frame = self.maskedLabel.frame;
     
     // Dark underlay.

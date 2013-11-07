@@ -95,8 +95,8 @@
                 break;
             }
             
-            ingredientsLabel.frame = (CGRect){ 0.0, self.layoutOffset, self.maxSize.width, size.height };
-            self.layoutOffset += size.height;
+            ingredientsLabel.frame = CGRectIntegral((CGRect){ 0.0, self.layoutOffset, self.maxSize.width, size.height });
+            self.layoutOffset += ingredientsLabel.frame.size.height;
             if (ingredientIndex < [ingredients count] - 1) {
                 self.layoutOffset += self.compact ? kCompactRowGap : kRowGap;
             }

@@ -102,11 +102,11 @@
     CGSize labelSize = [self.label sizeThatFits:self.availableBounds];
     
     // Update own frame.
-    self.label.frame = CGRectMake(kInsets.left, kInsets.top, labelSize.width, labelSize.height);
-    self.frame = CGRectMake(0.0,
-                            0.0,
-                            kInsets.left + labelSize.width + kInsets.right,
-                            kInsets.top + labelSize.height + kInsets.bottom);
+    self.label.frame = CGRectIntegral(CGRectMake(kInsets.left, kInsets.top, labelSize.width, labelSize.height));
+    self.frame = CGRectIntegral(CGRectMake(0.0,
+                                           0.0,
+                                           kInsets.left + labelSize.width + kInsets.right,
+                                           kInsets.top + labelSize.height + kInsets.bottom));
     
     // Redraw.
     [self setNeedsDisplay];

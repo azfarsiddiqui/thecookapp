@@ -41,7 +41,7 @@
     
     frame.size.width = size.width;
     frame.size.height = size.height;
-    self.titleLabel.frame = frame;
+    self.titleLabel.frame = CGRectIntegral(frame);
 }
 
 - (void)updateIngredients {
