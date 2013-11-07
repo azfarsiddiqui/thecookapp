@@ -22,6 +22,7 @@ NSString *const kUserModelName                  = @"_User";
 NSString *const kUserAttrDefaultNameValue       = @"Your Name";
 NSString *const kUserModelForeignKeyName        = @"user";
 NSString *const kUserAttrFacebookId             = @"facebookId";
+NSString *const kUserAttrFacebookEmail          = @"facebookEmail";
 NSString *const kUserAttrAdmin                  = @"admin";
 NSString *const kUserAttrBookSuggestions        = @"suggestedBooks";
 NSString *const kUserAttrFacebookFriends        = @"facebookFriends";

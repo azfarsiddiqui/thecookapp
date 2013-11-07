@@ -27,6 +27,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 
 @property (nonatomic, strong) PFUser *parseUser;
 @property (nonatomic, copy) NSString *facebookId;
+@property (nonatomic, strong) NSString *facebookEmail;
 @property (nonatomic, readonly) BOOL admin;
 @property (nonatomic, strong) NSString *firstName;
 @property (nonatomic, strong) NSString *lastName;

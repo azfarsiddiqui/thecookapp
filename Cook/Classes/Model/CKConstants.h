@@ -22,6 +22,7 @@ extern NSString *const kUserModelName;
 extern NSString *const kUserAttrDefaultNameValue;
 extern NSString *const kUserModelForeignKeyName;
 extern NSString *const kUserAttrFacebookId;
+extern NSString *const kUserAttrFacebookEmail;
 extern NSString *const kUserAttrBookSuggestions;
 extern NSString *const kUserAttrAdmin;
 extern NSString *const kUserAttrFacebookFriends;

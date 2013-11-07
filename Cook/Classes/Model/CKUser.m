@@ -54,7 +54,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     
     // Go ahead and link this user via Facebook.
     DLog(@"Linking user with facebook %@", self);
-    [PFFacebookUtils logInWithPermissions:nil block:^(PFUser *user, NSError *error) {
+    [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
         if (!user) {
             if (!error) {
                 loginFailureBlock([CKModel errorWithCode:kCKLoginCancelledErrorCode
@@ -589,6 +589,14 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseObject objectForKey:kUserAttrEmail];
 }
 
+- (void)setFacebookEmail:(NSString *)facebookEmail {
+    [self.parseObject setObject:facebookEmail forKey:kUserAttrFacebookEmail];
+}
+
+- (NSString *)facebookEmail {
+    return [self.parseObject objectForKey:kUserAttrFacebookEmail];
+}
+
 - (void)setTheme:(DashTheme)theme {
     [self.parseObject setObject:@(theme) forKey:kUserAttrTheme];
 }
@@ -652,6 +660,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
             currentUser.facebookId = [userData objectForKey:@"id"];
             currentUser.firstName = userData.first_name;
             currentUser.lastName = userData.last_name;
+            
+            // Facebook email if given.
+            NSString *facebookEmail = [userData objectForKey:@"email"];
+            if ([facebookEmail length] > 0) {
+                currentUser.facebookEmail = facebookEmail;
+            }
             
             // Store the facebook friends ids.
             [currentUser.parseUser addUniqueObjectsFromArray:friendIds forKey:kUserAttrFacebookFriends];
