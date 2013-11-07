@@ -55,6 +55,7 @@
 @property (nonatomic, strong) NSString *updatedPage;
 
 @property (nonatomic, assign) BOOL ownBook;
+@property (nonatomic, assign) BOOL fullscreenMode;
 
 // To keep track of scroll direction.
 @property (nonatomic, assign) CGPoint startContentOffset;
@@ -79,6 +80,7 @@
         self.ownBook = [book isOwner];
         self.page = page;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
+        self.fullscreenMode = NO;
     }
     return self;
 }
@@ -490,9 +492,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
     
-    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
-    panGesture.delegate = self;
-    [self.view addGestureRecognizer:panGesture];
+    // Register fullscreen mode panning.
+    if (self.fullscreenMode) {
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+        panGesture.delegate = self;
+        [self.view addGestureRecognizer:panGesture];
+    }
 }
 
 - (void)initOverlay {
