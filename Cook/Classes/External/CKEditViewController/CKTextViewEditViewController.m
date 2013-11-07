@@ -52,7 +52,7 @@
     
     // Initial TextView height taking into account containing text.
     NSString *currentText = self.clearOnFocus ? @"" : [self currentTextValue];
-    self.textView.text = [currentText uppercaseString];
+    self.textView.text = self.forceUppercase ? [currentText uppercaseString] : currentText;
     CGFloat requiredTextViewHeight = [self requiredTextViewHeight];
     CGFloat minHeight = textViewAdjustments.top + self.minHeight + textViewAdjustments.bottom;
     
