@@ -774,7 +774,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)showOrHideNavigationViewWithContentOffset {
-    if (self.disableInformScrollOffset) {
+    if (self.disableInformScrollOffset || !self.fullscreenMode) {
         return;
     }
     
