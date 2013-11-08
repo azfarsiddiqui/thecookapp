@@ -396,8 +396,13 @@
 - (void)loginLogoutTapped:(id)sender {
     
     if ([CKUser isLoggedIn]) {
+  
+// HERE FOR DEV TESTING OF UNLINKING FB user.
+//        [PFFacebookUtils unlinkUser:[CKUser currentUser].parseUser];
+//
         
         [CKUser logoutWithCompletion:^{
+            
             // Post logout.
             [EventHelper postLogout];
         } failure:^(NSError *error) {
