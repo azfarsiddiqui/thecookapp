@@ -467,6 +467,9 @@
     // Apply blurring/tinting offset to content image.
     BookContentImageView *contentHeaderView = [self.pageHeaderViews objectForKey:page];
     [contentHeaderView applyOffset:offset];
+    
+    // Show or hide navigation view.
+    // [self showOrHideNavigationViewWithOffset:offset page:page];
 }
 
 - (BOOL)bookContentViewControllerAddSupportedForPage:(NSString *)page {
@@ -1692,7 +1695,18 @@
 }
 
 - (void)showNavigationView:(BOOL)show slide:(BOOL)slide {
-    if (self.bookNavigationView && self.bookNavigationView.hidden == show && !self.navBarAnimating) {
+    
+    // Show/hide frames.
+    CGRect showFrame = (CGRect){
+        0.0, 0.0, self.bookNavigationView.frame.size.width, self.bookNavigationView.frame.size.height
+    };
+    CGRect hideFrame = (CGRect){
+        0.0, -self.bookNavigationView.frame.size.height, self.bookNavigationView.frame.size.width, self.bookNavigationView.frame.size.height
+    };
+    
+    if (self.bookNavigationView
+        && !CGRectEqualToRect(self.bookNavigationView.frame, show ? showFrame : hideFrame)
+        && !self.navBarAnimating) {
         self.navBarAnimating = YES;
         
         if (show) {
@@ -1701,7 +1715,7 @@
         }
         
         if (!slide) {
-            self.bookNavigationView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.bookNavigationView.frame.size.height);
+            self.bookNavigationView.frame = show ? showFrame : hideFrame;
         } else {
             self.bookNavigationView.alpha = 1.0;
         }
@@ -1714,7 +1728,7 @@
                             options:show ? UIViewAnimationCurveEaseIn : UIViewAnimationOptionCurveEaseOut
                          animations:^{
                              if (slide) {
-                                 self.bookNavigationView.transform = show ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0.0, -self.bookNavigationView.frame.size.height);
+                                 self.bookNavigationView.frame = show ? showFrame : hideFrame;
                              } else {
                                  self.bookNavigationView.alpha = show ? 1.0 : 0.0;
                              }
@@ -1730,6 +1744,31 @@
 
 - (NSInteger)contentStartSection {
     return kIndexSection + 1;
+}
+
+- (void)showOrHideNavigationViewWithOffset:(CGFloat)offset page:(NSString *)page {
+    DLog(@">>>> offset[%f] <<<<", offset);
+    CGRect frame = self.bookNavigationView.frame;
+
+    CGPoint scrollOffset = [[self.contentControllerOffsets objectForKey:page] CGPointValue];
+    
+    CGFloat translatedOffset = scrollOffset.y - offset;
+    if (scrollOffset.y > offset && frame.origin.y == 0.0) {
+        translatedOffset = scrollOffset.y - offset;
+    }
+//    if (offset < scrollOffset.y && frame.origin.y == -frame.size.height) {
+//        translatedOffset = -frame.size.height;
+//    }
+    DLog(@">>> scrollOffset[%f] translatedOffset[%f]", scrollOffset.y, translatedOffset);
+    
+    // Cap the translations.
+    translatedOffset = MAX(translatedOffset, -frame.size.height);
+    translatedOffset = MIN(translatedOffset, 0.0);
+    
+    frame.origin.y = translatedOffset;
+    DLog(@">>> offset[%f] translatedOffset[%f]", offset, translatedOffset);
+    
+    self.bookNavigationView.frame = frame;
 }
 
 @end

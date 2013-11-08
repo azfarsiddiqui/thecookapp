@@ -342,12 +342,10 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
-        [self showOrHideNavigationViewWithContentOffset];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self showOrHideNavigationViewWithContentOffset];
 }
 
 #pragma mark - UICollectionViewDelegate methods
@@ -423,19 +421,6 @@
     
 }
 
-#pragma mark - UIGestureRecognizerDelegate methods
-
-- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)panGestureRecognizer {
-    
-    CGPoint translation = [panGestureRecognizer translationInView:self.view];
-    return fabs(translation.y) > fabs(translation.x);
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
 #pragma mark - Properties
 
 - (BookContentTitleView *)contentTitleView {
@@ -491,13 +476,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             forCellWithReuseIdentifier:[self cellIdentifierForGridType:BookContentGridTypeExtraSmall]];
     
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kContentHeaderId];
-    
-    // Register fullscreen mode panning.
-    if (self.fullscreenMode) {
-        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
-        panGesture.delegate = self;
-        [self.view addGestureRecognizer:panGesture];
-    }
 }
 
 - (void)initOverlay {
@@ -515,7 +493,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void)applyScrollingEffectsOnCategoryView {
-    
     if (!self.disableInformScrollOffset) {
         CGRect visibleFrame = [ViewHelper visibleFrameForCollectionView:self.collectionView];
         [self.delegate bookContentViewControllerScrolledOffset:visibleFrame.origin.y page:self.page
@@ -758,31 +735,5 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }];
 }
 
-- (void)panned:(UIPanGestureRecognizer *)panGesture {
-    CGPoint translation = [panGesture translationInView:self.view];
-    if (panGesture.state == UIGestureRecognizerStateBegan || panGesture.state == UIGestureRecognizerStateChanged) {
-        [self showOrHideNavigationViewWithTranslation:translation];
-    }
-}
-
-- (void)showOrHideNavigationViewWithTranslation:(CGPoint)translation {
-    if (self.disableInformScrollOffset || translation.y == 0) {
-        return;
-    }
-    BOOL scrollingDown = (translation.y < 0);
-    [self.delegate bookContentViewControllerShowNavigationView:!scrollingDown];
-}
-
-- (void)showOrHideNavigationViewWithContentOffset {
-    if (self.disableInformScrollOffset || !self.fullscreenMode) {
-        return;
-    }
-    
-    // If content offset is half way down the current page.
-    CGFloat showOffset = floorf(self.view.bounds.size.height / 2.0);
-    if (self.collectionView.contentOffset.y <= showOffset) {
-        [self.delegate bookContentViewControllerShowNavigationView:YES];
-    }
-}
 
 @end
