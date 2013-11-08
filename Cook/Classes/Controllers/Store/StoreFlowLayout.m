@@ -77,8 +77,6 @@
 
 - (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     UICollectionViewLayoutAttributes *finalAttributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
-    DLog(@"FINAL ATTRIBUTES %@", finalAttributes);
-    DLog(@"DELETED INDEX PATHS %@", self.deletedIndexPaths);
     if ([self.deletedIndexPaths containsObject:itemIndexPath]) {
         finalAttributes.alpha = 0.0;
         finalAttributes.transform3D = CATransform3DScale(finalAttributes.transform3D, 0.1, 0.1, 0.0);
