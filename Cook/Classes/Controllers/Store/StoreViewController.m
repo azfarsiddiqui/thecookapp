@@ -259,7 +259,7 @@
         } else {
             
             // Fade between controllers.
-            [UIView animateWithDuration:0.2
+            [UIView animateWithDuration:0.1
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{

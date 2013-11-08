@@ -15,18 +15,20 @@
 #import "CKBookCoverView.h"
 #import "ViewHelper.h"
 #import "AppHelper.h"
-#import "SocialMediaActionHeader.h"
 #import "StoreFlowLayout.h"
 #import "StoreBookCoverViewCell.h"
+#import "CKContentContainerCell.h"
+#import "FacebookSuggestButtonView.h"
 
-@interface FriendsStoreCollectionViewController () <UICollectionViewDelegateFlowLayout>
+@interface FriendsStoreCollectionViewController () <UICollectionViewDelegateFlowLayout, FacebookSuggestButtonViewDelegate>
+
+@property (nonatomic, strong) FacebookSuggestButtonView *facebookButtonView;
 
 @end
 
 @implementation FriendsStoreCollectionViewController
 
-#define kFacebookSection 1
-#define kHeaderIdentifier @"SocialHeader"
+#define kFacebookCellId     @"FacebookCellId"
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
     if (friendsBook) {
@@ -38,62 +40,61 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.collectionView registerClass:[SocialMediaActionHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderIdentifier];
+    [self.collectionView registerClass:[CKContentContainerCell class] forCellWithReuseIdentifier:kFacebookCellId];
 }
 
 - (void)loadData {
     [super loadData];
-    [CKBook friendsBooksForUser:[CKUser currentUser]
-                         success:^(NSArray *featuredBooks) {
-                             self.books = [NSMutableArray arrayWithArray:featuredBooks];
-                             [self fetchFacebookFriendBooks];
-                         }
-                         failure:^(NSError *error) {
-                             DLog(@"Error: %@", [error localizedDescription]);
-                             [self showNoConnectionCardIfApplicableError:error];
-                         }];
+    [CKBook friendsAndSuggestedBooksForUser:[CKUser currentUser]
+                                    success:^(NSArray *friendsSuggestedBooks) {
+                                        [self loadBooks:friendsSuggestedBooks];
+                                    }
+                                    failure:^(NSError *error) {
+                                        DLog(@"Error: %@", [error localizedDescription]);
+                                        [self showNoConnectionCardIfApplicableError:error];
+                                    }];
+}
+
+- (void)insertBooks {
+    
+    NSMutableArray *insertIndexPaths = [NSMutableArray arrayWithArray:[self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
+        return [NSIndexPath indexPathForItem:index inSection:0];
+    }]];
+    
+    if (self.books && ![[CKUser currentUser] isFacebookUser]) {
+        [insertIndexPaths addObject:[NSIndexPath indexPathForItem:[insertIndexPaths count] inSection:0]];
+    }
+    
+    [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
 }
 
 - (void)signInFacebook {
     CKUser *currentUser = [CKUser currentUser];
-    if (!currentUser.facebookId)
-    {
+    if (![currentUser isFacebookUser]) {
         [CKUser attachFacebookToCurrentUserWithSuccess:^{
-            [self fetchFacebookFriendBooks];
+            
+            [self.facebookButtonView enableActivity:NO];
+            [self unloadDataCompletion:^{
+                [self loadData];
+            }];
+            
         } failure:^(NSError *error) {
-            [self errorInFriendFetchWithMessage:@"There was an error in signing into Facebook"];
+            [self.facebookButtonView enableActivity:NO];
+            [self errorInFriendFetchWithTitle:@"Couldn't Add" message:@"Facebook account has already been registered."];
         }];
-    } else
-    {
-        [self fetchFacebookFriendBooks];
     }
 }
 
-- (void)fetchFacebookFriendBooks {
-    [CKBook suggestedBooksForUser:[CKUser currentUser] success:^(NSArray *results) {
-        //Mark books as suggested
-        [results enumerateObjectsUsingBlock:^(CKBook *book, NSUInteger idx, BOOL *stop) {
-            book.status = kBookStatusFBSuggested;
-        }];
-        //Add results to self.books and load
-        [self.books addObjectsFromArray:results];
-        [self loadBooks:self.books];
-    } failure:^(NSError *error) {
-        [self errorInFriendFetchWithMessage:@"There was an error in getting your friends from Facebook"];
-    }];
-}
-
-- (BOOL)featuredMode {
-    return NO;
-}
-
 - (void)showNoBooksCard {
-    [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
-                                             view:self.collectionView show:YES center:self.collectionView.center];
+    CKUser *currentUser = [CKUser currentUser];
+    if ([currentUser isFacebookUser]) {
+        [[CardViewHelper sharedInstance] showCardText:@"NO FRIENDS" subtitle:@"USE SEARCH TO FIND PEOPLE YOU KNOW"
+                                                 view:self.collectionView show:YES center:self.collectionView.center];
+    }
 }
 
-- (void)errorInFriendFetchWithMessage:(NSString *)message {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+- (void)errorInFriendFetchWithTitle:(NSString *)title message:(NSString *)message {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
                                                         message:message
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
@@ -101,40 +102,86 @@
     [alertView show];
 }
 
-#pragma mark - CollectionView delegate and datasource method overrides
+#pragma mark - FacebookSuggestionButtonViewDelegate methods
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    //Hide first section header, other sections are attach to Facebook
-    if (section == kStoreSection)
-    {
-        return CGSizeZero;
+- (void)facebookSuggestButtonViewTapped {
+    [self.facebookButtonView enableActivity:YES];
+    [self signInFacebook];
+}
+
+#pragma mark - UICollectionViewDataSource methods
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    NSInteger numItems = [super collectionView:collectionView numberOfItemsInSection:section];
+    
+    // Extra facebook button if not linked to facebook.
+    if (self.dataLoaded && ![[CKUser currentUser] isFacebookUser]) {
+        numItems += 1;
     }
-    else
-        return CGSizeMake(self.collectionView.frame.size.width - 240, self.collectionView.frame.size.height);
+    
+    return numItems;
 }
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    if (![CKUser currentUser].facebookId && [self.books count] == 0)
-        return 2; //Only show sign-in to facebook section header if not Facebook and no friends
-    else
-        return 1;
+#pragma mark - UICollectionViewDelegateFlowLayout methods
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+referenceSizeForHeaderInSection:(NSInteger)section {
+    
+    CGSize headerSize = CGSizeZero;
+    
+    CKUser *currentUser = [CKUser currentUser];
+    if (self.dataLoaded && ([self.books count] == 0) && ![currentUser isFacebookUser]) {
+        headerSize = (CGSize) {
+            floorf((collectionView.bounds.size.width - self.facebookButtonView.frame.size.width) / 2.0) - floorf(self.facebookButtonView.frame.size.width / 2.0) + 18,
+            0.0
+        };
+    }
+    
+    return headerSize;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    if (section == kStoreSection)
-        return [self.books count];
-    else
-        return 0;
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == [self.books count]) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    SocialMediaActionHeader *headerView = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:kHeaderIdentifier forIndexPath:indexPath];
-    headerView.completionBlock = ^{
-        [self signInFacebook];
-        //Check if already signed in, do a refresh of friends books if so
-    };
-    return headerView;
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.item == [self.books count]) {
+        return self.facebookButtonView.frame.size;
+    } else {
+        return [StoreBookCoverViewCell cellSize];
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionViewCell *cell = nil;
+    if (indexPath.item == [self.books count]) {
+        
+        CKContentContainerCell *facebookCell = (CKContentContainerCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kFacebookCellId
+                                                                                                                   forIndexPath:indexPath];
+        [facebookCell configureContentView:self.facebookButtonView];
+        cell = facebookCell;
+        
+    } else {
+        cell = [super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+    }
+    return cell;
+}
+
+#pragma mark - Properties
+
+- (FacebookSuggestButtonView *)facebookButtonView {
+    if (!_facebookButtonView) {
+        _facebookButtonView = [[FacebookSuggestButtonView alloc] initWithDelegate:self];
+    }
+    return _facebookButtonView;
 }
 
 @end

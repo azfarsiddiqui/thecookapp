@@ -697,6 +697,7 @@
     } else {
         [self updateRequestButtonText:@"SENDING" activity:YES enabled:NO];
     }
+    
     [self.currentUser requestFriend:self.book.user
                          completion:^{
                              if (self.pendingAcceptance) {
@@ -713,6 +714,12 @@
                                                    icon:nil
                                                 enabled:NO target:nil selector:nil];
                              }
+                             
+                             // Inform delegate that book has been followed/updated.
+                             if ([self.delegate respondsToSelector:@selector(bookSummaryViewUserFriendActioned)]) {
+                                 [self.delegate bookSummaryViewUserFriendActioned];
+                             }
+                             
                          }
                             failure:^(NSError *error) {
                                 [self updateButtonText:@"UNABLE TO SEND" activity:NO icon:nil enabled:NO target:nil selector:nil];
@@ -721,6 +728,7 @@
 
 - (void)sendUnfriendRequest {
     [self updateRequestButtonText:@"REMOVING" activity:YES enabled:NO];
+    
     [self.currentUser ignoreRemoveFriendRequestFrom:self.book.user
                                          completion:^{
                                              
@@ -731,6 +739,11 @@
                                              [self updateButtonText:@"ADD FRIEND" activity:NO
                                                                icon:nil
                                                             enabled:YES target:self selector:@selector(requestTapped:)];
+                                             
+                                             // Inform delegate that book has been followed/updated.
+                                             if ([self.delegate respondsToSelector:@selector(bookSummaryViewUserFriendActioned)]) {
+                                                 [self.delegate bookSummaryViewUserFriendActioned];
+                                             }
                                              
                                          } failure:^(NSError *error) {
                                              

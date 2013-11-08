@@ -213,6 +213,20 @@
     return CKActivityIndicatorViewStyleTinyDark;
 }
 
+#pragma mark - Background/Foreground activity.
+
+- (void)pauseActivityIfRequired {
+    if (self.activityView.superview) {
+        [self.activityView stopAnimating];
+    }
+}
+
+- (void)resumeActivityIfRequired {
+    if (self.activityView.superview) {
+        [self.activityView startAnimating];
+    }
+}
+
 #pragma mark - Properties
 
 - (UIButton *)button {
@@ -290,18 +304,6 @@
 
 - (void)holdLabel:(BOOL)hold {
     self.textLabel.alpha = hold ? 0.7 : 1.0;
-}
-
-- (void)pauseActivityIfRequired {
-    if (self.activityView.superview) {
-        [self.activityView stopAnimating];
-    }
-}
-
-- (void)resumeActivityIfRequired {
-    if (self.activityView.superview) {
-        [self.activityView startAnimating];
-    }
 }
 
 @end

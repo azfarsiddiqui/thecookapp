@@ -16,14 +16,15 @@
 typedef void(^BookRecipesSuccessBlock)(PFObject *parseBook, NSArray *recipes, NSArray *likedRecipes, NSArray *recipePins,
                                        NSDate *bookLastAccessedDate);
 typedef void(^FollowBooksSuccessBlock)(NSArray *followBooks, NSDictionary *followBookUpdates);
+typedef void(^FriendsAndSuggestedBooksSuccessBlock)(NSArray *friendsBooks, NSArray *suggestedBooks);
 typedef void(^BookInfoSuccessBlock)(NSUInteger followCount, BOOL areFriends, BOOL followed, NSUInteger recipeCount,
                                     NSUInteger privateRecipesCount, NSUInteger friendsRecipesCount,
                                     NSUInteger publicRecipesCount);
 
 typedef enum {
-    kBookStatusFollowed = 0,
-    kBookStatusFBSuggested,
-    kBookStatusNone
+    kBookStatusNone,
+    kBookStatusFollowed,
+    kBookStatusFBSuggested
 } BookStatus;
 
 @interface CKBook : CKModel
@@ -65,6 +66,7 @@ typedef enum {
 + (void)createBookForUser:(CKUser *)user succeess:(GetObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)followBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)friendsBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)friendsAndSuggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)suggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure;
 - (void)addFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;

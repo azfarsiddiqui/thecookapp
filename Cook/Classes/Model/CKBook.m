@@ -237,6 +237,44 @@
     
 }
 
++ (void)friendsAndSuggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success
+                                failure:(ObjectFailureBlock)failure {
+    
+    // No friends for guest-user.
+    if (!user) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            success(nil);
+        });
+        return;
+    }
+    
+    [PFCloud callFunctionInBackground:@"friendsAndSuggestedBooks"
+                       withParameters:@{}
+                                block:^(NSDictionary *booksResults, NSError *error) {
+                                    
+                                    if (!error) {
+                                        
+                                        // Combine the friends and suggested books.
+                                        NSArray *friendsBooks = [booksResults objectForKey:@"friends"];
+                                        NSMutableArray *friendsSuggestedBooks = [NSMutableArray arrayWithArray:friendsBooks];
+                                        NSArray *suggestedBooks = [booksResults objectForKey:@"suggested"];
+                                        [friendsSuggestedBooks addObjectsFromArray:suggestedBooks];
+                                        
+                                        // Annotate for following and suggested status.
+                                        [self annotateFollowedAndSuggestedForBooks:friendsSuggestedBooks
+                                                                              user:user
+                                                                           success:^(NSArray *annotatedBooks) {
+                                                                               success(annotatedBooks);
+                                                                           }
+                                                                            failure:^(NSError *error) {
+                                                                                failure(error);
+                                                                            }];
+                                    } else {
+                                        DLog(@"Error loading friends/suggested books: %@", [error localizedDescription]);
+                                    }
+                                }];
+}
+
 + (void)suggestedBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     // No friends for guest-user.
@@ -820,6 +858,58 @@
             failure(error);
         }
         
+        
+    }];
+}
+
++ (void)annotateFollowedAndSuggestedForBooks:(NSArray *)parseBooks user:(CKUser *)user
+                                     success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    // Existing follows.
+    __block CKUser *currentUser = user;
+    PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
+    [followsQuery whereKey:kUserModelForeignKeyName equalTo:currentUser.parseUser];
+    [followsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error)  {
+        
+        if (!error) {
+            
+            // Collect the object ids.
+            NSArray *objectIds = [parseFollows collect:^id(PFObject *parseFollow) {
+                PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
+                return parseBook.objectId;
+            }];
+            
+            // Get facebookFriends objectIds.
+            NSArray *facebookFriends = currentUser.facebookFriends;
+            
+            // Return CKBook model objects.
+            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
+                CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
+                
+                // Book followed?
+                BOOL isFollowed = [objectIds containsObject:book.objectId];
+                
+                // Facebook friend?
+                BOOL isFacebookFriend = [facebookFriends containsObject:book.user.facebookId];
+                
+                if (isFollowed) {
+                    book.status = kBookStatusFollowed;
+                } else if (isFacebookFriend) {
+                    book.status = kBookStatusFBSuggested;
+                } else {
+                    book.status = kBookStatusNone;
+                }
+                
+                return book;
+            }];
+            
+            success(books);
+            
+        } else {
+            
+            DLog(@"Error annotating followed/suggested books by follows: %@", [error localizedDescription]);
+            failure(error);
+        }
         
     }];
 }

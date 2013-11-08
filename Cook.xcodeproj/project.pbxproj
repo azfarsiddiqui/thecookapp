@@ -209,6 +209,10 @@
 		7640CE111784095900873073 /* cook_customise_colour_picker_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7640CE0F1784095900873073 /* cook_customise_colour_picker_gray@2x.png */; };
 		7640CE141784096800873073 /* cook_customise_colour_bar_neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 7640CE121784096800873073 /* cook_customise_colour_bar_neutral.png */; };
 		7640CE151784096800873073 /* cook_customise_colour_bar_neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7640CE131784096800873073 /* cook_customise_colour_bar_neutral@2x.png */; };
+		76411334182C7FFA00366512 /* cook_library_btn_facebook_blank.png in Resources */ = {isa = PBXBuildFile; fileRef = 76411332182C7FFA00366512 /* cook_library_btn_facebook_blank.png */; };
+		76411335182C7FFA00366512 /* cook_library_btn_facebook_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76411333182C7FFA00366512 /* cook_library_btn_facebook_blank@2x.png */; };
+		76411338182C86C700366512 /* CKContentContainerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76411337182C86C700366512 /* CKContentContainerCell.m */; };
+		764113D7182C9D9F00366512 /* FacebookSuggestButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 764113D5182C9D9F00366512 /* FacebookSuggestButtonView.m */; };
 		76424AD1171D317B0086231F /* CKTextViewEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76424AD0171D317B0086231F /* CKTextViewEditViewController.m */; };
 		7643B8C916D7037B001A2452 /* TTTAddressFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8BC16D7037A001A2452 /* TTTAddressFormatter.m */; };
 		7643B8CA16D7037B001A2452 /* TTTArrayFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7643B8BE16D7037B001A2452 /* TTTArrayFormatter.m */; };
@@ -735,7 +739,6 @@
 		76A10AC217CB02680051751F /* cook_login_btn_signup_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A10AC017CB02680051751F /* cook_login_btn_signup_white.png */; };
 		76A10AC317CB02680051751F /* cook_login_btn_signup_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A10AC117CB02680051751F /* cook_login_btn_signup_white@2x.png */; };
 		76A10AD917CB09680051751F /* SignUpBookCoverViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A10AD817CB09680051751F /* SignUpBookCoverViewCell.m */; };
-		76A10ADC17CB11F00051751F /* FacebookSignInButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A10ADB17CB11F00051751F /* FacebookSignInButtonView.m */; };
 		76A10ADF17CB19CE0051751F /* CKFacebookSignInButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A10ADE17CB19CE0051751F /* CKFacebookSignInButtonView.m */; };
 		76A269DB175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D7175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png */; };
 		76A269DC175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76A269D8175F0A0C00D7ACA3 /* cook_book_titledivider_quote@2x.png */; };
@@ -1618,6 +1621,12 @@
 		7640CE0F1784095900873073 /* cook_customise_colour_picker_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_colour_picker_gray@2x.png"; sourceTree = "<group>"; };
 		7640CE121784096800873073 /* cook_customise_colour_bar_neutral.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_customise_colour_bar_neutral.png; sourceTree = "<group>"; };
 		7640CE131784096800873073 /* cook_customise_colour_bar_neutral@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_colour_bar_neutral@2x.png"; sourceTree = "<group>"; };
+		76411332182C7FFA00366512 /* cook_library_btn_facebook_blank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_library_btn_facebook_blank.png; sourceTree = "<group>"; };
+		76411333182C7FFA00366512 /* cook_library_btn_facebook_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_library_btn_facebook_blank@2x.png"; sourceTree = "<group>"; };
+		76411336182C86C700366512 /* CKContentContainerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKContentContainerCell.h; sourceTree = "<group>"; };
+		76411337182C86C700366512 /* CKContentContainerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKContentContainerCell.m; sourceTree = "<group>"; };
+		764113D5182C9D9F00366512 /* FacebookSuggestButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookSuggestButtonView.m; sourceTree = "<group>"; };
+		764113D6182C9D9F00366512 /* FacebookSuggestButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookSuggestButtonView.h; sourceTree = "<group>"; };
 		76424ACF171D317B0086231F /* CKTextViewEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKTextViewEditViewController.h; sourceTree = "<group>"; };
 		76424AD0171D317B0086231F /* CKTextViewEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKTextViewEditViewController.m; sourceTree = "<group>"; };
 		7643B8BB16D7037A001A2452 /* TTTAddressFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAddressFormatter.h; sourceTree = "<group>"; };
@@ -2230,8 +2239,6 @@
 		76A10AC117CB02680051751F /* cook_login_btn_signup_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_login_btn_signup_white@2x.png"; sourceTree = "<group>"; };
 		76A10AD717CB09680051751F /* SignUpBookCoverViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpBookCoverViewCell.h; sourceTree = "<group>"; };
 		76A10AD817CB09680051751F /* SignUpBookCoverViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpBookCoverViewCell.m; sourceTree = "<group>"; };
-		76A10ADA17CB11F00051751F /* FacebookSignInButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookSignInButtonView.h; sourceTree = "<group>"; };
-		76A10ADB17CB11F00051751F /* FacebookSignInButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookSignInButtonView.m; sourceTree = "<group>"; };
 		76A10ADD17CB19CE0051751F /* CKFacebookSignInButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKFacebookSignInButtonView.h; sourceTree = "<group>"; };
 		76A10ADE17CB19CE0051751F /* CKFacebookSignInButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKFacebookSignInButtonView.m; sourceTree = "<group>"; };
 		76A269D7175F0A0C00D7ACA3 /* cook_book_titledivider_quote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_book_titledivider_quote.png; sourceTree = "<group>"; };
@@ -4541,6 +4548,8 @@
 				F6C6773318237F30000897A6 /* cook_library_btn_facebook@2x.png */,
 				F6C6772C182371B0000897A6 /* cook_library_icon_facebook.png */,
 				F6C6772D182371B0000897A6 /* cook_library_icon_facebook@2x.png */,
+				76411332182C7FFA00366512 /* cook_library_btn_facebook_blank.png */,
+				76411333182C7FFA00366512 /* cook_library_btn_facebook_blank@2x.png */,
 				7675159E170D2ACD008B675D /* cook_featured_profileimage.png */,
 				767515A0170D2E95008B675D /* cook_featured_profileimage@2x.png */,
 				76462D341782FC0E002EA7D0 /* cook_library_tab_selected.png */,
@@ -4889,14 +4898,16 @@
 				7680103617A92A370065B2C6 /* ThemeTabView.m */,
 				76FC077517C5E89B00ABF96F /* CKNotificationView.h */,
 				76FC077617C5E89B00ABF96F /* CKNotificationView.m */,
-				76A10ADA17CB11F00051751F /* FacebookSignInButtonView.h */,
-				76A10ADB17CB11F00051751F /* FacebookSignInButtonView.m */,
 				76709001181402ED0065DE51 /* CKInfoView.h */,
 				76709002181402ED0065DE51 /* CKInfoView.m */,
 				76709004181403AB0065DE51 /* CKUserInfoView.h */,
 				76709005181403AB0065DE51 /* CKUserInfoView.m */,
 				7684618B1814FFD500C621DC /* CKBookInfoView.h */,
 				7684618C1814FFD500C621DC /* CKBookInfoView.m */,
+				76411336182C86C700366512 /* CKContentContainerCell.h */,
+				76411337182C86C700366512 /* CKContentContainerCell.m */,
+				764113D6182C9D9F00366512 /* FacebookSuggestButtonView.h */,
+				764113D5182C9D9F00366512 /* FacebookSuggestButtonView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -5547,6 +5558,7 @@
 				766E433717DEC8FA006B2495 /* cook_book_edge_orange_left.png in Resources */,
 				762D0ABB1785942F00E5947B /* cook_customise_book_dock@2x.png in Resources */,
 				89E2CA94165F438300CDE0D4 /* cook_editrecipe_textbox.png in Resources */,
+				76411334182C7FFA00366512 /* cook_library_btn_facebook_blank.png in Resources */,
 				76E9868917E2CEB700D9CAF3 /* cook_library_icons_search_off.png in Resources */,
 				F60C570817E3309E00912544 /* cook_dash_settings_icon_web.png in Resources */,
 				762CB79117B87A22000197E8 /* cook_book_inner_icon_small_serves.png in Resources */,
@@ -6277,6 +6289,7 @@
 				76B3AEB8174B2BAA001B4661 /* cook_customise_colour_picker_overlay@2x.png in Resources */,
 				7635D32318234AA100D96C0A /* cook_title_arrow_left_fr8@2x.png in Resources */,
 				767EEA2F17BDBF62001E7D0B /* cook_login_btn_bottom_right@2x.png in Resources */,
+				76411335182C7FFA00366512 /* cook_library_btn_facebook_blank@2x.png in Resources */,
 				76B3AEBB174B2BAA001B4661 /* cook_customise_colour_picker_red.png in Resources */,
 				7689A1AD17BBDADF0093C56F /* cook_customise_photo_btn_flash_onpress.png in Resources */,
 				76B3AEBC174B2BAA001B4661 /* cook_customise_colour_picker_red@2x.png in Resources */,
@@ -6429,6 +6442,7 @@
 				76ED27521612DC180012E479 /* AppDelegate.m in Sources */,
 				769FE3F7180B99BB00B3DBB2 /* CKLocation.m in Sources */,
 				76ED278C1612E45C0012E479 /* CKServerManager.m in Sources */,
+				764113D7182C9D9F00366512 /* FacebookSuggestButtonView.m in Sources */,
 				7666B3E816140A16001D1BA1 /* CKConstants.m in Sources */,
 				7634612E17B9C3C000876AE9 /* BookContentGridLayout.m in Sources */,
 				7600973017A0E8C2001DFC9F /* CKListCell.m in Sources */,
@@ -6439,7 +6453,6 @@
 				7666B40616143713001D1BA1 /* AppHelper.m in Sources */,
 				76520465161ABB0F00EE253C /* CKBook.m in Sources */,
 				F668F8D618228AC800F3DC76 /* SocialMediaActionHeader.m in Sources */,
-				76A10ADC17CB11F00051751F /* FacebookSignInButtonView.m in Sources */,
 				766D96F517D2E54700A9104E /* NotificationsViewController.m in Sources */,
 				7652046E161AD11E00EE253C /* NSString+Utilities.m in Sources */,
 				8936F7E9161E78AF00E6EF1D /* CKRecipe.m in Sources */,
@@ -6610,6 +6623,7 @@
 				76EC556117C3030D000DEA08 /* RecipeCommentCell.m in Sources */,
 				76EF95D317363BF50033DBCE /* CKListEditViewController.m in Sources */,
 				76EF95D417363BF50033DBCE /* CKTableEditViewController.m in Sources */,
+				76411338182C86C700366512 /* CKContentContainerCell.m in Sources */,
 				76EF95D517363BF50033DBCE /* CKTableViewCell.m in Sources */,
 				7648FF27181564DA00E36041 /* CKStoreBookCoverView.m in Sources */,
 				76735C8B17BA12000027CA3B /* BookRecipeGridCell.m in Sources */,

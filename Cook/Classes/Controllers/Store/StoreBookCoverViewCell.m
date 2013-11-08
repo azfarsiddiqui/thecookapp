@@ -15,7 +15,7 @@
 
 @interface StoreBookCoverViewCell ()
 
-@property (nonatomic, strong) UIView *statusIconView;
+@property (nonatomic, strong) UIImageView *statusIconView;
 @property (nonatomic, strong) UIImageView *snapshotView;
 
 @end
@@ -44,8 +44,8 @@
 - (void)loadBookCoverImage:(UIImage *)bookCoverImage status:(BookStatus)bookStatus {
     self.snapshotView.image = bookCoverImage;
     
-    // Followed indicator.
-    [self updateFollowedIcon:bookStatus];
+    // Followed/FB indicator.
+    [self updateFollowedAndFacebookIcon:bookStatus];
 }
 
 - (CKBookCoverView *)createBookCoverViewWithDelegate:(id<CKBookCoverViewDelegate>)delegate {
@@ -68,30 +68,30 @@
     }
 }
 
-- (void)updateFollowedIcon:(BookStatus)status {
-    if (status == kBookStatusFollowed) {
+- (void)updateFollowedAndFacebookIcon:(BookStatus)status {
+
+    if (status == kBookStatusFollowed || status == kBookStatusFBSuggested) {
+        UIImage *iconImage = (status == kBookStatusFollowed) ? [UIImage imageNamed:@"cook_btns_okay.png"] : [UIImage imageNamed:@"cook_library_icon_facebook.png"];
+        
         if (!self.statusIconView) {
-            UIImageView *followedIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_btns_okay.png"]];
-            followedIconView.frame = CGRectMake(self.contentView.bounds.size.width - 50.0,
-                                                -20.0,
-                                                followedIconView.frame.size.width,
-                                                followedIconView.frame.size.height);
-            self.statusIconView = followedIconView;
+            self.statusIconView = [[UIImageView alloc] initWithFrame:(CGRect){
+                self.contentView.bounds.size.width - 50.0,
+                -20.0,
+                iconImage.size.width,
+                iconImage.size.height
+            }];
         }
-        [self.contentView addSubview:self.statusIconView];
-    } else if (status == kBookStatusFBSuggested) {
-        if (!self.statusIconView) {
-            UIImageView *fbSuggestIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_library_icon_facebook.png"]];
-            fbSuggestIconView.frame = CGRectMake(self.contentView.bounds.size.width - 50.0,
-                                                -20.0,
-                                                fbSuggestIconView.frame.size.width,
-                                                fbSuggestIconView.frame.size.height);
-            self.statusIconView = fbSuggestIconView;
+        
+        self.statusIconView.image = iconImage;
+        
+        if (!self.statusIconView.superview) {
+            [self.contentView addSubview:self.statusIconView];
         }
-        [self.contentView addSubview:self.statusIconView];
-    } else { //if (status == kBookStatusNone)
+        
+    } else {
         [self.statusIconView removeFromSuperview];
     }
+    
 }
 
 @end

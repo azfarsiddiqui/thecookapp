@@ -251,6 +251,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return [self.parseUser isAuthenticated];
 }
 
+- (BOOL)isFacebookUser {
+    return [PFFacebookUtils isLinkedWithUser:self.parseUser];
+}
+
 - (id)initWithParseUser:(PFUser *)parseUser {
     if (self = [super initWithParseObject:parseUser]) {
         self.parseUser = parseUser;
@@ -619,6 +623,10 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 - (PFFile *)profilePhoto {
     return [self.parseObject objectForKey:kUserAttrProfilePhoto];
+}
+
+- (NSArray *)facebookFriends {
+    return [self.parseUser objectForKey:kUserAttrFacebookFriends];
 }
 
 #pragma mark - CKModel

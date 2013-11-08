@@ -80,15 +80,15 @@
 - (void)unloadDataCompletion:(void(^)())completion {
     DLog(@"Unloading Books [%d]", [self.books count]);
     [self hideMessageCard];
-    if ([self.books count] > 0) {
-        [self.books removeAllObjects];
-        [self.bookCoverImages removeAllObjects];
-        [self.bookCovers removeAllObjects];
-        
-        [self.collectionView reloadData];
-        if (completion != nil) {
-            completion();
-        }
+    [self.books removeAllObjects];
+    self.books = nil;
+    [self.bookCoverImages removeAllObjects];
+    [self.bookCovers removeAllObjects];
+    self.dataLoaded = NO;
+    
+    [self.collectionView reloadData];
+    if (completion != nil) {
+        completion();
     }
 }
 
@@ -99,6 +99,9 @@
     
     // Hide any message cards.
     [self hideMessageCard];
+    
+    // Mark books as loaded.
+    self.dataLoaded = YES;
     
     if ([books count] > 0) {
         
@@ -119,32 +122,27 @@
         }]];
         
         if (reloadBooks) {
-            
             [self reloadBooks];
-            
         } else {
-            
-            // Insert the books.
-            NSArray *insertIndexPaths = [books collectWithIndex:^id(CKBook *book, NSUInteger index) {
-                return [NSIndexPath indexPathForItem:index inSection:0];
-            }];
-            
-            [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
+            [self insertBooks];
         }
         
     } else {
-        if ([CKUser currentUser].facebookId)
-        {
-            // Show no books card if already logged into Facebook and theres nothing left.
-            [self showNoBooksCard];
-        }
+        [self reloadBooks];
+        [self showNoBooksCard];
     }
     
 }
 
 - (void)reloadBooks {
     [self.collectionView reloadData];
-//    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:kStoreSection]];
+}
+
+- (void)insertBooks {
+    NSArray *insertIndexPaths = [self.books collectWithIndex:^id(CKBook *book, NSUInteger index) {
+        return [NSIndexPath indexPathForItem:index inSection:0];
+    }];
+    [self.collectionView insertItemsAtIndexPaths:insertIndexPaths];
 }
 
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook {
@@ -226,7 +224,6 @@
     cell.delegate = self;
     CKBook *book = [self.books objectAtIndex:indexPath.item];
     [cell loadBookCoverImage:[self.bookCoverImages objectAtIndex:indexPath.item] status:book.status];
-    
     [self loadRemoteIllustrationAtIndex:indexPath.item];
     
     return cell;
@@ -358,10 +355,6 @@
         });
     }
     
-}
-
-- (BOOL)featuredMode {
-    return NO;
 }
 
 @end

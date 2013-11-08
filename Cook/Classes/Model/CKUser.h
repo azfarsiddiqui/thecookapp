@@ -34,6 +34,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 @property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *password;
 @property (nonatomic, assign) DashTheme theme;
+@property (nonatomic, readonly) NSArray *facebookFriends;
 
 // Cover photos.
 @property (nonatomic, strong) PFFile *profilePhoto;
@@ -59,6 +60,7 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 
 - (id)initWithParseUser:(PFUser *)parseUser;
 - (BOOL)isSignedIn;
+- (BOOL)isFacebookUser;
 - (NSArray *)bookSuggestionIds;
 - (NSUInteger)numFollows;
 - (NSURL *)profilePhotoUrl;

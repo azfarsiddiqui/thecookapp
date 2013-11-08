@@ -23,6 +23,7 @@
 #define kStoreSection   0
 
 @property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL dataLoaded;
 @property (nonatomic, strong) NSMutableArray *books;
 
 - (id)initWithDelegate:(id<StoreCollectionViewControllerDelegate>)delegate;
@@ -32,8 +33,8 @@
 - (void)unloadDataCompletion:(void(^)())completion;
 - (void)loadBooks:(NSArray *)books;
 - (void)reloadBooks;
+- (void)insertBooks;
 - (BOOL)updateForFriendsBook:(BOOL)friendsBook;
-- (BOOL)featuredMode;
 - (void)showActivity:(BOOL)show;
 - (void)showNoConnectionCardIfApplicableError:(NSError *)error;
 - (void)showNoBooksCard;
