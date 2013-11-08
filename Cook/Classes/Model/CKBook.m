@@ -261,14 +261,15 @@
                                         [friendsSuggestedBooks addObjectsFromArray:suggestedBooks];
                                         
                                         // Annotate for following and suggested status.
-                                        [self annotateFollowedAndSuggestedForBooks:friendsSuggestedBooks
-                                                                              user:user
-                                                                           success:^(NSArray *annotatedBooks) {
-                                                                               success(annotatedBooks);
-                                                                           }
-                                                                            failure:^(NSError *error) {
-                                                                                failure(error);
-                                                                            }];
+                                        [self annotateForFriendsBooks:friendsBooks
+                                                       suggestedBooks:suggestedBooks
+                                                                 user:user
+                                                              success:^(NSArray *annotatedBooks) {
+                                                                  success(annotatedBooks);
+                                                              }
+                                                              failure:^(NSError *error) {
+                                                                  failure(error);
+                                                              }];
                                     } else {
                                         DLog(@"Error loading friends/suggested books: %@", [error localizedDescription]);
                                     }
@@ -862,8 +863,9 @@
     }];
 }
 
-+ (void)annotateFollowedAndSuggestedForBooks:(NSArray *)parseBooks user:(CKUser *)user
-                                     success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)annotateForFriendsBooks:(NSArray *)parseFriendsBooks suggestedBooks:(NSArray *)parseSuggestedBooks
+                           user:(CKUser *)user success:(ListObjectsSuccessBlock)success
+                        failure:(ObjectFailureBlock)failure {
     
     // Existing follows.
     __block CKUser *currentUser = user;
@@ -879,23 +881,14 @@
                 return parseBook.objectId;
             }];
             
-            // Get facebookFriends objectIds.
-            NSArray *facebookFriends = currentUser.facebookFriends;
-            
-            // Return CKBook model objects.
-            NSArray *books = [parseBooks collect:^id(PFObject *parseBook) {
+            // Annotate. friends books with follow indicators.
+            NSArray *friendsBooks = [parseFriendsBooks collect:^id(PFObject *parseBook) {
                 CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
                 
                 // Book followed?
                 BOOL isFollowed = [objectIds containsObject:book.objectId];
-                
-                // Facebook friend?
-                BOOL isFacebookFriend = [facebookFriends containsObject:book.user.facebookId];
-                
                 if (isFollowed) {
                     book.status = kBookStatusFollowed;
-                } else if (isFacebookFriend) {
-                    book.status = kBookStatusFBSuggested;
                 } else {
                     book.status = kBookStatusNone;
                 }
@@ -903,7 +896,22 @@
                 return book;
             }];
             
-            success(books);
+            // Annotate. friends books with follow indicators.
+            NSArray *suggestedBooks = [parseSuggestedBooks collect:^id(PFObject *parseBook) {
+                CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
+                book.status = kBookStatusFBSuggested;
+                return book;
+            }];
+            
+            // Results
+            NSMutableArray *combinedBooks = [NSMutableArray new];
+            if ([friendsBooks count] > 0) {
+                [combinedBooks addObjectsFromArray:friendsBooks];
+            }
+            if ([suggestedBooks count] > 0) {
+                [combinedBooks addObjectsFromArray:suggestedBooks];
+            }
+            success(combinedBooks);
             
         } else {
             
