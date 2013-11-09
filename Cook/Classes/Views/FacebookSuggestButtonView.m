@@ -15,6 +15,7 @@
 @property (nonatomic, weak) id<FacebookSuggestButtonViewDelegate> delegate;
 @property (nonatomic, strong) UIButton *facebookButton;
 @property (nonatomic, strong) UILabel *label;
+@property (nonatomic, assign) BOOL disableText;
 @property (nonatomic, strong) CKActivityIndicatorView *activityView;
 
 @end
@@ -37,27 +38,9 @@
         self.delegate = delegate;
         self.frame = (CGRect) { 0.0, 0.0, kSize.width, kSize.height };
         
-        // Facebook button.
-        CGRect buttonFrame = self.facebookButton.frame;
-        [self addSubview:self.facebookButton];
-        
-        // Facebook text.
-        CGRect labelFrame = self.label.frame;
-        
-        // Reposition based on combined height.
-        CGFloat requiredHeight = buttonFrame.size.height + kButtonTextGap + labelFrame.size.height;
-        buttonFrame.origin = (CGPoint) {
-            floorf((self.bounds.size.width - buttonFrame.size.width) / 2.0) + 6.0,
-            floorf((self.bounds.size.height - requiredHeight) / 2.0),
-        };
-        labelFrame.origin = (CGPoint) {
-            floorf((self.bounds.size.width - labelFrame.size.width) / 2.0),
-            buttonFrame.origin.y + buttonFrame.size.height + kButtonTextGap
-        };
-        self.facebookButton.frame = buttonFrame;
-        self.label.frame = labelFrame;
         [self addSubview:self.facebookButton];
         [self addSubview:self.label];
+        [self updateViews];
         
         // Register for notification that app did enter background
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -101,6 +84,11 @@
         [self.activityView removeFromSuperview];
         self.activityView = nil;
     }
+}
+
+- (void)showText:(BOOL)show {
+    self.disableText = !show;
+    [self updateViews];
 }
 
 #pragma mark - Background/Foreground activity.
@@ -176,5 +164,30 @@
             nil];
 }
 
+- (void)updateViews {
+    // Facebook button and text.
+    CGRect buttonFrame = self.facebookButton.frame;
+    CGRect labelFrame = self.label.frame;
+    
+    // Reposition based on combined height, and if text is displayed.
+    CGFloat requiredHeight = 0.0;
+    if (self.disableText) {
+        requiredHeight = buttonFrame.size.height;
+    } else {
+        requiredHeight = buttonFrame.size.height + kButtonTextGap + labelFrame.size.height;
+    }
+    
+    buttonFrame.origin = (CGPoint) {
+        floorf((self.bounds.size.width - buttonFrame.size.width) / 2.0) + 6.0,
+        floorf((self.bounds.size.height - requiredHeight) / 2.0),
+    };
+    labelFrame.origin = (CGPoint) {
+        floorf((self.bounds.size.width - labelFrame.size.width) / 2.0),
+        buttonFrame.origin.y + buttonFrame.size.height + kButtonTextGap
+    };
+    self.facebookButton.frame = buttonFrame;
+    self.label.frame = labelFrame;
+    self.label.hidden = self.disableText;
+}
 
 @end

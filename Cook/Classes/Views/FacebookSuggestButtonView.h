@@ -18,5 +18,6 @@
 
 - (id)initWithDelegate:(id<FacebookSuggestButtonViewDelegate>)delegate;
 - (void)enableActivity:(BOOL)activity;
+- (void)showText:(BOOL)show;
 
 @end
