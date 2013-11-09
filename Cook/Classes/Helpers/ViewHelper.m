@@ -313,4 +313,12 @@
                      }];
 }
 
+#pragma mark - Alerts
+
++ (void)alertWithTitle:(NSString *)title message:(NSString *)message {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self
+                                              cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+}
+
 @end

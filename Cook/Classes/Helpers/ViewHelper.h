@@ -71,4 +71,7 @@
 // View effects.
 + (void)removeViewWithAnimation:(UIView *)view completion:(void (^)())completion;
 
+// Alerts
++ (void)alertWithTitle:(NSString *)title message:(NSString *)message;
+
 @end
