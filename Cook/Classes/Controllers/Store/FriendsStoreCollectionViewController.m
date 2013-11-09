@@ -44,15 +44,18 @@
 }
 
 - (void)loadData {
-    [super loadData];
-    [CKBook friendsAndSuggestedBooksForUser:[CKUser currentUser]
-                                    success:^(NSArray *friendsSuggestedBooks) {
-                                        [self loadBooks:friendsSuggestedBooks];
-                                    }
-                                    failure:^(NSError *error) {
-                                        DLog(@"Error: %@", [error localizedDescription]);
-                                        [self showNoConnectionCardIfApplicableError:error];
-                                    }];
+    
+    if ([[CKUser currentUser] isSignedIn]) {
+        [super loadData];
+        [CKBook friendsAndSuggestedBooksForUser:[CKUser currentUser]
+                                        success:^(NSArray *friendsSuggestedBooks) {
+                                            [self loadBooks:friendsSuggestedBooks];
+                                        }
+                                        failure:^(NSError *error) {
+                                            DLog(@"Error: %@", [error localizedDescription]);
+                                            [self showNoConnectionCardIfApplicableError:error];
+                                        }];
+    }
 }
 
 - (void)insertBooks {
@@ -115,7 +118,8 @@
     NSInteger numItems = [super collectionView:collectionView numberOfItemsInSection:section];
     
     // Extra facebook button if not linked to facebook.
-    if (self.dataLoaded && ![[CKUser currentUser] isFacebookUser]) {
+    CKUser *currentUser = [CKUser currentUser];
+    if (self.dataLoaded && currentUser && ![currentUser isFacebookUser]) {
         numItems += 1;
     }
     
