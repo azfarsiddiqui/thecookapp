@@ -54,6 +54,8 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 + (PFObject *)createUserFriendObjectForUser:(PFUser *)parseUser friend:(PFUser *)parseFriend requestor:(PFUser *)parseRequestor;
 + (BOOL)usernameExistsForSignUpError:(NSError *)error;
 + (BOOL)invalidCredentialsForSignInError:(NSError *)error;
++ (BOOL)isFacebookPermissionsError:(NSError *)error;
++ (BOOL)facebookAlreadyUsedInAnotherAccountError:(NSError *)error;
 + (void)setGuestTheme:(DashTheme)theme;
 + (DashTheme)currentTheme;
 + (NSURL *)defaultBlankProfileUrl;

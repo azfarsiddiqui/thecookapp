@@ -217,6 +217,14 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return ([error code] == kPFErrorObjectNotFound);
 }
 
++ (BOOL)isFacebookPermissionsError:(NSError *)error {
+    return ([error.domain isEqualToString:@"com.facebook.sdk"] && [error code] == FBErrorLoginFailedOrCancelled);
+}
+
++ (BOOL)facebookAlreadyUsedInAnotherAccountError:(NSError *)error {
+    return ([error.domain isEqualToString:@"Parse"] && [error code] == kPFErrorFacebookAccountAlreadyLinked);
+}
+
 + (void)setGuestTheme:(DashTheme)theme {
     [[NSUserDefaults standardUserDefaults] setObject:@(theme) forKey:kCookGuestTheme];
 }

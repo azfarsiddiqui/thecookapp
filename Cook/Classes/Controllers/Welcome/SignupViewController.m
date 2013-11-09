@@ -867,6 +867,10 @@
         DLog(@"Error logging in: %@", [error localizedDescription]);
         
         [self enableFacebookLogin:NO completion:^{
+            
+            if ([CKUser isFacebookPermissionsError:error]) {
+                [ViewHelper alertWithTitle:@"Permission Required" message:@"Go to iPad Settings > Facebook and turn on for Cook"];
+            }
             [self.facebookButton setText:@"COULDN'T CONNECT TO FACEBOOK" activity:NO animated:NO enabled:NO];
             [self informLoginSuccessful:NO];
             

@@ -82,8 +82,16 @@
             }];
             
         } failure:^(NSError *error) {
+            
             [self.facebookButtonView enableActivity:NO];
-            [self errorInFriendFetchWithTitle:@"Couldn't Add" message:@"Facebook account has already been registered."];
+            
+            if ([CKUser facebookAlreadyUsedInAnotherAccountError:error]) {
+                [ViewHelper alertWithTitle:@"Couldn’t Add Facebook" message:@"The Facebook account is already used by another Cook account"];
+            } else if ([CKUser isFacebookPermissionsError:error]) {
+                [ViewHelper alertWithTitle:@"Permission Required" message:@"Go to iPad Settings > Facebook and turn on for Cook"];
+            } else {
+                [ViewHelper alertWithTitle:@"Couldn’t Add Facebook" message:nil];
+            }
         }];
     }
 }
