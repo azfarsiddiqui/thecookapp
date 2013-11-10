@@ -52,6 +52,9 @@
     // Set up Parse analytics.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
+    // Clean up cached user.
+    [CKUser forceLogoutUserIfRequired];
+    
     // Register/refresh device tokens if logged in.
     if ([CKUser isLoggedIn]) {
         [self registerForPush];

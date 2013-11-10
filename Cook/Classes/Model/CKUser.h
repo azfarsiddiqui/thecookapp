@@ -12,7 +12,7 @@
 
 @class CKUser;
 
-typedef void(^LoginSuccessBlock)(CKUser *user);
+typedef void(^FacebookSuccessBlock)(BOOL isNewUser);
 typedef void(^UserFriendSuccessBlock)(BOOL alreadySent, BOOL alreadyConnected, BOOL pendingAcceptance);
 typedef void(^UserInfoSuccessBlock)(NSUInteger friendCount, NSUInteger followCount, NSUInteger recipeCount, BOOL areFriends);
 
@@ -41,7 +41,9 @@ typedef NS_ENUM(NSUInteger, DashTheme) {
 
 + (CKUser *)currentUser;
 + (BOOL)isLoggedIn;
-+ (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
++ (void)forceLogoutUserIfRequired;
++ (void)forceLogout;
++ (void)loginWithFacebookCompletion:(FacebookSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)attachFacebookToCurrentUserWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)logoutWithCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure;
 + (void)registerWithEmail:(NSString *)email name:(NSString *)name password:(NSString *)password

@@ -20,11 +20,13 @@
 @end
 
 static ObjectSuccessBlock loginSuccessfulBlock = nil;
+static ObjectSuccessBlock facebookLoginSuccessfulBlock = nil;
 static ObjectFailureBlock loginFailureBlock = nil;
 
 @implementation CKUser
 
 #define kCookGuestTheme     @"kCookGuestTheme"
+#define kCookForceLogout    @"CookForceLogout"
 
 + (CKUser *)currentUser {
     PFUser *parseUser = [PFUser currentUser];
@@ -39,7 +41,24 @@ static ObjectFailureBlock loginFailureBlock = nil;
     return ([CKUser currentUser] != nil);
 }
 
-+ (void)loginWithFacebookCompletion:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
++ (void)forceLogoutUserIfRequired {
+    
+    // If force logout was indicated, then do it.
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:kCookForceLogout] boolValue]) {
+        DLog(@"Forced logout");
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:kCookForceLogout];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [PFUser logOut];
+    }
+}
+
++ (void)forceLogout {
+    DLog();
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kCookForceLogout];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (void)loginWithFacebookCompletion:(FacebookSuccessBlock)success failure:(ObjectFailureBlock)failure {
     CKUser *currentUser = [CKUser currentUser];
     
     // Make sure user is not signed on already.
@@ -49,7 +68,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
     }
     
     // Copies and saves the completion blocks.
-    loginSuccessfulBlock = [success copy];
+    facebookLoginSuccessfulBlock = [success copy];
     loginFailureBlock = [failure copy];
     
     // Go ahead and link this user via Facebook.
@@ -63,25 +82,34 @@ static ObjectFailureBlock loginFailureBlock = nil;
                 loginFailureBlock(error);
             }
             loginFailureBlock = nil;
-            loginSuccessfulBlock = nil;
+            facebookLoginSuccessfulBlock = nil;
             
         } else {
             
-            // Update user details and friends.
-            [[FBRequest requestForMe] startWithCompletionHandler:
-             ^(FBRequestConnection *connection,
-               NSDictionary<FBGraphUser> *userData,
-               NSError *error) {
-                 if (error) {
-                     loginFailureBlock(error);
-                     loginFailureBlock = nil;
-                     loginSuccessfulBlock = nil;
-                 } else {
-                     [CKUser populateUserDetailsFromFacebookData:userData];
-                 }
-             }];
+            // Logged in, now update user details and friends.
+            [self updateFacebookLoginDataIsNewUser:user.isNew];
         }
     }];
+}
+
++ (void)updateFacebookLoginData {
+    [self updateFacebookLoginDataIsNewUser:NO];
+}
+
++ (void)updateFacebookLoginDataIsNewUser:(BOOL)isNewUser {
+    
+    [[FBRequest requestForMe] startWithCompletionHandler:
+     ^(FBRequestConnection *connection,
+       NSDictionary<FBGraphUser> *userData,
+       NSError *error) {
+         if (error) {
+             loginFailureBlock(error);
+             loginFailureBlock = nil;
+             facebookLoginSuccessfulBlock = nil;
+         } else {
+             [CKUser populateUserDetailsFromFacebookData:userData isNewUser:isNewUser];
+         }
+     }];
 }
 
 + (void)attachFacebookToCurrentUserWithSuccess:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure
@@ -121,7 +149,7 @@ static ObjectFailureBlock loginFailureBlock = nil;
                      loginFailureBlock = nil;
                      loginSuccessfulBlock = nil;
                  } else {
-                     [CKUser populateUserDetailsFromFacebookData:userData];
+                     [CKUser populateUserDetailsFromFacebookData:userData isNewUser:NO];
                  }
              }];
         }
@@ -651,15 +679,9 @@ static ObjectFailureBlock loginFailureBlock = nil;
 
 #pragma mark - Private methods
 
-+ (void)populateUserDetailsFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
-    CKUser *currentUser = [CKUser currentUser];
-    DLog(@"Logged in user %@", currentUser);
-    [CKUser handleUserLoginFromFacebookData:userData];
-}
-
-+ (void)handleUserLoginFromFacebookData:(NSDictionary<FBGraphUser> *)userData {
++ (void)populateUserDetailsFromFacebookData:(NSDictionary<FBGraphUser> *)userData isNewUser:(BOOL)isNewUser {
     
-    // Find the user's friends, and see if any of them are Cook users
+    // Find the user's friends and update it.
     [[FBRequest requestForMyFriends] startWithCompletionHandler:^(FBRequestConnection *connection,
                                                                      NSDictionary *jsonDictionary, NSError *error) {
         CKUser *currentUser = [CKUser currentUser];
@@ -690,15 +712,15 @@ static ObjectFailureBlock loginFailureBlock = nil;
             [currentUser.parseUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (!error) {
                     
-                    loginSuccessfulBlock();
-                    loginSuccessfulBlock = nil;
+                    facebookLoginSuccessfulBlock(isNewUser);
+                    facebookLoginSuccessfulBlock = nil;
                     loginFailureBlock = nil;
                     
                 } else {
                     loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
                                                      message:[NSString stringWithFormat:@"Unable to save friends for %@", currentUser]]);
                     loginFailureBlock = nil;
-                    loginSuccessfulBlock = nil;
+                    facebookLoginSuccessfulBlock = nil;
                 }
             }];
             
@@ -707,13 +729,12 @@ static ObjectFailureBlock loginFailureBlock = nil;
             loginFailureBlock([CKModel errorWithCode:kCKLoginFriendsErrorCode
                                              message:[NSString stringWithFormat:@"Unable to retrieve friends for %@", currentUser]]);
             loginFailureBlock = nil;
-            loginSuccessfulBlock = nil;
+            facebookLoginSuccessfulBlock = nil;
         }
         
     }];
 
 }
-
 
 //overridden
 

@@ -45,6 +45,9 @@
 @property (nonatomic, strong) CKSignInButtonView *forgotButton;
 @property (nonatomic, strong) UIButton *leftArrowButton;
 
+// Facebook new user alert.
+@property (nonatomic, strong) UIAlertView *facebookNewUserAlert;
+
 @end
 
 @implementation SignupViewController
@@ -63,6 +66,8 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
 }
 
 - (id)initWithDelegate:(id<SignupViewControllerDelegate>)delegate {
@@ -92,6 +97,10 @@
     // Register for keyboard events.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    // Register for background/terminate events.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 - (void)enableSignUpMode:(BOOL)signUp {
@@ -278,6 +287,34 @@
     }
 }
 
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if (alertView == self.facebookNewUserAlert) {
+        
+        // Clear alerts.
+        self.facebookNewUserAlert = nil;
+        
+        if (buttonIndex == 0) {
+            
+            [self deleteCurrentUser];
+            
+        } else if (buttonIndex == 1) {
+            
+            // Proceed.
+            [self.facebookButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
+            
+            // Wait before informing login successful.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self informLoginSuccessful:YES];
+            });
+            
+        }
+    }
+    
+}
+
 #pragma mark - Properties
 
 - (UILabel *)titleLabel {
@@ -384,6 +421,24 @@
 - (void)keyboardDidHide:(NSNotification *)notification {
     CGRect keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     [self handleKeyboardShow:NO keyboardFrame:keyboardFrame];
+}
+
+#pragma mark - Lifecycle events.
+
+- (void)appDidEnterBackground:(NSNotification *)notification {
+    
+    // If Facebook new alert is visible, then dismiss it to do cleanup.
+    if (self.facebookNewUserAlert.visible) {
+        [self.facebookNewUserAlert dismissWithClickedButtonIndex:0 animated:NO];
+    }
+}
+
+- (void)appWillTerminate:(NSNotification *)notification {
+    
+    // If Facebook new alert is visible, then dismiss it to do cleanup.
+    if (self.facebookNewUserAlert.visible) {
+        [self deleteCurrentUserUpdateViews:NO];
+    }
 }
 
 #pragma mark - CKSignInButtonViewDelegate methods
@@ -854,14 +909,24 @@
 - (void)performFacebookLogin {
     
     // Now tries and log the user in.
-    [CKUser loginWithFacebookCompletion:^{
+    [CKUser loginWithFacebookCompletion:^(BOOL isNewUser) {
         
-        [self.facebookButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
-        
-        // Wait before informing login successful.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [self informLoginSuccessful:YES];
-        });
+        if (!self.signUpMode && isNewUser) {
+            self.facebookNewUserAlert = [[UIAlertView alloc] initWithTitle:@"New Facebook User"
+                                                                   message:@"This will create a new Cook account using the Facebook profile.\nAre you sure?"
+                                                                  delegate:self
+                                                         cancelButtonTitle:@"Cancel" otherButtonTitles:@"Create", nil];
+            [self.facebookNewUserAlert show];
+            
+        } else {
+            
+            [self.facebookButton setText:[self welcomeText] done:YES activity:NO animated:NO enabled:NO];
+            
+            // Wait before informing login successful.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self informLoginSuccessful:YES];
+            });
+        }        
         
     } failure:^(NSError *error) {
         DLog(@"Error logging in: %@", [error localizedDescription]);
@@ -1027,6 +1092,40 @@
 - (NSString *)welcomeText {
     CKUser *currentUser = [CKUser currentUser];
     return [[NSString stringWithFormat:@"WELCOME %@", currentUser.friendlyName] uppercaseString];
+}
+
+- (void)deleteCurrentUser {
+    [self deleteCurrentUserUpdateViews:YES];
+}
+
+- (void)deleteCurrentUserUpdateViews:(BOOL)updateViews {
+    DLog();
+    CKUser *currentUser = [CKUser currentUser];
+    [CKUser forceLogout];
+    
+    [currentUser deleteInBackground:^{
+        DLog(@"Deleted user");
+        
+        if (updateViews) {
+            [self enableFacebookLogin:NO completion:^{
+                [self.facebookButton setText:[self facebookButtonTextForSignUp:self.signUpMode] activity:NO animated:NO
+                                     enabled:YES];
+                [self informLoginSuccessful:NO];
+            }];
+            
+        }
+    } failure:^(NSError *error) {
+        DLog(@"Unable to delete user");
+        
+        if (updateViews) {
+            [self enableFacebookLogin:NO completion:^{
+                [self.facebookButton setText:[self facebookButtonTextForSignUp:self.signUpMode] activity:NO animated:NO
+                                     enabled:YES];
+                [self informLoginSuccessful:NO];
+            }];
+        }
+        
+    }];
 }
 
 @end
