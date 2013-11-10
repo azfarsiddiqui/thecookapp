@@ -912,8 +912,8 @@
     [CKUser loginWithFacebookCompletion:^(BOOL isNewUser) {
         
         if (!self.signUpMode && isNewUser) {
-            self.facebookNewUserAlert = [[UIAlertView alloc] initWithTitle:@"New Facebook User"
-                                                                   message:@"This will create a new Cook account using the Facebook profile.\nAre you sure?"
+            self.facebookNewUserAlert = [[UIAlertView alloc] initWithTitle:@"Create Account"
+                                                                   message:@"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?"
                                                                   delegate:self
                                                          cancelButtonTitle:@"Cancel" otherButtonTitles:@"Create", nil];
             [self.facebookNewUserAlert show];
