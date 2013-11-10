@@ -141,7 +141,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 - (id)initWithRecipe:(CKRecipe *)recipe book:(CKBook *)book {
     if (self = [super init]) {
         self.recipe = recipe;
-        self.book = book;
+        self.book = book;   // Can be in a different book if pinned or liked.
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.currentUser = [CKUser currentUser];
     }
@@ -1396,7 +1396,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (BOOL)canEditRecipe {
-    return ([self.recipe isOwner]);
+    return ([self.recipe isOwner:self.currentUser] && [self.book isOwner:self.currentUser]);
 }
 
 - (void)updateButtons {

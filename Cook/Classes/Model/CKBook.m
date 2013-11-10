@@ -684,6 +684,10 @@
     return [self isUserBookAuthor:[CKUser currentUser]];
 }
 
+- (BOOL)isOwner:(CKUser *)user {
+    return [self isUserBookAuthor:user];
+}
+
 - (BOOL)isUserBookAuthor:(CKUser *)user {
     return [self.user isEqual:user];
 }

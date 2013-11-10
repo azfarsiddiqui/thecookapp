@@ -89,6 +89,7 @@ typedef enum {
 - (BOOL)editable;
 - (BOOL)isThisMyFriendsBook;
 - (BOOL)isOwner;
+- (BOOL)isOwner:(CKUser *)user;
 - (BOOL)isUserBookAuthor:(CKUser*)user;
 - (BOOL)isPublic;
 - (BOOL)hasCoverPhoto;
