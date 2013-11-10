@@ -210,13 +210,16 @@
         [CKUser attachFacebookToCurrentUserWithSuccess:^{
             [self shareFacebook];
         } failure:^(NSError *error) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                message:@"There was an error in signing into Facebook"
-                                                               delegate:self
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
+            
+            if ([CKUser facebookAlreadyUsedInAnotherAccountError:error]) {
+                [ViewHelper alertWithTitle:@"Couldn’t Add Facebook" message:@"The Facebook account is already used by another Cook account"];
+            } else if ([CKUser isFacebookPermissionsError:error]) {
+                [ViewHelper alertWithTitle:@"Permission Required" message:@"Go to iPad Settings > Facebook and turn on for Cook"];
+            } else {
+                [ViewHelper alertWithTitle:@"Couldn’t Add Facebook" message:nil];
+            }
         }];
+        
     }
     else
         [self shareFacebook];
