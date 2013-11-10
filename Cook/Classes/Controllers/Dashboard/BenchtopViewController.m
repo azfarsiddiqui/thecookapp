@@ -1650,7 +1650,10 @@
                              self.updateIntroView.alpha = 1.0;
                          } completion:^(BOOL finished) {
                              [self.delegate panEnabledRequested:NO];
+                             
                              [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kHasSeenUpdateIntro];
+                             [[NSUserDefaults standardUserDefaults] synchronize];
+                             
                          }];
     }
 }
