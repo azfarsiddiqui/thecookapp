@@ -879,7 +879,7 @@
         if (!error) {
             
             // Collect the object ids.
-            NSArray *objectIds = [parseFollows collect:^id(PFObject *parseFollow) {
+            NSArray *followObjectIds = [parseFollows collect:^id(PFObject *parseFollow) {
                 PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
                 return parseBook.objectId;
             }];
@@ -889,7 +889,7 @@
                 CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
                 
                 // Book followed?
-                BOOL isFollowed = [objectIds containsObject:book.objectId];
+                BOOL isFollowed = [followObjectIds containsObject:book.objectId];
                 if (isFollowed) {
                     book.status = kBookStatusFollowed;
                 } else {
@@ -902,7 +902,15 @@
             // Annotate. friends books with follow indicators.
             NSArray *suggestedBooks = [parseSuggestedBooks collect:^id(PFObject *parseBook) {
                 CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
-                book.status = kBookStatusFBSuggested;
+                
+                // Book followed?
+                BOOL isFollowed = [followObjectIds containsObject:book.objectId];
+                if (isFollowed) {
+                    book.status = kBookStatusFollowed;
+                } else {
+                    book.status = kBookStatusFBSuggested;
+                }
+                
                 return book;
             }];
             
