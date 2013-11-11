@@ -345,7 +345,7 @@
 
 - (UIImageView *)dividerView {
     if (!_dividerView) {
-        UIImage *dividerImage = [[UIImage imageNamed:@"cook_login_divider.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 1.0, 0.0, 1.0 }];
+        UIImage *dividerImage = [[UIImage imageNamed:@"cook_login_divider.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 4.0, 0.0, 4.0 }];
         _dividerView = [[UIImageView alloc] initWithImage:dividerImage];
         CGRect frame = _dividerView.frame;
         frame.size.width = 288.0;
