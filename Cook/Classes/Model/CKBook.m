@@ -13,6 +13,7 @@
 #import "MRCEnumerable.h"
 #import "CKBookCover.h"
 #import "CKPhotoManager.h"
+#import "AppHelper.h"
 
 @interface CKBook ()
 
@@ -319,7 +320,7 @@
 + (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
     [PFCloud callFunctionInBackground:@"featuredBooks"
-                       withParameters:@{}
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSArray *parseBooks, NSError *error) {
                                     
                                     if (!error) {
