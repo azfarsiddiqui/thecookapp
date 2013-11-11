@@ -455,7 +455,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     
     [self updateProfilePhoto];
     [self updateTitle];
-//    [self updateTags]; Disabling Tags for 1.1 release
+    [self updateTags];
     [self updateStory];
     [self updateContentDivider];
     [self updateServesCook];
