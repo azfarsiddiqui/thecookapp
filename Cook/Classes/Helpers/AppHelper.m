@@ -57,6 +57,10 @@
     return [UIApplication sharedApplication].keyWindow.rootViewController.view;
 }
 
+- (NSString *)appVersion {
+    return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+}
+
 - (CGRect)fullScreenFrame {
     return [self rootView].bounds;
 }
