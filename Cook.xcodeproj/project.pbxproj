@@ -1188,10 +1188,6 @@
 		8936F7ED161E78CE00E6EF1D /* CKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7EC161E78CE00E6EF1D /* CKCategory.m */; };
 		8936F800161E7C1100E6EF1D /* ViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F7FF161E7C1100E6EF1D /* ViewHelper.m */; };
 		8936F803161E959800E6EF1D /* CKRecipeImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936F802161E959700E6EF1D /* CKRecipeImage.m */; };
-		8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */; };
-		8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */; };
-		8944C1C116CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */; };
-		8944C1C216CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8944C1BC16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png */; };
 		895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D91650C23500765F96 /* CoreText.framework */; };
 		895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892041D71650C20200765F96 /* OpenGLES.framework */; };
 		895A2B901655BC9E0061E687 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962217D161E9F830023EC30 /* Accelerate.framework */; };
@@ -2788,10 +2784,6 @@
 		8936F7FF161E7C1100E6EF1D /* ViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewHelper.m; sourceTree = "<group>"; };
 		8936F801161E959700E6EF1D /* CKRecipeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKRecipeImage.h; sourceTree = "<group>"; };
 		8936F802161E959700E6EF1D /* CKRecipeImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKRecipeImage.m; sourceTree = "<group>"; };
-		8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_bg.png; sourceTree = "<group>"; };
-		8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_bg@2x.png"; sourceTree = "<group>"; };
-		8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_keyboard_autosuggest_btn.png; sourceTree = "<group>"; };
-		8944C1BC16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_keyboard_autosuggest_btn@2x.png"; sourceTree = "<group>"; };
 		8962217D161E9F830023EC30 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		8962217F161E9F970023EC30 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		89622181161E9FA80023EC30 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -4991,17 +4983,6 @@
 			name = Book;
 			sourceTree = "<group>";
 		};
-		8944C1B816CDB9870087EFC9 /* accessoryView */ = {
-			isa = PBXGroup;
-			children = (
-				8944C1B916CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png */,
-				8944C1BA16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png */,
-				8944C1BB16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png */,
-				8944C1BC16CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png */,
-			);
-			path = accessoryView;
-			sourceTree = "<group>";
-		};
 		89622170161E9F300023EC30 /* External */ = {
 			isa = PBXGroup;
 			children = (
@@ -5051,7 +5032,6 @@
 			isa = PBXGroup;
 			children = (
 				89B0916B16DDBEAC00D47725 /* servesSlider */,
-				8944C1B816CDB9870087EFC9 /* accessoryView */,
 				89E2CA92165F438300CDE0D4 /* cook_editrecipe_textbox.png */,
 				89E2CA93165F438300CDE0D4 /* cook_editrecipe_textbox@2x.png */,
 				89E2CA8A165F024800CDE0D4 /* cook_editrecipe_categorybg.png */,
@@ -5690,15 +5670,11 @@
 				762D0AB21785919200E5947B /* cook_book_graphic_sausages.png in Resources */,
 				762D0AAF1785918B00E5947B /* cook_book_graphic_olives@2x.png in Resources */,
 				7664801517E149ED00A690D6 /* cook_book_inner_icon_small_likes_on_blue@2x.png in Resources */,
-				8944C1BF16CDB9870087EFC9 /* cook_keyboard_autosuggest_bg.png in Resources */,
 				F6F593331817F32400998795 /* cook_book_inner_icon_share_light_onpress.png in Resources */,
 				F613C65D17DF4F7E00A5962A /* cook_customise_photo_filter_bg_text@2x.png in Resources */,
 				7676058217B3EB7000CA441B /* cook_book_recipe_icon_time.png in Resources */,
-				8944C1C016CDB9870087EFC9 /* cook_keyboard_autosuggest_bg@2x.png in Resources */,
-				8944C1C116CDB9870087EFC9 /* cook_keyboard_autosuggest_btn.png in Resources */,
 				F68E0F0117D2AE6600B56E7A /* cook_book_share_icon_unlocked@2x.png in Resources */,
 				76FC07ED17C6667F00ABF96F /* cook_customise_textbox_white_edit_onpress.png in Resources */,
-				8944C1C216CDB9870087EFC9 /* cook_keyboard_autosuggest_btn@2x.png in Resources */,
 				76EAAEE11787B25E00158211 /* cook_book_graphic_fish@2x.png in Resources */,
 				762CB78917B87A22000197E8 /* cook_book_inner_icon_small_comments.png in Resources */,
 				766E43CB17DEDC0D006B2495 /* cook_book_inner_icon_add_gray.png in Resources */,
