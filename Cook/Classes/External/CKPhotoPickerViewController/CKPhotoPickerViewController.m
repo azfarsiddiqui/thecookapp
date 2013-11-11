@@ -484,17 +484,7 @@
     
     // Save to photo album.
     if (self.imageSourceType == UIImagePickerControllerSourceTypeCamera && self.saveToPhotoAlbum) {
-        
-        // Check status
-        ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-        if (status != ALAuthorizationStatusAuthorized) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention"
-                                                            message:@"Please give Cook permission to access your photo library in your settings app." delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
-            [alert show];
-        } else {
-            NSLog(@"Saved to camera roll.");
-            UIImageWriteToSavedPhotosAlbum(visibleImage, nil, nil, nil);
-        }
+        UIImageWriteToSavedPhotosAlbum(visibleImage, nil, nil, nil);
     }
     
     [self.delegate photoPickerViewControllerSelectedImage:visibleImage];
