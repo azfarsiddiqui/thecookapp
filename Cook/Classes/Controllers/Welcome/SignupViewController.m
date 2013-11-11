@@ -345,7 +345,7 @@
 
 - (UIImageView *)dividerView {
     if (!_dividerView) {
-        UIImage *dividerImage = [[UIImage imageNamed:@"cook_login_divider.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 1.0, 0.0, 1.0 }];
+        UIImage *dividerImage = [[UIImage imageNamed:@"cook_login_divider.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 4.0, 0.0, 4.0 }];
         _dividerView = [[UIImageView alloc] initWithImage:dividerImage];
         CGRect frame = _dividerView.frame;
         frame.size.width = 288.0;
@@ -912,8 +912,8 @@
     [CKUser loginWithFacebookCompletion:^(BOOL isNewUser) {
         
         if (!self.signUpMode && isNewUser) {
-            self.facebookNewUserAlert = [[UIAlertView alloc] initWithTitle:@"New Facebook User"
-                                                                   message:@"This will create a new Cook account using the Facebook profile.\nAre you sure?"
+            self.facebookNewUserAlert = [[UIAlertView alloc] initWithTitle:@"Create Account"
+                                                                   message:@"Your Facebook Account isn’t registered. Would you like to create a new Cook Account?"
                                                                   delegate:self
                                                          cancelButtonTitle:@"Cancel" otherButtonTitles:@"Create", nil];
             [self.facebookNewUserAlert show];

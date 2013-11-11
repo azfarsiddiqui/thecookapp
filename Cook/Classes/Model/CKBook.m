@@ -91,7 +91,6 @@
     [parseBook setObject:kBookAttrGuestCaptionValue forKey:kModelAttrName];
     [parseBook setObject:kBookAttrGuestNameValue forKey:kBookAttrAuthor];
     [parseBook setObject:[CKBookCover guestCover] forKey:kBookAttrCover];
-    [parseBook setObject:[CKBookCover guestIllustration] forKey:kBookAttrIllustration];
     
     CKBook *guestBook = [[CKBook alloc] initWithParseObject:parseBook];
     guestBook.guest = YES;
@@ -532,7 +531,7 @@
 }
 
 - (BOOL)editable {
-    return self.guest || [self.user.objectId isEqualToString:[CKUser currentUser].objectId];
+    return (!self.guest && [self.user.objectId isEqualToString:[CKUser currentUser].objectId]);
 }
 
 - (void)addFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {
@@ -880,7 +879,7 @@
         if (!error) {
             
             // Collect the object ids.
-            NSArray *objectIds = [parseFollows collect:^id(PFObject *parseFollow) {
+            NSArray *followObjectIds = [parseFollows collect:^id(PFObject *parseFollow) {
                 PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
                 return parseBook.objectId;
             }];
@@ -890,7 +889,7 @@
                 CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
                 
                 // Book followed?
-                BOOL isFollowed = [objectIds containsObject:book.objectId];
+                BOOL isFollowed = [followObjectIds containsObject:book.objectId];
                 if (isFollowed) {
                     book.status = kBookStatusFollowed;
                 } else {
@@ -903,7 +902,15 @@
             // Annotate. friends books with follow indicators.
             NSArray *suggestedBooks = [parseSuggestedBooks collect:^id(PFObject *parseBook) {
                 CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
-                book.status = kBookStatusFBSuggested;
+                
+                // Book followed?
+                BOOL isFollowed = [followObjectIds containsObject:book.objectId];
+                if (isFollowed) {
+                    book.status = kBookStatusFollowed;
+                } else {
+                    book.status = kBookStatusFBSuggested;
+                }
+                
                 return book;
             }];
             

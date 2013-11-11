@@ -137,7 +137,7 @@
 }
 
 - (void)setCover:(NSString *)cover illustration:(NSString *)illustration {
-    [self setLayout:[CKBookCover layoutForIllustration:illustration]];
+    [self setLayout:[CKBookCover layoutForIllustration:illustration guest:self.book.guest]];
     if (illustration) {
         self.illustrationImageView.image = [CKBookCover imageForIllustration:illustration];
     }

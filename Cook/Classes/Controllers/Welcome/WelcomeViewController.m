@@ -146,7 +146,7 @@
         _welcomePageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:74.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:76.0]
                                                    text:@"WELCOME" textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-10.0];
         titleLabel.frame = CGRectMake(floorf((size.width - titleLabel.frame.size.width) / 2.0),
@@ -158,7 +158,7 @@
         // HR
         CGFloat hrWidth = titleLabel.frame.size.width * 0.8;
         CGFloat dividerOffset = 0.0;
-        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
+        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[self dividerImage]];
         dividerView.frame = (CGRect){
             floorf((_welcomePageView.bounds.size.width - hrWidth) / 2.0),
             titleLabel.frame.origin.y + titleLabel.frame.size.height + dividerOffset,
@@ -189,7 +189,7 @@
         _createPageView.autoresizingMask = UIViewAutoresizingNone;
 
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:66.0]
                                                    text:[NSString stringWithFormat:@"YOUR%@COOKBOOK", [NSString CK_lineBreakString]]
                                           textAlignment:NSTextAlignmentLeft
                                           availableSize:size paragraphBefore:-10.0];
@@ -202,7 +202,7 @@
         // HR
         CGFloat hrWidth = titleLabel.frame.size.width;
         CGFloat dividerOffset = 10.0;
-        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
+        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[self dividerImage]];
         dividerView.frame = (CGRect){
             0.0,
             titleLabel.frame.origin.y + titleLabel.frame.size.height + dividerOffset,
@@ -232,7 +232,7 @@
         _collectPageView.autoresizingMask = UIViewAutoresizingNone;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:66.0]
                                                    text:[NSString stringWithFormat:@"SHARE YOUR%@RECIPES", [NSString CK_lineBreakString]]
                                           textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-14.0];
@@ -245,7 +245,7 @@
         // HR
         CGFloat hrWidth = titleLabel.frame.size.width * 0.6;
         CGFloat dividerOffset = 10.0;
-        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_login_divider.png"]];
+        UIImageView *dividerView = [[UIImageView alloc] initWithImage:[self dividerImage]];
         dividerView.frame = (CGRect){
             floorf((_collectPageView.bounds.size.width - hrWidth) / 2.0),
             titleLabel.frame.origin.y + titleLabel.frame.size.height + dividerOffset,
@@ -272,7 +272,7 @@
         CGSize size = self.collectionView.bounds.size;
         
         // Title
-        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:64.0]
+        UILabel *titleLabel = [self createLabelWithFont:[UIFont fontWithName:@"BrandonGrotesque-Light" size:66.0]
                                                    text:@"LET'S GET STARTED..." textAlignment:NSTextAlignmentCenter
                                           availableSize:size paragraphBefore:-10.0];
         _signUpPageView = titleLabel;
@@ -698,6 +698,10 @@
                              [self.delegate welcomeViewControllerGetStartedReached];
                          }];
     }
+}
+
+- (UIImage *)dividerImage {
+    return [[UIImage imageNamed:@"cook_login_divider.png"] resizableImageWithCapInsets:(UIEdgeInsets){ 0.0, 4.0, 0.0, 4.0 }];
 }
 
 @end
