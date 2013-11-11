@@ -142,8 +142,8 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
     {
         return;
     }
-    
-    [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+    if (!toDisk)
+        [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
     
     if (toDisk)
     {
