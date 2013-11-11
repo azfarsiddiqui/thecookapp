@@ -1290,7 +1290,6 @@
 		F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */; };
 		F6526BB817D1C998000DDD95 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6526BB717D1C998000DDD95 /* Social.framework */; };
 		F652ECC41813731C00D73AF9 /* CKListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F652ECC31813731C00D73AF9 /* CKListHeaderView.m */; };
-		F668F8C7182094C000F3DC76 /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F668F8C6182094C000F3DC76 /* Reveal.framework */; };
 		F668F8D618228AC800F3DC76 /* SocialMediaActionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */; };
 		F686ED491817787600746A49 /* CKCommentEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F686ED481817787600746A49 /* CKCommentEditViewController.m */; };
 		F68E0EF017D2AE6600B56E7A /* cook_book_share_icon_email.png in Resources */ = {isa = PBXBuildFile; fileRef = F68E0EDE17D2AE6600B56E7A /* cook_book_share_icon_email.png */; };
@@ -2903,7 +2902,6 @@
 		F6526BB917D1D575000DDD95 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		F652ECC21813731C00D73AF9 /* CKListHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKListHeaderView.h; sourceTree = "<group>"; };
 		F652ECC31813731C00D73AF9 /* CKListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKListHeaderView.m; sourceTree = "<group>"; };
-		F668F8C6182094C000F3DC76 /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "../../../../../Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
 		F668F8D418228AC800F3DC76 /* SocialMediaActionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialMediaActionHeader.h; sourceTree = "<group>"; };
 		F668F8D518228AC800F3DC76 /* SocialMediaActionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialMediaActionHeader.m; sourceTree = "<group>"; };
 		F686ED471817787600746A49 /* CKCommentEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKCommentEditViewController.h; sourceTree = "<group>"; };
@@ -3019,7 +3017,6 @@
 				895A2B8D1655BC010061E687 /* OpenGLES.framework in Frameworks */,
 				895A2B8C1655BBF20061E687 /* CoreText.framework in Frameworks */,
 				89622182161E9FA80023EC30 /* CoreData.framework in Frameworks */,
-				F668F8C7182094C000F3DC76 /* Reveal.framework in Frameworks */,
 				89622180161E9F970023EC30 /* libz.1.2.5.dylib in Frameworks */,
 				76ED276F1612DCC60012E479 /* AudioToolbox.framework in Frameworks */,
 				76ED27701612DCC60012E479 /* CFNetwork.framework in Frameworks */,
@@ -4669,7 +4666,6 @@
 		76ED27401612DC180012E479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F668F8C6182094C000F3DC76 /* Reveal.framework */,
 				F6526BB917D1D575000DDD95 /* MessageUI.framework */,
 				F6526BB717D1C998000DDD95 /* Social.framework */,
 				7632F25017AF4CFA00E80952 /* Crashlytics.framework */,
