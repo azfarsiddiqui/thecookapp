@@ -464,11 +464,11 @@
 #pragma mark - Book Cover
 
 + (UIFont *)bookCoverViewModeNameMaxFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:56];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:60];
 }
 
 + (UIFont *)bookCoverViewStoreModeNameMaxFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:56];
+    return [UIFont fontWithName:@"BrandonGrotesque-Regular" size:60];
 }
 
 + (UIFont *)bookCoverViewModeNameFontForSize:(CGFloat)fontSize {

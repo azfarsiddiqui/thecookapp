@@ -91,7 +91,6 @@
     [parseBook setObject:kBookAttrGuestCaptionValue forKey:kModelAttrName];
     [parseBook setObject:kBookAttrGuestNameValue forKey:kBookAttrAuthor];
     [parseBook setObject:[CKBookCover guestCover] forKey:kBookAttrCover];
-    [parseBook setObject:[CKBookCover guestIllustration] forKey:kBookAttrIllustration];
     
     CKBook *guestBook = [[CKBook alloc] initWithParseObject:parseBook];
     guestBook.guest = YES;
@@ -532,7 +531,7 @@
 }
 
 - (BOOL)editable {
-    return self.guest || [self.user.objectId isEqualToString:[CKUser currentUser].objectId];
+    return (!self.guest && [self.user.objectId isEqualToString:[CKUser currentUser].objectId]);
 }
 
 - (void)addFollower:(CKUser *)user success:(ObjectSuccessBlock)success failure:(ObjectFailureBlock)failure {

@@ -233,8 +233,10 @@
     return [[[CKBookCover settings] valueForKey:@"Illustrations"] allKeys];
 }
 
-+ (BookCoverLayout)layoutForIllustration:(NSString *)illustration {
-    if ([self imageExistsForIllustration:illustration]) {
++ (BookCoverLayout)layoutForIllustration:(NSString *)illustration guest:(BOOL)guest {
+    if (guest) {
+        return BookCoverLayoutTop;
+    } else if (![self imageExistsForIllustration:illustration]) {
         return BookCoverLayoutMid;
     } else {
         return [self layoutForKey:[[CKBookCover settings] valueForKeyPath:
@@ -339,7 +341,7 @@
 
 + (BOOL)imageExistsForIllustration:(NSString *)illustration {
     NSString *imageName = [[CKBookCover settings] valueForKeyPath:[NSString stringWithFormat:@"Illustrations.%@.Image", illustration]];
-    return (imageName == nil);
+    return ([imageName length] > 0);
 }
 
 @end

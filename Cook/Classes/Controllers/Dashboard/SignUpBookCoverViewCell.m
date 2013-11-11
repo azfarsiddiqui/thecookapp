@@ -13,7 +13,6 @@
 
 @interface SignUpBookCoverViewCell () <CKSignInButtonViewDelegate>
 
-@property (nonatomic, strong) UIImageView *dullOverlayView;
 @property (nonatomic, strong) CKSignInButtonView *registerButton;
 @property (nonatomic, strong) CKBlueSignInButtonView *signInButton;
 
@@ -21,11 +20,10 @@
 
 @implementation SignUpBookCoverViewCell
 
-#define kWidth  282.0   // 270 + 12 shadows left/right
+#define kWidth  272.0   // 270 + 12 shadows left/right
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self.contentView addSubview:self.dullOverlayView];
         [self.contentView addSubview:self.registerButton];
         [self.contentView addSubview:self.signInButton];
     }
@@ -33,16 +31,7 @@
 }
 
 - (void)loadBook:(CKBook *)book {
-//    self.bookCoverView.illustrationImageView.alpha = 0.5;
     [super loadBook:book];
-}
-
-- (void)enableEditMode:(BOOL)enable {
-    [super enableEditMode:enable];
-    
-    self.registerButton.hidden = enable;
-    self.signInButton.hidden = enable;
-    self.dullOverlayView.hidden = enable;
 }
 
 #pragma mark - CKSignInButtonViewDelegate methods
@@ -61,14 +50,6 @@
 
 #pragma mark - Properties
 
-- (UIImageView *)dullOverlayView {
-    if (!_dullOverlayView) {
-        _dullOverlayView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_demo_overlay.png"]];
-        _dullOverlayView.center = self.bookCoverView.center;
-    }
-    return _dullOverlayView;
-}
-
 - (CKBlueSignInButtonView *)signInButton {
     if (!_signInButton) {
         _signInButton = [[CKBlueSignInButtonView alloc] initWithWidth:self.registerButton.frame.size.width text:@"SIGN IN" activity:NO delegate:self];
@@ -83,7 +64,7 @@
 
 - (CKSignInButtonView *)registerButton {
     if (!_registerButton) {
-        UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0);
+        UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 16.0, 0.0);
         _registerButton = [[CKSignInButtonView alloc] initWithWidth:kWidth text:@"REGISTER" activity:NO delegate:self];
         _registerButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin;
         _registerButton.frame = CGRectMake(floorf((self.contentView.bounds.size.width - kWidth) / 2.0),
