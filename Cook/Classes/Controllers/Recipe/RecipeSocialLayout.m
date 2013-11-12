@@ -323,14 +323,18 @@
         CGFloat minAlpha = 0.0;
         
         CGRect frame = attributes.frame;
+        CKRecipeComment *comment = [self.delegate recipeSocialLayoutCommentAtIndex:attributes.indexPath.row];
+        CGSize size =  [self sizeForComment:comment commentIndex:attributes.indexPath.row];
         
         if (frame.origin.y <= topFadeOffset) {
             CGFloat effectiveDistance = 100.0;
-            CGFloat distance = MIN(topFadeOffset - frame.origin.y, effectiveDistance);
+            CGFloat fadeRate = 2.0f;
+            CGFloat distance = MIN(topFadeOffset - frame.origin.y - (size.height-effectiveDistance)/fadeRate, effectiveDistance);
             attributes.alpha = MAX(minAlpha, 1.0 - (distance / effectiveDistance));
-        } else if (frame.origin.y + frame.size.height >= bottomFadeOffset) {
-            CGFloat effectiveDistance = 70.0;
-            CGFloat distance = MIN((frame.origin.y + frame.size.height) - bottomFadeOffset, effectiveDistance);
+        } else if (frame.origin.y + size.height >= bottomFadeOffset) {
+            CGFloat effectiveDistance = 120.0;
+            CGFloat fadeRate = 1.5;
+            CGFloat distance = MIN((frame.origin.y + frame.size.height) - (bottomFadeOffset) - (size.height - effectiveDistance)/fadeRate, effectiveDistance);
             attributes.alpha = MAX(minAlpha, 1.0 - (distance / effectiveDistance));
         } else {
             attributes.alpha = 1.0;
