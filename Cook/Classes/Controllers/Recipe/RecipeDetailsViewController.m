@@ -132,6 +132,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 #define kContentImageOffset (UIOffset){ 0.0, -13.0 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (id)initWithRecipe:(CKRecipe *)recipe {
@@ -169,6 +170,10 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     leftEdgeGesture.edges = UIRectEdgeLeft;
     leftEdgeGesture.delegate = self;
     [self.view addGestureRecognizer:leftEdgeGesture];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didBecomeInactive)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:[UIApplication sharedApplication]];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -782,6 +787,16 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
             _privacyView.frame.size.height};
     }
     return _privacyView;
+}
+
+#pragma mark - Background notification methods
+
+- (void)didBecomeInactive {
+    //If backgrounding, remove photo picker to prevent crash
+    if (self.photoPickerViewController)
+    {
+        [self showPhotoPicker:NO];
+    }
 }
 
 #pragma mark - Private methods
