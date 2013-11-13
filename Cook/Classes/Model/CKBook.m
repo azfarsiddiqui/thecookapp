@@ -249,7 +249,7 @@
     }
     
     [PFCloud callFunctionInBackground:@"friendsAndSuggestedBooks"
-                       withParameters:@{}
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
                                 block:^(NSDictionary *booksResults, NSError *error) {
                                     
                                     if (!error) {
@@ -259,11 +259,13 @@
                                         NSMutableArray *friendsSuggestedBooks = [NSMutableArray arrayWithArray:friendsBooks];
                                         NSArray *suggestedBooks = [booksResults objectForKey:@"suggested"];
                                         [friendsSuggestedBooks addObjectsFromArray:suggestedBooks];
+                                        NSArray *followedBookIds = [booksResults objectForKey:@"followedBookIds"];
                                         
                                         // Annotate for following and suggested status.
                                         [self annotateForFriendsBooks:friendsBooks
                                                        suggestedBooks:suggestedBooks
                                                                  user:user
+                                                      followedBookIds:followedBookIds
                                                               success:^(NSArray *annotatedBooks) {
                                                                   success(annotatedBooks);
                                                               }
@@ -512,30 +514,14 @@
         return;
     }
     
-    CKUser *currentUser = [CKUser currentUser];
     DLog(@"searching keyword[%@]", searchTerm);
-    [PFCloud callFunctionInBackground:@"searchBooks"
-                       withParameters:@{ @"keyword" : searchTerm }
-                                block:^(NSArray *parseBooks, NSError *error) {
-                                    
-                                    if (!error) {
-                                        if (currentUser) {
-                                            [self annotateFollowedBooks:parseBooks
-                                                                   user:currentUser
-                                                                success:^(NSArray *annotatedBooks) {
-                                                                    success(annotatedBooks);
-                                                                }
-                                                                failure:^(NSError *error) {
-                                                                    failure(error);
-                                                                }];
-                                        } else {
-                                            success([parseBooks collect:^id(PFObject *parseBook) {
-                                                return [[CKBook alloc] initWithParseObject:parseBook];
-                                            }]);
-                                        }
-                                    } else {
-                                        DLog(@"Error searching books: %@", [error localizedDescription]);
+    [PFCloud callFunctionInBackground:@"storeSearchBooks"
+                       withParameters:@{ @"keyword" : searchTerm, @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *results, NSError *error) {                                    
+                                    if (error) {
                                         failure(error);
+                                    } else {
+                                        [self processStoreBooksFromResults:results success:success failure:failure];
                                     }
                                 }];
 }
@@ -896,70 +882,49 @@
 }
 
 + (void)annotateForFriendsBooks:(NSArray *)parseFriendsBooks suggestedBooks:(NSArray *)parseSuggestedBooks
-                           user:(CKUser *)user success:(ListObjectsSuccessBlock)success
-                        failure:(ObjectFailureBlock)failure {
+                           user:(CKUser *)user followedBookIds:(NSArray *)followedBookIds
+                        success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    // Existing follows.
-    __block CKUser *currentUser = user;
-    PFQuery *followsQuery = [PFQuery queryWithClassName:kUserBookFollowModelName];
-    [followsQuery whereKey:kUserModelForeignKeyName equalTo:currentUser.parseUser];
-    [followsQuery findObjectsInBackgroundWithBlock:^(NSArray *parseFollows, NSError *error)  {
+        // Annotate. friends books with follow indicators.
+        NSArray *friendsBooks = [parseFriendsBooks collect:^id(PFObject *parseBook) {
+            CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
+            
+            // Book followed?
+            BOOL isFollowed = [followedBookIds containsObject:book.objectId];
+            if (isFollowed) {
+                book.status = kBookStatusFollowed;
+            } else {
+                book.status = kBookStatusNone;
+            }
+            
+            return book;
+        }];
         
-        if (!error) {
+        // Annotate. friends books with follow indicators.
+        NSArray *suggestedBooks = [parseSuggestedBooks collect:^id(PFObject *parseBook) {
+            CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
             
-            // Collect the object ids.
-            NSArray *followObjectIds = [parseFollows collect:^id(PFObject *parseFollow) {
-                PFObject *parseBook = [parseFollow objectForKey:kBookModelForeignKeyName];
-                return parseBook.objectId;
-            }];
-            
-            // Annotate. friends books with follow indicators.
-            NSArray *friendsBooks = [parseFriendsBooks collect:^id(PFObject *parseBook) {
-                CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
-                
-                // Book followed?
-                BOOL isFollowed = [followObjectIds containsObject:book.objectId];
-                if (isFollowed) {
-                    book.status = kBookStatusFollowed;
-                } else {
-                    book.status = kBookStatusNone;
-                }
-                
-                return book;
-            }];
-            
-            // Annotate. friends books with follow indicators.
-            NSArray *suggestedBooks = [parseSuggestedBooks collect:^id(PFObject *parseBook) {
-                CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
-                
-                // Book followed?
-                BOOL isFollowed = [followObjectIds containsObject:book.objectId];
-                if (isFollowed) {
-                    book.status = kBookStatusFollowed;
-                } else {
-                    book.status = kBookStatusFBSuggested;
-                }
-                
-                return book;
-            }];
-            
-            // Results
-            NSMutableArray *combinedBooks = [NSMutableArray new];
-            if ([friendsBooks count] > 0) {
-                [combinedBooks addObjectsFromArray:friendsBooks];
+            // Book followed?
+            BOOL isFollowed = [followedBookIds containsObject:book.objectId];
+            if (isFollowed) {
+                book.status = kBookStatusFollowed;
+            } else {
+                book.status = kBookStatusFBSuggested;
             }
-            if ([suggestedBooks count] > 0) {
-                [combinedBooks addObjectsFromArray:suggestedBooks];
-            }
-            success(combinedBooks);
             
-        } else {
-            
-            DLog(@"Error annotating followed/suggested books by follows: %@", [error localizedDescription]);
-            failure(error);
+            return book;
+        }];
+        
+        // Results
+        NSMutableArray *combinedBooks = [NSMutableArray new];
+        if ([friendsBooks count] > 0) {
+            [combinedBooks addObjectsFromArray:friendsBooks];
         }
+        if ([suggestedBooks count] > 0) {
+            [combinedBooks addObjectsFromArray:suggestedBooks];
+        }
+        success(combinedBooks);
         
-    }];
 }
 
 + (void)filterFollowedBooks:(NSArray *)parseBooks user:(CKUser *)user success:(ListObjectsSuccessBlock)success
