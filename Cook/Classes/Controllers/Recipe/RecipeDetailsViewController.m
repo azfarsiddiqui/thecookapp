@@ -8,6 +8,7 @@
 
 #import "RecipeDetailsViewController.h"
 #import "CKRecipe.h"
+#import "CKRecipeImage.h"
 #import "CKRecipePin.h"
 #import "RecipeDetails.h"
 #import "RecipeDetailsView.h"
@@ -87,6 +88,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
 @property (nonatomic, assign) BOOL editMode;
 @property (nonatomic, assign) BOOL addMode;
 @property (nonatomic, assign) BOOL locatingInProgress;
+@property (nonatomic, assign) BOOL isDeleteRecipeImage;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIButton *deleteButton;
@@ -160,6 +162,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
     self.isClosed = NO;
+    self.isDeleteRecipeImage = NO;
     [self initImageView];
     [self initScrollView];
     [self initRecipeDetails];
@@ -311,6 +314,15 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     }];
 }
 
+- (void)photoPickerViewControllerDeleteRequested
+{
+    [self loadImageViewWithPhoto:[CKBookCover recipeEditBackgroundImageForCover:self.book.cover]
+                     placeholder:YES];
+    self.recipeDetails.image = nil;
+    self.recipeDetails.saveRequired = YES;
+    self.isDeleteRecipeImage = YES;
+}
+
 #pragma mark - RecipeSocialViewControllerDelegate methods
 
 - (void)recipeSocialViewControllerCloseRequested {
@@ -321,7 +333,7 @@ typedef NS_ENUM(NSUInteger, SnapViewport) {
     return self.likeButton;
 }
 
-#pragma mark - RecipeShareViewControllerDelegate methods
+#pragma mark - RecipeShareViewControllerDelegate method6s
 
 - (void)recipeShareViewControllerCloseRequested {
     [self showShareOverlay:NO];
@@ -1725,6 +1737,12 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
         if (!self.addMode && ([self.recipeDetails nameUpdated] || [self.recipeDetails pageUpdated])) {
             self.recipe.recipeUpdatedDateTime = [NSDate date];
         }
+        //If has deleted image and no new image selected
+        if (self.isDeleteRecipeImage)
+        {
+            [self.recipe.recipeImage deleteEventually];
+            self.recipe.recipeImage = nil;
+        }
         
         // Get any existing location from the original recipe.
         CKLocation *existingLocation = self.recipeDetails.originalRecipe.geoLocation;
@@ -1862,7 +1880,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 
 - (void)saveRecipeWithImageStartProgress:(CGFloat)startProgress endProgress:(CGFloat)endProgress
                               completion:(void (^)())completion failure:(void (^)(NSError *))failure {
-    
     [self.recipe saveWithImage:self.recipeDetails.image
                  startProgress:startProgress
                    endProgress:endProgress
@@ -2039,7 +2056,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     if (show) {
         // Present photo picker fullscreen.
         UIView *rootView = [[AppHelper sharedInstance] rootView];
-        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self];
+        UIImage *editingImage = [self.recipe hasPhotos] ? self.imageView.image : nil;
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self type:CKPhotoPickerImageTypeLandscape editImage:editingImage];
         self.photoPickerViewController = photoPickerViewController;
         self.photoPickerViewController.view.alpha = 0.0;
         [rootView addSubview:self.photoPickerViewController.view];

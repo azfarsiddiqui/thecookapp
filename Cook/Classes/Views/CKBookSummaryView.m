@@ -86,6 +86,7 @@
         self.backgroundColor = [UIColor clearColor];
         self.editingHelper = [[CKEditingViewHelper alloc] init];
         self.currentUser = [CKUser currentUser];
+        self.isDeleteCoverPhoto = NO;
         
         [self initViews];
         [self loadData];
@@ -229,6 +230,10 @@
     [self showPhotoPicker:NO];
 }
 
+- (void)photoPickerViewControllerDeleteRequested {
+    //Delete not enabled
+}
+
 #pragma mark - CKUserProfilePhotoViewDelegate methods
 
 - (void)userProfilePhotoViewEditRequested {
@@ -255,6 +260,16 @@
             [self updateStory:self.updatedStory];
             
             self.book.story = self.updatedStory;
+        }
+        
+        if (self.isDeleteCoverPhoto)
+        {
+            self.book.coverPhotoFile = nil;
+            self.book.coverPhotoThumbFile = nil;
+        }
+        
+        if (self.updatedStory || self.isDeleteCoverPhoto)
+        {
             [self.book saveInBackground:^{
                 // Ignore success.
             } failure:^(NSError *error) {
@@ -496,7 +511,7 @@
     if (show) {
         // Present photo picker fullscreen.
         UIView *rootView = [[AppHelper sharedInstance] rootView];
-        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self type:CKPhotoPickerImageTypeSquare];
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self type:CKPhotoPickerImageTypeSquare editImage:nil];
         self.photoPickerViewController = photoPickerViewController;
         self.photoPickerViewController.view.alpha = 0.0;
         [rootView addSubview:self.photoPickerViewController.view];

@@ -625,6 +625,9 @@
         
         // Replace the list with a single-element list, future expandable for more photos.
         [self.parseObject setObject:@[recipeImage.parseObject] forKey:kRecipeAttrRecipePhotos];
+    } else if (recipeImage == nil) {
+        //TODO: Will need to change this later to accomodate multiple images
+        [self.parseObject removeObjectForKey:kRecipeAttrRecipePhotos];
     }
 }
 

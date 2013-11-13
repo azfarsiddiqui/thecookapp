@@ -29,6 +29,7 @@
 @property (nonatomic, strong) UIImage *updatedProfileImage;
 @property (nonatomic, strong) NSString *updatedName;
 @property (nonatomic, strong) NSString *updatedStory;
+@property (nonatomic, assign) BOOL isDeleteCoverPhoto;
 
 - (id)initWithBook:(CKBook *)book;
 - (id)initWithBook:(CKBook *)book storeMode:(BOOL)storeMode;
