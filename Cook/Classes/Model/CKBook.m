@@ -317,30 +317,48 @@
     }];
 }
 
+#pragma mark - Store books.
+
++ (void)categoriesBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"storeCategoriesBooks"
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    
+                                    if (error) {
+                                        failure(error);
+                                    } else {
+                                        [self processStoreBooksFromResults:results success:success failure:failure];
+                                    }
+                                    
+                                }];
+}
+
 + (void)featuredBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
     
-    [PFCloud callFunctionInBackground:@"featuredBooks"
+    [PFCloud callFunctionInBackground:@"storeFeatureBooks"
                        withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
-                                block:^(NSArray *parseBooks, NSError *error) {
+                                block:^(NSDictionary *results, NSError *error) {
                                     
-                                    if (!error) {
-                                        
-                                        if (user) {
-                                            [self annotateFollowedBooks:parseBooks
-                                                                   user:user
-                                                                success:^(NSArray *annotatedBooks) {
-                                                                    success(annotatedBooks);
-                                                                }
-                                                                failure:^(NSError *error) {
-                                                                    failure(error);
-                                                                }];
-                                        } else {
-                                            success([parseBooks collect:^id(PFObject *parseBook) {
-                                                return [[CKBook alloc] initWithParseObject:parseBook];
-                                            }]);
-                                        }
+                                    if (error) {
+                                        failure(error);
                                     } else {
-                                        DLog(@"Error loading featured books: %@", [error localizedDescription]);
+                                        [self processStoreBooksFromResults:results success:success failure:failure];
+                                    }
+                                    
+                                }];
+}
+
++ (void)worldBooksForUser:(CKUser *)user success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    [PFCloud callFunctionInBackground:@"storeWorldBooks"
+                       withParameters:@{ @"cookVersion": [[AppHelper sharedInstance] appVersion] }
+                                block:^(NSDictionary *results, NSError *error) {
+                                    
+                                    if (error) {
+                                        failure(error);
+                                    } else {
+                                        [self processStoreBooksFromResults:results success:success failure:failure];
                                     }
                                 }];
 }
@@ -832,6 +850,16 @@
     }];
 }
 
++ (void)annotateFollowedBooks:(NSArray *)parseBooks followedBookIds:(NSArray *)followedBookIds
+                      success:(ListObjectsSuccessBlock)success failure:(ObjectFailureBlock)failure {
+    
+    success([parseBooks collect:^id(PFObject *parseBook) {
+        CKBook *book = [[CKBook alloc] initWithParseObject:parseBook];
+        book.status = [followedBookIds containsObject:book.objectId] ? kBookStatusFollowed : kBookStatusNone;
+        return book;
+    }]);
+}
+
 + (void)annotateFollowedBooks:(NSArray *)parseBooks user:(CKUser *)user success:(ListObjectsSuccessBlock)success
                       failure:(ObjectFailureBlock)failure {
     
@@ -1016,6 +1044,21 @@
     return [parseBooks collect:^id(PFObject *parseBook) {
         return [[CKBook alloc] initWithParseObject:parseBook];
     }];
+}
+
++ (void)processStoreBooksFromResults:(NSDictionary *)results success:(ListObjectsSuccessBlock)success
+                             failure:(ObjectFailureBlock) failure {
+    
+    NSArray *parseBooks = [results objectForKey:@"books"];
+    NSArray *followedBookIds = [results objectForKey:@"followedBookIds"];
+    
+    [self annotateFollowedBooks:parseBooks
+                followedBookIds:followedBookIds
+                        success:^(NSArray *annotatedBooks) {
+                            success(annotatedBooks);
+                        } failure:^(NSError *error) {
+                            failure(error);
+                        }];
 }
 
 @end

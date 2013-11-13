@@ -30,14 +30,6 @@
 
 #define kFacebookCellId     @"FacebookCellId"
 
-- (BOOL)updateForFriendsBook:(BOOL)friendsBook {
-    if (friendsBook) {
-        return YES;
-    } else {
-        return [super updateForFriendsBook:friendsBook];
-    }
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.collectionView registerClass:[CKContentContainerCell class] forCellWithReuseIdentifier:kFacebookCellId];

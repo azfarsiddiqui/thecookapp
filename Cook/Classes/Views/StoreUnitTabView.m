@@ -47,6 +47,9 @@
     self.selectedTabImageView.alpha = select ? 1.0 : 0.0;
     self.iconImageView.alpha = select ? 1.0 : 0.0;
     self.offIconImageView.alpha = select ? 0.0 : 1.0;
+    
+    // Text label.
+    self.selectedLabel.textColor = select ? [Theme storeTabSelectedTextColour] : [Theme storeTabTextColour];
 }
 
 #pragma mark - Private
@@ -66,8 +69,8 @@
     // Selected label to be hidden to start off with.
     UILabel *selectedLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     selectedLabel.backgroundColor = [UIColor clearColor];
-    selectedLabel.font = [Theme storeTabSelectedFont];
-    selectedLabel.textColor = [Theme storeTabSelectedTextColour];
+    selectedLabel.font = [Theme storeTabFont];
+    selectedLabel.textColor = [Theme storeTabTextColour];
     selectedLabel.text = self.text;
     selectedLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [selectedLabel sizeToFit];

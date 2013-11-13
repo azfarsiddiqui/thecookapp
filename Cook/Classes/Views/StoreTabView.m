@@ -13,8 +13,9 @@
 @interface StoreTabView ()
 
 @property (nonatomic, assign) id<StoreTabViewDelegate> delegate;
+@property (nonatomic, strong) StoreUnitTabView *categoriesTabView;
 @property (nonatomic, strong) StoreUnitTabView *featuredTabView;
-@property (nonatomic, strong) StoreUnitTabView *friendsTabView;
+@property (nonatomic, strong) StoreUnitTabView *worldTabView;
 
 @property (nonatomic, strong) UIImage *selectedTabImage;
 @property (nonatomic, strong) UIImageView *topImageView;
@@ -33,8 +34,9 @@
 #define kHeight         105
 #define kMinTabHeight   83.0
 #define kMaxTabHeight   103.0
-#define kFeaturedTab    0
-#define kFriendsTab     1
+#define kCategoriesTab  0
+#define kFeaturedTab    1
+#define kWorldTab       2
 
 - (id)initWithDelegate:(id<StoreTabViewDelegate>)delegate {
     if (self = [super initWithFrame:CGRectZero]) {
@@ -45,12 +47,45 @@
     return self;
 }
 
+- (void)selectCategories {
+    [self selectTabAtIndex:kCategoriesTab force:YES];
+}
+
 - (void)selectFeatured {
     [self selectTabAtIndex:kFeaturedTab force:YES];
 }
 
-- (void)selectFriends {
-    [self selectTabAtIndex:kFriendsTab force:YES];
+- (void)selectWorld {
+    [self selectTabAtIndex:kWorldTab force:YES];
+}
+
+#pragma mark - Properties
+
+- (StoreUnitTabView *)categoriesTabView {
+    if (!_categoriesTabView) {
+        _categoriesTabView = [[StoreUnitTabView alloc] initWithText:@"CATEGORIES"
+                                                               icon:[UIImage imageNamed:@"cook_library_icons_categories.png"]
+                                                            offIcon:[UIImage imageNamed:@"cook_library_icons_categories_off.png"]];
+    }
+    return _categoriesTabView;
+}
+
+- (StoreUnitTabView *)featuredTabView {
+    if (!_featuredTabView) {
+        _featuredTabView = [[StoreUnitTabView alloc] initWithText:@"FEATURED"
+                                                             icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]
+                                                          offIcon:[UIImage imageNamed:@"cook_library_icons_featured_off.png"]];
+    }
+    return _featuredTabView;
+}
+
+- (StoreUnitTabView *)worldTabView {
+    if (!_worldTabView) {
+        _worldTabView = [[StoreUnitTabView alloc] initWithText:@"WORLD"
+                                                          icon:[UIImage imageNamed:@"cook_library_icons_world.png"]
+                                                       offIcon:[UIImage imageNamed:@"cook_library_icons_world_off.png"]];
+    }
+    return _worldTabView;
 }
 
 #pragma mark - Private methods
@@ -59,32 +94,37 @@
     
     CGPoint offset = CGPointZero;
     
-    StoreUnitTabView *featuredTabView = [[StoreUnitTabView alloc] initWithText:@"FEATURED"
-                                                                          icon:[UIImage imageNamed:@"cook_library_icons_featured.png"]
-                                                                       offIcon:[UIImage imageNamed:@"cook_library_icons_featured_off.png"]];
-    featuredTabView.frame = (CGRect){
+    // Categories Tab.
+    self.categoriesTabView.frame = (CGRect){
         offset.x,
         offset.y,
-        featuredTabView.frame.size.width,
-        featuredTabView.frame.size.height
+        self.categoriesTabView.frame.size.width,
+        self.categoriesTabView.frame.size.height
     };
-    [self addSubview:featuredTabView];
-    self.featuredTabView = featuredTabView;
+    [self addSubview:self.categoriesTabView];
+    self.bounds = CGRectUnion(self.bounds, self.categoriesTabView.frame);
+    offset.x += self.categoriesTabView.frame.size.width;
+    
+    // Featured Tab.
+    self.featuredTabView.frame = (CGRect){
+        offset.x,
+        offset.y,
+        self.featuredTabView.frame.size.width,
+        self.featuredTabView.frame.size.height
+    };
+    [self addSubview:self.featuredTabView];
     self.bounds = CGRectUnion(self.bounds, self.featuredTabView.frame);
     offset.x += self.featuredTabView.frame.size.width;
     
-    StoreUnitTabView *friendsTabView = [[StoreUnitTabView alloc] initWithText:@"FRIENDS"
-                                                                         icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
-                                                                      offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]];
-    friendsTabView.frame = (CGRect){
+    // World Tab.
+    self.worldTabView.frame = (CGRect){
         offset.x,
         offset.y,
-        friendsTabView.frame.size.width,
-        friendsTabView.frame.size.height
+        self.worldTabView.frame.size.width,
+        self.worldTabView.frame.size.height
     };
-    [self addSubview:friendsTabView];
-    self.friendsTabView = friendsTabView;
-    self.bounds = CGRectUnion(self.bounds, self.friendsTabView.frame);
+    [self addSubview:self.worldTabView];
+    self.bounds = CGRectUnion(self.bounds, self.worldTabView.frame);
     
     // Register tap.
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
@@ -94,20 +134,25 @@
 
 - (void)tapped:(UITapGestureRecognizer *)tapGesture {
     CGPoint location = [tapGesture locationInView:self];
-    if (CGRectContainsPoint(self.featuredTabView.frame, location)) {
+    if (CGRectContainsPoint(self.categoriesTabView.frame, location)) {
+        [self selectCategories];
+    } else if (CGRectContainsPoint(self.featuredTabView.frame, location)) {
         [self selectFeatured];
-    } else if (CGRectContainsPoint(self.friendsTabView.frame, location)) {
-        [self selectFriends];
+    } else if (CGRectContainsPoint(self.worldTabView.frame, location)) {
+        [self selectWorld];
     }
 }
 
 - (void)selectedTabAtIndex:(NSUInteger)tabIndex {
     switch (tabIndex) {
+        case kCategoriesTab:
+            [self.delegate storeTabSelectedCategories];
+            break;
         case kFeaturedTab:
             [self.delegate storeTabSelectedFeatured];
             break;
-        case kFriendsTab:
-            [self.delegate storeTabSelectedFriends];
+        case kWorldTab:
+            [self.delegate storeTabSelectedWorld];
             break;
         default:
             break;
@@ -134,8 +179,9 @@
                           delay:0.0
                         options:UIViewAnimationCurveEaseIn
                      animations:^{
+                         [self.categoriesTabView select:(tabIndex == kCategoriesTab)];
                          [self.featuredTabView select:(tabIndex == kFeaturedTab)];
-                         [self.friendsTabView select:(tabIndex == kFriendsTab)];
+                         [self.worldTabView select:(tabIndex == kWorldTab)];
                      }
                      completion:^(BOOL finished) {
                          self.animating = NO;

@@ -16,14 +16,6 @@
 
 @implementation SuggestedStoreCollectionViewController
 
-- (BOOL)updateForFriendsBook:(BOOL)friendsBook {
-    if (!friendsBook) {
-        return YES;
-    } else {
-        return [super updateForFriendsBook:friendsBook];
-    }
-}
-
 - (void)loadData {
     [super loadData];
     [CKBook suggestedBooksForUser:[CKUser currentUser]

@@ -71,7 +71,7 @@
 #pragma mark - Store
 
 + (UIFont *)storeTabFont {
-    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:20.0];
+    return [UIFont fontWithName:@"BrandonGrotesque-Light" size:26.0];
 }
 
 + (UIColor *)storeTabTextColour {
@@ -87,7 +87,7 @@
 }
 
 + (UIColor *)storeTabSelectedTextColour {
-    return [UIColor grayColor];
+    return [UIColor colorWithHexString:@"009ce5"];
 }
 
 + (UIColor *)storeBookActionButtonColour {

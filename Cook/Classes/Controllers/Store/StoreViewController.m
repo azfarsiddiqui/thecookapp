@@ -8,7 +8,9 @@
 
 #import "StoreViewController.h"
 #import "FriendsStoreCollectionViewController.h"
+#import "CategoriesStoreCollectionViewController.h"
 #import "FeaturedStoreCollectionViewController.h"
+#import "WorldStoreCollectionViewController.h"
 #import "SearchStoreCollectionViewController.h"
 #import "StoreBookCoverViewCell.h"
 #import "EventHelper.h"
@@ -23,11 +25,16 @@
 
 @property (nonatomic, strong) UIImageView *bottomShadowView;
 
+// Store
+@property (nonatomic, strong) CategoriesStoreCollectionViewController *categoriesViewController;
 @property (nonatomic, strong) FeaturedStoreCollectionViewController *featuredViewController;
-@property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
+@property (nonatomic, strong) WorldStoreCollectionViewController *worldViewController;
 @property (nonatomic, strong) StoreCollectionViewController *currentStoreCollectionViewController;
 @property (nonatomic, strong) StoreTabView *storeTabView;
 @property (nonatomic, strong) NSMutableArray *storeCollectionViewControllers;
+
+// Friends
+@property (nonatomic, strong) FriendsStoreCollectionViewController *friendsViewController;
 
 // Search
 @property (nonatomic, strong) CKSearchFieldView *searchFieldView;
@@ -90,16 +97,16 @@
 
 #pragma mark - StoreTabView methods
 
+- (void)storeTabSelectedCategories {
+    [self selectedStoreCollectionViewController:self.categoriesViewController];
+}
+
 - (void)storeTabSelectedFeatured {
     [self selectedStoreCollectionViewController:self.featuredViewController];
 }
 
-- (void)storeTabSelectedFriends {
-    [self selectedStoreCollectionViewController:self.friendsViewController];
-}
-
-- (void)storeTabSelectedSuggested {
-    [self selectedStoreCollectionViewController:self.searchViewController];
+- (void)storeTabSelectedWorld {
+    [self selectedStoreCollectionViewController:self.worldViewController];
 }
 
 #pragma mark - StoreCollectionViewControllerDelegate methods
@@ -130,6 +137,41 @@
 }
 
 #pragma mark - Properties
+
+- (CategoriesStoreCollectionViewController *)categoriesViewController {
+    if (!_categoriesViewController) {
+        _categoriesViewController = [[CategoriesStoreCollectionViewController alloc] initWithDelegate:self];
+    }
+    return _categoriesViewController;
+}
+
+- (FeaturedStoreCollectionViewController *)featuredViewController {
+    if (!_featuredViewController) {
+        _featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self];
+    }
+    return _featuredViewController;
+}
+
+- (WorldStoreCollectionViewController *)worldViewController {
+    if (!_worldViewController) {
+        _worldViewController = [[WorldStoreCollectionViewController alloc] initWithDelegate:self];
+    }
+    return _worldViewController;
+}
+
+- (SearchStoreCollectionViewController *)searchViewController {
+    if (!_searchViewController) {
+        _searchViewController = [[SearchStoreCollectionViewController alloc] initWithDelegate:self];
+    }
+    return _searchViewController;
+}
+
+- (FriendsStoreCollectionViewController *)friendsViewController {
+    if (!_friendsViewController) {
+        _friendsViewController = [[FriendsStoreCollectionViewController alloc] initWithDelegate:self];
+    }
+    return _friendsViewController;
+}
 
 - (CKSearchFieldView *)searchFieldView {
     if (!_searchFieldView) {
@@ -177,37 +219,45 @@
 
 - (void)initStores {
     CGFloat rowHeight = kShelfHeight;
-    self.storeCollectionViewControllers = [NSMutableArray arrayWithCapacity:3];
+    self.storeCollectionViewControllers = [NSMutableArray arrayWithCapacity:5];
+    
+    // Categories.
+    self.categoriesViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
+                                                          self.view.bounds.size.height - kShelfTopOffsetFromBottom - [self bottomShadowHeight],
+                                                          self.view.bounds.size.width,
+                                                          rowHeight);
+    self.categoriesViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    self.categoriesViewController.view.hidden = YES;
+    [self.view addSubview:self.categoriesViewController.view];
+    [self.storeCollectionViewControllers addObject:self.categoriesViewController];
     
     // Featured.
-    FeaturedStoreCollectionViewController *featuredViewController = [[FeaturedStoreCollectionViewController alloc] initWithDelegate:self];
-    featuredViewController.view.frame = CGRectMake(self.view.bounds.origin.x,
-                                                   self.view.bounds.size.height - kShelfTopOffsetFromBottom - [self bottomShadowHeight],
-                                                   self.view.bounds.size.width,
-                                                   rowHeight);
-    featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-    featuredViewController.view.hidden = YES;
-    [self.view addSubview:featuredViewController.view];
-    self.featuredViewController = featuredViewController;
-    [self.storeCollectionViewControllers addObject:featuredViewController];
+    self.featuredViewController.view.frame = self.categoriesViewController.view.frame;
+    self.featuredViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    self.featuredViewController.view.hidden = YES;
+    [self.view addSubview:self.featuredViewController.view];
+    [self.storeCollectionViewControllers addObject:self.featuredViewController];
+    
+    // World.
+    self.worldViewController.view.frame = self.categoriesViewController.view.frame;
+    self.worldViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    self.worldViewController.view.hidden = YES;
+    [self.view addSubview:self.worldViewController.view];
+    [self.storeCollectionViewControllers addObject:self.worldViewController];
     
     // Friends.
-    FriendsStoreCollectionViewController *friendsViewController = [[FriendsStoreCollectionViewController alloc] initWithDelegate:self];
-    friendsViewController.view.frame = featuredViewController.view.frame;
-    friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-    friendsViewController.view.hidden = YES;
-    [self.view addSubview:friendsViewController.view];
-    self.friendsViewController = friendsViewController;
-    [self.storeCollectionViewControllers addObject:friendsViewController];
+    self.friendsViewController.view.frame = self.categoriesViewController.view.frame;
+    self.friendsViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    self.friendsViewController.view.hidden = YES;
+    [self.view addSubview:self.friendsViewController.view];
+    [self.storeCollectionViewControllers addObject:self.friendsViewController];
     
-    // Suggested.
-    SearchStoreCollectionViewController *searchViewController = [[SearchStoreCollectionViewController alloc] initWithDelegate:self];
-    searchViewController.view.frame = featuredViewController.view.frame;
-    searchViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-    searchViewController.view.hidden = YES;
-    [self.view addSubview:searchViewController.view];
-    self.searchViewController = searchViewController;
-    [self.storeCollectionViewControllers addObject:searchViewController];
+    // Search.
+    self.searchViewController.view.frame = self.categoriesViewController.view.frame;
+    self.searchViewController.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+    self.searchViewController.view.hidden = YES;
+    [self.view addSubview:self.searchViewController.view];
+    [self.storeCollectionViewControllers addObject:self.searchViewController];
 }
 
 - (void)initTabs {
@@ -342,7 +392,9 @@
 }
 
 - (void)loggedOut:(NSNotification *)notification {
+    [self.categoriesViewController unloadData];
     [self.featuredViewController unloadData];
+    [self.worldViewController unloadData];
     [self.friendsViewController unloadData];
     [self.searchViewController unloadData];
     [self.searchFieldView clearSearch];

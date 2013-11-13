@@ -17,14 +17,6 @@
 
 @implementation FeaturedStoreCollectionViewController
 
-- (BOOL)updateForFriendsBook:(BOOL)friendsBook {
-    if (!friendsBook) {
-        return YES;
-    } else {
-        return [super updateForFriendsBook:friendsBook];
-    }
-}
-
 - (void)loadData {
     [super loadData];
     [CKBook featuredBooksForUser:[CKUser currentUser]
@@ -32,7 +24,6 @@
                              [self loadBooks:featuredBooks];
                          }
                          failure:^(NSError *error) {
-                            DLog(@"Error: %@", [error localizedDescription]);
                              [self showNoConnectionCardIfApplicableError:error];
                          }];
 }

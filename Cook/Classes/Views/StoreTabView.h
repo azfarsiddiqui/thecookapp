@@ -10,16 +10,17 @@
 
 @protocol StoreTabViewDelegate
 
+- (void)storeTabSelectedCategories;
 - (void)storeTabSelectedFeatured;
-- (void)storeTabSelectedFriends;
-- (void)storeTabSelectedSuggested;
+- (void)storeTabSelectedWorld;
 
 @end
 
 @interface StoreTabView : UIView
 
 - (id)initWithDelegate:(id<StoreTabViewDelegate>)delegate;
+- (void)selectCategories;
 - (void)selectFeatured;
-- (void)selectFriends;
+- (void)selectWorld;
 
 @end
