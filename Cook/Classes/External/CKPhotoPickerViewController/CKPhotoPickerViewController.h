@@ -17,6 +17,7 @@ typedef NS_ENUM(NSUInteger, CKPhotoPickerImageType) {
 
 - (void)photoPickerViewControllerSelectedImage:(UIImage *)image;
 - (void)photoPickerViewControllerCloseRequested;
+- (void)photoPickerViewControllerDeleteRequested;
 
 @end
 
@@ -25,9 +26,9 @@ typedef NS_ENUM(NSUInteger, CKPhotoPickerImageType) {
 @property (nonatomic, assign) CKPhotoPickerImageType type;
 
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate;
-- (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate type:(CKPhotoPickerImageType)type;
+- (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate type:(CKPhotoPickerImageType)type editImage:(UIImage *)editImage;
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate saveToPhotoAlbum:(BOOL)saveToPhotoAlbum;
 - (id)initWithDelegate:(id<CKPhotoPickerViewControllerDelegate>)delegate type:(CKPhotoPickerImageType)type
-      saveToPhotoAlbum:(BOOL)saveToPhotoAlbum showFilters:(BOOL)showFilters;
+      saveToPhotoAlbum:(BOOL)saveToPhotoAlbum showFilters:(BOOL)showFilters editImage:(UIImage *)editImage;
 
 @end

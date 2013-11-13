@@ -1291,6 +1291,8 @@
 		F64E463F17DA0DD300F99A5A /* cook_customise_photo_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = F64E463D17DA0DD300F99A5A /* cook_customise_photo_overlay.png */; };
 		F64E464017DA0DD300F99A5A /* cook_customise_photo_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F64E463E17DA0DD300F99A5A /* cook_customise_photo_overlay@2x.png */; };
 		F64E465B17DA0DE600F99A5A /* CKPhotoFilterSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F64E464317DA0DE600F99A5A /* CKPhotoFilterSliderView.m */; };
+		F64EA6D6183203250062E8AA /* cook_btns_photo_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = F64EA6D4183203250062E8AA /* cook_btns_photo_delete.png */; };
+		F64EA6D7183203250062E8AA /* cook_btns_photo_delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F64EA6D5183203250062E8AA /* cook_btns_photo_delete@2x.png */; };
 		F6526BB017D0D49F000DDD95 /* Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAE17D0D49F000DDD95 /* Debug.plist */; };
 		F6526BB117D0D49F000DDD95 /* Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6526BAF17D0D49F000DDD95 /* Release.plist */; };
 		F6526BB417D15E01000DDD95 /* RecipeShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6526BB317D15E01000DDD95 /* RecipeShareViewController.m */; };
@@ -2908,6 +2910,8 @@
 		F64E463E17DA0DD300F99A5A /* cook_customise_photo_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_customise_photo_overlay@2x.png"; sourceTree = "<group>"; };
 		F64E464217DA0DE600F99A5A /* CKPhotoFilterSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKPhotoFilterSliderView.h; sourceTree = "<group>"; };
 		F64E464317DA0DE600F99A5A /* CKPhotoFilterSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPhotoFilterSliderView.m; sourceTree = "<group>"; };
+		F64EA6D4183203250062E8AA /* cook_btns_photo_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cook_btns_photo_delete.png; sourceTree = "<group>"; };
+		F64EA6D5183203250062E8AA /* cook_btns_photo_delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cook_btns_photo_delete@2x.png"; sourceTree = "<group>"; };
 		F6526BAE17D0D49F000DDD95 /* Debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Debug.plist; sourceTree = "<group>"; };
 		F6526BAF17D0D49F000DDD95 /* Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Release.plist; sourceTree = "<group>"; };
 		F6526BB217D15E01000DDD95 /* RecipeShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecipeShareViewController.h; sourceTree = "<group>"; };
@@ -3092,6 +3096,8 @@
 				76A9177A17BCE0F300CB8E9A /* cook_btns_photo_cancel@2x.png */,
 				76A9177B17BCE0F300CB8E9A /* cook_btns_photo_okay.png */,
 				76A9177C17BCE0F300CB8E9A /* cook_btns_photo_okay@2x.png */,
+				F64EA6D4183203250062E8AA /* cook_btns_photo_delete.png */,
+				F64EA6D5183203250062E8AA /* cook_btns_photo_delete@2x.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -5844,6 +5850,7 @@
 				76375A811702AC3A008D8B63 /* cook_book_btn_addrecipe_onpress@2x.png in Resources */,
 				7649632C181017AD0014047B /* cook_book_addtobook_category_overlay@2x.png in Resources */,
 				766E43D217DEDC0D006B2495 /* cook_book_inner_icon_add_onpress_blue@2x.png in Resources */,
+				F64EA6D7183203250062E8AA /* cook_btns_photo_delete@2x.png in Resources */,
 				76375A821702AC3A008D8B63 /* cook_book_btn_addrecipe.png in Resources */,
 				767EEA2317BDBF62001E7D0B /* cook_login_bg_whitepanel@2x.png in Resources */,
 				766E431917C7129400F1044B /* cook_book_inner_loading_large_outer.png in Resources */,
@@ -6148,6 +6155,7 @@
 				76E9869E17E330E800D9CAF3 /* cook_book_graphic_featured_healthy@2x.png in Resources */,
 				7640CE0C1784093B00873073 /* cook_customise_colour_picker_purple.png in Resources */,
 				7614D5AE1744B7D400B16AC9 /* Brandon_thin.otf in Resources */,
+				F64EA6D6183203250062E8AA /* cook_btns_photo_delete.png in Resources */,
 				766E43AB17DEDC0D006B2495 /* cook_book_inner_category_add_onpress_orange.png in Resources */,
 				F60C56F417E3309E00912544 /* cook_dash_settings_firstscreen_bg.png in Resources */,
 				76DE6D5718178DF9000ACCDC /* cook_book_inner_icon_small_friends.png in Resources */,

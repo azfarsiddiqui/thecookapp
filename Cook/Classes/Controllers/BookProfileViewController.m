@@ -37,6 +37,7 @@
 //@property (nonatomic, strong) UIImage *originalImage;
 
 @property (nonatomic, assign) BOOL fullImageLoaded;
+@property (nonatomic, assign) BOOL isDeleteCoverImage;
 
 @end
 
@@ -55,6 +56,7 @@
     if (self = [super init]) {
         self.book = book;
         self.editingHelper = [[CKEditingViewHelper alloc] init];
+        self.isDeleteCoverImage = NO;
     }
     return self;
 }
@@ -114,6 +116,7 @@
         
         // Upload profile photo if given.
         if (self.updatedBookCoverPhoto) {
+            self.isDeleteCoverImage = NO;
             [self.book saveWithImage:self.updatedBookCoverPhoto
                           completion:^{
                               //Store temp image in cache during editing
@@ -122,9 +125,11 @@
                           } failure:^(NSError *error) {
                               // Ignore returns.
                           }];
+        } else if (self.isDeleteCoverImage) {
+            self.summaryView.isDeleteCoverPhoto = YES;
         }
         
-        if ([self.summaryView contentSaveRequired]) {
+        if ([self.summaryView contentSaveRequired] || self.isDeleteCoverImage) {
             [self.summaryView contentPerformSave:YES];
         }
         
@@ -140,7 +145,6 @@
         
         // Restore the data in summary view.
         [self.summaryView contentPerformSave:NO];
-        
     }
     
     // Show intro card?
@@ -162,6 +166,13 @@
 
 - (void)photoPickerViewControllerCloseRequested {
     [self showPhotoPicker:NO];
+}
+
+- (void)photoPickerViewControllerDeleteRequested {
+    self.isDeleteCoverImage = YES;
+    self.updatedBookCoverPhoto = nil;
+    UIImage *bookCoverImage = [CKBookCover recipeEditBackgroundImageForCover:self.book.cover];
+    [self loadImage:bookCoverImage placeholder:YES];
 }
 
 #pragma mark - CKEditingTextBoxViewDelegate methods
@@ -286,7 +297,7 @@
     if (show) {
         // Present photo picker fullscreen.
         UIView *rootView = [[AppHelper sharedInstance] rootView];
-        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self];
+        CKPhotoPickerViewController *photoPickerViewController = [[CKPhotoPickerViewController alloc] initWithDelegate:self type:CKPhotoPickerImageTypeLandscape editImage:[[CKPhotoManager sharedInstance] cachedImageForKey:kTempBookImageKey]];
         self.photoPickerViewController = photoPickerViewController;
         self.photoPickerViewController.view.alpha = 0.0;
         [rootView addSubview:self.photoPickerViewController.view];
