@@ -165,6 +165,7 @@
         [super dismissEditView];
     }
 }
+
 - (void)showItems {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self showItems:YES];
@@ -187,6 +188,12 @@
 
 - (NSString *)swipeToDeleteTextActivated:(BOOL)activated {
     return activated ? @"Release to delete" : @"Swipe to delete";
+}
+
+- (void)addCellToBottom {
+    NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:[self.items count] inSection:0];
+    [self createNewCellAtIndexPath:nextIndexPath];
+    [self.collectionView scrollToItemAtIndexPath:nextIndexPath atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
 }
 
 #pragma mark - Lifecycle events.

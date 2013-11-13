@@ -23,6 +23,10 @@
 
 #define kFooterId   @"FooterId"
 
+- (void)tappedToAddCell:(id)sender {
+    [self addCellToBottom];
+}
+
 #pragma mark - CKEditViewController methods
 
 - (id)updatedValue {
@@ -110,6 +114,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
 - (UIView *)hintsView {
     if (!_hintsView) {
         _hintsView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cook_book_Ingredientshint.png"]];
+        //TEST to add cells
+        _hintsView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapToAddGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedToAddCell:)];
+        [_hintsView addGestureRecognizer:tapToAddGesture];
     }
     return _hintsView;
 }
