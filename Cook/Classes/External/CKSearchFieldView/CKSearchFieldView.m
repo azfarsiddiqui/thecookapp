@@ -72,10 +72,12 @@
 
 - (void)focus:(BOOL)focus {
     if (focus) {
+        [self.searchButton setBackgroundImage:[self imageForSearchSelected:NO] forState:UIControlStateNormal];
         self.textField.placeholder = @"SEARCH BY NAME";
         self.textField.text = self.currentSearch;
         [self.textField becomeFirstResponder];
     } else {
+        [self.searchButton setBackgroundImage:[self imageForSearchSelected:YES] forState:UIControlStateNormal];
         self.textField.placeholder = nil;
         self.textField.text = nil;
         [self.textField resignFirstResponder];
@@ -151,8 +153,8 @@
 
 - (UIButton *)searchButton {
     if (!_searchButton) {
-        _searchButton = [self buttonWithImage:[UIImage imageNamed:@"cook_library_icons_search.png"]
-                                selectedImage:[UIImage imageNamed:@"cook_library_icons_search_off.png"]
+        _searchButton = [self buttonWithImage:[self imageForSearchSelected:YES]
+                                selectedImage:[self imageForSearchSelected:YES]
                                        target:self selector:@selector(searchTapped)];
     }
     return _searchButton;
@@ -161,13 +163,17 @@
 - (UIButton *)closeButton {
     if (!_closeButton) {
         _closeButton = [self buttonWithImage:[UIImage imageNamed:@"cook_library_icons_clear.png"]
-                                selectedImage:[UIImage imageNamed:@"cook_library_icons_clear_off.png"]
-                                       target:self selector:@selector(clearTapped)];
+                               selectedImage:[UIImage imageNamed:@"cook_library_icons_clear_off.png"]
+                                      target:self selector:@selector(clearTapped)];
     }
     return _closeButton;
 }
 
 #pragma mark - Private methods
+
+- (UIImage *)imageForSearchSelected:(BOOL)selected {
+    return selected ? [UIImage imageNamed:@"cook_library_icons_search_off.png"] : [UIImage imageNamed:@"cook_library_icons_search.png"];
+}
 
 - (NSString *)currentText {
     return [self.textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
