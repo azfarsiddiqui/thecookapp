@@ -15,6 +15,7 @@
 #import "StoreBookCoverViewCell.h"
 #import "EventHelper.h"
 #import "StoreTabView.h"
+#import "StoreUnitTabView.h"
 #import "ImageHelper.h"
 #import "NSString+Utilities.h"
 #import "CKSearchFieldView.h"
@@ -39,8 +40,13 @@
 // Search
 @property (nonatomic, strong) CKSearchFieldView *searchFieldView;
 @property (nonatomic, strong) SearchStoreCollectionViewController *searchViewController;
-@property (nonatomic, strong) UIButton *searchBackButton;
+@property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, assign) BOOL searchMode;
+
+// Friends
+@property (nonatomic, strong) UIButton *friendsButton;
+@property (nonatomic, strong) StoreUnitTabView *friendsTabView;
+@property (nonatomic, assign) BOOL friendsMode;
 
 @end
 
@@ -73,6 +79,7 @@
     [self initStores];
     [self initTabs];
     [self initSearch];
+    [self initFriends];
     
     [EventHelper registerLogout:self selector:@selector(loggedOut:)];
 }
@@ -180,11 +187,30 @@
     return _searchFieldView;
 }
 
-- (UIButton *)searchBackButton {
-    if (!_searchBackButton) {
-        _searchBackButton = [ViewHelper backButtonLight:NO target:self selector:@selector(searchCloseTapped)];
+- (UIButton *)backButton {
+    if (!_backButton) {
+        _backButton = [ViewHelper backButtonLight:NO target:self selector:@selector(backTapped)];
     }
-    return _searchBackButton;
+    return _backButton;
+}
+
+- (UIButton *)friendsButton {
+    if (!_friendsButton) {
+        _friendsButton = [ViewHelper buttonWithImage:[self imageForFriendsButtonSelected:YES]
+                                       selectedImage:[self imageForFriendsButtonSelected:YES]
+                                              target:self selector:@selector(friendsTapped)];
+    }
+    return _friendsButton;
+}
+
+- (StoreUnitTabView *)friendsTabView {
+    if (!_friendsTabView) {
+        _friendsTabView = [[StoreUnitTabView alloc] initWithText:@"FRIENDS"
+                                                            icon:[UIImage imageNamed:@"cook_library_icons_friends.png"]
+                                                         offIcon:[UIImage imageNamed:@"cook_library_icons_friends_off.png"]];
+        [_friendsTabView select:YES];
+    }
+    return _friendsTabView;
 }
 
 #pragma mark - Private methods
@@ -270,16 +296,38 @@
     self.storeTabView = storeTabView;
 }
 
+- (void)initFriends {
+    
+    // Friends button.
+    self.friendsButton.frame = (CGRect){
+        20.0,
+        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.friendsButton.frame.size.height) / 2.0),
+        self.friendsButton.frame.size.width,
+        self.friendsButton.frame.size.height
+    };
+    [self.view addSubview:self.friendsButton];
+    
+    // Friends tab.
+    self.friendsTabView.frame = (CGRect) {
+        floorf((self.view.bounds.size.width - self.friendsTabView.frame.size.width) / 2.0),
+        self.storeTabView.frame.origin.y,
+        self.friendsTabView.frame.size.width,
+        self.friendsTabView.frame.size.height
+    };
+    self.friendsTabView.alpha = 0.0;
+    [self.view addSubview:self.friendsTabView];
+}
+
 - (void)initSearch {
     
-    self.searchBackButton.alpha = 0.0;
-    self.searchBackButton.frame = (CGRect){
+    self.backButton.alpha = 0.0;
+    self.backButton.frame = (CGRect){
         20.0,
-        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.searchBackButton.frame.size.height) / 2.0),
-        self.searchBackButton.frame.size.width,
-        self.searchBackButton.frame.size.height
+        self.storeTabView.frame.origin.y + floorf((self.storeTabView.frame.size.height - self.backButton.frame.size.height) / 2.0),
+        self.backButton.frame.size.width,
+        self.backButton.frame.size.height
     };
-    [self.view addSubview:self.searchBackButton];
+    [self.view addSubview:self.backButton];
     
     self.searchFieldView.frame = (CGRect){
         floorf((self.view.bounds.size.width - self.searchFieldView.frame.size.width) / 2.0),
@@ -291,7 +339,7 @@
     [self.view addSubview:self.searchFieldView];
     
     self.searchFieldView.transform = CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
-    self.searchBackButton.transform = CGAffineTransformMakeTranslation(20.0, 0.0);
+    self.backButton.transform = CGAffineTransformMakeTranslation(20.0, 0.0);
 }
 
 - (void)selectedStoreCollectionViewController:(StoreCollectionViewController *)storeCollectionViewController {
@@ -367,8 +415,9 @@
                          self.storeTabView.alpha = searchMode ? 0.0 : 1.0;
                          self.searchFieldView.backgroundView.alpha = searchMode ? 1.0 : 0.0;
                          self.searchFieldView.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
-                         self.searchBackButton.alpha = searchMode ? 1.0 : 0.0;
-                         self.searchBackButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
+                         self.backButton.alpha = searchMode ? 1.0 : 0.0;
+                         self.friendsButton.alpha = searchMode ? 0.0 : 1.0;
+                         self.backButton.transform = searchMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
                          self.currentStoreCollectionViewController.view.alpha = searchMode ? 0.0 : 1.0;
                          self.searchViewController.view.alpha = searchMode ? 1.0 : 0.0;
                      }
@@ -383,12 +432,55 @@
                      }];
 }
 
-- (CGFloat)searchStartOffset {
-    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 90.0;
+- (void)enableFriendsMode:(BOOL)friendsMode {
+    if (friendsMode) {
+        self.friendsViewController.view.alpha = 0.0;
+        self.friendsViewController.view.hidden = NO;
+    }
+    
+    [UIView animateWithDuration:0.3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         self.storeTabView.alpha = friendsMode ? 0.0 : 1.0;
+                         self.searchFieldView.alpha = friendsMode ? 0.0 : 1.0;
+                         self.friendsButton.alpha = friendsMode ? 0.0 : 1.0;
+                         self.searchFieldView.transform = friendsMode ? CGAffineTransformMakeTranslation([self searchStartOffset] + 50.0, 0.0) : CGAffineTransformMakeTranslation([self searchStartOffset], 0.0);
+                         self.friendsButton.transform = friendsMode ? CGAffineTransformMakeTranslation(-20.0, 0.0) : CGAffineTransformIdentity;
+                         self.friendsTabView.alpha = friendsMode ? 1.0 : 0.0;
+                         self.backButton.alpha = friendsMode ? 1.0 : 0.0;
+                         self.backButton.transform = friendsMode ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(20.0, 0.0);
+                         self.currentStoreCollectionViewController.view.alpha = friendsMode ? 0.0 : 1.0;
+                         self.friendsViewController.view.alpha = friendsMode ? 1.0 : 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         self.friendsMode = friendsMode;
+                         
+                         if (friendsMode) {
+                             [self.friendsViewController loadData];
+                         } else {
+                             [self.friendsViewController unloadData];
+                             self.friendsViewController.view.hidden = YES;
+                         }
+                         
+                     }];
 }
 
-- (void)searchCloseTapped {
-    [self enableSearchMode:NO];
+- (CGFloat)searchStartOffset {
+//    return self.view.bounds.size.width - self.searchFieldView.frame.origin.x - 90.0;
+    return 617.0;
+}
+
+- (void)backTapped {
+    if (self.searchMode) {
+        [self enableSearchMode:NO];
+    } else if (self.friendsMode) {
+        [self enableFriendsMode:NO];
+    }
+}
+
+- (void)friendsTapped {
+    [self enableFriendsMode:!self.friendsMode];
 }
 
 - (void)loggedOut:(NSNotification *)notification {
@@ -402,6 +494,10 @@
         [self enableSearchMode:NO];
     }
     self.currentStoreCollectionViewController = nil;
+}
+
+- (UIImage *)imageForFriendsButtonSelected:(BOOL)selected {
+    return selected ? [UIImage imageNamed:@"cook_library_icons_friends_off.png"] : [UIImage imageNamed:@"cook_library_icons_friends.png"];
 }
 
 @end
