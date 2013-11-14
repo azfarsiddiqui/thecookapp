@@ -121,6 +121,14 @@
     return [self.method CK_containsText];
 }
 
+- (BOOL)hasServes {
+    return (self.numServes || self.prepTimeInMinutes || self.cookingTimeInMinutes);
+}
+
+- (BOOL)hasIngredients {
+    return [self.ingredients count] > 0;
+}
+
 #pragma mark - Properties.
 
 - (void)setPage:(NSString *)page {

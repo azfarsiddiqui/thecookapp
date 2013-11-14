@@ -731,12 +731,25 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSAttributedString *storyDisplay = [self attributedTextForText:story font:[Theme storyFont] colour:[Theme storyColor]];
     self.storyLabel.attributedText = storyDisplay;
     CGSize size = [self.storyLabel sizeThatFits:(CGSize){ kMaxStoryWidth, MAXFLOAT }];
-    self.storyLabel.frame = CGRectIntegral((CGRect){
-        floorf((self.bounds.size.width - size.width) / 2.0),
-        self.storyDividerView.frame.origin.y + self.storyDividerView.frame.size.height + dividerStoryGap,
-        size.width,
-        size.height
-    });
+    
+    //Center story if no ingredients or serves
+    if ([self.recipeDetails hasServes] || [self.recipeDetails hasIngredients] || self.editMode) {
+        self.storyLabel.frame = CGRectIntegral((CGRect){
+            floorf((self.bounds.size.width - size.width) / 2.0),
+            self.storyDividerView.frame.origin.y + self.storyDividerView.frame.size.height + dividerStoryGap,
+            size.width,
+            size.height
+        });
+    }
+    else {
+        self.storyLabel.frame = CGRectIntegral((CGRect){
+            (kWidth - size.width) / 2.0,
+            self.storyDividerView.frame.origin.y + self.storyDividerView.frame.size.height + dividerStoryGap,
+            size.width,
+            size.height
+
+        });
+    }
 }
 
 - (void)updateContentDivider {
@@ -770,7 +783,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
 
 - (void)updateServesCook {
     
-    if (self.editMode || self.recipeDetails.numServes || self.recipeDetails.prepTimeInMinutes || self.recipeDetails.cookingTimeInMinutes) {
+    if (self.editMode || [self.recipeDetails hasServes]) {
         
         // Add the serves cook view once.
         if (!self.servesCookView) {
@@ -906,12 +919,22 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     NSAttributedString *methodDisplay = [self attributedTextForText:method font:[Theme methodFont] colour:[Theme methodColor]];
     self.methodLabel.attributedText = methodDisplay;
     CGSize size = [self.methodLabel sizeThatFits:(CGSize){ kMaxRightWidth, MAXFLOAT }];
-    self.methodLabel.frame = CGRectIntegral((CGRect){
-        self.bounds.size.width - kMaxRightWidth,
-        self.contentOffset.y,
-        size.width,
-        size.height
-    });
+    //Center story if no ingredients or serves
+    if ([self.recipeDetails hasServes] || [self.recipeDetails hasIngredients] || self.editMode) {
+        self.methodLabel.frame = CGRectIntegral((CGRect){
+            self.bounds.size.width - kMaxRightWidth,
+            self.contentOffset.y,
+            size.width,
+            size.height
+        });
+    } else {
+        self.methodLabel.frame = CGRectIntegral((CGRect){
+            (kWidth - size.width) / 2.0,
+            self.contentOffset.y,
+            size.width,
+            size.height
+        });
+    }
 }
 
 
