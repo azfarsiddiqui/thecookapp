@@ -653,7 +653,7 @@ typedef NS_ENUM(NSUInteger, EditPadDirection) {
     }
     else if (self.editMode)
     {
-        tagsString = [NSMutableString stringWithString:@"ENTER TAGS"];
+        tagsString = [NSMutableString stringWithString:@"TAGS"];
     }
     else
     {
