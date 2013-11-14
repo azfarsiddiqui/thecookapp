@@ -53,5 +53,7 @@
 - (BOOL)hasTitle;
 - (BOOL)hasStory;
 - (BOOL)hasMethod;
+- (BOOL)hasServes;
+- (BOOL)hasIngredients;
 
 @end
